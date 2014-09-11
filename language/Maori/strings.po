@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -388,10 +388,6 @@ msgstr "Whakau tārua kōnae"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Whakaū i te nuku kōnae"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Whakaū i te muku i te kōnae?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2376,10 +2372,6 @@ msgstr "Tirotiro hoki Script"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "Taumata kōpeketanga"
-
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Takitaki kupu autaki ..."
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
@@ -4957,22 +4949,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Tukua te whakaterenga pūmārō (MediaCodec)"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Whakamahia te MPEG-2 VDPAU"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Whakahohe i tēnei kōwhiringa ki te whakamahi i te whakaterenga pūmārō mō te MPEG-(1/2) ngā kotēkē. Ki te monokia ka whakamahia kē te PTM. Tawhito Radeon Cards ahu ki te segfault ki tenei i taea ai."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Whakamahia te MPEG-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Whakahohe i tēnei kōwhiringa ki te whakamahi i te whakaterenga pūmārō mo te kōtēke MPEG-4. Ki te monokia ka whakamahia kē te PTM. Ētahi Hardware Ion he raruraru ki te makaurangi tenei i te taunoa."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Whakamahia te VC-1 VDPAU"
@@ -4980,22 +4956,6 @@ msgstr "Whakamahia te VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Whakahohe i tēnei kōwhiringa ki te whakamahi i te whakaterenga pūmārō mō te VC-1 e hāngai ana ngā kotēkē. Ki te monokia ka whakamahia kē te PTM. E kore e taea e AMD Hardware ki VDPAU Pūwhiwhi VC-1 Māmā."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Whakamahia te MPEG-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Whakahohe i tēnei kōwhiringa ki te whakamahi i te whakaterenga pūmārō mō te MPEG-(1/2) ngā kotēkē. Ki te monokia ka whakamahia kē te PTM. Ētahi Videos MPEG-2 ai mau tao'ao matomato."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Whakamahia te MPEG-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Whakahohe i tēnei kōwhiringa ki te whakamahi i te whakaterenga pūmārō mo te kōtēke MPEG-4. Ki te monokia ka whakamahia kē te PTM."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5953,10 +5913,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "te whakamahi ranei kīanga ki te kimihia he ōritenga, rite \"te ruānuku o Oz \"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Kimihia hōtaka ōrite"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Te kawemai i EPG i kiritaki"
@@ -6008,10 +5964,6 @@ msgstr "Whakamuna"
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
 msgstr "PVR Backend% i -% s"
-
-msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Recordings TV"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6200,10 +6152,6 @@ msgstr "Haere ki te timata"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Haere ki te mutunga"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Matapihi EPG Taunoa"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6621,10 +6569,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Whakaatuhia te mōhiohio hongere i runga i te whakawhiti"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Huna te mōhiohio hongere aunoa"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6636,10 +6580,6 @@ msgstr "Tahua / OSD"
 msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Ra ki te whakaatu i roto i te EPG"
-
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Mōhiohio hongere roanga"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6660,10 +6600,6 @@ msgstr "EPG ko te tautuhi anō"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Tonu hongere o mua i runga i te whakaohonga"
-
-msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimised"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6976,10 +6912,6 @@ msgstr "Kaua e whakaatu 'kore mōhiohio e wātea ana' tapanga"
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Kaua e whakaatu 'hononga ngaro' whakatūpato"
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Recordings katoa"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -10797,10 +10729,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Monokia kakautohu i te kei konei i tēnei pūrere"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Whakahohe i kī pūnaha i roto i te matakatoa"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Tauwāhi"
@@ -11437,10 +11365,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Whakatautuhia ngā tauranga i te tūmautukutuku."
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Whakatautuhia ngā te tūmautukutuku username."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Tīpakohia i waenganui atanga tukutuku tāuta mā te Kaiwhakahaere Tāpiri-ki."
@@ -11564,10 +11488,6 @@ msgstr "Te tautuhi i te mea e mahi Kodi mahi i te i reira kua mangere hoki o te 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Whakamahia Kōpaki ki te whakaora screenshots tangohia i roto i Kodi."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Whakapūtātia ngā whare pukapuka atu ki te whakauru i roto i te poro patuiro."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11744,10 +11664,6 @@ msgstr "Hōhonu stereoscopic Taitararoto"
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Whakamahia teitei kakano kounga mō ngā pukupuku, me te fanart (whakamahi i mahara ake)"
-
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Rohe taumira o gui ki te whakaora i mahara. E kore e pā te purei anō ataata. Whakamahia 1080 mō te mutunga kore. Me tīmata anō."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

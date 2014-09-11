@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Подтверждение перемещения"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Удалить файл?"
+msgid "Confirm delete"
+msgstr "Подтверждение удаления"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Веб-интерфейс"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Кодировщики аудио"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Девиз"
@@ -848,6 +852,10 @@ msgstr "Полный экран"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Размер: (%i,%i)->(%i,%i) (Увеличение x%2.2f) Соотношение:%2.2f:1 (Пикселей: %2.2f:1) (Верт. смещение: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Монитор"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Язык потока по умолчанию"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Язык интерфейса"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Раскладки клавиатуры"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Сводить многоканальный звук в стерео"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Номер"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Сорт. по: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Степень сжатия"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Подробный журнал..."
+msgid "Enable component-specific logging"
+msgstr "Включить компонентный журнал отладки"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Включить перекодирование в Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Cпецифицировать компонентный журнал отладки"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Подробный журнал для библиотеки SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Подробный журнал для библиотеки CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Подробный журнал для библиотеки CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Подробный журнал для библиотек FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Подробный журнал для библиотеки RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Подробный журнал для вызовов DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Подробный журнал для запросов JSON-RPC "
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Подробное ведение журнала для АУДИО устройства"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Подробный журнал для библиотеки AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Подробный журнал для компонентов UPnP "
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Подробный журнал для библиотеки CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Уровень батареи"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Автообновление: Включено"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Автообновление: Уведомлять"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Автообновление: Отключено"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Погода"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Включить многопоточное программное декодирование"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Использовать Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Использовать MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Включите, чтобы использовать аппаратное декодирование форматов Mpeg-(1/2). В противном случае декодирование будет выполняться ЦП. Включение этой настройки может вызывать сбои на старых видеокартах Radeon."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Включите, чтобы использовать аппаратное декодирование форматов MPEG-(1/2). В противном случае декодирование будет выполняться ЦП. Включение этой настройки может вызывать сбои на старых видеокартах Radeon."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Использовать Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Использовать MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Включите, чтобы использовать аппаратное декодирование формата Mpeg-4. В противном случае декодирование будет выполняться ЦП. Включение этой настройки может вызывать сбои в системах на базе ION."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Включите, чтобы использовать аппаратное декодирование формата MPEG-4. В противном случае декодирование будет выполняться ЦП. Включение этой настройки может вызывать сбои в системах на базе ION."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Включите, чтобы использовать аппаратное декодирование формата VC-1. В противном случае декодирование будет выполняться ЦП. Системы на базе AMD с VDPAU не могут декодировать VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Использовать Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Использовать MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Включите, чтобы использовать аппаратное декодирование форматов Mpeg-(1/2). В противном случае декодирование будет выполняться ЦП. На некоторых видеофайлах Mpeg-2 могут возникать зеленые артефакты."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Включите, чтобы использовать аппаратное декодирование форматов MPEG-(1/2). В противном случае декодирование будет выполняться ЦП. На некоторых видеофайлах MPEG-2 могут возникать зеленые артефакты."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Использовать Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Использовать MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Включите, чтобы использовать аппаратное декодирование формата Mpeg-4. В противном случае декодирование будет выполняться ЦП."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Включите, чтобы использовать аппаратное декодирование формата MPEG-4. В противном случае декодирование будет выполняться ЦП."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5369,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Фильтры интерфейса"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Сканировать в фоновом режиме"
@@ -5608,6 +5688,10 @@ msgstr "Звуки интерфейса"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Стандартн."
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Увеличенный размер шрифта"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6018,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "или используйте словосочетания, чтобы найти точное совпадение, например \"Волшебник из страны Оз\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Найти похожие программы"
+msgid "Find similar"
+msgstr "Найти похожее"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Сервер PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Записи ТВ"
+msgid "Recordings"
+msgstr "Записи"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6349,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "В конец"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Окно EPG по умолчанию"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Значки каналов"
@@ -6417,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Переключитесь на другой канал."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Перейти к каналу"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Введите имя папки для записи"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Пожалуйста выберите канал"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6528,14 @@ msgstr "Неизвестная ошибка. Повторите попытку �
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Ошибка сервера PVR . См. журнал."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Удалить эту запись?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Удалить все записи в этой папке?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6640,10 @@ msgstr "Сначала создайте группу"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Имя новой группы"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Поиск..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Отображать сведения о канале при переключении"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Автоматически скрывать сведения о канале"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "ТВ"
@@ -6705,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Количество дней в EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Длительность показа сведений о канале"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Радио"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "Продолжить с последнего канала при запуске"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "В окне"
+msgid "Background"
+msgstr "Фон"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7050,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Не отображать сообщения \"Соединение потеряно\""
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Все записи"
+msgid "Group Items"
+msgstr "Группировать записи"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7208,18 @@ msgstr "Выбрать значок"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Найти значок"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Поиск значков для каналов"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Все каналы"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Передний план"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8779,7 +8887,7 @@ msgstr "Исключить путь из обновлений медиатеки
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Извлекать метаданные из медиафайлов"
+msgstr "Извлекать эскизы и сведения о видео"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -9392,6 +9500,10 @@ msgstr "%d—%d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s—%s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -10125,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Список изменений"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Проверить обновления"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Последний раз обновлено %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Включить это дополнение?"
@@ -10200,6 +10320,22 @@ msgstr "Требуемое дополнение"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Подключиться повторно?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Вспомогательные дополнения"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Библиотеки дополнений"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Библиотеки сведений"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Библиотеки визуализации"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10476,14 @@ msgstr "Рядом с видео"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "В отдельной папке"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Автоматически загружать первые субтитры"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Автоматически скачивать первые найденные субтитры"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10933,10 +11077,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Отключать джойстик, когда это устройство подключено"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Разрешить системные сочетания клавиш в полноэкранном режиме"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Расположение"
@@ -11419,7 +11559,7 @@ msgstr "Возможные действия: воспроизвести файл
 
 msgctxt "#36178"
 msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
-msgstr "Извлечение эскизов и метаданных, таких как кодек и пропорции, из видеофайлов."
+msgstr "Извлекать эскизы и метаданные, например кодек и пропорции, из видеофайлов."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11557,17 +11697,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Выводить сведения о телепрограмме при переключении канала, такие как название текущей передачи."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Скрывать сведения о телепрограмме автоматически через интервал, заданный ниже."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Скрывать кнопки управления на дисплее после переключения каналов."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Длительность показа сведений о телепрограмме, если включена настройка автоматического скрытия."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11712,6 @@ msgstr "Искать недостающие значки каналов."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Настройки телепрограммы (EPG)."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Окно по умолчанию для отображения EPG."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12022,12 +12150,12 @@ msgid "Define the webserver port."
 msgstr "Укажите номер порта веб-сервера."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Укажите имя пользователя веб-сервера."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Задайте  имя пользователя для веб сервера. Настройка вступает в силу только тогда, когда заданы и имя пользователя и пароль."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Задать пароль веб-сервера."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Задайте пароль для веб сервера. Настройка вступает в силу только тогда, когда заданы и имя пользователя и пароль."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12278,8 +12406,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Папка для сохранения скриншотов, снятых в Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Укажите дополнительные библиотеки, которые нужно включать в журнал отладки."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Включает информацию от дополнительных библиотек в журнал отладки."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12553,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Определяет, будет ли выполняться декодирование видео в программном режиме (требуется больше ресурсов ЦП) или аппаратно, если это возможно."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Выберать виртуальную раскладку клавиатуры."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Стереоскопический режим (текущий)"
@@ -12521,6 +12653,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Выбор способа микширования аудио, например с 5.1 до стерео. [Вкл.] — сохранение исходного динамического диапазона при микшировании, но при этом громкость будет ниже. [Выкл.] — сохранение уровня исходного уровня громкости, но со сжатием динамического диапазона. Примечание: динамический диапазон — это разница между самым тихим и самым громким звуками исходного аудио."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Укажите дополнительные библиотеки, которые нужно включать в журнал отладки."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Стереоскопический режим видео"
@@ -12574,8 +12710,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Высококачественные текстуры для обложек и фанарта (повышенное использование памяти)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Ограничение разрешения интерфейса, чтобы сэкономить память. Не влияет на воспроизведение видео. 1080 — без ограничений. Требуется перезапуск."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Ограничение разрешения графического интерфейса, с целью экономии памяти. Не влияет на воспроизведение видео. Требуется перезапуск."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12728,94 @@ msgstr "Настройки службы AirPlay."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Настройки вывода видео."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "фильм"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "фильмы"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Сериал"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Сериалы"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "сезон"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "сезоны"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "серия"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "серии"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "музыкальное видео"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "музыкальные видео"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "серия фильмов"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "серии фильмов"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "видео"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "видео"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "музыка"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "музыка"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "исполнитель"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "исполнители"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "альбом"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "альбомы"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "песня"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "песни"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12861,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Усиливать центральный канал при микшировании"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Разрешить использование клавиш PRINTSCREEN, ALT+TAB и клавиш управления громкостью в полноэкранном режиме."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Разрешить картинки с расширенной глубиной цвета"
@@ -12660,3 +12880,27 @@ msgstr "Остановить проигрывание на удаленном у
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Включите, если аудиовыход поддерживает многоканальный звук только в формате Dolby Digital 5.1. Это позволит выводить многоканальное аудио (например AAC5.1 или FLAC5.1) в формате 5.1 путем перекодирования в DD. Примечание: не рекомендуется в системах на базе Pi из-за большой нагрузки на ЦП."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Настроить кодировщик аудио, такие как качество и уровень сжатия данный"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Авто"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Неограниченно"

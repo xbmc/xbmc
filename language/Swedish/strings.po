@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Bekräfta flytt av fil"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Bekräfta radering?"
+msgid "Confirm delete"
+msgstr "Bekräfta borttagning"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Webbgränssnitt"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Ljud-omkodare"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Slogan"
@@ -848,6 +852,10 @@ msgstr "Fullskärm"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Storlek: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixlar: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Övervaka"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Originalströmmens språk"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Använd gränssnittets språk"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Tangentbordslayout"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Mixa ned flerkanalsljud till stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Nummer"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Sortering: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Kompressionsnivå"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Detaljerad loggning..."
+msgid "Enable component-specific logging"
+msgstr "Aktivera komponent-specifik loggning"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Aktivera Dolby Digital-transkodning"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Specifiera komponent-specifik loggning..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Utförlig loggning av SMB-bibliotek"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Utförlig loggning av CURL-bibliotek (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Utförlig loggning av CMYTH-bibliotek"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Utförlig loggning av FFMPEG-bibliotek"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Utförlig loggning av RTMP-bibliotek"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Utförlig loggning av DBUS-anrop"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Utförlig loggning av JSON-RPC förfrågningar"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Utförlig loggning av AUDIO-komponent"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Detaljerad loggning för AirTunes bibliotek"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Detaljerad loggning för UPnP komponenter"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Detaljerad loggning för CEC bibliotek"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Batterinivå"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Auto uppdateringar: På"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Auto uppdateringar: Meddela"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Auto uppdateringar: Aldrig"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Väder"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Tillåt flertrådig mjukvaruavkodning"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Använd Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Använd MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-(1/2) codecs. Om avaktiverad kommer CPU'n att användas istället. Äldre Radeon-kort brukar generera segmenteringsfel med detta aktiverat."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-(1/2) kodecs. Ifall den är inaktiverad kommer CPU:n att användas istället. Äldre Radeon-kort har en tendens att ge upphov till fel vid aktivering."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Använd Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Använd MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-4 codec. Om avaktiverad kommer CPU'n att användas istället. Viss ION-hårdvara får problem om detta är aktiverat."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-4 kodec. Ifall den är inaktiverad kommer CPU:n att användas istället. Viss ION-hårdvara kan skapa problem vid aktivering."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Aktivera för att använda hårdvaruacceleration för codecs baserade på VC-1. Om avaktiverad kommer CPU'n att användas istället. AMD-hårdvara med VDPAU kan inte avkoda VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Använd Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Använd MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-(1/2) codecs. Om avaktiverad kommer CPU'n att användas istället. Viss MPEG-2-material kan ha gröna artifakter."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-(1/2) kodeks. Ifall den är inaktiverad kommer CPU:n att användas istället. Vissa MPEG-2 filmer kan visa gröna artifakter."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Använd Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Använd MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-4 codec. Om avaktiverad kommer CPU'n att användas istället. "
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-4 kodek. Ifall den är inaktiverad kommer CPU:n att användas istället."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5369,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Gränsnittsfilter"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Använd bakgrundsskanning"
@@ -5608,6 +5688,10 @@ msgstr "Navigeringsljud"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skalets egna"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Större teckensnittsstorlek"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6018,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "eller använd fraser för att få en exakt träff, som \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Hitta liknande program"
+msgid "Find similar"
+msgstr "Hitta liknande"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR-backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV-inspelningar"
+msgid "Recordings"
+msgstr "Inspelningar"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6179,7 +6263,7 @@ msgstr "Är du säker på att döpa om denna timer?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "Spelar in"
+msgstr "Inspelning"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
@@ -6264,10 +6348,6 @@ msgstr "Gå till början"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Gå till slutet"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Standard EPG-fönster"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6417,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Var god byt till en annan kanal."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Gå till kanal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Ange mappnamnet för inspelningen"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Välj en kanal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6528,14 @@ msgstr "Ett oväntat fel uppstod. Försök igen senare eller kolla loggen för d
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR-backendfel. Se loggen för detaljer."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Ta bort den här inspelningen?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Ta bort alla inspelningar i den här mappen?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6640,10 @@ msgstr "Var god skapa en grupp först"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Namnet på den nya gruppen"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Sök..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Visa kanalinformation vid kanalbyten"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Dölj kanalinformation automatiskt"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Dagar att visa i EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Längd för kanalinformation"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "Återuppta senast valda kanal vid start"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimerad"
+msgid "Background"
+msgstr "Bakgrund"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7050,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Visa inte varningar med 'anslutning tappad'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Alla inspelningar"
+msgid "Group Items"
+msgstr "Gruppera objekt"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7208,18 @@ msgstr "Välj ikon"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Bläddra bland ikoner"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Sök efter kanal-ikoner"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Alla kanaler"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Förgrunden"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9393,6 +9501,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s till %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Externa)"
@@ -10125,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Ändringslogg"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Sök efter uppdateringar"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Senast uppdaterad %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Vill du aktivera detta tillägg?"
@@ -10200,6 +10320,22 @@ msgstr "Tillägg krävs"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Prova ansluta igen?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Helper Tillägg"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Tilläggsbibliotek"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Informationsbibliotek"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Visualiseringsbibliotek"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10476,14 @@ msgstr "Intill videon"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Anpassad plats"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Auto-nedladdning av undertext"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Ladda ner första undertexten i söklistan automatiskt "
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10932,10 +11076,6 @@ msgstr "Aktivera joystick och gamepad-stöd"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Inaktivera joystick när denna enhet finns"
-
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Tillåt systemknappar att användas i fullskärmsläge"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11557,17 +11697,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Visa programinformation vid kanalbyten, som nuvarande TV-program."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Göm programinformationen automatiskt efter det antal sekunder som angivits nedan."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Göm OSD-kontrollerna efter kanalbyte."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Hur länge programinformationen skall visas när 'göm automatiskt'-inställningen är aktiverad."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11712,6 @@ msgstr "Sök efter saknade kanalikoner."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Kategori med EPG-inställningar."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Standard EPG-fönster att visa."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12015,19 +12143,19 @@ msgstr "Kategori med inställningar för hur webbservertjänsten skall hanteras.
 
 msgctxt "#36328"
 msgid "Enable remote users to control Kodi through the built-in webserver."
-msgstr "Tillåt fjärranvändare att kontrollera XMBC genom den inbyggda webbservern."
+msgstr "Tillåt fjärranvändare att kontrollera Kodi genom den inbyggda webbservern."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Ange port för webbservern."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Ange användarnamn för webbservern."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Ange användarnamnet för webbservern. Det här tar endast effekt när både användarnamnet och lösenordet har angivits."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Ange webbserverns lösenord."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Ange lösenordet för webbservern. Det här tar endast effekt när både användarnamnet och lösenordet har angivits."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12278,8 +12406,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Mapp som skall användas för att spara skärmdumpar från Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Specificera ytterligare bibliotek som ska ingå i felsökningsloggen. "
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Aktivera logg-meddelanden från ytterligare bibliotek, som ska inkluderas i loggen."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12553,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Avgör om videoavkodning skall utföras av mjukvara (kräver mer CPU) eller med hårdvaruacceleration om det är möjligt."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Välj layout för virtuella tangentbord."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoskopiskt läge (nuvarande)"
@@ -12521,6 +12653,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Ange hur ljudet skall nedmixas, exempelvi från 5.1 till 2.0: [Aktiverat] - bibehåller originalets dynamiska omfång vid nedmixning men ljudvolymen kommer bli lägre [Avaktiverat] - ljudvolymen bibehålls men det dynamiska omfånget kommer komprimeras. Notera - Dynamiskt omfång är skillnaden mellan det lägsta och högsta ljudet i en ljukälla."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Specifiera ytterligare bibliotek, vars logg-meddelanden som ska inkluderas i loggen."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoskopiskt läge för video"
@@ -12574,8 +12710,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Använd högkvalitetstexturer för fanart och omslag (använder mer minne)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Begränsar GUI-upplösningen för att spara minne. Påverkar inte videouppspelning. Välj 1080 för obegränsad upplösning. Kräver omstart."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Begränsar upplösningen av gränssnittet för att spara minne. Påverkar inte videouppspelningen. Kräver omstart."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12728,94 @@ msgstr "Kategori med inställningar för hur AirPlay-tjänsten skall hanteras."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori med inställningar för hur videoutgången skall hanteras."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmer"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV-serie"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV-serier"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "säsong"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "säsonger"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "avsnitt"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "avsnitt"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "musikvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "musikvideos"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "samling"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "samlingar"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videos"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artist"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artister"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "låt"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "låtar"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12861,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Höj centerkanalen vid nedmixning"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Tillåter systemtangenter som printscreen, alt-tab och volymknappar i fullskärmsläge."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Aktivera grafik med högre färgdjup"
@@ -12660,3 +12880,27 @@ msgstr "Vill du stoppa uppspelningen på fjärrenheten?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Välj detta om din ljudutgång endast stödjer multikanalsljud som Dolby Digital 5.1, detta tillåter multikanalsljud som t.ex. AAC5.1 eller FLAC5.1 att spelas upp i 5.1 surroundljud. Obs! Rekommenderas ej för Pi då detta använder mycket processorkraft."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Konfigurera inställningar för ljudomvandling, som ljudkvalité och komprimering"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Obegränsat"

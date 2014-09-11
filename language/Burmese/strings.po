@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -368,10 +368,6 @@ msgstr "ဖိုင်ကူးခြင်းကိုအတည်ပြုမ
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "ဖိုင်ရွှေ့ခြင်းကိုအတည်ပြုမည်"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "ဖိုဒ်များကို ဖျက်မှာ သေချာပြီလား ?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -1784,6 +1780,10 @@ msgstr "ဒီဟာကို library မှဖြုတ်ချင်ပါသ
 msgctxt "#664"
 msgid "Browse for Script"
 msgstr "script များရှာမည်"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB library အတွက် ပိုမိုရှင်းပြထားသော logging"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3670,8 +3670,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV recordings"
+msgid "Recordings"
+msgstr "အသံသွင်းခြင်း"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -3969,6 +3969,14 @@ msgctxt "#19181"
 msgid "Menu/OSD"
 msgstr "Menu/OSD"
 
+msgctxt "#19183"
+msgid "Radio"
+msgstr "ရေဒီယို"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "နောက်ခံ"
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "ဆက်လုပ်မလား"
@@ -4044,6 +4052,10 @@ msgstr "ဖက်ရှင်"
 msgctxt "#19635"
 msgid "Languages"
 msgstr "ဘာသာစကားများ"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "အလိုအလျောက်"
 
 msgctxt "#19649"
 msgid "Cooking"
@@ -5241,6 +5253,10 @@ msgctxt "#24053"
 msgid "License:"
 msgstr "လိုင်စင်-"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "updates ထွက်မထွက်စစ်မည်"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "ဒီ Add-on ကိုဖွင့်ချင်ပါသလား။"
@@ -5676,3 +5692,23 @@ msgstr "channel သို့ပြောင်းမည်"
 msgctxt "#36428"
 msgid "Record"
 msgstr "မှတ်တမ်းသွင်းမည်"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV show"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV shows"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "အပိုင်း"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "အပိုင်းများ"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "အလိုအလျောက်"

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Tywydd"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "canolfan cyfryngau xbmc"
+msgstr "canolfan cyfryngau Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Cadarnhau symud ffeil"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Cadarnhau dileu ffeil?"
+msgid "Confirm delete"
+msgstr "Cadarnhau dileu"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Rhyngwyneb gwe"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Amgodwyr sain"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Llinell tag"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Meintioli: (%i,%i)->(%i,%i) (Chwyddo x%2.2f) AR:%2.2f:1 (Picseli: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Sgriptiau"
@@ -861,9 +869,17 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Cerddoriaeth"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Delweddu"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Dewis cyfeiriadur targed"
+
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Uwch gymysgu stereo"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1077,6 +1093,14 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Iaith wreiddiol y ffrwd"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Defnyddio iaith y rhyngwyneb"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Cynllun bysellfwrdd"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1177,9 +1201,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Trosi'r raddfa fframiau"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Ffurfweddu'r allbwn"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Sefydlog"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Gorau"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1205,9 +1237,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Blwyddyn"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normaleiddio lefelau'r isgymysgu"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Derbynnydd DTS-HD galluog"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Galluogi pasio drwodd"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1485,6 +1525,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Uchel"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Cydweddiad Gorau"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Cadw'r ddyfais sain yn fyw"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Dileu gwybodaeth albwm"
@@ -1589,6 +1637,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "Cyfrwng awtoredeg"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Derbynnydd Dolby Digital Plus (E-AC3) galluog"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Galluogwyd"
@@ -1624,6 +1676,10 @@ msgstr "Modd"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Newid golwg"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Cyfyngu'r raddfa samplo (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1793,6 +1849,10 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Trefnu: Defnydd"
 
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Galluogi delweddu"
+
 msgctxt "#511"
 msgid "Enable video mode switching"
 msgstr "Galluogi newid modd fideo"
@@ -1936,6 +1996,10 @@ msgstr "Dim bywgraffiad i'r artist"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Cymysgu lawr sail sianel lluosog i stereo"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Rhif"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2237,6 +2301,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Cyfaddas"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Newid sain ReplayGain"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Defnyddio lefelau trac"
@@ -2244,6 +2316,18 @@ msgstr "Defnyddio lefelau trac"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Defnyddio lefelau albwm"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Lefel Rheolydd Ton - ffeiliau ReplayGain"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Lefel Rheolydd Ton - nid ffeiliau ReplayGain"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Osgoi tocio ffeiliau ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2334,8 +2418,60 @@ msgid "Compression level"
 msgstr "Lefel cywasgiad"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Cofnodi geiriog..."
+msgid "Enable component-specific logging"
+msgstr "Galluogi cofnodi cydran bnodol"
+
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Galluogi trawscodio Dolby Digidol"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Pennu cofnodi cydran benodol"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Cofnodi geiriog i lyfrgell SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Cofnodi geiriog i lyfrgell CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Cofnodi geiriog i lyfrgell CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Cofnodi geiriog i lyfrgelloedd FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Cofnodi geiriog i lyfrgell RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Cofnodi geiriog i alwadau DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Cofnodi geiriog i geisiadau JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Cofnod hyglyw ar gyfer cydran AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Cofnodi hyglyw ar gyfer llyfrgell AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Cofnodi hyglyw ar gyfer cydrannau UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Cofnodi hyglyw ar gyfer llyfrgell CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2880,6 +3016,10 @@ msgstr "Estynnwyd %i o %i eitem"
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Ychwanegion Rhaglenni"
+
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Gosod llun bach ategyn"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3461,6 +3601,14 @@ msgctxt "#10039"
 msgid "Expert"
 msgstr "Arbenigwr"
 
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Porwr ychwanegyn"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Ailosod y gosodiadau uchod i'r rhagosidiad"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Ydych chi'n siŵr eich bod am ailosod y gosodiadau yn y categori hwn?"
@@ -3473,9 +3621,25 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr "Dim cymorth ar gael"
 
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Ailosod pob gosodiad gweladwy i'w gwerthoedd rhagosodedig."
+
 msgctxt "#10046"
 msgid "No categories available"
 msgstr "Dim categorïau ar gael"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Ceisiwch newid lefel y gosodiad i weld categorïau ychwanegol a gosodiadau."
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Deialog Iawn/Na"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Deialog cynnydd"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3617,9 +3781,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Gwybodaeth ffilm"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Dewis y ddeialog"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Cerddoriaeth/Gwybodaeth"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Deialog yn Iawn"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3632,6 +3804,14 @@ msgstr "Sgriptiau/Gwybodaeth"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Fideo sgrin lawn"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "Delweddu gweledol"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Deialog stacio ffeiliau"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3789,6 +3969,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Dim cais cyfrinair pellach."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Bydd y system nawr yn cau"
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Eitem wedi ei gloi"
@@ -3905,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Cyflwr y batri"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Diweddariadau awtomatig: Ymlaen"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Diweddariadau awtomatig: Hysbysu"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Diweddariadau awtomatig: Byth"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Tywydd"
@@ -3964,6 +4160,10 @@ msgstr "Gadael"
 msgctxt "#13013"
 msgid "Reboot"
 msgstr "Ailgychwyn"
+
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Lleihau"
 
 msgctxt "#13015"
 msgid "Power button action"
@@ -4085,6 +4285,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Cadw'r cydraniad?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Hoffech chi gadw'r newid hwn?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Uwchraddio ansawdd uchel"
@@ -4124,6 +4328,14 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Lefel Uwchraddio VDPAU HQ"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "Trosi lefel lliw VDPAU Studio"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Cadw'r croen?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4176,6 +4388,10 @@ msgstr "Porth"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS Cynradd"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "Methu cychwyn"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4421,6 +4637,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Ailadrodd sioe sleidiau"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Hapio"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -4633,9 +4853,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Rhagosodyn"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Nid oes rhagosodiadau ar gael ar gyfer y delweddu hwn."
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Nid oes gosodiadau ar gael ar gyfer y delweddu hwn."
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Bwrw Allan/Llwytho"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Defnyddio delweddu os yn chwarae sain"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4813,9 +5045,81 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr "Caniatáu cyflymu caledwedd (libstagefright)"
 
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Dewis Cymysgydd Fideo VDPAU"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Caniatau cyflymu caledwedd (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Caniatau cyflymu caledwedd (MediaCodec)"
+
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Caniatau dadcodio meddalwedd trywydd lluosog"
+
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Defnyddio MPEG-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec MPEG-(1/2). Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny. Mae cardiau Radeon hŷn yn tueddu i gael gwall os yw hyn wedi ei alluogi."
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Defnyddio MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec MPEG-4). Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny. Mae caledwedd ION yn tueddu i gael gwall os yw hyn wedi ei alluogi'n rhagosodedig."
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Defnyddio VC-1 VDPAU"
+
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec MPEG-4). Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny. Nid yw caledwedd AMD gyda VDPAU yn gallu dadgodio VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Defnyddio MPEG-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec MPEG-(1/2). Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny. Gall rhai fideos MPEG-2 fod ag elfennau gwyrdd arnynt."
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Defnyddio MPEG-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec MPEG-4. Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny."
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Defnyddio VC-1 VAAPI"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "Galluogwch y dewis hwn i ddefnyddio cyflymu caledwedd ar gyfer codec VC-1. Os yw wedi ei analluogi bydd y CPU yn cael ei ddefnyddio yn lle hynny. Mae elfennau VC-1 yn gallu methu ar galedwedd Intel. ."
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Dull dadgodio"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Meddalwedd"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Caledwedd wedi ei gyflymu"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4832,6 +5136,10 @@ msgstr "Cloc fideo (Sain Drop/Dupe)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Cloc fideo (Ailsamplo'r sain)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Cyflymder eithaf/swm arafu (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4937,6 +5245,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Rheolwr Pell Apple"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Nid oedd mod galluogi cefnogaeth Apple Remote"
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stac"
@@ -5029,13 +5341,33 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Rhowch enw'r dref agosaf"
 
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Storfa Fideo/Sain/DVD - Disg caled"
+
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Storfa Fideo - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Storfa fideo - Rhwydwaith Lleol"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Storfa Fideo - Rhyngrwyd"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Storfa Sain - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Storfa Sain - Rhwydwaith Lleol"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Storfa sain - Rhyngrwyd"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5048,6 +5380,10 @@ msgstr "Rhwydwaith Leol"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Gwasanaethau"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "Storfa DVD - Rhwydwaith Lleol"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5108,6 +5444,10 @@ msgstr "Fformat dyddiad"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Hidlau rhyngwyneb"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5281,6 +5621,22 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Atal rhwygo CD"
 
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Cyflymu"
+
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Ffynhonnell ddim ar gael"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Beth hoffech chi ei wneud gydag eitemau cyfrwng o %s"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Cadw"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Tynnu"
@@ -5333,6 +5689,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Croen rhagosodedig"
 
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Maint ffont mwy"
+
 msgctxt "#15111"
 msgid "Theme"
 msgstr "Thema"
@@ -5356,6 +5716,10 @@ msgstr "Heb gysylltu"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "Chwarae gan ddefnyddio..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Defnyddio cydweddu A?V llyfn"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5497,6 +5861,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Dim caneuon yn cydweddu yn y lyfrgell."
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "Methy cychwyn cronfeydd data."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Methu agor y gronfa ddata."
@@ -5556,6 +5924,10 @@ msgstr "Nodi heb eu Gwylio"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Golygu teitl"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Rheoli..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -5649,6 +6021,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Telcine yn groes"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Gwella ar gyfer Lanczos3"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Awto"
@@ -5677,9 +6053,21 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Gwella ar gyfer Spline36"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Cymysgedd Meddalwedd"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5714,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "neu ddefnyddio ymadroddion i ganfod r union air, fel \"Y dewin dwl\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Canfod rhaglenni tebyg"
+msgid "Find similar"
+msgstr "Canfod tebyg"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -5770,8 +6158,12 @@ msgid "PVR Backend %i - %s"
 msgstr "Cefn y Recordydd %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Recordiadau teledu"
+msgid "Recordings"
+msgstr "Recordiadau"
+
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Ffolder gyda eiconau sianel"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5957,9 +6349,9 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Mynd i'r diwedd"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Ffenestr  rhagosodedig yr Amserlenydd"
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Eiconau sianel"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -5972,6 +6364,10 @@ msgstr "Nid oedd modd dileu'r recordiad hwn. Gwiriwch y cofnod am fanylion."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "Amserlenydd"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Mynd i nawr"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6089,6 +6485,10 @@ msgctxt "#19099"
 msgid "Service"
 msgstr "Gwasanaeth"
 
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
 msgctxt "#19101"
 msgid "Provider"
 msgstr "Darparwr"
@@ -6097,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Newidiwch i sianel arall."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Mynd i sianel"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Rhowch enw ffolder ar gyfer y recordiad"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Dewiswch sianel"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6121,6 +6529,14 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Gwall offer cefn y Recordydd. Darllenwch y cofnod am fanylion."
 
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Dileu'r recordiad?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Dileu pob recordiad yn y ffolder?"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Fersiwn"
@@ -6140,6 +6556,10 @@ msgstr "Chwilio am sianeli"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Methu defnyddio swyddogaethau Recordydd tra'n chwilio."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Ar ba weinydd hoffech chi chwilio?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6220,6 +6640,10 @@ msgstr "Crëwch grŵp yn gyntaf"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Enw'r grŵp newydd"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Chwilio..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6333,6 +6757,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Amser allan wrth gychwyn chwarae"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Cychwyn chwarae nôl yn fach"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Hyd recordio cyflym"
@@ -6361,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Dangos gwybodaeth am y sianel wrth ei newid"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Cuddio gwybodaeth am y sianel yn awtomatig"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "Teledu"
@@ -6377,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Sawl diwrnod i'w dangos yn yr Amserlenydd"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Cyfnod gwybodaeth sianel"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6400,6 +6824,10 @@ msgstr "Mae'r Amserlenydd yn cael ei ailosod"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Parhau ar y sianel diwethaf wrth gychwyn"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Cefndir"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6521,9 +6949,17 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Sianeli mewn"
 
+msgctxt "#19221"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Cydweddu grwpiau sianeli gyda'r cefn"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "Amserlenydd Fideo Personol"
+
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nid oedd modd galluogi ychwanegion Recordydd. Gwiriwch eich gosodiadau neu gofnod am ragor o wybodaeth."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6549,6 +6985,10 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Cau Dangosydd ar Sgrin y sianel ar ôl newid sianel"
 
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Peidio diweddaru'r Amserlenydd wrth chwarae nôl"
+
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Defnyddio trefn sianeli yr offer cefn bob tro"
@@ -6560,6 +7000,10 @@ msgstr "Clirio canlyniadau chwilio"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Hysbysu am ddiweddaru amseryddion"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Defnyddio rhifau sianeli offer cefn (1 ategyn Recordydd yn unig)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6581,9 +7025,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Cychwyn trywyddau cefndirol"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Dim ychwanegion Recordydd wedi eu galluogi"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Mae'r rheolwr Recordydd wedi ei alluogi heb unrhyw ychwanegyn"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "Recordydd wedi ei alluogi. Galluogwch o leiaf un"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6694,12 +7146,20 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Peidio dangos rhybuddion 'cysylltiad wedi ei golli'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Pob recordiad"
+msgid "Group Items"
+msgstr "Grwpio eitemau"
+
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Heb ganfod ychwanegion Recordydd"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Mae angen tiwniwr, meddalwedd offer cefn ac"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Ychwanegyn ar gyfer y offer cefn er mwyn defnyddio'r Recordydd."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -6732,6 +7192,34 @@ msgstr "Gosodiadau cleieint penodol"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Cadarnhau newid sianel drwy bwyso Iawn"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Eicon cyfredol"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Dim eicon"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Dewis eicon"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Pori am eiconau"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Chwilio am eiconau sianeli"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Pob sianel"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Blaendir"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7017,6 +7505,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Moduro"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Ffitrwydd ac Iechyd"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Coginio"
@@ -7036,6 +7528,10 @@ msgstr "Nodweddion Arbennig"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Iaith Wreiddiol"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Du a Gwyn"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7360,6 +7856,14 @@ msgstr "Dangos gwybodaeth tywydd"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Dangos gwybodaeth system"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Dangos gofod disg sydd ar gael C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Dangos gofod disg sydd ar gael E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -7805,6 +8309,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Methodd llwytho artist i lawr"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Trosysgrifennu tagiau caneuon gyda gwybodaeth ar-lein"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Pan mae hwn wedi ei alluogi, bydd unrhyw wybodaeth sy'n cael ei lwytho i awr am albymau ac artistiaid yn cael ei ddefnyddio yn lle'r hyn sydd wedi ei osod ar dagiau caneuon, megis mathau, blwyddyn, artistiaid caneuon ac ati. Defnyddiol os oes gennych ddynodwyr MusicBrainz yn eich tagiau caneuon."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Cerddoriaeth Android"
@@ -7937,6 +8449,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Sganio albymau gyda %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Plot y ffilm"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Chwarae rhan..."
@@ -7948,6 +8464,10 @@ msgstr "Ailosod calibro"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Bydd hyn yn ailodsod gwerthoedd calibro %s"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "i'w werthoedd rhagosodedig"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8003,7 +8523,7 @@ msgstr "Hoffech chi dynnu'r holl eitemau o fewn"
 
 msgctxt "#20341"
 msgid "this path from the Kodi library?"
-msgstr "y llwybr hwn o lyfrgell XMBC?"
+msgstr "y llwybr hwn o lyfrgell Kodi?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -8281,9 +8801,17 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "Gwastatáu"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Gwastatáu tymor rhaglenni teledu"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Estyn celf selogion"
+
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Dangos Celf Selogion mewn llyfrgelloedd fideo a cherddoriaeth"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8565,6 +9093,10 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Tynnu rhaniad cyfrwng"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Ffolder isdeitlai cyfaddas"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Cyfeiriadur ffilmiau ac isdeitlau eraill"
@@ -8572,6 +9104,10 @@ msgstr "Cyfeiriadur ffilmiau ac isdeitlau eraill"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Anwybyddu ffontiau isdeitlau ASS/SSA"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Galluogi cynnal llygoden a sgrin cyffwrdd"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8929,6 +9465,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "cymysgwyd"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Lleoliad isdeitlau ar y sgrin"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Sefydlog"
@@ -8960,6 +9500,14 @@ msgstr "%d i %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s i %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Allanol)"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9353,6 +9901,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Canllaw"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Caniatáu gwall yn y gymhareb agwedd i leihau'r barau duon"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Dangos ffeiliau fideo yn y rhestrau"
@@ -9513,6 +10065,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Sgript"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Delweddu"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "Storfa ychwanegion"
@@ -9637,13 +10193,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Diweddariadau ar Gael"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Nid yw'r ddibyniaeth wedi ei gyflawni. Cysylltch ag awdur yr ychwanegyn"
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Nid oes gan yr Ychwanegyn y strwythur cywir"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "% i'w ddefnyddio gan yr Ychwanegion canlynol"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Nid oes modd dadosod yr ychwanegyn hwn"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Camu nôl"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Anghymarus"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9664,6 +10236,14 @@ msgstr "Trwydded:"
 msgctxt "#24054"
 msgid "Changelog"
 msgstr "Cofnod newid"
+
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Gwirio am ddiweddariadau"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Diweddarwyd diwethaf %s"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -9741,6 +10321,22 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Ceisiwch ailgysylltu?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Ychwanegion Cynorthwyol"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Llyfrgelloedd ychwanegion"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Llyfrgelloedd gwybodaeth"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Llyfrgelloedd delweddu"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
 msgstr "Ailgychwyn Ychwanegion"
@@ -9749,6 +10345,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Cloi rheolwr Ychwanegion"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Nid oes modd analluogi'r Ychwanegyn hwn"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(cyfredol)"
@@ -9756,6 +10356,10 @@ msgstr "(cyfredol)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(negyddol)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Mae'r Ychwanegyn yn anghymarus neu wedi ei nodi ei fod wedi torri yn y storfa."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9785,9 +10389,101 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Mae rhai ffeiliau ar goll yn y croen"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Mae'r ychwanegyn yn anghymarus oherwydd dibyniaethau coll."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Oedi wrth chwilio am isdeitlau"
+
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Pennu lle bydd isdeitlau'n cael eu cadw, yr un lleoliad â'r fideo neu leoliad arall."
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Chwilio am isdeitlau ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d isdeitl wedi eu canfod"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Heb ganfod isdeitlau"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Llwytho isdeitlau i lawr ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Llwytho isdeitlau i awr ar gyfer yr ieithoedd hyn"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Gosod yr iaith i'w defnyddio wrth chwilio am isdeitlau. Nid yw pob gwasanaeth isdeitlo'n defnyddio pob iaith."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Methwyd llwytho i lawr isdeitlau"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Heb osod gwasanaeth isdeitlo"
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Lleoliad cadw isdeitlau"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Gwasanaeth Teledu Rhagosodedig"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Dewis gwasanaeth fydd yn cael ei ddefnyddio fel y rhagosodedig i chwilio am isdeitlau sioeau teledu."
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Gwasanaeth Ffilmiau Rhagosodedig"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Dewis gwasanaeth fydd yn cael ei ddefnyddio fel y rhagosodedig i chwilio am isdeitlau ffilmiau."
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Llinyn chwilio â llaw"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Rhowch llinyn chwilio"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Diweddaru popeth"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Oedi'r fideo cyfredol wrth chwilio am isdeitlau ac ailgychwyn pan fydd isdeitlau ar gael."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Nesaf i'r fideo"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Lleoliad cyfaddas"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Awto llwytho i lawr yr isdeitl cyntaf"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Llwytho'r isdeitl cyntaf yn awtomatig o'r rhestr canlyniadau chwilio"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9801,6 +10497,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Dewis o'r holl deitlau ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Dangos dewislenni Blu-ray"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Chwarae'r prif deitl: %d"
@@ -9812,6 +10512,18 @@ msgstr "Teitl: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Dewis eitem chwarae nôl"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Penawdau: %u - hyd: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Methodd chwarae'r Blu-ray"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Nid yw ymddygiad y Blu-ray yma'n cael ei gynnal"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -9888,6 +10600,10 @@ msgstr "Gofyn am ei lwytho ilawr cyn chwarae fideo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clipiau"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Ail gychwyn yr ategyn i'w alluogi"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10209,6 +10925,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Dewiswch yr ymddygiad pan na fydd angen sain ar gyfer chwarae neu synau'r rhyngwyneb. [Drwy'r Amser] - sain anhyglyw barhaus yn cael ei allbynnu, mae hyn yn cadw'r ddyfais sain yn fyw ar gyfer unrhyw sain newydd, er y gall rwystro sain o raglenni eraill. [1 - 10 munud] - yr un a Drwy'r Amser ond ar ôl amser penodol mae sain yn mynd i gyflwr gohiriedig. [Diffodd]  - mae'r sain mewn cyflwr gohiriedig. Nodyn - gall seiniau gael eu colli os yw'n mynd i gyflwr gohiriedig."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Chwarae sain GUI"
@@ -10281,6 +11001,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Methwyd ymgychwyn hidlau/graddwyr fideo, mynd nôl at raddio deulinellol"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Methu cychwyn y ddyfais sain"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Gwiriwch eich awtoddewisiadau"
@@ -10312,6 +11036,10 @@ msgstr "Offer ategol"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Dyfais HID generig"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Addasydd rhwydwaith cyffredinol"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10369,6 +11097,10 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Enw Cynnyrch"
 
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Addasydd CEC Pulse-Eight"
+
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10388,6 +11120,10 @@ msgstr "Pwyso botwm gorchymyn \"defnyddiwr\""
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Galluogi gorchymyn newid och"
+
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Methu agor yr addasydd"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting Kodi"
@@ -10409,6 +11145,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Methu canfod y porth CEC com. Ei osod gyda llaw."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Methu cychwyn yr addasydd CEC. Gwiriwch eich gosodiadau."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Rhif porth HDMI"
@@ -10416,6 +11156,10 @@ msgstr "Rhif porth HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Cysylltwyd"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Methu ymgychwyn yr addasydd CEC: nid yw libCEC ar eich system."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10469,6 +11213,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Collwyd y cysylltiad"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Nid oes gan y defnyddiwr hwn hawl i agor yr addasydd CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Mae'r porth yn brysur. Dim ond un rhaglen gall gael mynediad i'r addasydd CEC"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Oedi chwarae wrth newid i ffynhonell arall"
@@ -10501,6 +11253,22 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Ffolder eitem"
 
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Defnyddiwch yr ystod lliw cyfyng (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Newidiwch liw a theimlad y rhyngwyneb defnyddiwr."
+
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Mae'r categori'n cynnwys holl osodiadau'r Croen."
+
+msgctxt "#36103"
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Dewiswch y croen ar gyfer y rhyngwyneb defnyddiwr. Bydd hwn y diffinio golwg a theimlad Kodi."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Newid gosodiadau penodol croen. Mae'r dewisiadau'n ddibynnol ar y croen sy'n cael ei ddefnyddio."
@@ -10513,9 +11281,21 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Newid lliw'r croen rydych wedi ei dewis"
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "Dewiswch y ffontiau i'w defnyddio yn y rhyngwyneb defnyddiwr. Mae'r setiau ffont yn cael eu ffurfweddu gan eich croen."
+
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "Newid maint golwg y rhyngwyneb defnyddiwr."
+
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
 msgstr "Dewis y ffenestr cyfrwng mae Kodi yn ei ddangos wrth gychwyn."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "Dewis neu anablu cynllun sain y rhyngwyneb defnyddiwr"
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10525,9 +11305,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Golygu'r ffrydiau RSS."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Categori'n cynnwys holl osodiadau'r locale/ardal."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Dewis iaith y rhyngwyneb defnyddiwr."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Dewis y fformatau ar gyfer tymheredd, amser a dyddiad. Mae'r dewisiadau'n dibynnu ar yr iaith sydd wedi'i dewis."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Dewis pa set nodau i'w defnyddio ar gyfer dangos testun yn y rhyngwyneb defnyddiwr."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -10545,6 +11337,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Dewis yr isdeitlau arferol pan fydd ieithoedd gwahanol ar gael."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Categori'n cynnwys golwg gosodiadau'r rhestrau ffeiliau."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Dangos y (..) eitem mewn rhestrau ar gyfer ymweld â'r ffolder rhiant."
@@ -10553,13 +11349,33 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Dangos estyniadau ffeiliau ar ffeiliau cyfrwng. Er enghraifft, bydd 'Cân Go Lew.mp3' yn cael ei ddangos fel 'Cân Go Lew.mp3'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Anwybyddu rhai tocynau yn ystod gweithredoedd didoli. Er enghraifft, byddai 'The Simpsons' yn cael eu didoli fel 'Simpsons'."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Caniatáu i ffeiliau gael eu dileu a'u hailenwi drwy'r rhyngwyneb defnyddiwr, drwy'r ddewislen cyd-destun (pwyso C ar y bysellfwrdd i agor y ddewislen hon)"
 
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Dangos botwm ychwanegu ffynhonnell yn adrannau gwraidd y rhyngwyneb defnyddiwr."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Dangos ffeiliau a chyfeiriaduron cudd wrth restru ffeiliau."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Categori sy'n cynnwys holl osodiadau'r arbedwr sgrin."
+
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Gosod y cyfnod oedi cyn dangos yr arbedwr sgrin."
+
+msgctxt "#36130"
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Dewis yr arbedwr sgrin. Bydd Kodi'n gorfodi'r arbedwr sgrin 'Pwl' pan fydd chwarae fideo sgrin lawn yn cael ei oedi neu fod blwch deialog yn fyw."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -10568,6 +11384,10 @@ msgstr "Newid gosodiadau penodol yr arbedwr sgrin. Mae'r gosodiadau yn dibynnol 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Rhagolwg o'r arbedwr sgrin"
+
+msgctxt "#36133"
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Os oes cerddoriaeth y cael ei chwarae, bydd Kodi'n cychwyn y delweddu penodol yn dangos arbedwr sgrin."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -10584,6 +11404,18 @@ msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Adran sy'n cynnwys gosodiadau sy'n perthyn i fideos a sut maen nhw'n cael eu trin."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Categori sy'n cynnwys gosodiadau ar sut mae llyfrgell fideo'n cael ei drin."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Galluogi llyfrgell fideo."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -10621,13 +11453,73 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Mewnforio ffeil XML i gronfa ddata'r Llyfrgell Fideo."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Categori sy'n cynnwys gosodiadau ar sut mae chwarae fideo'n cael i drin."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Galluogi chwarae'r ffeil nesaf ar y rhestr, yn awtomatig."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Addasu'r dull o brosesu a dangos fideo."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Defnyddio graddwyr ansawdd uchel wrth uwchraddio fideo o o leiaf y canran hwn."
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Galluogi dadgodio ffeiliau fideo gyda chaledwedd VDPAU, yn bennaf ar gyfer graffigau NVIDIA ac o dan rhai amgylchiadau graffigau AMD."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Galluogi dadgodio ffeiliau fideo gyda chaledwedd VAAPI, yn bennaf ar gyfer graffigau INTEL ac o dan rhai amgylchiadau graffigau AMD."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Galluogi dadgodio ffeiliau fideo gan galedwedd DXVA2."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Galluogi dadgodio ffeiliau fideo gan galedwedd CrystalHD."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Galluogi dadgodio ffeiliau fideo gan galedwedd VDA."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Galluogi dadgodio ffeiliau fideo gan galedwedd OpenMax."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Galluogi dadgodio ffeiliau fideo gan galedwedd VideoToolbox."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Galluogi dadgodio ffeiliau fideo gan ddefnyddio gwrthrychau byffer picsel."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Caniatáu i'r raddfa adnewyddu'r dangosydd gael ei newid fel ei fod yn cyd-fynd orau gyda graddfa'r ffrâm fideo. Gall hyn ddarparu chwarae fideo llyfnach."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Oedi am ychydig bach yn ystod newid graddfa adnewyddu."
+
+msgctxt "#36166"
+msgid "Synchronise the video to the refresh rate of the monitor."
+msgstr "Cydweddu'r fideo i raddfa adnewyddu'r dangosydd."
+
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Rhaid i sain gydweddu, mae modd gwneud hyn drwy ailsamplo, hepgor/dyblygu pacedi neu newid y cloc os yw'n allan y ormodol."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Newid cyflymder uchaf y fideo i raddfa adnewyddu'r sgrin."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -10637,6 +11529,10 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Dewis lefel chwyddo fel bod fideos 4:3 yn gallu cael eu dangos ar sgrin lydan."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Galluogi uwchraddio gan ddefnyddio VDPAU"
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Galluogi Teletestun wrth wylio llif teledu byw."
@@ -10645,9 +11541,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Graddio Teletestun i 4:3."
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Categori sy'n cynnwys gosodiadau ar sut i drin rhestrau ffeiliau video."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Toglo rhwng Dewis, Chwarae (rhagosodedig), Ailgychwyn a Dangos Gwybodaeth. Bydd dewis yn dewis eitem, e.e. agor cyfeiriadur ym modd ffeiliau. Bydd Ailgychwyn yn ailgychwyn fideos yn awtomatig o'r fan diwethaf, hyd yn oed ar ôl ailgychwyn y system."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Tynnu gwybodaeth am luniau bach a metadata megis codec a chydraniad agwedd o fideos."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -10661,6 +11565,42 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Cyfuno ffeiliau fideo rhannau lluosog, ffolderi DVD a ffolderi ffilmiau i un eitem mewn golwg nad yw'n llyfrgell."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Tynnu teitl, math ac ati, o'r golwg llyfrgell. Bydd dewis y categori'n eich cymryd y syth i'r golwg teitl."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Categori sy'n cynnwys gosodiadau ar sut mae isdeitlau'n cael eu trin."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Gosod y math o ffont i'w ddefnyddio mewn isdeitlau"
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Gosod maint y ffont i'w ddefnyddio ar gyfer isdeitlau."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Gosod yr arddull ffont i'w ddefnyddio ar gyfer isdeitlau."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Gosod lliw'r ffont i'w ddefnyddio ar gyfer isdeitlau."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Gosod set nod y ffont i'w ddefnyddio ar gyfer isdeitlau"
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Disodli ffontiau isdeitlau ASS/SSA."
+
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr "Gosod cyfeiriadur cyfaddas ar gyfer eich isdeitlau. Gall hyn fod yn rhaniad ffeiliau."
@@ -10668,6 +11608,10 @@ msgstr "Gosod cyfeiriadur cyfaddas ar gyfer eich isdeitlau. Gall hyn fod yn rhan
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Lleoliad isdeitlau ar y sgrin."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Categori'n cynnwys gosodiadau ar sut mae DVDs yn cael eu trin."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -10697,9 +11641,25 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Y crafwr arferol ar gyfer ychwanegu fideos cerddoriaeth i'ch llyfrgell."
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Gosodiadau ar gyfer nodweddion recordydd/teledu byw."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Categori ar gyfer gosodiadau cyffredinol nodweddion recordydd/teledu byw."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Galluogi'r nodweddion recordio yn Kodi. Mae hy y gofyn bod o leiaf un ychwanegyn recordydd wedi ei osod."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Mewnforio grwpiau sianeli o gefn y Recordydd (os yw'n cael ei gynnal). Bydd yn dileu grwpiau crëwyd gan y defnyddiwr os nad ydynt i'w cael yn y cefn."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Trefnu'r sianeli yn ôl rhif sianel yn y cefn ond defnyddio rhifo Kodi ar gyfer sianeli."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
@@ -10717,6 +11677,42 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Dileu sianel/cronfa ddata'r Amserlenydd ac ail fewnforio'r data o'r cefn wedyn."
 
+msgctxt "#36210"
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Rhwystro ffenestr rhybuddion 'cysylltiad wedi ei golli' rhag dangos pan nad yw Kodi'n gallu siarad gyda'r gweinydd cefn y recordydd."
+
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Categori ar gyfer dewislenni a gosodiadau ar y sgrin yn ogystal â ffenestri gwybodaeth sianel."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Dangos gwybodaeth am raglenni wrth newid sianel, fel y rhaglen gyfredol."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Cau'r rheolyddion ar y sgrin ar ôl newid sianel."
+
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Y ffolder lle mae'r eiconau sianel yn cael eu cadw."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Sganio i ganfod eiconau sianel coll."
+
+msgctxt "#36218"
+msgid "Category for electronic programming guide settings."
+msgstr "Categori ar gyfer gosodiadau'r rhestr rhaglenni electronig."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Nifer y dyddiau o ddata rhaglenni i'w mewnforio o'r cefn."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Amser rhwng mewnforio data rhaglenni o'r cefn."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Peidio mewnforio data'r Amserlenydd tra bod y teledu ymlaen er mwyn lleihau'r defnydd o'r CPU."
@@ -10729,21 +11725,85 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Cuddio labeli \"dim gwybodaeth ar gael\" pan nad oes modd estyn data sianel yr Amserlenydd '"
 
+msgctxt "#36225"
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Dileu cronfa ddata data rhaglenni yn Kodi ac ail fewnforio'r data wedyn o'r cefn."
+
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Categori chwarae rhaglennydd a gosodiadau newid sianel."
+
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Dangos llif o sianel benodol i ffenestr fach yn lle'r sgrin lawn."
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Parhau gyda'r sianel gwyliwyd diwethaf wrth gychwyn."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Dangos gwybodaeth ansawdd y signal yn ffenestr gwybodaeth y codec (os yw'n cael ei gynnal gan yr Ychwanegyn a'r cefn)."
+
+msgctxt "#36230"
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Pa mor hir fydd Kodi'n aros i newid y sianel os nad yw'r sianel yn cael ei dderbyn. Defnyddiol am sianeli dros yr awyr sy'n colli eu cryfder o bryd i'w gilydd."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Bydd pwyso botwm rhif yn y modd sgrin llawn yn newid yn awtomatig i'r rhif sianel hwnnw o fewn 1 eiliad."
 
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Wrth bwyso sianel i fyny neu lawr, mae'r newid sianel y cael ei arafu gan ganiatáu i'r defnyddiwr newid sianel heb orfod aros i bob sianel newid."
+
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "Categori ar gyfer gosodiadau hyd recordiad rhagosodedig."
+
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Hyd recordio cyflym wrth bwyso'r botwm recordio."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Blaenoriaeth y recordiad. Rhif uwch y golygu blaenoriaeth uwch. Nid yw'n cael ei gynnal gan bob Ychwanegyn a chefn."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Dileu recordiadau ar ôl yr amser hwn. Nid yw'n cael ei gynnal gan bob Ychwanegyn a chefn."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Cychwyn recordio o flaen yr amser cywir. Nid yw'n cael ei gynnal gan bob Ychwanegyn a chefn."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Gorffen recordio cyn yr amser cywir. Nid yw'n cael ei gynnal gan bob Ychwanegyn a chefn."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Dangos rhybudd pan fydd amseryddion yn cael eu hychwanegu, gorffen neu dynnu gan y cefn."
 
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Categori ar gyfer gosodiadau rheoli pŵer y recordydd, megis pryd i ddeffro gweinydd cefn y recordydd."
+
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Gweithredu'r \"gorchymyn deffro\" isod pan mae Kodi yn gadael neu'n mynd i'r modd cysgu. Bydd stamp amser y recordiad nesaf yn cael ei anfon fel paramedr."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Ni fydd y gorchymyn yn cael ei weithredu pan fydd recordiad yn cael ei gychwyn o fewn yr amser allan hwn."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Y gorchymyn i'w weithredu."
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Amser i'w dynnu o amser cychwyn y recordiad nesaf."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -10753,6 +11813,10 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Pryd i weithredu'r gorchymyn deffro dyddiol."
 
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Categori ar gyfer rheolaeth rhiant os yw gweinydd cefn y recordydd y cynnal rheolaeth rhiant."
+
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Bydd y gofyn am rif PIN i gael mynediad at glo sianeli'r rhiant./ Mae modd marcio sianeli wedi eu cloi yng ngolygydd y sianeli yn y tab cyffredinol. Nid oes modd chwarae neu recordio sianeli sydd â chlo'r rhieni heb gyflwyno'r rhif PIN ac mae gwybodaeth am y sianeli hynny wedi ei guddio yn yr Amserlenydd ."
@@ -10760,6 +11824,14 @@ msgstr "Bydd y gofyn am rif PIN i gael mynediad at glo sianeli'r rhiant./ Mae mo
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Rhowch PIN newydd i ddatgloi sianeli sydd â chlo'r rhiant."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Gofyn am cod pin eto wrth geisio cael mynediad i sianel sydd wedi ei gloi gan riant ac nad yw'r cod wedi cael ei ofyn amdano yr hyd yma o amser."
+
+msgctxt "#36251"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Categori ar gyfer unrhyw osodiad penodol cefn eich recordydd, os yw'r cefn yn cynnal y newidiadau hyn yn Kodi."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -10909,10 +11981,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Diffinio porth y gweinydd gw"
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Diffinio enw defnyddiwr y gweinydd gwe."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Dewis rhwng rhyngwynebau gwe sydd wedi eu gosod drwy'r Rheolwr Ychwanegion."
@@ -11013,10 +12081,6 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Y ffolder i'w ddefnyddio i gadw lluniau sgrin wedi eu cymryd o fewn Kodi."
 
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Pennu llyfrgelloedd ychwanegol i'w cynnwys yn y cofnod dadfygio."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Diffinio cod PIN y prif glo."
@@ -11073,6 +12137,94 @@ msgctxt "#36507"
 msgid "Interlaced"
 msgstr "Rhyngweol"
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "ffilm"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "ffilm"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Rhaglen deledu"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Rhaglenni teledu"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "tymor"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "tymor"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "rhifyn"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "rhifyn"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "fideo cerddoriaeth"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "fideo cerddoriaeth"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "set"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "set"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "fideo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "fideo"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "cerddoriaeth"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "cerddoriaeth"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artist"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artist"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "albwm"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albwm"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "cân"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "cân"
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Diffyg ar y golwg)"
@@ -11108,3 +12260,23 @@ msgstr "Pori i"
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "Allbwn sain ddeuol"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Awto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Di derfyn"

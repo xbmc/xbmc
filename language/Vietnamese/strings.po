@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Thời tiết"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "Kodi media center"
+msgstr "Kodi trung tâm truyền thông đa phương tiện"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "Xác nhận sao chép tập tin"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Xác nhận di chuyển tập tin"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Xác nhận xóa tập tin?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -1041,6 +1037,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Sổ bookmark"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Đầu thu hỗ trợ MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Đầu thu hỗ trợ MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Đầu thu hỗ trợ MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Độ trễ"
@@ -1060,6 +1068,10 @@ msgstr "Không xen kẽ"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Ngôn ngữ gốc của stream"
+
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Ngôn ngữ giao diện"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1160,6 +1172,10 @@ msgstr "Bắt đầu"
 msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Chuyển đổi tốc độ khung hình"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Sửa chữa"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1516,6 +1532,14 @@ msgstr "Có thực sự xóa '%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Từ %s tại %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Không có ổ đĩa quang nào"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Bạn cần một đầu đọc đĩa quang để đọc video này"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2001,6 +2025,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Số thời gian đã chơi"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Ngày được làm"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Thứ tự xếp"
@@ -2281,6 +2309,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Mạng"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "Server"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Sử dụng máy chủ proxy giao thức HTTP để truy cập internet"
@@ -2308,6 +2340,10 @@ msgstr "Cố định (IP tĩnh)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "Địa chỉ IP"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Server DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2489,6 +2525,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Tên mạng không dây (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Mật khẩu cho Wifi"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Bảo mật Wifi"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Lưu và áp dụng các thiết lập mạng"
@@ -2569,6 +2613,18 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "Truy cập Internet"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Cập nhật Thư viện"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Thư viện nhạc cần dò xét lại tags từ các tập tin"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Bạn có muốn dò tìm bây giờ không ?"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Điền sai port number"
@@ -2581,13 +2637,21 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Port range từ 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Thêm Hình ảnh"
+
 msgctxt "#998"
 msgid "Add Music..."
-msgstr "Thêm nhạc..."
+msgstr "Thêm Nhạc..."
 
 msgctxt "#999"
 msgid "Add Videos..."
-msgstr "Thêm video..."
+msgstr "Thêm Video..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Duyệt trước"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2785,9 +2849,29 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Nhập địa chỉ web"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Kiểu proxy"
+
 msgctxt "#1181"
 msgid "HTTP"
 msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 với DNS dung giải từ xa"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -2925,9 +3009,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Tên thiết bị"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Sử dụng mật khẩu bảo vệ"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -2981,9 +3073,21 @@ msgctxt "#1405"
 msgid "in"
 msgstr "trong"
 
+msgctxt "#1406"
+msgid "the"
+msgstr " "
+
+msgctxt "#1407"
+msgid "Vicinity"
+msgstr "Phụ Cận"
+
 msgctxt "#1408"
 msgid "Ice"
 msgstr "Băng"
+
+msgctxt "#1409"
+msgid "Crystals"
+msgstr "Pha lê"
 
 msgctxt "#1410"
 msgid "Calm"
@@ -3017,6 +3121,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Giông bão"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Không sâu"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Trung bình"
@@ -3032,6 +3140,10 @@ msgstr "Có gió"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "Sương mù"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "U ám"
 
 msgctxt "#1427"
 msgid "Smoke"
@@ -3056,6 +3168,10 @@ msgstr "Cát"
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Bão cát"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Thổi"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3213,6 +3329,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Cài đặt - Tài khoản"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Thiết lập lại cài đặt"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Chuẩn"
@@ -3221,17 +3341,69 @@ msgctxt "#10038"
 msgid "Advanced"
 msgstr "Nâng cao"
 
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Bạn có chắc bạn muốn thiếtlập lại những cài đặt trong mục này ?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Trợ giúp"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Không có trợ giúp sẵn có"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Trình duyệt tập tin"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Cài đặt mạng"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Nguồn Media"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Cài đặt cấu hình"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Khóa cài đặt"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Cài đặt nội dung"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Mục ưa thích"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Bài hát/Thông tin"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Biên tập danh sách nhạc thông minh"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Biên tập quy tắc cho danh sách nhạc thông minh"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "HÌnh ảnh/Thông tin"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Các thiết lập Add-on"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Add-ons/Thông tin"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3497,9 +3669,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Mục bị khoá"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Đang cập nhật thư viện video"
+
 msgctxt "#12350"
 msgid "Processing %s"
 msgstr "Xử lý %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Bộ nhớ đệm nghệ thuật trong thư viện video của bạn cần cập nhật."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -3617,6 +3797,10 @@ msgctxt "#13000"
 msgid "System"
 msgstr "Hệ thống"
 
+msgctxt "#13001"
+msgid "Immediate HD spindown"
+msgstr "Ngay lập tức HD spindown"
+
 msgctxt "#13002"
 msgid "Video only"
 msgstr "Chỉ Video"
@@ -3688,6 +3872,26 @@ msgstr "Đã cắm tay điều khiển"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Đã tháo tay điều khiển"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Chờ kết nối mạng..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Wake on Lan thất bại"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Chờ server hoạt động lại..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Chờ thêm cho server hoạt động lại..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Chờ để khởi động các dịch vụ..."
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -3988,6 +4192,10 @@ msgstr "Tự động điểu khiển nhiệt độ"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Ép tốc độ quạt"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Font"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4496,6 +4704,10 @@ msgstr "Remote đa năng (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Lỗi remote Apple"
+
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Không thể bật Apple Remote."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5113,9 +5325,37 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Chuyển tới kênh"
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Tìm ứng dụng tương tự"
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Chất lượng tín hiệu"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BẺ"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Backend"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Sửa chữa"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Mã hóa"
+
+msgctxt "#19017"
+msgid "Recordings"
+msgstr "Các bản ghi"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5125,6 +5365,10 @@ msgctxt "#19020"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
 msgctxt "#19023"
 msgid "TV channels"
 msgstr "Kênh TV"
@@ -5133,6 +5377,10 @@ msgctxt "#19024"
 msgid "Radio channels"
 msgstr "Kênh Radio"
 
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Thêm hẹn giờ..."
+
 msgctxt "#19030"
 msgid "Now"
 msgstr "Ngay bây giờ"
@@ -5140,6 +5388,10 @@ msgstr "Ngay bây giờ"
 msgctxt "#19031"
 msgid "Next"
 msgstr "Kế"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Thông tin"
 
 msgctxt "#19037"
 msgid "Show signal quality"
@@ -5152,6 +5404,10 @@ msgstr "Tới đầu"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Tới cuối"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
 
 msgctxt "#19078"
 msgid "Channel:"
@@ -5217,6 +5473,18 @@ msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Nền"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "Dịch vụ PVR"
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "Tiếp tục?"
@@ -5224,6 +5492,42 @@ msgstr "Tiếp tục?"
 msgctxt "#19207"
 msgid "Group:"
 msgstr "Nhóm:"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Tất cả Kênh TV"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Hiển thị"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Tách nhóm các kênh"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Các kênh trong"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Tiến trình thu hình/âm đã bị hủy bỏ"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Tiến trình thu hình/âm đã được lên lịch"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Thu hình/âm đã bắt đầu"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Thu hình/âm hoàn tất"
 
 msgctxt "#19259"
 msgid "Parental control"
@@ -5316,6 +5620,10 @@ msgstr "Thời trang"
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Ngôn ngữ"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Tự động"
 
 msgctxt "#19649"
 msgid "Cooking"
@@ -5729,6 +6037,14 @@ msgctxt "#20190"
 msgid "Custom"
 msgstr "Tuỳ chỉnh"
 
+msgctxt "#20193"
+msgid "Default service for album information"
+msgstr "Dịch vụ mặc định cho thông tin album"
+
+msgctxt "#20194"
+msgid "Default service for artist information"
+msgstr "Dịch vụ mặc định cho thông tin nghệ sỹ"
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Nhạc Android"
@@ -6017,6 +6333,30 @@ msgctxt "#21446"
 msgid "Audio codec"
 msgstr "Bộ giải mã Audio"
 
+msgctxt "#21447"
+msgid "Audio language"
+msgstr "Ngôn ngữ âm thanh"
+
+msgctxt "#21448"
+msgid "Subtitle language"
+msgstr "Ngôn ngữ phụ đề"
+
+msgctxt "#21451"
+msgid "Internet connection required."
+msgstr "Cần có kết nối internet"
+
+msgctxt "#21452"
+msgid "Get More..."
+msgstr "Lấy thêm..."
+
+msgctxt "#21454"
+msgid "Cache full"
+msgstr "Bộ nhớ đệm đầy"
+
+msgctxt "#21455"
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "Bộ nhớ đệm đầy trước khi đạt được dung lượng cần thiết để tiếp tục phát"
+
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Lưu trữ ngoài"
@@ -6024,6 +6364,34 @@ msgstr "Lưu trữ ngoài"
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Số phần đã xem"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Được nhóm bởi"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "trộn"
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Sửa chữa"
+
+msgctxt "#21462"
+msgid "Bottom of video"
+msgstr "Phía dưới của video"
+
+msgctxt "#21463"
+msgid "Below video"
+msgstr "Bên dưới video"
+
+msgctxt "#21464"
+msgid "Top of video"
+msgstr "Phía trên của video"
+
+msgctxt "#21465"
+msgid "Above video"
+msgstr "Bên trên video"
 
 msgctxt "#21467"
 msgid "%.1f to %.1f"
@@ -6037,6 +6405,26 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s đến %s"
 
+msgctxt "#21800"
+msgid "File name"
+msgstr "Tên file"
+
+msgctxt "#21801"
+msgid "File path"
+msgstr "Đường dẫn file"
+
+msgctxt "#21802"
+msgid "File size"
+msgstr "Kích cỡ"
+
+msgctxt "#21803"
+msgid "File date/time"
+msgstr "Ngày/giờ"
+
+msgctxt "#21804"
+msgid "Slide index"
+msgstr "Slide index"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Độ phân giải"
@@ -6048,6 +6436,54 @@ msgstr "Bình Luận"
 msgctxt "#21807"
 msgid "Colour/B&W"
 msgstr "Màu/Đen trắng"
+
+msgctxt "#21808"
+msgid "JPEG process"
+msgstr "In ra JPEG"
+
+msgctxt "#21820"
+msgid "Date/Time"
+msgstr "Ngày/Giờ"
+
+msgctxt "#21821"
+msgid "Description"
+msgstr "Mô tả"
+
+msgctxt "#21822"
+msgid "Camera make"
+msgstr "Hãng máy ảnh"
+
+msgctxt "#21823"
+msgid "Camera model"
+msgstr "Model máy ảnh"
+
+msgctxt "#21824"
+msgid "EXIF comment"
+msgstr "Bình luận EXIF"
+
+msgctxt "#21825"
+msgid "Firmware"
+msgstr "Firmware"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Khẩu độ"
+
+msgctxt "#21827"
+msgid "Focal length"
+msgstr "Độ dài tiêu cự"
+
+msgctxt "#21828"
+msgid "Focus distance"
+msgstr "Khoảng cách tiêu cự"
+
+msgctxt "#21829"
+msgid "Exposure"
+msgstr "Exposure"
+
+msgctxt "#21830"
+msgid "Exposure time"
+msgstr "Thời gian exposure"
 
 msgctxt "#21835"
 msgid "Light source"
@@ -6072,6 +6508,10 @@ msgstr "Quốc gia"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Ngày tạo"
+
+msgctxt "#21880"
+msgid "Reference service"
+msgstr "Dịch vụ tham khảo"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
@@ -6245,6 +6685,10 @@ msgctxt "#25000"
 msgid "Notifications"
 msgstr "Các thông báo"
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Hiện menu của Blu-ray"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Phát tựa đề chính: %d"
@@ -6256,6 +6700,14 @@ msgstr "Tựa đề: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Lựa mục phát"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Lỗi không xem được Blu-ray"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Menu của Blu-ray này không xem được"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -6344,6 +6796,10 @@ msgstr "Điều kiện"
 msgctxt "#33021"
 msgid "Precipitation"
 msgstr "Tuyết rơi"
+
+msgctxt "#33022"
+msgid "Precip"
+msgstr "Mưa"
 
 msgctxt "#33023"
 msgid "Humid"
@@ -6601,6 +7057,26 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Không tim thấy mục trước đó để phát"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Khởi động Zeroconf thất bại"
+
+msgctxt "#34301"
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr "Dịch vụ Bonjour của Apple được cài đặt chưa? Xem log để biết thêm."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay cần Zeroconf phải kích hoạt trước."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Không thể dừng Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay và AirTunes cần Zeroconf đang hoạt động."
+
 msgctxt "#34400"
 msgid "Video Rendering"
 msgstr "Đang tạo hình ảnh"
@@ -6716,3 +7192,15 @@ msgstr "Chuyển tới kênh"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Thu âm"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Chương trình TV"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Chương trình TV"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Tự động"

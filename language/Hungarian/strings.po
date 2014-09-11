@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -388,10 +388,6 @@ msgstr "Másolás megerősítése"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Áthelyezés megerősítése"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Fájltörlés megerősítése?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2401,13 +2397,41 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Tömörítés erőssége"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Bőbeszédű naplózás..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Dolby Digital átkódolás engedélyezése"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB könyvtár bőbeszédű naplózása"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL könyvtár (http, dav) bőbeszédű naplózása"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH könyvtár bőbeszédű naplózása"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG könyvtárak bőbeszédű naplózása"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP könyvtár bőbeszédű naplózása"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS hívások bőbeszédű naplózása"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC hívások bőbeszédű naplózása"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Az AUDIO komponens részletes naplózása"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4985,22 +5009,6 @@ msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
 msgstr "Több-szálú dekódolás engedélyezése"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Mpeg-2 VDPAU használata"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Az Mpeg-(1/2) kodekek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol. Régebbi Radeon kártyákon szegmenshiba fordulhat elő."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Mpeg-4 VDPAU használata"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Az Mpeg-4 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  Néhány ION alapú rendszerel probléma lehet engedélyezés esetén."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "VC-1 VDPAU használata"
@@ -5008,22 +5016,6 @@ msgstr "VC-1 VDPAU használata"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "A VC-1 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  AMD hardver VDPAU nem ismeri a VC-1 Egyszerű üzemmódot."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Mpeg-2 VAAPI használata"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Az Mpeg-(1/2) kodekek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  Néhány Mpeg-2 videónak zöldes hibái lehetnek."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Mpeg-4 VAAPI használata"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Az Mpeg-4 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol. "
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -6017,10 +6009,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "Vagy használj szókapcsolatot a pontos találathoz, pl. \"Óz, a csodák csodája\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Hasonló műsorok keresése"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "EPG információ beolvasása a TV ügyfelekkel"
@@ -6074,8 +6062,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR háttér-kiszolgáló %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV felvételek"
+msgid "Recordings"
+msgstr "Felvételek"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6264,10 +6252,6 @@ msgstr "Ugrás az elejére"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Ugrás a végére"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Alapértelmezett EPG ablak"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6689,10 +6673,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Csatornainformáció mutatása váltáskor"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Csatornainformáció automatikus elrejtése"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6685,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Az EPG-ben mutatott napok száma"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Csatornainformáció időtartama"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Rádió"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6710,8 @@ msgid "Continue last channel on startup"
 msgstr "Az utolsó csatorna folytatása bekapcsoláskor"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimalizált"
+msgid "Background"
+msgstr "Háttér"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7048,10 +7028,6 @@ msgstr "A 'nincs információ' felirat elrejtése"
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "A 'kapcsolat megszakadt' figyelmeztetés elrejtése"
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Minden felvétel"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -10125,6 +10101,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Változáslista"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Frissítések keresése"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Akarod engedélyezni ezt a kiegészítőt?"
@@ -10933,10 +10913,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Joystick letiltása amikor ez az eszköz jelen van"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Rendszerbillentyűk engedélyezése teljesképernyős módban "
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Hely"
@@ -11557,17 +11533,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Program információk megjelenítése a csatornaváltás alatt, mint például a jelenleg futó TV műsor."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "A program információk automatikus elrejtése egy pár másodpercen belül."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "A képernyőn megjelenő vezérlők bezárása csatornaváltás után."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Beállítja, hogy milyen hosszú ideig jelenjen meg a program információ, amikor az 'automatikus elrejtés' funkció be van kapcsolva."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11548,6 @@ msgstr "Hiányzó csatorna ikonok keresése."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Kategória az elektronikus műsorújság beállításaival."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Az alapértelmezett elektronikus műsorújság nézetablak megadása."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12021,14 +11985,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Webkiszolgáló portjának megadása."
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Webkiszolgáló felhasználónevének megadása."
-
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Webkiszolgáló jelszavának megadása."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Telepített Webfelületek közötti választás a Kiegészítő-kezelő segítségével."
@@ -12276,10 +12232,6 @@ msgstr "Debug információk naplózásának ki- bekapcsolása.  Hasznos hibakere
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Könyvtár megadása az Kodi képernyőmentéseihez."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "A debug naplóba bekerülendő egyéb komponensek megadása."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12573,10 +12525,6 @@ msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Nagyobb felbontású képek használata a borítókhoz és a fanartokhoz (magasabb memóriahasználat)"
 
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "GUI felbontásának limitálása memória megtakarításhoz. Nem érvényes a videólejátszásra. 1080 a végtelen. Újraindítás szükséges."
-
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
 msgstr "Csoport ami a zene médiatár kezelésével kapcsolatos beállításokat tartalmazza."
@@ -12592,6 +12540,22 @@ msgstr "Kategória az AirPlay szolgáltatás beállítási lehetőségeivel."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategória a képkimenet beállításaival."
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Sorozat"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Sorozatok"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "epizód"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "epizód"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12601,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Középcsatorna erősítése lekeverés esetén"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Rendszerbillentyűk engedélyezése teljesképernyős üzemmódban úgymint alt-tab, printscreen, hangerőgombok."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Nagyobb színmélységű képek használata"
@@ -12660,3 +12620,7 @@ msgstr "Megszakítja a lejátszást a távoli eszközön?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Ez a beállítás akkor szükséges ha a hangkimenet csak a Dolby Digital 5.1-et támogatja, ezzel lehetővé válik egyéb többcsatornás hangfolyam átvitele is úgymint AAC5.1 vagy FLAC5.1 többcsatornásként. Megjegyzés - nem javasolt a használata Pi eszköznél az erős CPU igény miatt."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"

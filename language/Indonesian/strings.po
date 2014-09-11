@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Cuaca"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "pusat media xbmc"
+msgstr "pusat media Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "Konfirmasi salin file"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Konfirmasi pindah file"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Konfirmasi hapus file"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2401,13 +2397,41 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Tingkat Kompresi"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Log Verbose..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Perbolehkan transkode Dolby Digital"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Pencatatan log terinci bagi pustaka SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Pencatatan log terinci bagi pustaka CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Pencatatan log terinci bagi pustaka CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Pencatatan log terinci bagi pustaka FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Pencatatan log terinci bagi pustaka RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Pencatatan log terinci bagi pemanggilan DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Pencatatan terinci untuk permintaan JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Pencatatan log terperinci untuk komponen AUDIO"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4985,22 +5009,6 @@ msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
 msgstr "Perbolehkan dekode perangkat-lunak multi threaded"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Gunakan Mpeg-2 VDPAU"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek Mpeg-(1/2). Apabila dinonaktifkan, akan menggunakan CPU. Kartu grafis Radeon yang lama biasanya akan segfault apabila diaktifkan."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Gunakan Mpeg-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek Mpeg-4. Apabila dinonaktifkan, akan menggunakan CPU. Kartu grafis Radeon yang lama biasanya akan segfault apabila diaktifkan."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Gunakan VC-1 VDPAU"
@@ -5008,22 +5016,6 @@ msgstr "Gunakan VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek berbasis VC-1. Apabila dinonaktifkan, akan menggunakan CPU. Perangkat keras merek AMD dengan VDPAU tidak dapat mendekode VC-1 Simple."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Gunakan Mpeg-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek Mpeg-(1/2). Apabila dinonaktifkan, akan menggunakan CPU. Beberapa video Mpeg-2 dapat memunculkan artifak hijau."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Gunakan Mpeg-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek Mpeg-4. Apabila dinonaktifkan, akan menggunakan CPU."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -6017,10 +6009,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "atau gunakan frase untuk mencari padanan sama, seperti \"Gue ganteng banget bray\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Cari program yang mirip"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Mengimpor EPG dari klien"
@@ -6074,8 +6062,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Backend PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Rekaman TV"
+msgid "Recordings"
+msgstr "Perekaman"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6264,10 +6252,6 @@ msgstr "Menuju awalan"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Menuju akhir"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Jendela EPG Default"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6689,10 +6673,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Perlihatkan informasi saluran ketika berpindah saluran"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Sembunyikan informasi saluran otomatis"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6685,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Hari yang ditampilkan pada EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Durasi informasi saluran"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6710,8 @@ msgid "Continue last channel on startup"
 msgstr "Lanjutkan saluran terakhir pada saat mulai"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Secara minimal"
+msgid "Background"
+msgstr "Latar belakang"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7048,10 +7028,6 @@ msgstr "Jangan tampilkan label 'tidak ada informasi tersedia'"
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Jangan tampilkan peringatan 'koneksi putus'"
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Semua rekaman"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -10125,6 +10101,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Log Perubahan"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Periksa untuk pembaruan"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Apakan anda ingin mengaktifkan tambahan ini?"
@@ -10781,6 +10761,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Pilih perilaku ketika tidak ada suara yang dibutuhkan untuk pemutaran atau suara GUI. [Selalu] - keluaran berupa sinyal tak terdengar yang berkelanjutan, agar perangkat audio tetap aktif untuk semua suara baru, namun mungkin juga menutup suara dari aplikasi lain. [1-10 Menit] - sama dengan Selalu kecuali beberapa saat setelah waktu yang dipilih selesai, audio tidak aktif. [Mati] - keluaran audio menjadi tidak aktif. Catatan - suara dapat dilewatkan bila audio tidak aktif."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Mainkan suara GUI"
@@ -10928,10 +10912,6 @@ msgstr "Mengaktifkan dukungan joystik dan gamepad"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Lumpuhkan joystick saat perangkat ini terpasang"
-
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Membolehkan kunci sistem dalam layar penuh"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11205,6 +11185,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Tampilkan ekstensi berkas untuk berkas media. Sebagai contoh, 'You Enjoy Myself.mp3' akan ditampilkan sederhananya sebagai 'You Enjoy Myself'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Abaikan token tertentu selama operasi pemilahan. Misalkan, 'The Simpsons' akan dipilahkan sebagai 'Simpsons'."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Izinkan berkas untuk dihapus dan diubah nama melalui antarmuka pengguna, dengan menu kontekstual (tekan C di keyboard, sebagai contoh, akan memunculkan menu ini)."
@@ -11316,6 +11300,14 @@ msgstr "Aktifkan pemutaran video berikutnya di dalam list dengan otomatis."
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Setel metoda yang dipakai untuk memroses dan menampilkan video."
+
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Gunakan pengukur berkualitas tinggi ketika meningkatkan ukuran video dengan persentase setidaknya"
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Aktifkan dekoding perangkat-keras VDPAU, biasanya digunakan untuk kartu grafis NVIDIA, atau pada beberapa kondisi, kartu grafis AMD"
 
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
@@ -11493,6 +11485,14 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Pengais standar digunakan ketika menambahkan video musik ke dalam pustaka Anda"
 
+msgctxt "#36201"
+msgid "Settings for PVR/Live TV features."
+msgstr "Pengaturan untuk PVR / fitur Live TV."
+
+msgctxt "#36202"
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategori untuk pengaturan umum PVR / fitur Live TV"
+
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
 msgstr "Aktifkan fitur Perekam Video Personal (PVR) di dalam Kodi. Ini membutuhkan paling tidak satu pengaya PVR terinstall."
@@ -11521,6 +11521,34 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Hapus basis data kanal/EPG lalu impor ulang data dari backend setelahnya."
 
+msgctxt "#36210"
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Cegah penampilan jendela pemberitahuan 'koneksi hilang' ketika Kodi tidak bisa berkomunikasi dengan server backend PVR"
+
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategori untuk menu PVR dan pengaturan tampilan layar, juga jendela informasi kanal."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Tampilan informasi pemrograman ketika mengubah kanal, seperti acara TV saat ini."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Tutup tampilan layar kontrol setelah berpindah kanal."
+
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Folder penyimpanan ikon kanal."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Pindai ikon kanal yang hilang."
+
+msgctxt "#36218"
+msgid "Category for electronic programming guide settings."
+msgstr "Kategori pengaturan panduan pemrograman elektronik."
+
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
 msgstr "Lama hari data EPG yang diimpor dari backend."
@@ -11541,6 +11569,14 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Sembunyikan label \"Tidak ada informasi tersedia\" apabila tidak ada data EPG yang dapat ditarik untuk kanal."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Hapus basis data EPG pada Kodi dan mengimpor ulang data setelahnya dari backend."
+
+msgctxt "#36226"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Kategori pengaturan untuk pemutaran PVR dan pemindahan kanal."
+
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Tampilkan aliran kanal terpilih di dalam kotak kecil bukan layar penuh."
@@ -11553,9 +11589,21 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Tampilkan informasi kualitas sinyal di dalam jendela informasi kodek (apabila didukung oleh pengaya dan backend)."
 
+msgctxt "#36230"
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Berapa lama Kodi harus menunggu untuk mengganti kanal bila kanal tidak diterima. Berguna untuk kanal over-the-air yang biasanya kehilangan sinyal."
+
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Menekan tombol angka dalam modus layar penuh akan secara otomatis memindahkan ke kanal yang telah dimasukkan setelah 1 detik."
+
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Ketika menekan kanal keatas atau kebawah, pemindahan kanal sebenarnya di jeda, agar pengguna dapat membalik nomor kanal tanpa menunggu tiap kanal berpindah."
+
+msgctxt "#36233"
+msgid "Category for default recording duration settings."
+msgstr "Kategori pengaturan durasi perekaman."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -11581,6 +11629,10 @@ msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Tampilkan notifikasi ketika timer ditambah, selesai atau dihilangkan oleh backend."
 
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Kategori pengaturan manajemen daya PVR, seperti ketika membangunkan server backend PVR."
+
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Jalankan \"perintah bangun\" di bawah ini ketika Kodi keluar ataupun memasuki mode hibernasi. Waktu perekaman berikutnya akan dikirimkan sebagai parameter."
@@ -11593,6 +11645,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Perintah yang harus dijalankan."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Waktu yang dikurangkan dari waktu mulai sampai jadwal perekaman selanjutnya."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Jalankan perintah bangun setiap hari pada waktu yang telah ditentukan."
@@ -11600,6 +11656,10 @@ msgstr "Jalankan perintah bangun setiap hari pada waktu yang telah ditentukan."
 msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Kapan harus menjalankan perintah bangun harian."
+
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Kategori pengaturan kontrol orangtua jika server backend PVR mendukung kontrol orangtua."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11612,6 +11672,14 @@ msgstr "Masukkan kode pin baru untuk membuka kanal yang terkunci parental."
 msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
 msgstr "Minta kode pinlagi ketika mencoba mengakses kanal yang terkunci parental dan kode belum pernah ditanya selama durasi ini."
+
+msgctxt "#36251"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Kategori untuk tiap pengaturan pada backend PVD, jika backend PVR mendukung pengubahan pengaturan tersebut pada Kodi"
+
+msgctxt "#36252"
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Opsi ini akan membawa anda ke tiap pengaturan spesifik untuk backend PVR anda, bila backend PVR mendukung perubahan pengaturan pada Kodi."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11684,6 +11752,10 @@ msgstr "Kurangi volume berkas apabila pemotongan akan terjadi."
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Pudarkan secara lembut dari satu trek audio ke trek berikutnya. Anda dapat menentukan lama tindihan dari 1-15 detik."
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Perbolehkan crossfading terjadi bila kedua dari album yang sama."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11789,6 +11861,14 @@ msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "Pilih set karakter yang digunakan ketika karaoke."
 
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "Ekspor lagu karaoke yang ternomori ke berkas HTML atau CSV."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "Impor lagu karaoke ternomori dari berkas HTML atau CSV."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
@@ -11885,6 +11965,14 @@ msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Ketika pemuktahiran pustaka terjadi, baik secara manual atau otomatis, beri tahu klien UPnP."
 
+msgctxt "#36325"
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Aktifkan klien UPnP. Dengan demikian, anda bisa menyiarkan media dari tiap server UPnP dengan titik pengendali dan kendali pemutaran dari server tersebut."
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "Aktifkan kontrol poin UPnP. Dengan demikian, anda dapat menyiarkan media ke klien UPnP manapun dan mengatur pemutaran dari Kodi."
+
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "Kategori yang berisi setelan bagaimana layanan webserver ditangani."
@@ -11896,14 +11984,6 @@ msgstr "Aktikan pengguna jarak-jauh untuk mengatur Kodi melalui server web yang 
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Tentukan port server web."
-
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Tentukan nama pengguna server web."
-
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Tentukan kata kunci webserver."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -11993,6 +12073,10 @@ msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Rubah refresh rate dimana antar muka ditampilkan."
 
+msgctxt "#36354"
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Tampilkan Kodi pada jendela layar penuh. Keuntungan utama dari konfigurasi banyak layar adalah Kodi dapat digunakan tanpa meminimalkan aplikasi lain. Hal ini menggunakan sumberdaya lebih banyak, sehingga pemutaran mungkin kurang halus."
+
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
 msgstr "Dalam konfigurasi layar jamak, layar di mana Kodi tidak ditampilkan akan diburamkan."
@@ -12060,6 +12144,10 @@ msgstr "Pilih opsi ini apabila penerima anda mampu mendekode aliran DTS-HD."
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
 msgstr "Pilih perangkat yang digunakan untuk pemutaran audio yang telah didekode seperti mp3."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Pilih perangkat yang digunakan untuk pemutaran format yang diencode, yang ada dibawah pilihan 'yang bisa jadi penerima'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12144,10 +12232,6 @@ msgstr "Set logging debug nyala atau mati. Berguna ketika pemecahan masalah."
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Folder yang digunakan untuk menyimpan screenshot yang terambil di dalam Kodi"
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Tentukan pustaka tambahan yang akan disertakan ke dalam log debug."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12333,6 +12417,10 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "Monoskopik - 2D"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "Mode pemutaran dari video stereoskopis."
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Tanya saya"
@@ -12340,6 +12428,10 @@ msgstr "Tanya saya"
 msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Gunakan modus pilihan"
+
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
+msgstr "Sampel rate maksimum untuk spdif atau sampel rate untuk konfigurasi yang ditentukan."
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12389,6 +12481,22 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "Modus stereoskopik terbalik"
 
+msgctxt "#36537"
+msgid "Set playback mode of stereoscopic 3D videos."
+msgstr "Atur modus pemutaran video stereoskopik 3D."
+
+msgctxt "#36538"
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "Cegah Kodi keluar dari modus stereoskopis 3D ketika pemutaran dihentikan karena tidak semua TV akan mengenali pemindahan dari 3D ke 2D tanpa modus lihat dialihkan di TV."
+
+msgctxt "#36539"
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "Ubah modus stereoskpis 3D pada antarmuka pengguna."
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Modus stereoskopis 3D yang disukai."
+
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Perbolehkan volume control dari klien AirPlay."
@@ -12409,13 +12517,45 @@ msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "kedalaman stereoskopik subtitle"
 
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Atur kedalaman visual dari subtitle untuk video stereoskopis 3D. Semakin tinggi nilainya, subtitle akan terlihat semakin dekat dengan pemirsa."
+
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Gunakan tekstur dengan kualitas lebih tinggi untuk sampul dan fanart (membutuhkan lebih banyak memori)"
 
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Batasi resolusi GUI untuk menghemat memori. Tidak berefek pada pemutaran video. Gunakan 1080 untuk tidak dibatasi. Membutuhkan start ulang."
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "Kategori berisi pengaturan bagaimana pustaka musik ditangani."
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "Kategori berisi pengaturan bagaimana daftar berkas musik ditangani."
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "Kategori berisi pengaturan bagaimana layanan AirPlay ditangani."
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "Kategori berisi pengaturan bagaimana keluaran video ditangani."
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV show"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV show"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "episode"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "episode"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12461,10 +12601,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Dorong tingkat suara ketika melakukan downmix"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Aktifkan tuts sistem seperti printscreen, alt-tab dan tuts volume ketika layar penuh."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Memperbolehkan artwork dengan kedalaman warna lebih tinggi"
@@ -12484,3 +12620,7 @@ msgstr "Apakah anda ingin menghentikan pemutaran di perangkat remote?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Pilih ini apabila keluaran audio hanya mendukung audio kanal-jamak seperti Dolby Digital 5.1, ini akan memungkinkan audio kanal-jamak seperti AAC5.1 atau FLAC5.1 untuk didengarkan dalam 5.1 surround sound. Catatan: Tidak direkomendasikan pada perangkat Pi disebabkan membutuhkan CPU yang tinggi."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"

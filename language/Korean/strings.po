@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "파일 이동 확인"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "파일 삭제 확인"
+msgid "Confirm delete"
+msgstr "삭제 확인"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "웹 인터페이스"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "오디오 인코더"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "태그라인"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "크기: (%i,%i)->(%i,%i) (축소확대 x%2.2f) 가로세로비:%2.2f:1 (픽셀: %2.2f:1)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "모니터"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "스크립트"
@@ -907,7 +915,7 @@ msgstr "샤우트캐스트"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "시작 대기중...."
+msgstr "시작 대기 중...."
 
 msgctxt "#262"
 msgid "Scripts output"
@@ -1087,7 +1095,11 @@ msgstr "원본 언어"
 
 msgctxt "#309"
 msgid "User interface language"
-msgstr "사용자 인터페이스 영어"
+msgstr "사용자 인터페이스 언어"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "키보드 레이아웃"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1099,7 +1111,7 @@ msgstr "데이터베이스 정리"
 
 msgctxt "#314"
 msgid "Preparing..."
-msgstr "준비중..."
+msgstr "준비 중..."
 
 msgctxt "#315"
 msgid "Database error"
@@ -1263,11 +1275,11 @@ msgstr "매트릭스 트레일"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "화면보호기 시간"
+msgstr "화면 보호기 시간"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "화면보호기 모드"
+msgstr "화면 보호기 모드"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1279,11 +1291,11 @@ msgstr "모든 앨범"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "최근 추가한 앨범"
+msgstr "최근 추가 앨범"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#361"
 msgid "R. Slideshow"
@@ -1291,7 +1303,7 @@ msgstr "역 슬라이드쇼"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "화면보호기 흐림 정도"
+msgstr "화면 보호기 흐림 정도"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -1507,7 +1519,7 @@ msgstr "보기: 큰 아이콘"
 
 msgctxt "#418"
 msgid "Low"
-msgstr "최저"
+msgstr "낮음"
 
 msgctxt "#419"
 msgid "High"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "다채널 오디오를 스테레오로 다운믹스"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "번호"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "정렬기준: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "압축 수준"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "자세한 정보 로깅"
+msgid "Enable component-specific logging"
+msgstr "구성 요소 로그 사용"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "돌비 디지털 트랜스코딩 사용"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "구성 요소 로그 지정"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB 라이브러리를 자세히 로깅"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL 라이브러리 (http, dav)를 자세히 로깅"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH 라이브러리를 자세히 로깅"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG 라이브러리를 자세히 로깅"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP 라이브러리를 자세히 로깅"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS 콜을 자세히 로깅"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC 요청을 자세히 로깅"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "오디오 구성 요소를 자세히 로깅"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "AirTunes 라이브러리를 자세히 로깅"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "UPnP 구성 요소를 자세히 로깅"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "CEC 라이브러리를 자세히 로깅"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3333,6 +3397,10 @@ msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "모래폭풍"
 
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "불고있다"
+
 msgctxt "#1437"
 msgid "Pellet"
 msgstr "싸라기"
@@ -3360,6 +3428,10 @@ msgstr "어쩌면"
 msgctxt "#1443"
 msgid "of"
 msgstr " "
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "깔때기 모양"
 
 msgctxt "#1445"
 msgid "Cloud"
@@ -3591,7 +3663,7 @@ msgstr "잠금 설정"
 
 msgctxt "#10132"
 msgid "Content settings"
-msgstr "컨텐츠 설정"
+msgstr "콘텐츠 설정"
 
 msgctxt "#10134"
 msgid "Favourites"
@@ -4017,13 +4089,25 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "배터리 상태"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "자동 업데이트: 켜짐"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "자동 업데이트: 알림"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "자동 업데이트: 꺼짐"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "날씨"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
@@ -4215,7 +4299,7 @@ msgstr "사용 안 함"
 
 msgctxt "#13114"
 msgid "Enabled for SD content"
-msgstr "SD 컨텐츠 사용함"
+msgstr "SD 콘텐츠 사용함"
 
 msgctxt "#13115"
 msgid "Always enabled"
@@ -4663,7 +4747,7 @@ msgstr "IMDb 찾기..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#13350"
 msgid "Current playlist"
@@ -4978,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "다중 스레드 소프트웨어 디코딩 허용"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Mpeg-2 VDPAU 사용"
+msgid "Use MPEG-2 VDPAU"
+msgstr "MPEG-2 VDPAU 사용"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Mpeg-(1/2) 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 이 옵션을 활성화하면 구형 Radeon 카드에서 세그멘테이션 오류를 일으킬 수 있습니다."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "MPEG-(1/2) 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화합니다. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 이 옵션을 활성화하면 구형 Radeon 카드에서 세그멘테이션 오류를 일으킬 수 있습니다."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Mpeg-4 VDPAU 사용"
+msgid "Use MPEG-4 VDPAU"
+msgstr "MPEG-4 VDPAU 사용"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Mpeg-4 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 이 옵션은 몇몇 ION 하드웨어에서 문제를 일으킬 수 있습니다."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "MPEG-4 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화합니다. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 이 옵션은 몇몇 ION 하드웨어에서 문제를 일으킬 수 있습니다."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5002,24 +5086,28 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "VC-1 기반의 코덱에서 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다.  AMD 하드웨어는 VC-1 Simple 동영상을 디코딩하지 못합니다."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Mpeg-2 VAAPI 사용"
+msgid "Use MPEG-2 VAAPI"
+msgstr "MPEG-2 VAAPI 사용"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Mpeg-(1/2) 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 일부 Mpeg-2 동영상에서는 화면이 녹색으로 변할 수 있습니다."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "MPEG-(1/2) 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화합니다. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 일부 MPEG-2 동영상에서는 화면이 녹색으로 변할 수 있습니다."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Mpeg-4 VAAPI 사용"
+msgid "Use MPEG-4 VAAPI"
+msgstr "MPEG-4 VAAPI 사용"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Mpeg-4 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "MPEG-4 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화합니다. 이 옵션을 활성화하지 않으면 CPU를 사용합니다."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr "VC-1 VAAPI 사용"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "VC-1 기반 코덱의 하드웨어 가속을 사용하려면 이 옵션을 활성화하세요. 이 옵션을 활성화하지 않으면 CPU를 사용합니다. 특히 VC-1 인터레이스는 인텔 하드웨어에서 거의 동작하지 않습니다."
 
 msgctxt "#13454"
 msgid "Decoding method"
@@ -5032,6 +5120,14 @@ msgstr "소프트웨어"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "하드웨어 가속"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "하드웨어 가속 허용 (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "동영상 재생에  OMXPlayer 디코딩을 사용합니다."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5357,6 +5453,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI 필터"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "백그라운드 검색 사용"
@@ -5596,6 +5696,10 @@ msgstr "탐색 효과음"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "스킨 기본값"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "글꼴 크게"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5973,6 +6077,10 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "후처리"
@@ -6006,8 +6114,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "정확한 검색을 하려면 \"오즈의 마법사\"와 같은 문구를 사용하세요."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "비슷한 프로그램 검색"
+msgid "Find similar"
+msgstr "비슷한 프로그램 찾기"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6062,8 +6170,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR 백엔드 %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV 녹화"
+msgid "Recordings"
+msgstr "녹화"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6253,10 +6361,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "끝으로 가기"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "기본 EPG 윈도우"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "채널 아이콘"
@@ -6272,6 +6376,10 @@ msgstr "이 녹화를 삭제할 수 없습니다. 로그를 확인하세요."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "재생 중인 위치로 이동"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6401,9 +6509,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "다른 채널로 변경하세요"
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "채널로 가기"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "녹화를 저장할 폴더명 입력"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "채널을 선택하세요"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6424,6 +6540,14 @@ msgstr "알 수 없는 에러. 다시 시도하거나 로그를 확인하세요.
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR 백엔드 에러. 로그를 확인하세요."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "이 녹화를 삭제하겠습니까?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "이 폴더의 모든 녹화를 삭제하겠습니까?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6528,6 +6652,10 @@ msgstr "먼저 그룹을 생성하세요"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "새 그룹 이름"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "찾기..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6673,10 +6801,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "채널 변경할 때 채널 정보 표시"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "채널 정보 자동 숨김"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6689,9 +6813,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "EPG에 표시할 기간"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "채널 정보 표시 시간"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "라디오"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6714,8 +6838,8 @@ msgid "Continue last channel on startup"
 msgstr "시작할 때 이전 채널 계속 재생"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "최소화"
+msgid "Background"
+msgstr "배경"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7034,8 +7158,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "'연결 끊어짐' 메시지 보이지 않기"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* 모든 녹화"
+msgid "Group Items"
+msgstr "그룹 항목"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7096,6 +7220,18 @@ msgstr "아이콘 선택"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "아이콘 찾기"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "채널 아이콘 찾는 중"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "모든 채널"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "전경"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7947,7 +8083,7 @@ msgstr "%i 포트, %i 슬롯"
 
 msgctxt "#20140"
 msgid "Lock screensaver"
-msgstr "화면보호기 잠금"
+msgstr "화면 보호기 잠금"
 
 msgctxt "#20141"
 msgid "Set"
@@ -8167,7 +8303,7 @@ msgstr "아티스트 정보를 위한 기본 서비스"
 
 msgctxt "#20195"
 msgid "Change scraper"
-msgstr "자료수집기 변경"
+msgstr "정보수집기 변경"
 
 msgctxt "#20196"
 msgid "Export music library"
@@ -8311,7 +8447,7 @@ msgstr "%s로 영화 검색중"
 
 msgctxt "#20318"
 msgid "Scanning music videos using %s"
-msgstr "%s로 뮤직 비디오 검색중"
+msgstr "%s로 뮤직비디오 검색 중"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
@@ -8367,7 +8503,7 @@ msgstr "검색에 파일이나 폴더 이름을 사용 하시겠습니까?"
 
 msgctxt "#20333"
 msgid "Set content"
-msgstr "컨텐츠 설정"
+msgstr "콘텐츠 설정"
 
 msgctxt "#20334"
 msgid "Folder"
@@ -8375,7 +8511,7 @@ msgstr "폴더"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "컨텐츠를 순환 찾기 하시겠습니까?"
+msgstr "콘텐츠를 순환 찾기 하시겠습니까?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8399,7 +8535,7 @@ msgstr "Kodi 라이브러리에서 이 경로의"
 
 msgctxt "#20341"
 msgid "this path from the Kodi library?"
-msgstr "모든 항목을 제거 하시겠습니까?"
+msgstr "모든 항목을 제거 하겠습니까?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -8535,7 +8671,7 @@ msgstr "영화 정보 다운로드"
 
 msgctxt "#20375"
 msgid "Unassign content"
-msgstr "컨텐츠 할당해제"
+msgstr "콘텐츠 할당해제"
 
 msgctxt "#20376"
 msgid "Original title"
@@ -8575,11 +8711,11 @@ msgstr "TV 쇼 연결 제거"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "최근 추가한 영화"
+msgstr "최근 추가 영화"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "최근 추가한 에피소드"
+msgstr "최근 추가 에피소드"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8591,7 +8727,7 @@ msgstr "뮤직비디오"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "최근 추가한 뮤직비디오"
+msgstr "최근 추가 뮤직비디오"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -8659,7 +8795,7 @@ msgstr "에피소드 책갈피 설정"
 
 msgctxt "#20407"
 msgid "Scraper settings"
-msgstr "자료수집기 설정"
+msgstr "정보수집기 설정"
 
 msgctxt "#20408"
 msgid "Downloading music video information"
@@ -8691,7 +8827,7 @@ msgstr "비디오 및 음악 라이브러리에 팬아트 보기"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#20416"
 msgid "First aired"
@@ -8799,7 +8935,7 @@ msgstr "원격 팬아트"
 
 msgctxt "#20442"
 msgid "Change content"
-msgstr "컨텐츠 변경"
+msgstr "콘텐츠 변경"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
@@ -9155,19 +9291,19 @@ msgstr "마지막 아님"
 
 msgctxt "#21412"
 msgid "Scrapers"
-msgstr "자료수집기"
+msgstr "정보수집기"
 
 msgctxt "#21413"
 msgid "Default movie scraper"
-msgstr "기본 영화 자료수집기"
+msgstr "기본 영화 정보수집기"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
-msgstr "기본 TV 쇼 자료수집기"
+msgstr "기본 TV 쇼 정보수집기"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
-msgstr "기본 뮤직비디오 자료수집기"
+msgstr "기본 뮤직비디오 정보수집기"
 
 msgctxt "#21417"
 msgid "Settings"
@@ -9179,7 +9315,7 @@ msgstr "다국어"
 
 msgctxt "#21419"
 msgid "No scrapers present"
-msgstr "자료수집기 없음"
+msgstr "정보수집기 없음"
 
 msgctxt "#21420"
 msgid "Value to match"
@@ -9376,6 +9512,10 @@ msgstr "%d 에서 %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s 에서 %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9931,7 +10071,7 @@ msgstr "영화 정보"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr "화면보호기"
+msgstr "화면 보호기"
 
 msgctxt "#24009"
 msgid "Script"
@@ -10109,6 +10249,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "변경로그"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "업데이트 확인"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "마지막 업데이트: %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "이 애드온을 사용함으로 하시겠습니까?"
@@ -10184,6 +10332,22 @@ msgstr "애드온 필요함"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "재연결 하시겠습니까?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "보조 애드온"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "애드온 라이브러리"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "정보 라이브러리"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "시각화 라이브러리"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10324,6 +10488,14 @@ msgstr "동영상과 같은 위치"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "사용자 지정 위치"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "첫 번째 자막 자동 다운로드"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "검색결과에서 첫 번째 자막을 자동으로 받기"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10917,10 +11089,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "이 장치가 있을 때 조이스틱 사용 안 함"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "전체화면에서 시스템 키 사용"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "위치"
@@ -10979,11 +11147,11 @@ msgstr "Kodi 종료시 장치 전원 끄기"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "화면보호기 작동시 장치를 대기모드로 설정"
+msgstr "화면 보호기 작동시 장치를 대기모드로 설정"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "화면보호기가 작동하지 않을 때 장치 깨우기"
+msgstr "화면 보호기가 작동하지 않을 때 장치 깨우기"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -11211,27 +11379,27 @@ msgstr "파일 목록을 표시할 때 숨김 파일과 폴더 보기."
 
 msgctxt "#36128"
 msgid "Category containing all screensaver settings."
-msgstr "모든 화면보호기 설정을 포함합니다."
+msgstr "모든 화면 보호기 설정을 포함합니다."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
-msgstr "화면보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
+msgstr "화면 보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
 
 msgctxt "#36130"
 msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "화면보호기를 선택합니다. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면보호기가 강제 실행됩니다."
+msgstr "화면 보호기를 선택합니다. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면 보호기가 강제 실행됩니다."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
-msgstr "화면보호기별 설정을 바꾸세요. 사용 가능한 옵션은 화면보호기에 따라 다릅니다."
+msgstr "화면 보호기별 설정을 바꾸세요. 사용 가능한 옵션은 화면 보호기에 따라 다릅니다."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
-msgstr "선택한 화면보호기 미리보기."
+msgstr "선택한 화면 보호기 미리보기."
 
 msgctxt "#36133"
 msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
-msgstr "음악이 재생중인 경우 Kodi는 화면보호기 대신, 선택한 시각화를 실행합니다."
+msgstr "음악이 재생중인 경우 Kodi는 화면 보호기 대신, 선택한 시각화를 실행합니다."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11309,6 +11477,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "비디오 처리와 화면 표시 방법을 조정합니다."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "이 배율로 업스케일링을 할 때는 고품질 스케일링을 사용하세요."
+
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
 msgstr "동영상 재생에 VDPAU 하드웨어 디코딩을 사용합니다. 주로 NVIDIA 그래픽과 특정 환경의 AMD 그래픽에 사용됩니다. "
@@ -11372,6 +11544,10 @@ msgstr "화면의 검은 여백을 영상으로 채울 때 비디오 재생기�
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "와이드스크린 디스플레이에 4:3 동영상 재생시 확대 방법을 선택합니다."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "VDPAU 스튜디오 수준 변환은 Kodi와 같은 진보된 어플리케이션이 색 공간 변환을 조절할 수 있게합니다."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11483,7 +11659,7 @@ msgstr "기본 TV 쇼 정보 소스를 선택합니다. 애드온 관리자에�
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "기본 뮤직비디오 자료수집기"
+msgstr "뮤직비디오를 라이브러리에 추가할 때 사용하는 기본 정보수집기"
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
@@ -11533,10 +11709,6 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "채널을 변경할 때 현재 TV 쇼와 같은 프로그램 정보를 표시합니다."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "아래 항목에서 설정한 시간이 지나면 자동으로 프로그램 정보를 숨깁니다."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "채널 변경 후 화면에 표시되는 채널 컨트롤을 닫습니다."
@@ -11552,10 +11724,6 @@ msgstr "누락된 채널 아이콘을 검색합니다."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "EPG 설정과 관련된 범주입니다."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "기본으로 표시할 EPG 창."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11605,6 +11773,10 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "전체화면 모드에서 숫자 버튼을 누르면 1초가 지난 후 해당 번호의 채널로 자동 전환됩니다."
 
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "채널을 옮길 때, 사용자가 기다리지 않고 채널 번호를 바꿀 수 있도록 실제 채널은 지연되어 변경됩니다."
+
 msgctxt "#36233"
 msgid "Category for default recording duration settings."
 msgstr "기본 녹화 시간 설정과 관련된 범주입니다."
@@ -11637,9 +11809,21 @@ msgctxt "#36240"
 msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
 msgstr "PVR 백엔드 서버가 깨어나는 시간 등의 PVR 전원 관리 설정과 관련된 범주입니다. "
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Kodi가 종료되거나 절전 모드로 진입할 경우 \"깨우기 명령\"이 실행됩니다. 다음 실행될 녹화의 timestamp를 인수로 전달합니다."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "대기 시간 내에 녹화가 시작되면 명령은 실행되지 않습니다."
+
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "실행할 명령어입니다."
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "다음 예약된 녹화전 미리 깨울 시간입니다."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11687,7 +11871,7 @@ msgstr "컴필레이션 앨범에만 있는 아티스트를 라이브러리 아�
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
-msgstr "음악을 검색할 때 앨범과 아티스트 정보를 자료수집기를 사용하여 자동으로 가져옵니다.  "
+msgstr "음악을 검색할 때 앨범과 아티스트 정보를 정보수집기를 사용하여 자동으로 가져옵니다.  "
 
 msgctxt "#36257"
 msgid "Select the default album information source."
@@ -11853,6 +12037,14 @@ msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "노래방 화면에서 사용할 문자집합을 선택합니다."
 
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "노래방 노래를 HTML 또는 CSV 파일로 내 보냅니다."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "HTML 또는 CSV 파일에서 노래방 노래를 불러옵니다."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
@@ -11970,12 +12162,12 @@ msgid "Define the webserver port."
 msgstr "웹서버 포트를 설정합니다."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "웹서버 사용자 이름을 설정합니다."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "웹서버의 사용자명을 정의합니다. 사용자명과 비밀번호가 모두 설정됐을 때만 동작합니다."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "웹서버 비밀번호를 설정합니다."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "웹서버의 비밀번호를 정의합니다. 사용자명과 비밀번호가 모두 설정됐을 때만 동작합니다."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12226,8 +12418,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Kodi에서 캡처한 스크린샷을 저장할 폴더"
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "디버그 로그에 포함할 추가 라이브러리를 지정합니다."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "추가 라이브러리로부터 로그에 포함할 로그 메시지를 활성화합니다."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12240,6 +12432,10 @@ msgstr "마스터 잠금에 사용할 PIN 코드를 설정합니다."
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock Kodi on startup."
 msgstr "옵션을 켜면, Kodi를 시작할 때 마스터 잠금 코드를 입력해야 합니다."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Kodi를 닫기 전에 재시도할 최대 횟수를 정의합니다."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12369,6 +12565,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "비디오 디코딩 방식을 선택합니다. 소프트웨어(CPU 자원을 더 많이 사용함) 방식과 하드웨어 가속(사용 가능한 경우) 방식이 있습니다."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "가상 키보드 레이아웃을 선택합니다."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "3D 모드 (현재)"
@@ -12465,6 +12665,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "다운믹스(Ex. 5.1 채널을 2.0 채널로 출력) 방식을 선택합니다: [사용함] 원 소스의 다이내믹 레인지를 유지하지만 음량은 낮아집니다. [사용 안 함] 원 소스의 음량 수준을 유지하지만 다이내믹 레인지는 좁아집니다. 참고 - 다이내믹 레인지는 특정 오디오 소스에서 가장 큰 소리와 가장 작은 소리 사이의 범위입니다."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "로그에 포함할 로그 메시지를 가진 추가 라이브러리를 지정합니다."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "비디오 3D 모드"
@@ -12476,6 +12680,10 @@ msgstr "3D 모드 반전"
 msgctxt "#36537"
 msgid "Set playback mode of stereoscopic 3D videos."
 msgstr "3D 비디오 재생 모드를 설정합니다."
+
+msgctxt "#36538"
+msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "재생을 종료(일시정지가 아님)하였을 때 Kodi를 3D 상태로 유지합니다. 3D에서 2D로 돌아갔을 때 모든 TV가 자동 감지하여 2D 상태로 전환되지 않기 때문입니다."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12514,8 +12722,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "커버와 팬아트에서 고품질의 텍스처를 사용합니다 (더 많은 메모리를 사용함)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "메모리 절약을 위하여 GUI 해상도를 제한합니다. 비디오 재생에는 영향을 주지 않습니다. 1080으로 설정하면 제한을 두지 않습니다. 설정 후 다시 시작하여야 합니다."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "메모리 절약을 위하여 GUI 해상도를 제한합니다. 비디오 재생에는 영향을 주지 않습니다. 설정 후 다시 시작하여야 합니다."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12532,6 +12740,94 @@ msgstr "AirPlay 서비스 관련 설정을 포함합니다."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "비디오 출력과 관련된 설정을 포함합니다"
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "영화"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "영화"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV 쇼"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV 쇼"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "시즌"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "시즌"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "에피소드"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "에피소드"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "뮤직비디오"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "뮤직비디오"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "시리즈"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "시리즈"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "비디오"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "비디오"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "음악"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "음악"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "아티스트"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "아티스트"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "앨범"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "앨범"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "노래"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "노래"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12577,10 +12873,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "다운믹스할 때 센터 채널 증폭"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "전체화면에서 프린트스크린, alt-tab, 음량 등의 시스템 키를 사용합니다"
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "고품질 아트워크 사용"
@@ -12600,3 +12892,27 @@ msgstr "원격 장치에서 재생을 중지하겠습니까?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "연결된 오디오 장치의 멀티 채널이 돌비 디지털 5.1 만 지원하는 경우 선택하세요. AAC5.1 이나 FLAC5.1 오디오도 5.1 서라운드 사운드로 감상할 수 있습니다. 주의 - CPU 부하가 크므로 라즈베리 파이에서는 권장하지 않습니다."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "오디오 인코더의 품질이나 압축 수준을 설정합니다."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "자동"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "제한 없음"

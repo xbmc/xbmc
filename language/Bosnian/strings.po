@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -111,7 +111,7 @@ msgstr "juli"
 
 msgctxt "#28"
 msgid "August"
-msgstr "avgust"
+msgstr "august"
 
 msgctxt "#29"
 msgid "September"
@@ -187,7 +187,7 @@ msgstr "jul"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "avg"
+msgstr "aug"
 
 msgctxt "#59"
 msgid "Sep"
@@ -303,7 +303,7 @@ msgstr "Prikaz: Auto-veliko"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Prikaz: Ikoni"
+msgstr "Prikaz: Ikone"
 
 msgctxt "#101"
 msgid "View: List"
@@ -389,10 +389,6 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Potvrdi premještanje"
 
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Potvrđujete li brisanje?"
-
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Kopiranje ovih datoteka?"
@@ -463,11 +459,11 @@ msgstr "Temperature:"
 
 msgctxt "#140"
 msgid "CPU:"
-msgstr "Centralnog procesora:"
+msgstr "CPU:"
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "Grafičkog procesora:"
+msgstr "GPU:"
 
 msgctxt "#142"
 msgid "Time:"
@@ -519,11 +515,11 @@ msgstr "Puni dupleks"
 
 msgctxt "#154"
 msgid "Storage"
-msgstr "Skladišta"
+msgstr "Skladište"
 
 msgctxt "#155"
 msgid "Drive"
-msgstr "Drajv"
+msgstr "Uređaj"
 
 msgctxt "#156"
 msgid "Free"
@@ -539,7 +535,7 @@ msgstr "Slobodna memorija"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "nije uspostavljena"
+msgstr "Nema vezu"
 
 msgctxt "#160"
 msgid "Free"
@@ -867,7 +863,7 @@ msgstr "Broj kanala"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "DTS sposoban reciver"
+msgstr "DTS podoban prijemnik"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -903,7 +899,7 @@ msgstr "Izlazne skripte"
 
 msgctxt "#263"
 msgid "Allow control of Kodi via HTTP"
-msgstr "Dozvoli kontrolu Kodi aplikacije putem HTTP protokola"
+msgstr "Dozvoli kontrolu Kodi putem HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1043,15 +1039,15 @@ msgstr "Obilježivači"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "MP1 sposoban reciver"
+msgstr "MP1 podoban prijemnik"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "MP2 sposoban reciver"
+msgstr "MP2 podoban prijemnik"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "MP3 sposoban reciver"
+msgstr "MP3 podoban prijemnik"
 
 msgctxt "#303"
 msgid "Delay"
@@ -2320,10 +2316,6 @@ msgstr "Potraži skriptu"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "Nivo kompresije"
-
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Verbalno logovanje"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -5649,10 +5641,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "ili koristi fraze da dobiješ precizan rezultat, npr. \"Bijelo dugme\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Pronađi slične programe"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importuje EPG iz klijenta"
@@ -5706,7 +5694,7 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
+msgid "Recordings"
 msgstr "Snimci"
 
 msgctxt "#19019"
@@ -5892,10 +5880,6 @@ msgstr "Idi na početak"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Idi na kraj"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Standardni EPG prozor"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6085,25 +6069,209 @@ msgctxt "#19123"
 msgid "Free to air channels only"
 msgstr "Samo \"Free-to-air\" kanali"
 
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Zanemari sadašnje brojače vremena"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Zanemari sadašnje snimanje"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Početno vrijeme"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Krajnje vrijeme"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Početni datum"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Krajnji datum"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Najmanje trajanje"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Najveće trajanje"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Uključi nepoznate žanrove"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Pretraži niz"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Uključi opis"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Osjetljiv na VelikA i MalA slova "
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanal nedostupan"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Grupa nije određena"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Molimo, prvo kreirajte grupu"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Ime nove grupe"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grupa"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Vodić za pretragu"
+
 msgctxt "#19143"
 msgid "Group management"
 msgstr "Upravljanje grupama"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Grupa nije određena"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Po grupama"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupe"
 
 msgctxt "#19148"
 msgid "Channel"
 msgstr "Kanal"
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Po"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Ut"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Sr"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Če"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Pe"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Su"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Ne"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "od"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Slijedeće snimanje"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Sadašnje snimanje"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "od"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "do"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Snimanje aktivno"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Snimci"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Ne mogu početi snimanje. Provjerite dnevnik za detalje."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Promjeni"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR informacije"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Skeniranje za nedostajuće ikone"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Sakrij okvir za video informacije"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Timeout prilikom pokretanja reprodukcije"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Trajanje instant snimalice"
 
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Reprodukcija"
 
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Pokaži informacije o kanalu kada mjenjam kanale"
+
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Menu/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Dani za prikaz u EPG"
+
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Pozadina"
 
 msgctxt "#19204"
 msgid "New channel"
@@ -6124,6 +6292,10 @@ msgstr "Zaustavi snimanje"
 msgctxt "#19607"
 msgid "Fashion"
 msgstr "Režim"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Automatski"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -8788,3 +8960,15 @@ msgstr "Prebaci na kanal"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Snimi"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV serija"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV serije"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Automatski"

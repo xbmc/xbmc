@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Επιβεβαίωση μεταφοράς αρχείου"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Επιβεβαίωση διαγραφής;"
+msgid "Confirm delete"
+msgstr "Επιβεβαίωση διαγραφής"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Διασύνδεση ιστού"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Κωδικοποιητές ήχου"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Σλόγκαν"
@@ -848,6 +852,10 @@ msgstr "Πλήρης οθόνη"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Μέγεθος: (%i,%i)->(%i,%i) (Ζουμ x%2.2f) AR:%2.2f:1 (Εικονοστοιχεία: %2.2f:1) (ΚΜετατόπιση: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Οθόνη"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Αρχική γλώσσα ροής"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Γλώσσα περιβάλλοντος εργασίας"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Διατάξεις πληκτρολογίου"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1751,7 +1763,7 @@ msgstr "Ιδιότητες ήχου"
 
 msgctxt "#482"
 msgid "About Kodi"
-msgstr "Περί Kodi"
+msgstr "Σχετικά με το Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1984,6 +1996,10 @@ msgstr "Δεν υπάρχει βιογραφία γι' αυτόν τον καλ�
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Downmix πολυκάναλου ήχου σε στερεοφωνικό"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Αριθμός"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2355,7 +2371,7 @@ msgstr "Ενημέρωση συλλογής"
 
 msgctxt "#654"
 msgid "Show debug info"
-msgstr "Επίδειξη σφαλμάτων"
+msgstr "Πληροφορίες σφαλμάτων"
 
 msgctxt "#655"
 msgid "Browse for executable"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Επίπεδο συμπίεσης"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Αναλυτική καταγραφή..."
+msgid "Enable component-specific logging"
+msgstr "Ενεργοποίηση στοχευμένης καταγραφής"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Ενεργοποίηση Διακωδικοποίησης Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Ορισμός στοχευμένης καταγραφής..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Αναλυτική καταγραφή για τη συλλογή SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Αναλυτική καταγραφή για τη συλλογή CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Αναλυτική καταγραφή για τη συλλογή CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Αναλυτική καταγραφή για τις συλλογές FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Αναλυτική καταγραφή για τη συλλογή RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Αναλυτική καταγραφή για τις κλήσεις DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Αναλυτική καταγραφή για αιτήματα JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Αναλυτική καταγραφή για στοιχείο AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Αναλυτική καταγραφή για τη συλλογή AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Αναλυτική καταγραφή για τα στοιχεία UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Αναλυτική καταγραφή για τη συλλογή CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Επίπεδο φόρτισης"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Αυτ. Ενημερώσεις: Ενεργές"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Αυτ. Ενημερώσεις: Ειδοποίηση"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Αυτ. Ενημερώσεις: Ποτέ"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Καιρός"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Να επιτρέπεται η πολυνηματική αποκωδικοποίηση λογισμικού"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Χρήση Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Χρήση MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση Mpeg-(1/2). Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Παλαιότερες κάρτες Radeon τείνουν να παρουσιάζουν προβλήματα με αυτήν την επιλογή."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση MPEG-(1/2). Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Παλαιότερες κάρτες Radeon τείνουν να παρουσιάζουν προβλήματα με αυτήν την επιλογή."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Χρήση Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Χρήση MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση Mpeg-4. Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Κάποιες κάρτες ION τείνουν να παρουσιάζουν προβλήματα με αυτήν την επιλογή."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση MPEG-4. Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Κάποιες κάρτες ION τείνουν να παρουσιάζουν προβλήματα με αυτήν την επιλογή."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση τύπου VC-1. Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Κάρτες AMD με VDPAU δεν μπορούν να αποκωδικοποιήσουν το VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Χρήση Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Χρήση MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση Mpeg-(1/2). Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Κάποια βίντεο Mpeg-2 ενδέχεται να εμφανίζουν πράσινα κομμάτια."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση MPEG-(1/2). Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής. Κάποια βίντεο MPEG-2 ενδέχεται να εμφανίζουν πράσινα κομμάτια."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Χρήση Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Χρήση MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση Mpeg-4. Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή για χρήση της κάρτας γραφικών για κωδικοποίηση MPEG-4. Αν απενεργοποιηθεί, θα χρησιμοποιηθεί ο επεξεργαστής."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5369,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Φίλτρα Περιβάλλοντος Εργασίας (GUI)"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Σάρωση στο παρασκήνιο"
@@ -5507,7 +5587,7 @@ msgstr "Κωδικοποίηση χαρακτήρων"
 
 msgctxt "#14092"
 msgid "Debugging"
-msgstr "Καταγραφή σφαλμάτων"
+msgstr "Εντοπισμός σφαλμάτων"
 
 msgctxt "#14093"
 msgid "Security"
@@ -5609,6 +5689,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Προεπιλογή κελύφους"
 
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Μεγαλύτερη γραμματοσειρά"
+
 msgctxt "#15111"
 msgid "Theme"
 msgstr "Θέμα"
@@ -5655,11 +5739,11 @@ msgstr "Απέτυχε η σύνδεση με το διακομιστή δικτ
 
 msgctxt "#15302"
 msgid "No servers found"
-msgstr "Δεν βρέθηκαν διακομιστές"
+msgstr "Δε βρέθηκαν διακομιστές"
 
 msgctxt "#15303"
 msgid "Workgroup not found"
-msgstr "Δεν βρέθηκε η ομάδα εργασίας"
+msgstr "Δε βρέθηκε η ομάδα εργασίας"
 
 msgctxt "#15310"
 msgid "Opening multi-path source"
@@ -5985,6 +6069,10 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Μετα-επεξεργασία"
@@ -6018,8 +6106,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "ή χρησιμοποιήστε φράσεις για ακριβείς αντιστοιχίες, όπως \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Εύρεση παρόμοιων προγραμμάτων"
+msgid "Find similar"
+msgstr "Εύρεση παρόμοιων"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6162,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Backend του PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Τηλεοπτικές εγγραφές"
+msgid "Recordings"
+msgstr "Εγγραφές"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6353,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Μετάβαση στο τέλος"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Προεπιλεγμένο παράθυρο EPG"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Εικονίδια καναλιών"
@@ -6417,9 +6501,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Πηγαίνετε σε άλλο κανάλι."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Μετάβαση σε κανάλι"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Εισάγετε το όνομα του φακέλου για την εγγραφή"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Επιλέξτε ένα κανάλι"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6532,14 @@ msgstr "Προέκυψε ένα αναπάντεχο σφάλμα. Δοκιμά�
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Σφάλμα του backend του PVR. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Διαγραφή αυτής της εγγραφής;"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Διαγραφή όλων των εγγραφών αυτού του φακέλου;"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6644,10 @@ msgstr "Δημιουργήστε πρώτα ένα γκρουπ"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Όνομα του νέου γκρουπ"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Αναζήτηση..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6793,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Εμφάνιση πληροφοριών καναλιού κατά το ζάπινγκ"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Αυτόματη απόκρυψη πληροφοριών καναλιού"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "Τηλεόραση"
@@ -6705,9 +6805,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Ημέρες που θα εμφανίζονται στο EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Διάρκεια πληροφοριών καναλιού"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Ραδιόφωνο"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6830,8 @@ msgid "Continue last channel on startup"
 msgstr "Συνέχεια του τελευταίου καναλιού κατά την εκκίνηση"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Ελαχιστοποιημένο"
+msgid "Background"
+msgstr "Υπόβαθρο"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7050,8 +7150,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Να μην εμφανίζονται ειδοποιήσεις 'απώλειας σύνδεσης'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Όλες οι εγγραφές"
+msgid "Group Items"
+msgstr "Αντικείμενα σε Γκρουπ"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7212,18 @@ msgstr "Επιλογή εικονιδίου"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Αναζήτηση εικονιδίου"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Αναζήτηση εικονιδίων καναλιών"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Όλα τα κανάλια"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Προσκήνιο"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8167,7 +8279,7 @@ msgstr "Προσαρμογή"
 
 msgctxt "#20191"
 msgid "Enable debug logging"
-msgstr "Ενεργοποίηση καταγραφής σφαλμάτων (debug log)"
+msgstr "Καταγραφή σφαλμάτων"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
@@ -8195,7 +8307,7 @@ msgstr "Εισαγωγή μουσικής συλλογής"
 
 msgctxt "#20198"
 msgid "No artist found!"
-msgstr "Δεν βρέθηκε ο καλλιτέχνης!"
+msgstr "Δε βρέθηκε ο καλλιτέχνης!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
@@ -8447,7 +8559,7 @@ msgstr "Σκηνοθέτες"
 
 msgctxt "#20349"
 msgid "No video files found in this path!"
-msgstr "Δεν βρέθηκαν αρχεία βίντεο σε αυτή τη διαδρομή!"
+msgstr "Δε βρέθηκαν αρχεία βίντεο σε αυτή τη διαδρομή!"
 
 msgctxt "#20350"
 msgid "votes"
@@ -9393,6 +9505,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s με %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Εξωτερικός)"
@@ -10125,6 +10241,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Αρχείο καταγραφής αλλαγών"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Έλεγχος για ενημερώσεις"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Τελευταία Ενημέρωση %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Να ενεργοποιηθεί αυτό το πρόσθετο;"
@@ -10200,6 +10324,22 @@ msgstr "Απαιτείται πρόσθετο"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Νέα προσπάθεια επανασύνδεσης;"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Βοηθητικά Πρόσθετα"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Συλλογές Πρόσθετων"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Συλλογές Πληροφοριών"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Συλλογές Οπτικοποιήσεων"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10480,14 @@ msgstr "Δίπλα στο βίντεο"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Προσαρμοσμένη τοποθεσία"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Αυτόματη λήψη του πρώτου υπότιτλου"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Να γίνεται αυτόματη λήψη του πρώτου υπότιτλου που βρέθηκε"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10932,10 +11080,6 @@ msgstr "Ενεργοποίηση υποστήριξης χειριστηρίων
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Απενεργοποίηση χειριστηρίου κατά την παρουσία αυτής της συσκευής"
-
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Πλήκτρα συστήματος στην πλήρη οθόνη"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11557,17 +11701,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Προβολή πληροφοριών προγράμματος, όπως η τρέχουσα τηλ. σειρά, κατά την αλλαγή καναλιών."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Απόκρυψη των πληροφοριών προγράμματος αυτόματα μετά από λίγα δευτερόλεπτα, όπως ορίζεται παρακάτω."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Κλείσιμο των χειριστηρίων οθόνης κατά την αλλαγή καναλιών."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Πόση ώρα θα προβάλλονται οι πληροφορίες προγράμματος όταν είναι ενεργή η επιλογή 'αυτόματη απόκρυψη'."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11716,6 @@ msgstr "Σάρωση για εικονίδια καναλιών που λείπ�
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Κατηγορία με ρυθμίσεις οδηγού τηλεοπτικού προγράμματος (EPG)"
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Προεπιλεγμένο παράθυρο οδηγού τηλεοπτικού προγράμματος (EPG)."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12022,12 +12154,12 @@ msgid "Define the webserver port."
 msgstr "Ορισμός της θύρας του διακομιστή ιστού."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Ορισμός του ονόματος χρήστη του διακομιστή ιστού."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Ορισμός ονόματος χρήστη του διακομιστή ιστού. Έχει ισχύ μόνο εάν οριστεί και κωδικός."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Ορισμός του κωδικού του διακομιστή ιστού."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Ορισμός κωδικού του διακομιστή ιστού. Έχει ισχύ μόνο εάν οριστεί και όνομα χρήστη."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12271,15 +12403,15 @@ msgstr "Κατηγορία με ρυθμίσεις σχετικά με τον ε
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
-msgstr "(Απ)Ενεργοποίηση του αρχείου καταγραφής εντοπισμού σφαλμάτων. Χρήσιμο για αντιμετώπιση προβλημάτων."
+msgstr "(Απ)Ενεργοποίηση του αρχείου καταγραφής σφαλμάτων. Χρήσιμο για αντιμετώπιση προβλημάτων."
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Ο φάκελος όπου θα αποθηκεύονται στιγμιότυπα οθόνης εντός του Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Καθορίστε τις συλλογές που θα περιληφθούν στην καταγραφή εντοπισμού σφαλμάτων."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Ενεργοποίηση μηνυμάτων επιπλέον συλλογών που θα περιληφθούν στο αρχείο καταγραφής."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12557,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Ορισμός του τρόπου αποκωδικοποίησης βίντεο, είτε μέσω λογισμικού (απαιτείται περισσότερη επεξεργαστική ισχύ), ή μέσω επιτάχυνσης υλικού όταν είναι εφικτό."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Επιλογή διατάξεων εικονικού πληκτρολογίου."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Στερεοσκοπική προβολή (τρέχουσα)"
@@ -12521,6 +12657,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Επιλογή του τρόπου με τον οποίο θα γίνεται ο υποβιβασμός καναλιών του ήχου (downmix), π.χ. από 5.1 σε 2.0: Το [Ενεργό] διατηρεί το δυναμικό εύρος της αρχικής ηχητικής πηγής κατά το downmix, εντούτοις η ένταση θα είναι πιο χαμηλή. Το [Ανενεργό] διατηρεί την ένταση του ήχου της αρχικής ηχητικής πηγής, εντούτοις το δυναμικό εύρος συμπιέζεται. Σημείωση: Το δυναμικό εύρος είναι η διαφορά ανάμεσα στον πιο έντονο και τον πιο αχνό ήχο σε μια ηχητική πηγή."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Ορίστε τις επιπλέον συλλογές τα μηνύματα των οποίων θα περιληφθούν στο αρχείο καταγραφής."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Στερεοσκοπική προβολή του βίντεο"
@@ -12574,8 +12714,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Χρήση εικόνων υψηλότερης ανάλυσης για εξώφυλλα και fanart (απαιτεί περισσότερη μνήμη)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Περιορισμός της ανάλυσης του Περιβάλλοντος Εργασίας για χρήση λιγότερης μνήμης. Δεν επηρεάζεται η αναπαραγωγή βίντεο. Η τιμή 1080 αντιστοιχεί σε απεριόριστη χρήση μνήμης. Απαιτεί επανεκκίνηση."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Περιορισμός της ανάλυσης του Περιβάλλοντος Εργασίας για χρήση λιγότερης μνήμης. Δεν επηρεάζεται η αναπαραγωγή βίντεο. Απαιτεί επανεκκίνηση."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12732,94 @@ msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χε
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό της εξόδου βίντεο."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "ταινία"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "ταινίες"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Τηλ. Σειρά"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Τηλ. Σειρές"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "κύκλος"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "κύκλοι"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "επεισόδιο"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "επεισόδια"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "μουσικό βίντεο"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "μουσικά βίντεο"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "ομάδα"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "ομάδες"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "βίντεο"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "βίντεο"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "μουσική"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "μουσική"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "καλλιτέχνης"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "καλλιτέχνες"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "άλμπουμ"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "άλμπουμ"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "τραγούδι"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "τραγούδια"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12865,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Ενίσχυση του κεντρικού καναλιού κατά το downmix"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Ενεργοποίηση πλήκτρων συστήματος όπως το printscreen, το alt-tab και των πλήκτρων ήχου κατά την πλήρη οθόνη."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Ενεργοποίηση εικόνων υψηλότερου χρωματικού βάθους"
@@ -12660,3 +12884,27 @@ msgstr "Να διακοπεί η αναπαραγωγή στην απομακρ�
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Επιλογή αυτής της ρύθμισης αν η σύνδεση της εξόδου ήχου υποστηρίζει μόνο πολυκάναλο ήχο όπως το Dolby Digital 5.1. Με αυτόν τον τρόπο μπορεί να αποδοθεί πολυκάναλος ήχος όπως AAC5.1 ή FLAC5.1 σε μορφή 5.1 surround sound. Σημείωση - δεν προτείνεται για Raspberry Pi, καθώς απαιτεί πολλή επεξεργαστική ισχύ."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Διαμόρφωση ρυθμίσεων της κωδικοποίησης ήχου, όπως η ποιότητα και το επίπεδο συμπίεσης."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Αυτόματη"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Απεριόριστο"

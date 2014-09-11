@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Potvrdenie presunutia"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Potvrdenie vymazania"
+msgid "Confirm delete"
+msgstr "Potvrdiť odstránenie"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Webové rozhranie"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Audio kodéry"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Stručné info"
@@ -848,6 +852,10 @@ msgstr "Celá obrazovka"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Zmena veľkosti: (%i,%i)->(%i,%i) (Priblíženie x%2.2f) AR:%2.2f:1 (Pixelov: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Originálny jazyk Streamu"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Jazyk používateľského prostredia"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Rozloženia klávesnice"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Prevádzať viackanálový zvuk na stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Číslo"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Zoradiť: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Úroveň kompresie"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Podrobný záznam..."
+msgid "Enable component-specific logging"
+msgstr "Zapnúť zaznamenávanie informácií špecifických pre komponenty"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Povoliť Dolby Digital transcoding"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Určiť typ zaznamenávaných informácií špecifických pre komponenty..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Podrobné záznamy pre SMB knižnicu"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Podrobné záznamy pre CURL knižnicu (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Podrobné záznamy pre CMYTH knižnicu"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Podrobné záznamy pre FFMPEG knižnice"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Podrobné záznamy pre RTMP knižnicu"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Podrobné záznamy pre DBUS volania"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Podrobné záznamy pre požiadavky JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Podrobné záznamy pre AUDIO komponent"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Podrobné zaznamenávanie informácii pre AirTunes knižnicu"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Podrobné zaznamenávanie informácií pre UPnP komponenty"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Podrobné zaznamenávanie informácií pre CEC knižnicu"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Stav batérie"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Automatické aktualizácie: zapnuté"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Automatické aktualizácie: oznámiť"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Automatické aktualizácie: nikdy"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Počasie"
@@ -4981,33 +5057,69 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Povoliť hardvérovú akceleráciu (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Povoliť viacvláknové softvérové dekódovanie"
+
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Použiť Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Použiť MPEG-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodeky MPEG-(1/2). Ak je vypnutá, namiesto toho sa použije procesor. U starších Radeon kariet môže dôjsť k chybe segmentácie."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Použiť Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Použiť MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodek MPEG-4. Ak je vypnutá, namiesto toho sa použije procesor. Ak je táto voľba štandardne zapnutá, určitý ION hardvér s tým môže mať problémy."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Použit VC-1 VDPAU"
 
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodeky založené na VC-1. Ak je vypnutá, namiesto toho sa použije procesor. AMD hardvér s VDPAU neumožňuje dekódovať VC-1 Simple profil."
+
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Použiť Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Použiť MPEG-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodeky MPEG-(1/2). Ak je vypnutá, namiesto toho sa použije procesor. U niektorých Mpeg-2 videí sa môžu vyskytnúť zelené artefakty."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Použiť Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Použiť MPEG-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodek MPEG-4. Ak je vypnutá, namiesto toho sa použije procesor."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr "Použiť VC-1 VAAPI"
 
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "Zapnite túto voľbu pre použitie hardvérovej akcelerácie pre kodeky založené na VC-1. Ak je vypnutá, namiesto toho sa použije procesor. Obzvlášť u prekladaného VC-1 videa dochádza k zlyhaniu na hardvéri spoločnosti Intel."
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Metóda dekódovania"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Softvér"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Hardvérovo akcelerované"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5133,6 +5245,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Diaľkové ovládanie Apple Chyba"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Nie je možné zapnúť podporu pre diaľkové ovládanie Apple."
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Zlučovať"
@@ -5233,9 +5349,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Medzipamäť - Video - DVDRom"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Medzipamäť - Video - Miestna sieť"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Medzipamäť - Video - Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Medzipamäť - Audio - DVDRom"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Medzipamäť - Audio - Miestna sieť"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Medzipamäť - Audio - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5248,6 +5380,10 @@ msgstr "Miestna sieť"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Servery"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "Medzipamäť - DVD - Miestna sieť"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5308,6 +5444,10 @@ msgstr "Formát Dátumu"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI Filtre"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5481,9 +5621,17 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Zastaviť kopírovanie CD"
 
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Akcelerácia"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Nedostupný zdroj"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Čo by ste chceli urobiť s položkami médií z %s"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -5540,6 +5688,10 @@ msgstr "Zvuky navigácie"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Predvolené"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Väčšia veľkosť písma"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5950,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "alebo použite frázy na to, aby ste našli presnú zhodu, ako napr. \"Čarodejník z krajiny Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Nájsť podobné programy"
+msgid "Find similar"
+msgstr "Nájsť podobné"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6006,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV nahrávky"
+msgid "Recordings"
+msgstr "Nahrávky"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6197,10 +6349,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Prejsť na koniec"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Predvolené okno EPG"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Logá kanálov"
@@ -6349,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Prepnite, prosím, na ďalší kanál."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Prejsť na kanál"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Zadajte názov priečinka pre nahrávanie"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Vyberte si, prosím, kanál"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6373,6 +6529,14 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Chyba PVR backendu. Pre viac informácii si pozrite výpis z denníka."
 
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Odstrániť túto nahrávku?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Odstrániť všetky nahrávky v tomto priečinku?"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Verzia"
@@ -6392,6 +6556,10 @@ msgstr "Vyhľadávať kanály"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Počas vyhľadávania nie je možné použiť PVR funkcie."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Na ktorom serveri chcete vyhľadávať?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6472,6 +6640,10 @@ msgstr "Najprv vytvorte skupinu"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Názov skupiny"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Hľadať..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6617,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Zobraziť informácie o kanáli počas prepínania kanálov"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Automaticky skryť informácie o kanále"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6633,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Počet dní, pre ktoré sa má zobraziť EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Dĺžka zobrazenia informácií o kanále"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Rádio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6658,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "Po spustení zobraziť posledný kanál"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimalizované"
+msgid "Background"
+msgstr "Pozadie"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6780,6 +6948,10 @@ msgstr "Kanály nezahrnuté v žiadnej skupine"
 msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanály v"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Synchronizovať skupiny kanálov s backendmi"
 
 msgctxt "#19222"
 msgid "EPG"
@@ -6974,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Nezobrazovať upozornenia typu 'strata pripojenia'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Všetky nahrávky"
+msgid "Group Items"
+msgstr "Zoskupiť položky"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7036,6 +7208,18 @@ msgstr "Vybrať logo"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Nájsť cestu k logu"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Hľadajú sa ikony kanálov"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Všetky kanály"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Popredie"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8129,6 +8313,10 @@ msgctxt "#20220"
 msgid "Override song tags with online information"
 msgstr "Prepísať tagy piesní pomocou online informácií"
 
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Ak je táto voľba zapnutá, akékoľvek informácie, ktoré sa prevezmú pre albumy a umelcov, nahradia všetko, čo máte nastavené v tagoch vašich skladieb, ako napr. žánre, rok, interpreti skladby atď. Je to užitočné v prípade, že máte v tagoch vašich skladieb identifikátory MusicBrainz."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Hudba z Androidu"
@@ -8276,6 +8464,10 @@ msgstr "Vyčistenie kalibrácie"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Tímto zmažete uložené hodnoty kalibrácie pre %s"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "na predvolené hodnoty."
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8609,6 +8801,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "Zúžený režim"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Zobrazovať série TV seriálov v zúženom režime"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "FanArt-y"
@@ -8908,6 +9104,10 @@ msgstr "Film a alternatívny priečinok s titulkami"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Prepisovať ASS/SSA písmo titulkov"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Aktivovať ovládanie myšou a podporu dotykových displejov"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9265,6 +9465,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "zmiešané"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Pozícia titulkov na obrazovke"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Pevné"
@@ -9296,6 +9500,10 @@ msgstr "%d do %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s do %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -10029,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Zmeny"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Skontrolovať aktualizácie"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Naposledy aktualizované %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Prajete si aktivovať tento doplnok?"
@@ -10105,6 +10321,22 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Pokúsiť sa o opätovné pripojenie?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Pomocné doplnky"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Knižnice doplnkov"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Informačné knižnice"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Vizualizačné knižnice"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
 msgstr "Doplnok sa reštartuje"
@@ -10165,6 +10397,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Pozastaviť prehrávanie počas hľadania titulkov"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Špecifikujte, kam sa majú ukladať prevzaté titulky - do rovnakého umiestnenia ako video alebo do iného určeného umiestnenia."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Prebieha vyhľadávanie titulkov..."
@@ -10197,13 +10433,25 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Nie je nainštalovaná žiadna služba s titulkami"
 
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Umiestnenie ukladacieho priestoru titulkov"
+
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Predvolená TV služba"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Zvoľte službu, ktorá bude použitá ako predvolená pre vyhľadanie titulkov pre seriály"
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Predvolená filmová služba"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Zvoľte službu, ktorá bude použitá ako predvolená pre vyhľadanie titulkov pre filmy"
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10217,6 +10465,26 @@ msgctxt "#24122"
 msgid "Update all"
 msgstr "Aktualizovať všetko"
 
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Pozastaviť prehrávanie aktuálneho videa počas hľadania titulkov a pokračovať v prehrávaní, len čo sú titulky k dispozícii."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Nasleduje po tomto videu"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Používateľom určené umiestnenie"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Automaticky prevziať prvé nájdené titulky"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Automaticky prevziať prvé titulky zo zoznamu výsledkov vyhľadávania"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifikácie"
@@ -10228,6 +10496,10 @@ msgstr "Skryť cudzie"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vybrať zo všetkých titulov"
+
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Zobraziť Blu-ray menu"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10244,6 +10516,14 @@ msgstr "Vyberte položku k prehraniu"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Kapitoly: %u - trvanie: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Prehrávanie Blu-ray zlyhalo"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Menu tohto Blu-ray nie je podporované"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10797,10 +11077,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Zakázať joystick, pokiaľ je toto zariadenie prítomné"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Zapnúť systémové klávesy v režime celej obrazovky"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Umiestnenie"
@@ -10981,6 +11257,18 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Použiť obmedzený rozsah farieb (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Zmeniť vzhľad a správanie používateľského rozhrania."
+
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Kategória obsahujúca všetky nastavenia týkajúce sa vzhľadu."
+
+msgctxt "#36103"
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Vyberte vzhľad pre používateľské prostredie. Týmto nastavíte vzhľad a správanie pre Kodi."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Zmena nastavenia konkrétneho vzhľadu. Dostupné možnosti nastavenia sú závislé na používanom vzhľade."
@@ -10993,9 +11281,21 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Zmena farby vybratého vzhľadu."
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "Vyberte písmo zobrazené v používateľskom prostredí. Typy písma sú závislé na použitom vzhľade."
+
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "Zmeniť veľkosť zobrazenia používateľského rozhrania."
+
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
 msgstr "Vyberte úvodné okno, ktoré sa zobrazí pri spustení Kodi."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "Vyberte alebo vypnite zvukovú schému použitú v používateľskom rozhraní."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11005,9 +11305,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Upraviť RSS kanály."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Kategória obsahujúca všetky nastavenia týkajúce sa jazyka a regiónu."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Vyberie jazyk používateľského rozhrania."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Vyberte formáty teploty, času a dátumu. Dostupné možnosti závisia od vybraného jazyka."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Vyberte znakovú sadu, ktorá sa použije na zobrazenie textu v používateľskom rozhraní."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11025,6 +11337,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Vyberte predvolený jazyk titulkov v prípade, ak budú k dispozícii titulky v rôznych jazykoch."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategória obsahujúca nastavenia týkajúce sa toho, ako sa majú zobrazovať zoznamy súborov."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Zobrazovať symbol bodiek (..) v zoznamoch na prechod do nadradeného priečinka."
@@ -11036,6 +11352,18 @@ msgstr "Zobrazovať prípony mediálnych súborov. Napríklad, \"Helenka Vondrá
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Zobraziť tlačidlo Pridať zdroj v koreňovej časti používateľského prostredia."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Zobraziť skryté súbory a priečinky pri výpise zoznamu súborov."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategória obsahujúca všetky nastavenia šetriča obrazovky."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11073,6 +11401,18 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Sekcia, ktorá obsahuje nastavenia týkajúce sa videí a toho, ako sa s nimi má zaobchádzať."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategória obsahujúca nastavenia toho, ako sa má zaobchádzať s knižnicou videí."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Zapnúť knižnicu videí"
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Zobraziť informácie o obsahu pre nevidené médiá vo video knižnici."
@@ -11109,9 +11449,53 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Importovať súbor XML do databázy video knižnice."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategória obsahujúca nastavenia toho, ako sa má zaobchádzať s prehrávaním videa."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Povoliť automatické prehrávanie ďalšieho súboru v zozname."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Upraviť metódu používanú na spracovanie a zobrazenie videa."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Povoliť hardvérové dekódovanie video súborov prostredníctvom VAAPI, používa sa hlavne u grafických kariet spoločnosti Intel a za určitých okolností u AMD grafických kariet."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Povoliť hardvérové dekódovanie video súborov prostredníctvom DXVA2."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Povoliť dekódovanie video súborov prostredníctvom CrystalHD."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Povoliť VDA hardvérové dekódovanie video súborov."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Povoliť OpenMax hardvérové dekódovanie video súborov."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Povoliť VideoToolbox hardvérové dekódovanie video súborov."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Povoliť dekódovanie video súborov pomocou pixel buffer objektov."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Umožniť zmenu obnovovacej frekvencie displeja, aby čo najlepšie zodpovedala snímkovacej frekvencii videa. Toto nastavenie môže spôsobiť plynulejšie prehrávanie videa."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Pozastaviť prehrávanie na krátky čas počas zmeny obnovovacej frekvencie."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11141,6 +11525,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Povoliť prevzorkovanie na vyššie rozlíšenie pomocou VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Enable Teletext when watching a live TV stream."
@@ -11149,9 +11537,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Scale Teletext to 4:3 ratio."
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategória obsahujúca nastavenia toho, ako sa má zaobchádzať so súbormi videa."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Extrahovať z videí informácie ako sú náhľady videa a informácie z metadát ako kodek a pomer strán."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11165,9 +11561,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Zlúči video súbory rozdelené na viac častí, DVD priečinky a priečinky s filmom do jednej položky pri zobrazení mimo knižnice médií."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategória obsahujúca nastavenia toho, ako sa má zaobchádzať s titulkami."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Nastaviť typ písma, ktorý sa má použiť pre titulky."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Nastaviť veľkosť písma, ktorá sa má použiť pre titulky."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Nastaviť štýl písma, ktorý sa má použiť pre titulky."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Nastaviť farbu písma, ktorá sa má použiť pre titulky."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Nastaviť znakovú sadu písma, ktorá sa má použiť pre titulky."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Nahradiť ASS/SSA písma titulkov."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11176,6 +11604,10 @@ msgstr "Set a custom directory for your subtitles. This can be a file share."
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Umiestnenie titulkov na obrazovke."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategória obsahujúca nastavenia toho, ako sa má zaobchádzať s diskami DVD."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11213,6 +11645,10 @@ msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Usporiadať kanály podľa čísla kanálu v backende, ale v Kodi namiesto toho použiť vlastné číslovanie kanálov."
+
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
 msgstr "Use numbering from the backend, instead of configuring them manually over Kodi."
@@ -11228,6 +11664,14 @@ msgstr "Instruct the backend to search for channels (if supported)."
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Delete channel/EPG database and reimport the data from the backend afterwards."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Importovať z backendu EPG dáta na určený počet dní."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Časový rozostup medzi importami EPG dát z backendov."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11245,6 +11689,10 @@ msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Display stream of selected channel in a small box instead of fullscreen."
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Po spustení pokračovať s naposledy pozeraným kanálom."
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Zobrazovať informácie o kvalite signálu v okne s informáciami o použitom kodeku (pokiaľ to podporuje doplnok a backend)."
@@ -11253,6 +11701,26 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Doba trvania okamžitého nahrávania po stlačení tlačidla Nahrávať."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Priorita nahrávania. Vyššie číslo znamená vyššiu prioritu. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Odstrániť nahrávku po zadanom čase. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Spustiť nahrávanie pred skutočným časom začiatku programu. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Ukončiť nahrávanie po skutočnom čase konca programu. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Display a notification when timers are added, finished or removed by the backend."
@@ -11260,6 +11728,14 @@ msgstr "Display a notification when timers are added, finished or removed by the
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Príkaz nebude spustený, ak bude začaté nahrávanie v rámci tejto doby čakania."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Príkaz na spustenie."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11276,6 +11752,10 @@ msgstr "Asks for a pin code to access parental locked channels. Channels can be 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Enter a new pin code to unlock parental locked channels."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Povoliť hudobnú knižnicu"
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11369,6 +11849,14 @@ msgctxt "#36293"
 msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Zvoľte typ písma použitého pri karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Zvoľte veľkosť písma použitého pri karaoke."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
@@ -11433,10 +11921,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Define the webserver port."
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Define the webserver username."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Select between web interfaces installed via the Add-on Manager."
@@ -11448,6 +11932,10 @@ msgstr "Allow programs on this computer to control Kodi via the Web Interface or
 msgctxt "#36338"
 msgid "Allow programs on the network to control Kodi."
 msgstr "Allow programs on the network to control Kodi."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Povoliť AirPlay ochranu heslom"
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11465,6 +11953,14 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Test patterns for display hardware calibration."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Vyberte, ako budú nastavené vlastnosti zvukového výstupu: [Pevný] - výstupné vlastnosti sú vo všetkých prípadoch nastavené na pevne určenú vzorkovaciu frekvenciu a konfiguráciu reproduktorov; [Najlepšia zhoda] - výstupné vlastnosti sú nastavené tak, aby boli zakaždým čo najbližšie vlastnostiam zdrojového signálu; [Optimalizovaný] - vlastnosti výstupu sú nastavené na začiatku prehrávania a nezmenia sa v prípade, že sa zmenili vlastnosti zdroja."
+
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Vyberte počet kanálov podporovaných pripojeným audio zariadením alebo počet reproduktorov v prípade analógového pripojenia. Toto nastavenie nemá vplyv na priechodzí výstup zvuku. Poznámka - SPDIF podporuje iba 2.0 kanály, napriek tomu môže spracovať viackanálový zvukový doprovod, ak sa použije formát podporovaný priechodzím výstupom."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Boost AC3 streams that have been downmixed to 2 channels."
@@ -11477,6 +11973,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Select this option if your receiver is capable of decoding DTS streams."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Vyberte maximálny počet zvukových kanálov/reproduktorov k dispozícii pre dekódovaný zvuk. V prípade použitia optického/koaxiálneho výstupu, táto voľba musí byť nastavená na 2.0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Vyberte pre povolenie možností priechodzieho zvuku, ktoré ovplyvňujú prehrávanie zvuku kódovaného napr. v štandarde Dolby Digital."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11484,6 +11988,10 @@ msgstr "Select this option if your receiver is capable of decoding TrueHD stream
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Select this option if your receiver is capable of decoding DTS-HD streams."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Vyberte, aké zariadenie sa má použiť na prehrávanie kódovaných formátov. To sú akékoľvek z formátov uvedených nižšie pod možnosťami, ktoré majú v názve 'AV prijímač schopný prehrať'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11545,10 +12053,6 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Folder used to save screenshots taken within Kodi."
 
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Specify additional libraries to be included in the debug log."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Define the PIN code used for the master lock."
@@ -11584,6 +12088,10 @@ msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Define locations used for retrieving weather information."
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Vyberte, čo sa má spraviť, keď sa vyberie položka EPG: [Zobraziť kontextovú ponuku] vyvolá kontextovú ponuku, z ktorej môžete vybrať ďalšie akcie; [Prepnúť na kanál] okamžite naladí na súvisiaci kanál; [Zobraziť informácie] zobrazí podrobné informácie vrátane zápletky a ďalších možností; [Nahrať] vytvorí časovač nahrávania pre zvolenú položku."
 
 msgctxt "#36425"
 msgid "Show context menu"
@@ -11641,6 +12149,10 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "Monoscopic - 2D"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "Režim prehrávania u priestorových videí"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ask me"
@@ -11685,6 +12197,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Same as movie"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Vyberte. ako sa má zvuk downmixovať, napríklad z 5.1 na 2.0: [Zapnuté] po downmixe je zachovaný dynamický rozsah pôvodného zdroja zvuku, avšak hlasitosť bude nižšia [Vypnuté] je zachovaná úroveň hlasitosti pôvodného zdroja signálu, avšak dynamický rozsah je zmenšený. Poznámka - Dynamický rozsah je rozdiel medzi najtichším a najhlasnejším zvukom v zdroji zvuku."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoscopic mode of video"
@@ -11712,6 +12228,98 @@ msgstr "Enable hardware decoding of video files."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "Hĺbka 3D titulkov"
+
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Pre obaly a umeleckú grafiku použiť textúry vyššej kvality (potrebuje viac pamäte)"
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmy"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Seriál"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Seriály"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "séria"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "série"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "epizóda"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "epizódy"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "hudobné video"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "hudobné videá"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "sada"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "sady"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videá"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "hudba"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "hudba"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "interpret"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "interpreti"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albumy"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "skladba"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "skladby"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11772,3 +12380,31 @@ msgstr "UPnP Prehrávač"
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr "Želáte si zastaviť prehrávanie na ovládanom zariadení?"
+
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr "Vyberte túto možnosť v prípade, že výstup zvuku podporuje iba viackanálový zvuk vo formáte Dolby Digital 5.1, toto nastavenie umožní, aby bolo možné si vypočuť viackanálový zvuk ako napr. AAC5.1 alebo FLAC5.1 ako 5.1 priestorový zvuk. Poznámka - Neodporúča sa na Pi, keďže táto operácia veľmi zaťažuje procesor."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Konfigurovať nastavenia kodéra zvuku, ako napr. kvalita a úroveň kompresie"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Automaticky"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Neobmedzené"

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -232,10 +232,6 @@ msgstr "Tikkonferma li Tikkopja"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Tikkonferma li Tmexxi"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Tikkonferma li Tħassar"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -4237,6 +4233,10 @@ msgctxt "#16316"
 msgid "Auto"
 msgstr "Awto"
 
+msgctxt "#19017"
+msgid "Recordings"
+msgstr "Recordings"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Li jmiss"
@@ -4244,6 +4244,10 @@ msgstr "Li jmiss"
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Recordings"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Awto"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5960,3 +5964,15 @@ msgstr "Xbox Imqabbda"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Irrekordja"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Programm Televiziv"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Xow Televiżiv"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Awto"

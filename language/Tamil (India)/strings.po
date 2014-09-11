@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -388,10 +388,6 @@ msgstr "கோப்பு நகலெடுத்தலை உறுதிச�
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "கோப்பு நகர்த்தலை உறுதிசெய்"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "கோப்பு நீக்கலை உறுதிசெய்?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2321,9 +2317,29 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "சுருக்கம் நிலை"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "அதிகமாக குறிப்பெழுது..."
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL (http, dav) நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS அழைப்பிற்கான அதிகமாக குறிப்பெழுது"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4777,25 +4793,9 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "இதை மற்றும் vaasikkavum"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Mpeg-2 VDPAU உபயோகிக்கவும்"
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Mpeg-4 VDPAU உபயோகிக்கவும்"
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "VC-1 VDPAU உபயோகிக்கவும்"
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Mpeg-2 VAAPI உபயோகிக்கவும்"
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Mpeg-4 VAAPI உபயோகிக்கவும்"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5697,10 +5697,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "அல்லது சரியான பொருத்தத்திற்கு வாக்கியங்களை பயன்படுத்தவும், உதாரனத்திற்க்கு \"The wizard of Oz\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "இதே போன்ற நிரல்களை தேடுக"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "கிளையன்களிடமிருந்து EPG யை இறக்குமதி செய்கிறது"
@@ -5754,8 +5750,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR பின்னணி %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "தொலைக்காட்சி பதிவகள்"
+msgid "Recordings"
+msgstr "பதிவகள்"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5940,10 +5936,6 @@ msgstr "தொடக்கத்திற்கு செல்"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "முடிவிற்கு செல்லவும்"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "இயல்புநிலை EPG சாளரம்"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6337,10 +6329,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "சேனல்களை மாற்றும் போது சேனல் தகவல் காண்பிக்கவும்"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "தானாக சேனல் தகவல்களை மறைக்கவும்"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "தொலைக்காட்சி"
@@ -6353,9 +6341,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "EPG உள்ள காட்ட தேவைப்படும் நாட்கள்"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "சேனல் தகவல் காலம்"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "வானொலி"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6376,6 +6364,10 @@ msgstr "EPG மீட்டமைக்கப்படுகிறது"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "தொடக்கத்தில் கடந்த சேனலை தொடரவும்"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "பின்னணி"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6668,10 +6660,6 @@ msgstr "'தகவல் இல்லை' சிட்டை காண்பி�
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "'இணைப்பு இயலவில்லை' சிட்டை காண்பிக்கவேண்டாம்."
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* அனைத்து பதிப்புகளும்"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -9637,6 +9625,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "மாற்றத்தின் பதிவு"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "புதுப்பித்தல் எதாவது உள்ளதா என்று பார்"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "இந்த துணை-பயனை இயக்க விரும்புகிறீர்களா?"
@@ -10733,6 +10725,26 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "AirPlay பயனகத்தின் மூலம் தொகுதி கட்டுப்பாட்டை அனுமதிக்கிறது."
 
+msgctxt "#36902"
+msgid "TV show"
+msgstr "தொலைக்காட்சி நிகழ்ச்சி"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "தொலைக்காட்சி நிகழ்ச்சிகள்"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "அத்தியாயம்"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "அத்தியாயங்கள்"
+
 msgctxt "#37022"
 msgid "UPnP Player"
 msgstr "UPnP வாசிப்பான்"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "தானாக"

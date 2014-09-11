@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Обу ҳаво"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "Маркази мултимедиаи xbmc"
+msgstr "Маркази мултимедиаи Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "Тасдиқи нусхабардории файл"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Тасдиқи интиқолдиҳии файл"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Несткунии файлро тасдиқ мекунед?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2401,13 +2397,33 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Сатҳи фишурдасозӣ"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Сабти рӯйдодҳои ботафсил..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Фаъол кардани рамзгузории Dolby Digital"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Воридшавии ботафсил барои китобхонаи SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Воридшавии ботафсил барои китобхонаи CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Воридшавии ботафсил барои китобхонаи CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Воридшавии ботафсил барои китобхонаҳои FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Воридшавии ботафсил барои китобхонаи RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Воридшавии ботафсил барои дархостҳои DBUS"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4985,22 +5001,6 @@ msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
 msgstr "Иҷозат додани рамзкушоии нармафзор бо якҷанд ҷараён"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Истифодаи Mpeg-2 VDPAU"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодеки Mpeg-(1/2) истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад. Кортҳои кӯҳнаи Radeon бо ин имкони фаъолшуда кор намекунанд."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Истифодаи Mpeg-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодеки Mpeg-4 истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад. Баъзе сахтафзори ION ҳангоми истифодаи ин имкон кор намекунанд."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Истифодаи VC-1 VDPAU"
@@ -5008,22 +5008,6 @@ msgstr "Истифодаи VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодекҳои VC-1 истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад. Сахтафзори AMD бо имкони VDPAU нметавонад VC-1-ро рамзкушоӣ кунад."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Истифодаи Mpeg-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодекҳои Mpeg-(1/2) истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад. Баъзе видеоҳои Mpeg-2 метавонанд хатҳои сабзро дар бар гиранд."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Истифодаи Mpeg-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодекҳои Mpeg-4 истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -6017,10 +6001,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "ё барои ёфтани мувофиқати дақиқ ибораҳоро истифода баред, масалан \"сурудҳои Шабнами Сурайё\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Ёфтани барномаҳои монанд"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Воридоти иттилооти EPG аз муштариён"
@@ -6074,8 +6054,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Сервери PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Сабтҳои ТВ"
+msgid "Recordings"
+msgstr "Сабтҳо"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6264,10 +6244,6 @@ msgstr "Гузариш ба аввал"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Гузариш ба поён"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Равзанаи EPG-и пешфарз"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6685,10 +6661,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Намоиш додани иттилооти шабака ҳангоми гузариш ба шабакаҳои дигар"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Пинҳон кардани иттилооти шабака ба таври худкор"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "ТВ"
@@ -6701,9 +6673,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Ҳисоби рӯзҳо барои намоиш дар EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Давомнокии намоиши иттилооти шабака"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Радио"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6726,8 +6698,8 @@ msgid "Continue last channel on startup"
 msgstr "Намоиш додани шабакаи охирин дар оғози кор"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Дар равзана"
+msgid "Background"
+msgstr "Пасзамина"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7040,10 +7012,6 @@ msgstr "Намоиш надодани барчаспҳо бо огоҳии \"Я�
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Намоиш надодани огоҳиҳо бо маълумоти \"Пайвастшавӣ гум шудааст\""
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Ҳамаи сабтҳо"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -10109,6 +10077,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Сабти тағйирот"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Санҷидани навсозиҳо"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Шумо мехоҳед, ки ин барномаи иловагиро фаъол кунед?"
@@ -10905,10 +10877,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Ғайрифаъол кардани ҷойстик ҳангоми фаъол будани ин дастгоҳ"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Фаъол кардани тугмаҳои системавӣ дар экрани пурра"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Ҷойгиршавӣ"
@@ -11625,14 +11593,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Порти сервери вебро ворид кунед."
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Номи корбари сервери вебро ворид кунед."
-
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Таъин кардани парол барои сервери веб."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Интихоби интерфейсҳои веби насбшуда тавассути мудири барномаҳои иловагӣ."
@@ -11788,10 +11748,6 @@ msgstr "Фаъол ва хомӯш кардани қайди ислоҳи хат
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Ҷузвдон барои захира кардани суратҳои экрани гирифташуда ҳангоми истифодаи Kodi."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Китобхонаҳои иловагиеро. ки мехоҳед ба коркарди ислоҳи хтоҳо илова кунед, интихоб намоед."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11969,9 +11925,21 @@ msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Истифодаи текстураи баландсифат барои муқова ва тасвирҳои (ҳофизаи зиёдро истифода мебарад)"
 
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Возеҳии интерфейси графикиро барои кам истифодаи ҳофиза маҳдуд мекунад. Ба сифати пахши видео таъсир намерасонад. Қимати 1080 барои номаҳдуд. Бояд бозоғозӣ карда шавад."
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Барномаи телевизион"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Барномаҳои ТВ"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "эпизод"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "эпизод"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12036,3 +12004,7 @@ msgstr "Шумо мехоҳед, ки пахшро дар дастгоҳи ду�
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Ин имконро интихоб кунед, агар хуруҷи аудио танҳо аудиоро бо якчанд шабака, монанди Dolby Digital 5.1 дастгирӣ кунад. Ин имкон иҷозат медиҳад, то ки аудиои бо якчанд шабака, монанди AAC5.1 ё FLAC5.1 дар садои гирду атрофи 5.1 пахш карда шавад. Тавзеҳ - Барои истифода дар Pi тавсия дода намешавад, зеро ки метавонад CPU-и барзиёдро истифода барад."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Худкор"

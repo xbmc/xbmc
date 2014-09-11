@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Météo"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "Centre multimédia Xbmc"
+msgstr "Centre multimédia Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Confirmer le déplacement du fichier"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Confirmer la suppression du fichier?"
+msgid "Confirm delete"
+msgstr "Confirmer la suppression"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Interface Web"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Encodeurs audio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Slogan"
@@ -848,6 +852,10 @@ msgstr "Plein écran"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Dimensionnement : (%i,%i)->(%i,%i) (Zoom x%2.2f) AR : %2.2f : 1 (Pixels : %2.2f : 1) (VShift : %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Moniteur"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Langue originale du flux"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Langue de l'interface utilisateur"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Agencements du clavier"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Sousmixer l'audio multiplexé en stéréo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Nombre"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Trier par : %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Niveau de compression"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Journalisation bavarde..."
+msgid "Enable component-specific logging"
+msgstr "Activer la journalisation spécifique par composant"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Activer le transcodage « Dolby Digital »"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Spécifier la journalisation spécifique par composant..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Journalisation en clair pour la bibliothèque SMB "
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Journalisation en clair pour la bibliothèque CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Journalisation en clair pour la bibliothèque CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Journalisation en clair pour les bibliothèques FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Journalisation en clair pour la bibliothèque RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Journalisation en clair pour les appels DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Journalisation en clair pour les demandes JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Journalisation en clair pour le composant AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Journalisation en clair pour la bibliothèque AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Journalisation en clair pour les composants UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Journalisation en clair pour la bibliothèque CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2715,7 +2779,7 @@ msgstr "Télécommande"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control Kodi"
-msgstr "Autoriser le contrôle de Kodi par des programmes locaux"
+msgstr "Permettre aux programmes sur ce système de contrôler Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2727,7 +2791,7 @@ msgstr "Plage des port"
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control Kodi"
-msgstr "Autoriser le contrôle de Kodi par des programmes distants"
+msgstr "Permettre aux programmes sur d'autres systèmes de contrôler Kodi"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Niveau de batterie"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Mises à jour automatiques : activées"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Mises à jour automatiques : notifier"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Mises à jour automatiques : jamais"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Météo"
@@ -4135,7 +4211,7 @@ msgstr "Essayer de réveiller les serveurs distants lors de l'accès"
 
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
-msgstr "Réveiller à partir du réseau LAN (%s)"
+msgstr "Réveiller par le réseau (%s)"
 
 msgctxt "#13028"
 msgid "Waiting for network to connect..."
@@ -4143,7 +4219,7 @@ msgstr "En attente de la connexion au réseau..."
 
 msgctxt "#13029"
 msgid "Failed to execute Wake on Lan!"
-msgstr "Échec de Réveiller à partir du réseau LAN! "
+msgstr "Échec lors de l'exécution du Réveil par le réseau! "
 
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
@@ -4279,11 +4355,11 @@ msgstr "Connexions actives détectées!"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control Kodi"
-msgstr "En continuant, vous perdrez peut-être le contrôle de"
+msgstr "En continuant, vous ne pourrez peut-être plus contrôler Kodi."
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "Kodi. Êtes-vous sûr de vouloir arrêter le serveur d'événements?"
+msgstr "Êtes-vous certain de vouloir arrêter le serveur d'événements?"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
@@ -4295,11 +4371,11 @@ msgstr "Si vous utilisez actuellement la télécommande Apple pour"
 
 msgctxt "#13146"
 msgid "Kodi, changing this setting might affect your ability"
-msgstr "contrôler Kodi, changer ce paramètre peut affecter"
+msgstr "contrôler Kodi, changer ce paramètre peut vous"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
-msgstr "ce contrôle. Voulez-vous continuer?"
+msgstr "empêcher de continuer ce contrôle. Voulez-vous continuer?"
 
 msgctxt "#13159"
 msgid "Subnet mask"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Permettre le décodage logiciel multifil"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Utiliser Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Utiliser MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs Mpeg-(1/2). Si elle est désactivée, l'UCT sera utilisée à la place. Les anciennes cartes Radeon on tendance à provoquer des erreurs de segmentation quand elle est activée."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs MPEG-(1/2). Sinon l'UCT sera plutôt utilisée. Les cartes Radeon plus anciennes ont tendance à retourner des erreurs de segmentation lorsque ceci est activé."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Utiliser Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Utiliser MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour le codec Mpeg-4. Si elle est désactivée, l'UCT sera utilisée à la place. Certains matériels ION posent des problèmes si elle activée par défaut."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs MPEG-4. Sinon l'UCT sera plutôt utilisée. Certains matériels ION ont des problèmes avec ceci activé par défaut."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs basés sur VC-1. Si elle est désactivée, l'UCT sera utilisée à la place. Le matériel AMD avec VDPAU ne peut pas décoder VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Utiliser Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Utiliser MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs Mpeg-(1/2). Si elle est désactivée, l'UCT sera utilisée à la place. Certaines vidéos Mpeg-2 peuvent afficher des artefacts verts."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs MPEG-(1/2). Sinon l'UCT sera plutôt utilisée. Certaines vidéos MPEG-2 pourraient afficher des artefacts verts."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Utiliser Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Utiliser MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour le codec Mpeg-4. Si elle est désactivée, l'UCT sera utilisée à la place."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs MPEG-4. Sinon l'UCT sera plutôt utilisée."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5143,7 +5219,7 @@ msgstr "Télécommande Apple"
 
 msgctxt "#13602"
 msgid "Allow start of Kodi using the remote"
-msgstr "Permettre le démarrage de Kodi avec la télécommande"
+msgstr "Permettre le démarrage de Kodi en utilisant la télécommande"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5315,7 +5391,7 @@ msgstr "Les paramètres réseau ont été modifiés"
 
 msgctxt "#14039"
 msgid "Kodi requires to restart to change your"
-msgstr "Kodi doit redémarrer pour changer vos paramètres"
+msgstr "Kodi doit redémarrer pour changer vos paramètres "
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5368,6 +5444,10 @@ msgstr "Format de la date"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filtres d'interface utilisateur"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5608,6 +5688,10 @@ msgstr "Sons de navigation"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Habillage par défaut"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Taille de police plus grande"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6018,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "ou utiliser des phrases pour trouver une correspondance précise, comme « Le magicien d'Oz »."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Trouver des programmes similaires"
+msgid "Find similar"
+msgstr "Trouver idem"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Arrière-plan du numériscope %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Enregistrements télé"
+msgid "Recordings"
+msgstr "Enregistrements"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6349,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Aller à la fin"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Fenêtre du GÉP par défaut"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Icônes de chaînes"
@@ -6417,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Veuillez changer de chaîne."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Aller vers la chaîne"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Saisir le nom du dossier pour l'enregistrement"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Veuillez choisir une chaîne"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6528,14 @@ msgstr "Erreur inattendue inconnue. Ressayer ou consulter le journal pour plus d
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Erreur de l'arrière-plan du numériscope Consulter le journal pour plus de détails."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Supprimer cet enregistrement?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Supprimer tous les enregistrements dans ce dossier?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6640,10 @@ msgstr "Veuillez créer un groupe en premier"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nom du nouveau groupe"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Recherche..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Afficher les informations sur la chaîne lors d'un changement"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Masquer automatiquement les informations sur la chaîne"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "Télé"
@@ -6705,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Jours à afficher dans le GÉP"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Durée d'affichage des informations sur la chaîne"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "Reprendre la dernière chaîne au démarrage"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimisé"
+msgid "Background"
+msgstr "Arrière-plan"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7050,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Ne pas afficher les avertissements « connexion perdue »"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Tous les enregistrements"
+msgid "Group Items"
+msgstr "Éléments groupés"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7208,18 @@ msgstr "Choisir une icône"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Rechercher des icônes"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Recherche d'icônes de chaînes"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Toutes les chaînes"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Premier plan"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7503,7 +7611,7 @@ msgstr "Captures d'écran"
 
 msgctxt "#20009"
 msgid "Use Kodi"
-msgstr "Utiliser Kodi"
+msgstr "Utiliser Kodi "
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8207,7 +8315,7 @@ msgstr "Remplacer les balises des pièces par les informations en ligne"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
-msgstr "Un fois activé, toute information téléchargée pour les albums et les artistes écrasera tout le contenu des balises, tel que genre, année, artiste, etc... Utile si vous avez des identifiants MusicBrainz dans vos balises."
+msgstr "Un fois activé, toute information téléchargée pour les albums et les artistes écrasera tout le contenu des balises, tel que genre, année, artiste, etc. Utile si vous avez des identifiants MusicBrainz dans vos balises."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -9393,6 +9501,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s à %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Externe)"
@@ -10125,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Journal des changements"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Vérifier les mises à jour"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Dernière mise à jour %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Voulez-vous activer cet addiciel?"
@@ -10200,6 +10320,22 @@ msgstr "Addiciel requis"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Tenter la reconnexion ?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Addiciels assistants"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Bibliothèques d'addiciels"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Bibliothèques d'information"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Bibliothèques de visualisation"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10476,14 @@ msgstr "À côté de la vidéo"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Emplacement personnalisé"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Télécharger automatiquement les premiers sous-titres"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Télécharger automatiquement les premiers sous-titres du résultat de recherche"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10643,11 +10787,11 @@ msgstr "Voir le journal des changements"
 
 msgctxt "#33074"
 msgid "This version of %s requires an"
-msgstr "Cette version de %s exige Kodi"
+msgstr "Cette version de %s exige une"
 
 msgctxt "#33075"
 msgid "Kodi revision of %s or greater to run."
-msgstr "%s ou ultérieure pour fonctionner."
+msgstr "révision de Kodi %s ou ultérieure pour fonctionner."
 
 msgctxt "#33076"
 msgid "Please update Kodi."
@@ -10933,10 +11077,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Désactiver le manche à balai quand ce dispositif est présent"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Activer les touches système en plein écran"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Emplacement"
@@ -10987,11 +11127,11 @@ msgstr "Impossible d'ouvrir l'adaptateur"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting Kodi"
-msgstr "Dispositifs à démarrer avec Kodi"
+msgstr "Dispositifs à mettre en marche lors du démarrage de Kodi"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping Kodi"
-msgstr "Dispositifs à éteindre avec Kodi"
+msgstr "Dispositifs à éteindre lors de l'arrêt de Kodi"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11051,7 +11191,7 @@ msgstr "Impossible d'appliquer la nouvelle configuration. Veuillez vérifier vos
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping Kodi"
-msgstr "Envoyer la commande « source inactive » lors de l'arrêt d'Kodi"
+msgstr "Envoyer la commande « source inactive » lors de l'arrêt de Kodi"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11107,7 +11247,7 @@ msgstr "Télé et récepteur audio-vidéo (explicite)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
-msgstr "La version de l'interface libCEC n'est pas prise en charge. %x est inférieur à la version prise en charge par Kodi (%x)"
+msgstr "Version de l'interface libCEC non prise en charge. %x est inférieure à la version prise en charge par Kodi (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11151,7 +11291,7 @@ msgstr "Redimensionner la vue de l'interface utilisateur."
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
-msgstr "Choisir la fenêtre de média que Kodi affiche au démarrage."
+msgstr "Choisir la fenêtre de média affichée par Kodi lors du démarrage."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11207,7 +11347,7 @@ msgstr "Ajouter l'élément (..) dans les listes pour visiter le dossier parent.
 
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
-msgstr "Afficher l'extension des fichiers multimédias. Par exemple, « 02 - La mémoire de l'onde.mp3 » serait simplement affiché « 02 - La mémoire de l'onde »."
+msgstr "Afficher l'extension des fichiers de contenu multimédia. Par exemple, « 02 - La mémoire de l'onde.mp3 » serait simplement affiché « 02 - La mémoire de l'onde »."
 
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
@@ -11235,7 +11375,7 @@ msgstr "Définir le délai d'inactivité requis avant d'afficher l'économiseur 
 
 msgctxt "#36130"
 msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Choisir l'économiseur d'écran. Kodi va forcer l'économiseur d'écran « Dim » quand une lecture en plein écran est mise en pause ou une boîte de dialogue est active."
+msgstr "Choisir l'économiseur d'écran. Kodi va forcer l'économiseur d'écran « Atténuer » quand la lecture en plein écran est mise en pause ou une boîte de dialogue est active."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11295,7 +11435,7 @@ msgstr "Regrouper les films en « Sagas » lors du parcours de la vidéothèque.
 
 msgctxt "#36146"
 msgid "Check for new media files on Kodi startup."
-msgstr "Vérifier les nouveaux fichiers multimédias lors du démarrage de Kodi."
+msgstr "Vérifier les nouveaux fichiers de contenu multimédia lors du démarrage de Kodi."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11395,7 +11535,7 @@ msgstr "Choisir le niveau de zoom pour les vidéos 4:3 affichées sur les écran
 
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
-msgstr "La conversion des niveaux VDPAU Studio permet aux applications avancées, comme Kodi, d'influencer la conversion de l'espace chromatique."
+msgstr "La conversion de niveau studio VDPAU permet aux applications avancées, comme Kodi, d'influencer la conversion de l'espace chromatique."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11519,7 +11659,7 @@ msgstr "Catégorie pour les paramètres généraux des fonctions de numériscope
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
-msgstr "Activer les fonctions de numériscope dans Kodi. Ceci nécessite au moins un addiciel compatible installé."
+msgstr "Activer les fonctions de numériscope dans Kodi. Ceci exige qu'au moins un addiciel numériscope soit installé."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11535,7 +11675,7 @@ msgstr "Utiliser la numérotation de l'arrière-plan au lieu de la configurer ma
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
-msgstr "Ouvrir le gestionnaire de chaînes, ce qui permet de modifier l'ordre des chaînes, leurs noms, icônes, etc..."
+msgstr "Ouvrir le gestionnaire de chaînes, ce qui permet de modifier l'ordre des chaînes, leurs noms, icônes, etc."
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
@@ -11557,17 +11697,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Afficher les informations de programmation au changement des chaînes, comme la série télé actuelle."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Masquer les informations de programmation automatiquement après quelques secondes. Défini ci-dessous."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Fermer les contrôles d'affichage à l'écran au changement de chaînes."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Combien de temps les informations de programmation sont affichées quand le paramètre « Masquer automatiquement » est activé."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11712,6 @@ msgstr "Rechercher les icônes des chaînes manquantes."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Catégorie pour les paramètres du guide électronique de programmation."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Fenêtre à afficher par défaut pour le guide électronique de programmation."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11671,7 +11799,7 @@ msgstr "Catégorie pour les paramètres de gestion de l'énergie du numériscope
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Exécuter la commande de réveil ci-dessous quand Kodi se termine ou se met en veille longue durée. L'horodatage du prochain enregistrement est passé comme paramètre."
+msgstr "Exécuter la commande de réveil ci-dessous quand Kodi s'arrête ou se met en mode veille longue durée. L'horodatage du prochain enregistrement planifié est passé comme paramètre."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11711,11 +11839,11 @@ msgstr "Redemander à nouveau le NIP lors d'une tentative d'accès à une chaîn
 
 msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Catégorie pour tout paramètre spécifique de votre arrière-plan du numériscope, s'il prend en charge ces paramètres dans Kodi."
+msgstr "Catégorie pour tout paramètre spécifique de votre arrière-plan de numériscope, s'il prend en charge le changement de ces paramètres dans Kodi."
 
 msgctxt "#36252"
 msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Cette option vous amènera vers tout paramètre spécifique de votre arrière-plan du numériscope, s'il prend en charge le changement de ces paramètres."
+msgstr "Cette option vous amènera vers tout paramètre spécifique de votre arrière-plan de numériscope, s'il prend en charge le changement de ces paramètres dans Kodi."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11743,7 +11871,7 @@ msgstr "Sélectionner la source d'informations par défaut pour les artistes. Vo
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on Kodi startup."
-msgstr "Vérifier les nouveaux fichiers multimédias et ceux enlevés au démarrage de Kodi."
+msgstr "Vérifier les nouveaux fichiers de contenu multimédia  et ceux enlevés lors du démarrage de Kodi."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11763,7 +11891,7 @@ msgstr "Catégorie contenant des paramètres sur la gestion de la lecture de la 
 
 msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
-msgstr "Kodi lit automatiquement l'élément suivant dans le dossier actuel. Par exemple, dans la vue par fichiers, : un fois qu'un morceau a été lu, Kodi lirait automatiquement la piste suivante dans le même dossier."
+msgstr "Kodi lit automatiquement l'élément suivant dans le dossier actuel. Par exemple, dans la vue par fichiers, un fois qu'un morceau a été lu, Kodi lirait automatiquement la piste suivante dans le même dossier."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
@@ -11771,7 +11899,7 @@ msgstr "Quand des morceaux sont choisis, ils sont mis en attente au lieu d'être
 
 msgctxt "#36267"
 msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "Kodi lira les informations de ReplayGain dans vos fichiers audio avec un programme comme MP3Gain et normalisera les niveaux sonores adéquatement."
+msgstr "Kodi lira les informations de ReplayGain encodées dans vos fichiers audio par un programme comme MP3Gain et normalisera les niveaux sonores adéquatement."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11827,7 +11955,7 @@ msgstr "Utilisé pour formater la deuxième colonne des listes des médiathèque
 
 msgctxt "#36281"
 msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "Kodi cherchera des imagettes sur les emplacements partagés distants et sur les supports optiques. Ceci peut souvent ralentir le listage des dossiers sur le réseau."
+msgstr "Kodi cherchera des imagettes sur les emplacements partagés distants et sur les supports optiques. Ceci peut souvent ralentir le listage des dossiers sur le réseau"
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11927,7 +12055,7 @@ msgstr "Catégorie contenant des paramètres sur la gestion des listes de fichie
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
-msgstr "Si les information EXIF existent (date, heure, appareil-photo utilisé, etc...), elles seront affichées."
+msgstr "Si les information EXIF existent (date, heure, appareil-photo utilisé, etc.), elles seront affichées."
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
@@ -12022,12 +12150,12 @@ msgid "Define the webserver port."
 msgstr "Définir le port du serveur Web."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Définir le nom d'utilisateur du serveur Web."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Définir le nom d'utilisateur du serveur Web. Ceci ne prend effet que lorsque que le nom d'utilisateur et le mot de passe sont définis."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Définir le mot de passe du serveur Web."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Définir le mot de passe du serveur Web. Ceci ne prend effet que lorsque que le nom d'utilisateur et le mot de passe sont définis."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12099,7 +12227,7 @@ msgstr "Si un serveur WINS tourne sur le réseau, saisir son nom de groupe de tr
 
 msgctxt "#36349"
 msgid "Section that contains the System related settings for the device Kodi is installed on."
-msgstr "Catégorie contenant des paramètres en rapport avec le dispositif sur lequel Kodi est installé."
+msgstr "Section contenant les paramètres associés au système pour le dispositif sur lequel Kodi est installé."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -12107,7 +12235,7 @@ msgstr "Envoyer automatiquement un « Réveil par le réseau » au(x) serveur(s)
 
 msgctxt "#36351"
 msgid "Display Kodi in a window, or fullscreen on the selected screen."
-msgstr "Afficher Kodi dans une fenêtre, ou en plein écran sur les écrans sélectionnés."
+msgstr "Afficher Kodi dans une fenêtre ou en plein écran sur les écrans choisis."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12123,7 +12251,7 @@ msgstr "Afficher Kodi dans une fenêtre plein écran. Le principal avantage est 
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
-msgstr "Dans une configuration multi-écrans, les écrans où Kodi n'est pas affichés sont noirs."
+msgstr "Dans une configuration multi-écrans, les écrans où Kodi n'est pas affiché sont noirs."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12211,11 +12339,11 @@ msgstr "Si ceci est activé, les flèches de votre clavier déplaceront la séle
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
-msgstr "Utiliser une souris ou un dispositif à écran tactile pour contrôler Kodi. Note: désactiver ceci vous fera perdre le contrôle de Kodi si aucun clavier ou télécommande n'est présent."
+msgstr "Utiliser une souris ou un dispositif à écran tactile pour contrôler Kodi. Note : le désactiver vous fera perdre le contrôle de Kodi si aucun clavier ou télécommande ne sont présents."
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."
-msgstr "Utiliser un manche à balai pour contrôler Kodi."
+msgstr "Utiliser un manche à balai pour contrôler Kodi. "
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12259,7 +12387,7 @@ msgstr "Éteindre l'affichage si inactif. Utile pour les téléviseurs qui s'ét
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
-msgstr "Définir pendant combien de temps Kodi devrait rester inactif avant de s'éteindre."
+msgstr "Définir pendant combien de temps Kodi devrait rester inactif avant de s'éteindre. "
 
 msgctxt "#36390"
 msgid "Define what action Kodi should do when it has been idle for a long period of time."
@@ -12278,8 +12406,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Dossier utiliser pour enregistrer les captures d'écran prises avec Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Spécifiez les bibliothèques supplémentaires à ajouter aux journaux de débogage."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Activer l'inclusion de messages de journalisation de bibliothèques supplémentaires au journal."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12291,7 +12419,7 @@ msgstr "Définir le NIP utilisé pour le verrou maître."
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock Kodi on startup."
-msgstr "Si ceci est activé, le code verrou maître est exigé pour déverrouiller Kodi au démarrage."
+msgstr "Si ceci est activé, le code verrou maître est exigé pour déverrouiller Kodi lors du démarrage."
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before Kodi is closed down."
@@ -12425,6 +12553,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Définit si le décodage vidéo devrait être effectué par le logiciel (UCT plus en demande) ou par accélération matérielle lorsque possible."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Choisir les agencements de claviers virtuels."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Mode stéréoscopique (actuel)"
@@ -12521,6 +12653,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Choisir comment l'audio est sousmixé, par exemple pour passer de 5.1 à 2.0 : [Activé] maintient l'étendue dynamique de la source audio originale mais le volume sera moins élevé. [Désactivé] maintient le volume de la source audio originale mais l'étendue dynamique est compressée. Note - l'étendue dynamique est la différence entre le son le plus faible et le plus fort dans une source audio."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Spécifier des bibliothèques supplémentaires dont les messages de journalisation doivent être inclus au journal."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Mode stéréoscopique de la vidéo"
@@ -12574,8 +12710,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Utiliser des textures de plus grande qualité pour les illustrations (demande plus de mémoire)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Limiter la résolution de l'interface utilisateur pour économiser de la mémoire. N'affecte pas la lecture vidéo. 1080 = sans limite. Redémarrage nécessaire."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Limite la résolution de l'IUG pour économiser de la mémoire. N'affecte pas la lecture de vidéos. Redémarrage exigé."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12728,94 @@ msgstr "Catégorie contenant des paramètres sur la gestion du service AirPlay."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Catégorie contenant des paramètres sur la gestion de la sortie vidéo."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "films"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Série télé"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Séries télé"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "saison"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "saisons"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "épisode"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "épisodes"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "vidéo musicale"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "vidéos musicales"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "saga"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "sagas"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "vidéo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "vidéos"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "musique"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musique"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artiste"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artistes"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albums"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "morceau"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "morceaux"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12861,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Augmenter la voie centrale lors du sousmixage"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Active les touches systèmes comme imp écran, alt-tab ou les touches de volume lors du plein écran."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Activer les illustrations à plus grande profondeur de couleurs"
@@ -12660,3 +12880,27 @@ msgstr "Désirez-vous arrêter la lecture sur le dispositif distant?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Choisir ceci si les connexions de sortie audio ne prennent en charge que l'audio multiplexé tel que « Dolby Digital 5.1». Ceci permet d'écouter de l'audio multiplexé tel que AAC 5.1 ou Flac 5.1 en son ambiophonique 5.1. Note - n'est pas recommandé sur le Pi car ceci demande beaucoup de puissance UCT."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Configurer les paramètres de l'encodeur audio tels que la qualité et le niveau de compression"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Automatique"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Illimité"

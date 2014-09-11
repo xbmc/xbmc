@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "Clima"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "centro multimedia xbmc"
+msgstr "centro multimedia Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "Confirmar copiar archivo"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Confirmar mover archivo"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Confirmar eliminar archivo?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -1080,6 +1076,10 @@ msgstr "No-Interpolado"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Lenguaje original del flujo"
+
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Idioma de la interfaz de usuario"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -2393,13 +2393,33 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Nivel de compresión"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Registro verbal..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Habilitar transcodificación Dolby Digital"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Registro verboso para la libreria SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Registro verboso para la libreria CURL (http, dav) "
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Registro verboso para la libreria CMYTH "
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Registro verboso para librerias FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Registro verboso para la libreria RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Registro verboso para llamadas DBUS"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4973,22 +4993,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleración por HW (MediaCodec)"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Usar Mpeg-2 VDPAU"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Habilite esta opción para utilizar acceleración por hardware para los codecs Mpeg-(1/2). Si esta deshabilitado, se utilizará en cambio el CPU. Tarjetas Radeon antiguas tienden a arrorjar segfault con esto habilitado."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Usar Mpeg-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Habilite esta opción para utilizar acceleración por hardware para el codec Mpeg-4. Si esta deshabilitado, se utilizará en cambio el CPU. Algunos dispositivos ION tienen problemas con esto habilitado por defecto."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Usar VC-1 VDPAU"
@@ -4996,22 +5000,6 @@ msgstr "Usar VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Habilite esta opción para utilizar acceleración por hardware para los codecs basados en VC-1. Si esta deshabilitado, se utilizará en cambio el CPU. Hardware AMD con VDPAU no puede decodificar VC-1 Simple."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Usar Mpeg-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Habilite esta opción para utilizar acceleración por hardware para los codecs Mpeg-(1/2). Si esta deshabilitado, se utilizará en cambio el CPU. Algunos videos Mpeg-2 podrían presentar artefactos verdes."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Usar Mpeg-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Habilite esta opción para utilizar acceleración por hardware para el codec Mpeg-4. Si esta deshabilitado, se utilizará en cambio el CPU."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -6001,10 +5989,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "o usa frases para encontrar un resultado exacto, como \"El mago de Oz\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Buscar programas similares"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importar EPG desde clientes"
@@ -6058,8 +6042,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Grabaciones de TV"
+msgid "Recordings"
+msgstr "Grabaciones"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6248,10 +6232,6 @@ msgstr "Ir al principio"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Ir al final"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Ventana EPG por Defecto"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6665,10 +6645,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Mostrar la informacion de los canales cuando cambias de canal"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Automaticamente ocultar la informacion de los canales"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6681,9 +6657,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Dias para mostrar en el EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Duración de la información del canal"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6706,8 +6682,8 @@ msgid "Continue last channel on startup"
 msgstr "Continuar con el último canal al inicio"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimizado"
+msgid "Background"
+msgstr "Background"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7024,10 +7000,6 @@ msgstr "NO mostrar etiquetas 'informacion no disponible'"
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "No mostrar advertencias 'conexion perdida'"
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Todas las grabaciones"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -10093,6 +10065,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Changelog"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Check for updates"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Desea activar este Add-on?"
@@ -10284,6 +10260,18 @@ msgstr "Cadena de búsqueda manual"
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Introduzca la cadena de búsqueda"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Actualizar todo"
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Al lado del vídeo"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Ubicación personalizada"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10872,10 +10860,6 @@ msgstr "Habilitar soporte de palanca de mando y control"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Inhabilitar palanca de mando cuando este dispositivo este presente"
-
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Habilitar teclas del sistema en pantalla completa"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11549,10 +11533,6 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Define el puerto del servidor web."
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Define el nombre de usuario del servidor web."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Seleccione entre las interfaces web instaladas a traves del Administrador de Complementos."
@@ -11692,10 +11672,6 @@ msgstr "Apague o prenda el registro de depuracion. Util para solucionar problema
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Carpeta usada para guardar las capturas de pantalla tomadas dentro de Kodi."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Especifique las bibliotecas adicionales que se incluiran en el registro de depuracion."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11861,6 +11837,22 @@ msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Usar texturas de mayor calidad para carátulas y fanart (utiliza más memoria)"
 
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Programa de TV"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Series de TV"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "episodio"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "episodios"
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Visualmente Emparejado)"
@@ -11916,3 +11908,7 @@ msgstr "Reproductor UPnP"
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr "¿Desea detener la reprodución en el dispositivo remoto?"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"

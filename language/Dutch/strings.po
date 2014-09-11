@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Bevestig verplaatsopdracht"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Bevestig verwijderingsopdracht"
+msgid "Confirm delete"
+msgstr "Bevestig verwijderen"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,13 +689,17 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Webinterface"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Audio-encoders"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Slagzin"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Plot"
+msgstr "Plotsamenvatting"
 
 msgctxt "#205"
 msgid "Votes"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Formaat: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Beeldscherm"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Scripts"
@@ -911,7 +919,7 @@ msgstr "Wachten op start..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Uitvoer scripts"
+msgstr "Scripts uitvoer"
 
 msgctxt "#263"
 msgid "Allow control of Kodi via HTTP"
@@ -927,23 +935,23 @@ msgstr "Stop opname"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sorteer: Naam"
+msgstr "Sorteer op: Nummer"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Sorteer: Tijd"
+msgstr "Sorteer op: Tijd"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Sorteer: Titel"
+msgstr "Sorteer op: Titel"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Sorteer: Artiest"
+msgstr "Sorteer op: Artiest"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Sorteer: Album"
+msgstr "Sorteer op: Album"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -1089,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Taal van de gebruikersinterface"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Toetsenbordindelingen"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1119,7 +1131,7 @@ msgstr "Verwijderde nummers markeren"
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Fout tijdens reorganiseren nummers"
+msgstr "Fout tijdens opschonen nummers"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
@@ -1207,7 +1219,7 @@ msgstr "Diverse artiesten"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "DVD afspelen"
+msgstr "Schijf afspelen"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1259,7 +1271,7 @@ msgstr "Zwart"
 
 msgctxt "#354"
 msgid "Matrix trails"
-msgstr "Matrix Sporen"
+msgstr "Matrixsporen"
 
 msgctxt "#355"
 msgid "Screensaver time"
@@ -1271,7 +1283,7 @@ msgstr "Schermbeveiliging mode"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Uitschakel timer functie"
+msgstr "Schakel functie timer uit"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1295,7 +1307,7 @@ msgstr "Doorzichtigheid schermbeveiliging"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Sorteer: Bestand"
+msgstr "Sorteer op: Bestand"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
@@ -1303,15 +1315,15 @@ msgstr "Dolby Digital (AC3) geschikte ontvanger"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Sorteer: Naam"
+msgstr "Sorteer op: Naam"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Sorteer: Jaar"
+msgstr "Sorteer op: Jaar"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Sorteer: Waardering"
+msgstr "Sorteer op: Beoordeling"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1435,11 +1447,11 @@ msgstr "Vernieuwingstijd"
 
 msgctxt "#398"
 msgid "Temperature units"
-msgstr "Temperatuur eenheden"
+msgstr "Temperatuureenheden"
 
 msgctxt "#399"
 msgid "Speed units"
-msgstr "Windsnelheid eenheden"
+msgstr "Windsnelheideenheden"
 
 msgctxt "#400"
 msgid "Weather"
@@ -1479,7 +1491,7 @@ msgstr "Weersverwachting opzoeken"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "Weersverwachting ophalen voor"
+msgstr "Weersverwachting ophalen voor:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
@@ -1543,7 +1555,7 @@ msgstr "Geen CDDB-informatie gevonden."
 
 msgctxt "#427"
 msgid "Disc"
-msgstr "Schijf:"
+msgstr "Schijf"
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
@@ -1551,11 +1563,11 @@ msgstr "Voer de juiste CD/DVD in"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "Voer de volgende CD/DVD in"
+msgstr "Voer de volgende CD/DVD in:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Sorteer: DVD#"
+msgstr "Sorteer op: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1575,11 +1587,11 @@ msgstr "Uit het %s met %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr "Er is geen optisch disk station gedetecteerd"
+msgstr "Er is geen optisch diskstation gedetecteerd"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr "U heeft een optisch disk station nodig om deze video te kunnen afspelen"
+msgstr "U heeft een optisch diskstation nodig om deze video te kunnen afspelen"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1803,7 +1815,7 @@ msgstr "Extensies mediabestanden tonen"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Sorteer: Type"
+msgstr "Sorteer op: Type"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1835,7 +1847,7 @@ msgstr "Media-info van bestanden inlezen..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Sorteer: Gebruik"
+msgstr "Sorteer op: Gebruik"
 
 msgctxt "#510"
 msgid "Enable visualisations"
@@ -1984,6 +1996,10 @@ msgstr "Geen biografie beschikbaar voor deze artiest"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Downmix multikanaals audio naar stereo"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Nummer"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2171,11 +2187,11 @@ msgstr "Herhalen: Alles"
 
 msgctxt "#600"
 msgid "Rip audio CD"
-msgstr "Cd kopiëren"
+msgstr "Cd rippen"
 
 msgctxt "#601"
 msgid "Medium"
-msgstr "Middelmatig"
+msgstr "Gem."
 
 msgctxt "#602"
 msgid "Standard"
@@ -2191,7 +2207,7 @@ msgstr "Constante bitsnelheid"
 
 msgctxt "#605"
 msgid "Ripping..."
-msgstr "Kopiëren..."
+msgstr "Rippen..."
 
 msgctxt "#607"
 msgid "To:"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Compressieniveau"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Uitgebreide logging..."
+msgid "Enable component-specific logging"
+msgstr "Schakel component-specifieke logging in"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Activeer Dolby Digitaal transcodering"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Specificeer component-specifieke logging..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Uitgebreide logging voor SMB bibliotheek"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Uitgebreide logging voor CURL bibliotheek (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Uitgebreide logging voor CMYTH bibliotheek"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Uitgebreide logging voor FFMPEG library"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Uitgebreide logging voor RTMP bibliotheek"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Uitgebreide logging voor DBUS aanroepen"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Uitgebreide logging voor JSON-RPC aanvragen"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "De uitgebreide registratie voor AUDIO component"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Breedsprakige logging voor AirTunes bibliotheek"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Breedsprakige logging voor UPnP componenten"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Breedsprakige logging voor CEC library"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Battery niveau"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Automatische updates: Aan"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Automatische updates: Melding"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Automatische updates: Nooit"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Het weer"
@@ -4279,7 +4355,7 @@ msgstr "Actieve verbindingen gedetecteerd!"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control Kodi"
-msgstr "Als u doorgaat, kunt u Kodi mogelijk niet meer"
+msgstr "Als u doorgaat, kunt u Kodi mogelijk niet meer beheren"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4295,7 +4371,7 @@ msgstr "Als u op dit moment de Apple afstandsbediening gebruikt"
 
 msgctxt "#13146"
 msgid "Kodi, changing this setting might affect your ability"
-msgstr "om Kodi te besturen, kan het veranderen van deze instelling"
+msgstr "Kodi, wijzigen van deze instelling kunnen de mogelijkheden beïnvloeden"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Toestaan van multi-threaded softwaredecodering"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Gebruik Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Gebruik MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor Mpeg-(1/2) codecs. Indien uitgeschakeld zal de CPU worden gebruikt. Oudere Radeon kaarten hebben de neiging tot segfouten wanneer deze is ingeschakeld."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor MPEG-(1/2) codecs. Indien uitgeschakeld zal in plaats daarvan de CPU worden gebruikt. Oudere Radeon kaarten hebben kans op segmentatiefouten met deze optie ingeschakeld."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Gebruik Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Gebruik MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Schakel deze optie in om hardwareversnelling gebruiken voor de MPEG-4 codec. Indien uitgeschakeld zal de CPU worden gebruikt. Sommige ION-hardware heeft problemen met deze optie wanneer deze wordt standaard ingeschakeld."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor de MPEG-4 codec. Indien uitgeschakeld zal in plaats daarvan de CPU worden gebruikt. Sommige ION Hardware heeft problemen met deze optie standaard ingeschakeld."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor VC-1 gebaseerde codecs. Indien uitgeschakeld zal de CPU worden gebruikt. AMD hardware met VDPAU kan niet  VC-1 Simpel decoderen."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Gebruik Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Gebruik MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor Mpeg-(1/2) codecs. Indien uitgeschakeld zal de CPU worden gebruikt. Sommige MPEG-2 video's zouden last kunnen hebben van groene blokjes."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor MPEG-(1/2) codecs. Indien uitgeschakeld zal in plaats daarvan de CPU worden gebruikt. Sommige MPEG-2 video's zouden groene blokjes kunnen hebben."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Gebruik Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Gebruik MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Schakel deze optie in om hardwareversnelling gebruiken voor de MPEG-4 codec. Indien uitgeschakeld zal de CPU worden gebruikt."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Schakel deze optie in om hardwareversnelling te gebruiken voor de MPEG-4 codec. Indien uitgeschakeld zal in plaats daarvan de CPU worden gebruikt."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5369,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Interface-filters"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Scannen op de achtergrond inschakelen"
@@ -5608,6 +5688,10 @@ msgstr "Navigatiegeluiden"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Standaarduiterijk"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Groter lettertype"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6018,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "of gebruik zinnen om op een tekst te zoeken, bijv. \"Toen was geluk heel gewoon\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Zoek soortgelijke programma's"
+msgid "Find similar"
+msgstr "Vind vergelijkbaar"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR server %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV opnames"
+msgid "Recordings"
+msgstr "Opnames"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6349,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Ga naar einde"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Standaard TV gids"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Kanaaliconen"
@@ -6417,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Schakel over naar een ander kanaal"
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Ga naar kanaal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Geef naam van de opname map"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Selecteer a.u.b. een kanaal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6528,14 @@ msgstr "Er is een onverwachte fout opgetreden. Probeer later opnieuw of controle
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR server fout. Controleer het logboek voor meer info."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Deze opname verwijderen?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Alle opnames in deze folder verwijderen?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6640,10 @@ msgstr "Maak er eerst een aan"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Naam nieuwe groep"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Zoeken..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Toon kanaal Informatie bij wisselen kanaal"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Sluit kanaal informatie na wijzigen kanaal"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Weergegeven dagen in de TV gids"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Kanaal informatie sluiten na"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "Hervat laatste kanaal bij opstarten"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Geminimaliseerd"
+msgid "Background"
+msgstr "Achtergrond"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6835,11 +6931,11 @@ msgstr "De PVR server ondersteunt geen timers."
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr "Alle radio kanalen"
+msgstr "Alle radio-zenders"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr "Alle TV kanalen"
+msgstr "Alle TV-zenders"
 
 msgctxt "#19218"
 msgid "Visible"
@@ -6859,7 +6955,7 @@ msgstr "Synchroniseer kanaalgroepen met backend(s)"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr "TV gids"
+msgstr "TV-gids"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
@@ -7015,7 +7111,7 @@ msgstr "Duur ontgrendeling"
 
 msgctxt "#19261"
 msgid "Change PIN"
-msgstr "Verander de PIN code"
+msgstr "Verander de PIN-code"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
@@ -7027,7 +7123,7 @@ msgstr "Vergrendeld kanaal. Voer de PIN code in:"
 
 msgctxt "#19264"
 msgid "Incorrect PIN"
-msgstr "Incorrecte PIN code"
+msgstr "Onjuiste PIN-code"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
@@ -7050,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Toon de waarschuwingen 'verbinding verbroken' niet"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Alle opnames"
+msgid "Group Items"
+msgstr "Groepeer items"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7208,18 @@ msgstr "Kies icoon"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Zoek naar icoon"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Zoeken naar kanaaliconen"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Alle kanalen"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Voorgrond"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9215,7 +9323,7 @@ msgstr "Nieuwe regel..."
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Muziek moet gelijk aan"
+msgstr "Items moeten overeenkomen"
 
 msgctxt "#21425"
 msgid "all of the rules"
@@ -9255,7 +9363,7 @@ msgstr "Naam van de afspeellijst"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Zoek muziek gelijk aan"
+msgstr "Zoek items gelijk aan"
 
 msgctxt "#21435"
 msgid "Edit"
@@ -9392,6 +9500,10 @@ msgstr "%d naar %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s naar %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -10125,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Wijzigingen"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Controleren op updates"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Laats geüpdatet %s "
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Wilt u deze add-on inschakelen?"
@@ -10200,6 +10320,22 @@ msgstr "Vereiste add-on"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Nogmaals proberen te verbinden?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Helper Add-ons"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Add-on bibliotheken"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Informatie bibliotheken"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Visualisatie bibliotheken"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10476,14 @@ msgstr "Naast de video"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Aangepaste locatie"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Automatisch eerste ondertitel downloaden"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Automatisch de eerste ondertitel downloaden van de zoekresultatenlijst"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10933,10 +11077,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Zet joysticks uit wanneer die present zijn"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Activeer systeem knoppen in volledig scherm"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Locatie"
@@ -11011,7 +11151,7 @@ msgstr "Kon de CEC adapter niet initialiseren. Controleer uw instellingen."
 
 msgctxt "#36015"
 msgid "HDMI port number"
-msgstr "HDMI poort nummer"
+msgstr "HDMI-poortnummer"
 
 msgctxt "#36016"
 msgid "Connected"
@@ -11035,7 +11175,7 @@ msgstr "Maak Kodi de actieve bron bij het opstarten"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr "Physiek adres (overschrijft HDMI poort)"
+msgstr "Fysiek adres (overschrijft HDMI poort)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
@@ -11051,7 +11191,7 @@ msgstr "Kon de nieuwe configuratie niet instellen. Controleer de instellingen."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping Kodi"
-msgstr "Verstuur 'inactieve bron' commando bij het stoppen"
+msgstr "Verstuur 'inactieve bron' commando bij het stoppen van Kodi"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11557,17 +11697,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Toon de programmeringsinformatie wanneer kanalen worden verandert, zoals de huidige TV uitzending."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Verberg het programmeringsinformatiescherm automatisch na een aantal seconden, hieronder ingesteld."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "sluit de op beeld scherm knoppen af na verwisselen van kanalen."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Hoe lang de programmeringsinformatie wordt getoond wanneer de 'automatisch verbergen' instelling aanstaat."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11712,6 @@ msgstr "Zoek voor missende kanaaliconen."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Categorie voor elektronische programmering gids instellingen."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Standaard elektronische programmeringsgids scherm te tonen."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11671,7 +11799,7 @@ msgstr "Categorie voor PVR energiebeheer instellingen, zoals wanneer de PVR back
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Voer het \"wakeup commando\" hieronder uit wanneer Kodi stopt of in sluimerstand gaat. Het tijdstip van de volgende geplande opname wordt doorgegeven als parameter."
+msgstr "Voer het \"ontwaak commando\" hieronder uit wanneer Kodi stopt of in sluimerstand gaat. Het tijdstip van de volgende geplande opname wordt doorgegeven als parameter."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11951,15 +12079,15 @@ msgstr "Categorie met instellingen voor de manier waarop diavoorstellingen worde
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
-msgstr "Selecteer de duurtijd per afbeelding tijdens een slideshow."
+msgstr "Selecteer de duurtijd per afbeelding tijdens een diavoorstelling."
 
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
-msgstr "Afbeeldingen in een slideshow worden met 'pan en zoom' afgebeeld."
+msgstr "Afbeeldingen in een diavoorstelling worden met 'pan en zoom' afgebeeld."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Bekijk afbeeldingen in een slideshow in willekeurige volgorde."
+msgstr "Bekijk afbeeldingen in een diavoorstelling in willekeurige volgorde."
 
 msgctxt "#36315"
 msgid "Section that contains weather related settings."
@@ -12022,12 +12150,12 @@ msgid "Define the webserver port."
 msgstr "Definieer de poort voor de webserver."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Definieer de gebruikersnaam voor de webserver."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Definieer de webserver gebruikersnaam. Dit heeft alleen effect wanneer zowel de gebruikersnaam als wel het wachtwoord zijn ingesteld. "
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Definieer het wachtwoord voor de webserver."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Definieer het webserver wachtwoord. Dit heeft alleen effect wanneer zowel de gebruikersnaam als wel het wachtwoord zijn ingesteld."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12278,8 +12406,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "De map die gebruikt moet worden om screenshots van Kodi te bewaren."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Specificeer bijkomende bibliotheken die inbegrepen moeten worden in de foutregistratie."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "staat toe log berichten van overige bibliotheken te worden opgenomen in het log."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12553,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Bepaalt of video-decodering moeten worden uitgevoerd via de software (vereist meer CPU-kracht) of met hardwareversnelling waar mogelijk."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Selecteer virtuele toetsenbord lay-outs."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoscopische modus (huidig)"
@@ -12521,6 +12653,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Selecteer hoe geluid wordt gedownmixed. als voorbeeld van 5.1 naar 2.0: [Geactiveerd] behoudt het dynamische bereik van de originele geluidsbron wanneer er wordt gedownmixed, echter volume zal lager zijn [Gedeactiveerd] behoudt het volumeniveau van de originele geluidsbron echter het dynamische bereik is gecomprimeerd. Opmerking - dynamisch bereik is het verschil tussen de zachtste en hardste geluiden in een geluidsbron."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Specificeer overige bibliotheken wiens log berichten moeten worden opgenomen in het log."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoscopische modus van video"
@@ -12574,8 +12710,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Gebruik hogere kwaliteitstexturen voor covers en fanart (gebruikt meer geheugen)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Limiteert de GUI-resolutie om intern geheugen te besparen. Dit beïnvloedt niet het afspelen van video's. Gebruik 1080p voor een ongelimiteerde GUI. Dit vereist een herstart."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Limiteert de resolutie van de GUI om geheugen te besparen. dit beïnvloed niet het afspelen van video`s."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12728,94 @@ msgstr "Categorie met instellingen voor de manier waarop de AirPlay-dienst wordt
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Categorie die instellingen bevat voor hoe de video output wordt verwerkt."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "films"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Serie"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV-Series"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "seizoen"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "seizoenen"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "Aflevering"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "Afleveringen"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "muziekvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "muziekvideo's"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "set"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "sets"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "video's"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "muziek"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "muziek"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artiest"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artiesten"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albums"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "lied"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "liedjes"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12861,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Boost middenkanaal bij downmixen"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Activeer systeemknoppen zoals PrintScreen, Alt-Tab en volumeknoppen bij volledig scherm."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Activeer een hogere kleurdiepte voor artwork"
@@ -12651,7 +12871,7 @@ msgstr "Stel GUI resolutielimiet in"
 
 msgctxt "#37022"
 msgid "UPnP Player"
-msgstr "UPnP speler"
+msgstr "UPnP-speler"
 
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
@@ -12660,3 +12880,27 @@ msgstr "Wilt u het afspelen stoppen op het externe apparaat?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Selecteer deze optie als de audio-out-aansluiting alleen multikanaals audio ondersteunt zoals Dolby Digital 5.1, dit maakt multikanaals audio zoals AAC5.1 of FLAC5.1 te beluisteren in 5.1 surround sound. PS - Niet aanbevolen op de Raspberry-Pi omdat dit veel rekenkracht vergt van de CPU."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Configureer audio encoderinstellingen, zoals de kwaliteit en het compressieniveau"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Onbeperkt"

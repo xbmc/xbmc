@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Confirm file move"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Confirm file delete?"
+msgid "Confirm delete"
+msgstr "Confirm delete"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Web interface"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Audio encoders"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Tagline"
@@ -848,6 +852,10 @@ msgstr "Full screen"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "Original stream's language"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "User interface language"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Keyboard layouts"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Downmix multichannel audio to stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Number"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Sort by: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Compression level"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Verbose logging..."
+msgid "Enable component-specific logging"
+msgstr "Enable component-specific logging"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Enable Dolby Digital transcoding"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Specify component-specific logging..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Verbose logging for SMB library"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Verbose logging for CURL library (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Verbose logging for CMYTH library"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Verbose logging for FFMPEG libraries"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Verbose logging for RTMP library"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Verbose logging for DBUS calls"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Verbose logging for JSON-RPC requests"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Verbose logging for AUDIO component"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Verbose logging for AirTunes library"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Verbose logging for UPnP components"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Verbose logging for CEC library"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Battery level"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Auto updates: On"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Auto updates: Notify"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Auto updates: Never"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Weather"
@@ -4933,6 +5009,10 @@ msgctxt "#13427"
 msgid "Allow hardware acceleration (DXVA2)"
 msgstr "Allow hardware acceleration (DXVA2)"
 
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Allow hardware acceleration (CrystalHD)"
+
 msgctxt "#13429"
 msgid "Allow hardware acceleration (VDADecoder)"
 msgstr "Allow hardware acceleration (VDADecoder)"
@@ -4982,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Allow multi threaded software decoding"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
 msgstr "Use MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon cards tend to segfault with this enabled."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
 msgstr "Use MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION hardware has problems with this being enabled by default."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5006,19 +5086,19 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD hardware with VDPAU cannot decode VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
 msgstr "Use MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 videos might have green artifacts."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
 msgstr "Use MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
 msgstr "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
 
 msgctxt "#13451"
@@ -5040,6 +5120,18 @@ msgstr "Software"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Hardware accelerated"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Prefer VAAPI render method"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Allow hardware acceleration (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Use OMXPlayer for decoding of video files."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5365,6 +5457,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI filters"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Use background scanning"
@@ -5604,6 +5700,10 @@ msgstr "Navigation sounds"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skin default"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Larger font size"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5981,6 +6081,18 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -6014,8 +6126,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "or use phrases to find an exact match, like \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Find similar programs"
+msgid "Find similar"
+msgstr "Find similar"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6070,8 +6182,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV recordings"
+msgid "Recordings"
+msgstr "Recordings"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6261,10 +6373,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Go to end"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Default EPG window"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Channel icons"
@@ -6413,9 +6521,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Please switch to another channel."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Go to channel"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Enter the name of the folder for the recording"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Please select a channel"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6436,6 +6552,14 @@ msgstr "An unexpected error occurred. Try again later or check the log for detai
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR backend error. Check the log for details."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Delete this recording?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Delete all recordings in this folder?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6540,6 +6664,10 @@ msgstr "Please create a group first"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Name of the new group"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Search..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6685,10 +6813,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Show channel information when switching channels"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Automatically hide channel information"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6701,9 +6825,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Days to display in the EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Channel information duration"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6726,8 +6850,8 @@ msgid "Continue last channel on startup"
 msgstr "Continue last channel on startup"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimized"
+msgid "Background"
+msgstr "Background"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7046,8 +7170,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Do not show 'connection lost' warnings"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* All recordings"
+msgid "Group Items"
+msgstr "Group Items"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7108,6 +7232,18 @@ msgstr "Choose icon"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Browse for icon"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Searching for channel icons"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "All channels"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Foreground"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9389,6 +9525,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s to %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(External)"
@@ -10121,6 +10261,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Changelog"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Check for updates"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Last updated %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Would you like to enable this Add-on?"
@@ -10196,6 +10344,22 @@ msgstr "Add-on Required"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Try to reconnect?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Helper Add-ons"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Add-on libraries"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Information libraries"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Visualization libraries"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10336,6 +10500,14 @@ msgstr "Next to the video"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Custom location"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Auto download first subtitle"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Automatically download first subtitle from the search result list"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10929,10 +11101,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Disable joystick when this device is present"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Enable system keys in fullscreen"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Location"
@@ -11337,6 +11505,10 @@ msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr "Enable DXVA2 hardware decoding of video files."
 
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Enable CrystalHD decoding of video files."
+
 msgctxt "#36160"
 msgid "Enable VDA hardware decoding of video files."
 msgstr "Enable VDA hardware decoding of video files."
@@ -11549,17 +11721,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Display programming information when changing channels, such as the current TV show."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Hide the programming information automatically after a few seconds, defined below."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Close the on screen display controls after switching channels."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "How long the programming information is displayed when the 'automatically hide' setting is turned on."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11572,10 +11736,6 @@ msgstr "Scan for missing channel icons."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Category for electronic programming guide settings."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Default electronic programming guide window to show."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12014,12 +12174,12 @@ msgid "Define the webserver port."
 msgstr "Define the webserver port."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Define the webserver username."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Define the webserver username. This only takes effect when both the username and the password are set."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Define the webserver password."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Define the webserver password. This only takes effect when both the username and the password are set."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12270,8 +12430,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Folder used to save screenshots taken within Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Specify additional libraries to be included in the debug log."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Enables log messages from additional libraries to be included in the log."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12417,6 +12577,14 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Select virtual keyboard layouts."
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoscopic mode (current)"
@@ -12513,6 +12681,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Specify additional libraries whose log messages are to be included in the log."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoscopic mode of video"
@@ -12566,8 +12738,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Use higher quality textures for covers and fanart (uses more memory)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12584,6 +12756,94 @@ msgstr "Category containing settings for how the AirPlay service is handled."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Category containing settings for how video output is handled."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "movie"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "movies"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV show"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV shows"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "season"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "seasons"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "episode"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "episodes"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "musicvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "musicvideos"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "set"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "sets"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videos"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "music"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "music"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artist"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artists"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albums"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "song"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "songs"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12629,10 +12889,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Boost center channel when downmixing"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Enable higher color depth artwork"
@@ -12652,3 +12908,27 @@ msgstr "Do you wish to stop playback on the remote device?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Configure audio encoder settings such as quality and compression level"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Unlimited"

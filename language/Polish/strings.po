@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -295,11 +295,11 @@ msgstr "Zmienny"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "Widok: Auto"
+msgstr "Widok: Automatyczny"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Widok: Auto szeroki"
+msgstr "Widok: Szeroki"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -375,7 +375,7 @@ msgstr "Usuń"
 
 msgctxt "#118"
 msgid "Rename"
-msgstr "Zmień nazwę"
+msgstr "Przemianuj"
 
 msgctxt "#119"
 msgid "New folder"
@@ -390,7 +390,7 @@ msgid "Confirm file move"
 msgstr "Potwierdź przenoszenie pliku"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
+msgid "Confirm delete"
 msgstr "Czy rzeczywiście chcesz usunąć plik?"
 
 msgctxt "#123"
@@ -467,7 +467,7 @@ msgstr "Procesor:"
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "Procesor graficzny:"
+msgstr "Procesor grafiki:"
 
 msgctxt "#142"
 msgid "Time:"
@@ -535,7 +535,7 @@ msgstr "Wideo"
 
 msgctxt "#158"
 msgid "Free memory"
-msgstr "Wolnej pamięci"
+msgstr "Wolna pamięć"
 
 msgctxt "#159"
 msgid "No link"
@@ -587,7 +587,7 @@ msgstr "Dopasuj częstotliwość odświeżania do materiału"
 
 msgctxt "#171"
 msgid "Sort title"
-msgstr "Sortuj tytuł"
+msgstr "Tytuł sortowania"
 
 msgctxt "#172"
 msgid "Release date"
@@ -687,7 +687,11 @@ msgstr "Wczytywanie informacji o filmie"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Interfejs WWW"
+msgstr "Interfejs webowy"
+
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Koder Audio:"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Rozmiar: (%i,%i)->(%i,%i) (Powiększenie x%2.2f) AR:%2.2f:1 (Piksele: %2.2f:1)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Skrypty"
@@ -879,7 +887,7 @@ msgstr "Liczba kanałów"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "Wspiera format DTS"
+msgstr "Odbiornik wspiera DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -915,7 +923,7 @@ msgstr "Monitor skryptów"
 
 msgctxt "#263"
 msgid "Allow control of Kodi via HTTP"
-msgstr "Zezwalaj na sterowanie Kodi przez HTTP"
+msgstr "Zezwalaj na sterowanie Kodi przez HTTP "
 
 msgctxt "#264"
 msgid "Record"
@@ -975,7 +983,7 @@ msgstr "Przesuń linię, aby zmieniać pozycję napisów"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "Zmień prostokąt w idealny kwadrat"
+msgstr "Zmieniaj prostokąt w idealny kwadrat"
 
 msgctxt "#279"
 msgid "Unable to load settings"
@@ -1055,15 +1063,15 @@ msgstr "Zakładki"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "Wspiera format MP1"
+msgstr "Odbiornik wspiera MP1"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "Wspiera format MP2"
+msgstr "Odbiornik wspiera MP2"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "Wspiera format MP3"
+msgstr "Odbiornik wspiera MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1089,9 +1097,13 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Język interfejsu"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Układ klawiatury"
+
 msgctxt "#312"
 msgid "(0=auto)"
-msgstr "(0=auto)"
+msgstr "(0=automatycznie)"
 
 msgctxt "#313"
 msgid "Cleaning database"
@@ -1231,7 +1243,7 @@ msgstr "Normalizuj poziomy przy miksowaniu"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "Wspiera format DTS-HD"
+msgstr "Odbiornik wspiera DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
@@ -1239,7 +1251,7 @@ msgstr "Dekoduj na zewnętrznym urządzeniu"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "Wspiera format TrueHD"
+msgstr "Odbiornik wspiera TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1287,7 +1299,7 @@ msgstr "Wygaszacz ekranu"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "z podfolderami"
+msgstr "Uwzględniaj podfoldery"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -1299,7 +1311,7 @@ msgstr "Sortuj: Plik"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "Wspiera format Dolby Digital (AC3)"
+msgstr "Odbiornik wspiera Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1427,7 +1439,7 @@ msgstr "zamglenie"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Wybierz lokację"
+msgstr "Wybierz lokalizację"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1567,7 +1579,7 @@ msgstr "Usuń film z biblioteki"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "Jesteś pewny, że chcesz usunąć '%s'?"
+msgstr "Na pewno chcesz usunąć '%s'?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -1623,11 +1635,11 @@ msgstr "DVD"
 
 msgctxt "#447"
 msgid "Autorun media"
-msgstr "Odtwarzanie automatyczne"
+msgstr "Odtwarzaj automatycznie"
 
 msgctxt "#448"
 msgid "Dolby Digital Plus (E-AC3) capable receiver"
-msgstr "Wspiera format Dolby Digital Plus (E-AC3)"
+msgstr "Odbiornik wspiera Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Miksuj dźwięk wielokanałowy do stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Numer"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Sortuj: %s"
@@ -2159,11 +2175,11 @@ msgstr "Nieaktywne"
 
 msgctxt "#595"
 msgid "Repeat: Off"
-msgstr "Powtórz: Nic"
+msgstr "Powtórz: Wyłączone"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "Powtórz: Jeden"
+msgstr "Powtórz: Raz"
 
 msgctxt "#597"
 msgid "Repeat: All"
@@ -2187,7 +2203,7 @@ msgstr "Najwyższa"
 
 msgctxt "#604"
 msgid "Constant bitrate"
-msgstr "Stały bitrate"
+msgstr "Stała przepływność"
 
 msgctxt "#605"
 msgid "Ripping..."
@@ -2239,7 +2255,7 @@ msgstr "Jakość"
 
 msgctxt "#623"
 msgid "Bitrate"
-msgstr "Bitrate"
+msgstr "Przepływność"
 
 msgctxt "#624"
 msgid "Include track number"
@@ -2355,7 +2371,7 @@ msgstr "Aktualizuj bibliotekę"
 
 msgctxt "#654"
 msgid "Show debug info"
-msgstr "Pokazuj komunikaty diagnozowania"
+msgstr "Pokazuj informacje diagnostyczne"
 
 msgctxt "#655"
 msgid "Browse for executable"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Poziom kompresji"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Szczegółowa diagnostyka..."
+msgid "Enable component-specific logging"
+msgstr "Rejestruj komunikaty diagnostyczne komponentów"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Transkoduj do Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Wybierz komponenty..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Rejestruj komunikaty biblioteki SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Rejestruj komunikaty biblioteki CURL (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Rejestruj komunikaty biblioteki CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Rejestruj komunikaty bibliotek FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Rejestruj komunikaty biblioteki RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Rejestruj komunikaty wywołań DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Rejestruj komunikaty wywołań JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Rejestruj komunikaty komponentu AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Rejestruj komunikaty biblioteki AirTunes "
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Rejestruj komunikaty komponentów UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Rejestruj komunikaty biblioteki CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2599,7 +2663,7 @@ msgstr "Edytuj głębokość ścieżki"
 
 msgctxt "#759"
 msgid "View: Big list"
-msgstr "Widok: Duża lista"
+msgstr "Widok: Lista szeroka"
 
 msgctxt "#760"
 msgid "Yellow"
@@ -2791,7 +2855,7 @@ msgstr "Nieudane połączenie"
 
 msgctxt "#1002"
 msgid "Kodi was unable to connect to the network location."
-msgstr "Kodi nie mógł nawiązać połączenia sieciowego."
+msgstr "Kodi nie mógł nawiązać połączenia z lokalizacją sieciową."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -2807,7 +2871,7 @@ msgstr "Adres IP"
 
 msgctxt "#1007"
 msgid "Add network location"
-msgstr "Dodaj lokację siecową"
+msgstr "Dodaj lokalizację sieciową"
 
 msgctxt "#1008"
 msgid "Protocol"
@@ -2863,7 +2927,7 @@ msgstr "Dodaj źródło %s"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "Wybierz ścieżki lub przeglądaj lokacje mediów."
+msgstr "Wprowadź ścieżki lub przeglądaj lokalizacje mediów."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
@@ -2871,7 +2935,7 @@ msgstr "Wprowadź nazwę dla tego źródła mediów."
 
 msgctxt "#1023"
 msgid "Browse for new share"
-msgstr "Wskaż nowy udziały"
+msgstr "Wskaż nowy udział"
 
 msgctxt "#1024"
 msgid "Browse"
@@ -2907,7 +2971,7 @@ msgstr "Wybierz folder obrazów"
 
 msgctxt "#1032"
 msgid "Add network location..."
-msgstr "Dodaj lokację sieciową..."
+msgstr "Dodaj lokalizację sieciową..."
 
 msgctxt "#1033"
 msgid "Browse for file"
@@ -2959,7 +3023,7 @@ msgstr "Ustaw miniaturę wtyczki"
 
 msgctxt "#1045"
 msgid "Add-on settings"
-msgstr "Ustawienia wtyczki"
+msgstr "Ustawienia dodatku"
 
 msgctxt "#1046"
 msgid "Access points"
@@ -3199,7 +3263,7 @@ msgstr "burze"
 
 msgctxt "#1402"
 msgid "Thunder"
-msgstr "pioruny"
+msgstr "wyładowania atmosferyczne "
 
 msgctxt "#1403"
 msgid "Sun"
@@ -3259,7 +3323,7 @@ msgstr "mgliście"
 
 msgctxt "#1417"
 msgid "Grains"
-msgstr "granulki"
+msgstr "śnieg ziarnisty"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
@@ -3291,7 +3355,7 @@ msgstr "pochmurnie"
 
 msgctxt "#1425"
 msgid "Pellets"
-msgstr "Grudki"
+msgstr "śnieg ziarnisty"
 
 msgctxt "#1426"
 msgid "Hail"
@@ -3503,7 +3567,7 @@ msgstr "Przeglądarka"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr "Wwideo"
+msgstr "Wideo"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3519,7 +3583,7 @@ msgstr "Ustawienia - Profile"
 
 msgctxt "#10035"
 msgid "Reset"
-msgstr "Resetuj"
+msgstr "Wyczyść"
 
 msgctxt "#10036"
 msgid "Basic"
@@ -3539,7 +3603,7 @@ msgstr "Ekspercki"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Przeglądarka wtyczek"
+msgstr "Menedżer dodatków"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -3623,11 +3687,11 @@ msgstr "Obrazy/Informacje"
 
 msgctxt "#10140"
 msgid "Add-on settings"
-msgstr "Ustawienia wtyczki"
+msgstr "Ustawienia dodatku"
 
 msgctxt "#10146"
 msgid "Add-ons/Info"
-msgstr "Wtyczki/Informacje"
+msgstr "Dodatki/Informacje"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3719,7 +3783,7 @@ msgstr "Informacje o filmie"
 
 msgctxt "#12000"
 msgid "Select dialogue"
-msgstr "Okno dialogowe wyboru"
+msgstr "Okno dialogowe Wybierz"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -3743,7 +3807,7 @@ msgstr "Tryb pełnoekranowy"
 
 msgctxt "#12006"
 msgid "Audio visualisation"
-msgstr "Wizualizacja audio"
+msgstr "Wizualizacja dźwięku"
 
 msgctxt "#12008"
 msgid "File stacking dialogue"
@@ -3859,7 +3923,7 @@ msgstr "Odblokuj"
 
 msgctxt "#12334"
 msgid "Reset lock"
-msgstr "Resetuj blokady"
+msgstr "Wyczyść blokady"
 
 msgctxt "#12335"
 msgid "Remove lock"
@@ -3923,7 +3987,7 @@ msgstr "Przetwarzanie %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr "Bufor grafik w Twojej bibliotece wideo wymaga aktualizacji."
+msgstr "Bufor grafik w bibliotece wideo wymaga aktualizacji."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4024,6 +4088,18 @@ msgstr "Całkowity czas pracy"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Poziom baterii"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Auto aktualizacja: Włączona"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Auto aktualizacja: Powiadamiaj"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Auto aktualizacja: Wyłączona"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -4231,7 +4307,7 @@ msgstr "Zawsze aktywne"
 
 msgctxt "#13116"
 msgid "Upscaling method"
-msgstr "Metody skalowania"
+msgstr "Metoda skalowania"
 
 msgctxt "#13117"
 msgid "Bicubic"
@@ -4255,7 +4331,7 @@ msgstr "VDPAU poziom skalowania HQ"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
-msgstr "Korekcja poziomu kolorów VDPAU (YCbCr i RGB)"
+msgstr "Korekcja poziomu kolorów VDPAU"
 
 msgctxt "#13123"
 msgid "Keep skin?"
@@ -4279,7 +4355,7 @@ msgstr "Wykryto aktywne połączenie!"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control Kodi"
-msgstr "Kontynuując możesz stracić możliwość sterowania Kodi."
+msgstr "Kontynuując możesz stracić możliwość sterowania Kodi"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4295,7 +4371,7 @@ msgstr "Jeżeli aktualnie używasz pilota Apple do sterowania"
 
 msgctxt "#13146"
 msgid "Kodi, changing this setting might affect your ability"
-msgstr "ustawień może doprowadzić do braku możliwości"
+msgstr "zmiana ustawień może mieć wpływ na poprawność działania"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4559,7 +4635,7 @@ msgstr "Rozpocznij pokaz slajdów"
 
 msgctxt "#13318"
 msgid "Recursive slideshow"
-msgstr "uwzględniając podfoldery"
+msgstr "Uwzględniaj podfoldery"
 
 msgctxt "#13319"
 msgid "Randomise"
@@ -4623,7 +4699,7 @@ msgstr "Przesuń na dół"
 
 msgctxt "#13334"
 msgid "Edit label"
-msgstr "Zmień etykietę"
+msgstr "Modyfikuj etykietę"
 
 msgctxt "#13335"
 msgid "Make default"
@@ -4691,7 +4767,7 @@ msgstr "Zatrzymaj skanowanie"
 
 msgctxt "#13354"
 msgid "Render method"
-msgstr "Metody renderowania"
+msgstr "Metoda renderowania"
 
 msgctxt "#13355"
 msgid "Low quality pixel shader"
@@ -4775,7 +4851,7 @@ msgstr "Szablon nazewnictwa utworu - prawa strona"
 
 msgctxt "#13388"
 msgid "Preset"
-msgstr "Predefiniowane ustawienia"
+msgstr "Zdefiniowane ustawienia"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualisation"
@@ -4783,7 +4859,7 @@ msgstr "Brak predefiniowanych ustawień\ndla tej wizualizacji"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualisation"
-msgstr "Nie ma dostępnych opcji \ndla tej wizualizacji"
+msgstr "Brak dostępnych opcji \ndla tej wizualizacji"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4851,7 +4927,7 @@ msgstr "Informacje o obrazie"
 
 msgctxt "#13407"
 msgid "%s presets"
-msgstr "%s predefiniowane ustawienia"
+msgstr "%s zdefiniowane ustawienia"
 
 msgctxt "#13408"
 msgid "(IMDb user rating)"
@@ -4986,19 +5062,19 @@ msgid "Allow multi threaded software decoding"
 msgstr "Dopuszczaj wielowątkowe dekodowanie programowe"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
 msgstr "Używaj VDPAU dla MPEG-2"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-(1/2), w przeciwnym przypadku do dekodowania zostanie użyty procesor. Na starszych kartach z serii Radeon, w przypadku zaznaczenia tej opcji, mogą wystąpić poważne błędy."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-(1/2), w przeciwnym przypadku do dekodowania zostanie użyty procesor. Na starszych kartach z serii Radeon mogą wystąpić poważne błędy, w przypadku zaznaczenia tej opcji."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
 msgstr "Używaj VDPAU dla MPEG-4"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
 msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-4, w przeciwnym przypadku do dekodowania zostanie użyty procesor. Podczas dekodowania na platformie ION  mogą wystąpić problemy."
 
 msgctxt "#13445"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania VC-1, w przeciwnym przypadku do dekodowania zostanie użyty procesor. Platforma AMD nie potrafi dekodować wideo VC-1 o profilu Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
 msgstr "Używaj VAAPI dla MPEG-2"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
 msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-(1/2), w przeciwnym przypadku do dekodowania zostanie użyty procesor. Podczas odtwarzania niektórych plików wideo MPEG-2 mogą pojawić się zielone artefakty."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
 msgstr "Używaj VAAPI dla MPEG-4"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-4, w przeciwnym przypadku do dekodowania zostanie użyty procesor."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania MPEG-4, w przeciwnym przypadku do dekodowania zostanie użyty procesor"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5045,9 +5121,21 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Sprzętowa akceleracja"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Preferuj metodę renderowania VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Dopuszczaj sprzętową akcelerację (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania odtwarzacza OMXPLayer."
+
 msgctxt "#13500"
 msgid "A/V sync method"
-msgstr "Metoda synchronizacji A/V"
+msgstr "Metoda synchronizacji"
 
 msgctxt "#13501"
 msgid "Audio clock"
@@ -5231,7 +5319,7 @@ msgstr "Miniatury, jeżeli nie ma plików"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
-msgstr "Przynajmniej jeden plik i ikona"
+msgstr "Przynajmniej jeden plik i miniatura"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
@@ -5315,7 +5403,7 @@ msgstr "Zmieniono ustawienia sieci"
 
 msgctxt "#14039"
 msgid "Kodi requires to restart to change your"
-msgstr "Wprowadzone zmiany w konfiguracji sieci wymagają"
+msgstr "Wprowadzone zmiany w konfiguracji wymagają"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5368,6 +5456,10 @@ msgstr "Format czasu"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filtry interfejsu użytkownika"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5491,7 +5583,7 @@ msgstr "DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
-msgstr "Odtwarzaj dyski DVD automatycznie."
+msgstr "Odtwarzaj dyski DVD automatycznie"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
@@ -5499,7 +5591,7 @@ msgstr "Czcionka"
 
 msgctxt "#14090"
 msgid "International"
-msgstr "Język"
+msgstr "Regionalne"
 
 msgctxt "#14091"
 msgid "Character set"
@@ -5609,6 +5701,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Domyślne"
 
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Większa czcionka"
+
 msgctxt "#15111"
 msgid "Theme"
 msgstr "Motyw"
@@ -5631,11 +5727,11 @@ msgstr "Niepołączony"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Użyj do odtwarzania..."
+msgstr "Odtwórz używając…"
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronisation"
-msgstr "Użyj płynniejszej synchronizacji A/V"
+msgstr "Używaj płynnej synchronizacji A/V"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5731,11 +5827,11 @@ msgstr "Brak"
 
 msgctxt "#16019"
 msgid "Auto select"
-msgstr "Auto wybór"
+msgstr "Automatycznie"
 
 msgctxt "#16020"
 msgid "De-interlace"
-msgstr "Usuwaj przeplot"
+msgstr "Usuwanie przeplotu"
 
 msgctxt "#16021"
 msgid "Bob"
@@ -5795,11 +5891,11 @@ msgstr "Lista odtwarzania Trybu Imprezy"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "Usuwaj przeplot (półobrazy)"
+msgstr "Usuwanie przeplotu (półobrazy)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr "Usuń przeplot z wideo"
+msgstr "Usuwaj przeplot z wideo"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
@@ -5807,11 +5903,11 @@ msgstr "Metoda usuwania przeplotu"
 
 msgctxt "#16039"
 msgid "Off"
-msgstr "Nieakwyne"
+msgstr "Nieaktywne"
 
 msgctxt "#16040"
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatycznie"
 
 msgctxt "#16041"
 msgid "On"
@@ -5847,7 +5943,7 @@ msgstr "Zarządzaj..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
-msgstr "Edycja sortowania"
+msgstr "Edytuj tytuł sortowania"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5879,7 +5975,7 @@ msgstr "Nieudane usuwanie co najmniej jednego pliku"
 
 msgctxt "#16300"
 msgid "Video scaling method"
-msgstr "Metody skalowania wideo"
+msgstr "Metoda skalowania wideo"
 
 msgctxt "#16301"
 msgid "Nearest neighbour"
@@ -5919,11 +6015,11 @@ msgstr "Sinc (programowo)"
 
 msgctxt "#16310"
 msgid "Temporal"
-msgstr "Czasowo"
+msgstr "Temporal"
 
 msgctxt "#16311"
 msgid "Temporal/Spatial"
-msgstr "czasowy/przestrzenny"
+msgstr "Temporal/Spatial"
 
 msgctxt "#16312"
 msgid "(VDPAU)Noise Reduction"
@@ -5935,15 +6031,15 @@ msgstr "(VDPAU)Ostrość"
 
 msgctxt "#16314"
 msgid "Inverse Telecine"
-msgstr "Odwrócone Telecine"
+msgstr "Inverse Telecine"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
-msgstr "Lanczos3 (zoptymalizowany)"
+msgstr "Lanczos3 zoptymalizowany"
 
 msgctxt "#16316"
 msgid "Auto"
-msgstr "Auto"
+msgstr "Automatycznie"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
@@ -5959,11 +6055,11 @@ msgstr "DXVA"
 
 msgctxt "#16320"
 msgid "DXVA Bob"
-msgstr "DXVA Bob"
+msgstr "Liniowo DXVA"
 
 msgctxt "#16321"
 msgid "DXVA Best"
-msgstr "DXVA Best"
+msgstr "Najlepsza dostępna DXVA"
 
 msgctxt "#16322"
 msgid "Spline36"
@@ -5971,19 +6067,23 @@ msgstr "Spline36"
 
 msgctxt "#16323"
 msgid "Spline36 optimised"
-msgstr "Spline36 optymalizowany"
+msgstr "Spline36 zoptymalizowany"
 
 msgctxt "#16324"
 msgid "Software Blend"
-msgstr "Software Blend"
+msgstr "Miksowanie programowe"
 
 msgctxt "#16325"
 msgid "VDPAU - Bob"
-msgstr "DXVA Bob"
+msgstr "Liniowo  VDPAU"
 
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "Liniowo VAAPI"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6011,14 +6111,14 @@ msgstr "Przełącz na kanał"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr "Podziel szukane słowa używając I, LUB i/lub NIE"
+msgstr "Oddzielaj szukane słowa używając słów AND, OR i/lub NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr "lub użyj zwrotów by znaleźć dokładny wynik, np. \"The wizard of Oz\""
+msgstr "lub używaj zwrotów by znaleźć dokładny wynik, np. \"Czarnoksiężnik z Oz\""
 
 msgctxt "#19003"
-msgid "Find similar programs"
+msgid "Find similar"
 msgstr "Znajdź podobne programy"
 
 msgctxt "#19004"
@@ -6027,7 +6127,7 @@ msgstr "Importowanie danych przewodnika telewizyjnego"
 
 msgctxt "#19005"
 msgid "PVR stream information"
-msgstr "Informacja o strumieniu PVR"
+msgstr "Informacje o strumieniu telewizyjnym"
 
 msgctxt "#19006"
 msgid "Receiving device"
@@ -6055,7 +6155,7 @@ msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "Serwer PVR"
+msgstr "Serwer TV"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -6071,10 +6171,10 @@ msgstr "Szyfrowanie"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr "Serwer PVR %i - %s"
+msgstr "Serwer TV %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
+msgid "Recordings"
 msgstr "Nagrania"
 
 msgctxt "#19018"
@@ -6115,7 +6215,7 @@ msgstr "Zaplanuj nagranie..."
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr "Brak rezultatów wyszukiwania"
+msgstr "Brak wyników wyszukiwania"
 
 msgctxt "#19028"
 msgid "No EPG entries"
@@ -6159,7 +6259,7 @@ msgstr "Pokazuj jakość sygnału"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr "Nieobsługiwane przez serwer PVR"
+msgstr "Nieobsługiwane przez serwer TV"
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
@@ -6167,7 +6267,7 @@ msgstr "Czy na pewno chcesz ukryć kanał?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Zaplanowane nagrania"
+msgstr "Plan nagrań"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -6187,7 +6287,7 @@ msgstr "Sprawdź konfigurację lub szczegóły w pliku dziennika."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Nie uruchomiono jeszcze żadnego klienta PVR. Zaczekaj aż klient PVR zostanie uruchomiony lub sprawdź szczegóły w pliku dziennika."
+msgstr "Nie uruchomiono jeszcze żadnego klienta TV. Zaczekaj aż klient TV zostanie uruchomiony lub sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6235,11 +6335,11 @@ msgstr "Nowe nagranie"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr "Edytuj zaplanowane nagranie"
+msgstr "Modyfikuj nagranie"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr "Zaplanowano nagranie "
+msgstr "Zmień stan"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -6265,17 +6365,13 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Przejdź na koniec"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Domyślny tryb przewodnika"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Ikony kanałów"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr "To zdarzenie już było nagrywane."
+msgstr "To zdarzenie jest już nagrywane."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
@@ -6303,7 +6399,7 @@ msgstr "Opóźniaj zmiany kanału o"
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr "Aktywny:"
+msgstr "Aktywne:"
 
 msgctxt "#19075"
 msgid "Name:"
@@ -6399,7 +6495,7 @@ msgstr "Wprowadź nazwę nagrania"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr "Uwaga"
+msgstr "Ostrzeżenie"
 
 msgctxt "#19099"
 msgid "Service"
@@ -6417,13 +6513,21 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Proszę przełącz na inny kanał."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Wybór kanału"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Wprowadź nazwę folderu nagrań"
 
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Proszę wybierz inny kanał"
+
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr "Następne zaplanowane nagranie:"
+msgstr "Najbliższe nagranie:"
 
 msgctxt "#19107"
 msgid "at"
@@ -6439,7 +6543,15 @@ msgstr "Wystąpił nieoczekiwany błąd. Spróbuj później lub sprawdź szczeg�
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Błąd serwera PVR. Sprawdź szczegóły w pliku dziennika."
+msgstr "Błąd serwera TV. Sprawdź szczegóły w pliku dziennika."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Skasować nagranie?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Usunąć wszystkie nagrania w tym folderze?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6459,7 +6571,7 @@ msgstr "Szukaj kanałów"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
-msgstr "Nie można używać funkcji PVR podczas wyszukiwania."
+msgstr "Nie można używać funkcji TV podczas wyszukiwania."
 
 msgctxt "#19119"
 msgid "On which server do you want to search?"
@@ -6491,7 +6603,7 @@ msgstr "Ignoruj istniejące nagrania"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr "Czas startu"
+msgstr "Czas rozpoczęcia"
 
 msgctxt "#19127"
 msgid "End time"
@@ -6499,7 +6611,7 @@ msgstr "Czas zakończenia"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr "Data startu"
+msgstr "Data rozpoczęcia"
 
 msgctxt "#19129"
 msgid "End date"
@@ -6519,11 +6631,11 @@ msgstr "Uwzględnij nieznane gatunki"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr "Fraza wyszukiwania"
+msgstr "Wyrażenie wyszukiwania"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr "Zawiera opis"
+msgstr "Uwzględnij opis"
 
 msgctxt "#19135"
 msgid "Case sensitive"
@@ -6544,6 +6656,10 @@ msgstr "Najpierw utwórz grupę"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nazwa nowej grupy"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Szukaj"
 
 msgctxt "#19141"
 msgid "Group"
@@ -6571,7 +6687,7 @@ msgstr "Grupy"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "Serwer PVR nie wspiera tej operacji. Sprawdź szczegóły w pliku dziennika."
+msgstr "Serwer TV nie wspiera tej operacji. Sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6643,7 +6759,7 @@ msgstr "Przełącz"
 
 msgctxt "#19166"
 msgid "PVR information"
-msgstr "Informacja PVR"
+msgstr "Informacje TV"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
@@ -6659,11 +6775,11 @@ msgstr "Limit czasu na uruchomienie odtwarzania"
 
 msgctxt "#19171"
 msgid "Start playback minimised"
-msgstr "Uruchom odtwarzanie zminimalizowane"
+msgstr "Uruchomiaj odtwarzanie zminimalizowane"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr "Czas trwania natychmiastowego nagrania"
+msgstr "Czas trwania szybkiego nagrania"
 
 msgctxt "#19173"
 msgid "Default recording priority"
@@ -6689,10 +6805,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Pokazuj informację o kanale podczas zmiany kanału"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Ukrywaj informacje o kanale automatycznie"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "Telewizja"
@@ -6705,41 +6817,41 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Liczba dni wyświetlanych w przewodniku"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Okres wyświetlania informacji o kanale"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Resetuj bazę PVR"
+msgstr "Wyczyść bazę"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Wszystkie dane bazy PVR są usuwane"
+msgstr "Wszystkie dane bazy TV są usuwane"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Resetuj bazę przewodnika"
+msgstr "Wyczyść bazę przewodnika"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "Resetowanie bazy przewodnika"
+msgstr "Czyszczenie bazy przewodnika"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Odtwarzaj ostatnio oglądany kanał po uruchomieniu"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Zminimalizowane"
+msgid "Background"
+msgstr "Tło"
 
 msgctxt "#19191"
 msgid "PVR service"
-msgstr "Usługa PVR"
+msgstr "Usługa TV"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Żaden z podłączonych serwerów PVR nie wspiera skanowania kanałów."
+msgstr "Żaden z podłączonych serwerów TV nie wspiera skanowania kanałów."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -6751,11 +6863,11 @@ msgstr "Kontynuować?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr "Czynności klienta"
+msgstr "Operacje klienta"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "Specyficzne operacje klienta PVR"
+msgstr "Specyficzne operacje klienta TV"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6831,7 +6943,7 @@ msgstr "Wprowadź poprawny adres URL dla nowego kanału"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Serwer PVR nie wspiera planowania nagrań."
+msgstr "Serwer TV nie wspiera planowania nagrań."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6863,7 +6975,7 @@ msgstr "Przewodnik TV"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
-msgstr "Nie można aktywować żadnej wtyczki PVR. Sprawdź ustawienia lub sprawdź szczegóły w pliku dziennika."
+msgstr "Nie można aktywować żadnego klienta TV. Sprawdź ustawienia lub sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6899,7 +7011,7 @@ msgstr "Zawsze używaj kolejności kanałów z serwera(ów)"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr "Wyczyść rezultaty wyszukiwania"
+msgstr "Wyczyść wyniki wyszukiwania"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
@@ -6907,11 +7019,11 @@ msgstr "Wyświetlaj powiadomienie o zmianie zaplanowanych zadań"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
-msgstr "Używaj numerów kanałów z serwera (działa tylko z 1 wtyczką PVR)"
+msgstr "Używaj numerów kanałów z serwera (działa tylko z 1 klientem TV)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "Menedżer PVR startuje"
+msgstr "Uruchomienie menedżera TV w toku"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
@@ -6931,19 +7043,19 @@ msgstr "Uruchamianie wątków działających w tle"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
-msgstr "Żadna wtyczka PVR nie została aktywowana"
+msgstr "Brak aktywnego klienta TV"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "Menedżer PVR został uruchomiony bez jakichkolwiek"
+msgstr "Menedżer TV został uruchomiony bez żadnego aktywnego"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "Aktywuj przynajmniej jedną wtyczkę PVR, aby oglądać telewizję."
+msgstr "klienta TV. Aktywuj przynajmniej jednego klienta, aby"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
-msgstr "by korzystać z funkcjonalności PVR."
+msgstr "korzystać z funkcji odtwarzania i nagrywania TV."
 
 msgctxt "#19244"
 msgid "Backend idle time"
@@ -6955,7 +7067,7 @@ msgstr "Ustaw polecenie wybudzania (cmd [timestamp])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
-msgstr "Wybudzaj przed nagrywaniem"
+msgstr "Wybudzaj przed rozpoczęciem nagrywania"
 
 msgctxt "#19247"
 msgid "Daily wakeup"
@@ -6983,11 +7095,11 @@ msgstr "Zaplanować odświeżanie Przewodnika TV dla tego kanału?"
 
 msgctxt "#19253"
 msgid "EPG update scheduled for channel"
-msgstr "Planowana aktualizacja Przewodnika TV dla kanału"
+msgstr "Planowana aktualizacja programu dla kanału"
 
 msgctxt "#19254"
 msgid "EPG update failed for channel"
-msgstr "Nieudana aktualizacja Przewodnika TV dla kanału"
+msgstr "Nieudana aktualizacja programu dla kanału"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -7050,12 +7162,12 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Nie pokazuj ostrzeżeń \"połączenie zerwane\""
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Wszystkie nagrania"
+msgid "Group Items"
+msgstr "Grupowanie"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
-msgstr "Brak wtyczek PVR"
+msgstr "Brak klientów TV"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -7063,11 +7175,11 @@ msgstr "Potrzebujesz karty telewizyjnej, oprogramowania serwerowego, i"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "Wtyczka umożliwiająca użycie funkcji serwera PVR."
+msgstr "Dodatek umożliwiająca użycie funkcji serwera TV."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Odwiedź xbmc.org/pvr by dowiedzieć się więcej."
+msgstr "Odwiedź stronę xbmc.org/pvr by dowiedzieć się więcej."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7112,6 +7224,18 @@ msgstr "Wybierz ikonę"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Znajdź ikonę"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Wyszukiwanie ikon kanałów"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Wszystkie kanały "
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Przezroczystość "
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7291,7 +7415,7 @@ msgstr "Sztuka/Kultura"
 
 msgctxt "#19597"
 msgid "Performing Arts"
-msgstr "Przedstawienie teatralne"
+msgstr "Występ"
 
 msgctxt "#19598"
 msgid "Fine Arts"
@@ -7343,7 +7467,7 @@ msgstr "Magazyn/Reportaż/Dokument"
 
 msgctxt "#19614"
 msgid "Economics/Social Advisory"
-msgstr "Ekonomiczny/Porady społeczne"
+msgstr "Ekonomika/Doradztwo społeczne"
 
 msgctxt "#19615"
 msgid "Remarkable People"
@@ -7351,7 +7475,7 @@ msgstr "Wyjątkowi ludzie"
 
 msgctxt "#19628"
 msgid "Education/Science/Factual"
-msgstr "Edukacja/Naukowy/Na faktach"
+msgstr "Edukacja/Nauka/Na faktach"
 
 msgctxt "#19629"
 msgid "Nature/Animals/Environment"
@@ -7751,7 +7875,7 @@ msgstr "Pokazuj informacje systemowe"
 
 msgctxt "#20086"
 msgid "Show available disk space C: E: F:"
-msgstr "Pokazuj wolne miejsce dysków C: E: F:"
+msgstr "Pokazuj wolne miejsce na dyskach C: E: F:"
 
 msgctxt "#20087"
 msgid "Show available disk space E: F: G:"
@@ -7759,11 +7883,11 @@ msgstr "Pokazuj wolne miejsce na dyskach E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
-msgstr "Dane pogodowe"
+msgstr "Informacje o pogodzie"
 
 msgctxt "#20089"
 msgid "Drive space free"
-msgstr "Wolne miejsce na dyskach"
+msgstr "Wolna przestrzeń dyskowa"
 
 msgctxt "#20090"
 msgid "Enter the name of an existing share"
@@ -7935,11 +8059,11 @@ msgstr "Uruchom wideo ponownie"
 
 msgctxt "#20133"
 msgid "Edit network location"
-msgstr "Edytuj położenie z sieci"
+msgstr "Edytuj lokalizację sieciową"
 
 msgctxt "#20134"
 msgid "Remove network location"
-msgstr "Usuń położenie z sieci"
+msgstr "Usuń lokalizację sieciową"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
@@ -8051,7 +8175,7 @@ msgstr "Razem"
 
 msgctxt "#20162"
 msgid "Used"
-msgstr "zajęte"
+msgstr "Zajęte"
 
 msgctxt "#20163"
 msgid "of"
@@ -8075,7 +8199,7 @@ msgstr "Zamrożony"
 
 msgctxt "#20168"
 msgid "Requires reset"
-msgstr "Wymagany reset"
+msgstr "Wymagane ponowne uruchomienie"
 
 msgctxt "#20169"
 msgid "Week"
@@ -8167,7 +8291,7 @@ msgstr "Zdefiniowane"
 
 msgctxt "#20191"
 msgid "Enable debug logging"
-msgstr "Rejestruj komunikaty diagnozowania w pliku dziennika"
+msgstr "Rejestruj komunikaty diagnostyczne w dzienniku"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
@@ -8235,11 +8359,11 @@ msgstr "Imprezujemy! (wideo)"
 
 msgctxt "#20251"
 msgid "Mixing drinks (videos)"
-msgstr "Robię drinki (wideo)"
+msgstr "Robimy drinki (wideo)"
 
 msgctxt "#20252"
 msgid "Filling glasses (videos)"
-msgstr "Napełniam szklaneczki (wideo)"
+msgstr "Napełniamy szklaneczki (wideo)"
 
 msgctxt "#20253"
 msgid "WebDAV server (HTTP)"
@@ -8351,11 +8475,11 @@ msgstr "Odtwarzaj część..."
 
 msgctxt "#20325"
 msgid "Calibration reset"
-msgstr "Resetowanie kalibracji"
+msgstr "Czyszczenie ustawień kalibracji"
 
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
-msgstr "Spowoduje to reset ustawień kalibracji dla %s"
+msgstr "Spowoduje to wyczyszczenie ustawień kalibracji dla %s"
 
 msgctxt "#20327"
 msgid "to its default values."
@@ -8391,7 +8515,7 @@ msgstr "Folder"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "Uwzględnić zawartość podfolderów?"
+msgstr "Uwzględniać zawartość podfolderów?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8431,11 +8555,11 @@ msgstr "Zawartość folderu"
 
 msgctxt "#20345"
 msgid "Run automated scan"
-msgstr "Uruchom automatyczne skanowanie"
+msgstr "Uruchom skanowanie automatyczne"
 
 msgctxt "#20346"
 msgid "Scan recursively"
-msgstr "z uwzględnieniem podfolderów"
+msgstr "Uwzględniaj podfoldery"
 
 msgctxt "#20347"
 msgid "as"
@@ -8607,7 +8731,7 @@ msgstr "Teledyski"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Ostatnio dodane teledyski"
+msgstr "Teledyski ostatnio dodane"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -8667,11 +8791,11 @@ msgstr "Usuń zakładkę"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
-msgstr "Odcinek - usuń zakładkę"
+msgstr "Usuń zakładkę odcinka"
 
 msgctxt "#20406"
 msgid "Set episode bookmark"
-msgstr "Odcinek - ustaw zakładkę"
+msgstr "Ustaw zakładkę odcinka"
 
 msgctxt "#20407"
 msgid "Scraper settings"
@@ -8695,15 +8819,15 @@ msgstr "Tylko tytuły"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Pomijaj podział na sezony"
+msgstr "Spłaszczaj podział na sezony seriali"
 
 msgctxt "#20413"
 msgid "Get fanart"
-msgstr "Pobierz tapetę"
+msgstr "Pobierz Fanart"
 
 msgctxt "#20414"
 msgid "Show fanart in video and music libraries"
-msgstr "Pokazuj tapetę w trybie biblioteki wideo i muzyki"
+msgstr "Pokazuj Fanart w trybie biblioteki wideo i muzyki"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8747,7 +8871,7 @@ msgstr "Fałsz"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Pokaz tapet"
+msgstr "Pokaz Fanartu"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -8755,7 +8879,7 @@ msgstr "Eksportować do pojedynczego pliku"
 
 msgctxt "#20427"
 msgid "files per entry?"
-msgstr "czy rozdzielić pliki?"
+msgstr "czy do osobnych plików?"
 
 msgctxt "#20428"
 msgid "Single file"
@@ -8763,11 +8887,11 @@ msgstr "Jeden plik"
 
 msgctxt "#20429"
 msgid "Separate"
-msgstr "Oddziel"
+msgstr "Oddzielne"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Eksportować miniatury i tapety?"
+msgstr "Eksportować miniatury i Fanart?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -8787,35 +8911,35 @@ msgstr "Serie"
 
 msgctxt "#20435"
 msgid "Combine split video items"
-msgstr "Scalaj podzielone elementy wideo"
+msgstr "Scalaj podzielone pliki wideo"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
-msgstr "Eksportować zdjęcia aktorów?"
+msgstr "Eksportować portrety aktorów?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
-msgstr "Wybierz tapetę"
+msgstr "Wybierz Fanart"
 
 msgctxt "#20438"
 msgid "Local fanart"
-msgstr "Lokalna tapeta"
+msgstr "Lokalny Fanart"
 
 msgctxt "#20439"
 msgid "No fanart"
-msgstr "Brak tapety"
+msgstr "Brak Fanartu"
 
 msgctxt "#20440"
 msgid "Current fanart"
-msgstr "Aktualna tapeta"
+msgstr "Aktualny Fanart"
 
 msgctxt "#20441"
 msgid "Remote fanart"
-msgstr "Tapeta zdalna"
+msgstr "Zdalny Fanart"
 
 msgctxt "#20442"
 msgid "Change content"
-msgstr "Zmień typ zawartości"
+msgstr "Zmiana typu zawartości"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
@@ -8827,7 +8951,7 @@ msgstr "pozycji związanych z tą ścieżką?"
 
 msgctxt "#20445"
 msgid "Fanart"
-msgstr "Tapeta"
+msgstr "Fanart"
 
 msgctxt "#20446"
 msgid "Locally stored information found."
@@ -8959,7 +9083,7 @@ msgstr "Urządzenie TuxBox"
 
 msgctxt "#21359"
 msgid "Add media share..."
-msgstr "Dodaj udział ..."
+msgstr "Dodaj udział..."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
@@ -8975,7 +9099,7 @@ msgstr "Zakładka utworzona"
 
 msgctxt "#21363"
 msgid "Episode Bookmark created"
-msgstr "Zakładka epizodu utworzona"
+msgstr "Zakładka odcinku utworzona"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8991,7 +9115,7 @@ msgstr "Zdefiniowany folder napisów"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
-msgstr "Filmy i alternatywny folder dla napisów"
+msgstr "Filmy i alternatywny folder napisów"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
@@ -9003,7 +9127,7 @@ msgstr "Aktywuj obsługę myszy i ekranu dotykowego"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
-msgstr "Dźwięki nawigacyjne podczas odtwarzania mediów"
+msgstr "Odtwarzaj dźwięki nawigacji podczas odtwarzania mediów"
 
 msgctxt "#21371"
 msgid "Thumbnail"
@@ -9023,7 +9147,7 @@ msgstr "Proporcje obrazu"
 
 msgctxt "#21375"
 msgid "Normal"
-msgstr "Zwykły"
+msgstr "Normalny"
 
 msgctxt "#21376"
 msgid "Letterbox"
@@ -9059,7 +9183,7 @@ msgstr "Pokazuj pasek przewijania"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Filtrowanie oglądanych pozycji jako przełącznik w trybie biblioteki"
+msgstr "Filtr oglądanych pozycji jako przełącznik w trybie biblioteki"
 
 msgctxt "#21385"
 msgid "Open"
@@ -9227,7 +9351,7 @@ msgstr "przynajmniej jedna reguła"
 
 msgctxt "#21427"
 msgid "Limit to"
-msgstr "Ogranicz do"
+msgstr "Ograniczaj do"
 
 msgctxt "#21428"
 msgid "No limit"
@@ -9295,7 +9419,7 @@ msgstr "Rozdzielczość wideo"
 
 msgctxt "#21444"
 msgid "Audio channels"
-msgstr "Kanały audio"
+msgstr "Kanały dźwięku"
 
 msgctxt "#21445"
 msgid "Video codec"
@@ -9303,11 +9427,11 @@ msgstr "Kodek wideo"
 
 msgctxt "#21446"
 msgid "Audio codec"
-msgstr "Kodek audio"
+msgstr "Kodek dźwięku"
 
 msgctxt "#21447"
 msgid "Audio language"
-msgstr "Język dialogów"
+msgstr "Język dźwięku"
 
 msgctxt "#21448"
 msgid "Subtitle language"
@@ -9367,7 +9491,7 @@ msgstr "Stała"
 
 msgctxt "#21462"
 msgid "Bottom of video"
-msgstr "Dół wideo"
+msgstr "Na dole wideo"
 
 msgctxt "#21463"
 msgid "Below video"
@@ -9375,7 +9499,7 @@ msgstr "Poniżej wideo"
 
 msgctxt "#21464"
 msgid "Top of video"
-msgstr "Góra wideo"
+msgstr "Na górze wideo"
 
 msgctxt "#21465"
 msgid "Above video"
@@ -9392,6 +9516,10 @@ msgstr "%d do %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s do %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9451,7 +9579,7 @@ msgstr "Model aparatu"
 
 msgctxt "#21824"
 msgid "EXIF comment"
-msgstr "Komentarz Exif"
+msgstr "Komentarz EXIF"
 
 msgctxt "#21825"
 msgid "Firmware"
@@ -9599,7 +9727,7 @@ msgstr "Miasto"
 
 msgctxt "#21874"
 msgid "State"
-msgstr "Prowincja/stan"
+msgstr "Jednostka administracyjna"
 
 msgctxt "#21875"
 msgid "Country"
@@ -9715,7 +9843,7 @@ msgstr "Ukrywaj postęp aktualizacji biblioteki"
 
 msgctxt "#22002"
 msgid "DNS suffix"
-msgstr "sufiks DNS"
+msgstr "Sufiks DNS"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -9747,15 +9875,15 @@ msgstr "Wersja OpenGL:"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "Temperatura GPU:"
+msgstr "Temperatura procesora grafiki:"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
-msgstr "Temperatura CPU:"
+msgstr "Temperatura procesora:"
 
 msgctxt "#22012"
 msgid "Total memory"
-msgstr "Całkowity rozmiar pamięci"
+msgstr "Rozmiar pamięci"
 
 msgctxt "#22013"
 msgid "Profile data"
@@ -9859,7 +9987,7 @@ msgstr "biały/niebieski"
 
 msgctxt "#22043"
 msgid "black/white"
-msgstr "czarno/biała"
+msgstr "czarno/biały"
 
 msgctxt "#22079"
 msgid "Default select action"
@@ -9907,7 +10035,7 @@ msgstr "Uruchomiony"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Skalowanie telegazety do 4:3"
+msgstr "Skaluj telegazetę do 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9923,19 +10051,19 @@ msgstr "Naciśnij OK po zakończeniu odtwarzania"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr "Wtyczka"
+msgstr "Dodatek"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Wtyczki"
+msgstr "Dodatki"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr "Opcje wtyczki"
+msgstr "Opcje dodatków"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "O wtyczce"
+msgstr "O dodatku"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -9959,7 +10087,7 @@ msgstr "Wizualizacja"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr "Repozytorium wtyczek"
+msgstr "Repozytorium dodatków"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -9967,7 +10095,7 @@ msgstr "Napisy"
 
 msgctxt "#24013"
 msgid "Lyrics"
-msgstr "Tekst piosenki"
+msgstr "Tekst utworu"
 
 msgctxt "#24014"
 msgid "TV information"
@@ -9991,19 +10119,19 @@ msgstr "Usługi"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "Klienci PVR"
+msgstr "Klienty TV"
 
 msgctxt "#24020"
 msgid "Configure"
-msgstr "Ustaw"
+msgstr "Konfiguruj"
 
 msgctxt "#24021"
 msgid "Disable"
-msgstr "Dezaktywuj"
+msgstr "Wyłącz"
 
 msgctxt "#24022"
 msgid "Enable"
-msgstr "Aktywuj"
+msgstr "Włącz"
 
 msgctxt "#24023"
 msgid "Disabled"
@@ -10011,7 +10139,7 @@ msgstr "Nieaktywne"
 
 msgctxt "#24024"
 msgid "Add-on disabled"
-msgstr "Wtyczka nieaktywna"
+msgstr "Ekstraktor nieaktywny"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -10019,15 +10147,15 @@ msgstr "Pogoda"
 
 msgctxt "#24028"
 msgid "Weather.com (standard)"
-msgstr "Weather.com (standard)"
+msgstr "Weather.com (standardowe)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr "Serwis pogodowy"
+msgstr "Serwis informacji pogodowych"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
-msgstr "Ta wtyczka nie może być skonfigurowana"
+msgstr "Ten dodatek nie ma ustawień"
 
 msgctxt "#24031"
 msgid "Error loading settings"
@@ -10035,11 +10163,11 @@ msgstr "Błąd wczytywania ustawień"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "Wszystkie wtyczki"
+msgstr "Wszystkie dodatki"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "Pobierz wtyczki"
+msgstr "Pobierz dodatki"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -10055,15 +10183,15 @@ msgstr "Lista zmian"
 
 msgctxt "#24037"
 msgid "Uninstall"
-msgstr "Usuń"
+msgstr "Odinstaluj"
 
 msgctxt "#24038"
 msgid "Install"
-msgstr "Instaluj"
+msgstr "Zainstaluj"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Wtyczki nieaktywne"
+msgstr "Dodatki nieaktywne"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -10071,7 +10199,7 @@ msgstr "(Wyczyść aktualne ustawienie)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
-msgstr "Instaluj z pliku zip"
+msgstr "Zainstaluj z pliku zip"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
@@ -10083,19 +10211,19 @@ msgstr "Dostępne aktualizacje"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
-msgstr "Niespełnione zależności. Proszę skontaktować się z autorem wtyczki."
+msgstr "Niespełnione zależności. Proszę skontaktować się z autorem dodatku."
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
-msgstr "Wtyczka nie ma właściwej struktury"
+msgstr "Dodatek nie ma właściwej struktury"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "%s jest używana przez następujące zainstalowane wtyczki"
+msgstr "%s jest używana przez następujące zainstalowane dodatek(tki)"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
-msgstr "Tej wtyczki nie można usunąć"
+msgstr "Tego dodatku nie można usunąć"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -10107,7 +10235,7 @@ msgstr "Niekompatybilna"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
-msgstr "Dostępne wtyczki"
+msgstr "Dostępne dodatki"
 
 msgctxt "#24051"
 msgid "Version:"
@@ -10125,21 +10253,29 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Lista zmian"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Sprawdź aktualizacje"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Ostatnia aktualizacja %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "Czy chcesz aktywować tę wtyczkę?"
+msgstr "Czy chcesz aktywować ten dodatek?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "Czy chcesz dezaktywować tę wtyczkę?"
+msgstr "Czy chcesz dezaktywować ten dodatek?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Dostępna aktualizacja wtyczki!"
+msgstr "Dostępna aktualizacja dodatku!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Wtyczki aktywne"
+msgstr "Dodatki aktywne"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -10147,31 +10283,31 @@ msgstr "Automatyczna aktualizacja"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Wtyczka aktywne"
+msgstr "Dodatek włączony"
 
 msgctxt "#24065"
 msgid "Add-on updated"
-msgstr "Wtyczka zaktualizowana"
+msgstr "Dodatek zaktualizowany"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Anulować pobieranie wtyczki?"
+msgstr "Anulować pobieranie dodatku?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Aktualnie pobierane wtyczki"
+msgstr "Dodatki aktualnie pobierane"
 
 msgctxt "#24068"
 msgid "Update available"
-msgstr "Aktualizacja jest dostępna"
+msgstr "Dostępna aktualizacja"
 
 msgctxt "#24069"
 msgid "Update"
-msgstr "Aktualizacja"
+msgstr "Aktualizuj"
 
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
-msgstr "Błąd ładowania wtyczki."
+msgstr "Błąd ładowania dodatku."
 
 msgctxt "#24071"
 msgid "An unknown error has occurred."
@@ -10183,7 +10319,7 @@ msgstr "Wymagane ustawienia"
 
 msgctxt "#24073"
 msgid "Could not connect"
-msgstr "Nie mogę się połączyć"
+msgstr "Nieudane połączenie"
 
 msgctxt "#24074"
 msgid "Needs to restart"
@@ -10191,27 +10327,43 @@ msgstr "Potrzebny restart"
 
 msgctxt "#24075"
 msgid "Disable"
-msgstr "Dezaktywuj"
+msgstr "Wyłącz"
 
 msgctxt "#24076"
 msgid "Add-on Required"
-msgstr "Wymagana wtyczka"
+msgstr "Dodatek wymagany"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Ponowić próbę połączenia?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Dodatki pomocnicze"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Biblioteki dodatków"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Biblioteki metadanych"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Biblioteki wizualizacji"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
-msgstr "Restart wtyczki"
+msgstr "Ponowne uruchomienie dodatku"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Zablokuj menedżer wtyczek"
+msgstr "Zablokuj Menedżer dodatków"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
-msgstr "Tej wtyczki nie można dezaktywować"
+msgstr "Tego dodatku nie można wyłączyć"
 
 msgctxt "#24094"
 msgid "(current)"
@@ -10223,7 +10375,7 @@ msgstr "(zablokowany)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Wtyczka jest niekompatybilna lub oznaczona jako uszkodzona w repozytorium."
+msgstr "Dodatek jest niekompatybilny lub oznaczony jako uszkodzony w repozytorium."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10235,15 +10387,15 @@ msgstr "Uszkodzona"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "Chcesz przełączyć się na tę skórę?"
+msgstr "Chcesz przełączyć na tę skórę?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "Aby użyć tej funkcji musisz pobrać wtyczki:"
+msgstr "Aby używać tej funkcji musisz pobrać dodatek:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Czy chcesz pobrać tę wtyczkę?"
+msgstr "Czy chcesz pobrać ten dodatek?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
@@ -10255,7 +10407,7 @@ msgstr "W skórze brakuje części plików"
 
 msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
-msgstr "Wtyczka jest niekompatybilna z powodu niespełnianych zależności."
+msgstr "Dodatek jest niekompatybilny z powodu niespełnianych zależności."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
@@ -10327,7 +10479,7 @@ msgstr "Wprowadź tekst do wyszukania"
 
 msgctxt "#24122"
 msgid "Update all"
-msgstr "Zaktualizuj wszystko"
+msgstr "Aktualizuj wszystkie"
 
 msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
@@ -10340,6 +10492,14 @@ msgstr "Obok wideo"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Zdefiniowana lokalizacja"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Pobieraj pierwsze napisy automatycznie"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Aktywuje pobieranie automatyczne pierwszego pliku napisów z listy wyników wyszukiwania."
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10447,7 +10607,7 @@ msgstr "Długi"
 
 msgctxt "#33014"
 msgid "Use DVD player instead of regular player"
-msgstr "Użyj odtwarzacza DVD zamiast zwykłego"
+msgstr "Użyj odtwarzacza DVD zamiast normalnego"
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
@@ -10591,7 +10751,7 @@ msgstr "Skonfiguruj"
 
 msgctxt "#33060"
 msgid "Power"
-msgstr "Zasilanie"
+msgstr "Koniec"
 
 msgctxt "#33061"
 msgid "Menu"
@@ -10611,11 +10771,11 @@ msgstr "Edytor"
 
 msgctxt "#33066"
 msgid "About your"
-msgstr "O"
+msgstr "Informacje o"
 
 msgctxt "#33067"
 msgid "Star rating"
-msgstr "Ocena \"gwiazdkowa\""
+msgstr "Ocena"
 
 msgctxt "#33068"
 msgid "Background"
@@ -10635,7 +10795,7 @@ msgstr "Zdefiniowane tła"
 
 msgctxt "#33072"
 msgid "View Readme"
-msgstr "Przeglądaj Readme"
+msgstr "Zapoznaj się z informacjami"
 
 msgctxt "#33073"
 msgid "View Changelog"
@@ -10651,11 +10811,11 @@ msgstr "Wymagany Kodi w wersji %s lub nowszej."
 
 msgctxt "#33076"
 msgid "Please update Kodi."
-msgstr "Zaktualizuj Kodi."
+msgstr "Proszę, zaktualizuj Kodi"
 
 msgctxt "#33077"
 msgid "No data found!"
-msgstr "Dane niedostępne!"
+msgstr "Brak danych!"
 
 msgctxt "#33078"
 msgid "Next page"
@@ -10823,11 +10983,11 @@ msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr "Nie mogę znaleźć następnej pozycji do odtworzenia"
+msgstr "Nie można odnaleźć następnej pozycji do odtworzenia"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr "Nie mogę znaleźć poprzedniej pozycji do odtworzenia"
+msgstr "Nie można odnaleźć poprzedniej pozycji do odtworzenia"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
@@ -10851,7 +11011,7 @@ msgstr "AirPlay oraz AirTunes wymagają działającego ZeroConf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr "Rendering wideo"
+msgstr "Renderowanie wideo"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
@@ -10932,10 +11092,6 @@ msgstr "Aktywuj wsparcie dla dżojstika oraz gamepada"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Dezaktywuj dżojstik, kiedy to urządzenie jest dostępne"
-
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Aktywuj klawisze systemowe w trybie pełnoekranowym"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11051,11 +11207,11 @@ msgstr "Nieudane zmiana konfiguracji. Proszę sprawdzić ustawienia."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping Kodi"
-msgstr "Wyślij sygnał 'nieaktywne źródło' zamykając Kodi"
+msgstr "Wyślij sygnał \"nieaktywne źródło\" zamykając Kodi"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Przestaw urządzenia w tryb czuwania, gdy PC jest przestawiane w tryb czuwania"
+msgstr "Przełącz urządzenia w tryb czuwania, gdy PC jest przełączane w tryb czuwania"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -11091,7 +11247,7 @@ msgstr "Zawsze"
 
 msgctxt "#36036"
 msgid "On start/stop"
-msgstr "Na starcie/zatrzymaniu"
+msgstr "Na starcie/po zatrzymaniu"
 
 msgctxt "#36037"
 msgid "TV"
@@ -11235,7 +11391,7 @@ msgstr "Określa czas bezczynności wymagany do uruchomienia wygaszacza ekranu."
 
 msgctxt "#36130"
 msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Określa aktywny wygaszacz ekranu. Kodi wymusi włączenie wygaszacza ekranu 'Przyciemnienie', gdy pełnoekranowe odtwarzanie wideo jest wstrzymane lub okno dialogowe jest aktywne."
+msgstr "Określa aktywny wygaszacz ekranu. Kodi wymusi włączenie wygaszacza ekranu \"Przyciemnienie\", gdy pełnoekranowe odtwarzanie wideo jest wstrzymane lub okno dialogowe jest aktywne."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11303,7 +11459,7 @@ msgstr "Ukrywa pasek postępu aktualizacji biblioteki podczas skanowania."
 
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
-msgstr "Aktywuje usuwanie pozycji z biblioteki, których nie można znaleźć (zmieniono nazwę, usunięto lub przechowywano w pamięciach wymiennych, które są aktualnie odłączone)."
+msgstr "Aktywuje usuwanie pozycji z biblioteki, których nie można znaleźć (przemianowano, usunięto lub przechowywano w pamięciach wymiennych, które są aktualnie odłączone)."
 
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
@@ -11395,7 +11551,7 @@ msgstr "Określa poziom powiększenia materiałów wideo o proporcjach 4:3 na wy
 
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
-msgstr "Poziom konwersji VDPAU wraz z zaawansowanymi aplikacjami, takimi jak Kodi wpływania na konwersję przestrzeni kolorów."
+msgstr "Poziom konwersji VDPAU dostarcza zaawansowanym aplikacjom takim, jak Kodi wpływać na konwersję przestrzeni kolorów."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11499,11 +11655,11 @@ msgstr "Brak dostępnych informacji."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Określa domyślny serwis informacji o filmie. Więcej opcji w  menedżerze wtyczek."
+msgstr "Określa domyślny serwis informacji o filmie. Więcej opcji w  menedżerze dodatków."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Określa domyślny serwis informacji o serialach. Więcej opcji w  menedżerze wtyczek."
+msgstr "Określa domyślny serwis informacji o serialach. Więcej opcji w  menedżerze dodatków."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11511,27 +11667,27 @@ msgstr "Domyślnie używany ekstraktor teledysków przy aktualizacji biblioteki.
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
-msgstr "Ustawienia funkcji odtwarzania i nagrywania telewizji"
+msgstr "Ustawienia funkcji odtwarzania i nagrywania programów telewizyjnych"
 
 msgctxt "#36202"
 msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategoria z ogólnymi ustawieniami odtwarzania i nagrywania telewizji."
+msgstr "Kategoria z ogólnymi ustawieniami odtwarzania i nagrywania programów telewizyjnych. "
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
-msgstr "Aktywuje funkcje odtwarzania i nagrywania telewizji (PVR) w Kodi. Do działania wymaga zainstalowanej co najmniej jednej wtyczki PVR."
+msgstr "Aktywuje funkcje odtwarzania i nagrywania telewizji (PVR) w Kodi. Do działania wymaga zainstalowanego, co najmniej jednego, klienta TV."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr "Importuje grupy kanałów z serwera PVR (jeśli wspierane). Wszystkie grupy stworzone przez użytkownika zostaną usunięte, jeśli nie znajdują się na serwerze."
+msgstr "Importuje grupy kanałów z serwera TV (jeśli wspierane). Wszystkie grupy stworzone przez użytkownika zostaną usunięte, jeśli nie znajdują się na serwerze."
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
-msgstr "Sortuje kanały według numeracji na serwerze PVR, ale Kodi będzie używać własnej numeracji kanałów."
+msgstr "Sortuje kanały według numeracji na serwerze, ale Kodi będzie używać własnej numeracji kanałów."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
-msgstr "Używa numeracji z serwera PVR, zamiast konfigurować ją ręcznie w Kodi."
+msgstr "Używa numeracji z serwera TV, zamiast konfigurować ją ręcznie w Kodi."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11539,7 +11695,7 @@ msgstr "Otwiera menedżera kanałów, który umożliwia zmianę kolejności kana
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
-msgstr "Wymusza na serwerze PVR wyszukiwanie kanałów (jeśli wspierane)."
+msgstr "Wymusza na serwerze TV wyszukiwanie kanałów (jeśli wspierane)."
 
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
@@ -11547,7 +11703,7 @@ msgstr "Usuwa kanały i bazę przewodnika telewizyjnego, a następnie importuje 
 
 msgctxt "#36210"
 msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
-msgstr "Zapobiega wyświetlaniu okna informacyjnego 'połączenie utracone', w przypadku problemów z komunikacją między Kodi a serwerem PVR."
+msgstr "Zapobiega wyświetlaniu okna informacyjnego \"połączenie utracone\", w przypadku problemów z komunikacją między Kodi a serwerem TV."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11555,19 +11711,11 @@ msgstr "Kategoria z ustawieniami menu ekranowego oraz oknami informacyjnymi kana
 
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
-msgstr "Wyświetla, podczas zmiany kanału, informacje o programie takie jak nazwa aktualnej audycji."
-
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Ukrywa informacje o programie automatycznie po upływie kilku sekund, w liczbie określonej poniżej."
+msgstr "Wyświetla podczas zmiany kanału informacje o programie takie, jak nazwa aktualnej audycji."
 
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Ukrywa menu ekranowe z przyciskami odtwarzania po przełączeniu kanału."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Określa, jak długo informację o programie są wyświetlane, kiedy opcja 'ukrywaj automatycznie' jest zaznaczona."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11581,17 +11729,13 @@ msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Kategoria z ustawieniami przewodnika telewizyjnego"
 
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Określa domyślnie wyświetlany tryb przewodnika telewizyjnego."
-
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
-msgstr "Określa liczbe dni, dla których importowane będą dane do przewodnika telewizyjnego z serwerów PVR."
+msgstr "Określa liczbę dni, dla których importowane będą dane do przewodnika telewizyjnego z serwerów."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends."
-msgstr "Określa interwał pomiędzy importami danych do przewodnika telewizyjnego z serwerów PVR."
+msgstr "Określa interwał pomiędzy importami danych do przewodnika telewizyjnego z serwerów."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11607,7 +11751,7 @@ msgstr "Ukrywa komunikat \"brak dostępnych informacji\", gdy brak informacji o 
 
 msgctxt "#36225"
 msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
-msgstr "Usuwa lokalną bazę przewodnika, a następnie importuje ją ponownie z serwera PVR."
+msgstr "Usuwa lokalną bazę przewodnika, a następnie importuje ją ponownie z serwera."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11623,7 +11767,7 @@ msgstr "Aktywuje odtwarzanie ostatnio oglądanego kanału telewizyjnego po uruch
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
-msgstr "Wyświetla informację o jakości sygnału w oknie informacyjnym kodeka (jeśli wspierane przez wtyczkę i serwer)."
+msgstr "Wyświetla informację o jakości sygnału w oknie informacyjnym kodeka (jeśli wspierane przez klienta i serwer)."
 
 msgctxt "#36230"
 msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
@@ -11647,19 +11791,19 @@ msgstr "Określa czas trwania nagrania po naciśnięciu przycisku nagrywania."
 
 msgctxt "#36235"
 msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
-msgstr "Priorytet nagrywania. Większa liczba oznacza wyższy priorytet. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+msgstr "Priorytet nagrywania. Większa liczba oznacza wyższy priorytet. Nie wszystkie klienty i serwery wspierają tę funkcję."
 
 msgctxt "#36236"
 msgid "Delete recording after this time. Not supported by all Add-ons and backends."
-msgstr "Usuwa nagrania po upłynięciu określonego tutaj czasu. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+msgstr "Usuwa nagrania po upłynięciu określonego tutaj czasu. Nie wszystkie klienty i serwery wspierają tę funkcję."
 
 msgctxt "#36237"
 msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
-msgstr "Rozpoczyna nagrywanie przed planowanym rozpoczęciem nagrania. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+msgstr "Rozpoczyna nagrywanie przed planowanym rozpoczęciem nagrania. Nie wszystkie klienty i serwery wspierają tę funkcję."
 
 msgctxt "#36238"
 msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
-msgstr "Kończy nagrywanie po planowanym zakończeniu nagrania. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+msgstr "Kończy nagrywanie po planowanym zakończeniu nagrania. Nie wszystkie klienty i serwery wspierają tę funkcję."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11667,7 +11811,7 @@ msgstr "Wyświetla powiadomienie, gdy nagrania są dodawane, zakończone lub usu
 
 msgctxt "#36240"
 msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
-msgstr "Kategoria z ustawieniami oszczędzania energii takimi, jak wybudzanie serwera PVR."
+msgstr "Kategoria z ustawieniami oszczędzania energii takimi, jak wybudzanie serwera TV."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11695,7 +11839,7 @@ msgstr "Określa godzinę uruchamiania polecenia wybudzenia."
 
 msgctxt "#36247"
 msgid "Category for parental control settings if the PVR backend server supports parental controls."
-msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer PVR wspiera kontrolę rodzicielską."
+msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer TV wspiera kontrolę rodzicielską."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11711,11 +11855,11 @@ msgstr "Prosi ponownie o podanie kodu PIN podczas próby uzyskania dostępu do k
 
 msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Kategoria ze specyficznymi ustawieniami serwera PVR, jeśli używany serwer PVR wspiera zmianę tych ustawień z poziomu Kodi."
+msgstr "Kategoria ze specyficznymi ustawieniami serwera TV, jeśli używany serwer TV wspiera zmianę tych ustawień z poziomu Kodi."
 
 msgctxt "#36252"
 msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Umożliwia ustawienie specyficznych ustawień serwera PVR, jeśli serwer wspiera zmianę tych ustawień z poziomu Kodi."
+msgstr "Umożliwia ustawienie specyficznych ustawień serwera TV, jeśli serwer wspiera zmianę tych ustawień z poziomu Kodi."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11739,11 +11883,11 @@ msgstr "Wybierz domyślny serwis informacji o albumach."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Wybierz domyślny serwis informacji o wykonawcach. Więcej opcji w menedżerze wtyczek."
+msgstr "Określa domyślny serwis informacji o wykonawcach. Więcej opcji w menedżerze dodatków."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on Kodi startup."
-msgstr "Sprawdź nowe i usunięte pliki multimedialne przy uruchomieniu Kodi."
+msgstr "Wyszukuje nowych i usuniętych plików multimedialnych przy uruchomieniu Kodi."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11843,7 +11987,7 @@ msgstr "Aktywuje wczytywanie informacji o CD-Audio z internetowej bazy danych."
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
-msgstr "Określa lokalizację na dysku, gdzie zgrane ścieżki zostaną zapisane."
+msgstr "Określa lokalizację na dysku, gdzie zgrane ścieżki będą zapisywane."
 
 msgctxt "#36286"
 msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
@@ -11975,7 +12119,7 @@ msgstr "Wybierz maksymalnie trzy lokalizacje, dla których pogoda może być wy�
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Określa domyślny serwis informacji pogodowych. Więcej opcji w menedżerze wtyczek."
+msgstr "Określa domyślny serwis informacji pogodowych. Więcej opcji w menedżerze dodatków."
 
 msgctxt "#36319"
 msgid "Section containing settings for how network services are handled."
@@ -12022,16 +12166,16 @@ msgid "Define the webserver port."
 msgstr "Określa port serwera WWW."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Określa nazwę użytkownika serwera WWW."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Nazwa użytkownika serwera WWW. Ma efekt wyłącznie przy ustawieniu zarówno nazwy i hasła."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Określa hasło serwera webowego."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Hasła serwera WWW. Ma efekt wyłącznie przy ustawieniu zarówno hasła i nazwy użytkownika."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Umożliwia wybór interfejsu webowego przy pomocy menedżera wtyczek."
+msgstr "Umożliwia wybór interfejsu webowego przy pomocy menedżera dodatków."
 
 msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."
@@ -12163,11 +12307,11 @@ msgstr "Zaznacz, aby aktywować miksowanie dźwięku 2 kanałowego do liczby kan
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
-msgstr "Zaznacz tę opcję, jeśli zewnętrzne urządzenie dekodowania wspiera dekodowanie strumieni AC3."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje strumień AC3."
 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
-msgstr "Zaznacz tę opcję, jeśli zewnętrzne urządzenie dekodowania wspiera dekodowanie strumieni DTS."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje strumień DTS."
 
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
@@ -12179,11 +12323,11 @@ msgstr "Aktywuje przesyłanie zakodowanego dźwięku w formatach takich jak Dolb
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
-msgstr "Zaznacz tę opcję, jeśli zewnętrzne urządzenie dekodowania wspiera dekodowanie strumieni TrueHD."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje strumień TrueHD."
 
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
-msgstr "Zaznacz tę opcję, jeśli zewnętrzne urządzenie dekodowania wspiera dekodowanie strumieni DTS-HD."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje strumień DTS-HD."
 
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
@@ -12271,15 +12415,15 @@ msgstr "Kategoria zawierająca ustawienia funkcji diagnozowania błędów."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
-msgstr "Aktywuje rejestrowanie diagnozowania błędów w pliku dziennika. Pomocne w rozwiązywaniu problemów."
+msgstr "Aktywuje rejestrowanie w pliku dziennika komunikatów diagnostycznych. Pomocne w rozwiązywaniu problemów."
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Folder używany do zapisywania zrzutów ekranu Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Określa dodatkowe biblioteki, których komunikaty diagnozowania błędów mają być rejestrowane w pliku dziennika."
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Aktywuje rejestrowanie w pliku dziennika komunikatów diagnostycznych dodatkowych bibliotek."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12569,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Określa czy dekodowanie wideo powinno być przetwarzane programowo (wymaga mocniejszego procesora), czy przy wykorzystaniu akceleracji sprzętowej, jeśli to możliwe."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Określa wirtualny układ klawiatury."
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Tryb stereoskopowy (aktualny)"
@@ -12507,7 +12655,7 @@ msgstr "Monofoniczny (2D)"
 
 msgctxt "#36530"
 msgid "Preferred mode"
-msgstr "Preferowany tryb"
+msgstr "Tryb preferowany"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12520,6 +12668,10 @@ msgstr "Jak w materiale wideo"
 msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Określa sposób miksowania dźwięku, na przykład z 5.1 do 2.0: [Aktywne] utrzymuje podczas miksowania rozpiętość tonalną pierwotnego źródła dźwięku, ale obniża poziom głośności; [Nieaktywne] utrzymuje poziom głośności oryginalnego źródła dźwięku, ale rozpiętość tonalna będzie mniejsza. Uwaga - rozpiętość tonalna jest różnicą pomiędzy najcichszym i najgłośniejszym tonem w źródle dźwięku."
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Określa dodatkowe biblioteki, których komunikaty diagnostyczne będą rejestrowane w pliku dziennika."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12571,11 +12723,11 @@ msgstr "Określa głębię napisów w stereoskopowych materiałach wideo 3D. Im 
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
-msgstr "Używaj tekstur wyższej jakości dla okładek i tapet (zużywa więcej pamięci)"
+msgstr "Używaj tekstur wyższej jakości dla okładek i Fanartu (zużywa więcej pamięci)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Ogranicza rozdzielczość interfejsu użytkownika w celu oszczędzenia pamięci. Użyj 1080, aby wyłączyć ograniczenie. Wymaga ponownego uruchomienia."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Ogranicza rozdzielczość interfejsu użytkownika w celu oszczędzenia pamięci. Nie ma wpływu na odtwarzanie wideo. Wymaga ponownego uruchomienia."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12744,94 @@ msgstr "Kategoria zawierająca ustawienia związane z usługą AirPlay."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą wyświetlania obrazu."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmy"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Serial"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Seriale"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "sezon"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "sezony"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "odcinek"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "odcinki"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "teledysk"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "teledyski"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "ustaw"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "serie"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "wideo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "wideo"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "muzyka"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "muzyka"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "wykonawca"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "wykonawcy"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albumy"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "utwór"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "utwory"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12627,7 +12867,7 @@ msgstr "Znajdź w"
 
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
-msgstr "Zaznacz tę opcję, jeśli zewnętrzne urządzenie dekodowania wspiera dekodowanie strumieni E-AC3."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje strumień E-AC3."
 
 msgctxt "#37017"
 msgid "Dual audio output"
@@ -12637,13 +12877,9 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Wzmacniaj kanał centralny przy miksowaniu"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Aktywuje klawisze systemowe takie, jak PrintScreen, Alt-Tab i regulacji głośności w trybie pełnoekranowym."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
-msgstr "Aktywuj większą głębię koloru grafik"
+msgstr "Używaj powiększonej głębi koloru grafik"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
@@ -12660,3 +12896,27 @@ msgstr "Chcesz zatrzymać odtwarzanie na zdalnym urządzeniu?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe wspiera wielokanałowy dźwięk tylko w formacie Dolby Digital 5.1, a chcesz odtwarzać wielokanałowy dźwięk w formatach AACS5.1 lub FLAC5.1 na systemie dźwięku przestrzennego 5.1. Uwaga - nierekomendowane dla platformy Pi z powodu silnego użycia procesora."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Określa ustawienia koderów dźwięku takie, jak jakość i poziom kompresji."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Automatycznie"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Nieograniczony"

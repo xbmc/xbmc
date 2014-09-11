@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "确认移动文件"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "确认删除文件"
+msgid "Confirm delete"
+msgstr "确认删除"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Web 界面"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "音频编码器"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "标语"
@@ -848,6 +852,10 @@ msgstr "全屏"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "屏幕调整：(%i,%i)->(%i,%i) (缩放 x%2.2f) 宽高比：%2.2f:1 (像素比：%2.2f:1) (纵向偏移：%2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "监视器"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1088,6 +1096,10 @@ msgstr "原始语言"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "用户界面语言"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "键盘布局"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1985,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "多声道音频混缩为立体声"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "编号"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "排序：%s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "压缩级别"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "详细日志..."
+msgid "Enable component-specific logging"
+msgstr "启用特定组件日志"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "启用杜比数字编码转换"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "指定特定组件日志..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB 库详细日志"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL 库（http、dav）详细日志"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH 库详细日志"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG 库详细日志"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP 库详细日志"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS 调用详细日志"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC 请求详细日志"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "音频组件详细日志"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "AirTunes 库详细日志"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "UPnP 组件详细日志"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "CEC 库详细日志"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "电池电量"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "自动更新：开启"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "自动更新：通知"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "自动更新：从不"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "天气"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "允许多线程软件解码"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "使用 Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "使用 MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "启用此选项激活 Mpeg-(1/2) 编码的硬件加速，禁用则为 CPU 解码。老 Radeon 显卡启用会导致段错误（segfault）。"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "启用此选项激活 MPEG-(1/2) 编码的硬件加速，禁用则为 CPU 解码。老 Radeon 显卡启用会导致段错误（segfault）。"
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "使用 Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "使用 MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "启用此选项激活 Mpeg-4 编码的硬件加速，禁用则为 CPU 解码。一些 ION 硬件启用时会有问题。"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "启用此选项激活 MPEG-4 编码的硬件加速，禁用则为 CPU 解码。一些 ION 硬件默认启用时会有问题。"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "启用此选项激活基于 VC-1 的编码的硬件加速，禁用则为 CPU 解码。AMD 硬件无法用 VDPAU 解码 VC-1。"
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "使用 Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "使用 MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "启用此选项激活 Mpeg-(1/2) 编码的硬件加速，禁用则为 CPU 解码。一些 Mpeg-2  视频可能会出现绿色块。"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "启用此选项激活 MPEG-(1/2) 编码的硬件加速，禁用则为 CPU 解码。一些 MPEG-2  视频可能会出现绿色块。"
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "使用 Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "使用 MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "启用此选项激活 Mpeg-4 编码的硬件加速，禁用则为 CPU 解码。"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "启用此选项激活 MPEG-4 编码的硬件加速，禁用则为 CPU 解码。"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5369,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "图形界面滤镜"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "使用后台扫描"
@@ -5608,6 +5688,10 @@ msgstr "导航音效"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "皮肤默认"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "大字体"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6018,8 +6102,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "或使用短语来查找完全匹配，如“绿野仙踪”。"
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "查找类似节目"
+msgid "Find similar"
+msgstr "查找类似的"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6158,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR 后端 %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "电视录像"
+msgid "Recordings"
+msgstr "录像"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6349,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "转到末尾"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "默认电子节目单窗口"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "频道图标"
@@ -6417,9 +6497,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "请切换到其它频道。"
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "转到频道"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "输入录像文件夹名称"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "请选择频道"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6528,14 @@ msgstr "出现未知错误，稍后重试或查看详细日志记录。"
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR 后端错误，详情见日志记录。"
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "删除此录像？"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "删除此文件夹中所有录像？"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6640,10 @@ msgstr "请先定义组"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "新组名称"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "查找..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6789,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "切换频道时显示频道信息"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "自动隐藏频道信息"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "电视"
@@ -6705,9 +6801,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "电子节目单显示天数"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "频道信息时长"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "电台"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6826,8 @@ msgid "Continue last channel on startup"
 msgstr "启动时继续最后频道"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "最小化"
+msgid "Background"
+msgstr "背景"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7050,8 +7146,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "不显示“连接丢失”警告"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* 所有录像"
+msgid "Group Items"
+msgstr "组项目"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7208,18 @@ msgstr "选择图标"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "浏览图标"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "搜索频道图标"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "全部频道"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "前景"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9393,6 +9501,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s 到 %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "（外挂）"
@@ -10125,6 +10237,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "更新日志"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "检查更新"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "最近更新 %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "要启用此插件吗？"
@@ -10200,6 +10320,22 @@ msgstr "依赖插件"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "尝试重新连接？"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "助手插件"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "插件库"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "信息库"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "可视化效果库"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10476,14 @@ msgstr "与视频同目录"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "自定义目录"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "自动下载第一个字幕"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "自动下载搜索结果列表中的第一个字幕"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10933,10 +11077,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "当此设备接入时禁用游戏杆"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "全屏画面启用系统键"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "位置"
@@ -11511,11 +11651,11 @@ msgstr "用于给资料库加入音乐电视的默认刮削器。"
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
-msgstr "设置 PVR或直播电视功能"
+msgstr "设置 PVR 或直播电视功能"
 
 msgctxt "#36202"
 msgid "Category for general settings for PVR/Live TV features."
-msgstr "PVR/直播电视功能常用设置功能区。"
+msgstr "PVR 或直播电视功能常用设置功能区。"
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
@@ -11557,17 +11697,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "变更频道时显示节目信息，如当前剧集。"
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "几秒后自动隐藏节目信息。"
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "切换频道后关闭在屏显示控制。"
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "当“自动隐藏”设置开启时节目信息显示时长。"
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11712,6 @@ msgstr "扫描缺失频道图标。"
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "电子节目单设置功能区。"
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "默认显示的电子节目单窗口。"
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12022,12 +12150,12 @@ msgid "Define the webserver port."
 msgstr "定义 web 服务器端口。"
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "定义 web 服务器用户名。"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "设置 Web 服务器用户名。仅当用户名和密码均设置后才生效。"
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "定义 web 服务器密码。"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "设置 Web 服务器密码。仅当用户名和密码均设置后才生效。"
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12211,7 +12339,7 @@ msgstr "激活时，键盘方向键控制在虚拟键盘按键间移动。停用
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
-msgstr "使用鼠标或触摸屏设备来控制 Kodi。注：在没有键盘或遥控器的情况下禁用会导致你失去对 Kodi 的控制。"
+msgstr "使用鼠标或触摸屏设备来控制 Kodi。注意：在没有键盘或遥控器的情况下禁用会导致你失去对 Kodi 的控制。"
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."
@@ -12278,8 +12406,8 @@ msgid "Folder used to save screenshots taken within Kodi."
 msgstr "用于保存 Kodi 内置截屏功能截取图片的目录。"
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "在调试日志中包含特定附加库文件信息。"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "启用在日志中包含附加库的调试信息。"
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12425,6 +12553,10 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "定义如何软件处理视频解码（需消耗 CPU 资源）或可能情况下硬件加速。"
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "选择虚拟键盘布局。"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "立体模式（当前）"
@@ -12521,6 +12653,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "选择音频混缩方式，如从5.1到2.0：[启用] 混缩时保持原始音频源动态范围而音量会降低 [禁用] 保持原始音频源音量而动态范围被压缩。注 - 动态范围是音频源最静和最响声音之间的差距。"
 
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "指定要包含到日志中的附加库调试信息。"
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "视频立体模式"
@@ -12574,8 +12710,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "封面和同人画使用高质量贴图（占用更多内存）"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "限制图形用户界面分辨率以节省内存。不影响视频播放。1080为无限制。需要重新启动。"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "限制图形用户界面分辨率以节省内存。不影响视频播放。需要重新启动。"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12728,94 @@ msgstr "包含 AirPlay 服务处理相关设置的功能区。"
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "包含视频输出处理相关设置的功能区。"
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "电影"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "电影"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "剧集"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "剧集"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "季"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "季"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "集"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "集"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "音乐电视"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "音乐电视"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "影片集"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "影片集"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "视频"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "视频"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "音乐"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "音乐"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "歌手"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "歌手"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "专辑"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "专辑"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "歌曲"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "歌曲"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12861,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "混缩时增大中置声道音量"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "在全屏画面启用 printscreen、alt-tab 和音量等系统键。"
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "启用高色深艺术图片"
@@ -12660,3 +12880,27 @@ msgstr "要停止远程设备上的播放吗？"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "当音频输出接口仅支持如杜比数字5.1多声道音频时选择此项，这将允许 AAC5.1 或 FLAC5.1 等多声道音频以5.1环绕声播放。注意 - 需占用较多 CPU 资源，建议不要在 Pi 上使用。"
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "设置音频编码器参数，如质量和压缩级别"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "自动"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "无限制"

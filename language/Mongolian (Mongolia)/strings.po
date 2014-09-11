@@ -1,0 +1,1510 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Mongolian (Mongolia) (http://www.transifex.com/projects/p/xbmc-main/language/mn_MN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mn_MN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Зураг"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Хөгжим"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "Видео"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "ТВ-Хөтөч"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "Тохиргоо"
+
+msgctxt "#6"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "Цаг агаар"
+
+msgctxt "#9"
+msgid "Kodi media center"
+msgstr "Kodi медиа төв"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "Даваа"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "Мягмар"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "Лхагва"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "Пүрэв"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "Баасан"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "Бямба"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "Ням"
+
+msgctxt "#21"
+msgid "January"
+msgstr "Нэгдүгээр сар"
+
+msgctxt "#22"
+msgid "February"
+msgstr "Хоёрдугаар сар"
+
+msgctxt "#23"
+msgid "March"
+msgstr "Гуравдугаар сар"
+
+msgctxt "#24"
+msgid "April"
+msgstr "Дөрөвдүгээр сар"
+
+msgctxt "#25"
+msgid "May"
+msgstr "Тавдугаар сар"
+
+msgctxt "#26"
+msgid "June"
+msgstr "Зургаадугаар сар"
+
+msgctxt "#27"
+msgid "July"
+msgstr "Долоодугаар сар"
+
+msgctxt "#28"
+msgid "August"
+msgstr "Наймдугаар сар"
+
+msgctxt "#29"
+msgid "September"
+msgstr "Есдүгээр сар"
+
+msgctxt "#30"
+msgid "October"
+msgstr "Аравдугаар сар"
+
+msgctxt "#31"
+msgid "November"
+msgstr "Арваннэгдүгээр сар"
+
+msgctxt "#32"
+msgid "December"
+msgstr "Арванхоёрдугаар сар"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "Дав"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Мяг"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Лха"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Пүр"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Баа"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Бям"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "Ням"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "1-р сар"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "2-р сар"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "3-р сар"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "4-р сар"
+
+msgctxt "#55"
+msgid "May"
+msgstr "5-р сар"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "6-р сар"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "7-р сар"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "8-р сар"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "9-р сар"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "10-р сар"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "11-р сар"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "12-р сар"
+
+msgctxt "#71"
+msgid "N"
+msgstr "Х"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "ЗХХ"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "ЗХ"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "ЗЗХ"
+
+msgctxt "#75"
+msgid "E"
+msgstr "З"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "ЗЗУ"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "ЗУ"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "ЗУУ"
+
+msgctxt "#79"
+msgid "S"
+msgstr "У"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "БУУ"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "БУ"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "ББУ"
+
+msgctxt "#83"
+msgid "W"
+msgstr "Б"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "ББХ"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "БХ"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "БХХ"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "ТТГ"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Өмнө зүг"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Хойд зүг"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Баруун зүг"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Зүүн зүг"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Тогтворгүй"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "Харагдац: Автомат"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "Харагдац: Автомат том"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "Харагдац: Дүрс"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "Харагдац: Жагсаалт"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "Хайх"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "Эрэмбэлэх: Нэр"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "Эрэмбэлэх: Огноо"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "Эрэмбэлэх: Хэмжээ"
+
+msgctxt "#106"
+msgid "No"
+msgstr "Үгүй"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "Тийм"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "Дөт зам"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "Түр зогссон"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Шинэчлэлт амжилтгүй боллоо."
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Суулгалт амжилтгүй боллоо."
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "Хуулах"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "Зөөх"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "Устгах"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "Нэр өөрчлөх"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "Шинэ хавтас"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "Файл хуулахыг баталгаажуулах"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "Файл зөөхийг баталгаажуулах"
+
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Устгахыг баталгаажуулах"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "Эдгээр файлыг хуулах уу?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "Эдгээр файлыг зөөх үү?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Эдгээр файлыг устгах уу? - Устгагдсан файлыг сэргээж чадахгүй!"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "Төлөв"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "Объект"
+
+msgctxt "#128"
+msgid "General"
+msgstr "Ерөнхий"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "Системийн мэдээлэл"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "Дэлгэц"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "Альбом"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "Уран бүтээлч"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "Дуу"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "Жанр"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "Тоглуулах жагсаалт"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "Хайх"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "Системийн мэдээлэл"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "Хэм:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "Хугацаа:"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "Одоо:"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "Хийц"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "Сүлжээ:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "Төрөл:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "Статик"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC хаяг"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP хаяг"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Холбоос:"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "Санах байгууламж"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "Чөлөөтэй"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "Видео"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "Чөлөөт санах ой"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "Холбоосгүй"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "Чөлөөтэй"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "Боломжгүй"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "Уншиж байна"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "Диск алга"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "Нягтаршил"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Эрэмбэлэх гарчиг"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "Гарах огноо"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "Төлвүүд"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "Дуу"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "Үргэлжлэх хугацаа"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "Альбом сонгох"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "Зам"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "Шүүмж"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "Сэргээх"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "Альбом хайж байна"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "Ямар ч альбом олдсонгүй!"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "Бүгдийг сонгох"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "Хадгалах"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "Холих"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "Цэвэрлэх"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "Хайх"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "Хайж байна..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "Ямар ч мэдээлэл олдсонгүй!"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "Кино сонгох:"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "Санал"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Тоглуулах"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "Дараах"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "Өмнөх"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "Пиксель харьцаа"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD цооног"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "Дискээ хийнэ үү"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "Сүлжээнд холбогдоогүй байна"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "Цуцлах"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "Хурд"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "Шугаман"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "Дэлгэцийн горим"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Бүтэн дэлгэц #%d"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Бүтэн дэлгэц"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Дэлгэц"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "Хэл"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "Хөгжим"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "Алдаа"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "Нээж байна"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "Эхлэхийг хүлээж байна"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "Бичлэг"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "Бичлэг зогсоох"
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "Эрэмбэлэх: Зам"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "Эрэмбэлэх: Цаг хугацаа"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "Эрэмбэлэх: Гарчиг"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "Эрэмбэлэх: Уран бүтээлч"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "Эрэмбэлэх: Альбом"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "Топ 100"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "Хайлтын үр дүн"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "Фонт"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Хэмжээ"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "Видео"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "Хэл"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "Эрэмбэлэх: Файл"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "Эрэмбэлэх: Нэрээр"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "Эрэмбэлэх: Он"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Эрэмбэлэх: Үнэлгээ"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "Цэвэрлэх"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "Цаг агаар"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "Эрэмбэлэх: DVD#"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "Видео"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Эрэмбэлэх: Төрөл"
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Эрэмбэлэх: Ашиглалт"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Эрэмбэлэх: %s"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "Хэмжээ"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "Улс"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Эрэмбэлэх чиг "
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Эрэмбэлэх арга"
+
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP хаяг"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Нууц үг"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP хаяг"
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "Хэрэглэгчийн нэр"
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Хэрэглэгчийн нэр"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "Хөгжим"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "Видео"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "Зураг"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "Ням"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "Зураг"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "Тохиргоо"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "Хөгжим"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "Видео"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "Видео"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "Системийн мэдээлэл"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "Цаг агаар"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "Санах байгууламж"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "Видео"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "Дөт зам"
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "Топ 250"
+
+msgctxt "#13411"
+msgid "Minimum fan speed"
+msgstr "Сэнсний доод хурд"
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "Эндээс тоглуулах"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "Татаж байна"
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "Програм хангамж"
+
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "MPEG-2 VDPAU ашиглах"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "MPEG-4 VDPAU ашиглах"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "VC-1 VDPAU ашиглах"
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "MPEG-2 VAAPI ашиглах"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "MPEG-4 VAAPI ашиглах"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "VC-1 VAAPI ашиглах"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Програм хангамж"
+
+msgctxt "#13501"
+msgid "Audio clock"
+msgstr "Аудио цаг"
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f секунд"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f секунд"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d минут"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d минут"
+
+msgctxt "#14022"
+msgid "Library"
+msgstr "Номын сан"
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "ТВ алга"
+
+msgctxt "#14024"
+msgid "Enter the nearest large town"
+msgstr "Ойролцоох том хотыг оруулах"
+
+msgctxt "#14036"
+msgid "Services"
+msgstr "Үйлчилгээ"
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i мин"
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i сек"
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i милли сек"
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i килобит/сек"
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i кило бит"
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 дБ"
+
+msgctxt "#14051"
+msgid "Time format"
+msgstr "Цаг формат"
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "Огноо формат"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f дБ"
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "Огноо &  цаг"
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "Огноо тохируулах"
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "Цаг тохируулах"
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "24 цагийг HH:MM форматаар цаг оруулах"
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "DD/MM/YYYY форматаар огноо оруулах"
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "IP хаяг оруулах"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Тоглуулах"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "Нууц үг"
+
+msgctxt "#15100"
+msgid "Library"
+msgstr "Номын сан"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "Ерөнхий"
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Эрэмбэлэх гарчигийг засварлах"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Сувгууд"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Радио"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV сувгууд"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Radio сувгууд"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Суваг"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Дараах"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Шинэ суваг"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Бичлэг зогсоох"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Эрэмбэлэх: Суваг"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Эхлэх цаг"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Дуусах цаг"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Эхлэх огноо"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Дуусах огноо"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Хамгийн бага үргэлжлэл"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Хамгийн их үргэлжлэл"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Үл мэдэх жанрыг оролцуулах"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Тайлбар оролцуулах"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Хайх..."
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Групп"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Хөтөч хайх"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Групп болгосон"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Групп"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Суваг"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Да"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Мя"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Лх"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Пү"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Ба"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Бя"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Ня"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR мэдээлэл"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Цэс/OSD"
+
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Радио"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "PVR мэдээллийн санг тэглэх"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Арын хэсэг"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR үйлчилгээ"
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Үргэлжлүүлэх?"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG эх:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Сувгийн нэр:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Суваг засах"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Шинэ суваг"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Групп:"
+
+msgctxt "#19209"
+msgid "Kodi virtual backend"
+msgstr "Kodi виртуал ар тал"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Суваг устгах"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Бүх радио сувгууд"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Бүх ТВ сувгууд"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Ил"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Групплээгүй сувгууд"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Бичлэг зогсоогдсон"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Бичлэг хуваарьт орсон"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Бичлэг эхэлсэн"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Бичлэг дууссан"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Бичлэг устгагдсан"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Хайлтын үр дүнг цэвэрлэх"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Бичлэг эхлүүлэх"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Бичлэг зогсоох"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Суваг түгжих"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Эцэг эхийн удирдлага"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "ПИН өөрчлөх"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Эцэг эхийн удирдлага. ПИН оруулах:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Түгжигдсэн суваг. ПИН оруулах:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Буруу ПИН"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Бүх сувгууд"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Бусад/Үл мэдэгдэх"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Кино/Драма"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Хошин"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Романтик"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Мэдээ/Цаг агаар мэдээлэл"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Мэдээний сэтгүүл"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Баримтат"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Спорт"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Спортын сэтгүүл"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Хөлбөмбөг"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Багийн спорт"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Атлетик"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Мото спорт"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Усан спорт"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Өвлийн спорт"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Хүүхдийн/Залуусын нэвтрүүлэг"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Сургуулийн өмнөх насны хүүхдийн нэвтрүүлэг"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Рок/Поп"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Балет"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Урлаг/Соёл"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Шашин"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Утга зохиол"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Загвар"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Технологи/Байгалын ШУ"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Хэл"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Гар урлал"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Хар & Цагаан"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Нийтлэгдээгүй"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Драма"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Хошин"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Романтик"
+
+msgctxt "#20014"
+msgid "Sort by: Playlist"
+msgstr "Эрэмбэлэх: Тоглуулах жагсаалт"
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "Хэрэглэгчийн нэр"
+
+msgctxt "#20316"
+msgid "Sort by: ID"
+msgstr "Эрэмбэлэх: ID"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Тохиргоо"
+
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "Видео кодек"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "Аудио кодек"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "Нягтаршил"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "Улс"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "Фонт"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Хэмжээ"
+
+msgctxt "#23054"
+msgid "Running"
+msgstr "Ажиллаж байна"
+
+msgctxt "#24018"
+msgid "Services"
+msgstr "Үйлчилгээ"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "Цаг агаар"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "Арын хэсэг"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "Байрлал"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Бичлэг"

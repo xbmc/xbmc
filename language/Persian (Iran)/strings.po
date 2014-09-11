@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -388,10 +388,6 @@ msgstr "تایید کپی فایل"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "تایید انتقال فایل"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "حذف فایل را تایید میکنید؟"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -2316,10 +2312,6 @@ msgstr "مرور برای اسکریپت"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "میزان فشرده سازی"
-
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "ثبت رخداد مفصل..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -5289,6 +5281,10 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "تغییر به کانال"
 
+msgctxt "#19017"
+msgid "Recordings"
+msgstr "ضبط شده ها"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "بعدی"
@@ -5308,6 +5304,10 @@ msgstr "پخش"
 msgctxt "#19607"
 msgid "Fashion"
 msgstr "حالت"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "خودکار"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6564,3 +6564,15 @@ msgstr "تغییر به کانال"
 msgctxt "#36428"
 msgid "Record"
 msgstr "ضبط"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "سریال"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "سریال‌ها"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "خودکار"

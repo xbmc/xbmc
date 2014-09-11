@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -368,10 +368,6 @@ msgstr "ഫയൽ കോപ്പി കൺഫേം ചെയ്യുക"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "ഫയൽ മാറ്റുന്നത് കൺഫേം ചെയ്യുക"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "ഫയൽ ഇല്ലാതാക്കുന്നത് കൺഫേം ചെയ്യുക"
 
 msgctxt "#123"
 msgid "Copy these files?"

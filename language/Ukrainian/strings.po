@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -389,10 +389,6 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Підтвердження переміщення"
 
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Видалити файл?"
-
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Копіювати файли?"
@@ -584,6 +580,10 @@ msgstr "Роздільна здатність"
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Налаштувати частоту дисплея згідно з відео"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Сортувати назви"
 
 msgctxt "#172"
 msgid "Release date"
@@ -857,6 +857,10 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Музика"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Візуалізація"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Виберіть папку призначення"
@@ -1073,6 +1077,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Мова потоку за промовчанням"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Мова інтерфейсу"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=авто)"
@@ -1173,9 +1181,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Перетворення частоти кадрів"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Конфігурація виходу"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Фіксоване"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Оптимізовано"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1201,9 +1217,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Рік"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Нормалізувати рівні при мікшуванні"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Виводити звук у форматі DTS-HD"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Увімкнути пряме виведення"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1481,6 +1505,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Макс."
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Найкращий збіг"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Підтримувати роботу аудіопристрою"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Видалити відомості про альбом"
@@ -1553,6 +1585,10 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Буферизація"
 
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Жорсткий диск"
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1580,6 +1616,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Автозапуск"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Dolby Digital Plus (E-AC3) сумісний приймач"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1616,6 +1656,10 @@ msgstr "Режим"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Змінити вигляд"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Обмежити частоту семплування (кГц)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1784,6 +1828,10 @@ msgstr "Завантаження інформації з файлів…"
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Сорт. за частотою"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Увімкнути візуалізації"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2165,6 +2213,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Частота семплів"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Віртуальна тека"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Аудіо-CD"
@@ -2225,6 +2277,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Заданий"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "Посилення на повторне відтворення"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Коригування гучності на повторне відтворення"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "За рівнями треку"
@@ -2232,6 +2292,18 @@ msgstr "За рівнями треку"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "За рівнями альбому"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Рівень попередньго підсилювача - файли Посилення на повторне відтворення"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Рівень попередньго підсилювача - без файлів Посилення на повторне відтворення"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Уникнути відсікання на файлах Посилення на повторне відтворення"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2320,10 +2392,6 @@ msgstr "Вибрати сценарій"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "Ступінь стиснення"
-
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Детальний журнал…"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2869,6 +2937,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Програмні надбудови"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Встановити ескіз для надбудови"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Налаштування надбудови"
@@ -3048,6 +3120,10 @@ msgstr "Zeroconf"
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Оголошувати ці сервіси іншим системам за Zeroconf"
+
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Дозволити керування гучністю"
 
 msgctxt "#1270"
 msgid "Allow Kodi to receive AirPlay content"
@@ -3429,6 +3505,10 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Скинути"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Базовий"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Стандартний"
@@ -3437,9 +3517,17 @@ msgctxt "#10038"
 msgid "Advanced"
 msgstr "Більше"
 
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Експертний"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Браузер надбудов"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Скинути налаштування до значень за промовчанням"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3452,6 +3540,26 @@ msgstr "Допомога"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Довідка відсутня"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Скинути всі досупні нашаштування до значень за промовчанням."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Категорії відсутні"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Змініть рівень налаштувань, щоб відкрити додадкові категорії та налаштування."
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Так/Ні діалогу"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Перебіг діалогу"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3593,9 +3701,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Відомості про фільм"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Виберіть діалог"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Музика/дані"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Діалог ОК"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3608,6 +3724,14 @@ msgstr "Сценарії/дані"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Повноекранне відео"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "Візуалізація аудіо"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Файл укладання діалогу"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3764,6 +3888,10 @@ msgstr "Доступ заборонено"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Кількість спроб уведення паролю вичерпано."
+
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Систему буде вимкнено."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -3941,6 +4069,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Перезавантаження"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Мінімізувати"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Реакція на кнопку вимкнення"
@@ -4061,6 +4193,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Зберегти роздільну здатність?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Зберегти зміни?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Високоякісне масштабування"
@@ -4100,6 +4236,14 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Високоякісне масштабування VDPAU"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "Колір рівня перетворення VDPAU студії"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Зберегти обкладинку?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4152,6 +4296,10 @@ msgstr "Шлюз"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Основний DNS"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "Збій запуску"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4397,6 +4545,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Рекурсивне слайд-шоу"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Змішування"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Стерео"
@@ -4609,9 +4761,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Задані параметри"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Немає заздалегідь заготовлених\nзразків для цієї візуалізації"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Немає доступних налаштувань\nдля цієї візуалізації"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Відкрити/закрити"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Ввімкнути візуалізацію при відтворенні аудіо"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4785,6 +4949,30 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Високоякісне масштабування більше, ніж"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "Дозволити апаратне прискорення (libstagefright)"
+
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Віддати перевагу відео мікшеру VDPAU"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Дозволити апаратне прискорення (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Дозволити апаратне прискорення (MediaCodec)"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Використовувати VC-1 VDPAU"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Використовувати VC-1 VAAPI"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Програмний"
@@ -4804,6 +4992,10 @@ msgstr "За частотою відео (пропущення/дублюван�
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "За частотою відео (перетворення звуку)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Максимальне значення прискорення/уповільнення (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4868,6 +5060,14 @@ msgstr "%.1f с."
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f с."
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d хв."
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d хв."
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -4992,6 +5192,10 @@ msgstr "Без ТБ"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Вкажіть найближче велике місто"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Кеш Відео/Аудіо/DVD - Жорсткий диск"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5245,6 +5449,10 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Зупинити оцифровування CD"
 
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Прискорення"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Видалити"
@@ -5320,6 +5528,10 @@ msgstr "Не підключено"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "Відтворити за допомогою…"
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Згладжена А/В синхронізація"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5461,6 +5673,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Немає схожих пісень у медіатеці."
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "Не вдалося ініціалізувати базу даних."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Не вдалося відкрити базу даних."
@@ -5520,6 +5736,14 @@ msgstr "Відміт. як непереглянуте"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Змінити назву"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Налаштування"
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Змінити сортування назв"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5609,6 +5833,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Зворотній телесін (3:2)"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Оптимізований Lanczos3"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Авто"
@@ -5637,9 +5865,17 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Оптимізований Spline36"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Blend (програмний)"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5672,10 +5908,6 @@ msgstr "Розділюйте слова в пошуковому запиті з�
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "або використовуйте фрази, щоб знайти точний збіг, наприклад \"The wizard of Oz\"."
-
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Знайти подібні програми"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -5730,8 +5962,8 @@ msgid "PVR Backend %i - %s"
 msgstr "Сервер PVR %i — %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "Записи ТБ"
+msgid "Recordings"
+msgstr "Записи"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5917,9 +6149,9 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "У кінець"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Вікно EPG за промовчанням"
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Значки каналів"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6044,6 +6276,18 @@ msgstr "Уведіть ім'я запису"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Увага"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Служба"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Мікшування"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Джерело"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6285,6 +6529,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Затримка початку відтворення"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Запускати відтворення мінімізованим"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Тривалість швидкого запису"
@@ -6313,10 +6561,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Показувати відомості про канал після переключення"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Автоматично приховувати відомості про канал"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "ТБ"
@@ -6329,9 +6573,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Кількість днів в EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Тривалість показу відомостей про канал"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Радіо"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6352,6 +6596,10 @@ msgstr "EPG видаляється"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Продовжити з останнього каналу при запуску"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Тло"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6504,6 +6752,10 @@ msgstr "Запис видалено"
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Ховати OSD після переключення каналів"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Заборонити оновлення EPG під час відтворення"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6661,10 +6913,6 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Не показувати попередження \"З'єднання перервано\""
 
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Усі записи"
-
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Не вдалося знайти надбудови PVR"
@@ -6708,6 +6956,18 @@ msgstr "Налаштування клієнта"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Підтверджувати переключення каналів натисканням ОК"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "ПОточний значок"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Немає значка"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Обрати значок"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -6993,6 +7253,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Авто/мото"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Здоров'я та фітнес"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Кулінарія"
@@ -7012,6 +7276,10 @@ msgstr "Особливі властивості"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Оригінальна мова"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Ч-Б"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7336,6 +7604,14 @@ msgstr "Показувати відомості про погоду"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Показувати відомості про систему"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Показати вільне місце на диску C: Е: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Показати вільне місце на диску E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -7913,6 +8189,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Сканування альбомів за допомогою %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Сюжет фільму"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Відтворити частину…"
@@ -7924,6 +8204,10 @@ msgstr "Скидання калібрування"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Калібрувальні значення для %s буде скинуто"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "до значень за промовчанням"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8261,6 +8545,10 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Фанарт"
 
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Показувати фанарт у відео та музичних бібліотеках"
+
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "Сканування нового вмісту…"
@@ -8341,6 +8629,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Кіноцикли"
 
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr "Комбінуйте розрізанні елементи відео"
+
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Експортувати ескізи акторів?"
@@ -8420,6 +8712,10 @@ msgstr "Слухач"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Слухачів"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Вирівняйте бібліотечну ієрархію"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -8540,6 +8836,10 @@ msgstr "Папка для фільмів і альтернативних суб�
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ігнорувати шрифти субтитрів ASS/SSA"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Увімкнути мишу та сенсорний екран"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8897,6 +9197,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "мікс"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Положення субтитрів"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Фіксоване"
@@ -8928,6 +9232,10 @@ msgstr "%d — %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s — %s"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Зовнішній)"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9145,6 +9453,10 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Дата створення"
 
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Терміновість"
+
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Код країни"
@@ -9241,6 +9553,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Приховувати стан оновлення медіатеки"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Суфікс DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f с."
@@ -9313,6 +9629,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Програма"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Дозволена помилка в пропорції, щоб мінімізувати чорні смуги"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Показувати відеофайли у списках"
@@ -9336,6 +9656,10 @@ msgstr "Розмір"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "Кольори"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Кодування символів"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9469,6 +9793,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Скрипт"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Візуалізація"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "Репозиторій надбудов"
@@ -9593,13 +9921,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Доступні надбудови"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Відсутні залежності. Зв'яжіться з автором надбудови."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Неправильна структура надбудови"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s використовується встановленими надбудовами"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Неможливо видалити надбудову"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Повернути"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Несумісно"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9620,6 +9964,10 @@ msgstr "Ліцензія:"
 msgctxt "#24054"
 msgid "Changelog"
 msgstr "Список змін"
+
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Перевірити оновлення"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -9705,6 +10053,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Заблокувати менеджер надбудов"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Неможливо вимкнути надбудову"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(поточн.)"
@@ -9712,6 +10064,10 @@ msgstr "(поточн.)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(заблокован.)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Надбудова несумісна або відмічена в репозиторії як зіпсована."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9741,9 +10097,57 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "У обкладинці бракує файлів"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Надбудова несумісна через відсутні залежності."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Пауза при пошуку субтитрів"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Пошук субтитрів…"
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "Знайдено субтитрів: %d"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Субтитри не знайдено"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Завантаження субтитрів…"
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Мови завантажуваних субтитрів"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Вибрати мови для пошуку субтитрів. Окремі служби можуть не підтримувати вибрані мови."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Не вдалося завантажити субтитри"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Служби субтитрів не встановлено"
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Додати вручну"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Рядок пошуку"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Оновити все"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9844,6 +10248,10 @@ msgstr "Пропонувати завантаження відео перед в
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Кліпи"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Перезапустіть надбудову, щоб увімкнути її"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10065,6 +10473,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Увімкніть кнопку вибраного скрипта"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Автоматичний вхід"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Не вдалося запустити"
@@ -10108,6 +10520,14 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Аудіо (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Аудіо Windows Media 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Number of channels"
@@ -10153,6 +10573,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Вибрати поведінку при відсутності програвання і звуків інтерфейсу. \"Завжди\" — безперервне передавання на вихід нечутного сигналу для запобігання вимкненню аудіопристрою. Проте це може заблокувати звуки від інших програм. \"1—10 хв.\" — те саме, що й \"Завжди\", але через вказаний проміжок часу звук вимикається. \"Вимкн.\" — вимкнення звуку. У цьому випадку можливий пропуск звуку."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Звуки інтерфейсу"
@@ -10169,6 +10593,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Ніколи"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44,1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48,0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88,2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96,0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192,0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Не вдається знайти наступний файл"
@@ -10177,9 +10621,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не вдається знайти попередній файл"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Не вдалося запустити Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Перевірте, чи встановлено службу Apple Bonjour. Див. журнал."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay потребує ввімкнення Zeroconf."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Не вдалося зупинити Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay та AirTunes залежать від роботи Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10188,6 +10648,10 @@ msgstr "Оброблювач відео"
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Не вдалося активувати фільтри відео. Використовується масштабування bilinear."
+
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Не вдалося ввімкнути аудіопристрій"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
@@ -10221,6 +10685,10 @@ msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Типовий HID-пристрій"
 
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Загальний мережевий адаптер"
+
 msgctxt "#35003"
 msgid "Generic disk"
 msgstr "Типовий диск"
@@ -10253,6 +10721,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Увімкнути джойстик і геймпад"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Вимкнути джойстик, коли підключено цей пристрій."
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Розташування"
@@ -10272,6 +10744,10 @@ msgstr "Опис"
 msgctxt "#35504"
 msgid "Product ID"
 msgstr "ID продукту"
+
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Адаптер Pulse-Eight CEC"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
@@ -10293,6 +10769,10 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Увімкніть додаткові команди"
 
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Не вдалося відкрити адаптер"
+
 msgctxt "#36007"
 msgid "Devices to power on when starting Kodi"
 msgstr "Умикати наступні пристрої при старті Kodi"
@@ -10305,9 +10785,17 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Переводити аудіопристрої в режим сну при активній заставці"
 
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Прокидати пристрої при вимкненні заставки"
+
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Не вдалося виявити порт CEC. Налаштуйте його вручну."
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Не вдалося ініціалізувати адаптер CEC. Перевірте налаштування."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10316,6 +10804,10 @@ msgstr "Номер порту HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Підключено"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Не вдалося ініціалізувати CEC адаптер: libCEC не знайдений у вашій системі."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10369,6 +10861,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "З'єднання перервано"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Цей користувач не має дозволу на відкриття адаптера CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Порт зайнятий. Тільки одна програма може звернутися до адаптера CEC"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Призупиняти запис при переключенні на інше джерело"
@@ -10401,6 +10901,14 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Папка об'єкту"
 
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Обмежити діапазон кольорів (16-235)"
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Налаштування обкладинки. Наявні параметри залежать від поточної обкладинки."
+
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr "Змінити тему, що асоційована з вибраною шкіркою."
@@ -10409,13 +10917,73 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Зміна кольорів вибраної шкірки."
 
+msgctxt "#36109"
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Вибір вікна, яке відкривається при запуску Kodi."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Вимкнення показу RSS-новин."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Редагування потоків RSS."
 
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Вибір форматів температури, часу і дати. Доступні параметри залежать від обраної мови."
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Вказати розміщення країни."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Вибір часового поясу."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Вибір звукової доріжки за промовчанням при наявності доріжок кількома мовами."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Вибір субтитрів за промовчанням при наявності субтитрів кількома мовами."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Показувати в списках пункт (..) для переходу на рівень вище."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Показувати розширення медіафайлів. Наприклад, \"You Enjoy Myself.mp3\" буде показано просто як \"You Enjoy Myself\"."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Дозволити видалення і перейменування файлів через контекстне меню (кнопка \"С\" або права кнопка миші)."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Проміжок часу перед увімкненням заставки."
+
+msgctxt "#36130"
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Виберіть заставку. Kodi змусить \"Потьмяніти\" заставку, коли відтворення повноекранного відео призупинено або відкрито діалогове вікно."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Налаштування заставки. Доступні параметри залежать від поточної заставки."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Попередній перегляд вибраної заставки."
+
+msgctxt "#36133"
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Якщо грає музика, Kodi запустить вибрану візуалізацію замість відображення заставки."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Затемнювати екран на паузі. Не діє, якщо вибрано заставку \"Dim\"."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10429,9 +10997,129 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Показувати сюжет непереглянутих фільмів/серій у медіатеці."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Завантажувати портрети акторів при скануванні медіафайлів."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Приховувати меню вибору сезонів серіалів. Доступні варіанти: \"Якщо один сезон\" (за промовчанням), \"Завжди\" і \"Ніколи\"."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Об'єднувати фільми у кіноцикли при перегляді фільмотеки."
+
+msgctxt "#36146"
+msgid "Check for new media files on Kodi startup."
+msgstr "Шукати нові медіафайли при запуску Kodi."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Приховувати вікно перебігу процесу сканування."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Видаляти з медіатеки елементи, що неможливо знайти (наприклад, перейменовані чи видалені файли або файли на відсутніх дисках)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Експорт бази даних медіатеки у вигляді файлів XML. При потребі можна перезаписати наявні файли XML."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Імпорт файлу XML до медіатеки відео."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Вибір методу обробки і показу відео."
+
+msgctxt "#36166"
+msgid "Synchronise the video to the refresh rate of the monitor."
+msgstr "Синхронізація відео на частоті відновлення монітора."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Синхронізація аудіо та відео шляхом ресемпілнгу частоти, пропуску/дублювання пакетів або налаштування синхронізації при значній розбіжності."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Максимальна швидкість відео коригується відповідно до фактичної частоти оновлення екрану."
+
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Вибрати якість ресемплінґу для випадків, коли частота на виході має відрізнятися від частоти джерела. \"Низька\" — велика швидкість й низьке навантаження на процесор. \"Середня\" та \"Висока\" — пропорційно більше навантаження на процесор."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Дозволити відеоплеєру ігнорувати спотворення пропорцій до деякої міри, щоб заповнити екран."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Вибір налаштування пропорцій показу відео 4:3 на широкоформатних дисплеях."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "Перетворення рівня VDPAU студії, забезпечує шлях для додаткових застосунків, таких як Kodi, щоб впливати на перетворення колірного простору."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Увімкнути телетекст при перегляді ТБ."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Масштабувати телетекст до пропорцій 4:3."
+
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Перемикач між Вибором, Гра (за умовчанням), Продовжити і Показати інформацію. Виберіть пункт, наприклад відкрити каталог в режимі файлів. Продовжити - автоматично відновить відео з останньої позиції, яку ви переглядали, навіть після перезапуску системи."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Отримувати з файлу ескізи та іншу інформацію, наприклад кодеки і пропорції відео."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Якщо файл додано до медіатеки, замість імені файлу буде показуватися назва фільму/серії."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Отримувати з файлу ескізи та іншу інформацію, наприклад кодеки і пропорції відео, для відображення в медіатеції."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Видаляє назву, жанр, тощо з подання бібліотеки. Вибір категорії доставить вас прямо до подання назв."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Ігнорувати шрифти субтитрів ASS/SSA"
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Вибрати папку для субтитрів. Папка може бути на мережному диску."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Розташування субтитрів на екрані."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Автоматично програвати DVD-диск при вставленні."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Примусовий вибір регіону при програванні DVD-диску."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Намагатися пропустити примусовий вступ перед меню DVD."
 
 msgctxt "#36197"
 msgid "No info available yet."
@@ -10445,13 +11133,173 @@ msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про серіали. Доступні варіанти див. у менеджері надбудов."
 
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Інфоресурс за промовчанням для музичних відео."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Увімкнути функції перегляду та запису ТБ в Kodi (PVR). Для цього потрібна щонайменше одна надбудова PVR."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Імпорт груп каналів із ТБ-серверу (якщо підтримується). Користувацькі групи, що відсутні на ТБ-сервері, будуть видалені."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Використовувати номери із ТБ-серверу замість ручного налаштування в Kodi."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Відкрити менеджер каналів, який дозволяє змінювати порядок каналів, імена каналів, значки тощо."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Відправити команду на ТБ-сервер шукати канали (якщо підтримується)."
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Видалити базу даних каналів/EPG, а потім знову імпортувати дані із ТБ серверів."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Не імпортувати дані EPG при перегляді ТБ, щоб знизити навантаження на процесор."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "За промовчанням дані EPG зберігаються в локальній базі даних, щоб прискорити імпорт при перезапуску Kodi."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Приховати текст \"немає відомостей\", якщо неможливо отримати дані EPG для каналу."
+
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Показувати обраний ТБ-канал у вікні замість повного екрану."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Показувати відомості про якість сигналу у вікні з відомостями про кодек (якщо підтримується надбудовою і ТБ-сервером)."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "При натисканні кнопки з цифрою в повноекранному режимі через 1 секунду буде автоматично ввімкнено відповідний канал."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Показувати повідомлення при додаванні, завершенні або видаленні таймерів на ТБ-сервері."
+
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Виконати вказану команду пробудження при виході з Kodi або вході в режим гібернації. Мітка часу наступного запланованого запису передається як параметр."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Виконувати команду пробудження щодня у вказаний час."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Час виконання щоденної команди пробудження."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Запитувати пароль при доступі до заблокованих від дітей каналів. Канали можна позначити як заблоковані в розділі \"Загальні\" редактору каналів. Заблоковані від дітей канали неможливо переглядати або записувати без уведення паролю. Крім того, відомості EPG для таких каналів приховані."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Введіть пароль, щоб розблокувати заблоковані від дітей канали."
+
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Показувати серед виконавців у музичній медіатеці тих виконавців, що присутні лише в збірках."
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Під час сканування автоматично отримувати відомості про альбом та виконавця з інфоресурсу."
+
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про виконавців. Доступні варіанти див. у менеджері надбудов."
 
+msgctxt "#36259"
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Шукати нові або видалені медіафайли після запуску Kodi."
+
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Експорт бази даних музичної медіатеки у вигляді файлів XML. При потребі можна перезаписати наявні файли XML."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Імпорт файлу XML до музичної медіатеки."
+
+msgctxt "#36265"
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Автоматично відтворювати наступний файл у поточній папці. Наприклад, у представленні файлів після відтворення доріжки Kodi автоматично відкриє наступну доріжку в цій же папці."
+
+msgctxt "#36267"
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi читатиме відомості ReplayGain, закодовані в аудіофайлах, наприклад програмою MP3Gain, і відповідно нормалізуватиме рівні звуку."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "За стандартом — 89 дБ. Змінювати обережно."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "За стандартом — 89 дБ. Змінювати обережно."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Плавний перехід між аудіотреками. Тривалість переходу можна налаштувати в діапазоні 1—15 с."
+
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Виберіть візуалізацію, яка буде показуватися під час відтворення музики."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Зчитувати інформаційні теги з музичних файлів. Може сповільнити сканування папок з великою кількістю файлів, особливо по мережі."
+
+msgctxt "#36281"
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Шукати ескізи у мережних папках та на оптичних дисках. Це може сповільнити показ мережних папок."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Автоматично програвати CD-диск при вставленні."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Шукати відомості про CD-диск в Інтернеті."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Вибрати папку для збереження оцифрованих треків."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Вибрати кодувальник звуку, що використовується при оцифровуванні."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Вибрати якість оцифровування аудіотреків."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Вибрати бітрейт, що використовується вибраним кодувальником при оцифровуванні аудіотреків."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Відкривати лоток CD після закінчення оцифровування."
+
+msgctxt "#36293"
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "При відтворенні музичних файлів Kodi шукатиме відповідний файл .cdg і показуватиме з нього графічні зображення."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10465,17 +11313,181 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Показ відомостей EXIF (дата, час, використаний фотоапарат тощо) при їх наявності."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Автоматично створювати ескізи при відкриванні папки з фото."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Автоматично повертати фото відповідно до інформації EXIF при її наявності."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Вибрати тривалість показу кожного фото у слайд-шоу."
+
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "Використовувати ефекти панорами і збільшення при показі слайд-шоу."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Показувати слайд-шоу у випадковому порядку."
+
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr "Вибрати три місцевості для показу прогнозу погоди."
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про погоду. Доступні варіанти див. у менеджері надбудов."
 
+msgctxt "#36321"
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Показувати ім'я системи, де встановлено Kodi, при використанні різномантних мережних служб."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Повідомляти клієнти UPnP при ручному або автоматичному оновленні медіатеки."
+
+msgctxt "#36328"
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Надайте можливість видаленим користувачам управляти Kodi через вбудований веб-сервер."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Визначте порт веб-серверу."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Вибір доступних веб-інтерфейсів, встановлених за допомогою менеджера надбудов."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Дозвольте програмам цьому комп'ютеру управляти Kodi через Мережевий Інтерфейс або інтерфейсний протокол JSON-RPC."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control Kodi."
+msgstr "Дозвольте програмам мережі управляти Kodi."
+
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Автоматично надсилати 'Wake-On-Lan' на сервер(и) безпосередньо перед тим, як отримати доступ до спільних файлів або послуг."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "У багато-екранній конфігурації, екрани, де Kodi не відображений,  затемнені."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Усунути вертикальний розрив."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Тестові зразки для калібрування дисплея устаткування."
+
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Вибрати спосіб налаштування аудіовиходу. \"Фіксований\" — налаштування виходу постійно змінюються згідно із вказаною частотою семплування і конфігурацією колонок. \"Найкращий збіг\" — налаштування виходу якомога точніше відповідають параметрам джерела. \"Оптимізовано\" — налаштування виходу встановлюються на початку відтворення та не змінюються при зміні параметрів джерела."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Посилити AC3 потоки, які були зведені в 2 канали."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Виберіть цей варіант, якщо ваш ресівер здатний декодувати AC3 потоки."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Виберіть цей варіант, якщо ваш ресівер здатний декодувати потоки DTS ."
+
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Виберіть максимальну кількість аудіоканалів/колонок при декодуванні звуку. При використанні оптичного/коаксіального виходу цей параметр має бути 2.0."
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Увімкнути пряме передавання (бітстрім) кодованого звуку, наприклад Dolby Digital, на зовнішній аудіопристрій (А/В-ресівер)."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Виберіть цей варіант, якщо ваш ресівер здатний декодувати TrueHD потоки."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Виберіть цей варіант, якщо ваш ресівер здатний декодувати DTS-HD потоки."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Налаштуйте, як оброблюються звуки інтерфейсу, наприклад, меню навігації і важливі повідомлення."
+
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "При включенні, стрілки вашої клавіатури переміщають вибір на віртуальній клавіатурі. Якщо вимкнуто, вони переміщають курсор за вашим текстом."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Використовувайте мишу або сенсорний екран пристрою керування Kodi. Примітка: відключення призведе до втратити контроль над Kodi, коли немає клавіатури або дистанційного пульта."
+
+msgctxt "#36378"
+msgid "Use a joystick to control Kodi."
+msgstr "Використовуйте джойстик для керування Kodi."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Якщо ваше інтернет-з'єднання використовує проксі, налаштуйте його тут."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Настроїти тип проксі-серверу, який використовується."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Налаштувати адресу проксі-сервера."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Налаштування порту проксі-сервера."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Налаштувати ім'я користувача проксі-сервера."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Налаштуйте пароль проксі-сервера."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "Якщо у вас обмежена доступна смуга пропускання, Kodi намагатиметься зберегти її в цих межах."
+
+msgctxt "#36389"
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "Визначте, як довго Kodi повинен байдикувати перед припиненням роботи."
+
+msgctxt "#36390"
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "Визначте , які дії Kodi має робити, якщо він не використовується протягом тривалого часу."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Тека для збереження знімків екрану, узятих в межах Kodi."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Визначте PIN-код, що використовується для головного замку ."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Визначте максимальну кількість спроб до закриття Kodi."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -10501,10 +11513,198 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Визначення розташувань, які використовуються для отримання інформації про погоду."
+
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Переключитися на канал"
 
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Показати відомості"
+
 msgctxt "#36428"
 msgid "Record"
 msgstr "Запис"
+
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr "Стереоскопічний режим (поточний)"
+
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr "Стереоскопічний режим"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Нічого"
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "Над/Під"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Поруч"
+
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "Анагліф червоно/блакитний"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "Анагліф зелено/пурпурний"
+
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr "Переплетено"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "На підставі устаткування"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "Моноскопічна - 2D"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "Запитайте у мене"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "Кращий спосіб використання"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "Кращий спосіб"
+
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "Так само, як фільм (автовизначення)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "Вимкнути стереоскопічний режим, коли відтворення зупинено"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "Це відео стереоскопічне. Виберіть режим відтворення"
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "Виберіть стереоскопічний режим"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Моно (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Кращий спосіб"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Вибір альтернативного режиму..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Так само, як фільм"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Стереоскопічний режим відео"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Стереоскопічний перевернутий режим"
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Дозволяє регулятор гучності від AirPlay клієнтів."
+
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Вивід звуку через аналоговий вихід (на навушники) та HDMI."
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Підвищувати гучність діалогів порівняно з фоновими звуками при мікшуванні багатоканального звуку."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Увімкнути апаратне декодування відеофайлів."
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "Серіал"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Серіали"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "серія"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "серій"
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Слабозорих)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Коментарі директорів)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Коментарі директорів 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(КОПІЯ)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Примусове)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Коментарі директорів)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Востаннє зайнятий профіль"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Перегляд в"
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Виберіть цей параметр, якщо ваш ресівер здатний декодувати потоки E-AC3."
+
+msgctxt "#37017"
+msgid "Dual audio output"
+msgstr "Виведення звуку на два виходи"
+
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
+msgstr "Підвищувати гучність центрального каналу при мікшуванні"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "Програвач UPnP"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Ви хочете зупинити відтворення на віддаленому пристрої?"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Авто"

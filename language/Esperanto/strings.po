@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -121,13 +121,169 @@ msgctxt "#32"
 msgid "December"
 msgstr "Decembro"
 
+msgctxt "#41"
+msgid "Mon"
+msgstr "Lun"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Mar"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Mer"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Ĵaŭ"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Ven"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Sab"
+
 msgctxt "#47"
 msgid "Sun"
-msgstr "Sunbrilo"
+msgstr "Dim"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Jan"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Feb"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Mar"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Apr"
 
 msgctxt "#55"
 msgid "May"
-msgstr "Majo"
+msgstr "Maj"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Jun"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Jul"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Aŭg"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Sep"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Okt"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Dec"
+
+msgctxt "#71"
+msgid "N"
+msgstr "N"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "NNOr"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "NOr"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "OrNOr"
+
+msgctxt "#75"
+msgid "E"
+msgstr "Or"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "OrSOr"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "SOr"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "SSOr"
+
+msgctxt "#79"
+msgid "S"
+msgstr "S"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "SSOk"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "SOk"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "OkSOk"
+
+msgctxt "#83"
+msgid "W"
+msgstr "Ok"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "OkNOk"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "NOk"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "NNOk"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Sude"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Norde"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Okcidente"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Oriente"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Varieme"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -147,7 +303,7 @@ msgstr "Vido: listo"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Skani"
+msgstr "Akiri"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -171,7 +327,7 @@ msgstr "Jes"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "SlideShow"
+msgstr "Bildmontrado"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -191,7 +347,7 @@ msgstr "Paŭzigita"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Mia vicos : Fonto"
+msgstr "Ĝisdatigo fiaskis"
 
 msgctxt "#114"
 msgid "Installation failed"
@@ -225,10 +381,6 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Konfirmi movon de dosiero"
 
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Ĉu konfirmi forigon de dosiero?"
-
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Ĉu kopii ĉi tiujn dosierojn?"
@@ -247,7 +399,7 @@ msgstr "Stato"
 
 msgctxt "#127"
 msgid "Objects"
-msgstr "Objecktoj"
+msgstr "Objektoj"
 
 msgctxt "#128"
 msgid "General"
@@ -255,7 +407,7 @@ msgstr "Ĝenerala"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Slideshow"
+msgstr "Bildmontrado"
 
 msgctxt "#130"
 msgid "System info"
@@ -335,7 +487,7 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC"
+msgstr "MAC-adreso"
 
 msgctxt "#150"
 msgid "IP address"
@@ -405,6 +557,14 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "Etoso"
 
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Nuligi pridosierajn agojn"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Distingivo"
@@ -412,6 +572,10 @@ msgstr "Distingivo"
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Albumo:"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Ordigi titolojn"
 
 msgctxt "#172"
 msgid "Release date"
@@ -685,13 +849,25 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Muziko"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Videbligo"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Elektu celdosierujon"
 
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Dukanaligi"
+
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Nombro de kanaloj"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS-kapabla ricevilo"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -813,6 +989,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Neniu rezulto trovata"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Preferata aŭdlingvo"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Preferata subteksta lingvo"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Subteksto"
@@ -820,6 +1004,10 @@ msgstr "Subteksto"
 msgctxt "#288"
 msgid "Font"
 msgstr "Tiparo"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Grandeco"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -853,6 +1041,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Legosignoj"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1-kapabla ricevilo"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2-kapabla ricevilo"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3-kapabla ricevilo"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "malfruiĝo"
@@ -868,6 +1068,14 @@ msgstr "Enabled"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Non-Interleaved"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Fontflua lingvo"
+
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Uzantinterfaca lingvo"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -955,11 +1163,11 @@ msgstr "Eraro compressing datinbanko"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Do you want to clean la muziko library?"
+msgstr "Ĉu vi volas purigi la bibliotekon?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Clean Muziko Library..."
+msgstr "Purigi bibliotekon.."
 
 msgctxt "#335"
 msgid "Start"
@@ -968,6 +1176,18 @@ msgstr "Iniciati"
 msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate Conversion"
+
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Konfiguro de eligo"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fiksita"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimumigita"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -993,6 +1213,22 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Jaro"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normaligi nivelojn je malplikanaligo"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD-kapabla ricevilo"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Ebligi trapaso"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD-kapabla ricevilo"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Softvaro"
@@ -1015,11 +1251,11 @@ msgstr "Matrix Trails"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "ekranosaver Idle Timeout"
+msgstr "Ekrankurtena tempo"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "ekranosaver Mode"
+msgstr "Ekrankurtena modo"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1031,11 +1267,11 @@ msgstr "ĉiom albumos"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Recently Added Albumos"
+msgstr "Laste aldonitaj albumoj"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "ekranosaver"
+msgstr "Ekrankurteno"
 
 msgctxt "#361"
 msgid "R. Slideshow"
@@ -1043,11 +1279,15 @@ msgstr "R. SlideShow"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "ekranosaver Fade Level"
+msgstr "Ekrankurtena malheliga nivelo"
 
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "ordigi je: vico"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Ricevilo kapabla je Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1255,11 +1495,19 @@ msgstr "Vido: Big Icons"
 
 msgctxt "#418"
 msgid "Low"
-msgstr "Mia Filmoj/Gxenroj"
+msgstr "Malalta"
 
 msgctxt "#419"
 msgid "High"
-msgstr "Mia Filmoj/Aktoroj"
+msgstr "Alta"
+
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Plej bona kombino"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Vivtenu aŭdaparaton"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -1303,7 +1551,7 @@ msgstr "No Cache"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "Forviŝi movie from datinbanko"
+msgstr "Forviŝi filmon de la biblioteko"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -1312,6 +1560,14 @@ msgstr "Are vi sure about removing"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "la filmo?"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Ne detektis lumdisklegilon"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Vi bezonas lumdisklegilon por ludi ĉi tiun filmon"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1324,6 +1580,10 @@ msgstr "Opening vico"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
+
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Malmola disko"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1353,6 +1613,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "Autorun"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Ricevilo kapabla je Dolby Digital Plus (E-AC3)"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Enabled"
@@ -1363,19 +1627,19 @@ msgstr "Columns"
 
 msgctxt "#451"
 msgid "Row 1 address"
-msgstr "Row 1 Address"
+msgstr "Adreso de vico 1"
 
 msgctxt "#452"
 msgid "Row 2 address"
-msgstr "Row 2 Address"
+msgstr "Adreso de vico 2"
 
 msgctxt "#453"
 msgid "Row 3 address"
-msgstr "Row 3 Address"
+msgstr "Adreso de vico 3"
 
 msgctxt "#454"
 msgid "Row 4 address"
-msgstr "Row 4 Address"
+msgstr "Adreso de vico 4"
 
 msgctxt "#455"
 msgid "Rows"
@@ -1447,7 +1711,7 @@ msgstr "Muziko Only"
 
 msgctxt "#476"
 msgid "Music & video"
-msgstr "Muziko & Filmoj"
+msgstr "Muziko kaj video"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
@@ -1463,7 +1727,7 @@ msgstr "Skin and Language"
 
 msgctxt "#480"
 msgid "Appearance"
-msgstr "Appearance"
+msgstr "Aspekto"
 
 msgctxt "#481"
 msgid "Audio options"
@@ -1471,7 +1735,7 @@ msgstr "Audio Options"
 
 msgctxt "#482"
 msgid "About Kodi"
-msgstr "About Kodi"
+msgstr "Pri Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1511,7 +1775,7 @@ msgstr "Overĉiom Audio Headroom"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
-msgstr "Upsample Filmoj to GUI Resolution"
+msgstr "Plikanaligi videojn ĝis interfaca distingivo"
 
 msgctxt "#496"
 msgid "Calibration"
@@ -1551,7 +1815,7 @@ msgstr "Empty"
 
 msgctxt "#505"
 msgid "Loading media info from files..."
-msgstr "Loading media info from vicos..."
+msgstr "Ŝargante ludaĵinformojn de dosieroj..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -1559,7 +1823,7 @@ msgstr "ordigi je: Usage"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
-msgstr "Enable filmoj mode switching"
+msgstr "Ebligi ŝanĝon de videomodo"
 
 msgctxt "#512"
 msgid "Startup window"
@@ -1571,7 +1835,7 @@ msgstr "Home Window"
 
 msgctxt "#514"
 msgid "Manual settings"
-msgstr "Manual Preferoj"
+msgstr "Manaj agordoj"
 
 msgctxt "#515"
 msgid "Genre"
@@ -1597,9 +1861,25 @@ msgctxt "#522"
 msgid "Remove source"
 msgstr "ReMovi Source"
 
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "Aldoni al ludlisto"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "Mane aldoni al biblioteko"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Mana aldono"
+
 msgctxt "#543"
 msgid "DVD"
 msgstr "KD"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "Grandeco"
 
 msgctxt "#556"
 msgid "Title"
@@ -1612,6 +1892,10 @@ msgstr "Jaro"
 msgctxt "#564"
 msgid "Type"
 msgstr "Type"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "Aldona dato"
 
 msgctxt "#571"
 msgid "Default"
@@ -1771,15 +2055,35 @@ msgstr "Need to cache a big vico. Continue?"
 
 msgctxt "#646"
 msgid "Remove from library"
-msgstr "ReMovi Title"
+msgstr "Forviŝi el biblioteko"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "Eksporti videobibliotekon"
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "Importi videobibliotekon"
+
+msgctxt "#651"
+msgid "Browse for library"
+msgstr "Foliumi bibliotekon"
+
+msgctxt "#653"
+msgid "Update library"
+msgstr "Ĝisdatigi bibliotekon"
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "Ĉu vi volas forviŝi ĝin de la biblioteko?"
 
 msgctxt "#700"
 msgid "Cleaning up library"
-msgstr "Cleaning up Library"
+msgstr "Purigante bibliotekon"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Removing old kantoj from la Library"
+msgstr "Forviŝante malnovajn kantojn de la biblioteko"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -1823,7 +2127,7 @@ msgstr "Save & Restart"
 
 msgctxt "#724"
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Nevalida adreso uziĝis. La valoro estu laŭ AAA.BBB.CCC.DDD"
 
 msgctxt "#725"
 msgid "with numbers between 0 and 255."
@@ -1883,7 +2187,7 @@ msgstr "flava"
 
 msgctxt "#744"
 msgid "Files"
-msgstr "vicos"
+msgstr "Dosieroj"
 
 msgctxt "#745"
 msgid "No scanned information for this view"
@@ -1891,7 +2195,7 @@ msgstr "No scanned informaĵo for this Vido"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
-msgstr "Switch to la vicos Vido"
+msgstr "Bonvolu elŝalti bibliotekan modon"
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -1915,7 +2219,7 @@ msgstr "Removing Share"
 
 msgctxt "#754"
 msgid "Add program link"
-msgstr "Add Program Link"
+msgstr "Aldoni program-ligilon"
 
 msgctxt "#755"
 msgid "Edit program path"
@@ -1985,13 +2289,25 @@ msgctxt "#792"
 msgid "Port"
 msgstr "Port"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Biblioteka ĝisdatigo"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Muzikbiblioteko bezonas reakiri etikedojn el dosieroj"
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Aldoni bildojn..."
+
 msgctxt "#998"
 msgid "Add Music..."
-msgstr "XLink Kai"
+msgstr "Aldoni muzikon..."
 
 msgctxt "#999"
 msgid "Add Videos..."
-msgstr "Interreto-gaming"
+msgstr "Aldoni videojn..."
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -1999,7 +2315,7 @@ msgstr "Unable to connect"
 
 msgctxt "#1002"
 msgid "Kodi was unable to connect to the network location."
-msgstr "Kodi was unable to connect to la network location."
+msgstr "Kodi ne sukcesis konektiĝi al la reta loko."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -2007,15 +2323,15 @@ msgstr "This could be due to la network not being connected."
 
 msgctxt "#1004"
 msgid "Would you like to add it anyway?"
-msgstr "Would you like to add it anyway?"
+msgstr "Ĉu vi tamen volas aldoni ĝin?"
 
 msgctxt "#1006"
 msgid "IP address"
-msgstr "IP Address"
+msgstr "IP-adreso"
 
 msgctxt "#1007"
 msgid "Add network location"
-msgstr "Add Network Location"
+msgstr "Aldoni retan lokon"
 
 msgctxt "#1008"
 msgid "Protocol"
@@ -2023,7 +2339,7 @@ msgstr "Protocol"
 
 msgctxt "#1009"
 msgid "Server address"
-msgstr "Server Address"
+msgstr "Servilo-adreso"
 
 msgctxt "#1010"
 msgid "Server name"
@@ -2051,7 +2367,7 @@ msgstr "network server"
 
 msgctxt "#1016"
 msgid "Enter the network address of the server"
-msgstr "tajpi la network address of la server"
+msgstr "Enigi la retan adreson de la servilo"
 
 msgctxt "#1017"
 msgid "Enter the path on the server"
@@ -2067,7 +2383,7 @@ msgstr "tajpi la uzulonomo"
 
 msgctxt "#1020"
 msgid "Add %s source"
-msgstr "Add %s Source"
+msgstr "Aldoni fonton de %s"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
@@ -2091,7 +2407,7 @@ msgstr "Could not retrieve directory informaĵo."
 
 msgctxt "#1026"
 msgid "Add source"
-msgstr "Add Source"
+msgstr "Aldoni fonton"
 
 msgctxt "#1027"
 msgid "Edit source"
@@ -2115,11 +2431,35 @@ msgstr "an image folder"
 
 msgctxt "#1032"
 msgid "Add network location..."
-msgstr "Add Network Location..."
+msgstr "Aldoni retan lokon..."
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "Videaj aldonaĵoj"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "Muzikaj aldonaĵoj"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "Bildaj aldonaĵoj"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "Programaj aldonaĵoj"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Aldonaĵaj agordoj"
 
 msgctxt "#1048"
 msgid "Username"
 msgstr "Uzulonomo"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "Enigi retan adreson"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -2151,7 +2491,7 @@ msgstr "Muziko"
 
 msgctxt "#1212"
 msgid "Video"
-msgstr "Filmoj"
+msgstr "Video"
 
 msgctxt "#1213"
 msgid "Pictures"
@@ -2159,11 +2499,11 @@ msgstr "Bildoj"
 
 msgctxt "#1214"
 msgid "Files"
-msgstr "vicos"
+msgstr "Dosieroj"
 
 msgctxt "#1215"
 msgid "Music & video "
-msgstr "Muziko & Filmoj "
+msgstr "Muziko kaj video"
 
 msgctxt "#1216"
 msgid "Music & pictures"
@@ -2171,27 +2511,27 @@ msgstr "Muziko & Bildoj"
 
 msgctxt "#1217"
 msgid "Music & files"
-msgstr "Muziko & vicos"
+msgstr "Muziko kaj dosieroj"
 
 msgctxt "#1218"
 msgid "Video & pictures"
-msgstr "Filmoj & Bildoj"
+msgstr "Video kaj bildoj"
 
 msgctxt "#1219"
 msgid "Video & files"
-msgstr "Filmoj & vicos"
+msgstr "Video kaj dosieroj"
 
 msgctxt "#1220"
 msgid "Pictures & files"
-msgstr "Bildoj & vicos"
+msgstr "Bildoj kaj dosieroj"
 
 msgctxt "#1221"
 msgid "Music & video & pictures"
-msgstr "Muziko & Filmoj & Bildoj"
+msgstr "Muziko kaj video kaj bildoj"
 
 msgctxt "#1222"
 msgid "Music & video & pictures & files"
-msgstr "Muziko & Filmoj & Bildoj & vicos"
+msgstr "Muziko kaj filmoj kaj bildoj kaj dosieroj"
 
 msgctxt "#1223"
 msgid "Disabled"
@@ -2199,15 +2539,15 @@ msgstr "Disabled"
 
 msgctxt "#1226"
 msgid "Files & music & video"
-msgstr "vicos & Muziko & Filmoj"
+msgstr "Dosieroj kaj muziko kaj filmoj"
 
 msgctxt "#1227"
 msgid "Files & pictures & music"
-msgstr "vicos & Bildoj & Muziko"
+msgstr "Dosieroj kaj bildoj kaj muziko"
 
 msgctxt "#1228"
 msgid "Files & pictures & video"
-msgstr "vicos & Bildoj & Filmoj"
+msgstr "Dosieroj kaj bildoj kaj filmoj"
 
 msgctxt "#1229"
 msgid "Music & programs"
@@ -2215,7 +2555,7 @@ msgstr "Muziko & Programs"
 
 msgctxt "#1230"
 msgid "Video & programs"
-msgstr "Filmoj & Programs"
+msgstr "Video kaj programoj"
 
 msgctxt "#1231"
 msgid "Pictures & programs"
@@ -2223,11 +2563,11 @@ msgstr "Bildoj & Programs"
 
 msgctxt "#1232"
 msgid "Music & video & pictures & programs"
-msgstr "Muziko & Filmoj & Bildoj & Programs"
+msgstr "Muziko kaj video kaj bildoj kaj programoj"
 
 msgctxt "#1233"
 msgid "Programs & video & music"
-msgstr "Programs & Filmoj & Muziko"
+msgstr "Programoj kaj video kaj muziko"
 
 msgctxt "#1234"
 msgid "Programs & pictures & music"
@@ -2235,7 +2575,7 @@ msgstr "Programs & Bildoj & Muziko"
 
 msgctxt "#1235"
 msgid "Programs & pictures & video"
-msgstr "Programs & Bildoj & Filmoj"
+msgstr "Programoj kaj bildoj kaj video"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -2327,11 +2667,11 @@ msgstr "Mia Bildoj"
 
 msgctxt "#10003"
 msgid "File manager"
-msgstr "Mia vicos"
+msgstr "Dosiermanaĝilo"
 
 msgctxt "#10004"
 msgid "Settings"
-msgstr "Preferoj"
+msgstr "Agordoj"
 
 msgctxt "#10005"
 msgid "Music"
@@ -2339,7 +2679,7 @@ msgstr "Mia Muziko"
 
 msgctxt "#10006"
 msgid "Videos"
-msgstr "Mia Filmoj"
+msgstr "Videoj"
 
 msgctxt "#10007"
 msgid "System information"
@@ -2347,51 +2687,51 @@ msgstr "Sistemo informaĵo"
 
 msgctxt "#10008"
 msgid "Settings - General"
-msgstr "Preferoj->Generalo"
+msgstr "Agordoj - Ĝenerale"
 
 msgctxt "#10009"
 msgid "Settings - Screen"
-msgstr "Preferoj->ekrano"
+msgstr "Agordoj - Ekrano"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Preferoj->Appearance->GUI Calibration"
+msgstr "Agordoj - Aspekto - Ĝustigo de grafika interfaco"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Preferoj->Mia Filmoj->ekrano Calibration"
+msgstr "Agordoj - Videoj - Ekranĝustigo"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
-msgstr "Preferoj->Mia Bildoj"
+msgstr "Agordoj - Bildoj"
 
 msgctxt "#10013"
 msgid "Settings - Programs"
-msgstr "Preferoj->Mia Programs"
+msgstr "Agordoj - Programoj"
 
 msgctxt "#10014"
 msgid "Settings - Weather"
-msgstr "Preferoj->Wealar"
+msgstr "Agordoj - Vetero"
 
 msgctxt "#10015"
 msgid "Settings - Music"
-msgstr "Preferoj->Mia Muziko"
+msgstr "Agordoj - Muziko"
 
 msgctxt "#10016"
 msgid "Settings - System"
-msgstr "Preferoj->System"
+msgstr "Agordoj - Sistemo"
 
 msgctxt "#10017"
 msgid "Settings - Videos"
-msgstr "Preferoj->Mia Filmoj"
+msgstr "Agordoj - Videoj"
 
 msgctxt "#10018"
 msgid "Settings - Network"
-msgstr "Preferoj->Network"
+msgstr "Agordoj - Reto"
 
 msgctxt "#10019"
 msgid "Settings - Appearance"
-msgstr "Preferoj->Appearance"
+msgstr "Agordoj - Aspekto"
 
 msgctxt "#10020"
 msgid "Scripts"
@@ -2399,23 +2739,43 @@ msgstr "Scripts"
 
 msgctxt "#10021"
 msgid "Web Browser"
-msgstr "Mia Filmoj/Gxenroj"
+msgstr "Retfoliumilo"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr "Mia Filmoj/Nomoj"
+msgstr "Videoj"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
-msgstr "Mia Filmoj/Kanto-listoj"
+msgstr "Videoj/Ludlisto"
+
+msgctxt "#10029"
+msgid "Login screen"
+msgstr "Ensalutekrano"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
-msgstr "Preferoj->Provicos"
+msgstr "Agordoj - Profiloj"
 
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
+
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Aldonaĵo-foliumilo"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Provu ŝanĝi la agordo-nivelon por vidi aldonajn kategoriojn kaj agordojn."
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Aldonaĵo-agordoj"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Aldonaĵoj/Informoj"
 
 msgctxt "#10500"
 msgid "Music/Playlist"
@@ -2423,11 +2783,11 @@ msgstr "Mia Muziko/Playlist"
 
 msgctxt "#10501"
 msgid "Music/Files"
-msgstr "Mia Muziko/vicos"
+msgstr "Muziko/Dosieroj"
 
 msgctxt "#10502"
 msgid "Music/Library"
-msgstr "Mia Muziko/Library"
+msgstr "Muziko/Biblioteko"
 
 msgctxt "#10503"
 msgid "Playlist editor"
@@ -2447,7 +2807,7 @@ msgstr "Applications"
 
 msgctxt "#10507"
 msgid "Configuration"
-msgstr "Preferoj"
+msgstr "Konfiguro"
 
 msgctxt "#10508"
 msgid "Weather forecast"
@@ -2455,7 +2815,7 @@ msgstr "Wealar Forecast"
 
 msgctxt "#10509"
 msgid "Network gaming"
-msgstr "Reto Gaming"
+msgstr "Ludi rete"
 
 msgctxt "#10510"
 msgid "Extensions"
@@ -2467,7 +2827,7 @@ msgstr "Sistemo Info"
 
 msgctxt "#10516"
 msgid "Music - Library"
-msgstr "Mia Muziko - Library"
+msgstr "Muziko - Biblioteko"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -2475,7 +2835,7 @@ msgstr "Mia Muziko - Now Playing"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "Mia Filmoj - Now Playing"
+msgstr "Nun ludas - Videoj"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -2491,7 +2851,7 @@ msgstr "Mia Muziko/info"
 
 msgctxt "#12003"
 msgid "Videos/Info"
-msgstr "Mia Filmoj/Info"
+msgstr "Videoj/Informoj"
 
 msgctxt "#12004"
 msgid "Scripts/Info"
@@ -2499,7 +2859,7 @@ msgstr "Mia Scripts/Info"
 
 msgctxt "#12005"
 msgid "Fullscreen video"
-msgstr "Fullekrano filmoj"
+msgstr "Tutekrana video"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -2511,7 +2871,7 @@ msgstr "Return to Mia Muziko"
 
 msgctxt "#12011"
 msgid "Return to videos window"
-msgstr "Return to Mia Filmoj"
+msgstr "Reiri al video-fenestro"
 
 msgctxt "#12021"
 msgid "Start from beginning"
@@ -2661,6 +3021,14 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Item Locked"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Ĝisdatigante videobibliotekan artaĵaron"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "La artaĵa kaŝujo en via videobiblioteko bezonas ĝisdatiĝi."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Reactivate Lock"
@@ -2695,7 +3063,7 @@ msgstr "Plaĉi tajpi a Valid Master Code!"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Preferoj &  Mia vicos"
+msgstr "Agordoj kaj dosiermanaĝilo"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -2751,11 +3119,11 @@ msgstr "Mia Wealar"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "ekranosaver"
+msgstr "Ekrankurteno"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
-msgstr "Fullekrano OSD"
+msgstr "Tutekrana ekranmontraĵo"
 
 msgctxt "#13000"
 msgid "System"
@@ -2767,7 +3135,7 @@ msgstr "Immediate HD Spindown"
 
 msgctxt "#13002"
 msgid "Video only"
-msgstr "Filmoj Only"
+msgstr "Nur video"
 
 msgctxt "#13003"
 msgid "- Delay"
@@ -2823,7 +3191,7 @@ msgstr "After %i secs"
 
 msgctxt "#13200"
 msgid "Profiles"
-msgstr "Provicos"
+msgstr "Profiloj"
 
 msgctxt "#13201"
 msgid "Delete profile '%s'?"
@@ -2911,7 +3279,7 @@ msgstr "Network"
 
 msgctxt "#13280"
 msgid "Video"
-msgstr "Filmoj"
+msgstr "Video"
 
 msgctxt "#13281"
 msgid "Hardware"
@@ -2927,11 +3295,11 @@ msgstr "CPU Speed:"
 
 msgctxt "#13286"
 msgid "Video encoder:"
-msgstr "Filmoj Encoder:"
+msgstr "Video-kodigilo:"
 
 msgctxt "#13287"
 msgid "Screen resolution:"
-msgstr "ekrano Resolution:"
+msgstr "Ekrana distingivo:"
 
 msgctxt "#13292"
 msgid "A/V cable:"
@@ -2951,7 +3319,7 @@ msgstr "Xbox is Connected"
 
 msgctxt "#13297"
 msgid "Not connected. Check network settings."
-msgstr "Xbox is not Connected. Check Network Preferoj."
+msgstr "Ne konektita. Kontrolu retajn agordojn."
 
 msgctxt "#13299"
 msgid "Target temperature"
@@ -3123,7 +3491,7 @@ msgstr "Switch LED off on Playback"
 
 msgctxt "#13346"
 msgid "Movie information"
-msgstr "Filmoj info"
+msgstr "Filmaj informoj"
 
 msgctxt "#13347"
 msgid "Queue item"
@@ -3135,7 +3503,7 @@ msgstr "Skani IMDb..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "Query Info For ĉiom vicos"
+msgstr "Serĉi novan enhavon"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -3143,7 +3511,7 @@ msgstr "Albumo informaĵo"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Scan ĉiom to Datinbanko"
+msgstr "Akiri eron por biblioteko"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -3207,7 +3575,7 @@ msgstr "Default Gamma"
 
 msgctxt "#13381"
 msgid "Resume video"
-msgstr "Resume Filmoj"
+msgstr "Restarti videon"
 
 msgctxt "#13382"
 msgid "Voice mask - Port 1"
@@ -3251,11 +3619,11 @@ msgstr "Calculating folder amplekso"
 
 msgctxt "#13395"
 msgid "Video settings"
-msgstr "Filmoj Preferoj"
+msgstr "Video-agordoj"
 
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
-msgstr "Audio and Subtitle Preferoj"
+msgstr "Aŭdaj kaj subtekstaj agordoj"
 
 msgctxt "#13397"
 msgid "Enable subtitles"
@@ -3304,6 +3672,10 @@ msgstr "Medium"
 msgctxt "#13508"
 msgid "High"
 msgstr "Nobla"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Aldoni arton"
 
 msgctxt "#13551"
 msgid "Off"
@@ -3371,7 +3743,7 @@ msgstr "- Percentage"
 
 msgctxt "#14015"
 msgid "No files and at least one thumb"
-msgstr "No vicos and at least one Thumb"
+msgstr "Sen dosieroj kaj almenaŭ unu antaŭvidbildeto"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
@@ -3399,7 +3771,7 @@ msgstr "Change Area Code 3"
 
 msgctxt "#14022"
 msgid "Library"
-msgstr "Library"
+msgstr "Biblioteko"
 
 msgctxt "#14023"
 msgid "No TV"
@@ -3411,7 +3783,7 @@ msgstr "tajpi la nearest large town or US ZIP code"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
-msgstr "Filmoj Cache - DVDRom"
+msgstr "Video-kaŝujo - DVD-ROM"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
@@ -3427,7 +3799,7 @@ msgstr "Servers"
 
 msgctxt "#14038"
 msgid "Network settings changed"
-msgstr "Network Preferoj changed"
+msgstr "Retaj agordoj ŝanĝiĝis"
 
 msgctxt "#14039"
 msgid "Kodi requires to restart to change your"
@@ -3539,11 +3911,11 @@ msgstr "tajpi la Dati in DD/MM/YYYY format"
 
 msgctxt "#14068"
 msgid "Enter the IP address"
-msgstr "tajpi la IP address"
+msgstr "Enigi la IP-adreson"
 
 msgctxt "#14069"
 msgid "Apply these settings now?"
-msgstr "Apply lase Preferoj now?"
+msgstr "Ĉu nun apliki ĉi tiujn agordojn?"
 
 msgctxt "#14070"
 msgid "Apply changes now"
@@ -3552,6 +3924,14 @@ msgstr "Apply Changes Now"
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr "ĉiomow vico Renaming and Deletion"
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "Aldoni al plej ŝatataj"
+
+msgctxt "#14083"
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Uzi tutekranan fenestron anstataŭ veran tutekraniĝon."
 
 msgctxt "#14098"
 msgid "Play"
@@ -3567,7 +3947,7 @@ msgstr "Games"
 
 msgctxt "#15019"
 msgid "Add"
-msgstr "Add"
+msgstr "Aldoni"
 
 msgctxt "#15052"
 msgid "Password"
@@ -3575,7 +3955,7 @@ msgstr "pasvorto"
 
 msgctxt "#15100"
 msgid "Library"
-msgstr "Library"
+msgstr "Biblioteko"
 
 msgctxt "#15101"
 msgid "Database"
@@ -3747,7 +4127,7 @@ msgstr "Festo Mode mode aborted."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Ne matching kantoj in la datinbanko."
+msgstr "Ne trovis kongruajn kantojn en la biblioteko."
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -3767,7 +4147,7 @@ msgstr "Auto"
 
 msgctxt "#16100"
 msgid "All Videos"
-msgstr "ĉiom Filmoj"
+msgstr "Ĉiuj videoj"
 
 msgctxt "#16101"
 msgid "Unwatched"
@@ -3793,17 +4173,57 @@ msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
 
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fiksita"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Aldoni tempumilon..."
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Sekva"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Aldoni tempumilon"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adreso"
 
 msgctxt "#19607"
 msgid "Fashion"
 msgstr "Mode"
 
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Auto"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "Ekranfota dosierujo"
+
+msgctxt "#20008"
+msgid "Screenshots"
+msgstr "Ekranfotoj"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "Ensalutekrano"
+
 msgctxt "#20109"
 msgid "Zoom"
 msgstr "Zoom"
+
+msgctxt "#20116"
+msgid "Use lock on login screen"
+msgstr "Ŝlosi ensalutekranon"
+
+msgctxt "#20140"
+msgid "Lock screensaver"
+msgstr "Ŝlosi ensalutekranon"
 
 msgctxt "#20142"
 msgid "Username"
@@ -3817,21 +4237,81 @@ msgctxt "#20177"
 msgid "Done"
 msgstr "Bone"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Anonci bibliotekĝisdatigojn per UPnP"
+
 msgctxt "#20190"
 msgid "Custom"
 msgstr "Custom"
+
+msgctxt "#20196"
+msgid "Export music library"
+msgstr "Eksporti muzikbibliotekon"
+
+msgctxt "#20197"
+msgid "Import music library"
+msgstr "Importi muzikbibliotekon"
+
+msgctxt "#20314"
+msgid "Videos - Library"
+msgstr "Videoj - Biblioteko"
+
+msgctxt "#20341"
+msgid "this path from the Kodi library?"
+msgstr "ĉi tiun padon el la Kodi-biblioteko?"
 
 msgctxt "#20342"
 msgid "Movies"
 msgstr "Filmoj"
 
+msgctxt "#20362"
+msgid "Remove episode from library"
+msgstr "Forviŝi epizodon el biblioteko"
+
+msgctxt "#20363"
+msgid "Remove TV show from library"
+msgstr "Forviŝi televidaĵon el biblioteko"
+
+msgctxt "#20392"
+msgid "Remove music video from library"
+msgstr "Forviŝi muzikvideon el biblioteko"
+
+msgctxt "#20402"
+msgid "Download actor thumbnails when adding to library"
+msgstr "Elŝuti aktorantaŭvidbildetojn aldonante al biblioteko"
+
+msgctxt "#20419"
+msgid "Replace file names with library titles"
+msgstr "Anstataŭi dosiernomojn per bibliotekaj titoloj"
+
 msgctxt "#20420"
 msgid "Never"
 msgstr "Never"
 
+msgctxt "#20432"
+msgid "Exclude path from library updates"
+msgstr "Ellasi padon de biblioteko-ĝisdatigoj"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Platigi bibliotekan hierarĥion"
+
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Ebligi muson kaj tuŝekranan subtenon"
+
 msgctxt "#21375"
 msgid "Normal"
 msgstr "Normal"
+
+msgctxt "#21377"
+msgid "Widescreen"
+msgstr "Larĝekrane"
+
+msgctxt "#21384"
+msgid "Make watched filtering a toggle in video library"
+msgstr "Filtri je viditeco estu ŝanĝebla en la videobiblioteko"
 
 msgctxt "#21385"
 msgid "Open"
@@ -3841,21 +4321,45 @@ msgctxt "#21417"
 msgid "Settings"
 msgstr "Agordoj"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Subteksta pozicio surekrane"
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Fiksita"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Distingivo"
+
+msgctxt "#22000"
+msgid "Update library on startup"
+msgstr "Ĝisdatigi bibliotekon je starto"
+
+msgctxt "#22001"
+msgid "Hide progress of library updates"
+msgstr "Kaŝi progreson de bibliotekaj ĝisdatigoj"
 
 msgctxt "#22030"
 msgid "Font"
 msgstr "Tiparo"
 
+msgctxt "#22031"
+msgid "Size"
+msgstr "Grandeco"
+
 msgctxt "#24007"
 msgid "Movie information"
-msgstr "Filmoj info"
+msgstr "Filmaj informoj"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr "ekranosaver"
+msgstr "Ekrankurteno"
+
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Videbligo"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -3881,6 +4385,10 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Tajpi Search String"
 
+msgctxt "#29800"
+msgid "Library Mode"
+msgstr "Biblioteka modo"
+
 msgctxt "#34100"
 msgid "Number of channels"
 msgstr "Nombro de kanaloj"
@@ -3889,10 +4397,186 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Never"
 
+msgctxt "#36009"
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "Paŭzigi aparatojn je aktivigo de ekrankurteno"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Veki aparatojn je malaktivigo de ekrankurteno"
+
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Xbox is Connected"
 
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategorio enhavanta ĉiujn ekrankurtenajn agordojn."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Konfiguri kiom da senaktiveca tempo necesas ĝis montro de la ekrankurteno."
+
+msgctxt "#36130"
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Elekti la ekrankurtenon. Kodi devige uzas la malheligan ekrankurtenon kiam tutekrana video estas paŭzita aŭ dialogujo estas aktiva."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Ŝanĝi specifajn ekrankurtenajn agordojn. La haveblaj opcioj dependas de la uzata ekrankurteno."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Antaŭvidi la elektitan ekrankurtenon."
+
+msgctxt "#36133"
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Se muziko estas ludata, Kodi startos la elektitan videbligaĵon anstataŭ montri la ekrankurtenon."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Malheligi la montradon dum paŭzoj. Ne valida por la malhelig-ekrankurtena modo."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategorio kiu enhavas konfigurojn por kiel la videobiblioteko estu traktata."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Ebligi la videobibliotekon."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Montri enhavinformojn por nespektitaĵoj en la videobiblioteko."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Grupigi filmojn laŭ filmaroj kiam foliumante la filmbibliotekon."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Kaŝi la bibliotekan akiran progresbreton dum akirado."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Forviŝi erojn el via biblioteko kiuj estas netroveblaj (ĉu renomigitaj, forviŝitaj aŭ sur forigebla disko kiu nun ne estas konektita)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Eksporti la videobibliotekan datumbazon al XML-dosieroj. Tio eble povas transskribi viajn nunajn XML-dosierojn."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importi XML-dosieron en la videobibliotekan datumbazon."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Maksimuma video-rapideco ĝustiĝas por kongrui kun efektiva ekrana refreŝigo."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Permesi videoludilon ignori bildformaton je iom por plenigi pli grandan parton de la ekrano per la video."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Elekti la zomnivelon je kiu 4:3-videoj estas montrataj en larĝekranaj montriloj."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Post akiro de dosiero al la biblioteko, ĝi montros la metadatuman titolon anstataŭ la dosiernomo."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Eligi antaŭvidbildetojn kaj informojn, kiaj kodeksoj kaj bildformato, por montri en biblioteka modo."
+
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Kombini multpartajn videodosierojn, DVD-dosierujojn kaj filmajn dosierujojn ĝis unuopa ero en ne-bibliotekaj vidmodoj."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Forviŝi la titolajn, ĝenrajn ktp subdividojn el la biblioteka vidmodo. Elektante kategorion vi tuj vidos la titolan vidmodon."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Loko de subtekstoj sur la ekrano."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Prenilo normale uzata por aldoni muzikvideojn al via biblioteko."
+
+msgctxt "#36211"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategorio por PVR-menuoj kaj surekranmontraĵaj agordoj, kaj kanalinformaj fenestroj."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Fermi la surekranmontraĵajn regumojn post ŝanĝo de kanalo."
+
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Montri fluon de elektita kanalo en malgranda kesto anstaŭ tutekrane."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Premado de numerbutono en tutekrana modo aŭtomate ŝanĝos al la kanalnumero enigita post 1 sekundo."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Ebligi la muzikbibliotekon."
+
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Decidi ĉu artisto kiu nur aperas en kompilaĵoj estu montrata en la biblioteka artisto-vidmodo."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Eksporti la muzikbibliotekan datumbazon al XML-dosieroj. Tio eble transskribos viajn nunajn XML-dosierojn."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Importi XML-dosieron en la muzikbibliotekan datumbazon."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Agordi kiel la nomoj de kantoj estu montrataj en bibliotekaj listoj."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Uzata por formatigi la duan kolumnon en bibliotekaj listoj."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Kiam mana aŭ aŭtomata biblioteko-ĝisdatigo okazas, informu al UPnP-klientoj."
+
+msgctxt "#36351"
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "Montri Kodi en fenestro, aŭ tutekrane sur la elektita ekrano."
+
+msgctxt "#36354"
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Montri Kodi en tutekrana fenestro. La ĉefa avantaĝo estas por multekranaj konfiguroj, tiel ke Kodi povu esti uzata sen minimumigi aliajn aplikaĵojn. Tio uzas pli da rimedoj, do la ludado povas esti malpli glata."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "En multekrana konfiguro, la ekranoj kie Kodi ne estas montrata estos nigrigitaj."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Uzi muson aŭ tuŝekranon por sendi komandojn al Kodi. Atentu: malebligi tion kaŭzas perdon de rego pri Kodi kiam ne ĉeestas klavaro aŭ teleregilo."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Dosierujo uzata por konservi ekranfotojn faritajn en Kodi."
+
 msgctxt "#36428"
 msgid "Record"
 msgstr "Registri"
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "Kategorio enhavanta la agordojn por kiel la muzikbiblioteko estu traktata."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"

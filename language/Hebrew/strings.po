@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "אישור העברת קובץ"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "לאשר את מחיקת הקובץ?"
+msgid "Confirm delete"
+msgstr "אשר מחיקה"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "ממשק אינטרנט"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "מקודדי שמע"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "סלוגן"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "גודל: (%i,%i)->(%i,%i) (זום x%2.2f) AR:%2.2f:1 (פיקסלים: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "מסך"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "סקריפטים"
@@ -879,7 +887,7 @@ msgstr "מספר ערוצים"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "מקלט עם תמיכה ב־DTS"
+msgstr "רסיבר עם תמיכה ב־DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1055,15 +1063,15 @@ msgstr "סימניות"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP1"
+msgstr "רסיבר עם תמיכה ב־MP1"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP2"
+msgstr "רסיבר עם תמיכה ב־MP2"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP3"
+msgstr "רסיבר עם תמיכה ב־MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1088,6 +1096,10 @@ msgstr "שפת שידור מקורית"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "שפת ממשק משתמש"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "מערך מקלדת"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1225,9 +1237,13 @@ msgctxt "#345"
 msgid "Year"
 msgstr "שנה"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalize levels on downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "מקלט עם תמיכה ב־DTS-HD"
+msgstr "רסיבר עם תמיכה ב־DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
@@ -1235,7 +1251,7 @@ msgstr "הפעל passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "מקלט עם תמיכה ב־TrueHD"
+msgstr "רסיבר עם תמיכה ב־TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1295,7 +1311,7 @@ msgstr "סדר לפי : קובץ"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "מקלט עם תמיכה ב־Dolby Digital (AC3)‎"
+msgstr "רסיבר עם תמיכה ב־Dolby Digital (AC3)‎"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1620,6 +1636,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "נגן אוטומטית"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "רסיבר עם תמיכה ב־Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1977,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "התאם אודיו רב-ערוצי לסטריאו"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "מספר"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "מיין לפי: %s"
@@ -2277,6 +2301,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "מותאם אישי"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "התאמת עוצמת הקול ReplayGain"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "השתמש בעוצמת הרצועה"
@@ -2284,6 +2316,14 @@ msgstr "השתמש בעוצמת הרצועה"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "השתמש בעוצמת האלבום"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "עוצמת PreAmp  - קבצי ReplayGain"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "עוצמת PreAmp - ללא קבצי ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2373,13 +2413,41 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "רמת דחיסה"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "רישום מפורט..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "הפעל Dolby Digital transcoding"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול (CURL (http, dav"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "פירוט ביומן הרישום על אירועי ספריות FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "פירוט ביומן הרישום על קריאות ל-DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "פירוט ביומן הרישום על בקשות JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "פירוט ביומן הרישום על רכיב AUDIO"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2471,7 +2539,7 @@ msgstr "שרת FTP"
 
 msgctxt "#730"
 msgid "Port"
-msgstr "פתחה"
+msgstr "פורט"
 
 msgctxt "#732"
 msgid "Save & apply"
@@ -3989,6 +4057,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "רמת סוללה"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "עדכונים אוטומטים: פעיל"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "עדכונים אוטומטים: התראה"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "עדכונים אוטומטים: כבוי"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "מזג אויר"
@@ -4937,21 +5017,17 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "אפשר האצת חומרה (MediaCodec)"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "השתמש ב- Mpeg-2 VDPAU"
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "אפשר פענוח multi threaded software"
 
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים Mpeg-(1/2). אם מבוטל יעשה שימוש במעבד במקום. כרטיסי Radeon ישנים לא מתפקדים כראוי כשאפשרות זו מופעלת."
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "השתמש ב- MPEG-2 VDPAU"
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "השתמש ב- Mpeg-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודד Mpeg-4. אם מבוטל יעשה שימוש במעבד במקום. חלק חומרת IOS חווים בעיות כשאפשרות זו מופעלת."
+msgid "Use MPEG-4 VDPAU"
+msgstr "השתמש ב- MPEG-4 VDPAU"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -4962,20 +5038,8 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים מבוססי VC-1. אם מבוטל יעשה שימוש במעבד במקום. חומרת AMD עם VDPAU אינם יכולים לקודד VC-1."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "השתמש ב- Mpeg-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים Mpeg-(1/2). אם מבוטל יעשה שימוש במעבד במקום. ישנם סרטי Mpeg-2 אשר מופיעים בהם סימנים ירוקים."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "השתמש ב- Mpeg-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדי Mpeg-4. אם מבוטל יעשה שימוש במעבד במקום."
+msgid "Use MPEG-2 VAAPI"
+msgstr "השתמש ב- MPEG-2 VAAPI"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5209,13 +5273,33 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "הזן את העיר הגדולה הקרובה"
 
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "זכרון וידאו/אודיו/DVD - דיסק קשיח"
+
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "מטמון וידאו - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "זכרון וידאו - רשמת מקומית"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "זכרון וידאו - אינטרנט"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "מטמון אודיו - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "זכרון אודיו - רשמת מקומית"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "זכרון אודיו - אינטרנט"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5228,6 +5312,10 @@ msgstr "רשת מקומית"
 msgctxt "#14036"
 msgid "Services"
 msgstr "שרותים"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "זכרון DVD - רשת מקומית"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5288,6 +5376,10 @@ msgstr "מבנה תאריך"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI פילטרים ב"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5525,6 +5617,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "ברירת מחדל של המעטפת"
 
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "גופן גדול יותר"
+
 msgctxt "#15111"
 msgid "Theme"
 msgstr "ערכת נושא"
@@ -5548,6 +5644,10 @@ msgstr "לא מחובר"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "נגן באמצעות..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "השתמש בסנכרון A/V חלק"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5849,6 +5949,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "שיפור Lanczos3"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "אוטומטי"
@@ -5876,6 +5980,10 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
+
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "שיפור Spline36"
 
 msgctxt "#16324"
 msgid "Software Blend"
@@ -5922,8 +6030,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "או השתמש בביטויים כדי למצוא התאמה מדוייקת, כמו \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "מצא תכנות דומות"
+msgid "Find similar"
+msgstr "מצא דומים"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -5978,8 +6086,8 @@ msgid "PVR Backend %i - %s"
 msgstr "ממשק האחורי PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "הקלטת טלוויזיה"
+msgid "Recordings"
+msgstr "הקלטות"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6169,10 +6277,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "עבור לסיום"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "חלון לוח שידורים ברירת מחדל"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "סמלי ערוץ"
@@ -6321,9 +6425,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "אנא החלף לערוץ אחר."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "עבור לערוץ"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "הזן את שם התיקיה עבור ההקלטה"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "אנא בחר ערוץ"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6344,6 +6456,14 @@ msgstr "שגיאה בלתי צפויה. נסה שנית מאוחר יותר או
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "שגיאת ממשק האחורי PVR. בדוק יומן רישום לפרטים."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "למחוק הקלטה זו?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "למחוק את כל ההקלטות מתיקיה זו?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6448,6 +6568,10 @@ msgstr "בבקשה צור קבוצה לפני הפעולה"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "שם הקבוצה"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "חיפוש..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6593,10 +6717,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "הצג מידע ערוץ במעבר בין ערוצים"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "הסתר מידע ערוץ האופן אוטומטי"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "טלוויזיה"
@@ -6609,9 +6729,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "ימים להצגה בלוח שידורים"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "משך זמן לתצוגת מידע ערוץ"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "רדיו"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6634,8 +6754,8 @@ msgid "Continue last channel on startup"
 msgstr "בהפעלה מחדש התחל בערוץ אחרון שנצפה"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "ממוזער"
+msgid "Background"
+msgstr "רקע"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6946,8 +7066,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "אל תציג אזהרות 'חיבור אבד'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* כל ההקלטות"
+msgid "Group Items"
+msgstr "פריטי קבוצה"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -6963,7 +7083,7 @@ msgstr "הרחבה עבור ממשק אחורי שתאפשר שימוש ב-PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "בבקשה בקר בxbmc.org/pvr ע\"מ ללמוד יותר."
+msgstr "בבקשה בקר ב- xbmc.org/pvr ע\"מ ללמוד יותר."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7008,6 +7128,14 @@ msgstr "בחר סמל"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "עיין לסמל"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "מחפש סמלי ערוץ"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "כל הערוצים"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9285,6 +9413,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s עד %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(חיצוני)"
@@ -10013,6 +10145,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "לוג שינויים"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "חפש עדכונים"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "עודכן לאחרונה %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "האם תרצה/י להפעיל הרחבה זו?"
@@ -10088,6 +10228,18 @@ msgstr "דרושה הרחבה"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "לנסות להתחבר מחדש?"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "ספריות הרחבות"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "ספריות מידע"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "ספריות חיזויים"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10192,6 +10344,10 @@ msgstr "הזן מחרוזת חיפוש"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "עדכן הכל"
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "צמוד לוידאו"
 
 msgctxt "#24125"
 msgid "Custom location"
@@ -10785,10 +10941,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "לנטרל את הג׳ויסטיק כאשר התקן זה קיים"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "הפעל מפתחות מערכת במסך מלא"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "מיקום"
@@ -11020,6 +11172,10 @@ msgstr "בחר את כתוביות ברירת המחדל כאשר קיימות �
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "הצג את הסימן (..) ברשימות כדי לעבור לספריית האב"
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "מציג סיומות קבצים של קבצי מדיה. למשל, \"You enjoy Myself.mp3\" פשוט יוצג כ-\"You enjoy Myself\""
 
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
@@ -11289,6 +11445,10 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "נגן דיסקים באופן אוטומטי בעת הכנסתם למחשב"
 
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "קרא את המידע השייך לתקליטור שמע ממסד נתונים באינטרנט."
+
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "בחר את המיקום בדיסק הקשיח שלך שבו הרצועות המועתקות ישמרו."
@@ -11357,33 +11517,45 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "הגדר פורט לשרת WEB"
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "הגדר שם משתמש לשרת WEB"
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "הגדר את פורט השלט הרחוק"
 
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "הגדר סיסמא לשרת ה-WEB שלך."
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "הגדרת תווך פורטים לשלט הרחוק"
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
 msgstr "חוזר על עיכוב ראשוני (ms)"
 
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "הפעל הגנת סיסמה לשירות האייר פליי."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "הגדר את סיסמת האייר פליי"
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי AC3."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי AC3."
 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי DTS."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי DTS."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי TrueHD."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי TrueHD."
 
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי DTS-HD."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי DTS-HD."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "בחר את המכשיר שיעשה בו שימוש כדי לנגן פורמטים מקודדים, אלו הפורמטים המופיעים למטה באפשרויות ה-'תמיכת רסיבר'"
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11428,10 +11600,6 @@ msgstr "הגדר/י כמה זמן להמתין לפני כבוי"
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "התקייה לשמירת תצלומי מסך נלקחת מתוך ה-Kodi."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "הגדר הצגת ספריות נוספות לתצוגה בלוג הדיבאג."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11513,6 +11681,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "מבוסס חומרה"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "מצב ניגון של וידאו סטראוסקופי"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "שאל אותי"
@@ -11557,6 +11729,10 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "מצב סטיראוסקופי הפוך"
 
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "מצב 3D סטראוסקופי מעודף."
+
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "אפשר פענוח חומרה של קבצי וידאו."
@@ -11564,6 +11740,94 @@ msgstr "אפשר פענוח חומרה של קבצי וידאו."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "עומק כתוביות סטיראוסקופי"
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "סרט"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "סרטים"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "סדרה"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "סדרות"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "עונה"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "עונות"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "פרק"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "פרקים"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "קליפ"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "קליפים"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "מארז"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "מארזים"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "וידאו"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "וידאו"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "מוסיקה"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "מוסיקה"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "אמן"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "אמנים"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "אלבום"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "אלבומים"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "שיר"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "שירים"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11597,6 +11861,10 @@ msgctxt "#37015"
 msgid "Browse Into"
 msgstr "לעיין בתוך"
 
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "בחר באופציה זו עם הרסיבר שלך מסוגל לקודד תזרימי E-AC3."
+
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "פלט אודיו כפול"
@@ -11620,3 +11888,23 @@ msgstr "האם ברצונך להפסיק את הניגון במכשיר המרו
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "בחר באפשרות זו רק אם היציאת אודיו תומכת באודיו רב ערוצי כמו Dolby Digital 5.1, זה מאפשר שמיעה באודיו רב ערוצי כמו AAC5.1 או FLAC5.1 בצליל היקפי. הערה - לא מומולץ במכשירי Pi כי זה דורש משאבי מעבד רבים."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "ללא הגבלה"

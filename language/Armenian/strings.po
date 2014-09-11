@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -320,10 +320,6 @@ msgstr "Հաստատել ֆայլի պատճենը"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Հաստատել ֆայլի տեղափոխումը"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Հաստատե՞լ ֆայլի ջնջումը"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -677,6 +673,14 @@ msgctxt "#226"
 msgid "Test patterns..."
 msgstr "Փորձարկման հրահանգներ"
 
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Փնտրել CD երգերի անունները freedb.org կայքից "
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "Խառնել երգացանկը"
+
 msgctxt "#230"
 msgid "Video filters"
 msgstr "Տեսանյութերի զտիչներ"
@@ -757,9 +761,17 @@ msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
 
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "CD տեղեկությունների ստացում"
+
 msgctxt "#257"
 msgid "Error"
 msgstr "Սխալ"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "Միացնել տեգերի կարդալը"
 
 msgctxt "#259"
 msgid "Opening"
@@ -912,6 +924,10 @@ msgstr "Լեզու"
 msgctxt "#305"
 msgid "Enabled"
 msgstr "Միացված"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "Ոչ հաջորդական"
 
 msgctxt "#308"
 msgid "Original stream's language"
@@ -1101,6 +1117,18 @@ msgctxt "#369"
 msgid "Title"
 msgstr "Վերնագիր"
 
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "Ամպրոպ"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "Մասամբ"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "Մեծ մասամբ"
+
 msgctxt "#373"
 msgid "Sunny"
 msgstr "Արևոտ"
@@ -1129,9 +1157,13 @@ msgctxt "#379"
 msgid "PM"
 msgstr "PM"
 
+msgctxt "#380"
+msgid "Showers"
+msgstr "Հորդ անձրև"
+
 msgctxt "#381"
 msgid "Few"
-msgstr "Միքանի"
+msgstr "Մի քանի"
 
 msgctxt "#382"
 msgid "Scattered"
@@ -1145,6 +1177,10 @@ msgctxt "#384"
 msgid "Strong"
 msgstr "Խիստ"
 
+msgctxt "#385"
+msgid "Fair"
+msgstr "Պարզ"
+
 msgctxt "#386"
 msgid "Clear"
 msgstr "Մաքրել"
@@ -1156,6 +1192,14 @@ msgstr "Ամպեր"
 msgctxt "#388"
 msgid "Early"
 msgstr "Վաղ"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "Անձրև"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "Ուժեղ քամի"
 
 msgctxt "#391"
 msgid "Low"
@@ -1333,6 +1377,10 @@ msgctxt "#438"
 msgid "Opening file"
 msgstr "Ֆայլը բացվում է"
 
+msgctxt "#439"
+msgid "Cache"
+msgstr "Պահեստ"
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1356,6 +1404,10 @@ msgstr "Ձայնադարան"
 msgctxt "#446"
 msgid "DVD"
 msgstr "DVD"
+
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "Ավտոնվագարկում"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1389,6 +1441,18 @@ msgctxt "#456"
 msgid "Mode"
 msgstr "Կարգավիճակ"
 
+msgctxt "#457"
+msgid "Switch view"
+msgstr "Անցնել դիտմանը"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "Ենթավերնագրեր"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "Ձայնային հոսք"
+
 msgctxt "#461"
 msgid "[active]"
 msgstr "[ակտիվ]"
@@ -1405,6 +1469,10 @@ msgctxt "#464"
 msgid "Brightness"
 msgstr "Պայծառություն"
 
+msgctxt "#465"
+msgid "Contrast"
+msgstr "Հակադիր"
+
 msgctxt "#466"
 msgid "Gamma"
 msgstr "Գամմա"
@@ -1412,6 +1480,18 @@ msgstr "Գամմա"
 msgctxt "#467"
 msgid "Type"
 msgstr "Տիպ"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "Տեղափոխել սանդղակը փոխել OSD դիրքորոշումը"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "OSD դիրքորոշում"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "Վարկեր"
 
 msgctxt "#474"
 msgid "Off"
@@ -1432,6 +1512,18 @@ msgstr "Հնարավոր չէ բեռնել երգացանկը"
 msgctxt "#478"
 msgid "OSD"
 msgstr "OSD"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "Հայտնվել"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "Աուդիո տարբերակներ"
+
+msgctxt "#482"
+msgid "About Kodi"
+msgstr "Kodi մասին"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1457,13 +1549,33 @@ msgctxt "#491"
 msgid "- Use big icons"
 msgstr "-Օգտագործել մեծ նշանները"
 
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "Լրացուցիչ տարբերակներ (Միայն փորձագետները)"
+
+msgctxt "#494"
+msgid "Overall audio headroom"
+msgstr "Ընդհանուր աուդիոպահոց"
+
 msgctxt "#496"
 msgid "Calibration"
 msgstr "Շտկում"
 
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "Ցուցադրել ֆայլի ընդարձակումը"
+
 msgctxt "#498"
 msgid "Sort by: Type"
 msgstr "Դասավորել ըստ՝ Ոճի"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "Հնարավոր չէ միացնել օնլայն-փնտրում ծառայությունը"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "Ալբոմի տեղեկության ներբեռնումը ձախողվեց"
 
 msgctxt "#501"
 msgid "Looking for album names..."
@@ -1489,6 +1601,10 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Դասավորել ըստ՝ Օգտագործման"
 
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "Միացնել ռեժիմների տեսատարբերակը"
+
 msgctxt "#512"
 msgid "Startup window"
 msgstr "Մեկնարկի պատուհան"
@@ -1497,13 +1613,141 @@ msgctxt "#513"
 msgid "Home window"
 msgstr "Գլխավոր պատուհան"
 
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "Ձեռքով կառավարում"
+
 msgctxt "#515"
 msgid "Genre"
 msgstr "Ժանր"
 
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "Վերջերս նվագարկած ալբոմներ"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Սկսել"
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "Սկսել -ում"
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "Հավաքածուներ"
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "Հեռացնել աղբյուրը"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "Անցնել ԶԼՄ-ների"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "Ընտրել նվագացանկը"
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "Նոր նվագացանկ"
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "Ավելացնել նվագացանկում"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "Ինքնուրույն ավելացնել դարանում"
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "Մուտքագրել անվանումը"
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "Սխալ՝ Նման վերնագիր"
+
+msgctxt "#530"
+msgid "Select genre"
+msgstr "Ընտրել ժանրը"
+
+msgctxt "#531"
+msgid "New genre"
+msgstr "Նոր ժանր"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Ձեռքով ավելացում"
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "Մուտքագրել ժանրը"
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "Տեսք. %"
+
+msgctxt "#535"
+msgid "List"
+msgstr "Ցուցակ"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "Նշաններ"
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "Մեծ ցուցակ"
+
+msgctxt "#538"
+msgid "Big icons"
+msgstr "Մեծ նշաններ"
+
+msgctxt "#539"
+msgid "Wide"
+msgstr "Լայնք"
+
+msgctxt "#540"
+msgid "Big wide"
+msgstr "Մեծ լայնք"
+
+msgctxt "#541"
+msgid "Album icons"
+msgstr "Ալբոմի նշաններ"
+
+msgctxt "#542"
+msgid "DVD icons"
+msgstr "DVD նշաններ"
+
 msgctxt "#543"
 msgid "DVD"
 msgstr "DVD"
+
+msgctxt "#544"
+msgid "Media info"
+msgstr "Կրիչ"
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "Աուդիո ելքի սարքը"
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "Միջանցիկ ելքի սարքը"
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "Այս երգչի կենսագրությունը բացակայում է"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "Բազմաալիք աուդիոն վերափոխել ստերեոյի"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Դասավորել ըստ՝ %ների"
 
 msgctxt "#551"
 msgid "Name"
@@ -1516,6 +1760,14 @@ msgstr "Ամսաթիվ"
 msgctxt "#553"
 msgid "Size"
 msgstr "Չափս"
+
+msgctxt "#554"
+msgid "Track"
+msgstr "Ձայնուղի"
+
+msgctxt "#555"
+msgid "Time"
+msgstr "Ժամանակ"
 
 msgctxt "#556"
 msgid "Title"
@@ -1545,13 +1797,49 @@ msgctxt "#562"
 msgid "Year"
 msgstr "Տարեթիվ"
 
+msgctxt "#563"
+msgid "Rating"
+msgstr "Գնահատական"
+
 msgctxt "#564"
 msgid "Type"
 msgstr "Տիպ"
 
+msgctxt "#565"
+msgid "Usage"
+msgstr "Օգտագործում"
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "Կատարողի ալբոմ"
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "Նվագարկել համարը"
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "Վերջին նվագարկածը"
+
 msgctxt "#569"
 msgid "Comment"
 msgstr "Մեկնաբանություն"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "Ավելացման ամսաթիվը"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "Նախնական"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "Ստուդիա"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "Ուղի"
 
 msgctxt "#574"
 msgid "Country"
@@ -1561,6 +1849,18 @@ msgctxt "#575"
 msgid "In progress"
 msgstr "Կատարվում է"
 
+msgctxt "#576"
+msgid "Times played"
+msgstr "Նվագարկում էին"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Ամսաթիվ"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Դասավորել ուղղությունը"
+
 msgctxt "#581"
 msgid "Sort method"
 msgstr "Դասավորման ձևը"
@@ -1569,6 +1869,18 @@ msgctxt "#582"
 msgid "View mode"
 msgstr "Ցուցադրման ձևը"
 
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "Հիշել ցուցադրումը տարբեր թղթապանակների համար"
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "Աճող"
+
+msgctxt "#585"
+msgid "Descending"
+msgstr "Նվազող"
+
 msgctxt "#586"
 msgid "Edit playlist"
 msgstr "Խմբագրել նվագացանկը"
@@ -1576,6 +1888,14 @@ msgstr "Խմբագրել նվագացանկը"
 msgctxt "#587"
 msgid "Filter"
 msgstr "Զտիչ"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "Չեղարկել ռեժիմը"
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "Ռեժիմ"
 
 msgctxt "#590"
 msgid "Random"
@@ -1619,7 +1939,11 @@ msgstr "Ստանդարտ"
 
 msgctxt "#603"
 msgid "Extreme"
-msgstr "Եքստրեմալ"
+msgstr "Էքստրեմալ"
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "Հաստատուն որակ"
 
 msgctxt "#607"
 msgid "To:"
@@ -1629,9 +1953,37 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Մուտքագրել համար"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Կտորներ/նմուշ"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Նմուշի չափը"
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "Աուդիո CDներ"
+
 msgctxt "#622"
 msgid "Quality"
 msgstr "Որակ"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Հոսք"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "Ներառել ձայնուղու համարը"
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "-ի բոլոր երգերը"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Հեռուստաշոուի ընթացքում"
 
 msgctxt "#629"
 msgid "View mode"
@@ -1645,9 +1997,61 @@ msgctxt "#631"
 msgid "Zoom"
 msgstr "Խոշորացում"
 
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "Լայնացում 4:3"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "Ընդառձակում"
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "Լայնացում 16:9 "
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "Իսկական չափս"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Մանրամասն գրառումներ SMB գրադարանի համար"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Մանրամասն գրառումներ CURL գրադարանի համար (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Մանրամասն գրառումներ CMYTH գրադարանի համար"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Մանրամասն գրառումներ FFMPEG գրադարանների համար"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Մանրամասն գրառումներ RTMP գրադարանի համար"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Մանրամասն գրառումներ DBUS զանգերի համար"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Մանրամասն գրառումներ JSON-RPC հարցումների համար"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Մանրամասն գրառումներ AUDIO բաղադրիչի համար"
+
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP հասցե"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Գաղտնաբառ"
 
 msgctxt "#738"
 msgid "Normal"
@@ -1753,6 +2157,10 @@ msgctxt "#14098"
 msgid "Play"
 msgstr "Նվագարկել"
 
+msgctxt "#15052"
+msgid "Password"
+msgstr "Գաղտնաբառ"
+
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Հիմնական տեսք"
@@ -1776,6 +2184,10 @@ msgstr "Հաջորդ"
 msgctxt "#19099"
 msgid "Service"
 msgstr "Ծառայություն"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "Ֆոն"
 
 msgctxt "#20109"
 msgid "Zoom"

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Main\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -320,10 +320,6 @@ msgstr "पक्का करना फाइल नक़ल करना"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "पक्का करना फाइल हटाना"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "पक्का करना फाइल मिटाना?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -3000,6 +2996,10 @@ msgstr "अगला"
 msgctxt "#19177"
 msgid "Playback"
 msgstr "प्लेबैक"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "पृष्ठभूमि"
 
 msgctxt "#19607"
 msgid "Fashion"
