@@ -53,7 +53,7 @@ using namespace AUTOPTR;
 using namespace std;
 
 static void RelBufferS(void *opaque, uint8_t *data)
-{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware())->RelBuffer(data); }
+{ ((CDecoder*)opaque)->RelBuffer(data); }
 
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
@@ -1104,7 +1104,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
   pic->data[0] = (uint8_t*)buf->surface;
   pic->data[3] = (uint8_t*)buf->surface;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, this, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "DXVA - error creating buffer");
