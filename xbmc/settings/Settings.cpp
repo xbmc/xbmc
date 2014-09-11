@@ -203,6 +203,7 @@ const std::string CSettings::SETTING_DVDS_AUTORUN = "dvds.autorun";
 const std::string CSettings::SETTING_DVDS_PLAYERREGION = "dvds.playerregion";
 const std::string CSettings::SETTING_DVDS_AUTOMENU = "dvds.automenu";
 const std::string CSettings::SETTING_DISC_PLAYBACK = "disc.playback";
+const std::string CSettings::SETTING_BLURAY_PLAYERREGION = "bluray.playerregion";
 const std::string CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL = "accessibility.audiovisual";
 const std::string CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING = "accessibility.audiohearing";
 const std::string CSettings::SETTING_ACCESSIBILITY_SUBHEARING = "accessibility.subhearing";

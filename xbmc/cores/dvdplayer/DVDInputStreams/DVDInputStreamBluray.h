@@ -30,6 +30,7 @@ extern "C"
 #include <libbluray/bluray-version.h>
 #include <libbluray/keys.h>
 #include <libbluray/overlay.h>
+#include <libbluray/player_settings.h>
 }
 
 #define MAX_PLAYLIST_ID 99999
