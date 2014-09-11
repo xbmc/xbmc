@@ -73,7 +73,7 @@ namespace PlexUtils
   int GetItemListID(const CFileItem& item);
   
   std::string GetPlayListIDfromPath(CStdString plpath);
-  void PrintItemProperties(CFileItemPtr item);
+  void PrintItemProperties(CGUIListItemPtr item);
 }
 
 #if defined(HAVE_EXECINFO_H)

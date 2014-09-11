@@ -1073,7 +1073,7 @@ std::string PlexUtils::GetPlayListIDfromPath(CStdString plpath)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void PlexUtils::PrintItemProperties(CFileItemPtr item)
+void PlexUtils::PrintItemProperties(CGUIListItemPtr item)
 {
   PropertyMap props = item->GetAllProperties();
   printf("Item Properties :\n");
