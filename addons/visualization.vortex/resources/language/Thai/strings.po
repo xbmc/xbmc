@@ -1,20 +1,24 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Vortex
 # Addon id: visualization.vortex
-# Addon Provider: Team XBMC
+# Addon Provider: Team-Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/xbmc-main/language/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: th\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "สุ่มเวลา"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -23,6 +27,30 @@ msgstr "ระยะเวลาระหว่างชุดรูปแบบ
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "เวลาสุ่มเพิ่มเติม"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "ล็อคเวลา"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "เปิดการส่งผ่าน"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "หยุดช่วงเวลาแรก"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "แสดง FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "แสดง debug console"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "แสดงการวิเคราะห์เสียง"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

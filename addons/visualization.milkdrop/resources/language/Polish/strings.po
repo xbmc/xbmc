@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: MilkDrop
 # Addon id: visualization.milkdrop
-# Addon Provider: Team XBMC
+# Addon Provider: Team-Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/xbmc-main/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,7 @@ msgstr "Interwał automatycznego mieszania"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Interwał efektów"
+msgstr "Interwał zdefiniowanych ustawień"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -54,7 +54,7 @@ msgstr "Aktywuj stereofoniczny tryb 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Paczka efektów"
+msgstr "Pakiet zdefiniowanych ustawień"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
@@ -62,7 +62,7 @@ msgstr "Folder ustawień użytkownika"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Tryb losowy efektów"
+msgstr "Tryb losowych ustawień"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
@@ -74,7 +74,7 @@ msgstr "Ustawienia Winampa"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Zdefiniowany folder ustawień"
+msgstr "Folder zdefiniowanych ustawień użytkownika"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

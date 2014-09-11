@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.20"
+       version="1.0.21"
        provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -40,16 +40,17 @@
     <summary lang="ja">画面を黒くするスクリーンセーバー</summary>
     <summary lang="ko">화면을 검게하는 화면보호기</summary>
     <summary lang="lt">Ekrano užsklanda, kuri paverčia jūsų ekraną juodu fonu</summary>
-    <summary lang="lv">Ekrānsaudzētājs, kurš padara jūsu ekrānu melnu</summary>
+    <summary lang="lv">Ekrānsaudzētājs, kas padara jūsu ekrānu melnu</summary>
     <summary lang="mk">Заштита на екран која го прави екранот црн</summary>
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
-    <summary lang="pt">Protetor de ecrã que coloca o seu ecrã negro</summary>
+    <summary lang="pt">Protector de ecrã que coloca o seu ecrã negro</summary>
     <summary lang="pt_BR">Protetor de tela que deixa sua tela preta</summary>
     <summary lang="ro">Screensaver care afișează un ecran negru</summary>
     <summary lang="ru">Заставка «чёрный экран»</summary>
     <summary lang="se">Skärmsläckare som gör din skärm svart</summary>
+    <summary lang="si">ඔබගේ තිරය කළුවට හරවන තිරමෙහෙකරු </summary>
     <summary lang="sk">Šetrič obrazovky, ktorú ju zmení na čiernu</summary>
     <summary lang="sl">Ohranjevalnik zaslona, ki počrni zaslon</summary>
     <summary lang="sv">En skärmsläckare som gör din skärm svart</summary>
@@ -93,19 +94,20 @@
     <description lang="id">Hitam adalah sebuah screensaver sederhana yang mengubah layar menjadi hitam.</description>
     <description lang="is">Black er einföld skjáhvíla sem sendir svart út á skjáinn.</description>
     <description lang="it">Black è un semplice salvaschermo che trasforma il tuo schermo in nero.</description>
-    <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
+    <description lang="ja">Black はシンプルなスクリーンセーバーで、画面を黒くします。</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
     <description lang="lt">'Juodas' yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
-    <description lang="lv">"Melns" ir vienkāršs ekrānsaudzētājs, kurš padara jūsu ekrānu melnu.</description>
+    <description lang="lv">Melns ir vienkāršs ekrānsaudzētājs, kas padara jūsu ekrānu melnu.</description>
     <description lang="mk">Црна е едноставна заштита на екран која екранот го прави црн.</description>
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
     <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
-    <description lang="pt">Negro é um protetor de ecrã simples que coloca o seu ecrã negro.</description>
+    <description lang="pt">Black é um protector de ecrã simples que coloca o seu ecrã negro.</description>
     <description lang="pt_BR">Black é um protetor de tela que vai deixar sua tela preta</description>
     <description lang="ro">Black este un screensaver simplu care afișează negru pe ecran.</description>
     <description lang="ru">Это простая заставка, которая делает экран чёрным.</description>
     <description lang="se">Mörka är en enkel skärmsläckare som gör din skärm svart.</description>
+    <description lang="si">කළු ඔබගේ තිරය කළුවට හරවන සරල තිරමෙහෙකරුවෙකි. </description>
     <description lang="sk">Black je jednoduchý šetrič, ktorý zmení vašu obrazovku na čiernu.</description>
     <description lang="sl">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sv">Detta är en enkel skärmsläckare som gör din skärm svart.</description>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.14"
+  version="2.2.15"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -32,7 +32,7 @@
     <summary lang="es_MX">Interfaz Web del Equipo de Kodi (Interfaz Web por defecto de Kodi)</summary>
     <summary lang="et">Kodi meeskonna veebikeskkond. (Vaikimisi keskkond)</summary>
     <summary lang="eu">Kodi taldean Web Interfazea. (Kodi-ren lehenetsiriko web interfazea)</summary>
-    <summary lang="fa">نمایه وب تیم Xbmc.(رابط پیش فرض Xbmc)</summary>
+    <summary lang="fa">نمایه وب تیم Kodi.(رابط پیش فرض Kodi)</summary>
     <summary lang="fi">Team-Kodi:n WWW-käyttöliittymä. (Kodi:n oletus WWW-käyttöliittymä)</summary>
     <summary lang="fr">Interface Web de l'équipe d'Kodi. (Interface Web par défaut d'Kodi)</summary>
     <summary lang="fr_CA">Interface Web de l'équipe Kodi. (Interface Web par défaut d'Kodi)</summary>
@@ -91,7 +91,7 @@
     <description lang="es_MX">Interfaz Web por defecto para Kodi; Diseñado para dispositivos de todas las resoluciones</description>
     <description lang="et">Kodi vaikimisi veebikeskkond; Disainitud erinevate resolutsioonidega seadmetele.</description>
     <description lang="eu">Kodi-ren lehenetsiriko web interfazea. Erresoluzio guztietako gailentzat diseinatua</description>
-    <description lang="fa">رابط پیش فرض Xbmcوطراحی شده برای هر رزولیشن</description>
+    <description lang="fa">رابط پیش فرض Kodiوطراحی شده برای هر رزولیشن</description>
     <description lang="fi">Oletus WWW-käyttöliittymä Kodi:lle. Suunniteltu käytettäväksi kaiken kokoisilla laitteilla.</description>
     <description lang="fr">Interface Web par défaut d'Kodi; Adaptée aux dispositifs de toutes résolutions</description>
     <description lang="fr_CA">Interface Web par défaut d'Kodi - Conçue pour les dispositifs de toutes résolutions</description>
@@ -99,9 +99,11 @@
     <description lang="he">ממשק דפדפן ברירת המחדל עבור Kodi; מתאים למכשירים בעלי רזולוציות שונות</description>
     <description lang="hr">Uobičajeno web sučelje za Kodi; Dizajnirano za uređaje svih razlučivosti</description>
     <description lang="hu">Az Kodi alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
+    <description lang="hy">Նախնական տեսք Kodi-ի համար; Նախատեսված է բոլոր կրիչների համար</description>
     <description lang="id">Antar muka web bawaan bagi Kodi; Dirancang bagi perangkat dengan semua resolusi</description>
+    <description lang="is">Sjálfgefið vefviðmót fyrir Kodi; Hannað fyrir tæki með allskonar upplausnir</description>
     <description lang="it">Interfaccia Web di default per Kodi; Realizzata per periferiche con qualunque risoluzione</description>
-    <description lang="ja">Default web interface for Kodi; Designed for devices of all resolutions</description>
+    <description lang="ja">Kodi のデフォルト Web インターフェースです。さまざまな解像度のデバイス用にデザインされています。</description>
     <description lang="ko">Kodi 기본 웹 인터페이스; 모든 해상도의 기기를 위해 디자인 됨</description>
     <description lang="lt">Numatytoji Kodi Web sąsaja skirta visų rezoliucijų prietaisams</description>
     <description lang="lv">Noklusētā Kodi tīmekļa sakarne; Piemērota visu izšķirtspēju iekārtām</description>
@@ -111,11 +113,12 @@
     <description lang="nl">Standaard Kodi-webinterface; geschikt voor alle resoluties</description>
     <description lang="no">Standard nettgrensesnitt for Kodi; Laget for alle oppløsninger</description>
     <description lang="pl">Domyślny interfejs webowy Kodi; Zaprojektowany dla urządzeń o dowolnej rozdzielczości</description>
-    <description lang="pt">Interface Web padrão do Kodi. Pensada para dispositivos com qualquer resolução</description>
+    <description lang="pt">Interface da Web predefinida do Kodi. Criada para dispositivos em qualquer resolução</description>
     <description lang="pt_BR">Interface web padrão para Kodi; Concebida para dispositivos de todas as resoluções</description>
     <description lang="ro">Interfață web implicită pentru Kodi, realizată de echipa Kodi pentru dispozitive cu orice rezoluție.</description>
     <description lang="ru">Веб-интерфейс Kodi по умолчанию. Разработан для устройств с любыми разрешениями.</description>
     <description lang="se">Kodi's standardwebbgränsnitt; Designat för alla upplösningar</description>
+    <description lang="si">Kodi' සඳහා නියත  වෙබ් අතුරුමුහුණත; සෑම විභේදනයකම උපකරණ සඳහා නිර්මාණය කර ඇත</description>
     <description lang="sk">Predvolené webové rozhranie pre Kodi; Navrhnuté pre zariadenia zobrazujúce v akomkoľvek rozlíšení</description>
     <description lang="sl">Privzet spletni vmesnik za Kodi, ustvarjen za naprave vseh ločljivosti</description>
     <description lang="sr">Подразумевани веб интерфејс Kodi-а, намењен уређајима свих резолуција</description>

@@ -1,4 +1,4 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: FishBMC
 # Addon id: visualization.fishbmc
 # Addon Provider: 26elf
@@ -8,13 +8,17 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-main/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "자세히 [CPU 부하]"
 
 msgctxt "#30001"
 msgid "Low"
@@ -55,3 +59,7 @@ msgstr "보통"
 msgctxt "#30010"
 msgid "High"
 msgstr "높음"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "저장된 파일 사용[빠른 시작]"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.vortex"
-  version="1.0.8"
+  version="1.0.9"
   name="Vortex"
   provider-name="Team-Kodi">
   <extension
@@ -11,6 +11,7 @@
     <summary lang="af">Vortex Visualisasie van die XBOX paket</summary>
     <summary lang="ar">تصور دوامة من حزمة XBOX</summary>
     <summary lang="bg">Визуализацията Vortex  от пакета за XBOX</summary>
+    <summary lang="ca">Visualització Vortex del paquet d'XBOX</summary>
     <summary lang="cs">Vizualizace Vortex z balíčku XBOX</summary>
     <summary lang="da">Vortex visualisering fra XBOX pakken</summary>
     <summary lang="de">Vortex Visualisierung aus dem XBOX Paket</summary>
@@ -31,12 +32,16 @@
     <summary lang="hr">Vortex vizualizacija iz XBOX paketa</summary>
     <summary lang="hu">Vortex vizualizáció az XBOX csomagból</summary>
     <summary lang="id">Visualisasi Vortex dari paket XBOX</summary>
+    <summary lang="is">Vortex sjónræn upplifun frá XBOX pakkanum</summary>
     <summary lang="it">Visualizzazione vortice dal package XBOX</summary>
+    <summary lang="ja">XBOX パッケージ由来の渦巻きビジュアライザー</summary>
     <summary lang="ko">XBOX 패키지의 Vortex 시각화</summary>
+    <summary lang="lt">Vortex vizualicija iš Kodi paketo</summary>
     <summary lang="lv">Vortex vizualizācija no XBOX pakotnes</summary>
     <summary lang="mk">Vortex визуелизација од пакетот на XBOX</summary>
-    <summary lang="nl">Vortex Visualisatie van XBOX verpakking</summary>
-    <summary lang="pl">Wizualizacja Vortex z pakietu XBOX</summary>
+    <summary lang="nl">Vortexvisualisatie van XBOX pakket</summary>
+    <summary lang="no">Tornado Visualisering fra XBOX pakke</summary>
+    <summary lang="pl">Wizualizacja Vortex z XBOX</summary>
     <summary lang="pt">Visualização Vortex do pacote XBOX</summary>
     <summary lang="pt_BR">Visualização Vortex do pacote XBOX</summary>
     <summary lang="ru">Vortex визуализация из пакета XBOX</summary>
@@ -45,6 +50,7 @@
     <summary lang="sv">Vortex Visualization från XBOX-paketet</summary>
     <summary lang="ta_IN">XBOX தொகுப்பில் இருந்து Vortex காட்சிஅமைப்பு</summary>
     <summary lang="tg">Таҷассуми Vortex аз бастаи XBOX</summary>
+    <summary lang="th">การแสดง Vortex จาก XBOX package</summary>
     <summary lang="tr">XBOX paketinden Vortex Görsel Öğe</summary>
     <summary lang="zh">来自 XBOX 组件包的旋涡可视化效果</summary>
     <platform>windx</platform>

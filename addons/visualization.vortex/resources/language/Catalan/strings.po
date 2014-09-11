@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Vortex
 # Addon id: visualization.vortex
-# Addon Provider: Team XBMC
+# Addon Provider: Team-Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/xbmc-main/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,6 +28,18 @@ msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Temps aleatori addicional"
 
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Bloqueja predefinit"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Activa les transicions"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Para al primer predefinit"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "Mostra els FPS"
@@ -35,6 +47,10 @@ msgstr "Mostra els FPS"
 msgctxt "#30007"
 msgid "Show debug console"
 msgstr "Mostra la consola de depuració"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Mostra anàlisi d'audio"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
