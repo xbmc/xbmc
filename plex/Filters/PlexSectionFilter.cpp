@@ -37,8 +37,7 @@ bool CPlexSectionFilter::loadFilters()
     {
       CFileItemPtr primaryFilter = list.Get(i);
 
-      if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder" &&
-          m_sectionType != PLEX_DIR_TYPE_HOME_MOVIES)
+      if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
         continue;
 
       if (advancedFilters && (m_sectionType == PLEX_DIR_TYPE_MOVIE))
@@ -68,57 +67,72 @@ bool CPlexSectionFilter::loadFilters()
   list.Clear();
 
   /* and now the secondaries */
-  if (m_sectionType != PLEX_DIR_TYPE_HOME_MOVIES)
+  PlexUtils::AppendPathToURL(fURL, "filters");
+  if (dir.GetDirectory(fURL.Get(), list))
   {
-    PlexUtils::AppendPathToURL(fURL, "filters");
-    if (dir.GetDirectory(fURL.Get(), list))
+    // for Home Movies, remove the irrelevant filters
+    if (m_sectionType == PLEX_DIR_TYPE_HOME_MOVIES)
     {
+      CFileItemList listtoRemove;
+      
       for (int i = 0; i < list.Size(); i ++)
       {
-        CFileItemPtr filter = list.Get(i);
-        CPlexSecondaryFilterPtr secondaryFilter = CPlexSecondaryFilter::secondaryFilterFromItem(filter);
-        if (secondaryFilter)
-        {
-          /* we might already have this filter in our list because it was used last time
+        if ((list.Get(i)->GetProperty("filter").asString() != "unwatched") &&
+            (list.Get(i)->GetProperty("filter").asString() != "resolution") &&
+            (list.Get(i)->GetProperty("filter").asString() != "year"))
+          listtoRemove.Add(list.Get(i));
+      }
+      
+      for (int i = 0; i < listtoRemove.Size(); i ++)
+        list.Remove(listtoRemove.Get(i).get());
+    }
+    
+    for (int i = 0; i < list.Size(); i ++)
+    {
+      CFileItemPtr filter = list.Get(i);
+      CPlexSecondaryFilterPtr secondaryFilter = CPlexSecondaryFilter::secondaryFilterFromItem(filter);
+      if (secondaryFilter)
+      {
+        /* we might already have this filter in our list because it was used last time
          * and saved to the state file */
-          BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
+        BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
+        {
+          if (filter->getFilterKey() == secondaryFilter->getFilterKey())
           {
-            if (filter->getFilterKey() == secondaryFilter->getFilterKey())
-            {
-              secondaryFilter = filter;
-              break;
-            }
+            secondaryFilter = filter;
+            break;
           }
-
-          m_secondaryFilters[secondaryFilter->getFilterKey()] = secondaryFilter;
-
-          /* if this is a selected filter it probably comes from the
+        }
+        
+        m_secondaryFilters[secondaryFilter->getFilterKey()] = secondaryFilter;
+        
+        /* if this is a selected filter it probably comes from the
          * XML file at this point, so we need to load it values to
          * have something nice to show in the UI */
-          if (secondaryFilter->isSelected())
-            secondaryFilter->loadValues();
-        }
-      }
-    }
-
-    /* and now sorts */
-    list.Clear();
-    fURL = m_sectionUrl;
-    PlexUtils::AppendPathToURL(fURL, "sorts");
-    if (dir.GetDirectory(fURL.Get(), list))
-    {
-      for (int i = 0; i < list.Size(); i ++)
-      {
-        CFileItemPtr sort = list.Get(i);
-        m_sortOrders[sort->GetProperty("unprocessed_key").asString()] = sort->GetProperty("title").asString();
-        if (sort->HasProperty("default") && m_currentSortOrder.empty())
-        {
-          m_currentSortOrder = sort->GetProperty("unprocessed_key").asString();
-          m_currentSortOrderAscending = sort->GetProperty("default").asString() == "asc" ? true : false;
-        }
+        if (secondaryFilter->isSelected())
+          secondaryFilter->loadValues();
       }
     }
   }
+  
+  /* and now sorts */
+  list.Clear();
+  fURL = m_sectionUrl;
+  PlexUtils::AppendPathToURL(fURL, "sorts");
+  if (dir.GetDirectory(fURL.Get(), list))
+  {
+    for (int i = 0; i < list.Size(); i ++)
+    {
+      CFileItemPtr sort = list.Get(i);
+      m_sortOrders[sort->GetProperty("unprocessed_key").asString()] = sort->GetProperty("title").asString();
+      if (sort->HasProperty("default") && m_currentSortOrder.empty())
+      {
+        m_currentSortOrder = sort->GetProperty("unprocessed_key").asString();
+        m_currentSortOrderAscending = sort->GetProperty("default").asString() == "asc" ? true : false;
+      }
+    }
+  }
+
 
   return true;
 }
