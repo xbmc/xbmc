@@ -58,17 +58,24 @@ void CGUIDialogPlexPlayQueue::LoadPlayQueue()
   CFileItemList list;
   int currentItemId = -1;
   int currentItemIndex = m_viewControl.GetSelectedItem();
+  CStdString pqUrl;
+  
   if (PlexUtils::IsPlayingPlaylist())
   {
     if (g_application.CurrentFileItemPtr() && g_application.CurrentFileItemPtr()->HasMusicInfoTag())
+    {
       currentItemId = PlexUtils::GetItemListID(g_application.CurrentFileItemPtr());
+      pqUrl = "plexserver://playqueue/audio";
+    }
+    else
+      pqUrl = "plexserver://playqueue/video";
   }
 
   // clear items & view control in case we're updating
   m_vecList->Clear();
   m_viewControl.Clear();
-
-  if (dir.GetDirectory("plexserver://playqueue/", list))
+  
+  if (dir.GetDirectory(pqUrl, list))
   {
     int playingItemIdx = 0;
     for (int i = 0; i < list.Size(); i++)
