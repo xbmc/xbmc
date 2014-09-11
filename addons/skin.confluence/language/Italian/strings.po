@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/xbmc-main/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -214,7 +214,7 @@ msgstr "Mostra i Video Aggiunti di Recente"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Sotto-menu Programmi nella home page"
+msgstr "Sottomenù Programmi nella home page"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -230,7 +230,7 @@ msgstr "Mostra la visualizzazione nello sfondo \"In Riproduzione\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Riproduci le sigle TV (sonore) nell'archivio video (add-on TvTunes)"
+msgstr "Riproduci le sigle TV nell'archivio video (addon TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -238,7 +238,7 @@ msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
-msgstr "XBMC Testi Canzoni"
+msgstr "Kodi Testi Canzoni"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
@@ -246,19 +246,19 @@ msgstr "Nascondi Fanart nella visualizzazione full screen"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Add-on Testi"
+msgstr "Addon Testi"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Sotto-menu Video nella home page"
+msgstr "Sottomenù Video nella home page"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Sotto-menu musica nella home page"
+msgstr "Sottomenù musica nella home page"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Sotto-menu Immagini nella home page"
+msgstr "Sottomenù Immagini nella home page"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -462,15 +462,15 @@ msgstr "[B]CONFIGURA IMPOSTAZIONI DI SISTEMA[/B][CR][CR]Imposta e calibra il vid
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons"
+msgstr "[B]CONFIGURA GLI ADDON[/B][CR][CR]Gestisci i tuoi addon installati · Cerca ed installa gli addon da xbmc.org[CR]Modifica le impostazioni degli Addon"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]CONFIGURA IMPOSTAZIONI TV[/B][CR][CR]Cambia impostazioni schermo intero · Gestisci impostazioni dati EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURA IMPOSTAZIONI DI RETE[/B][CR][CR]Imposta il controllo di XBMC via UPnP e HTTP · Configura la condivisione dei file[CR]Abilita Zeroconf · Configura AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURA IMPOSTAZIONI DI RETE[/B][CR][CR]Imposta il controllo di Kodi via UPnP e HTTP · Configura la condivisione dei file[CR]Abilita Zeroconf · Configura AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -478,7 +478,7 @@ msgstr "Aiuto primo avvio...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Questa linguetta significa che c'è un menu off a lato di questa finestra che contiene ulteriori opzioni per questa sezione. Per accedere al menu, naviga a sinistra con il tuo telecomando o tastiera, o posiziona il mouse sulla linguetta. [CR][CR]Clicca \"Ok\" per chiudere questa informazione. Non apparirà nuovamente."
+msgstr "Questa linguetta significa che c'è un menù off a lato di questa finestra che contiene ulteriori opzioni per questa sezione. Per accedere al menù, naviga a sinistra con il tuo telecomando o tastiera, o posiziona il mouse sulla linguetta. [CR][CR]Clicca \"Ok\" per chiudere questa informazione. Non apparirà nuovamente."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Login"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Scegli il tuo profilo utente di XBMC[CR]per fare il login e continuare"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Scegli il tuo profilo utente di Kodi[CR]per fare il login e continuare"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "IMMAGINI"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "LIVE TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -607,3 +607,7 @@ msgstr "RIPRODUCI DISCO"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

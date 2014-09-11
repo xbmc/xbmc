@@ -1,3 +1,7 @@
+[B]2.5.2[/B]
+
+- Updated language files from Transifex
+
 [B]2.5.0[/B]
 - Kodi name change
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.5.1"
+  version="2.5.2"
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
@@ -23,7 +23,7 @@
     <summary lang="cs">Vzhled Confluence od Jezz_X. (výchozí vzhled Kodi)</summary>
     <summary lang="cy">Croen Confluence gan Jezz_X. (Croen rhagosodedig Kodi)</summary>
     <summary lang="da">Confluence skin af Jezz_X. (Kodi's standardskin)</summary>
-    <summary lang="de">Confluence Skin von Jezz_X. (Standardskin von Kodi)</summary>
+    <summary lang="de">Confluence Skin von Jezz_X. (Standard-Skin von Kodi)</summary>
     <summary lang="el">Το κέλυφος Confluence από τον Jezz_X (προεπιλεγμένο κέλυφος του Kodi).</summary>
     <summary lang="en">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
     <summary lang="en_AU">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
@@ -39,7 +39,7 @@
     <summary lang="fo">Confluence útsjónd av Jezz_X. (Kodi's vanliga útsjónd)</summary>
     <summary lang="fr">Thème Confluence par Jezz_X. (thème par défaut)</summary>
     <summary lang="fr_CA">Habillage Confluence par Jezz_X. (habillage par défaut de Kodi)</summary>
-    <summary lang="gl">Pel Confluence por Jezz_Z. (Pel predeterminada de Kodi)</summary>
+    <summary lang="gl">Pel Confluence por Jezz_Z. (Pel predefinida do Kodi)</summary>
     <summary lang="he">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
     <summary lang="hr">Confluence presvlaka autora Jezz_X. (uobičajena Kodi presvlaka)</summary>
     <summary lang="hu">Confluence felszín. Készítő: Jezz_X (Kodi alapértelmezett felszín)</summary>
@@ -50,8 +50,8 @@
     <summary lang="ja">Confluence スキン by Jezz_X. (Kodi デフォルトスキン)</summary>
     <summary lang="km">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듦 (Kodi 기본 스킨)</summary>
-    <summary lang="lt">Teminę išvaizdą Confluence sukūrė Jezz_X.(Kodi numatytoji teminė išvaizda)</summary>
-    <summary lang="lv">Confluence āda no Jeez_X. (Kodi pamatāda)</summary>
+    <summary lang="lt">Confluence teminė išvaizda, kurią sukūrė Jezz_X. (Kodi numatytoji teminė išvaizda)</summary>
+    <summary lang="lv">Confluence apvalks no Jeez_X. (Kodi noklusētais apvalks)</summary>
     <summary lang="mk">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
     <summary lang="ms">Penyatuan, kulit daripada Jezz_X. (Kulit lalai Kodi)</summary>
     <summary lang="nl">Confluence skin door Jezz_X. (Kodi's standaard skin)</summary>
@@ -139,7 +139,7 @@
     <disclaimer lang="cs">Confluence je výchozím vzhledem Kodi, jeho odstranění může způsobit problémy</disclaimer>
     <disclaimer lang="cy">Confluence yw croen rhagosodedig Kodi, gall ei dynnu achosi anhawsterau</disclaimer>
     <disclaimer lang="da">Confluence er standardskin'et til Kodi. Fjernes det, kan der opstå problemer</disclaimer>
-    <disclaimer lang="de">Confluence ist der Standardskin für Kodi. Die Deinstallation kann zu unerwünschten Nebeneffekten führen.</disclaimer>
+    <disclaimer lang="de">Confluence ist der Standard-Skin für Kodi. Die Deinstallation kann zu unerwünschten Nebeneffekten führen.</disclaimer>
     <disclaimer lang="el">Το Confluence είναι το προεπιλεγμένο κέλυφος για το Kodi, η αφαίρεσή του μπορεί να δημιουργήσει προβλήματα</disclaimer>
     <disclaimer lang="en">Confluence is the default skin for Kodi, removing it may cause issues</disclaimer>
     <disclaimer lang="en_AU">Confluence is the default skin for Kodi, removing it may cause issues</disclaimer>
@@ -155,7 +155,7 @@
     <disclaimer lang="fo">Confluence er vanliga útsjónding brúkt av Kodi. Strikan kann viðføra brek.</disclaimer>
     <disclaimer lang="fr">Confluence est le thème par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
     <disclaimer lang="fr_CA">Confluence est l'habillage par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
-    <disclaimer lang="gl">Confluence é a pel predeterminada para Kodi e eliminala pode causas problemas.</disclaimer>
+    <disclaimer lang="gl">Confluence é a pel predefinida para Kodi e eliminala pode causas problemas.</disclaimer>
     <disclaimer lang="he">Confluence הוא סקין ברירת המחדל של Kodi, הסרה שלו עלולה לגרום לבעיות.</disclaimer>
     <disclaimer lang="hr">Confluence je uobičajena presvlaka za Kodi, njegovim uklanjanjem može uzrokovati poteškoće.</disclaimer>
     <disclaimer lang="hu">A Confluence az alapértelmezett Kodi felszín. Eltávolítása problémákat okozhat.</disclaimer>
@@ -164,8 +164,8 @@
     <disclaimer lang="it">Confluence è la skin predefinita di Kodi, l'eliminazione potrebbe comportare dei problemi.</disclaimer>
     <disclaimer lang="ja">Confluence は Kodi のデフォルトスキンですので、これを削除するとうまく動かなくなる可能性があります</disclaimer>
     <disclaimer lang="ko">Confluence는 Kodi의 기본스킨으로 제거시 문제가 생길 수 있습니다.</disclaimer>
-    <disclaimer lang="lt">Confluence yra numatytoji Kodi teminė išvaizda, ją panaikinus ar pakeitus gali kilti problemų</disclaimer>
-    <disclaimer lang="lv">Confluence ir Kodi pamatāda, dzēšot to var rasties problēmas</disclaimer>
+    <disclaimer lang="lt">Confluence yra numatytoji Kodi teminė išvaizda, jos pašalinimas gali sukelti problemų</disclaimer>
+    <disclaimer lang="lv">Confluence ir Kodi noklusētais apvalks, dzēšot to, var rasties problēmas</disclaimer>
     <disclaimer lang="mk">Confluence е подразбирачка маска, бришењето може да предизвика пречки</disclaimer>
     <disclaimer lang="ms">Penyatuan ialah kulit lalai Kodi, mengubahnya boleh menimbulkan isu.</disclaimer>
     <disclaimer lang="nl">Confluence is de standaard Kodi skin, het verwijderen van Confluence kan leiden tot problemen.</disclaimer>

@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/xbmc-main/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Cambiar tus"
+msgstr "Cambiar su"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -62,7 +62,7 @@ msgstr "Elementos"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Opciones várias"
+msgstr "Opciones varias"
 
 msgctxt "#31027"
 msgid "Location"
@@ -278,7 +278,7 @@ msgstr "Accesos directos"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Elije su canción"
+msgstr "Elija su canción"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -442,11 +442,11 @@ msgstr "[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin · Cam
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]Configura las opciones de VIDEO[/B][CR][CR]Administre su colección de video · Ajusta reproducción de video · Cambia opciones de listas de video[CR]Configura fuentes de subtítulos"
+msgstr "[B]Configura las opciones de VIDEO[/B][CR][CR]Administre su colección de video · Ajusta reproducción de video · Cambia opciones de listas de video[CR]Configura tipografía de subtítulos"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administre su colección de música · Ajusta reproducción de música · Cambia opciones de listas de música[CR]Configura sumisión de canciones · Configura el karaoke"
+msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administre su colección de música · Ajusta reproducción de música · Cambia opciones de listas de música[CR]Configura envío de canciones · Configura el karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
@@ -462,15 +462,15 @@ msgstr "[B]Configura las opciones de SISTEMA[/B][CR][CR]Configura y calibra la p
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · Busca e instala addons desde xbmc.org[CR]Modifica la configuración de los addons"
+msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administre addons instalados · Busca e instala addons desde xbmc.org[CR]Modifica la configuración de los addons"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR OPCIONES DE TV[/B][CR][CR]Cambiar info pantalla completa ·  Especificar datos de guía EPG"
+msgstr "[B]CONFIGURAR OPCIONES DE TV[/B][CR][CR]Cambiar info pantalla completa ·  Especificar datos de guía GEP"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]AJUSTES DE SERVICIOS[/B][CR][CR]Ajustes para controlar XBMC por UPnP y HTTP - Ajustes de compartición de archivos[CR]Activar Zeroconf - Ajustes de AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]AJUSTES DE SERVICIOS[/B][CR][CR]Ajustes para controlar Kodi por UPnP y HTTP - Ajustes de archivos compartidos[CR]Activar Zeroconf - Ajustes de AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Ingresar"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Seleccione su perfil de usuario de XBMC[CR]para ingresar y continuar"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "FOTOS"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "TV EN VIVO"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

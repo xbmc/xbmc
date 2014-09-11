@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/xbmc-main/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -469,8 +469,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ TELEVIZNÍHO PŘEHRÁVÁNÍ[/B][CR][CR]Změna zobrazení přes celou obrazovku · Nastavení EPG dat"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání Kodi skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Přihlášení"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vyberte profil XBMC[CR]pro přihlášení a pokračování"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Vyberte profil Kodi[CR]pro přihlášení a pokračování"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "OBRÁZKY"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "ŽIVÉ VYSÍLÁNÍ"
+msgid "TV"
+msgstr "Televize"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -590,7 +590,7 @@ msgstr "FILMY"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV SHOW"
+msgstr "TV SERIÁLY"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -607,3 +607,7 @@ msgstr "PŘEHRÁT DISK"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SYSTÉM"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RÁDIO"

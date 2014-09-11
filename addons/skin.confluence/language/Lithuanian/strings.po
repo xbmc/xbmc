@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-main/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Pakeitimas"
+msgstr "Pakeiskite savo"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -50,7 +50,7 @@ msgstr "Muzika - Failai"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Atkūrimas"
+msgstr "Atkuriama"
 
 msgctxt "#31024"
 msgid "Page"
@@ -62,7 +62,7 @@ msgstr "Elementai"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Kitos opcijos"
+msgstr "Įvairios parinktys"
 
 msgctxt "#31027"
 msgid "Location"
@@ -70,11 +70,11 @@ msgstr "Vieta"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Posterių karuselė"
+msgstr "Plakatų karuselė"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "FanArt"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
@@ -90,7 +90,7 @@ msgstr "Informacija"
 
 msgctxt "#31039"
 msgid "Actions"
-msgstr "Veiksmas"
+msgstr "Veiksmai"
 
 msgctxt "#31040"
 msgid "Now Playing"
@@ -118,7 +118,7 @@ msgstr "PAIEŠKA"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Vizualizacijos išankstiniai nustatymai"
+msgstr "Vizualizacijos išankstinės parinktys"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -126,11 +126,11 @@ msgstr "Pabaigos laikas"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Rodyti: Didėjimo tvarka"
+msgstr "Rūšiuoti: didėjančiai"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Rodyti: Mažėjimo tvarka"
+msgstr "Rūšiuoti: mažėjančiai"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -138,7 +138,7 @@ msgstr "Atidaryti grojaraštį"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Įšsaugoti grojaraštį"
+msgstr "Išsaugoti grojaraštį"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -146,15 +146,15 @@ msgstr "Uždaryti grojaraštį"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Sistemos garso failai"
+msgstr "Sistemos muzikos failai"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Aktualus grojaraštis"
+msgstr "Dabartinis grojaraštis"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkūrti."
+msgstr "Šis failais yra sugrupuotas, pasirinkite dalį kurią norite atkurti."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -162,7 +162,7 @@ msgstr "Dabartinis pasirinkimas"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Pagrindinio ekrano nustatymai"
+msgstr "Pradinio ekrano parinktys"
 
 msgctxt "#31102"
 msgid "Background"
@@ -170,67 +170,67 @@ msgstr "Fonas"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Rodyti \"Pauzė\" prezentacijos metu"
+msgstr "Rodyti \"Pauzė\" nuotraukų skaidrių peržiūroje"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Filmų anonsą rodyti lange [COLOR=grey3](Informacija tik apie video)[/COLOR]"
+msgstr "Atkurti anonsus lange [COLOR=grey3](Tik vaizdo įrašo informacijos dialogo lange)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Įvairios opcijos"
+msgstr "Įvairios parinktys"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Nerodyti nuorodos iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Slėpti žymes vaizdo failų varduose [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Slėpti pagrindinio meniu nuorodas"
+msgstr "Slėpti pagrindinio meniu mygtukus"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Įgalinti priskirtą foną"
+msgstr "Įjungti individualų foną"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Fono maršrutas:"
+msgstr "Fono kelias:"
 
 msgctxt "#31111"
 msgid "Hide"
-msgstr "Nerodyti"
+msgstr "Slėpti"
 
 msgctxt "#31112"
 msgid "Options"
-msgstr "Nustatymai"
+msgstr "Parinktys"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Rodyti neseniai patalpintus albumus"
+msgstr "Rodyti neseniai pridėtus albumus"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Rodyti neseniai patalpintus video"
+msgstr "Rodyti neseniai pridėtus vaizdo įrašus"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Pagrindinis programos submeniu puslapis"
+msgstr "Pradinio puslapio programų submeniu"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Slėpti Fanart informaciją"
+msgstr "Slėpti fono Fanart"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Rodyti foninį \"Dabar atkuriama\" video"
+msgstr "Rodyti fone \"Dabar atkuriamą\" vaizdo įrašą"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Rodyti fono \"Dabar atkuriama\" vizualizaciją"
+msgstr "Rodyti fone \"Dabar atkuriama\" vizualizaciją"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Atkūri televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
+msgstr "Atkurti televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -242,7 +242,7 @@ msgstr "Dainų žodžiai"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Slėpti Fanart visame ekrane vizualizacija"
+msgstr "Slėpti Fanart viso ekrano vizualizacijoje"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -250,15 +250,15 @@ msgstr "Dainų žodžių priedas"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Pagrindinio tinklapio video submeniu"
+msgstr "Pradinio puslapio vaizdo įrašų submeniu"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Pagrindinio tinklapio muzikos submeniu"
+msgstr "Pradinio puslapio muzikos submeniu"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Pagrindinio tinklapio nuotraukų submeniu"
+msgstr "Pradinio puslapio nuotraukų submeniu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -266,19 +266,19 @@ msgstr "Muzikos OSD"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "Video OSD"
+msgstr "Vaizdo OSD"
 
 msgctxt "#31142"
 msgid "Settings level"
-msgstr "Parametrų lygis"
+msgstr "Nustatymų lygis"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Etiketės"
+msgstr "Nuorodos"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Pasirinkti savo dainą"
+msgstr "Pasirinkite savo dainą"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -286,7 +286,7 @@ msgstr "Dainų žodžių šaltinis"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "Surasta"
+msgstr "Rasta"
 
 msgctxt "#31207"
 msgid "Find More Items"
@@ -310,11 +310,11 @@ msgstr "Duomenų tiekėjas"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Nerodyti Fanart"
+msgstr "Slėpti Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Filmo aprašymas"
+msgstr "Filmo duomenys"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -326,23 +326,23 @@ msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart paveikslėlis[CR][CR]Nepasiekiamas[CR][CR] norėdami nustatyti, spauskite mygtuką"
+msgstr "Fanart atvaizdas[CR][CR]nepasiekiamas[CR][CR] Spauskite mygtuką, norėdami nustatyti"
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Aktualus Scraper"
+msgstr "Dabartinis skreperis"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Pasirinkti Scraper"
+msgstr "Pasirinkite skreperį"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Nuskaitomo turinio parinktys"
+msgstr "Turinio nuskaitymo parinktys"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Nustatyti FanArt maršrutą"
+msgstr "Nustatyti Fanart kelią"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -350,7 +350,7 @@ msgstr "Pasirinktas profilis"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Paskutinis įėjimas"
+msgstr "Paskutinis prisijungimas"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
@@ -358,7 +358,7 @@ msgstr "Karaoke dainos pasirinkimas"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Eteryje"
+msgstr "Transliuotas"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -370,19 +370,19 @@ msgstr "Sukurtas"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "Rezoliucija"
+msgstr "Raiška"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Nesenai patalpinti"
+msgstr "Neseniai pridėti"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Nustatytas laikrodis![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po...[/COLOR]"
+msgstr "[B]Laikmatis nustatytas![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Spauskite norėdami atkūrti[CR][CR]filmo anonsą"
+msgstr "Spauskite mygtuką, norėdami atkurti[CR][CR]filmo anonsą"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -394,7 +394,7 @@ msgstr "Pauzė"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Stabdyti"
 
 msgctxt "#31353"
 msgid "Fast Forward"
@@ -414,7 +414,7 @@ msgstr "Atsisiųsti subtitrus"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "Žiūrėti kaip 2D"
+msgstr "Žiūrėti 2D režimu"
 
 msgctxt "#31361"
 msgid "Change mode"
@@ -430,7 +430,7 @@ msgstr "Dabartinė teminė išvaizda"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Dabartinė teminė išvaizda be 'Caps'"
+msgstr "Dabartinė teminė išvaizda be didžiųjų raidžių"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -438,39 +438,39 @@ msgstr "Arial pagrindu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B][COLOR=blue]TEMINĖS IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną · Konfigūruoti failų sąrašą"
+msgstr "[B]KONFIGŪRUOTI IŠVAIZDOS NUSTATYMAS[/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną[CR]Pakeisti failų sąrašo atvaizdavimo parinktis · Nustatyti ekrano užsklandą"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B][COLOR=blue]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas · Nustatyti video sarašą"
+msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keisti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas · Nustatyti audio sarašą[CR]Nustatyti audio pridėjimą"
+msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą · Nustatyti karaoke parinktis[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B][COLOR=blue]NUOTRAUKŲ/PAVEIKSLĖLIŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti pavaikslėlių/nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją"
+msgstr "[B]KONFIGŪRUOTI NUOTRAUKŲ NUSTATYMUS[/B][CR][CR]Nustatyti nuotraukų sąrašo atvaizdavimo parinktis · Konfigūruoti skaidrių peržiūras"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B][COLOR=blue]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti trys vietoves informacijai apie orus gauti"
+msgstr "[B]KONFIGŪRUOTI ORŲ NUSTATYMUS[/B][CR][CR]Nustatykite tris miestus, kuriems norite gauti orų informaciją"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti ekrano kalibravimą · Nustatyti garso išėjimą · Nustatyti energijos taupymo galimybes[CR]Nustatyti distancinį valdiklį · Įgalinti derinimą · Sąrankos [B][COLOR=red]Master lock[/COLOR][/B] toliau vadinama kaip [B][COLOR=blue]Spec. apsauga[/COLOR][/B] blokavimas"
+msgstr "[B]KONFIGŪRUOTI SISTEMOS NUSTATYMUS[/B][CR][CR]Nustatyti ir kalibruoti ekranus · Nustatyti garso išvestį · Nustatyti nuotolinį valdymą[CR]Nustatyti energijos taupymo parinktis · Įjungti derinimą · Nustatyti valdytojo užraktą"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti priedų parametrų valdymą · Nustatyti priedų diegimą iš xbmc.org[CR]Nustatyti priedų pakeitimą"
+msgstr "[B]KONFIGŪRUOTI PRIEDUS[/B][CR][CR]Tvarkyti įdiegtus priedus · Naršyti ir įdiegti priedus iš xbmc.org[CR]Keisti priedo nustatymus"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B][COLOR=blue]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR][CR]Pakeisti viso ekrano info · Tvarkyti EPG duomenų parametrus"
+msgstr "[B]KONFIGŪRUOTI TELEVIZIJOS NUSTATYMUS[/B][CR][CR]Pakeisti viso ekrano informaciją · Tvarkyti EPG duomenų nustatymus"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]XBMC sąrankos valdymas per UPnP ar HTTP · Konfigūruoti bendrą failų naudojimą"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGŪRUOTI PASLAUGŲ NUSTATYMUS[/B][CR][CR]Nustatyti Kodi valdymą per UPnP ir HTTP · Konfigūruoti failų bendrinimą[CR]Įjungti Zeroconf · Konfigūruoti AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -478,19 +478,19 @@ msgstr "Pirmo paleidimo pagalba..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad yra  išjungtas šio lango meniu, kuriame yra papildomos galimybės šiam skyriui. Norėdami atidaryti menių, pereikite į kairę naudojant nuotolinio valdymo pultą arba klaviatūrą arba pažymėkite pele skirtuką. [Cr][Cr] Spauskite \"Gerai\", šio dialogo uždarymui. Daugiau tai nebus rodoma."
+msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR]Paspauskite \"OK\", norėdami uždaryti šį langą ir jis daugiau nebus rodomas."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Prieinami lokaliniai subtitrai"
+msgstr "Prieinami vietiniai subtitrai"
 
 msgctxt "#31420"
 msgid "Login"
 msgstr "Prisijungti"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeikite į sistemą ir tęskite."
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Pasirinkite Kodi vartotojo profilį[CR]prisijungimui ir tęskite"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -498,7 +498,7 @@ msgstr "Rodyti arba slėpti prisijungimo ekraną paleidimo metu."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Pasirinkite profilį, kuris bus naudojamas paleidžiant kai prisijungimo ekranas yra išjungtas."
+msgstr "Pasirinkite profilį, kuris bus naudojamas paleidimo metu, kai prisijungimo langas išjungtas."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -506,7 +506,7 @@ msgstr "Suplanuotas laikas"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "Televizija"
 
 msgctxt "#31503"
 msgid "Add Group"
@@ -526,15 +526,15 @@ msgstr "Galimos[CR]grupės"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr "Kanalų grupė"
+msgstr "Kanalo grupė"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Laikmačio nustatymas"
+msgstr "Laikmatis nustatytas"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Kanalų parinktys"
+msgstr "Kanalo parinktys"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -542,7 +542,7 @@ msgstr "36 valandų prognozė"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
-msgstr "Valandos prognozė"
+msgstr "Valandinė prognozė"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
@@ -566,7 +566,7 @@ msgstr "Atsiunčiama prognozės informacija..."
 
 msgctxt "#31910"
 msgid "Map & Alerts"
-msgstr "Žemėlapis ir Įspėjimai"
+msgstr "Žemėlapis ir įspėjimai"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -577,12 +577,12 @@ msgid "PICTURES"
 msgstr "NUOTRAUKOS"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "LIVE TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
-msgstr "VIDEO"
+msgstr "VAIZDO ĮRAŠAI"
 
 msgctxt "#31954"
 msgid "MOVIES"
@@ -602,8 +602,12 @@ msgstr "PROGRAMOS"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "GROTI DISKĄ"
+msgstr "ATKURTI DISKĄ"
 
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIJA"

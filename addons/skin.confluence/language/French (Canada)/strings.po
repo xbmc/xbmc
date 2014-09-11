@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: French (Canada) (http://www.transifex.com/projects/p/xbmc-main/language/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -469,8 +469,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]CONFIGURER LES RÉGLAGES DE TÉLÉ[/B][CR][CR]Changer les informations de plein écran · Gérer les données du GÉP"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES SERVICES[/B][CR][CR]Configurer le contrôle de XBMC par UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zéroconf · Configurer AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES SERVICES[/B][CR][CR]Configurer le contrôle de Kodi par UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zéroconf · Configurer AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Connexion"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Choisissez votre profil d'utilisateur XBMC[CR]pour vous connecter et continuer"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et continuer"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "IMAGES"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "TÉLÉ EN DIRECT"
+msgid "TV"
+msgstr "Télé"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -607,3 +607,7 @@ msgstr "LIRE UN DISQUE"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SYSTÈME"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"
