@@ -93,7 +93,6 @@ public:
 protected:
   CURL m_url;
   bool IsValidFile(const std::string& strFileName);
-  std::string GetAuthenticatedPath(const CURL &url);
   int64_t m_fileSize;
   int m_fd;
 };
