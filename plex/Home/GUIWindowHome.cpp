@@ -654,15 +654,30 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& item2)
 {
-  if (item1->GetLabel() == item2->GetLabel())
-    return (item1->GetLabel2() < item2->GetLabel2());
-  
-  if (item1->GetLabel2() == "myPlex")
-    return false;
-  if (item2->GetLabel2() == "myPlex")
-    return true;
+  bool bIsSection1 = (item1->GetProperty("sectionPath").asString().find("sections") != std::string::npos);
+  bool bIsSection2 = (item2->GetProperty("sectionPath").asString().find("sections") != std::string::npos);
 
-  return (item1->GetLabel() < item2->GetLabel());
+  if (bIsSection1 && bIsSection2)
+  {
+    // two sections -> Sort alphabetically
+    return (item1->GetLabel() < item2->GetLabel());
+  }
+  else
+  {
+    if ((!bIsSection1) && (!bIsSection2))
+    {
+      // two static items -> Sort alphabetically
+      return (item1->GetLabel() < item2->GetLabel());
+    }
+    else
+    {
+      // we have one section and one static item, sections should be before
+      if (bIsSection1)
+        return true;
+      else
+        return false;
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -784,7 +799,6 @@ void CGUIWindowHome::UpdateSections()
     }
   }
 
-  std::sort(newSections.begin(), newSections.end(), _sortLabels);
   for(int i = 0; i < newSections.size(); i ++)
   {
     CGUIListItemPtr item = newSections[i];
@@ -830,6 +844,7 @@ void CGUIWindowHome::UpdateSections()
 
   if (listUpdated)
   {
+    std::sort(newList.begin(), newList.end(), _sortLabels);
     control->SetStaticContent(newList);
     RestoreSection();
   }
