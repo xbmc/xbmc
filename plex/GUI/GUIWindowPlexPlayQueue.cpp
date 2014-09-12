@@ -84,7 +84,7 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
 {
   CStdString dirPath = strDirectory;
   if (strDirectory.empty())
-    dirPath = "plexserver://playqueue/audio";
+    dirPath = "plexserver://playqueue/";
 
   CStdString plexEditMode = m_vecItems->GetProperty("PlexEditMode").asString();
 
