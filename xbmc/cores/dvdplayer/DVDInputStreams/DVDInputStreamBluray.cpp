@@ -38,6 +38,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
+#include "utils/LangCodeExpander.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -1135,7 +1136,10 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG, g_langInfo.GetDVDAudioLanguage().c_str());
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG, g_langInfo.GetDVDSubtitleLanguage().c_str());
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, g_langInfo.GetDVDMenuLanguage().c_str());
-  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, "us");
+
+  std::string langCode;
+  g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, langCode.c_str());
 }
 
 #endif
