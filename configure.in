@@ -1199,7 +1199,7 @@ AC_SEARCH_LIBS([__dn_expand],resolv)
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
-    AC_CHECK_LIB([SDL2],      [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
     AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
   fi
@@ -2090,7 +2090,7 @@ fi
 
 if test "$use_joystick" = "yes"; then
   final_message="$final_message\n  Joystick:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
+  AC_DEFINE([HAS_SDL_JOYSTICK],[1],["Define to 1 if using SDL joystick"])
 else
   final_message="$final_message\n  Joystick:\tNo"
 fi
