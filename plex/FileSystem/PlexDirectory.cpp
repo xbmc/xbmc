@@ -129,6 +129,13 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     
     if (url.GetFileName() == "audio")
       return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_MUSIC, fileItems);
+    
+    if (url.GetFileName().IsEmpty())
+    {
+      CPlexPlayQueuePtr pq = g_plexApplication.playQueueManager->getPlayingPlayQueue();
+      if (pq)
+        return pq->get(fileItems);
+    }
   }
   else if (url.GetHostName() == "playlists")
   {
