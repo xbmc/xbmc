@@ -84,7 +84,7 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
 {
   CStdString dirPath = strDirectory;
   if (strDirectory.empty())
-    dirPath = "plexserver://playqueue/";
+    dirPath = "plexserver://playqueue/audio";
 
   CStdString plexEditMode = m_vecItems->GetProperty("PlexEditMode").asString();
 
@@ -143,6 +143,8 @@ bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage& message)
     }
 
     case GUI_MSG_WINDOW_INIT:
+      m_vecItems->SetPath("");
+
     case GUI_MSG_WINDOW_DEINIT:
       m_vecItems->SetProperty("PlexEditMode", "");
       break;
