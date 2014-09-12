@@ -128,6 +128,7 @@ public:
   virtual EPlexDirectoryType getPlayQueueDirType(ePlexMediaType type) const;
 
   virtual CPlexPlayQueuePtr getPlayQueueOfType(ePlexMediaType type) const;
+  virtual CPlexPlayQueuePtr getPlayingPlayQueue() const;
   CPlexPlayQueuePtr getPlayQueueFromID(int id) const;
   
   inline int getPlayQueuesCount() { return m_playQueues.size(); }

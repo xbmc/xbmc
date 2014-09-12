@@ -492,6 +492,18 @@ CPlexPlayQueuePtr CPlexPlayQueueManager::getPlayQueueOfType(ePlexMediaType type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexPlayQueuePtr CPlexPlayQueueManager::getPlayingPlayQueue() const
+{
+  if (PlexUtils::IsPlayingPlaylist() && g_application.CurrentFileItemPtr())
+  {
+    ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(g_application.CurrentFileItemPtr());
+    return getPlayQueueOfType(type);
+  }
+  
+  return CPlexPlayQueuePtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexPlayQueuePtr CPlexPlayQueueManager::getPlayQueueFromID(int id) const
 {
   for (PlayQueueMap::const_iterator it = m_playQueues.begin(); it != m_playQueues.end(); ++it)
