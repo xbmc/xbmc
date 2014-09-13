@@ -5857,3 +5857,10 @@ void CApplication::CloseNetworkShares()
   CSFTPSessionManager::DisconnectAllSessions();
 #endif
 }
+
+std::string CApplication::GetScreenSaverId()
+{
+  if (m_screenSaver)
+    return m_screenSaver->ID();
+  return "";
+}

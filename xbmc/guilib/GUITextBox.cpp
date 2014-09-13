@@ -133,7 +133,9 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {
-    if ((!m_autoScrollCondition || m_autoScrollCondition->Get()) && !g_application.IsInScreenSaver())
+    if ((!m_autoScrollCondition || m_autoScrollCondition->Get()) && !(g_application.IsInScreenSaver() &&
+         (g_application.GetScreenSaverId() == "screensaver.xbmc.builtin.black" ||
+          g_application.GetScreenSaverId() == "screensaver.xbmc.builtin.dim")))
     {
       if (m_lastRenderTime)
         m_autoScrollDelayTime += currentTime - m_lastRenderTime;
