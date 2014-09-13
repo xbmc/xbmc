@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="-35dp"
+            android:layout_marginTop="20dp"
             android:progress="50"
             android:progressDrawable="@drawable/progresscolor" />
 
@@ -39,7 +39,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-60dp"
             android:text=""
             android:textColor="@android:color/white"
             android:textSize="16dp" />
