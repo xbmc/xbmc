@@ -84,13 +84,11 @@ protected:
   struct SVideoSample
   {
     DXVA2_VideoSample sample;
-    CSurfaceContext* context;
+    CRenderPicture* renderPic;
   };
-  typedef std::deque<SVideoSample> SSamples;
-  SSamples         m_sample;
+  std::deque<SVideoSample> m_samples;
 
   CCriticalSection    m_section;
-  LPDIRECT3DSURFACE9* m_surfaces;
   CSurfaceContext*    m_context;
   bool                m_quirk_nodeintprocforprog;
   static CCriticalSection    m_dlSection;

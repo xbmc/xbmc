@@ -97,7 +97,7 @@ protected:
   struct SFrame
   {
     IDirect3DSurface9*     pSurface;
-    CSurfaceContext*       context;
+    CRenderPicture*        pRenderPic;
     unsigned int           index;
     unsigned               format;
   };

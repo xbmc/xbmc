@@ -151,7 +151,6 @@ CProcessor::CProcessor()
   m_time    = 0;
   g_Windowing.Register(this);
 
-  m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
   m_progressive = true;
@@ -174,21 +173,13 @@ void CProcessor::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_process);
-  for(unsigned i = 0; i < m_sample.size(); i++)
+  for(unsigned i = 0; i < m_samples.size(); i++)
   {
-    SAFE_RELEASE(m_sample[i].context);
-    SAFE_RELEASE(m_sample[i].sample.SrcSurface);
+    SAFE_RELEASE(m_samples[i].renderPic);
   }
-  m_sample.clear();
+  m_samples.clear();
 
   SAFE_RELEASE(m_context);
-  if (m_surfaces)
-  {
-    for (unsigned i = 0; i < m_size; i++)
-      SAFE_RELEASE(m_surfaces[i]);
-    free(m_surfaces);
-    m_surfaces = NULL;
-  }
 }
 
 bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -499,17 +490,23 @@ bool CProcessor::OpenProcessor()
 bool CProcessor::CreateSurfaces()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_size, sizeof(LPDIRECT3DSURFACE9));
+  LPDIRECT3DSURFACE9 surfaces[32];
   for (unsigned idx = 0; idx < m_size; idx++)
+  {
     CHECK(pD3DDevice->CreateOffscreenPlainSurface(
-                                (m_desc.SampleWidth + 15) & ~15,
-                                (m_desc.SampleHeight + 15) & ~15,
-                                m_desc.Format,
-                                D3DPOOL_DEFAULT,
-                                &m_surfaces[idx],
-                                NULL));
+      (m_desc.SampleWidth + 15) & ~15,
+      (m_desc.SampleHeight + 15) & ~15,
+      m_desc.Format,
+      D3DPOOL_DEFAULT,
+      &surfaces[idx],
+      NULL));
+  }
 
   m_context = new CSurfaceContext();
+  for (int i = 0; i < m_size; i++)
+  {
+    m_context->AddSurface(surfaces[i]);
+  }
 
   return true;
 }
@@ -519,7 +516,6 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   CSingleLock lock(m_section);
 
   IDirect3DSurface9* surface = NULL;
-  CSurfaceContext* context = NULL;
 
   if (picture->iFlags & DVP_FLAG_DROPPED)
     return 0;
@@ -528,18 +524,15 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   {
     case RENDER_FMT_DXVA:
     {
-      surface = (IDirect3DSurface9*)picture->data[3];
-      context = picture->context;
+      surface = picture->dxva->surface;
       break;
     }
 
     case RENDER_FMT_YUV420P:
     {
-      surface = m_surfaces[m_index];
+      surface = m_context->GetAtIndex(m_index);
       m_index = (m_index + 1) % m_size;
 
-      context = m_context;
-  
       D3DLOCKED_RECT rectangle;
       if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
         return 0;
@@ -585,18 +578,18 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
     }
   }
 
-  if (!surface || !context)
+  if (!surface)
     return 0;
 
   m_time += 2;
-
-  surface->AddRef();
-  context->Acquire();
 
   SVideoSample vs = {};
   vs.sample.Start          = m_time;
   vs.sample.End            = 0; 
   vs.sample.SampleFormat   = m_desc.SampleFormat;
+  vs.renderPic = NULL;
+  if (picture->format == RENDER_FMT_DXVA)
+    vs.renderPic = picture->dxva->Acquire();
 
   if (picture->iFlags & DVP_FLAG_INTERLACED)
   {
@@ -615,17 +608,14 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   vs.sample.SrcSurface     = surface;
 
 
-  vs.context = context;
+  if(!m_samples.empty())
+    m_samples.back().sample.End = vs.sample.Start;
 
-  if(!m_sample.empty())
-    m_sample.back().sample.End = vs.sample.Start;
-
-  m_sample.push_back(vs);
-  if (m_sample.size() > m_size)
+  m_samples.push_back(vs);
+  if (m_samples.size() > m_size)
   {
-    SAFE_RELEASE(m_sample.front().context);
-    SAFE_RELEASE(m_sample.front().sample.SrcSurface);
-    m_sample.pop_front();
+    SAFE_RELEASE(m_samples.front().renderPic);
+    m_samples.pop_front();
   }
 
   return m_time;
@@ -671,20 +661,19 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   REFERENCE_TIME MinTime = time - m_max_back_refs*2;
   REFERENCE_TIME MaxTime = time + m_max_fwd_refs*2;
 
-  SSamples::iterator it = m_sample.begin();
-  while (it != m_sample.end())
+  std::deque<SVideoSample>::iterator it = m_samples.begin();
+  while (it != m_samples.end())
   {
     if (it->sample.Start < MinTime)
     {
-      SAFE_RELEASE(it->context);
-      SAFE_RELEASE(it->sample.SrcSurface);
-      it = m_sample.erase(it);
+      SAFE_RELEASE(it->renderPic);
+      it = m_samples.erase(it);
     }
     else
       ++it;
   }
 
-  if(m_sample.empty())
+  if(m_samples.empty())
     return false;
 
   // MinTime and MaxTime are now the first and last samples to feed the processor.
@@ -711,7 +700,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   for (int i = 0; i < count; i++)
     samp[i].SampleFormat.SampleFormat = DXVA2_SampleUnknown;
 
-  for(it = m_sample.begin(); it != m_sample.end() && valid < count; ++it)
+  for(it = m_samples.begin(); it != m_samples.end() && valid < count; ++it)
   {
     if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
     {

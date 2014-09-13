@@ -27,6 +27,7 @@
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+#include <list>
 #include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
 
@@ -49,10 +50,32 @@ public:
   CSurfaceContext();
   ~CSurfaceContext();
 
-   void HoldSurface(IDirect3DSurface9* surface);
+  void AddSurface(IDirect3DSurface9* surf);
+  void ClearReference(IDirect3DSurface9* surf);
+  bool MarkRender(IDirect3DSurface9* surf);
+  void ClearRender(IDirect3DSurface9* surf);
+  bool IsValid(IDirect3DSurface9* surf);
+  IDirect3DSurface9* GetFree(IDirect3DSurface9* surf);
+  IDirect3DSurface9* GetAtIndex(unsigned int idx);
+  void Reset();
+  int Size();
+  bool HasFree();
 
 protected:
-  std::vector<IDirect3DSurface9*> m_heldsurfaces;
+  std::map<IDirect3DSurface9*, int> m_state;
+  std::list<IDirect3DSurface9*> m_freeSurfaces;
+  CCriticalSection m_section;
+};
+
+class CRenderPicture
+  : public IDVDResourceCounted<CRenderPicture>
+{
+public:
+  CRenderPicture(CSurfaceContext *context);
+  ~CRenderPicture();
+  IDirect3DSurface9* surface;
+protected:
+  CSurfaceContext *surface_context;
 };
 
 typedef HRESULT(__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
@@ -121,26 +144,12 @@ protected:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
-  struct SVideoBuffer
-  {
-    SVideoBuffer();
-   ~SVideoBuffer();
-    void Clear();
-
-    IDirect3DSurface9* surface;
-    bool               used;
-    int                age;
-  };
-
   IDirectXVideoDecoder*        m_decoder;
   HANDLE                       m_device;
   GUID                         m_input;
   DXVA2_VideoDesc              m_format;
-  static const unsigned        m_buffer_max = 32;
-  SVideoBuffer                 m_buffer[m_buffer_max];
-  unsigned                     m_buffer_count;
-  unsigned                     m_buffer_age;
   int                          m_refs;
+  CRenderPicture              *m_presentPicture;
 
   struct dxva_context*         m_context;
 

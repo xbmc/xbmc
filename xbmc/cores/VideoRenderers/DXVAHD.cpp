@@ -88,7 +88,6 @@ CProcessorHD::CProcessorHD()
   m_frame   = 0;
   g_Windowing.Register(this);
 
-  m_surfaces = NULL;
   m_context  = NULL;
 }
 
@@ -112,21 +111,11 @@ void CProcessorHD::Close()
 
   for(unsigned i = 0; i < m_frames.size(); i++)
   {
-    SAFE_RELEASE(m_frames[i].context);
-    SAFE_RELEASE(m_frames[i].pSurface);
+    SAFE_RELEASE(m_frames[i].pRenderPic);
   }
   m_frames.clear();
 
   SAFE_RELEASE(m_context);
-  if (m_surfaces)
-  {
-    for (unsigned i = 0; i < m_size; i++)
-    {
-      SAFE_RELEASE(m_surfaces[i]);
-    }
-    free(m_surfaces);
-    m_surfaces = NULL;
-  }
 }
 
 bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -330,17 +319,23 @@ bool CProcessorHD::OpenProcessor()
 bool CProcessorHD::CreateSurfaces()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_size, sizeof(LPDIRECT3DSURFACE9));
+  LPDIRECT3DSURFACE9 surfaces[32];
   for (unsigned idx = 0; idx < m_size; idx++)
+  {
     CHECK(pD3DDevice->CreateOffscreenPlainSurface(
-                                (m_width + 15) & ~15,
-                                (m_height + 15) & ~15,
-                                m_format,
-                                m_VPDevCaps.InputPool,
-                                &m_surfaces[idx],
-                                NULL));
+      (m_width + 15) & ~15,
+      (m_height + 15) & ~15,
+      m_format,
+      m_VPDevCaps.InputPool,
+      &surfaces[idx],
+      NULL));
+  }
 
   m_context = new CSurfaceContext();
+  for (int i = 0; i < m_size; i++)
+  {
+    m_context->AddSurface(surfaces[i]);
+  }
 
   return true;
 }
@@ -350,7 +345,6 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
   CSingleLock lock(m_section);
 
   IDirect3DSurface9* surface = NULL;
-  CSurfaceContext* context = NULL;
 
   if (picture->iFlags & DVP_FLAG_DROPPED)
   {
@@ -361,23 +355,20 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
   {
     case RENDER_FMT_DXVA:
     {
-      surface = (IDirect3DSurface9*)picture->data[3];
-      context = picture->context;
+      surface = picture->dxva->surface;
       break;
     }
 
     case RENDER_FMT_YUV420P:
     {
-      if (!m_surfaces)
+      if (!m_context)
       {
         CLog::Log(LOGWARNING, __FUNCTION__" - not initialized.");
         return 0;
       }
 
-      surface = m_surfaces[m_index];
+      surface = m_context->GetAtIndex(m_index);
       m_index = (m_index + 1) % m_size;
-
-      context = m_context;
   
       D3DLOCKED_RECT rectangle;
       if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
@@ -430,19 +421,18 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
     }
   }
 
-  if (!surface || !context)
+  if (!surface)
   {
     return 0;
   }
   m_frame += 2;
 
-  surface->AddRef();
-  context->Acquire();
-
   SFrame frame = {};
   frame.index       = m_frame;
-  frame.pSurface    = surface; 
-  frame.context     = context;
+  frame.pSurface    = surface;
+  frame.pRenderPic  = NULL;
+  if (picture->format == RENDER_FMT_DXVA)
+    frame.pRenderPic  = picture->dxva->Acquire();
   frame.format      = DXVAHD_FRAME_FORMAT_PROGRESSIVE;
 
   if (picture->iFlags & DVP_FLAG_INTERLACED)
@@ -456,8 +446,7 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
 
   if (m_frames.size() > m_size)
   {
-    SAFE_RELEASE(m_frames.front().context);
-    SAFE_RELEASE(m_frames.front().pSurface);
+    SAFE_RELEASE(m_frames.front().pRenderPic);
 
     m_frames.pop_front();
   }
@@ -526,8 +515,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   {
     if (it->index < minFrame)
     {
-      SAFE_RELEASE(it->context);
-      SAFE_RELEASE(it->pSurface);
+      SAFE_RELEASE(it->pRenderPic);
       it = m_frames.erase(it);
     }
     else
