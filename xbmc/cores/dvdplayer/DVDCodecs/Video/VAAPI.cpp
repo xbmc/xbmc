@@ -368,7 +368,7 @@ VASurfaceID CVideoSurfaces::GetFree(VASurfaceID surf)
 
 VASurfaceID CVideoSurfaces::GetAtIndex(int idx)
 {
-  if (idx >= m_state.size())
+  if (idx >= (int) m_state.size())
     return VA_INVALID_SURFACE;
 
   std::map<VASurfaceID, int>::iterator it = m_state.begin();
@@ -674,7 +674,6 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 void CDecoder::FFReleaseBuffer(uint8_t *data)
 {
   VASurfaceID surf;
-  unsigned int i;
 
   CSingleLock lock(m_DecoderSection);
 
@@ -734,7 +733,6 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 
   m_bufferStats.Get(decoded, processed, render, vpp);
 
-  bool hasfree = m_videoSurfaces.HasFree();
   while (!retval)
   {
     // first fill the buffers to keep vaapi busy
@@ -917,7 +915,7 @@ bool CDecoder::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  for (int i=0; i<m_diMethods.size(); i++)
+  for (size_t i = 0; i < m_diMethods.size(); i++)
   {
     if (m_diMethods[i] == method)
       return true;
@@ -2404,11 +2402,11 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   if (methods)
   {
-    for (int i=0; i<numFilters; i++)
+    for (unsigned int i = 0; i < numFilters; i++)
     {
       if (filters[i] == VAProcFilterDeinterlacing)
       {
-        for (int j=0; j<numDeinterlacingCaps; j++)
+        for (unsigned int j = 0; j < numDeinterlacingCaps; j++)
         {
           if (deinterlacingCaps[j].type == VAProcDeinterlacingBob)
           {
@@ -2644,7 +2642,8 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   pipelineParams->num_filters = 1;
 
   // references
-  double pts, ptsLast = DVD_NOPTS_VALUE;
+  double pts = DVD_NOPTS_VALUE;
+  double ptsLast = DVD_NOPTS_VALUE;
   pipelineParams->surface = VA_INVALID_SURFACE;
   for (it=m_decodedPics.begin(); it!=m_decodedPics.end(); ++it)
   {
