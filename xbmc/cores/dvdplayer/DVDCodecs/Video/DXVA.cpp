@@ -53,7 +53,7 @@ using namespace AUTOPTR;
 using namespace std;
 
 static void RelBufferS(void *opaque, uint8_t *data)
-{ ((CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware())->RelBuffer(data); }
+{ ((CDecoder*)opaque)->RelBuffer(data); }
 
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
@@ -507,20 +507,30 @@ bool CDXVAContext::CreateSurfaces(int width, int height, D3DFORMAT format, unsig
 bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder)
 {
   CSingleLock lock(m_section);
-  std::vector<CDecoder*>::iterator it;
-  for (it = m_decoders.begin(); it != m_decoders.end(); ++it)
+
+  int retry = 0;
+  while (retry < 2)
   {
-    (*it)->CloseDXVADecoder();
+    HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
+    if (!FAILED(res))
+    {
+      return true;
+    }
+
+    if (retry == 0)
+    {
+      CLog::Log(LOGERROR, "%s - hw may not support multiple decoders, releasing existing ones", __FUNCTION__);
+      std::vector<CDecoder*>::iterator it;
+      for (it = m_decoders.begin(); it != m_decoders.end(); ++it)
+      {
+        (*it)->CloseDXVADecoder();
+      }
+    }
+    retry++;
   }
 
-  HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
-  if (FAILED(res))
-  {
-    CLog::Log(LOGNOTICE, "%s - failed creating decoder", __FUNCTION__);
-    return false;
-  }
-
-  return true;
+  CLog::Log(LOGERROR, "%s - failed creating decoder", __FUNCTION__);
+  return false;
 }
 
 bool CDXVAContext::IsValidDecoder(CDecoder *decoder)
@@ -908,6 +918,12 @@ int CDecoder::Check(AVCodecContext* avctx)
 {
   CSingleLock lock(m_section);
 
+  // we may not have a hw decoder on systems (AMD HD2xxx, HD3xxx) which are only capable
+  // of opening a single decoder and DVDPlayer opened a new stream without having flushed
+  // current one.
+  if (!m_decoder)
+    return VC_BUFFER;
+
   if(m_state == DXVA_RESET)
     Close();
 
@@ -1104,7 +1120,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
   pic->data[0] = (uint8_t*)buf->surface;
   pic->data[3] = (uint8_t*)buf->surface;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, this, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "DXVA - error creating buffer");
