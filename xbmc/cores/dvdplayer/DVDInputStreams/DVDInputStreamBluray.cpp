@@ -215,6 +215,11 @@ CDVDInputStreamBluray::~CDVDInputStreamBluray()
   delete m_dll;
 }
 
+void CDVDInputStreamBluray::Abort()
+{
+  m_hold = HOLD_EXIT;
+}
+
 bool CDVDInputStreamBluray::IsEOF()
 {
   return false;
@@ -604,7 +609,8 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if(m_hold == HOLD_HELD)
         return 0;
 
-      if(m_hold == HOLD_ERROR)
+      if(  m_hold == HOLD_ERROR
+        || m_hold == HOLD_EXIT)
         return -1;
 
       result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
@@ -1010,7 +1016,7 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode)
+  if(!m_navmode || m_hold == HOLD_EXIT)
     return NEXTSTREAM_NONE;
 
   if (m_hold == HOLD_ERROR)
