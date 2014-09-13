@@ -72,9 +72,9 @@ BEGIN
             VALUE "CompanyName", "@COMPANY_NAME@"
             VALUE "FileDescription", "@APP_NAME@"
             VALUE "FileVersion", "@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@"
-            VALUE "InternalName", "XBMC.exe"
-            VALUE "LegalCopyright", "Copyright (c) Team XBMC.  All rights reserved."
-            VALUE "OriginalFilename", "XBMC.exe"
+            VALUE "InternalName", "@APP_NAME@.exe"
+            VALUE "LegalCopyright", "Copyright (c) @COMPANY_NAME@.  All rights reserved."
+            VALUE "OriginalFilename", "@APP_NAME@.exe"
             VALUE "ProductName", "@APP_NAME@ for Windows"
             VALUE "ProductVersion", "@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@"
         END
