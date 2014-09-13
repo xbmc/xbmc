@@ -4,5 +4,8 @@ XBMC_PLATFORM_DIR=android
 
 #fetch submodules
 cd $WORKSPACE
+if test -d $WORKSPACE/addons/skin.re-touched
+then
 rm -r $WORKSPACE/addons/skin.re-touched
+fi
 git submodule update --init $WORKSPACE/addons/skin.re-touched
