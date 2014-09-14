@@ -1087,3 +1087,11 @@ msgstr "Toggle Edit Mode"
 msgctxt "#52609"
 msgid "Force Transcode"
 msgstr "Force Transcode"
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr "Cannot open Playlist"
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr "Playlist is empty"

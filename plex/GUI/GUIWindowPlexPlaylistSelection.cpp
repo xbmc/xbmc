@@ -10,6 +10,8 @@
 #include "interfaces/Builtins.h"
 #include "PlexApplication.h"
 #include "GUIPlexDefaultActionHandler.h"
+#include "GUIDialogPlexError.h"
+#include "LocalizeStrings.h"
 
 CGUIWindowPlexPlaylistSelection::CGUIWindowPlexPlaylistSelection()
   : CGUIMediaWindow(WINDOW_PLEX_PLAYLIST_SELECTION, "PlexPlaylistSelection.xml")
@@ -23,9 +25,15 @@ bool CGUIWindowPlexPlaylistSelection::OnSelect(int iItem)
     return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   
-  CStdString action = "XBMC.ActivateWindow(PlexPlayQueue," + pItem->GetPath() + ",return)";
-  
-  CBuiltins::Execute(action);
+  if (pItem->GetProperty("leafCount").asInteger())
+  {
+    CStdString action = "XBMC.ActivateWindow(PlexPlayQueue," + pItem->GetPath() + ",return)";
+    
+    CBuiltins::Execute(action);
+  }
+  else
+    CGUIDialogPlexError::ShowError(g_localizeStrings.Get(52610), g_localizeStrings.Get(52611), "", "");
+    
   return true;
 }
 

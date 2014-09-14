@@ -86,6 +86,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/GUISettings.h"
 #include "GUI/GUIPlexDefaultActionHandler.h"
+#include "GUI/GUIDialogPlexError.h"
 
 
 using namespace std;
@@ -611,6 +612,12 @@ void CGUIWindowHome::OnWatchStateChanged(const CGUIMessage& message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::OpenItem(CFileItemPtr item)
 {
+  if ((item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PLAYLIST) && item->GetProperty("leafCount").asInteger() == 0)
+  {
+    CGUIDialogPlexError::ShowError(g_localizeStrings.Get(52610), g_localizeStrings.Get(52611), "", "");
+    return;
+  }
+  
   // save current focused controls
   m_focusSaver.SaveFocus(this);
 
