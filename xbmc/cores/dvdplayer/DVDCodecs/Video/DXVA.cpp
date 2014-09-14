@@ -1091,7 +1091,6 @@ void CDecoder::RelBuffer(uint8_t *data)
   {
     CLog::Log(LOGWARNING, "%s - return of invalid surface", __FUNCTION__);
   }
-
   m_surface_context->ClearReference(surface);
 
   Release();
