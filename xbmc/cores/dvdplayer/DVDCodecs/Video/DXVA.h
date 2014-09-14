@@ -60,6 +60,7 @@ public:
   void Reset();
   int Size();
   bool HasFree();
+  bool HasRefs();
 
 protected:
   std::map<IDirect3DSurface9*, int> m_state;
@@ -122,6 +123,7 @@ public:
   virtual void Close();
   virtual const std::string Name() { return "dxva2"; }
   virtual unsigned GetAllowedReferences();
+  virtual long Release();
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();
@@ -155,6 +157,7 @@ protected:
 
   CSurfaceContext*             m_surface_context;
   CDXVAContext*                m_dxva_context;
+  AVCodecContext*              m_avctx;
 
   unsigned int                 m_shared;
 

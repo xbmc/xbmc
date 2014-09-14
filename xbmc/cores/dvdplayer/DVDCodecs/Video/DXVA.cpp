@@ -608,6 +608,17 @@ bool CSurfaceContext::HasFree()
   return !m_freeSurfaces.empty();
 }
 
+bool CSurfaceContext::HasRefs()
+{
+  CSingleLock lock(m_section);
+  for (map<IDirect3DSurface9*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  {
+    if (it->second & SURFACE_USED_FOR_REFERENCE)
+      return true;
+  }
+  return false;
+}
+
 //-----------------------------------------------------------------------------
 // DXVA RednerPictures
 //-----------------------------------------------------------------------------
@@ -654,6 +665,16 @@ CDecoder::~CDecoder()
   free(m_context->surface);
   free(const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg)); // yes this is foobar
   free(m_context);
+}
+
+long CDecoder::Release()
+{
+  // if ffmpeg holds any references, flush buffers
+  if (m_surface_context && m_surface_context->HasRefs())
+  {
+    avcodec_flush_buffers(m_avctx);
+  }
+  return IHardwareDecoder::Release();
 }
 
 void CDecoder::Close()
@@ -902,6 +923,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   avctx->get_buffer2 = GetBufferS;
   avctx->hwaccel_context = m_context;
 
+  m_avctx = avctx;
+
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
   if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
   {
@@ -1093,7 +1116,7 @@ void CDecoder::RelBuffer(uint8_t *data)
   }
   m_surface_context->ClearReference(surface);
 
-  Release();
+  IHardwareDecoder::Release();
 }
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
