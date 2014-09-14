@@ -2427,6 +2427,18 @@ bool CApplication::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
     }
   }
+  else if (iWin == WINDOW_VISUALISATION)
+  {
+    // check for PVR specific keymaps
+    if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_FULLSCREEN_LIVETV, key, false);
+
+      // if no PVR specific action/mapping is found, fall back to default
+      if (action.GetID() == 0)
+        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+    }
+  }
   else
   {
     // current active window isnt the fullscreen window
