@@ -347,6 +347,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "lastplayed",       MUSICPLAYER_LASTPLAYED },
                                   { "channelname",      MUSICPLAYER_CHANNEL_NAME },
                                   { "channelnumber",    MUSICPLAYER_CHANNEL_NUMBER },
+                                  { "subchannelnumber", MUSICPLAYER_SUB_CHANNEL_NUMBER },
+                                  { "channelnumberlabel", MUSICPLAYER_CHANNEL_NUMBER_LBL },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP }
 };
 
@@ -404,6 +406,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "nextduration",     VIDEOPLAYER_NEXT_DURATION },
                                   { "channelname",      VIDEOPLAYER_CHANNEL_NAME },
                                   { "channelnumber",    VIDEOPLAYER_CHANNEL_NUMBER },
+                                  { "subchannelnumber", VIDEOPLAYER_SUB_CHANNEL_NUMBER },
+                                  { "channelnumberlabel", VIDEOPLAYER_CHANNEL_NUMBER_LBL },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
@@ -1571,6 +1575,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_CHANNEL_NAME:
   case MUSICPLAYER_CHANNEL_NUMBER:
+  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
+  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
   case MUSICPLAYER_CHANNEL_GROUP:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
@@ -1613,6 +1619,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
   case VIDEOPLAYER_NEXT_DURATION:
   case VIDEOPLAYER_CHANNEL_NAME:
   case VIDEOPLAYER_CHANNEL_NUMBER:
+  case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
+  case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
   case VIDEOPLAYER_CHANNEL_GROUP:
   case VIDEOPLAYER_PARENTAL_RATING:
   case VIDEOPLAYER_PLAYCOUNT:
@@ -3727,6 +3735,19 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
       }
     }
     break;
+  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
+    {
+      CPVRChannel* channel = m_currentFile->GetPVRChannelInfoTag();
+      if (channel)
+        return StringUtils::Format("%i", channel->SubChannelNumber());
+    }
+    break;
+  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
+    {
+      CPVRChannel* channel = m_currentFile->GetPVRChannelInfoTag();
+      return channel ? channel->FormattedChannelNumber() : "";
+    }
+    break;
   case MUSICPLAYER_CHANNEL_GROUP:
     {
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
@@ -3824,10 +3845,16 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     /* General channel infos */
     case VIDEOPLAYER_CHANNEL_NAME:
       return tag->ChannelName();
+
     case VIDEOPLAYER_CHANNEL_NUMBER:
-      {
-        return StringUtils::Format("%i", tag->ChannelNumber());;
-      }
+      return StringUtils::Format("%i", tag->ChannelNumber());
+
+    case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
+      return StringUtils::Format("%i", tag->SubChannelNumber());
+
+    case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
+      return tag->FormattedChannelNumber();
+
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())

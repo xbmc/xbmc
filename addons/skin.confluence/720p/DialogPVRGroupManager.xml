@@ -226,7 +226,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+								<label>$INFO[ListItem.ChannelNumberLabel,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</itemlayout>
 						<focusedlayout height="45">
@@ -264,7 +264,7 @@
 								<aligny>center</aligny>
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+								<label>$INFO[ListItem.ChannelNumberLabel,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</focusedlayout>
 					</control>
@@ -345,7 +345,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+								<label>$INFO[ListItem.ChannelNumberLabel,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</itemlayout>
 						<focusedlayout height="45">
@@ -383,7 +383,7 @@
 								<aligny>center</aligny>
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+								<label>$INFO[ListItem.ChannelNumberLabel,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</focusedlayout>
 					</control>
