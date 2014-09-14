@@ -102,7 +102,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 }
 
-void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
+void CGUIWindowPVRGuide::UpdateSelectedItemPath()
 {
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
   {
@@ -115,7 +115,7 @@ void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
     }
   }
   else
-    CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
+    CGUIWindowPVRBase::UpdateSelectedItemPath();
 }
 
 bool CGUIWindowPVRGuide::OnAction(const CAction &action)
