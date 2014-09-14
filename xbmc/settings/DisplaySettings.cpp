@@ -330,15 +330,20 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
 
 void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* = false */)
 {
+  if (resolution == RES_WINDOW && !g_Windowing.CanDoWindowed())
+    resolution = RES_DESKTOP;
+
   if (save)
   {
     string mode = GetStringFromResolution(resolution);
     CSettings::Get().SetString("videoscreen.screenmode", mode.c_str());
   }
 
-  m_currentResolution = resolution;
-
-  SetChanged();
+  if (resolution != m_currentResolution)
+  {
+    m_currentResolution = resolution;
+    SetChanged();
+  }
 }
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
