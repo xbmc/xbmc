@@ -24,8 +24,10 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
+#include "utils/RegExp.h"
 
 #include <math.h>
+#include <boost/shared_ptr.hpp>
 
 #include <dinput.h>
 #include <dinputd.h>
@@ -137,10 +139,15 @@ BOOL CALLBACK CJoystick::EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInst
           p_this->m_devCaps.push_back(diDevCaps);
 
           // load axes configuration from keymap
-          std::map<std::string, AxesConfig>::const_iterator axesConfig = p_this->m_AxesConfigs.find(joyName);
-          if (axesConfig != p_this->m_AxesConfigs.end())
+          std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
+          for (axesCfg = p_this->m_AxesConfigs.begin(); axesCfg != p_this->m_AxesConfigs.end(); axesCfg++)
           {
-            for (AxesConfig::const_iterator it = axesConfig->second.begin(); it != axesConfig->second.end(); ++it)
+            if (axesCfg->first->RegFind(joyName) >= 0)
+              break;
+          }
+          if (axesCfg != p_this->m_AxesConfigs.end())
+          {
+            for (AxesConfig::const_iterator it = axesCfg->second.begin(); it != axesCfg->second.end(); ++it)
             {
               int axis = p_this->MapAxis(pJoystick, it->axis - 1);
               p_this->m_Axes[axis].trigger = it->isTrigger;
@@ -514,7 +521,7 @@ void CJoystick::Acquire()
   }
 }
 
-void CJoystick::LoadAxesConfigs(const std::map<std::string, AxesConfig> &axesConfigs)
+void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
 {
   m_AxesConfigs.clear();
   m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());

@@ -20,14 +20,15 @@
 
 #include "system.h"
 #include "SDLJoystick.h"
-#include "ButtonTranslator.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/RegExp.h"
 
 #include <math.h>
+#include <boost/shared_ptr.hpp>
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL2/SDL.h>
@@ -405,7 +406,7 @@ bool CJoystick::Reinitialize()
   return true;
 }
 
-void CJoystick::LoadAxesConfigs(const std::map<std::string, AxesConfig> &axesConfigs)
+void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
 {
   m_AxesConfigs.clear();
   m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());
@@ -418,10 +419,15 @@ void CJoystick::ApplyAxesConfigs()
   for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); it++)
   {
     std::string joyName(SDL_JoystickName(it->second));
-    std::map<std::string, AxesConfig>::const_iterator axesConfig = m_AxesConfigs.find(joyName);
-    if (axesConfig != m_AxesConfigs.end())
+    std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
+    for (axesCfg = m_AxesConfigs.begin(); axesCfg != m_AxesConfigs.end(); axesCfg++)
     {
-      for (AxesConfig::const_iterator it = axesConfig->second.begin(); it != axesConfig->second.end(); ++it)
+      if (axesCfg->first->RegFind(joyName) >= 0)
+        break;
+    }
+    if (axesCfg != m_AxesConfigs.end())
+    {
+      for (AxesConfig::const_iterator it = axesCfg->second.begin(); it != axesCfg->second.end(); ++it)
       {
         int axis = axesCount + it->axis - 1;
         m_Axes[axis].trigger = it->isTrigger;

@@ -2969,7 +2969,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     CStdString actionName;
     bool fullrange;
     keymapId = joyId + 1;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_Mouse.SetActive(false);
@@ -2987,7 +2987,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     int actionID;
     CStdString actionName;
     bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -3021,7 +3021,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
     keymapId = position << 16 | keymapId;
 
-    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName.c_str(), keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
+    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_Mouse.SetActive(false);
@@ -3240,7 +3240,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    bool fullRange = false;
 
    // Translate using regular joystick translator.
-   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, inputType, actionID, actionName, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName, wKeyID, inputType, actionID, actionName, fullRange))
      return ExecuteInputAction( CAction(actionID, fAmount, 0.0f, actionName, holdTime) );
    else
      CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);

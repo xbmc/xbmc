@@ -51,6 +51,8 @@ struct AxisConfig {
 };
 
 typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
+class CRegExp;
+namespace boost { template <typename T> class shared_ptr; }
 
 // Class to manage all connected joysticks
 class CJoystick : public ISettingCallback
@@ -75,7 +77,7 @@ public:
   bool Reinitialize();
   void Acquire();
   typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
-  void LoadAxesConfigs(const std::map<std::string, AxesConfig> &axesConfigs);
+  void LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs);
 
 private:
   bool IsButtonActive() const { return m_ButtonIdx != -1; }
@@ -113,7 +115,7 @@ private:
   std::vector<LPDIRECTINPUTDEVICE8> m_pJoysticks;
   std::vector<std::string> m_JoystickNames;
   std::vector<DIDEVCAPS> m_devCaps;
-  std::map<std::string, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
+  std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
 };
 
 extern CJoystick g_Joystick;
