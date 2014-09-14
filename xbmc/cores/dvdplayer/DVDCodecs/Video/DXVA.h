@@ -32,6 +32,16 @@
 
 namespace DXVA {
 
+#define CHECK(a) \
+do { \
+  HRESULT res = a; \
+  if(FAILED(res)) \
+  { \
+    CLog::Log(LOGERROR, "DXVA - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    return false; \
+  } \
+} while(0);
+
 class CSurfaceContext
   : public IDVDResourceCounted<CSurfaceContext>
 {
@@ -141,70 +151,6 @@ protected:
 
   CCriticalSection             m_section;
   CEvent                       m_event;
-};
-
-class CProcessor
-  : public ID3DResource
-{
-public:
-  CProcessor();
- ~CProcessor();
-
-  virtual bool           PreInit();
-  virtual void           UnInit();
-  virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
-  virtual void           Close();
-  virtual REFERENCE_TIME Add(DVDVideoPicture* picture);
-  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
-  virtual unsigned       Size() { if (m_service) return m_size; return 0; }
-
-  virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
-
-protected:
-  virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
-  virtual bool CreateSurfaces();
-  virtual bool OpenProcessor();
-  virtual bool SelectProcessor();
-  virtual void EvaluateQuirkNoDeintProcForProg();
-
-  IDirectXVideoProcessorService* m_service;
-  IDirectXVideoProcessor*        m_process;
-  GUID                           m_device;
-
-  DXVA2_VideoProcessorCaps m_caps;
-  DXVA2_VideoDesc  m_desc;
-
-  DXVA2_ValueRange m_brightness;
-  DXVA2_ValueRange m_contrast;
-  DXVA2_ValueRange m_hue;
-  DXVA2_ValueRange m_saturation;
-  REFERENCE_TIME   m_time;
-  unsigned         m_size;
-  unsigned         m_max_back_refs;
-  unsigned         m_max_fwd_refs;
-  EDEINTERLACEMODE m_deinterlace_mode;
-  EINTERLACEMETHOD m_interlace_method;
-  bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
-  unsigned         m_index;
-
-  struct SVideoSample
-  {
-    DXVA2_VideoSample sample;
-    CSurfaceContext* context;
-  };
-
-  typedef std::deque<SVideoSample> SSamples;
-  SSamples          m_sample;
-
-  CCriticalSection  m_section;
-
-  LPDIRECT3DSURFACE9* m_surfaces;
-  CSurfaceContext* m_context;
-
-  bool             m_quirk_nodeintprocforprog;
 };
 
 };

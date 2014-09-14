@@ -21,6 +21,7 @@
 
 #include "libavcodec/avcodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "DVDCodecs/Video/DXVA.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 #include "DVDResource.h"
@@ -45,6 +46,8 @@ const DXVAHD_FILTER PROCAMP_FILTERS[] =
 
 const DWORD NUM_FILTERS = ARRAYSIZE(PROCAMP_FILTERS);
 
+typedef HRESULT (__stdcall *DXVAHDCreateVideoServicePtr)(IDirect3DDevice9Ex *pD3DDevice, const DXVAHD_CONTENT_DESC *pContentDesc, DXVAHD_DEVICE_USAGE Usage, PDXVAHDSW_Plugin pPlugin, IDXVAHD_Device **ppDevice);
+
 class CProcessorHD
   : public CProcessor
 {
@@ -66,6 +69,7 @@ public:
   virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
 
 protected:
+  virtual bool LoadSymbols();
   virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
   virtual bool ReInit();
   virtual bool CreateSurfaces();
@@ -99,6 +103,7 @@ protected:
   };
   typedef std::deque<SFrame> SFrames;
   SFrames                  m_frames;
+  static DXVAHDCreateVideoServicePtr m_DXVAHDCreateVideoService;
 };
 
 };

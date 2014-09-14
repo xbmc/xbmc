@@ -30,11 +30,10 @@
 #include <dxva.h>
 #include <dxva2api.h>
 #include "libavcodec/dxva2.h"
-#include "../DVDCodecUtils.h"
 
 #include "DXVAHD.h"
 #include "windowing/WindowingFactory.h"
-#include "../../../VideoRenderers/WinRenderer.h"
+#include "WinRenderer.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "boost/shared_ptr.hpp"
@@ -46,14 +45,9 @@
 #include "win32/WIN32Util.h"
 #include "utils/Log.h"
 
-#define ALLOW_ADDING_SURFACES 0
-
 using namespace DXVA;
 using namespace AUTOPTR;
 using namespace std;
-
-typedef HRESULT (__stdcall *DXVAHDCreateVideoServicePtr)(IDirect3DDevice9Ex *pD3DDevice, const DXVAHD_CONTENT_DESC *pContentDesc, DXVAHD_DEVICE_USAGE Usage, PDXVAHDSW_Plugin pPlugin, IDXVAHD_Device **ppDevice);
-static DXVAHDCreateVideoServicePtr g_DXVAHDCreateVideoService;
 
 #define CHECK(a) \
 do { \
@@ -74,28 +68,6 @@ do { \
   } \
 } while(0);
 
-static bool LoadDXVAHD()
-{
-  static CCriticalSection g_section;
-  static HMODULE          g_handle;
-
-  CSingleLock lock(g_section);
-  if(g_handle == NULL)
-  {
-    g_handle = LoadLibraryEx("dxva2.dll", NULL, 0);
-  }
-  if(g_handle == NULL)
-  {
-    return false;
-  }
-  g_DXVAHDCreateVideoService = (DXVAHDCreateVideoServicePtr)GetProcAddress(g_handle, "DXVAHD_CreateDevice");
-  if(g_DXVAHDCreateVideoService == NULL)
-  {
-    return false;
-  }
-  return true;
-}
-
 static std::string GUIDToString(const GUID& guid)
 {
   std::string buffer = StringUtils::Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x"
@@ -105,6 +77,8 @@ static std::string GUIDToString(const GUID& guid)
                                           , guid.Data4[5], guid.Data4[6], guid.Data4[7]);
   return buffer;
 }
+
+DXVAHDCreateVideoServicePtr CProcessorHD::m_DXVAHDCreateVideoService = NULL;
 
 CProcessorHD::CProcessorHD()
 {
@@ -162,7 +136,7 @@ bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
 
 bool CProcessorHD::PreInit()
 {
-  if (!LoadDXVAHD())
+  if (!LoadSymbols())
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - DXVAHD not loaded.");
     return false;
@@ -182,7 +156,7 @@ bool CProcessorHD::PreInit()
   desc.OutputWidth = 640;
   desc.OutputHeight = 480;
 
-  HRESULT cvres = g_DXVAHDCreateVideoService( (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice()
+  HRESULT cvres = m_DXVAHDCreateVideoService( (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice()
                                               , &desc
                                               , DXVAHD_DEVICE_USAGE_OPTIMAL_QUALITY
                                               , NULL
@@ -678,6 +652,19 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   delete [] stream_data.ppFutureSurfaces;
 
   return !FAILED(hr);
+}
+
+bool CProcessorHD::LoadSymbols()
+{
+  CSingleLock lock(m_dlSection);
+  if(m_dlHandle == NULL)
+    m_dlHandle = LoadLibraryEx("dxva2.dll", NULL, 0);
+  if(m_dlHandle == NULL)
+    return false;
+  m_DXVAHDCreateVideoService = (DXVAHDCreateVideoServicePtr)GetProcAddress(m_dlHandle, "DXVAHD_CreateDevice");
+  if(m_DXVAHDCreateVideoService == NULL)
+    return false;
+  return true;
 }
 
 #endif
