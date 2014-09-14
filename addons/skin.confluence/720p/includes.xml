@@ -324,7 +324,7 @@
 				<top>30r</top>
 				<width>700</width>
 				<height>20</height>
-				<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumber, - ([COLOR=blue],[/COLOR])]</label>
+				<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumberLabel, - ([COLOR=blue],[/COLOR])]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
