@@ -51,7 +51,7 @@ FOR /F %%f IN ('dir /B /A:-D "%~n1\*.*"') DO (del "%~n1\%%f" /F /Q || EXIT /B 4)
 
 CALL :setSubStageName Copying %1 to build tree...
 REM Copy only content of extracted ".\packagename\"
-XCOPY "%~n1\*" "%XBMC_PATH%\" /E /I /Y /F /R /H /K || EXIT /B 5
+XCOPY "%~n1\*" "%APP_PATH%\" /E /I /Y /F /R /H /K || EXIT /B 5
 
 dir /A:-D * >NUL 2>NUL && (
 CALL :setSubStageName Post-Cleaning %1...

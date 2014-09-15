@@ -10,9 +10,9 @@ cd %TMP_PATH%
 xcopy SDL-1.2.14\include\* "%CUR_PATH%\include\SDL\" /E /Q /I /Y
 copy SDL-1.2.14\lib\SDL.lib "%CUR_PATH%\lib\SDL.lib" /Y
 
-copy SDL-1.2.14\lib\SDL.dll "%XBMC_PATH%\tools\TexturePacker\SDL.dll"
+copy SDL-1.2.14\lib\SDL.dll "%APP_PATH%\tools\TexturePacker\SDL.dll"
 copy SDL_image-1.2.10\include\SDL_image.h "%CUR_PATH%\include\SDL\"
-copy SDL_image-1.2.10\lib\*.dll "%XBMC_PATH%\tools\TexturePacker\"
+copy SDL_image-1.2.10\lib\*.dll "%APP_PATH%\tools\TexturePacker\"
 copy SDL_image-1.2.10\lib\SDL_image.lib "%CUR_PATH%\lib\SDL_image.lib" /Y
 
 

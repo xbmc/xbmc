@@ -9,6 +9,6 @@ cd %TMP_PATH%
 
 xcopy include\* "%CUR_PATH%\include\" /E /Q /I /Y
 copy lib\zlib.lib "%CUR_PATH%\lib\" /Y
-copy bin\zlib1.dll "%XBMC_PATH%\system\" /Y
+copy bin\zlib1.dll "%APP_PATH%\system\" /Y
 
 cd %LOC_PATH%
