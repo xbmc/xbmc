@@ -66,6 +66,7 @@ private:
   void RefreshSection(const CStdString& url, CPlexSectionFanout::SectionTypes type);
   void RefreshAllSections(bool force = true);
   void RefreshSectionsForServer(const CStdString &uuid);
+  void RemoveSectionsForServer(const CStdString &uuid);
   void AddSection(const CStdString& url, CPlexSectionFanout::SectionTypes sectionType, bool useGlobalSlideshow);
   void RemoveSection(const CStdString& url);
   bool ShowSection(const CStdString& url);
