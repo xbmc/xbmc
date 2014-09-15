@@ -168,7 +168,16 @@ bool CPlexServer::MarkUpdateFinished(int connType)
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
   {
     if (conn->GetRefreshed() == false)
+    {
       conn->m_type &= ~connType;
+      if (connType == CPlexConnection::CONNECTION_MYPLEX && !conn->GetAccessToken().empty())
+      {
+        // When we remove a MyPlex connection type and still have a token we need to clear
+        // out the token to make sure it won't linger on the local connection
+        //
+        conn->SetAccessToken("");
+      }
+    }
 
     if (conn->m_type == 0)
       connsToRemove.push_back(conn);

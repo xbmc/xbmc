@@ -62,6 +62,11 @@ public:
   {
     return "X-Plex-Token";
   }
+  
+  void SetAccessToken(const std::string& token)
+  {
+    m_token = token;
+  }
 
   CStdString toString() const
   {

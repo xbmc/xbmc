@@ -214,3 +214,46 @@ TEST_F(PlexServerManagerTest, getAllOwnedActiveServers)
   EXPECT_EQ(1, servers.size());
   EXPECT_TRUE(servers.at(0)->GetOwned());
 }
+
+// This test simulates something that we saw in the wild after
+// adding the merging of local & remote connections.
+// When signed out of plex.tv it will actually retain the token
+// on the local connection. We test for that now.
+TEST_F(PlexServerManagerTest, localDuplicateRemoveTokenConnection)
+{
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   "10.10.10.10", 32400));
+  CPlexServerPtr localServer = PlexTestUtils::serverWithConnection(conn);
+  PlexServerList list;
+  list.push_back(localServer);
+  
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(localServer, true)).Times(1);
+  EXPECT_CALL(*serverMgr, UpdateReachability(false)).Times(3);
+  
+  serverMgr->UpdateFromDiscovery(localServer);
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+  
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX,
+                                                "10.10.10.10", 32400, "http", "token"));
+  CPlexServerPtr localAddressServer = PlexTestUtils::serverWithConnection(conn);
+  list.clear();
+  list.push_back(localAddressServer);
+  
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+  
+  std::vector<CPlexConnectionPtr> conns;
+  serverMgr->GetBestServer()->GetConnections(conns);
+  
+  EXPECT_STREQ("token", serverMgr->GetBestServer()->GetAccessToken());
+  EXPECT_EQ(1, conns.size());
+  
+  // everything setup now. now remove the myPlex connection
+  list.clear();
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+
+  conns.clear();
+  serverMgr->GetBestServer()->GetConnections(conns);
+  EXPECT_EQ(1, conns.size());
+  EXPECT_EQ(CPlexConnection::CONNECTION_DISCOVERED, conns[0]->m_type);
+  EXPECT_TRUE(serverMgr->GetBestServer()->GetAccessToken().empty());
+}
