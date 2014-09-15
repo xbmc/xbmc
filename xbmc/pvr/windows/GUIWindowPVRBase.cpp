@@ -64,6 +64,7 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
+  UpdateSelectedItemPath();
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::Get().SendGUIMessage(m);
 }
@@ -121,13 +122,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
 {
-  int selectedItem = m_viewControl.GetSelectedItem();
-  if (selectedItem > -1)
-  {
-    CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
-    if (fileItem)
-      m_selectedItemPaths.at(m_bRadio) = fileItem->GetPath();
-  }
+  UpdateSelectedItemPath();
 }
 
 bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
@@ -706,4 +701,15 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 {
   CGUIMediaWindow::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + (m_group->GroupType() == PVR_GROUP_TYPE_INTERNAL ? g_localizeStrings.Get(19287) : m_group->GroupName()));
+}
+
+void CGUIWindowPVRBase::UpdateSelectedItemPath()
+{
+  int selectedItem = m_viewControl.GetSelectedItem();
+  if (selectedItem > -1)
+  {
+    CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
+    if (fileItem)
+      m_selectedItemPaths.at(m_bRadio) = fileItem->GetPath();
+  }
 }

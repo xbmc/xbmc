@@ -35,7 +35,6 @@ namespace PVR
     CGUIWindowPVRGuide(bool bRadio);
     virtual ~CGUIWindowPVRGuide(void);
 
-    void OnDeinitWindow(int nextWindowID);
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -43,6 +42,9 @@ namespace PVR
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     void ResetObservers(void);
     void UnregisterObservers(void);
+
+  protected:
+    void UpdateSelectedItemPath();
 
   private:
     bool SelectPlayingFile(void);
