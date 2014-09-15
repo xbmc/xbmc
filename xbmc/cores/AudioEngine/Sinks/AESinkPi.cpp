@@ -43,7 +43,8 @@ CAEDeviceInfo CAESinkPi::m_info;
 CAESinkPi::CAESinkPi() :
     m_sinkbuffer_sec_per_byte(0),
     m_Initialized(false),
-    m_submitted(0)
+    m_submitted(0),
+    m_omx_output(NULL)
 {
 }
 
@@ -56,13 +57,26 @@ void CAESinkPi::SetAudioDest()
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
   OMX_CONFIG_BRCMAUDIODESTINATIONTYPE audioDest;
   OMX_INIT_STRUCTURE(audioDest);
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
-    strncpy((char *)audioDest.sName, "local", strlen("local"));
-  else
-    strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s::%s - m_omx_render.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  if ( m_omx_render.IsInitialized() )
+  {
+    if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+      strncpy((char *)audioDest.sName, "local", strlen("local"));
+    else
+      strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
+    omx_err = m_omx_render.SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - m_omx_render.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
+  if ( m_omx_render_slave.IsInitialized() )
+  {
+    if (CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue")
+      strncpy((char *)audioDest.sName, "local", strlen("local"));
+    else
+      strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
+    omx_err = m_omx_render_slave.SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - m_omx_render_slave.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
 }
 
 static void SetAudioProps(bool stream_channels, uint32_t channel_map)
@@ -176,8 +190,11 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_initFormat = format;
 
   // analogue only supports stereo
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  {
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
+    m_passthrough = false;
+  }
 
   // setup for a 50ms sink feed from SoftAE
   if (format.m_dataFormat != AE_FMT_FLOATP && format.m_dataFormat != AE_FMT_FLOAT &&
@@ -196,18 +213,29 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_format = format;
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_format.m_frameSize * m_format.m_sampleRate);
 
-  CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f", CLASSNAME, __func__,
-                m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte);
-
-  CLog::Log(LOGDEBUG, "%s:%s", CLASSNAME, __func__);
+  CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f dest=%s", CLASSNAME, __func__,
+                m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte,
+                CSettings::Get().GetString("audiooutput.audiodevice").c_str());
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
 
   if (!m_omx_render.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
     CLog::Log(LOGERROR, "%s::%s - m_omx_render.Initialize omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  {
+    if (!m_omx_splitter.Initialize("OMX.broadcom.audio_splitter", OMX_IndexParamAudioInit))
+      CLog::Log(LOGERROR, "%s::%s - m_omx_splitter.Initialize omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    if (!m_omx_render_slave.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
+      CLog::Log(LOGERROR, "%s::%s - m_omx_render.Initialize omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    m_omx_output = &m_omx_splitter;
+  }
+  else
+    m_omx_output = &m_omx_render;
+
+  SetAudioDest();
+
   OMX_INIT_STRUCTURE(m_pcm_input);
-  m_pcm_input.nPortIndex            = m_omx_render.GetInputPort();
   m_pcm_input.eNumData              = OMX_NumericalDataSigned;
   m_pcm_input.eEndian               = OMX_EndianLittle;
   m_pcm_input.bInterleaved          = OMX_TRUE;
@@ -222,37 +250,100 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_pcm_input.nChannels             = channels;
   m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
 
-  omx_err = m_omx_render.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s::%s - error m_omx_render SetParameter in omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  if ( m_omx_splitter.IsInitialized() )
+  {
+    m_pcm_input.nPortIndex = m_omx_splitter.GetInputPort();
+    omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter in omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
-  m_omx_render.ResetEos();
+    m_pcm_input.nPortIndex = m_omx_splitter.GetOutputPort();
+    omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+    if(omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
-  SetAudioDest();
+    m_pcm_input.nPortIndex = m_omx_splitter.GetOutputPort() + 1;
+    omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+    if(omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
 
-  // set up the number/size of buffers for decoder input
-  OMX_PARAM_PORTDEFINITIONTYPE port_param;
-  OMX_INIT_STRUCTURE(port_param);
-  port_param.nPortIndex = m_omx_render.GetInputPort();
+  if ( m_omx_render_slave.IsInitialized() )
+  {
+    m_pcm_input.nPortIndex = m_omx_render_slave.GetInputPort();
+    omx_err = m_omx_render_slave.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - error m_omx_render_slave SetParameter in omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
 
-  omx_err = m_omx_render.GetParameter(OMX_IndexParamPortDefinition, &port_param);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s:%s - error get OMX_IndexParamPortDefinition (input) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  if ( m_omx_render.IsInitialized() )
+  {
+    m_pcm_input.nPortIndex = m_omx_render.GetInputPort();
+    omx_err = m_omx_render.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s::%s - error m_omx_render SetParameter in omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
 
-  port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, (unsigned int)NUM_OMX_BUFFERS);
-  port_param.nBufferSize = m_format.m_frameSize * m_format.m_frames;
+  if ( m_omx_output->IsInitialized() )
+  {
+    // set up the number/size of buffers for decoder input
+    OMX_PARAM_PORTDEFINITIONTYPE port_param;
+    OMX_INIT_STRUCTURE(port_param);
+    port_param.nPortIndex = m_omx_output->GetInputPort();
 
-  omx_err = m_omx_render.SetParameter(OMX_IndexParamPortDefinition, &port_param);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s:%s - error set OMX_IndexParamPortDefinition (intput) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    omx_err = m_omx_output->GetParameter(OMX_IndexParamPortDefinition, &port_param);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - error get OMX_IndexParamPortDefinition (input) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
-  omx_err = m_omx_render.AllocInputBuffers();
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s:%s - Error alloc buffers 0x%08x", CLASSNAME, __func__, omx_err);
+    port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, (unsigned int)NUM_OMX_BUFFERS);
+    port_param.nBufferSize = ALIGN_UP(m_format.m_frameSize * m_format.m_frames, port_param.nBufferAlignment);
 
-  omx_err = m_omx_render.SetStateForComponent(OMX_StateExecuting);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s:%s - m_omx_render OMX_StateExecuting omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    omx_err = m_omx_output->SetParameter(OMX_IndexParamPortDefinition, &port_param);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - error set OMX_IndexParamPortDefinition (input) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+
+    omx_err = m_omx_output->AllocInputBuffers();
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - Error alloc buffers 0x%08x", CLASSNAME, __func__, omx_err);
+  }
+
+  if ( m_omx_splitter.IsInitialized() )
+  {
+    m_omx_tunnel_splitter.Initialize(&m_omx_splitter, m_omx_splitter.GetOutputPort(), &m_omx_render, m_omx_render.GetInputPort());
+    omx_err = m_omx_tunnel_splitter.Establish();
+    if (omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "COMXAudio::Initialize - Error m_omx_tunnel_splitter.Establish 0x%08x", omx_err);
+      return false;
+    }
+
+    m_omx_tunnel_splitter_slave.Initialize(&m_omx_splitter, m_omx_splitter.GetOutputPort() + 1, &m_omx_render_slave, m_omx_render_slave.GetInputPort());
+    omx_err = m_omx_tunnel_splitter_slave.Establish();
+    if (omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "COMXAudio::Initialize - Error m_omx_tunnel_splitter_slave.Establish 0x%08x", omx_err);
+      return false;
+    }
+  }
+
+  if ( m_omx_splitter.IsInitialized() )
+  {
+    omx_err = m_omx_splitter.SetStateForComponent(OMX_StateExecuting);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - m_omx_splitter OMX_StateExecuting omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
+  if ( m_omx_render.IsInitialized() )
+  {
+    omx_err = m_omx_render.SetStateForComponent(OMX_StateExecuting);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - m_omx_render OMX_StateExecuting omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
+  if ( m_omx_render_slave.IsInitialized() )
+  {
+    omx_err = m_omx_render_slave.SetStateForComponent(OMX_StateExecuting);
+    if (omx_err != OMX_ErrorNone)
+      CLog::Log(LOGERROR, "%s:%s - m_omx_render_slave OMX_StateExecuting omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
 
   m_Initialized = true;
   return true;
@@ -263,12 +354,32 @@ void CAESinkPi::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "%s:%s", CLASSNAME, __func__);
   SetAudioProps(false, 0);
-  if (m_Initialized)
-  {
+
+  if ( m_omx_render.IsInitialized() )
+    m_omx_render.IgnoreNextError(OMX_ErrorPortUnpopulated);
+  if ( m_omx_render_slave.IsInitialized() )
+    m_omx_render_slave.IgnoreNextError(OMX_ErrorPortUnpopulated);
+
+  if ( m_omx_tunnel_splitter.IsInitialized() )
+    m_omx_tunnel_splitter.Deestablish();
+  if ( m_omx_tunnel_splitter_slave.IsInitialized() )
+    m_omx_tunnel_splitter_slave.Deestablish();
+
+  if ( m_omx_splitter.IsInitialized() )
+    m_omx_splitter.FlushAll();
+  if ( m_omx_render.IsInitialized() )
     m_omx_render.FlushAll();
+  if ( m_omx_render_slave.IsInitialized() )
+    m_omx_render_slave.FlushAll();
+
+  if ( m_omx_splitter.IsInitialized() )
+    m_omx_splitter.Deinitialize();
+  if ( m_omx_render.IsInitialized() )
     m_omx_render.Deinitialize();
-    m_Initialized = false;
-  }
+  if ( m_omx_render_slave.IsInitialized() )
+    m_omx_render_slave.Deinitialize();
+
+  m_Initialized = false;
 }
 
 bool CAESinkPi::IsCompatible(const AEAudioFormat &format, const std::string &device)
@@ -314,7 +425,7 @@ double CAESinkPi::GetCacheTotal()
 
 unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
-  if (!m_Initialized || !frames)
+  if (!m_Initialized || !m_omx_output || !frames)
     return frames;
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
@@ -332,7 +443,7 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
   if (delay <= 0.0 && m_submitted)
     CLog::Log(LOGNOTICE, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
 
-  omx_buffer = m_omx_render.GetInputBuffer(1000);
+  omx_buffer = m_omx_output->GetInputBuffer(1000);
   if (omx_buffer == NULL)
   {
     CLog::Log(LOGERROR, "CAESinkPi::AddPackets timeout");
@@ -351,7 +462,7 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
     for (int i=0; i < planes; i++)
       memcpy((uint8_t *)omx_buffer->pBuffer + i * planesize, data[i] + offset * pitch, planesize);
   }
-  omx_err = m_omx_render.EmptyThisBuffer(omx_buffer);
+  omx_err = m_omx_output->EmptyThisBuffer(omx_buffer);
   if (omx_err != OMX_ErrorNone)
     CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
   m_submitted++;
@@ -407,6 +518,26 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_deviceType = AE_DEVTYPE_PCM;
   m_info.m_deviceName = "Analogue";
   m_info.m_displayName = "Analogue";
+  m_info.m_displayNameExtra = "";
+  m_info.m_channels += AE_CH_FL;
+  m_info.m_channels += AE_CH_FR;
+  m_info.m_sampleRates.push_back(48000);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
+  m_info.m_dataFormats.push_back(AE_FMT_S32LE);
+  m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOATP);
+  m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
+  m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
+
+  list.push_back(m_info);
+
+  m_info.m_channels.Reset();
+  m_info.m_dataFormats.clear();
+  m_info.m_sampleRates.clear();
+
+  m_info.m_deviceType = AE_DEVTYPE_PCM;
+  m_info.m_deviceName = "Both";
+  m_info.m_displayName = "HDMI and Analogue";
   m_info.m_displayNameExtra = "";
   m_info.m_channels += AE_CH_FL;
   m_info.m_channels += AE_CH_FR;

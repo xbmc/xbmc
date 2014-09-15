@@ -61,11 +61,6 @@
     </category>
     <category id="audiooutput">
       <group id="1">
-        <setting id="audiooutput.dualaudio" type="boolean" label="37017" help="36542">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="audiooutput.processquality">
           <default>101</default> <!-- AE_QUALITY_GPU -->
         </setting>
