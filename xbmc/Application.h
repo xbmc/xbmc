@@ -356,6 +356,8 @@ public:
 
   void SetLoggingIn(bool loggingIn) { m_loggingIn = loggingIn; }
 
+  std::string GetScreenSaverId();
+
 protected:
   virtual bool OnSettingsSaving() const;
 
