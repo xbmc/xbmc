@@ -107,13 +107,16 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       break;
     }
 
-    case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
+    case GUI_MSG_NOTIFY_ALL:
     {
-      if (message.GetStringParam() == m_vecItems->GetProperty("plexserver").asString())
+      if (message.GetParam1()  == GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
       {
-        CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage got a notice that server that we are browsing is going away, returning home");
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
-        g_windowManager.ActivateWindow(WINDOW_HOME);
+        if (message.GetStringParam() == m_vecItems->GetProperty("plexserver").asString())
+        {
+          CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage got a notice that server that we are browsing is going away, returning home");
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
+          g_windowManager.ActivateWindow(WINDOW_HOME);
+        }
       }
       break;
     }

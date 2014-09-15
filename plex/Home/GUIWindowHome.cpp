@@ -397,18 +397,33 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       return true;
     }
 
+    case GUI_MSG_NOTIFY_ALL:
+    {
+      switch (message.GetParam1())
+      {
+        case GUI_MSG_PLEX_SERVER_DATA_LOADED:
+        case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
+        {
+          // we Lost a server, clear the associated sections
+          if (message.GetParam1() == GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
+            RemoveSectionsForServer(message.GetStringParam());
+
+          UpdateSections();
+          
+          // we have a new section, refresh it
+          if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
+            RefreshSectionsForServer(message.GetStringParam());
+          break;
+        }
+      }
+      break;
+    }
+      
     case GUI_MSG_WINDOW_RESET:
-    case GUI_MSG_PLEX_SERVER_DATA_LOADED:
-    case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
     case GUI_MSG_UPDATE:
     {
       UpdateSections();
-      
-      if (message.GetMessage() == GUI_MSG_WINDOW_RESET || message.GetMessage() == GUI_MSG_UPDATE)
-        RefreshAllSections(false);
-      else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
-        RefreshSectionsForServer(message.GetStringParam());
-
+      RefreshAllSections(false);
       RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYLISTS);
 
       break;

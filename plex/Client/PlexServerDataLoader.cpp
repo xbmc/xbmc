@@ -78,7 +78,7 @@ void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr& server)
   if (m_servers.find(server->GetUUID()) != m_servers.end())
     m_servers.erase(server->GetUUID());
 
-  CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_UNLOADED, PLEX_DATA_LOADER, 0);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, PLEX_DATA_LOADER, 0, GUI_MSG_PLEX_SERVER_DATA_UNLOADED);
   msg.SetStringParam(server->GetUUID());
   g_windowManager.SendThreadMessage(msg);
 }
@@ -111,7 +111,7 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
 
     j->m_server->DidRefresh();
 
-    CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, PLEX_DATA_LOADER, 0, GUI_MSG_PLEX_SERVER_DATA_LOADED);
     msg.SetStringParam(j->m_server->GetUUID());
     g_windowManager.SendThreadMessage(msg);
   }
