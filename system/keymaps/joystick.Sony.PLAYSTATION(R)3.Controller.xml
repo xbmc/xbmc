@@ -37,7 +37,7 @@
 <!--   Coming soon.                                                                           -->
 <keymap>
   <global>
-    <joystick name="Sony PLAYSTATION(R)3 Controller">
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
       <altname>PLAYSTATION(R)3 Controller</altname>
       <altname>PS3 Controller</altname>
       <altname>Sony Computer Entertainment Wireless Controller</altname>
