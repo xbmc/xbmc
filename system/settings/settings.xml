@@ -587,11 +587,8 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="videoplayer.useframemtdec" type="boolean" parent="videoplayer.decodingmethod" label="13440" help="36423">
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">0</dependency>
-          </dependencies>
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
