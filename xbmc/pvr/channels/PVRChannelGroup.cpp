@@ -54,7 +54,8 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -68,7 +69,8 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -82,7 +84,8 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bUsingBackendChannelOrder(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -115,6 +118,7 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
   m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
   m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
   m_iLastWatched                = group.m_iLastWatched;
+  m_bHidden                     = group.m_bHidden;
 
   for (int iPtr = 0; iPtr < group.Size(); iPtr++)
     m_members.push_back(group.m_members.at(iPtr));
@@ -1357,4 +1361,21 @@ bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
 {
   /* used only by internal channel groups */
   return true;
+}
+
+void CPVRChannelGroup::SetHidden(bool bHidden)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_bHidden != bHidden)
+  {
+    m_bHidden = bHidden;
+    m_bChanged = true;
+  }
+}
+
+bool CPVRChannelGroup::IsHidden(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bHidden;
 }

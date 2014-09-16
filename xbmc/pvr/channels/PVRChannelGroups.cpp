@@ -90,7 +90,9 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
     if (!bUpdateFromClient)
     {
       updateGroup->SetLastWatched(group.LastWatched());
+      updateGroup->SetHidden(group.IsHidden());
     }
+
   }
 
   // persist changes
@@ -346,7 +348,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
     if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()) &&
-        (iChannelID == -1 || (iChannelID >= 0 && (*it)->IsGroupMember(iChannelID))))
+        (iChannelID == -1 || (iChannelID >= 0 && (*it)->IsGroupMember(iChannelID))) && !(*it)->IsHidden())
       group = (*it);
   }
 
@@ -360,7 +362,7 @@ std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers() const
   return groups;
 }
 
-int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
+int CPVRChannelGroups::GetGroupList(CFileItemList* results, bool bExcludeHidden /* = false */) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
@@ -368,6 +370,10 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   std::string strPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
+    // exclude hidden groups if desired
+    if (bExcludeHidden && (*it)->IsHidden())
+      continue;
+
     strPath = StringUtils::Format("pvr://channels/%s/%s/", m_bRadio ? "radio" : "tv", (*it)->GroupName().c_str());
     CFileItemPtr group(new CFileItem(strPath, true));
     group->m_strTitle = (*it)->GroupName();
@@ -388,12 +394,19 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &
     for (std::vector<CPVRChannelGroupPtr>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); it++)
     {
       // return this entry
-      if (bReturnNext)
+      if (bReturnNext && !(*it)->IsHidden())
         return *it;
 
       // return the next entry
       if ((*it)->GroupID() == group.GroupID())
         bReturnNext = true;
+    }
+
+    // no match return last visible group
+    for (std::vector<CPVRChannelGroupPtr>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); it++)
+    {
+      if (!(*it)->IsHidden())
+        return *it;
     }
   }
 
@@ -410,12 +423,19 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &grou
     for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
     {
       // return this entry
-      if (bReturnNext)
+      if (bReturnNext && !(*it)->IsHidden())
         return *it;
 
       // return the next entry
       if ((*it)->GroupID() == group.GroupID())
         bReturnNext = true;
+    }
+
+    // no match return first visible group
+    for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
+    {
+      if (!(*it)->IsHidden())
+        return *it;
     }
   }
 
