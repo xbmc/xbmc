@@ -2893,15 +2893,9 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 #endif
 }
 
-unsigned int CLinuxRendererGLES::GetProcessorSize()
+unsigned int CLinuxRendererGLES::GetOptimalBufferSize()
 {
-  if(m_format == RENDER_FMT_OMXEGL
-  || m_format == RENDER_FMT_CVBREF
-  || m_format == RENDER_FMT_EGLIMG
-  || m_format == RENDER_FMT_MEDIACODEC)
-    return 1;
-  else
-    return 0;
+  return 2;
 }
 
 #ifdef HAVE_LIBOPENMAX

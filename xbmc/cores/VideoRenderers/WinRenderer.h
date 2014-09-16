@@ -168,7 +168,7 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
-  virtual unsigned int GetProcessorSize();
+  virtual unsigned int GetOptimalBufferSize();
   virtual void         SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
   virtual void         ReleaseBuffer(int idx);

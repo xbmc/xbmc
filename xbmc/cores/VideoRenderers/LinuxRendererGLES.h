@@ -143,7 +143,7 @@ public:
   virtual void         ReleaseBuffer(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
-  virtual unsigned int GetProcessorSize();
+  virtual unsigned int GetOptimalBufferSize();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 

@@ -261,14 +261,14 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     lock2.Enter();
     m_format = format;
 
-    int processor = m_pRenderer->GetProcessorSize();
-    m_QueueSize = std::min(buffers, processor);
+    int renderbuffers = m_pRenderer->GetOptimalBufferSize();
+    m_QueueSize = std::min(buffers, renderbuffers);
     m_QueueSize = std::min(m_QueueSize, (int)m_pRenderer->GetMaxBufferSize());
     m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, processor, buffers);
+      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, buffers);
     }
 
     m_pRenderer->SetBufferSize(m_QueueSize);
@@ -855,10 +855,14 @@ void CXBMCRenderManager::UpdateResolution()
 }
 
 
-unsigned int CXBMCRenderManager::GetProcessorSize()
+unsigned int CXBMCRenderManager::GetOptimalBufferSize()
 {
   CSharedLock lock(m_sharedSection);
-  return std::max(4, NUM_BUFFERS);
+  if (!m_pRenderer)
+  {
+    CLog::Log(LOGERROR, "%s - renderer is NULL", __FUNCTION__);
+  }
+  return m_pRenderer->GetMaxBufferSize();
 }
 
 // Supported pixel formats, can be called before configure

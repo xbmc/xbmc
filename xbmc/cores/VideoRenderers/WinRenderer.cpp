@@ -1311,12 +1311,12 @@ EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
     return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
-unsigned int CWinRenderer::GetProcessorSize()
+unsigned int CWinRenderer::GetOptimalBufferSize()
 {
   if (m_format == RENDER_FMT_DXVA && m_processor)
     return m_processor->Size();
   else
-    return 0;
+    return 2;
 }
 
 void CWinRenderer::ReleaseBuffer(int idx)
