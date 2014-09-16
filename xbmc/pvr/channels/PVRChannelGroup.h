@@ -34,8 +34,8 @@ namespace EPG
 
 namespace PVR
 {
-#define XBMC_INTERNAL_GROUP_RADIO 1
-#define XBMC_INTERNAL_GROUP_TV    2
+#define PVR_INTERNAL_GROUP_ID_RADIO 1
+#define PVR_INTERNAL_GROUP_ID_TV    2
 
 #define PVR_GROUP_TYPE_DEFAULT      0
 #define PVR_GROUP_TYPE_INTERNAL     1
