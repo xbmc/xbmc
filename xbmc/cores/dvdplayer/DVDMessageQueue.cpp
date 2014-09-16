@@ -249,6 +249,8 @@ void CDVDMessageQueue::WaitUntilEmpty()
 
 int CDVDMessageQueue::GetLevel() const
 {
+  CSingleLock lock(m_section);
+
   if(m_iDataSize > m_iMaxDataSize)
     return 100;
   if(m_iDataSize == 0)
@@ -262,6 +264,8 @@ int CDVDMessageQueue::GetLevel() const
 
 int CDVDMessageQueue::GetTimeSize() const
 {
+  CSingleLock lock(m_section);
+
   if(IsDataBased())
     return 0;
   else
