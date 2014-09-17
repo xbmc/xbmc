@@ -1259,7 +1259,7 @@ const CharCodeConvertionWithHack CharCode2To3[189] =
   { "br", "bre", NULL },
   { "bg", "bul", NULL },
   { "ca", "cat", NULL },
-  { "cs", "cze", "csy" },
+  { "cs", "cze", "ces" },
   { "ch", "cha", NULL },
   { "ce", "che", NULL },
   { "cu", "chu", NULL },
@@ -1419,7 +1419,7 @@ const CharCodeConvertionWithHack CharCode2To3[189] =
   { "yi", "yid", NULL },
   { "yo", "yor", NULL },
   { "za", "zha", NULL },
-  { "zh", "chi", NULL },
+  { "zh", "chi", "zho" },
   { "zu", "zul", NULL },
   { "zv", "und", NULL }, // XBMC intern mapping for missing "Undetermined" iso639-1 code
   { "zx", "zxx", NULL }, // XBMC intern mapping for missing "No linguistic content" iso639-1 code
