@@ -19,15 +19,15 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 APP=@APP_NAME@
-bin_name=$(echo $APP | tr '[:upper:]' '[:lower:]')
+bin_name=@APP_NAME_LC@
 SAVED_ARGS="$@"
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
 CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
+USERDATA_DIR="${HOME}/.${bin_name}"
 
-[ "$(basename $0)" == "xbmc" ] && echo "WARNING: running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
 
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
@@ -42,6 +42,18 @@ do
             ;;
     esac
 done
+
+migrate_home()
+{
+  [ "$(basename $0)" = "xbmc" ] && echo "WARNING: running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
+
+  #check if data migration is needed
+  if [ -d "${HOME}/.xbmc" ] && [ ! -d "${USERDATA_DIR}" ]; then
+      echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $USERDATA_DIR"
+      mv ${HOME}/.xbmc $USERDATA_DIR
+      touch ${USERDATA_DIR}/.kodi_data_was_migrated
+  fi
+}
 
 command_exists()
 {
@@ -98,8 +110,8 @@ print_crash_report()
       BASEDIR="$LIBDIR/${bin_name}/"
     fi
     single_stacktrace "$BASEDIR" 5
-    # find in user xbmc dir
-    single_stacktrace $HOME/.xbmc/ 5
+    # find in userdata dir
+    single_stacktrace $USERDATA_DIR/ 5
   else
     echo "gdb not installed, can't get stack trace." >> $FILE
   fi
@@ -107,9 +119,9 @@ print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [ -f ~/.xbmc/temp/xbmc.log ]
+  if [ -f $USERDATA_DIR/temp/xbmc.log ]
   then
-    cat ~/.xbmc/temp/xbmc.log >> $FILE
+    cat $USERDATA_DIR/temp/xbmc.log >> $FILE
     echo >> $FILE
   else
     echo "Logfile not found in the usual place." >> $FILE
@@ -123,6 +135,7 @@ print_crash_report()
   echo "Crash report available at $FILE"
 }
 
+migrate_home
 python @datadir@/${bin_name}/FEH.py $SAVED_ARGS
 RET=$?
 if [ $RET -ne 0 ]; then

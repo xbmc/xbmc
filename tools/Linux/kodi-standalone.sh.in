@@ -22,7 +22,7 @@ APP=@APP_NAME@
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 bindir="@bindir@"
-bin_name=$(echo $APP | tr '[:upper:]' '[:lower:]')
+bin_name=@APP_NAME_LC@
 APP="${bindir}/${bin_name} --standalone $@"
 
 @XBMC_STANDALONE_SH_PULSE@
