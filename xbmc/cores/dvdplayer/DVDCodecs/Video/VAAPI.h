@@ -331,6 +331,7 @@ public:
   void Reset();
   int Size();
   bool HasFree();
+  bool HasRefs();
 protected:
   std::map<VASurfaceID, int> m_state;
   std::list<VASurfaceID> m_freeSurfaces;
@@ -427,6 +428,7 @@ protected:
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
   vaapi_context m_hwContext;
+  AVCodecContext* m_avctx;
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;
