@@ -412,27 +412,7 @@ lib/cpluff/stamp-h1
 /system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
-/system/players/dvdplayer/avcodec-55.dll
-/system/players/dvdplayer/avfilter-4.dll
-/system/players/dvdplayer/avformat-55.dll
-/system/players/dvdplayer/avutil-52.dll
-/system/players/dvdplayer/freetype6.dll
-/system/players/dvdplayer/libass.dll
-/system/players/dvdplayer/libdvdcss-2.dll
-/system/players/dvdplayer/libdvdnav.dll
-/system/players/dvdplayer/libexpat-1.dll
-/system/players/dvdplayer/libfontconfig-1.dll
-/system/players/dvdplayer/libgmp-10.dll
-/system/players/dvdplayer/libgnutls-28.dll
-/system/players/dvdplayer/libhogweed-2-5.dll
-/system/players/dvdplayer/libnettle-4-7.dll
-/system/players/dvdplayer/libp11-kit-0.dll
-/system/players/dvdplayer/librtmp.dll
-/system/players/dvdplayer/postproc-52.dll
-/system/players/dvdplayer/swresample-0.dll
-/system/players/dvdplayer/swscale-2.dll
-/system/players/dvdplayer/libbluray.dll
-/system/players/dvdplayer/libmpeg2-0.dll
+/system/players/dvdplayer/*
 
 # /system/players/paplayer
 /system/players/paplayer/libmodplug.dll
