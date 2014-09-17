@@ -1263,8 +1263,14 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
   if (m_renderMethod == RENDER_PS || m_renderMethod == RENDER_DXVA)
   {
-    if(m_renderMethod == RENDER_DXVA && method == VS_SCALINGMETHOD_DXVA_HARDWARE)
-      return true;
+    if (m_renderMethod == RENDER_DXVA)
+    {
+      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
+          method == VS_SCALINGMETHOD_AUTO)
+        return true;
+      else
+        return false;
+    }
 
     if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
     && (   method == VS_SCALINGMETHOD_AUTO
