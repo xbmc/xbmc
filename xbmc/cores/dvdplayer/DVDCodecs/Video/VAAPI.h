@@ -116,7 +116,6 @@ struct CVaapiConfig
   CDecoder *vaapi;
   int upscale;
   CVideoSurfaces *videoSurfaces;
-  int numRenderBuffers;
   uint32_t maxReferences;
   bool useInteropYuv;
   CVAAPIContext *context;

@@ -495,7 +495,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   m_vaapiConfig.surfaceWidth = avctx->width;
   m_vaapiConfig.surfaceHeight = avctx->height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
-  m_vaapiConfig.numRenderBuffers = surfaces;
   m_decoderThread = CThread::GetCurrentThreadId();
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
