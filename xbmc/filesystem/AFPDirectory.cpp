@@ -216,7 +216,7 @@ bool CAFPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
                 continue;
               }
               path = linkUrl.Get();
-              bIsDir = info.st_mode & S_IFDIR;            
+              bIsDir = S_ISDIR(info.st_mode);            
             }
             lTimeDate = info.st_mtime;
             if (lTimeDate == 0) // if modification date is missing, use create date
@@ -319,6 +319,6 @@ bool CAFPDirectory::Exists(const CURL& url)
   if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFileName.c_str(), &info) != 0)
     return false;
 
-  return (info.st_mode & S_IFDIR) ? true : false;
+  return S_ISDIR(info.st_mode);
 }
 #endif
