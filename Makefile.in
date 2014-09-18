@@ -258,9 +258,9 @@ LIBADDON_DIRS=\
 CONFLUENCE_MEDIA=addons/skin.confluence/media
 SKIN_DIRS=$(CONFLUENCE_MEDIA)
 
-ifeq (@USE_SKIN_TOUCHED@,1)
-TOUCHED_MEDIA=addons/skin.touched/media
-SKIN_DIRS+=$(TOUCHED_MEDIA)
+ifeq (@USE_TOUCH_SKIN@,1)
+TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
+SKIN_DIRS+=$(TOUCH_SKIN_MEDIA)
 endif
 
 LIBS=@LIBS@
@@ -353,8 +353,8 @@ config.status: configure
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
-ifeq (@USE_SKIN_TOUCHED@,1)
-	 $(MAKE) -C $(TOUCHED_MEDIA)
+ifeq (@USE_TOUCH_SKIN@,1)
+	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
 endif
 else
 skins:

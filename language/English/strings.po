@@ -4569,61 +4569,61 @@ msgstr ""
 #empty strings from id 12023 to 12309
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12310"
 msgid "0"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12311"
 msgid "1"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12312"
 msgid "2"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12313"
 msgid "3"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12314"
 msgid "4"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12315"
 msgid "5"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12316"
 msgid "6"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12317"
 msgid "7"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12318"
 msgid "8"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#12319"
 msgid "9"
 msgstr ""
@@ -5024,13 +5024,13 @@ msgid "Suspend"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#13012"
 msgid "Exit"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#13013"
 msgid "Reboot"
 msgstr ""
@@ -5046,7 +5046,7 @@ msgid "Power button action"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#13016"
 msgid "Power off System"
 msgstr ""
@@ -5365,7 +5365,7 @@ msgstr ""
 #empty strings from id 13175 to 13199
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 #: xbmc\profiles\ProfilesManager.cpp
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 msgctxt "#13200"
@@ -12177,7 +12177,7 @@ msgid "Version:"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#24052"
 msgid "Disclaimer"
 msgstr ""
@@ -12566,7 +12566,7 @@ msgstr ""
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
 #: skin.confluence
-#: skin.touched
+#: skin.retouched
 msgctxt "#29800"
 msgid "Library Mode"
 msgstr ""
@@ -12577,7 +12577,6 @@ msgid "QWERTY keyboard"
 msgstr ""
 
 #: skin.confluence
-#: skin.touched
 msgctxt "#29802"
 msgid "Passthrough Audio in use"
 msgstr ""
@@ -12815,8 +12814,8 @@ msgctxt "#33062"
 msgid "Play the"
 msgstr ""
 
-#: addons/skin/touched/
 #: addons/skin/confluence
+#: skin.retouched
 msgctxt "#33063"
 msgid "Options"
 msgstr ""

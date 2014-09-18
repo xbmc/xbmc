@@ -189,7 +189,7 @@ set WORKSPACE=%CD%\..\..
   Echo addons\visualization.projectm\>>exclude.txt
   Echo addons\visualization.glspectrum\>>exclude.txt
   rem Exclude skins as they're copied by their own script
-  Echo addons\skin.touched\>>exclude.txt
+  Echo addons\skin.re-touched\>>exclude.txt
   Echo addons\skin.confluence\>>exclude.txt
   
   md BUILD_WIN32\application
@@ -234,9 +234,9 @@ set WORKSPACE=%CD%\..\..
   call build.bat > NUL
   cd %build_path%
   
-  IF EXIST  ..\..\addons\skin.touched\build.bat (
-    ECHO Building Touched Skin...
-    cd ..\..\addons\skin.touched
+  IF EXIST  ..\..\addons\skin.re-touched\build.bat (
+    ECHO Building Touch Skin...
+    cd ..\..\addons\skin.re-touched
     call build.bat > NUL
     cd %build_path%
   )
