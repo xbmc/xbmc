@@ -175,6 +175,7 @@ CActiveAE::CActiveAE() :
   m_audioCallback = NULL;
   m_vizInitialized = false;
   m_sinkHasVolume = false;
+  m_stats.Reset(44100);
 }
 
 CActiveAE::~CActiveAE()
