@@ -278,6 +278,7 @@
 #include "video/dialogs/GUIDialogSubtitles.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
+#include "CompileInfo.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -299,7 +300,6 @@
 #endif
 #ifdef TARGET_DARWIN
 #include "osx/DarwinUtils.h"
-#include "CompileInfo.h"
 #endif
 
 
@@ -731,7 +731,9 @@ bool CApplication::Create()
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Local hostname: %s", m_network->GetHostName().c_str());
-  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_advancedSettings.m_logFolder.c_str());
+  std::string lowerAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lowerAppName);
+  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -1042,13 +1044,13 @@ bool CApplication::InitDirectoriesLinux()
 /*
    The following is the directory mapping for Platform Specific Mode:
 
-   special://xbmc/          => [read-only] system directory (/usr/share/xbmc)
-   special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
+   special://xbmc/          => [read-only] system directory (/usr/share/kodi)
+   special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
                                installations like skins, screensavers, etc.
-                               ($HOME/.xbmc)
+                               ($HOME/.kodi)
                                NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.xbmc/userdata)
+                               mapped to special://home/userdata ($HOME/.kodi/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -1058,55 +1060,63 @@ bool CApplication::InitDirectoriesLinux()
 */
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  CStdString userName;
+  std::string userName;
   if (getenv("USER"))
     userName = getenv("USER");
   else
     userName = "root";
 
-  CStdString userHome;
+  std::string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
-  xbmcPath = getenv("XBMC_HOME");
+  std::string appBinPath, appPath;
+  std::string appName = CCompileInfo::GetAppName();
+  std::string dotLowerAppName = "." + appName;
+  StringUtils::ToLower(dotLowerAppName);
+  const char* envAppHome = "APP_HOME";
+  const char* envAppBinHome = "APP_BIN_HOME";
+  const char* envAppTemp = "APP_TEMP";
 
-  if (xbmcPath.empty())
+
+  CUtil::GetHomePath(appBinPath, envAppBinHome);
+  if (getenv(envAppHome))
+    appPath = getenv(envAppHome);
+  else
   {
-    xbmcPath = xbmcBinPath;
-    /* Check if xbmc binaries and arch independent data files are being kept in
+    appPath = appBinPath;
+    /* Check if binaries and arch independent data files are being kept in
      * separate locations. */
-    if (!CDirectory::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
+    if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
     {
       /* Attempt to locate arch independent data files. */
-      CUtil::GetHomePath(xbmcPath);
-      if (!CDirectory::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
+      CUtil::GetHomePath(appPath);
+      if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
       {
-        fprintf(stderr, "Unable to find path to XBMC data files!\n");
+        fprintf(stderr, "Unable to find path to %s data files!\n", appName.c_str());
         exit(1);
       }
     }
   }
 
   /* Set some environment variables */
-  setenv("XBMC_BIN_HOME", xbmcBinPath.c_str(), 0);
-  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
+  setenv(envAppBinHome, appBinPath.c_str(), 0);
+  setenv(envAppHome, appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
+    CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
 
     CStdString strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
-    if (getenv("XBMC_TEMP"))
-      strTempPath = getenv("XBMC_TEMP");
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1117,18 +1127,18 @@ bool CApplication::InitDirectoriesLinux()
   }
   else
   {
-    URIUtils::AddSlashAtEnd(xbmcPath);
-    g_advancedSettings.m_logFolder = xbmcPath;
+    URIUtils::AddSlashAtEnd(appPath);
+    g_advancedSettings.m_logFolder = appPath;
 
-    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    CStdString strTempPath = xbmcPath;
+    CStdString strTempPath = appPath;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
-    if (getenv("XBMC_TEMP"))
-      strTempPath = getenv("XBMC_TEMP");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
     CreateUserDirs();
 

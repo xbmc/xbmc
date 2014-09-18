@@ -47,7 +47,7 @@
 #if defined(TARGET_DARWIN)
 #define XBMC_SMB_MOUNT_PATH "Library/Application Support/Kodi/Mounts/"
 #else
-#define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
+#define XBMC_SMB_MOUNT_PATH "/media/kodi/smb/"
 #endif
 
 struct CachedDirEntry
