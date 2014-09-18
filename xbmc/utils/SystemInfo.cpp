@@ -1163,6 +1163,14 @@ std::string CSysInfo::GetUserAgent()
   result += ")";
   // add fork ID here in form:
   // result += " XBMC_FORK_" + "forkname" + "/" + "1.0"; // default fork number is '1.0'
+
+#ifdef TARGET_LINUX
+  // Add distribution name
+  std::string linuxOSName(GetOsName(true));
+  if (!linuxOSName.empty())
+    result += " " + linuxOSName + "/" + GetOsVersion();
+#endif
+
 #ifdef TARGET_RASPBERRY_PI
   result += " XBMC_HW_RaspberryPi/1.0";
 #elif defined (TARGET_DARWIN_IOS)
