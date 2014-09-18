@@ -38,13 +38,13 @@ namespace XBMCAddon
   { 
   protected:
     AddonClass* addonClassObject;
-    Callback(AddonClass* _object) : addonClassObject(_object) {}
+    Callback(AddonClass* _object) : addonClassObject(_object) { XBMC_TRACE; }
 
   public:
     virtual void executeCallback() = 0;
     virtual ~Callback();
 
-    AddonClass* getObject() { return addonClassObject; }
+    AddonClass* getObject() { XBMC_TRACE; return addonClassObject; }
   };
 
   struct cb_null_type {};
@@ -70,9 +70,9 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method) : 
-      Callback(object), meth(method), obj(object) {}
+      Callback(object), meth(method), obj(object) { XBMC_TRACE; }
 
-    virtual ~CallbackFunction() { deallocating(); }
+    virtual ~CallbackFunction() { XBMC_TRACE; deallocating(); }
 
     virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(); }
   };
@@ -94,9 +94,9 @@ namespace XBMCAddon
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter) : 
       Callback(object), meth(method), obj(object),
-      param(parameter) {}
+      param(parameter) { XBMC_TRACE; }
 
-    virtual ~CallbackFunction() { deallocating(); }
+    virtual ~CallbackFunction() { XBMC_TRACE; deallocating(); }
 
     virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param); }
   };
@@ -119,9 +119,9 @@ namespace XBMCAddon
   public:
     CallbackFunction(M* object, MemberFunction method, P1* parameter) : 
       Callback(object), meth(method), obj(object),
-      param(parameter) {}
+      param(parameter) { XBMC_TRACE; }
 
-    virtual ~CallbackFunction() { deallocating(); }
+    virtual ~CallbackFunction() { XBMC_TRACE; deallocating(); }
 
     virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param); }
   };
@@ -145,9 +145,9 @@ namespace XBMCAddon
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2) : 
       Callback(object), meth(method), obj(object),
-      param1(parameter), param2(parameter2) {}
+      param1(parameter), param2(parameter2) { XBMC_TRACE; }
 
-    virtual ~CallbackFunction() { deallocating(); }
+    virtual ~CallbackFunction() { XBMC_TRACE; deallocating(); }
 
     virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param1,param2); }
   };
@@ -172,9 +172,9 @@ namespace XBMCAddon
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2, P3 parameter3) : 
       Callback(object), meth(method), obj(object),
-      param1(parameter), param2(parameter2), param3(parameter3) {}
+      param1(parameter), param2(parameter2), param3(parameter3) { XBMC_TRACE; }
 
-    virtual ~CallbackFunction() { deallocating(); }
+    virtual ~CallbackFunction() { XBMC_TRACE; deallocating(); }
 
     virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param1,param2,param3); }
   };

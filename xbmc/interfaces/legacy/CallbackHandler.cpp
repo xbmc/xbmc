@@ -30,7 +30,7 @@ namespace XBMCAddon
   {
   public:
     AddonClass::Ref<Callback> cb;
-    RetardedAsynchCallbackHandler* handler;
+    AddonClass::Ref<RetardedAsynchCallbackHandler> handler;
     AsynchCallbackMessage(Callback* _cb, RetardedAsynchCallbackHandler* _handler) :
       cb(_cb), handler(_handler) { XBMC_TRACE; }
   };
@@ -62,7 +62,7 @@ namespace XBMCAddon
     {
       AddonClass::Ref<AsynchCallbackMessage> cur(*iter);
       {
-        if (cur->handler == this) // then this message is because of me
+        if (cur->handler.get() == this) // then this message is because of me
         {
           g_callQueue.erase(iter);
           iter = g_callQueue.begin();
@@ -103,7 +103,9 @@ namespace XBMCAddon
 #ifdef ENABLE_XBMC_TRACE_API
           CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
 #endif
-          CSingleLock lock2(*(p->cb->getObject()));
+          AddonClass* obj = (p->cb->getObject());
+          AddonClass::Ref<AddonClass> ref(obj);
+          CSingleLock lock2(*obj);
           if (!p->cb->getObject()->isDeallocating())
           {
             try
