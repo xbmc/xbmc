@@ -4323,6 +4323,7 @@ void CGUIInfoManager::UpdateFPS()
 
 void CGUIInfoManager::UpdateAVInfo()
 {
+  CSingleLock lock(m_critInfo);
   if(g_application.m_pPlayer->IsPlaying())
   {
     if (!m_AVInfoValid)
