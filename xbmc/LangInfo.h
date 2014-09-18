@@ -20,6 +20,7 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
+#include "utils/GlobalsHandling.h"
 
 #include <map>
 #include <string>
@@ -186,4 +187,5 @@ protected:
 };
 
 
-extern CLangInfo g_langInfo;
+XBMC_GLOBAL_REF(CLangInfo, g_langInfo);
+#define g_langInfo XBMC_GLOBAL_USE(CLangInfo)
