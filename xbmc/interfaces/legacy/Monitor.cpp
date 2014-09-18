@@ -27,6 +27,7 @@ namespace XBMCAddon
   {
     Monitor::Monitor(): abortEvent(true)
     {
+      XBMC_TRACE;
       if (languageHook)
       {
         Id = languageHook->GetAddonId();
@@ -68,6 +69,7 @@ namespace XBMCAddon
 
     Monitor::~Monitor()
     {
+      XBMC_TRACE;
       deallocating();
       DelayedCallGuard dg(languageHook);
       // we're shutting down so unregister me.
