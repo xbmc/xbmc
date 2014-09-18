@@ -1084,7 +1084,7 @@ std::string CSysInfo::GetUserAgent()
   if (!result.empty())
     return result;
 
-  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
+  result = GetAppName() + "/" + (std::string)g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetKernelName() + " " + GetKernelVersion();
   BOOL bIsWow = FALSE;
@@ -1171,8 +1171,9 @@ std::string CSysInfo::GetUserAgent()
   result += "Unknown";
 #endif
   result += ")";
-  // add fork ID here in form:
-  // result += " XBMC_FORK_" + "forkname" + "/" + "1.0"; // default fork number is '1.0'
+
+  if (GetAppName() != "Kodi")
+    result += "Kodi_Fork_" + GetAppName() + "/1.0"; // default fork number is '1.0', replace it with actual number if necessary
 
 #ifdef TARGET_LINUX
   // Add distribution name
@@ -1182,7 +1183,7 @@ std::string CSysInfo::GetUserAgent()
 #endif
 
 #ifdef TARGET_RASPBERRY_PI
-  result += " XBMC_HW_RaspberryPi/1.0";
+  result += " HW_RaspberryPi/1.0";
 #elif defined (TARGET_DARWIN_IOS)
   std::string iDevVer;
   if (iDevStrDigit == std::string::npos)
@@ -1190,11 +1191,11 @@ std::string CSysInfo::GetUserAgent()
   else
     iDevVer.assign(iDevStr, iDevStrDigit, std::string::npos);
   StringUtils::Replace(iDevVer, ',', '.');
-  result += " XBMC_HW_" + iDev + "/" + iDevVer;
+  result += " HW_" + iDev + "/" + iDevVer;
 #endif
   // add more device IDs here if needed. 
   // keep only one device ID in result! Form:
-  // result += " XBMC_HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
+  // result += " HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
 
 #if defined(TARGET_ANDROID)
   // Android has no CPU string by default, so add it as additional parameter
@@ -1203,11 +1204,11 @@ std::string CSysInfo::GetUserAgent()
   {
     std::string cpuStr(un1.machine);
     StringUtils::Replace(cpuStr, ' ', '_');
-    result += " XBMC_CPU/" + cpuStr;
+    result += " Sys_CPU/" + cpuStr;
   }
 #endif
 
-  result += " XBMC_BITNESS/" + StringUtils::Format("%d", GetXbmcBitness());
+  result += " App_Bitness/" + StringUtils::Format("%d", GetXbmcBitness());
 
   std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
   StringUtils::Replace(fullVer, ' ', '-');
