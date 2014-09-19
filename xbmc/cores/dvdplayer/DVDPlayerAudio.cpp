@@ -165,7 +165,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_streaminfo = hints;
 
   /* update codec information from what codec gave out, if any */
-  int channelsFromCodec = m_pAudioCodec->GetChannels();
+  int channelsFromCodec   = m_pAudioCodec->GetEncodedChannels();
   int samplerateFromCodec = m_pAudioCodec->GetEncodedSampleRate();
 
   if (channelsFromCodec > 0)
@@ -553,7 +553,7 @@ void CDVDPlayerAudio::Process()
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
 
-      m_streaminfo.channels = audioframe.channel_count;
+      m_streaminfo.channels = audioframe.passthrough ? audioframe.encoded_channel_count : audioframe.channel_count;
     }
 
     // Zero out the frame data if we are supposed to silence the audio
