@@ -34,6 +34,7 @@ CRBP::CRBP()
   m_DllBcmHost      = new DllBcmHost();
   m_OMX             = new COMXCore();
   m_display = DISPMANX_NO_HANDLE;
+  m_last_pll_adjust = 1.0;
 }
 
 CRBP::~CRBP()
@@ -114,6 +115,7 @@ void CRBP::CloseDisplay(DISPMANX_DISPLAY_HANDLE_T display)
   assert(display == m_display);
   vc_dispmanx_display_close(m_display);
   m_display = DISPMANX_NO_HANDLE;
+  m_last_pll_adjust = 1.0;
 }
 
 void CRBP::GetDisplaySize(int &width, int &height)
@@ -214,5 +216,16 @@ void CRBP::Deinitialize()
   m_omx_image_init  = false;
   m_initialized     = false;
   m_omx_initialized = false;
+}
+
+double CRBP::AdjustHDMIClock(double adjust)
+{
+  char response[80];
+  vc_gencmd(response, sizeof response, "hdmi_adjust_clock %f", adjust);
+  char *p = strchr(response, '=');
+  if (p)
+    m_last_pll_adjust = atof(p+1);
+  CLog::Log(LOGDEBUG, "CRBP::%s(%.4f) = %.4f", __func__, adjust, m_last_pll_adjust);
+  return m_last_pll_adjust;
 }
 #endif
