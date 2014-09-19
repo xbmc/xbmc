@@ -44,6 +44,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_paused = false;
   m_rgain = 1.0;
   m_volume = 1.0;
+  SetVolume(1.0);
   m_amplify = 1.0;
   m_streamSpace = m_format.m_frameSize * m_format.m_frames;
   m_streamDraining = false;

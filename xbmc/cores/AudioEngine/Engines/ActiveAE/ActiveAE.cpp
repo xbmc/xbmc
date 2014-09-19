@@ -2484,7 +2484,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   AVFormatContext *fmt_ctx = NULL;
   AVCodecContext *dec_ctx = NULL;
   AVIOContext *io_ctx;
-  AVInputFormat *io_fmt;
+  AVInputFormat *io_fmt = NULL;
   AVCodec *dec = NULL;
   CActiveAESound *sound = NULL;
   SampleConfig config;
