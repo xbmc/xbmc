@@ -365,11 +365,10 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
     sinkStruct->list->push_back(defaultDevice);
   }
-  bool valid = true;
   if (i && i->name)
   {
     CAEDeviceInfo device;
-
+    bool valid = true;
     device.m_deviceName = string(i->name);
     device.m_displayName = string(i->description);
     if (i->active_port && i->active_port->description)
@@ -423,7 +422,7 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     {
       CLog::Log(LOGDEBUG, "PulseAudio: Skipped %s with devicestring %s", device.m_displayName.c_str(), device.m_deviceName.c_str());
     }
- }
+  }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
 
