@@ -107,6 +107,7 @@ private:
   UINT m_input_count;
   GUID *m_input_list;
   std::vector<CDecoder*> m_decoders;
+  bool m_atiWorkaround;
 };
 
 class CDecoder

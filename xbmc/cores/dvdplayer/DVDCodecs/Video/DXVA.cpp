@@ -231,6 +231,7 @@ CDXVAContext::CDXVAContext()
   m_context = NULL;
   m_refCount = 0;
   m_service = NULL;
+  m_atiWorkaround = false;
 }
 
 void CDXVAContext::Release(CDecoder *decoder)
@@ -303,6 +304,15 @@ bool CDXVAContext::CreateContext()
 {
   m_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service);
   QueryCaps();
+
+  // Some older Ati devices can only open a single decoder at a given time
+  std::string renderer = g_Windowing.GetRenderRenderer();
+  if (renderer.find("Radeon HD 2") != std::string::npos ||
+      renderer.find("Radeon HD 3") != std::string::npos)
+  {
+    m_atiWorkaround = true;
+  }
+
   return true;
 }
 
@@ -437,15 +447,18 @@ bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DX
   int retry = 0;
   while (retry < 2)
   {
-    HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
-    if (!FAILED(res))
+    if (!m_atiWorkaround || retry > 0)
     {
-      return true;
+      HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
+      if (!FAILED(res))
+      {
+        return true;
+      }
     }
 
     if (retry == 0)
     {
-      CLog::Log(LOGERROR, "%s - hw may not support multiple decoders, releasing existing ones", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s - hw may not support multiple decoders, releasing existing ones", __FUNCTION__);
       std::vector<CDecoder*>::iterator it;
       for (it = m_decoders.begin(); it != m_decoders.end(); ++it)
       {
