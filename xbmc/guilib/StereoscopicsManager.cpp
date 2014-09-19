@@ -422,12 +422,14 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
     {
       SetStereoMode(RENDER_STEREO_MODE_MONO);
     }
+    return true;
   }
   else if (action.GetID() == ACTION_STEREOMODE_SET)
   {
     int stereoMode = ConvertStringToGuiStereoMode(action.GetName());
     if (stereoMode > -1)
       SetStereoMode( (RENDER_STEREO_MODE) stereoMode);
+    return true;
   }
 
   return false;
