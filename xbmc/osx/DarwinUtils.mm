@@ -92,6 +92,8 @@ enum iosPlatform
   iPadAirCellular,
   iPadMini2Wifi,
   iPadMini2Cellular,
+  iPhone6,
+  iPhone6Plus,        //from here on list devices with retina support which have scale == 3.0
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -140,6 +142,8 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPhone5,4") eDev = iPhone5CGlobal;
     else if (devStr == "iPhone6,1") eDev = iPhone5SGSM;
     else if (devStr == "iPhone6,2") eDev = iPhone5SGlobal;
+    else if (devStr == "iPhone7,1") eDev = iPhone6Plus;
+    else if (devStr == "iPhone7,2") eDev = iPhone6;
     else if (devStr == "iPod1,1") eDev = iPodTouch1G;
     else if (devStr == "iPod2,1") eDev = iPodTouch2G;
     else if (devStr == "iPod3,1") eDev = iPodTouch3G;
@@ -212,7 +216,7 @@ bool CDarwinUtils::IsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
-bool CDarwinUtils::DeviceHasRetina(void)
+bool CDarwinUtils::DeviceHasRetina(double &scale)
 {
   static enum iosPlatform platform = iDeviceUnknown;
 
@@ -222,6 +226,19 @@ bool CDarwinUtils::DeviceHasRetina(void)
     platform = getIosPlatform();
   }
 #endif
+  scale = 1.0; //no retina
+
+  // see http://www.paintcodeapp.com/news/iphone-6-screens-demystified
+  if (platform >= iPhone4 && platform < iPhone6Plus)
+  {
+    scale = 2.0; // 2x render retina
+  }
+
+  if (platform >= iPhone6Plus)
+  {
+    scale = 3.0; //3x render retina + downscale
+  }
+
   return (platform >= iPhone4);
 }
 
