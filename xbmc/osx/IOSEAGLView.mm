@@ -123,9 +123,16 @@
     //if no retina display scale detected yet -
     //ensure retina resolution on supported devices mainScreen
     //even on older iOS SDKs
-    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinHasRetina())
+    double screenScale = 1.0;
+    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinHasRetina(screenScale))
     {
-      ret = 2.0;//all retina devices have a scale factor of 2.0
+      ret = screenScale;//set scale factor from our static list in case older SDKs report 1.0
+    }
+
+    // fix for ip6 plus which seems to report 2.0 when not compiled with ios8 sdk
+    if (DarwinHasRetina(screenScale) && screenScale == 3.0)
+    {
+      ret = screenScale;
     }
   }
   return ret;
