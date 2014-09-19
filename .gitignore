@@ -202,6 +202,7 @@ lib/cpluff/stamp-h1
 # /lib/gtest
 /lib/gtest/Makefile.in
 /lib/gtest/aclocal.m4
+/lib/gtest/build-aux/compile
 /lib/gtest/build-aux/config.guess
 /lib/gtest/build-aux/config.h.in
 /lib/gtest/build-aux/config.sub
@@ -449,6 +450,16 @@ lib/cpluff/stamp-h1
 # /skin/Confluence/
 /skin/Confluence/BUILD
 
+#
+/tools/android/packaging/xbmc/AndroidManifest.xml
+/tools/darwin/packaging/xbmc-osx/mkdmg-xbmc-osx.sh
+/tools/depends/native/JsonSchemaBuilder/bin/
+/tools/depends/native/JsonSchemaBuilder/native/
+/tools/depends/target/ffmpeg/.ffmpeg-installed
+/tools/depends/target/ffmpeg/ffmpeg-2.4-Helix-alpha4.tar.gz
+/tools/depends/target/ffmpeg/ffmpeg-2.4-Helix-alpha4/
+/tools/depends/target/ffmpeg/ffmpeg-install/
+
 # /tools/EventClients/
 /tools/EventClients/*.pyc
 /tools/EventClients/Clients/OSXRemote/Makefile
@@ -481,6 +492,7 @@ lib/cpluff/stamp-h1
 /userdata/guisettings.xml
 
 # /xbmc/
+/xbmc/.GitRevision
 /xbmc/config.h
 /xbmc/config.h.in
 /xbmc/config.h.in~
@@ -555,6 +567,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/linux/
 /xbmc/linux/Makefile
+/xbmc/linux/sse4/Makefile
 
 # /xbmc/main/
 /xbmc/main/Makefile
@@ -568,6 +581,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/osx/
 /xbmc/osx/Makefile
+/xbmc/osx/Info.plist
 
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile
@@ -642,8 +656,10 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/fishBMC/Makefile
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
+/xbmc/visualizations/Goom/goom2k4-0/compile
 /xbmc/visualizations/Goom/goom2k4-0/configure
 /xbmc/visualizations/Goom/goom2k4-0/INSTALL
+/xbmc/visualizations/Goom/goom2k4-0/mkinstalldirs
 /xbmc/visualizations/Goom/goom2k4-0/Makefile.in
 /xbmc/visualizations/Goom/goom2k4-0/config.guess
 /xbmc/visualizations/Goom/goom2k4-0/config.sub
@@ -655,6 +671,7 @@ lib/cpluff/stamp-h1
 /xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
 /xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
 /xbmc/visualizations/Goom/goom2k4-0/ylwrap
+/xbmc/visualizations/Goom/goom2k4-0/gtk-gui-devel/confdefs.h
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release
 /xbmc/visualizations/OpenGLSpectrum/Makefile
@@ -716,6 +733,7 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdcss/Makefile.in
 /lib/libdvd/libdvdcss/aclocal.m4
 /lib/libdvd/libdvdcss/autom4te.cache/
+/lib/libdvd/libdvdcss/compile
 /lib/libdvd/libdvdcss/config.guess
 /lib/libdvd/libdvdcss/config.h
 /lib/libdvd/libdvdcss/config.h.in
@@ -743,10 +761,12 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdcss/src/.dirstamp
 /lib/libdvd/libdvdcss/src/Makefile.in
 /lib/libdvd/libdvdcss/src/dvdcss/Makefile.in
+/lib/libdvd/libdvdcss/stamp-doxygen
 /lib/libdvd/libdvdcss/test/Makefile
 /lib/libdvd/libdvdcss/doc/doxygen.cfg
 /lib/libdvd/libdvdcss/doc/Makefile
 /lib/libdvd/libdvdcss/doc/Makefile.in
+/lib/libdvd/libdvdcss/doc/html/
 /lib/libdvd/libdvdcss/test/Makefile.in
 /lib/libdvd/libdvdcss/test/csstest
 /lib/libdvd/libdvdcss/test/csstest.exe
@@ -754,6 +774,7 @@ lib/cpluff/stamp-h1
 # /lib/libdvd/libdvdnav/
 /lib/libdvd/libdvdnav/conf
 /lib/libdvd/libdvdnav/obj
+/lib/libdvd/libdvdnav/compile
 /lib/libdvd/libdvdnav/config.mak
 /lib/libdvd/libdvdnav/config.h
 /lib/libdvd/libdvdnav/config.status
@@ -778,6 +799,7 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdnav/config.h.in~
 
 # /lib/libdvd/libdvdread/
+/lib/libdvd/libdvdread/compile
 /lib/libdvd/libdvdread/config.h
 /lib/libdvd/libdvdread/obj
 /lib/libdvd/libdvdread/config.mak
