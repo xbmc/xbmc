@@ -31,6 +31,14 @@ enum AML_DEVICE_TYPE
   AML_DEVICE_TYPE_M8
 };
 
+enum AML_DISPLAY_AXIS_PARAM
+{
+  AML_DISPLAY_AXIS_PARAM_X = 0,
+  AML_DISPLAY_AXIS_PARAM_Y,
+  AML_DISPLAY_AXIS_PARAM_WIDTH,
+  AML_DISPLAY_AXIS_PARAM_HEIGHT
+};
+
 int aml_set_sysfs_str(const char *path, const char *val);
 int aml_get_sysfs_str(const char *path, char *valstr, const int size);
 int aml_set_sysfs_int(const char *path, const int val);

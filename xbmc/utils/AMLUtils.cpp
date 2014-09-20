@@ -290,6 +290,17 @@ void aml_probe_hdmi_audio()
   }
 }
 
+int aml_axis_value(AML_DISPLAY_AXIS_PARAM param)
+{
+  char axis[20] = {0};
+  int value[8];
+
+  aml_get_sysfs_str("/sys/class/display/axis", axis, 19);
+  sscanf(axis, "%d %d %d %d %d %d %d %d", &value[0], &value[1], &value[2], &value[3], &value[4], &value[5], &value[6], &value[7]);
+
+  return value[param];
+}
+
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 {
   if (!res)
@@ -308,7 +319,16 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   if (StringUtils::EndsWith(fromMode, "*"))
     fromMode.erase(fromMode.size() - 1);
 
-  if (fromMode.Equals("720p"))
+  if (fromMode.Equals("panel"))
+  {
+    res->iWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
+    res->iHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
+    res->iScreenWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
+    res->iScreenHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (fromMode.Equals("720p"))
   {
     res->iWidth = 1280;
     res->iHeight= 720;
