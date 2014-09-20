@@ -278,8 +278,8 @@ bool CProcessorHD::OpenProcessor()
   CHECK(m_pDXVAHD->CreateVideoProcessor(&m_device, &m_pDXVAVP));
 
   DXVAHD_STREAM_STATE_D3DFORMAT_DATA d3dformat = { m_format };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_D3DFORMAT
-                                                  , sizeof(d3dformat), &d3dformat ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_D3DFORMAT
+                                             , sizeof(d3dformat), &d3dformat ));
 
   DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE_DATA data =
   {
@@ -288,19 +288,19 @@ bool CProcessorHD::OpenProcessor()
     m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // YCbCr_Matrix: 0=BT.601, 1=BT.709
     m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0  // YCbCr_xvYCC: 0=Conventional YCbCr, 1=xvYCC
   };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE
-                                                  , sizeof(data), &data ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE
+                                             , sizeof(data), &data ));
 
   DXVAHD_COLOR_YCbCrA bgColor = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   DXVAHD_COLOR backgroundColor;
   backgroundColor.YCbCr = bgColor; 
   DXVAHD_BLT_STATE_BACKGROUND_COLOR_DATA backgroundData = { true, backgroundColor }; // {YCbCr, DXVAHD_COLOR}
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessBltState( DXVAHD_BLT_STATE_BACKGROUND_COLOR
-                                               , sizeof (backgroundData), &backgroundData ));
+  CHECK(m_pDXVAVP->SetVideoProcessBltState( DXVAHD_BLT_STATE_BACKGROUND_COLOR
+                                          , sizeof (backgroundData), &backgroundData ));
 
   DXVAHD_STREAM_STATE_ALPHA_DATA alpha = { true, 1.0f };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_ALPHA
-                                                  , sizeof(alpha), &alpha ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_ALPHA
+                                             , sizeof(alpha), &alpha ));
 
   return true;
 }
