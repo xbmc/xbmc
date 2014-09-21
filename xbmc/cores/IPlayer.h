@@ -46,10 +46,10 @@ public:
     identify = false;
     fullscreen = false;
     video_only = false;
-	virtualSeek = false;
-	virtualDirectCacheLevelCalculation = false;
-	virtualStartTime = 0LL;
-	virtualTotalTime = 0LL;
+    virtualSeek = false;
+    virtualDirectCacheLevelCalculation = false;
+    virtualStartTime = 0LL;
+    virtualTotalTime = 0LL;
 	
   }
   double  starttime; /* start time in seconds */
