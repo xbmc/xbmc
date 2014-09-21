@@ -417,6 +417,17 @@ bool CVideoSurfaces::HasFree()
   return !m_freeSurfaces.empty();
 }
 
+bool CVideoSurfaces::HasRefs()
+{
+  CSingleLock lock(m_section);
+  for (std::map<VASurfaceID, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  {
+    if (it->second & SURFACE_USED_FOR_REFERENCE)
+    return true;
+  }
+  return false;
+}
+
 //-----------------------------------------------------------------------------
 // VAAPI
 //-----------------------------------------------------------------------------
@@ -440,6 +451,7 @@ CDecoder::CDecoder() : m_vaapiOutput(&m_inMsgEvent)
   m_vaapiConfig.context = 0;
   m_vaapiConfig.contextId = VA_INVALID_ID;
   m_vaapiConfig.configId = VA_INVALID_ID;
+  m_avctx = NULL;
 }
 
 CDecoder::~CDecoder()
@@ -483,7 +495,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   m_vaapiConfig.surfaceWidth = avctx->width;
   m_vaapiConfig.surfaceHeight = avctx->height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
-  m_vaapiConfig.numRenderBuffers = surfaces;
   m_decoderThread = CThread::GetCurrentThreadId();
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
@@ -568,6 +579,8 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   avctx->hwaccel_context = &m_hwContext;
   avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+
+  m_avctx = avctx;
   return true;
 }
 
@@ -586,6 +599,12 @@ void CDecoder::Close()
 
 long CDecoder::Release()
 {
+  // if ffmpeg holds any references, flush buffers
+  if (m_avctx && m_videoSurfaces.HasRefs())
+  {
+    avcodec_flush_buffers(m_avctx);
+  }
+
   // check if we should do some pre-cleanup here
   // a second decoder might need resources
   if (m_vaapiConfigured == true)

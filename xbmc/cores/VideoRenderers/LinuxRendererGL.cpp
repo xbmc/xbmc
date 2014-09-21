@@ -3500,6 +3500,11 @@ unsigned int CLinuxRendererGL::GetOptimalBufferSize()
 {
   if(m_format == RENDER_FMT_CVBREF)
     return 2;
+  else if (m_format == RENDER_FMT_VAAPI ||
+           m_format == RENDER_FMT_VAAPINV12 ||
+           m_format == RENDER_FMT_VDPAU ||
+           m_format == RENDER_FMT_VDPAU_420)
+    return 5;
   else
     return 3;
 }
