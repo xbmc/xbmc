@@ -84,11 +84,8 @@ CProcessorHD::CProcessorHD()
 {
   m_pDXVAHD = NULL;
   m_pDXVAVP = NULL;
-  m_index   = 0;
-  m_frame   = 0;
   g_Windowing.Register(this);
 
-  m_surfaces = NULL;
   m_context  = NULL;
 }
 
@@ -109,24 +106,7 @@ void CProcessorHD::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_pDXVAVP);
-
-  for(unsigned i = 0; i < m_frames.size(); i++)
-  {
-    SAFE_RELEASE(m_frames[i].context);
-    SAFE_RELEASE(m_frames[i].pSurface);
-  }
-  m_frames.clear();
-
   SAFE_RELEASE(m_context);
-  if (m_surfaces)
-  {
-    for (unsigned i = 0; i < m_size; i++)
-    {
-      SAFE_RELEASE(m_surfaces[i]);
-    }
-    free(m_surfaces);
-    m_surfaces = NULL;
-  }
 }
 
 bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -275,8 +255,6 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
     return false;
   }
 
-  m_frame = 0;
-
   return true;
 }
 
@@ -300,8 +278,8 @@ bool CProcessorHD::OpenProcessor()
   CHECK(m_pDXVAHD->CreateVideoProcessor(&m_device, &m_pDXVAVP));
 
   DXVAHD_STREAM_STATE_D3DFORMAT_DATA d3dformat = { m_format };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_D3DFORMAT
-                                                  , sizeof(d3dformat), &d3dformat ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_D3DFORMAT
+                                             , sizeof(d3dformat), &d3dformat ));
 
   DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE_DATA data =
   {
@@ -310,19 +288,19 @@ bool CProcessorHD::OpenProcessor()
     m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // YCbCr_Matrix: 0=BT.601, 1=BT.709
     m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0  // YCbCr_xvYCC: 0=Conventional YCbCr, 1=xvYCC
   };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE
-                                                  , sizeof(data), &data ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE
+                                             , sizeof(data), &data ));
 
   DXVAHD_COLOR_YCbCrA bgColor = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   DXVAHD_COLOR backgroundColor;
   backgroundColor.YCbCr = bgColor; 
   DXVAHD_BLT_STATE_BACKGROUND_COLOR_DATA backgroundData = { true, backgroundColor }; // {YCbCr, DXVAHD_COLOR}
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessBltState( DXVAHD_BLT_STATE_BACKGROUND_COLOR
-                                               , sizeof (backgroundData), &backgroundData ));
+  CHECK(m_pDXVAVP->SetVideoProcessBltState( DXVAHD_BLT_STATE_BACKGROUND_COLOR
+                                          , sizeof (backgroundData), &backgroundData ));
 
   DXVAHD_STREAM_STATE_ALPHA_DATA alpha = { true, 1.0f };
-  LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_ALPHA
-                                                  , sizeof(alpha), &alpha ));
+  CHECK(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_ALPHA
+                                             , sizeof(alpha), &alpha ));
 
   return true;
 }
@@ -330,139 +308,25 @@ bool CProcessorHD::OpenProcessor()
 bool CProcessorHD::CreateSurfaces()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_size, sizeof(LPDIRECT3DSURFACE9));
+  LPDIRECT3DSURFACE9 surfaces[32];
   for (unsigned idx = 0; idx < m_size; idx++)
+  {
     CHECK(pD3DDevice->CreateOffscreenPlainSurface(
-                                (m_width + 15) & ~15,
-                                (m_height + 15) & ~15,
-                                m_format,
-                                m_VPDevCaps.InputPool,
-                                &m_surfaces[idx],
-                                NULL));
+      (m_width + 15) & ~15,
+      (m_height + 15) & ~15,
+      m_format,
+      m_VPDevCaps.InputPool,
+      &surfaces[idx],
+      NULL));
+  }
 
   m_context = new CSurfaceContext();
+  for (int i = 0; i < m_size; i++)
+  {
+    m_context->AddSurface(surfaces[i]);
+  }
 
   return true;
-}
-
-REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
-{
-  CSingleLock lock(m_section);
-
-  IDirect3DSurface9* surface = NULL;
-  CSurfaceContext* context = NULL;
-
-  if (picture->iFlags & DVP_FLAG_DROPPED)
-  {
-    return 0;
-  }
-
-  switch (picture->format)
-  {
-    case RENDER_FMT_DXVA:
-    {
-      surface = (IDirect3DSurface9*)picture->data[3];
-      context = picture->context;
-      break;
-    }
-
-    case RENDER_FMT_YUV420P:
-    {
-      if (!m_surfaces)
-      {
-        CLog::Log(LOGWARNING, __FUNCTION__" - not initialized.");
-        return 0;
-      }
-
-      surface = m_surfaces[m_index];
-      m_index = (m_index + 1) % m_size;
-
-      context = m_context;
-  
-      D3DLOCKED_RECT rectangle;
-      if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
-      {
-        return 0;
-      }
-
-      // Convert to NV12 - Luma
-      // TODO: Optimize this later using shaders/swscale/etc.
-      uint8_t *s = picture->data[0];
-      uint8_t* bits = (uint8_t*)(rectangle.pBits);
-      for (unsigned y = 0; y < picture->iHeight; y++)
-      {
-        memcpy(bits, s, picture->iWidth);
-        s += picture->iLineSize[0];
-        bits += rectangle.Pitch;
-      }
-
-      D3DSURFACE_DESC desc;
-      if (FAILED(surface->GetDesc(&desc)))
-      {
-        return 0;
-      }
-
-      // Convert to NV12 - Chroma
-      uint8_t *s_u, *s_v, *d_uv;
-      for (unsigned y = 0; y < picture->iHeight/2; y++)
-      {
-        s_u = picture->data[1] + (y * picture->iLineSize[1]);
-        s_v = picture->data[2] + (y * picture->iLineSize[2]);
-        d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
-        for (unsigned x = 0; x < picture->iWidth/2; x++)
-        {
-          *d_uv++ = *s_u++;
-          *d_uv++ = *s_v++;
-        }
-      }
-  
-      if (FAILED(surface->UnlockRect()))
-      {
-        return 0;
-      }
-      break;
-    }
-    
-    default:
-    {
-      CLog::Log(LOGWARNING, __FUNCTION__" - colorspace not supported by processor, skipping frame.");
-      return 0;
-    }
-  }
-
-  if (!surface || !context)
-  {
-    return 0;
-  }
-  m_frame += 2;
-
-  surface->AddRef();
-  context->Acquire();
-
-  SFrame frame = {};
-  frame.index       = m_frame;
-  frame.pSurface    = surface; 
-  frame.context     = context;
-  frame.format      = DXVAHD_FRAME_FORMAT_PROGRESSIVE;
-
-  if (picture->iFlags & DVP_FLAG_INTERLACED)
-  {
-    frame.format = picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST
-                     ? DXVAHD_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST
-                     : DXVAHD_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
-  }
-
-  m_frames.push_back(frame);
-
-  if (m_frames.size() > m_size)
-  {
-    SAFE_RELEASE(m_frames.front().context);
-    SAFE_RELEASE(m_frames.front().pSurface);
-
-    m_frames.pop_front();
-  }
-
-  return m_frame;
 }
 
 bool CProcessorHD::ApplyFilter(DXVAHD_FILTER filter, int value, int min, int max, int def)
@@ -499,7 +363,7 @@ bool CProcessorHD::ApplyFilter(DXVAHD_FILTER filter, int value, int min, int max
   return !FAILED( m_pDXVAVP->SetVideoProcessStreamState( 0, state, sizeof(data), &data ) );
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFERENCE_TIME frame, DWORD flags)
+bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect3DSurface9** source, DWORD flags, UINT frameIdx)
 {
   CSingleLock lock(m_section);
 
@@ -509,6 +373,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
     return false;
   }
   
+  if (!source[2])
+    return false;
+
   EDEINTERLACEMODE deinterlace_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
     deinterlace_mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
@@ -518,27 +385,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
                   || (   interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
                       && interlace_method != VS_INTERLACEMETHOD_DXVA_BEST);
 
-  // minFrame is the first samples to keep. Delete the rest.
-  REFERENCE_TIME minFrame = frame - m_max_back_refs * 2;
-
-  SFrames::iterator it = m_frames.begin();
-  while (it != m_frames.end())
-  {
-    if (it->index < minFrame)
-    {
-      SAFE_RELEASE(it->context);
-      SAFE_RELEASE(it->pSurface);
-      it = m_frames.erase(it);
-    }
-    else
-      ++it;
-  }
-
-  if(m_frames.empty())
-  {
-    return false;
-  }
-
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
   CRect rectTarget(0, 0, desc.Width, desc.Height);
@@ -546,51 +392,62 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
-  // MinTime and MaxTime are now the first and last samples to feed the processor.
-  minFrame = frame - m_VPCaps.PastFrames * 2;
-  REFERENCE_TIME maxFrame = frame + m_VPCaps.FutureFrames * 2;
-
-  bool isValid(false);
   DXVAHD_FRAME_FORMAT dxvaFrameFormat = DXVAHD_FRAME_FORMAT_PROGRESSIVE;
+
+  unsigned int providedPast = 0;
+  for (int i = 3; i < 8; i++)
+  {
+    if (source[i])
+      providedPast++;
+  }
+  unsigned int providedFuture = 0;
+  for (int i = 1; i >= 0; i--)
+  {
+    if (source[i])
+      providedFuture++;
+  }
+  int futureFrames = std::min(providedFuture, m_VPCaps.FutureFrames);
+  int pastFrames = std::min(providedPast, m_VPCaps.PastFrames);
 
   DXVAHD_STREAM_DATA stream_data = { 0 };
   stream_data.Enable = TRUE;
-  stream_data.PastFrames = 0;
-  stream_data.FutureFrames = 0;
-  stream_data.ppPastSurfaces = new IDirect3DSurface9*[m_VPCaps.PastFrames];
-  stream_data.ppFutureSurfaces = new IDirect3DSurface9*[m_VPCaps.FutureFrames];
+  stream_data.PastFrames = pastFrames;
+  stream_data.FutureFrames = futureFrames;
+  stream_data.ppPastSurfaces = new IDirect3DSurface9*[pastFrames];
+  stream_data.ppFutureSurfaces = new IDirect3DSurface9*[futureFrames];
 
-  for(it = m_frames.begin(); it != m_frames.end(); ++it)
+  int start = 2 - futureFrames;
+  int end = 2 + pastFrames;
+
+  for (int i = start; i <= end; i++)
   {
-    if (it->index >= minFrame && it->index <= maxFrame)
+    if (!source[i])
+      continue;
+
+    if (i > 2)
     {
-      if (it->index < frame)
-      {
-        // frames order should be { .., T-1, T-2, T-3 }
-        stream_data.ppPastSurfaces[(frame - it->index)/2 - 1] = it->pSurface;
-        stream_data.PastFrames++;
-      }
-      else if (it->index == frame)
-      {
-        stream_data.pInputSurface = it->pSurface;
-        dxvaFrameFormat = (DXVAHD_FRAME_FORMAT) it->format;
-        isValid = true;
-      }
-      else if (it->index > frame)
-      {
-        // frames order should be { T+1, T+2, T+3, .. }
-        stream_data.ppFutureSurfaces[(it->index - frame)/2 - 1] = it->pSurface;
-        stream_data.FutureFrames++;
-      }
+      // frames order should be { ?, T-3, T-2, T-1 }
+      stream_data.ppPastSurfaces[2+pastFrames-i] = source[i];
+    }
+    else if (i == 2)
+    {
+      stream_data.pInputSurface = source[2];
+    }
+    else if (i < 2)
+    {
+      // frames order should be { T+1, T+2, T+3, .. }
+      stream_data.ppFutureSurfaces[1-i] = source[i];
     }
   }
 
-  // no present frame, skip
-  if (!isValid)
-  {
-    CLog::Log(LOGWARNING, __FUNCTION__" - uncomplete stream data, skipping frame.");
-    return false;
-  }
+  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_TOP)
+    dxvaFrameFormat = DXVAHD_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  else if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_BOT)
+    dxvaFrameFormat = DXVAHD_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_BOT)
+    dxvaFrameFormat = DXVAHD_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+  if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_TOP)
+    dxvaFrameFormat = DXVAHD_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
 
   // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
   if (progressive)
@@ -606,7 +463,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   bool frameProgressive = dxvaFrameFormat == DXVAHD_FRAME_FORMAT_PROGRESSIVE;
 
   // Progressive or Interlaced video at normal rate.
-  stream_data.InputFrameOrField = frame + (flags & RENDER_FLAG_FIELD1 ? 1 : 0);
+  stream_data.InputFrameOrField = frameIdx;
   stream_data.OutputIndex = flags & RENDER_FLAG_FIELD1 && !frameProgressive ? 1 : 0;
 
   DXVAHD_STREAM_STATE_FRAME_FORMAT_DATA frame_format = { dxvaFrameFormat };
@@ -642,7 +499,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFER
   LOGIFERROR( m_pDXVAVP->SetVideoProcessBltState( DXVAHD_BLT_STATE_TARGET_RECT
                                                 , sizeof(targetRect), &targetRect ) );
 
-  HRESULT hr = m_pDXVAVP->VideoProcessBltHD(target, frame, 1, &stream_data);
+  HRESULT hr = m_pDXVAVP->VideoProcessBltHD(target, frameIdx, 1, &stream_data);
   if(FAILED(hr))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed executing VideoProcessBltHD with error %x", hr);

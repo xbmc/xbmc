@@ -44,9 +44,10 @@ public:
   virtual void           UnInit();
   virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   virtual void           Close();
-  virtual REFERENCE_TIME Add(DVDVideoPicture* picture);
-  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
+  virtual CRenderPicture *Convert(DVDVideoPicture* picture);
+  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect3DSurface9** source, DWORD flags, UINT frameIdx);
   virtual unsigned       Size() { if (m_service) return m_size; return 0; }
+  virtual unsigned       PastRefs() { return m_max_back_refs; }
 
   virtual void OnCreateDevice()  {}
   virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
@@ -72,25 +73,14 @@ protected:
   DXVA2_ValueRange m_contrast;
   DXVA2_ValueRange m_hue;
   DXVA2_ValueRange m_saturation;
-  REFERENCE_TIME   m_time;
   unsigned         m_size;
   unsigned         m_max_back_refs;
   unsigned         m_max_fwd_refs;
   EDEINTERLACEMODE m_deinterlace_mode;
   EINTERLACEMETHOD m_interlace_method;
   bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
-  unsigned         m_index;
-
-  struct SVideoSample
-  {
-    DXVA2_VideoSample sample;
-    CSurfaceContext* context;
-  };
-  typedef std::deque<SVideoSample> SSamples;
-  SSamples         m_sample;
 
   CCriticalSection    m_section;
-  LPDIRECT3DSURFACE9* m_surfaces;
   CSurfaceContext*    m_context;
   bool                m_quirk_nodeintprocforprog;
   static CCriticalSection    m_dlSection;

@@ -148,12 +148,9 @@ CProcessor::CProcessor()
 {
   m_service = NULL;
   m_process = NULL;
-  m_time    = 0;
   g_Windowing.Register(this);
 
-  m_surfaces = NULL;
   m_context = NULL;
-  m_index = 0;
   m_progressive = true;
 }
 
@@ -174,21 +171,7 @@ void CProcessor::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_process);
-  for(unsigned i = 0; i < m_sample.size(); i++)
-  {
-    SAFE_RELEASE(m_sample[i].context);
-    SAFE_RELEASE(m_sample[i].sample.SrcSurface);
-  }
-  m_sample.clear();
-
   SAFE_RELEASE(m_context);
-  if (m_surfaces)
-  {
-    for (unsigned i = 0; i < m_size; i++)
-      SAFE_RELEASE(m_surfaces[i]);
-    free(m_surfaces);
-    m_surfaces = NULL;
-  }
 }
 
 bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -371,8 +354,6 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   if (!OpenProcessor())
     return false;
 
-  m_time = 0;
-
   return true;
 }
 
@@ -499,136 +480,92 @@ bool CProcessor::OpenProcessor()
 bool CProcessor::CreateSurfaces()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_size, sizeof(LPDIRECT3DSURFACE9));
+  LPDIRECT3DSURFACE9 surfaces[32];
   for (unsigned idx = 0; idx < m_size; idx++)
+  {
     CHECK(pD3DDevice->CreateOffscreenPlainSurface(
-                                (m_desc.SampleWidth + 15) & ~15,
-                                (m_desc.SampleHeight + 15) & ~15,
-                                m_desc.Format,
-                                D3DPOOL_DEFAULT,
-                                &m_surfaces[idx],
-                                NULL));
+      (m_desc.SampleWidth + 15) & ~15,
+      (m_desc.SampleHeight + 15) & ~15,
+      m_desc.Format,
+      D3DPOOL_DEFAULT,
+      &surfaces[idx],
+      NULL));
+  }
 
   m_context = new CSurfaceContext();
+  for (int i = 0; i < m_size; i++)
+  {
+    m_context->AddSurface(surfaces[i]);
+  }
 
   return true;
 }
 
-REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
+CRenderPicture *CProcessor::Convert(DVDVideoPicture* picture)
 {
-  CSingleLock lock(m_section);
-
-  IDirect3DSurface9* surface = NULL;
-  CSurfaceContext* context = NULL;
-
-  if (picture->iFlags & DVP_FLAG_DROPPED)
-    return 0;
-
-  switch (picture->format)
+  if (picture->format != RENDER_FMT_YUV420P)
   {
-    case RENDER_FMT_DXVA:
+    CLog::Log(LOGERROR, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
+    return NULL;
+  }
+
+  IDirect3DSurface9* surface = m_context->GetFree(NULL);
+  if (!surface)
+  {
+    CLog::Log(LOGERROR, "%s - no free video surface", __FUNCTION__);
+    return NULL;
+  }
+
+  D3DLOCKED_RECT rectangle;
+  if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
+  {
+    CLog::Log(LOGERROR, "%s - could not lock rect", __FUNCTION__);
+    m_context->ClearReference(surface);
+    return NULL;
+  }
+
+  // Convert to NV12 - Luma
+  // TODO: Optimize this later using shaders/swscale/etc.
+  uint8_t *s = picture->data[0];
+  uint8_t* bits = (uint8_t*)(rectangle.pBits);
+  for (unsigned y = 0; y < picture->iHeight; y++)
+  {
+    memcpy(bits, s, picture->iWidth);
+    s += picture->iLineSize[0];
+    bits += rectangle.Pitch;
+  }
+  D3DSURFACE_DESC desc;
+  if (FAILED(surface->GetDesc(&desc)))
+  {
+    CLog::Log(LOGERROR, "%s - could not get surface descriptor", __FUNCTION__);
+    m_context->ClearReference(surface);
+    return NULL;
+  }
+  // Convert to NV12 - Chroma
+  uint8_t *s_u, *s_v, *d_uv;
+  for (unsigned y = 0; y < picture->iHeight / 2; y++)
+  {
+    s_u = picture->data[1] + (y * picture->iLineSize[1]);
+    s_v = picture->data[2] + (y * picture->iLineSize[2]);
+    d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
+    for (unsigned x = 0; x < picture->iWidth / 2; x++)
     {
-      surface = (IDirect3DSurface9*)picture->data[3];
-      context = picture->context;
-      break;
-    }
-
-    case RENDER_FMT_YUV420P:
-    {
-      surface = m_surfaces[m_index];
-      m_index = (m_index + 1) % m_size;
-
-      context = m_context;
-  
-      D3DLOCKED_RECT rectangle;
-      if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
-        return 0;
-
-      // Convert to NV12 - Luma
-      // TODO: Optimize this later using shaders/swscale/etc.
-      uint8_t *s = picture->data[0];
-      uint8_t* bits = (uint8_t*)(rectangle.pBits);
-      for (unsigned y = 0; y < picture->iHeight; y++)
-      {
-        memcpy(bits, s, picture->iWidth);
-        s += picture->iLineSize[0];
-        bits += rectangle.Pitch;
-      }
-
-      D3DSURFACE_DESC desc;
-      if (FAILED(surface->GetDesc(&desc)))
-        return 0;
-
-      // Convert to NV12 - Chroma
-      for (unsigned y = 0; y < picture->iHeight/2; y++)
-      {
-        uint8_t *s_u = picture->data[1] + (y * picture->iLineSize[1]);
-        uint8_t *s_v = picture->data[2] + (y * picture->iLineSize[2]);
-        uint8_t *d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
-        for (unsigned x = 0; x < picture->iWidth/2; x++)
-        {
-          *d_uv++ = *s_u++;
-          *d_uv++ = *s_v++;
-        }
-      }
-  
-      if (FAILED(surface->UnlockRect()))
-        return 0;
-
-      break;
-    }
-    
-    default:
-    {
-      CLog::Log(LOGWARNING, "DXVA - colorspace not supported by processor, skipping frame");
-      return 0;
+      *d_uv++ = *s_u++;
+      *d_uv++ = *s_v++;
     }
   }
-
-  if (!surface || !context)
-    return 0;
-
-  m_time += 2;
-
-  surface->AddRef();
-  context->Acquire();
-
-  SVideoSample vs = {};
-  vs.sample.Start          = m_time;
-  vs.sample.End            = 0; 
-  vs.sample.SampleFormat   = m_desc.SampleFormat;
-
-  if (picture->iFlags & DVP_FLAG_INTERLACED)
+  if (FAILED(surface->UnlockRect()))
   {
-    if (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
-    else
-      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
-  }
-  else
-  {
-    vs.sample.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+    CLog::Log(LOGERROR, "%s - failed to unlock surface", __FUNCTION__);
+    m_context->ClearReference(surface);
+    return NULL;
   }
 
-  vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
-  vs.sample.SampleData     = 0;
-  vs.sample.SrcSurface     = surface;
-
-
-  vs.context = context;
-
-  if(!m_sample.empty())
-    m_sample.back().sample.End = vs.sample.Start;
-
-  m_sample.push_back(vs);
-  if (m_sample.size() > m_size)
-  {
-    SAFE_RELEASE(m_sample.front().context);
-    SAFE_RELEASE(m_sample.front().sample.SrcSurface);
-    m_sample.pop_front();
-  }
-
-  return m_time;
+  m_context->ClearReference(surface);
+  m_context->MarkRender(surface);
+  CRenderPicture *pic = new CRenderPicture(m_context);
+  pic->surface = surface;
+  return pic;
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)
@@ -645,9 +582,12 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
+bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect3DSurface9** source, DWORD flags, UINT frameIdx)
 {
   CSingleLock lock(m_section);
+
+  if (!source[2])
+    return false;
 
   // With auto deinterlacing, the Ion Gen. 1 drops some frames with deinterlacing processor + progressive flags for progressive material.
   // For that GPU (or when specified by an advanced setting), use the progressive processor.
@@ -667,30 +607,6 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
       return false;
   }
   
-  // MinTime and MaxTime are the first and last samples to keep. Delete the rest.
-  REFERENCE_TIME MinTime = time - m_max_back_refs*2;
-  REFERENCE_TIME MaxTime = time + m_max_fwd_refs*2;
-
-  SSamples::iterator it = m_sample.begin();
-  while (it != m_sample.end())
-  {
-    if (it->sample.Start < MinTime)
-    {
-      SAFE_RELEASE(it->context);
-      SAFE_RELEASE(it->sample.SrcSurface);
-      it = m_sample.erase(it);
-    }
-    else
-      ++it;
-  }
-
-  if(m_sample.empty())
-    return false;
-
-  // MinTime and MaxTime are now the first and last samples to feed the processor.
-  MinTime = time - m_caps.NumBackwardRefSamples*2;
-  MaxTime = time + m_caps.NumForwardRefSamples*2;
-
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
   CRect rectTarget(0, 0, desc.Width, desc.Height);
@@ -698,63 +614,70 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
+  // set sample format for progressive and interlaced
+  UINT sampleFormat = DXVA2_SampleProgressiveFrame;
+  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_TOP)
+    sampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+  else if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_BOT)
+    sampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_BOT)
+    sampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+  if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_TOP)
+    sampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
 
   // How to prepare the samples array for VideoProcessBlt
   // - always provide current picture + the number of forward and backward references required by the current processor.
   // - provide the surfaces in the array in increasing temporal order
   // - at the start of playback, there may not be enough samples available. Use SampleFormat.SampleFormat = DXVA2_SampleUnknown for the missing samples.
 
-  int count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
-  int valid = 0;
+  unsigned int providedPast = 0;
+  for (int i = 3; i < 8; i++)
+  {
+    if (source[i])
+      providedPast++;
+  }
+  unsigned int providedFuture = 0;
+  for (int i = 1; i >= 0; i--)
+  {
+    if (source[i])
+      providedFuture++;
+  }
+  int futureFrames = std::min(providedFuture, m_caps.NumForwardRefSamples);
+  int pastFrames = std::min(providedPast, m_caps.NumBackwardRefSamples);
+
+  int count = 1 + pastFrames + futureFrames;
   auto_aptr<DXVA2_VideoSample> samp(new DXVA2_VideoSample[count]);
 
-  for (int i = 0; i < count; i++)
-    samp[i].SampleFormat.SampleFormat = DXVA2_SampleUnknown;
-
-  for(it = m_sample.begin(); it != m_sample.end() && valid < count; ++it)
+  int start = 2 - futureFrames;
+  int end = 2 + pastFrames;
+  int sampIdx = 0;
+  for (int i = end; i >= start; i--)
   {
-    if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
-    {
-      DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
-      vs = it->sample;
-      vs.SrcRect = sourceRECT;
-      vs.DstRect = dstRECT;
-      if(vs.End == 0)
-        vs.End = vs.Start + 2;
+    if (!source[i])
+      continue;
 
-      // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
-      if (m_progressive)
-        vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
-      else if (m_deinterlace_mode == VS_DEINTERLACEMODE_FORCE && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
-        vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+    DXVA2_VideoSample& vs = samp[sampIdx];
+    vs.SrcSurface = source[i];
+    vs.SrcRect = sourceRECT;
+    vs.DstRect = dstRECT;
+    vs.SampleData = 0;
+    vs.Start = frameIdx + (sampIdx - pastFrames) * 2;
+    vs.End = vs.Start + 2;
+    vs.PlanarAlpha = DXVA2_Fixed32OpaqueAlpha();
+    vs.SampleFormat.SampleFormat = sampleFormat;
+    
+    // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
+    if (m_progressive)
+      vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+    else if (m_deinterlace_mode == VS_DEINTERLACEMODE_FORCE && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
+      vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
 
-      valid++;
-    }
-  }
-  
-  // MS' guidelines above don't work. The blit fails when the processor is given DXVA2_SampleUnknown samples (with ATI at least).
-  // The ATI driver works with a reduced number of samples though, support that for now.
-  // Problem is an ambiguity if there are future refs requested by the processor. There are no such implementations at the moment.
-  int offset = 0;
-  if(valid < count)
-  {
-    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples, adjusting the sample array.");
-
-    for (int i = 0; i < count; i++)
-    {
-      if (samp[i].SampleFormat.SampleFormat == DXVA2_SampleUnknown)
-        offset = i+1;
-    }
-    count -= offset;
-    if (count == 0)
-    {
-      CLog::Log(LOGWARNING, __FUNCTION__" - no usable samples.");
-      return false;
-    }
+    sampIdx++;
   }
 
+ 
   DXVA2_VideoProcessBltParams blt = {};
-  blt.TargetFrame = time;
+  blt.TargetFrame = frameIdx;
   if (flags & RENDER_FLAG_FIELD1)
     blt.TargetFrame += 1;
   blt.TargetRect  = dstRECT;
@@ -787,7 +710,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   float verts[2][3]= {};
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, &samp[offset], count, NULL));
+  CHECK(m_process->VideoProcessBlt(target, &blt, &samp[0], count, NULL));
   return true;
 }
 

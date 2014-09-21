@@ -186,7 +186,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   unsigned int surfaces = 0;
   std::vector<ERenderFormat> formats;
 #ifdef HAS_VIDEO_PLAYBACK
-  surfaces = g_renderManager.GetProcessorSize();
+  surfaces = g_renderManager.GetOptimalBufferSize();
   formats  = g_renderManager.SupportedFormats();
 #endif
 

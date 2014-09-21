@@ -3496,16 +3496,12 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
-unsigned int CLinuxRendererGL::GetProcessorSize()
+unsigned int CLinuxRendererGL::GetOptimalBufferSize()
 {
-  if(m_format == RENDER_FMT_VDPAU
-  || m_format == RENDER_FMT_VDPAU_420
-  || m_format == RENDER_FMT_VAAPI
-  || m_format == RENDER_FMT_VAAPINV12
-  || m_format == RENDER_FMT_CVBREF)
-    return 1;
+  if(m_format == RENDER_FMT_CVBREF)
+    return 2;
   else
-    return 0;
+    return 3;
 }
 
 #ifdef HAVE_LIBVDPAU

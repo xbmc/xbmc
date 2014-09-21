@@ -198,6 +198,7 @@ void CWinRenderer::SelectRenderMethod()
 
   RenderMethodDetail *rmdet = FindRenderMethod(m_renderMethod);
   CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method %d: %s", m_renderMethod, rmdet != NULL ? rmdet->name : "unknown");
+  m_frameIdx = 0;
 }
 
 bool CWinRenderer::UpdateRenderMethod()
@@ -270,6 +271,11 @@ int CWinRenderer::NextYV12Texture()
 
 bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
 {
+  if (!m_NumYV12Buffers)
+  {
+    return false;
+  }
+
   if (m_renderMethod == RENDER_DXVA)
   {
     int source = index;
@@ -277,7 +283,17 @@ bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
       return false;
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-    buf->id = m_processor->Add(picture);
+    SAFE_RELEASE(buf->pic);
+    if (picture->format == RENDER_FMT_DXVA)
+    {
+      buf->pic = picture->dxva->Acquire();
+    }
+    else
+    {
+      buf->pic = m_processor->Convert(picture);
+    }
+    buf->frameIdx = m_frameIdx;
+    m_frameIdx += 2;
     return true;
   }
   return false;
@@ -341,7 +357,9 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   else
     pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
-  if (!m_bConfigured) return;
+  if (!m_bConfigured) 
+    return;
+
   ManageTextures();
 
   CSingleLock lock(g_graphicsContext);
@@ -998,6 +1016,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
+  if (!image->pic)
+    return;
+
   IDirect3DSurface9* target;
   if ( m_bUseHQScaler 
     || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
@@ -1014,7 +1035,50 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     }
   }
 
-  m_processor->Render(m_sourceRect, destRect, target, image->id, flags);
+  IDirect3DSurface9 *source[8];
+  memset(source, 0, 8 * sizeof(IDirect3DSurface9*));
+  source[2] = image->pic->surface;
+
+  int past = 0;
+  int future = 0;
+  DXVABuffer **buffers = (DXVABuffer**)m_VideoBuffers;
+
+  // set future frames
+  while (future < 2)
+  {
+    bool found = false;
+    for (int i = 0; i < m_NumYV12Buffers; i++)
+    {
+      if (buffers[i] && buffers[i]->pic && buffers[i]->frameIdx == image->frameIdx + (future*2 + 2))
+      {
+        source[1 - future++] = buffers[i]->pic->surface;
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      break;
+  }
+
+  // set past frames
+  while (past < 4)
+  {
+    bool found = false;
+    for (int i = 0; i < m_NumYV12Buffers; i++)
+    {
+      if (buffers[i] && buffers[i]->pic && buffers[i]->frameIdx == image->frameIdx - (past*2 + 2))
+      {
+        source[3 + past++] = buffers[i]->pic->surface;
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      break;
+  }
+
+
+  m_processor->Render(m_sourceRect, destRect, target, source, flags, image->frameIdx);
 
   target->Release();
 
@@ -1199,8 +1263,14 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
   if (m_renderMethod == RENDER_PS || m_renderMethod == RENDER_DXVA)
   {
-    if(m_renderMethod == RENDER_DXVA && method == VS_SCALINGMETHOD_DXVA_HARDWARE)
-      return true;
+    if (m_renderMethod == RENDER_DXVA)
+    {
+      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
+          method == VS_SCALINGMETHOD_AUTO)
+        return true;
+      else
+        return false;
+    }
 
     if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
     && (   method == VS_SCALINGMETHOD_AUTO
@@ -1247,12 +1317,35 @@ EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
     return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
-unsigned int CWinRenderer::GetProcessorSize()
+unsigned int CWinRenderer::GetOptimalBufferSize()
 {
   if (m_format == RENDER_FMT_DXVA && m_processor)
     return m_processor->Size();
   else
-    return 0;
+    return 2;
+}
+
+void CWinRenderer::ReleaseBuffer(int idx)
+{
+  if (m_renderMethod == RENDER_DXVA && m_VideoBuffers[idx])
+    SAFE_RELEASE(((DXVABuffer*)m_VideoBuffers[idx])->pic);
+}
+
+bool CWinRenderer::NeedBufferForRef(int idx)
+{
+  // check if processor wants to keep past frames
+  if (m_format == RENDER_FMT_DXVA && m_processor)
+  {
+    DXVABuffer** buffers = (DXVABuffer**)m_VideoBuffers;
+
+    int numPast = m_processor->PastRefs();
+    if (buffers[idx] && buffers[idx]->pic)
+    {
+      if (buffers[idx]->frameIdx + numPast*2 >= buffers[m_iYV12RenderBuffer]->frameIdx)
+        return true;
+    }
+  }
+  return false;
 }
 
 //============================================
@@ -1405,21 +1498,4 @@ void YUVBuffer::Clear()
   }
 }
 
-
-//==================================
-
-DXVABuffer::~DXVABuffer()
-{
-  Release();
-}
-
-void DXVABuffer::Release()
-{
-  id = 0;
-}
-
-void DXVABuffer::StartDecode()
-{
-  Release();
-}
 #endif

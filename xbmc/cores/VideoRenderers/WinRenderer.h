@@ -128,13 +128,11 @@ struct DXVABuffer : SVideoBuffer
 {
   DXVABuffer()
   {
-    id   = 0;
+    pic = NULL;
   }
-  ~DXVABuffer();
-  virtual void Release();
-  virtual void StartDecode();
-
-  int64_t           id;
+  ~DXVABuffer() { SAFE_RELEASE(pic); }
+  DXVA::CRenderPicture *pic;
+  unsigned int frameIdx;
 };
 
 class CWinRenderer : public CBaseRenderer
@@ -170,9 +168,11 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
-  virtual unsigned int GetProcessorSize();
+  virtual unsigned int GetOptimalBufferSize();
   virtual void         SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
+  virtual void         ReleaseBuffer(int idx);
+  virtual bool         NeedBufferForRef(int idx);
 
 protected:
   virtual void Render(DWORD flags);
@@ -240,6 +240,7 @@ protected:
   unsigned int         m_destHeight;
 
   int                  m_neededBuffers;
+  unsigned int         m_frameIdx;
 };
 
 #else

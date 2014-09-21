@@ -47,7 +47,7 @@ struct DVDCodecAvailableType
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
-namespace DXVA { class CSurfaceContext; }
+namespace DXVA { class CRenderPicture; }
 namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
 class COpenMax;
@@ -72,7 +72,7 @@ struct DVDVideoPicture
       int iLineSize[4];   // [4] = alpha channel, currently not used
     };
     struct {
-      DXVA::CSurfaceContext* context;
+      DXVA::CRenderPicture* dxva;
     };
     struct {
       VDPAU::CVdpauRenderPicture* vdpau;

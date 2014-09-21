@@ -59,9 +59,9 @@ public:
   virtual void           UnInit();
   virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   virtual void           Close();
-  virtual REFERENCE_TIME Add(DVDVideoPicture* picture);
-  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
+  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect3DSurface9 **source, DWORD flags, UINT frameIdx);
   virtual unsigned       Size() { if (m_pDXVAHD) return m_size; return 0; }
+  virtual unsigned       PastRefs() { return m_max_back_refs; }
 
   virtual void OnCreateDevice()  {}
   virtual void OnDestroyDevice() { CSingleLock lock(m_section); UnInit(); }
@@ -83,7 +83,6 @@ protected:
   unsigned int             m_width;
   unsigned int             m_height;
   D3DFORMAT                m_format;
-  REFERENCE_TIME           m_frame;
   unsigned int             m_flags;
   unsigned int             m_renderFormat;
 
@@ -94,15 +93,6 @@ protected:
   };
   ProcAmpInfo              m_Filters[NUM_FILTERS];
 
-  struct SFrame
-  {
-    IDirect3DSurface9*     pSurface;
-    CSurfaceContext*       context;
-    unsigned int           index;
-    unsigned               format;
-  };
-  typedef std::deque<SFrame> SFrames;
-  SFrames                  m_frames;
   static DXVAHDCreateVideoServicePtr m_DXVAHDCreateVideoService;
 };
 

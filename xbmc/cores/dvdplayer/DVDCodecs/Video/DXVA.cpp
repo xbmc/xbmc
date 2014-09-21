@@ -218,6 +218,10 @@ static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
     return NULL;
 }
 
+//-----------------------------------------------------------------------------
+// DXVA Context
+//-----------------------------------------------------------------------------
+
 CDXVAContext *CDXVAContext::m_context = NULL;
 CCriticalSection CDXVAContext::m_section;
 HMODULE CDXVAContext::m_dlHandle = NULL;
@@ -227,6 +231,7 @@ CDXVAContext::CDXVAContext()
   m_context = NULL;
   m_refCount = 0;
   m_service = NULL;
+  m_atiWorkaround = false;
 }
 
 void CDXVAContext::Release(CDecoder *decoder)
@@ -299,6 +304,15 @@ bool CDXVAContext::CreateContext()
 {
   m_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service);
   QueryCaps();
+
+  // Some older Ati devices can only open a single decoder at a given time
+  std::string renderer = g_Windowing.GetRenderRenderer();
+  if (renderer.find("Radeon HD 2") != std::string::npos ||
+      renderer.find("Radeon HD 3") != std::string::npos)
+  {
+    m_atiWorkaround = true;
+  }
+
   return true;
 }
 
@@ -433,15 +447,18 @@ bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DX
   int retry = 0;
   while (retry < 2)
   {
-    HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
-    if (!FAILED(res))
+    if (!m_atiWorkaround || retry > 0)
     {
-      return true;
+      HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
+      if (!FAILED(res))
+      {
+        return true;
+      }
     }
 
     if (retry == 0)
     {
-      CLog::Log(LOGERROR, "%s - hw may not support multiple decoders, releasing existing ones", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s - hw may not support multiple decoders, releasing existing ones", __FUNCTION__);
       std::vector<CDecoder*>::iterator it;
       for (it = m_decoders.begin(); it != m_decoders.end(); ++it)
       {
@@ -464,39 +481,175 @@ bool CDXVAContext::IsValidDecoder(CDecoder *decoder)
   return false;
 }
 
+//-----------------------------------------------------------------------------
+// DXVA Video Surface states
+//-----------------------------------------------------------------------------
+#define SURFACE_USED_FOR_REFERENCE 0x01
+#define SURFACE_USED_FOR_RENDER 0x02
+
 CSurfaceContext::CSurfaceContext()
 {
 }
 
 CSurfaceContext::~CSurfaceContext()
 {
-  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); ++it)
-    SAFE_RELEASE(*it);
+  CLog::Log(LOGDEBUG, "%s - destructing surface context", __FUNCTION__);
+  Reset();
 }
 
-void CSurfaceContext::HoldSurface(IDirect3DSurface9* surface)
+void CSurfaceContext::AddSurface(IDirect3DSurface9* surf)
 {
-  surface->AddRef();
-  m_heldsurfaces.push_back(surface);
+  CSingleLock lock(m_section);
+  surf->AddRef();
+  m_state[surf] = 0;
+  m_freeSurfaces.push_back(surf);
 }
 
-CDecoder::SVideoBuffer::SVideoBuffer()
+void CSurfaceContext::ClearReference(IDirect3DSurface9* surf)
 {
-  surface = NULL;
-  Clear();
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "%s - surface invalid", __FUNCTION__);
+    return;
+  }
+  m_state[surf] &= ~SURFACE_USED_FOR_REFERENCE;
+  if (m_state[surf] == 0)
+  {
+    m_freeSurfaces.push_back(surf);
+  }
 }
 
-CDecoder::SVideoBuffer::~SVideoBuffer()
+bool CSurfaceContext::MarkRender(IDirect3DSurface9* surf)
 {
-  Clear();
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "%s - surface invalid", __FUNCTION__);
+    return false;
+  }
+  std::list<IDirect3DSurface9*>::iterator it;
+  it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+  if (it != m_freeSurfaces.end())
+  {
+    m_freeSurfaces.erase(it);
+  }
+  m_state[surf] |= SURFACE_USED_FOR_RENDER;
+  return true;
 }
 
-void CDecoder::SVideoBuffer::Clear()
+void CSurfaceContext::ClearRender(IDirect3DSurface9* surf)
 {
-  SAFE_RELEASE(surface);
-  age     = 0;
-  used    = 0;
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "%s - surface invalid", __FUNCTION__);
+    return;
+  }
+  m_state[surf] &= ~SURFACE_USED_FOR_RENDER;
+  if (m_state[surf] == 0)
+  {
+    m_freeSurfaces.push_back(surf);
+  }
 }
+
+bool CSurfaceContext::IsValid(IDirect3DSurface9* surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) != m_state.end())
+    return true;
+  else
+    return false;
+}
+
+IDirect3DSurface9* CSurfaceContext::GetFree(IDirect3DSurface9* surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) != m_state.end())
+  {
+    std::list<IDirect3DSurface9*>::iterator it;
+    it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    if (it == m_freeSurfaces.end())
+    {
+      CLog::Log(LOGWARNING, "%s - surface not free", __FUNCTION__);
+    }
+    else
+    {
+      m_freeSurfaces.erase(it);
+      m_state[surf] = SURFACE_USED_FOR_REFERENCE;
+      return surf;
+    }
+  }
+  if (!m_freeSurfaces.empty())
+  {
+    IDirect3DSurface9* freeSurf = m_freeSurfaces.front();
+    m_freeSurfaces.pop_front();
+    m_state[freeSurf] = SURFACE_USED_FOR_REFERENCE;
+    return freeSurf;
+  }
+  return NULL;
+}
+
+IDirect3DSurface9* CSurfaceContext::GetAtIndex(unsigned int idx)
+{
+  if (idx >= m_state.size())
+    return NULL;
+  std::map<IDirect3DSurface9*, int>::iterator it = m_state.begin();
+  for (unsigned int i = 0; i < idx; i++)
+    ++it;
+  return it->first;
+}
+
+void CSurfaceContext::Reset()
+{
+  CSingleLock lock(m_section);
+  for (map<IDirect3DSurface9*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+    it->first->Release();
+  m_freeSurfaces.clear();
+  m_state.clear();
+}
+
+int CSurfaceContext::Size()
+{
+  CSingleLock lock(m_section);
+  return m_state.size();
+}
+
+bool CSurfaceContext::HasFree()
+{
+  CSingleLock lock(m_section);
+  return !m_freeSurfaces.empty();
+}
+
+bool CSurfaceContext::HasRefs()
+{
+  CSingleLock lock(m_section);
+  for (map<IDirect3DSurface9*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  {
+    if (it->second & SURFACE_USED_FOR_REFERENCE)
+      return true;
+  }
+  return false;
+}
+
+//-----------------------------------------------------------------------------
+// DXVA RednerPictures
+//-----------------------------------------------------------------------------
+
+CRenderPicture::CRenderPicture(CSurfaceContext *context)
+{
+  surface_context = context->Acquire();
+}
+
+CRenderPicture::~CRenderPicture()
+{
+  surface_context->ClearRender(surface);
+  surface_context->Release();
+}
+
+//-----------------------------------------------------------------------------
+// DXVA Decoder
+//-----------------------------------------------------------------------------
 
 CDecoder::CDecoder()
  : m_event(true)
@@ -505,21 +658,21 @@ CDecoder::CDecoder()
   m_state     = DXVA_OPEN;
   m_device    = NULL;
   m_decoder   = NULL;
-  m_buffer_count = 0;
-  m_buffer_age   = 0;
   m_refs         = 0;
   m_shared       = 0;
   m_surface_context = NULL;
+  m_presentPicture = NULL;
   m_dxva_context = NULL;
   memset(&m_format, 0, sizeof(m_format));
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
+  m_context->surface = (IDirect3DSurface9**)calloc(32, sizeof(IDirect3DSurface9*));
   g_Windowing.Register(this);
 }
 
 CDecoder::~CDecoder()
 {
+  CLog::Log(LOGDEBUG, "%s - destructing decoder, %ld", __FUNCTION__, this);
   g_Windowing.Unregister(this);
   Close();
   free(m_context->surface);
@@ -527,18 +680,29 @@ CDecoder::~CDecoder()
   free(m_context);
 }
 
+long CDecoder::Release()
+{
+  // if ffmpeg holds any references, flush buffers
+  if (m_surface_context && m_surface_context->HasRefs())
+  {
+    avcodec_flush_buffers(m_avctx);
+  }
+  return IHardwareDecoder::Release();
+}
+
 void CDecoder::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_decoder);
   SAFE_RELEASE(m_surface_context);
-  for(unsigned i = 0; i < m_buffer_count; i++)
-    m_buffer[i].Clear();
-  m_buffer_count = 0;
+  SAFE_RELEASE(m_presentPicture);
   memset(&m_format, 0, sizeof(m_format));
 
   if (m_dxva_context)
+  {
+    CLog::Log(LOGNOTICE, "%s - closing decoder", __FUNCTION__);
     m_dxva_context->Release(this);
+  }
   m_dxva_context = NULL;
 }
 
@@ -769,8 +933,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   if(!OpenDecoder())
     return false;
 
-  avctx->get_buffer2     = GetBufferS;
+  avctx->get_buffer2 = GetBufferS;
   avctx->hwaccel_context = m_context;
+
+  m_avctx = avctx;
 
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
   if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
@@ -801,12 +967,16 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
   if(result)
     return result;
 
+  SAFE_RELEASE(m_presentPicture);
+
   if(frame)
   {
-    for(unsigned i = 0; i < m_buffer_count; i++)
+    if (m_surface_context->IsValid((IDirect3DSurface9*)frame->data[3]))
     {
-      if(m_buffer[i].surface == (IDirect3DSurface9*)frame->data[3])
-        return VC_BUFFER | VC_PICTURE;
+      m_presentPicture = new CRenderPicture(m_surface_context);
+      m_presentPicture->surface = (IDirect3DSurface9*)frame->data[3];
+      m_surface_context->MarkRender(m_presentPicture->surface);
+      return VC_BUFFER | VC_PICTURE;
     }
     CLog::Log(LOGWARNING, "DXVA - ignoring invalid surface");
     return VC_BUFFER;
@@ -819,10 +989,10 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 {
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
+
+  picture->dxva = m_presentPicture;
   picture->format = RENDER_FMT_DXVA;
   picture->extended_format = (unsigned int)m_format.Format;
-  picture->context = m_surface_context;
-  picture->data[3]= frame->data[3];
   return true;
 }
 
@@ -922,21 +1092,15 @@ bool CDecoder::OpenDecoder()
 
   m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
 
-  if(m_context->surface_count > m_buffer_count)
+  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
+
+  if (!m_dxva_context->CreateSurfaces(m_format.SampleWidth, m_format.SampleHeight, m_format.Format,
+                                      m_context->surface_count - 1, m_context->surface))
+    return false;
+
+  for(unsigned i = 0; i < m_context->surface_count; i++)
   {
-    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_buffer_count);
-
-    if (!m_dxva_context->CreateSurfaces(m_format.SampleWidth, m_format.SampleHeight, m_format.Format,
-                                        m_context->surface_count - 1 - m_buffer_count, m_context->surface + m_buffer_count))
-      return false;
-
-    for(unsigned i = m_buffer_count; i < m_context->surface_count; i++)
-    {
-      m_buffer[i].surface = m_context->surface[i];
-      m_surface_context->HoldSurface(m_context->surface[i]);
-    }
-
-    m_buffer_count = m_context->surface_count;
+    m_surface_context->AddSurface(m_context->surface[i]);
   }
 
   if (!m_dxva_context->CreateDecoder(m_input, &m_format, m_context->cfg, m_context->surface, m_context->surface_count, &m_decoder))
@@ -957,19 +1121,15 @@ bool CDecoder::Supports(enum PixelFormat fmt)
 void CDecoder::RelBuffer(uint8_t *data)
 {
   CSingleLock lock(m_section);
-  IDirect3DSurface9* surface = (IDirect3DSurface9*)data;
+  IDirect3DSurface9* surface = (IDirect3DSurface9*)(uintptr_t)data;
 
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  if (!m_surface_context->IsValid(surface))
   {
-    if(m_buffer[i].surface == surface)
-    {
-      m_buffer[i].used = false;
-      m_buffer[i].age  = ++m_buffer_age;
-      break;
-    }
+    CLog::Log(LOGWARNING, "%s - return of invalid surface", __FUNCTION__);
   }
+  m_surface_context->ClearReference(surface);
 
-  Release();
+  IHardwareDecoder::Release();
 }
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
@@ -979,46 +1139,12 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   if (!m_decoder)
     return -1;
 
-  if(avctx->coded_width  != m_format.SampleWidth
-  || avctx->coded_height != m_format.SampleHeight)
+  IDirect3DSurface9* surf = (IDirect3DSurface9*)(uintptr_t)pic->data[3];
+  surf = m_surface_context->GetFree(surf != 0 ? surf : NULL);
+  if (surf == NULL)
   {
-    Close();
-    if(!Open(avctx, avctx->pix_fmt, m_shared))
-    {
-      Close();
-      return -1;
-    }
-  }
-
-  int           count = 0;
-  SVideoBuffer* buf   = NULL;
-  for(unsigned i = 0; i < m_buffer_count; i++)
-  {
-    if(m_buffer[i].used)
-      count++;
-    else
-    {
-      if(!buf || buf->age > m_buffer[i].age)
-        buf = m_buffer+i;
-    }
-  }
-
-  if(count >= m_refs+2)
-  {
-    m_refs++;
-#if ALLOW_ADDING_SURFACES
-    if(!OpenDecoder())
-      return -1;
-    return GetBuffer(avctx, pic);
-#else
-    Close();
-    return -1;
-#endif
-  }
-
-  if(!buf)
-  {
-    CLog::Log(LOGERROR, "DXVA - unable to find new unused buffer");
+    CLog::Log(LOGERROR, "%s - no surface available - dec: %d, render: %d", __FUNCTION__);
+    m_state = DXVA_LOST;
     return -1;
   }
 
@@ -1030,8 +1156,8 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     pic->linesize[i] = 0;
   }
 
-  pic->data[0] = (uint8_t*)buf->surface;
-  pic->data[3] = (uint8_t*)buf->surface;
+  pic->data[0] = (uint8_t*)surf;
+  pic->data[3] = (uint8_t*)surf;
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, this, 0);
   if (!buffer)
   {
@@ -1039,7 +1165,6 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     return -1;
   }
   pic->buf[0] = buffer;
-  buf->used = true;
 
   Acquire();
 

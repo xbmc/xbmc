@@ -261,20 +261,14 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     lock2.Enter();
     m_format = format;
 
-    int processor = m_pRenderer->GetProcessorSize();
-    if(processor > buffers)                          /* DXVA-HD returns processor size 6 */
-      m_QueueSize = 3;                               /* we need queue size of 3 to get future frames in the processor */
-    else if(processor)
-      m_QueueSize = buffers - processor + 1;         /* respect maximum refs */
-    else
-      m_QueueSize = m_pRenderer->GetMaxBufferSize(); /* no refs to data */
-
+    int renderbuffers = m_pRenderer->GetOptimalBufferSize();
+    m_QueueSize = std::min(buffers, renderbuffers);
     m_QueueSize = std::min(m_QueueSize, (int)m_pRenderer->GetMaxBufferSize());
     m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, processor, buffers);
+      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, buffers);
     }
 
     m_pRenderer->SetBufferSize(m_QueueSize);
@@ -365,11 +359,16 @@ void CXBMCRenderManager::FrameMove()
     /* release all previous */
     for(std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
     {
-      // TODO check for fence
-      m_pRenderer->ReleaseBuffer(*it);
-      m_overlays.Release(*it);
-      m_free.push_back(*it);
-      it = m_discard.erase(it);
+      // renderer may want to keep the frame for postprocessing
+      if (!m_pRenderer->NeedBufferForRef(*it))
+      {
+        m_pRenderer->ReleaseBuffer(*it);
+        m_overlays.Release(*it);
+        m_free.push_back(*it);
+        it = m_discard.erase(it);
+      }
+      else
+        ++it;
     }
   }
 }
@@ -856,10 +855,14 @@ void CXBMCRenderManager::UpdateResolution()
 }
 
 
-unsigned int CXBMCRenderManager::GetProcessorSize()
+unsigned int CXBMCRenderManager::GetOptimalBufferSize()
 {
   CSharedLock lock(m_sharedSection);
-  return std::max(4, NUM_BUFFERS);
+  if (!m_pRenderer)
+  {
+    CLog::Log(LOGERROR, "%s - renderer is NULL", __FUNCTION__);
+  }
+  return m_pRenderer->GetMaxBufferSize();
 }
 
 // Supported pixel formats, can be called before configure
