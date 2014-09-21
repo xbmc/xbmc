@@ -97,8 +97,9 @@ Section "${APP_NAME}" SecAPP
   Var /GLOBAL INSTDIR_OLD
   ReadRegStr $INSTDIR_OLD HKCU "Software\XBMC" ""
   ${IfNot} $INSTDIR_OLD == ""
-      IfFileExists "$APPDATA\XBMC\*.*" 0 +2
+      IfFileExists "$APPDATA\XBMC\*.*" 0 +3
         Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
+        MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC userdata folder was moved to the new ${APP_NAME} userdata location.$\n.This to make the transition as smooth as possible without any user interactions needed."
 
     ${IfNot} $INSTDIR_OLD == $INSTDIR
       IfFileExists $INSTDIR_OLD\portable_data\*.* 0 +3
