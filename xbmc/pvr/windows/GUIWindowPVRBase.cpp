@@ -700,7 +700,7 @@ bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilte
 void CGUIWindowPVRBase::UpdateButtons(void)
 {
   CGUIMediaWindow::UpdateButtons();
-  SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + (m_group->GroupType() == PVR_GROUP_TYPE_INTERNAL ? g_localizeStrings.Get(19287) : m_group->GroupName()));
+  SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + m_group->GroupName());
 }
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()

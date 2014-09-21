@@ -216,21 +216,12 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = GetPVRDatabase();
-  if (!database)
-    return false;
-
   bool bSyncWithBackends = CSettings::Get().GetBool("pvrmanager.syncchannelgroups");
 
   CSingleLock lock(m_critSection);
 
-  // load the other groups from the database
-  int iSize = m_groups.size();
-  database->Get(*this);
-  CLog::Log(LOGDEBUG, "PVR - %s - %d user defined %s channel groups fetched from the database", __FUNCTION__, (int) (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
-
   // load groups from the backends if the option is enabled
-  iSize = m_groups.size();
+  int iSize = m_groups.size();
   if (bSyncWithBackends)
   {
     GetGroupsFromClients();
@@ -271,6 +262,10 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
+  CPVRDatabase *database = GetPVRDatabase();
+  if (!database)
+    return false;
+
   CSingleLock lock(m_critSection);
 
   // remove previous contents
@@ -278,10 +273,16 @@ bool CPVRChannelGroups::Load(void)
 
   CLog::Log(LOGDEBUG, "PVR - %s - loading all %s channel groups", __FUNCTION__, m_bRadio ? "radio" : "TV");
 
-  // create and load the internal channel group
-  CPVRChannelGroupPtr internalChannels = CPVRChannelGroupPtr(new CPVRChannelGroupInternal(m_bRadio));
-  m_groups.push_back(internalChannels);
-  if (!internalChannels->Load())
+  // create the internal channel group
+  CPVRChannelGroupPtr internalGroup = CPVRChannelGroupPtr(new CPVRChannelGroupInternal(m_bRadio));
+  m_groups.push_back(internalGroup);
+
+  // load groups from the database
+  database->Get(*this);
+  CLog::Log(LOGDEBUG, "PVR - %s - %d %s groups fetched from the database", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+
+  // load channels of internal group
+  if (!internalGroup->Load())
   {
     CLog::Log(LOGERROR, "PVR - %s - failed to load channels", __FUNCTION__);
     return false;
@@ -296,7 +297,7 @@ bool CPVRChannelGroups::Load(void)
 
   // set the last played group as selected group at startup
   CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
-  SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalChannels);
+  SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");
 
