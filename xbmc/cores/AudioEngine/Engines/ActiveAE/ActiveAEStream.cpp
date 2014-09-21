@@ -431,8 +431,9 @@ double CActiveAEStream::GetResampleRatio()
 
 bool CActiveAEStream::SetResampleRatio(double ratio)
 {
+  if (ratio != m_streamResampleRatio)
+    AE.SetStreamResampleRatio(this, ratio);
   m_streamResampleRatio = ratio;
-  AE.SetStreamResampleRatio(this, m_streamResampleRatio);
   return true;
 }
 
