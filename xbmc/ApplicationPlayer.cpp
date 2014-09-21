@@ -22,6 +22,7 @@
 #include "cores/IPlayer.h"
 #include "Application.h"
 #include "settings/MediaSettings.h"
+#include "settings/AdvancedSettings.h"
 
 CApplicationPlayer::CApplicationPlayer()
 {
@@ -86,7 +87,8 @@ void CApplicationPlayer::CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& cal
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = newCore;
-    m_pPlayer.reset(CPlayerCoreFactory::Get().CreatePlayer(newCore, callback));
+	m_playerCallbacks = &callback;
+	m_pPlayer.reset(CPlayerCoreFactory::Get().CreatePlayer(newCore, callback));
   }
 }
 
@@ -98,8 +100,12 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
   {
     // op seq for detect cancel (CloseFile be called or OpenFile be called again) during OpenFile.
     unsigned int startingSeq = ++m_iPlayerOPSeq;
-
-    iResult = player->OpenFile(item, options) ? PLAYBACK_OK : PLAYBACK_FAIL;
+	m_playerOptions = options;
+	if (m_playerOptions.virtualSeek){
+		m_playerOptions.starttime = 0;
+		m_playerOptions.startpercent = 0;
+	}
+	iResult = player->OpenFile(item, m_playerOptions) ? PLAYBACK_OK : PLAYBACK_FAIL;
     // check whether the OpenFile was canceled by either CloseFile or another OpenFile.
     if (m_iPlayerOPSeq != startingSeq)
       iResult = PLAYBACK_CANCELED;
@@ -180,8 +186,12 @@ bool CApplicationPlayer::IsPlayingVideo() const
 void CApplicationPlayer::Pause()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->Pause();
+  if (player){
+	  if (m_playerOptions.virtualResume && IsPausedPlayback())
+	  	  SeekTime(-10);
+	  else
+		  player->Pause();
+  }
 }
 
 bool CApplicationPlayer::ControlsVolume() const
@@ -207,15 +217,47 @@ void CApplicationPlayer::SetVolume(float volume)
 void CApplicationPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->Seek(bPlus, bLargeStep, bChapterOverride);
+  if (player){
+	  if (m_playerOptions.virtualSeek){
+		  int64_t seek;
+		  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000 * g_advancedSettings.m_videoTimeSeekForwardBig)
+		  {
+			  if (bLargeStep)
+				  seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+			  else
+				  seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+			  seek *= 1000;
+			  seek += GetTime();
+		  }
+		  else
+		  {
+			  int percent;
+			  if (bLargeStep)
+				  percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+			  else
+				  percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+			  seek = (int64_t)(GetTotalTime()*(GetPercentage() + percent) / 100);
+		  }
+		  int64_t time = GetTime();
+		  m_playerCallbacks->OnPlayBackSeek((int)seek, (int)(seek - time));
+	  }
+	  else
+		  player->Seek(bPlus, bLargeStep, bChapterOverride);
+  }
+  
 }
 
 void CApplicationPlayer::SeekPercentage(float fPercent)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->SeekPercentage(fPercent);
+  if (player){
+	  if (m_playerOptions.virtualSeek){
+		  int64_t iTotalTime = GetTotalTime();
+		  SeekTime((int64_t)(iTotalTime * fPercent / 100));
+	  }
+	  else
+		player->SeekPercentage(fPercent);
+  }
 }
 
 bool CApplicationPlayer::IsPassthrough() const
@@ -227,20 +269,26 @@ bool CApplicationPlayer::IsPassthrough() const
 bool CApplicationPlayer::CanSeek()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->CanSeek());
+  return (player && (player->CanSeek() || m_playerOptions.virtualSeek));
 }
 
 bool CApplicationPlayer::SeekScene(bool bPlus)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->SeekScene(bPlus));
+  return (player && !m_playerOptions.virtualSeek && player->SeekScene(bPlus));
 }
 
 void CApplicationPlayer::SeekTime(int64_t iTime)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->SeekTime(iTime);
+  if (player){
+	  if (m_playerOptions.virtualSeek){
+		  int seekOffset = (int)(iTime - GetTime());		  
+		  m_playerCallbacks->OnPlayBackSeek((int)iTime, seekOffset);
+	  }
+	  else
+		player->SeekTime(iTime);
+  }
 }
 
 std::string CApplicationPlayer::GetPlayingTitle()
@@ -255,8 +303,13 @@ std::string CApplicationPlayer::GetPlayingTitle()
 int64_t CApplicationPlayer::GetTime() const
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetTime();
+  if (player){
+	  if (m_playerOptions.virtualSeek){
+		  return player->GetTime() + m_playerOptions.virtualStartTime * 1000;
+	  }
+	  else
+		return player->GetTime();
+  }
   else
     return 0;
 }
@@ -365,8 +418,12 @@ TextCacheStruct_t* CApplicationPlayer::GetTeletextCache()
 int64_t CApplicationPlayer::GetTotalTime() const
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetTotalTime();
+  if (player){
+	  if (m_playerOptions.virtualSeek)
+		  return m_playerOptions.virtualTotalTime;
+	  else
+		return player->GetTotalTime();
+  }
   else
     return 0;
 }
@@ -374,8 +431,13 @@ int64_t CApplicationPlayer::GetTotalTime() const
 float CApplicationPlayer::GetPercentage() const
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetPercentage();
+  if (player){
+	  if (m_playerOptions.virtualSeek){
+		  return GetTime() * 100 / (float)GetTotalTime();
+	  }
+	  else
+		return player->GetPercentage();
+  }
   else
     return 0.0;
 }
@@ -638,7 +700,7 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
     return ;
   if (m_iPlaySpeed == iSpeed)
     return ;
-  if (!CanSeek())
+  if (!CanSeek() || m_playerOptions.virtualSeek)
     return;
   if (IsPaused())
   {

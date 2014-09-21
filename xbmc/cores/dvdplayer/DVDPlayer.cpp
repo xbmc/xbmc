@@ -1687,11 +1687,14 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   double cache_need  = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
   delay = cache_left - play_left;
-
-  if (full && (currate < maxrate) )
-    level = -1.0;                          /* buffer is full & our read rate is too low  */
+  if (m_PlayerOptions.virtualDirectCacheLevelCalculation && m_PlayerOptions.virtualSeek){
+	  level = std::max(0.0,std::max(m_dvdPlayerVideo->GetLevel(), m_dvdPlayerAudio->GetLevel())/100.0);
+  }
   else
-    level = (cached + queued) / (cache_need + queued);
+	  if (full && (currate < maxrate) )
+		level = -1.0;                          /* buffer is full & our read rate is too low  */
+	  else
+		level = (cached + queued) / (cache_need + queued);
 
   return true;
 }

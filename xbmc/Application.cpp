@@ -3967,6 +3967,22 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   CPlayerOptions options;
 
+  if (item.HasProperty("VirtualSeek")){
+	  options.virtualSeek = item.GetProperty("VirtualSeek").asBoolean();
+  }
+  if (item.HasProperty("VirtualResume")){
+	  options.virtualResume = item.GetProperty("VirtualResume").asBoolean();
+  }
+  if (item.HasProperty("VirtualStartTime")){
+	  options.virtualStartTime = item.GetProperty("VirtualStartTime").asDouble(0LL);
+  }
+  if (item.HasProperty("VirtualTotalTime")){
+	  options.virtualTotalTime = item.GetProperty("VirtualTotalTime").asDouble(0LL);
+  }
+  if (item.HasProperty("VirtualDirectCacheLevelCalculation")){
+	  options.virtualDirectCacheLevelCalculation = item.GetProperty("VirtualDirectCacheLevelCalculation").asBoolean();
+  }
+
   if( item.HasProperty("StartPercent") )
   {
     double fallback = 0.0f;
