@@ -79,6 +79,8 @@ bool CPlexSectionFilter::loadFilters()
       {
         if ((list.Get(i)->GetProperty("filter").asString() != "unwatched") &&
             (list.Get(i)->GetProperty("filter").asString() != "resolution") &&
+            (list.Get(i)->GetProperty("filter").asString() != "collection") &&
+            (list.Get(i)->GetProperty("filter").asString() != "genre") &&
             (list.Get(i)->GetProperty("filter").asString() != "year"))
           listtoRemove.Add(list.Get(i));
       }
@@ -121,6 +123,22 @@ bool CPlexSectionFilter::loadFilters()
   PlexUtils::AppendPathToURL(fURL, "sorts");
   if (dir.GetDirectory(fURL.Get(), list))
   {
+    // for Home Movies, remove the irrelevant sorts
+    if (m_sectionType == PLEX_DIR_TYPE_HOME_MOVIES)
+    {
+      CFileItemList listtoRemove;
+      
+      for (int i = 0; i < list.Size(); i ++)
+      {
+        if ((boost::ends_with(list.Get(i)->GetProperty("key").asString(),"originallyAvailableAt")) ||
+            boost::ends_with(list.Get(i)->GetProperty("key").asString(),"rating"))
+          listtoRemove.Add(list.Get(i));
+      }
+      
+      for (int i = 0; i < listtoRemove.Size(); i ++)
+        list.Remove(listtoRemove.Get(i).get());
+    }
+
     for (int i = 0; i < list.Size(); i ++)
     {
       CFileItemPtr sort = list.Get(i);
