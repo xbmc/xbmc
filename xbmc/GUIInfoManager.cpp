@@ -190,6 +190,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   /* PLEX */
                                   { "hasmusicplaylist",       PLAYER_HAS_MUSIC_PLAYLIST },
                                   { "onnew",            PLAYER_ONNEW },
+                                  { "playlist",         PLAYER_PLAYLIST },
                                   /* END PLEX */
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -1509,6 +1510,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         strLabel = GetLabel(MUSICPLAYER_TITLE);
     }
     break;
+  /* PLEX */
+    case PLAYER_PLAYLIST:
+    {
+      CPlexPlayQueuePtr pq = g_plexApplication.playQueueManager->getPlayingPlayQueue();
+      if (pq)
+        return pq->getPlaylistTitle();
+      break;
+    }
+  /* END PLEX */
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -5957,7 +5967,17 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
           else
             return false;
         }
-
+        else if (fitem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PLAYLIST)
+        {
+          if (item->HasProperty("unprocessed_ratingkey"))
+          {
+            int plID = fitem->GetProperty("unprocessed_ratingkey").asInteger();
+            CPlexPlayQueuePtr pq = g_plexApplication.playQueueManager->getPlayingPlayQueue();
+            if ((pq) && (pq->getPlaylistID() == plID))
+              return true;
+          }
+        }
+        
         return fitem->GetPath().Equals(gitem->GetPath());
       }
     }

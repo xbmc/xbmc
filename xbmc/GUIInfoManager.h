@@ -115,6 +115,7 @@ namespace INFO
 #define PLAYER_TITLE                 53
 /* PLEX */
 #define PLAYER_ONNEW                 54
+#define PLAYER_PLAYLIST              55
 /* END PLEX */
 
 #define WEATHER_CONDITIONS          100
