@@ -80,6 +80,22 @@ int CPlexPlayQueueLocal::getID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexPlayQueueLocal::getPlaylistID()
+{
+  if (m_list)
+    return m_list->GetProperty("playQueuePlaylistID").asInteger();
+  return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexPlayQueueLocal::getPlaylistTitle()
+{
+  if (m_list)
+    return m_list->GetProperty("playQueuePlaylistTitle").asString();
+  return "";
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueLocal::get(const CStdString& playQueueID, const CPlexPlayQueueOptions &options)
 {
   if (m_list && m_list->GetProperty("playQueueID").asString() == playQueueID)

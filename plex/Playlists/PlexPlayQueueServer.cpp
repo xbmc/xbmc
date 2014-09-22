@@ -191,6 +191,23 @@ int CPlexPlayQueueServer::getID()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexPlayQueueServer::getPlaylistID()
+{
+  CSingleLock lk(m_mapLock);
+  if (m_list)
+    return m_list->GetProperty("playQueuePlaylistID").asInteger();
+  return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexPlayQueueServer::getPlaylistTitle()
+{
+  if (m_list)
+    return m_list->GetProperty("playQueuePlaylistTitle").asString();
+  return "";
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexPlayQueueServer::get(const CStdString &playQueueID, const CPlexPlayQueueOptions &options)
 {
   CStdString path;

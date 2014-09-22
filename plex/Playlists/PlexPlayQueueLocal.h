@@ -28,6 +28,8 @@ public:
   virtual bool addItem(const CFileItemPtr &item, bool next);
   virtual bool moveItem(const CFileItemPtr& item, const CFileItemPtr& afteritem);
   virtual int getID();
+  virtual int getPlaylistID();
+  virtual CStdString getPlaylistTitle();
   virtual void get(const CStdString &playQueueID,
                    const CPlexPlayQueueOptions& options = CPlexPlayQueueOptions());
   virtual CPlexServerPtr server() const
