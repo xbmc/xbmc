@@ -863,3 +863,23 @@ void CURL::RemoveProtocolOption(const std::string &key)
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
+
+#ifdef TARGET_WINDOWS
+std::string CURL::SanitizePath(const CURL& url)
+{
+  std::string filename = url.Get();
+  std::string common_ext[] = { ".iso", ".img", ".nrg" };
+  size_t ext = std::string::npos;
+  for (int i = 0; i < 3; ++i)
+  {
+    if ((ext = filename.rfind(common_ext[i])) != std::string::npos)
+      break;
+  }
+
+  std::string beforeLastDot = filename.substr(0, ext);
+  std::string afterLastDot = filename.substr(ext, filename.length());
+  afterLastDot = CURL::Decode(afterLastDot);
+  afterLastDot = URIUtils::FixSlashesAndDups(afterLastDot, '/', 0);
+  return beforeLastDot.append(afterLastDot);
+}
+#endif

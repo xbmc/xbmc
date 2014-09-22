@@ -91,8 +91,16 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
     file->tell  = file_tell;
     file->eof   = file_eof;
 
+    std::string filename_clean(filename);
+
+#ifdef TARGET_WINDOWS
+    // replace \\ with / after "udf://", because our udf implementation requires this format
+    if (URIUtils::IsProtocol(filename, "udf"))
+      filename_clean = URIUtils::FixSlashesAndDups(filename, '/', 6);
+#endif
+
     CFile* fp = new CFile();
-    if(fp->Open(filename))
+    if (fp->Open(filename_clean))
     {
       file->internal = (void*)fp;
       return file;
@@ -147,6 +155,12 @@ BD_DIR_H *DllLibbluray::dir_open(const char* dirname)
     SDirState *st = new SDirState();
 
     std::string strDirname(dirname);
+
+#ifdef TARGET_WINDOWS
+    // replace \\ with / after "udf://", because our udf implementation requires this format 
+    if (URIUtils::IsProtocol(strDirname, "udf"))
+      strDirname = URIUtils::FixSlashesAndDups(strDirname, '/', 6);
+#endif
 
     if(!CDirectory::GetDirectory(strDirname, st->list))
     {
