@@ -59,7 +59,7 @@
       <i>Info</i>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
-      <space>Pause</space>
+      <space>PlayPause</space>
       <x>Stop</x>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
@@ -164,7 +164,7 @@
     <keyboard>
       <i>info</i>
       <end mod="ctrl">XBMC.ShutDown()</end>
-      <space>Play</space>
+      <space>PlayPause</space>
     </keyboard>
   </Home>
   <VirtualKeyboard>
