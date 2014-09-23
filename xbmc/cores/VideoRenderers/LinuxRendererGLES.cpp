@@ -79,6 +79,12 @@ static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
 static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
 #endif
 
+#if defined(EGL_KHR_reusable_sync)
+static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
+static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
+static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
+#endif
+
 #ifdef HAS_IMXVPU
 #include "windowing/egl/EGLWrapper.h"
 #include "DVDCodecs/Video/DVDVideoCodecIMX.h"
@@ -102,7 +108,7 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
   memset(&image , 0, sizeof(image));
   flipindex = 0;
 #ifdef HAVE_LIBOPENMAX
-  openMaxBuffer = NULL;
+  openMaxBufferHolder = NULL;
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   cvBufferRef = NULL;
@@ -167,6 +173,19 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   if (!glEGLImageTargetTexture2DOES)
     glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
 #endif
+
+#if defined(EGL_KHR_reusable_sync)
+  if (!eglCreateSyncKHR) {
+    eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC) eglGetProcAddress("eglCreateSyncKHR");
+  }
+  if (!eglDestroySyncKHR) {
+    eglDestroySyncKHR = (PFNEGLDESTROYSYNCKHRPROC) eglGetProcAddress("eglDestroySyncKHR");
+  }
+  if (!eglClientWaitSyncKHR) {
+    eglClientWaitSyncKHR = (PFNEGLCLIENTWAITSYNCKHRPROC) eglGetProcAddress("eglClientWaitSyncKHR");
+  }
+#endif
+
 #ifdef HAS_IMXVPU
   if (!glTexDirectVIVMap)
     glTexDirectVIVMap = (PFNGLTEXDIRECTVIVMAPPROC) CEGLWrapper::GetProcAddress("glTexDirectVIVMap");
@@ -842,7 +861,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateIMXMAPTexture;
     m_textureDelete = &CLinuxRendererGLES::DeleteIMXMAPTexture;
   }
-  else
+  else if (m_format == RENDER_FMT_OMXEGL)
+  {
+    m_textureUpload = &CLinuxRendererGLES::UploadOpenMaxTexture;
+    m_textureCreate = &CLinuxRendererGLES::CreateOpenMaxTexture;
+    m_textureDelete = &CLinuxRendererGLES::DeleteOpenMaxTexture;
+  }
+   else
   {
     // default to YV12 texture handlers
     m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
@@ -1372,7 +1397,12 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 void CLinuxRendererGLES::RenderOpenMax(int index, int field)
 {
 #if defined(HAVE_LIBOPENMAX)
-  GLuint textureId = m_buffers[index].openMaxBuffer->texture_id;
+  OpenMaxVideoBufferHolder *bufferHolder = m_buffers[index].openMaxBufferHolder;
+  if (!bufferHolder)
+    return;
+  OpenMaxVideoBuffer *buffer = bufferHolder->m_openMaxVideoBuffer;
+
+  GLuint textureId = buffer->texture_id;
 
   glDisable(GL_DEPTH_TEST);
 
@@ -1411,9 +1441,9 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = 0;
-  tex[0][1] = tex[1][1] = 0;
+  tex[0][1] = tex[1][1] = 1;
   tex[1][0] = tex[2][0] = 1;
-  tex[2][1] = tex[3][1] = 1;
+  tex[2][1] = tex[3][1] = 0;
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
@@ -1427,6 +1457,15 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
+
+#if defined(EGL_KHR_reusable_sync)
+  if (buffer->eglSync) {
+    eglDestroySyncKHR(buffer->eglDisplay, buffer->eglSync);
+  }
+  buffer->eglSync = eglCreateSyncKHR(buffer->eglDisplay, EGL_SYNC_FENCE_KHR, NULL);
+  glFlush(); // flush to ensure the sync later will succeed
+#endif
+
 #endif
 }
 
@@ -1787,7 +1826,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
 
 #if defined(HAVE_LIBOPENMAX)
-  if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBuffer)
+  if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBufferHolder)
 #else
   if (!(im->flags&IMAGE_FLAG_READY))
 #endif
@@ -1820,9 +1859,9 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
         SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
       uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
-      int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+      int srcStride[] = { int(im->stride[0]), int(im->stride[1]), int(im->stride[2]), 0 };
       uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
-      int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+      int dstStride[] = { int(m_sourceWidth*4), 0, 0, 0 };
       sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
     }
   }
@@ -2613,6 +2652,31 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
   return true;
 }
 
+//********************************************************************************************************
+// SurfaceTexture creation, deletion, copying + clearing
+//********************************************************************************************************
+void CLinuxRendererGLES::UploadOpenMaxTexture(int index)
+{
+}
+
+void CLinuxRendererGLES::DeleteOpenMaxTexture(int index)
+{
+#ifdef HAVE_LIBOPENMAX
+  if (m_buffers[index].openMaxBufferHolder) {
+    m_buffers[index].openMaxBufferHolder->Release();
+    m_buffers[index].openMaxBufferHolder = 0;
+  }
+#endif
+}
+
+bool CLinuxRendererGLES::CreateOpenMaxTexture(int index)
+{
+#ifdef HAVE_LIBOPENMAX  m_buffers[index].openMaxBufferHolder = 0;
+#endif
+  return true;
+}
+
+
 void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 {
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
@@ -2902,7 +2966,13 @@ unsigned int CLinuxRendererGLES::GetOptimalBufferSize()
 void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  buf.openMaxBuffer = picture->openMaxBuffer;
+  if (buf.openMaxBufferHolder) {
+    buf.openMaxBufferHolder->Release();
+  }
+  buf.openMaxBufferHolder = picture->openMaxBufferHolder;
+  if (buf.openMaxBufferHolder) {
+    buf.openMaxBufferHolder->Acquire();
+  }
 }
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
