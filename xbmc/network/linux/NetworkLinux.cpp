@@ -472,17 +472,22 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
    std::vector<std::string> result;
 
 #if defined(TARGET_DARWIN)
-  //only finds the primary dns (0 :)
-  FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
+  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | tail -n2", "r");
+  Sleep(100);
   if (pipe)
   {
-    std::string tmpStr;
+    vector<std::string> tmpStr;
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
-      tmpStr = buffer;
-      if (tmpStr.length() >= 17)
-        result.push_back(tmpStr.substr(17));
+      tmpStr = StringUtils::Split(buffer, "\n");
+      for (unsigned int i = 0; i < tmpStr.size(); i ++)
+      {
+        // result looks like this - > '  nameserver[0] : 192.168.1.1'
+        // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
+        if (tmpStr[i].length() >= 18)
+          result.push_back(tmpStr[i].substr(18));
+      }
     }
     pclose(pipe);
   } 
