@@ -1022,6 +1022,10 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
       delete m_currentFile;
     m_currentFile = new CFileItem(channel);
 
+    // set channel as selected item
+    if (channel.HasPVRChannelInfoTag())
+      CGUIWindowPVRBase::SetSelectedItemPath(channel.GetPVRChannelInfoTag()->IsRadio(), channel.GetPVRChannelInfoTag()->Path());
+
     if (m_addons->GetPlayingChannel(playingChannel))
     {
       time_t tNow;
@@ -1331,6 +1335,9 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     g_application.SaveFileState();
     g_application.LoadVideoSettings(channel.Path());
     
+    // set channel as selected item
+    CGUIWindowPVRBase::SetSelectedItemPath(channel.IsRadio(), channel.Path());
+
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
     m_bIsSwitchingChannels = false;
