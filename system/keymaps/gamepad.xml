@@ -118,6 +118,14 @@
       <dpaddown>ChannelDown</dpaddown>
     </gamepad>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <gamepad>
+      <dpadleft>PreviousChannelGroup</dpadleft>
+      <dpadright>NextChannelGroup</dpadright>
+      <dpadup>ChannelUp</dpadup>
+      <dpaddown>ChannelDown</dpaddown>
+    </gamepad>
+  </FullscreenRadio>
   <FullscreenInfo>
     <gamepad>
       <start>OSD</start>

@@ -380,6 +380,7 @@ static const ActionMapping windows[] =
         {"textviewer"               , WINDOW_DIALOG_TEXT_VIEWER},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
         {"fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV}, // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
+        {"fullscreenradio"          , WINDOW_FULLSCREEN_RADIO}, // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
         {"visualisation"            , WINDOW_VISUALISATION},
         {"slideshow"                , WINDOW_SLIDESHOW},
         {"filestackingdialog"       , WINDOW_DIALOG_FILESTACKING},
@@ -429,7 +430,8 @@ static const ActionMapping touchcommands[] =
 static const WindowMapping fallbackWindows[] =
 {
   { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
-  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_FULLSCREEN_RADIO,           WINDOW_VISUALISATION    }
 };
 
 #ifdef TARGET_WINDOWS
@@ -905,7 +907,13 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
 
   action = GetTouchActionCode(window, touchAction);
   if (action <= 0)
-    action = GetTouchActionCode(-1, touchAction);
+  {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      action = GetTouchActionCode(fallbackWindow, touchAction);
+    if (action <= 0)
+      action = GetTouchActionCode(-1, touchAction);
+  }
 
   return action > 0;
 }

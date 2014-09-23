@@ -134,6 +134,18 @@
       <hat id="1" position="right">NextChannelGroup</hat>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick>
+      <button id="11">ChannelUp</button>
+      <button id="12">ChannelDown</button>
+      <button id="13">PreviousChannelGroup</button>
+      <button id="14">NextChannelGroup</button>
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">PreviousChannelGroup</hat>
+      <hat id="1" position="right">NextChannelGroup</hat>
+    </joystick>
+  </FullscreenRadio>
   <FullscreenInfo>
     <joystick>
       <button id="2">Close</button>
