@@ -3,16 +3,16 @@
 die("No HOME set, cannot install defaults.\n")
     if !$ENV{'HOME'};
 
-die("No XBMC_HOME set, cannot install defaults.\n")
-    if !$ENV{'XBMC_HOME'};
+die("No APP_HOME set, cannot install defaults.\n")
+    if !$ENV{'APP_HOME'};
 
 sub get_home {
     return $ENV{'HOME'} if defined $ENV{'HOME'};
 }
 
 sub get_extras {
-    # XBMC_HOME is assumed to be always setup
-    return $ENV{'XBMC_HOME'}."/extras/" if get_os() eq "osx";
+    # APP_HOME is assumed to be always setup
+    return $ENV{'APP_HOME'}."/extras/" if get_os() eq "osx";
     return;
 }
 
