@@ -682,6 +682,7 @@ void CDVDInputStreamBluray::OverlayClose()
   CDVDOverlayGroup* group   = new CDVDOverlayGroup();
   group->bForced = true;
   m_player->OnDVDNavResult(group, 0);
+  group->Release();
 #endif
 }
 
@@ -752,6 +753,7 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
   }
 
   m_player->OnDVDNavResult(group, 0);
+  group->Release();
 #endif
 }
 
