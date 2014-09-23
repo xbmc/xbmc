@@ -400,7 +400,7 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     tag->SetTrackNumber(atol(value.c_str()));
     break;
   case 'S':
-    tag->SetPartOfSet(atol(value.c_str()));
+    tag->SetDiscNumber(atol(value.c_str()));
     break;
   case 'A':
     tag->SetArtist(value);

@@ -88,7 +88,7 @@ public:
   const std::vector<std::string>& GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
-  int GetTrackAndDiskNumber() const;
+  int GetTrackAndDiscNumber() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
   int GetDatabaseId() const;
@@ -129,8 +129,8 @@ public:
   void SetDatabaseId(long id, const std::string &type);
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
-  void SetPartOfSet(int m_iPartOfSet);
-  void SetTrackAndDiskNumber(int iTrackAndDisc);
+  void SetDiscNumber(int iDiscNumber);
+  void SetTrackAndDiscNumber(int iTrackAndDisc);
   void SetDuration(int iSec);
   void SetLoaded(bool bOnOff = true);
   void SetArtist(const CArtist& artist);
