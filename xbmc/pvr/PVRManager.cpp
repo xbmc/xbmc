@@ -1012,9 +1012,6 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
   if (IsParentalLocked(*channel.GetPVRChannelInfoTag()))
     return bReturn;
 
-  CPVRChannelPtr playingChannel;
-  CPVRChannelGroupPtr group;
-  bool bPersistChanges(false);
   if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag(), false)) != false)
   {
     CSingleLock lock(m_critSection);
@@ -1026,29 +1023,9 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
     if (channel.HasPVRChannelInfoTag())
       CGUIWindowPVRBase::SetSelectedItemPath(channel.GetPVRChannelInfoTag()->IsRadio(), channel.GetPVRChannelInfoTag()->Path());
 
+    CPVRChannelPtr playingChannel;
     if (m_addons->GetPlayingChannel(playingChannel))
-    {
-      time_t tNow;
-      CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-
-      /* update last watched timestamp for channel */
-      playingChannel->SetLastWatched(tNow);
-
-      /* update last watched timestamp for group */
-      group = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
-      group->SetLastWatched(tNow);
-
-      /* update last played group */
-      m_channelGroups->SetLastPlayedGroup(group);
-
-      bPersistChanges = true;
-    }
-  }
-
-  if (bPersistChanges)
-  {
-    playingChannel->Persist();
-    group->Persist();
+      UpdateLastWatched(playingChannel);
   }
 
   return bReturn;
@@ -1070,43 +1047,19 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
 
 void CPVRManager::CloseStream(void)
 {
+  CSingleLock lock(m_critSection);
+
   CPVRChannelPtr channel;
-  CPVRChannelGroupPtr group;
-  bool bPersistChanges(false);
-
+  if (m_addons->GetPlayingChannel(channel))
   {
-    CSingleLock lock(m_critSection);
+    UpdateLastWatched(channel);
 
-    if (m_addons->GetPlayingChannel(channel))
-    {
-      time_t tNow;
-      CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-
-      /* update last watched timestamp for channel */
-      channel->SetLastWatched(tNow);
-
-      /* update last watched timestamp for group */
-      group = g_PVRManager.GetPlayingGroup(channel->IsRadio());
-      group->SetLastWatched(tNow);
-
-      /* update last played group */
-      m_channelGroups->SetLastPlayedGroup(group);
-
-      bPersistChanges = true;
-      
-      // store channel settings
-      g_application.SaveFileState();
-    }
-
-    m_addons->CloseStream();
-    SAFE_DELETE(m_currentFile);
+    // store channel settings
+    g_application.SaveFileState();
   }
 
-  if (bPersistChanges)
-  {
-    channel->Persist();
-    group->Persist();
-  }
+  m_addons->CloseStream();
+  SAFE_DELETE(m_currentFile);
 }
 
 void CPVRManager::UpdateCurrentFile(void)
@@ -1294,17 +1247,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel.ChannelName().c_str());
 
-  // store current time in iLastWatched
-  CPVRChannelPtr currentChannel;
-  if (m_addons->GetPlayingChannel(currentChannel))
-  {
-    time_t tNow;
-    CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-    currentChannel->SetLastWatched(tNow);
-
-    m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(currentChannel->IsRadio()));
-  }
-
   // will be deleted by CPVRChannelSwitchJob::DoWork()
   CFileItem* previousFile = m_currentFile;
   m_currentFile = NULL;
@@ -1337,6 +1279,9 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     
     // set channel as selected item
     CGUIWindowPVRBase::SetSelectedItemPath(channel.IsRadio(), channel.Path());
+
+    CPVRChannelPtr channelPtr(new CPVRChannel(channel));
+    UpdateLastWatched(channelPtr);
 
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
@@ -1625,4 +1570,22 @@ bool CPVRManager::CreateChannelEpgs(void)
 std::string CPVRManager::GetPlayingTVGroupName()
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTVGroup() : "";
+}
+
+void CPVRManager::UpdateLastWatched(CPVRChannelPtr channel)
+{
+  time_t tNow;
+  CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+
+  // update last watched timestamp for channel
+  channel->SetLastWatched(tNow);
+  channel->Persist();
+
+  // update last watched timestamp for group
+  CPVRChannelGroupPtr group = GetPlayingGroup(channel->IsRadio());
+  group->SetLastWatched(tNow);
+  group->Persist();
+
+  /* update last played group */
+  m_channelGroups->SetLastPlayedGroup(group);
 }

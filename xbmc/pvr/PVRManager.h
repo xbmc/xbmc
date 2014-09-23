@@ -95,6 +95,12 @@ namespace PVR
      */
     CPVRManager(void);
 
+    /*!
+     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
+     * @param channel The channel which is updated
+     */
+    void UpdateLastWatched(CPVRChannelPtr channel);
+
   public:
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
