@@ -3761,9 +3761,13 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr ""
 
-#empty strings from id 1261 to 1268
+#empty strings from id 1261 to 1267
 
 #: system/settings/settings.xml
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr ""
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr ""
@@ -15670,7 +15674,13 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr ""
 
-#empty strings from id 36549 to 36599
+#. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
+#: system/settings/settings.xml
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr ""
+
+#empty strings from id 36550 to 36599
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022
