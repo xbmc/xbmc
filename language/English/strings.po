@@ -13427,8 +13427,10 @@ msgctxt "#36027"
 msgid "This device needs servicing"
 msgstr ""
 
+#. Label for a select option
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 #: system/peripherals.xml
+#: system/settings.xml
 msgctxt "#36028"
 msgid "Ignore"
 msgstr ""
@@ -15412,75 +15414,86 @@ msgstr ""
 #empty strings from id 36434 to 36499
 #end reservation
 
+#. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
 #: system/settings/settings.xml
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
+msgid "Stereoscopic 3D mode (current)"
 msgstr ""
 
+#. headline of a dialog/info message showing the current stereoscopic 3D mode
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36501"
-msgid "Stereoscopic mode"
+msgid "Stereoscopic 3D mode"
 msgstr ""
 
+#reserved strings for 3d modes 36502 - 36519
+
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36502"
-msgid "None"
+msgid "Disabled"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36503"
 msgid "Over/Under"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36504"
 msgid "Side by side"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36505"
 msgid "Anaglyph Red/Cyan"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36506"
 msgid "Anaglyph Green/Magenta"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36507"
 msgid "Interlaced"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36508"
 msgid "Hardware Based"
 msgstr ""
 
+#. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
+msgid "Monoscopic (2D)"
 msgstr ""
 
-#empty strings from id 36510 to 36519
-#reserved strings for 3d modes 36509 - 36520
+#empty (BUT RESERVED) strings from id 36510 to 36519
+#end of reserved strings for 3d modes
 
+#. Name of a setting, asking the user for the default playback mode (2D, 3D, ask) of stereoscopic videos
 #: system/settings/settings.xml
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
+msgid "Playback mode of stereoscopic 3D videos"
 msgstr ""
 
+#. Option value of a desired playback mode setting. (f.e. "Settings -> Video -> Playback -> Playback mode of stereoscopic 3D videos" with label #36520)
 #: system/settings/settings.xml
 msgctxt "#36521"
 msgid "Ask me"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr ""
+# empty string 36522
 
 #. Description of setting "System -> Audio output -> Limit sampling rate (kHz)" with label #458
 #: system/settings/settings.xml
@@ -15488,46 +15501,46 @@ msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
 msgstr ""
 
+#. label for a setting to choose the preferred (playback) mode and the name of a selectable playback option
 #: system/settings/settings.xml
+#: guilib/StereoscopicsManager.cpp
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr ""
 
+#. label for a preferred stereoscopic 3D playback mode
 #: settings/DisplaySettings.cpp
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr ""
 
+#. label of a setting to turn of stereoscopic 3D mode if video playback ended
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
+msgid "Disable stereoscopic 3D mode when playback ended"
 msgstr ""
 
+#. Title of a dialog to choose the desired playback mode
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
+msgid "Select playback mode"
 msgstr ""
 
-#: system/settings/settings.xml
+#. label of a dialog box promting the user to selected the desired playback mode of the detected stereoscopic video
+#: guilib/StereoscopicsManager.cpp
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
+msgid "Select stereoscopic 3D mode"
 msgstr ""
 
-#: guilib/StereoscopicsManager.cpp
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr ""
+# empty labels 36529, 36530
 
-#: guilib/StereoscopicsManager.cpp
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr ""
-
+#. option label of a setting/dialog asking for the desired stereoscopic playback mode
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr ""
 
+#. option label of a setting/dialog asking for the desired stereoscopic playback mode
 #: settings/DisplaySettings.cpp
 msgctxt "#36532"
 msgid "Same as movie"
@@ -15545,28 +15558,30 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr ""
 
+#. label of a setting, allowing to specify the stereoscopic 3D mode of a video
 #: guilib/StereoscopicsManager.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
+msgid "Stereoscopic 3D mode of video"
 msgstr ""
 
+#. label of a toggle option that allows to invert the stereoscopic 3d mode
 #: guilib/StereoscopicsManager.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Playback mode of stereoscopic videos" with label #36520
 #: system/settings/settings.xml
 msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling".
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Stereoscopic mode (current)" with label #36500
@@ -15578,7 +15593,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Preferred mode" with label #36524
 #: system/settings/settings.xml
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
 msgstr ""
 
 #. Description of setting "Services -> AirPlay -> Allow volume control" with label #1269
@@ -15602,9 +15617,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr ""
 
+#. Label of a setting, allowing the user to adjust the visual depths of subtitles when watching stereoscopic 3D videos
 #: system/settings/settings.xml
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
+msgid "Stereoscopic 3D depth of subtitles"
 msgstr ""
 
 #. Description of setting "Videos -> Subtitles -> Subtitle stereoscopic depth" with label #36545

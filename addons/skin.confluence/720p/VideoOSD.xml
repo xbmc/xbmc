@@ -636,9 +636,9 @@
 					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
 				</control>
 				<control type="label" id="">
-					<left>30</left>
+					<left>0</left>
 					<top>20</top>
-					<width>196</width>
+					<width>256</width>
 					<height>15</height>
 					<font>font12</font>
 					<label>36501</label>
@@ -735,9 +735,9 @@
 					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
 				</control>
 				<control type="label" id="">
-					<left>30</left>
+					<left>0</left>
 					<top>20</top>
-					<width>196</width>
+					<width>256</width>
 					<height>15</height>
 					<font>font12</font>
 					<label>36501</label>

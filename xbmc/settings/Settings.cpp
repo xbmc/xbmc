@@ -680,6 +680,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videoscreen.screenmode");
   settingSet.insert("videoscreen.vsync");
   settingSet.insert("videoscreen.monitor");
+  settingSet.insert("videoscreen.preferedstereoscopicmode");
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
 
   settingSet.clear();

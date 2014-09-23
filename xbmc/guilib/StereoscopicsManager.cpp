@@ -205,7 +205,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const CStdSt
     if (g_Windowing.SupportsStereo(selectableMode))
     {
       selectableModes.push_back(selectableMode);
-      CStdString label = g_localizeStrings.Get(36502+i);
+      CStdString label = GetLabelForStereoMode((RENDER_STEREO_MODE) i);
       pDlgSelect->Add( label );
       if (mode == selectableMode)
         pDlgSelect->SetSelected( label );
@@ -241,6 +241,8 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
 
 CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)
 {
+  if (mode == RENDER_STEREO_MODE_AUTO)
+    return g_localizeStrings.Get(36532);
   return g_localizeStrings.Get(36502 + mode);
 }
 
@@ -420,12 +422,14 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
     {
       SetStereoMode(RENDER_STEREO_MODE_MONO);
     }
+    return true;
   }
   else if (action.GetID() == ACTION_STEREOMODE_SET)
   {
     int stereoMode = ConvertStringToGuiStereoMode(action.GetName());
     if (stereoMode > -1)
       SetStereoMode( (RENDER_STEREO_MODE) stereoMode);
+    return true;
   }
 
   return false;
@@ -449,15 +453,19 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   if (!g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
     return;
 
-  // only change stereo mode if not yet in stereo mode
+  STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::Get().GetInt("videoplayer.stereoscopicplaybackmode");
   RENDER_STEREO_MODE mode = GetStereoMode();
+
+  // early return if playback mode should be ignored and we're in no stereoscopic mode right now
+  if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_IGNORE && mode == RENDER_STEREO_MODE_OFF)
+    return;
+
   if (mode != RENDER_STEREO_MODE_OFF)
     return;
 
-  int playbackMode = CSettings::Get().GetInt("videoplayer.stereoscopicplaybackmode");
   switch (playbackMode)
   {
-  case 0: // Ask
+  case STEREOSCOPIC_PLAYBACK_MODE_ASK: // Ask
     {
       CApplicationMessenger::Get().MediaPause();
 
@@ -473,16 +481,14 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
         
 
       // add choices
-      int idx_preferred = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36530)
+      int idx_preferred = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36524) // preferred
                                      + " ("
                                      + GetLabelForStereoMode(preferred)
                                      + ")");
 
-      if(preferred != RENDER_STEREO_MODE_MONO)
-        idx_mono = pDlgSelect->Add( g_localizeStrings.Get(36529) ); // mono / 2d
+      idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
 
-
-      if(playing != RENDER_STEREO_MODE_OFF && g_Windowing.SupportsStereo(playing))
+      if(playing != RENDER_STEREO_MODE_OFF && playing != preferred && g_Windowing.SupportsStereo(playing))
         idx_playing = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36532)
                                     + " ("
                                     + GetLabelForStereoMode(playing)
@@ -506,8 +512,11 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
       CApplicationMessenger::Get().MediaUnPause();
     }
     break;
-  case 1: // Stereoscopic
+  case STEREOSCOPIC_PLAYBACK_MODE_PREFERRED: // Stereoscopic
     SetStereoMode( GetPreferredPlaybackMode() );
+    break;
+  case 2: // Mono
+    SetStereoMode( RENDER_STEREO_MODE_MONO );
     break;
   default:
     break;
