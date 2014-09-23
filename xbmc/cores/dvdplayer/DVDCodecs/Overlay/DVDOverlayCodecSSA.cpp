@@ -45,7 +45,8 @@ CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
 
 bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if(hints.codec != AV_CODEC_ID_SSA)
+  if(hints.codec != AV_CODEC_ID_SSA &&
+     hints.codec != AV_CODEC_ID_ASS)
     return false;
 
   Dispose();
