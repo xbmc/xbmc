@@ -610,13 +610,13 @@ void CXBMCApp::SetupEnv()
   if (xbmcHome.empty())
   {
     std::string cacheDir = getCacheDir().getAbsolutePath();
-    setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-    setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("APP_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("APP_HOME", (cacheDir + "/apk/assets").c_str(), 0);
   }
   else
   {
-    setenv("XBMC_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
-    setenv("XBMC_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("APP_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("APP_HOME", (xbmcHome + "/assets").c_str(), 0);
   }
 
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
@@ -633,7 +633,7 @@ void CXBMCApp::SetupEnv()
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
   else
-    setenv("HOME", getenv("XBMC_TEMP"), 0);
+    setenv("HOME", getenv("APP_TEMP"), 0);
 }
 
 std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
