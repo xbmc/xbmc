@@ -563,7 +563,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "audiolanguage",    LISTITEM_AUDIO_LANGUAGE },
                                   { "subtitlelanguage", LISTITEM_SUBTITLE_LANGUAGE },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
+                                  { "isresuming",       LISTITEM_IS_RESUMING },
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
+                                  { "timeplayed",       LISTITEM_TIME_PLAYED },
                                   { "isfolder",         LISTITEM_IS_FOLDER },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -4438,6 +4440,14 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     else
       value = 0;
     return true;
+  case LISTITEM_TIME_PLAYED:
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.IsPartWay())
+      value = ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds;
+    else if (item->IsFileItem() && ((const CFileItem *)item)->HasPVRRecordingInfoTag() && ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.IsPartWay())
+      value = ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds;
+    else
+      value = 0;
+    return true;    
   }
 
   value = 0;
@@ -5112,6 +5122,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::s
       }
       break;
     }
+  case LISTITEM_TIME_PLAYED:
+  {
+    int val;
+    if (GetItemInt(val, item, info))
+    {
+      return StringUtils::Format("%d", val);
+    }
+    break;
+  }
   case LISTITEM_DATE_ADDED:
     if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_dateAdded.IsValid())
       return item->GetVideoInfoTag()->m_dateAdded.GetAsLocalizedDate();
@@ -5201,6 +5220,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_RESUMING)
+    return ((const CFileItem *)item)->m_lStartOffset == STARTOFFSET_RESUME;
   else if (condition == LISTITEM_IS_RESUMABLE)
   {
     if (item->IsFileItem())
