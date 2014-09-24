@@ -37,6 +37,8 @@
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "CompileInfo.h"
+
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
 #ifndef WIN32_LEAN_AND_MEAN
@@ -430,6 +432,14 @@ bool CSysInfo::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(generalNode, "systemtotaluptime", m_iSystemTimeTotalUp);
 
   return true;
+}
+
+const std::string& CSysInfo::GetAppName(void)
+{
+  assert(CCompileInfo::GetAppName() != NULL);
+  static const std::string appName(CCompileInfo::GetAppName());
+
+  return appName;
 }
 
 bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)

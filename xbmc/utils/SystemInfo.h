@@ -100,6 +100,8 @@ public:
 
   char MD5_Sign[32 + 1];
 
+  static const std::string& GetAppName(void); // the same name as CCompileInfo::GetAppName(), but const ref to std::string
+
   static std::string GetKernelName(bool emptyIfUnknown = false);
   static std::string GetKernelVersionFull(void); // full version string, including "-generic", "-RELEASE" etc.
   static std::string GetKernelVersion(void); // only digits with dots
