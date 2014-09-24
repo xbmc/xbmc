@@ -6320,7 +6320,10 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr ""
 
-#empty strings from id 13556 to 13599
+msgctxt "#13556"
+msgid "Using additive seeking instead of variable speed seeking"
+msgstr ""
+#empty strings from id 13557 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -15877,4 +15880,10 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#37030"
 msgid "Unlimited"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Using additive seeking instead of variable speed seeking" with label #13556
+#: system/settings/settings.xml
+msgctxt "#37031"
+msgid "Configure seeking algorithm (additive instead of variable speed seeking)"
 msgstr ""

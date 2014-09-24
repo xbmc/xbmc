@@ -33,9 +33,12 @@ public:
   float GetPercent() const;
   bool InProgress() const;
 private:
-  static const int time_before_seek = 500;
-  static const int time_for_display = 2000; // TODO: WTF?
+  int        GetSeekSeconds(bool forward);
+  int        m_time_before_seek;
+  int        m_time_for_display;
   bool       m_requireSeek;
-  float      m_percent;
+  float      m_percent; 
+  float      m_percents_pro_sec;
+  int        m_seek_step;
   CStopWatch m_timer;
 };

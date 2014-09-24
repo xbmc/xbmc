@@ -160,6 +160,16 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    int m_videoAdditiveTimeSeekWaitForSeekingStart;
+    int m_videoAdditiveTimeSeekWaitForDisplayHide;
+    int m_videoAdditiveTimeSeekStepOne;
+    int m_videoAdditiveTimeSeekStepTwo;
+    int m_videoAdditiveTimeSeekStepThree;
+    int m_videoAdditiveTimeSeekStepFour;
+    int m_videoAdditiveTimeSeekStepFive;
+    int m_videoAdditiveTimeSeekStepSix;
+    int m_videoAdditiveTimeSeekStepOther;
+
     CStdString m_videoPPFFmpegDeint;
     CStdString m_videoPPFFmpegPostProc;
     bool m_videoVDPAUtelecine;

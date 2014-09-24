@@ -428,6 +428,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useadditiveseeking" type="boolean" label="13556" help="37031">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.synctype" type="integer" parent="videoplayer.usedisplayasclock" label="13500" help="36167">
           <level>2</level>
           <default>2</default> <!-- SYNC_RESAMPLE -->
