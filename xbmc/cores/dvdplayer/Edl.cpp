@@ -846,7 +846,7 @@ std::string CEdl::GetInfo() const
       strInfo += StringUtils::Format("b%i", commBreakCount);
   }
   if (HasSceneMarker())
-    strInfo += StringUtils::Format("s%i", m_vecSceneMarkers.size());
+    strInfo += StringUtils::Format("s%" PRIuS, m_vecSceneMarkers.size());
 
   return strInfo.empty() ? "-" : strInfo;
 }

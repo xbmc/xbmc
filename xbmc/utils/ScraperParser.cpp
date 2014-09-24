@@ -560,7 +560,7 @@ void CScraperParser::ConvertJSON(std::string &string)
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue(reg2.GetMatch(1));
 
-    std::string replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
+    std::string replace = StringUtils::Format("%li", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 

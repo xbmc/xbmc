@@ -1905,7 +1905,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
     strLabel = CProfilesManager::Get().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("%i", CProfilesManager::Get().GetNumberOfProfiles());
+    strLabel = StringUtils::Format("%" PRIuS, CProfilesManager::Get().GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
@@ -5163,7 +5163,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::s
       CStdString rating;
       if (item->HasVideoInfoTag())
       { // rating for videos is assumed 0..10, so convert to 0..5
-        rating = StringUtils::Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+        rating = StringUtils::Format("rating%ld.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
       }
       else if (item->HasMusicInfoTag())
       { // song rating.

@@ -178,7 +178,7 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CLog::Log(LOGDEBUG, "%s: texture:%s has %i frames %i refcount", __FUNCTION__, m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
+  CLog::Log(LOGDEBUG, "%s: texture:%s has %" PRIuS" frames %i refcount", __FUNCTION__, m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
 }
 
 unsigned int CTextureMap::GetMemoryUsage() const
@@ -510,7 +510,7 @@ void CGUITextureManager::Cleanup()
 
 void CGUITextureManager::Dump() const
 {
-  CLog::Log(LOGDEBUG, "%s: total texturemaps size:%i", __FUNCTION__, m_vecTextures.size());
+  CLog::Log(LOGDEBUG, "%s: total texturemaps size:%" PRIuS, __FUNCTION__, m_vecTextures.size());
 
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {

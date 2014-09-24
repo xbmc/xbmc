@@ -652,7 +652,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CVideoDatabase database;
       database.Open();
-      strPath = StringUtils::Format("videodb://musicvideos/artists/%ld/",
+      strPath = StringUtils::Format("videodb://musicvideos/artists/%i/",
                                     database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
@@ -696,10 +696,10 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
       CONTENT_TYPE content = CONTENT_ALBUMS;
       if (params.GetAlbumId() != -1)
-        path = StringUtils::Format("musicdb://albums/%i/",params.GetAlbumId());
+        path = StringUtils::Format("musicdb://albums/%li/",params.GetAlbumId());
       else if (params.GetArtistId() != -1)
       {
-        path = StringUtils::Format("musicdb://artists/%i/",params.GetArtistId());
+        path = StringUtils::Format("musicdb://artists/%li/",params.GetArtistId());
         content = CONTENT_ARTISTS;
       }
 

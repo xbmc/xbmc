@@ -174,7 +174,7 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   // get year
   if (params.GetYear() != -1)
   {
-    std::string strTemp = StringUtils::Format("%i",params.GetYear());
+    std::string strTemp = StringUtils::Format("%li",params.GetYear());
     if (!strLabel.empty())
       strLabel += " / ";
     strLabel += strTemp;
