@@ -6432,7 +6432,19 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr ""
 
-#empty strings from id 13556 to 13599
+#. Label of a setting that allows to select the skip step sizes to use for skipping
+#: system/settings/settings.xml
+msgctxt "#13556"
+msgid "Skip steps"
+msgstr ""
+
+#. Name of a setting to configure the time to wait for subsequent keypresses in order to apply additive skipping
+#: system/settings/settings.xml
+msgctxt "#13557"
+msgid "Skip delay"
+msgstr ""
+
+#empty strings from id 13557 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -16193,7 +16205,19 @@ msgctxt "#37041"
 msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channels or the used codec."
 msgstr ""
 
-#empty strings from id 37042 to 38009
+#. Description of setting "Videos -> Playback -> Skip steps"
+#: system/settings/settings.xml
+msgctxt "#37042"
+msgid "Defines which step sizes to use when pressing the skip buttons. If more steps are selected for a skip direction, these can be applied by subsequent presses on the skip button within the defined skip delay. Forward (positive) and backward (negative) steps can be defined independently."
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Skip delay"
+#: system/settings/settings.xml
+msgctxt "#37043"
+msgid "Defines the time to wait for subsequent key presses before performing the skip. Only applies when using smart skipping (when using more than one skip step for a direction)."
+msgstr ""
+
+#empty strings from id 37044 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

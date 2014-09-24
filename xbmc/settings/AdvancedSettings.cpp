@@ -143,6 +143,18 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
+  
+  m_videoSeekSteps.clear();
+  m_videoSeekSteps.push_back(7);
+  m_videoSeekSteps.push_back(15);
+  m_videoSeekSteps.push_back(30);
+  m_videoSeekSteps.push_back(60);
+  m_videoSeekSteps.push_back(180);
+  m_videoSeekSteps.push_back(300);
+  m_videoSeekSteps.push_back(600);
+  m_videoSeekSteps.push_back(900);
+  m_videoSeekSteps.push_back(1800);
+  
   m_videoBlackBarColour = 0;
   m_videoPPFFmpegDeint = "linblenddeint";
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
@@ -560,6 +572,16 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "timeseekbackward", m_videoTimeSeekBackward, -6000, 0);
     XMLUtils::GetInt(pElement, "timeseekforwardbig", m_videoTimeSeekForwardBig, 0, 6000);
     XMLUtils::GetInt(pElement, "timeseekbackwardbig", m_videoTimeSeekBackwardBig, -6000, 0);
+    
+    std::string seekSteps;
+    XMLUtils::GetString(pRootElement, "seeksteps", seekSteps);
+    if (!seekSteps.empty())
+    {
+      m_videoSeekSteps.clear();
+      std::vector<string> steps = StringUtils::Split(seekSteps, ',');
+      for(std::vector<string>::iterator it = steps.begin(); it != steps.end(); ++it)
+        m_videoSeekSteps.push_back(atoi((*it).c_str()));
+    }
 
     XMLUtils::GetInt(pElement, "percentseekforward", m_videoPercentSeekForward, 0, 100);
     XMLUtils::GetInt(pElement, "percentseekbackward", m_videoPercentSeekBackward, -100, 0);
