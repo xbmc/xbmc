@@ -1,0 +1,26 @@
+diff --git a/configure b/configure
+index 0766dbb..5d3ecb2 100755
+--- a/configure
++++ b/configure
+@@ -12523,7 +12523,7 @@ $as_echo "no" >&6; }
+ fi
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ 
+-for ac_func in fchmodat fchownat fstatat mkdirat mknodat openat renameat unlinkat lchmod fgetattrlist
++for ac_func in fchmodat fchownat fstatat mkdirat mknodat renameat unlinkat lchmod fgetattrlist
+ do :
+   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+diff --git a/configure.ac b/configure.ac
+index 43a0984..1b10130 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -286,7 +286,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+   ],[ AC_MSG_RESULT([no])
+   ])
+ 
+-AC_CHECK_FUNCS(fchmodat fchownat fstatat mkdirat mknodat openat renameat unlinkat lchmod fgetattrlist)
++AC_CHECK_FUNCS(fchmodat fchownat fstatat mkdirat mknodat renameat unlinkat lchmod fgetattrlist)
+ 
+ dnl find out how stat() etc are called. On linux systems, we really
+ dnl need to wrap (IIRC):

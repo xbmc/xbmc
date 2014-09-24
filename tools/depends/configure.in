@@ -209,6 +209,7 @@ case $host in
           10.7);;
           10.8);;
           10.9);;
+          10.10);;
           *)
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
@@ -245,11 +246,11 @@ case $host in
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=iphoneos$use_sdk
         case $use_xcode in
-          5.* | 5.*.* )
-            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
+          3.*.* | 4.* | 4.*.*)
+            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
             ;;
           *)
-            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
+            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
             ;;
         esac
         
@@ -258,6 +259,7 @@ case $host in
           5.*);;
           6.*);;
           7.*);;
+          8.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;

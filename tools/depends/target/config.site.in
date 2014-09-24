@@ -139,13 +139,13 @@ if test "@platform_os@" = "ios"; then
   # tweaks for libffi (ios must use llvm-gcc-4.2)
   if test "${PACKAGE_NAME}" = "libffi" ; then
       case "@use_xcode@" in
-        5.* | 5.*.* )
-          export CC="@use_toolchain@/usr/bin/clang"
-          export CPP="@use_toolchain@/usr/bin/clang -E"
-          ;;
-        *)
+        3.*.* | 4.* | 4.*.*)
           export CC="@use_toolchain@/usr/bin/llvm-gcc-4.2"
           export CPP="@use_toolchain@/usr/bin/llvm-gcc-4.2 -E"
+          ;;
+        *)
+          export CC="@use_toolchain@/usr/bin/clang"
+          export CPP="@use_toolchain@/usr/bin/clang -E"
           ;;
         esac
     unset AS
