@@ -699,7 +699,7 @@ std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorStrin
   // special-casing
   if (m_field == FieldTime)
   { // translate time to seconds
-    std::string seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(param));
+    std::string seconds = StringUtils::Format("%li", StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
