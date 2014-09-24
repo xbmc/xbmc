@@ -1930,7 +1930,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
   case SYSTEM_FRIENDLY_NAME:
     {
       CStdString friendlyName = CSettings::Get().GetString("services.devicename");
-      if (friendlyName.Equals("XBMC"))
+      if (friendlyName.Equals(CCompileInfo::GetAppName()))
         strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
       else
         strLabel = friendlyName;
