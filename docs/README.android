@@ -33,6 +33,10 @@ users will need to get the equivalents.
 
 If you run a 64bit operating system you will also need to get ia32-libs
 
+ ubuntu >= 14.04:
+   # sudo apt-get install lib32stdc++6 lib32z1 lib32z1-de
+
+ older versions:
    # sudo apt-get install ia32-libs
    
 The following versions are used on our continuous integration system "jenkins". Other (newer)
