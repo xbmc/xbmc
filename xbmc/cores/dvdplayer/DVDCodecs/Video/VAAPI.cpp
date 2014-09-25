@@ -1832,6 +1832,7 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     if (!CheckSuccess(vaSyncSurface(m_config.dpy, pic.videoSurface)))
       return NULL;
 
+    XLockDisplay(m_Display);
     if (!CheckSuccess(vaPutSurface(m_config.dpy,
                                    pic.videoSurface,
                                    retPic->pixmap,
@@ -1844,6 +1845,8 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     {
       return NULL;
     }
+    XUnlockDisplay(m_Display);
+
     XSync(m_config.x11dsp, false);
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, retPic->texture);
