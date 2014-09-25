@@ -868,6 +868,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   {
     std::string location;
     float position = 0.0;
+    bool startPlayback = true;
     m_lastEvent = EVENT_NONE;
 
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
@@ -910,6 +911,18 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
             tmpNode = NULL;
           }
           
+          tmpNode = m_pLibPlist->plist_dict_get_item(dict, "rate");
+          if (tmpNode)
+          {
+            double rate = 0;
+            m_pLibPlist->plist_get_real_val(tmpNode, &rate);
+            if (rate == 0.0)
+            {
+              startPlayback = false;
+            }
+            tmpNode = NULL;
+          }
+
           // in newer protocol versions the location is given
           // via host and path where host is ip:port and path is /path/file.mov
           if (location.empty())
@@ -951,6 +964,13 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       // one who will work well with airplay
       g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
       CApplicationMessenger::Get().MediaPlay(fileToPlay);
+
+      // allow starting the player paused in ios8 mode (needed by camera roll app)
+      if (CSettings::Get().GetBool("services.airplayios8compat") && !startPlayback)
+      {
+        CApplicationMessenger::Get().MediaPause();
+        g_application.m_pPlayer->SeekPercentage(position * 100.0f);
+      }
     }
   }
 
