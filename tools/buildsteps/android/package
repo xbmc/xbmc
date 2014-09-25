@@ -6,5 +6,5 @@ cd $WORKSPACE;make apk
 
 #rename for upload
 #e.x. xbmc-20130314-8c2fb31-Frodo-armeabi-v7a.apk
-UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-armeabi-v7a.apk"
-mv xbmcapp-armeabi-*.apk $UPLOAD_FILENAME
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-armeabi-v7a.apk"
+mv kodiapp-armeabi-*.apk $UPLOAD_FILENAME

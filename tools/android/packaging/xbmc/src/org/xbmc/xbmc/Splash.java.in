@@ -57,7 +57,7 @@ public class Splash extends Activity {
   private static final int StorageChecked = 8;
   private static final int StartingXBMC = 99;
 
-  private static final String TAG = "XBMC";
+  private static final String TAG = "@APP_NAME@";
 
   private String mCpuinfo = "";
   private ArrayList<String> mMounts = new ArrayList<String>();
@@ -132,7 +132,7 @@ public class Splash extends Activity {
 
           break;
         case StartingXBMC:
-          mSplash.mTextView.setText("Starting XBMC...");
+          mSplash.mTextView.setText("Starting @APP_NAME@...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
           mSplash.startXBMC();
           break;
@@ -466,11 +466,11 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
-    // NB: We only preload libxbmc to be able to get info on missing symbols.
+    // NB: We only preload lib@APP_NAME_LC@ to be able to get info on missing symbols.
     //     This is not normally needed
-    System.loadLibrary("xbmc");
+    System.loadLibrary("@APP_NAME_LC@");
     
-    // Run XBMC
+    // Run @APP_NAME@
     Intent intent = getIntent();
     intent.setClass(this, org.xbmc.xbmc.Main.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
@@ -482,7 +482,7 @@ public class Splash extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // Check if XBMC is not already running
+    // Check if @APP_NAME@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()
         .getSystemService(Context.ACTIVITY_SERVICE);
     List<RunningTaskInfo> tasks = activityManager
@@ -490,7 +490,7 @@ public class Splash extends Activity {
     for (RunningTaskInfo task : tasks)
       if (task.topActivity.toString().equalsIgnoreCase(
           "ComponentInfo{org.xbmc.xbmc/org.xbmc.xbmc.Main}")) {
-        // XBMC already running; just activate it
+        // @APP_NAME@ already running; just activate it
         startXBMC();
         return;
       }
@@ -517,7 +517,7 @@ public class Splash extends Activity {
         properties.load(xbmcprop);
 
         if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))) {
-          mErrorMsg = "This XBMC package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
           Log.e(TAG, mErrorMsg);
           mState = InError;
         }
@@ -543,7 +543,7 @@ public class Splash extends Activity {
         } else {
           ret = CheckCpuFeature("neon");
           if (!ret) {
-            mErrorMsg = "This XBMC package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+            mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
             Log.e(TAG, mErrorMsg);
             mState = InError;
           }

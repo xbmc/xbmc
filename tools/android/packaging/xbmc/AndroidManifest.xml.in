@@ -71,7 +71,7 @@
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data
                 android:name="android.app.lib_name"
-                android:value="xbmc" />
+                android:value="@APP_NAME_LC@" />
         </activity>
     </application>
 

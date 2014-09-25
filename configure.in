@@ -2500,6 +2500,8 @@ OUTPUT_FILES="Makefile \
     xbmc/osx/atv2/XBMCATV2-Info.plist \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
+    tools/android/packaging/Makefile \
+    tools/android/packaging/xbmc/src/org/xbmc/xbmc/Splash.java \
     addons/xbmc.addon/addon.xml"
 
 if test "$use_wayland" = "yes"; then

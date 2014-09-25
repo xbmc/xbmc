@@ -16,7 +16,7 @@ INCLUDES += -I${prefix}/opt/android-source/libhardware/include
 LIBNAME=libXBMCvcodec_stagefrightICS
 LIB_SHARED=@abs_top_srcdir@/system/players/dvdplayer/$(LIBNAME)-$(ARCH).so
 
-LIBS += -landroid -lEGL -lGLESv2 -L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui -L@abs_top_srcdir@ -lxbmc
+LIBS += -landroid -lEGL -lGLESv2 -L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui -L@abs_top_srcdir@ -l@APP_NAME_LC@
 
 all: $(LIB_SHARED)
 

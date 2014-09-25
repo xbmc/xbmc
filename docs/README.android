@@ -265,10 +265,10 @@ ignored as we have setup the appropriate paths already.
 --------------------------------------------------------------------
 
 During the early days of the android port, xbmc was launched via a stub lib
-that then dlopen'd libxbmc. This was done to get around bionic's poor handling
-of shared libs. We now compile everything into libxbmc itself so that it has
+that then dlopen'd libkodi. This was done to get around bionic's poor handling
+of shared libs. We now compile everything into libkodi itself so that it has
 no runtime dependencies beyond system libs. Done this way, we're able to launch
-into libxbmc directly.
+into libkodi directly.
 
 But we still hit Bionic's loader's deficiencies when we dlopen a lib. There are
 two main issues to overcome for loading:

@@ -43,32 +43,32 @@ endif
 
 all: package
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
-DSTLIBS = $(CPU)/lib/libxbmc.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
+DSTLIBS = $(CPU)/lib/lib@APP_NAME_LC@.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
 libs= $(DSTLIBS)
 
 multi: x86 arm
-	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-multi-unaligned.apk
-	@cd xbmc; zip -r -q ../images/xbmcapp-debug-multi-unaligned.apk lib/ assets
-	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-multi-unaligned.apk androiddebugkey
-	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-multi-unaligned.apk $(XBMCROOT)/xbmcapp-multi-debug.apk
-	@rm images/xbmcapp-debug-multi-unaligned.apk
-	@echo "$(XBMCROOT)/xbmcapp-multi-debug.apk created"
+	@cp images/@APP_NAME_LC@app-debug-skeleton.apk images/@APP_NAME_LC@app-debug-multi-unaligned.apk
+	@cd xbmc; zip -r -q ../images/@APP_NAME_LC@app-debug-multi-unaligned.apk lib/ assets
+	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/@APP_NAME_LC@app-debug-multi-unaligned.apk androiddebugkey
+	@$(ZIPALIGN) -f 4 images/@APP_NAME_LC@app-debug-multi-unaligned.apk $(XBMCROOT)/@APP_NAME_LC@app-multi-debug.apk
+	@rm images/@APP_NAME_LC@app-debug-multi-unaligned.apk
+	@echo "$(XBMCROOT)/@APP_NAME_LC@app-multi-debug.apk created"
 
 package: extras
-	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(CPU)-unaligned.apk
+	@cp images/@APP_NAME_LC@app-debug-skeleton.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
-	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
-	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
-	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
-	@rm images/xbmcapp-debug-$(CPU)-unaligned.apk
-	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
+	@cd xbmc; zip -r -q ../images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
+	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk androiddebugkey
+	@$(ZIPALIGN) -f 4 images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(XBMCROOT)/@APP_NAME_LC@app-$(CPU)-debug.apk
+	@rm images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
+	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(CPU)-debug.apk created"
 
 extras: libs
 	rm -rf xbmc/assets
 	mkdir -p xbmc/assets xbmc/res xbmc/res/raw xbmc/assets/python2.6/lib/
-	cp -rfp $(PREFIX)/share/xbmc/* ./xbmc/assets
+	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./xbmc/assets
 	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/xbmc/assets/system/ -name "*.so" -exec rm {} \;
 	find `pwd`/xbmc/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
@@ -85,16 +85,16 @@ extras: libs
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
 	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/xbmcapp-debug-skeleton.apk -J xbmc/src
+	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src
 	@rm -rf tmp/
 
-libs: $(PREFIX)/lib/xbmc/libxbmc.so
+libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
 	mkdir -p xbmc/lib/$(CPU) images xbmc/assets/python2.6/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
 	cp -fp $(SRCLIBS) xbmc/obj/local/$(CPU)/
-	cp -fp $(PREFIX)/lib/xbmc/libxbmc.so xbmc/obj/local/$(CPU)/
-	find $(PREFIX)/lib/xbmc/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	find $(PREFIX)/lib/xbmc/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
+	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
+	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
@@ -104,7 +104,7 @@ libs: $(PREFIX)/lib/xbmc/libxbmc.so
 	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
 	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
 
-$(PREFIX)/lib/xbmc/libxbmc.so: $(SRCLIBS)
+$(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc
 
 $(SRCLIBS):

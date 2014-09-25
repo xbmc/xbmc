@@ -8,6 +8,8 @@
 #include <fcntl.h>
 #include "android/activity/XBMCApp.h"
 #include "AndroidDyload.h"
+#include "utils/StringUtils.h"
+#include "CompileInfo.h"
 using namespace std;
 
 //#define DEBUG_SPEW
@@ -246,8 +248,11 @@ void* CAndroidDyload::Open_Internal(string filename, bool checkSystem)
 
   for (strings::iterator j = deps.begin(); j != deps.end(); ++j)
   {
-    // Don't traverse into libxbmc's deps, they're guaranteed to be loaded.
-    if (*j == "libxbmc.so")
+    std::string appName = CCompileInfo::GetAppName();
+    std::string libName = "lib" + appName + ".so";
+    StringUtils::ToLower(libName);
+    // Don't traverse into libkodi's deps, they're guaranteed to be loaded.
+    if (*j == libName.c_str())
       continue;
 
     if (FindInDeps(*j))
