@@ -39,6 +39,7 @@
 #include "epg/Epg.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -115,6 +116,15 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
     m_group.reset();
   }
 
+  // set selected item path
+  int selectedItem = m_viewControl.GetSelectedItem();
+  if (selectedItem > -1)
+  {
+    CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
+    if (fileItem)
+      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), fileItem->GetPath());
+  }
+
   CGUIDialog::OnDeinitWindow(nextWindowID);
 
   Clear();
@@ -148,7 +158,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 {
   CPVRChannelPtr channel;
-  if(g_PVRManager.GetCurrentChannel(channel))
+  if (g_PVRManager.GetCurrentChannel(channel))
     return g_PVRManager.GetPlayingGroup(channel->IsRadio());
   else
     return CPVRChannelGroupPtr();
@@ -168,19 +178,20 @@ void CGUIDialogPVRChannelsOSD::Update()
   Clear();
 
   CPVRChannelPtr channel;
-  g_PVRManager.GetCurrentChannel(channel);
-  CPVRChannelGroupPtr group = g_PVRManager.GetPlayingGroup(channel->IsRadio());
-
-  if (group)
+  if (g_PVRManager.GetCurrentChannel(channel))
   {
-    group->GetMembers(*m_vecItems);
-    m_viewControl.SetItems(*m_vecItems);
-
-    if(!m_group)
+    CPVRChannelGroupPtr group = g_PVRManager.GetPlayingGroup(channel->IsRadio());
+    if (group)
     {
-      m_group = group;
-      m_viewControl.SetSelectedItem(group->GetIndex(*channel));
-      SaveSelectedItem(group->GroupID());
+      group->GetMembers(*m_vecItems);
+      m_viewControl.SetItems(*m_vecItems);
+
+      if (!m_group)
+      {
+        m_group = group;
+        m_viewControl.SetSelectedItem(CGUIWindowPVRBase::GetSelectedItemPath(channel->IsRadio()));
+        SaveSelectedItem(group->GroupID());
+      }
     }
   }
 
@@ -192,7 +203,7 @@ void CGUIDialogPVRChannelsOSD::SaveControlStates()
   CGUIDialog::SaveControlStates();
 
   CPVRChannelGroupPtr group = GetPlayingGroup();
-  if(group)
+  if (group)
     SaveSelectedItem(group->GroupID());
 }
 
@@ -201,7 +212,7 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   CGUIDialog::RestoreControlStates();
 
   CPVRChannelGroupPtr group = GetPlayingGroup();
-  if(group)
+  if (group)
   {
     m_viewControl.SetSelectedItem(GetLastSelectedItem(group->GroupID()));
   }
@@ -330,7 +341,7 @@ void CGUIDialogPVRChannelsOSD::SaveSelectedItem(int iGroupID)
 int CGUIDialogPVRChannelsOSD::GetLastSelectedItem(int iGroupID) const
 {
   std::map<int,int>::const_iterator it = m_groupSelectedItems.find(iGroupID);
-  if(it != m_groupSelectedItems.end())
+  if (it != m_groupSelectedItems.end())
     return it->second;
   return 0;
 }

@@ -62,6 +62,21 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 {
 }
 
+void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string path)
+{
+  m_selectedItemPaths.at(bRadio) = path;
+}
+
+std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
+{
+  if (!m_selectedItemPaths.at(bRadio).empty())
+    return m_selectedItemPaths.at(bRadio);
+  else if (g_PVRManager.IsPlaying())
+    return g_application.CurrentFile();
+
+  return "";
+}
+
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
   UpdateSelectedItemPath();
@@ -109,15 +124,10 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 
   m_vecItems->SetPath(GetDirectoryPath());
 
-  // use the path of the current playing channel if no previous selection exists
-  // to mark the corresponding item in the list as selected
-  if (m_selectedItemPaths.at(m_bRadio).empty() && g_PVRManager.IsPlaying())
-    m_selectedItemPaths.at(m_bRadio) = g_application.CurrentFile();
-
   CGUIMediaWindow::OnInitWindow();
 
   // mark item as selected by channel path
-  m_viewControl.SetSelectedItem(m_selectedItemPaths.at(m_bRadio));
+  m_viewControl.SetSelectedItem(GetSelectedItemPath(m_bRadio));
 }
 
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
