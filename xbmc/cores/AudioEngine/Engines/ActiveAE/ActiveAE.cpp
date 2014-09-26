@@ -91,7 +91,8 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
 void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
-  GetDelay(status);
+  status = m_sinkDelay;
+  status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
 
   status.delay += m_sinkLatency;
   status.delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
