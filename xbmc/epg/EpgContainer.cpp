@@ -278,6 +278,31 @@ void CEpgContainer::Process(void)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
+    while (!m_bStop)
+    {
+      SUpdateRequest request;
+      {
+        CSingleLock lock(m_updateRequestsLock);
+        if (m_updateRequests.empty())
+          break;
+        request = m_updateRequests.front();
+        m_updateRequests.pop_front();
+      }
+
+      // get the channel
+      CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(request.channelID, request.clientID);
+      CEpg* epg(NULL);
+
+      // get the EPG for the channel
+      if (!channel || (epg = channel->GetEPG()) == NULL)
+      {
+        CLog::Log(LOGERROR, "PVR - %s - invalid channel or channel doesn't have an EPG", __FUNCTION__);
+        continue;
+      }
+
+      // force an update
+      epg->ForceUpdate();
+    }
     if (!m_bStop)
     {
       {
@@ -717,4 +742,13 @@ void CEpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */)
     m_pendingUpdates++;
   else
     m_pendingUpdates = 0;
+}
+
+void CEpgContainer::UpdateRequest(int clientID, unsigned int channelID)
+{
+  CSingleLock lock(m_updateRequestsLock);
+  SUpdateRequest request;
+  request.clientID = clientID;
+  request.channelID = channelID;
+  m_updateRequests.push_back(request);
 }
