@@ -84,6 +84,7 @@ extras: libs
 	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
 	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload
+	mkdir xbmc/res/values && mv xbmc/strings.xml xbmc/res/values/
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
 	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src
 	@rm -rf tmp/
@@ -124,6 +125,7 @@ clean:
 	rm -rf xbmc/assets
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/raw
+	rm -rf xbmc/res/values
 	rm -rf tmp
 	rm -f xbmc/res/drawable/splash.png
 	rm -f xbmc/src/R.java

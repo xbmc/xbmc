@@ -1,4 +1,4 @@
-package org.xbmc.xbmc;
+package org.xbmc.@APP_NAME_LC@;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -472,7 +472,7 @@ public class Splash extends Activity {
     
     // Run @APP_NAME@
     Intent intent = getIntent();
-    intent.setClass(this, org.xbmc.xbmc.Main.class);
+    intent.setClass(this, org.xbmc.@APP_NAME_LC@.Main.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
     startActivity(intent);
     finish();
@@ -489,7 +489,7 @@ public class Splash extends Activity {
         .getRunningTasks(Integer.MAX_VALUE);
     for (RunningTaskInfo task : tasks)
       if (task.topActivity.toString().equalsIgnoreCase(
-          "ComponentInfo{org.xbmc.xbmc/org.xbmc.xbmc.Main}")) {
+          "ComponentInfo{org.xbmc.@APP_NAME_LC@/org.xbmc.@APP_NAME_LC@.Main}")) {
         // @APP_NAME@ already running; just activate it
         startXBMC();
         return;
