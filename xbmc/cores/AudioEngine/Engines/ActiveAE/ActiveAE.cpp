@@ -2152,7 +2152,7 @@ void CActiveAE::LoadSettings()
   m_settings.samplerate = CSettings::Get().GetInt("audiooutput.samplerate");
 
   m_settings.stereoupmix = IsSettingVisible("audiooutput.stereoupmix") ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
-  m_settings.normalizelevels = CSettings::Get().GetBool("audiooutput.normalizelevels");
+  m_settings.normalizelevels = !CSettings::Get().GetBool("audiooutput.maintainoriginalvolume");
   m_settings.guisoundmode = CSettings::Get().GetInt("audiooutput.guisoundmode");
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
@@ -2213,22 +2213,22 @@ std::string CActiveAE::GetDefaultDevice(bool passthrough)
 
 void CActiveAE::OnSettingsChange(const std::string& setting)
 {
-  if (setting == "audiooutput.passthroughdevice" ||
-      setting == "audiooutput.audiodevice"       ||
-      setting == "audiooutput.config"            ||
-      setting == "audiooutput.ac3passthrough"    ||
-      setting == "audiooutput.ac3transcode"      ||
-      setting == "audiooutput.eac3passthrough"   ||
-      setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.truehdpassthrough" ||
-      setting == "audiooutput.dtshdpassthrough"  ||
-      setting == "audiooutput.channels"          ||
-      setting == "audiooutput.stereoupmix"       ||
-      setting == "audiooutput.streamsilence"     ||
-      setting == "audiooutput.processquality"    ||
-      setting == "audiooutput.passthrough"       ||
-      setting == "audiooutput.samplerate"        ||
-      setting == "audiooutput.normalizelevels"   ||
+  if (setting == "audiooutput.passthroughdevice"      ||
+      setting == "audiooutput.audiodevice"            ||
+      setting == "audiooutput.config"                 ||
+      setting == "audiooutput.ac3passthrough"         ||
+      setting == "audiooutput.ac3transcode"           ||
+      setting == "audiooutput.eac3passthrough"        ||
+      setting == "audiooutput.dtspassthrough"         ||
+      setting == "audiooutput.truehdpassthrough"      ||
+      setting == "audiooutput.dtshdpassthrough"       ||
+      setting == "audiooutput.channels"               ||
+      setting == "audiooutput.stereoupmix"            ||
+      setting == "audiooutput.streamsilence"          ||
+      setting == "audiooutput.processquality"         ||
+      setting == "audiooutput.passthrough"            ||
+      setting == "audiooutput.samplerate"             ||
+      setting == "audiooutput.maintainoriginalvolume" ||
       setting == "audiooutput.guisoundmode")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
