@@ -188,7 +188,7 @@ public:
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (SelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer);
+  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
 

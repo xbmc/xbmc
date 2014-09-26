@@ -394,7 +394,7 @@ void CSelectionStreams::Update(SelectionStream& s)
   }
 }
 
-void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
+void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2)
 {
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -466,6 +466,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.language = g_LangCodeExpander.ConvertToISO6392T(stream->language);
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
+      s.filename2 = filename2;
       stream->GetStreamName(s.name);
       std::string codec;
       demuxer->GetStreamCodecName(stream->iId, codec);
@@ -4143,10 +4144,9 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     CDVDDemuxVobsub v;
     if(!v.Open(filename, vobsubfile))
       return -1;
-    m_SelectionStreams.Update(NULL, &v);
+    m_SelectionStreams.Update(NULL, &v, vobsubfile);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
-    m_SelectionStreams.Get(STREAM_SUBTITLE, index).filename2 = vobsubfile;
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).name = info.name;
