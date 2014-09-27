@@ -481,6 +481,14 @@ bool CXBMCRenderManager::Flush()
     else
       return true;
   }
+
+  m_queued.clear();
+  m_discard.clear();
+  m_free.clear();
+  m_presentsource = 0;
+  for (int i = 1; i < m_QueueSize; i++)
+    m_free.push_back(i);
+
   return true;
 }
 
