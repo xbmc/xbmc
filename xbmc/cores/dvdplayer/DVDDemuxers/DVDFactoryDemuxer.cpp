@@ -39,7 +39,7 @@
 using namespace std;
 using namespace PVR;
 
-CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
+CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo)
 {
   if (!pInputStream)
     return NULL;
@@ -145,7 +145,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
   }
 
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
-  if(demuxer->Open(pInputStream, streaminfo))
+  if(demuxer->Open(pInputStream, streaminfo, fileinfo))
     return demuxer.release();
   else
     return NULL;

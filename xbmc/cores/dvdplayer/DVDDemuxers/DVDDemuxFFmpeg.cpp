@@ -199,7 +199,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   return false;
 }
 
-bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo)
+bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool fileinfo)
 {
   AVInputFormat* iformat = NULL;
   std::string strFile;
@@ -409,7 +409,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo)
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
 
   bool isMpegts = false;
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0))
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkvideo = true;

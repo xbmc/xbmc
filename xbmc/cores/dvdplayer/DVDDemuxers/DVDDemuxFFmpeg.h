@@ -91,7 +91,7 @@ public:
   CDVDDemuxFFmpeg();
   virtual ~CDVDDemuxFFmpeg();
 
-  bool Open(CDVDInputStream* pInput, bool streaminfo = true);
+  bool Open(CDVDInputStream* pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
   void Reset();
   void Flush();
