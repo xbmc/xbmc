@@ -82,7 +82,7 @@ msgstr "Miniatiūros"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Nuotraukų karuselė"
+msgstr "Atvaizdų karuselė"
 
 msgctxt "#31033"
 msgid "Info"

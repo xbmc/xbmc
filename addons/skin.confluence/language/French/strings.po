@@ -607,3 +607,7 @@ msgstr "LIRE LE DISQUE"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SYSTÈME"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

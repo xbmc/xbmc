@@ -607,3 +607,7 @@ msgstr "TOISTA LEVY"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "JÄRJESTELMÄ"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Radio"

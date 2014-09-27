@@ -607,3 +607,7 @@ msgstr "Chơi đĩa"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "Hệ thống"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Dài phát thanh"

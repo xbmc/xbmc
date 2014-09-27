@@ -578,7 +578,7 @@ msgstr "СНИМКИ"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "Телевизора"
+msgstr "ТЕЛЕВИЗИЯ"
 
 msgctxt "#31953"
 msgid "VIDEOS"

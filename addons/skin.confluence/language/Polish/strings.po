@@ -206,11 +206,11 @@ msgstr "Opcje"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Pokazuj Albumy ostatnio dodane"
+msgstr "Pokazuj Ostatnio dodane Albumy"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Pokazuj Wideo ostatnio dodane"
+msgstr "Pokazuj Ostatnio dodane Video"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -234,7 +234,7 @@ msgstr "Odtwarzaj motywy muzyczne w bibliotece wideo (dodatek TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
-msgstr "Wtyczka TvTunes"
+msgstr "Dodatek TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -438,7 +438,7 @@ msgstr "Bazujące na Arialu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Listy plików · Wygaszacz ekranu"
+msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Ustawienia regionalne · Listy plików · Wygaszacz ekranu"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -578,7 +578,7 @@ msgstr "OBRAZY"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "Telewizja"
+msgstr "TELEWIZJA"
 
 msgctxt "#31953"
 msgid "VIDEOS"

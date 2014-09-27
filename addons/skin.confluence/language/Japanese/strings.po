@@ -607,3 +607,7 @@ msgstr "ディスク再生"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "システム"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "ラジオ"
