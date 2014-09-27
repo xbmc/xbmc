@@ -11294,8 +11294,8 @@ msgid "Record"
 msgstr "Salvesta"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Puudub"
+msgid "Disabled"
+msgstr "Ei kasutata"
 
 msgctxt "#36508"
 msgid "Hardware Based"
@@ -11306,14 +11306,6 @@ msgid "Ask me"
 msgstr "Küsi minult"
 
 msgctxt "#36524"
-msgid "Preferred mode"
-msgstr "Eelistatud režiim"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
 msgid "Preferred mode"
 msgstr "Eelistatud režiim"
 

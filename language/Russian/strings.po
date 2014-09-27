@@ -1763,7 +1763,7 @@ msgstr "Параметры аудио"
 
 msgctxt "#482"
 msgid "About Kodi"
-msgstr "Об Kodi"
+msgstr "О Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2419,7 +2419,7 @@ msgstr "Степень сжатия"
 
 msgctxt "#666"
 msgid "Enable component-specific logging"
-msgstr "Включить компонентный журнал отладки"
+msgstr "Включить журнал отладки компонентов"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
@@ -2427,7 +2427,7 @@ msgstr "Включить перекодирование в Dolby Digital"
 
 msgctxt "#668"
 msgid "Specify component-specific logging..."
-msgstr "Cпецифицировать компонентный журнал отладки"
+msgstr "Настроить журнал отладки компонентов"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
@@ -2459,7 +2459,7 @@ msgstr "Подробный журнал для запросов JSON-RPC "
 
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
-msgstr "Подробное ведение журнала для АУДИО устройства"
+msgstr "Подробный журнал для аудио-подсистемы"
 
 msgctxt "#677"
 msgid "Verbose logging for AirTunes library"
@@ -4091,15 +4091,15 @@ msgstr "Уровень батареи"
 
 msgctxt "#12396"
 msgid "Auto updates: On"
-msgstr "Автообновление: Включено"
+msgstr "Автообновление: включено"
 
 msgctxt "#12397"
 msgid "Auto updates: Notify"
-msgstr "Автообновление: Уведомлять"
+msgstr "Автообновление: уведомлять"
 
 msgctxt "#12398"
 msgid "Auto updates: Never"
-msgstr "Автообновление: Отключено"
+msgstr "Автообновление: отключено"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Аппаратное ускорение"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Предпочитать обработку VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Включить аппаратное ускорение (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Использвать OMXPlayer для декодирование видеофайлов."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Синхронизация А/В"
@@ -5219,7 +5231,7 @@ msgstr "ДУ Apple"
 
 msgctxt "#13602"
 msgid "Allow start of Kodi using the remote"
-msgstr "Разрешить запуск Kodi с ДУ"
+msgstr "Разрешить запуск Kodi с пульта ДУ"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5447,7 +5459,7 @@ msgstr "Фильтры интерфейса"
 
 msgctxt "#14054"
 msgid "%2.1f dB"
-msgstr "%2.1f dB"
+msgstr "%2.1f дБ"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5691,7 +5703,7 @@ msgstr "Стандартн."
 
 msgctxt "#15110"
 msgid "Larger font size"
-msgstr "Увеличенный размер шрифта"
+msgstr "Крупный шрифт"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU  Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6507,7 +6531,7 @@ msgstr "Введите имя папки для записи"
 
 msgctxt "#19105"
 msgid "Please select a channel"
-msgstr "Пожалуйста выберите канал"
+msgstr "Выберите канал"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6643,7 +6667,7 @@ msgstr "Имя новой группы"
 
 msgctxt "#19140"
 msgid "Search..."
-msgstr "Поиск..."
+msgstr "Поиск…"
 
 msgctxt "#19141"
 msgid "Group"
@@ -10483,7 +10507,7 @@ msgstr "Автоматически загружать первые субтит�
 
 msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
-msgstr "Автоматически скачивать первые найденные субтитры"
+msgstr "Автоматически загружать первые найденные субтитры"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11659,7 +11683,7 @@ msgstr "Общие настройки просмотра и записи ТВ."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
-msgstr "Активировать функции просмотра и записи ТВ (PVR) в Kodi. Для этого требуется по крайней мере одно дополенние PVR."
+msgstr "Активировать функции просмотра и записи ТВ (PVR) в Kodi. Для этого требуется по крайней мере одно дополнение PVR."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11735,7 +11759,7 @@ msgstr "Скрыть метки \"сведения недоступны\", ес�
 
 msgctxt "#36225"
 msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
-msgstr "Удалить базу данных EPG в Kodi и затем повторно получить данные из ТВ-сервера."
+msgstr "Удалить базу данных EPG в Kodi, а затем повторно получить данные с ТВ-сервера."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11799,7 +11823,7 @@ msgstr "Настройки управления питанием ТВ-серве
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Выполнять указанную ниже \"команду пробуждения\" при выходе из Kodi или переходе в спящий режим. Время следующей запланированной записи передается как параметр."
+msgstr "Выполнять указанную ниже команду пробуждения при выходе из Kodi или переходе в спящий режим. Время следующей запланированной записи передается как параметр."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11899,7 +11923,7 @@ msgstr "Выбранные композиции не воспроизводят�
 
 msgctxt "#36267"
 msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "Kodi будет читать информацию Replay Gain, закодированную в музыкальных файлах такими программами, как MP3Gain, и выравнивать уровень звука соответственно."
+msgstr "Kodi будет читать информацию Replay Gain, закодированную в музыкальных файлах такими программами, как MP3Gain, и соответственно выравнивать уровень звука."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -12135,7 +12159,7 @@ msgstr "Включение клиента UPnP для потоковой пер�
 
 msgctxt "#36326"
 msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
-msgstr "Включение управления по UPnP, чтобы передать медиафайлы на любой клиент UPnP и управлять воспроизведением с Kodi."
+msgstr "Включение управления по UPnP, чтобы передавать медиафайлы на любой клиент UPnP и управлять воспроизведением с Kodi."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
@@ -12151,11 +12175,11 @@ msgstr "Укажите номер порта веб-сервера."
 
 msgctxt "#36330"
 msgid "Define the webserver username. This only takes effect when both the username and the password are set."
-msgstr "Задайте  имя пользователя для веб сервера. Настройка вступает в силу только тогда, когда заданы и имя пользователя и пароль."
+msgstr "Задайте имя пользователя для веб сервера. Настройка вступает в силу только тогда, когда заданы как имя пользователя, так и пароль."
 
 msgctxt "#36331"
 msgid "Define the webserver password. This only takes effect when both the username and the password are set."
-msgstr "Задайте пароль для веб сервера. Настройка вступает в силу только тогда, когда заданы и имя пользователя и пароль."
+msgstr "Задайте пароль для веб сервера. Настройка вступает в силу только тогда, когда заданы как имя пользователя, так и пароль."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12227,7 +12251,7 @@ msgstr "Если в сети имеется WINS-сервер, введите е
 
 msgctxt "#36349"
 msgid "Section that contains the System related settings for the device Kodi is installed on."
-msgstr "Настройки системы с установленным Kodi."
+msgstr "Настройки системы с установленным медиацентром Kodi."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -12251,7 +12275,7 @@ msgstr "Отображать Kodi в полноэкранном окне. Это
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
-msgstr "В многодисплейных системах затемнять все дисплеи, кроме дисплея с Kodi."
+msgstr "В системах с несколькими дисплеями затемнять все дисплеи, кроме дисплея с Kodi."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12339,7 +12363,7 @@ msgstr "При включенной настройке стрелками пул
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
-msgstr "Управление Kodi при помощи мыши или сенсорного экрана. Внимание! Если к устройству не подключена клавиатура или пульт, при отключении этой настройки управлять Kodi будет невозможно!"
+msgstr "Управление Kodi при помощи мыши или сенсорного экрана. Внимание! Если к устройству не подключена клавиатура или пульт ДУ, при отключении этой настройки управлять Kodi будет невозможно!"
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."
@@ -12375,7 +12399,7 @@ msgstr "Укажите пароль для доступа к прокси-сер
 
 msgctxt "#36386"
 msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
-msgstr "В случае низкоскоростного интернет-канала можно ограничить полосу пропускания используемую Kodi."
+msgstr "В случае низкоскоростного интернет-канала можно ограничить полосу пропускания, используемую Kodi."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12387,11 +12411,11 @@ msgstr "Выключать дисплей при простое. Полезно 
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
-msgstr "Укажите период отсутствия активности, после которого Kodi завершит работу."
+msgstr "Период отсутствия активности, после которого Kodi завершит работу."
 
 msgctxt "#36390"
 msgid "Define what action Kodi should do when it has been idle for a long period of time."
-msgstr "Выберите действие, которое выполнит Kodi по истечении указанного периода отсутствия активности."
+msgstr "Выбрать действие, которое выполнит Kodi по истечении указанного периода отсутствия активности."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12403,11 +12427,11 @@ msgstr "Включение и выключение журнала отладки
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
-msgstr "Папка для сохранения скриншотов, снятых в Kodi."
+msgstr "Папка для сохранения скриншотов, сделанных в Kodi."
 
 msgctxt "#36394"
 msgid "Enables log messages from additional libraries to be included in the log."
-msgstr "Включает информацию от дополнительных библиотек в журнал отладки."
+msgstr "Добавление информации от дополнительных библиотек в журнал отладки."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12419,11 +12443,11 @@ msgstr "Задать пин-код для общей защиты."
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock Kodi on startup."
-msgstr "При включении пин-код общей блокировки необходимо вводить при каждом запуске Kodi."
+msgstr "Заданный пин-код общей блокировки необходимо вводить при каждом запуске Kodi."
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before Kodi is closed down."
-msgstr "Укажите максимальное количество попыток ввода, после которых Kodi закроется."
+msgstr "Укажите максимальное количество попыток ввода, после которого Kodi закроется."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12499,7 +12523,7 @@ msgstr "Укажите тип используемого пульта ДУ."
 
 msgctxt "#36417"
 msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
-msgstr "Всегда запускать помощник, обеспечивающий запуск Kodi при помощи пульта дистанционного управления."
+msgstr "Использовать агент, чтобы запускать Kodi при помощи пульта дистанционного управления."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12555,19 +12579,15 @@ msgstr "Определяет, будет ли выполняться декод�
 
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
-msgstr "Выберать виртуальную раскладку клавиатуры."
+msgstr "Выбрать раскладки экранной клавиатуры."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Стереоскопический режим (текущий)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Стереоскопический режим"
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "При включении этой настройки VAAPI используется как предпочтительный метод обработки. Это снижает нагрузку на ЦП, но драйвер может зависнуть!"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Нет"
+msgid "Disabled"
+msgstr "Откл."
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12593,21 +12613,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Аппаратный"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Без стереоскопии (2D)"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Режим просмотра стереоскопического видео."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Спрашивать"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Использовать предпочтительный режим"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12620,26 +12628,6 @@ msgstr "Предпочтительный режим"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Как в фильме (автораспознавание)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Отключать стереоскопический режим при остановке проигрывания"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Это стереоскопическое видео. Выберите режим просмотра."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Выберите стереоскопический режим"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Без стереоскопии (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Предпочтительный режим"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12655,31 +12643,11 @@ msgstr "Выбор способа микширования аудио, напр�
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
-msgstr "Укажите дополнительные библиотеки, которые нужно включать в журнал отладки."
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Стереоскопический режим видео"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Инверсный стереоскопический режим"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Установить режим воспроизведения стереоскопического (3D) видео."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Предотвращает выход Kodi из стереоскопическом режима (3D), когда воспроизведение остановлено, поскольку не все телевизоры распознают переход от 3D к 2D без переключения видеорежима."
+msgstr "Укажите дополнительные библиотеки, сведения о которых нужно включать в журнал отладки."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Изменение стереоскопического (3D) режима пользовательского интерфейса."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Предпочтительный режим вывода стереоскопического (3D) видео."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12697,10 +12665,6 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Включение аппаратного декодирования видеофайлов."
 
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Глубина стереосубтитров"
-
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Устанавливает визуальную глубину субтитров для стереоскопического (3D) видео. Чем выше значение, тем ближе к зрителю отображаются субтитры."
@@ -12711,7 +12675,7 @@ msgstr "Высококачественные текстуры для облож�
 
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
-msgstr "Ограничение разрешения графического интерфейса, с целью экономии памяти. Не влияет на воспроизведение видео. Требуется перезапуск."
+msgstr "Ограничение разрешения графического интерфейса с целью экономии памяти. Не влияет на воспроизведение видео. Требуется перезапуск."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12771,11 +12735,11 @@ msgstr "музыкальные видео"
 
 msgctxt "#36910"
 msgid "set"
-msgstr "серия фильмов"
+msgstr "киноцикл"
 
 msgctxt "#36911"
 msgid "sets"
-msgstr "серии фильмов"
+msgstr "киноциклы"
 
 msgctxt "#36912"
 msgid "video"
@@ -12811,11 +12775,11 @@ msgstr "альбомы"
 
 msgctxt "#36920"
 msgid "song"
-msgstr "песня"
+msgstr "композиция"
 
 msgctxt "#36921"
 msgid "songs"
-msgstr "песни"
+msgstr "композиции"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12883,7 +12847,7 @@ msgstr "Включите, если аудиовыход поддерживает
 
 msgctxt "#37025"
 msgid "Configure audio encoder settings such as quality and compression level"
-msgstr "Настроить кодировщик аудио, такие как качество и уровень сжатия данный"
+msgstr "Настроить параметры кодировщика аудио, например качество и уровень сжатия"
 
 msgctxt "#37026"
 msgid "Auto"
@@ -12903,4 +12867,4 @@ msgstr "900"
 
 msgctxt "#37030"
 msgid "Unlimited"
-msgstr "Неограниченно"
+msgstr "Неограничен."

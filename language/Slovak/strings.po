@@ -12109,17 +12109,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Nahrávať"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoscopic mode (current)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoscopic mode"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "None"
+msgid "Disabled"
+msgstr "Zakázaný"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12145,21 +12137,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware Based"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Režim prehrávania u priestorových videí"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ask me"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Use preferred mode"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12168,26 +12148,6 @@ msgstr "Preferred mode"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Same as movie (autodetect)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Disable stereoscopic mode when playback is stopped"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "This video is stereoscopic. Select playback mode"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Select stereoscopic mode"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Preferred mode"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12200,14 +12160,6 @@ msgstr "Same as movie"
 msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Vyberte. ako sa má zvuk downmixovať, napríklad z 5.1 na 2.0: [Zapnuté] po downmixe je zachovaný dynamický rozsah pôvodného zdroja zvuku, avšak hlasitosť bude nižšia [Vypnuté] je zachovaná úroveň hlasitosti pôvodného zdroja signálu, avšak dynamický rozsah je zmenšený. Poznámka - Dynamický rozsah je rozdiel medzi najtichším a najhlasnejším zvukom v zdroji zvuku."
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoscopic mode of video"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoscopic mode inverted"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12224,10 +12176,6 @@ msgstr "Enable this to make dialogue louder compared to background sounds when d
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Hĺbka 3D titulkov"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

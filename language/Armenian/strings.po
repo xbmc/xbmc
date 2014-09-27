@@ -2272,7 +2272,3 @@ msgstr "Անվանում"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Ձայնագրում"
-
-msgctxt "#36502"
-msgid "None"
-msgstr "Ոչինչ"

@@ -6042,8 +6042,8 @@ msgid "Record"
 msgstr "መቅረጫ "
 
 msgctxt "#36502"
-msgid "None"
-msgstr "ምንም "
+msgid "Disabled"
+msgstr "ተሰናክሏል "
 
 msgctxt "#36504"
 msgid "Side by side"

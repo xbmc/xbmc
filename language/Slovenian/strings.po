@@ -5121,6 +5121,10 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Strojno pospešeno"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Raje uporabi VAAPI render metodo"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metoda sinhroniziranja A/V"
@@ -12337,17 +12341,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Snemaj"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopski način (trenutni)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopki način"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Brez"
+msgid "Disabled"
+msgstr "Onemogočeno"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12373,21 +12369,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Temelji na strojni opremi"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopsko - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Način predvajanja stereoskopskih videov"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Vprašaj me"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Uporabi želeni način"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12396,26 +12380,6 @@ msgstr "Želeni način"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Enako kot film (samodejno)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Onemogoči stereoskopski način, ko je predvajanje zaustavljeno"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Ta video je stereoskopski. Izberite način predvajanja"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Izberite stereoskopski način"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Želeni način"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12433,25 +12397,9 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Določite dodatne knjižnice ki bodo vključene v zapisnik."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopski način videa"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoskopski način obrnjen"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Določi način predvajanja stereoskopskih 3D videov."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Spremeni stereoskopski 3D način uporabniškega vmesnika."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Prednostni stereoskopski 3D način."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12468,10 +12416,6 @@ msgstr "Omogočite to možnost, da bodo dialogi glasnejši glede na ozadje pri z
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Omogočite strojno dekodiranje video datotek."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Globina stereoskopskih podnapisov"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

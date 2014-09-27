@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Acelerado por hardware"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Preferir método de renderização VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Permitir aceleração por hardware (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Usar OMXPlayer para decodificar arquivos de vídeo"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de syncronização de A/V"
@@ -5567,11 +5579,11 @@ msgstr "Execução"
 
 msgctxt "#14087"
 msgid "DVDs"
-msgstr "DVDs"
+msgstr "Discos"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
-msgstr "Reproduzir DVDs automaticamente"
+msgstr "Reproduzir Disco Automaticamente"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -11619,11 +11643,11 @@ msgstr "Localização das legendas na tela."
 
 msgctxt "#36193"
 msgid "Category containing settings for how DVDs are handled."
-msgstr "Categoria contém os ajustes de como DVDs são manuseados."
+msgstr "Categoria contém os ajustes de como DVDs e BDs são manuseados."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
-msgstr "Reproduzir automaticamente um DVD de vídeo inserido na drive."
+msgstr "Reproduzir automaticamente um Disco de vídeo inserido na drive."
 
 msgctxt "#36195"
 msgid "Force a region for DVD playback."
@@ -12557,17 +12581,21 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Selecione o layout do teclado virtual."
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Se ativado o método de renderização VAAPI como preferido. Isto coloca menos carga na CPU mas o driver poderá vir a travar!"
+
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Modo estereoscópico (atual)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modo estereoscópico 3D (atual)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Modo Estereoscópico"
+msgid "Stereoscopic 3D mode"
+msgstr "Modo Estereoscópico 3D"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Nenhum"
+msgid "Disabled"
+msgstr "Desabilitado"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12594,20 +12622,16 @@ msgid "Hardware Based"
 msgstr "Baseado no Hardware"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscópico - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoscópico (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Modo reprodução de vídeos estereoscópico."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Modo reprodução de vídeos estereoscópico 3D"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Pergunte-me"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Usar modo preferido"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12622,24 +12646,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Igual ao do filme (auto detectar)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Desative modo estereoscópico quando vídeo parar"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Desative modo estereoscópico 3D quando vídeo parar"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Este vídeo é esteroscópico. Selecione modo reprodução"
+msgid "Select playback mode"
+msgstr "Selecione modo de reprodução"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Selecione modo estereoscópico"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Modo Preferido"
+msgid "Select stereoscopic 3D mode"
+msgstr "Selecione modo estereoscópico 3D"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12658,28 +12674,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Especifique as bibliotecas adicionais cujas mensagens devam ser incluídas no registro de log."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Modo de vídeo estereoscópico"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modo de vídeo estereoscópico 3D"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Modo estereoscópico invertido"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Sete o modo de reprodução para vídeos estereocópicos 3D."
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Modo estereoscópico 3D invertido"
 
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Previna que o Kodi saia do modo 3D estereoscópico quando a reprodução estiver parada, como nem todas as TVs vão reconhecer a mudança de 3D ​​de volta ao 2D sem que o modo de visualização tenha quer ser alternado em sua TV."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Ativado] Alternar GUI (em algumas TVs) volta para o modo 2D quando a reprodução terminar. [Desabilitado] GUI e TV vão ficar em modo 3D estereoscópico. Para playlists de vídeo no modo 3D estereoscópico não vai mudar entre vídeos, nem mesmo para os não estereoscópicas."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Altere o modo estereoscópico 3D da interface do usuário."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "O modo estereocópico 3D preferido."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "O modo preferido em que a mídia 3D estereoscópica, como vídeos irá ser reproduzida."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12698,8 +12710,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Ativar decodificação por hardware de arquivos de vídeo."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profundidade da Legenda estereoscópica"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Profundidade da Legenda estereoscópica 3D"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

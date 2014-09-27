@@ -853,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Оразмеряване:  (%i,%i)->(%i,%i) (Приближаване x%2.2f) AR:%2.2f:1 (Пиксели: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Монитор"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Скриптове"
@@ -995,7 +999,7 @@ msgstr "Моля, проверете XML файловете"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "Намерени са %i  елемента"
+msgstr "Намерени са %i елемента"
 
 msgctxt "#283"
 msgid "Search results"
@@ -1979,7 +1983,7 @@ msgstr "Информация"
 
 msgctxt "#545"
 msgid "Audio output device"
-msgstr "Аудио изxод (устройство)"
+msgstr "Аудио изход (устройство)"
 
 msgctxt "#546"
 msgid "Passthrough output device"
@@ -2699,7 +2703,7 @@ msgstr "Грешка %i: споделеното не е налично"
 
 msgctxt "#772"
 msgid "Audio output"
-msgstr "Аудио изxод"
+msgstr "Аудио изход"
 
 msgctxt "#773"
 msgid "Seeking"
@@ -3067,7 +3071,7 @@ msgstr "SOCKS5"
 
 msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
-msgstr "SOCKS5 с отдалечено dns разрешаване"
+msgstr "SOCKS5 с отдалечено DNS разрешаване"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3951,7 +3955,7 @@ msgstr "Неправилна парола,"
 
 msgctxt "#12343"
 msgid "retries left "
-msgstr "оставащи опита: "
+msgstr "оставащи опита"
 
 msgctxt "#12344"
 msgid "Passwords entered did not match."
@@ -5043,7 +5047,7 @@ msgstr "Разреши хардуерното ускорение (libstagefright
 
 msgctxt "#13437"
 msgid "Prefer VDPAU Video Mixer"
-msgstr "Стандартно  ползвай VDPAU Video Mixer"
+msgstr "Стандартно ползвай VDPAU Video Mixer"
 
 msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
@@ -5071,7 +5075,7 @@ msgstr "Ползвай Mpeg-4 VDPAU"
 
 msgctxt "#13444"
 msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Активирайте опцията, за да използвате хардуерно ускорение на Mpeg-4 кодека. Ако не е актививна, декодирането ще се изпълнява от централния процесор. Активирането на опцията може да доведе до сривове при ION базираните системи."
+msgstr "Активирайте опцията, за да използвате хардуерно ускорение на Mpeg-4 кодека. Ако не е активна, декодирането ще се изпълнява от централния процесор. Активирането на опцията може да доведе до сривове при ION базираните системи."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5116,6 +5120,18 @@ msgstr "Софтуерно"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Хардуерно ускорен"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "При възможност ползвай VAAPI рендър"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Разреши хардуерното ускорение (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Активира ползването на OMXPlayer за декодиране а видео файлове."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5367,7 +5383,7 @@ msgstr "Аудио кеш - Интернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
-msgstr "DVD кеш  - DVD-ROM"
+msgstr "DVD кеш - DVD-ROM"
 
 msgctxt "#14035"
 msgid "Local Network"
@@ -5739,7 +5755,7 @@ msgstr "Не са намерени сървъри"
 
 msgctxt "#15303"
 msgid "Workgroup not found"
-msgstr "Workgroup не е намерена"
+msgstr "Работната група не е намерена."
 
 msgctxt "#15310"
 msgid "Opening multi-path source"
@@ -6064,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7269,6 +7297,10 @@ msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
 msgstr "Гейм шоу/Викторина/Конкурс"
 
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Вариете"
+
 msgctxt "#19535"
 msgid "Talk Show"
 msgstr "Ток шоу"
@@ -8159,7 +8191,7 @@ msgstr "Замразено"
 
 msgctxt "#20168"
 msgid "Requires reset"
-msgstr "Изисква ресет"
+msgstr "Изисква рестарт"
 
 msgctxt "#20169"
 msgid "Week"
@@ -9051,7 +9083,7 @@ msgstr "Споделяй видео и музикалната библиотек
 
 msgctxt "#21361"
 msgid "Look for remote UPnP players"
-msgstr "Tърси отдалечени UPnP плейъри"
+msgstr "Търси отдалечени UPnP плейъри"
 
 msgctxt "#21362"
 msgid "Bookmark created"
@@ -10297,6 +10329,10 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Нов опит за свърване?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Добавки помощници"
+
 msgctxt "#24082"
 msgid "Add-on libraries"
 msgstr "Библиотеки за добавки"
@@ -10367,7 +10403,7 @@ msgstr "Добавката е несъвместима защото не отг�
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
-msgstr "Активирай режима \"На  пауза\" при търсене на субтитри"
+msgstr "Активирай режима \"На пауза\" при търсене на субтитри"
 
 msgctxt "#24106"
 msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
@@ -10991,7 +11027,7 @@ msgstr "Замахване с 1 пръст <, >, ˄ и ˅ за курсори"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr "Замахване с 2 пръста налявао за backspace"
+msgstr "Замахване с 2 пръста наляво за backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
@@ -11263,7 +11299,7 @@ msgstr "Променете размера на изгледа на потреб�
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
-msgstr "Изберете кой прозорец да се отваря автоматично, при стартиране на  Kodi."
+msgstr "Изберете кой прозорец да се отваря автоматично, при стартиране на Kodi."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11283,7 +11319,7 @@ msgstr "Категорията съдържа всички настройки с
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
-msgstr "Изберете език за потребителския интерфйс."
+msgstr "Изберете език за потребителския интерфейс."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
@@ -11479,7 +11515,7 @@ msgstr "Разрешете промяната на честота на обно�
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."
-msgstr "Превключване в режим \"На пауза\" за предиода на превключване на честотата."
+msgstr "Превключване в режим \"На пауза\" за периода на превключване на честотата."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11619,7 +11655,7 @@ msgstr "Изберете стандартния източник на инфор
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "Стандартен източник на инф, за музикалните видео файлове в библиотеката."
+msgstr "Стандартен източник на инф., за музикалните видео файлове в библиотеката."
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
@@ -12121,6 +12157,14 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Определете порт за уеб сървъра."
 
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Определете потребителско име за уеб сървъра. Важи само когато са зададени потребителско име и парола."
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Определете парола за уеб сървъра. Важи само когато са зададени потребителско име и парола."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Изберете стандартният уеб интерфейс измежду инсталираните посредством диспечера на добавки."
@@ -12359,7 +12403,7 @@ msgstr "Определете какво действие трябва да пр�
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
-msgstr "Категорията съдържа всички настройки свързани с дебъгването - функциите за  събиране на информация, необходима отстраняване на неизправности."
+msgstr "Категорията съдържа всички настройки свързани с дебъгването - функциите за събиране на информация, необходима отстраняване на неизправности."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -12383,7 +12427,7 @@ msgstr "Задайте пин код за заключване с код."
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock Kodi on startup."
-msgstr "Ако е включено, кода за заключване се изисква, за да отключите Kodi при стартиране."
+msgstr "Ако е включено, кода за заключване ще се изисква, за отключване на Kodi при всяко стартиране."
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before Kodi is closed down."
@@ -12521,17 +12565,21 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Изберете подредба за вирт. клавиатура"
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Определя VAAPI рендъра като стандартен. Резултат от включването на опцията е по-малко натоварване на централния процесор, но има вероятност от проблеми с драйвърите."
+
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
+msgid "Stereoscopic 3D mode (current)"
 msgstr "Стереоскопичен режим (текущ)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
+msgid "Stereoscopic 3D mode"
 msgstr "Стереоскопичен режим"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Няма"
+msgid "Disabled"
+msgstr "Изключено"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12558,20 +12606,16 @@ msgid "Hardware Based"
 msgstr "Хардуерно"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
+msgid "Monoscopic (2D)"
 msgstr "Моноскопичен - 2D"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Режим за стереоскопичните видео файлове"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Режим за стереоскопичните 3D видео файлове"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Запитване"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Предпочитания режим"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12586,24 +12630,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Според филма (автоматично откриване)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Изключи стереоскопичния режим при спиране на възпроизвеждането"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Изключване на стереоскопичния режим при спиране на възпроизвеждането"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Видеото е стереоскопично. Изберете метод за възпроизвеждане"
+msgid "Select playback mode"
+msgstr "Избор на режим за възпроизвеждане"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
+msgid "Select stereoscopic 3D mode"
 msgstr "Избор на стереоскопичен режим"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Моно (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Предпочитан режим"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12622,28 +12658,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Посочете допълнителни библиотеки, чийто съобщения да бъдат включени в дневника."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
+msgid "Stereoscopic 3D mode of video"
 msgstr "Стереоскопичен режим за видео"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "Обърнат стереоскопичен режим"
 
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Определя кой режим за възпроизвеждане да се ползва стереоскопични 3D видео файлове."
-
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Предотвратява излизането от стереоскопичния 3D режим при спиране на възпроизвеждането. Опцията е полезна когато телевизора не може да разбере за промяната без да превключите режима от дистанционното."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "Превключва интефейса (и някои ТВ) обратно в 2D режим при приклюване на възпроизвеждане. Ако опцията не е включена интерфейса и ТВ остават в стереоскопичен 3D режим. Стереоскопичния режим няма да се променя между отделните видео файлове, дори и тези които не са 3D."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Променете стереоскопичния 3D режим на потребителския интерфейс."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Предпочитаният стереоскопичен 3D режим."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Предпочитаният стереоскопичен режим за възпроизвеждане на 3D видео файлове."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12662,8 +12694,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Включете хардуерното декодиране на видео файлове."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Стереоскопична дълбочина на субтитрите"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Стереоскопична дълбочина на 3D субтитрите"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -12733,6 +12765,14 @@ msgctxt "#36909"
 msgid "musicvideos"
 msgstr "музикални клипове"
 
+msgctxt "#36910"
+msgid "set"
+msgstr "поредица"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "поредици"
+
 msgctxt "#36912"
 msgid "video"
 msgstr "видео"
@@ -12749,9 +12789,13 @@ msgctxt "#36915"
 msgid "music"
 msgstr "музика"
 
+msgctxt "#36916"
+msgid "artist"
+msgstr "Изпълнител"
+
 msgctxt "#36917"
 msgid "artists"
-msgstr "Изпълнител"
+msgstr "Изпълнители"
 
 msgctxt "#36918"
 msgid "album"

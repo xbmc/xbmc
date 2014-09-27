@@ -11517,13 +11517,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "録音"
 
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "立体映像の再生モード。"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "お好みのモードをご使用"
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "無効"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11533,17 +11529,9 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "ムービーと同じ(自動検出)"
 
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "推奨モード"
-
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "ムービーと同じ"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "3D 立体映像の再生モードを設定します。"
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."

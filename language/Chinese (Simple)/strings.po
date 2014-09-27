@@ -12557,17 +12557,9 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "选择虚拟键盘布局。"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "立体模式（当前）"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "立体模式"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "无"
+msgid "Disabled"
+msgstr "禁用"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12593,21 +12585,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "基于硬件"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "平面 - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "立体视频播放模式"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "询问"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "使用首选模式"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12620,26 +12600,6 @@ msgstr "首选模式"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "同影片格式（自动检测）"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "播放停止时禁用立体模式"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "这是立体视频，请选择播放模式"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "选择立体模式"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "平面（2D）"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "首选模式"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12657,29 +12617,9 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "指定要包含到日志中的附加库调试信息。"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "视频立体模式"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "立体模式反转"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "设置立体 3D 视频播放模式。"
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "阻止 Kodi 在播放停止时退出立体 3D 模式，主要针对一些电视无法自动识别并从 3D 切换到 2D 模式。"
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "改变用户界面的立体 3D 模式。"
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "首选立体 3D 模式。"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12696,10 +12636,6 @@ msgstr "启用此项使多声道混缩时人声较背景声音更突出"
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "启用视频文件的硬解码。"
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "字幕立体深度"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

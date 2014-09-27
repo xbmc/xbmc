@@ -11545,17 +11545,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Hopu"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Aratau Stereoscopic (nāianei)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Aratau Stereoscopic"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Kahore"
+msgid "Disabled"
+msgstr "Kua mono"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11581,17 +11573,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware I"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - Ahu-2"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ui ki ahau"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Whakamahia aratau pai"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11600,26 +11584,6 @@ msgstr "Aratau e hiahiatia ana"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Rite kiriata (Rapuaunoatia)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Monokia aratau stereoscopic ka mutu te purei anō te"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Ko te stereoscopic tenei ataata. Tīpakohia aratau pūrei anō"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Tīpakohia aratau stereoscopic"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Anake (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Aratau e hiahiatia ana"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -11632,14 +11596,6 @@ msgstr "Rite kiriata"
 msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Tīpakohia pēhea te downmixed audio te, hei tauira i te 5.1 ki te 2.0: [Whakahohe] pupuritia e te ngā hihiri o te puna audio original ka downmixed Heoi ka raro [Kua Monokia] e whakaū ana te taumata rōrahi o te puna audio taketake Heoi kōpeke te ngā hihiri te rōrahi. Kia mōhio - ngā Dynamic ko te rerekētanga i waenganui i te quietest me whakahau nui oro i roto i te puna audio."
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Aratau Stereoscopic o te ataata"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Aratau Stereoscopic Taupokia"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -11656,10 +11612,6 @@ msgstr "Whakahohe i tenei ki te kōrero nui rite ki te whakamārama i te oro dow
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Whakahohe i wetemuna ngā pūmārō o ngā kōnae ataata."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Hōhonu stereoscopic Taitararoto"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

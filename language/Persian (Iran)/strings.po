@@ -6565,6 +6565,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "ضبط"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "غیر فعال"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "سریال"

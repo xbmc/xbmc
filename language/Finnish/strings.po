@@ -10793,6 +10793,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Nauhoita"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Ei käytössä"
+
 msgctxt "#36504"
 msgid "Side by side"
 msgstr "Vierekkäin"

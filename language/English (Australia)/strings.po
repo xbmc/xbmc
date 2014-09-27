@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Hardware accelerated"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Prefer VAAPI render method"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Allow hardware acceleration (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Use OMXPlayer for decoding of video files."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sync method"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12557,17 +12581,13 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Select virtual keyboard layouts."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoscopic mode (current)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoscopic mode"
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "If enabled VAAPI render method is preferred. This puts less load on the CPU but driver may hang!"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "None"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12593,21 +12613,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware Based"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Playback mode of stereoscopic videos."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ask me"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Use preferred mode"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12620,26 +12628,6 @@ msgstr "Preferred mode"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Same as movie (autodetect)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Disable stereoscopic mode when playback is stopped"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "This video is stereoscopic. Select playback mode"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Select stereoscopic mode"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Preferred mode"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12657,29 +12645,9 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Specify additional libraries whose log messages are to be included in the log."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoscopic mode of video"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoscopic mode inverted"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Set playback mode of stereoscopic 3D videos."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Changes the stereoscopic 3D mode of the user interface."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "The preferred stereoscopic 3D mode."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12696,10 +12664,6 @@ msgstr "Enable this to make dialogueue louder compared to background sounds when
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Subtitle stereoscopic depth"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

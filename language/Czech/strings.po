@@ -1463,7 +1463,7 @@ msgstr "Teplota"
 
 msgctxt "#402"
 msgid "Feels like"
-msgstr "Pocitově jako"
+msgstr "Pociťová teplota"
 
 msgctxt "#403"
 msgid "UV index"
@@ -1519,11 +1519,11 @@ msgstr "Pohled: velké ikony"
 
 msgctxt "#418"
 msgid "Low"
-msgstr "Nízká"
+msgstr "Nejnižší"
 
 msgctxt "#419"
 msgid "High"
-msgstr "Vysoký"
+msgstr "Nejvyšší"
 
 msgctxt "#420"
 msgid "Best Match"
@@ -1583,7 +1583,7 @@ msgstr "Opravdu si přejete odstranit '%s'?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
-msgstr "Z %s  na %i %s"
+msgstr "Ze směru %s rychlostí %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Hardwarově akcelerované"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Preferovat VAAPI metodu renderování"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Aktivovat hardwarovou akceleraci (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Použít OMXPlayer pro dekódování video souborů."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metoda synchronizace A/V"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "Adaptivní VAAPI Motion"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "Kompenzovaný VAAPI Motion"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12557,17 +12581,13 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Vyber rozložení virtuální klávesnice."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopický režim (aktuální)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopický režim"
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Povolte preferovanou VAAPI metodu renderování. Toto bude mít za následek snížení zátěže CPU, ale ovladač může přestat reagovat!"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Žádné"
+msgid "Disabled"
+msgstr "Zakázáno"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12593,21 +12613,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "V závislosti na hardware."
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopické - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Režim přehrávání pro stereoskopická videa."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Zeptej se mě"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Použít preferovaný režim"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12620,26 +12628,6 @@ msgstr "Preferovaný režim"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Shodný s filmem (autodetekce)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Při zastaveném přehrávání vypnout stereoskopický režim"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Toto video je stereoskopické. Zvolte režim přehrávání."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Zvolte stereoskopický režim"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Upřednostňovaný režim"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12657,29 +12645,9 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Vyber další knihovny, pro které má být přidáno logování."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopický režim videa"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Převrácený stereoskopický režim"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Režim přehrávání pro stereoskopická 3D videa."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Zabraňuje Kodi ukončení 3D stereoskopického režimu v okamžiku zastavení přehrávání, volba je vhodná pro zařízení, které nerozpoznají přechod z 3D zpět do 2D režimu zobrazení, bez nutnosti změny režimu televizoru."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Změnit 3D stereoskopického režim uživatelského rozhraní."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Preferovaný stereoskopický 3D režim."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12696,10 +12664,6 @@ msgstr "Tato volba zvýší hlasitost dialogů na úkor pozadí při downmixu v�
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Zapni hardwarové dekódování videa."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Hloubka titulků prř stereoskopickém režimu"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

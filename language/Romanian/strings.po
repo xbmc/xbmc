@@ -10453,6 +10453,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Înregistrează"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Dezactivat"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Serial"

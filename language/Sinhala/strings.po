@@ -5470,8 +5470,8 @@ msgid "Record"
 msgstr "පටිගත කරන්න "
 
 msgctxt "#36502"
-msgid "None"
-msgstr "කිසිවක් නැත"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
 
 msgctxt "#37026"
 msgid "Auto"

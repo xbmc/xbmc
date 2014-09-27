@@ -10629,17 +10629,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "பதிவுசெய்"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "சிடீரியோசுகோபிக்கு முறை (தற்போதையது)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "சிடீரியோசுகோபிக்கு முறை"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "எதுவுமில்லை"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டது"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -10665,17 +10657,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "வன்பொருள் சார்ந்தது"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "மோனோசுகோபிக்கு - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "என்னை கேட்கவும்"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "விருப்பமான முறையை பயன்படுத்தவும்"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -10685,26 +10669,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "திரைப்படத்தை போன்றது (தானாக கண்டறி)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "வசிப்பது நிறுத்திவிட்டால் சிடீரியோசுகோபிக்கு முறையை முடக்கவும்"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "இது சிடீரியோசுகோபிக்கு வீடியோ. வாசிக்கும் முறையை தேர்வு செய்க."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "சிடீரியோசுகோபிக்கு முறையை தேர்வு செய்க"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "மோனோ (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "விருப்பமான முறை"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "மாற்று முறையை தேர்வு செய்க"
@@ -10712,14 +10676,6 @@ msgstr "மாற்று முறையை தேர்வு செய்க
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "திரைப்படத்தை போன்றது"
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "வீடியோவின் சிடீரியோசுகோபிக்கு முறை"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "சிடீரியோசுகோபிக்கு முறை தலைகீழாக்கப்பட்டது"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

@@ -12409,17 +12409,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Video kod çözmesinin yazılım (daha fazla CPU gerektirir) veya mümkünse donanım hızlandırması olup olmayacağını tanımlar."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopik mod (varsayılan)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopik mod"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Hiçbiri"
+msgid "Disabled"
+msgstr "Devre dışı"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12445,21 +12437,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Donanım Temelli"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Stereoskopik videoların oynatma modu."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Bana sor"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Tercih edilen modu kullan"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12473,26 +12453,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Film ile aynı (otomatik)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Oynatma durdurulunca stereoskopik modu devre dışı bırak"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Bu video stereoskopik. Oynatma modunu seçin"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Stereoskopik modu seç"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Tercih edilen mod"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Alternatif mod seç..."
@@ -12505,29 +12465,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Sesin nasıl downmix yapılacağını seçin, mesela 5.1'den 2.0'a: [Etkin] downmix yaparken orijinal ses kaynağının dinamik aralığını korur ancak ses şiddeti düşük olacaktır [Devre dışı] dinamik aralık sıkıştırılır ancak orijinal ses kaynağının ses seviyesini korur. Not - Dinamik aralık bir ses kaynağının en sessiz ve en gürültülü sesleri arasındaki farktır."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopik video modu"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Ters çevrilmiş stereoskopik mod"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Stereoskopik 3B videoların oynatma modunu ayarla."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Oynatma durdurulduğunda Kodi'nin stereoskopik 3B modundan çıkmasını önler, bazı TV'ler TV'de görüntüleme modu değiştirilmeden 3 Boyutludan 2 Boyutluya geçişi tanımaz."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Kullanıcı arabiriminin stereoskopik 3B modunu değiştirir."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Tercih edilen Stereoskopik 3B modu."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12544,10 +12484,6 @@ msgstr "Çok kanallı ses downmix yapılınca diyalog seslerini arka plan sesler
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Video dosyalarının donanımsal kod çözmesini etkinleştir."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Stereoskopik altyazı derinliği"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

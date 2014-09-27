@@ -11689,17 +11689,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Grava"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Mode estereoscòpic (actual)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Mode estereoscòpic"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Cap"
+msgid "Disabled"
+msgstr "Inhabilitat"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11725,17 +11717,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Maquinari Basat"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscòpic - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Pregunta'm"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Utilitza el mode preferit"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11745,26 +11729,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "El mateix que la pel·lícula (detecció automàtica)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Desactiva el mode estereoscòpic quan s'atura la reproducció"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Aquest vídeo és estereoscòpic. Seleccioneu el mode de reproducció"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Selecciona el mode estereoscòpic"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Mode preferit"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Selecciona el mode alternatiu..."
@@ -11772,14 +11736,6 @@ msgstr "Selecciona el mode alternatiu..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "El mateix que la pel·lícula"
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Mode estereoscòpic del vídeo"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Mode estereoscòpic invertit"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -11796,10 +11752,6 @@ msgstr "Habilita-ho per potenciar els diàlegs en comparació amb els so de fons
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilita el maquinari de descodificació d'arxius de vídeo."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profunditat estereoscòpica dels subtítols"
 
 msgctxt "#36902"
 msgid "TV show"

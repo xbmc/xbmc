@@ -8993,6 +8993,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Сними"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Оневозможено"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "ТВ Серија"

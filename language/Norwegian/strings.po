@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Bekreft flytting"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Bekreft sletting"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Kopier disse filene?"
@@ -1084,6 +1088,10 @@ msgstr "Strømmens originalspråk"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Språk i brukergrensesnitt"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Tastaturoppsett"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -2403,35 +2411,47 @@ msgstr "Aktiver Dolby Digital transkoding"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
-msgstr "Omstendelig logging for SMB-biblioteket"
+msgstr "Detaljert logging for SMB-biblioteket"
 
 msgctxt "#670"
 msgid "Verbose logging for CURL library (http, dav)"
-msgstr "Omstendelig logging for CURL-biblioteket (http, dav)"
+msgstr "Detaljert logging for CURL-biblioteket (http, dav)"
 
 msgctxt "#671"
 msgid "Verbose logging for CMYTH library"
-msgstr "Omstendelig logging for CMYTH-biblioteket"
+msgstr "Detaljert logging for CMYTH-biblioteket"
 
 msgctxt "#672"
 msgid "Verbose logging for FFMPEG libraries"
-msgstr "Omstendelig logging for FFMPEG-bibiotekene"
+msgstr "Detaljert logging for FFMPEG-bibiotekene"
 
 msgctxt "#673"
 msgid "Verbose logging for RTMP library"
-msgstr "Omstendelig logging for RTMP-biblioteket"
+msgstr "Detaljert logging for RTMP-biblioteket"
 
 msgctxt "#674"
 msgid "Verbose logging for DBUS calls"
-msgstr "Omstendelig logging for DBUS-oppkall"
+msgstr "Detaljert logging av DBUS-kall"
 
 msgctxt "#675"
 msgid "Verbose logging for JSON-RPC requests"
-msgstr "Omstendelig logging for JSON-RPC-anmodninger"
+msgstr "Detaljert logging av JSON-RPC-forespørsler"
 
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
-msgstr "Omstendelig logging for AUDIO-komponent"
+msgstr "Detaljert logging for AUDIO-komponent"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Detaljert logging for AirTunes-biblioteket"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Detaljert logging for UPnP-komponentene"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Detaljert logging for CEC-biblioteket"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3563,7 +3583,7 @@ msgstr "Ekspert"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Tilleggsutforsker"
+msgstr "Utvidelser"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -4048,6 +4068,18 @@ msgstr "Total oppetid"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Batterinivå"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Automatiske oppdateringer: på"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Automatiske oppdateringer: varsle"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Automatiske oppdateringer: av"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5009,6 +5041,14 @@ msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
 msgstr "Tillat multitråd programvare avkoding"
 
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Bruk MPEG-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Bruk MPEG-4 VDPAU"
+
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Bruk VC-1 VDPAU"
@@ -5016,6 +5056,14 @@ msgstr "Bruk VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Aktiver dette alternativet for å benytte maskinvareakselerasjon for VC-1-baserte kodeker. Hvis deaktivert så vil CPU-en benyttes i stedet. AMD-maskinvare med VDPAU kan ikke avkode VC-1 Simple. "
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Bruk MPEG-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Bruk MPEG-4 VAAPI"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5036,6 +5084,14 @@ msgstr "Programvare"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Maskinvareakselerert"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Tillat maskinvareakselerasjon (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Bruk OMXPlayer for dekoding av videofiler."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5360,6 +5416,10 @@ msgstr "Datoformat"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI-filtre"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5977,6 +6037,18 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-prosessering"
@@ -6529,6 +6601,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Navn på ny gruppe"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Søk..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Gruppe"
@@ -7039,7 +7115,7 @@ msgstr "Du trenger en tuner, tjenerdelprogramvare, og et"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "Tillegg for at tjenerdelen skal kunne bruke PVR"
+msgstr "Utvidelse for at tjenerdelen skal kunne bruke PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -8391,7 +8467,7 @@ msgstr "Ønsker du å fjerne alle oppføringer fra"
 
 msgctxt "#20341"
 msgid "this path from the Kodi library?"
-msgstr "denne stien fra Kodi-biblioteket?"
+msgstr "denne stien fra biblioteket?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9287,7 +9363,7 @@ msgstr "Lydspråk"
 
 msgctxt "#21448"
 msgid "Subtitle language"
-msgstr "Språk for undertekster"
+msgstr "Språk på teksting"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
@@ -9368,6 +9444,10 @@ msgstr "%d til %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s til %s"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -10104,6 +10184,10 @@ msgstr "Endringslogg"
 msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Se etter oppdateringer"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Sist oppdatert %s"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -11587,7 +11671,7 @@ msgstr "Fortsett med sist sette kanal ved oppstart."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
-msgstr "Vis informasjon om signalkvaliteten i kodekinformasjonsvinduet (hvis støttet av tillegget og tjenerdelen)"
+msgstr "Vis informasjon om signalkvaliteten i vinduet for kodekinformasjon (hvis støttet av utvidelsen og tjenerdelen)"
 
 msgctxt "#36230"
 msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
@@ -12011,7 +12095,7 @@ msgstr "Bestem høyeste antall klienter som kan kobles til."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control Kodi."
-msgstr "Tillat at programmer på nettverket kontrollerer Kodi."
+msgstr "Tillat programmer på nettverket å styre Kodi."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12377,17 +12461,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Definerer om videodekoding skal utføres i programvare (krever mer CPU) eller med maskinvareakselerasjon når mulig."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopisk modus (gjeldende)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopisk modus"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Ingen"
+msgid "Disabled"
+msgstr "Deaktivert"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12413,21 +12489,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Maskinvarebasert"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopisk - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Avspillingsmodus for stereoskopiske videoer."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Spør meg"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Bruk foretrukket modus"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12441,26 +12505,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Same som film (auto-oppdaget)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Deaktiver stereoskopisk modus når avspillingen er stoppet"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Denne videoen er stereoskopisk - Velg avspillingsmodus"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Velg stereoskopisk modus"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Foretrukket modus"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Velg alternativ modus..."
@@ -12473,29 +12517,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Velg hvordan lyd blir nedmikset, for eksempel fra 5.1 til 2.0: [Aktivert] beholder det dynamiske registeret fra den originale lydkilden ved nedmiks, men lydnivået vil bli lavere [Deaktivert] beholder lydnivået fra den originale lydkilden, men det dynamiske registeret blir komprimert. Bemerk - Dynamisk register er forskjellen mellom den svakeste og den kraftigste lyden i lydkilden."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Videoens stereoskopiske modus"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Invertert stereoskopisk modus"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Fastsett avspillingsmodus for stereoskopiske 3D-videoer."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Hindrer at Kodi avslutter stereoskopisk modus når avspillingen stoppes. Ikke alle TV-er vill oppfatte byttet fra 3D til 2D uten at visningsmoduset skiftes på TV-en."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Endrer det stereoskopiske 3D-moduset i brukergrensesnittet."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Det foretrukne, stereoskipiske 3D-modus."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12512,10 +12536,6 @@ msgstr "Aktiver denne for å gjøre dialoger høyere sammenlignet med bakgrunnsl
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktiver maskinvareavkoding av videofiler."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Stereoskopisk dybde på undertekster"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -12541,6 +12561,14 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori som inneholder innstillinger for hvordan videoutgang håndteres."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmer"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV-serie"
@@ -12549,6 +12577,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "TV-serier"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "sesong"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "sesonger"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episode"
@@ -12556,6 +12592,46 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episoder"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "samling"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "samlinger"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videoer"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "musikk"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musikk"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artist"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artister"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "album"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12624,3 +12700,15 @@ msgstr "Velg denne hvis lyd-ut tilkoblingen bare støtter multikanal lyd som Dol
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Automatisk"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"

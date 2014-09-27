@@ -12245,17 +12245,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Neem op"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopiese modus (huidig)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopiese modus"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Geen"
+msgid "Disabled"
+msgstr "Nie in staat gestel"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12281,21 +12273,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardeware Gebaseer"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopies - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Terugspeel modus van stereoskopiese videos."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Vra my"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Gebruik verkose modus"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12309,26 +12289,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Selfde as fliek (outospeur)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Deaktiveer stereoskopiese modus wanneer terugspeel stop"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Hierdie video is stereoskopies. Selekteer terugspeel modus"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Selekteer stereoskopiese modus"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Verkose modus"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Selekteer alternatiewe modus..."
@@ -12337,25 +12297,9 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Selfde as fliek"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopiese modus van video"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoskopiese modus omgekeer"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Stel terugspeel modus van stereoskopiese 3D videos."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Verander die stereoskopiese 3D modus van die gebruiker koppelvlak."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Die verkose stereoskopiese 3D modus."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12372,10 +12316,6 @@ msgstr "Stel hierdie in staat om dialoog harder te maak in vergelyking met agter
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Stel hardeware dekodering van video lêers in staat."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Subtitel stereoskopiese diepte"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

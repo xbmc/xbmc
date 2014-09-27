@@ -12377,17 +12377,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Nosaka, vai video atkodēšanu izpildīt ar programmatūru (prasa vairāk CPU) vai ar aparatūras paātrinājumu, ja tas ir pieejams."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopiskais režīms (pašreizējais)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopiskais režīms"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Nav"
+msgid "Disabled"
+msgstr "Izslēgts"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12413,21 +12405,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Ar aparatūru"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopisks - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Stereoskopisko video atskaņošanas režīms."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Prasīt man"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Izmantot vēlamo režīmu"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12441,26 +12421,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Tāds kā filmai (autonoteikt)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Izslēgt stereoskopisko režīmu, ja atskaņošana apturēta"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Šis video ir stereoskopisks. Atlasiet atskaņošanas režīmu"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Atlasīt stereoskopisko režīmu"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Vēlamais režīms"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Atlasīt alternatīvo režīmu..."
@@ -12473,29 +12433,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Atlasīt, kā audio ir samiksēts, piemēram, no 5.1 uz 2.0: [Ieslēgts] patur sākotnējā audio avota skaļuma diapazonu samiksējot, tomēr skaļums būs mazāks [Izslēgts] patur sākotnējā audio avota skaļuma līmeni, taču skaļuma diapazons tiek saspiests. Piezīme - Skaļuma diapazons ir starpība starp klusākajām un skaļākajām skaņām audio avotā."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Video stereoskopiskais režīms"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Apgriezti stereoskopiskais režīms"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Iestatīt stereoskopisko 3D video atskaņošanas režīmu."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Nepieļauj Kodi iziešanu no stereoskopiskā 3D režīma, kad atskaņošana ir apturēta, jo ne visi TV atpazīst pārslēgšanos no 3D uz 2D, ja skatīšanas režīms TV nemainās."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Mainīt lietotāja saskarnes stereoskopisko 3D režīmu."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Vēlamais stereoskopiskais 3D režīms."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12512,10 +12452,6 @@ msgstr "Ieslēgt šo, lai laikā, kad notiek daudzkanālu audio samiksēšana, p
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Ieslēgt video failu atkodēšanu ar aparatūru."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Subtitru stereoskopiskais dziļums"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

@@ -12586,16 +12586,16 @@ msgid "If enabled VAAPI render method is prefered. This puts less load on the CP
 msgstr "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoscopic mode (current)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoscopic 3D mode (current)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoscopic mode"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoscopic 3D mode"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "None"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12622,20 +12622,16 @@ msgid "Hardware Based"
 msgstr "Hardware Based"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopic (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Playback mode of stereoscopic videos."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Playback mode of stereoscopic 3D videos"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ask me"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Use preferred mode"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12650,24 +12646,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Same as movie (autodetect)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Disable stereoscopic mode when playback is stopped"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Disable stereoscopic 3D mode when playback ended"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "This video is stereoscopic. Select playback mode"
+msgid "Select playback mode"
+msgstr "Select playback mode"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Select stereoscopic mode"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Preferred mode"
+msgid "Select stereoscopic 3D mode"
+msgstr "Select stereoscopic 3D mode"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12686,28 +12674,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Specify additional libraries whose log messages are to be included in the log."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoscopic mode of video"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoscopic 3D mode of video"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoscopic mode inverted"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Set playback mode of stereoscopic 3D videos."
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Invert Stereoscopic 3D mode (flip eyes)"
 
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognize the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Changes the stereoscopic 3D mode of the user interface."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "The preferred stereoscopic 3D mode."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "The preferred mode in which stereoscopic 3D media such as videos should be played."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12726,8 +12710,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Subtitle stereoscopic depth"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoscopic 3D depth of subtitles"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

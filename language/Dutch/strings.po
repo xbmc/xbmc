@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Hardwareversneld"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Voorkeur voor VAAPI rendermethode"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Hardwareversnelling inschakelen (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Gebruik OMXPlayer voor het decoderen van videobestanden."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synchronisatiemethode"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPO Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI beweging adaptief"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI beweging gecompenseerd"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12557,17 +12581,21 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Selecteer virtuele toetsenbord lay-outs."
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Wanneer ingeschakeld is de VAAP rendermethode gewenst. Dit verminderd minder gebruik van de CPU maar de driver kan blijven  hangen!"
+
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoscopische modus (huidig)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoscopische 3D modus (huidig)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoscopische modus"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoscopische 3D modus"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Geen"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12594,20 +12622,16 @@ msgid "Hardware Based"
 msgstr "Hardware-gebaseerd"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopisch - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopisch (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Weergavemodus van stereoscopische video's."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Weergavemodus van stereoscopische 3D videos"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Vraag"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Voorkeursmodus gebruiken"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12622,24 +12646,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Zelfde als film (auto-detectie)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Schakel stereoscopische modus uit wanneer het afspelen gestopt is"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Schakel stereoscopische 3D modus uit wanneer het afspelen gestopt is"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Deze video is stereoscopisch. Kies weergavemodus."
+msgid "Select playback mode"
+msgstr "Selecteer afspeelmodus"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Kies stereoscopische modus."
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Voorkeursmodus"
+msgid "Select stereoscopic 3D mode"
+msgstr "Kies stereoscopische 3D modus."
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12658,28 +12674,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Specificeer overige bibliotheken wiens log berichten moeten worden opgenomen in het log."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoscopische modus van video"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoscopische 3D modus van video"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoscopische modus omgekeerd"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Stel Weergavemodus van stereoscopische 3D video's in."
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Omkeren Stereoscopische 3D modus (Verwissel van oog)"
 
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Voorkomt dat Kodi uit de stereoscopische 3D modus gaat wanneer afspelen is gestopt, omdat niet alle TV's de verandering van 3D terug naar 2D herkennen zonder dat de modus wordt veranderd op de TV."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Geactiveerd] Verwissel GUI (en sommige TV`s) terug naar 2D modus bij einde afspelen. [gedeactiveerd] GUI en TV blijven in Stereoscopische 3D modus. Voor video afspeellijsten wordt de sterioscopische 3D mode niet verandert tussen video`s, zelfs niet voor niet-stereoscopische video`s. "
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Verander de stereoscopische 3D modus voor de gebruikersinterface."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "De geprefereerde stereoscopische 3D modus."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "de gekozen modus in welke stereoscopische 3D media zoals video`s moeten worden afgespeeld."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12698,8 +12710,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Gebruik hardware decodering van video bestanden."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Ondertitel Stereoscopische diepte"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoscopische 3D diepte van Ondertitels"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

@@ -12401,17 +12401,9 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Escoller a disposición do teclado virtual."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Modo estereoscópico (actual)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Modo estereoscópico"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Ningún"
+msgid "Disabled"
+msgstr "Desactivado"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12437,21 +12429,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Baseado no Hardware"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscópico - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Modo de reprodución para vídeos estereoscópicos."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Preguntar"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Usar modo preferido"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12461,26 +12441,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "O mesmo do filme (autodetectar)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Desactivar o modo estereoscópico cando a reprodución estea detida"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Este vídeo é estereoscópico, escolla o modo reprodución"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Seleccionar modo estereoscópico"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Modo peferido"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Seleccionar modo alternativo..."
@@ -12489,29 +12449,9 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "O mesmo do filme"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Modo de vídeo estereoscópico"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Modo invertido estereoscópico"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Estabelecer o modo de reprodución dos vídeos 3D estereoscópicos."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Evita que o Kodi saia do modo 3D estereoscópico cando a reproducción estea detida xa que non tódalas televisións reconocerán o troco do 3D ​​ao 2D sen volver ao modo de visualización na televisión."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Cambia o modo 3D estereoscópico do interfaz de usuario."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "O modo 3D estereoscópico preferido."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12528,10 +12468,6 @@ msgstr "Actíveo para potenciar os diálogos a diferenza dos sons de fondo cando
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activar a decodificación por hardware dos ficheiros de vídeo."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profundidade estereoscópica para os subtítulos"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

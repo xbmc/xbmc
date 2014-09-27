@@ -11805,17 +11805,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Сабт"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Ҳолати стереоскопӣ (ҷорӣ)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Ҳолати стереоскопӣ "
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Ҳеҷ"
+msgid "Disabled"
+msgstr "Ғайрифаъол"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11841,17 +11833,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Дар асоси сахтафзор"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Моноскопӣ - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Маро пурсед"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Истифодаи ҳолати дӯстдошта"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11860,26 +11844,6 @@ msgstr "Ҳолати дӯстдошта"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Монанди филм (худмуайянкунӣ)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Ғайрифаъол кардани ҳолати стереоскопӣ баъд аз таваққуфи пахш"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Ин видео стереоскопӣ мебошад. ҳолати пахшро интихоб намоед."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Ҳолати стереоскопиро интихоб намоед"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Моно (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Ҳолати дӯстдошта"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -11892,14 +11856,6 @@ msgstr "Монанди филм"
 msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Интихоб кунед, ки чӣ тавр аудио омезиш меёбад, масалан аз 5.1 то 2.0: [Фаъолшуда] диапазони динамикии манбаи аудиои аслиро ҳангоми омезиш истифода мекунад, вале баландии садо паст мешавад [Ғайрифаъол] сатҳи баландии садои манбаи аудиоии аслиро истифода мекунад, вале диапазони динамиқӣ фишурдашуда аст. Тавзеҳ - Диапазони динамикӣ ин тафовут байни садои пасттарин ва баландтарин дар манбаи аудиоӣ мебошад."
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Ҳолати видеои стереоскопӣ"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Ҳолати стереоскопии аксшуда"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -11916,10 +11872,6 @@ msgstr "Баландкунии садои талаффуз дар диалог �
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Фаъол кардани рамзкушоии сахтафзорӣ барои файлҳои видеоӣ."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Қаъри стереоскопии зерунвонҳо"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

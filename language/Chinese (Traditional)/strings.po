@@ -12273,17 +12273,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "設定影片解碼要使用軟體(需要更多 CPU 資源)或者可能的話使用硬體加速。"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "3D 立體模式 (目前的)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "3D 立體模式"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "無"
+msgid "Disabled"
+msgstr "關閉"
 
 msgctxt "#36504"
 msgid "Side by side"
@@ -12297,21 +12289,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "基於硬體"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "3D 立體影片的播放模式。"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "問我"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "使用偏好的模式"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12325,26 +12305,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "和電影相同 (自動偵測)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "當播放停止時停用 3D 立體模式"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "這是一部 3D 立體影片。選擇播放模式"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "選擇 3D 立體模式"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "2D"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "偏好的模式"
-
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "和電影相同"
@@ -12353,29 +12313,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "選擇聲音要如何下降混合，例如從 5.1 到 2.0：[啟用] 維持原本聲音來源的動態範圍，但會稍微變小聲。[停用] 維持原本聲音的大小，但動態範圍會被壓縮。注意 - 動態範圍指的是原本聲音最小聲和最大聲的差距。"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "影片的 3D 立體模式"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "相反的 3D 立體模式"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "設定 3D 立體影片的播放模式。"
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "避免 Kodi 在停止播放時退出 3D 立體模式，這樣可以避免有些電視無法自動偵測切換 3D 立體模式而造成的問題。"
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "變更使用者介面的 3D 立體模式。"
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "偏好的 3D 立體模式。"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12392,10 +12332,6 @@ msgstr "啟用這個功能讓下降混合多聲道時的對白比背景音效大
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "啟用影片硬體解碼。"
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "字幕立體效果深度"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

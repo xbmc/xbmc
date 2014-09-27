@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Accélération matérielle"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Préférer la méthode de rendu VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Permettre l'accélération matérielle (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Utiliser OMXPlayer pour le décodage de fichiers vidéo."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Méthode de synchro. A/V"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI adaptation aux mouvements"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI compensation des mouvements "
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12557,17 +12581,21 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Choisir les agencements de claviers virtuels."
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "En cas d'activation, la méthode de rendu VAAPI est préférée. Ceci met moins de charge sur l'UCT, mais le pilote peut figer !"
+
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Mode stéréoscopique (actuel)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Mode stéréoscopique 3D (actuel)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Mode stéréoscopique"
+msgid "Stereoscopic 3D mode"
+msgstr "Mode stéréoscopique 3D"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Aucun"
+msgid "Disabled"
+msgstr "Désactivé"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12594,20 +12622,16 @@ msgid "Hardware Based"
 msgstr "Fondé sur le matériel"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopique - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopique (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Mode de lecture de vidéos stéréoscopiques."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Mode lecture des vidéos stéréoscopiques 3D"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Demandez-moi"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Utiliser le mode préféré"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12622,24 +12646,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Comme le film (détection automatiquement)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Désactiver le mode stéréoscopique quand la lecture est arrêtée"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Désactiver le mode stéréoscopique 3D quand la lecture est stoppée"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Cette vidéo est stéréoscopique. Choisir le mode de lecture"
+msgid "Select playback mode"
+msgstr "Choisir le mode de lecture"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Choisir le mode stéréoscopique"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Mode préféré"
+msgid "Select stereoscopic 3D mode"
+msgstr "Choisir le mode stéréoscopique 3D"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12658,28 +12674,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Spécifier des bibliothèques supplémentaires dont les messages de journalisation doivent être inclus au journal."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Mode stéréoscopique de la vidéo"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Mode stéréoscopique 3D de la vidéo"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Mode stéréoscopique inversé"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Définit le mode de lecture de vidéos 3D stéréoscopiques."
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Inverser le mode stéréoscopique 3D (intervertir les yeux)"
 
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Empêche la sortie de Kodi du mode 3D stéréoscopique quand la lecture est arrêtée car toutes les télés ne reconnaissent pas le passage du 3D au 2D sans que le mode d'affichage ne soit basculé sur la télé."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Activé] Repasser l'IUG (et certaines télés) en mode 2D quand la lecture est stoppée. [Désactivé] L'IUG et la télé resteront en mode stéréoscopique 3D. Pour les listes de lectures vidéo, le mode stéréoscopique 3D ne changera pas entre les vidéos, même pour les vidéos non stéréoscopiques."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Change le mode 3D stéréoscopique de l'interface utilisateur."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Le mode 3D stéréoscopique préféré."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Le mode préféré pour la lecture des médias stéréoscopiques 3D tels que les vidéos."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12698,8 +12710,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Activer le décodage matériel des fichiers vidéos."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profondeur stéréoscopique des sous-titres"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Profondeur stéréoscopique 3D des sous-titres"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

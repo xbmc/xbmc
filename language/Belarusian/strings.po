@@ -10949,6 +10949,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Запіс"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Забаронена"
+
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."

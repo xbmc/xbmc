@@ -4573,6 +4573,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Registri"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
 msgstr "Kategorio enhavanta la agordojn por kiel la muzikbiblioteko estu traktata."

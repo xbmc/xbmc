@@ -3336,3 +3336,7 @@ msgstr "नाम"
 msgctxt "#36428"
 msgid "Record"
 msgstr "लिखना"
+
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "विकलांग"

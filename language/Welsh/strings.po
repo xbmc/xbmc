@@ -5121,6 +5121,10 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Caledwedd wedi ei gyflymu"
 
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Caniatáu cyflymu caledwedd (OMXPlayer)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Dull cydweddu A/V"
@@ -11833,6 +11837,10 @@ msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
 msgstr "Categori ar gyfer unrhyw osodiad penodol cefn eich recordydd, os yw'r cefn yn cynnal y newidiadau hyn yn Kodi."
 
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Galluogi llyfrgell gerddoriaeth."
+
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
 msgstr "Pennu os yw artistiaid sy'n ymddangos mewn casgliadau hefyd yn cael eu dangos yng ngolwg artist y llyfrgell."
@@ -11840,6 +11848,10 @@ msgstr "Pennu os yw artistiaid sy'n ymddangos mewn casgliadau hefyd yn cael eu d
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Estyn yn awtomatig gwybodaeth am yr albwm a'r artist drwy grafwyr wrth sganio."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Dewis ffynhonnell arferol gwybodaeth albwm."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11872,6 +11884,10 @@ msgstr "Yr arferol yw 89dB yn ôl y safon. Newidiwch gyda gofal."
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Yr arferol yw 89dB yn ôl y safon. Newidiwch gyda gofal."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "Gostwng sain os yn clipio."
 
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
@@ -11917,6 +11933,22 @@ msgctxt "#36293"
 msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr "Pan yn chwarae ffeil cerddoriaeth bydd Kodi yn chwilio am ffeil .cdg sy'n cyfateb ac yn dangos ei graffigau."
 
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Gosod y math o ffont i'w ddefnyddio yn ystod karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Gosod maint y ffont i'w ddefnyddio yn ystod karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Gosod lliw'r ffont i'w ddefnyddio yn ystod karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Gosod set nod y ffont i'w ddefnyddio yn ystod karaoke."
+
 msgctxt "#36301"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
@@ -11940,6 +11972,10 @@ msgstr "Cynhyrchu lluniau bach yn awtomatig wrth fynd i ffolder lluniau."
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Bydd lluniau'n tro'n awtomatig yn ôl y wybodaeth yn y tag EXIF, os yw ar gael."
+
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Dangos fideos yn rhestrau ffeil lluniau."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -12126,8 +12162,8 @@ msgid "Record"
 msgstr "Recordio"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Dim"
+msgid "Disabled"
+msgstr "Analluogwyd"
 
 msgctxt "#36503"
 msgid "Over/Under"

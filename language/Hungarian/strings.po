@@ -12377,17 +12377,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Meghatározza, hogy a videó dekódolás szoftveresen történjen -e (több CPU erőforrást igényel), vagy hardveresen a GPU segítségével amikor lehetséges."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Sztereógráf mód (aktuális)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Sztereógráf mód"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Nincs"
+msgid "Disabled"
+msgstr "Letiltva"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12413,21 +12405,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardver Alapú"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoszkópikus - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "A sztereógráf videók lejátszási módja."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Kérdezzen"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Használja a preferált módot"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12441,26 +12421,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Az állomány szerinti (detektálás)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Sztereógráf mód letiltása a lejátszás megállításakor"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Ez a videó sztereógráf. Válassza ki a lejátszás módját"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Válasszon sztereógráf módot"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Monó (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Előnyben részesített mód"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Válasszon más módot..."
@@ -12473,29 +12433,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Audió lekeverés beállítása például 5.1-ről 2.0-ra: [Engedélyez] Fenntartja a hangok dinamikatartományát még ha a lekevert hang halkabbá is válik [Letiltott] fenntartja a forrás hangerejét még ha a dinamika tartomány szélessége csökken is. Megjegyzés - A dinamika tartomány a különbség a legalacsonyabb és a legmagasabb hangerő között a hangforrásban."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "A videó sztereógráf módja"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Sztereógráf mód megfordítva"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "A sztereógráf 3D videók lejátszási módjának beállítása."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Megakadályozza, hogy az Kodi kilépjen a szereográf 3D módból, amikor a lejátszás megáll, mivel nem minden TV érzékeli a 3D -> 2D módváltást a nézettípus TV-n történő váltása nélkül."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Beállítja a a sztereográf 3D módot a felhasználói felületen."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Előnyben részesített sztereográf 3D mód."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12512,10 +12452,6 @@ msgstr "A párbeszédek hangosítása a a háttérhez képest mikor többcsatorn
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Videófájlok hardveres dekódolásának engedélyezése."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Felirat 3D mélység"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

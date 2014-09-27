@@ -1732,3 +1732,7 @@ msgstr "TV"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Rakam"
+
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Dilumpuhkan"

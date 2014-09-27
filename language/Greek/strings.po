@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Επιτάχυνση υλικού"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Να προτιμάται η μέθοδος απόδοσης VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Να επιτρέπεται η επιτάχυνση υλικού (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Χρήση του OMXPlayer για αποκωδικοποίηση αρχείων βίντεο."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Μέθοδος συγχρονισμού A/V"
@@ -5883,7 +5895,7 @@ msgstr "Απόπλεξη (κατά το ήμισυ)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr "Απόπλεξη βίντεο (Deinterlace)"
+msgstr "Απόπλεξη βίντεο (De-interlace)"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
@@ -6072,6 +6084,14 @@ msgstr "DXVA-HD"
 msgctxt "#16327"
 msgid "VAAPI Bob"
 msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Προσαρμοστική Κίνηση"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Επανόρθωση Κίνησης"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12561,17 +12581,13 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Επιλογή διατάξεων εικονικού πληκτρολογίου."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Στερεοσκοπική προβολή (τρέχουσα)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Στερεοσκοπική προβολή"
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Αν ενεργοποιηθεί, θα προτιμάται η μέθοδος απόδοσης VAAPI. Ρίχνει λιγότερο βάρος στον επεξεργαστή, αλλά μπορεί να προκαλέσει κολλήματα!"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Κανένα"
+msgid "Disabled"
+msgstr "Ανενεργή"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12597,21 +12613,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Βασισμένο στο Υλικό"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Μονοσκοπικό - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Λειτουργία αναπαραγωγής στερεοσκοπικών βίντεο."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ρωτήστε με"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Χρήση προτιμώμενης λειτουργίας"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12624,26 +12628,6 @@ msgstr "Προτιμώμενη λειτουργία"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Όπως η ταινία (αυτόματος εντοπισμός)"
-
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Απενεργοποίηση στερεοσκοπικής προβολής κατά τη διακοπή της αναπαραγωγής"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Αυτό το βίντεο είναι στερεοσκοπικό. Επιλέξτε λειτουργία αναπαραγωγής"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Επιλογή στερεοσκοπικής προβολής"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Μονό (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Προτιμώμενη λειτουργία"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12661,29 +12645,9 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Ορίστε τις επιπλέον συλλογές τα μηνύματα των οποίων θα περιληφθούν στο αρχείο καταγραφής."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Στερεοσκοπική προβολή του βίντεο"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Ανεστραμμένη στερεοσκοπική προβολή"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Ορισμός λειτουργίας αναπαραγωγής στερεοσκοπικών 3D βίντεο."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Αποτρέπει το Kodi από το να βγαίνει από τη στερεοσκοπική 3D προβολή κατά τη διακοπή της αναπαραγωγής, καθώς δεν αναγνωρίζουν όλες οι τηλεοράσεις την αλλαγή από 3D σε 2D χωρίς την αντίστοιχη ρύθμιση στην ίδια την τηλεόραση."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Αλλάζει τη στερεοσκοπική 3D προβολή του περιβάλλοντος εργασίας."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Προτιμώμενη στερεοσκοπική 3D προβολή."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12700,10 +12664,6 @@ msgstr "Ενεργοποιήστε το για αύξηση της ένταση�
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Αποκωδικοποίηση υλικού των αρχείων βίντεο."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Στερεοσκοπικό βάθος υποτίτλων"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

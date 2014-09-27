@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Confirmar mover archivo"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Confirmar eliminacion"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Copiar estos archivos?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Interfaz Web"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Codificadores de audio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Eslogan"
@@ -844,6 +852,10 @@ msgstr "Pant. Completa"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixeles: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1976,6 +1988,10 @@ msgstr "No hay biografía para este artista"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Convertir audio multicanal a stereo"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Numero"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -4037,6 +4053,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Nivel de batería"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Actualizaciones automaticas: Encendida"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Actualizaciones automaticas: Notificar"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Actualizaciones automaticas: Nunca"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Clima"
@@ -5989,6 +6017,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "o usa frases para encontrar un resultado exacto, como \"El mago de Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Buscar similar"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importar EPG desde clientes"
@@ -6377,9 +6409,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Favor de cambiar a otro canal."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Ir al canal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Escriba el nombre de la carpeta para la grabacion"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Porfavor elija un canal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6401,6 +6441,14 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Error del backend PVR.  Verificar log para detalles."
 
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Borrar esta grabacion?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Borrar todas las grabaciones en esta carpeta?"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Versión"
@@ -6420,6 +6468,10 @@ msgstr "Buscar canales"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "No se pueden usar las funciones del PVR mientras se esta buscando."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "En que servidor desea buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6500,6 +6552,10 @@ msgstr "Por favor cree un grupo primero"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nombre del nuevo grupo"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Buscar..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -7001,6 +7057,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "No mostrar advertencias 'conexion perdida'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Elementos de grupo"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "No se han encontrado Complementos PVR"
@@ -7056,6 +7116,10 @@ msgstr "Escoger ícono"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Buscar ícono"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Todos los canales"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -10069,6 +10133,10 @@ msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Check for updates"
 
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Ultima vez actualizado %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Desea activar este Add-on?"
@@ -11725,17 +11793,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Grabar"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Modo estereoscópico (activado)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Modo estereoscópico"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Ninguno"
+msgid "Disabled"
+msgstr "Deshabilitado"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11761,17 +11821,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Basado en hardware"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopio - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Preguntarme"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Usar modo preferido"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11781,26 +11833,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Igual como pelicula (autodetectar)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Deshabilite modo estereoscópico cuando se para la reproducción."
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Este vídeo es estereoscópico.  Elija un modo de reproducción."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Seleccionar modo esteroscópico"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Modo preferido"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Seleccione modo alternativo ..."
@@ -11808,14 +11840,6 @@ msgstr "Seleccione modo alternativo ..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Igual como pelicula"
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Modo de video estereoscopico "
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Modo estereoscópico invertido"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -11828,10 +11852,6 @@ msgstr "Emita tanto en análogo (audífonos) como en HDMI"
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activa la decodificación por hardware para archivos de vídeo."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profundidad estereoscópica de subtítulos|"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

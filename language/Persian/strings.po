@@ -1042,8 +1042,8 @@ msgid "TV"
 msgstr "تلوزیون"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "خالی"
+msgid "Disabled"
+msgstr "غیرفعال"
 
 msgctxt "#37026"
 msgid "Auto"

@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Confirmer le déplacement du fichier"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Confirmer la suppression"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Copier ces fichiers ?"
@@ -684,6 +688,10 @@ msgstr "Chargement des détails du film"
 msgctxt "#199"
 msgid "Web interface"
 msgstr "Interface Web"
+
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Encodeur Audio"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -1084,6 +1092,10 @@ msgstr "Langue originale du flux"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Langue de l'interface utilisateur"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Agencements du clavier"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1981,6 +1993,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Dé-multiplexer les multi canaux audio en stéréo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Nombre"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Trier par : %s"
@@ -2396,6 +2412,10 @@ msgstr "Rechercher un script"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "Niveau de compression"
+
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Activer le journal spécifique aux composants"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
@@ -12401,17 +12421,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Définir si le décodage vidéo doit être effectuée dans le logiciel (nécessite plus de CPU) ou grâce à l'accélération matérielle, si possible."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Mode stéréoscopique (actuel)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Mode stéréoscopique"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Aucun"
+msgid "Disabled"
+msgstr "Désactivé"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12437,21 +12449,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Basé sur le matériel"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopique - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Lecture de vidéo en mode stéréoscopique"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Demandez moi"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Utiliser le mode préféré"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12465,26 +12465,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Pareil que le film (détecter automatiquement)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Désactiver le mode stéréoscopique quand la lecture est stoppée"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "La vidéo est stéréoscopique. Choisissez le mode de lecture"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Choisir le mode stéréoscopique"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Mode préféré"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Choisir le mode alternatif..."
@@ -12497,29 +12477,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Choisir comment l'audio est ré-échantillonné (downmix), par exemple pour passer de 5.1 à 2.0 : [Activé] maintient l'étendue dynamique de la source audio originale mais le volume sera moins élevé. [Désactivé] maintient le volume de la source audio originale mais l'étendue dynamique est compressée. Note - l'étendue dynamique est la différence entre le son le plus faible et le plus fort dans une source audio."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Mode stéréoscopique de la vidéo"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Mode stéréoscopique inversé"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Définit le mode de lecture pour les vidéos 3D stéréoscopiques."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Evite à Kodi de sortir du mode 3D stéréoscopique quand la lecture se termine étant donné que toutes les TVs ne vont pas reconnaître le passage de la 3D à la 2D sans que le mode d'affichage n'ait été basculé sur la TV."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Change l'affichage stéréoscopique 3D de l'interface utilisateur."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Le mode stéréoscopique 3D préféré"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12536,10 +12496,6 @@ msgstr "Activer ceci pour rendre les dialogues plus présent, comparativement au
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activer le décodage matériel des fichiers."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profondeur stéréoscopique des sous-titres"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

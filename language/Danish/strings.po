@@ -12377,17 +12377,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Definerer om video dekodning skal ske i software (kræver mere CPU) eller med hardware acceleration hvis muligt."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopisk tilstand (aktuel)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopisk tilstand"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Ingen"
+msgid "Disabled"
+msgstr "Deaktiveret"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12413,21 +12405,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware Baseret"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopisk - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Afspilningsmode for stereoskopise videoer."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Spørg mig"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Brug foretrukken måde"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12441,26 +12421,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Samme som filmen (automatisk registrering)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Deaktiver stereoskopisk tilstand når playback stoppes"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Denne video er stereoskopisk. Vælg playback tilstand"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Vælg stereoskopisk tilstand"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Foretrukken tilstand"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Vælg alternativ tilstand..."
@@ -12473,29 +12433,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Vælg hvordan lyden er konverteret, for eksempel fra 5,1 til 2,0: [Enabled] fastholder det dynamiske område af den oprindelige lydkilde når det downmixes, dog vil volumen være lavere [Disabled] fastholder lydstyrken af den oprindelige lydkilde, dog er dynamikområdet komprimeret. Bemærk - Dynamisk område er forskellen mellem de lavest og højeste lyde i en lydkilde."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopisk video stand"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoskopisk tilstand inverteret"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Indstil afspilningsmode for stereoskopiske 3D videoer."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Forhindrer at Kodi forlader stereoskopisk 3D mode når afspilning standser. Nødvendig fordi ikke alle TV automatisk skifter tilbage til 2D mode (uden at det skiftet manuelt på TV'et). "
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Skifter brugergrænsefladens stereoskopiske 3D mode."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Den foretrukne stereoskopiske 3D mode."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12512,10 +12452,6 @@ msgstr "Aktiver denne for at gøre dialog højere ift. baggrundslyde multi-kanal
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktiver hardware dekodning af video-filer."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Underteksters stereoskopiske dybde"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

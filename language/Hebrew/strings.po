@@ -11653,17 +11653,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "הקלט"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "מצב סטריאוסקופי (נוכחי)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "מצב סטריאוסקופי"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "ללא"
+msgid "Disabled"
+msgstr "מנוטרל"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11681,17 +11673,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "מבוסס חומרה"
 
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "מצב ניגון של וידאו סטראוסקופי"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "שאל אותי"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "השתמש במצב המועדף"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11701,18 +11685,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "כמו הסרט (אוטומטית)"
 
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "בחר מצב סטריאוסקופי"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "מונו (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "מצב מועדף"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "בחר מצב חלופי..."
@@ -11721,25 +11693,9 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "כמו הסרט"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "מצב סטריאוסקופי של וידאו"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "מצב סטיראוסקופי הפוך"
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "מצב 3D סטראוסקופי מעודף."
-
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "אפשר פענוח חומרה של קבצי וידאו."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "עומק כתוביות סטיראוסקופי"
 
 msgctxt "#36900"
 msgid "movie"

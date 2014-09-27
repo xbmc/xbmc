@@ -15484,7 +15484,7 @@ msgctxt "#36509"
 msgid "Monoscopic (2D)"
 msgstr ""
 
-#empty (BUT RESERVED) strings from id 36510 to 36519
+#empty strings from id 36510 to 36519
 #end of reserved strings for 3d modes
 
 #. Name of a setting, asking the user for the default playback mode (2D, 3D, ask) of stereoscopic videos
@@ -15499,7 +15499,7 @@ msgctxt "#36521"
 msgid "Ask me"
 msgstr ""
 
-# empty string 36522
+#empty string with id 36522
 
 #. Description of setting "System -> Audio output -> Limit sampling rate (kHz)" with label #458
 #: system/settings/settings.xml
@@ -15538,7 +15538,7 @@ msgctxt "#36528"
 msgid "Select stereoscopic 3D mode"
 msgstr ""
 
-# empty labels 36529, 36530
+#empty strings from id 36529 to 36530
 
 #. option label of a setting/dialog asking for the desired stereoscopic playback mode
 #: guilib/StereoscopicsManager.cpp
@@ -15581,7 +15581,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Playback mode of stereoscopic videos" with label #36520
 #: system/settings/settings.xml
 msgctxt "#36537"
-msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling".
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526

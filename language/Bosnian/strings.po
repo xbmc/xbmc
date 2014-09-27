@@ -8961,6 +8961,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Snimi"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Onemogućeno"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV serija"

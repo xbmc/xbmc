@@ -1099,7 +1099,7 @@ msgstr "Lingua dell'interfaccia utente"
 
 msgctxt "#310"
 msgid "Keyboard layouts"
-msgstr "Layouts della tastiera"
+msgstr "Layout della tastiera"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -3459,7 +3459,7 @@ msgstr "Metti lo schermo in risparmio energetico quando inattivo"
 
 msgctxt "#2050"
 msgid "Runtime"
-msgstr "Durata:"
+msgstr "Durata"
 
 msgctxt "#2080"
 msgid "Empty list"
@@ -4751,7 +4751,7 @@ msgstr "Cerca info per tutti i file"
 
 msgctxt "#13350"
 msgid "Current playlist"
-msgstr "Playlist Corrente "
+msgstr "Playlist corrente "
 
 msgctxt "#13351"
 msgid "Album information"
@@ -5120,6 +5120,14 @@ msgstr "Software"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Accelerazione via hardware"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Abilita accelerazione hardware (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Utilizza OMXPlayer per la decodifica dei file video."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -8979,7 +8987,7 @@ msgstr "In Ascolto"
 
 msgctxt "#20456"
 msgid "Flatten library hierarchy"
-msgstr "Spiana la gerarchia della libreria."
+msgstr "Spiana la gerarchia della libreria"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10155,7 +10163,7 @@ msgstr "Scarica addon"
 
 msgctxt "#24034"
 msgid "Check for updates"
-msgstr "Controlla Aggiornamenti"
+msgstr "Controlla aggiornamenti"
 
 msgctxt "#24035"
 msgid "Force refresh"
@@ -10191,7 +10199,7 @@ msgstr "Scaricando %i%%"
 
 msgctxt "#24043"
 msgid "Available Updates"
-msgstr "Aggiornamenti Disponibili"
+msgstr "Aggiornamenti disponibili"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
@@ -10239,7 +10247,7 @@ msgstr "Changelog"
 
 msgctxt "#24055"
 msgid "Check for updates"
-msgstr "Controlla Aggiornamenti"
+msgstr "Controlla aggiornamenti"
 
 msgctxt "#24056"
 msgid "Last updated %s"
@@ -11155,7 +11163,7 @@ msgstr "Connesso"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
-msgstr "Impossibile inizializzare l'adattatore CEC: il libCEC non è stato trovato nel tuo sistema."
+msgstr "Impossibile inizializzare l'adattatore CEC: libCEC non è stata trovata nel tuo sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -11259,7 +11267,7 @@ msgstr "Cambia l'aspetto dell'interfaccia utente."
 
 msgctxt "#36102"
 msgid "Category containing all Skin related settings."
-msgstr "Categoria contenente tutte le impostazioni della Skin"
+msgstr "Categoria contenente tutte le impostazioni della skin"
 
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
@@ -11463,7 +11471,7 @@ msgstr "Configura il metodo usato per elaborare e visualizzare i video."
 
 msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
-msgstr "Usa sacling ad alta qualità quando si upscala un video di almeno questa percentuale."
+msgstr "Usa scaling ad alta qualità quando si upscala un video di almeno questa percentuale."
 
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
@@ -11887,7 +11895,7 @@ msgstr "Categoria contenente impostazioni sulla gestione della riproduzione dell
 
 msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
-msgstr "Kodi esegue automaticamente la voce successiva della cartella corrente. Per esempio, nella Vista Files. Dopo l'esecuzione di una traccia, Kodi eseguirà automaticamente la traccia successiva nella stessa cartella."
+msgstr "Kodi esegue automaticamente la voce successiva della cartella corrente. Per esempio, nella Vista Files: dopo l'esecuzione di una traccia, Kodi eseguirà automaticamente la traccia successiva nella stessa cartella."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
@@ -12507,7 +12515,7 @@ msgstr "Imposta le località usate per recuperare le informazioni sul meteo."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
-msgstr "Esclludere il mixer VDPAU risparmia risorse di sistema sui sistemi poco potenti ma riduce leggermente la qualità dell'immagine."
+msgstr "Escludere il mixer VDPAU risparmia risorse di sistema sui sistemi poco potenti, ma riduce leggermente la qualità dell'immagine."
 
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
@@ -12554,16 +12562,16 @@ msgid "Select virtual keyboard layouts."
 msgstr "Seleziona i layout virtuali per la tastiera."
 
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Modalità stereoscopica (attuale)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modalità stereoscopica 3D (corrente)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Modalità stereoscopia"
+msgid "Stereoscopic 3D mode"
+msgstr "Modalità stereoscopica 3D"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Nessuno"
+msgid "Disabled"
+msgstr "Disabilitato"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12590,20 +12598,16 @@ msgid "Hardware Based"
 msgstr "Hardware"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopica - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopica (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Modalità riproduzione dei video stereoscopici."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Modalità di riproduzione dei video stereoscopici 3D"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Chiedimi"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Utilizza modalità preferita"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12618,24 +12622,16 @@ msgid "Same as movie (autodetect)"
 msgstr "La stessa del video (riconoscimento automatico)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Disabilita modalità stereoscopica quando viene fermata la riproduzione"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Disabilita la modalità stereoscopica 3D quando viene fermata la riproduzione"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Questo è un video stereoscopico. Seleziona la modalità di riproduzione"
+msgid "Select playback mode"
+msgstr "Seleziona la modalità di riproduzione"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Seleziona modalità stereoscopia"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Modalità preferita"
+msgid "Select stereoscopic 3D mode"
+msgstr "Seleziona la modalità stereoscopica 3D"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12654,28 +12650,12 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Specifica librerie addizionali i cui messaggi di log devono essere inclusi nel log."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Modalità stereoscopia"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Modalità stereoscopica inversa"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Imposta modalità riproduzione dei video stereoscopici 3D."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Previene l'uscita di Kodi dalla modalità stereoscopica 3d quando la riproduzione è fermata visto che non tutte le TV riconoscono il cambio da 3D a 2D senza che la modalità di visualizzazione venga cambiata manualmente sulla TV."
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modalità stereoscopica 3D del video"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Cambia la modalità stereoscopica 3D dell'interfaccia utente."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "La modalità stereoscopica 3D preferita."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12692,10 +12672,6 @@ msgstr "Attivare questa opzione per rendere il dialogo più forte rispetto a suo
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Abilita la decodifica hardware dei file video."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Profondità stereoscopica dei sottotitoli"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

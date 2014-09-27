@@ -7549,6 +7549,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Сними"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Онемогућено"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV серија"

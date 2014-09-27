@@ -5965,6 +5965,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Irrekordja"
 
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "Mhux attiv"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Programm Televiziv"

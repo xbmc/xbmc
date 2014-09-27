@@ -5121,6 +5121,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Aparatinės įrangos spartinimas"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Pirmenybė VAAPI metodui"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Leisti įrangos akseleraciją (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Naudokite OMXPlayer vaizdo failų dekodavimui."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sinchronizavimo metodas"
@@ -6068,6 +6080,18 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI judesio adaptavimas"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI judesio kompensavimas"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12557,17 +12581,21 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Pasirinkti virtualios klaviatūros išdėstymus."
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Jei įjungta VAAPI. Bus mažiau apkrautas CPU, tačiau gali sutrikti tvarkyklės darbas!"
+
 msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopinis režimas (dabartinis)"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoskopinis 3D režimas (dabartinis)"
 
 msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopinis režimas"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoskopinis 3D režimas"
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Joks"
+msgid "Disabled"
+msgstr "Atjungta"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12594,20 +12622,16 @@ msgid "Hardware Based"
 msgstr "Pagrįstas aparatine įranga"
 
 msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopinis - 2D"
+msgid "Monoscopic (2D)"
+msgstr "Monoslopinis (2D)"
 
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Stereoskopinių vaizdo įrašų atkūrimo būdas."
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Stereoskopinis 3D video atkūrimo režimas"
 
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Paklausti manęs"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Naudoti pageidautiną režimą"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12622,24 +12646,16 @@ msgid "Same as movie (autodetect)"
 msgstr "Toks pat kaip ir filmo (aptinkamas automatiškai)"
 
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Išjungti stereoskopinį režimą, kai atkūrimas sustabdytas"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Išjungti stereoskopinį 3D režimą, kai atkūrimas pasibaigė"
 
 msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Šis vaizdo įrašas yra stereoskopinis. Pasirinkite atkūrimo režimą"
+msgid "Select playback mode"
+msgstr "Pasirinkite atkūrimo režimą"
 
 msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Pasirinkite stereoskopinį režimą"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Pageidautinas režimas"
+msgid "Select stereoscopic 3D mode"
+msgstr "Pasirinkite stereoskopinį 3D režimą"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12658,28 +12674,24 @@ msgid "Specify additional libraries whose log messages are to be included in the
 msgstr "Nurodykite papildomas bibliotekos, kurių žurnalo pranešimus įrašyti į žurnalą."
 
 msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopinis vaizdo režimas"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoskopinis 3D vaizdo režimas"
 
 msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Stereoskopinis atvirkščias režimas"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Nustatyti stereoskopinio 3D vaizdo atkūrimo būdą."
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Invertuoti Stereoskopinį 3D režimą (apversti akis)"
 
 msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Neleidžia Kodi išeiti iš stereoskopinio 3D režimo, kai atkūrimas sustabdomas, nes ne visi televizoriai atpažįsta perjungimą iš 3D režimo atgal į 2D, pirmiau neperjungus peržiūros režimo televizoriuje."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Įjungta] Perjungti vartotojo sąsają (ir kai kuriuos televizorius) atgal į 2D režimą, kai atkūrimas baigiasi. [Išjungta] Vartotojo sąsaja ir televizorius liks stereoskopiniame 3D režime. Vaizdo grojaraščiams stereoskopinis 3D režimas nepasikeist tarp vaizdo įrašų, net jei vaizdo įrašas ir nėra stereoskopinis."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Pakeiskite stereoskopinį 3D vartotojo sąsajos režimą."
 
 msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Pageidautinas stereoskopinis 3D režimas."
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Pageidaujamas režimas, kuriuo stereoskopiniai 3D media įrašai, tokie kaip vaizdo įrašai, turi būti atkurti."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12698,8 +12710,8 @@ msgid "Enable hardware decoding of video files."
 msgstr "Įjungti aparatinės įrangos vaizdo failų dekodavimą."
 
 msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Subtitrų stereoskopinis gylis"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoskopinis 3D subtitrų gylis"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

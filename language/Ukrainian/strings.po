@@ -11529,17 +11529,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Запис"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Стереоскопічний режим (поточний)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Стереоскопічний режим"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Нічого"
+msgid "Disabled"
+msgstr "Вимкн."
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11565,17 +11557,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "На підставі устаткування"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Моноскопічна - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Запитайте у мене"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Кращий спосіб використання"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -11585,26 +11569,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Так само, як фільм (автовизначення)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Вимкнути стереоскопічний режим, коли відтворення зупинено"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Це відео стереоскопічне. Виберіть режим відтворення"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Виберіть стереоскопічний режим"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Моно (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Кращий спосіб"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Вибір альтернативного режиму..."
@@ -11612,14 +11576,6 @@ msgstr "Вибір альтернативного режиму..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Так само, як фільм"
-
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Стереоскопічний режим відео"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Стереоскопічний перевернутий режим"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

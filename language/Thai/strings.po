@@ -12425,17 +12425,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "ปรับแต่ง ว่าการถอดรหัสวิดีโอจะถูกดำเนินการด้วยซอฟท์แวร์ (ใช้ ซีพียู มากขึ้น) หรือด้วยการเร่งความเร็วด้วยฮาร์ดแวร์ เมื่อเป็นไปได้."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "โหมดภาพสามมิติ (ปัจจุบัน)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "โหมดภาพสามมิติ"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "ไม่ใช้"
+msgid "Disabled"
+msgstr "ปิดการใช้งาน"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12461,21 +12453,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "ใช้ฮาร์ดแวร์"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "มุมมองเดียว - 2มิติ"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "โหมดการเล่น ของวิดีโอแบบสามมิติ."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "ถามฉัน"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "ใช้โหมดที่กำหนดไว้"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12489,26 +12469,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "แบบเดียวกับภาพยนตร์ (ตรวจสอบอัตโนมัติ)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "ปิดใช้งาน โหมดภาพสามมิติ เมื่อจบการเล่น"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "วิดีโอนี้เป็นแบบสามมิติ. จงเลือกโหมดการเล่น"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "เลือก โหมดภาพสามมิติ"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "ภาพเดียว (2มิติ)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "โหมดที่กำหนดไว้"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "เลือกโหมดอื่น..."
@@ -12521,29 +12481,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "เลือกวิธีการรวมช่องสัญญาณเสียง, ตัวอย่างเช่น จาก 5.1 ไปยัง 2.0: [เปิดใช้งาน] ยังคงช่วงไดนามิคของแหล่งกำเนิดเสียงเดิมเมื่อรวมช่องสัญญาณเสียง แต่ความดังจะลดลง [ปิดใช้งาน] รักษาระดับความดังของเสียงเดิม แต่ช่วงไดนามิคจะถูกบีบอัด. หมายเหตุ - ช่วงไดนามิกคือความแตกต่างระหว่างเสียงเงียบที่สุดและดังที่สุดในเสียงต้นฉบับ."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "โหมดภาพสามมิติ ของวิดีโอ"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "โหมดภาพสามมิติ กลับด้าน"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "กำหนดโหมดการเล่น ของวิดีโอแบบ 3 มิติ."
-
-msgctxt "#36538"
-msgid "Prevents Kodi exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "ป้องกันไม่ให้ Kodi ออกไปจากโหมด 3 สามมิติ เมื่อหยุดเล่น ทั้งนี้ทีวีไม่ทั้งหมด ที่จะรับรู้ถึงการสลับจาก 3 มิติ กลับไปยัง 2 มิติ โดยที่ไม่ต้องสลับโหมดการรับชมจากทีวี."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "เปลี่ยนโหมดการแสดงผล 3 มิติ ของส่วนติดต่อผู้ใช้."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "โหมดการแสดงผล 3 มิติ ที่กำหนดไว้."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12560,10 +12500,6 @@ msgstr "เปิดใช้ตัวเลือกนี้ จะทำใ�
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์สำหรับไฟล์วิดีโอ."
-
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "ความลึกของคำบรรยาย แบบสามมิติ"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
