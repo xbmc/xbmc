@@ -588,11 +588,6 @@
           </constraints>
           <control type="spinner" format="integer" />
         </setting>
-        <setting id="videoplayer.useframemtdec" type="boolean" parent="videoplayer.decodingmethod" label="13440" help="36423">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
           <dependencies>

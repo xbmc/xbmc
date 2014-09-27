@@ -244,9 +244,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
    * sensitive to changes in frame sizes, and it causes crashes
    * during HW accell - so we unset it in this case.
    * */
-  if (((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE || m_isSWCodec) && CSettings::Get().GetBool("videoplayer.useframemtdec"))
+  if ((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE || m_isSWCodec)
   {
-    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading %d by videoplayer.useframemtdec",
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keeping default threading %d",
                         m_pCodecContext->thread_type);
   }
   else
