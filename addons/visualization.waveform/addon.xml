@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.21"
+  version="1.0.22"
   name="Waveform"
   provider-name="MrC">
   <extension

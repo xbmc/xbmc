@@ -38,7 +38,7 @@ msgstr "Maksymalna"
 
 msgctxt "#30005"
 msgid "Shuffle Mode"
-msgstr "Tryb mieszania"
+msgstr "Tryb losowania"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"

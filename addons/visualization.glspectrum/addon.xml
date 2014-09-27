@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.glspectrum"
-  version="1.0.21"
+  version="1.0.22"
   name="OpenGL Spectrum"
   provider-name="Team-Kodi">
   <extension

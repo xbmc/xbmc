@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.21"
+  version="1.0.22"
   name="Solarwinds"
   provider-name="mogumbo, Team-Kodi">
   <requires>

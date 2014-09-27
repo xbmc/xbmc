@@ -1,3 +1,6 @@
+2014-09-27:
+        Updated language files from Transifex
+
 2014-09-11:
         Updated language files from Transifex
 

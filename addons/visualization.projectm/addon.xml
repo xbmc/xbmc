@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.projectm"
-  version="1.0.22"
+  version="1.0.23"
   name="projectM"
   provider-name="Team-Kodi">
   <extension

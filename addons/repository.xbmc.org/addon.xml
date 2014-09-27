@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.1.25"
+		version="2.1.26"
 		provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>

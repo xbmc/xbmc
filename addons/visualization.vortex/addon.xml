@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.vortex"
-  version="1.0.9"
+  version="1.0.10"
   name="Vortex"
   provider-name="Team-Kodi">
   <extension

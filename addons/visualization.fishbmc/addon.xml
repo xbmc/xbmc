@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.10"
+  version="4.0.11"
   name="FishBMC"
   provider-name="26elf">
   <extension
