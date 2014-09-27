@@ -212,13 +212,13 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
         src = dst = dst_buffer[i];
         for (int j=0; j<samples; j++)
         {
-#ifdef WORDS_BIGENDIAN
+#ifndef WORDS_BIGENDIAN
           src++;
 #endif
           *dst++ = *src++;
           *dst++ = *src++;
           *dst++ = *src++;
-#ifndef WORDS_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
           src++;
 #endif
         }
