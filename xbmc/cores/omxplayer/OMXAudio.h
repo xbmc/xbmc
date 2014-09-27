@@ -87,10 +87,6 @@ public:
 
   static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
   void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
-  void PrintDDP(OMX_AUDIO_PARAM_DDPTYPE *ddparm);
-  void PrintDTS(OMX_AUDIO_PARAM_DTSTYPE *dtsparam);
-  unsigned int SyncDTS(BYTE* pData, unsigned int iSize);
-  unsigned int SyncAC3(BYTE* pData, unsigned int iSize);
   void UpdateAttenuation();
 
   bool BadState() const { return !m_Initialized; };
@@ -119,7 +115,6 @@ private:
   OMXClock       *m_av_clock;
   bool          m_settings_changed;
   bool          m_setStartTime;
-  bool          m_LostSync;
   int           m_SampleRate;
   OMX_AUDIO_CODINGTYPE m_eEncoding;
   uint8_t       *m_extradata;
