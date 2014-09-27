@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "video/VideoReferenceClock.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up use dxerr
   #include <Dxerr.h>
 #else
@@ -371,6 +372,8 @@ void CRenderSystemDX::OnDeviceReset()
   { // we're back
     for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnResetDevice();
+
+    g_renderManager.Flush();
 
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }

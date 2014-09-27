@@ -95,6 +95,7 @@ struct SVideoBuffer
   virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
   virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
   virtual void Clear() {};              // clear the buffer with solid black
+  virtual bool IsReadyToRender() { return true; };
 };
 
 // YV12 decoder textures
@@ -106,7 +107,7 @@ struct SVideoPlane
 
 struct YUVBuffer : SVideoBuffer
 {
-  YUVBuffer() : m_width (0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0) {}
+  YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false) {}
   ~YUVBuffer();
   bool Create(ERenderFormat format, unsigned int width, unsigned int height);
   virtual void Release();
@@ -114,6 +115,7 @@ struct YUVBuffer : SVideoBuffer
   virtual void StartRender();
   virtual void Clear();
   unsigned int GetActivePlanes() { return m_activeplanes; }
+  virtual bool IsReadyToRender();
 
   SVideoPlane planes[MAX_PLANES];
 
@@ -122,6 +124,7 @@ private:
   unsigned int     m_height;
   ERenderFormat    m_format;
   unsigned int     m_activeplanes;
+  bool             m_locked;
 };
 
 struct DXVABuffer : SVideoBuffer
@@ -156,6 +159,7 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
+  virtual void         Flush();
 
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
