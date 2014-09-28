@@ -302,7 +302,7 @@ int COMXAudioCodecOMX::GetBitsPerSample()
 {
   if (!m_pCodecContext)
     return 0;
-  return m_pCodecContext->sample_fmt == AV_SAMPLE_FMT_S16 ? 16 : 32;
+  return m_desiredSampleFormat == AV_SAMPLE_FMT_S16 ? 16 : 32;
 }
 
 int COMXAudioCodecOMX::GetBitRate()
