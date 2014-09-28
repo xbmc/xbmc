@@ -189,12 +189,15 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   addPath(scriptDir);
 
   // add addon module dependecies
-  ADDON::ADDONDEPS deps = m_addon.get()->GetDeps();
-  for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
+  if (m_addon)
   {
-    ADDON::AddonPtr addon;
-    if (ADDON::CAddonMgr::Get().GetAddon(it->first, addon, ADDON::ADDON_SCRIPT_MODULE))
-      addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
+    ADDON::ADDONDEPS deps = m_addon.get()->GetDeps();
+    for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
+    {
+      ADDON::AddonPtr addon;
+      if (ADDON::CAddonMgr::Get().GetAddon(it->first, addon, ADDON::ADDON_SCRIPT_MODULE))
+        addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
+    }
   }
 
   // we want to use sys.path so it includes site-packages
