@@ -12,11 +12,6 @@
       <group id="1">
         <visible>false</visible>
       </group>
-      <group id="3">
-        <setting id="videoplayer.useframemtdec">
-          <visible>false</visible>
-        </setting>
-      </group>
     </category>
   </section>
 

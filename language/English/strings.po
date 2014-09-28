@@ -6105,10 +6105,7 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr ""
+# empty string with id 13440
 
 #: system/settings/settings.xml
 msgctxt "#13441"
@@ -15356,11 +15353,7 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow frame-multi-threaded decoding" with label #13440
-#: system/settings/settings.xml
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr ""
+#empty string with id 36423
 
 #: system/settings/settings.xml
 msgctxt "#36424"
