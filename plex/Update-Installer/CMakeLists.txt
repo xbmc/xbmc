@@ -15,6 +15,19 @@ set(BINARY_SIGNING_TOOL sign-updater.bat CACHE PATH "Path to the tool used to si
 
 include_directories(external)
 include_directories(external/TinyThread/source)
+include_directories(external/sha1 external/bsdiff)
+
+## PLEX
+if(NOT APPNAME)
+	set(APPNAME "Plex Home Theater")
+endif(NOT APPNAME)
+add_definitions(-DAPPNAME="${APPNAME}")
+
+option(DISABLE_GUI "Disable the installer GUI" OFF)
+if(DISABLE_GUI)
+	add_definitions(-DDISABLE_GUI)
+endif(DISABLE_GUI)
+## End PLEX
 
 if (WIN32)
     include_directories(external/zlib/)
@@ -41,17 +54,20 @@ if (APPLE)
 	# Build the updater as a dual 32/64bit binary.  If only one architecture
 	# is required, removing the other architecture will reduce the size
 	# of the updater binary
-	set(CMAKE_OSX_ARCHITECTURES i386;x86_64)
+	set(CMAKE_OSX_ARCHITECTURES x86_64)
 
 	# Build the updater so that it works on OS X 10.5 and above.
 	set(MIN_OSX_VERSION 10.5)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
 endif()
 
 add_subdirectory(src)
 add_subdirectory(external/AnyOption)
 add_subdirectory(external/minizip)
-add_subdirectory(external/tinyxml)
+add_subdirectory(external/tinyxml2)
 add_subdirectory(external/TinyThread)
-
+add_subdirectory(external/bsdiff)
+add_subdirectory(external/sha1)

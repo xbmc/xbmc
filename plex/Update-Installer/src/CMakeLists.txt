@@ -5,7 +5,7 @@ find_package(Threads REQUIRED)
 include(GenerateCppResourceFile)
 
 if (UNIX)
-	add_definitions(-Wall -Werror -Wconversion)
+	add_definitions(-Wall -Wno-non-virtual-dtor -Wconversion)
 endif()
 
 if (UNIX AND NOT APPLE)
@@ -14,9 +14,12 @@ endif()
 
 if (LINUX)
 	find_package(GTK2 REQUIRED gtk)
-	include_directories(${GTK2_INCLUDE_DIRS})
-	add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
-	target_link_libraries(updatergtk ${GTK2_LIBRARIES})
+	if(GTK2_FOUND)
+		add_definitions(-DHAVE_GTK2)
+		include_directories(${GTK2_INCLUDE_DIRS})
+		add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
+		target_link_libraries(updatergtk ${GTK2_LIBRARIES})
+	endif(GTK2_FOUND)
 endif()
 
 add_definitions(-DTIXML_USE_STL)
@@ -74,7 +77,7 @@ if (UNIX)
 	set(SOURCES ${SOURCES} UpdateDialogAscii.cpp)
 endif()
 
-if (LINUX)
+if (LINUX AND GTK2_FOUND)
 	# embed the GTK helper library into the updater binary.
 	# At runtime it will be extracted and loaded if the
 	# GTK libraries are available
@@ -104,6 +107,8 @@ target_link_libraries(updatershared
   tinyxml
   minizip
   tinythread
+  bspatch
+  sha1
 )
 
 if(LINUX)
@@ -117,7 +122,10 @@ if(APPLE)
 endif()
 
 if (UNIX)
-  target_link_libraries(updatershared pthread dl)
+  target_link_libraries(updatershared pthread)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(updatershared dl)
+  endif()
 endif()
 
 if (WIN32)

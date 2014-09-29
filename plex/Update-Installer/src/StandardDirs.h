@@ -6,17 +6,15 @@
 
 class StandardDirs
 {
-	public:
-		static std::string appDataPath(const std::string& organizationName,
-                                       const std::string& appName);
+public:
+  static std::string appDataPath(const std::string& organizationName, const std::string& appName);
 
-	private:
+private:
 #ifdef PLATFORM_UNIX
-		static std::string homeDir();
+  static std::string homeDir();
 #endif
 
 #ifdef PLATFORM_MAC
-		static std::string applicationSupportFolderPath();
+  static std::string applicationSupportFolderPath();
 #endif
 };
-

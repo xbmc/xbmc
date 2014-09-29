@@ -1,1 +1,5 @@
 build/
+
+CMakeLists.txt.user
+
+*.pyc

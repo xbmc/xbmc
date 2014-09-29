@@ -2,8 +2,7 @@
 
 class TestUpdateScript
 {
-	public:
-		void testV2Script();
-		void testPermissions();
+public:
+  void testV2Script();
+  void testPermissions();
 };
-
