@@ -47,6 +47,7 @@ public:
     fullscreen = false;
     video_only = false;
     virtualSeek = false;
+    virtualResume = false;
     virtualDirectCacheLevelCalculation = false;
     virtualStartTime = 0LL;
     virtualTotalTime = 0LL;

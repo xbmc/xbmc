@@ -3875,8 +3875,11 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     SaveFileState(true);
 
-    // Switch to default options
-    CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+    if (!item.HasProperty("VirtualSeekProcess") || !item.GetProperty("VirtualSeekProcess").asBoolean())
+    {
+      // Switch to default options
+      CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+    }
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
@@ -4014,8 +4017,10 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   else
   {
     options.starttime = item.m_lStartOffset / 75.0;
-    LoadVideoSettings(item.GetPath());
-
+    if (!item.HasProperty("VirtualSeekProcess") || !item.GetProperty("VirtualSeekProcess").asBoolean())
+    {
+      LoadVideoSettings(item.GetPath());
+    }
     if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie

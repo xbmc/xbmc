@@ -2360,7 +2360,10 @@ void CDVDPlayer::HandleMessages()
             CloseStream(m_CurrentAudio, false);
             OpenStream(m_CurrentAudio, st.id, st.source);
             AdaptForcedSubtitles();
-            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
+            if (!m_PlayerOptions.virtualSeek)
+            {
+              m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
+            }
           }
         }
       }
