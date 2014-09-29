@@ -26,7 +26,7 @@ void UpdateScript::parse(const std::string& path)
 {
   m_path.clear();
 
-  XMLDocument document;
+  tinyxml2::XMLDocument document;
   XMLError error = XML_ERROR_EMPTY_DOCUMENT;
 
   if (endsWith(path, ".bz2"))
