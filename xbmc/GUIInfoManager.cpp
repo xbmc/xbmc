@@ -5130,7 +5130,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::s
       return StringUtils::Format("%d", val);
     }
     break;
-  }
+  } 
+  case LISTITEM_IS_RESUMING:
+    return GetItemBool(item,info) ? "True" : "False";
   case LISTITEM_DATE_ADDED:
     if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_dateAdded.IsValid())
       return item->GetVideoInfoTag()->m_dateAdded.GetAsLocalizedDate();
