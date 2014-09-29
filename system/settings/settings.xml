@@ -398,6 +398,26 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.timeseekforward" type="integer" label="13460" help="13462">
+          <level>1</level>
+          <default>30</default>
+		  <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>6000</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="videoplayer.timeseekbackward" type="integer" label="13461" help="13463">
+          <level>1</level>
+          <default>-30</default>
+		  <constraints>
+            <minimum>-6000</minimum>
+            <step>1</step>
+            <maximum>-1</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
