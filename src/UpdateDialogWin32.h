@@ -21,7 +21,7 @@ public:
 
   // implements UpdateObserver
   virtual void updateError(const std::string& errorMessage);
-  virtual void updateMessage(const std::string &);
+  virtual void updateMessage(const std::string &message);
   virtual void updateProgress(int percentage);
   virtual void updateFinished();
 
