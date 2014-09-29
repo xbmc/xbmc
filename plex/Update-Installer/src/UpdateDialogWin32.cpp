@@ -211,7 +211,7 @@ void UpdateDialogWin32::installWindowProc(CWnd* window)
   windowDialogMap[window->GetHwnd()] = this;
 }
 
-void UpdateObserver::updateMessage(const std::string &)
+void UpdateDialogWin32::updateMessage(const std::string &message)
 {
 	
 }
