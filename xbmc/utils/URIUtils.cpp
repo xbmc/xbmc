@@ -799,12 +799,17 @@ bool URIUtils::IsISO9660(const std::string& strFile)
 
 bool URIUtils::IsSmb(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsSmb(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "smb");
+  if (IsSpecial(strFile))
+    return IsSmb(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsSmb(url.GetHostName());
+
+  return IsProtocol(strFile, "smb");
 }
 
 bool URIUtils::IsURL(const std::string& strFile)
@@ -814,13 +819,18 @@ bool URIUtils::IsURL(const std::string& strFile)
 
 bool URIUtils::IsFTP(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsFTP(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "ftp")  ||
-         IsProtocol(strFile2, "ftps");
+  if (IsSpecial(strFile))
+    return IsFTP(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsFTP(url.GetHostName());
+
+  return IsProtocol(strFile, "ftp") ||
+         IsProtocol(strFile, "ftps");
 }
 
 bool URIUtils::IsUDP(const std::string& strFile)
@@ -855,13 +865,18 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
 
 bool URIUtils::IsDAV(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsDAV(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "dav")  ||
-         IsProtocol(strFile2, "davs");
+  if (IsSpecial(strFile))
+    return IsDAV(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsDAV(url.GetHostName());
+  
+  return IsProtocol(strFile, "dav") ||
+         IsProtocol(strFile, "davs");
 }
 
 bool URIUtils::IsInternetStream(const std::string &path, bool bStrictCheck /* = false */)
@@ -975,22 +990,32 @@ bool URIUtils::IsMusicDb(const std::string& strFile)
 
 bool URIUtils::IsNfs(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-  
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-  
-  return IsProtocol(strFile2, "nfs");
+    return IsNfs(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsSpecial(strFile))
+    return IsNfs(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsNfs(url.GetHostName());
+
+  return IsProtocol(strFile, "nfs");
 }
 
 bool URIUtils::IsAfp(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-  
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-  
-  return IsProtocol(strFile2, "afp");
+    return IsAfp(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsSpecial(strFile))
+    return IsAfp(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsAfp(url.GetHostName());
+
+  return IsProtocol(strFile, "afp");
 }
 
 
