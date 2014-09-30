@@ -693,7 +693,6 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 void CDecoder::FFReleaseBuffer(uint8_t *data)
 {
   VASurfaceID surf;
-  unsigned int i;
 
   CSingleLock lock(m_DecoderSection);
 

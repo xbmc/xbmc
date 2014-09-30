@@ -165,7 +165,8 @@ class CVaapiRenderPicture
   friend class COutput;
 public:
   CVaapiRenderPicture(CCriticalSection &section)
-    : texture(None), avFrame(NULL), refCount(0), renderPicSection(section) { fence = None; }
+    : texWidth(0), texHeight(0), texture(None), valid(false), vaapi(NULL), avFrame(NULL),
+      usefence(false), refCount(0), renderPicSection(section) { fence = None; }
   void Sync();
   DVDVideoPicture DVDPic;
   int texWidth, texHeight;
