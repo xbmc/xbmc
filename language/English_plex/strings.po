@@ -1095,3 +1095,7 @@ msgstr "Cannot open Playlist"
 msgctxt "#52611"
 msgid "Playlist is empty"
 msgstr "Playlist is empty"
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr "Add to Playlist"

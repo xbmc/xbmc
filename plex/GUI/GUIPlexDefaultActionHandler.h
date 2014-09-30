@@ -43,7 +43,7 @@ public:
   static bool IsVideoContainer(CFileItemListPtr container);
   static bool IsPlayQueueContainer(CFileItemListPtr container);
   static bool IsPlayListContainer(CFileItemListPtr container);
-
+  static bool IsItemPlaylistCompatible(CFileItemPtr item);
 private:
   void GetContextButtonsForAction(int actionID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
   std::string GetFilteredURI(const CFileItem& item) const;

@@ -7,11 +7,15 @@
 #include "guilib/GUIWindowManager.h"
 #include <boost/foreach.hpp>
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "GUIBaseContainer.h"
 #include "Client/PlexServerManager.h"
 #include "ApplicationMessenger.h"
 #include "VideoInfoTag.h"
 #include "GUIMessage.h"
+#include "GUI/GUIDialogPlayListSelection.h"
+#include "GUI/GUIDialogPlexError.h"
+#include "Client/PlexServer.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
@@ -84,6 +88,12 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_PLEX_PLAYLIST_SELECTION].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
+  
+  action = new ACTION_SETTING(ACTION_PLEX_PL_ADDTO);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +265,47 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
           return true;
         }
         break;
+        
+      case ACTION_PLEX_PL_ADDTO:
+      {
+        if (IsItemPlaylistCompatible(item))
+        {
+          CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+          
+          CGUIDialogPlaylistSelection *plDialog = (CGUIDialogPlaylistSelection *)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_PLAYLIST_SELECT);
+          
+          plDialog->filterPlaylist(PlexUtils::GetMediaTypeFromItem(item), server);
+          
+          plDialog->DoModal();
+          if (plDialog->IsConfirmed())
+          {
+            CFileItemPtr plItem =  plDialog->GetSelectedItem();
+            if (plItem)
+            {
+              CStdString playlistID = plItem->GetProperty("unprocessed_ratingkey").asString();
+              
+              
+              if (server)
+              {
+                if (g_plexApplication.mediaServerClient->addItemToPlayList(server, item, playlistID, true))
+                {
+                  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Playlist addition", "Item was successfully added to the playlist");
+                  return true;
+                }
+                else
+                  CLog::Log(LOGERROR, "CGUIPlexDefaultActionHandler : Playlist failure when adding item");
+              }
+              else
+                CLog::Log(LOGERROR, "CGUIPlexDefaultActionHandler : Can't a valid server for selected playlist");
+            }
+            else
+              CLog::Log(LOGERROR, "CGUIPlexDefaultActionHandler : Can't get Playlist selection item");
+            
+            CGUIDialogPlexError::ShowError("Playlist Error", "The item could not be added to the playlist", "", "");
+          }
+        }
+        break;
+      }
     }
   }
 
@@ -396,6 +447,15 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
         ePlexMediaType itemType = PlexUtils::GetMediaTypeFromItem(item);
         if (g_plexApplication.playQueueManager->getPlayQueueOfType(itemType))
           buttons.Add(actionID, 52603);
+      }
+      break;
+    }
+      
+    case ACTION_PLEX_PL_ADDTO:
+    {
+      if (IsItemPlaylistCompatible(item))
+      {
+        buttons.Add(actionID, 52612);
       }
       break;
     }
@@ -574,3 +634,20 @@ bool CGUIPlexDefaultActionHandler::IsPlayQueueContainer(CFileItemListPtr contain
   return false;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexDefaultActionHandler::IsItemPlaylistCompatible(CFileItemPtr item)
+{
+  switch (item->GetPlexDirectoryType())
+  {
+    case PLEX_DIR_TYPE_TRACK:
+    case PLEX_DIR_TYPE_MOVIE:
+    case PLEX_DIR_TYPE_ALBUM:
+    case PLEX_DIR_TYPE_EPISODE:
+      return true;
+      break;
+
+    default:
+      return false;
+      break;
+  }
+}
