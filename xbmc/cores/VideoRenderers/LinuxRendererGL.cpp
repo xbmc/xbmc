@@ -57,11 +57,7 @@ extern "C" {
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 #ifdef HAVE_LIBVA
-#include <va/va.h>
-#include <va/va_x11.h>
-#include <va/va_glx.h>
 #include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
-
 #endif
 
 #ifdef TARGET_DARWIN
@@ -71,10 +67,6 @@ extern "C" {
   #ifdef TARGET_DARWIN_OSX
     #include "osx/DarwinUtils.h"
   #endif
-#endif
-
-#ifdef HAS_GLX
-#include <GL/glx.h>
 #endif
 
 //due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
