@@ -46,6 +46,7 @@ public:
   void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
   
   void movePlayListItem(CFileItemPtr item, CFileItemPtr after);
+  bool addItemToPlayList(CPlexServerPtr server, CFileItemPtr item, CStdString playlistID, bool block = false);
 
   CURL GetItemURL(CFileItemPtr item);
   void SendTranscoderPing(CPlexServerPtr server);

@@ -298,3 +298,24 @@ void CPlexMediaServerClient::movePlayListItem(CFileItemPtr item, CFileItemPtr af
   AddJob(new CPlexMediaServerClientJob(url.Get(), "PUT", msg, 16205));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexMediaServerClient::addItemToPlayList(CPlexServerPtr server, CFileItemPtr item, CStdString playlistID, bool block)
+{
+  CURL url = server->BuildPlexURL("/playlists/" + playlistID + "/items");
+  
+  CStdString uri = CPlexPlayQueueManager::getURIFromItem(*item);
+  url.SetOption("uri", uri);
+  
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "PUT", msg);
+  
+  if (block)
+  {
+    return g_plexApplication.busy.blockWaitingForJob(job, NULL);
+  }
+  else
+  {
+    AddJob(job);
+    return true;
+  }
+}
