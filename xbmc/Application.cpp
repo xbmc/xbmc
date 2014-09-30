@@ -933,30 +933,41 @@ bool CApplication::CreateGUI()
   }
 
   // Retrieve the matching resolution based on GUI settings
+  bool sav_res = false;
   CDisplaySettings::Get().SetCurrentResolution(CDisplaySettings::Get().GetDisplayResolution());
   CLog::Log(LOGNOTICE, "Checking resolution %i", CDisplaySettings::Get().GetCurrentResolution());
   if (!g_graphicsContext.IsValidResolution(CDisplaySettings::Get().GetCurrentResolution()))
   {
     CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
-    CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP, true);
+    // defer saving resolution after window was created
+    CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP);
+    sav_res = true;
   }
 
   // update the window resolution
   g_Windowing.SetWindowResolution(CSettings::Get().GetInt("window.width"), CSettings::Get().GetInt("window.height"));
 
   if (g_advancedSettings.m_startFullScreen && CDisplaySettings::Get().GetCurrentResolution() == RES_WINDOW)
+  {
+    // defer saving resolution after window was created
     CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP);
+    sav_res = true;
+  }
 
   if (!g_graphicsContext.IsValidResolution(CDisplaySettings::Get().GetCurrentResolution()))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP);
+    sav_res = true;
   }
   if (!InitWindow())
   {
     return false;
   }
+
+  if (sav_res)
+    CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP, true);
 
   if (g_advancedSettings.m_splashImage)
   {
