@@ -137,9 +137,9 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
         return pq->get(fileItems);
     }
   }
-  else if (url.GetHostName() == "playlists")
+  else if ((url.GetHostName() == "playlists") && (url.GetFileName().IsEmpty() || url.GetFileName() == "all"))
   {
-    return GetPlaylistsDirectory(fileItems);
+    return GetPlaylistsDirectory(fileItems, url.GetOptions());
   }
 
   if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children") && !boost::ends_with(m_url.GetFileName(), "extras"))
@@ -898,7 +898,7 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
+bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items, CStdString options)
 {
   items.SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
   items.SetProperty("PlexContent", PlexUtils::GetPlexContent(items));
@@ -913,6 +913,7 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items)
     if (version > playlistVersion)
     {
       CURL plURL = server->BuildPlexURL("/playlists/all");
+      plURL.SetOptions(options);
       plURL.SetOption("type", boost::lexical_cast<std::string>(PLEX_MEDIA_FILTER_TYPE_PLAYLISTITEM));
       plURL.SetOption("sort", "lastViewedAt");
       

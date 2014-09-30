@@ -58,7 +58,7 @@ namespace XFILE
     bool GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items);
     
     /* plexserver://playlists */
-    bool GetPlaylistsDirectory(CFileItemList& items);
+    bool GetPlaylistsDirectory(CFileItemList& items, CStdString options);
 
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items)
     {
