@@ -310,6 +310,9 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
   YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
 
+  if (buf->IsReadyToRender())
+    return -1;
+
   image->cshift_x = 1;
   image->cshift_y = 1;
   image->height = m_sourceHeight;
@@ -481,6 +484,18 @@ void CWinRenderer::UnInit()
     m_processor->UnInit();
     SAFE_DELETE(m_processor);
   }
+}
+
+void CWinRenderer::Flush()
+{
+  PreInit();
+  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  ManageDisplay();
+
+  m_bConfigured = true;
+
+  SelectRenderMethod();
+  UpdateRenderMethod();
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
@@ -704,6 +719,9 @@ void CWinRenderer::Render(DWORD flags)
     CWinRenderer::RenderProcessor(flags);
     return;
   }
+
+  if (!m_VideoBuffers[m_iYV12RenderBuffer]->IsReadyToRender())
+    return;
 
   UpdateVideoFilter();
 
@@ -1200,9 +1218,6 @@ bool CWinRenderer::CreateYV12Texture(int index)
   buf->StartDecode();
   buf->Clear();
 
-  if(index == m_iYV12RenderBuffer)
-    buf->StartRender();
-
   CLog::Log(LOGDEBUG, "created video buffer %i", index);
   return true;
 }
@@ -1428,6 +1443,11 @@ void YUVBuffer::Release()
 
 void YUVBuffer::StartRender()
 {
+  if (!m_locked)
+    return;
+
+  m_locked = false;
+
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get() && planes[i].rect.pBits)
@@ -1439,6 +1459,11 @@ void YUVBuffer::StartRender()
 
 void YUVBuffer::StartDecode()
 {
+  if (m_locked)
+    return;
+
+  m_locked = true;
+
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get()
@@ -1496,6 +1521,13 @@ void YUVBuffer::Clear()
     }
 
   }
+}
+
+bool YUVBuffer::IsReadyToRender()
+{
+  if (!m_locked)
+    return true;
+  return false;
 }
 
 #endif
