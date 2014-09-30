@@ -1,6 +1,3 @@
-#ifndef LINUXRENDERERGL_RENDERER
-#define LINUXRENDERERGL_RENDERER
-
 /*
  *      Copyright (C) 2007-2013 Team XBMC
  *      http://xbmc.org
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "system.h"
 
@@ -352,6 +351,4 @@ inline int NP2( unsigned x ) {
     return ++x;
 #endif
 }
-#endif
-
 #endif
