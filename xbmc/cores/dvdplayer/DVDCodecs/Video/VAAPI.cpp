@@ -492,8 +492,8 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   m_vaapiConfig.vidHeight = avctx->height;
   m_vaapiConfig.outWidth = avctx->width;
   m_vaapiConfig.outHeight = avctx->height;
-  m_vaapiConfig.surfaceWidth = avctx->width;
-  m_vaapiConfig.surfaceHeight = avctx->height;
+  m_vaapiConfig.surfaceWidth = avctx->coded_width;
+  m_vaapiConfig.surfaceHeight = avctx->coded_height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
   m_decoderThread = CThread::GetCurrentThreadId();
   m_DisplayState = VAAPI_OPEN;
@@ -1832,18 +1832,21 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     if (!CheckSuccess(vaSyncSurface(m_config.dpy, pic.videoSurface)))
       return NULL;
 
+    XLockDisplay(m_Display);
     if (!CheckSuccess(vaPutSurface(m_config.dpy,
                                    pic.videoSurface,
                                    retPic->pixmap,
                                    0,0,
-                                   m_config.surfaceWidth, m_config.surfaceHeight,
+                                   m_config.vidWidth, m_config.vidHeight,
                                    0,0,
-                                   m_config.surfaceWidth, m_config.surfaceHeight,
+                                   m_config.outWidth, m_config.outHeight,
                                    NULL,0,
                                    VA_FRAME_PICTURE | colorStandard)))
     {
       return NULL;
     }
+    XUnlockDisplay(m_Display);
+
     XSync(m_config.x11dsp, false);
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, retPic->texture);
@@ -2068,8 +2071,8 @@ bool COutput::EnsureBufferPool()
 
     pic->pixmap = XCreatePixmap(m_Display,
                                 m_Window,
-                                m_config.surfaceWidth,
-                                m_config.surfaceHeight,
+                                m_config.outWidth,
+                                m_config.outHeight,
                                 wndattribs.depth);
     if (!pic->pixmap)
     {
@@ -2265,6 +2268,7 @@ bool COutput::DestroyGlxContext()
 {
   if (m_glContext)
   {
+    glFinish();
     glXMakeCurrent(m_Display, None, NULL);
     glXDestroyContext(m_Display, m_glContext);
   }
@@ -2998,7 +3002,7 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   uint8_t *src, *dst;
   src = buf + image.offsets[0];
   dst = m_pFilterFrameIn->data[0];
-  m_dllSSE4.copy_frame(src, dst, m_cache, image.width, image.height, image.pitches[0]);
+  m_dllSSE4.copy_frame(src, dst, m_cache, m_config.vidWidth, m_config.vidHeight, image.pitches[0]);
 
   src = buf + image.offsets[1];
   dst = m_pFilterFrameIn->data[1];
