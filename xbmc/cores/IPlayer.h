@@ -217,7 +217,7 @@ public:
   
   virtual std::string GetPlayingTitle() { return ""; };
 
-  virtual bool SwitchChannel(const PVR::CPVRChannel &channel) { return false; }
+  virtual bool SwitchChannel(PVR::CPVRChannel &channel) { return false; }
 
   // Note: the following "OMX" methods are deprecated and will be removed in the future
   // They should be handled by the video renderer, not the player

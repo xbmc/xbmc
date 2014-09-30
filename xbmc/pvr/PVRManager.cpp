@@ -1025,7 +1025,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
 
     CPVRChannelPtr playingChannel;
     if (m_addons->GetPlayingChannel(playingChannel))
-      UpdateLastWatched(playingChannel);
+      UpdateLastWatched(*playingChannel.get());
   }
 
   return bReturn;
@@ -1052,7 +1052,7 @@ void CPVRManager::CloseStream(void)
   CPVRChannelPtr channel;
   if (m_addons->GetPlayingChannel(channel))
   {
-    UpdateLastWatched(channel);
+    UpdateLastWatched(*channel.get());
 
     // store channel settings
     g_application.SaveFileState();
@@ -1214,7 +1214,7 @@ bool CPVRManager::StartPlayback(PlaybackType type /* = PlaybackTypeAny */)
 }
 
 
-bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview)
+bool CPVRManager::PerformChannelSwitch(CPVRChannel &channel, bool bPreview)
 {
   // check parental lock state
   if (IsParentalLocked(channel))
@@ -1280,8 +1280,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     // set channel as selected item
     CGUIWindowPVRBase::SetSelectedItemPath(channel.IsRadio(), channel.Path());
 
-    CPVRChannelPtr channelPtr(new CPVRChannel(channel));
-    UpdateLastWatched(channelPtr);
+    UpdateLastWatched(channel);
 
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
@@ -1572,17 +1571,17 @@ std::string CPVRManager::GetPlayingTVGroupName()
   return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTVGroup() : "";
 }
 
-void CPVRManager::UpdateLastWatched(CPVRChannelPtr channel)
+void CPVRManager::UpdateLastWatched(CPVRChannel &channel)
 {
   time_t tNow;
   CDateTime::GetCurrentDateTime().GetAsTime(tNow);
 
   // update last watched timestamp for channel
-  channel->SetLastWatched(tNow);
-  channel->Persist();
+  channel.SetLastWatched(tNow);
+  channel.Persist();
 
   // update last watched timestamp for group
-  CPVRChannelGroupPtr group = GetPlayingGroup(channel->IsRadio());
+  CPVRChannelGroupPtr group = GetPlayingGroup(channel.IsRadio());
   group->SetLastWatched(tNow);
   group->Persist();
 
