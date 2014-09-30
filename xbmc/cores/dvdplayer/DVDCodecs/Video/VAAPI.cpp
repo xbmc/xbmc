@@ -2667,7 +2667,9 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   pipelineParams->num_filters = 1;
 
   // references
-  double pts, ptsLast = DVD_NOPTS_VALUE;
+  double ptsLast = DVD_NOPTS_VALUE;
+  double pts = DVD_NOPTS_VALUE;
+
   pipelineParams->surface = VA_INVALID_SURFACE;
   for (it=m_decodedPics.begin(); it!=m_decodedPics.end(); ++it)
   {
