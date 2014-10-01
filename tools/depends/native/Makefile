@@ -8,7 +8,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
         gas-preprocessor-native python26-native zlib-native \
         pcre-native swig-native rpl-native libsdl_image-native \
-        tiff-native libpng-native libjpeg-turbo-native liblzo2-native \
+        tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         libsdl-native distribute-native distutilscross-native JsonSchemaBuilder
 
 
