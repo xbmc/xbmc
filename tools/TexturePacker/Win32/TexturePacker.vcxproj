@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -20,10 +20,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -51,31 +53,32 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\xbmc;..\..\..\lib;..\..\..\xbmc\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\xbmc;..\..\..\lib;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;TARGET_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\project\VS2010Express\libs\squish\Debug\squishd.lib;..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>..\..\..\project\VS2010Express\libs\squish\Debug\squishd.lib;..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\project\BuildDependencies\lib\libpng15d.lib;..\..\..\project\BuildDependencies\lib\libgif.lib;..\..\..\project\BuildDependencies\lib\zlib.lib;..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(WindowsSDK_LibraryPath_x86);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;..\..\..\xbmc;..\..\..\lib;..\..\..\xbmc\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_LZO_PACKING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\xbmc;..\..\..\lib;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_LZO_PACKING;TARGET_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -83,25 +86,38 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\project\VS2010Express\libs\squish\Release\squish.lib;..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\project\VS2010Express\libs\squish\Release\squish.lib;..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\project\BuildDependencies\lib\libpng15.lib;..\..\..\project\BuildDependencies\lib\libgif.lib;..\..\..\project\BuildDependencies\lib\zlib.lib;..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(WindowsSDK_LibraryPath_x86);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\DecoderManager.cpp" />
+    <ClCompile Include="..\decoder\GIFDecoder.cpp" />
+    <ClCompile Include="..\decoder\GifHelper.cpp" />
+    <ClCompile Include="..\decoder\JPGDecoder.cpp" />
+    <ClCompile Include="..\decoder\PNGDecoder.cpp" />
     <ClCompile Include="..\md5.cpp" />
-    <ClCompile Include="..\SDL_anigif.cpp" />
+    <ClCompile Include="..\TexturePacker.cpp" />
     <ClCompile Include="dirent.c" />
-    <ClCompile Include="..\XBMCTex.cpp" />
     <ClCompile Include="..\..\..\xbmc\guilib\XBTF.cpp" />
     <ClCompile Include="..\XBTFWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cmdlineargs.h" />
+    <ClInclude Include="..\DecoderManager.h" />
+    <ClInclude Include="..\decoder\GIFDecoder.h" />
+    <ClInclude Include="..\decoder\GifHelper.h" />
+    <ClInclude Include="..\decoder\IDecoder.h" />
+    <ClInclude Include="..\decoder\JPGDecoder.h" />
+    <ClInclude Include="..\decoder\PNGDecoder.h" />
+    <ClInclude Include="..\Gif.h" />
+    <ClInclude Include="..\rgbaimage.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="..\md5.h" />
     <ClInclude Include="..\SDL_anigif.h" />

@@ -13,12 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="decoder">
+      <UniqueIdentifier>{c79bff3f-9118-4c2d-bc31-68b25f7dfbba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dirent.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XBMCTex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\xbmc\guilib\XBTF.cpp">
@@ -27,10 +27,25 @@
     <ClCompile Include="..\XBTFWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SDL_anigif.cpp">
+    <ClCompile Include="..\md5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\md5.cpp">
+    <ClCompile Include="..\decoder\GIFDecoder.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\decoder\GifHelper.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\decoder\JPGDecoder.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\decoder\PNGDecoder.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TexturePacker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DecoderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -52,6 +67,30 @@
     </ClInclude>
     <ClInclude Include="..\XBTFWriter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Gif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rgbaimage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\decoder\GIFDecoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\decoder\GifHelper.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\decoder\IDecoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\decoder\JPGDecoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\decoder\PNGDecoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DecoderManager.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

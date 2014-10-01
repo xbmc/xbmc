@@ -5,9 +5,13 @@ endif
 
 SRCS           = \
   md5.cpp \
-  SDL_anigif.cpp \
   XBTFWriter.cpp \
-  XBMCTex.cpp \
+  TexturePacker.cpp \
+  DecoderManager.cpp \
+  decoder/PNGDecoder.cpp \
+  decoder/JPGDecoder.cpp \
+  decoder/GifHelper.cpp \
+  decoder/GIFDecoder.cpp \
   @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
 
 TARGET         = TexturePacker
@@ -15,12 +19,12 @@ CLEAN_FILES    = $(TARGET)
 
 CXXFLAGS_FOR_BUILD += \
   -I. \
+  -I./decoder \
   -I@abs_top_srcdir@/lib \
   -I@abs_top_srcdir@/xbmc \
   -I@abs_top_srcdir@/xbmc/linux
 
-LDFLAGS_FOR_BUILD += -lSDL_image -lSDL -llzo2
-LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
+LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native -lpng -ljpeg -lgif -llzo2
 
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 DEFINES += -DTARGET_DARWIN
