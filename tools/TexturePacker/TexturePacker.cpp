@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,26 +23,25 @@
 #include <sys/stat.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#define platform_stricmp _stricmp
+#else
+#define platform_stricmp stricmp
 #endif
-//#include <string>
 #include <cerrno>
-//#include <cstring>
 #include <dirent.h>
 #include <map>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#undef main
-
 #include "guilib/XBTF.h"
+
+#include "DecoderManager.h"
+
 #include "XBTFWriter.h"
 #include "md5.h"
-#include "SDL_anigif.h"
 #include "cmdlineargs.h"
 #include "libsquish/squish.h"
 
 #ifdef TARGET_WINDOWS
-#define strncasecmp strnicmp
+#define strncasecmp _strnicmp
 #endif
 
 #ifdef USE_LZO_PACKING
@@ -60,18 +59,6 @@ using namespace std;
 #define FLAGS_USE_DXT     4
 
 #define DIR_SEPARATOR "/"
-#define DIR_SEPARATOR_CHAR '/'
-
-int NP2( unsigned x )
-{
-  --x;
-  x |= x >> 1;
-  x |= x >> 2;
-  x |= x >> 4;
-  x |= x >> 8;
-  x |= x >> 16;
-  return ++x;
-}
 
 const char *GetFormatString(unsigned int format)
 {
@@ -92,37 +79,6 @@ const char *GetFormatString(unsigned int format)
   default:
     return "?????";
   }
-}
-
-// returns true for png, bmp, tga, jpg and dds files, otherwise returns false
-bool IsGraphicsFile(char *strFileName)
-{
-  size_t n = strlen(strFileName);
-  if (n < 4)
-    return false;
-
-  if (strncasecmp(&strFileName[n-4], ".png", 4) &&
-      strncasecmp(&strFileName[n-4], ".bmp", 4) &&
-      strncasecmp(&strFileName[n-4], ".tga", 4) &&
-      strncasecmp(&strFileName[n-4], ".gif", 4) &&
-      strncasecmp(&strFileName[n-4], ".tbn", 4) &&
-      strncasecmp(&strFileName[n-4], ".jpg", 4))
-    return false;
-
-  return true;
-}
-
-// returns true for png, bmp, tga, jpg and dds files, otherwise returns false
-bool IsGIF(const char *strFileName)
-{
-  size_t n = strlen(strFileName);
-  if (n < 4)
-    return false;
-
-  if (strncasecmp(&strFileName[n-4], ".gif", 4))
-    return false;
-
-  return true;
 }
 
 void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string relativePath)
@@ -154,7 +110,7 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
 
           CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
         }
-        else if (IsGraphicsFile(dp->d_name))
+        else if (DecoderManager::IsSupportedGraphicsFile(dp->d_name))
         {
           std::string fileName = "";
           if (relativePath.size() > 0)
@@ -256,46 +212,19 @@ bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
   return false;
 }
 
-CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
+CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
 {
-  // Convert to ARGB
-  SDL_PixelFormat argbFormat;
-  memset(&argbFormat, 0, sizeof(SDL_PixelFormat));
-  argbFormat.BitsPerPixel = 32;
-  argbFormat.BytesPerPixel = 4;
-
-  // For DXT5 we need RGBA
-#if defined(HOST_BIGENDIAN)
-  argbFormat.Amask = 0x000000ff;
-  argbFormat.Ashift = 0;
-  argbFormat.Rmask = 0x0000ff00;
-  argbFormat.Rshift = 8;
-  argbFormat.Gmask = 0x00ff0000;
-  argbFormat.Gshift = 16;
-  argbFormat.Bmask = 0xff000000;
-  argbFormat.Bshift = 24;
-#else
-  argbFormat.Amask = 0xff000000;
-  argbFormat.Ashift = 24;
-  argbFormat.Rmask = 0x00ff0000;
-  argbFormat.Rshift = 16;
-  argbFormat.Gmask = 0x0000ff00;
-  argbFormat.Gshift = 8;
-  argbFormat.Bmask = 0x000000ff;
-  argbFormat.Bshift = 0;
-#endif
 
   int width, height;
   unsigned int format = 0;
-  SDL_Surface *argbImage = SDL_ConvertSurface(image, &argbFormat, 0);
-  unsigned char* argb = (unsigned char*)argbImage->pixels;
+  unsigned char* argb = (unsigned char*)image.pixels;
   unsigned int compressedSize = 0;
   unsigned char* compressed = NULL;
   
-  width  = image->w;
-  height = image->h;
+  width  = image.width;
+  height = image.height;
   bool hasAlpha = HasAlpha(argb, width, height);
-  
+
   if (flags & FLAGS_USE_DXT)
   {
     double colorMSE, alphaMSE;
@@ -308,18 +237,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
       compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt1);
       format = XB_FMT_DXT1;
     }
-    /* 
-    if (!format && alphaMSE == 0 && (flags & FLAGS_ALLOW_YCOCG) == FLAGS_ALLOW_YCOCG)
-    { 
-      // no alpha channel, so DXT5YCoCg is going to be the best DXT5 format
-      CompressImage(argb, width, height, compressed, squish::kDxt5 | squish::kUseYCoCg, colorMSE, alphaMSE);
-      if (colorMSE < maxMSE && alphaMSE < maxMSE)
-      { // success - use it
-        compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt5);
-        format = XB_FMT_DXT5_YCoCg;
-      }
-    }
-    */
+
     if (!format)
     { // try DXT3 and DXT5 - use whichever is better (color is the same, but alpha will be different)
       CompressImage(argb, width, height, compressed, squish::kDxt3, colorMSE, alphaMSE);
@@ -358,7 +276,6 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
     frame = appendContent(writer, width, height, argb, (width * height * 4), format, hasAlpha, flags);
   }
 
-  SDL_FreeSurface(argbImage);
   return frame;
 }
 
@@ -435,83 +352,49 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     output = output.substr(0, 40);
     while (output.size() < 46)
       output += ' ';
-    if (!IsGIF(fullPath.c_str()))
+
+    DecodedFrames frames;
+    bool loaded = DecoderManager::LoadFile(fullPath, frames);
+
+    if (!loaded)
     {
-      // Load the image
-      SDL_Surface* image = IMG_Load(fullPath.c_str());
-      if (!image)
+      fprintf(stderr, "...unable to load image %s\n", file.GetPath());
+      continue;
+    }
+
+    printf("%s\n", output.c_str());
+    bool skip=false;
+    if (dupecheck)
+    {
+      for (unsigned int j = 0; j < frames.frameList.size(); j++)
+        MD5Update(&ctx,
+          (const uint8_t*)frames.frameList[j].rgbaImage.pixels,
+          frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
+
+      if (checkDupe(&ctx,hashes,dupes,i))
       {
-        fprintf(stderr, "...unable to load image %s\n", file.GetPath());
-        continue;
+        printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
+        file.GetFrames().insert(file.GetFrames().end(),
+                                files[dupes[i]].GetFrames().begin(),
+                                files[dupes[i]].GetFrames().end());
+        skip = true;
       }
+    }
 
-      bool skip=false;
-      printf("%s", output.c_str());
-      if (dupecheck)
+    if (!skip)
+    {
+      for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
-        MD5Update(&ctx,(const uint8_t*)image->pixels,image->h*image->pitch);
-        if (checkDupe(&ctx,hashes,dupes,i))
-        {
-          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
-          file.GetFrames().insert(file.GetFrames().end(),
-            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
-          skip = true;
-        }
-      }
-
-      if (!skip)
-      {
-        CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
-
+        printf("    frame %4i                                ", j);
+        CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
+        frame.SetDuration(frames.frameList[j].delay);
+        file.GetFrames().push_back(frame);
         printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
           frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
-
-        file.SetLoop(0);
-        file.GetFrames().push_back(frame);
       }
-      SDL_FreeSurface(image);
     }
-    else
-    {
-      int gnAG = AG_LoadGIF(fullPath.c_str(), NULL, 0);
-      AG_Frame* gpAG = new AG_Frame[gnAG];
-      AG_LoadGIF(fullPath.c_str(), gpAG, gnAG);
-
-      printf("%s\n", output.c_str());
-      bool skip=false;
-      if (dupecheck)
-      {
-        for (int j = 0; j < gnAG; j++)
-          MD5Update(&ctx,
-            (const uint8_t*)gpAG[j].surface->pixels,
-            gpAG[j].surface->h * gpAG[j].surface->pitch);
-
-        if (checkDupe(&ctx,hashes,dupes,i))
-        {
-          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
-          file.GetFrames().insert(file.GetFrames().end(),
-            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
-          skip = true;
-        }
-      }
-
-      if (!skip)
-      {
-        for (int j = 0; j < gnAG; j++)
-        {
-          printf("    frame %4i                                ", j);
-          CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
-          frame.SetDuration(gpAG[j].delay);
-          file.GetFrames().push_back(frame);
-          printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
-            frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
-        }
-      }
-      AG_FreeSurfaces(gpAG, gnAG);
-      delete [] gpAG;
-
-      file.SetLoop(0);
-    }
+    DecoderManager::FreeDecodedFrames(frames);
+    file.SetLoop(0);
   }
 
   if (!writer.UpdateHeader(dupes))
@@ -557,12 +440,12 @@ int main(int argc, char* argv[])
 
   for (unsigned int i = 1; i < args.size(); ++i)
   {
-    if (!stricmp(args[i], "-help") || !stricmp(args[i], "-h") || !stricmp(args[i], "-?"))
+    if (!platform_stricmp(args[i], "-help") || !platform_stricmp(args[i], "-h") || !platform_stricmp(args[i], "-?"))
     {
       Usage();
       return 1;
     }
-    else if (!stricmp(args[i], "-input") || !stricmp(args[i], "-i"))
+    else if (!platform_stricmp(args[i], "-input") || !platform_stricmp(args[i], "-i"))
     {
       InputDir = args[++i];
       valid = true;
@@ -571,7 +454,7 @@ int main(int argc, char* argv[])
     {
       dupecheck = true;
     }
-    else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
+    else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
       OutputFilename = args[++i];
       valid = true;
@@ -580,16 +463,16 @@ int main(int argc, char* argv[])
       while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
 #endif
     }
-    else if (!stricmp(args[i], "-use_none"))
+    else if (!platform_stricmp(args[i], "-use_none"))
     {
       flags &= ~FLAGS_USE_DXT;
     }
-    else if (!stricmp(args[i], "-use_dxt"))
+    else if (!platform_stricmp(args[i], "-use_dxt"))
     {
       flags |= FLAGS_USE_DXT;
     }
 #ifdef USE_LZO_PACKING
-    else if (!stricmp(args[i], "-use_lzo"))
+    else if (!platform_stricmp(args[i], "-use_lzo"))
     {
       flags |= FLAGS_USE_LZO;
     }
@@ -611,5 +494,7 @@ int main(int argc, char* argv[])
     InputDir += DIR_SEPARATOR;
 
   double maxMSE = 1.5;    // HQ only please
+  DecoderManager::InstantiateDecoders();
   createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
+  DecoderManager::FreeDecoders();
 }

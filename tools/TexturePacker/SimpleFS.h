@@ -31,6 +31,11 @@ public:
   {
     m_file = NULL;
   }
+  
+  ~CFile()
+  {
+    Close();
+  }
 
   bool Open(const std::string &file)
   {
@@ -54,16 +59,21 @@ public:
 
   uint64_t Read(void *data, uint64_t size)
   {
-    if (fread(data, size, 1, m_file) == 1)
+    if (fread(data, (size_t)size, 1, m_file) == 1)
       return size;
     return 0;
   }
 
   uint64_t Write(const void *data, uint64_t size)
   {
-    if (fwrite(data, size, 1, m_file) == 1)
+    if (fwrite(data, (size_t)size, 1, m_file) == 1)
       return size;
     return 0;
+  }
+  
+  FILE *getFP()
+  {
+    return m_file;
   }
 
   uint64_t GetFileSize()
