@@ -91,11 +91,6 @@ public:
       seekedBytes = offset;
     return seekedBytes;
   }
-  
-  FILE *getFP()
-  {
-    return m_file;
-  }
 
 private:
   FILE* m_file;
