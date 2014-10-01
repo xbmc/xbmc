@@ -30,6 +30,8 @@
 #include "linux/XMemUtils.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "xbmc/guilib/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
@@ -254,8 +256,10 @@ bool COMXVideo::PortSettingsChanged()
 
   if(m_deinterlace)
   {
-    bool advanced_deinterlace = port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
-
+    EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+    bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF &&
+        port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
+    bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
     if (!advanced_deinterlace)
     {
       // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
@@ -275,8 +279,10 @@ bool COMXVideo::PortSettingsChanged()
     OMX_INIT_STRUCTURE(image_filter);
 
     image_filter.nPortIndex = m_omx_image_fx.GetOutputPort();
-    image_filter.nNumParams = 1;
+    image_filter.nNumParams = 3;
     image_filter.nParams[0] = 3;
+    image_filter.nParams[1] = 0;
+    image_filter.nParams[2] = half_framerate;
     if (!advanced_deinterlace)
       image_filter.eImageFilter = OMX_ImageFilterDeInterlaceFast;
     else
