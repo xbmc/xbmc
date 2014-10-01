@@ -103,7 +103,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   }
 
   std::string message = StringUtils::FormatV(format, va);
-  std::string prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
+  std::string prefix = StringUtils::Format("ffmpeg[%lX]: ", threadId);
   if(avc)
   {
     if(avc->item_name)
