@@ -2009,6 +2009,16 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
         if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt)
           || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
         {
+          //check for delimiters .-" " or end of filename
+          std::string token;
+          if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt))
+            token = strItem.substr(strMovieFileNameNoExt.length());
+          else
+            token = strItem.substr(isoFileNameNoExt.length());
+
+          // FIXME/TODO add an AdvancedSetting for custom delimiters
+          if (token.find_first_of(".- ") != 0)
+            continue;
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
           {
