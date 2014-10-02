@@ -142,8 +142,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     return true;
   }
   
-  if (g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem(), CFileItemListPtr()))
-    return true;
+  g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem(), CFileItemListPtr());
   
   bool ret = CGUIWindow::OnAction(action);
   
