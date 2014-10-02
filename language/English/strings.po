@@ -6034,11 +6034,6 @@ msgid "Allow hardware acceleration (VDPAU)"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#13426"
-msgid "Allow hardware acceleration (VAAPI)"
-msgstr ""
-
-#: system/settings/settings.xml
 msgctxt "#13427"
 msgid "Allow hardware acceleration (DXVA2)"
 msgstr ""
@@ -6140,39 +6135,6 @@ msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13447"
-msgid "Use MPEG-2 VAAPI"
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Use MPEG-2 VAAPI" with label #13447
-#: system/settings/settings.xml
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13449"
-msgid "Use MPEG-4 VAAPI"
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Use MPEG-4 VAAPI" with label #13449
-#: system/settings/settings.xml
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13451"
-msgid "Use VC-1 VAAPI"
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Use VC-1 VAAPI" with label #13451
-#: system/settings/settings.xml
-msgctxt "#13452"
-msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
-msgstr ""
-
 #empty string with id 13453
 
 #. Label for a setting to configure the video decoding method
@@ -6191,12 +6153,6 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#13456"
 msgid "Hardware accelerated"
-msgstr ""
-
-#. Option for video related setting #13454: sw filter
-#: system/settings/settings.xml
-msgctxt "#13457"
-msgid "Prefer VAAPI render method"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7374,21 +7330,6 @@ msgstr ""
 #: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16326"
 msgid "DXVA-HD"
-msgstr ""
-
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16327"
-msgid "VAAPI Bob"
-msgstr ""
-
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16328"
-msgid "VAAPI Motion Adaptive"
-msgstr ""
-
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16329"
-msgid "VAAPI Motion Compensated"
 msgstr ""
 
 #empty strings from id 16330 to 16399
@@ -12978,11 +12919,6 @@ msgctxt "#34003"
 msgid "DXVA2"
 msgstr ""
 
-#: Unknown
-msgctxt "#34004"
-msgid "VAAPI"
-msgstr ""
-
 #: system/settings/settings.xml
 msgctxt "#34005"
 msgid "Flac"
@@ -13839,12 +13775,6 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VAAPI)" with label #13426
-#: system/settings/settings.xml
-msgctxt "#36156"
-msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
 #empty string with id 36157
@@ -15402,12 +15332,6 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
-msgstr ""
-
-#. Description for video related setting #13457: vaapi sw filter
-#: system/settings/settings.xml
-msgctxt "#36433"
-msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr ""
 
 #empty strings from id 36434 to 36499

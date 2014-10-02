@@ -35,7 +35,6 @@
 class CRenderCapture;
 
 namespace DXVA { class CProcessor; }
-namespace VAAPI { class CSurfaceHolder; }
 namespace VDPAU { class CVdpauRenderPicture; }
 struct DVDVideoPicture;
 

@@ -65,7 +65,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
   if (!buffer)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - error creating buffer", __FUNCTION__);
+    CLog::Log(LOGERROR, "VDA::%s - error creating buffer", __FUNCTION__);
     return -1;
   }
   pic->buf[0] = buffer;

@@ -56,13 +56,6 @@ extern "C" {
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
-#ifdef HAVE_LIBVA
-#include <va/va.h>
-#include <va/va_x11.h>
-#include <va/va_glx.h>
-#include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
-
-#endif
 
 #ifdef TARGET_DARWIN
   #include "osx/CocoaInterface.h"
@@ -128,9 +121,6 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
   flipindex = 0;
 #ifdef HAVE_LIBVDPAU
   vdpau = NULL;
-#endif
-#ifdef HAVE_LIBVA
-  vaapi = NULL;
 #endif
 #ifdef TARGET_DARWIN_OSX
   cvBufferRef = NULL;
@@ -562,9 +552,6 @@ void CLinuxRendererGL::ReleaseBuffer(int idx)
 #ifdef HAVE_LIBVDPAU
   SAFE_RELEASE(buf.vdpau);
 #endif
-#ifdef HAVE_LIBVA
-  SAFE_RELEASE(buf.vaapi);
-#endif
 #ifdef TARGET_DARWIN
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
@@ -841,7 +828,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    if (((m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI)) && m_nonLinStretch)
+    if ((m_renderMethod & RENDER_VDPAU) && m_nonLinStretch)
     {
       m_pVideoFilterShader = new StretchFilterShader();
       if (!m_pVideoFilterShader->CompileAndLink())
@@ -924,11 +911,6 @@ void CLinuxRendererGL::LoadShaders(int field)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
-  }
-  else if (m_format == RENDER_FMT_VAAPI)
-  {
-    CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
-    m_renderMethod = RENDER_VAAPI;
   }
   else if (m_format == RENDER_FMT_CVBREF)
   {
@@ -1046,8 +1028,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_pboUsed = false;
 
   // Now that we now the render method, setup texture function handlers
-  if (m_format == RENDER_FMT_NV12 ||
-      m_format == RENDER_FMT_VAAPINV12)
+  if (m_format == RENDER_FMT_NV12)
   {
     m_textureUpload = &CLinuxRendererGL::UploadNV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
@@ -1071,12 +1052,6 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGL::UploadVDPAUTexture420;
     m_textureCreate = &CLinuxRendererGL::CreateVDPAUTexture420;
     m_textureDelete = &CLinuxRendererGL::DeleteVDPAUTexture420;
-  }
-  else if (m_format == RENDER_FMT_VAAPI)
-  {
-    m_textureUpload = &CLinuxRendererGL::UploadVAAPITexture;
-    m_textureCreate = &CLinuxRendererGL::CreateVAAPITexture;
-    m_textureDelete = &CLinuxRendererGL::DeleteVAAPITexture;
   }
   else if (m_format == RENDER_FMT_CVBREF)
   {
@@ -1127,7 +1102,6 @@ void CLinuxRendererGL::UnInit()
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
     (this->*m_textureDelete)(i);
-    DeleteVAAPITexture(i);
   }
 
   // cleanup framebuffer object if it was in use
@@ -1190,13 +1164,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderRGB(renderBuffer, m_currentField);
   }
 #endif
-#ifdef HAVE_LIBVA
-  else if (m_renderMethod & RENDER_VAAPI)
-  {
-    UpdateVideoFilter();
-    RenderRGB(renderBuffer, m_currentField);
-  }
-#endif
   else
   {
     // RENDER_CVREF uses the same render as the default case
@@ -1211,16 +1178,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     if (buf.vdpau)
     {
       buf.vdpau->Sync();
-    }
-  }
-#endif
-#ifdef HAVE_LIBVA
-  if (m_format == RENDER_FMT_VAAPI)
-  {
-    YUVBUFFER &buf = m_buffers[renderBuffer];
-    if (buf.vaapi)
-    {
-      buf.vaapi->Sync();
     }
   }
 #endif
@@ -2501,86 +2458,6 @@ bool CLinuxRendererGL::UploadVDPAUTexture420(int index)
   return true;
 }
 
-void CLinuxRendererGL::DeleteVAAPITexture(int index)
-{
-#ifdef HAVE_LIBVA
-  YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
-  SAFE_RELEASE(m_buffers[index].vaapi);
-  plane.id = 0;
-#endif
-}
-
-bool CLinuxRendererGL::CreateVAAPITexture(int index)
-{
-#ifdef HAVE_LIBVA
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
-
-  DeleteVAAPITexture(index);
-
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  plane.id = 1;
-
-#endif
-  return true;
-}
-
-bool CLinuxRendererGL::UploadVAAPITexture(int index)
-{
-#ifdef HAVE_LIBVA
-  VAAPI::CVaapiRenderPicture *vaapi = m_buffers[index].vaapi;
-
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE &plane = fields[FIELD_FULL][0];
-
-  if (!vaapi || !vaapi->valid)
-  {
-    return false;
-  }
-
-  plane.id = vaapi->texture;
-
-  // in stereoscopic mode sourceRect may only
-  // be a part of the source video surface
-  plane.rect = m_sourceRect;
-
-  // clip rect
-  if (vaapi->crop.x1 > plane.rect.x1)
-    plane.rect.x1 = vaapi->crop.x1;
-  if (vaapi->crop.x2 < plane.rect.x2)
-    plane.rect.x2 = vaapi->crop.x2;
-  if (vaapi->crop.y1 > plane.rect.y1)
-    plane.rect.y1 = vaapi->crop.y1;
-  if (vaapi->crop.y2 < plane.rect.y2)
-    plane.rect.y2 = vaapi->crop.y2;
-
-  plane.texheight = vaapi->texHeight;
-  plane.texwidth  = vaapi->texWidth;
-
-  if (m_textureTarget == GL_TEXTURE_2D)
-  {
-    plane.rect.y1 /= plane.texheight;
-    plane.rect.y2 /= plane.texheight;
-    plane.rect.x1 /= plane.texwidth;
-    plane.rect.x2 /= plane.texwidth;
-  }
-
-#endif
-  return true;
-}
-
 //********************************************************************************************************
 // CoreVideoRef Texture creation, deletion, copying + clearing
 //********************************************************************************************************
@@ -3282,9 +3159,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
     if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool("videoscreen.limitedrange"))
       return true;
 
-    if (m_renderMethod & RENDER_VAAPI)
-      return false;
-
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
         || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
@@ -3294,9 +3168,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   {
     if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool("videoscreen.limitedrange"))
       return true;
-
-    if (m_renderMethod & RENDER_VAAPI)
-      return false;
 
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
@@ -3321,7 +3192,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   if (feature == RENDERFEATURE_NONLINSTRETCH)
   {
     if (((m_renderMethod & RENDER_GLSL) && !(m_renderMethod & RENDER_POT)) ||
-        (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
+        (m_renderMethod & RENDER_VDPAU))
       return true;
   }
 
@@ -3370,17 +3241,6 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     VDPAU::CVdpauRenderPicture *vdpauPic = m_buffers[m_iYV12RenderBuffer].vdpau;
     if(vdpauPic && vdpauPic->vdpau)
       return vdpauPic->vdpau->Supports(method);
-#endif
-    return false;
-  }
-
-  if(m_format == RENDER_FMT_VAAPI ||
-      m_format == RENDER_FMT_VAAPINV12)
-  {
-#ifdef HAVE_LIBVA
-    VAAPI::CVaapiRenderPicture *vaapiPic = m_buffers[m_iYV12RenderBuffer].vaapi;
-    if(vaapiPic && vaapiPic->vaapi)
-      return vaapiPic->vaapi->Supports(method);
 #endif
     return false;
   }
@@ -3434,7 +3294,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
       return false;
 
     if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) ||
-        (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
+        (m_renderMethod & RENDER_VDPAU))
     {
       // spline36 and lanczos3 are only allowed through advancedsettings.xml
       if(method != VS_SCALINGMETHOD_SPLINE36
@@ -3500,9 +3360,7 @@ unsigned int CLinuxRendererGL::GetOptimalBufferSize()
 {
   if(m_format == RENDER_FMT_CVBREF)
     return 2;
-  else if (m_format == RENDER_FMT_VAAPI ||
-           m_format == RENDER_FMT_VAAPINV12 ||
-           m_format == RENDER_FMT_VDPAU ||
+  else if (m_format == RENDER_FMT_VDPAU ||
            m_format == RENDER_FMT_VDPAU_420)
     return 5;
   else
@@ -3516,16 +3374,6 @@ void CLinuxRendererGL::AddProcessor(VDPAU::CVdpauRenderPicture *vdpau, int index
   VDPAU::CVdpauRenderPicture *pic = vdpau->Acquire();
   SAFE_RELEASE(buf.vdpau);
   buf.vdpau = pic;
-}
-#endif
-
-#ifdef HAVE_LIBVA
-void CLinuxRendererGL::AddProcessor(VAAPI::CVaapiRenderPicture *vaapi, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
-  SAFE_RELEASE(buf.vaapi);
-  buf.vaapi = pic;
 }
 #endif
 

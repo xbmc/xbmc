@@ -56,10 +56,6 @@
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
-#ifdef HAVE_LIBVA
-  #include "../dvdplayer/DVDCodecs/Video/VAAPI.h"
-#endif
-
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */
@@ -934,15 +930,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 #ifdef TARGET_DARWIN
   else if(pic.format == RENDER_FMT_CVBREF)
     m_pRenderer->AddProcessor(pic.cvBufferRef, index);
-#endif
-#ifdef HAVE_LIBVA
-  else if(pic.format == RENDER_FMT_VAAPI)
-    m_pRenderer->AddProcessor(pic.vaapi, index);
-  else if(pic.format == RENDER_FMT_VAAPINV12)
-  {
-    m_pRenderer->AddProcessor(pic.vaapi, index);
-    CDVDCodecUtils::CopyNV12Picture(&image, &pic.vaapi->DVDPic);
-  }
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
   else if(pic.format == RENDER_FMT_EGLIMG)
