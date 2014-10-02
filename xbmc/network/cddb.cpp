@@ -776,7 +776,7 @@ bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
   XFILE::CFile file;
   if (file.OpenForWrite(GetCacheFile(discid), true))
   {
-    const bool ret = (file.Write((void*)pBuffer, strlen(pBuffer) + 1) == strlen(pBuffer) + 1);
+    const bool ret = ( (size_t) file.Write((void*)pBuffer, strlen(pBuffer) + 1) == strlen(pBuffer) + 1);
     file.Close();
     return ret;
   }
