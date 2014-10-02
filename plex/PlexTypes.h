@@ -124,6 +124,8 @@ enum ePlexMediaFilterTypes
 #define WINDOW_DIALOG_PLEX_GLOBAL_CACHER    10208
 #define WINDOW_DIALOG_PLEX_EXTRAS           10209
 #define WINDOW_DIALOG_PLEX_PLAYLIST_SELECT  10210
+#define WINDOW_DIALOG_PLEX_USER_SELECT      10211
+#define WINDOW_DIALOG_PLEX_PIN_INPUT        10212
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40

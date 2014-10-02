@@ -373,6 +373,7 @@
 #include "plex/GUI/GUIDialogPlexVideoOSD.h"
 #include "plex/GUI/GUIWindowPlexPlaylistSelection.h"
 #include "plex/GUI/GUIDialogPlaylistSelection.h"
+#include "plex/GUI/GUIDialogPlexUserSelect.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1539,6 +1540,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPlexVideoOSD);
     g_windowManager.Add(new CGUIWindowPlexPlaylistSelection);
     g_windowManager.Add(new CGUIDialogPlaylistSelection);
+    g_windowManager.Add(new CGUIDialogPlexUserSelect);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
