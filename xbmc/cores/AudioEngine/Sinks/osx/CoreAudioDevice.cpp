@@ -658,7 +658,7 @@ std::string CCoreAudioDevice::GetDataSourceName(UInt32 dataSourceId) const
 
   if (( status == noErr ) && dataSourceNameCF )
   {
-    if (DarwinCFStringRefToUTF8String(dataSourceNameCF, dataSourceName))
+    if (CDarwinUtils::CFStringRefToUTF8String(dataSourceNameCF, dataSourceName))
     {
       ret = dataSourceName;
     }

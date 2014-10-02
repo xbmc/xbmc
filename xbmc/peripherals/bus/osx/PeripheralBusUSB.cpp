@@ -250,7 +250,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
             if (deviceFilePathAsCFString)
             {
               // Convert the path from a CFString to a std::string
-              if (!DarwinCFStringRefToUTF8String(deviceFilePathAsCFString, ttlDeviceFilePath))
+              if (!CDarwinUtils::CFStringRefToUTF8String(deviceFilePathAsCFString, ttlDeviceFilePath))
                 CLog::Log(LOGWARNING, "CPeripheralBusUSB::DeviceAttachCallback failed to convert CFStringRef");
               CFRelease(deviceFilePathAsCFString);
             }

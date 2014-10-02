@@ -723,7 +723,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 void CLinuxRendererGLES::LoadShaders(int field)
 {
 #ifdef TARGET_DARWIN_IOS
-  float ios_version = GetIOSVersion();
+  float ios_version = CDarwinUtils::GetIOSVersion();
 #endif
   int requestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);

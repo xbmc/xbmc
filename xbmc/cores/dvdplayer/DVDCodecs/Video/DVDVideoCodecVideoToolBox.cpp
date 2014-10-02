@@ -340,7 +340,7 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
 
   FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
   
-  if (GetIOSVersion() < 4.3)
+  if (CDarwinUtils::GetIOSVersion() < 4.3)
   {
     CLog::Log(LOGDEBUG, "%s - GetIOSVersion says < 4.3", __FUNCTION__);
     status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1(

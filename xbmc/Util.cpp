@@ -439,7 +439,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
     char     given_path[2*MAXPATHLEN];
     uint32_t path_size =2*MAXPATHLEN;
 
-    result = GetDarwinExecutablePath(given_path, &path_size);
+    result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
     if (result == 0)
     {
       // Move backwards to last /.
@@ -1798,7 +1798,7 @@ CStdString CUtil::ResolveExecutablePath()
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
-  GetDarwinExecutablePath(given_path, &path_size);
+  CDarwinUtils::GetExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
 #elif defined(TARGET_FREEBSD)                                                                                                                                                                   
   char buf[PATH_MAX];
@@ -1841,7 +1841,7 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
-  GetDarwinFrameworkPath(forPython, given_path, &path_size);
+  CDarwinUtils::GetFrameworkPath(forPython, given_path, &path_size);
   strFrameworksPath = given_path;
 #endif
   return strFrameworksPath;
