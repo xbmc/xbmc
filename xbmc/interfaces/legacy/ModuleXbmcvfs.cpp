@@ -57,7 +57,10 @@ namespace XBMCAddon
       DelayedCallGuard dg;
       if (URIUtils::HasSlashAtEnd(path, true))
         return XFILE::CDirectory::Exists(path);
-      return XFILE::CFile::Exists(path, false);
+
+      // even if path doesn't have slash at last position, 
+      // try to check it as directory
+      return XFILE::CFile::Exists(path, false) || XFILE::CDirectory::Exists(path, false);
     }      
 
     // make a directory
