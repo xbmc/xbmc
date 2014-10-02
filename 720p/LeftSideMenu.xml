@@ -363,6 +363,12 @@
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
 					</item>
+					<item id="8">
+						<description>Switch User</description>
+						<label>Switch User</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
+					</item>
 					<item id="101">
 						<description>OE Settings Button</description>
 						<label> $LOCALIZE[41000] </label>
@@ -482,6 +488,12 @@
 						<label>$LOCALIZE[31955]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
+					</item>
+					<item id="7">
+						<description>Switch User</description>
+						<label>Switch User</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
 					</item>
 					<item id="112">
 						<description>Sleep</description>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<window id="2000">
+	<defaultcontrol>3</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<coordinates>
+		<origin y="0">Skin.String(DialogPos,audiostreampicker)</origin>
+		<origin y="45">Skin.String(DialogPos,subtitlestreampicker)</origin>
+		<origin y="150">Skin.String(DialogPos,recommend)</origin>
+	</coordinates>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include condition="!Window.IsVisible(10090)">DialogSelectDefault</include>
+		<include condition="Window.IsVisible(10090)">DialogSelectAudioSubtitleStreamPicker</include>
+	</controls>
+</window>
