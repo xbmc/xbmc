@@ -1303,7 +1303,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
-    vector<string> exts = StringUtils::Split(extraExtensions,"|");
+    vector<string> exts = StringUtils::Split(extraExtensions, '|');
     for (vector<string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
     {
       size_t iPos = extensions.find(*i);

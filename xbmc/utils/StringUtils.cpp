@@ -661,64 +661,56 @@ std::string StringUtils::Join(const vector<string> &strings, const std::string& 
 
 vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
-  vector<string> results;
+  std::vector<std::string> results;
   if (input.empty())
     return results;
-
-  size_t iPos = std::string::npos;
-  size_t newPos = std::string::npos;
-  size_t sizeS2 = delimiter.size();
-  size_t isize = input.size();
-
-  vector<unsigned int> positions;
-
-  newPos = input.find(delimiter, 0);
-
-  if (newPos == std::string::npos)
+  if (delimiter.empty())
   {
     results.push_back(input);
     return results;
   }
 
-  while (newPos != std::string::npos)
+  const size_t delimLen = delimiter.length();
+  size_t nextDelim;
+  size_t textPos = 0;
+  do
   {
-    positions.push_back(newPos);
-    iPos = newPos;
-    newPos = input.find(delimiter, iPos + sizeS2);
-  }
-
-  // numFound is the number of delimiters which is one less
-  // than the number of substrings
-  unsigned int numFound = positions.size();
-  if (iMaxStrings > 0 && numFound >= iMaxStrings)
-    numFound = iMaxStrings - 1;
-
-  for ( unsigned int i = 0; i <= numFound; i++ )
-  {
-    string s;
-    if ( i == 0 )
+    if (--iMaxStrings == 0)
     {
-      if ( i == numFound )
-        s = input;
-      else
-        s = input.substr(i, positions[i]);
+      results.push_back(input.substr(textPos));
+      break;
     }
-    else
-    {
-      size_t offset = positions[i - 1] + sizeS2;
-      if ( offset < isize )
-      {
-        if ( i == numFound )
-          s = input.substr(offset);
-        else if ( i > 0 )
-          s = input.substr( positions[i - 1] + sizeS2,
-                         positions[i] - positions[i - 1] - sizeS2 );
-      }
-    }
-    results.push_back(s);
-  }
+    nextDelim = input.find(delimiter, textPos);
+    results.push_back(input.substr(textPos, nextDelim - textPos));
+    textPos = nextDelim + delimLen;
+  } while (nextDelim != std::string::npos);
+
   return results;
 }
+
+std::vector<std::string> StringUtils::Split(const std::string& input, const char delimiter, size_t iMaxStrings /*= 0*/)
+{
+  std::vector<std::string> results;
+  if (input.empty())
+    return results;
+
+  size_t nextDelim;
+  size_t textPos = 0;
+  do
+  {
+    if (--iMaxStrings == 0)
+    {
+      results.push_back(input.substr(textPos));
+      break;
+    }
+    nextDelim = input.find(delimiter, textPos);
+    results.push_back(input.substr(textPos, nextDelim - textPos));
+    textPos = nextDelim + 1;
+  } while (nextDelim != std::string::npos);
+
+  return results;
+}
+
 
 // returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
@@ -801,7 +793,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
 
 int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 {
-  vector<string> days = StringUtils::Split(dateString, "-");
+  vector<string> days = StringUtils::Split(dateString, '-');
   if (days.size() == 1)
     return atoi(days[0].c_str());
   else if (days.size() == 2)
@@ -823,7 +815,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   }
   else
   {
-    vector<string> secs = StringUtils::Split(strCopy, ":");
+    vector<string> secs = StringUtils::Split(strCopy, ':');
     int timeInSecs = 0;
     for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {
@@ -1178,5 +1170,28 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
     tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
     // Skip delimiters.  Note the "not_of"
     dataPos = input.find_first_not_of(delimiters, nextDelimPos);
+  }
+}
+
+std::vector<std::string> StringUtils::Tokenize(const std::string &input, const char delimiter)
+{
+  std::vector<std::string> tokens;
+  Tokenize(input, tokens, delimiter);
+  return tokens;
+}
+
+void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter)
+{
+  tokens.clear();
+  // Skip delimiters at beginning.
+  std::string::size_type dataPos = input.find_first_not_of(delimiter);
+  while (dataPos != std::string::npos)
+  {
+    // Find next delimiter
+    const std::string::size_type nextDelimPos = input.find(delimiter, dataPos);
+    // Found a token, add it to the vector.
+    tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
+    // Skip delimiters.  Note the "not_of"
+    dataPos = input.find_first_not_of(delimiter, nextDelimPos);
   }
 }

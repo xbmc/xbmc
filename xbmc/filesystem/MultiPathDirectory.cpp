@@ -169,7 +169,7 @@ bool CMultiPathDirectory::GetPaths(const std::string& path, std::vector<std::str
   path1.erase(path1.find_last_not_of('/')+1);
 
   // split on "/"
-  vector<string> temp = StringUtils::Split(path1, "/");
+  vector<string> temp = StringUtils::Split(path1, '/');
   if (temp.size() == 0)
     return false;
 
@@ -186,7 +186,7 @@ bool CMultiPathDirectory::HasPath(const std::string& strPath, const std::string&
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
+  vector<string> vecTemp = StringUtils::Split(strPath1, '/');
   if (vecTemp.empty())
     return false;
 

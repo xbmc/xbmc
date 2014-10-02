@@ -93,7 +93,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   const CSetting *setting = CSettings::Get().GetSetting("locale.keyboardlayouts");
   std::vector<std::string> layouts;
   if (setting)
-    layouts = StringUtils::Split(setting->ToString(), "|");
+    layouts = StringUtils::Split(setting->ToString(), '|');
   for (std::vector<CKeyboardLayout>::const_iterator j = keyLayouts.begin(); j != keyLayouts.end(); ++j)
   {
     if (std::find(layouts.begin(), layouts.end(), j->GetName()) != layouts.end())
