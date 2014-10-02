@@ -35,6 +35,7 @@
   Var PageProfileState
   Var DirectXSetupError
   Var VSRedistSetupError
+  Var /GLOBAL CleanDestDir
   
 ;--------------------------------
 ;Interface Settings
@@ -55,6 +56,7 @@
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE.GPL"
   !insertmacro MUI_PAGE_COMPONENTS
+  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE CallbackDirLeave
   !insertmacro MUI_PAGE_DIRECTORY
   
   ;Start Menu Folder Page Configuration
@@ -64,6 +66,7 @@
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder  
 
   !insertmacro MUI_PAGE_INSTFILES
+  !define MUI_PAGE_CUSTOMFUNCTION_PRE CallbackPreFinish
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_WELCOME
@@ -76,6 +79,118 @@
 ;Languages
 
   !insertmacro MUI_LANGUAGE "English"
+
+;--------------------------------
+;HelperFunction
+Function CallbackPreFinish 
+  Var /GLOBAL ShouldMigrateUserData
+  StrCpy $ShouldMigrateUserData "0"
+  Var /GLOBAL OldXBMCInstallationFound
+  StrCpy $OldXBMCInstallationFound "0"
+
+  Call HandleOldXBMCInstallation
+  ;Migrate userdata from XBMC to Kodi
+  Call HandleUserdataMigration
+FunctionEnd
+
+Function CallbackDirLeave
+  ;deinstall kodi if it is already there in destination folder
+  Call HandleKodiInDestDir
+FunctionEnd
+
+Function HandleUserdataMigration
+  Var /GLOBAL INSTDIR_XBMC
+  ReadRegStr $INSTDIR_XBMC HKCU "Software\XBMC" ""
+
+  ;Migration from XBMC to Kodi
+  ;Move XBMC portable_data and appdata folder if exists to new location
+  ${If} $ShouldMigrateUserData == "1"
+      ${If} ${FileExists} "$APPDATA\XBMC\*.*"
+      ${AndIfNot} ${FileExists} "$APPDATA\${APP_NAME}\*.*"
+          Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
+          MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC userdata folder was moved to the new ${APP_NAME} userdata location.$\nThis to make the transition as smooth as possible without any user interactions needed."
+      ${EndIf}
+  ${Else}
+    ; old installation was found but not uninstalled - inform the user
+    ; that his userdata is not automatically migrted
+    ${If} $OldXBMCInstallationFound == "1"
+      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "There was a former XBMC Installation detected but you didn't uninstall it. The older profile data will not be moved to the ${APP_NAME} userdata location. ${APP_NAME} will use default profile settings."
+    ${EndIf}
+  ${EndIf}
+FunctionEnd
+
+Function HandleOldXBMCInstallation
+  Var /GLOBAL INSTDIR_XBMC_OLD
+  ReadRegStr $INSTDIR_XBMC_OLD HKCU "Software\XBMC" ""
+  
+  ;ask if a former XBMC installation should be uninstalled if detected
+  ${IfNot} $INSTDIR_XBMC_OLD == ""
+    StrCpy $OldXBMCInstallationFound "1"
+    MessageBox MB_YESNO|MB_ICONQUESTION "A previous XBMC installation was detected. Would you like to uninstall it?" IDYES true IDNO false
+    true:
+      DetailPrint "Uninstalling $INSTDIR_XBMC"
+      SetDetailsPrint none
+      ExecWait '"$INSTDIR_XBMC_OLD\uninstall.exe" /S _?=$INSTDIR_XBMC_OLD'
+      SetDetailsPrint both
+      ;this also removes the uninstall.exe which doesn't remove it self...
+      Delete "$INSTDIR_XBMC_OLD\uninstall.exe"
+      ;if the directory is now empty we can safely remove it (rmdir won't remove non-empty dirs!)
+      RmDir "$INSTDIR_XBMC_OLD"
+      StrCpy $ShouldMigrateUserData "1"
+    false:
+  ${EndIf}
+FunctionEnd
+
+Function HandleOldKodiInstallation
+  Var /GLOBAL INSTDIR_KODI
+  ReadRegStr $INSTDIR_KODI HKCU "Software\${APP_NAME}" ""
+
+  ;if former Kodi installation was detected in a different directory then the destination dir
+  ;ask for uninstallation
+  ;only ask about the other installation if user didn't already
+  ;decide to not overwrite the installation in his originally selected destination dir
+  ${IfNot}    $CleanDestDir == "0"
+  ${AndIfNot} $INSTDIR_KODI == ""
+  ${AndIfNot} $INSTDIR_KODI == $INSTDIR
+    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous ${APP_NAME} installation in a different folder was detected. Would you like to uninstall it?" IDYES true IDNO false
+    true:
+      DetailPrint "Uninstalling $INSTDIR_KODI"
+      SetDetailsPrint none
+      ExecWait '"$INSTDIR_KODI\uninstall.exe" /S _?=$INSTDIR_KODI'
+      SetDetailsPrint both
+      ;this also removes the uninstall.exe which doesn't remove it self...
+      Delete "$INSTDIR_KODI\uninstall.exe"
+      ;if the directory is now empty we can safely remove it (rmdir won't remove non-empty dirs!)
+      RmDir "$INSTDIR_KODI"
+    false:
+  ${EndIf}
+FunctionEnd
+
+Function HandleKodiInDestDir
+  ;if former Kodi installation was detected in the destination directory - uninstall it first
+  ${IfNot} $INSTDIR == ""
+  ${AndIf} ${FileExists} "$INSTDIR\uninstall.exe"
+    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous installation was detected in the selected destination folder. Do you really want to overwrite it?" IDYES true IDNO false
+    true:
+      StrCpy $CleanDestDir "1"
+      Goto done
+    false:
+      StrCpy $CleanDestDir "0"
+      Abort
+    done:
+  ${EndIf}
+FunctionEnd
+
+Function DeinstallKodiInDestDir
+  ${If} $CleanDestDir == "1"
+    DetailPrint "Uninstalling former ${APP_NAME} Installation in $INSTDIR"
+    SetDetailsPrint none
+    ExecWait '"$INSTDIR\uninstall.exe" /S _?=$INSTDIR'
+    SetDetailsPrint both
+    ;this also removes the uninstall.exe which doesn't remove it self...
+    Delete "$INSTDIR\uninstall.exe"
+  ${EndIf}
+FunctionEnd
 
 ;--------------------------------
 ;Install levels
@@ -91,42 +206,12 @@ Section "${APP_NAME}" SecAPP
   SetShellVarContext current
   SectionIn RO
   SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
-  
-  ;Move XBMC portable_data and appdata folder if exists to new location
-  ;and safe clean out old install folder
-  Var /GLOBAL INSTDIR_OLD
-  ReadRegStr $INSTDIR_OLD HKCU "Software\XBMC" ""
-  ${IfNot} $INSTDIR_OLD == ""
-      IfFileExists "$APPDATA\XBMC\*.*" 0 +3
-        Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
-        MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC userdata folder was moved to the new ${APP_NAME} userdata location.$\n.This to make the transition as smooth as possible without any user interactions needed."
 
-    ${IfNot} $INSTDIR_OLD == $INSTDIR
-      IfFileExists $INSTDIR_OLD\portable_data\*.* 0 +3
-        Rename "$INSTDIR_OLD\portable_data\" "$INSTDIR\portable_data\"
-        MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC portable_data folder was moved to the new installation folder.$\nPlease manually adjust the short-cut for starting ${APP_NAME} accordingly."
-      
-      RMDir /r "$INSTDIR_OLD\addons"
-      RMDir /r "$INSTDIR_OLD\language"
-      RMDir /r "$INSTDIR_OLD\media"
-      RMDir /r "$INSTDIR_OLD\sounds"
-      RMDir /r "$INSTDIR_OLD\system"
-      RMDir /r "$INSTDIR_OLD\userdata"
-      Delete "$INSTDIR_OLD\*.*"
-      RMDir "$INSTDIR_OLD"
-    ${EndIf}
-    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC"
-    DeleteRegKey HKCU "Software\XBMC"
-  ${EndIf}
+  ;handle an old kodi installation in a folder different from the destination folder
+  Call HandleOldKodiInstallation
+  ;deinstall kodi in destination dir if $CleanDestDir == "1" - meaning user has confirmed it
+  Call DeinstallKodiInDestDir
 
-  ;Clean up install folder
-  RMDir /r $INSTDIR\addons
-  RMDir /r $INSTDIR\language
-  RMDir /r $INSTDIR\media
-  RMDir /r $INSTDIR\sounds
-  RMDir /r $INSTDIR\system
-  Delete "$INSTDIR\*.*"
-  
   ;Start copying files
   SetOutPath "$INSTDIR"
   File "${app_root}\application\*.*"
@@ -141,7 +226,7 @@ Section "${APP_NAME}" SecAPP
   SetOutPath "$INSTDIR\system"
   File /r "${app_root}\application\system\*.*"
   
-  ;Turn off overwrite to prevent files in APPDATA\xbmc\userdata\ from being overwritten
+  ;Turn off overwrite to prevent files in APPDATA\Kodi\userdata\ from being overwritten
   SetOverwrite off
   IfFileExists $INSTDIR\userdata\*.* 0 +2
     SetOutPath "$APPDATA\${APP_NAME}\userdata"
@@ -170,9 +255,6 @@ Section "${APP_NAME}" SecAPP
   
   WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url" "InternetShortcut" "URL" "${WEBSITE}"
   !insertmacro MUI_STARTMENU_WRITE_END  
-
-  ;Remove old XBMC shortcuts
-  RMDir /r "$SMPROGRAMS\XBMC"
 
   ;add entry to add/remove programs
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
@@ -355,4 +437,5 @@ Function .onInit
   IfFileExists ${DXVERSIONDLL} +3 0
   IntOp $0 ${SF_SELECTED} | ${SF_RO}
   SectionSetFlags ${SEC_DIRECTX} $0
+  StrCpy $CleanDestDir "-1"
 FunctionEnd
