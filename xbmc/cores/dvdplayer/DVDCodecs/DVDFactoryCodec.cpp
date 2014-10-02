@@ -179,11 +179,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(TARGET_WINDOWS)
   hwSupport += "DXVA:no ";
 #endif
-#if defined(HAVE_LIBVA) && defined(TARGET_POSIX)
-  hwSupport += "VAAPI:yes ";
-#elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  hwSupport += "VAAPI:no ";
-#endif
 #if defined(HAS_IMXVPU)
   hwSupport += "iMXVPU:yes ";
 #else

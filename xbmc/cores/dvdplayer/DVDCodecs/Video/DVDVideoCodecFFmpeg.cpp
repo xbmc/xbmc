@@ -55,9 +55,6 @@
 #ifdef HAS_DX
 #include "DXVA.h"
 #endif
-#ifdef HAVE_LIBVA
-#include "VAAPI.h"
-#endif
 #ifdef TARGET_DARWIN_OSX
 #include "VDA.h"
 #endif
@@ -111,20 +108,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     else
       dec->Release();
   }
-#endif
-#ifdef HAVE_LIBVA
-    // mpeg4 vaapi decoding is disabled
-    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::Get().GetBool("videoplayer.usevaapi"))
-    {
-      VAAPI::CDecoder* dec = new VAAPI::CDecoder();
-      if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
-      {
-        ctx->SetHardware(dec);
-        return *cur;
-      }
-      else
-        dec->Release();
-    }
 #endif
 
 #ifdef TARGET_DARWIN_OSX

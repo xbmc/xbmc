@@ -44,17 +44,6 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
 
     return false; //will also hide intel settings on nvidia hardware
   }
-  else if (isIntel) // intel needs vc1, mpeg-2 and mpeg4 setting
-  {
-    if (settingId == "videoplayer.usevaapimpeg4")
-      return true;
-    if (settingId == "videoplayer.usevaapivc1")
-      return true;
-    if (settingId == "videoplayer.usevaapimpeg2")
-      return true;
-
-    return false; //this will also hide nvidia settings on intel hardware
-  }
   // if we don't know the hardware we are running on e.g. amd oss vdpau 
   // or fglrx with xvba-driver we show everything
   return true;

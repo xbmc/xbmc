@@ -990,8 +990,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_VDPAU:     return "VDPAU";
     case RENDER_FMT_VDPAU_420: return "VDPAU_420";
     case RENDER_FMT_DXVA:      return "DXVA";
-    case RENDER_FMT_VAAPI:     return "VAAPI";
-    case RENDER_FMT_VAAPINV12: return "VAAPI_NV12";
     case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_EGLIMG:    return "EGLIMG";

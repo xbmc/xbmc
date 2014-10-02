@@ -32,7 +32,6 @@
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CSurfaceContext; }
-namespace VAAPI { struct CHolder; }
 class CVDPAU;
 class COMXCore;
 class COMXCoreVideo;
@@ -60,10 +59,6 @@ struct DVDVideoPicture
     struct {
       CVDPAU* vdpau;
     };
-    struct {
-      VAAPI::CHolder* vaapi;
-    };
-
     struct {
       COMXCore *openMax;
       OMXCoreVideoBuffer *openMaxBuffer;
@@ -105,7 +100,6 @@ struct DVDVideoPicture
     FMT_UYVY,
     FMT_YUY2,
     FMT_DXVA,
-    FMT_VAAPI,
     FMT_OMXEGL,
     FMT_CVBREF,
   } format;

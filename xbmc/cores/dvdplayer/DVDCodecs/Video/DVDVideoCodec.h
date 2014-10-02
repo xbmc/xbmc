@@ -48,7 +48,6 @@ struct DVDCodecAvailableType
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CRenderPicture; }
-namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
 class COpenMax;
 class COpenMaxVideo;
@@ -77,10 +76,6 @@ struct DVDVideoPicture
     struct {
       VDPAU::CVdpauRenderPicture* vdpau;
     };
-    struct {
-      VAAPI::CVaapiRenderPicture* vaapi;
-    };
-
     struct {
       COpenMax *openMax;
       OpenMaxVideoBufferHolder *openMaxBufferHolder;

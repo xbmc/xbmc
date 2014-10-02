@@ -41,7 +41,6 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-namespace VAAPI   { class CVaapiRenderPicture; }
 namespace VDPAU   { class CVdpauRenderPicture; }
 
 #undef ALIGN
@@ -86,7 +85,6 @@ enum RenderMethod
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
-  RENDER_VAAPI=0x20,
   RENDER_CVREF = 0x40,
 };
 
@@ -141,9 +139,6 @@ public:
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(VDPAU::CVdpauRenderPicture* vdpau, int index);
 #endif
-#ifdef HAVE_LIBVA
-  virtual void         AddProcessor(VAAPI::CVaapiRenderPicture* vaapi, int index);
-#endif
 #ifdef TARGET_DARWIN
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
 #endif
@@ -194,10 +189,6 @@ protected:
   void DeleteVDPAUTexture420(int index);
   bool CreateVDPAUTexture420(int index);
 
-  bool UploadVAAPITexture(int index);
-  void DeleteVAAPITexture(int index);
-  bool CreateVAAPITexture(int index);
-
   bool UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
@@ -218,7 +209,7 @@ protected:
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
-  void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
+  void RenderRGB(int renderBuffer, int field);      // render using vdpau hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
   struct
@@ -279,9 +270,6 @@ protected:
 
 #ifdef HAVE_LIBVDPAU
     VDPAU::CVdpauRenderPicture *vdpau;
-#endif
-#ifdef HAVE_LIBVA
-    VAAPI::CVaapiRenderPicture *vaapi;
 #endif
 #ifdef TARGET_DARWIN_OSX
     struct __CVBuffer *cvBufferRef;
