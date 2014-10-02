@@ -38,6 +38,7 @@
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
+#include "CompileInfo.h"
 #include <X11/Xatom.h>
 
 #if defined(HAS_XRANDR)
@@ -1174,8 +1175,9 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XWMHints *wm_hints;
       XClassHint *class_hints;
       XTextProperty windowName, iconName;
-      std::string titleString = "XBMC Media Center";
-      std::string classString = "xbmc.bin";
+
+      std::string titleString = CCompileInfo::GetAppName();
+      std::string classString = titleString;
       char *title = (char*)titleString.c_str();
 
       XStringListToTextProperty(&title, 1, &windowName);
