@@ -143,7 +143,7 @@ FunctionEnd
 
 Function HandleOldKodiInstallation
   Var /GLOBAL INSTDIR_KODI
-  ReadRegStr $INSTDIR_KODI HKCU "Software\Kodi" ""
+  ReadRegStr $INSTDIR_KODI HKCU "Software\${APP_NAME}" ""
 
   ;if former Kodi installation was detected in a different directory then the destination dir
   ;ask for uninstallation
@@ -152,7 +152,7 @@ Function HandleOldKodiInstallation
   ${IfNot}    $CleanDestDir == "0"
   ${AndIfNot} $INSTDIR_KODI == ""
   ${AndIfNot} $INSTDIR_KODI == $INSTDIR
-    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous Kodi installation in a different folder was detected. Would you like to uninstall it?" IDYES true IDNO false
+    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous ${APP_NAME} installation in a different folder was detected. Would you like to uninstall it?" IDYES true IDNO false
     true:
       DetailPrint "Uninstalling $INSTDIR_KODI"
       SetDetailsPrint none
@@ -183,7 +183,7 @@ FunctionEnd
 
 Function DeinstallKodiInDestDir
   ${If} $CleanDestDir == "1"
-    DetailPrint "Uninstalling former Kodi Installation in $INSTDIR"
+    DetailPrint "Uninstalling former ${APP_NAME} Installation in $INSTDIR"
     SetDetailsPrint none
     ExecWait '"$INSTDIR\uninstall.exe" /S _?=$INSTDIR'
     SetDetailsPrint both
