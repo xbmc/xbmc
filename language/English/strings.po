@@ -6746,7 +6746,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14087"
-msgid "DVDs"
+msgid "Discs"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6818,7 +6818,25 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr ""
 
-#empty strings from id 14102 to 15011
+#. Name of a setting for Blu-ray playback mode
+#: system/settings/settings.xml
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr ""
+
+#. Playback mode option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr ""
+
+#. Playback mode option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr ""
+
+#empty strings from id 14105 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -12530,9 +12548,11 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr ""
 
+#. A Blu-ray playback mode and a option in the simplified Blu-ray menu
 #: xbmc/filesystem/BlurayDirectory.cpp
+#: system/settings/settings.xml
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
+msgid "Show Blu-ray menu"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
@@ -15892,4 +15912,10 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#37030"
 msgid "Unlimited"
+msgstr ""
+
+#. Description of setting #14102 Settings -> Video -> Discs -> Blu-ray playback mode
+#: system/settings/settings.xml
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
