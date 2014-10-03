@@ -18,6 +18,7 @@
  *
  */
 
+#include "settings/Settings.h"
 #include "AEResampleFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResampleFFMPEG.h"
 #if defined(TARGET_RASPBERRY_PI)
@@ -29,6 +30,10 @@ namespace ActiveAE
 
 IAEResample *CAEResampleFactory::Create()
 {
+#if defined(TARGET_RASPBERRY_PI)
+  if (CSettings::Get().GetInt("audiooutput.processquality") == AE_QUALITY_GPU)
+    return new CActiveAEResamplePi();
+#endif
   return new CActiveAEResampleFFMPEG();
 }
 

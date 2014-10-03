@@ -2270,6 +2270,10 @@ bool CActiveAE::SupportsQualityLevel(enum AEQuality level)
 {
   if (level == AE_QUALITY_LOW || level == AE_QUALITY_MID || level == AE_QUALITY_HIGH)
     return true;
+#if defined(TARGET_RASPBERRY_PI)
+  if (level == AE_QUALITY_GPU)
+    return true;
+#endif
 
   return false;
 }
