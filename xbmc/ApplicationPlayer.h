@@ -146,6 +146,6 @@ public:
   void  SetSubTitleDelay(float fValue = 0.0f);
   void  SetSubtitleVisible(bool bVisible);
   void  SetVolume(float volume);
-  bool  SwitchChannel(const PVR::CPVRChannel &channel);
+  bool  SwitchChannel(PVR::CPVRChannel &channel);
   void  ToFFRW(int iSpeed = 0);
 };
