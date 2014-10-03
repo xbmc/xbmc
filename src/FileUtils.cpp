@@ -28,6 +28,7 @@
 #include "sha1.hpp"
 #include "bsdiff/bspatch.h"
 #include "bzlib.h"
+#include "ProcessUtils.h"
 
 FileUtils::IOException::IOException(const std::string& error)
 {
@@ -597,7 +598,7 @@ std::string FileUtils::tempPath()
   {
     delete templ;
     LOG(Error, "Failed to create temp directory " + std::string(templ));
-    return "/tmp";
+    return "/tmp/" + intToStr(ProcessUtils::currentProcessId());
   }
 
   delete templ;
@@ -606,7 +607,9 @@ std::string FileUtils::tempPath()
 #else
   char buffer[MAX_PATH + 1];
   GetTempPath(MAX_PATH + 1, buffer);
-  return toUnixPathSeparators(buffer);
+  std::string baseDir = toUnixPathSeparators(buffer);
+  baseDir + '/' + intToStr(ProcessUtils::currentProcessId());
+  return baseDir;
 #endif
 }
 
