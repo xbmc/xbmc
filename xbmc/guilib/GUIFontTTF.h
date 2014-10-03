@@ -33,12 +33,14 @@ class CBaseTexture;
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
 struct FT_GlyphSlotRec_;
+struct FT_GlyphRec_;
 struct FT_BitmapGlyphRec_;
 struct FT_StrokerRec_;
 
 typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
+typedef struct FT_GlyphRec_ *FT_Glyph;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
 typedef struct FT_StrokerRec_ *FT_Stroker;
 
@@ -82,6 +84,8 @@ public:
 
   const CStdString& GetFileName() const { return m_strFileName; };
 
+  void KeepGlyphs();
+
 protected:
   struct Character
   {
@@ -115,7 +119,8 @@ protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
-
+  virtual void ClearTexture() = 0;
+  
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
   static void ObliqueGlyph(FT_GlyphSlot slot);
@@ -124,6 +129,7 @@ protected:
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
+  unsigned int m_textureHeightMax;
   int m_posX;                        // current position in the texture
   int m_posY;
 
@@ -171,6 +177,8 @@ private:
   CGUIFontTTFBase(const CGUIFontTTFBase&);
   CGUIFontTTFBase& operator=(const CGUIFontTTFBase&);
   int m_referenceCount;
+  bool m_keepGlyphs;
+  std::map<character_t, FT_Glyph> m_glyphs;
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)

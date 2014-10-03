@@ -328,5 +328,27 @@ void CGUIFontTTFDX::DeleteHardwareTexture()
   
 }
 
+void CGUIFontTTFDX::ClearTexture()
+{
+  LPDIRECT3DTEXTURE9 texture = ((CDXTexture *)m_texture)->GetTextureObject();
+  LPDIRECT3DSURFACE9 target;
+  if (m_speedupTexture)
+    m_speedupTexture->GetSurfaceLevel(0, &target);
+  else
+    texture->GetSurfaceLevel(0, &target);
+
+  D3DLOCKED_RECT lr;
+  HRESULT hr = target->LockRect(&lr, NULL, 0);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock texture (0x%08X)", hr);
+    return;
+  }
+  
+  memset(lr.pBits, 0, lr.Pitch * m_textureHeight);
+
+  target->UnlockRect();
+}
+
 
 #endif

@@ -62,6 +62,7 @@ private:
   };
   
   TextureStatus m_textureStatus;
+  virtual void ClearTexture();
 };
 
 #endif
