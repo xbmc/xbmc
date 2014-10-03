@@ -39,6 +39,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
 #include "utils/LangCodeExpander.h"
+#include "filesystem/SpecialProtocol.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -1140,6 +1141,13 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   std::string langCode;
   g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, langCode.c_str());
+
+#ifdef HAVE_LIBBLURAY_BDJ
+  std::string cacheDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache");
+  std::string persitentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
+  m_dll->bd_set_player_setting_str(m_bd, 400, persitentDir.c_str());
+  m_dll->bd_set_player_setting_str(m_bd, 401, cacheDir.c_str());
+#endif
 }
 
 #endif
