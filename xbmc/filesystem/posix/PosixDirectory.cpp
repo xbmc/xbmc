@@ -76,7 +76,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         bStat = true;
     }
 
-    if (entry->d_type == DT_DIR || (bStat && buffer.st_mode & S_IFDIR))
+    if (entry->d_type == DT_DIR || (bStat && S_ISDIR(buffer.st_mode)))
     {
       pItem->m_bIsFolder = true;
       URIUtils::AddSlashAtEnd(itemPath);
