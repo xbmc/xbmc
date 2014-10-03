@@ -381,7 +381,15 @@ void UpdateInstaller::copyBundle()
   {
     m_observer->updateMessage("Creating Backup...");
   }
+
   m_installDir = m_tempDir + '/' + FileUtils::fileName(m_targetDir.c_str());
+
+  if (FileUtils::fileExists(m_installDir.c_str()))
+  {
+    LOG(Warn, "Backup directory " + m_installDir + " - removing it.");
+    FileUtils::rmdirRecursive(m_installDir.c_str());
+  }
+
   FileUtils::copyTree(m_targetDir, m_installDir);
 }
 
