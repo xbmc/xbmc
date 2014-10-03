@@ -1884,6 +1884,26 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   std::string strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
   strLookInPaths.push_back(strPath);
   
+  CURL url(strMovie);
+  std::string isoFileNameNoExt;
+  if (url.IsProtocol("bluray"))
+      url = CURL(url.GetHostName());
+  //a path inside an iso
+  if (url.IsProtocol("udf"))
+  {
+    std::string isoPath = url.GetHostName();
+    URIUtils::RemoveSlashAtEnd(isoPath);
+    CFileItem iso(isoPath, false);
+
+    if (iso.IsDiscImage())
+    {
+      std::string isoFileName;
+      URIUtils::Split(iso.GetPath(), isoPath, isoFileName);
+      isoFileNameNoExt = URIUtils::ReplaceExtension(isoFileName, "");
+      strLookInPaths.push_back(isoPath);
+    }
+  }
+  
   if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() && !CSettings::Get().GetString("subtitles.custompath").empty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(CSettings::Get().GetString("subtitles.custompath")))
@@ -1985,7 +2005,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
-        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt))
+        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt)
+          || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
         {
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))

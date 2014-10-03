@@ -179,7 +179,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if(file == "titles")
     GetTitles(false, items);
   else
-    return false;
+  {
+    CURL url2 = GetUnderlyingCURL(url);
+    if (url2.GetFileName().empty())
+      return false;
+    CDirectory::CHints hints;
+    hints.flags = m_flags;
+    if (!CDirectory::GetDirectory(url2, items, hints))
+      return false;
+  }
 
   items.AddSortMethod(SortByTrackNumber,  554, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
   items.AddSortMethod(SortBySize,         553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
@@ -187,6 +195,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return true;
 }
 
+CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
+{
+  assert(url.IsProtocol("bluray"));
+  std::string host = url.GetHostName();
+  std::string filename = url.GetFileName();
+  if (host.empty() || filename.empty())
+    return CURL();
+  return CURL(host.append(filename));
+}
 
 } /* namespace XFILE */
 #endif
