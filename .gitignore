@@ -91,9 +91,9 @@ config.log
 /Makefile.depend
 /config.status
 /configure
-/xbmc.bin
-/xbmc-test
-/xbmc-xrandr
+/kodi.bin
+/kodi-test
+/kodi-xrandr
 /git_revision.h
 /libtool
 /*.patch
