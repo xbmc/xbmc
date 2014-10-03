@@ -1173,7 +1173,7 @@ std::string CSysInfo::GetUserAgent()
   result += ")";
 
   if (GetAppName() != "Kodi")
-    result += "Kodi_Fork_" + GetAppName() + "/1.0"; // default fork number is '1.0', replace it with actual number if necessary
+    result += " Kodi_Fork_" + GetAppName() + "/1.0"; // default fork number is '1.0', replace it with actual number if necessary
 
 #ifdef TARGET_LINUX
   // Add distribution name
