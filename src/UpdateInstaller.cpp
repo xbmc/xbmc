@@ -259,6 +259,8 @@ void UpdateInstaller::run() throw()
 
       if (FileUtils::fileExists(m_installDir.c_str()) && m_installDir != m_targetDir)
         FileUtils::rmdirRecursive(m_installDir.c_str());
+
+      FileUtils::rmdir(m_tempDir.c_str());
     }
     catch (const FileUtils::IOException& exception)
     {

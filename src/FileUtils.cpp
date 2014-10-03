@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "Platform.h"
 #include "StringUtils.h"
+#include "AppInfo.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -608,8 +609,7 @@ std::string FileUtils::tempPath()
   char buffer[MAX_PATH + 1];
   GetTempPath(MAX_PATH + 1, buffer);
   std::string baseDir = toUnixPathSeparators(buffer);
-  baseDir + '/' + intToStr(ProcessUtils::currentProcessId());
-  return baseDir;
+  return baseDir + '/' + AppInfo::name() + '-' + intToStr(ProcessUtils::currentProcessId());
 #endif
 }
 

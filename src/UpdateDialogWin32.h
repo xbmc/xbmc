@@ -24,6 +24,7 @@ public:
   virtual void updateMessage(const std::string &message);
   virtual void updateProgress(int percentage);
   virtual void updateFinished();
+  virtual bool didCancel();
 
   LRESULT WINAPI windowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -36,4 +37,5 @@ private:
   CProgressBar m_progressBar;
   CButton m_finishButton;
   bool m_hadError;
+  bool m_didCancel;
 };
