@@ -39,6 +39,7 @@
 #if defined(HAS_IMXVPU)
 #include "Video/DVDVideoCodecIMX.h"
 #endif
+#include "Video/DVDVideoCodecMMAL.h"
 #include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
@@ -255,6 +256,19 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
     {
       if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
+    }
+  }
+#endif
+
+#if defined(HAS_MMAL)
+  if (CSettings::Get().GetBool("videoplayer.usemmal") && !hint.software )
+  {
+    if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
+        hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
+        hint.codec == AV_CODEC_ID_VP6 || hint.codec == AV_CODEC_ID_VP6F || hint.codec == AV_CODEC_ID_VP6A || hint.codec == AV_CODEC_ID_VP8 ||
+        hint.codec == AV_CODEC_ID_THEORA || hint.codec == AV_CODEC_ID_MJPEG || hint.codec == AV_CODEC_ID_MJPEGB || hint.codec == AV_CODEC_ID_VC1 || hint.codec == AV_CODEC_ID_WMV3)
+    {
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecMMAL(), hint, options)) ) return pCodec;
     }
   }
 #endif

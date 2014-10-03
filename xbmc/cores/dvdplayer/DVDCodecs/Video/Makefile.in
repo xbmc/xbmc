@@ -37,6 +37,11 @@ ifeq (@USE_LIBSTAGEFRIGHT@,1)
 SRCS += DVDVideoCodecStageFright.cpp
 endif
 
+ifeq (@USE_MMAL@,1)
+SRCS += MMALCodec.cpp
+SRCS += DVDVideoCodecMMAL.cpp
+endif
+
 LIB=Video.a
 
 include @abs_top_srcdir@/Makefile.include

@@ -12,6 +12,16 @@
       <group id="1">
         <visible>false</visible>
       </group>
+      <group id="3">
+        <setting id="videoplayer.usemmal" type="boolean" label="36434" help="36435">
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
   </section>
 
