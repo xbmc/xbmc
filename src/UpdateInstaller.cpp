@@ -237,21 +237,25 @@ void UpdateInstaller::run() throw()
         m_observer->updateError(friendlyError);
       }
     }
-
-    if (m_observer)
+    else if (m_observer)
     {
       m_observer->updateMessage("Finishing up...");
     }
 
     try
     {
+      LOG(Info, "Removing backups and other cruft...");
       if (FileUtils::fileExists(backupDir.c_str()))
         FileUtils::rmdirRecursive(backupDir.c_str());
+
+      if (FileUtils::fileExists(m_installDir.c_str()) && m_installDir != m_targetDir)
+        FileUtils::rmdirRecursive(m_installDir.c_str());
     }
     catch (const FileUtils::IOException& exception)
     {
       error = exception.what();
-      LOG(Error, std::string("Failed to cleanup: " + m_targetDir + ".bak" + " - " + error));
+      // Log about it, but since we are done no need to do anything else
+      LOG(Error, std::string("Failed to cleanup: " + error));
     }
 
     if (m_observer)
