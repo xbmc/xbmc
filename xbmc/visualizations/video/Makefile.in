@@ -1,0 +1,21 @@
+ARCH=@ARCH@
+CXXFLAGS=-fPIC
+
+SLIB = @abs_top_srcdir@/addons/visualization.video/video.vis
+OBJS = video.o
+
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS += -framework OpenGL
+  else
+    LDFLAGS += -lGL
+  endif
+
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -o $(SLIB) $(OBJS)
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(SLIB) $(OBJS)
+endif
+
+include @abs_top_srcdir@/Makefile.include
