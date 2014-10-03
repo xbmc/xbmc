@@ -219,7 +219,7 @@ TEST_F(TestSystemInfo, GetXbmcBitness)
 
 TEST_F(TestSystemInfo, GetUserAgent)
 {
-  EXPECT_STREQ("XBMC/", g_sysinfo.GetUserAgent().substr(0, 5).c_str()) << "'GetUserAgent()' string must start from 'XBMC/'";
+  EXPECT_STREQ(g_sysinfo.GetAppName().c_str(), g_sysinfo.GetUserAgent().substr(0, g_sysinfo.GetAppName().size()).c_str()) << "'GetUserAgent()' string must start with app name'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find('(')) << "'GetUserAgent()' must contain brackets around second parameter";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(')')) << "'GetUserAgent()' must contain brackets around second parameter";
   EXPECT_EQ(g_sysinfo.GetUserAgent().find(' '), g_sysinfo.GetUserAgent().find(" (")) << "Second parameter in 'GetUserAgent()' string must be in brackets";
@@ -253,7 +253,7 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" XBMC_HW_RaspberryPi/")) << "'GetUserAgent()' must contain ' XBMC_HW_RaspberryPi/'";
 #endif // TARGET_RASPBERRY_PI
 
-  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" XBMC_BITNESS/")) << "'GetUserAgent()' must contain ' XBMC_BITNESS/'";
+  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" App_Bitness/")) << "'GetUserAgent()' must contain ' App_Bitness/'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" Version/")) << "'GetUserAgent()' must contain ' Version/'";
 }
 
