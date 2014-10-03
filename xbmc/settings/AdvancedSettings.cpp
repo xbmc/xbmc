@@ -142,6 +142,15 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
+  m_videoAdditiveTimeSeekWaitForSeekingStart = 500;
+  m_videoAdditiveTimeSeekWaitForDisplayHide = 2000;
+  m_videoAdditiveTimeSeekStepOne = 30;
+  m_videoAdditiveTimeSeekStepTwo = 60;
+  m_videoAdditiveTimeSeekStepThree = 180;
+  m_videoAdditiveTimeSeekStepFour = 300;
+  m_videoAdditiveTimeSeekStepFive = 600;
+  m_videoAdditiveTimeSeekStepSix = 1800;
+  m_videoAdditiveTimeSeekStepOther = 3600;
   m_videoBlackBarColour = 0;
   m_videoPPFFmpegDeint = "linblenddeint";
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
@@ -557,6 +566,16 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "timeseekbackward", m_videoTimeSeekBackward, -6000, 0);
     XMLUtils::GetInt(pElement, "timeseekforwardbig", m_videoTimeSeekForwardBig, 0, 6000);
     XMLUtils::GetInt(pElement, "timeseekbackwardbig", m_videoTimeSeekBackwardBig, -6000, 0);
+
+    XMLUtils::GetInt(pElement, "additivetimeseekwaitforseekingstart", m_videoAdditiveTimeSeekWaitForSeekingStart, 0, 60000);
+    XMLUtils::GetInt(pElement, "additivetimeseekwaitfordisplayhide", m_videoAdditiveTimeSeekWaitForDisplayHide, 0, 60000);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepone", m_videoAdditiveTimeSeekStepOne, 0, 60*60*24);
+    XMLUtils::GetInt(pElement, "additivetimeseeksteptwo", m_videoAdditiveTimeSeekStepTwo, 0, 60 * 60 * 24);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepthree", m_videoAdditiveTimeSeekStepThree, 0, 60 * 60 * 24);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepfour", m_videoAdditiveTimeSeekStepFour, 0, 60 * 60 * 24);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepfive", m_videoAdditiveTimeSeekStepFive, 0, 60 * 60 * 24);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepsix", m_videoAdditiveTimeSeekStepSix, 0, 60 * 60 * 24);
+    XMLUtils::GetInt(pElement, "additivetimeseekstepother", m_videoAdditiveTimeSeekStepOther, 0, 60 * 60 * 24);
 
     XMLUtils::GetInt(pElement, "percentseekforward", m_videoPercentSeekForward, 0, 100);
     XMLUtils::GetInt(pElement, "percentseekbackward", m_videoPercentSeekBackward, -100, 0);
