@@ -18,6 +18,7 @@ UpdateInstaller::UpdateInstaller()
     m_installed(0)
 {
   m_tempDir = FileUtils::tempPath();
+  LOG(Info, "Using tmpdir: " + m_tempDir);
 }
 
 void UpdateInstaller::setWaitPid(PLATFORM_PID pid)
