@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="visualization.video"
+	version="0.1.0"
+	name="Video"
+	provider-name="gominoa">
+	<extension point="xbmc.player.musicviz"
+    	library_linux="video.vis"
+		library_osx="video.vis"
+		library_windx="video.vis"/>
+	<extension point="xbmc.addon.metadata">
+    	<summary lang="en_US">Video Player</summary>
+		<description lang="en_US">Video Player</description>
+		<disclaimer lang="en_US">Ain't my fault</disclaimer>
+		<language></language>
+		<platform>all</platform>
+		<license>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</license>
+		<forum>http://forum.xbmc.org/showthread.php?tid=205584</forum>
+		<website></website>
+		<email></email>
+		<source>https://github.com/gominoa/gominoa-xbmc-addons</source>
+	</extension>
+</addon>
