@@ -144,6 +144,7 @@ const BUILT_IN commands[] = {
   { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
+  { "ShowPicture",                true,   "Display a picture by file path" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
