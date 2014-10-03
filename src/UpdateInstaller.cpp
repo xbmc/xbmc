@@ -108,6 +108,8 @@ std::string UpdateInstaller::friendlyErrorForError(const FileUtils::IOException&
   return friendlyError;
 }
 
+#define DID_CANCEL() { if (m_observer && m_observer->didCancel()) { throw std::string("Update canceled"); } }
+
 void UpdateInstaller::run() throw()
 {
   if (!m_script || !m_script->isValid())
@@ -196,6 +198,8 @@ void UpdateInstaller::run() throw()
       LOG(Info, "Copy bundle");
       copyBundle();
 
+      DID_CANCEL();
+
       LOG(Info, "Patching files");
       patchFiles();
 
@@ -205,8 +209,13 @@ void UpdateInstaller::run() throw()
       LOG(Info, "Uninstalling removed files");
       uninstallFiles();
 
+      DID_CANCEL();
+
       LOG(Info, "Verifying files against manifest");
       verifyAgainstManifest();
+
+      // last chance
+      DID_CANCEL();
 
       LOG(Info, "Moving bundle inplace");
       FileUtils::moveFile(m_targetDir.c_str(), backupDir.c_str());
@@ -409,6 +418,7 @@ void UpdateInstaller::patchFiles()
     patchFile(*iter);
     ++m_installed;
     updateProgress();
+    DID_CANCEL();
   }
 }
 
@@ -424,6 +434,8 @@ void UpdateInstaller::installFiles()
     installFile(*iter);
     ++m_installed;
     updateProgress();
+
+    DID_CANCEL();
   }
 }
 

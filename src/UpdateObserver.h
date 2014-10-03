@@ -12,4 +12,5 @@ public:
   virtual void updateProgress(int percentage) = 0;
   virtual void updateFinished() = 0;
   virtual void updateMessage(const std::string& message) = 0;
+  virtual bool didCancel() = 0;
 };

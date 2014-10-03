@@ -120,6 +120,7 @@ void UpdateDialogWin32::exec()
 
 void UpdateDialogWin32::updateError(const std::string& errorMessage)
 {
+  setAutoClose(false);
   UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateFailed);
   message->message = errorMessage;
   SendNotifyMessage(m_window.GetHwnd(), WM_USER, reinterpret_cast<WPARAM>(message), 0);

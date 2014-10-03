@@ -38,6 +38,7 @@ void UpdateDialogAscii::init(int /* argc */, char** /* argv */)
 
 void UpdateDialogAscii::updateError(const std::string& errorMessage)
 {
+  setAutoClose(false);
   m_mutex.lock();
   m_output << "\nThere was a problem installing the update: " << errorMessage << std::endl;
   m_mutex.unlock();
