@@ -703,7 +703,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
         }
-        else
+        else if (!item->IsPlugin())
         { // check what players we have, if we have multiple display play with option
           VECPLAYERCORES vecCores;
           CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
