@@ -1,8 +1,8 @@
 #!/usr/bin/python
 #
-# XBMC Media Center
-# J2ME Remote
-# Copyright (c) 2008 topfs2
+#      Copyright (c) 2008 topfs2
+#      Copyright (C) 2005-2014 Team Kodi
+#      http://kodi.tv
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -4,7 +4,7 @@
  *      Portions Copyright (c) by the authors of libPlatinum
  *      http://www.plutinosoft.com/blog/category/platinum/
  *      Copyright (C) 2006-2013 Team XBMC
- *      http://xbmc.org
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -591,9 +591,9 @@ CUPnP::CreateServer(int port /* = 0 */)
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
     device->m_ModelDescription = "XBMC Media Center - Media Server";
-    device->m_ModelURL         = "http://xbmc.org/";
+    device->m_ModelURL         = "http://kodi.tv/";
     device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://xbmc.org/";
+    device->m_ManufacturerURL  = "http://kodi.tv/";
 
     device->SetDelegate(device);
     return device;
@@ -673,9 +673,9 @@ CUPnP::CreateRenderer(int port /* = 0 */)
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
     device->m_ModelDescription = "XBMC Media Center - Media Renderer";
-    device->m_ModelURL         = "http://xbmc.org/";
+    device->m_ModelURL         = "http://kodi.tv/";
     device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://xbmc.org/";
+    device->m_ManufacturerURL  = "http://kodi.tv/";
 
     return device;
 }

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2014 Team XBMC
+ *      Copyright (C) 2005-2014 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify

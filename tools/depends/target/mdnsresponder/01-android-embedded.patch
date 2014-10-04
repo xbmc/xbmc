@@ -166,8 +166,8 @@ diff -uPr ./mDNSCore/mDnsEmbedded.h ./mDNSCore/mDnsEmbedded.h
 +++ ./mDNSCore/mDnsEmbedded.h	2013-06-10 18:45:59.000000000 +0200
 @@ -0,0 +1,32 @@
 +/*                                                                                                                                                                                        
-+ *      Copyright (C) 2005-2013 Team XBMC                                                                                                                                                 
-+ *      http://xbmc.org                                                                                                                                                               
++ *      Copyright (C) 2005-2014 Team Kodi                                                                                                                                                 
++ *      http://kodi.tv                                                                                                                                                               
 + *                                                                                                                                                                                        
 + *  This Program is free software; you can redistribute it and/or modify                                                                                                                  
 + *  it under the terms of the GNU General Public License as published by                                                                                                                  

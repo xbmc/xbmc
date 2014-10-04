@@ -27,7 +27,7 @@ echo "Depends: coreutils, bsdiff, gawk"                 >> $PACKAGE/DEBIAN/contr
 echo "Name: XBMC seatbelt unlock for AppleTV 2"         >> $PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                      >> $PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                       >> $PACKAGE/DEBIAN/control
-echo "Description: XBMC tweeks, removes seatbelt"       >> $PACKAGE/DEBIAN/control
+echo "Description: XBMC tweaks, removes seatbelt"       >> $PACKAGE/DEBIAN/control
 echo "Homepage: http://xbmc.org/"                       >> $PACKAGE/DEBIAN/control
 echo "Maintainer: Scott Davilla"                        >> $PACKAGE/DEBIAN/control
 echo "Author: TeamXBMC"                                 >> $PACKAGE/DEBIAN/control
