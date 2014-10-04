@@ -24,6 +24,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/EndianSwap.h"
 #include "ActiveAE.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
 
 #include "settings/Settings.h"
 
@@ -889,8 +890,8 @@ void CActiveAESink::GenerateNoise()
   }
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
-  CActiveAEResample resampler;
-  resampler.Init(config.channel_layout,
+  IAEResample *resampler = CAEResampleFactory::Create();
+  resampler->Init(config.channel_layout,
                  config.channels,
                  config.sample_rate,
                  config.fmt,
@@ -903,10 +904,11 @@ void CActiveAESink::GenerateNoise()
                  CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat),
                  CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat),
                  false, false, NULL, AE_QUALITY_UNKNOWN);
-  resampler.Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
+  resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 
   _aligned_free(noise);
+  delete resampler;
 }
 
 void CActiveAESink::SetSilenceTimer()

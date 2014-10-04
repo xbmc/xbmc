@@ -25,6 +25,7 @@
 
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
 
 #include "ActiveAE.h"
 #include "ActiveAEStream.h"
@@ -106,7 +107,7 @@ void CActiveAEStream::InitRemapper()
   {
     CLog::Log(LOGDEBUG, "CActiveAEStream::%s - initialize remapper", __FUNCTION__);
 
-    m_remapper = new CActiveAEResample();
+    m_remapper = CAEResampleFactory::Create();
     uint64_t avLayout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);
 
     // build layout according to ffmpeg channel order

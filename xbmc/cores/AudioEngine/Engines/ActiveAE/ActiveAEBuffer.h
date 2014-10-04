@@ -89,7 +89,7 @@ public:
   std::deque<CSampleBuffer*> m_freeSamples;
 };
 
-class CActiveAEResample;
+class IAEResample;
 
 class CActiveAEBufferPoolResample : public CActiveAEBufferPool
 {
@@ -105,7 +105,7 @@ public:
   std::deque<CSampleBuffer*> m_inputSamples;
   std::deque<CSampleBuffer*> m_outputSamples;
   CSampleBuffer *m_procSample;
-  CActiveAEResample *m_resampler;
+  IAEResample *m_resampler;
   uint8_t *m_planes[16];
   bool m_fillPackets;
   bool m_drain;

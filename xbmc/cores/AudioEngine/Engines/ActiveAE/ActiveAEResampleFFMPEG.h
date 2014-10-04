@@ -20,20 +20,23 @@
  */
 
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Interfaces/AEResample.h"
 
 extern "C" {
-#include "libavutil/avutil.h"
-#include "libswresample/swresample.h"
+#include "libavutil/samplefmt.h"
 }
+
+struct SwrContext;
 
 namespace ActiveAE
 {
 
-class CActiveAEResample
+class CActiveAEResampleFFMPEG : public IAEResample
 {
 public:
-  CActiveAEResample();
-  virtual ~CActiveAEResample();
+  const char *GetName() { return "ActiveAEResampleFFMPEG"; }
+  CActiveAEResampleFFMPEG();
+  virtual ~CActiveAEResampleFFMPEG();
   bool Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality);
   int Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio);
   int64_t GetDelay(int64_t base);

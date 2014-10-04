@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
 
 using namespace ActiveAE;
 
@@ -171,7 +172,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
       m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
       m_changeResampler)
   {
-    m_resampler = new CActiveAEResample();
+    m_resampler = CAEResampleFactory::Create();
     m_resampler->Init(CAEUtil::GetAVChannelLayout(m_format.m_channelLayout),
                                 m_format.m_channelLayout.Count(),
                                 m_format.m_sampleRate,
@@ -199,7 +200,7 @@ void CActiveAEBufferPoolResample::ChangeResampler()
 {
   delete m_resampler;
 
-  m_resampler = new CActiveAEResample();
+  m_resampler = CAEResampleFactory::Create();
   m_resampler->Init(CAEUtil::GetAVChannelLayout(m_format.m_channelLayout),
                                 m_format.m_channelLayout.Count(),
                                 m_format.m_sampleRate,

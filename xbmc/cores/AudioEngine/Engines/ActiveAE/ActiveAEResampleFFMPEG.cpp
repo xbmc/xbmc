@@ -19,6 +19,7 @@
  */
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "ActiveAEResampleFFMPEG.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -29,19 +30,19 @@ extern "C" {
 
 using namespace ActiveAE;
 
-CActiveAEResample::CActiveAEResample()
+CActiveAEResampleFFMPEG::CActiveAEResampleFFMPEG()
 {
   m_pContext = NULL;
   m_loaded = true;
 }
 
-CActiveAEResample::~CActiveAEResample()
+CActiveAEResampleFFMPEG::~CActiveAEResampleFFMPEG()
 {
   if (m_pContext)
     swr_free(&m_pContext);
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_loaded)
     return false;
@@ -70,7 +71,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
 
   if(!m_pContext)
   {
-    CLog::Log(LOGERROR, "CActiveAEResample::Init - create context failed");
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
     return false;
   }
 
@@ -127,7 +128,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
 
     if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
-      CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
+      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - setting channel matrix failed");
       return false;
     }
   }
@@ -165,20 +166,20 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
 
     if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
-      CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
+      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - setting channel matrix failed");
       return false;
     }
   }
 
   if(swr_init(m_pContext) < 0)
   {
-    CLog::Log(LOGERROR, "CActiveAEResample::Init - init resampler failed");
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - init resampler failed");
     return false;
   }
   return true;
 }
 
-int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio)
+int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio)
 {
   if (ratio != 1.0)
   {
@@ -186,7 +187,7 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
                                             (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
                                              dst_samples*m_dst_rate/m_src_rate) < 0)
     {
-      CLog::Log(LOGERROR, "CActiveAEResample::Resample - set compensation failed");
+      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
       return 0;
     }
   }
@@ -194,7 +195,7 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
   int ret = swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CActiveAEResample::Resample - resample failed");
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - resample failed");
     return 0;
   }
 
@@ -251,28 +252,28 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
   return ret;
 }
 
-int64_t CActiveAEResample::GetDelay(int64_t base)
+int64_t CActiveAEResampleFFMPEG::GetDelay(int64_t base)
 {
   return swr_get_delay(m_pContext, base);
 }
 
-int CActiveAEResample::GetBufferedSamples()
+int CActiveAEResampleFFMPEG::GetBufferedSamples()
 {
   return av_rescale_rnd(swr_get_delay(m_pContext, m_src_rate),
                                     m_dst_rate, m_src_rate, AV_ROUND_UP);
 }
 
-int CActiveAEResample::CalcDstSampleCount(int src_samples, int dst_rate, int src_rate)
+int CActiveAEResampleFFMPEG::CalcDstSampleCount(int src_samples, int dst_rate, int src_rate)
 {
   return av_rescale_rnd(src_samples, dst_rate, src_rate, AV_ROUND_UP);
 }
 
-int CActiveAEResample::GetSrcBufferSize(int samples)
+int CActiveAEResampleFFMPEG::GetSrcBufferSize(int samples)
 {
   return av_samples_get_buffer_size(NULL, m_src_channels, samples, m_src_fmt, 1);
 }
 
-int CActiveAEResample::GetDstBufferSize(int samples)
+int CActiveAEResampleFFMPEG::GetDstBufferSize(int samples)
 {
   return av_samples_get_buffer_size(NULL, m_dst_channels, samples, m_dst_fmt, 1);
 }
