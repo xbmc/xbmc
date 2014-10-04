@@ -754,10 +754,10 @@ void CActiveAESink::OpenSink()
 
   // init sample of silence
   SampleConfig config;
-  config.fmt = CActiveAEResample::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
+  config.fmt = CAEUtil::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
   config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
   config.dither_bits = CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat);
-  config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
+  config.channel_layout = CAEUtil::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
   config.channels = m_sinkFormat.m_channelLayout.Count();
   config.sample_rate = m_sinkFormat.m_sampleRate;
 

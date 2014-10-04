@@ -235,16 +235,16 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   {
     m_needConvert = true;
     m_pResampler = new ActiveAE::CActiveAEResample();
-    m_pResampler->Init(ActiveAE::CActiveAEResample::GetAVChannelLayout(m_ChannelInfo),
+    m_pResampler->Init(CAEUtil::GetAVChannelLayout(m_ChannelInfo),
                        m_ChannelInfo.Count(),
                        m_SampleRate,
-                       ActiveAE::CActiveAEResample::GetAVSampleFormat(AE_FMT_FLOAT),
+                       CAEUtil::GetAVSampleFormat(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToUsedBits(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToDitherBits(AE_FMT_FLOAT),
-                       ActiveAE::CActiveAEResample::GetAVChannelLayout(m_ChannelInfo),
+                       CAEUtil::GetAVChannelLayout(m_ChannelInfo),
                        m_ChannelInfo.Count(),
                        m_SampleRate,
-                       ActiveAE::CActiveAEResample::GetAVSampleFormat(m_DataFormat),
+                       CAEUtil::GetAVSampleFormat(m_DataFormat),
                        CAEUtil::DataFormatToUsedBits(m_DataFormat),
                        CAEUtil::DataFormatToDitherBits(m_DataFormat),
                        false,
