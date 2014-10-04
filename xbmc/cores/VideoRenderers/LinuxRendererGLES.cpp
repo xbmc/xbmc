@@ -2671,7 +2671,8 @@ void CLinuxRendererGLES::DeleteOpenMaxTexture(int index)
 
 bool CLinuxRendererGLES::CreateOpenMaxTexture(int index)
 {
-#ifdef HAVE_LIBOPENMAX  m_buffers[index].openMaxBufferHolder = 0;
+#ifdef HAVE_LIBOPENMAX
+  m_buffers[index].openMaxBufferHolder = 0;
 #endif
   return true;
 }
