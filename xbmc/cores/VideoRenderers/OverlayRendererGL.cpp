@@ -54,13 +54,20 @@ using namespace OVERLAY;
 static void LoadTexture(GLenum target
                       , GLsizei width, GLsizei height, GLsizei stride
                       , GLfloat* u, GLfloat* v
-                      , GLenum internalFormat, GLenum externalFormat, const GLvoid* pixels)
+                      , bool alpha, const GLvoid* pixels)
 {
   int width2  = width;
   int height2 = height;
   char *pixelVector = NULL;
   const GLvoid *pixelData = pixels;
 
+  GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
+#ifdef HAS_GLES
+  /** OpenGL ES does not support BGR so use RGB and swap later **/
+  GLenum externalFormat = alpha ? GL_ALPHA : GL_RGBA;
+#else
+  GLenum externalFormat = alpha ? GL_ALPHA : GL_BGRA;
+#endif
   int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
   if (!g_Windowing.SupportsNPOT(0))
@@ -70,8 +77,35 @@ static void LoadTexture(GLenum target
   }
 
 #ifdef HAS_GLES
+
+  /** OpenGL ES does not support BGR **/
+  if (!alpha)
+  {
+    int bytesPerLine = bytesPerPixel * width;
+
+    pixelVector = (char *)malloc(bytesPerLine * height);
+
+    const char *src = (const char*)pixels;
+    char *dst = pixelVector;
+    for (int y = 0;y < height;++y)
+    {
+      src = (const char*)pixels + y * stride;
+      dst = pixelVector + y * bytesPerLine;
+
+      for (unsigned int i = 0; i < width; i++, src+=4, dst+=4)
+      {
+        dst[0] = src[2];
+        dst[1] = src[1];
+        dst[2] = src[0];
+        dst[3] = src[3];
+      }
+    }
+
+    pixelData = pixelVector;
+    stride = width;
+  }
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  if (stride != width)
+  else if (stride != width)
   {
     int bytesPerLine = bytesPerPixel * width;
 
@@ -165,12 +199,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , o->height
             , stride
             , &m_u, &m_v
-            , GL_RGBA
-#ifdef HAS_GLES
-            , GL_RGBA
-#else
-            , GL_BGRA
-#endif
+            , false
             , rgba);
   if((BYTE*)rgba != o->data)
     free(rgba);
@@ -244,12 +273,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
             , max_y - min_y
             , o->width * 4
             , &m_u, &m_v
-            , GL_RGBA
-#ifdef HAS_GLES
-            , GL_RGBA
-#else
-            , GL_BGRA
-#endif
+            , false
             , rgba + min_x + min_y * o->width);
 
   free(rgba);
@@ -290,8 +314,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
             , quads.size_y
             , quads.size_x
             , &m_u, &m_v
-            , GL_ALPHA
-            , GL_ALPHA
+            , true
             , quads.data);
 
 
