@@ -217,7 +217,7 @@
 		<config-time>no</config-time>
 		<mute-pokey>no</mute-pokey>
 		<lang>C</lang>
-		<a href="http://xbmc.org/">XBMC</a>
+		<a href="http://kodi.tv/">XBMC</a>
 	</port>
 	<port name="POKEY DLL for RMT">
 		<bin>Windows</bin>

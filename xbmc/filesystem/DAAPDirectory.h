@@ -3,8 +3,8 @@
  * DAAP Support for XBMC
  *      Copyright (c) 2004 Forza (Chris Barnett)
  *      Portions Copyright (c) by the authors of libOpenDAAP
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2014 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

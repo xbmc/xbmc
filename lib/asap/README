@@ -29,7 +29,7 @@ ASAP includes the following programs:
 - plugin for http://moc.daper.net/[MOC]
 - plugin for http://www.winamp.com/[Winamp] {asapwin=}
 - plugin for http://www.microsoft.com/windows/windowsmedia/player/[Windows Media Player] {asapwin=}
-- plugin for http://xbmc.org/[XBMC] {asapwin=}
+- plugin for http://kodi.tv/[XBMC] {asapwin=}
 - plugin for http://xmms.org/[XMMS]
 - POKEY sound emulation DLL for http://raster.infos.cz/atari/rmt/rmt.htm[Raster Music Tracker] {asapwin=}
 - Java version of ASAP2WAV {asapjava=}

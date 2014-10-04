@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2009-2013 Team XBMC
+ *       Copyright (C) 2005-2014 Team Kodi
+ *       http://kodi.tv
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
