@@ -42,7 +42,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlexPlayQueue : public boost::enable_shared_from_this<CPlexPlayQueue>
 {
-private:
+protected:
   ePlexMediaType m_Type;
   int m_Version;
 

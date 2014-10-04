@@ -341,6 +341,7 @@ bool CPlexPlayQueueManager::loadPlayQueue(const CPlexServerPtr& server,
 
   CPlexPlayQueuePtr pq = CPlexPlayQueuePtr(new CPlexPlayQueueServer(server));
   pq->get(playQueueID, options);
+  m_playQueues[pq->getType()] = pq;
   return true;
 }
 

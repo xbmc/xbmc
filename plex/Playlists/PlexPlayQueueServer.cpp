@@ -222,6 +222,7 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
   if (fj && success)
   {
     ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(fj->m_items);
+    m_Type = type;
     int playlist = CPlexPlayQueueManager::getPlaylistFromType(type);
 
     // if we are removing items an that there is no more, clear the list and send update message
