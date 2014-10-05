@@ -119,9 +119,9 @@ print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [ -f $USERDATA_DIR/temp/xbmc.log ]
+  if [ -f $USERDATA_DIR/temp/@APP_NAME_LC@.log ]
   then
-    cat $USERDATA_DIR/temp/xbmc.log >> $FILE
+    cat $USERDATA_DIR/temp/@APP_NAME_LC@.log >> $FILE
     echo >> $FILE
   else
     echo "Logfile not found in the usual place." >> $FILE

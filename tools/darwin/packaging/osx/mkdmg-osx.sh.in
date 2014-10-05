@@ -22,7 +22,7 @@ if [ ! -d $APP ]; then
 fi
 ARCHITECTURE=`file $APP/Contents/MacOS/@APP_NAME@ | awk '{print $NF}'`
 
-PACKAGE=org.xbmc.kodi-osx
+PACKAGE=org.xbmc.@APP_NAME_LC@-osx
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
 REVISION=0~@APP_VERSION_TAG_LC@

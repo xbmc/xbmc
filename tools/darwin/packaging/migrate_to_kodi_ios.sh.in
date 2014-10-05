@@ -1,6 +1,6 @@
 APP_NAME=@APP_NAME@
 XBMC_HOME="/var/mobile/Library/Preferences/XBMC"
-APP_HOME="/var/mobile/Library/Preferences/Kodi"
+APP_HOME="/var/mobile/Library/Preferences/@APP_NAME@"
 
 
 function needs_kodi_migration () {
@@ -24,6 +24,6 @@ needs_kodi_migration
 NEEDS_MIGRATION=$?
 if [ "$NEEDS_MIGRATION" == "1"  ]
 then
-  echo "This is the first time you install Kodi and we detected that you have an old XBMC configuration. Your XBMC configuration will now be migrated to Kodi by moving the settings folder. If you ever want to go back to XBMC please backup /var/mobile/Library/Preferences/Kodi after this installation has finished and rename it to XBMC in case you downgrade to XBMC."
+  echo "This is the first time you install @APP_NAME@ and we detected that you have an old XBMC configuration. Your XBMC configuration will now be migrated to @APP_NAME@ by moving the settings folder. If you ever want to go back to XBMC please backup /var/mobile/Library/Preferences/@APP_NAME@ after this installation has finished and rename it to XBMC in case you downgrade to XBMC."
   migrate_to_kodi
 fi

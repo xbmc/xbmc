@@ -14,7 +14,7 @@ fi
 
 DPKGDEB="dpkg-deb"
 
-PACKAGE=org.xbmc.kodi-seatbeltunlock
+PACKAGE=org.xbmc.@APP_NAME_LC@-seatbeltunlock
 
 VERSION=1.0
 REVISION=5
@@ -29,13 +29,13 @@ mkdir -p $PACKAGE/DEBIAN
 echo "Package: $PACKAGE"                                >  $PACKAGE/DEBIAN/control
 echo "Priority: Extra"                                  >> $PACKAGE/DEBIAN/control
 echo "Depends: coreutils, bsdiff, gawk"                 >> $PACKAGE/DEBIAN/control
-echo "Name: Kodi seatbelt unlock for AppleTV 2"         >> $PACKAGE/DEBIAN/control
+echo "Name: @APP_NAME@ seatbelt unlock for AppleTV 2"   >> $PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                      >> $PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                       >> $PACKAGE/DEBIAN/control
 echo "Description: @APP_NAME@ tweeks, removes seatbelt" >> $PACKAGE/DEBIAN/control
 echo "Homepage: http://kodi.tv/"                       >> $PACKAGE/DEBIAN/control
 echo "Maintainer: Scott Davilla"                        >> $PACKAGE/DEBIAN/control
-echo "Author: Team-Kodi"                                >> $PACKAGE/DEBIAN/control
+echo "Author: Team-@APP_NAME@"                          >> $PACKAGE/DEBIAN/control
 echo "Section: Tweaks"                                  >> $PACKAGE/DEBIAN/control
 
 # postinst: find lowtide/appletv, binary patch out seatbelt-profile key,

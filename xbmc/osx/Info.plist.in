@@ -11,9 +11,9 @@
 	<key>CFBundleGetInfoString</key>
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleIconFile</key>
-	<string>kodi.icns</string>
+	<string>@APP_NAME_LC@.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.xbmc.kodi</string>
+	<string>org.xbmc.@APP_NAME_LC@</string>
 	<key>CFBundleName</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundlePackageType</key>

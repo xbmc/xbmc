@@ -46,7 +46,7 @@ if [ -f "${XBMC_DEPENDS_ROOT}/buildtools-native/bin/dpkg-deb" ]; then
   export PATH=${bin_path}:${PATH}
 fi
 
-PACKAGE=org.xbmc.kodi-ios
+PACKAGE=org.xbmc.@APP_NAME_LC@-ios
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
 REVISION=0~@APP_VERSION_TAG_LC@
