@@ -1530,15 +1530,16 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(TARGET_DARWIN_IOS)
-    //TODO - remove the clamp for ipad3 when CVOpenGLESTextureCacheCreateTextureFromImage
-    //has been planted ...
-    //if (!DarwinIsIPad3())
+    // allow rendering without scaledown for all
+    // retina devices (which have enough power to handle it)
+    double scale = 0.0;
+    //if (!DarwinHasRetina(scale))
     {
       // decoding, scaling and rendering above 1920 x 800 runs into
       // some bandwidth limit. detect and scale down to reduce
       // the bandwidth requirements.
-      int width_clamp = 1280;
-      if ((width * height) > (1920 * 800))
+      int width_clamp = 1920;
+      if (!DarwinHasRetina(scale) && (width * height) > (1920 * 1080))
         width_clamp = 960;
 
       int new_width = CheckNP2(width);
