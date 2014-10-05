@@ -92,42 +92,42 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
   if (index < 0)
     return InvalidParams;
 
-	// Init prompt
-	bool bPrompt = false;
-	bPrompt = parameterObject["prompt"].asBoolean();
+  // Init prompt
+  bool bPrompt = false;
+  bPrompt = parameterObject["prompt"].asBoolean();
     
-	bool bCanceled(false);
+  bool bCanceled(false);
   bool bLoadProfile(false);
 
   if (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||            // Password not needed
-      (bPrompt && g_passwordManager.IsProfileLockUnlocked(index, bCanceled, bPrompt)))  // Password needed and user asked to enter it
+     (bPrompt && g_passwordManager.IsProfileLockUnlocked(index, bCanceled, bPrompt)))  // Password needed and user asked to enter it
     bLoadProfile = true;
-	else if (!bCanceled && parameterObject.isMember("password"))  // Password needed and user provided it
-	{
+  else if (!bCanceled && parameterObject.isMember("password"))  // Password needed and user provided it
+  {
     const CVariant &passwordObject = parameterObject["password"];
-	  std::string strToVerify;  // Holds user saved password hash
-		if (index == 0)
-		  strToVerify = CProfilesManager::Get().GetMasterProfile().getLockCode();
-		else
-		{
-	    CProfile *profile = CProfilesManager::Get().GetProfile(index);
-		  strToVerify = profile->getLockCode();
-		}
+    std::string strToVerify;  // Holds user saved password hash
+    if (index == 0)
+      strToVerify = CProfilesManager::Get().GetMasterProfile().getLockCode();
+    else
+    {
+      CProfile *profile = CProfilesManager::Get().GetProfile(index);
+      strToVerify = profile->getLockCode();
+    }
 
-		std::string password = passwordObject["value"].asString();
+    std::string password = passwordObject["value"].asString();
 		
-		// Create password hash from the provided password if md5 is not used
+    // Create password hash from the provided password if md5 is not used
     std::string md5pword2;
     std::string encryption = passwordObject["encryption"].asString();
     if (encryption == "none")
       md5pword2 = XBMC::XBMC_MD5::GetMD5(password);
-		else if (encryption == "md5")
-			md5pword2 = password;
+    else if (encryption == "md5")
+      md5pword2 = password;
 
-		// Verify profided password
+    // Verify profided password
     if (strToVerify == md5pword2)
-		  bLoadProfile = true;
-	}
+      bLoadProfile = true;
+  }
 
   if (bLoadProfile)
   {
