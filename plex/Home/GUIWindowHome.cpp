@@ -142,9 +142,9 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     return true;
   }
   
-  g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem(), CFileItemListPtr());
+  bool ret = g_plexApplication.defaultActionHandler->OnAction(WINDOW_HOME, action, GetCurrentFanoutItem(), CFileItemListPtr());
   
-  bool ret = CGUIWindow::OnAction(action);
+  ret = ret || CGUIWindow::OnAction(action);
   
   int focusedControl = GetFocusedControlID();
 
