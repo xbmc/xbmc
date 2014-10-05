@@ -517,7 +517,7 @@ public class Splash extends Activity {
         properties.load(xbmcprop);
 
         if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))) {
-          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
           Log.e(TAG, mErrorMsg);
           mState = InError;
         }
@@ -543,7 +543,7 @@ public class Splash extends Activity {
         } else {
           ret = CheckCpuFeature("neon");
           if (!ret) {
-            mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+            mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
             Log.e(TAG, mErrorMsg);
             mState = InError;
           }

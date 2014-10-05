@@ -32,8 +32,8 @@ echo "Depends: coreutils, bsdiff, gawk"                 >> $PACKAGE/DEBIAN/contr
 echo "Name: Kodi seatbelt unlock for AppleTV 2"         >> $PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                      >> $PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                       >> $PACKAGE/DEBIAN/control
-echo "Description: Kodi tweeks, removes seatbelt"       >> $PACKAGE/DEBIAN/control
-echo "Homepage: http://xbmc.org/"                       >> $PACKAGE/DEBIAN/control
+echo "Description: @APP_NAME@ tweeks, removes seatbelt" >> $PACKAGE/DEBIAN/control
+echo "Homepage: http://kodi.tv/"                       >> $PACKAGE/DEBIAN/control
 echo "Maintainer: Scott Davilla"                        >> $PACKAGE/DEBIAN/control
 echo "Author: Team-Kodi"                                >> $PACKAGE/DEBIAN/control
 echo "Section: Tweaks"                                  >> $PACKAGE/DEBIAN/control
