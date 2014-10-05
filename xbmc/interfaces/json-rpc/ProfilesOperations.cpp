@@ -92,17 +92,25 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
   if (index < 0)
     return InvalidParams;
 
+  // get the profile
+  const CProfile *profile = CProfilesManager::Get().GetProfile(index);
+  if (profile == NULL)
+    return InvalidParams;
+
   bool bPrompt = parameterObject["prompt"].asBoolean();
   bool bCanceled = false;
   bool bLoadProfile = false;
 
-  if (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||            // Password not needed
-     (bPrompt && g_passwordManager.IsProfileLockUnlocked(index, bCanceled, bPrompt)))  // Password needed and user asked to enter it
+  // if the profile does not require a password or
+  // the user is prompted and provides the correct password
+  // we can load the requested profile
+  if (profile->getLockMode() == LOCK_MODE_EVERYONE ||
+     (bPrompt && g_passwordManager.IsProfileLockUnlocked(index, bCanceled, bPrompt)))
     bLoadProfile = true;
   else if (!bCanceled)  // Password needed and user provided it
   {
     const CVariant &passwordObject = parameterObject["password"];
-    std::string strToVerify = CProfilesManager::Get().GetProfile(index)->getLockCode();
+    std::string strToVerify = profile->getLockCode();
     std::string password = passwordObject["value"].asString();
 		
     // Create password hash from the provided password if md5 is not used
