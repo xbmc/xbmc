@@ -4288,6 +4288,13 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
           newItem.SetProperty("viewOffset", offsetSeek);
           newItem.m_lStartOffset = item.m_lStartOffset = ((offsetSeek / 10) - newItem.m_lEndOffset) * 0.75;
         }
+        else if (newItem.m_lStartOffset == STARTOFFSET_RESUME)
+        {
+          CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(newItem.GetProperty("plexserver").asString());
+          
+          CStdString transcodeURL = CPlexTranscoderClient::GetTranscodeURL(server, newItem).Get();
+          newItem.SetPath(transcodeURL);
+        }
       }
 
       item = newItem;
