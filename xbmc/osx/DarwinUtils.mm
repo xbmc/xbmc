@@ -36,6 +36,7 @@
 #else
   #import <Cocoa/Cocoa.h>
   #import <CoreFoundation/CoreFoundation.h>
+  #import <IOKit/IOKitLib.h>
   #import <IOKit/ps/IOPowerSources.h>
   #import <IOKit/ps/IOPSKeys.h>
 #endif
@@ -578,6 +579,43 @@ bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
 bool DarwinCFStringRefToUTF8String(CFStringRef source, std::string &destination)
 {
   return DarwinCFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
+}
+
+const std::string& CDarwinUtils::GetManufacturer(void)
+{
+  static std::string manufName;
+  if (manufName.empty())
+  {
+#ifdef TARGET_DARWIN_IOS
+    // to avoid dlloading of IOIKit, hardcode return value
+	// until other than Apple devices with iOS will be released
+    manufName = "Apple Inc.";
+#elif defined(TARGET_DARWIN_OSX)
+    const CFMutableDictionaryRef matchExpDev = IOServiceMatching("IOPlatformExpertDevice");
+    if (matchExpDev)
+    {
+      const io_service_t servExpDev = IOServiceGetMatchingService(kIOMasterPortDefault, matchExpDev);
+      if (servExpDev)
+      {
+        CFTypeRef manufacturer = IORegistryEntryCreateCFProperty(servExpDev, CFSTR("manufacturer"), kCFAllocatorDefault, 0);
+        if (manufacturer)
+        {
+          if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
+            manufName = (const char*)[[NSString stringWithString:(NSString *)manufacturer] UTF8String];
+          else if (CFGetTypeID(manufacturer) == CFDataGetTypeID())
+          {
+            manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
+            if (!manufName.empty() && manufName[manufName.length() - 1] == 0)
+              manufName.erase(manufName.length() - 1); // remove extra null at the end if any
+          }
+          CFRelease(manufacturer);
+        }
+      }
+      IOObjectRelease(servExpDev);
+    }
+#endif // TARGET_DARWIN_OSX
+  }
+  return manufName;
 }
 
 #endif

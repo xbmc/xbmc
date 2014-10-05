@@ -770,7 +770,7 @@ std::string CSysInfo::GetManufacturerName(void)
     int propLen = __system_property_get("ro.product.manufacturer", deviceCStr);
     manufName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
 #elif defined(TARGET_DARWIN)
-    manufName = "Apple";
+    manufName = CDarwinUtils::GetManufacturer();
 #elif defined(TARGET_WINDOWS)
     HKEY hKey;
     if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)

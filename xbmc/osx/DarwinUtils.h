@@ -55,4 +55,10 @@ extern "C"
 }
 #endif
 
+class CDarwinUtils
+{
+public:
+  static const std::string&  GetManufacturer(void);
+};
+
 #endif
