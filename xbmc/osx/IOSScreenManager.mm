@@ -244,11 +244,17 @@ static CEvent screenChangeEvent;
   res.size = [brwin interfaceFrame].size;
 #endif
 #else
-  //main screen is in portrait mode (physically) so exchange height and width
-  if(screen == [UIScreen mainScreen])
+  #if __IPHONE_8_0
+  if (CDarwinUtils::GetIOSVersion() < 8.0)
+  #endif
   {
-    CGRect frame = res;
-    res.size = CGSizeMake(frame.size.height, frame.size.width);
+    //main screen is in portrait mode (physically) so exchange height and width
+    //at least when compiled with ios sdk < 8.0 (seems to be fixed in later sdks)
+    if(screen == [UIScreen mainScreen])
+    {
+      CGRect frame = res;
+      res.size = CGSizeMake(frame.size.height, frame.size.width);
+    }
   }
 #endif
   return res;
