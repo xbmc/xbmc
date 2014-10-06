@@ -260,7 +260,7 @@ void CSettingConditions::Initialize()
     m_simpleConditions.insert("isappletv2");
 #endif
 #ifdef TARGET_DARWIN_OSX
-  if (DarwinIsSnowLeopard())
+  if (CDarwinUtils::IsSnowLeopard())
     m_simpleConditions.insert("osxissnowleopard");
 #endif
 #if defined(TARGET_WINDOWS) && defined(HAS_DX)

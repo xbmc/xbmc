@@ -644,9 +644,9 @@ std::string CSysInfo::GetOsVersion(void)
 #if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
   osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
 #elif defined(TARGET_DARWIN_IOS)
-  osVersion = GetIOSVersionString();
+  osVersion = CDarwinUtils::GetIOSVersionString();
 #elif defined(TARGET_DARWIN_OSX)
-  osVersion = GetOSXVersionString();
+  osVersion = CDarwinUtils::GetOSXVersionString();
 #elif defined(TARGET_ANDROID)
   char versionCStr[PROP_VALUE_MAX];
   int propLen = __system_property_get("ro.build.version.release", versionCStr);
@@ -810,7 +810,7 @@ std::string CSysInfo::GetModelName(void)
     int propLen = __system_property_get("ro.product.model", deviceCStr);
     modelName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
 #elif defined(TARGET_DARWIN_IOS)
-    modelName = getIosPlatformString();
+    modelName = CDarwinUtils::getIosPlatformString();
 #elif defined(TARGET_DARWIN_OSX)
     size_t nameLen = 0; // 'nameLen' should include terminating null
     if (sysctlbyname("hw.model", NULL, &nameLen, NULL, NULL) == 0 && nameLen > 1)
@@ -1220,7 +1220,7 @@ std::string CSysInfo::GetUserAgent()
 bool CSysInfo::IsAppleTV2()
 {
 #if defined(TARGET_DARWIN)
-  return DarwinIsAppleTV2();
+  return CDarwinUtils::IsAppleTV2();
 #else
   return false;
 #endif
@@ -1229,7 +1229,7 @@ bool CSysInfo::IsAppleTV2()
 bool CSysInfo::HasVideoToolBoxDecoder()
 {
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  return DarwinHasVideoToolboxDecoder();
+  return CDarwinUtils::HasVideoToolboxDecoder();
 #else
   return false;
 #endif

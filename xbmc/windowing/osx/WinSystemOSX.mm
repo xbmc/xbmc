@@ -751,7 +751,7 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
 {
   bool ret = ResizeWindow(newWidth, newHeight, newLeft, newTop);
 
-  if( DarwinIsMavericks() )
+  if( CDarwinUtils::IsMavericks() )
   {
     NSView * last_view = (NSView *)additional;
     if (last_view && [last_view window])
@@ -921,7 +921,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [newContext setView:blankView];
 
       // Hide the menu bar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || DarwinIsMavericks() )
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
         SetMenuBarVisible(false);
 
       // Blank other displays if requested.
@@ -955,7 +955,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
         CGDisplayCapture(GetDisplayID(res.iScreen));
 
       // If we don't hide menu bar, it will get events and interrupt the program.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || DarwinIsMavericks() )
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
         SetMenuBarVisible(false);
     }
 
@@ -983,7 +983,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [NSCursor unhide];
 
     // Show menubar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || DarwinIsMavericks() )
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
       SetMenuBarVisible(true);
 
     if (CSettings::Get().GetBool("videoscreen.fakefullscreen"))
@@ -1464,7 +1464,7 @@ bool CWinSystemOSX::IsObscured(void)
         if (!obscureLogged)
         {
           std::string appName;
-          if (DarwinCFStringRefToUTF8String(ownerName, appName))
+          if (CDarwinUtils::CFStringRefToUTF8String(ownerName, appName))
             CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
           obscureLogged = true;
         }
@@ -1523,7 +1523,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
           // find the screenID
           NSDictionary* screenInfo = [[window screen] deviceDescription];
           NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || DarwinIsMavericks() )
+          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
           {
             SetMenuBarVisible(false);
           }
