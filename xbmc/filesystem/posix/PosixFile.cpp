@@ -122,7 +122,10 @@ unsigned int CPosixFile::Read(void* lpBuf, int64_t uiBufSize)
   
   const ssize_t res = read(m_fd, lpBuf, uiBufSize);
   if (res < 0)
+  {
+    Seek(0, SEEK_CUR); // force update file position
     return 0; // TODO: return -1
+  }
   
   if (m_filePos >= 0)
   {
@@ -158,7 +161,10 @@ int CPosixFile::Write(const void* lpBuf, int64_t uiBufSize)
   
   const ssize_t res = write(m_fd, lpBuf, uiBufSize);
   if (res < 0)
+  {
+    Seek(0, SEEK_CUR); // force update file position
     return -1;
+  }
   
   if (m_filePos >= 0)
     m_filePos += res; // if m_filePos was known - update it
