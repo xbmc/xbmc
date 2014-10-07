@@ -8120,10 +8120,24 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning tvshow table", __FUNCTION__);
-    sql = "DELETE FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
-    m_pDS->exec(sql.c_str());
 
     std::string tvshowsToDelete;
+    sql = "SELECT idShow FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
+      tvshowsToDelete += m_pDS->fv(0).get_asString() + ",";
+      m_pDS->next();
+    }
+    m_pDS->close();
+    if (!tvshowsToDelete.empty())
+    {
+      sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
+      m_pDS->exec(sql.c_str());
+    }
+
+    tvshowsToDelete = "";
     sql = "SELECT tvshow.idShow FROM tvshow "
             "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
             "JOIN path ON path.idPath = tvshowlinkpath.idPath "
