@@ -1276,7 +1276,7 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
 
 CPVRChannel* CGUIEPGGridContainer::GetChannel(int iIndex)
 {
-  if (iIndex >= 0 && iIndex < m_channelItems.size())
+  if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
     CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(m_channelItems[iIndex]);
     if (fileItem->HasPVRChannelInfoTag())
