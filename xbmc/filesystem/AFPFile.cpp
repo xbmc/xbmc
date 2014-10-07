@@ -633,6 +633,9 @@ int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
   numberOfBytesWritten = gAfpConnection.GetImpl()->afp_wrap_write(m_pAfpVol,
     name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp, uid, gid);
 
+  if (numberOfBytesWritten > 0)
+    m_fileOffset += numberOfBytesWritten;
+
   return numberOfBytesWritten;
 }
 
