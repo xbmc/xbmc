@@ -589,21 +589,23 @@ std::string FileUtils::tempPath()
   if (*tmpDir.rbegin() != '/')
     tmpDir += '/';
 
-  tmpDir += "plexUpdater.XXXXX";
+  tmpDir += "plexUpdater.XXXXXX";
   char* templ = new char[tmpDir.size() + 1];
   std::copy(tmpDir.begin(), tmpDir.end(), templ);
   templ[tmpDir.size()] = '\0';
 
   char* dtemp = mkdtemp(templ);
-  if (dtemp == NULL)
+  if (dtemp == NULL || !*dtemp)
   {
-    delete templ;
+    perror("mkdtemp");
     LOG(Error, "Failed to create temp directory " + std::string(templ));
+    delete templ;
     return "/tmp/" + intToStr(ProcessUtils::currentProcessId());
   }
 
-  delete templ;
   std::string utmpDir(dtemp);
+
+  delete templ;
   return utmpDir;
 #else
   char buffer[MAX_PATH + 1];
