@@ -42,6 +42,7 @@
 #include "utils/Environment.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include <wuapi.h>
 
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
@@ -193,6 +194,7 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 bool CWIN32Util::PowerManagement(PowerState State)
 {
   static bool gotShutdownPrivileges = false;
+  DWORD shutdownFlags = 0;
   if (!gotShutdownPrivileges)
   {
     HANDLE hToken;
@@ -231,18 +233,28 @@ bool CWIN32Util::PowerManagement(PowerState State)
     break;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
+    shutdownFlags = SHUTDOWN_POWEROFF;
+
+    if (AllowOSUpdatesOnShutdown())
+      shutdownFlags += SHUTDOWN_INSTALL_UPDATES;
+
     if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
-      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_HYBRID | SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_POWEROFF,
-                               SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
-    return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_POWEROFF,
+      shutdownFlags += SHUTDOWN_HYBRID;
+
+    return InitiateShutdownW(NULL, NULL, 0, shutdownFlags,
                              SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
     break;
   case POWERSTATE_REBOOT:
     CLog::Log(LOGINFO, "Rebooting Windows...");
+    shutdownFlags = SHUTDOWN_RESTART;
+
+    if (AllowOSUpdatesOnShutdown())
+      shutdownFlags += SHUTDOWN_INSTALL_UPDATES;
+
     if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
-      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_HYBRID | SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
-                               SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
-    return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
+      shutdownFlags += SHUTDOWN_HYBRID;
+
+    return InitiateShutdownW(NULL, NULL, 0, shutdownFlags,
                              SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
     break;
   default:
@@ -1597,4 +1609,27 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
     return StringUtils::Format("%s (0x%X)", szBuf, dwError);
   else
     return StringUtils::Format("Unknown error (0x%X)", dwError);
+}
+
+bool CWIN32Util::AllowOSUpdatesOnShutdown()
+{
+  AutomaticUpdatesNotificationLevel level = aunlNotConfigured;
+  IAutomaticUpdates *pAutomaticUpdates = NULL;
+  IAutomaticUpdatesSettings *pAutomaticUpdatesSettings = NULL;
+  HRESULT hr = CoCreateInstance(CLSID_AutomaticUpdates, NULL, CLSCTX_ALL, IID_IAutomaticUpdates, (void**)&pAutomaticUpdates);
+
+  if (hr == S_OK)
+  {
+    hr = pAutomaticUpdates->get_Settings(&pAutomaticUpdatesSettings);
+    if (hr == S_OK)
+    {
+      hr = pAutomaticUpdatesSettings->get_NotificationLevel(&level);
+      SAFE_RELEASE(pAutomaticUpdatesSettings);
+    }
+    SAFE_RELEASE(pAutomaticUpdates);
+  }
+
+  // allow os updates on shutdown/reboot only if user has configured
+  // to automatically download and install(!) updates in control panel
+  return level == aunlScheduledInstallation;
 }
