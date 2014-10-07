@@ -96,6 +96,7 @@ public:
   static std::string WUSysMsg(DWORD dwError);
 private:
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+  static bool AllowOSUpdatesOnShutdown();
 };
 
 
