@@ -832,9 +832,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       CSetting *setting = CSettings::Get().GetSetting("debug.showloginfo");
       if (setting != NULL)
         setting->SetVisible(false);
-      setting = CSettings::Get().GetSetting("debug.setextraloglevel");
-      if (setting != NULL)
-        setting->SetVisible(false);
     }
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
