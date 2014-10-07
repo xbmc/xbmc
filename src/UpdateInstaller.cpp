@@ -365,11 +365,6 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
 
     std::string patchPath = patch.patchPath;
     std::string patchDir = m_tempDir + "/__patches/" + patchPath;
-    if (!FileUtils::fileExists(FileUtils::dirname(patchDir.c_str()).c_str()))
-    {
-      FileUtils::mkpath(FileUtils::dirname(patchDir.c_str()).c_str());
-    }
-
     FileUtils::extractFromZip(packageFile.c_str(), patchPath.c_str(), patchDir.c_str());
 
     std::string newFilePath = oldFile + ".new";
@@ -415,6 +410,13 @@ void UpdateInstaller::patchFiles()
   {
     m_observer->updateMessage("Patching Files...");
   }
+
+  std::string patchDir = m_tempDir + "/__patches/";
+  if (!FileUtils::fileExists(patchDir.c_str()))
+  {
+    FileUtils::mkpath(patchDir.c_str());
+  }
+
   for (; iter != m_script->patches().end(); iter++)
   {
     patchFile(*iter);
@@ -422,6 +424,8 @@ void UpdateInstaller::patchFiles()
     updateProgress();
     DID_CANCEL();
   }
+
+  FileUtils::rmdirRecursive(patchDir.c_str());
 }
 
 void UpdateInstaller::installFiles()
