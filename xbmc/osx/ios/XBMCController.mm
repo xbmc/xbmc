@@ -1013,8 +1013,15 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
   // reset the rotation of the view
   view.layer.transform = CATransform3DMakeRotation(angle, 0, 0.0, 1.0);
+#if __IPHONE_8_0
+  view.layer.bounds = view.bounds;
+#else
   [view setFrame:m_window.frame];
+#endif
   m_window.screen = screen;
+#if __IPHONE_8_0
+  [view setFrame:m_window.frame];
+#endif
 }
 //--------------------------------------------------------------
 - (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
