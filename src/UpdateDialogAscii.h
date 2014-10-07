@@ -24,6 +24,7 @@ public:
   virtual void updateProgress(int percentage);
   virtual void updateFinished();
   virtual void updateMessage(const std::string& message);
+  virtual bool didCancel() { return false; }
 
 private:
   tthread::mutex m_mutex;
