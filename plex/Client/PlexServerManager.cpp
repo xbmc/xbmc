@@ -55,6 +55,11 @@ CPlexServerManager::CPlexServerManager() : m_stopped(false)
   _localServer->AddConnection(conn);
   _localServer->SetActiveConnection(conn);
 
+  // hack hack
+  _staging2 = CPlexServerPtr(new CPlexServer("staging2", "staging2", true, false));
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "staging2.plex.tv", 443, "https", "vKzyQSa6zBz3Xqmk2dJB"));
+  _staging2->AddConnection(conn);
+  _staging2->SetActiveConnection(conn);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +106,9 @@ CPlexServerPtr CPlexServerManager::FindByUUID(const CStdString &uuid)
 
   if (uuid.Equals("best"))
     return m_bestServer;
+
+  if (uuid.Equals("staging2"))
+    return _staging2;
 
   if (m_serverMap.find(uuid) != m_serverMap.end())
   {
