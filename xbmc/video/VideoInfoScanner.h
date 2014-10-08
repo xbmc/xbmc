@@ -125,6 +125,8 @@ namespace VIDEO
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
+    bool ScanMovieFolder(const CStdString& strDirectory, const SScanSettings& settings, CONTENT_TYPE content);
+    bool ScanTVFolder(const CStdString& strDirectory, bool useDirNames, bool foundDirectly);
 
     INFO_RET RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetrieveInfoForMovie(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
@@ -243,13 +245,10 @@ namespace VIDEO
 
     bool m_showDialog;
     CGUIDialogProgressBarHandle* m_handle;
-    int m_currentItem;
-    int m_itemCount;
     bool m_bRunning;
     bool m_bCanInterrupt;
     bool m_bClean;
     bool m_scanAll;
-    CStdString m_strStartDir;
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
