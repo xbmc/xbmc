@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <keyboardlayouts>
-  <layout name="QWERTY">
+  <layout name="English">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiop</row>
@@ -40,7 +40,7 @@
       <row>`~éèçà</row>
     </keyboard>
   </layout>
-  <layout name="ABC">
+  <layout name="English ABC">
     <keyboard>
       <row>0123456789</row>
       <row>abcdefghij</row>
