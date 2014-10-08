@@ -54,21 +54,15 @@ public:
   static CJNIContentResolver getContentResolver();
   static CJNIWindow getWindow();
 
-  static CJNIContext* GetAppInstance() { return m_appInstance; };
-  static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
-
 protected:
   CJNIContext(const ANativeActivity *nativeActivity);
   ~CJNIContext();
 
-  virtual void onNewIntent(CJNIIntent intent)=0;
+  static jni::jhobject m_context;
 
-private:
+protected:
   CJNIContext();
 
   void PopulateStaticFields();
   void operator=(CJNIContext const&){};
-  static jni::jhobject m_context;
-  static CJNIContext *m_appInstance;
 };
-

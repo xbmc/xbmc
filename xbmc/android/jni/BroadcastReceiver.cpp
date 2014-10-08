@@ -21,6 +21,7 @@
 #include "BroadcastReceiver.h"
 #include "Intent.h"
 #include "Context.h"
+#include "Activity.h"
 #include "ClassLoader.h"
 #include "jutils/jutils-details.hpp"
 
@@ -29,7 +30,7 @@ using namespace jni;
 CJNIBroadcastReceiver *CJNIBroadcastReceiver::m_receiverInstance(NULL);
 CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJNIBase(className)
 {
-  CJNIContext *appInstance = CJNIContext::GetAppInstance();
+  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
   if (!appInstance || className.empty())
     return;
 
