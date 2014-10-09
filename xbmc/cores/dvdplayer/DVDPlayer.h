@@ -188,7 +188,7 @@ public:
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (SelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer);
+  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
 
@@ -269,7 +269,7 @@ public:
 
   virtual std::string GetPlayingTitle();
 
-  virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
+  virtual bool SwitchChannel(PVR::CPVRChannel &channel);
   virtual bool CachePVRStream(void) const;
 
   enum ECacheState

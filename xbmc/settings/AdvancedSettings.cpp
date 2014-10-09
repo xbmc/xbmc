@@ -408,7 +408,7 @@ void CAdvancedSettings::Initialize()
     #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
     #else // ios/atv2
-    logDir += "/" + CStdString(DarwinGetXbmcRootFolder()) + "/";
+    logDir += "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/";
     #endif
     m_logFolder = logDir;
   #else
@@ -830,9 +830,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     if (hide == NULL || strnicmp("false", hide, 4) != 0)
     {
       CSetting *setting = CSettings::Get().GetSetting("debug.showloginfo");
-      if (setting != NULL)
-        setting->SetVisible(false);
-      setting = CSettings::Get().GetSetting("debug.setextraloglevel");
       if (setting != NULL)
         setting->SetVisible(false);
     }
@@ -1315,7 +1312,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
-    vector<string> exts = StringUtils::Split(extraExtensions,"|");
+    vector<string> exts = StringUtils::Split(extraExtensions, '|');
     for (vector<string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
     {
       size_t iPos = extensions.find(*i);

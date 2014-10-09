@@ -23,9 +23,11 @@
 
 namespace XFILE
 {
+  class CWin32SMBFile; // forward declaration
 
   class CWin32SMBDirectory : public IDirectory
   {
+    friend class CWin32SMBFile;
   public:
     CWin32SMBDirectory(void);
     virtual ~CWin32SMBDirectory(void);

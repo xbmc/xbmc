@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [13.9.704], [http://issues.xbmc.org])
+AC_INIT([xbmc], [13.9.705], [http://issues.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -63,10 +63,10 @@ AC_DEFUN([XB_FIND_SONAME],
     fi
   elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
-    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ -z $$1_FILENAME ]]; then
       #try gold linker syntax
-      $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
+      $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
     fi
     if [[ ! -z $$1_FILENAME ]]; then
       $1_SONAME=$($OBJDUMP -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
@@ -721,6 +721,7 @@ case $use_platform in
      ARCH="arm"
      AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
      USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
+     USE_MMAL=1; AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL libs is enabled"])
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
      ;;
@@ -1010,7 +1011,7 @@ if test "$use_gles" = "yes"; then
       AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
       AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
       AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
-      LIBS="$LIBS -lEGL -lGLESv2 -lbcm_host -lvcos -lvchiq_arm"
+      LIBS="$LIBS -lEGL -lGLESv2 -lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util"
     else
       AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
@@ -1173,7 +1174,8 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
+    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.2.1"`;
+    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray], [$LIBBLURAY_LIB_BASENAME])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
     AC_CHECK_LIB([bluray], [bd_register_argb_overlay_proc],
@@ -2584,6 +2586,7 @@ AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
 AC_SUBST(UPNP_DEFINES)
 AC_SUBST(USE_SSE4)
+AC_SUBST(USE_MMAL)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

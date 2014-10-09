@@ -58,7 +58,7 @@ void CPluginSource::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-    vector<string> provides = StringUtils::Split(content, " ");
+    vector<string> provides = StringUtils::Split(content, ' ');
     for (vector<string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
       Content content = Translate(*i);

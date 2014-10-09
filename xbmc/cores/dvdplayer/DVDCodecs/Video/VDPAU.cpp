@@ -543,7 +543,7 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
         return false;
       }
 
-      if (max_width < avctx->coded_width || max_height < avctx->coded_height)
+      if (max_width < (uint32_t) avctx->coded_width || max_height < (uint32_t) avctx->coded_height)
       {
         CLog::Log(LOGWARNING,"VDPAU::Open: requested picture dimensions (%i, %i) exceed hardware capabilities ( %i, %i).",
 	                      avctx->coded_width, avctx->coded_height, max_width, max_height);

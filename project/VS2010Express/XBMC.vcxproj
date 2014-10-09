@@ -425,8 +425,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VirtualDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VTPFile.cpp" />
@@ -945,8 +944,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBFile.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
@@ -1028,6 +1026,7 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.h" />
+    <ClInclude Include="..\..\xbmc\settings\DiscSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISetting.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISettingCallback.h" />

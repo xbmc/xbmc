@@ -6746,7 +6746,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14087"
-msgid "DVDs"
+msgid "Discs"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6818,7 +6818,25 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr ""
 
-#empty strings from id 14102 to 15011
+#. Name of a setting for Blu-ray playback mode
+#: system/settings/settings.xml
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr ""
+
+#. Playback mode option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr ""
+
+#. Playback mode option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr ""
+
+#empty strings from id 14105 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -12530,9 +12548,11 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr ""
 
+#. A Blu-ray playback mode and a option in the simplified Blu-ray menu
 #: xbmc/filesystem/BlurayDirectory.cpp
+#: system/settings/settings.xml
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
+msgid "Show Blu-ray menu"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
@@ -15410,7 +15430,19 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr ""
 
-#empty strings from id 36434 to 36499
+#. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
+#: system/settings/settings.xml
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
+#: system/settings/settings.xml
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr ""
+
+#empty strings from id 36436 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
@@ -15892,6 +15924,12 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#37030"
 msgid "Unlimited"
+msgstr ""
+
+#. Description of setting #14102 Settings -> Video -> Discs -> Blu-ray playback mode
+#: system/settings/settings.xml
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
 
 #. 55000-55100 reserved for DSPlayer

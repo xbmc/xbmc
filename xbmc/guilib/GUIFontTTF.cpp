@@ -27,6 +27,8 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
+#include "URL.h"
+#include "filesystem/File.h"
 
 #include <math.h>
 
@@ -67,7 +69,7 @@ public:
       FT_Done_FreeType(m_library);
   }
 
-  FT_Face GetFont(const CStdString &filename, float size, float aspect)
+  FT_Face GetFont(const CStdString &filename, float size, float aspect, XUTILS::auto_buffer& memoryBuf)
   {
     // don't have it yet - create it
     if (!m_library)
@@ -81,8 +83,28 @@ public:
     FT_Face face;
 
     // ok, now load the font face
-    if (FT_New_Face( m_library, CSpecialProtocol::TranslatePath(filename).c_str(), 0, &face ))
+    CURL realFile(CSpecialProtocol::TranslatePath(filename));
+    if (realFile.GetFileName().empty())
       return NULL;
+
+    memoryBuf.clear();
+#ifndef TARGET_WINDOWS
+    if (!realFile.GetProtocol().empty())
+#endif // ! TARGET_WINDOWS
+    {
+      // load file into memory if it is not on local drive
+      // in case of win32: always load file into memory as filename is in UTF-8,
+      //                   but freetype expect filename in ANSI encoding
+      XFILE::CFile f;
+      if (f.LoadFile(realFile, memoryBuf) <= 0)
+        return NULL;
+      if (FT_New_Memory_Face(m_library, (const FT_Byte*)memoryBuf.get(), memoryBuf.size(), 0, &face) != 0)
+        return NULL;
+    }
+#ifndef TARGET_WINDOWS
+    else if (FT_New_Face( m_library, realFile.GetFileName().c_str(), 0, &face ))
+      return NULL;
+#endif // ! TARGET_WINDOWS
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
@@ -218,13 +240,16 @@ void CGUIFontTTFBase::Clear()
   free(m_vertex);
   m_vertex = NULL;
   m_vertex_count = 0;
+
+  m_strFileName.clear();
+  m_fontFileInMemory.clear();
 }
 
 bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
-  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect);
+  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect, m_fontFileInMemory);
 
   if (!m_face)
     return false;

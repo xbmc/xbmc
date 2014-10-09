@@ -439,7 +439,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
     char     given_path[2*MAXPATHLEN];
     uint32_t path_size =2*MAXPATHLEN;
 
-    result = GetDarwinExecutablePath(given_path, &path_size);
+    result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
     if (result == 0)
     {
       // Move backwards to last /.
@@ -1798,7 +1798,7 @@ CStdString CUtil::ResolveExecutablePath()
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
-  GetDarwinExecutablePath(given_path, &path_size);
+  CDarwinUtils::GetExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
 #elif defined(TARGET_FREEBSD)                                                                                                                                                                   
   char buf[PATH_MAX];
@@ -1841,7 +1841,7 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
-  GetDarwinFrameworkPath(forPython, given_path, &path_size);
+  CDarwinUtils::GetFrameworkPath(forPython, given_path, &path_size);
   strFrameworksPath = given_path;
 #endif
   return strFrameworksPath;
@@ -1883,6 +1883,26 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   URIUtils::Split(strMovie, strPath, strMovieFileName);
   std::string strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
   strLookInPaths.push_back(strPath);
+  
+  CURL url(strMovie);
+  std::string isoFileNameNoExt;
+  if (url.IsProtocol("bluray"))
+      url = CURL(url.GetHostName());
+  //a path inside an iso
+  if (url.IsProtocol("udf"))
+  {
+    std::string isoPath = url.GetHostName();
+    URIUtils::RemoveSlashAtEnd(isoPath);
+    CFileItem iso(isoPath, false);
+
+    if (iso.IsDiscImage())
+    {
+      std::string isoFileName;
+      URIUtils::Split(iso.GetPath(), isoPath, isoFileName);
+      isoFileNameNoExt = URIUtils::ReplaceExtension(isoFileName, "");
+      strLookInPaths.push_back(isoPath);
+    }
+  }
   
   if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() && !CSettings::Get().GetString("subtitles.custompath").empty()) // to avoid checking non-existent directories (network) every time..
   {
@@ -1985,7 +2005,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
-        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt))
+        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt)
+          || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
         {
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
@@ -2133,6 +2154,12 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   // we check left part - if it's same as video base name - strip it
   if (StringUtils::StartsWithNoCase(toParse, videoBaseName))
     toParse = toParse.substr(videoBaseName.length());
+  else if (URIUtils::GetExtension(strStream) == ".sub" && URIUtils::IsInArchive(strStream))
+  {
+    // exclude parsing of vobsub file names that embedded in an archive
+    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, strStream.c_str());
+    toParse.clear();
+  }
 
   // trim any non-alphanumeric char in the begining
   std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);

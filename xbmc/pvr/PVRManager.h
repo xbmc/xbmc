@@ -95,6 +95,12 @@ namespace PVR
      */
     CPVRManager(void);
 
+    /*!
+     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
+     * @param channel The channel which is updated
+     */
+    void UpdateLastWatched(CPVRChannel &channel);
+
   public:
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -299,7 +305,7 @@ namespace PVR
      * @param bPreview True to show a preview, false otherwise.
      * @return Trrue if the switch was successful, false otherwise.
      */
-    bool PerformChannelSwitch(const CPVRChannel &channel, bool bPreview);
+    bool PerformChannelSwitch(CPVRChannel &channel, bool bPreview);
 
     /*!
      * @brief Close an open PVR stream.

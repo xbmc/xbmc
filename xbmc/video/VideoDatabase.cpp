@@ -409,8 +409,6 @@ void CVideoDatabase::CreateViews()
                                       "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA,VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(episodeview.c_str());
 
-  /* NOTE: The tvshowview needs to have "GROUP BY tvshow.idShow" added to any usage if you wish to
-           avoid duplicates due to multiple paths per tvshow (from the join on tvshowlinkpath) */
   CLog::Log(LOGINFO, "create tvshowcounts");
   CStdString tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                                        "      tvshow.idShow AS idShow,"
@@ -440,7 +438,8 @@ void CVideoDatabase::CreateViews()
                                      "  LEFT JOIN path ON"
                                      "    path.idPath=tvshowlinkpath.idPath"
                                      "  INNER JOIN tvshowcounts ON"
-                                     "  tvshow.idShow = tvshowcounts.idShow");
+                                     "    tvshow.idShow = tvshowcounts.idShow "
+                                     "GROUP BY tvshow.idShow");
   m_pDS->exec(tvshowview.c_str());
 
   CLog::Log(LOGINFO, "create seasonview");
@@ -1894,7 +1893,6 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList
                  "LEFT JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
                  "LEFT JOIN actors d ON d.idActor=directorlinktvshow.idDirector";
   filter.where = PrepareSQL("a.strActor='%s' OR d.strActor='%s'", strActor.c_str(), strActor.c_str());
-  filter.group = "tvshowview.idShow";
   GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
 }
 
@@ -4751,7 +4749,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
         }
       }
       // cleanup duplicate seasons
-      m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT idSeason FROM (SELECT min(idSeason) FROM seasons GROUP BY idShow,season) AS sub)");
+      m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT idSeason FROM (SELECT min(idSeason) as idSeason FROM seasons GROUP BY idShow,season) AS sub)");
     }
   }
   if (iVersion < 84)
@@ -4797,7 +4795,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 89;
+  return 90;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
@@ -6372,7 +6370,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     CVideoDbUrl videoUrl;
     std::string strSQLExtra;
     Filter extFilter = filter;
-    extFilter.AppendGroup("tvshowview.idShow");
     SortDescription sorting = sortDescription;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
@@ -8120,10 +8117,24 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning tvshow table", __FUNCTION__);
-    sql = "DELETE FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
-    m_pDS->exec(sql.c_str());
 
     std::string tvshowsToDelete;
+    sql = "SELECT idShow FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
+      tvshowsToDelete += m_pDS->fv(0).get_asString() + ",";
+      m_pDS->next();
+    }
+    m_pDS->close();
+    if (!tvshowsToDelete.empty())
+    {
+      sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
+      m_pDS->exec(sql.c_str());
+    }
+
+    tvshowsToDelete = "";
     sql = "SELECT tvshow.idShow FROM tvshow "
             "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
             "JOIN path ON path.idPath = tvshowlinkpath.idPath "
@@ -8667,7 +8678,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     m_pDS->close();
 
     // repeat for all tvshows
-    sql = "SELECT * FROM tvshowview GROUP BY tvshowview.idShow";
+    sql = "SELECT * FROM tvshowview";
     m_pDS->query(sql.c_str());
 
     total = m_pDS->num_rows();

@@ -615,6 +615,7 @@ static int set_xg_reverb_type(int msb, int lsb)
 		break;
 	    case 0x03:
 		type = 3;			/* Stage 1 -> Hall 1 */
+		break;
 	    case 0x04:
 		type = 5;			/* Plate */
 		break;

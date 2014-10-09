@@ -85,7 +85,7 @@ void CPosixInterfaceForCLog::PrintDebugString(const std::string &debugString)
 {
 #ifdef _DEBUG
 #if defined(TARGET_DARWIN)
-  DarwinPrintDebugString(debugString);
+  CDarwinUtils::PrintDebugString(debugString);
 #elif defined(TARGET_ANDROID)
   //print to adb
   CXBMCApp::android_printf("Debug Print: %s", debugString.c_str());

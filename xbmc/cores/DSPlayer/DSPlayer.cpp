@@ -848,7 +848,7 @@ bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
 	return g_pPVRStream->SelectChannelByNumber(iChannelNumber);
 }
 
-bool CDSPlayer::SwitchChannel(const CPVRChannel &channel)
+bool CDSPlayer::SwitchChannel(CPVRChannel &channel)
 {
 	if (!g_PVRManager.CheckParentalLock(channel))
 		return false;

@@ -385,7 +385,7 @@ void CWinSystemIOS::ShowOSMouse(bool show)
 
 bool CWinSystemIOS::HasCursor()
 {
-  if( DarwinIsAppleTV2() )
+  if( CDarwinUtils::IsAppleTV2() )
   {
     return true;
   }

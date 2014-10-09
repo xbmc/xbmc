@@ -158,7 +158,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             else
               CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", CURL::GetRedacted(strFullName).c_str(), errno, strerror(errno));
 
-            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+            bIsDir = S_ISDIR(info.st_mode);
             lTimeDate = info.st_mtime;
             if(lTimeDate == 0) // if modification date is missing, use create date
               lTimeDate = info.st_ctime;
@@ -334,7 +334,7 @@ bool CSMBDirectory::Exists(const CURL& url2)
   if (smbc_stat(strFileName.c_str(), &info) != 0)
     return false;
 
-  return (info.st_mode & S_IFDIR) ? true : false;
+  return S_ISDIR(info.st_mode);
 }
 
 std::string CSMBDirectory::MountShare(const std::string &smbPath, const std::string &strType, const std::string &strName,

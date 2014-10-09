@@ -76,6 +76,7 @@
 #include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
 #include "filesystem/File.h"
+#include "settings/DiscSettings.h"
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
 #include "utils/StdString.h"
@@ -782,6 +783,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (!mediapath.empty())
     {
       CFileItemPtr item(new CFileItem(mediapath, false));
+      if (StringUtils::EndsWithNoCase(mediapath, "index.bdmv"))
+      {
+        if (!ShowPlaySelection(item))
+          return;
+      }
       queuedItems.Add(item);
       return;
     }
@@ -1126,13 +1132,16 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
 	  )
 	  return true;
 
+  if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)
+    return true;
+
   CStdString path;
   if (item->IsVideoDb())
     path = item->GetVideoInfoTag()->m_strFileNameAndPath;
   else
     path = item->GetPath();
 
-  if (URIUtils::GetFileName(path) == "index.bdmv")
+  if (item->IsBDFile())
   {
     CStdString root = URIUtils::GetParentPath(path);
     URIUtils::RemoveSlashAtEnd(root);
@@ -1144,7 +1153,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
     }
   }
 
-  if (URIUtils::HasExtension(path, ".iso|.img"))
+  if (item->IsDiscImage())
   {
     CURL url2("udf://");
     url2.SetHostName(item->GetPath());

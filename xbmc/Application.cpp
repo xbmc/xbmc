@@ -1188,8 +1188,8 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
     #if defined(TARGET_DARWIN_IOS)
-      CSpecialProtocol::SetHomePath(userHome + "/" + CStdString(DarwinGetXbmcRootFolder()) + "/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CStdString(DarwinGetXbmcRootFolder()) + "/XBMC/userdata");
+      CSpecialProtocol::SetHomePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/userdata");
     #else
       CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
       CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
@@ -1197,7 +1197,7 @@ bool CApplication::InitDirectoriesOSX()
 
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  CStdString(DarwinGetXbmcRootFolder()) + "/XBMC/temp");
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/temp");
     #else
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
       CDirectory::Create(strTempPath);
@@ -1207,7 +1207,7 @@ bool CApplication::InitDirectoriesOSX()
 
     // xbmc.log file location
     #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + CStdString(DarwinGetXbmcRootFolder());
+      strTempPath = userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder());
     #else
       strTempPath = userHome + "/Library/Logs";
     #endif
@@ -4780,7 +4780,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STARTED:
     {
 #ifdef TARGET_DARWIN
-      DarwinSetScheduling(message.GetMessage());
+      CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // reset the seek handler
       m_seekHandler->Reset();
@@ -4892,7 +4892,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_pKaraokeMgr->Stop();
 #endif
 #ifdef TARGET_DARWIN
-      DarwinSetScheduling(message.GetMessage());
+      CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)

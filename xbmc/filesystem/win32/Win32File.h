@@ -52,11 +52,14 @@ namespace XFILE
     virtual int Stat(struct __stat64* statData);
 
   protected:
+    CWin32File(bool asSmbFile);
     HANDLE  m_hFile;
     int64_t m_filePos;
     bool    m_allowWrite;
     // file path and name in win32 long form "\\?\D:\path\to\file.ext"
     std::wstring m_filepathnameW;
+    const bool m_smbFile; // true for SMB file, false for local file
+    unsigned long m_lastSMBFileErr; // used for SMB file operations
   };
 
 }

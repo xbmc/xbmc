@@ -36,6 +36,7 @@
 #else
   #import <Cocoa/Cocoa.h>
   #import <CoreFoundation/CoreFoundation.h>
+  #import <IOKit/IOKitLib.h>
   #import <IOKit/ps/IOPowerSources.h>
   #import <IOKit/ps/IOPSKeys.h>
 #endif
@@ -93,7 +94,7 @@ enum iosPlatform
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
-const char* getIosPlatformString(void)
+const char* CDarwinUtils::getIosPlatformString(void)
 {
   static std::string iOSPlatformString;
   if (iOSPlatformString.empty())
@@ -123,7 +124,7 @@ enum iosPlatform getIosPlatform()
 #if defined(TARGET_DARWIN_IOS)
   if (eDev == iDeviceUnknown)
   {
-    std::string devStr(getIosPlatformString());
+    std::string devStr(CDarwinUtils::getIosPlatformString());
     
     if (devStr == "iPhone1,1") eDev = iPhone2G;
     else if (devStr == "iPhone1,2") eDev = iPhone3G;
@@ -168,7 +169,7 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool DarwinIsAppleTV2(void)
+bool CDarwinUtils::IsAppleTV2(void)
 {
   static enum iosPlatform platform = iDeviceUnknown;
 #if defined(TARGET_DARWIN_IOS)
@@ -180,7 +181,7 @@ bool DarwinIsAppleTV2(void)
   return (platform == AppleTV2);
 }
 
-bool DarwinIsMavericks(void)
+bool CDarwinUtils::IsMavericks(void)
 {
   static int isMavericks = -1;
 #if defined(TARGET_DARWIN_OSX)
@@ -197,7 +198,7 @@ bool DarwinIsMavericks(void)
   return isMavericks == 1;
 }
 
-bool DarwinIsSnowLeopard(void)
+bool CDarwinUtils::IsSnowLeopard(void)
 {
   static int isSnowLeopard = -1;
 #if defined(TARGET_DARWIN_OSX)
@@ -210,7 +211,7 @@ bool DarwinIsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
-bool DarwinHasRetina(void)
+bool CDarwinUtils::DeviceHasRetina(void)
 {
   static enum iosPlatform platform = iDeviceUnknown;
 
@@ -223,7 +224,7 @@ bool DarwinHasRetina(void)
   return (platform >= iPhone4);
 }
 
-const char *GetDarwinOSReleaseString(void)
+const char *CDarwinUtils::GetOSReleaseString(void)
 {
   static std::string osreleaseStr;
   if (osreleaseStr.empty())
@@ -238,13 +239,13 @@ const char *GetDarwinOSReleaseString(void)
   return osreleaseStr.c_str();
 }
 
-const char *GetDarwinVersionString(void)
+const char *CDarwinUtils::GetOSVersionString(void)
 {
   CCocoaAutoPool pool;
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
-float GetIOSVersion(void)
+float CDarwinUtils::GetIOSVersion(void)
 {
   CCocoaAutoPool pool;
   float version;
@@ -257,7 +258,7 @@ float GetIOSVersion(void)
   return(version);
 }
 
-const char *GetIOSVersionString(void)
+const char *CDarwinUtils::GetIOSVersionString(void)
 {
 #if defined(TARGET_DARWIN_IOS)
   static std::string iOSVersionString;
@@ -272,7 +273,7 @@ const char *GetIOSVersionString(void)
 #endif
 }
 
-const char *GetOSXVersionString(void)
+const char *CDarwinUtils::GetOSXVersionString(void)
 {
 #if defined(TARGET_DARWIN_OSX)
   static std::string OSXVersionString;
@@ -289,7 +290,7 @@ const char *GetOSXVersionString(void)
 #endif
 }
 
-int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -359,7 +360,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
   return -1;
 }
 
-int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -386,12 +387,12 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
   return 0;
 }
 
-const char* DarwinGetXbmcRootFolder(void)
+const char* CDarwinUtils::GetAppRootFolder(void)
 {
   static std::string rootFolder = "";
   if ( rootFolder.length() == 0)
   {
-    if (DarwinIsIosSandboxed())
+    if (IsIosSandboxed())
     {
       // when we are sandbox make documents our root
       // so that user can access everything he needs 
@@ -406,7 +407,7 @@ const char* DarwinGetXbmcRootFolder(void)
   return rootFolder.c_str();
 }
 
-bool DarwinIsIosSandboxed(void)
+bool CDarwinUtils::IsIosSandboxed(void)
 {
   static int ret = -1;
   if (ret == -1)
@@ -417,7 +418,7 @@ bool DarwinIsIosSandboxed(void)
     ret = 0;
     memset(given_path, 0x0, path_size);
     /* Get Application directory */  
-    result = GetDarwinExecutablePath(given_path, &path_size);
+    result = GetExecutablePath(given_path, &path_size);
     if (result == 0)
     {
       // we re sandboxed if we are installed in /var/mobile/Applications
@@ -431,7 +432,7 @@ bool DarwinIsIosSandboxed(void)
   return ret == 1;
 }
 
-bool DarwinHasVideoToolboxDecoder(void)
+bool CDarwinUtils::HasVideoToolboxDecoder(void)
 {
   static int DecoderAvailable = -1;
 
@@ -446,7 +447,7 @@ bool DarwinHasVideoToolboxDecoder(void)
     else
     {
       /* When XBMC is started from a sandbox directory we have to check the sysctl values */      
-      if (DarwinIsIosSandboxed())
+      if (IsIosSandboxed())
       {
         uint64_t proc_enforce = 0;
         uint64_t vnode_enforce = 0; 
@@ -476,11 +477,11 @@ bool DarwinHasVideoToolboxDecoder(void)
   return (DecoderAvailable == 1);
 }
 
-int DarwinBatteryLevel(void)
+int CDarwinUtils::BatteryLevel(void)
 {
   float batteryLevel = 0;
 #if defined(TARGET_DARWIN_IOS)
-  if(!DarwinIsAppleTV2())
+  if(!IsAppleTV2())
     batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
   CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
@@ -511,7 +512,7 @@ int DarwinBatteryLevel(void)
   return batteryLevel * 100;  
 }
 
-void DarwinSetScheduling(int message)
+void CDarwinUtils::SetScheduling(int message)
 {
   int policy;
   struct sched_param param;
@@ -536,7 +537,7 @@ void DarwinSetScheduling(int message)
   result = pthread_setschedparam(this_pthread_self, policy, &param );
 }
 
-bool DarwinCFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
+bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
 {
   const char *cstr = CFStringGetCStringPtr(source, encoding);
   if (!cstr)
@@ -564,20 +565,57 @@ bool DarwinCFStringRefToStringWithEncoding(CFStringRef source, std::string &dest
   return true;
 }
 
-void DarwinPrintDebugString(std::string debugString)
+void CDarwinUtils::PrintDebugString(std::string debugString)
 {
   NSLog(@"Debug Print: %s", debugString.c_str());
 }
 
 
-bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
+bool CDarwinUtils::CFStringRefToString(CFStringRef source, std::string &destination)
 {
-  return DarwinCFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());
+  return CFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());
 }
 
-bool DarwinCFStringRefToUTF8String(CFStringRef source, std::string &destination)
+bool CDarwinUtils::CFStringRefToUTF8String(CFStringRef source, std::string &destination)
 {
-  return DarwinCFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
+  return CFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
+}
+
+const std::string& CDarwinUtils::GetManufacturer(void)
+{
+  static std::string manufName;
+  if (manufName.empty())
+  {
+#ifdef TARGET_DARWIN_IOS
+    // to avoid dlloading of IOIKit, hardcode return value
+	// until other than Apple devices with iOS will be released
+    manufName = "Apple Inc.";
+#elif defined(TARGET_DARWIN_OSX)
+    const CFMutableDictionaryRef matchExpDev = IOServiceMatching("IOPlatformExpertDevice");
+    if (matchExpDev)
+    {
+      const io_service_t servExpDev = IOServiceGetMatchingService(kIOMasterPortDefault, matchExpDev);
+      if (servExpDev)
+      {
+        CFTypeRef manufacturer = IORegistryEntryCreateCFProperty(servExpDev, CFSTR("manufacturer"), kCFAllocatorDefault, 0);
+        if (manufacturer)
+        {
+          if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
+            manufName = (const char*)[[NSString stringWithString:(NSString *)manufacturer] UTF8String];
+          else if (CFGetTypeID(manufacturer) == CFDataGetTypeID())
+          {
+            manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
+            if (!manufName.empty() && manufName[manufName.length() - 1] == 0)
+              manufName.erase(manufName.length() - 1); // remove extra null at the end if any
+          }
+          CFRelease(manufacturer);
+        }
+      }
+      IOObjectRelease(servExpDev);
+    }
+#endif // TARGET_DARWIN_OSX
+  }
+  return manufName;
 }
 
 #endif

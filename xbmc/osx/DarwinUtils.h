@@ -27,32 +27,30 @@
 struct __CFString;
 typedef const struct __CFString * CFStringRef;
 
-#ifdef __cplusplus
-extern "C"
+class CDarwinUtils
 {
-#endif
-  const char *getIosPlatformString(void);
-  bool        DarwinIsAppleTV2(void);
-  bool        DarwinIsMavericks(void);
-  bool        DarwinIsSnowLeopard(void);
-  bool        DarwinHasRetina(void);
-  const char *GetDarwinOSReleaseString(void);
-  const char *GetDarwinVersionString(void);
-  float       GetIOSVersion(void);
-  const char *GetIOSVersionString(void);
-  const char *GetOSXVersionString(void); 
-  int         GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
-  int         GetDarwinExecutablePath(char* path, uint32_t *pathsize);
-  const char *DarwinGetXbmcRootFolder(void);
-  bool        DarwinIsIosSandboxed(void);
-  bool        DarwinHasVideoToolboxDecoder(void);
-  int         DarwinBatteryLevel(void);
-  void        DarwinSetScheduling(int message);
-  void        DarwinPrintDebugString(std::string debugString);
-  bool        DarwinCFStringRefToString(CFStringRef source, std::string& destination);
-  bool        DarwinCFStringRefToUTF8String(CFStringRef source, std::string& destination);
-#ifdef __cplusplus
-}
-#endif
+public:
+  static const char *getIosPlatformString(void);
+  static bool        IsAppleTV2(void);
+  static bool        IsMavericks(void);
+  static bool        IsSnowLeopard(void);
+  static bool        DeviceHasRetina(void);
+  static const char *GetOSReleaseString(void);
+  static const char *GetOSVersionString(void);
+  static float       GetIOSVersion(void);
+  static const char *GetIOSVersionString(void);
+  static const char *GetOSXVersionString(void);
+  static int         GetFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
+  static int         GetExecutablePath(char* path, uint32_t *pathsize);
+  static const char *GetAppRootFolder(void);
+  static bool        IsIosSandboxed(void);
+  static bool        HasVideoToolboxDecoder(void);
+  static int         BatteryLevel(void);
+  static void        SetScheduling(int message);
+  static void        PrintDebugString(std::string debugString);
+  static bool        CFStringRefToString(CFStringRef source, std::string& destination);
+  static bool        CFStringRefToUTF8String(CFStringRef source, std::string& destination);
+  static const std::string&  GetManufacturer(void);
+};
 
 #endif

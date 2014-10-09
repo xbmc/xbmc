@@ -37,6 +37,8 @@
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "CompileInfo.h"
+
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
 #ifndef WIN32_LEAN_AND_MEAN
@@ -432,6 +434,14 @@ bool CSysInfo::Save(TiXmlNode *settings) const
   return true;
 }
 
+const std::string& CSysInfo::GetAppName(void)
+{
+  assert(CCompileInfo::GetAppName() != NULL);
+  static const std::string appName(CCompileInfo::GetAppName());
+
+  return appName;
+}
+
 bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   bool bRet= false;
@@ -634,9 +644,9 @@ std::string CSysInfo::GetOsVersion(void)
 #if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
   osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
 #elif defined(TARGET_DARWIN_IOS)
-  osVersion = GetIOSVersionString();
+  osVersion = CDarwinUtils::GetIOSVersionString();
 #elif defined(TARGET_DARWIN_OSX)
-  osVersion = GetOSXVersionString();
+  osVersion = CDarwinUtils::GetOSXVersionString();
 #elif defined(TARGET_ANDROID)
   char versionCStr[PROP_VALUE_MAX];
   int propLen = __system_property_get("ro.build.version.release", versionCStr);
@@ -760,7 +770,7 @@ std::string CSysInfo::GetManufacturerName(void)
     int propLen = __system_property_get("ro.product.manufacturer", deviceCStr);
     manufName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
 #elif defined(TARGET_DARWIN)
-    manufName = "Apple";
+    manufName = CDarwinUtils::GetManufacturer();
 #elif defined(TARGET_WINDOWS)
     HKEY hKey;
     if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
@@ -800,7 +810,7 @@ std::string CSysInfo::GetModelName(void)
     int propLen = __system_property_get("ro.product.model", deviceCStr);
     modelName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
 #elif defined(TARGET_DARWIN_IOS)
-    modelName = getIosPlatformString();
+    modelName = CDarwinUtils::getIosPlatformString();
 #elif defined(TARGET_DARWIN_OSX)
     size_t nameLen = 0; // 'nameLen' should include terminating null
     if (sysctlbyname("hw.model", NULL, &nameLen, NULL, NULL) == 0 && nameLen > 1)
@@ -1074,7 +1084,7 @@ std::string CSysInfo::GetUserAgent()
   if (!result.empty())
     return result;
 
-  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
+  result = GetAppName() + "/" + (std::string)g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetKernelName() + " " + GetKernelVersion();
   BOOL bIsWow = FALSE;
@@ -1161,10 +1171,19 @@ std::string CSysInfo::GetUserAgent()
   result += "Unknown";
 #endif
   result += ")";
-  // add fork ID here in form:
-  // result += " XBMC_FORK_" + "forkname" + "/" + "1.0"; // default fork number is '1.0'
+
+  if (GetAppName() != "Kodi")
+    result += " Kodi_Fork_" + GetAppName() + "/1.0"; // default fork number is '1.0', replace it with actual number if necessary
+
+#ifdef TARGET_LINUX
+  // Add distribution name
+  std::string linuxOSName(GetOsName(true));
+  if (!linuxOSName.empty())
+    result += " " + linuxOSName + "/" + GetOsVersion();
+#endif
+
 #ifdef TARGET_RASPBERRY_PI
-  result += " XBMC_HW_RaspberryPi/1.0";
+  result += " HW_RaspberryPi/1.0";
 #elif defined (TARGET_DARWIN_IOS)
   std::string iDevVer;
   if (iDevStrDigit == std::string::npos)
@@ -1172,11 +1191,11 @@ std::string CSysInfo::GetUserAgent()
   else
     iDevVer.assign(iDevStr, iDevStrDigit, std::string::npos);
   StringUtils::Replace(iDevVer, ',', '.');
-  result += " XBMC_HW_" + iDev + "/" + iDevVer;
+  result += " HW_" + iDev + "/" + iDevVer;
 #endif
   // add more device IDs here if needed. 
   // keep only one device ID in result! Form:
-  // result += " XBMC_HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
+  // result += " HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
 
 #if defined(TARGET_ANDROID)
   // Android has no CPU string by default, so add it as additional parameter
@@ -1185,11 +1204,11 @@ std::string CSysInfo::GetUserAgent()
   {
     std::string cpuStr(un1.machine);
     StringUtils::Replace(cpuStr, ' ', '_');
-    result += " XBMC_CPU/" + cpuStr;
+    result += " Sys_CPU/" + cpuStr;
   }
 #endif
 
-  result += " XBMC_BITNESS/" + StringUtils::Format("%d", GetXbmcBitness());
+  result += " App_Bitness/" + StringUtils::Format("%d", GetXbmcBitness());
 
   std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
   StringUtils::Replace(fullVer, ' ', '-');
@@ -1201,7 +1220,7 @@ std::string CSysInfo::GetUserAgent()
 bool CSysInfo::IsAppleTV2()
 {
 #if defined(TARGET_DARWIN)
-  return DarwinIsAppleTV2();
+  return CDarwinUtils::IsAppleTV2();
 #else
   return false;
 #endif
@@ -1210,7 +1229,7 @@ bool CSysInfo::IsAppleTV2()
 bool CSysInfo::HasVideoToolBoxDecoder()
 {
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  return DarwinHasVideoToolboxDecoder();
+  return CDarwinUtils::HasVideoToolboxDecoder();
 #else
   return false;
 #endif
