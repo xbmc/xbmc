@@ -1,5 +1,7 @@
 #include "PlexServerManager.h"
 
+#include "PlexNetworkServiceBrowser.h"
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -144,6 +146,25 @@ bool CPlexServerManager::HasAnyServerWithActiveConnection() const
   }
 
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerManager::RemoveAllServers()
+{
+  CSingleLock lk(m_serverManagerLock);
+
+  // The "nuclear" option. We probably have changed users
+  // or something like that.
+  //
+  BOOST_FOREACH(const PlexServerPair& pair, m_serverMap)
+    NotifyAboutServer(pair.second, false);
+
+  m_serverMap.clear();
+  ClearBestServer();
+  lk.unlock();
+
+  // make sure we don't have anything left in the database
+  save();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

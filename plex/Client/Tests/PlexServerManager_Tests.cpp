@@ -257,3 +257,25 @@ TEST_F(PlexServerManagerTest, localDuplicateRemoveTokenConnection)
   EXPECT_EQ(CPlexConnection::CONNECTION_DISCOVERED, conns[0]->m_type);
   EXPECT_TRUE(serverMgr->GetBestServer()->GetAccessToken().empty());
 }
+
+// This simulates a logout from myPlex event
+TEST_F(PlexServerManagerTest, removeAllServers)
+{
+  PlexServerList list;
+  list.push_back(PlexTestUtils::serverWithConnection("abc123", "10.0.42.2"));
+  list.push_back(PlexTestUtils::serverWithConnection("abc321", "10.0.66.2"));
+
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(testing::AnyOf(list[0], list[1]), true)).Times(2);
+  EXPECT_CALL(*serverMgr, UpdateReachability(false)).Times(1);
+
+  // then both needs to be removed
+  EXPECT_CALL(*serverMgr, NotifyAboutServer(testing::AnyOf(list[0], list[1]), false)).Times(2);
+
+  serverMgr->UpdateFromDiscovery(list[0]);
+  serverMgr->UpdateFromDiscovery(list[1]);
+  serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  serverMgr->RemoveAllServers();
+
+  EXPECT_EQ(0, serverMgr->GetAllServers().size());
+}

@@ -3,7 +3,6 @@
 #include <map>
 #include <vector>
 
-#include "PlexServer.h"
 #include "PlexConnection.h"
 #include "JobManager.h"
 
@@ -55,6 +54,8 @@ public:
 
   void ServerReachabilityDone(const CPlexServerPtr& server, bool success=false);
   bool HasAnyServerWithActiveConnection() const;
+
+  void RemoveAllServers();
 
   void save();
   void load();
