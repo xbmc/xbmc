@@ -112,8 +112,7 @@ void CPlexServiceListener::Process()
   NetworkInterface::WatchForChanges();
 
   // Server browser.
-  m_pmsBrowser =
-  NetworkServiceBrowserPtr(new CPlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
+  m_pmsBrowser = NetworkServiceBrowserPtr(new CPlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
 
   // start our reporting timer
   g_plexApplication.timer->SetTimeout(5000, (CPlexNetworkServiceBrowser*)m_pmsBrowser.get());

@@ -92,7 +92,7 @@ public:
     }
   }
 
-  void ScanNow() { m_pmsBrowser->scanNow(); }
+  void ScanNow() { g_plexApplication.timer->RestartTimeout(500, (CPlexNetworkServiceBrowser*)(m_pmsBrowser.get())); }
 
 private:
   boost::asio::io_service     m_ioService;
