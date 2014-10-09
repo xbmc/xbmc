@@ -165,7 +165,7 @@ void CPlexServerManager::UpdateFromConnectionType(const PlexServerList& servers,
     MergeServer(p);
 
   ServerRefreshComplete(connectionType);
-  UpdateReachability(true);
+  UpdateReachability();
   lk.unlock();
 
   save();
