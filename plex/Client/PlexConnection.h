@@ -105,7 +105,7 @@ class CMyPlexConnection : public CPlexConnection
 {
   public:
     CMyPlexConnection()
-    : CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "plex.tv", 443, "https") {}
+    : CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "staging2.plex.tv", 443, "https") {}
 
     virtual CStdString GetAccessToken() const
     {
