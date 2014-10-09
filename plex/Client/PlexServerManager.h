@@ -69,7 +69,6 @@ private:
   CPlexServerPtr _myPlexServer;
   CPlexServerPtr _localServer;
   CPlexServerPtr _nodeServer;
-  CPlexServerPtr _staging2;
   bool m_stopped;
 
   virtual void NotifyAboutServer(const CPlexServerPtr& server, bool added = true);

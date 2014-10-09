@@ -34,13 +34,14 @@ class CMyPlexManager : public CThread
       ERROR_TMEOUT
     };
 
-    CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH) {}
+    CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1) {}
 
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
 
     void StartPinLogin();
     void StopPinLogin();
     void Login(const CStdString& username, const CStdString& password);
+    void SwitchHomeUser(int id, const std::string &pin = "");
     void Logout();
     void Refresh() { m_state = STATE_REFRESH; Poke(); }
     void Rescan() { m_state = STATE_LOGGEDIN; Poke(); }
@@ -81,6 +82,9 @@ class CMyPlexManager : public CThread
 
     CStdString m_username;
     CStdString m_password;
+
+    int m_homeId;
+    std::string m_homePin;
 
     CPlexServerPtr m_myplex;
 

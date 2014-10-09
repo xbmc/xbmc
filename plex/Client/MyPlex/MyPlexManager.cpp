@@ -78,7 +78,6 @@ void CMyPlexManager::BroadcastState()
   CGUIMessage msg(GUI_MSG_MYPLEX_STATE_CHANGE, PLEX_MYPLEX_MANAGER, 0);
   msg.SetParam1((int)m_state);
   msg.SetParam2((int)m_lastError);
-  m_lastError = ERROR_NOERROR;
 
   switch(m_state)
   {
@@ -88,17 +87,20 @@ void CMyPlexManager::BroadcastState()
 
       if (!g_application.IsPlayingFullScreenVideo())
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(44105), m_currentUserInfo.username, 5000, false);
-
       break;
     }
     case STATE_NOT_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
+      if (m_lastError == ERROR_WRONG_CREDS && g_windowManager.GetActiveWindow() != WINDOW_SETTINGS_SYSTEM)
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20117), "Please try again", 3000, false);
       break;
     case STATE_REFRESH:
       g_guiSettings.SetString("myplex.status", "Trying...");
     default:
       break;
   }
+
+  m_lastError = ERROR_NOERROR;
 
   if (m_state == STATE_LOGGEDIN || m_state == STATE_NOT_LOGGEDIN)
   {
@@ -125,7 +127,7 @@ TiXmlElement *CMyPlexManager::GetXml(const CURL &url, bool POST)
 
   if (!returnval)
   {
-    CLog::Log(LOGERROR, "CMyPlexManager::GetXml failed to fetch %s", url.Get().c_str());
+    CLog::Log(LOGERROR, "CMyPlexManager::GetXml failed to fetch %s : %ld", url.Get().c_str(), file.GetLastHTTPResponseCode());
 
     if (file.GetLastHTTPResponseCode() == 401)
     {
@@ -157,9 +159,23 @@ TiXmlElement *CMyPlexManager::GetXml(const CURL &url, bool POST)
 
 int CMyPlexManager::DoLogin()
 {
-  CURL url = m_myplex->BuildPlexURL("users/sign_in.xml");
-  url.SetUserName(m_username);
-  url.SetPassword(m_password);
+  CURL url;
+
+  if (m_homeId == -1)
+  {
+    url = m_myplex->BuildPlexURL("users/sign_in.xml");
+    url.SetUserName(m_username);
+    url.SetPassword(m_password);
+  }
+  else
+  {
+    std::string id = boost::lexical_cast<std::string>(m_homeId);
+    url = m_myplex->BuildPlexURL("api/home/users/" + id + "/switch");
+    url.SetOption("id", id);
+
+    if (!m_homePin.empty())
+      url.SetOption("pin", m_homePin);
+  }
 
   TiXmlElement *root = GetXml(url, true);
 
@@ -341,6 +357,17 @@ void CMyPlexManager::Login(const CStdString &username, const CStdString &passwor
 
   m_username = username;
   m_password = password;
+
+  m_wakeEvent.Set();
+}
+
+void CMyPlexManager::SwitchHomeUser(int id, const std::string& pin)
+{
+  CSingleLock lk(m_stateLock);
+  m_state = STATE_TRY_LOGIN;
+
+  m_homeId = id;
+  m_homePin = pin;
 
   m_wakeEvent.Set();
 }

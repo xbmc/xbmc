@@ -20,6 +20,14 @@ bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
   root->QueryIntAttribute("id", &id);
   root->QueryStringAttribute("email", &email);
   root->QueryStringAttribute("username", &username);
+
+  // if we don't get a username, try if there is a
+  // title attribute, this happens when we switch
+  // home users for example
+  //
+  if (username.empty())
+    root->QueryStringAttribute("title", &username);
+
   root->QueryStringAttribute("queueEmail", &queueEmail);
   root->QueryStringAttribute("queueUid", &queueUID);
   root->QueryStringAttribute("cloudsyncdevice", &cloudSyncDevice);
