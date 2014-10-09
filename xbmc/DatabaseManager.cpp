@@ -28,6 +28,9 @@
 #include "pvr/PVRDatabase.h"
 #include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayerDatabase.h"
+#endif
 
 using namespace std;
 using namespace EPG;
@@ -63,6 +66,9 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
+#ifdef HAS_DS_PLAYER
+  { CDSPlayerDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseDSPlayer); }
+#endif
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 }
 

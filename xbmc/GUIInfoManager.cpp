@@ -596,6 +596,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
                                   { "dbtype",           LISTITEM_DBTYPE },
                                   { "dbid",             LISTITEM_DBID },
+#ifdef HAS_DS_PLAYER
+								  { "itemtype", LISTITEM_ITEM_TYPE },
+#endif
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC }};
 
@@ -4323,6 +4326,22 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
+#ifdef HAS_DS_PLAYER
+CStdString CGUIInfoManager::GetAudioStreamName(int iStream)
+{
+	SPlayerAudioStreamInfo audio;
+	g_application.m_pPlayer->GetAudioStreamInfo(iStream, audio);
+	return audio.name;
+}
+
+CStdString CGUIInfoManager::GetSubtitleName(int iStream)
+{
+	SPlayerSubtitleStreamInfo subs;
+	g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, subs);
+	return subs.name;
+}
+#endif
+
 void CGUIInfoManager::UpdateAVInfo()
 {
   if(g_application.m_pPlayer->IsPlaying())
@@ -4824,6 +4843,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::s
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->GetPath();
     break;
+#ifdef HAS_DS_PLAYER
+  case LISTITEM_ITEM_TYPE:
+	  if (item->m_itemType == CFileItem::ITEM_TYPE_BD)
+		  return "bd";
+	  else if (item->m_itemType == CFileItem::ITEM_TYPE_DVD)
+		  return "dvd";
+	  break;
+#endif
   case LISTITEM_STUDIO:
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);

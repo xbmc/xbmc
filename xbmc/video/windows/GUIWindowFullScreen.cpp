@@ -443,6 +443,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (pDialog) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_SUBTITLES);
       if (pDialog) pDialog->Close(true);
+#ifdef HAS_DS_PLAYER
+	  pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+	  if (pDialog) pDialog->Close(true);
+#endif
 
       CGUIWindow::OnMessage(message);
 

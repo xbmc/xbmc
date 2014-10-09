@@ -45,7 +45,11 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
+#ifdef HAS_DS_PLAYER
+  static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber, CStdString& strEdition);
+#else
   static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber);
+#endif
   static bool HasResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
@@ -149,4 +153,10 @@ protected:
 
   CVideoThumbLoader m_thumbLoader;
   bool m_stackingAvailable;
+#ifdef HAS_DS_PLAYER
+  static int GetDefaultPlayer(const CFileItemPtr &item);
+  bool IsLaunchBD(const CFileItemPtr &item);
+  bool LaunchBD(const CFileItemPtr &item);
+  const CStdString GetBDPath(const CFileItemPtr &item);
+#endif
 };

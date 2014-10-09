@@ -54,6 +54,10 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
+
 #ifdef TARGET_WINDOWS
 
 using namespace PERIPHERALS;
@@ -620,14 +624,34 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         g_Windowing.ShowOSMouse(true);
       break;
     case WM_MOUSEMOVE:
-      newEvent.type = XBMC_MOUSEMOTION;
+#ifdef HAS_DS_PLAYER
+      if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      {
+        if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+        {
+          CDSPlayer::PostMessage(new CDSMsgInt(CDSMsg::PLAYER_DVD_MOUSE_MOVE, lParam), false);
+          return(0);
+        }
+      }
+#endif
+	  newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
       newEvent.motion.state = 0;
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
-    case WM_MBUTTONDOWN:
+#ifdef HAS_DS_PLAYER
+      if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      {
+        if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+        {
+          CDSPlayer::PostMessage(new CDSMsgInt(CDSMsg::PLAYER_DVD_MOUSE_CLICK, lParam), false);
+          return(0);
+        }
+      }
+#endif
+	case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
       newEvent.type = XBMC_MOUSEBUTTONDOWN;
       newEvent.button.state = XBMC_PRESSED;

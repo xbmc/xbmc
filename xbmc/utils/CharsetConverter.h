@@ -25,6 +25,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/uXstrings.h"
+#include "utils/StdString.h"
 
 #include <string>
 #include <vector>
@@ -157,6 +158,7 @@ public:
   static std::vector<std::string> getCharsetLabels();
   static std::string getCharsetLabelByName(const std::string& charsetName);
   static std::string getCharsetNameByLabel(const std::string& charsetLabel);
+  int getCharsetIdByName(const CStdString& charsetName);
 
   static bool unknownToUTF8(std::string& stringSrcDst);
   static bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);

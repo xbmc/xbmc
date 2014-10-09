@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "utils/StdString.h"
 
 typedef enum
 {
@@ -148,4 +149,14 @@ public:
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannel &channel);
   void  ToFFRW(int iSpeed = 0);
+
+#ifdef HAS_DS_PLAYER
+  virtual int  GetEditionsCount()		{ return 0; }
+  virtual int  GetEdition()				{ return -1; }
+  virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt){};
+  virtual void SetEdition(int iEdition){};
+  virtual bool IsMatroskaEditions()		{ return false; }
+  virtual void ShowEditionDlg(bool playStart){};
+#endif
+
 };

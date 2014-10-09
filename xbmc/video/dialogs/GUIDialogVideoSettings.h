@@ -21,6 +21,7 @@
  */
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "DSPropertyPage.h"
 
 class CGUIDialogVideoSettings : public CGUIDialogSettingsManualBase
 {
@@ -42,4 +43,11 @@ protected:
 
 private:
   bool m_viewModeChanged;
+#ifdef HAS_DS_PLAYER
+  CDSPropertyPage* m_pDSPropertyPage;
+  int m_scalingMethod;
+  int m_dsStats;
+#endif
+
+
 };

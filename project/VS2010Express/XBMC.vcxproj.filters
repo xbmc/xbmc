@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="win32">
@@ -322,7 +322,43 @@
     <Filter Include="utils\win32">
       <UniqueIdentifier>{3adbba6a-6fbf-4192-b215-108d94bde1e0}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
+    <Filter Include="cores\DSPlayer">
+      <UniqueIdentifier>{8b65ff5a-9862-42bc-bf92-b5cf22b9c12a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\FilterCoreFactory">
+      <UniqueIdentifier>{e51e3d8c-ee41-4a89-b895-7855b6655146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Filters">
+      <UniqueIdentifier>{82fef0c7-f356-48c8-9bd3-f232311e770a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Interfaces">
+      <UniqueIdentifier>{63ced100-c60a-4c01-8e20-cef3c67e1925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Shaders">
+      <UniqueIdentifier>{cebe8028-82be-4cec-b3de-0d87a95cb2b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Utils">
+      <UniqueIdentifier>{11b4988a-2f71-4471-902a-81e3230df77c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Interfaces\ffdshow">
+      <UniqueIdentifier>{2824d426-eef9-4287-a19d-89340415fef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Filters\BaseClassFilters">
+      <UniqueIdentifier>{539077e3-65bf-4cab-b48b-01dd16a9a8a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Filters\Include">
+      <UniqueIdentifier>{a7d6b73c-f765-44b6-aff2-140a5903b128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Filters\Video Renderers">
+      <UniqueIdentifier>{3b6b6bfa-49fe-40c8-abe6-4b14e46d2257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\Filters\Source">
+      <UniqueIdentifier>{c356be07-4c7d-42dc-9a99-2beea6f8dc56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\DSPlayer\iMON">
+      <UniqueIdentifier>{c9cfe4a7-b0c3-4b86-aca2-908c801742b5}</UniqueIdentifier>
+    </Filter> 
+ </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <Filter>win32</Filter>
@@ -3077,6 +3113,115 @@
     <ClCompile Include="..\..\xbmc\utils\MarkWatchedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGFilter.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGLoader.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGManager.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGManager2.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\StreamsManager.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp">
+      <Filter>cores\DSPlayer\Filters\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp">
+      <Filter>cores\DSPlayer\Filters\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.cpp">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp">
+      <Filter>cores\DSPlayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp">
+      <Filter>cores\DSPlayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.cpp">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3095,6 +3240,12 @@
       <Filter>cores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h">
+      <Filter>cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\IPlayerCallback.h">
+      <Filter>cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\IAudioCallback.h">
       <Filter>cores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDAudio.h">
@@ -6013,6 +6164,161 @@
     <ClInclude Include="..\..\xbmc\utils\MarkWatchedJob.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayer.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGFilter.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGLoader.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGManager.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGManager2.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\StreamsManager.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h">
+      <Filter>cores\DSPlayer\Interfaces\ffdshow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h">
+      <Filter>cores\DSPlayer\Filters\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h">
+      <Filter>cores\DSPlayer\Filters\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.h">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.h">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h">
+      <Filter>cores\DSPlayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h">
+      <Filter>cores\DSPlayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h">
+      <Filter>cores\DSPlayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.h">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.h">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinBaseRenderer.h">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IDirectVobSub.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
@@ -6056,6 +6362,15 @@
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">
       <Filter>interfaces\swig</Filter>
+    </None>
+    <None Include="..\..\system\players\dsplayer\Shaders\shaders.xml">
+      <Filter>cores\DSPlayer\Shaders</Filter>
+    </None>
+    <None Include="..\..\system\players\dsplayer\filtersconfig.xml">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
+    </None>
+    <None Include="..\..\system\players\dsplayer\mediasconfig.xml">
+      <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
     </None>
   </ItemGroup>
 </Project>

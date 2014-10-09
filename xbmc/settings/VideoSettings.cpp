@@ -59,6 +59,22 @@ CVideoSettings::CVideoSettings()
   m_CropRight = 0;
 }
 
+#ifdef HAS_DS_PLAYER
+void CVideoSettings::SetDSPlayerScalingMethod(EDSSCALINGMETHOD method)
+{
+  m_ScalingMethod &= 0xFFFF0000; // Clear dsplayer scaling method
+  m_ScalingMethod += method & 0xFFFF;
+  //m_ScalingMethod += (method << 16) & 0xFFFF0000; <----- why this
+}
+
+EDSSCALINGMETHOD CVideoSettings::GetDSPlayerScalingMethod()
+{
+  if (m_ScalingMethod > DS_SCALINGMETHOD_BILINEAR_2_100)
+    m_ScalingMethod = DS_SCALINGMETHOD_BILINEAR_2_100;
+  return (EDSSCALINGMETHOD) (m_ScalingMethod & 0xFFFF);
+}
+#endif
+
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
 {
   if (m_DeinterlaceMode != right.m_DeinterlaceMode) return true;

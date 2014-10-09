@@ -29,6 +29,7 @@
 #include "threads/SingleLock.h"
 #include "utils/Utf8Utils.h"
 #include "log.h"
+#include "utils/StdString.h"
 
 #include <errno.h>
 #include <iconv.h>
@@ -552,32 +553,33 @@ static struct SCharsetMapping
 {
   const char* charset;
   const char* caption;
+  int win_id;
 } g_charsets[] = {
-  { "ISO-8859-1", "Western Europe (ISO)" }
-  , { "ISO-8859-2", "Central Europe (ISO)" }
-  , { "ISO-8859-3", "South Europe (ISO)" }
-  , { "ISO-8859-4", "Baltic (ISO)" }
-  , { "ISO-8859-5", "Cyrillic (ISO)" }
-  , { "ISO-8859-6", "Arabic (ISO)" }
-  , { "ISO-8859-7", "Greek (ISO)" }
-  , { "ISO-8859-8", "Hebrew (ISO)" }
-  , { "ISO-8859-9", "Turkish (ISO)" }
-  , { "CP1250", "Central Europe (Windows)" }
-  , { "CP1251", "Cyrillic (Windows)" }
-  , { "CP1252", "Western Europe (Windows)" }
-  , { "CP1253", "Greek (Windows)" }
-  , { "CP1254", "Turkish (Windows)" }
-  , { "CP1255", "Hebrew (Windows)" }
-  , { "CP1256", "Arabic (Windows)" }
-  , { "CP1257", "Baltic (Windows)" }
-  , { "CP1258", "Vietnamesse (Windows)" }
-  , { "CP874", "Thai (Windows)" }
-  , { "BIG5", "Chinese Traditional (Big5)" }
-  , { "GBK", "Chinese Simplified (GBK)" }
-  , { "SHIFT_JIS", "Japanese (Shift-JIS)" }
-  , { "CP949", "Korean" }
-  , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)" }
-  , { NULL, NULL }
+ { "ISO-8859-1", "Western Europe (ISO)", DEFAULT_CHARSET }
+ , { "ISO-8859-2", "Central Europe (ISO)", DEFAULT_CHARSET }
+ , { "ISO-8859-3", "South Europe (ISO)"  , DEFAULT_CHARSET }
+ , { "ISO-8859-4", "Baltic (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-5", "Cyrillic (ISO)"      , DEFAULT_CHARSET }
+ , { "ISO-8859-6", "Arabic (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-7", "Greek (ISO)"         , DEFAULT_CHARSET }
+ , { "ISO-8859-8", "Hebrew (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-9", "Turkish (ISO)"       , DEFAULT_CHARSET }
+ , { "CP1250"    , "Central Europe (Windows)", EASTEUROPE_CHARSET }
+ , { "CP1251"    , "Cyrillic (Windows)"      , RUSSIAN_CHARSET    }
+ , { "CP1252"    , "Western Europe (Windows)", ANSI_CHARSET       }
+ , { "CP1253"    , "Greek (Windows)"         , GREEK_CHARSET      }
+ , { "CP1254"    , "Turkish (Windows)"       , TURKISH_CHARSET    }
+ , { "CP1255"    , "Hebrew (Windows)"        , HEBREW_CHARSET     }
+ , { "CP1256"    , "Arabic (Windows)"        , ARABIC_CHARSET     }
+ , { "CP1257"    , "Baltic (Windows)"        , BALTIC_CHARSET     }
+ , { "CP1258"    , "Vietnamesse (Windows)"   , VIETNAMESE_CHARSET }
+ , { "CP874"     , "Thai (Windows)"          , THAI_CHARSET       }
+ , { "BIG5"      , "Chinese Traditional (Big5)", CHINESEBIG5_CHARSET }
+ , { "GBK"       , "Chinese Simplified (GBK)", GB2312_CHARSET     }
+ , { "SHIFT_JIS" , "Japanese (Shift-JIS)"    , SHIFTJIS_CHARSET   }
+ , { "CP949"     , "Korean"                  , HANGEUL_CHARSET    }
+ , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"  , DEFAULT_CHARSET    }
+ , { NULL        , NULL                      , 0                  }
 };
 
 
@@ -632,6 +634,17 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
   }
 
   return "";
+}
+
+int CCharsetConverter::getCharsetIdByName(const CStdString& charsetName)
+{
+	for(SCharsetMapping *c = g_charsets; c->charset; c++)
+	{
+		if (charsetName.Equals(c->charset))
+			return c->win_id;
+	}
+
+	return 1;
 }
 
 void CCharsetConverter::reset(void)

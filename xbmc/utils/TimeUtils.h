@@ -36,6 +36,9 @@ public:
   static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
   static CDateTime GetLocalTime(time_t time);
   static void Close();
+#ifdef HAS_DS_PLAYER
+  static int64_t GetPerfCounter();
+#endif
 
 private:
   static unsigned int frameTime;

@@ -657,6 +657,11 @@ namespace INFO
 #define LISTITEM_SUB_CHANNEL_NUMBER (LISTITEM_START + 144)
 #define LISTITEM_CHANNEL_NUMBER_LBL (LISTITEM_START + 145)
 
+#ifdef HAS_DS_PLAYER
+#define LISTITEM_ITEM_TYPE          (LISTITEM_START + 146)
+#endif
+#define LISTIT
+
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
@@ -795,6 +800,11 @@ public:
   CStdString GetAppName();
   CStdString GetVersion();
   CStdString GetBuild();
+
+#ifdef HAS_DS_PLAYER
+  CStdString GetAudioStreamName(int iStream);
+  CStdString GetSubtitleName(int iStream);
+#endif
 
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);

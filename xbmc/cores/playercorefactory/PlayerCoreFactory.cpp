@@ -34,6 +34,9 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
@@ -217,7 +220,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // Also push these players in case it is NOT audio either
   if (item.IsVideo() || !item.IsAudio())
   {
+#ifdef HAS_DS_PLAYER
+    bool dsplayer = CSettings::Get().GetBool("dsplayer.defaultvideoplayer");
+    PLAYERCOREID eVideoDefault = dsplayer ? EPC_DSPLAYER : GetPlayerCore("videodefaultplayer");
+#else
     PLAYERCOREID eVideoDefault = GetPlayerCore("videodefaultplayer");
+#endif
     if (eVideoDefault != EPC_NONE)
     {
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer (%d)", eVideoDefault);
@@ -342,6 +350,12 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
 
+#ifdef HAS_DS_PLAYER
+    CPlayerCoreConfig* dsplayer = new CPlayerCoreConfig("DSPlayer", EPC_DSPLAYER, NULL);
+    dsplayer->m_bPlaysAudio = dsplayer->m_bPlaysVideo = true;
+    m_vecCoreConfigs.push_back(dsplayer);
+#endif
+
     for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
       delete *it;
     m_vecCoreSelectionRules.clear();
@@ -368,6 +382,9 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
+#ifdef HAS_DS_PLAYER
+      if (type == "dsplayer" ) eCore = EPC_DSPLAYER;
+#endif
 
       if (eCore != EPC_NONE)
       {

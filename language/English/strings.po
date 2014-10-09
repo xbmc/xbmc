@@ -15893,3 +15893,177 @@ msgstr ""
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
+
+#. 55000-55100 reserved for DSPlayer
+msgctxt "#55000"
+msgid "DSPlayer"
+msgstr ""
+
+msgctxt "#55001"
+msgid "Use VMR9 instead of EVR Renderer"
+msgstr ""
+
+msgctxt "#55002"
+msgid "Use EVR instead of VMR9 Renderer"
+msgstr ""
+
+msgctxt "#55003"
+msgid "Audio Renderer"
+msgstr ""
+
+msgctxt "#55004"
+msgid "Set all stable formats to libavcodec (ffdshow)"
+msgstr ""
+
+msgctxt "#55005"
+msgid "Nearest neighbor"
+msgstr ""
+
+msgctxt "#55006"
+msgid "Bilinear"
+msgstr ""
+
+msgctxt "#55007"
+msgid "Bilinear (PS 2.0)"
+msgstr ""
+
+msgctxt "#55008"
+msgid "Bicubic A=-0.60 (PS 2.0)"
+msgstr ""
+
+msgctxt "#55009"
+msgid "Bicubic A=-0.75 (PS 2.0)"
+msgstr ""
+
+msgctxt "#55010"
+msgid "Bicubic A=-1.00 (PS 2.0)"
+msgstr ""
+
+msgctxt "#55011"
+msgid "Stats hidden"
+msgstr ""
+
+msgctxt "#55012"
+msgid "Stats minimal"
+msgstr ""
+
+msgctxt "#55013"
+msgid "Stats medium"
+msgstr ""
+
+msgctxt "#55014"
+msgid "Stats large"
+msgstr ""
+
+msgctxt "#55015"
+msgid "Renderer stats"
+msgstr ""
+
+msgctxt "#55016"
+msgid "Shaders"
+msgstr ""
+
+msgctxt "#55017"
+msgid "Shaders list"
+msgstr ""
+
+msgctxt "#55018"
+msgid "There is no shader loaded"
+msgstr ""
+
+msgctxt "#55021"
+msgid "Use system filters (DirectShow merits)"
+msgstr ""
+
+msgctxt "#55022"
+msgid "Min. Blu-ray title length (min.)"
+msgstr ""
+
+msgctxt "#55023"
+msgid "Matroska Editions"
+msgstr ""
+
+msgctxt "#55024"
+msgid "Blu-ray Titles"
+msgstr ""
+
+msgctxt "#55025"
+msgid "Select Matroska Editions"
+msgstr ""
+
+msgctxt "#55026"
+msgid "Select Blu-ray Titles"
+msgstr ""
+
+msgctxt "#55027"
+msgid "Show all Blu-ray Titles"
+msgstr ""
+
+msgctxt "#55030"
+msgid "Auto start .bdmv in Blu-ray folders"
+msgstr ""
+
+msgctxt "#55031"
+msgid "Use as the default video player"
+msgstr ""
+
+msgctxt "#55032"
+msgid "Show Blu-ray titles and Matroska Editions choice dialog (AVSplitter only)"
+msgstr ""
+
+#. 55050-55100 Directshow Subtitles 
+msgctxt "#55050"
+msgid "- Border line"
+msgstr ""
+
+msgctxt "#55051"
+msgid "Outline"
+msgstr ""
+
+msgctxt "#55052"
+msgid "Opaque"
+msgstr ""
+
+msgctxt "#55053"
+msgid "- Outline width"
+msgstr ""
+
+msgctxt "#55054"
+msgid "- Shadow depth"
+msgstr ""
+
+msgctxt "#55055"
+msgid "- Alpha"
+msgstr ""
+
+msgctxt "#55056"
+msgid "Font to use for text subtitles (dsplayer only) : %s"
+msgstr ""
+
+msgctxt "#55057"
+msgid "Choose a font"
+msgstr ""
+
+msgctxt "#55058"
+msgid "Disable subtitles"
+msgstr ""
+
+msgctxt "#55059"
+msgid "Subtitles not found"
+msgstr ""
+
+msgctxt "#55060"
+msgid "Use DSPlayer menu audio selector"
+msgstr ""
+
+msgctxt "#55061"
+msgid "Use DSPlayer menu subtitle selector"
+msgstr ""
+
+msgctxt "#909001"
+msgid "Rus"
+msgstr ""
+
+msgctxt "#909002"
+msgid "IP"
+msgstr ""

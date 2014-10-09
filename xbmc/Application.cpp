@@ -246,6 +246,9 @@
 #ifdef HAS_LINUX_NETWORK
 #include "network/GUIDialogAccessPoints.h"
 #endif
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/GUIDialogShaderList.h"
+#endif
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
@@ -288,6 +291,9 @@
 #ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/Filters/RendererSettings.h"
+#endif
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -794,6 +800,11 @@ bool CApplication::Create()
   CProfilesManager::Get().CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
+
+#ifdef HAS_DS_PLAYER // DSPlayer
+  g_dsSettings.Initialize();
+  g_dsSettings.LoadConfig();
+#endif
 
   // Load the langinfo to have user charset <-> utf-8 conversion
   CStdString strLanguage = CSettings::Get().GetString("locale.language");
@@ -2174,6 +2185,17 @@ float CApplication::GetDimScreenSaverLevel() const
   return 100.0f;
 }
 
+void CApplication::NewFrame()
+{
+	// We just posted another frame. Keep track and notify.
+	{
+		CSingleLock lock(m_frameMutex);
+		m_frameCount++;
+	}
+
+	m_frameCond.notifyAll();
+}
+
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -2228,10 +2250,23 @@ void CApplication::Render()
   CSingleLock lock(g_graphicsContext);
   g_infoManager.UpdateFPS();
 
-  if (g_graphicsContext.IsFullScreenVideo() && m_pPlayer->IsPlaying() && vsync_mode == VSYNC_VIDEO)
+  if (g_graphicsContext.IsFullScreenVideo() && m_pPlayer->IsPlaying() && vsync_mode == VSYNC_VIDEO
+#ifdef HAS_DS_PLAYER
+	  && !g_dsSettings.pRendererSettings->vSync
+#endif
+	)
     g_Windowing.SetVSync(true);
   else if (vsync_mode == VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
+#ifdef HAS_DS_PLAYER
+  {
+	  if (m_pPlayer->IsPlaying() && g_dsSettings.pRendererSettings->vSync)
+		  g_Windowing.SetVSync(false); // Disable XBMC vsync and use DSplayer one
+	  else
+		  g_Windowing.SetVSync(true);
+  }
+#else
+	  g_Windowing.SetVSync(true);
+#endif
   else if (vsync_mode != VSYNC_DRIVER)
     g_Windowing.SetVSync(false);
 
@@ -3819,7 +3854,10 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-
+#ifdef HAS_DS_PLAYER
+	m_progressTrackingVideoResumeBookmark.edition.editionNumber = 0;
+	m_progressTrackingVideoResumeBookmark.edition.editionName = "";
+#endif
     if (item.IsVideo())
       CUtil::ClearSubtitles();
   }
@@ -4435,7 +4473,17 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
-    m_pPlayer->CloseFile();
+	if (m_pPlayer)
+	{
+#ifdef HAS_DS_PLAYER
+		if (m_pPlayer->GetEditionsCount() > 1)
+		{
+			m_progressTrackingVideoResumeBookmark.edition.editionNumber = m_pPlayer->GetEdition();
+			m_pPlayer->GetEditionInfo(m_progressTrackingVideoResumeBookmark.edition.editionNumber, m_progressTrackingVideoResumeBookmark.edition.editionName, NULL);
+		}
+#endif
+		m_pPlayer->CloseFile();
+	}
 
     // turn off visualisation window when stopping
     if ((iWin == WINDOW_VISUALISATION

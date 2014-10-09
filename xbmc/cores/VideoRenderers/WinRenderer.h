@@ -28,6 +28,9 @@
 #include "BaseRenderer.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
+#ifdef HAS_DS_PLAYER
+#include "WinBaseRenderer.h"
+#endif
 #include "settings/VideoSettings.h"
 #include "DXVA.h"
 #include "DXVAHD.h"
@@ -138,7 +141,11 @@ struct DXVABuffer : SVideoBuffer
   unsigned int frameIdx;
 };
 
+#ifdef HAS_DS_PLAYER
+class CWinRenderer : public CWinBaseRenderer
+#else
 class CWinRenderer : public CBaseRenderer
+#endif
 {
 public:
   CWinRenderer();

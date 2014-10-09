@@ -27,6 +27,9 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayerDatabase.h"
+#endif
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
@@ -85,7 +88,12 @@ bool CMarkWatchedJob::DoWork()
   if (!markItems.empty())
   {
     CVideoDatabase database;
-    if (!database.Open())
+#ifdef HAS_DS_PLAYER
+	CDSPlayerDatabase dspdb;
+	if (!database.Open() && !dspdb.Open()) return false;
+#else
+	if (!database.Open()) return false;
+#endif
       return false;
 
     database.BeginTransaction();
@@ -93,8 +101,13 @@ bool CMarkWatchedJob::DoWork()
     for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
     {
       CFileItemPtr pItem = *iter;
-      if (m_bMark)
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+	  if (m_bMark)
+	  {
+#ifdef HAS_DS_PLAYER
+		  dspdb.ClearEditionOfFile(pItem->GetPath());
+#endif
+		  database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+	  }
       database.SetPlayCount(*pItem, m_bMark ? 1 : 0);
     }
 

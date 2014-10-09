@@ -159,6 +159,9 @@ public:
     type = STREAM_VIDEO;
     iOrientation = 0;
     iBitsPerPixel = 0;
+#ifdef HAS_DS_PLAYER
+    iCodecTag = 0;
+#endif
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -175,6 +178,9 @@ public:
   int iOrientation; // orientation of the video in degress counter clockwise
   int iBitsPerPixel;
   std::string stereo_mode; // expected stereo mode
+#ifdef HAS_DS_PLAYER
+  int iCodecTag;
+#endif
 };
 
 class CDemuxStreamAudio : public CDemuxStream

@@ -28,6 +28,9 @@
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
 #endif
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
 #include "utils/log.h"
 
 class CPlayerCoreConfig
@@ -99,6 +102,9 @@ public:
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
 #if defined(HAS_UPNP)
       case EPC_UPNPPLAYER: pPlayer = new UPNP::CUPnPPlayer(callback, m_id.c_str()); break;
+#endif
+#ifdef HAS_DS_PLAYER
+      case EPC_DSPLAYER: pPlayer = new CDSPlayer(callback); break;
 #endif
       default: return NULL;
     }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -75,8 +75,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";HAS_DS_PLAYER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -86,7 +86,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <IgnoreSpecificDefaultLibraries>libcpmt;libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
@@ -142,8 +142,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 XBMC";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50";HAS_DS_PLAYER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -153,7 +153,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-56.dll;avfilter-5.dll;avformat-56.dll;avutil-54.dll;postproc-53.dll;swresample-1.dll;swscale-3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -216,6 +216,41 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEPackIEC61937.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGFilter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGManager.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGManager2.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\StreamsManager.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp" />
@@ -228,6 +263,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
     <ClCompile Include="..\..\xbmc\DbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\dbwrappers\Database.cpp" />
@@ -839,11 +875,62 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEPackIEC61937.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayer.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGFilter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGLoader.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGManager.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGManager2.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IDirectVobSub.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\StreamsManager.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.h" />
     <ClInclude Include="..\..\xbmc\cores\FFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinBaseRenderer.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
@@ -2141,6 +2228,8 @@
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
+    <ClInclude Include="..\..\xbmc\cores\IAudioCallback.h" />
+    <ClInclude Include="..\..\xbmc\cores\IPlayerCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDAudio.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDClock.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxSPU.h" />
@@ -2387,6 +2476,22 @@
       <Project>{19b16cd0-3b47-47b7-ab0e-81ef2bf1b187}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\..\xbmc\cores\DSPlayer\DSUtil\dsutil.vcxproj">
+      <Project>{fc70988b-1ae5-4381-866d-4f405e28ac42}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xbmc\cores\DSPlayer\Subtitles\subpic\subpic.vcxproj">
+      <Project>{d514ea4d-eafb-47a9-a437-a582ca571251}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
     <ProjectReference Include="libPlatinum.vcxproj">
       <Project>{b2975495-fbe4-4f94-aac5-b21a9842bf50}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -2523,6 +2628,13 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
+    <None Include="..\..\system\players\dsplayer\filtersconfig.xml" />
+    <None Include="..\..\system\players\dsplayer\mediasconfig.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="..\..\system\players\dsplayer\Shaders\shaders.xml">
+      <SubType>Designer</SubType>
+    </None>    
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i" />
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,9 @@
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include <string>
+#ifdef HAS_DS_PLAYER
+#include "utils/StdString.h"
+#endif
 
 struct TextCacheStruct_t;
 class TiXmlElement;
@@ -173,6 +176,15 @@ public:
   virtual int  GetAudioStream()       { return -1; }
   virtual void SetAudioStream(int iStream){};
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
+
+#ifdef HAS_DS_PLAYER
+  virtual int  GetEditionsCount()      { return 0; }
+  virtual int  GetEdition()            { return -1; }
+  virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt){};
+  virtual void SetEdition(int iEdition){};
+  virtual bool IsMatroskaEditions()    { return false; }
+  virtual void ShowEditionDlg(bool playStart){};
+#endif
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};

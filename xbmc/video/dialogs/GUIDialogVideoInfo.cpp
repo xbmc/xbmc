@@ -54,6 +54,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif
@@ -1102,8 +1103,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   }
 
   CVideoDatabase database;
-  if (!database.Open())
-    return false;
+  if (!database.Open()) return false;
+
 
   int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
   CVideoInfoTag detail;

@@ -1,0 +1,116 @@
+<mediasconfig>
+  <rules>
+    <!-- DVD RULES -->
+    <!-- Iso still return a crash on this filter. -->
+    <rule filetypes="iso">
+      <source filter="avsource" />
+      <splitter filter="avsource" />
+      <video filter="ffdvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
+    <rule filetypes="ifo">
+      <source filter="dvdnavigator" />
+      <splitter filter="dvdnavigator" />
+      <video filter="mpeg2videodec" />
+      <audio filter="mpaaudiodec" />
+    </rule>
+    <!-- END DVD RULES -->
+    <rule filetypes="avi|divx">
+      <source filter="avisource" />
+      <splitter filter="avisplitter" />
+      <video filter="mpcvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="ogm">
+      <source filter="oggsource" />
+      <splitter filter="oggsplitter" />
+      <video filter="mpcvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>  
+      <rule filetypes="flv">
+      <source filter="flvsource" />
+      <splitter filter="flvsplitter" />
+      <video filter="mpcvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="mp4">
+      <source filter="mp4source" />
+      <splitter filter="mp4splitter" />
+      <video filter="mpcvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="mov|m4v">
+      <source filter="mp4source" />
+      <splitter filter="mp4splitter" />
+      <video filter="ffdvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="m2v">
+      <source filter="mpegsource" />
+      <splitter filter="mpegsplitter" />
+      <video filter="mpeg2videodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="ts|mpeg|mpg|m2ts">
+      <source filter="avsource" />
+      <splitter filter="avsource" />
+      <video filter="cyberlinkvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    <rule filetypes="mkv">
+      <source filter="avsource" />
+      <splitter filter="avsource" />
+      <video filter="mpcvideodec" />
+      <!-- You can do like that to specifie a DXVA only filters.
+      If you want to use the same filter for DXVA and non DXVA media, just add
+      a single <video> line.
+      <video>
+        <video dxva="true" filter="mpcvideodec" />
+        <video filter="mpcvideodec" />
+      </video> -->
+      <audio filter="ffdaudiodec" />
+      <!--<extra>
+        <extra filter="ac3filter" />
+        <extra filter="dcgraphiceq" />
+      </extra>-->
+      
+      <!-- Shaders example
+      
+      Must starts with <shaders> and ends with </shaders>
+      
+      Inside, specify your shader like that :
+        <shader id="x" dxva="true" videocodec="h264" audiocodec="mp3" ... />
+        
+      x is the ID of the shader, declared in the /system/DSPlayer/Shaders/shaders.xml file
+      -->
+      <!--
+      <shaders>
+        <shader id="7" />
+      </shaders>
+      -->
+    </rule>
+    <rule filetypes="wmv">
+      <source filter="wmasfreader" />
+      <splitter filter="wmasfreader" />
+      <video filter="wmvideodecoder" />
+      <audio filter="wmaudiodecoder" />
+    </rule>
+    
+    <!-- You need Real Alternative in order to read real media files -->
+    <rule filetypes="rmvb">
+      <source filter="realsource" />
+      <splitter filter="realsplitter" />
+      <video filter="realvideodec" />
+      <audio filter="realaudiodec" />
+    </rule>
+    
+    <rule protocols="http">
+      <source filter="urlfilesource" />
+      <splitter filter="avsplitter" />
+      <video filter="cyberlinkvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
+    
+  </rules>
+</mediasconfig>
