@@ -750,7 +750,10 @@ void CGUIWindowHome::UpdateSections()
       else if (item->HasProperty("playlists"))
       {
         havePlaylists = true;
-        newList.push_back(item);
+        if (g_plexApplication.serverManager->GetBestServer())
+          newList.push_back(item);
+        else
+          listUpdated = true;
       }
       else if (item->HasProperty("playqueues"))
       {
@@ -857,7 +860,7 @@ void CGUIWindowHome::UpdateSections()
     listUpdated = true;
   }
 
-  if (!havePlaylists)
+  if (g_plexApplication.serverManager->GetBestServer() && !havePlaylists)
     AddPlaylists(newList, listUpdated);
   
   if ((!havePlayqueues) && g_plexApplication.playQueueManager->getPlayQueuesCount())
