@@ -1411,6 +1411,12 @@ namespace VIDEO
         continue;
       }
 
+      if (result == CNfoFile::NO_NFO && useLocal)
+      {
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No valid NFO details found for '%s', episode %d - skipping", CURL::GetRedacted(item.GetPath()).c_str(), file->iEpisode);
+        continue;
+      }
+
       if (!hasEpisodeGuide)
       {
         // fetch episode guide

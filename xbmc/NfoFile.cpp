@@ -75,8 +75,11 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       while (m_headPos!=std::string::npos && details.m_iEpisode != episode)
       {
         m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
-        bNfo  = GetDetails(details);
-        infos++;
+        if (m_headPos != std::string::npos)
+        {
+          bNfo = GetDetails(details);
+          infos++;
+        }
       }
       if (details.m_iEpisode != episode)
       {
