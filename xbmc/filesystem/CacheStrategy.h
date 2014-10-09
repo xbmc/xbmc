@@ -23,11 +23,7 @@
 #define XFILECACHESTRATEGY_H
 
 #include <stdint.h>
-#ifdef TARGET_POSIX
-#include "PlatformDefs.h"
-#include "XHandlePublic.h"
-#include "XFileUtils.h"
-#endif
+#include <string>
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
@@ -37,6 +33,8 @@ namespace XFILE {
 #define CACHE_RC_ERROR -1
 #define CACHE_RC_WOULD_BLOCK -2
 #define CACHE_RC_TIMEOUT -3
+
+class IFile; // forward declaration
 
 class CCacheStrategy{
 public:
@@ -95,8 +93,9 @@ public:
   int64_t  GetAvailableRead();
 
 protected:
-  HANDLE  m_hCacheFileRead;
-  HANDLE  m_hCacheFileWrite;
+  std::string m_filename;
+  IFile*   m_cacheFileRead;
+  IFile*   m_cacheFileWrite;
   CEvent*  m_hDataAvailEvent;
   volatile int64_t m_nStartPosition;
   volatile int64_t m_nWritePosition;
