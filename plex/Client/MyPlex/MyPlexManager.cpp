@@ -182,6 +182,8 @@ int CMyPlexManager::DoLogin()
   if (!root)
     return FAILURE_TMOUT;
 
+  std::string currentToken = m_currentUserInfo.authToken;
+
   if (!m_currentUserInfo.SetFromXmlElement(root))
   {
     m_lastError = ERROR_PARSE;
@@ -189,6 +191,11 @@ int CMyPlexManager::DoLogin()
     BroadcastState();
     return FAILURE_TMOUT;
   }
+
+  // if we get a new token we want to refresh all
+  // servers again.
+  if (currentToken != m_currentUserInfo.authToken)
+    DoRemoveAllServers();
 
   m_state = STATE_REFRESH;
   BroadcastState();
@@ -322,8 +329,12 @@ int CMyPlexManager::DoRefreshUserInfo()
 
 int CMyPlexManager::DoRemoveAllServers()
 {
-  PlexServerList list;
-  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+  // remove ALL servers, since we want to make sure that no
+  // local connections with tokens are still around
+  //
+  g_plexApplication.serverManager->RemoveAllServers();
+
+  // Clear out queue and recommendations
   g_plexApplication.dataLoader->RemoveServer(m_myplex);
 
   if (g_application.IsPlayingFullScreenVideo())
