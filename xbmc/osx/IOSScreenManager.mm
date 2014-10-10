@@ -30,6 +30,7 @@
 #include "WindowingFactory.h"
 #include "settings/DisplaySettings.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "osx/DarwinUtils.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -95,10 +96,20 @@ static CEvent screenChangeEvent;
     if (toExternal)
     {
       // portrait on external screen means its landscape for xbmc
-      [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
+#if __IPHONE_8_0
+      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationLandscapeLeft];// will attach the screen to xbmc mainwindow
+      else
+#endif
+        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
     }
     else
     {
+#if __IPHONE_8_0
+      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
+      else
+#endif
       // switching back to internal - use same orientation as we used for the touch controller
       [g_xbmcController activateScreen:newScreen withOrientation:_lastTouchControllerOrientation];// will attach the screen to xbmc mainwindow
     }
@@ -244,11 +255,17 @@ static CEvent screenChangeEvent;
   res.size = [brwin interfaceFrame].size;
 #endif
 #else
-  //main screen is in portrait mode (physically) so exchange height and width
-  if(screen == [UIScreen mainScreen])
+  #if __IPHONE_8_0
+  if (CDarwinUtils::GetIOSVersion() < 8.0)
+  #endif
   {
-    CGRect frame = res;
-    res.size = CGSizeMake(frame.size.height, frame.size.width);
+    //main screen is in portrait mode (physically) so exchange height and width
+    //at least when compiled with ios sdk < 8.0 (seems to be fixed in later sdks)
+    if(screen == [UIScreen mainScreen])
+    {
+      CGRect frame = res;
+      res.size = CGSizeMake(frame.size.height, frame.size.width);
+    }
   }
 #endif
   return res;
