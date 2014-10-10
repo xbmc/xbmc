@@ -188,7 +188,10 @@ unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
   {
     DWORD lastRead = 0;
     if (!ReadFile(m_hFile, ((BYTE*)lpBuf) + read, (uiBufSize > DWORD_MAX) ? DWORD_MAX : (DWORD)uiBufSize, &lastRead, NULL))
+    {
+      m_filePos = -1;
       return 0; // TODO: return -1
+    }
     read += lastRead;
     // if m_filePos is set - update it
     if (m_filePos >= 0)
@@ -225,7 +228,10 @@ int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
     DWORD lastWritten = 0;
     const DWORD toWrite = uiBufSize > DWORD_MAX ? DWORD_MAX : (DWORD)uiBufSize;
     if (!WriteFile(m_hFile, ((const BYTE*)lpBuf) + written, toWrite, &lastWritten, NULL))
+    {
+      m_filePos = -1;
       return -1;
+    }
     written += lastWritten;
     uiBufSize -= lastWritten;
     // if m_filePos is set - update it
