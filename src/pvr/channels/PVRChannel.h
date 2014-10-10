@@ -299,7 +299,7 @@ namespace PVR
      *
      * The stream input type
      * If it is empty, ffmpeg will try to scan the stream to find the right input format.
-     * See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+     * See "src/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
      * list of the input formats.
      *
      * @return The stream input type

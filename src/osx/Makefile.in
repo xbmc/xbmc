@@ -1,6 +1,6 @@
 INCLUDES  = -I@abs_top_srcdir@
-INCLUDES += -I@abs_top_srcdir@/xbmc
-INCLUDES += -I@abs_top_srcdir@/xbmc/linux
+INCLUDES += -I@abs_top_srcdir@/src
+INCLUDES += -I@abs_top_srcdir@/src/linux
 
 .SUFFIXES : .m .mm
 

@@ -3,7 +3,7 @@ DOXYGEN=@DOXYGEN_EXE@
 endif
 
 TOPDIR = @abs_top_srcdir@
-INTERFACES_DIR = @abs_top_srcdir@/xbmc/interfaces
+INTERFACES_DIR = @abs_top_srcdir@/src/interfaces
 JAVA=@JAVA_EXE@
 SWIG=@SWIG_EXE@
 LIB=python_binding.a

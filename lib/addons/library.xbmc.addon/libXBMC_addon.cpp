@@ -22,9 +22,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../xbmc/addons/include/xbmc_addon_types.h"
+#include "../../../src/addons/include/xbmc_addon_types.h"
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
-#include "../../../xbmc/addons/AddonCallbacks.h"
+#include "../../../src/addons/AddonCallbacks.h"
 
 #ifdef _WIN32
 #include <windows.h>

@@ -68,7 +68,7 @@
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #if defined(TARGET_ANDROID)
-#include "xbmc/android/activity/XBMCApp.h"
+#include "src/android/activity/XBMCApp.h"
 #endif
 #include "FileItemListModification.h"
 

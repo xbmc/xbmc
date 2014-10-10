@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([kodi], [14.9.701], [http://issues.kodi.tv])
-AC_CONFIG_HEADERS([xbmc/config.h])
+AC_CONFIG_HEADERS([src/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
 m4_include([m4/ax_prog_cxx_for_build.m4])
@@ -788,7 +788,7 @@ if echo "$ARCH" | grep -q "freebsd" ; then
 fi
 if test "$host_vendor" = "apple" ; then
   # standard application paths
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/src/osx"
   if test "$use_arch" != "arm"; then
     LIBS="$LIBS -framework ApplicationServices"
     LIBS="$LIBS -framework AudioUnit"
@@ -2421,23 +2421,23 @@ fi
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
-    xbmc/Makefile \
-    xbmc/cdrip/Makefile \
-    xbmc/cores/Makefile \
-    xbmc/cores/VideoRenderers/Makefile \
-    xbmc/cores/dvdplayer/Makefile \
+    src/Makefile \
+    src/cdrip/Makefile \
+    src/cores/Makefile \
+    src/cores/VideoRenderers/Makefile \
+    src/cores/dvdplayer/Makefile \
     lib/libdvd/Makefile \
-    xbmc/cores/DllLoader/Makefile \
-    xbmc/cores/DllLoader/exports/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
-    xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
-    xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-    xbmc/cores/AudioEngine/Makefile \
-    xbmc/cores/paplayer/Makefile \
-    xbmc/cores/omxplayer/Makefile \
+    src/cores/DllLoader/Makefile \
+    src/cores/DllLoader/exports/Makefile \
+    src/cores/dvdplayer/DVDCodecs/Makefile \
+    src/cores/dvdplayer/DVDCodecs/Audio/Makefile \
+    src/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
+    src/cores/dvdplayer/DVDCodecs/Video/Makefile \
+    src/cores/dvdplayer/DVDDemuxers/Makefile \
+    src/cores/dvdplayer/DVDSubtitles/Makefile \
+    src/cores/AudioEngine/Makefile \
+    src/cores/paplayer/Makefile \
+    src/cores/omxplayer/Makefile \
     lib/timidity/Makefile \
     lib/asap/Makefile \
     lib/nosefart/Makefile \
@@ -2445,14 +2445,14 @@ OUTPUT_FILES="Makefile \
     lib/vgmstream/Makefile \
     lib/snesapu/SNES/SNESAPU/Makefile \
     lib/stsound/StSoundLibrary/Makefile \
-    xbmc/cores/playercorefactory/Makefile \
-    xbmc/music/karaoke/Makefile \
-    xbmc/osx/Makefile \
-    xbmc/guilib/Makefile \
-    xbmc/input/linux/Makefile \
-    xbmc/interfaces/Makefile \
-    xbmc/network/Makefile \
-    xbmc/network/upnp/Makefile \
+    src/cores/playercorefactory/Makefile \
+    src/music/karaoke/Makefile \
+    src/osx/Makefile \
+    src/guilib/Makefile \
+    src/input/linux/Makefile \
+    src/interfaces/Makefile \
+    src/network/Makefile \
+    src/network/upnp/Makefile \
     lib/libRTV/Makefile \
     lib/libexif/Makefile \
     lib/libXDAAP/Makefile \
@@ -2461,24 +2461,24 @@ OUTPUT_FILES="Makefile \
     lib/libsquish/Makefile \
     lib/cximage-6.0/Makefile \
     lib/libUPnP/Makefile \
-    xbmc/DllPaths_generated.h \
-    xbmc/DllPaths_generated_android.h \
-    xbmc/freebsd/Makefile \
-    xbmc/linux/Makefile \
-    xbmc/filesystem/Makefile \
-    xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
-    xbmc/visualizations/XBMCProjectM/Makefile \
-    xbmc/visualizations/Goom/Makefile \
-    xbmc/visualizations/OpenGLSpectrum/Makefile \
-    xbmc/visualizations/fishBMC/Makefile \
-    xbmc/visualizations/WaveForm/Makefile \
-    xbmc/windowing/Makefile \
-    xbmc/windowing/egl/Makefile \
+    src/DllPaths_generated.h \
+    src/DllPaths_generated_android.h \
+    src/freebsd/Makefile \
+    src/linux/Makefile \
+    src/filesystem/Makefile \
+    src/screensavers/rsxs-0.9/xbmc/Makefile \
+    src/visualizations/XBMCProjectM/Makefile \
+    src/visualizations/Goom/Makefile \
+    src/visualizations/OpenGLSpectrum/Makefile \
+    src/visualizations/fishBMC/Makefile \
+    src/visualizations/WaveForm/Makefile \
+    src/windowing/Makefile \
+    src/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.xbmc.gui/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
-    xbmc/visualizations/EGLHelpers/Makefile \
+    src/visualizations/EGLHelpers/Makefile \
     tools/Linux/${APP_NAME_LC}.sh \
     tools/Linux/${APP_NAME_LC}-standalone.sh \
     tools/Linux/${APP_NAME_LC}-xsession.desktop \
@@ -2487,13 +2487,13 @@ OUTPUT_FILES="Makefile \
     tools/TexturePacker/Makefile \
     tools/EventClients/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
-    xbmc/peripherals/bus/Makefile \
-    xbmc/peripherals/devices/Makefile \
-    xbmc/android/activity/Makefile \
-    xbmc/android/loader/Makefile \
-    xbmc/android/jni/Makefile \
-    xbmc/utils/Makefile \
-    xbmc/main/Makefile \
+    src/peripherals/bus/Makefile \
+    src/peripherals/devices/Makefile \
+    src/android/activity/Makefile \
+    src/android/loader/Makefile \
+    src/android/jni/Makefile \
+    src/utils/Makefile \
+    src/main/Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
@@ -2501,9 +2501,9 @@ OUTPUT_FILES="Makefile \
     tools/darwin/packaging/osx/mkdmg-osx.sh \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
     tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh \
-    xbmc/osx/Info.plist \
-    xbmc/osx/ios/XBMCIOS-Info.plist \
-    xbmc/osx/atv2/XBMCATV2-Info.plist \
+    src/osx/Info.plist \
+    src/osx/ios/XBMCIOS-Info.plist \
+    src/osx/atv2/XBMCATV2-Info.plist \
     project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
@@ -2516,7 +2516,7 @@ OUTPUT_FILES="Makefile \
     addons/xbmc.addon/addon.xml"
 
 if test "$use_wayland" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES src/windowing/tests/wayland/Makefile"
 fi
 
 if test "$use_touch_skin" = "yes"; then
@@ -2524,16 +2524,16 @@ OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
 fi
 
 if test "$use_codec_libstagefright" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES src/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/linux/sse4/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES src/linux/sse4/Makefile"
 fi
 
 OUTPUT_FILES="$OUTPUT_FILES \
-  xbmc/interfaces/python/Makefile \
-  xbmc/interfaces/python/test/Makefile"
+  src/interfaces/python/Makefile \
+  src/interfaces/python/test/Makefile"
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -2705,7 +2705,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
     --cc="$CC"
 ], [0])
 
-XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
+XB_CONFIG_MODULE([src/visualizations/XBMCProjectM/libprojectM],[
   set -x
   rm -f CMakeCache.txt &&                              \
   CC="$ORIGCC" CXX="$ORIGCXX" LDFLAGS="$LDFLAGS" cmake \
@@ -2727,7 +2727,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set +x
 ], [$DISABLE_PROJECTM])
 
-XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
+XB_CONFIG_MODULE([src/visualizations/Goom/goom2k4-0],[
   ./configure  \
     CFLAGS="$CFLAGS" \ 
     CXXFLAGS="$CXXFLAGS" \
@@ -2740,7 +2740,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
     --with-pic
 ], [$DISABLE_GOOM])
 
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+XB_CONFIG_MODULE([src/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple"; then
     # clang treats inlines different
     case $CC in

@@ -45,9 +45,9 @@
 #import <OpenGLES/ES2/glext.h>
 #import "IOSEAGLView.h"
 #if defined(TARGET_DARWIN_IOS_ATV2)
-#import "xbmc/osx/atv2/KodiController.h"
+#import "src/osx/atv2/KodiController.h"
 #elif defined(TARGET_DARWIN_IOS)
-#import "xbmc/osx/ios/XBMCController.h"
+#import "src/osx/ios/XBMCController.h"
 #endif
 #import "IOSScreenManager.h"
 #import "AutoPool.h"

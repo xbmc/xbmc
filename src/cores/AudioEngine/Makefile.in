@@ -1,13 +1,13 @@
 ARCH=@ARCH@
 
 INCLUDES  = -I.
-INCLUDES += -I@abs_top_srcdir@/xbmc
-INCLUDES += -I@abs_top_srcdir@/xbmc/linux
-INCLUDES += -I@abs_top_srcdir@/xbmc/utils
-INCLUDES += -I@abs_top_srcdir@/xbmc/guilib
-INCLUDES += -I@abs_top_srcdir@/xbmc/cores
-INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
-INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer/Codecs/ffmpeg
+INCLUDES += -I@abs_top_srcdir@/src
+INCLUDES += -I@abs_top_srcdir@/src/linux
+INCLUDES += -I@abs_top_srcdir@/src/utils
+INCLUDES += -I@abs_top_srcdir@/src/guilib
+INCLUDES += -I@abs_top_srcdir@/src/cores
+INCLUDES += -I@abs_top_srcdir@/src/cores/dvdplayer
+INCLUDES += -I@abs_top_srcdir@/src/cores/dvdplayer/Codecs/ffmpeg
 
 OSSLIBDIR=0
 -include /etc/oss.conf

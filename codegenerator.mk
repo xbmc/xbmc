@@ -1,5 +1,5 @@
 TOPDIR ?= .
-INTERFACES_DIR ?= xbmc/interfaces
+INTERFACES_DIR ?= src/interfaces
 
 JAVA ?= $(shell which java)
 ifeq ($(JAVA),)
@@ -35,7 +35,7 @@ GENERATED += $(GENDIR)/AddonModuleXbmcplugin.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcaddon.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcvfs.cpp
 
-GENERATE_DEPS += $(TOPDIR)/xbmc/interfaces/legacy/*.h $(TOPDIR)/xbmc/interfaces/python/typemaps/*.intm $(TOPDIR)/xbmc/interfaces/python/typemaps/*.outtm
+GENERATE_DEPS += $(TOPDIR)/src/interfaces/legacy/*.h $(TOPDIR)/src/interfaces/python/typemaps/*.intm $(TOPDIR)/src/interfaces/python/typemaps/*.outtm
 
 vpath %.i $(INTERFACES_DIR)/swig
 
@@ -49,7 +49,7 @@ $(GENDIR)/%.cpp: $(GENDIR)/%.xml $(JAVA) $(SWIG) $(DOXY_XML_PATH)
 
 $(GENDIR)/%.xml: %.i $(SWIG) $(JAVA) $(GENERATE_DEPS)
 	mkdir -p $(GENDIR)
-	$(SWIG) -w401 -c++ -o $@ -xml -I$(TOPDIR)/xbmc -xmllang python $<
+	$(SWIG) -w401 -c++ -o $@ -xml -I$(TOPDIR)/src -xmllang python $<
 
 codegenerated: $(DOXYGEN) $(SWIG) $(JAVA) $(GENERATED) $(GENERATED_JSON) $(GENERATED_ADDON_JSON)
 

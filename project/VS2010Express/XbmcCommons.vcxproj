@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\xbmc\commons\Exception.cpp" />
-    <ClCompile Include="..\..\xbmc\commons\ilog.cpp" />
+    <ClCompile Include="..\..\src\commons\Exception.cpp" />
+    <ClCompile Include="..\..\src\commons\ilog.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xbmc\commons\Buffer.h" />
-    <ClInclude Include="..\..\xbmc\commons\Exception.h" />
-    <ClInclude Include="..\..\xbmc\commons\ilog.h" />
+    <ClInclude Include="..\..\src\commons\Buffer.h" />
+    <ClInclude Include="..\..\src\commons\Exception.h" />
+    <ClInclude Include="..\..\src\commons\ilog.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}</ProjectGuid>
@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\src\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_LIB;_USE_32BIT_TIME_T;HAS_DX;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -78,7 +78,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\src\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_LIB;_USE_32BIT_TIME_T;HAS_DX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>commons.hpp</PrecompiledHeaderFile>
       <DebugInformationFormat>

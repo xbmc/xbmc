@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\..\..\xbmc\win32;..\..\..\xbmc\guilib;..\..\..\xbmc;..\..\..\xbmc\lib\libsquish;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..\..\src\win32;..\..\..\src\guilib;..\..\..\src;..\..\..\src\lib\libsquish;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;NO_XBMC_FILESYSTEM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -58,7 +58,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\xbmc\lib\libsquish\lib\squishd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\lib\libsquish\lib\squishd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -68,7 +68,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..;..\..\..\xbmc\win32;..\..\..\xbmc\guilib;..\..\..\xbmc;..\..\..\xbmc\lib\libsquish;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..\..\src\win32;..\..\..\src\guilib;..\..\..\src;..\..\..\lib\libsquish;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;NO_XBMC_FILESYSTEM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -78,7 +78,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\xbmc\lib\libsquish\lib\squish.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDL_image.lib;..\..\..\lib\libsquish\lib\squish.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -87,11 +87,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\xbmc\guilib\DDSImage.cpp" />
+    <ClCompile Include="..\..\..\src\guilib\DDSImage.cpp" />
     <ClCompile Include="..\MakeDDS.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\xbmc\guilib\DDSImage.h" />
+    <ClInclude Include="..\..\..\src\guilib\DDSImage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

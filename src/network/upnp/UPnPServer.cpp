@@ -43,7 +43,7 @@
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "guilib/GUIWindowManager.h"
-#include "xbmc/GUIUserMessages.h"
+#include "src/GUIUserMessages.h"
 #include "utils/FileUtils.h"
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")

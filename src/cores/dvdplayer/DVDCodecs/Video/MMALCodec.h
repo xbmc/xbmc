@@ -31,7 +31,7 @@
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 #include "threads/Event.h"
-#include "xbmc/settings/VideoSettings.h"
+#include "src/settings/VideoSettings.h"
 
 #include <queue>
 #include <semaphore.h>

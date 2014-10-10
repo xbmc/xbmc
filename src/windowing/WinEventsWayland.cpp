@@ -24,7 +24,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "Application.h"
-#include "xbmc/windowing/WindowingFactory.h"
+#include "src/windowing/WindowingFactory.h"
 #include "WinEventsWayland.h"
 
 #include "wayland/EventListener.h"

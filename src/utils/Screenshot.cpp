@@ -30,7 +30,7 @@
 #include "pictures/Picture.h"
 
 #ifdef TARGET_RASPBERRY_PI
-#include "xbmc/linux/RBP.h"
+#include "src/linux/RBP.h"
 #endif
 
 #ifdef HAS_VIDEO_PLAYBACK

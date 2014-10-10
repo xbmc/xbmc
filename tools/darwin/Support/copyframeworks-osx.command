@@ -70,7 +70,7 @@ cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 echo "Creating icon"
 iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
 
-cp -f "$SRCROOT/xbmc/osx/Info.plist" "$TARGET_CONTENTS/"
+cp -f "$SRCROOT/src/osx/Info.plist" "$TARGET_CONTENTS/"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"
@@ -102,8 +102,8 @@ check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.pvr"
 echo "Checking $XBMC_HOME/addons *.xbs for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.xbs"
 
-echo "Checking xbmc/DllPaths_generated.h for dylib dependencies"
-for a in $(grep .dylib "$SRCROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
+echo "Checking src/DllPaths_generated.h for dylib dependencies"
+for a in $(grep .dylib "$SRCROOT"/src/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
   check_dyloaded_depends $a
 done
 

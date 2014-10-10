@@ -19,7 +19,7 @@ XMMS_INPUT_PLUGIN_DIR = `xmms-config --input-plugin-dir`
 XMMS_USER_PLUGIN_DIR = $(HOME)/.xmms/Plugins
 MOC_INCLUDE = ../moc-2.4.4
 MOC_PLUGIN_DIR = /usr/local/lib/moc/decoder_plugins
-XBMC_DLL_LOADER_EXPORTS = @abs_top_srcdir@/xbmc/cores/DllLoader/exports
+XBMC_DLL_LOADER_EXPORTS = @abs_top_srcdir@/src/cores/DllLoader/exports
 
 COMMON_C = asap.c acpu.c apokeysnd.c
 COMMON_H = asap.h asap_internal.h anylang.h players.h
@@ -51,8 +51,8 @@ libasap_decoder.so: moc/libasap_decoder.c $(COMMON_C) $(COMMON_H)
 
 asap-xbmc: mads/mads xasm/xasm @abs_top_srcdir@/system/players/paplayer/xbmc_asap-@ARCH@.so
 
-xbmc/xbmc_asap.o: xbmc/xbmc_asap.c
-	$(CC) -I. -O2 -o $@ -c xbmc/xbmc_asap.c
+src/xbmc_asap.o: src/xbmc_asap.c
+	$(CC) -I. -O2 -o $@ -c src/xbmc_asap.c
 
 asap.o: asap.c $(COMMON_H)
 	$(CC) -I. -O2 -o $@ -c asap.c
@@ -63,8 +63,8 @@ acpu.o: acpu.c $(COMMON_H)
 apokeysnd.o: apokeysnd.c
 	$(CC) -I. -O2 -o $@ -c apokeysnd.c
 
-@abs_top_srcdir@/system/players/paplayer/xbmc_asap-@ARCH@.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
-	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
+@abs_top_srcdir@/system/players/paplayer/xbmc_asap-@ARCH@.so: src/xbmc_asap.o $(COMMON_O) $(COMMON_H)
+	$(CC) -shared -fPIC -o $@ -I. src/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
 
 players.h: files2anylang.pl $(PLAYERS_OBX)
 	$(PERL) files2anylang.pl $(PLAYERS_OBX) >$@
@@ -149,7 +149,7 @@ players-clean:
 distclean: clean
 
 clean: players-clean
-	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so @abs_top_srcdir@/system/players/paplayer/xbmc_asap-@ARCH@.so players.h xbmc/xbmc_asap.o
+	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so @abs_top_srcdir@/system/players/paplayer/xbmc_asap-@ARCH@.so players.h src/xbmc_asap.o
 
 README.html: README INSTALL NEWS CREDITS
 	$(ASCIIDOC) -o $@ -a asapsrc -a asapports README

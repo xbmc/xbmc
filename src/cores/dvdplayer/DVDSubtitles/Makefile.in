@@ -1,4 +1,4 @@
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES+=-I@abs_top_srcdir@/src/cores/dvdplayer
 
 SRCS  = DVDFactorySubtitle.cpp
 SRCS += DVDSubtitleLineCollection.cpp

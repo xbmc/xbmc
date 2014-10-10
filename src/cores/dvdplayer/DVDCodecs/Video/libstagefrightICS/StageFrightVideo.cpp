@@ -38,7 +38,7 @@
 #include "settings/AdvancedSettings.h"
 #include "android/jni/Build.h"
 
-#include "xbmc/guilib/FrameBufferObject.h"
+#include "src/guilib/FrameBufferObject.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>

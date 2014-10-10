@@ -8,8 +8,8 @@ SOS= libdvdnav-$(ARCH).so
 DIRS=	libdvdread \
 	libdvdnav
 
-WRAPPER=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
-WRAPPER_MACH_ALIAS=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias
+WRAPPER=@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper.o
+WRAPPER_MACH_ALIAS=@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper_mach_alias
 
 ifeq ($(findstring osx,$(ARCH)),osx)
 LDFLAGS +=-bundle -undefined dynamic_lookup -read_only_relocs suppress

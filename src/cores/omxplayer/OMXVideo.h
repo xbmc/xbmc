@@ -30,9 +30,9 @@
 
 #include "guilib/Geometry.h"
 #include "DVDDemuxers/DVDDemux.h"
-#include "xbmc/settings/VideoSettings.h"
+#include "src/settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
-#include "xbmc/rendering/RenderSystem.h"
+#include "src/rendering/RenderSystem.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60

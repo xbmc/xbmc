@@ -17,17 +17,17 @@ DVDPCODECS_DIRS= \
 	lib/libdvd 
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
-DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+DVDPCODECS_DIRS += src/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
 endif
 
-DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
-                   xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
-                   xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
-                   xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
+DVDPLAYER_ARCHIVES=src/cores/dvdplayer/DVDPlayer.a \
+                   src/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
+                   src/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
+                   src/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
+                   src/cores/dvdplayer/DVDCodecs/Video/Video.a \
+                   src/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
+                   src/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
+                   src/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
@@ -35,115 +35,115 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/libXDAAP/libxdaap.a \
                    lib/libhts/libhts.a \
                    lib/libsquish/libsquish.a \
-                   xbmc/addons/addons.a \
-                   xbmc/cdrip/cdrip.a \
-                   xbmc/cores/AudioEngine/audioengine.a \
-                   xbmc/cores/DllLoader/dllloader.a \
-                   xbmc/cores/DllLoader/exports/exports.a \
-                   xbmc/cores/DllLoader/exports/util/exports_utils.a \
-                   xbmc/cores/ExternalPlayer/ExternalPlayer.a \
-                   xbmc/cores/VideoRenderers/VideoRenderer.a \
-                   xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
-                   xbmc/cores/cores.a \
-                   xbmc/cores/paplayer/paplayer.a \
-                   xbmc/cores/playercorefactory/playercorefactory.a \
-                   xbmc/dbwrappers/dbwrappers.a \
-                   xbmc/dialogs/dialogs.a \
-                   xbmc/epg/epg.a \
-                   xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
-                   xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
-                   xbmc/filesystem/filesystem.a \
-                   xbmc/guilib/guilib.a \
-                   xbmc/input/input.a \
-                   xbmc/interfaces/generic/interfaces-generic.a \
-                   xbmc/interfaces/info/info.a \
-                   xbmc/interfaces/interfaces.a \
-                   xbmc/interfaces/json-rpc/json-rpc.a \
-                   xbmc/linux/linux.a \
-                   xbmc/listproviders/listproviders.a \
-                   xbmc/media/media.a \
-                   xbmc/music/dialogs/musicdialogs.a \
-                   xbmc/music/infoscanner/musicscanner.a \
-                   xbmc/music/karaoke/karaoke.a \
-                   xbmc/music/music.a \
-                   xbmc/music/tags/musictags.a \
-                   xbmc/music/windows/musicwindows.a \
-                   xbmc/network/websocket/websocket.a \
-                   xbmc/network/network.a \
-                   xbmc/peripherals/bus/peripheral-bus.a \
-                   xbmc/peripherals/devices/peripheral-devices.a \
-                   xbmc/peripherals/dialogs/peripheral-dialogs.a \
-                   xbmc/peripherals/peripherals.a \
-                   xbmc/pictures/pictures.a \
-                   xbmc/playlists/playlists.a \
-                   xbmc/powermanagement/powermanagement.a \
-                   xbmc/profiles/profiles.a \
-                   xbmc/profiles/dialogs/profiles_dialogs.a \
-                   xbmc/profiles/windows/profiles_windows.a \
-                   xbmc/programs/programs.a \
-                   xbmc/pvr/addons/pvraddons.a \
-                   xbmc/pvr/channels/pvrchannels.a \
-                   xbmc/pvr/dialogs/pvrdialogs.a \
-                   xbmc/pvr/pvr.a \
-                   xbmc/pvr/recordings/pvrrecordings.a \
-                   xbmc/pvr/timers/pvrtimers.a \
-                   xbmc/pvr/windows/pvrwindows.a \
-                   xbmc/rendering/rendering.a \
-                   xbmc/settings/settings.a \
-                   xbmc/settings/dialogs/settings_dialogs.a \
-                   xbmc/settings/lib/settings_lib.a \
-                   xbmc/settings/windows/settings_windows.a \
-                   xbmc/storage/storage.a \
-                   xbmc/utils/utils.a \
-                   xbmc/video/dialogs/videodialogs.a \
-                   xbmc/video/videosync/videosync.a \
-                   xbmc/video/video.a \
-                   xbmc/video/windows/videowindows.a \
-                   xbmc/view/view.a \
-                   xbmc/windowing/windowing.a \
-                   xbmc/windows/windows.a \
-                   xbmc/xbmc.a \
+                   src/addons/addons.a \
+                   src/cdrip/cdrip.a \
+                   src/cores/AudioEngine/audioengine.a \
+                   src/cores/DllLoader/dllloader.a \
+                   src/cores/DllLoader/exports/exports.a \
+                   src/cores/DllLoader/exports/util/exports_utils.a \
+                   src/cores/ExternalPlayer/ExternalPlayer.a \
+                   src/cores/VideoRenderers/VideoRenderer.a \
+                   src/cores/VideoRenderers/VideoShaders/VideoShaders.a \
+                   src/cores/cores.a \
+                   src/cores/paplayer/paplayer.a \
+                   src/cores/playercorefactory/playercorefactory.a \
+                   src/dbwrappers/dbwrappers.a \
+                   src/dialogs/dialogs.a \
+                   src/epg/epg.a \
+                   src/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
+                   src/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
+                   src/filesystem/filesystem.a \
+                   src/guilib/guilib.a \
+                   src/input/input.a \
+                   src/interfaces/generic/interfaces-generic.a \
+                   src/interfaces/info/info.a \
+                   src/interfaces/interfaces.a \
+                   src/interfaces/json-rpc/json-rpc.a \
+                   src/linux/linux.a \
+                   src/listproviders/listproviders.a \
+                   src/media/media.a \
+                   src/music/dialogs/musicdialogs.a \
+                   src/music/infoscanner/musicscanner.a \
+                   src/music/karaoke/karaoke.a \
+                   src/music/music.a \
+                   src/music/tags/musictags.a \
+                   src/music/windows/musicwindows.a \
+                   src/network/websocket/websocket.a \
+                   src/network/network.a \
+                   src/peripherals/bus/peripheral-bus.a \
+                   src/peripherals/devices/peripheral-devices.a \
+                   src/peripherals/dialogs/peripheral-dialogs.a \
+                   src/peripherals/peripherals.a \
+                   src/pictures/pictures.a \
+                   src/playlists/playlists.a \
+                   src/powermanagement/powermanagement.a \
+                   src/profiles/profiles.a \
+                   src/profiles/dialogs/profiles_dialogs.a \
+                   src/profiles/windows/profiles_windows.a \
+                   src/programs/programs.a \
+                   src/pvr/addons/pvraddons.a \
+                   src/pvr/channels/pvrchannels.a \
+                   src/pvr/dialogs/pvrdialogs.a \
+                   src/pvr/pvr.a \
+                   src/pvr/recordings/pvrrecordings.a \
+                   src/pvr/timers/pvrtimers.a \
+                   src/pvr/windows/pvrwindows.a \
+                   src/rendering/rendering.a \
+                   src/settings/settings.a \
+                   src/settings/dialogs/settings_dialogs.a \
+                   src/settings/lib/settings_lib.a \
+                   src/settings/windows/settings_windows.a \
+                   src/storage/storage.a \
+                   src/utils/utils.a \
+                   src/video/dialogs/videodialogs.a \
+                   src/video/videosync/videosync.a \
+                   src/video/video.a \
+                   src/video/windows/videowindows.a \
+                   src/view/view.a \
+                   src/windowing/windowing.a \
+                   src/windows/windows.a \
+                   src/xbmc.a \
 
-NWAOBJSXBMC=	xbmc/threads/threads.a \
-		xbmc/commons/commons.a
+NWAOBJSXBMC=	src/threads/threads.a \
+		src/commons/commons.a
 
 
 ifeq (@USE_WEB_SERVER@,1)
-DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
+DIRECTORY_ARCHIVES += src/network/httprequesthandler/httprequesthandlers.a
 endif
 
-DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
-DIRECTORY_ARCHIVES += xbmc/interfaces/python/python_binding.a
+DIRECTORY_ARCHIVES += src/interfaces/legacy/legacy.a
+DIRECTORY_ARCHIVES += src/interfaces/python/python_binding.a
 
 ifeq (@USE_OPENGL@,1)
-DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
+DIRECTORY_ARCHIVES += src/rendering/gl/rendering_gl.a
 endif
 
 ifeq (@USE_OPENGLES@,1)
-DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
-DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
-DIRECTORY_ARCHIVES += xbmc/visualizations/EGLHelpers/eglhelpers.a
+DIRECTORY_ARCHIVES += src/rendering/gles/rendering_gles.a
+DIRECTORY_ARCHIVES += src/windowing/egl/windowing_egl.a
+DIRECTORY_ARCHIVES += src/visualizations/EGLHelpers/eglhelpers.a
 endif
 
 ifeq (@USE_UPNP@,1)
 DIRECTORY_ARCHIVES += lib/libUPnP/libupnp.a \
-                      xbmc/network/upnp/upnp.a
+                      src/network/upnp/upnp.a
 endif
 
 ifeq (@USE_MDNSEMBEDDED@,1)
-DIRECTORY_ARCHIVES += xbmc/network/mdns/mdns.a
+DIRECTORY_ARCHIVES += src/network/mdns/mdns.a
 endif
 
 INSTALL_FILTER = .*visualization\.dxspectrum.*
 INSTALL_FILTER += .*visualization\.milkdrop.*
 
 ifeq ($(findstring osx,@ARCH@),osx)
-DIRECTORY_ARCHIVES += xbmc/osx/osx.a
-DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
-DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
-DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
-DIRECTORY_ARCHIVES += xbmc/storage/osx/storage.a
-DIRECTORY_ARCHIVES += xbmc/windowing/osx/windowing_osx.a
+DIRECTORY_ARCHIVES += src/osx/osx.a
+DIRECTORY_ARCHIVES += src/network/osx/network.a
+DIRECTORY_ARCHIVES += src/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += src/powermanagement/osx/powermanagement.a
+DIRECTORY_ARCHIVES += src/storage/osx/storage.a
+DIRECTORY_ARCHIVES += src/windowing/osx/windowing_osx.a
 INSTALL_FILTER += .*repository\.pvr-android\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-ios\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-win32\.xbmc\.org.*
@@ -152,25 +152,25 @@ INSTALL_FILTER += .*repository\.pvr-ios\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-win32\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-osx.*\.xbmc\.org.*
 ifeq (@USE_ANDROID@,1)
-DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
-DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
-DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
-DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
-DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
-DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
-DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+DIRECTORY_ARCHIVES += src/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += src/input/touch/input_touch.a
+DIRECTORY_ARCHIVES += src/input/touch/generic/input_touch_generic.a
+DIRECTORY_ARCHIVES += src/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += src/powermanagement/android/powermanagement_android.a
+DIRECTORY_ARCHIVES += src/storage/android/storage_android.a
+DIRECTORY_ARCHIVES += src/windowing/X11/windowing_X11.a
 else
-DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
-DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
-DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
-DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
-DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+DIRECTORY_ARCHIVES += src/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += src/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += src/powermanagement/linux/powermanagement_linux.a
+DIRECTORY_ARCHIVES += src/storage/linux/storage_linux.a
+DIRECTORY_ARCHIVES += src/windowing/X11/windowing_X11.a
 INSTALL_FILTER += .*repository\.pvr-android\.xbmc\.org.*
 endif
 endif
 
 ifeq ($(findstring freebsd,@ARCH@),freebsd)
-DIRECTORY_ARCHIVES += xbmc/freebsd/freebsd.a
+DIRECTORY_ARCHIVES += src/freebsd/freebsd.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
@@ -178,14 +178,14 @@ DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
 ifeq (@USE_ANDROID@,1)
-DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
-DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
-DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
-DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
+DIRECTORY_ARCHIVES += src/android/loader/AndroidDyload.a
+DIRECTORY_ARCHIVES += src/windowing/android/windowing_android.a
+DIRECTORY_ARCHIVES += src/android/bionic_supplement/bionic_supplement.a
+DIRECTORY_ARCHIVES += src/android/jni/jni.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
-DIRECTORY_ARCHIVES += xbmc/cores/omxplayer/omxplayer.a
+DIRECTORY_ARCHIVES += src/cores/omxplayer/omxplayer.a
 endif
 
 PAPCODECS_DIRS= \
@@ -215,37 +215,37 @@ endif
 
 SS_DIRS=
 ifneq (@DISABLE_RSXS@,1)
-  SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
+  SS_DIRS+= src/screensavers/rsxs-0.9/xbmc
 else
   INSTALL_FILTER+= .*screensaver\.rsxs.*
 endif
 
 ifneq (@DISABLE_SPECTRUM@,1)
-  VIS_DIRS+= xbmc/visualizations/OpenGLSpectrum
+  VIS_DIRS+= src/visualizations/OpenGLSpectrum
 else
   INSTALL_FILTER+= .*visualization\.glspectrum.*
 endif
 
 ifneq (@DISABLE_WAVEFORM@,1)
-  VIS_DIRS+= xbmc/visualizations/WaveForm
+  VIS_DIRS+= src/visualizations/WaveForm
 else
   INSTALL_FILTER+= .*visualization\.waveform.*
 endif
 
 ifneq (@DISABLE_FISHBMC@,1)
-  VIS_DIRS+= xbmc/visualizations/fishBMC
+  VIS_DIRS+= src/visualizations/fishBMC
 else
   INSTALL_FILTER+= .*visualization\.fishbmc.*
 endif
 
 ifneq (@DISABLE_PROJECTM@,1)
-  VIS_DIRS+= xbmc/visualizations/XBMCProjectM
+  VIS_DIRS+= src/visualizations/XBMCProjectM
 else
   INSTALL_FILTER+= .*visualization\.projectm.*
 endif
 
 ifneq (@DISABLE_GOOM@,1)
-  VIS_DIRS+=xbmc/visualizations/Goom
+  VIS_DIRS+=src/visualizations/Goom
 else
   INSTALL_FILTER+= .*visualization\.goom.*
 endif
@@ -290,30 +290,30 @@ GTEST_DIR = lib/gtest
 GTEST_INCLUDES = -I$(GTEST_DIR)/include
 GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 
-CHECK_DIRS = xbmc/addons/test \
-             xbmc/filesystem/test \
-             xbmc/music/tags/test \
-             xbmc/utils/test \
-             xbmc/video/test \
-             xbmc/threads/test \
-             xbmc/interfaces/python/test \
-             xbmc/cores/AudioEngine/Sinks/test \
-             xbmc/test
-CHECK_LIBS = xbmc/addons/test/addonsTest.a \
-             xbmc/filesystem/test/filesystemTest.a \
-             xbmc/music/tags/test/tagsTest.a \
-             xbmc/utils/test/utilsTest.a \
-             xbmc/video/test/videoTest.a \
-             xbmc/threads/test/threadTest.a \
-             xbmc/interfaces/python/test/pythonSwigTest.a \
-             xbmc/cores/AudioEngine/Sinks/test/AESinkTest.a \
-             xbmc/test/xbmc-test.a
+CHECK_DIRS = src/addons/test \
+             src/filesystem/test \
+             src/music/tags/test \
+             src/utils/test \
+             src/video/test \
+             src/threads/test \
+             src/interfaces/python/test \
+             src/cores/AudioEngine/Sinks/test \
+             src/test
+CHECK_LIBS = src/addons/test/addonsTest.a \
+             src/filesystem/test/filesystemTest.a \
+             src/music/tags/test/tagsTest.a \
+             src/utils/test/utilsTest.a \
+             src/video/test/videoTest.a \
+             src/threads/test/threadTest.a \
+             src/interfaces/python/test/pythonSwigTest.a \
+             src/cores/AudioEngine/Sinks/test/AESinkTest.a \
+             src/test/xbmc-test.a
 
 ifeq (@USE_WAYLAND@,1)
-CHECK_LIBS += xbmc/windowing/tests/wayland/test_wayland.a
+CHECK_LIBS += src/windowing/tests/wayland/test_wayland.a
 
 ifeq (@USE_WAYLAND_TEST_EXTENSION@,1)
-WAYLAND_TEST_MODULE = xbmc/windowing/tests/wayland/xbmc-wayland-test-extension.so
+WAYLAND_TEST_MODULE = src/windowing/tests/wayland/xbmc-wayland-test-extension.so
 $(WAYLAND_TEST_MODULE): force
 	$(MAKE) -C $(@D) $(@F)
 CHECK_EXTENSIONS = $(WAYLAND_TEST_MODULE)
@@ -324,7 +324,7 @@ endif
 ifeq (@USE_SSE4@,1)
 LIBSSE4+=sse4
 sse4 : force
-	$(MAKE) -C xbmc/linux/sse4
+	$(MAKE) -C src/linux/sse4
 endif
 
 CHECK_PROGRAMS = @APP_NAME_LC@-test
@@ -362,7 +362,7 @@ skins:
 endif
 
 # Setup some dependencies for subdir makes
-xbmc/cores/paplayer/paplayer.a: papcodecs
+src/cores/paplayer/paplayer.a: papcodecs
 $(DVDPLAYER_ARCHIVES)         : dvdpcodecs
 
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -377,15 +377,15 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 	$(CXX) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< \
 		-Wl,--no-whole-archive  \
-		`cat xbmc/cores/DllLoader/exports/wrapper.def` xbmc/cores/DllLoader/exports/wrapper.o -lexpat
+		`cat src/cores/DllLoader/exports/wrapper.def` src/cores/DllLoader/exports/wrapper.o -lexpat
 endif
 
-exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
-	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
-dllloader: exports xbmc/cores/DllLoader/dllloader.a
+exports: src/cores/DllLoader/exports/exports.a src/cores/DllLoader/exports/util/exports_utils.a
+	$(MAKE) -C src/cores/DllLoader/exports wrapper.def
+dllloader: exports src/cores/DllLoader/dllloader.a
 
 ifeq (@USE_OPENGLES@,1)
-EGLHELPERS=xbmc/visualizations/EGLHelpers/eglhelpers.a
+EGLHELPERS=src/visualizations/EGLHelpers/eglhelpers.a
 endif
 
 $(VIS_DIRS): force exports $(EGLHELPERS)
@@ -408,7 +408,7 @@ dvdpcodecs: dllloader
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 dvdpextcodecs: lib@APP_NAME_LC@.so
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+	$(MAKE) -C src/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
 else
 dvdpextcodecs:
 endif
@@ -466,20 +466,20 @@ xcode_depends: \
 	lib/SlingboxLib/SlingboxLib.a
 
 DYNOBJSXBMC= \
-	xbmc/linux/linux.a \
-	xbmc/network/network.a \
-	xbmc/video/windows/videowindows.a \
-	xbmc/utils/utils.a \
-	xbmc/cores/DllLoader/exports/util/exports_utils.a \
-	xbmc/cores/DllLoader/exports/exports.a \
-	xbmc/settings/settings.a \
-	xbmc/video/video.a \
-	xbmc/pvr/addons/pvraddons.a \
-	xbmc/pvr/windows/pvrwindows.a \
-	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
+	src/linux/linux.a \
+	src/network/network.a \
+	src/video/windows/videowindows.a \
+	src/utils/utils.a \
+	src/cores/DllLoader/exports/util/exports_utils.a \
+	src/cores/DllLoader/exports/exports.a \
+	src/settings/settings.a \
+	src/video/video.a \
+	src/pvr/addons/pvraddons.a \
+	src/pvr/windows/pvrwindows.a \
+	src/guilib/guilib.a # must be dynamic to avoid linker errors
 
 ifeq ($(findstring freebsd,@ARCH@),freebsd)
-DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
+DYNOBJSXBMC+= src/freebsd/freebsd.a
 endif
 
 ifeq (@USE_STATIC_FFMPEG@,1)
@@ -497,9 +497,9 @@ $(FFMPEGOBJS): dvdpcodecs
 endif
 
 ifeq (@USE_ANDROID@,1)
-MAINOBJS+=xbmc/android/activity/activity.a
+MAINOBJS+=src/android/activity/activity.a
 else
-MAINOBJS+=xbmc/main/main.a
+MAINOBJS+=src/main/main.a
 endif # USE_ANDROID
 
 
@@ -509,13 +509,13 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC)) $(dir $(MAINOBJS))
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) src/main
 
 $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
 # Binary Addon bindings
-include xbmc/addons/addon-bindings.mk
+include src/addons/addon-bindings.mk
 
 lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
@@ -540,7 +540,7 @@ else
 	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o @APP_NAME_LC@-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
 endif
 
-tools/TexturePacker/TexturePacker: xbmc/guilib/XBTF.h
+tools/TexturePacker/TexturePacker: src/guilib/XBTF.h
 	$(MAKE) -C tools/TexturePacker/
 
 

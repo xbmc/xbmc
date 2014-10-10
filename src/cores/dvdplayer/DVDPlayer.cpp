@@ -57,7 +57,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
-#include "xbmc/utils/PerformanceSample.h"
+#include "src/utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
@@ -78,7 +78,7 @@
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "xbmc/playlists/PlayListM3U.h"
+#include "src/playlists/PlayListM3U.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "LangInfo.h"
