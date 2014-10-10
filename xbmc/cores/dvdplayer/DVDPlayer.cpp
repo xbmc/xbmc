@@ -4433,32 +4433,3 @@ bool CDVDPlayer::CachePVRStream(void) const
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
-
-void CDVDPlayer::OMXGetRenderFeatures(std::vector<int> &renderFeatures)
-{
-  if (m_omxplayer_mode)
-  {
-    renderFeatures.push_back(RENDERFEATURE_STRETCH);
-    renderFeatures.push_back(RENDERFEATURE_CROP);
-    renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
-    renderFeatures.push_back(RENDERFEATURE_ZOOM);
-  }
-}
-
-void CDVDPlayer::OMXGetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
-{
-  if (m_omxplayer_mode)
-  {
-    deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
-  }
-}
-
-void CDVDPlayer::OMXGetDeinterlaceModes(std::vector<int> &deinterlaceModes)
-{
-  if (m_omxplayer_mode)
-  {
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_OFF);
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_FORCE);
-  }
-}
