@@ -37,6 +37,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "music/MusicDatabase.h"
+#include "PasswordManager.h"
 
 using namespace XFILE;
 using namespace JSONRPC;
@@ -273,6 +274,24 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
   }
 
   share.FromNameAndPaths(media, name, paths);
+
+  for (unsigned int i = 0; i < paths.size(); i++)
+  {
+    if (!paths[i].empty())
+    { // strip off the user and password for smb paths (anything that the password manager can auth)
+      // and add the user/pass to the password manager - note, we haven't confirmed that it works
+      // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
+      CURL url(paths[i]);
+      if (url.IsProtocol("smb"))
+      {
+        CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
+        url.SetPassword("");
+        url.SetUserName("");
+      }
+      paths.push_back(url.Get());
+    }
+  }
+
   CMediaSourceSettings::Get().AddShare(media, share);
 
   if (media == "video" && contents.size() > 1)
