@@ -99,8 +99,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
     CLog::Log(LOGERROR, "CMediaSourceSettings: sources.xml file does not contain <sources>");
 
   // parse sources
-  std::string dummy;
-  GetSources(pRootElement, "video", m_videoSources, dummy);
+  GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
   GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
   GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
@@ -125,7 +124,7 @@ bool CMediaSourceSettings::Save(const std::string &file) const
 
   // ok, now run through and save each sources section
   SetSources(pRoot, "programs", m_programSources, m_defaultProgramSource);
-  SetSources(pRoot, "video", m_videoSources, "");
+  SetSources(pRoot, "video", m_videoSources, m_defaultVideoSource);
   SetSources(pRoot, "music", m_musicSources, m_defaultMusicSource);
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
@@ -164,6 +163,8 @@ const std::string& CMediaSourceSettings::GetDefaultSource(const std::string &typ
 {
   if (type == "programs" || type == "myprograms")
     return m_defaultProgramSource;
+  else if (type == "video")
+    return m_defaultVideoSource;
   else if (type == "files")
     return m_defaultFileSource;
   else if (type == "music")
@@ -178,6 +179,8 @@ void CMediaSourceSettings::SetDefaultSource(const std::string &type, const std::
 {
   if (type == "programs" || type == "myprograms")
     m_defaultProgramSource = source;
+  else if (type == "video")
+    m_defaultVideoSource = source;
   else if (type == "files")
     m_defaultFileSource = source;
   else if (type == "music")
