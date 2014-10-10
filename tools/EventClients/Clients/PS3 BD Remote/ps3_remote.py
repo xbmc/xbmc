@@ -43,10 +43,10 @@ try:
     ICON_PATH = "../../icons/"
 except:
     # fallback to system wide modules
-    from xbmc.xbmcclient import *
-    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
-    from xbmc.bt.bt import *
-    from xbmc.defs import *
+    from kodi.xbmcclient import *
+    from kodi.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
+    from kodi.bt.bt import *
+    from kodi.defs import *
 
 import os
 import time

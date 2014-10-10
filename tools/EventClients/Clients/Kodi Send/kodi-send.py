@@ -23,15 +23,15 @@ import sys
 import getopt
 from socket import *
 try:
-    from xbmc.xbmcclient import *
+    from kodi.xbmcclient import *
 except:
     sys.path.append('../../lib/python')
     from xbmcclient import *
 
 def usage():
-    print "xbmc-send [OPTION] --action=ACTION"
+    print "kodi-send [OPTION] --action=ACTION"
     print 'Example'
-    print '\txbmc-send --host=192.168.0.1 --port=9777 --action="XBMC.Quit"'
+    print '\tkodi-send --host=192.168.0.1 --port=9777 --action="XBMC.Quit"'
     print "Options"
     print "\t-?, --help\t\t\tWill bring up this message"
     print "\t--host=HOST\t\t\tChoose what HOST to connect to (default=localhost)"
