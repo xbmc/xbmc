@@ -651,16 +651,22 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         // Handle the "playerid" option
         if (!optionPlayer.isNull())
         {
-          PLAYERCOREID playerId = (PLAYERCOREID)optionPlayer.asInteger();
-          // check if the there's actually a player with the given player ID
-          if (CPlayerCoreFactory::Get().GetPlayerConfig(playerId) == NULL)
-            return InvalidParams;
+          PLAYERCOREID playerId = EPC_NONE;
+          if (optionPlayer.isInteger())
+          {
+            playerId = (PLAYERCOREID)optionPlayer.asInteger();
+            // check if the there's actually a player with the given player ID
+            if (CPlayerCoreFactory::Get().GetPlayerConfig(playerId) == NULL)
+              return InvalidParams;
 
-          // check if the player can handle at least the first item in the list
-          VECPLAYERCORES possiblePlayers;
-          CPlayerCoreFactory::Get().GetPlayers(*list.Get(0).get(), possiblePlayers);
-          VECPLAYERCORES::const_iterator matchingPlayer = std::find(possiblePlayers.begin(), possiblePlayers.end(), playerId);
-          if (matchingPlayer == possiblePlayers.end())
+            // check if the player can handle at least the first item in the list
+            VECPLAYERCORES possiblePlayers;
+            CPlayerCoreFactory::Get().GetPlayers(*list.Get(0).get(), possiblePlayers);
+            VECPLAYERCORES::const_iterator matchingPlayer = std::find(possiblePlayers.begin(), possiblePlayers.end(), playerId);
+            if (matchingPlayer == possiblePlayers.end())
+              return InvalidParams;
+          }
+          else if (!optionPlayer.isString() || optionPlayer.asString().compare("default") != 0)
             return InvalidParams;
 
           // set the next player to be used

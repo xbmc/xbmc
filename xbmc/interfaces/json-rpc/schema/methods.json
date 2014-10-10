@@ -157,7 +157,12 @@
       },
       { "name": "options", "type": "object", "additionalProperties": false,
         "properties": {
-          "playercoreid": { "type": [ "null", { "type": "integer", "minimum": 1, "required": true } ], "default": null },
+          "playercoreid": { "type": [
+              "null",
+			  { "type": "string", "enum": [ "default" ], "required": true },
+              { "type": "integer", "minimum": 1, "required": true }
+            ],
+            "default": null },
           "shuffled": { "$ref": "Optional.Boolean" },
           "repeat": { "type": [ "null", { "$ref": "Player.Repeat", "required": true } ], "default": null },
           "resume": { "type": [
