@@ -1653,7 +1653,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
   m_display_rect = g_graphicsContext.GetViewWindow();
-  if (aml_get_device_type() == AML_DEVICE_TYPE_M8)
+  if ((aml_get_device_type() == AML_DEVICE_TYPE_M8) || (aml_get_device_type() == AML_DEVICE_TYPE_M8B))
   {
     char mode[256] = {0};
     aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
