@@ -79,6 +79,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/URIUtils.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
 
@@ -139,22 +140,28 @@ bool CSettings::Initialize()
 
 bool CSettings::Load()
 {
-  return Load(CProfilesManager::Get().GetSettingsFile());
+  if (!Load(CProfilesManager::Get().GetSettingsFile()))
+  {
+    // Loading failed, try to reset settings to backup/defaults
+    if (!Reset())
+      return false;
+  }
+
+  return true;
 }
 
 bool CSettings::Load(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
   bool updated = false;
+
+  CLog::Log(LOGNOTICE, "CSettingsManager: loading settings from %s", file.c_str());
+
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
       !m_settingsManager->Load(xmlDoc.RootElement(), updated))
   {
-    CLog::Log(LOGERROR, "CSettingsManager: unable to load settings from %s, creating new default settings", file.c_str());
-    if (!Reset())
-      return false;
-
-    if (!Load(file))
-      return false;
+    CLog::Log(LOGERROR, "CSettingsManager: unable to load settings from %s", file.c_str());
+    return false;
   }
   // if the settings had to be updated, we need to save the changes
   else if (updated)
@@ -825,19 +832,32 @@ void CSettings::InitializeISettingCallbacks()
 bool CSettings::Reset()
 {
   std::string settingsFile = CProfilesManager::Get().GetSettingsFile();
+  std::string settingsBackupFile = URIUtils::GetBackupPath(settingsFile);
+
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))
     CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", settingsFile.c_str());
-  
+
   // unload any loaded settings
   Unload();
+
+  // try to load backup settings
+  bool restored = Load(settingsBackupFile);
+  if (!restored)
+  {
+    CLog::Log(LOGERROR, "Failed to load the backup settings from %s, fallback to default settings", settingsBackupFile.c_str());
+    Unload();
+  }
 
   // try to save the default settings
   if (!Save())
   {
-    CLog::Log(LOGWARNING, "Failed to save the default settings to %s", settingsFile.c_str());
+    CLog::Log(LOGWARNING, "Failed to save the restored/default settings to %s", settingsFile.c_str());
     return false;
   }
 
-  return true;
+  if (!restored)
+    restored = Load(settingsFile);
+
+  return restored;
 }
