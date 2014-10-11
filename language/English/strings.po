@@ -12182,7 +12182,7 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr ""
 
-#: xbmc/addons/AddonsDirectory.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24049"
 msgid "Incompatible"
 msgstr ""
