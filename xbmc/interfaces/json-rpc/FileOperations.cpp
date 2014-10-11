@@ -256,41 +256,48 @@ CONTENT_TYPE contentTypeFromString(const std::string &content) {
 JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string name = parameterObject["name"].asString();
-  std::string directory = parameterObject["directory"].asString();
   std::string content = parameterObject["content"].asString("none");
-
   std::vector<std::string> contents = StringUtils::Split(content, ".");
+
+  CVariant directory = parameterObject["directory"];
   std::vector<std::string> paths;
-  paths.push_back(directory);
+
+  if (directory.isArray())
+  {
+    for (CVariant::iterator_array itr = directory.begin_array(); itr != directory.end_array(); itr++)
+      paths.push_back(itr->asString());
+  }
+  else
+    paths.push_back(directory.asString());
 
   std::string media = contents[0] == "audio" ? "music" : contents[0];
 
-  CMediaSource share;
-  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(media);
-  for (unsigned int i = 0; i < pShares->size(); ++i)
+  for (std::vector<std::string>::iterator itr = paths.begin(); itr != paths.end(); itr++)
   {
-    if (StringUtils::EqualsNoCase((*pShares)[i].strName, name))
-      return InvalidParams;
-  }
-
-  share.FromNameAndPaths(media, name, paths);
-
-  for (unsigned int i = 0; i < paths.size(); i++)
-  {
-    if (!paths[i].empty())
+    if (!itr->empty())
     { // strip off the user and password for smb paths (anything that the password manager can auth)
       // and add the user/pass to the password manager - note, we haven't confirmed that it works
       // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
-      CURL url(paths[i]);
+      CURL url(*itr);
       if (url.IsProtocol("smb"))
       {
         CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
         url.SetPassword("");
         url.SetUserName("");
       }
-      paths.push_back(url.Get());
+      itr->assign(url.Get());
     }
   }
+
+  CMediaSource share;
+  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(media);
+  for (VECSOURCES::iterator itr = pShares->begin(); itr != pShares->end(); itr++)
+  {
+    if (StringUtils::EqualsNoCase(itr->strName, name))
+      return InvalidParams;
+  }
+
+  share.FromNameAndPaths(media, name, paths);
 
   CMediaSourceSettings::Get().AddShare(media, share);
 
@@ -304,7 +311,8 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
     db.Open();
 
     VIDEO::SScanSettings settings;
-    db.SetScraperForPath(directory, scraper, settings);
+    for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
+      db.SetScraperForPath(*itr, scraper, settings);
   }
 
   return ACK;
