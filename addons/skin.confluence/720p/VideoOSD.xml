@@ -174,7 +174,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31354</label>
+				<label>209</label>
 				<font>-</font>
 				<texturefocus>OSDChannelDownFO.png</texturefocus>
 				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
@@ -227,7 +227,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31351</label>
+				<label>31352</label>
 				<font>-</font>
 				<texturefocus>OSDStopFO.png</texturefocus>
 				<texturenofocus>OSDStopNF.png</texturenofocus>
@@ -359,7 +359,7 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31355</label>
+				<label>298</label>
 				<font>-</font>
 				<texturefocus>OSDBookmarksFO.png</texturefocus>
 				<texturenofocus>OSDBookmarksNF.png</texturenofocus>
@@ -460,8 +460,8 @@
 				<top>0</top>
 				<width>55</width>
 				<height>55</height>
-				<label>31351</label>
-				<altlabel>208</altlabel>
+				<label>264</label>
+				<altlabel>265</altlabel>
 				<font>-</font>
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
@@ -570,7 +570,7 @@
 				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
 				<pulseonselect>false</pulseonselect>
 				<label>209</label>
-				<onclick>NextSubtitle</onclick>
+				<onclick>CycleSubtitle</onclick>
 				<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</visible>
 			</control>
 			<control type="radiobutton" id="404">
@@ -636,9 +636,9 @@
 					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
 				</control>
 				<control type="label" id="">
-					<left>30</left>
+					<left>0</left>
 					<top>20</top>
-					<width>196</width>
+					<width>256</width>
 					<height>15</height>
 					<font>font12</font>
 					<label>36501</label>
@@ -735,9 +735,9 @@
 					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
 				</control>
 				<control type="label" id="">
-					<left>30</left>
+					<left>0</left>
 					<top>20</top>
-					<width>196</width>
+					<width>256</width>
 					<height>15</height>
 					<font>font12</font>
 					<label>36501</label>

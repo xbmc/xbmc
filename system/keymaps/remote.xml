@@ -38,7 +38,7 @@
 <keymap>
   <global>
     <remote>
-      <play>Play</play>
+      <play>PlayPause</play>
       <pause>Pause</pause>
       <stop>Stop</stop>
       <forward>FastForward</forward>
@@ -88,6 +88,7 @@
       <seven>JumpSMS7</seven>
       <eight>JumpSMS8</eight>
       <nine>JumpSMS9</nine>
+      <print>Screenshot</print>
     </remote>
   </global>
   <Home>
@@ -541,6 +542,14 @@
       <down>ChannelDown</down>
     </remote>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <remote>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </remote>
+  </FullscreenRadio>
   <PVROSDChannels>
     <remote>
       <back>Close</back>

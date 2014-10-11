@@ -103,7 +103,7 @@ namespace XBMCAddon
       void stop();
 
       /**
-       * pause() -- Pause playing.
+       * pause() -- Pause or resume playing if already paused.
        */
       void pause();
 

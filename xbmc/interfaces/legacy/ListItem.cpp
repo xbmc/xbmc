@@ -410,6 +410,8 @@ namespace XBMCAddon
           // TODO: add the rest of the infolabels
           if (key == "tracknumber")
             item->GetMusicInfoTag()->SetTrackNumber(strtol(value.c_str(), NULL, 10));
+          else if (key == "discnumber")
+            item->GetMusicInfoTag()->SetDiscNumber(strtol(value.c_str(), NULL, 10));
           else if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
@@ -589,5 +591,16 @@ namespace XBMCAddon
       if (replaceItems)
         item->SetProperty("pluginreplacecontextitems", replaceItems);
     } // end addContextMenuItems
+
+    void ListItem::setSubtitles(const std::vector<String>& paths)
+    {
+      LOCKGUI;
+      unsigned int i = 1;
+      for (std::vector<String>::const_iterator it = paths.begin(); it != paths.end(); ++it, i++)
+      {
+        String property = StringUtils::Format("subtitle:%u", i);
+        item->SetProperty(property, *it);
+      }
+    }
   }
 }

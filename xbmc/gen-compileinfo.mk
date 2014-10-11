@@ -33,8 +33,9 @@ $(FILEPATH)/.GitRevision:
 
 $(FILEPATH)/CompileInfo.cpp: $(VERSION.TXT) $(FILEPATH)/CompileInfo.cpp.in $(FILEPATH)/.GitRevision
 	@GITREV=$$(cat $(FILEPATH)/.GitRevision) ;\
+	APP_NAME=$$(awk '/APP_NAME/ {print $$2}' $(VERSION.TXT)) ;\
 	MAJOR=$$(awk '/VERSION_MAJOR/ {print $$2}' $(VERSION.TXT)) ;\
 	MINOR=$$(awk '/VERSION_MINOR/ {print $$2}' $(VERSION.TXT)) ;\
 	TAG=$$(awk '/VERSION_TAG/ {print $$2}' $(VERSION.TXT)) ;\
-	sed -e "s/\@APP_VERSION_MAJOR\@/$$MAJOR/" -e "s/\@APP_VERSION_MINOR\@/$$MINOR/" -e "s/\@APP_VERSION_TAG\@/$$TAG/" -e "s/\@APP_SCMID\@/$$GITREV/" $@.in > $@
+	sed -e "s/\@APP_NAME\@/$$APP_NAME/" -e "s/\@APP_VERSION_MAJOR\@/$$MAJOR/" -e "s/\@APP_VERSION_MINOR\@/$$MINOR/" -e "s/\@APP_VERSION_TAG\@/$$TAG/" -e "s/\@APP_SCMID\@/$$GITREV/" $@.in > $@
 

@@ -91,7 +91,8 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
 void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
-  GetDelay(status);
+  status = m_sinkDelay;
+  status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
 
   status.delay += m_sinkLatency;
   status.delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
@@ -175,6 +176,7 @@ CActiveAE::CActiveAE() :
   m_audioCallback = NULL;
   m_vizInitialized = false;
   m_sinkHasVolume = false;
+  m_stats.Reset(44100);
 }
 
 CActiveAE::~CActiveAE()
@@ -2483,7 +2485,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   AVFormatContext *fmt_ctx = NULL;
   AVCodecContext *dec_ctx = NULL;
   AVIOContext *io_ctx;
-  AVInputFormat *io_fmt;
+  AVInputFormat *io_fmt = NULL;
   AVCodec *dec = NULL;
   CActiveAESound *sound = NULL;
   SampleConfig config;

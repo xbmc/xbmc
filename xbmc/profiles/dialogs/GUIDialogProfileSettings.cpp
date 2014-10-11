@@ -353,11 +353,11 @@ void CGUIDialogProfileSettings::InitializeSettings()
     }
 
     StaticIntegerSettingOptions entries;
-    entries.push_back(std::make_pair(0, 20062));
-    entries.push_back(std::make_pair(1, 20063));
-    entries.push_back(std::make_pair(2, 20061));
+    entries.push_back(std::make_pair(20062, 0));
+    entries.push_back(std::make_pair(20063, 1));
+    entries.push_back(std::make_pair(20061, 2));
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
-      entries.push_back(std::make_pair(3, 20107));
+      entries.push_back(std::make_pair(20107, 3));
 
     AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, 0, m_dbMode, entries);
     AddSpinner(groupMedia, SETTING_PROFILE_MEDIA_SOURCES, 20094, 0, m_sourcesMode, entries);

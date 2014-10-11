@@ -387,12 +387,29 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR("SDK path is required for android")
   fi
 
-  if [ ! test -f $use_sdk_path/tools/zipalign ]; then
+  if [ ! test -f $use_sdk_path/tools/android ]; then
     AC_MSG_ERROR(verify sdk path)
   fi
 
   if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
     AC_MSG_ERROR(verify ndk path)
+  fi
+
+  build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort -V | tail -n 1`
+
+  AC_PATH_PROG(AAPT,aapt,"no",$build_tools_path)
+  if test "x$AAPT" = "xno" ; then
+    AC_MSG_ERROR("Missing program: aapt")
+  fi
+
+  AC_PATH_PROG(DX,dx,"no",$build_tools_path)
+  if test "x$DX" = "xno" ; then
+    AC_MSG_ERROR("Missing program: dx")
+  fi
+
+  AC_PATH_PROG(ZIPALIGN,zipalign,"no",$build_tools_path)
+  if test "x$ZIPALIGN" = "xno" ; then
+    AC_MSG_ERROR("Missing program: zipalign")
   fi
 fi
 

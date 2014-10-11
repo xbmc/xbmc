@@ -751,6 +751,9 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (!CGUIDialogVideoInfo::DeleteVideoItem(pItem))
       return;
   }
+  int itemNumber = m_viewControl.GetSelectedItem();
+  int select = itemNumber >= m_vecItems->Size()-1 ? itemNumber-1 : itemNumber;
+  m_viewControl.SetSelectedItem(select);
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 }
@@ -960,6 +963,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           m_viewControl.SetSelectedItem(itemNumber + 1);
 
         Refresh(true);
+        if (ret == CONTEXT_BUTTON_DELETE)
+        {
+          int select = itemNumber >= m_vecItems->Size()-1 ? itemNumber-1:itemNumber;
+          m_viewControl.SetSelectedItem(select);
+        }
       }
       return true;
     }
@@ -984,7 +992,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath = StringUtils::Format("musicdb://artists/%ld/",
+      strPath = StringUtils::Format("musicdb://artists/%i/",
                                     database.GetArtistByName(StringUtils::Join(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
@@ -994,7 +1002,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath = StringUtils::Format("musicdb://albums/%ld/",
+      strPath = StringUtils::Format("musicdb://albums/%i/",
                                     database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;

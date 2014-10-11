@@ -24,7 +24,11 @@
 #include "network/Network.h"
 #include "system.h"
 #include "FileFactory.h"
-#include "HDFile.h"
+#ifdef TARGET_POSIX
+#include "posix/PosixFile.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32File.h"
+#endif // TARGET_WINDOWS
 #include "CurlFile.h"
 #include "HTTPFile.h"
 #include "DAVFile.h"
@@ -32,9 +36,9 @@
 #include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "windows/WINFileSmb.h"
+#include "win32/Win32SMBFile.h"
 #else
-#include "SmbFile.h"
+#include "SMBFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -135,7 +139,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
-  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CHDFile();
+#ifdef TARGET_POSIX
+  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
+#elif defined(TARGET_WINDOWS)
+  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CWin32File();
+#endif // TARGET_WINDOWS 
   else if (url.IsProtocol("filereader")) return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
@@ -167,9 +175,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("cmyth")) return new CMythFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-    else if (url.IsProtocol("smb")) return new CWINFileSMB();
+    else if (url.IsProtocol("smb")) return new CWin32SMBFile();
 #else
-    else if (url.IsProtocol("smb")) return new CSmbFile();
+    else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM

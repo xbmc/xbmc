@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: German (http://www.transifex.com/projects/p/xbmc-main/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,7 @@ msgstr "Verstecke Info"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Anzeige - Optionen"
+msgstr "Anzeige-Optionen"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -42,11 +42,11 @@ msgstr "Vollbild"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr "Insgesamte Laufzeit"
+msgstr "Gesamte Dauer"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Musik - Dateien"
+msgstr "Musik-Dateien"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -66,7 +66,7 @@ msgstr "Allgemeine Optionen"
 
 msgctxt "#31027"
 msgid "Location"
-msgstr "Ort"
+msgstr "Standort"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
@@ -106,7 +106,7 @@ msgstr "PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "VORSPULEN"
+msgstr "SCHNELLES VORSPULEN"
 
 msgctxt "#31045"
 msgid "REWIND"
@@ -118,7 +118,7 @@ msgstr "SUCHLAUF"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Visualisierungs - Voreinstellung"
+msgstr "Visualisierungs-Voreinstellung"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -138,7 +138,7 @@ msgstr "Öffne Wiedergabeliste"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Wiedergabeliste abspeichern"
+msgstr "Wiedergabeliste speichern"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -146,7 +146,7 @@ msgstr "Wiedergabeliste schließen"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "System Musikdateien"
+msgstr "System-Musikdateien"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -154,7 +154,7 @@ msgstr "Aktuelle Wiedergabeliste"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Diese Datei ist gestapelt, wähle den zu startenden Teil aus."
+msgstr "Diese Datei ist gestapelt. Wähle den abzuspielenden Teil aus."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -162,7 +162,7 @@ msgstr "Aktuell ausgewählt"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Hauptmenü - Optionen"
+msgstr "Hauptmenü-Optionen"
 
 msgctxt "#31102"
 msgid "Background"
@@ -170,7 +170,7 @@ msgstr "Hintergrund"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Zeige \"Pause\" in Bilder Diaschau"
+msgstr "Zeige \"Pause\" in Bilder-Diaschau"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
@@ -186,15 +186,15 @@ msgstr "Flags von Dateinamen ausblenden [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Verstecke Hauptmenü Buttons"
+msgstr "Verstecke Hauptmenü-Buttons"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Standard Hintergrund aktivieren"
+msgstr "Standard-Hintergrund aktivieren"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Hintergrund Pfad:"
+msgstr "Hintergrund-Pfad:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -218,7 +218,7 @@ msgstr "Hauptmenü Programme-Untermenü"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Verstecke Hintergrund - Fanart"
+msgstr "Verstecke Hintergrund-Fanart"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -242,11 +242,11 @@ msgstr "Songtexte"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Fanart in Vollbild Visualisierung ausblenden."
+msgstr "Fanart in Vollbild-Visualisierung ausblenden."
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Songtext Addon"
+msgstr "Songtext-Addon"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -282,7 +282,7 @@ msgstr "Wähle Deinen Song"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Songtext - Quelle"
+msgstr "Songtext-Quelle"
 
 msgctxt "#31206"
 msgid "Found"
@@ -294,7 +294,7 @@ msgstr "Finde mehr"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr "Kommende Episoden"
+msgstr "Zukünftige Episoden"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -314,7 +314,7 @@ msgstr "Verberge Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Film - Details"
+msgstr "Film-Details"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -322,7 +322,7 @@ msgstr "Speicher-Auslastung:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Song - Nummer"
+msgstr "Song-Nummer"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
@@ -334,15 +334,15 @@ msgstr "Aktueller Scraper"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Wähle Scraper"
+msgstr "Wähle einen Scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Inhalt Scanning Optionen"
+msgstr "Inhalt-Scanning-Optionen"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Setze Fanart - Pfad"
+msgstr "Setze Fanart-Pfad"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -354,7 +354,7 @@ msgstr "Letzte Anmeldung"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Karaoke Songauswahl"
+msgstr "Karaoke-Songauswahl"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -362,7 +362,7 @@ msgstr "Erschienen"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Wiedergabeliste - Optionen"
+msgstr "Wiedergabeliste-Optionen"
 
 msgctxt "#31326"
 msgid "Created"
@@ -374,19 +374,19 @@ msgstr "Auflösung"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Kürzlich Hinzugefügt"
+msgstr "Kürzlich hinzugefügt"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Ausschalttimer gestellt![/B] [COLOR=grey2] - Zeit bis zum Herunterfahren:[/COLOR]"
+msgstr "[B]Ausschalt-Timer gestellt![/B] [COLOR=grey2] - Zeit bis zum Herunterfahren:[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Starte[CR][CR]Filmtrailer"
+msgstr "Button klicken zum Abspielen[CR][CR]Filmtrailer"
 
 msgctxt "#31331"
 msgid "Album Details"
-msgstr "Album Details"
+msgstr "Album-Details"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -426,51 +426,51 @@ msgstr "Aktivieren"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Skin - Standard"
+msgstr "Skin-Standard"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Skin - Standard ohne Großbuchstaben"
+msgstr "Skin-Standard ohne Großbuchstaben"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Arial basiert"
+msgstr "Arial-basiert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURIERE DIE DARSTELLUNGS EINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilisten Optionen[CR]Setze Bildschirmschoner"
+msgstr "[B]KONFIGURIERE DARSTELLUNGSEINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilisten Optionen[CR]Setze Bildschirmschoner"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]KONFIGURIERE VIDEO EINSTELLUNGEN[/B][CR][CR]Organisiere die Video-Bibliothek · Setze die Abspiel-Optionen · Ändere die Videoauflistungsoptionen[CR]Setze Untertitel Schriftart"
+msgstr "[B]KONFIGURIERE VIDEO-EINSTELLUNGEN[/B][CR][CR]Organisiere die Video-Bibliothek · Setze die Videoabspieloptionen · Ändere die Videoauflistungsoptionen[CR]Setze Untertitel-Schriftart"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGURIERE MUSIK-EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik-Bibliothek · Setze die Musik Abspiel Optionen · Ändere die Musikauflistungsoptionen[CR]Konfiguriere die Musikübertragung · Setze Karaoke-Optionen"
+msgstr "[B]KONFIGURIERE MUSIK-EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik-Bibliothek · Setze die Musikabspieloptionen · Ändere die Musikauflistungsoptionen[CR]Konfiguriere die Musikübertragung · Setze Karaoke-Optionen"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]KONFIGURIERE BILDER EINSTELLUNGEN[/B][CR][CR]Setze Bildauflistungsoptionen · Konfiguriere Diashow"
+msgstr "[B]KONFIGURIERE BILDER-EINSTELLUNGEN[/B][CR][CR]Setze Bildauflistungsoptionen · Konfiguriere Diashow"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]KONFIGURIERE WETTER EINSTELLUNGEN[/B][CR][CR]Wähle bis zu drei Städte zum Sammeln der Wetter-Informationen"
+msgstr "[B]KONFIGURIERE WETTER-EINSTELLUNGEN[/B][CR][CR]Wähle bis zu drei Städte zum Sammeln der Wetter-Informationen"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Konfiguriere und kalibriere Anzeigen · Konfiguriere Audioausgabe · Setze Fernbedienungseinstellungen · Setze Energiespar-Optionen · Aktiviere Debugging · Einrichten der Master-Sperre"
+msgstr "[B]KONFIGURIERE SYSTEM-EINSTELLUNGEN[/B][CR][CR]Konfiguriere und kalibriere Bildschirme · Konfiguriere Audioausgabe · Setze Fernbedienungseinstellungen[CR]Setze Energiespar-Optionen · Aktiviere Debugging · Richte die Master-Sperre ein"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons · Installiere Addons von xbmc.org[CR]Addon Einstellungen anpassen"
+msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons · Installiere Addons[CR]Passe Addon-Einstellungen an"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]TV Einstellungen konfigurieren[/B][CR][CR]Ändere die Vollbild Information - Verwalte die EPG-Daten Einstellungen"
+msgstr "[B]KONFIGURIERE TV-EINSTELLUNGEN[/B][CR][CR]Ändere die Vollbild Information - Verwalte EPG-Daten-Einstellungen"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und HTTP ein · Konfiguriere die Dateifreigabe[CR]Aktiviere Zeroconf · Konfiguriere AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf Kodi via UPnP und HTTP ein · Konfiguriere die Dateifreigabe[CR]Aktiviere Zeroconf · Konfiguriere AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -489,8 +489,8 @@ msgid "Login"
 msgstr "Anmeldung"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Wähle Dein XBMC Benutzerprofil[CR]Zum Anmelden und Fortfahren"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Wähle Dein Kodi-Benutzerprofil[CR]zum Anmelden und Fortfahren"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -498,7 +498,7 @@ msgstr "Den Anmeldebildschirm beim Start anzeigen oder verstecken"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Profil, dass beim Start verwendet werden soll, wenn der Anmeldebildschirm deaktiviert ist."
+msgstr "Profil, das beim Start verwendet werden soll, wenn der Anmeldebildschirm deaktiviert ist."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "BILDER"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "LIVE TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -607,3 +607,7 @@ msgstr "DISC ABSPIELEN"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SYSTEM"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

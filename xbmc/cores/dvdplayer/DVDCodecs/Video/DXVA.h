@@ -27,10 +27,21 @@
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+#include <list>
 #include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
 
 namespace DXVA {
+
+#define CHECK(a) \
+do { \
+  HRESULT res = a; \
+  if(FAILED(res)) \
+  { \
+    CLog::Log(LOGERROR, "DXVA - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    return false; \
+  } \
+} while(0);
 
 class CSurfaceContext
   : public IDVDResourceCounted<CSurfaceContext>
@@ -39,10 +50,64 @@ public:
   CSurfaceContext();
   ~CSurfaceContext();
 
-   void HoldSurface(IDirect3DSurface9* surface);
+  void AddSurface(IDirect3DSurface9* surf);
+  void ClearReference(IDirect3DSurface9* surf);
+  bool MarkRender(IDirect3DSurface9* surf);
+  void ClearRender(IDirect3DSurface9* surf);
+  bool IsValid(IDirect3DSurface9* surf);
+  IDirect3DSurface9* GetFree(IDirect3DSurface9* surf);
+  IDirect3DSurface9* GetAtIndex(unsigned int idx);
+  void Reset();
+  int Size();
+  bool HasFree();
+  bool HasRefs();
 
 protected:
-  std::vector<IDirect3DSurface9*> m_heldsurfaces;
+  std::map<IDirect3DSurface9*, int> m_state;
+  std::list<IDirect3DSurface9*> m_freeSurfaces;
+  CCriticalSection m_section;
+};
+
+class CRenderPicture
+  : public IDVDResourceCounted<CRenderPicture>
+{
+public:
+  CRenderPicture(CSurfaceContext *context);
+  ~CRenderPicture();
+  IDirect3DSurface9* surface;
+protected:
+  CSurfaceContext *surface_context;
+};
+
+typedef HRESULT(__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
+class CDecoder;
+class CDXVAContext
+{
+public:
+  static bool EnsureContext(CDXVAContext **ctx, CDecoder *decoder);
+  bool GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outFormat);
+  bool GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_ConfigPictureDecode &config);
+  bool CreateSurfaces(int width, int height, D3DFORMAT format, unsigned int count, LPDIRECT3DSURFACE9 *surfaces);
+  bool CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder);
+  void Release(CDecoder *decoder);
+private:
+  CDXVAContext();
+  void Close();
+  bool LoadSymbols();
+  bool CreateContext();
+  void DestroyContext();
+  void QueryCaps();
+  bool IsValidDecoder(CDecoder *decoder);
+  static CDXVAContext *m_context;
+  static CCriticalSection m_section;
+  static HMODULE m_dlHandle;
+  static DXVA2CreateVideoServicePtr m_DXVA2CreateVideoService;
+  IDirectXVideoDecoderService* m_service;
+  int m_refCount;
+  UINT m_input_count;
+  GUID *m_input_list;
+  std::vector<CDecoder*> m_decoders;
+  bool m_atiWorkaround;
 };
 
 class CDecoder
@@ -59,6 +124,7 @@ public:
   virtual void Close();
   virtual const std::string Name() { return "dxva2"; }
   virtual unsigned GetAllowedReferences();
+  virtual long Release();
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();
@@ -67,6 +133,7 @@ public:
 
   static bool      Supports(enum PixelFormat fmt);
 
+  void CloseDXVADecoder();
 
 protected:
   enum EDeviceState
@@ -80,100 +147,23 @@ protected:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
-  struct SVideoBuffer
-  {
-    SVideoBuffer();
-   ~SVideoBuffer();
-    void Clear();
-
-    IDirect3DSurface9* surface;
-    bool               used;
-    int                age;
-  };
-
-  IDirectXVideoDecoderService* m_service;
   IDirectXVideoDecoder*        m_decoder;
   HANDLE                       m_device;
   GUID                         m_input;
   DXVA2_VideoDesc              m_format;
-  static const unsigned        m_buffer_max = 32;
-  SVideoBuffer                 m_buffer[m_buffer_max];
-  unsigned                     m_buffer_count;
-  unsigned                     m_buffer_age;
   int                          m_refs;
+  CRenderPicture              *m_presentPicture;
 
   struct dxva_context*         m_context;
 
   CSurfaceContext*             m_surface_context;
+  CDXVAContext*                m_dxva_context;
+  AVCodecContext*              m_avctx;
 
   unsigned int                 m_shared;
 
   CCriticalSection             m_section;
   CEvent                       m_event;
-};
-
-class CProcessor
-  : public ID3DResource
-{
-public:
-  CProcessor();
- ~CProcessor();
-
-  virtual bool           PreInit();
-  virtual void           UnInit();
-  virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
-  virtual void           Close();
-  virtual REFERENCE_TIME Add(DVDVideoPicture* picture);
-  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
-  virtual unsigned       Size() { if (m_service) return m_size; return 0; }
-
-  virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
-
-protected:
-  virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
-  virtual bool CreateSurfaces();
-  virtual bool OpenProcessor();
-  virtual bool SelectProcessor();
-  virtual void EvaluateQuirkNoDeintProcForProg();
-
-  IDirectXVideoProcessorService* m_service;
-  IDirectXVideoProcessor*        m_process;
-  GUID                           m_device;
-
-  DXVA2_VideoProcessorCaps m_caps;
-  DXVA2_VideoDesc  m_desc;
-
-  DXVA2_ValueRange m_brightness;
-  DXVA2_ValueRange m_contrast;
-  DXVA2_ValueRange m_hue;
-  DXVA2_ValueRange m_saturation;
-  REFERENCE_TIME   m_time;
-  unsigned         m_size;
-  unsigned         m_max_back_refs;
-  unsigned         m_max_fwd_refs;
-  EDEINTERLACEMODE m_deinterlace_mode;
-  EINTERLACEMETHOD m_interlace_method;
-  bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
-  unsigned         m_index;
-
-  struct SVideoSample
-  {
-    DXVA2_VideoSample sample;
-    CSurfaceContext* context;
-  };
-
-  typedef std::deque<SVideoSample> SSamples;
-  SSamples          m_sample;
-
-  CCriticalSection  m_section;
-
-  LPDIRECT3DSURFACE9* m_surfaces;
-  CSurfaceContext* m_context;
-
-  bool             m_quirk_nodeintprocforprog;
 };
 
 };

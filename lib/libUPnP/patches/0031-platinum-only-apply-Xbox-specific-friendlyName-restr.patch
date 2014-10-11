@@ -1,0 +1,39 @@
+From 9916c3e60b5924cd36bb4018e3723659cc077e23 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 2 Aug 2014 20:57:46 +0200
+Subject: [PATCH] platinum: only apply Xbox specific "friendlyName"
+ restrictions to Xbox clients
+
+---
+ .../Source/Devices/MediaConnect/PltMediaConnect.cpp       | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp
+index f948dd1..32503fe 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp
+@@ -117,11 +117,16 @@ PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
+     
+     PLT_DeviceSignature signature = PLT_HttpHelper::GetDeviceSignature(request);
+ 
+-    // XBox needs to see something behind a ':' to even show it
+-    if (m_AddHostname && hostname.GetLength() > 0) {
+-        m_FriendlyName += ": " + hostname;
+-    } else if (m_FriendlyName.Find(":") == -1) {
+-        m_FriendlyName += ": 1";
++    if (signature == PLT_DEVICE_XBOX /*|| signature == PLT_SONOS*/) {
++        // XBox needs to see something behind a ':' to even show it
++        if (m_AddHostname && hostname.GetLength() > 0) {
++            m_FriendlyName += ": " + hostname;
++        } else if (m_FriendlyName.Find(":") == -1) {
++            m_FriendlyName += ": 1";
++        }
++    }
++    else if (m_AddHostname && hostname.GetLength() > 0) {
++      m_FriendlyName += " (" + hostname + ")";
+     }
+ 
+     // change some things based on device signature from request
+-- 
+1.7.11.msysgit.0
+

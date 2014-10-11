@@ -59,6 +59,7 @@
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
 		<teletext>Teletext</teletext>
+		<print>Print</print>
 
 		<!-- new kernel-based lirc button names -->
 		<eject>KEY_EJECTCD</eject>

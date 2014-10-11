@@ -96,7 +96,7 @@ int CPlayerSelectionRule::GetTristate(const char* szValue)
 
 bool CPlayerSelectionRule::CompileRegExp(const std::string& str, CRegExp& regExp)
 {
-  return !str.empty() > 0 && regExp.RegComp(str.c_str());
+  return !str.empty() && regExp.RegComp(str.c_str());
 }
 
 bool CPlayerSelectionRule::MatchesRegExp(const std::string& str, CRegExp& regExp)
@@ -117,7 +117,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_tBD >= 0 && (m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD())) return;
   if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD()) return;
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
-  if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;
+  if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDiscImage()) return;
 
   CRegExp regExp(false, CRegExp::autoUtf8);
 

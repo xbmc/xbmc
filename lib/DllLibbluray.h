@@ -79,6 +79,7 @@ public:
   virtual void     bd_register_argb_overlay_proc(BLURAY *bd, void *handle, bd_argb_overlay_proc_f func, struct bd_argb_buffer_s *buf)=0;
 #endif
   virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
+  virtual int      bd_mouse_select              (BLURAY *bd, int64_t pts, uint16_t x, uint16_t y)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -126,6 +127,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD4(void,                bd_register_argb_overlay_proc, (BLURAY *p1, void *p2, bd_argb_overlay_proc_f p3, struct bd_argb_buffer_s *p4))
 #endif
   DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
+  DEFINE_METHOD4(int,                 bd_mouse_select,           (BLURAY *p1, int64_t p2, uint16_t p3, uint16_t p4))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
@@ -169,6 +171,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_register_argb_overlay_proc)
 #endif
     RESOLVE_METHOD(bd_menu_call)
+    RESOLVE_METHOD(bd_mouse_select)
   END_METHOD_RESOLVE()
 
 public:

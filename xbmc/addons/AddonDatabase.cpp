@@ -24,9 +24,7 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
-#include "addons/Service.h"
 #include "dbwrappers/dataset.h"
-#include "pvr/PVRManager.h"
 
 using namespace ADDON;
 using namespace std;
@@ -589,18 +587,11 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
         std::string sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
 
+        // If the addon is a special, call the disabled handler
         AddonPtr addon;
-        // If the addon is a service, stop it
-        if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
-        {
-          boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-          if (service)
-            service->Stop();
-        }
-        // restart the pvr manager when disabling a pvr add-on with the pvr manager enabled
-        else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon &&
-            PVR::CPVRManager::Get().IsStarted())
-          PVR::CPVRManager::Get().Start(true);
+        if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)) && addon)
+          addon->OnDisabled();
 
         return true;
       }
@@ -612,17 +603,14 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
       std::string sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
 
-      AddonPtr addon;
-      // If the addon is a service, start it
-      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon && disabled)
+      if (disabled)
       {
-        boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-        if (service)
-          service->Start();
+        // If the addon is a special, call the enabled handler
+        AddonPtr addon;
+        if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)) && addon)
+          addon->OnEnabled();
       }
-      // (re)start the pvr manager when enabling a pvr add-on
-      else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
-        PVR::CPVRManager::Get().Start(true);
     }
     return true;
   }

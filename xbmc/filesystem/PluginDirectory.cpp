@@ -101,8 +101,6 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 
   // get options
   std::string options = url.GetOptions();
-  URIUtils::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
-                                    // is needed for all others, as XBMC adds slashes to "folders"
   url.SetOptions(""); // do this because we can then use the url to generate the basepath
                       // which is passed to the plugin (and represents the share)
 
@@ -431,8 +429,6 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
   // options
   std::string options = url.GetOptions();
-  URIUtils::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
-                                    // is needed for all others, as XBMC adds slashes to "folders"
   url.SetOptions(""); // do this because we can then use the url to generate the basepath
                       // which is passed to the plugin (and represents the share)
 

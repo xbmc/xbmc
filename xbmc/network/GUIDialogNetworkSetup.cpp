@@ -143,7 +143,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #endif
 
   SET_CONTROL_LABELS(CONTROL_PROTOCOL, m_protocol, &labels);
-  OnProtocolChange();
+  UpdateButtons();
 }
 
 void CGUIDialogNetworkSetup::OnDeinitWindow(int nextWindowID)

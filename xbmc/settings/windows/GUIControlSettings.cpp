@@ -415,7 +415,7 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
     {
       if (!itValue->isInteger())
         return false;
-      values.insert(itValue->asInteger());
+      values.insert((int)itValue->asInteger());
     }
   }
   else
@@ -978,7 +978,6 @@ bool CGUIControlRangeSetting::OnClick()
 
   CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
   const SettingPtrList &settingListValues = settingList->GetValue();
-  SettingPtrList settingListValuesCopy(settingListValues.begin(), settingListValues.end());
   if (settingListValues.size() != 2)
     return false;
 

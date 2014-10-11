@@ -95,6 +95,12 @@ namespace PVR
      */
     CPVRManager(void);
 
+    /*!
+     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
+     * @param channel The channel which is updated
+     */
+    void UpdateLastWatched(CPVRChannel &channel);
+
   public:
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -198,7 +204,7 @@ namespace PVR
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
      */
-    bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
+    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
 
     /*!
      * @brief Get a GUIInfoManager integer.
@@ -299,7 +305,7 @@ namespace PVR
      * @param bPreview True to show a preview, false otherwise.
      * @return Trrue if the switch was successful, false otherwise.
      */
-    bool PerformChannelSwitch(const CPVRChannel &channel, bool bPreview);
+    bool PerformChannelSwitch(CPVRChannel &channel, bool bPreview);
 
     /*!
      * @brief Close an open PVR stream.
@@ -522,7 +528,7 @@ namespace PVR
      * @param strTitle Override the title of the dialog if set.
      * @return True if entered PIN was correct, false otherwise.
      */
-    bool CheckParentalPIN(const char *strTitle = NULL);
+    bool CheckParentalPIN(const std::string& strTitle = "");
 
     /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
@@ -547,6 +553,12 @@ namespace PVR
      * @return True if EPG tags where created successfully, false otherwise
      */
     bool CreateChannelEpgs(void);
+
+    /*!
+    * @brief get the name of the channel group of the current playing channel
+    * @return name of channel if tv channel is playing
+    */
+    std::string GetPlayingTVGroupName();
 
   protected:
     /*!
@@ -617,7 +629,7 @@ namespace PVR
      * @param strText The current status.
      * @param iProgress The current progress in %.
      */
-    void ShowProgressDialog(const CStdString &strText, int iProgress);
+    void ShowProgressDialog(const std::string &strText, int iProgress);
 
     /*!
      * @brief Hide the progress dialog if it's visible.

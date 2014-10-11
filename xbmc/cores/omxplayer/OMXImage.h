@@ -132,6 +132,7 @@ protected:
   OMX_BUFFERHEADERTYPE          *m_decoded_buffer;
   OMX_PARAM_PORTDEFINITIONTYPE  m_decoded_format;
   CCriticalSection              m_OMXSection;
+  bool                          m_success;
 };
 
 class COMXImageEnc
@@ -150,6 +151,7 @@ protected:
   OMX_BUFFERHEADERTYPE          *m_encoded_buffer;
   OMX_PARAM_PORTDEFINITIONTYPE  m_encoded_format;
   CCriticalSection              m_OMXSection;
+  bool                          m_success;
 };
 
 class COMXImageReEnc
@@ -173,6 +175,7 @@ protected:
   CCriticalSection              m_OMXSection;
   void                          *m_pDestBuffer;
   unsigned int                  m_nDestAllocSize;
+  bool                          m_success;
 };
 
 class COMXTexture
@@ -197,6 +200,7 @@ protected:
 
   OMX_BUFFERHEADERTYPE *m_egl_buffer;
   CCriticalSection              m_OMXSection;
+  bool              m_success;
 };
 
 extern COMXImage g_OMXImage;

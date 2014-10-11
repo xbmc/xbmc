@@ -95,6 +95,8 @@
 
 #define XINPUT_IR_REMOTE_EJECT          235
 
+#define XINPUT_IR_REMOTE_PRINT          240
+
 // Reserved 256 -> ...
 // Key.h
 // KEY_BUTTON_*

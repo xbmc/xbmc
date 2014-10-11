@@ -269,8 +269,8 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString value = StringUtils::Format("%i", i + 1);
       CStdString strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
       CStdString strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
-      CStdString strDBpath = StringUtils::Format("musicdb://albums/%i/", album.idAlbum);
-      CStdString strSQLAlbum = StringUtils::Format("idAlbum=%i", album.idAlbum);
+      CStdString strDBpath = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
+      CStdString strSQLAlbum = StringUtils::Format("idAlbum=%li", album.idAlbum);
       CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
       
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);

@@ -34,8 +34,8 @@ namespace EPG
 
 namespace PVR
 {
-#define XBMC_INTERNAL_GROUP_RADIO 1
-#define XBMC_INTERNAL_GROUP_TV    2
+#define PVR_INTERNAL_GROUP_ID_RADIO 1
+#define PVR_INTERNAL_GROUP_ID_TV    2
 
 #define PVR_GROUP_TYPE_DEFAULT      0
 #define PVR_GROUP_TYPE_INTERNAL     1
@@ -49,6 +49,7 @@ namespace PVR
   {
     CPVRChannelPtr channel;
     unsigned int   iChannelNumber;
+    unsigned int   iSubChannelNumber;
   } PVRChannelGroupMember;
   
   enum EpgDateType
@@ -80,7 +81,7 @@ namespace PVR
      * @param iGroupId The database ID of this group.
      * @param strGroupName The name of this group.
      */
-    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName);
+    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName);
 
     /*!
      * @brief Create a new channel group instance from a channel group provided by an add-on.
@@ -113,8 +114,9 @@ namespace PVR
      * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager. Call SortByChannelNumber() and Renumber() after all changes are done.
      * @param channel The channel to change the channel number for.
      * @param iChannelNumber The new channel number.
+     * @param iSubChannelNumber The new sub channel number.
      */
-    bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber);
+    bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0);
 
     /*!
      * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -152,7 +154,7 @@ namespace PVR
      * @param bSaveInDb Save in the database or not.
      * @return True if the something changed, false otherwise.
      */
-    bool SetGroupName(const CStdString &strGroupName, bool bSaveInDb = false);
+    bool SetGroupName(const std::string &strGroupName, bool bSaveInDb = false);
 
     /*!
      * @brief Persist changed or new data.
@@ -237,7 +239,7 @@ namespace PVR
      * @brief The name of this group.
      * @return The name of this group.
      */
-    CStdString GroupName(void) const;
+    std::string GroupName(void) const;
 
     /*! @name Sort methods
      */
@@ -270,9 +272,10 @@ namespace PVR
     /*!
      * @brief Get a channel given it's channel number.
      * @param iChannelNumber The channel number.
+     * * @param iSubChannelNumber The sub channel number.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelNumber(unsigned int iChannelNumber) const;
+    CFileItemPtr GetByChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.
@@ -280,6 +283,13 @@ namespace PVR
      * @return The channel number in this group or 0 if the channel isn't a member of this group.
      */
     unsigned int GetChannelNumber(const CPVRChannel &channel) const;
+
+    /*!
+     * @brief Get the sub channel number in this group of the given channel.
+     * @param channel The channel to get the sub channel number for.
+     * @return The sub channel number in this group or 0 if the channel isn't a member of this group.
+     */
+    unsigned int GetSubChannelNumber(const CPVRChannel &channel) const;
 
     /*!
      * @brief Get the next channel in this group.
@@ -408,7 +418,7 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL, bool bUserSetIcon = false);
+    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
 
     bool ToggleChannelLocked(const CFileItem &channel);
 
@@ -520,7 +530,7 @@ namespace PVR
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
-    CStdString       m_strGroupName;                /*!< The name of this group */
+    std::string      m_strGroupName;                /*!< The name of this group */
     bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
     bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
     bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */

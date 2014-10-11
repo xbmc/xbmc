@@ -4,8 +4,8 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>2</system>
-		<left>255</left>
-		<top>145</top>
+		<left>205</left>
+		<top>120</top>
 	</coordinates>
 	<controls>
 		<control type="group">
@@ -14,7 +14,7 @@
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
-				<width>760</width>
+				<width>860</width>
 				<height>430</height>
 				<texture border="40">DialogBack.png</texture>
 			</control>
@@ -22,7 +22,7 @@
 				<description>Dialog Header image</description>
 				<left>40</left>
 				<top>16</top>
-				<width>680</width>
+				<width>780</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
@@ -30,7 +30,7 @@
 				<description>header label</description>
 				<left>40</left>
 				<top>20</top>
-				<width>720</width>
+				<width>820</width>
 				<height>30</height>
 				<font>font13_title</font>
 				<align>center</align>
@@ -40,7 +40,7 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<left>670</left>
+				<left>770</left>
 				<top>15</top>
 				<width>64</width>
 				<height>32</height>
@@ -58,25 +58,27 @@
 			<control type="image">
 				<left>50</left>
 				<top>60</top>
-				<width>660</width>
+				<width>760</width>
 				<height>50</height>
 				<aspectratio>stretch</aspectratio>
 				<texture border="20">KeyboardEditArea.png</texture>
 			</control>
-			<control type="label" id="310">
+			<control type="edit" id="312">
 				<description>Edit Text</description>
 				<left>55</left>
 				<top>60</top>
-				<width>650</width>
+				<width>750</width>
 				<height>50</height>
 				<font>font13</font>
 				<align>center</align>
 				<aligny>center</aligny>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
 			</control>
 			<control type="image">
 				<left>130</left>
 				<top>110</top>
-				<width>500</width>
+				<width>600</width>
 				<height>30</height>
 				<aspectratio>stretch</aspectratio>
 				<texture>DialogHeader.png</texture>
@@ -84,788 +86,473 @@
 			<control type="group">
 				<left>30</left>
 				<top>140</top>
-				<control type="button" id="300">
-					<description>DONE button</description>
-					<left>0</left>
-					<top>0</top>
-					<width>200</width>
-					<height>50</height>
-					<label>20177</label>
-					<onleft>57</onleft>
-					<onright>48</onright>
-					<onup>307</onup>
-					<ondown>302</ondown>
-					<texturenofocus border="25,25,5,5">KeyboardCornerTopNF.png</texturenofocus>
-					<texturefocus border="25,25,5,5">KeyboardCornerTop.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
+				<!-- 1st row -->
+				<control type="grouplist">
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="309">
+						<description>Layout button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>20177</label>
+						<onup>300</onup>
+						<ondown>302</ondown>
+						<texturenofocus border="25,25,5,5">KeyboardCornerTopNF.png</texturenofocus>
+						<texturefocus border="25,25,5,5">KeyboardCornerTop.png</texturefocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="100">
+						<description>(0,0) key button</description>
+						<onup>32</onup>
+						<ondown>120</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="101">
+						<description>(0,1) key button</description>
+						<onup>32</onup>
+						<ondown>121</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="102">
+						<description>(0,2) key button</description>
+						<onup>32</onup>
+						<ondown>122</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="103">
+						<description>(0,3) key button</description>
+						<onup>32</onup>
+						<ondown>123</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="104">
+						<description>(0,4) key button</description>
+						<onup>8</onup>
+						<ondown>124</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="105">
+						<description>(0,5) key button</description>
+						<onup>8</onup>
+						<ondown>125</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="106">
+						<description>(0,6) key button</description>
+						<onup>8</onup>
+						<ondown>126</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="107">
+						<description>(0,7) key button</description>
+						<onup>8</onup>
+						<ondown>127</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="108">
+						<description>(0,8) key button</description>
+						<onup>305</onup>
+						<ondown>128</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="109">
+						<description>(0,9) key button</description>
+						<onup>305</onup>
+						<ondown>129</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="110">
+						<description>(0,10) key button</description>
+						<onup>306</onup>
+						<ondown>130</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="111">
+						<description>(0,11) key button</description>
+						<onup>306</onup>
+						<ondown>131</ondown>
+						<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
+						<texturefocus flipx="true" border="5,25,25,5">KeyboardCornerTop.png</texturefocus>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
-				<control type="button" id="48">
-					<description>'0' button</description>
-					<left>200</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>300</onleft>
-					<onright>49</onright>
-					<onup>32</onup>
-					<ondown>65</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="49">
-					<description>'1' button</description>
-					<left>250</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>48</onleft>
-					<onright>50</onright>
-					<onup>32</onup>
-					<ondown>66</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="50">
-					<description>'2' button</description>
-					<left>300</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>49</onleft>
-					<onright>51</onright>
-					<onup>32</onup>
-					<ondown>67</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="51">
-					<description>'3' button</description>
-					<left>350</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>50</onleft>
-					<onright>52</onright>
-					<onup>32</onup>
-					<ondown>68</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="52">
-					<description>'4' button</description>
-					<left>400</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>51</onleft>
-					<onright>53</onright>
-					<onup>32</onup>
-					<ondown>69</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="53">
-					<description>'5' button</description>
-					<left>450</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>52</onleft>
-					<onright>54</onright>
-					<onup>32</onup>
-					<ondown>70</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="54">
-					<description>'6' button</description>
-					<left>500</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>53</onleft>
-					<onright>55</onright>
-					<onup>305</onup>
-					<ondown>71</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="55">
-					<description>'7' button</description>
-					<left>550</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>54</onleft>
-					<onright>56</onright>
-					<onup>305</onup>
-					<ondown>72</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="56">
-					<description>'8' button</description>
-					<left>600</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>55</onleft>
-					<onright>57</onright>
-					<onup>306</onup>
-					<ondown>73</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="57">
-					<description>'9' button</description>
-					<left>650</left>
-					<top>0</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>56</onleft>
-					<onright>300</onright>
-					<onup>306</onup>
-					<ondown>74</ondown>
-					<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
-					<texturefocus flipx="true" border="5,25,25,5">KeyboardCornerTop.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="radiobutton" id="302">
-					<description>SHIFT button</description>
-					<left>0</left>
+					<!-- 2nd row -->
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
 					<top>50</top>
-					<width>200</width>
-					<height>50</height>
-					<label>20178</label>
-					<onleft>74</onleft>
-					<onright>65</onright>
-					<onup>300</onup>
-					<ondown>303</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<radioposy>5</radioposy>
-					<radiowidth>20</radiowidth>
-					<radioheight>20</radioheight>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
+					<itemgap>0</itemgap>
+					<control type="radiobutton" id="302">
+						<description>SHIFT button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>20178</label>
+						<onup>309</onup>
+						<ondown>303</ondown>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<radioposy>5</radioposy>
+						<radiowidth>20</radiowidth>
+						<radioheight>20</radioheight>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="120">
+						<description>(1,0) key button</description>
+						<onup>100</onup>
+						<ondown>140</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="121">
+						<description>(1,1) key button</description>
+						<onup>101</onup>
+						<ondown>141</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="122">
+						<description>(1,2) key button</description>
+						<onup>102</onup>
+						<ondown>142</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="123">
+						<description>(1,3) key button</description>
+						<onup>103</onup>
+						<ondown>143</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="124">
+						<description>(1,4) key button</description>
+						<onup>104</onup>
+						<ondown>144</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="125">
+						<description>(1,5) key button</description>
+						<onup>105</onup>
+						<ondown>145</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="126">
+						<description>(1,6) key button</description>
+						<onup>106</onup>
+						<ondown>146</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="127">
+						<description>(1,7) key button</description>
+						<onup>107</onup>
+						<ondown>147</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="128">
+						<description>(1,8) key button</description>
+						<onup>108</onup>
+						<ondown>148</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="129">
+						<description>(1,9) key button</description>
+						<onup>109</onup>
+						<ondown>149</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="130">
+						<description>(1,10) key button</description>
+						<onup>110</onup>
+						<ondown>150</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="131">
+						<description>(1,11) key button</description>
+						<onup>111</onup>
+						<ondown>151</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
-				<control type="button" id="65">
-					<description>'A' button</description>
-					<left>200</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>302</onleft>
-					<onright>66</onright>
-					<onup>48</onup>
-					<ondown>75</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="66">
-					<description>'B' button</description>
-					<left>250</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>65</onleft>
-					<onright>67</onright>
-					<onup>49</onup>
-					<ondown>76</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="67">
-					<description>'C' button</description>
-					<left>300</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>66</onleft>
-					<onright>68</onright>
-					<onup>50</onup>
-					<ondown>77</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="68">
-					<description>'D' button</description>
-					<left>350</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>67</onleft>
-					<onright>69</onright>
-					<onup>51</onup>
-					<ondown>78</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="69">
-					<description>'E' button</description>
-					<left>400</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>68</onleft>
-					<onright>70</onright>
-					<onup>52</onup>
-					<ondown>79</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="70">
-					<description>'F' button</description>
-					<left>450</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>69</onleft>
-					<onright>71</onright>
-					<onup>53</onup>
-					<ondown>80</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="71">
-					<description>'G' button</description>
-					<left>500</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>70</onleft>
-					<onright>72</onright>
-					<onup>54</onup>
-					<ondown>81</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="72">
-					<description>'H' button</description>
-					<left>550</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>71</onleft>
-					<onright>73</onright>
-					<onup>55</onup>
-					<ondown>82</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="73">
-					<description>'I' button</description>
-					<left>600</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>72</onleft>
-					<onright>74</onright>
-					<onup>56</onup>
-					<ondown>83</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="74">
-					<description>'J' button</description>
-					<left>650</left>
-					<top>50</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>73</onleft>
-					<onright>302</onright>
-					<onup>57</onup>
-					<ondown>84</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="radiobutton" id="303">
-					<description>CAPS LOCK button</description>
-					<left>0</left>
+					<!-- 3rd row -->
+				<control type="grouplist">
 					<top>100</top>
-					<width>200</width>
-					<height>50</height>
-					<label>20179</label>
-					<onleft>84</onleft>
-					<onright>75</onright>
-					<onup>302</onup>
-					<ondown>304</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<radioposy>5</radioposy>
-					<radiowidth>20</radiowidth>
-					<radioheight>20</radioheight>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
+					<orientation>horizontal</orientation>
+					<itemgap>0</itemgap>
+					<control type="radiobutton" id="303">
+						<description>CAPS LOCK button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>20179</label>
+						<onup>302</onup>
+						<ondown>307</ondown>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<radioposy>5</radioposy>
+						<radiowidth>20</radiowidth>
+						<radioheight>20</radioheight>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="140">
+						<description>(2,0) key button</description>
+						<onup>120</onup>
+						<ondown>160</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="141">
+						<description>(2,1) key button</description>
+						<onup>121</onup>
+						<ondown>161</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="142">
+						<description>(2,2) key button</description>
+						<onup>122</onup>
+						<ondown>162</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="143">
+						<description>(2,3) key button</description>
+						<onup>123</onup>
+						<ondown>163</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="144">
+						<description>(2,4) key button</description>
+						<onup>124</onup>
+						<ondown>164</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="145">
+						<description>(2,5) key button</description>
+						<onup>125</onup>
+						<ondown>165</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="146">
+						<description>(2,6) key button</description>
+						<onup>126</onup>
+						<ondown>166</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="147">
+						<description>(2,7) key button</description>
+						<onup>127</onup>
+						<ondown>167</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="148">
+						<description>(2,8) key button</description>
+						<onup>128</onup>
+						<ondown>168</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="149">
+						<description>(2,9) key button</description>
+						<onup>129</onup>
+						<ondown>169</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="150">
+						<description>(2,10) key button</description>
+						<onup>130</onup>
+						<ondown>170</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="151">
+						<description>(2,11) key button</description>
+						<onup>131</onup>
+						<ondown>171</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
-				<control type="button" id="75">
-					<description>'K' button</description>
-					<left>200</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>303</onleft>
-					<onright>76</onright>
-					<onup>65</onup>
-					<ondown>85</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="76">
-					<description>'L' button</description>
-					<left>250</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>75</onleft>
-					<onright>77</onright>
-					<onup>66</onup>
-					<ondown>86</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="77">
-					<description>'M' button</description>
-					<left>300</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>76</onleft>
-					<onright>78</onright>
-					<onup>67</onup>
-					<ondown>87</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="78">
-					<description>'N' button</description>
-					<left>350</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>77</onleft>
-					<onright>79</onright>
-					<onup>68</onup>
-					<ondown>88</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="79">
-					<description>'O' button</description>
-					<left>400</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>78</onleft>
-					<onright>80</onright>
-					<onup>69</onup>
-					<ondown>89</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="80">
-					<description>'P' button</description>
-					<left>450</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>79</onleft>
-					<onright>81</onright>
-					<onup>70</onup>
-					<ondown>90</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="81">
-					<description>'Q' button</description>
-					<left>500</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>80</onleft>
-					<onright>82</onright>
-					<onup>71</onup>
-					<ondown>8</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="82">
-					<description>'R' button</description>
-					<left>550</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>81</onleft>
-					<onright>83</onright>
-					<onup>72</onup>
-					<ondown>8</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="83">
-					<description>'S' button</description>
-					<left>600</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>82</onleft>
-					<onright>84</onright>
-					<onup>73</onup>
-					<ondown>8</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="84">
-					<description>'T' button</description>
-					<left>650</left>
-					<top>100</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>83</onleft>
-					<onright>303</onright>
-					<onup>74</onup>
-					<ondown>8</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="radiobutton" id="304">
-					<description>Symbols button</description>
-					<left>0</left>
+					<!-- 4th row -->
+				<control type="grouplist">
 					<top>150</top>
-					<width>200</width>
-					<height>50</height>
-					<label>20180</label>
-					<onleft>8</onleft>
-					<onright>85</onright>
-					<onup>303</onup>
-					<ondown>307</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<radioposy>5</radioposy>
-					<radiowidth>20</radiowidth>
-					<radioheight>20</radioheight>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="307">
+						<description>IP Input button</description>
+						<width>100</width>
+						<height>50</height>
+						<onup>303</onup>
+						<ondown>300</ondown>
+						<label>IP</label>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="radiobutton" id="304">
+						<description>Symbols button</description>
+						<width>100</width>
+						<height>50</height>
+						<label>@#!*   </label>
+						<onup>303</onup>
+						<ondown>300</ondown>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<radioposy>5</radioposy>
+						<radiowidth>20</radiowidth>
+						<radioheight>20</radioheight>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="160">
+						<description>(3,0) key button</description>
+						<onup>140</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="161">
+						<description>(3,1) key button</description>
+						<onup>141</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="162">
+						<description>(3,2) key button</description>
+						<onup>142</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="163">
+						<description>(3,3) key button</description>
+						<onup>143</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="164">
+						<description>(3,4) key button</description>
+						<onup>144</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="165">
+						<description>(3,5) key button</description>
+						<onup>145</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="166">
+						<description>(3,6) key button</description>
+						<onup>146</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="167">
+						<description>(3,7) key button</description>
+						<onup>147</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="168">
+						<description>(3,8) key button</description>
+						<onup>148</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="169">
+						<description>(3,9) key button</description>
+						<onup>149</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="170">
+						<description>(3,10) key button</description>
+						<onup>150</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="171">
+						<description>(3,11) key button</description>
+						<onup>151</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
-				<control type="button" id="85">
-					<description>'U' button</description>
-					<left>200</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>304</onleft>
-					<onright>86</onright>
-					<onup>75</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="86">
-					<description>'V' button</description>
-					<left>250</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>85</onleft>
-					<onright>87</onright>
-					<onup>76</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="87">
-					<description>'W' button</description>
-					<left>300</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>86</onleft>
-					<onright>88</onright>
-					<onup>77</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="88">
-					<description>'X' button</description>
-					<left>350</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>87</onleft>
-					<onright>89</onright>
-					<onup>78</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="89">
-					<description>'Y' button</description>
-					<left>400</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>88</onleft>
-					<onright>90</onright>
-					<onup>79</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="90">
-					<description>'Z' button</description>
-					<left>450</left>
-					<top>150</top>
-					<width>50</width>
-					<height>50</height>
-					<onleft>89</onleft>
-					<onright>8</onright>
-					<onup>80</onup>
-					<ondown>32</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="8">
-					<description>BACKSPACE button</description>
-					<left>500</left>
-					<top>150</top>
-					<width>200</width>
-					<height>50</height>
-					<label>20181</label>
-					<onleft>90</onleft>
-					<onright>304</onright>
-					<onup>81</onup>
-					<ondown>305</ondown>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="307">
-					<description>IP Input button</description>
-					<left>0</left>
+					<!-- 5th row -->
+				<control type="grouplist">
 					<top>200</top>
-					<width>200</width>
-					<height>50</height>
-					<texturenofocus border="25,5,25,5">KeyboardCornerBottomNF.png</texturenofocus>
-					<texturefocus border="25,5,25,5">KeyboardCornerBottom.png</texturefocus>
-					<label>1006</label>
-					<font>font13</font>
-					<align>center</align>
-					<aligny>center</aligny>
-					<onleft>306</onleft>
-					<onright>32</onright>
-					<onup>304</onup>
-					<ondown>300</ondown>
-					<focusedcolor>black</focusedcolor>
-				</control>
-				<control type="button" id="32">
-					<description>SPACE button</description>
-					<left>200</left>
-					<top>200</top>
-					<width>300</width>
-					<height>50</height>
-					<label>20182</label>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<focusedcolor>black</focusedcolor>
-					<onleft>307</onleft>
-					<onright>305</onright>
-					<onup>85</onup>
-					<ondown>48</ondown>
-				</control>
-				<control type="button" id="305">
-					<description>previous button</description>
-					<left>500</left>
-					<top>200</top>
-					<width>100</width>
-					<height>50</height>
-					<label>&lt;</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<font>font30</font>
-					<focusedcolor>black</focusedcolor>
-					<onleft>32</onleft>
-					<onright>306</onright>
-					<onup>8</onup>
-					<ondown>54</ondown>
-				</control>
-				<control type="button" id="306">
-					<description>next button</description>
-					<left>600</left>
-					<top>200</top>
-					<width>100</width>
-					<height>50</height>
-					<label>&gt;</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
-					<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
-					<font>font30</font>
-					<focusedcolor>black</focusedcolor>
-					<onleft>305</onleft>
-					<onright>307</onright>
-					<onup>8</onup>
-					<ondown>56</ondown>
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="300">
+						<description>DONE button</description>
+						<width>200</width>
+						<height>50</height>
+						<texturenofocus border="25,5,25,5">KeyboardCornerBottomNF.png</texturenofocus>
+						<texturefocus border="25,5,25,5">KeyboardCornerBottom.png</texturefocus>
+						<label>20177</label>
+						<font>font13</font>
+						<align>center</align>
+						<aligny>center</aligny>
+						<onup>304</onup>
+						<ondown>309</ondown>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="32">
+						<description>SPACE button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>20182</label>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+						<onup>161</onup>
+						<ondown>101</ondown>
+					</control>
+					<control type="button" id="8">
+						<description>BACKSPACE button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>20181</label>
+						<onup>165</onup>
+						<ondown>105</ondown>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+					</control>
+					<control type="button" id="305">
+						<description>previous button</description>
+						<width>100</width>
+						<height>50</height>
+						<label>&lt;</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
+						<font>font30</font>
+						<focusedcolor>black</focusedcolor>
+						<onup>168</onup>
+						<ondown>108</ondown>
+					</control>
+					<control type="button" id="306">
+						<description>next button</description>
+						<width>100</width>
+						<height>50</height>
+						<label>&gt;</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
+						<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
+						<font>font30</font>
+						<focusedcolor>black</focusedcolor>
+						<onup>170</onup>
+						<ondown>110</ondown>
+					</control>
 				</control>
 			</control>
 		</control>

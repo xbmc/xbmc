@@ -68,7 +68,7 @@ public:
   ~COMXCoreTunel();
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
-  bool IsInitialized();
+  bool IsInitialized() const { return m_tunnel_set; }
   OMX_ERRORTYPE Deestablish(bool noWait = false);
   OMX_ERRORTYPE Establish(bool enable_ports = true, bool disable_ports = false);
 private:
@@ -86,10 +86,10 @@ public:
   COMXCoreComponent();
   ~COMXCoreComponent();
 
-  OMX_HANDLETYPE    GetComponent()   { return m_handle;        };
-  unsigned int      GetInputPort()   { return m_input_port;    };
-  unsigned int      GetOutputPort()  { return m_output_port;   };
-  std::string       GetName()        { return m_componentName; };
+  OMX_HANDLETYPE    GetComponent() const { return m_handle; }
+  unsigned int      GetInputPort() const { return m_input_port; }
+  unsigned int      GetOutputPort() const { return m_output_port; }
+  std::string       GetName() const { return m_componentName; }
 
   OMX_ERRORTYPE DisableAllPorts();
   void          RemoveEvent(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
@@ -97,18 +97,18 @@ public:
   OMX_ERRORTYPE WaitForEvent(OMX_EVENTTYPE event, long timeout = 300);
   OMX_ERRORTYPE WaitForCommand(OMX_U32 command, OMX_U32 nData2, long timeout = 2000);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
-  OMX_STATETYPE GetState();
+  OMX_STATETYPE GetState() const;
   OMX_ERRORTYPE SetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct);
-  OMX_ERRORTYPE GetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct);
+  OMX_ERRORTYPE GetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct) const;
   OMX_ERRORTYPE SetConfig(OMX_INDEXTYPE configIndex, OMX_PTR configStruct);
-  OMX_ERRORTYPE GetConfig(OMX_INDEXTYPE configIndex, OMX_PTR configStruct);
+  OMX_ERRORTYPE GetConfig(OMX_INDEXTYPE configIndex, OMX_PTR configStruct) const;
   OMX_ERRORTYPE SendCommand(OMX_COMMANDTYPE cmd, OMX_U32 cmdParam, OMX_PTR cmdParamData);
   OMX_ERRORTYPE EnablePort(unsigned int port, bool wait = true);
   OMX_ERRORTYPE DisablePort(unsigned int port, bool wait = true);
   OMX_ERRORTYPE UseEGLImage(OMX_BUFFERHEADERTYPE** ppBufferHdr, OMX_U32 nPortIndex, OMX_PTR pAppPrivate, void* eglImage);
 
   bool          Initialize( const std::string &component_name, OMX_INDEXTYPE index);
-  bool          IsInitialized();
+  bool          IsInitialized() const { return m_handle != NULL; }
   bool          Deinitialize();
 
   // OMXCore Decoder delegate callback routines.
@@ -133,11 +133,11 @@ public:
   OMX_ERRORTYPE FillThisBuffer(OMX_BUFFERHEADERTYPE *omx_buffer);
   OMX_ERRORTYPE FreeOutputBuffer(OMX_BUFFERHEADERTYPE *omx_buffer);
 
-  unsigned int GetInputBufferSize();
-  unsigned int GetOutputBufferSize();
+  unsigned int GetInputBufferSize() const { return m_input_buffer_count * m_input_buffer_size; }
+  unsigned int GetOutputBufferSize() const { return m_output_buffer_count * m_output_buffer_size; }
 
-  unsigned int GetInputBufferSpace();
-  unsigned int GetOutputBufferSpace();
+  unsigned int GetInputBufferSpace() const { return m_omx_input_avaliable.size() * m_input_buffer_size; }
+  unsigned int GetOutputBufferSpace() const { return m_omx_output_available.size() * m_output_buffer_size; }
 
   void FlushAll();
   void FlushInput();
@@ -155,8 +155,8 @@ public:
   OMX_ERRORTYPE WaitForInputDone(long timeout=200);
   OMX_ERRORTYPE WaitForOutputDone(long timeout=200);
 
-  bool IsEOS() { return m_eos; };
-  bool BadState() { return m_resource_error; };
+  bool IsEOS() const { return m_eos; }
+  bool BadState() const { return m_resource_error; }
   void ResetEos();
   void IgnoreNextError(OMX_S32 error) { m_ignore_error = error; }
 

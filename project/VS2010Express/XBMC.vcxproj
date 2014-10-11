@@ -18,6 +18,7 @@
     <ProjectGuid>{3A68081D-E8F9-4523-9436-530DE9E5530A}</ProjectGuid>
     <RootNamespace>XBMC_PC</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <ProjectName>Kodi</ProjectName>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -86,12 +87,12 @@
     <Link>
       <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)XBMC.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <IgnoreSpecificDefaultLibraries>libcpmt;libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-55.dll;avfilter-4.dll;avformat-55.dll;avutil-52.dll;postproc-52.dll;swresample-0.dll;swscale-2.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
+      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-56.dll;avfilter-5.dll;avformat-56.dll;avutil-54.dll;postproc-53.dll;swresample-1.dll;swscale-3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
@@ -118,14 +119,14 @@
     <Link>
       <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;dxguid.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)xbmc-test.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)-test.exe</OutputFile>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-55.dll;avfilter-4.dll;avformat-55.dll;avutil-52.dll;postproc-52.dll;swresample-0.dll;swscale-2.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
+      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-56.dll;avfilter-5.dll;avformat-56.dll;avutil-54.dll;postproc-53.dll;swresample-1.dll;swscale-3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -153,11 +154,11 @@
     <Link>
       <AdditionalOptions>/IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)XBMC.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-55.dll;avfilter-4.dll;avformat-55.dll;avutil-52.dll;postproc-52.dll;swresample-0.dll;swscale-2.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>libxslt.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;avcodec-56.dll;avfilter-5.dll;avformat-56.dll;avutil-54.dll;postproc-53.dll;swresample-1.dll;swscale-3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <AdditionalLibraryDirectories>..\..\lib\win32\ffmpeg\.libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -216,7 +217,6 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.cpp" />
@@ -301,7 +301,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\FileReaderFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPParse.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\HDFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTSPDirectory.cpp" />
@@ -389,8 +388,8 @@
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VirtualDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VTPFile.cpp" />
@@ -487,6 +486,7 @@
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
     <ClCompile Include="..\..\xbmc\input\ButtonTranslator.cpp" />
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\input\KeyboardLayout.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutConfiguration.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardStat.cpp" />
     <ClCompile Include="..\..\xbmc\input\MouseStat.cpp" />
@@ -856,8 +856,8 @@
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBFile.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
@@ -939,6 +939,7 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManualBase.h" />
+    <ClInclude Include="..\..\xbmc\settings\DiscSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISetting.h" />
     <ClInclude Include="..\..\xbmc\settings\lib\ISettingCallback.h" />
@@ -977,11 +978,15 @@
     <ClInclude Include="..\..\xbmc\utils\IRssObserver.h" />
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h" />
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h" />
+    <ClInclude Include="..\..\xbmc\utils\MarkWatchedJob.h" />
+    <ClInclude Include="..\..\xbmc\utils\params_check_macros.h" />
     <ClInclude Include="..\..\xbmc\utils\RssManager.h" />
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h" />
     <ClInclude Include="..\..\xbmc\utils\Utf8Utils.h" />
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h" />
     <ClInclude Include="..\..\xbmc\utils\Vector.h" />
+    <ClInclude Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.h" />
+    <ClInclude Include="..\..\xbmc\utils\win32\Win32Log.h" />
     <ClInclude Include="..\..\xbmc\utils\XSLTUtils.h" />
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\swig.h" />
@@ -1040,7 +1045,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\FileReaderFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPParse.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\HDFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTSPDirectory.h" />
@@ -1117,6 +1121,7 @@
     <ClCompile Include="..\..\xbmc\utils\BooleanLogic.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp" />
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\MarkWatchedJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringValidation.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
@@ -1125,6 +1130,8 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Utf8Utils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Vector.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\win32\Win32Log.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XSLTUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\PlayerController.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp" />
@@ -1464,12 +1471,10 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp" />
@@ -1544,6 +1549,8 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVA.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp" />
@@ -1662,7 +1669,6 @@
     <ClInclude Include="..\..\xbmc\Autorun.h" />
     <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.h" />
@@ -1806,6 +1812,7 @@
     <ClInclude Include="..\..\xbmc\GUIUserMessages.h" />
     <ClInclude Include="..\..\xbmc\input\ButtonTranslator.h" />
     <ClInclude Include="..\..\xbmc\input\InertialScrollingHandler.h" />
+    <ClInclude Include="..\..\xbmc\input\KeyboardLayout.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutConfiguration.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardStat.h" />
     <ClInclude Include="..\..\xbmc\input\MouseStat.h" />
@@ -2159,12 +2166,10 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.h" />
@@ -2270,6 +2275,8 @@
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVA.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h" />
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h" />

@@ -65,8 +65,8 @@ TEST(TestStopWatch, Stop)
 
   a.Stop();
   EXPECT_FALSE(a.IsRunning());
-  EXPECT_EQ(0.0f, a.GetElapsedSeconds());
-  EXPECT_EQ(0.0f, a.GetElapsedMilliseconds());
+  EXPECT_GT(a.GetElapsedSeconds(), 0.0f);
+  EXPECT_GT(a.GetElapsedMilliseconds(), 0.0f);
 }
 
 TEST(TestStopWatch, StartZero)

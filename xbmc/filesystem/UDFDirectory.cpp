@@ -44,6 +44,7 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
   CURL url2(url);
   if (!url2.IsProtocol("udf"))
   { // path to an image
+    url2.Reset();
     url2.SetProtocol("udf");
     url2.SetHostName(url.Get());
   }
@@ -54,7 +55,7 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
   URIUtils::AddSlashAtEnd(strSub);
 
   udf25 udfIsoReader;
-  if(!udfIsoReader.Open(url.GetHostName().c_str()))
+  if(!udfIsoReader.Open(url2.GetHostName().c_str()))
      return false;
 
   udf_dir_t *dirp = udfIsoReader.OpenDir(strSub.c_str());

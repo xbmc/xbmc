@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Tamil (India) (http://www.transifex.com/projects/p/xbmc-main/language/ta_IN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "அமைப்புக்கள்"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "வானிலை"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "XBMC ஊடகமையம்"
+msgid "Kodi media center"
+msgstr "Kodi ஊடகமையம்"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "கோப்பு நகலெடுத்தலை உறுதிச�
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "கோப்பு நகர்த்தலை உறுதிசெய்"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "கோப்பு நீக்கலை உறுதிசெய்?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -902,8 +898,8 @@ msgid "Scripts output"
 msgstr "வாய்ப்பாடுகளின் வெளியீடு"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "XBMC கட்டுபாட்டை HTTP வழியாக கொடுத்தல்"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Kodi கட்டுபாட்டை HTTP வழியாக கொடுத்தல்"
 
 msgctxt "#264"
 msgid "Record"
@@ -1698,8 +1694,8 @@ msgid "Audio options"
 msgstr "கேட்பொலி விருப்பங்கள்"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "XBMC பற்றி"
+msgid "About Kodi"
+msgstr "Kodi பற்றி"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -2321,9 +2317,29 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "சுருக்கம் நிலை"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "அதிகமாக குறிப்பெழுது..."
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL (http, dav) நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP நூலகத்திற்கான அதிகமாக குறிப்பெழுது"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS அழைப்பிற்கான அதிகமாக குறிப்பெழுது"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2630,8 +2646,8 @@ msgid "Remote control"
 msgstr "தொலைநிலை கட்டுப்பாட்டு"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "இந்த கணினியில் உள்ள நிரல்களை கொண்டு XBMC யை கட்டுபடுத்த அனுமதிக்கும்"
+msgid "Allow programs on this system to control Kodi"
+msgstr "இந்த கணினியில் உள்ள நிரல்களை கொண்டு Kodi யை கட்டுபடுத்த அனுமதிக்கும்"
 
 msgctxt "#792"
 msgid "Port"
@@ -2642,8 +2658,8 @@ msgid "Port range"
 msgstr "துறை வீச்சு"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "மற்ற கணினியில் உள்ள நிரல்களை கொண்டு XBMC யை கட்டுபடுத்த அனுமதிக்கும்"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "மற்ற கணினியில் உள்ள நிரல்களை கொண்டு Kodi யை கட்டுபடுத்த அனுமதிக்கும்"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2706,8 +2722,8 @@ msgid "Unable to connect"
 msgstr "இணைக்க முடியவில்லை"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC யால் பிணைய இடத்திருக்கு இணைக்க முடியவில்லை."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi யால் பிணைய இடத்திருக்கு இணைக்க முடியவில்லை."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3050,8 +3066,8 @@ msgid "Announce these services to other systems via Zeroconf"
 msgstr "இந்த சேவைகளை மற்ற அமைப்புகளுக்கு ஜீரோகான்ஃப் வழியாக அறிவிப்பு செய்யவும்"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "ஏர்பிளே உள்ளடக்கத்தை பெற XBMC க்கு அனுமதி தரவும்"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "ஏர்பிளே உள்ளடக்கத்தை பெற Kodi க்கு அனுமதி தரவும்"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4114,8 +4130,8 @@ msgid "Active connections detected!"
 msgstr "இயக்க இணைப்புகள் கண்டறியப்பட்டது!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "நீங்கள் தொடர்ந்தால், நீங்கள் XBMC கட்டுப்படுத்த முடியாது"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "நீங்கள் தொடர்ந்தால், நீங்கள் Kodi கட்டுப்படுத்த முடியாது"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4130,8 +4146,8 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "நீங்கள் தற்போது ஆப்பிள் தொலை சாதனத்தை பயன்படுத்தி கட்டுப்படுத்தினால்"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC, இந்த அமைப்பை மாற்றுவதாள் உங்கள் திறனை பாதிக்கும்"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "Kodi, இந்த அமைப்பை மாற்றுவதாள் உங்கள் திறனை பாதிக்கும்"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4354,8 +4370,8 @@ msgid "Do you wish to reboot your system"
 msgstr "நீங்கள் உங்கள் கணினியை மீண்டும் துவக்கவும் விரும்புகிறீர்களா?"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "XBMC பதிலாக தான்?"
+msgid "instead of just Kodi?"
+msgstr "Kodi பதிலாக தான்?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -4777,25 +4793,9 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "இதை மற்றும் vaasikkavum"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Mpeg-2 VDPAU உபயோகிக்கவும்"
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Mpeg-4 VDPAU உபயோகிக்கவும்"
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "VC-1 VDPAU உபயோகிக்கவும்"
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Mpeg-2 VAAPI உபயோகிக்கவும்"
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Mpeg-4 VAAPI உபயோகிக்கவும்"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -4890,8 +4890,8 @@ msgid "Apple remote"
 msgstr "ஆப்பிள் தொலை இயக்கி"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "தொலைநிலை கட்டுப்பாடு பயன்படுத்தி XBMC தொடக்கத்தை அனுமதிக்கும்"
+msgid "Allow start of Kodi using the remote"
+msgstr "தொலைநிலை கட்டுப்பாடு பயன்படுத்தி Kodi தொடக்கத்தை அனுமதிக்கும்"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5034,8 +5034,8 @@ msgid "Network settings changed"
 msgstr "பிணைய அமைப்புகளை மாற்றப்பட்டுள்ளது"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "உங்கள் மாற்றங்களை அமுல்படுத்த XBMC மீண்டும் துவக்க வேண்டும்"
+msgid "Kodi requires to restart to change your"
+msgstr "உங்கள் மாற்றங்களை அமுல்படுத்த Kodi மீண்டும் துவக்க வேண்டும்"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5697,10 +5697,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "அல்லது சரியான பொருத்தத்திற்கு வாக்கியங்களை பயன்படுத்தவும், உதாரனத்திற்க்கு \"The wizard of Oz\"."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "இதே போன்ற நிரல்களை தேடுக"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "கிளையன்களிடமிருந்து EPG யை இறக்குமதி செய்கிறது"
@@ -5754,8 +5750,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR பின்னணி %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "தொலைக்காட்சி பதிவகள்"
+msgid "Recordings"
+msgstr "பதிவகள்"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5940,10 +5936,6 @@ msgstr "தொடக்கத்திற்கு செல்"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "முடிவிற்கு செல்லவும்"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "இயல்புநிலை EPG சாளரம்"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6337,10 +6329,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "சேனல்களை மாற்றும் போது சேனல் தகவல் காண்பிக்கவும்"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "தானாக சேனல் தகவல்களை மறைக்கவும்"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "தொலைக்காட்சி"
@@ -6353,9 +6341,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "EPG உள்ள காட்ட தேவைப்படும் நாட்கள்"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "சேனல் தகவல் காலம்"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "வானொலி"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6376,6 +6364,10 @@ msgstr "EPG மீட்டமைக்கப்படுகிறது"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "தொடக்கத்தில் கடந்த சேனலை தொடரவும்"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "பின்னணி"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6450,8 +6442,8 @@ msgid "Enter the name of the new channel"
 msgstr "புதிய சேனல் பெயரை உள்ளிடவும்"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC மெய்நிகர் பின்தளம்"
+msgid "Kodi virtual backend"
+msgstr "Kodi மெய்நிகர் பின்தளம்"
 
 msgctxt "#19210"
 msgid "Client"
@@ -6668,10 +6660,6 @@ msgstr "'தகவல் இல்லை' சிட்டை காண்பி�
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "'இணைப்பு இயலவில்லை' சிட்டை காண்பிக்கவேண்டாம்."
-
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* அனைத்து பதிப்புகளும்"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -7094,8 +7082,8 @@ msgid "Screenshots"
 msgstr "திரைக்காட்சிகள்"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "XBMC பயன்படுத்தவும்"
+msgid "Use Kodi"
+msgstr "Kodi பயன்படுத்தவும்"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -7982,8 +7970,8 @@ msgid "Do you want to remove all items within"
 msgstr "நீங்கள் இதனுள்ள அனைத்து பொருட்களை அகற்ற வேண்டுமா?"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr "XBMC நூலகத்தின் இந்த பாதை?"
+msgid "this path from the Kodi library?"
+msgstr "Kodi நூலகத்தின் இந்த பாதை?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9162,8 +9150,8 @@ msgid "Reference service"
 msgstr "குறிப்பு சேவை"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "XBMC கட்டுபாட்டை UPnP வழியாக கொடுத்தல்"
+msgid "Allow control of Kodi via UPnP"
+msgstr "Kodi கட்டுபாட்டை UPnP வழியாக கொடுத்தல்"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -9637,6 +9625,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "மாற்றத்தின் பதிவு"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "புதுப்பித்தல் எதாவது உள்ளதா என்று பார்"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "இந்த துணை-பயனை இயக்க விரும்புகிறீர்களா?"
@@ -10046,12 +10038,12 @@ msgid "This version of %s requires an"
 msgstr "%s பதிப்பிற்கு தேவையான"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC இயங்குவதற்கு %s அல்லது அதைவிட அதிகமான பதிப்பு thevai"
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi இயங்குவதற்கு %s அல்லது அதைவிட அதிகமான பதிப்பு thevai"
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "தயவு செய்து XBMC மேம்படுத்தல் செய்யவும்"
+msgid "Please update Kodi."
+msgstr "தயவு செய்து Kodi மேம்படுத்தல் செய்யவும்"
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10354,12 +10346,12 @@ msgid "Enable switch side commands"
 msgstr "மாற்ற பக்க கட்டளைகளை செயலாக்கவும்"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "XBMC தொடங்கும்போது இந்த சாதனைகளையும் தொடங்கவும்"
+msgid "Devices to power on when starting Kodi"
+msgstr "Kodi தொடங்கும்போது இந்த சாதனைகளையும் தொடங்கவும்"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "XBMC நிறுத்தும்போது இந்த சாதனைகளையும் நிறுத்தவும் "
+msgid "Devices to power off when stopping Kodi"
+msgstr "Kodi நிறுத்தும்போது இந்த சாதனைகளையும் நிறுத்தவும் "
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -10390,8 +10382,8 @@ msgid "Connected to HDMI device"
 msgstr "HDMI சாதனத்திற்கு இணைக்கப்பட்டுள்ளது"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "XBMC துவங்கும்போது செயலில் உள்ள மூலமாக செய்யவும்"
+msgid "Make Kodi the active source when starting"
+msgstr "Kodi துவங்கும்போது செயலில் உள்ள மூலமாக செய்யவும்"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10410,8 +10402,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "புதிய கட்டமைப்பை அமைப்பதில் பிழை. தயவு கூர்ந்து அமைப்பை சரி பார்க்கவும்."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "XBMC நிறுத்தும் போது 'செயலில் இல்லாத மூலம்' கட்டளையை அனுப்பியுள்ளது"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Kodi நிறுத்தும் போது 'செயலில் இல்லாத மூலம்' கட்டளையை அனுப்பியுள்ளது"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -10458,8 +10450,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "தொலைக்காட்சி மற்றும் AVR சாதனம் (வெளிப்படையாக)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "ஆதரவற்ற libCEC இடைமுகம் பதிப்பு. %x பதிப்பு ஆனது XBMC ஆதரவு தரும் பதிப்பை (%x) விட குறைவாக உள்ளது"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "ஆதரவற்ற libCEC இடைமுகம் பதிப்பு. %x பதிப்பு ஆனது Kodi ஆதரவு தரும் பதிப்பை (%x) விட குறைவாக உள்ளது"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -10478,8 +10470,8 @@ msgid "Change the colours of your selected skin."
 msgstr "தேர்ந்தெடுக்கப்பட்ட தோலுடைய வண்ணங்களை மாற்றவும்."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "XBMC தொடக்கத்தில் காண்பிக்க வேண்டிய ஊடக சாளரத்தை தேர்ந்தெடுக."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Kodi தொடக்கத்தில் காண்பிக்க வேண்டிய ஊடக சாளரத்தை தேர்ந்தெடுக."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10558,8 +10550,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "இயல்பான கலைஞர் தகவல் மூலத்தை தேர்வு செய்யவும். விருப்பங்களுக்கு துணை-பயன் மேலாளர் பார்க்கவும்."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "XBMC தொடக்கத்தில் புதிய மற்றும் நீக்கப்பட்ட ஊடக கோப்புகளுக்காக சரிபார்க்கவும்."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Kodi தொடக்கத்தில் புதிய மற்றும் நீக்கப்பட்ட ஊடக கோப்புகளுக்காக சரிபார்க்கவும்."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -10637,17 +10629,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "பதிவுசெய்"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "சிடீரியோசுகோபிக்கு முறை (தற்போதையது)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "சிடீரியோசுகோபிக்கு முறை"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "எதுவுமில்லை"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டது"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -10673,17 +10657,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "வன்பொருள் சார்ந்தது"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "மோனோசுகோபிக்கு - 2D"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "என்னை கேட்கவும்"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "விருப்பமான முறையை பயன்படுத்தவும்"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -10693,26 +10669,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "திரைப்படத்தை போன்றது (தானாக கண்டறி)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "வசிப்பது நிறுத்திவிட்டால் சிடீரியோசுகோபிக்கு முறையை முடக்கவும்"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "இது சிடீரியோசுகோபிக்கு வீடியோ. வாசிக்கும் முறையை தேர்வு செய்க."
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "சிடீரியோசுகோபிக்கு முறையை தேர்வு செய்க"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "மோனோ (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "விருப்பமான முறை"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "மாற்று முறையை தேர்வு செய்க"
@@ -10721,18 +10677,30 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "திரைப்படத்தை போன்றது"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "வீடியோவின் சிடீரியோசுகோபிக்கு முறை"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "சிடீரியோசுகோபிக்கு முறை தலைகீழாக்கப்பட்டது"
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "AirPlay பயனகத்தின் மூலம் தொகுதி கட்டுப்பாட்டை அனுமதிக்கிறது."
 
+msgctxt "#36902"
+msgid "TV show"
+msgstr "தொலைக்காட்சி நிகழ்ச்சி"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "தொலைக்காட்சி நிகழ்ச்சிகள்"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "அத்தியாயம்"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "அத்தியாயங்கள்"
+
 msgctxt "#37022"
 msgid "UPnP Player"
 msgstr "UPnP வாசிப்பான்"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "தானாக"

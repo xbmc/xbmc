@@ -512,10 +512,10 @@ void CScraperParser::Clean(std::string& strDirty)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
       std::wstring wbuffer;
-      g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
+      g_charsetConverter.utf8ToW(strBuffer, wbuffer, false, false, false);
       std::wstring wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
-      g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
+      g_charsetConverter.wToUTF8(wConverted, strBuffer, false);
       StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.replace(i, i2-i+14, strBuffer);
@@ -560,7 +560,7 @@ void CScraperParser::ConvertJSON(std::string &string)
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue(reg2.GetMatch(1));
 
-    std::string replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
+    std::string replace = StringUtils::Format("%li", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 

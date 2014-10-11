@@ -52,6 +52,7 @@ private:
   CCoreAudioDevice   m_device;
   CCoreAudioStream   m_outputStream;
   unsigned int       m_latentFrames;
+  unsigned int       m_outputBufferIndex;
 
   bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
   unsigned int       m_planes;            ///< number of audio planes (1 if non-planar)

@@ -24,9 +24,38 @@
 #include "OpenMax.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <DVDResource.h>
+
+template<typename T> struct IDVDResourceCounted2
+{
+  IDVDResourceCounted2() : m_refs(1) {}
+  virtual ~IDVDResourceCounted2() {}
+  virtual T*   Acquire()
+  {
+    printf("Acquire %p %d\n", this, m_refs);
+    ++m_refs;
+    return (T*)this;
+  }
+
+  virtual long Release()
+  {
+    printf("Release %p %d\n", this, m_refs);
+    --m_refs;
+    assert(m_refs >= 0);
+    if (m_refs == 0) delete (T*)this;
+    return m_refs;
+  }
+  int m_refs;
+};
+
 
 // an omx egl video frame
-typedef struct OpenMaxVideoBuffer {
+struct OpenMaxVideoBuffer : public IDVDResourceCounted<OpenMaxVideoBuffer> {
+  OpenMaxVideoBuffer();
+  virtual ~OpenMaxVideoBuffer();
+
   OMX_BUFFERHEADERTYPE *omx_buffer;
   int width;
   int height;
@@ -35,9 +64,30 @@ typedef struct OpenMaxVideoBuffer {
   // used for egl based rendering if active
   EGLImageKHR egl_image;
   GLuint texture_id;
-} OpenMaxVideoBuffer;
 
-class COpenMaxVideo : public COpenMax
+#if defined(EGL_KHR_reusable_sync)
+  EGLSyncKHR eglSync;
+#endif
+  EGLDisplay eglDisplay;
+
+  bool done;
+  void PassBackToRenderer();
+  void ReleaseTexture();
+  void SetOpenMaxVideo(COpenMaxVideo *openMaxVideo);
+
+private:
+  COpenMaxVideo *m_openMaxVideo;
+};
+
+class OpenMaxVideoBufferHolder : public IDVDResourceCounted<OpenMaxVideoBufferHolder> {
+public:
+  OpenMaxVideoBufferHolder(OpenMaxVideoBuffer *openMaxVideoBuffer);
+  virtual ~OpenMaxVideoBufferHolder();
+
+  OpenMaxVideoBuffer *m_openMaxVideoBuffer;
+};
+
+class COpenMaxVideo : public COpenMax, public IDVDResourceCounted<COpenMaxVideo>
 {
 public:
   COpenMaxVideo();
@@ -48,9 +98,13 @@ public:
   void Close(void);
   int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   void Reset(void);
-  bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  int GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  bool ClearPicture(DVDVideoPicture *pDvdVideoPicture);
+  void ReleaseBuffer(OpenMaxVideoBuffer *buffer);
   void SetDropState(bool bDrop);
 protected:
+  int EnqueueDemuxPacket(omx_demux_packet demux_packet);
+
   void QueryCodec(void);
   OMX_ERRORTYPE PrimeFillBuffers(void);
   OMX_ERRORTYPE AllocOMXInputBuffers(void);
@@ -59,12 +113,12 @@ protected:
   OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
   static void CallbackAllocOMXEGLTextures(void*);
   OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
-  static void CallbackFreeOMXEGLTextures(void*);
-  OMX_ERRORTYPE FreeOMXOutputEGLTextures(bool wait);
 
   // TODO Those should move into the base class. After start actions can be executed by callbacks.
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
+
+  void ReleaseDemuxQueue();
 
   // OpenMax decoder callback routines.
   virtual OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
@@ -87,8 +141,11 @@ protected:
   std::queue<double> m_dts_queue;
   std::queue<omx_demux_packet> m_demux_queue;
 
+  // Synchronization
+  //pthread_mutex_t   m_omx_queue_mutex;
+  pthread_cond_t    m_omx_queue_available;
+
   // OpenMax input buffers (demuxer packets)
-  pthread_mutex_t   m_omx_input_mutex;
   std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   bool              m_omx_input_eos;
@@ -97,7 +154,6 @@ protected:
   CEvent            m_input_consumed_event;
 
   // OpenMax output buffers (video frames)
-  pthread_mutex_t   m_omx_output_mutex;
   std::queue<OpenMaxVideoBuffer*> m_omx_output_busy;
   std::queue<OpenMaxVideoBuffer*> m_omx_output_ready;
   std::vector<OpenMaxVideoBuffer*> m_omx_output_buffers;

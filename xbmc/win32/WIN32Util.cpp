@@ -43,12 +43,6 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
-// default Broadcom registy bits (setup when installing a CrystalHD card)
-#define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-#define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
-#define BC_BCM_DLL        "bcmDIL.dll"
-#define BC_REG_INST_PATH  "InstallPath"
-
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \
@@ -198,30 +192,33 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 
 bool CWIN32Util::PowerManagement(PowerState State)
 {
-  HANDLE hToken;
-  TOKEN_PRIVILEGES tkp;
-  // Get a token for this process.
-  if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+  static bool gotShutdownPrivileges = false;
+  if (!gotShutdownPrivileges)
   {
-    return false;
-  }
-  // Get the LUID for the shutdown privilege.
-  LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
-  tkp.PrivilegeCount = 1;  // one privilege to set
-  tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-  // Get the shutdown privilege for this process.
-  AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
-  CloseHandle(hToken);
+    HANDLE hToken;
+    // Get a token for this process.
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+    {
+      // Get the LUID for the shutdown privilege.
+      TOKEN_PRIVILEGES tkp = {};
+      if (LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid))
+      {
+        tkp.PrivilegeCount = 1;  // one privilege to set
+        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+        // Get the shutdown privilege for this process.
+        if (AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0))
+          gotShutdownPrivileges = true;
+      }
+      CloseHandle(hToken);
+    }
 
-  if (GetLastError() != ERROR_SUCCESS)
-  {
-    return false;
+    if (!gotShutdownPrivileges)
+      return false;
   }
 
   // process OnSleep() events. This is called in main thread.
   g_powerManager.ProcessEvents();
 
-  UINT uExitFlags = 0;
   switch (State)
   {
   case POWERSTATE_HIBERNATE:
@@ -235,12 +232,18 @@ bool CWIN32Util::PowerManagement(PowerState State)
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
     if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
-      uExitFlags = 0x00400000; /* EWX_HYBRID_SHUTDOWN */
-    return ExitWindowsEx(uExitFlags | EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED) == TRUE;
+      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_HYBRID | SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_POWEROFF,
+                               SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
+    return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_POWEROFF,
+                             SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
     break;
   case POWERSTATE_REBOOT:
     CLog::Log(LOGINFO, "Rebooting Windows...");
-    return ExitWindowsEx(EWX_REBOOT | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED) == TRUE;
+    if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
+      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_HYBRID | SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
+                               SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
+    return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
+                             SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
     break;
   default:
     CLog::Log(LOGERROR, "Unknown PowerState called.");
@@ -414,7 +417,7 @@ std::string CWIN32Util::GetProfilePath()
   CUtil::GetHomePath(strHomePath);
 
   if(g_application.PlatformDirectoriesEnabled())
-    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "Kodi");
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
 
@@ -511,6 +514,55 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
 
   return result;
 }
+
+std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
+{
+  assert(url.GetProtocol().empty() || url.IsProtocol("smb"));
+
+  if (url.GetFileName().empty())
+    return std::wstring(); // empty string
+
+  if (url.GetProtocol().empty())
+  {
+    std::wstring result;
+    if (g_charsetConverter.utf8ToW("\\\\?\\" +
+          URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetFileName(), '\\'), '\\'), result, false, false, true))
+      return result;
+  }
+  else if (url.IsProtocol("smb"))
+  {
+    if (url.GetHostName().empty())
+      return std::wstring(); // empty string
+    
+    std::wstring result;
+    if (g_charsetConverter.utf8ToW("\\\\?\\UNC\\" +
+          URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetHostName() + '\\' + url.GetFileName(), '\\'), '\\'),
+          result, false, false, true))
+      return result;
+  }
+  else
+    return std::wstring(); // unsupported protocol, return empty string
+
+  CLog::Log(LOGERROR, "%s: Error converting path \"%s\" to Win32 form", __FUNCTION__, url.Get().c_str());
+  return std::wstring(); // empty string
+}
+
+__time64_t CWIN32Util::fileTimeToTimeT(const FILETIME& ftimeft)
+{
+  if (!ftimeft.dwHighDateTime && !ftimeft.dwLowDateTime)
+    return 0;
+
+  return fileTimeToTimeT((__int64(ftimeft.dwHighDateTime) << 32) + __int64(ftimeft.dwLowDateTime));
+}
+
+__time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
+{
+  if (ftimeli.QuadPart == 0)
+    return 0;
+
+  return fileTimeToTimeT(__int64(ftimeli.QuadPart));
+}
+
 
 void CWIN32Util::ExtendDllPath()
 {
@@ -1352,41 +1404,6 @@ bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKe
   const REGSAM rsAccessRightsTmp= ( CSysInfo::GetKernelBitness() == 64 ? rsAccessRights | ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
   bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
   return bRet;
-}
-
-bool CWIN32Util::GetCrystalHDLibraryPath(std::string &strPath)
-{
-  // support finding library by windows registry
-  HKEY hKey;
-  std::string strRegKey;
-
-  CLog::Log(LOGDEBUG, "CrystalHD: detecting CrystalHD installation path");
-  strRegKey = StringUtils::Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
-
-  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
-  {
-    DWORD dwType;
-    char *pcPath= NULL;
-    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
-    {
-      strPath = URIUtils::AddFileToFolder(pcPath, BC_BCM_DLL);
-      CLog::Log(LOGDEBUG, "CrystalHD: got CrystalHD installation path (%s)", strPath.c_str());
-      return true;
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "CrystalHD: getting CrystalHD installation path failed");
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CrystalHD: CrystalHD software seems to be not installed.");
-  }
-  // check for dll in system dir
-  if(XFILE::CFile::Exists(DLL_PATH_LIBCRYSTALHD))
-    return true;
-  else
-    return false;
 }
 
 // Retrieve the filename of the process that currently has the focus.

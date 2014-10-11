@@ -48,7 +48,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 
   if (address != INADDR_NONE)
   {
-    strIpAddress = StringUtils::Format("%d.%d.%d.%d", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
+    strIpAddress = StringUtils::Format("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
     return true;
   }
 

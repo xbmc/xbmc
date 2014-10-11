@@ -35,6 +35,28 @@ protected:
   }
 };
 
+TEST_F(TestSystemInfo, Print_System_Info)
+{
+  std::cout << "'GetKernelName(false)': \"" << g_sysinfo.GetKernelName(true) << "\"\n";
+  std::cout << "'GetKernelVersion()': \"" << g_sysinfo.GetKernelVersion() << "\"\n";
+  std::cout << "'GetKernelVersionFull()': \"" << g_sysinfo.GetKernelVersionFull() << "\"\n";
+  std::cout << "'GetOsPrettyNameWithVersion()': \"" << g_sysinfo.GetOsPrettyNameWithVersion() << "\"\n";
+  std::cout << "'GetOsName(false)': \"" << g_sysinfo.GetOsName(false) << "\"\n";
+  std::cout << "'GetOsVersion()': \"" << g_sysinfo.GetOsVersion() << "\"\n";
+  std::cout << "'GetKernelCpuFamily()': \"" << g_sysinfo.GetKernelCpuFamily() << "\"\n";
+  std::cout << "'GetKernelBitness()': \"" << g_sysinfo.GetKernelBitness() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformName()': \"" << g_sysinfo.GetBuildTargetPlatformName() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformVersionDecoded()': \"" << g_sysinfo.GetBuildTargetPlatformVersionDecoded() << "\"\n";
+  std::cout << "'GetBuildTargetPlatformVersion()': \"" << g_sysinfo.GetBuildTargetPlatformVersion() << "\"\n";
+  std::cout << "'GetBuildTargetCpuFamily()': \"" << g_sysinfo.GetBuildTargetCpuFamily() << "\"\n";
+  std::cout << "'GetXbmcBitness()': \"" << g_sysinfo.GetXbmcBitness() << "\"\n";
+  std::cout << "'GetUsedCompilerNameAndVer()': \"" << g_sysinfo.GetUsedCompilerNameAndVer() << "\"\n";
+  std::cout << "'GetManufacturerName()': \"" << g_sysinfo.GetManufacturerName() << "\"\n";
+  std::cout << "'GetModelName()': \"" << g_sysinfo.GetModelName() << "\"\n";
+  std::cout << "'IsAppleTV2()': \"" << g_sysinfo.IsAppleTV2() << "\"\n";
+  std::cout << "'GetUserAgent()': \"" << g_sysinfo.GetUserAgent() << "\"\n";
+}
+
 TEST_F(TestSystemInfo, GetKernelName)
 {
   EXPECT_FALSE(g_sysinfo.GetKernelName(true).empty()) << "'GetKernelName(true)' must not return empty kernel name";
@@ -197,7 +219,7 @@ TEST_F(TestSystemInfo, GetXbmcBitness)
 
 TEST_F(TestSystemInfo, GetUserAgent)
 {
-  EXPECT_STREQ("XBMC/", g_sysinfo.GetUserAgent().substr(0, 5).c_str()) << "'GetUserAgent()' string must start from 'XBMC/'";
+  EXPECT_STREQ(g_sysinfo.GetAppName().c_str(), g_sysinfo.GetUserAgent().substr(0, g_sysinfo.GetAppName().size()).c_str()) << "'GetUserAgent()' string must start with app name'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find('(')) << "'GetUserAgent()' must contain brackets around second parameter";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(')')) << "'GetUserAgent()' must contain brackets around second parameter";
   EXPECT_EQ(g_sysinfo.GetUserAgent().find(' '), g_sysinfo.GetUserAgent().find(" (")) << "Second parameter in 'GetUserAgent()' string must be in brackets";
@@ -231,7 +253,7 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" XBMC_HW_RaspberryPi/")) << "'GetUserAgent()' must contain ' XBMC_HW_RaspberryPi/'";
 #endif // TARGET_RASPBERRY_PI
 
-  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" XBMC_BITNESS/")) << "'GetUserAgent()' must contain ' XBMC_BITNESS/'";
+  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" App_Bitness/")) << "'GetUserAgent()' must contain ' App_Bitness/'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" Version/")) << "'GetUserAgent()' must contain ' Version/'";
 }
 

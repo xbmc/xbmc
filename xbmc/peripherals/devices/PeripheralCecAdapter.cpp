@@ -149,19 +149,19 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
     CSingleLock lock(m_critSection);
-    m_iExitCode = (int)data.asInteger(0);
+    m_iExitCode = (int)data["shuttingdown"].asInteger(0);
     CAnnouncementManager::Get().RemoveAnnouncer(this);
     StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
   {
     bool bIgnoreDeactivate(false);
-    if (data.isBoolean())
+    if (data["shuttingdown"].isBoolean())
     {
       // don't respond to the deactivation if we are just going to suspend/shutdown anyway
       // the tv will not have time to switch on before being told to standby and
       // may not action the standby command.
-      bIgnoreDeactivate = data.asBoolean();
+      bIgnoreDeactivate = data["shuttingdown"].asBoolean();
       if (bIgnoreDeactivate)
         CLog::Log(LOGDEBUG, "%s - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     }

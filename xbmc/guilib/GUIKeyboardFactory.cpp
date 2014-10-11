@@ -212,11 +212,8 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
 
   if (!strPassword.empty())
   {
-    if (strPassword == strUserInput)
-      return 0;
-
     std::string md5pword2 = XBMC::XBMC_MD5::GetMD5(strUserInput);
-    if (strPassword == md5pword2)
+    if (StringUtils::EqualsNoCase(strPassword, md5pword2))
       return 0;     // user entered correct password
     else return 1;  // user must have entered an incorrect password
   }

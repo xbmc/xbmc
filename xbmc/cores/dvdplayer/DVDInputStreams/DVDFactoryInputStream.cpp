@@ -48,7 +48,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 {
   CFileItem item(file.c_str(), false);
 
-  if(item.IsDVDImage())
+  if(item.IsDiscImage())
   {
 #ifdef HAVE_LIBBLURAY
     CURL url("udf://");

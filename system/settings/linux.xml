@@ -13,14 +13,5 @@
         </setting>
       </group>
     </category>
-    <category id="input">
-      <group id="2">
-        <setting id="input.enablejoystick">
-          <requirement>HAS_SDL_JOYSTICK</requirement>
-          <level>0</level>
-          <default>false</default>
-        </setting>      
-      </group>
-    </category>
   </section>
 </settings>

@@ -24,7 +24,6 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
-#include "threads/Condition.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/StdString.h"
 

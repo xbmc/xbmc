@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
 #include "cores/FFmpeg.h"
+#include "Util.h"
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avcodec.lib")
@@ -436,7 +437,7 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
 
   double lowestdiff = DVD_TIME_BASE;
   int    selected   = -1;
-  for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
+  for (size_t i = 0; i < ARRAY_SIZE(durations); i++)
   {
     double diff = fabs(frameduration - durations[i]);
     if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)

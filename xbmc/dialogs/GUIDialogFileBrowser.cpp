@@ -587,7 +587,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
 
 void CGUIDialogFileBrowser::GoParentFolder()
 {
-  std::string strPath(m_strParentPath), strOldPath(m_Directory->GetPath());
+  std::string strPath(m_strParentPath);
   if (strPath.size() == 2)
     if (strPath[1] == ':')
       URIUtils::AddSlashAtEnd(strPath);
@@ -611,7 +611,6 @@ void CGUIDialogFileBrowser::OnWindowUnload()
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &result, bool* flip, int label)
 {
-  std::string mask = ".png|.jpg|.bmp|.gif|.dds";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;

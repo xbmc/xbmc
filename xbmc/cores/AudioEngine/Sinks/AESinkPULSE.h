@@ -50,6 +50,8 @@ public:
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   bool IsInitialized();
+  void UpdateInternalVolume(pa_cvolume nVol);
+  pa_stream* GetInternalStream();
   CCriticalSection m_sec;
 private:
   void Pause(bool pause);
@@ -64,9 +66,10 @@ private:
   unsigned int m_BytesPerSecond;
   unsigned int m_BufferSize;
   unsigned int m_Channels;
-  
-  pa_stream *m_Stream;
+
+  pa_stream *m_Stream; 
   pa_cvolume m_Volume;
+  bool m_volume_needs_update;
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;

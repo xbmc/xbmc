@@ -59,7 +59,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion() const { return 25; };
+    virtual int GetSchemaVersion() const { return 26; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -180,7 +180,7 @@ namespace PVR
      * @param strClientUid The unique ID of the client.
      * @return The database ID of the client or -1 if it wasn't found.
      */
-    int GetClientId(const CStdString &strClientUid);
+    int GetClientId(const std::string &strClientUid);
     //@}
 
   private:

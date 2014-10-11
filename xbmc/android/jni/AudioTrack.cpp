@@ -37,12 +37,26 @@ void CJNIAudioTrack::PopulateStaticFields()
   }
 }
 
-CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode)
+CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode) throw(std::invalid_argument)
   : CJNIBase("android/media/AudioTrack")
 {
   m_object = new_object(GetClassName(), "<init>", "(IIIIII)V",
                         streamType, sampleRateInHz, channelConfig,
                         audioFormat, bufferSizeInBytes, mode);
+
+  /* AudioTrack constructor may throw IllegalArgumentException, pass it to
+   * caller instead of getting us killed */
+  JNIEnv* jenv = xbmc_jnienv();
+  jthrowable exception = jenv->ExceptionOccurred();
+  if (exception)
+  {
+    jenv->ExceptionClear();
+    jhclass excClass = find_class(jenv, "java/lang/Throwable");
+    jmethodID toStrMethod = get_method_id(jenv, excClass, "toString", "()Ljava/lang/String;");
+    jhstring msg = call_method<jhstring>(exception, toStrMethod);
+    throw std::invalid_argument(jcast<std::string>(msg));
+  }
+
   m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
 
   m_object.setGlobal();

@@ -26,6 +26,8 @@
 #include <string>
 #include "cores/VideoRenderers/RenderFormats.h"
 
+
+
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
@@ -45,14 +47,16 @@ struct DVDCodecAvailableType
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
-namespace DXVA { class CSurfaceContext; }
-namespace VAAPI { struct CHolder; }
+namespace DXVA { class CRenderPicture; }
+namespace VAAPI { class CVaapiRenderPicture; }
 namespace VDPAU { class CVdpauRenderPicture; }
 class COpenMax;
 class COpenMaxVideo;
-struct OpenMaxVideoBuffer;
+struct OpenMaxVideoBufferHolder;
 class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
+class CDVDVideoCodecIMXBuffer;
+class CMMALVideoBuffer;
 typedef void* EGLImageKHR;
 
 
@@ -69,18 +73,18 @@ struct DVDVideoPicture
       int iLineSize[4];   // [4] = alpha channel, currently not used
     };
     struct {
-      DXVA::CSurfaceContext* context;
+      DXVA::CRenderPicture* dxva;
     };
     struct {
       VDPAU::CVdpauRenderPicture* vdpau;
     };
     struct {
-      VAAPI::CHolder* vaapi;
+      VAAPI::CVaapiRenderPicture* vaapi;
     };
 
     struct {
       COpenMax *openMax;
-      OpenMaxVideoBuffer *openMaxBuffer;
+      OpenMaxVideoBufferHolder *openMaxBufferHolder;
     };
 
     struct {
@@ -95,6 +99,15 @@ struct DVDVideoPicture
     struct {
       CDVDMediaCodecInfo *mediacodec;
     };
+
+    struct {
+      CDVDVideoCodecIMXBuffer *IMXBuffer;
+    };
+
+    struct {
+      CMMALVideoBuffer *MMALBuffer;
+    };
+
   };
 
   unsigned int iFlags;

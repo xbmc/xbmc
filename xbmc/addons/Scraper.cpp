@@ -69,7 +69,7 @@ static const ContentMapping content[] =
 
 std::string TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(content); ++index)
   {
     const ContentMapping &map = content[index];
     if (type == map.type)
@@ -85,7 +85,7 @@ std::string TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 
 CONTENT_TYPE TranslateContent(const std::string &string)
 {
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(content); ++index)
   {
     const ContentMapping &map = content[index];
     if (string == map.name)
@@ -332,7 +332,6 @@ std::string CScraper::InternalRun(const std::string& function,
   unsigned int i;
   for (i=0;i<scrURL.m_url.size();++i)
   {
-    std::string strCurrHTML;
     if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
       return "";
   }

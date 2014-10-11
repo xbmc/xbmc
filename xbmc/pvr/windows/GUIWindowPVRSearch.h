@@ -32,26 +32,23 @@ namespace PVR
     virtual ~CGUIWindowPVRSearch(void) {};
 
     bool OnMessage(CGUIMessage& message);
+    void OnWindowLoaded();
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+    bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
 
   protected:
-    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
+    void OnPrepareFileItems(CFileItemList &items);
 
   private:
-    void Search(void);
-
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
-    bool ActionShowSearch(CFileItem *item);
-    void ShowSearchResults();
+    void OpenDialogSearch();
 
-    bool               m_bSearchStarted;
-    bool               m_bSearchConfirmed;
-    EPG::EpgSearchFilter m_searchfilter;
+    bool                  m_bSearchConfirmed;
+    EPG::EpgSearchFilter  m_searchfilter;
   };
 }

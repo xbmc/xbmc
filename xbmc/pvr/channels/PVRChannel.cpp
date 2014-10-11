@@ -56,12 +56,11 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsUserSetIcon          = false;
   m_bIsUserSetName          = false;
   m_bIsLocked               = false;
-  m_strIconPath             = StringUtils::EmptyString;
-  m_strChannelName          = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
   m_iCachedChannelNumber    = 0;
+  m_iCachedSubChannelNumber = 0;
 
   m_iEpgId                  = -1;
   m_bEPGCreated             = false;
@@ -70,11 +69,8 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
 
   m_iUniqueId               = -1;
   m_iClientId               = -1;
-  m_iClientChannelNumber    = -1;
-  m_strClientChannelName    = StringUtils::EmptyString;
-  m_strInputFormat          = StringUtils::EmptyString;
-  m_strStreamURL            = StringUtils::EmptyString;
-  m_strFileNameAndPath      = StringUtils::EmptyString;
+  m_iClientChannelNumber.channel    = 0;
+  m_iClientChannelNumber.subchannel = 0;
   m_iClientEncryptionSystem = -1;
   UpdateEncryptionName();
 }
@@ -90,14 +86,15 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strIconPath             = channel.strIconPath;
   m_strChannelName          = channel.strChannelName;
   m_iUniqueId               = channel.iUniqueId;
-  m_iClientChannelNumber    = channel.iChannelNumber;
+  m_iClientChannelNumber.channel    = channel.iChannelNumber;
+  m_iClientChannelNumber.subchannel = channel.iSubChannelNumber;
   m_strClientChannelName    = channel.strChannelName;
   m_strInputFormat          = channel.strInputFormat;
   m_strStreamURL            = channel.strStreamURL;
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
   m_iCachedChannelNumber    = 0;
+  m_iCachedSubChannelNumber = 0;
   m_iClientId               = iClientId;
-  m_strFileNameAndPath      = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = !channel.bIsHidden;
@@ -133,13 +130,15 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_strEPGScraper           = channel.m_strEPGScraper;
   m_iUniqueId               = channel.m_iUniqueId;
   m_iClientId               = channel.m_iClientId;
-  m_iClientChannelNumber    = channel.m_iClientChannelNumber;
+  m_iClientChannelNumber.channel    = channel.m_iClientChannelNumber.channel;
+  m_iClientChannelNumber.subchannel = channel.m_iClientChannelNumber.subchannel;
   m_strClientChannelName    = channel.m_strClientChannelName;
   m_strInputFormat          = channel.m_strInputFormat;
   m_strStreamURL            = channel.m_strStreamURL;
   m_strFileNameAndPath      = channel.m_strFileNameAndPath;
   m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
   m_iCachedChannelNumber    = channel.m_iCachedChannelNumber;
+  m_iCachedSubChannelNumber = channel.m_iCachedSubChannelNumber;
   m_iEpgId                  = channel.m_iEpgId;
   m_bEPGCreated             = channel.m_bEPGCreated;
   m_bChanged                = channel.m_bChanged;
@@ -158,8 +157,9 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["icon"] = m_strIconPath;
   value["channel"]  = m_strChannelName;
   CDateTime lastPlayed(m_iLastWatched);
-  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : StringUtils::Empty;
+  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
   value["channelnumber"] = m_iCachedChannelNumber;
+  value["subchannelnumber"] = m_iCachedSubChannelNumber;
   
   CEpgInfoTag epg;
   if (GetEPGNow(epg))
@@ -205,14 +205,27 @@ CEpg *CPVRChannel::GetEPG(void) const
 bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 {
   SetClientID(channel.ClientID());
-  SetClientChannelNumber(channel.ClientChannelNumber());
-  SetInputFormat(channel.InputFormat());
   SetStreamURL(channel.StreamURL());
-  SetEncryptionSystem(channel.EncryptionSystem());
-  SetClientChannelName(channel.ClientChannelName());
 
   CSingleLock lock(m_critSection);
-  
+
+  if (m_iClientChannelNumber.channel    != channel.ClientChannelNumber() ||
+      m_iClientChannelNumber.subchannel != channel.ClientSubChannelNumber() ||
+      m_strInputFormat                  != channel.InputFormat() ||
+      m_iClientEncryptionSystem         != channel.EncryptionSystem() ||
+      m_strClientChannelName            != channel.ClientChannelName())
+  {
+    m_iClientChannelNumber.channel    = channel.ClientChannelNumber();
+    m_iClientChannelNumber.subchannel = channel.ClientSubChannelNumber();
+    m_strInputFormat                  = channel.InputFormat();
+    m_iClientEncryptionSystem         = channel.EncryptionSystem();
+    m_strClientChannelName            = channel.ClientChannelName();
+
+    UpdateEncryptionName();
+    m_bChanged = true;
+    SetChanged();
+  }
+
   // only update the channel name and icon if the user hasn't changed them manually
   if (m_strChannelName.empty() || !IsUserSetName())
     SetChannelName(channel.ClientChannelName());
@@ -264,6 +277,12 @@ int CPVRChannel::ChannelNumber(void) const
   return m_iCachedChannelNumber;
 }
 
+int CPVRChannel::SubChannelNumber(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iCachedSubChannelNumber;
+}
+
 bool CPVRChannel::SetHidden(bool bIsHidden)
 {
   CSingleLock lock(m_critSection);
@@ -304,7 +323,7 @@ bool CPVRChannel::IsRecording(void) const
   return g_PVRTimers->IsRecordingOnChannel(*this);
 }
 
-bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon /* = false */)
+bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon /* = false */)
 {
   CSingleLock lock(m_critSection);
 
@@ -322,9 +341,9 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
   return false;
 }
 
-bool CPVRChannel::SetChannelName(const CStdString &strChannelName, bool bIsUserSetName /*= false*/)
+bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUserSetName /*= false*/)
 {
-  CStdString strName(strChannelName);
+  std::string strName(strChannelName);
 
   if (strName.empty())
     strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), ClientChannelNumber());
@@ -429,58 +448,7 @@ bool CPVRChannel::SetClientID(int iClientId)
   return false;
 }
 
-bool CPVRChannel::SetClientChannelNumber(int iClientChannelNumber)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_iClientChannelNumber != iClientChannelNumber && iClientChannelNumber > 0)
-  {
-    /* update the client channel number */
-    m_iClientChannelNumber = iClientChannelNumber;
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_strClientChannelName != strClientChannelName)
-  {
-    /* update the client channel name */
-    m_strClientChannelName = StringUtils::Format("%s", strClientChannelName.c_str());
-    SetChanged();
-    // this is not persisted, so don't update m_bChanged
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_strInputFormat != strInputFormat)
-  {
-    /* update the input format */
-    m_strInputFormat = StringUtils::Format("%s", strInputFormat.c_str());
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL)
+bool CPVRChannel::SetStreamURL(const std::string &strStreamURL)
 {
   CSingleLock lock(m_critSection);
 
@@ -501,7 +469,7 @@ void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewC
 {
   if (!group) return;
 
-  CStdString strFileNameAndPath;
+  std::string strFileNameAndPath;
   CSingleLock lock(m_critSection);
   strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelGroupPosition);
   if (m_strFileNameAndPath != strFileNameAndPath)
@@ -511,29 +479,11 @@ void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewC
   }
 }
 
-bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_iClientEncryptionSystem != iClientEncryptionSystem)
-  {
-    /* update the client encryption system */
-    m_iClientEncryptionSystem = iClientEncryptionSystem;
-    UpdateEncryptionName();
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
 void CPVRChannel::UpdateEncryptionName(void)
 {
   // http://www.dvb.org/index.php?id=174
   // http://en.wikipedia.org/wiki/Conditional_access_system
-  CStdString strName(g_localizeStrings.Get(13205)); /* Unknown */
+  std::string strName(g_localizeStrings.Get(13205)); /* Unknown */
   CSingleLock lock(m_critSection);
 
   if (     m_iClientEncryptionSystem == 0x0000)
@@ -625,6 +575,8 @@ void CPVRChannel::UpdateEncryptionName(void)
     strName = "Z-Crypt";
   else if (m_iClientEncryptionSystem == 0x5501)
     strName = "Griffin";
+  else if (m_iClientEncryptionSystem == 0x5601)
+    strName = "Verimatrix";
 
   if (m_iClientEncryptionSystem >= 0)
     strName += StringUtils::Format(" (%04X)", m_iClientEncryptionSystem);
@@ -689,7 +641,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
   return false;
 }
 
-bool CPVRChannel::SetEPGScraper(const CStdString &strScraper)
+bool CPVRChannel::SetEPGScraper(const std::string &strScraper)
 {
   CSingleLock lock(m_critSection);
 
@@ -716,6 +668,12 @@ void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
 {
   CSingleLock lock(m_critSection);
   m_iCachedChannelNumber = iChannelNumber;
+}
+
+void CPVRChannel::SetCachedSubChannelNumber(unsigned int iSubChannelNumber)
+{
+  CSingleLock lock(m_critSection);
+  m_iCachedSubChannelNumber = iSubChannelNumber;
 }
 
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
@@ -745,16 +703,33 @@ bool CPVRChannel::IsHidden(void) const
   return m_bIsHidden;
 }
 
+bool CPVRChannel::IsSubChannel(void) const
+{
+  return SubChannelNumber() > 0;
+}
+
+bool CPVRChannel::IsClientSubChannel(void) const
+{
+  return ClientSubChannelNumber() > 0;
+}
+
+std::string CPVRChannel::FormattedChannelNumber(void) const
+{
+  return !IsSubChannel() ?
+      StringUtils::Format("%i", ChannelNumber()) :
+      StringUtils::Format("%i.%i", ChannelNumber(), SubChannelNumber());
+}
+
 bool CPVRChannel::IsLocked(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsLocked;
 }
 
-CStdString CPVRChannel::IconPath(void) const
+std::string CPVRChannel::IconPath(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strIconPath);
+  std::string strReturn(m_strIconPath);
   return strReturn;
 }
 
@@ -775,7 +750,7 @@ bool CPVRChannel::IsUserSetName() const
   return m_bIsUserSetName;
 }
 
-CStdString CPVRChannel::ChannelName(void) const
+std::string CPVRChannel::ChannelName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strChannelName;
@@ -811,37 +786,43 @@ int CPVRChannel::ClientID(void) const
   return m_iClientId;
 }
 
-int CPVRChannel::ClientChannelNumber(void) const
+unsigned int CPVRChannel::ClientChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iClientChannelNumber;
+  return m_iClientChannelNumber.channel;
 }
 
-CStdString CPVRChannel::ClientChannelName(void) const
+unsigned int CPVRChannel::ClientSubChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strClientChannelName);
+  return m_iClientChannelNumber.subchannel;
+}
+
+std::string CPVRChannel::ClientChannelName(void) const
+{
+  CSingleLock lock(m_critSection);
+  std::string strReturn(m_strClientChannelName);
   return strReturn;
 }
 
-CStdString CPVRChannel::InputFormat(void) const
+std::string CPVRChannel::InputFormat(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strInputFormat);
+  std::string strReturn(m_strInputFormat);
   return strReturn;
 }
 
-CStdString CPVRChannel::StreamURL(void) const
+std::string CPVRChannel::StreamURL(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strStreamURL);
+  std::string strReturn(m_strStreamURL);
   return strReturn;
 }
 
-CStdString CPVRChannel::Path(void) const
+std::string CPVRChannel::Path(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strFileNameAndPath);
+  std::string strReturn(m_strFileNameAndPath);
   return strReturn;
 }
 
@@ -857,10 +838,10 @@ int CPVRChannel::EncryptionSystem(void) const
   return m_iClientEncryptionSystem;
 }
 
-CStdString CPVRChannel::EncryptionName(void) const
+std::string CPVRChannel::EncryptionName(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strClientEncryptionName);
+  std::string strReturn(m_strClientEncryptionName);
   return strReturn;
 }
 
@@ -883,10 +864,10 @@ bool CPVRChannel::EPGEnabled(void) const
   return m_bEPGEnabled;
 }
 
-CStdString CPVRChannel::EPGScraper(void) const
+std::string CPVRChannel::EPGScraper(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strEPGScraper);
+  std::string strReturn(m_strEPGScraper);
   return strReturn;
 }
 

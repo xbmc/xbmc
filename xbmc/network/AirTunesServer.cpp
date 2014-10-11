@@ -88,6 +88,19 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
   return result;
 }
 
+void CAirTunesServer::ResetMetadata()
+{
+  CSingleLock lock(m_metadataLock);
+
+  XFILE::CFile::Delete(TMP_COVERART_PATH);
+  RefreshCoverArt();
+
+  m_metadata[0] = "";
+  m_metadata[1] = "AirPlay";
+  m_metadata[2] = "";
+  RefreshMetadata();
+}
+
 void CAirTunesServer::RefreshMetadata()
 {
   CSingleLock lock(m_metadataLock);
@@ -230,6 +243,11 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
 
   CApplicationMessenger::Get().PlayFile(item);
 
+  // Not all airplay streams will provide metadata (e.g. if using mirroring,
+  // no metadata will be sent).  If there *is* metadata, it will be received
+  // in a later call to audio_set_metadata/audio_set_coverart.
+  ResetMetadata();
+
   return session;//session
 }
 
@@ -261,12 +279,6 @@ void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *sess
 
     sentBytes += n;
   }
-}
-
-void  CAirTunesServer::AudioOutputFunctions::audio_flush(void *cls, void *session)
-{
-  XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
-  pipe->Flush();
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *session)
@@ -438,14 +450,13 @@ bool CAirTunesServer::Initialize(const std::string &password)
   if (m_pLibShairplay->Load())
   {
 
-    raop_callbacks_t ao;
+    raop_callbacks_t ao = {};
     ao.cls                  = m_pPipe;
     ao.audio_init           = AudioOutputFunctions::audio_init;
     ao.audio_set_volume     = AudioOutputFunctions::audio_set_volume;
     ao.audio_set_metadata   = AudioOutputFunctions::audio_set_metadata;
     ao.audio_set_coverart   = AudioOutputFunctions::audio_set_coverart;
     ao.audio_process        = AudioOutputFunctions::audio_process;
-    ao.audio_flush          = AudioOutputFunctions::audio_flush;
     ao.audio_destroy        = AudioOutputFunctions::audio_destroy;
     m_pLibShairplay->EnableDelayedUnload(false);
     m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max

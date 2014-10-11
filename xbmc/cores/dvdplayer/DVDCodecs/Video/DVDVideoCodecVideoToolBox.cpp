@@ -66,7 +66,8 @@ enum {
 enum {
   // tells the decoder not to bother returning a CVPixelBuffer
   // in the outputCallback. The output callback will still be called.
-  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 0
+  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 0,
+  kVTDecoderDecodeFlags_DontEmitFrameIOS8 = 1 << 1
 };
 enum {
   // decode and return buffers for all frames currently in flight.
@@ -340,7 +341,7 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
 
   FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
   
-  if (GetIOSVersion() < 4.3)
+  if (CDarwinUtils::GetIOSVersion() < 4.3)
   {
     CLog::Log(LOGDEBUG, "%s - GetIOSVersion says < 4.3", __FUNCTION__);
     status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1(
@@ -1375,7 +1376,12 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     frameInfo = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
 
     if (m_DropPictures)
-      decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
+    {
+      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrameIOS8;
+      else
+        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
+    }
 
     // submit for decoding
     status = VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);

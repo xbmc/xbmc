@@ -30,7 +30,6 @@
 #include "utils/ISortable.h"
 #include "XBDateTime.h"
 #include "utils/SortUtils.h"
-#include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
 
@@ -173,7 +172,7 @@ public:
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
-  bool IsDVDImage() const;
+  bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;

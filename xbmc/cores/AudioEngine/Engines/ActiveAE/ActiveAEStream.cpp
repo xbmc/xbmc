@@ -44,6 +44,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_paused = false;
   m_rgain = 1.0;
   m_volume = 1.0;
+  SetVolume(1.0);
   m_amplify = 1.0;
   m_streamSpace = m_format.m_frameSize * m_format.m_frames;
   m_streamDraining = false;
@@ -195,7 +196,7 @@ unsigned int CActiveAEStream::GetSpace()
 unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
 {
   Message *msg;
-  int copied = 0;
+  unsigned int copied = 0;
   int sourceFrames = frames;
   uint8_t* const *buf = data;
 
@@ -430,8 +431,9 @@ double CActiveAEStream::GetResampleRatio()
 
 bool CActiveAEStream::SetResampleRatio(double ratio)
 {
+  if (ratio != m_streamResampleRatio)
+    AE.SetStreamResampleRatio(this, ratio);
   m_streamResampleRatio = ratio;
-  AE.SetStreamResampleRatio(this, m_streamResampleRatio);
   return true;
 }
 

@@ -324,7 +324,7 @@
 				<top>30r</top>
 				<width>700</width>
 				<height>20</height>
-				<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumber, - ([COLOR=blue],[/COLOR])]</label>
+				<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumberLabel, - ([COLOR=blue],[/COLOR])]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -648,7 +648,7 @@
 				<onup>610</onup>
 				<ondown>611</ondown>
 				<onclick>down</onclick>
-				<onclick>XBMC.PlayerControl(Stop)</onclick>
+				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="togglebutton" id="604">
 				<left>140</left>
@@ -666,7 +666,7 @@
 				<onup>610</onup>
 				<ondown>606</ondown>
 				<onback>50</onback>
-				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<onclick>PlayerControl(Play)</onclick>
 				<enable>Player.PauseEnabled</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.PauseEnabled">Conditional</animation>
 			</control>
@@ -682,7 +682,7 @@
 				<onright>50</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
-				<onclick>XBMC.PlayerControl(record)</onclick>
+				<onclick>PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
 			</control>
@@ -707,7 +707,7 @@
 				<onup>610</onup>
 				<ondown>611</ondown>
 				<onback>50</onback>
-				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="606">
 				<left>45</left>
@@ -722,7 +722,7 @@
 				<onup>610</onup>
 				<ondown>611</ondown>
 				<onback>50</onback>
-				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<onclick>PlayerControl(Rewind)</onclick>
 				<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 			</control>
 			<control type="group">
@@ -743,7 +743,7 @@
 					<onup>610</onup>
 					<ondown>611</ondown>
 					<onback>50</onback>
-					<onclick>XBMC.PlayerControl(Play)</onclick>
+					<onclick>PlayerControl(Play)</onclick>
 				</control>
 				<control type="button" id="601">
 					<left>85</left>
@@ -759,7 +759,7 @@
 					<ondown>611</ondown>
 					<onback>50</onback>
 					<onclick>down</onclick>
-					<onclick>XBMC.PlayerControl(Stop)</onclick>
+					<onclick>PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="607">
 					<left>125</left>
@@ -774,7 +774,7 @@
 					<onup>610</onup>
 					<ondown>611</ondown>
 					<onback>50</onback>
-					<onclick>XBMC.PlayerControl(Forward)</onclick>
+					<onclick>PlayerControl(Forward)</onclick>
 					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 				</control>
 				<control type="button" id="602">
@@ -790,7 +790,7 @@
 					<onup>610</onup>
 					<ondown>611</ondown>
 					<onback>50</onback>
-					<onclick>XBMC.PlayerControl(Next)</onclick>
+					<onclick>PlayerControl(Next)</onclick>
 					<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				</control>
 			</control>
@@ -804,7 +804,7 @@
 					<label>-</label>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<onclick>XBMC.PlayerControl(Repeat)</onclick>
+					<onclick>PlayerControl(Repeat)</onclick>
 					<onleft>602</onleft>
 					<onright>605</onright>
 					<onup>610</onup>
@@ -876,7 +876,7 @@
 					<usealttexture>Playlist.IsRandom</usealttexture>
 					<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
 					<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
-					<onclick>XBMC.PlayerControl(Random)</onclick>
+					<onclick>PlayerControl(Random)</onclick>
 					<onleft>604</onleft>
 					<onright>50</onright>
 					<onup>610</onup>
@@ -1239,5 +1239,15 @@
 	<include name="VisibleFadeEffect">
 		<animation effect="fade" time="300">Visible</animation>
 		<animation effect="fade" time="300">Hidden</animation>
+	</include>
+	<include name="KeyboardButton">
+		<width>50</width>
+		<height>50</height>
+		<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+		<texturefocus border="5">KeyboardKey.png</texturefocus>
+		<align>center</align>
+		<aligny>center</aligny>
+		<font>font13</font>
+		<focusedcolor>black</focusedcolor>
 	</include>
 </includes>

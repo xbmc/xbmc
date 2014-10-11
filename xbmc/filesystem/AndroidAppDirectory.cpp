@@ -49,22 +49,21 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str()); 
   if (dirname == "apps")
   {
-    vector<androidPackage> applications;
-    CXBMCApp::ListApplications(&applications);
-    if (!applications.size())
+    vector<androidPackage> applications = CXBMCApp::GetApplications();
+    if (applications.empty())
     {
       CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Application lookup listing failed");
       return false;
     }
-    for(unsigned int i = 0; i < applications.size(); i++)
+    for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
     {
-      if (applications[i].packageName == "org.xbmc.xbmc")
+      if ((*i).packageName == "org.xbmc.xbmc")
         continue;
-      CFileItemPtr pItem(new CFileItem(applications[i].packageName));
+      CFileItemPtr pItem(new CFileItem((*i).packageName));
       pItem->m_bIsFolder = false;
-      std::string path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(), dirname.c_str(),  applications[i].packageName.c_str());
+      std::string path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(), dirname.c_str(), (*i).packageName.c_str());
       pItem->SetPath(path);
-      pItem->SetLabel(applications[i].packageLabel);
+      pItem->SetLabel((*i).packageLabel);
       pItem->SetArt("thumb", path+".png");
       items.Add(pItem);
     }

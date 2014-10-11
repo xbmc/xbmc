@@ -46,13 +46,12 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libavcodec-dev,
   libavfilter-dev, libavformat-dev, libavutil-dev, libbluetooth-dev, libbluray-dev,
   libboost-dev, libboost-thread-dev, libbz2-dev, libcap-dev, libcdio-dev, libcec-dev,
-  libcrystalhd-dev, libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl-dev,
-  libcwiid-dev, libdbus-1-dev, libenca-dev, libflac-dev, libfontconfig-dev,
-  libfreetype6-dev, libfribidi-dev, libgl1-mesa-dev | libgl-dev, libglew-dev, 
-  libglu1-mesa-dev | libglu-dev, libhal-dev, libhal-storage-dev, libiso9660-dev,
-  libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmad0-dev, libmicrohttpd-dev,
-  libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev, libmysqlclient-dev, libnfs-dev,
-  libogg-dev, libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpostproc-dev,
+  libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev, 
+  libenca-dev, libflac-dev, libfontconfig-dev, libfreetype6-dev, libfribidi-dev, 
+  libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libhal-dev, 
+  libhal-storage-dev, libiso9660-dev, libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, 
+  libmad0-dev, libmicrohttpd-dev, libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev, libmysqlclient-dev,
+  libnfs-dev, libogg-dev, libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpostproc-dev,
   libpulse-dev, librtmp-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, 
   libswscale-dev, libtag1-dev (>= 1.8), libtiff-dev, libtinyxml-dev, libtool,
@@ -60,7 +59,6 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libxml2-dev, libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev,
   lsb-release, nasm [!amd64], python-dev, python-imaging, python-support, swig,
   unzip, yasm, zip, zlib1g-dev
-
 Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
 
    $ sudo apt-get install ccache

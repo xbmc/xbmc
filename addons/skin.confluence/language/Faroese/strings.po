@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Faroese (http://www.transifex.com/projects/p/xbmc-main/language/fo/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -389,16 +389,16 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]STILLA VÍÐKANIR[/B][CR][CR]Umsit innlagdar víðkanir · Leita eftir og innlegg víðkanir frá xbmc.org[CR]Tillaga víðkanir"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]STILLA TÆNASTUR[/B][CR][CR]Áset stýring av XBMC umvegis UPnP ella HTTP · Stilla fíludeiling[CR]Tendra Zeroconf · Stilla AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]STILLA TÆNASTUR[/B][CR][CR]Áset stýring av Kodi umvegis UPnP ella HTTP · Stilla fíludeiling[CR]Tendra Zeroconf · Stilla AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Hjálp til fyrstu koyring..."
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vel eina XBMC uppseting[CR]fyri at innrita og halda áfram"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Vel eina Kodi uppseting[CR]fyri at innrita og halda áfram"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -467,3 +467,7 @@ msgstr "Heinti upplýsing til forsøgn..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Kort og fráboðanir"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "Sjónvarp"

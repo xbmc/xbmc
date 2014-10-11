@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Burmese (http://www.transifex.com/projects/p/xbmc-main/language/my/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "ပြုပြင်ရန်"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "ရာသီဥတု"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc မီဒီယာ စင်တာ"
+msgid "Kodi media center"
+msgstr "Kodi မီဒီယာ စင်တာ"
 
 msgctxt "#11"
 msgid "Monday"
@@ -368,10 +368,6 @@ msgstr "ဖိုင်ကူးခြင်းကိုအတည်ပြုမ
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "ဖိုင်ရွှေ့ခြင်းကိုအတည်ပြုမည်"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "ဖိုဒ်များကို ဖျက်မှာ သေချာပြီလား ?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -1362,8 +1358,8 @@ msgid "Appearance"
 msgstr "အပြင်အဆင်"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "XBMC အကြောင်း"
+msgid "About Kodi"
+msgstr "Kodi အကြောင်း"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1784,6 +1780,10 @@ msgstr "ဒီဟာကို library မှဖြုတ်ချင်ပါသ
 msgctxt "#664"
 msgid "Browse for Script"
 msgstr "script များရှာမည်"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB library အတွက် ပိုမိုရှင်းပြထားသော logging"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2754,8 +2754,8 @@ msgid "Active connections detected!"
 msgstr "ကောင်းမွန်သောကွန်နက်ရှင်များ တွေ့ရှိမိ။"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "သင်ဆက်လက်လုပ်ဆောင်ပါက သင် XBMC ကိုမထိန်းနိုင်ပဲဖြစ်သွားမည်"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "သင်ဆက်လက်လုပ်ဆောင်ပါက သင် Kodi ကိုမထိန်းနိုင်ပဲဖြစ်သွားမည်"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -3194,8 +3194,8 @@ msgid "Services"
 msgstr "ဆားဗစ်များ"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC သည် ထိုအရာများကိုပြောင်းလဲလိုပါသည်.."
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi သည် ထိုအရာများကိုပြောင်းလဲလိုပါသည်.."
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -3670,8 +3670,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV recordings"
+msgid "Recordings"
+msgstr "အသံသွင်းခြင်း"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -3969,6 +3969,14 @@ msgctxt "#19181"
 msgid "Menu/OSD"
 msgstr "Menu/OSD"
 
+msgctxt "#19183"
+msgid "Radio"
+msgstr "ရေဒီယို"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "နောက်ခံ"
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "ဆက်လုပ်မလား"
@@ -4045,6 +4053,10 @@ msgctxt "#19635"
 msgid "Languages"
 msgstr "ဘာသာစကားများ"
 
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "အလိုအလျောက်"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "ချက်ပြုတ်ခြင်း"
@@ -4086,8 +4098,8 @@ msgid "Screenshots"
 msgstr "Screenshots"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "XBMC ကိုသုံးမည်"
+msgid "Use Kodi"
+msgstr "Kodi ကိုသုံးမည်"
 
 msgctxt "#20013"
 msgid "Do you wish to launch the game?"
@@ -5241,6 +5253,10 @@ msgctxt "#24053"
 msgid "License:"
 msgstr "လိုင်စင်-"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "updates ထွက်မထွက်စစ်မည်"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "ဒီ Add-on ကိုဖွင့်ချင်ပါသလား။"
@@ -5498,8 +5514,8 @@ msgid "View Readme"
 msgstr "Readme ကိုဖတ်မည်"
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "ကျေးဇူးပြု၍ XBMC ကို update ပြုလုပ်ပါ"
+msgid "Please update Kodi."
+msgstr "ကျေးဇူးပြု၍ Kodi ကို update ပြုလုပ်ပါ"
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -5676,3 +5692,27 @@ msgstr "channel သို့ပြောင်းမည်"
 msgctxt "#36428"
 msgid "Record"
 msgstr "မှတ်တမ်းသွင်းမည်"
+
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "ပိတ်ထားမည်"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV show"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV shows"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "အပိုင်း"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "အပိုင်းများ"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "အလိုအလျောက်"

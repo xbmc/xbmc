@@ -87,6 +87,9 @@ ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 int CXBMCApp::m_initialVolume = 0;
+CCriticalSection CXBMCApp::m_applicationsMutex;
+std::vector<androidPackage> CXBMCApp::m_applications;
+
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIContext(nativeActivity)
@@ -129,6 +132,12 @@ void CXBMCApp::onResume()
   CJNIIntentFilter batteryFilter;
   batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
   registerReceiver(*this, batteryFilter);
+
+  // Clear the applications cache. We could have installed/deinstalled apps
+  {
+    CSingleLock lock(m_applicationsMutex);
+    m_applications.clear();
+  }
 }
 
 void CXBMCApp::onPause()
@@ -297,8 +306,8 @@ void CXBMCApp::run()
 void CXBMCApp::XBMC_Pause(bool pause)
 {
   android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
-  // Only send the PAUSE action if we are pausing XBMC and something is currently playing
-  if (pause && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+  // Only send the PAUSE action if we are pausing XBMC and video is currently playing
+  if (pause && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
     CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
 }
 
@@ -349,22 +358,27 @@ int CXBMCApp::GetDPI()
   return dpi;
 }
 
-bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
+std::vector<androidPackage> CXBMCApp::GetApplications()
 {
-  CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
-  int numPackages = packageList.size();
-  for (int i = 0; i < numPackages; i++)
+  CSingleLock lock(m_applicationsMutex);
+  if (m_applications.empty())
   {
-    androidPackage newPackage;
-    newPackage.packageName = packageList.get(i).packageName;
-    newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
-    CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
-    if (!intent || !intent.hasCategory("android.intent.category.LAUNCHER"))
-      continue;
+    CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
+    int numPackages = packageList.size();
+    for (int i = 0; i < numPackages; i++)
+    {
+      androidPackage newPackage;
+      newPackage.packageName = packageList.get(i).packageName;
+      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
+      if (!intent || !intent.hasCategory("android.intent.category.LAUNCHER"))
+        continue;
 
-    applications->push_back(newPackage);
+      m_applications.push_back(newPackage);
+    }
   }
-  return true;
+
+  return m_applications;
 }
 
 bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)

@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/xbmc-main/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Konfiguracja ustawień"
+msgstr "Kodi -"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -26,7 +26,7 @@ msgstr "Opcje zasilania"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Praca w toku..."
+msgstr "Uruchamianie"
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -50,7 +50,7 @@ msgstr "Muzyka - Pliki"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Odtwarzanie w toku"
+msgstr "Odtwarzanie"
 
 msgctxt "#31024"
 msgid "Page"
@@ -98,7 +98,7 @@ msgstr "Teraz odtwarzane"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "ODTWARZANIE W TOKU"
+msgstr "ODTWARZANIE"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -118,7 +118,7 @@ msgstr "PRZESZUKIWANIE"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Szablony wizualizacji"
+msgstr "Zestaw ustawień wizualizacji"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -146,7 +146,7 @@ msgstr "Zamknij listę odtwarzania"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Dostępne w systemie pliki muzyczne"
+msgstr "Systemowe pliki muzyczne"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -190,7 +190,7 @@ msgstr "Ukrywanie przycisków menu startowego"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Używaj własnych obrazów tła"
+msgstr "Używaj zdefiniowanego tła"
 
 msgctxt "#31110"
 msgid "Background path:"
@@ -206,11 +206,11 @@ msgstr "Opcje"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Pokazuj ostatnio dodane albumy"
+msgstr "Pokazuj Ostatnio dodane Albumy"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Pokazuj ostatnio dodane wideo"
+msgstr "Pokazuj Ostatnio dodane Video"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -230,15 +230,15 @@ msgstr "Używaj wizualizacji muzyki w roli tła"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Odtwarzaj motywy muzyczne w bibliotece wideo (wtyczka TvTunes)"
+msgstr "Odtwarzaj motywy muzyczne w bibliotece wideo (dodatek TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
-msgstr "TvTunes"
+msgstr "Dodatek TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
-msgstr "Teksty utworów"
+msgstr "Tekst utworu"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
@@ -246,7 +246,7 @@ msgstr "Ukrywaj tapety podczas pełnoekranowej wizualizacji"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Wtyczka tekstów utworów"
+msgstr "Dodatek Tekst utworu"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -314,7 +314,7 @@ msgstr "Ukrywaj tapety"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Szczegóły filmu"
+msgstr "O filmie"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -342,7 +342,7 @@ msgstr "Opcje skanowania zawartości"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Ustaw ścieżkę do tapety"
+msgstr "Ustaw ścieżkę do folderu tapet"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -386,7 +386,7 @@ msgstr "Wciśnij przycisk, aby[CR][CR]odtwarzać zwiastun"
 
 msgctxt "#31331"
 msgid "Album Details"
-msgstr "Szczegóły albumu"
+msgstr "O albumie"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -438,7 +438,7 @@ msgstr "Bazujące na Arialu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Listy plików · Wygaszacz ekranu"
+msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Ustawienia regionalne · Listy plików · Wygaszacz ekranu"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -454,7 +454,7 @@ msgstr "[B]KONFIGURACJA OBRAZÓW[/B][CR][CR]Listy obrazów · Pokaz slajdów"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]KONFIGURACJA POGODY[/B][CR][CR]Wybór wtyczki · Wybór miast, dla których będą pobierane informacje pogodowe"
+msgstr "[B]KONFIGURACJA POGODY[/B][CR][CR]Wybór dodatku · Wybór lokalizacji dla informacji pogodowych"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -462,19 +462,19 @@ msgstr "[B]KONFIGURACJA SYSTEMU[/B][CR][CR]Wyświetlanie obrazu · Odtwarzanie d
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURACJA WTYCZEK[/B][CR][CR]Zarządzanie wtyczkami · Instalowanie wtyczek · Ustawienia wtyczek"
+msgstr "[B]KONFIGURACJA DODATKÓW[/B][CR][CR]Zarządzanie zainstalowanymi dodatkami · Przeglądanie i instalowanie dodatków[CR]Ustawienia dodatków"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr "[B]KONFIGURACJA TELEWIZJI[/B][CR][CR]Menu ekranowe · Przewodnik TV · Nagrywanie"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURACJA USŁUG[/B][CR][CR]Kontrola XBMC przez UPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGURACJA USŁUG[/B][CR][CR]Kontrola Kodi przez UPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Najpierw skorzystaj z pomocy..."
+msgstr "Wskazówki na początek..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
@@ -489,7 +489,7 @@ msgid "Login"
 msgstr "Logowanie"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
+msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
 
 msgctxt "#31422"
@@ -514,7 +514,7 @@ msgstr "Dodaj grupę"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "Zmień nazwę grupy"
+msgstr "Przemianuj grupę"
 
 msgctxt "#31505"
 msgid "Delete Group"
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "OBRAZY"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "TELEWIZJA "
+msgid "TV"
+msgstr "TELEWIZJA"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -607,3 +607,7 @@ msgstr "DYSK"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SYSTEM"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

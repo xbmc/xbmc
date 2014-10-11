@@ -1274,8 +1274,6 @@ extern "C"
       }
     }
 
-    OutputDebugString(szLine);
-    OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
@@ -1551,8 +1549,6 @@ extern "C"
       }
     }
 
-    OutputDebugString(tmp);
-    OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return strlen(tmp);
   }

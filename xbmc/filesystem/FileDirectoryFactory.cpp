@@ -116,7 +116,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
-  if (pItem->IsDVDImage())
+  if (pItem->IsDiscImage())
     return new CUDFDirectory();
 
 #endif

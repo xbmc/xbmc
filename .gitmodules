@@ -1,4 +1,3 @@
-[submodule "touched"]
-	path = addons/skin.touched
-	url = git://github.com/xbmc/skin.touched.git
-	ignore = all
+[submodule "addons/skin.re-touched"]
+	path = addons/skin.re-touched
+	url = git://github.com/xbmc/skin.re-touched.git

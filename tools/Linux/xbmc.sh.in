@@ -84,7 +84,7 @@ print_crash_report()
   echo "############### STACK TRACE #################" >> $FILE
   if command_exists gdb; then
     if command_exists systemd-coredumpctl; then
-      systemd-coredumpctl dump -o core xbmc.bin &> /dev/null
+      systemd-coredumpctl dump -o core xbmc.bin > /dev/null 2>&1
     fi
     single_stacktrace "$PWD" 1
     # Find in plugins directories

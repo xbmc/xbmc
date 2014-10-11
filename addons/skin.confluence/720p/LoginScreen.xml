@@ -22,12 +22,12 @@
 			</control>
 			<control type="image">
 				<description>LOGO</description>
-				<left>0</left>
-				<top>5</top>
-				<width>170</width>
-				<height>100</height>
+				<left>10</left>
+				<top>10</top>
+				<width>100</width>
+				<height>50</height>
 				<aspectratio aligny="top" align="left">keep</aspectratio>
-				<texture>xbmc-logo.png</texture>
+				<texture>kodi-logo.png</texture>
 				<include>Window_OpenClose_Animation</include>
 			</control>
 			<control type="image">

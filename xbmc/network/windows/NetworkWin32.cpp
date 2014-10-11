@@ -132,14 +132,14 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
               WlanFreeMemory((PVOID*)&pAttributes);
             }
             else
-              OutputDebugString("Can't query wlan interface\n");
+              CLog::Log(LOGERROR, "%s: Can't query wlan interface", __FUNCTION__);
           }
         }
       }
       WlanCloseHandle(&hClientHdl, NULL);
     }
     else
-      OutputDebugString("Can't open wlan handle\n");
+      CLog::Log(LOGERROR, "%s: Can't open wlan handle", __FUNCTION__);
   }
 #endif
   return result;
@@ -200,10 +200,7 @@ void CNetworkWin32::queryInterfaceList()
     free(adapterInfo);
     adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
     if (adapterInfo == NULL)
-    {
-      OutputDebugString("Error allocating memory needed to call GetAdaptersinfo\n");
       return;
-    }
   }
 
   if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
@@ -228,20 +225,15 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
 
   pFixedInfo = (FIXED_INFO *) malloc(sizeof (FIXED_INFO));
   if (pFixedInfo == NULL)
-  {
-    OutputDebugString("Error allocating memory needed to call GetNetworkParams\n");
     return result;
-  }
+
   ulOutBufLen = sizeof (FIXED_INFO);
   if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
   {
     free(pFixedInfo);
     pFixedInfo = (FIXED_INFO *) malloc(ulOutBufLen);
     if (pFixedInfo == NULL)
-    {
-      OutputDebugString("Error allocating memory needed to call GetNetworkParams\n");
       return result;
-    }
   }
 
   if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
@@ -427,10 +419,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
     free(adapterInfo);
     adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
     if (adapterInfo == NULL)
-    {
-      OutputDebugString("Error allocating memory needed to call GetAdaptersinfo\n");
       return;
-    }
   }
 
   if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
@@ -500,14 +489,14 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
               WlanFreeMemory((PVOID*)&pAttributes);
             }
             else
-              OutputDebugString("Can't query wlan interface\n");
+              CLog::Log(LOGERROR, "%s: Can't query wlan interface", __FUNCTION__);
           }
         }
       }
       WlanCloseHandle(&hClientHdl, NULL);
     }
     else
-      OutputDebugString("Can't open wlan handle\n");
+      CLog::Log(LOGERROR, "%s: Can't open wlan handle", __FUNCTION__);
   }
   // Todo: get the key (WlanGetProfile, CryptUnprotectData?)
 #endif

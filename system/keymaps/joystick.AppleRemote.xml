@@ -45,7 +45,7 @@
       <!-- hold right -->      <button id="10">Right</button>
 
       <!-- new aluminium remote buttons  -->
-      <!-- play/pause -->      <button id="12">Play</button>
+      <!-- play/pause -->      <button id="12">PlayPause</button>
 
       <!-- Additional buttons via Harmony Apple TV remote profile - these are also the learned buttons on Apple TV 2gen-->
       <!-- pageup     -->      <button id="13">PageUp</button>
@@ -120,6 +120,14 @@
       <!-- pagedown   -->      <button id="14">ChannelDown</button>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="AppleRemote">
+      <button id="3">ChannelDown</button>
+      <button id="4">ChannelUp</button>
+      <!-- pageup     -->      <button id="13">ChannelUp</button>
+      <!-- pagedown   -->      <button id="14">ChannelDown</button>
+    </joystick>
+  </FullscreenRadio>
   <Visualisation>
     <joystick name="AppleRemote">
       <button id="1">VolumeUp</button>

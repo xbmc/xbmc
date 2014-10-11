@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/xbmc-main/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Ayarlar"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "Hava Durumu"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc medya merkezi"
+msgid "Kodi media center"
+msgstr "Kodi medya merkezi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -388,10 +388,6 @@ msgstr "Dosya kopyalamayı onayla"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Dosya taşımayı onayla"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Dosya silmeyi onaylıyor musunuz?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -914,8 +910,8 @@ msgid "Scripts output"
 msgstr "Betik çıktısı"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "HTTP üzerinden XBMC kontrolüne izin ver"
+msgid "Allow control of Kodi via HTTP"
+msgstr "HTTP üzerinden Kodi kontrolüne izin ver"
 
 msgctxt "#264"
 msgid "Record"
@@ -1750,8 +1746,8 @@ msgid "Audio options"
 msgstr "Ses seçenekleri"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "XBMC Hakkında"
+msgid "About Kodi"
+msgstr "Kodi Hakkında"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1984,6 +1980,10 @@ msgstr "Bu sanatçı için biyografi yok"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Çok kanallı sesleri stereo'ya dönüştür"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Numarası"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2401,13 +2401,41 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Sıkıştırma düzeyi"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Ayrıntılı günlük..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Dolby Digital kod çevrimini etkinleştir."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "SMB kütüphanesi için ayrıntılı günlük"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "CURL kütüphanesi (http, dav) için ayrıntılı günlük"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "CMYTH kütüphanesi için ayrıntılı günlük"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "FFMPEG kütüphaneleri için ayrıntılı günlük"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "RTMP kütüphanesi için ayrıntılı günlük"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "DBUS çağrıları için ayrıntılı günlük"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC istekleri için ayrıntılı günlük"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "SES bileşeni için ayrıntılı günlük"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2714,8 +2742,8 @@ msgid "Remote control"
 msgstr "Uzaktan kontrol"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "Bu sistemdeki programların XBMC'yi kontrol etmesine izin ver"
+msgid "Allow programs on this system to control Kodi"
+msgstr "Bu sistemdeki programların Kodi'yi kontrol etmesine izin ver"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2754,8 @@ msgid "Port range"
 msgstr "Bağlantı noktası aralığı"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "Diğer sistemlerdeki programların XBMC'yi kontrol etmesine izin ver"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "Diğer sistemlerdeki programların Kodi'yi kontrol etmesine izin ver"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,8 +2818,8 @@ msgid "Unable to connect"
 msgstr "Bağlanamıyor"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC ağ konumuna bağlanamadı."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi ağ konumuna bağlanamadı."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3142,8 +3170,8 @@ msgid "Allow volume control"
 msgstr "Ses kontrolünü aç"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "XBMC'nin AirPlay içeriğini almasına izin ver"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Kodi'nin AirPlay içeriğini almasına izin ver"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4025,6 +4053,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Pil düzeyi"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Otomatik güncellemeler: Etkin"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Otomatik güncellemeler: Bildirmek"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Otomatik güncellemeler: Asla"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Hava Durumu"
@@ -4278,8 +4318,8 @@ msgid "Active connections detected!"
 msgstr "Etkin bağlantılar algılandı!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Devam ederseniz, XBMC'yi kontrol etmek mümkün olmayabilir."
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "Devam ederseniz, Kodi'yi kontrol etmek mümkün olmayabilir."
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4291,10 +4331,10 @@ msgstr "Apple Kumanda modu değiştirilsin mi?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr "XBMC'yi kontrol etmek için Apple Kumandayı kullanıyorsanız,"
+msgstr "Kodi'yi kontrol etmek için Apple Kumandayı kullanıyorsanız,"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
+msgid "Kodi, changing this setting might affect your ability"
 msgstr "bu ayarı değiştirmek kontrol yeteneğini etkileyebilir."
 
 msgctxt "#13147"
@@ -4519,10 +4559,10 @@ msgstr "Parça adlandırma şablonu"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
-msgstr "XBMC'yi yeniden başlatmak yerine sistemi"
+msgstr "Kodi'yi yeniden başlatmak yerine sistemi"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
+msgid "instead of just Kodi?"
 msgstr "yeniden başlatmak ister misiniz?"
 
 msgctxt "#13310"
@@ -4985,22 +5025,6 @@ msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
 msgstr "Çok iş parçacıklı yazılım kod çözmesine izin ver."
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Mpeg-2 VDPAU Kullan"
-
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Mpeg-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Eski Radeon kartları bu etkin ise hata verme eğilimindedir."
-
-msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Mpeg-4 VDPAU Kullan"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Mpeg-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı ION Donanımının bunun varsayılan olarak etkin olmasından dolayı problemleri vardır."
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "VC-1 VDPAU Kullan"
@@ -5008,22 +5032,6 @@ msgstr "VC-1 VDPAU Kullan"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "VC-1 tabanlı codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. VDPAU bulunan AMD Donanımı VC-1 Simple kodunu çözemez."
-
-msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Mpeg-2 VAAPI Kullan"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Mpeg-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı Mpeg-2 videolarda yeşil yapılar olabilir."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Mpeg-4 VAAPI Kullan"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Mpeg-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5142,8 +5150,8 @@ msgid "Apple remote"
 msgstr "Apple kumanda"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "XBMC'nin kumandayı kullanarak başlamasına izin ver"
+msgid "Allow start of Kodi using the remote"
+msgstr "Kodi'nin kumandayı kullanarak başlamasına izin ver"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5314,8 +5322,8 @@ msgid "Network settings changed"
 msgstr "Ağ ayarları değişti"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "Ağ ayarlarınızın değiştirilebilmesi için XBMC'yi yeniden"
+msgid "Kodi requires to restart to change your"
+msgstr "Ağ ayarlarınızın değiştirilebilmesi için Kodi'yi yeniden"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -6017,10 +6025,6 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "veya tam bir eşleşme bulmak için \"The wizard of Oz\" gibi ifadeleri kullanabilirsiniz."
 
-msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Benzer programları bul"
-
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "EPG istemcilerden alınıyor"
@@ -6074,8 +6078,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR Arka Uç %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV kayıtları"
+msgid "Recordings"
+msgstr "Kayıtlar"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6265,10 +6269,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Sona git"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Varsayılan EPG penceresi"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "Kanal simgeleri"
@@ -6417,6 +6417,10 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Lütfen başka kanala geçiniz."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Kanala git"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Kayıt için klasör adını girin"
@@ -6544,6 +6548,10 @@ msgstr "Lütfen önce bir grup oluşturun"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Yeni grubun adı"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Ara..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6697,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Kanalları değiştirirken kanal bilgisini göster"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Kanal bilgisini otomatik olarak gizle"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6709,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "EPG'de görüntülenecek günler"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Kanal bilgisi süresi"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radyo"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6734,8 @@ msgid "Continue last channel on startup"
 msgstr "Başlangıçta son kanala devam et"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Simge Durumuna Küçültülmüş"
+msgid "Background"
+msgstr "Arka Plan"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6806,8 +6810,8 @@ msgid "Enter the name of the new channel"
 msgstr "Yeni kanalın adını girin"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC sanal arka uç"
+msgid "Kodi virtual backend"
+msgstr "Kodi sanal arka uç"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7049,10 +7053,6 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "'bağlantı kesildi' uyarılarını gösterme"
 
-msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Bütün kayıtlar"
-
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Hiçbir PVR eklentisi bulunamadı"
@@ -7112,6 +7112,10 @@ msgstr "Simge seç"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Simgeye gözat"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Tüm Kanallar"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7502,8 +7506,8 @@ msgid "Screenshots"
 msgstr "Ekran görüntüleri"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "XBMC Kullanımı"
+msgid "Use Kodi"
+msgstr "Kodi Kullanımı"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8411,10 +8415,10 @@ msgstr "Yönetmen"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Bu yol içindeki tüm öğeleri XBMC kitaplığından"
+msgstr "Bu yol içindeki tüm öğeleri Kodi kitaplığından"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "kaldırmak istiyor musunuz?"
 
 msgctxt "#20342"
@@ -9626,8 +9630,8 @@ msgid "Reference service"
 msgstr "Başvuru hizmeti"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "UPnP üzerinden XBMC kontrolüne izin ver"
+msgid "Allow control of Kodi via UPnP"
+msgstr "UPnP üzerinden Kodi kontrolüne izin ver"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10125,6 +10129,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Değişim günlüğü"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Güncellemeleri denetle"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Bu eklentiyi etkinleştirmek ister misiniz?"
@@ -10200,6 +10208,10 @@ msgstr "Gerekli Eklenti"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Yeniden bağlanmayı denemek istiyor musunuz?"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Eklenti kütüphaneleri"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10646,12 +10658,12 @@ msgid "This version of %s requires an"
 msgstr "%s sürümünün çalışması için"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "%s veya daha büyük bir XBMC sürümü gerekli."
+msgid "Kodi revision of %s or greater to run."
+msgstr "%s veya daha büyük bir Kodi sürümü gerekli."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "Lütfen XBMC'yi güncelleyin."
+msgid "Please update Kodi."
+msgstr "Lütfen Kodi'yi güncelleyin."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10933,10 +10945,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Bu aygıt mevcut iken oyun çubuğunu kullanma"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Tam ekranda sistem tuşlarını etkinleştir"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Konum"
@@ -10986,12 +10994,12 @@ msgid "Could not open the adaptor"
 msgstr "Bağdaştırıcı açılamıyor"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "XBMC başlatılınca aygıtları aç"
+msgid "Devices to power on when starting Kodi"
+msgstr "Kodi başlatılınca aygıtları aç"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "XBMC durdurulunca aygıtları kapat"
+msgid "Devices to power off when stopping Kodi"
+msgstr "Kodi durdurulunca aygıtları kapat"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11030,8 +11038,8 @@ msgid "Connected to HDMI device"
 msgstr "HDMI aygıtına bağlandı"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "Başlatırken XBMC etkin kaynak olsun"
+msgid "Make Kodi the active source when starting"
+msgstr "Başlatırken Kodi etkin kaynak olsun"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11050,8 +11058,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "Yeni yapılandırma değeri ayarlanamadı. Lütfen ayarlarınızı denetleyin."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "XBMC durdurulunca 'etkin olmayan kaynak' komutu yolla"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Kodi durdurulunca 'etkin olmayan kaynak' komutu yolla"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11106,8 +11114,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV ve AVR aygıtı (kesin)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "Desteklenmeyen libCEC arabirim sürümü. %x sürümü XBMC'nin  desteklediği sürümden (%x) daha düşük."
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "Desteklenmeyen libCEC arabirim sürümü. %x sürümü Kodi'nin  desteklediği sürümden (%x) daha düşük."
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11126,8 +11134,8 @@ msgid "Category containing all Skin related settings."
 msgstr "Bütün Dış Görünüm ile ilgili ayarları içeren kategori."
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "Kullanıcı arabirimi için bir dış görünüm seçiniz. Bu seçim XBMC'nin nasıl görüneceğini tanımlayacaktır."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Kullanıcı arabirimi için bir dış görünüm seçiniz. Bu seçim Kodi'nin nasıl görüneceğini tanımlayacaktır."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11150,8 +11158,8 @@ msgid "Resize the view of the user interface."
 msgstr "Kullanıcı arabirimi görünümünü yeniden boyutlandır."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "XBMC nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Kodi nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11234,8 +11242,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Ekran koruyucusunu göstermeden önce gereken boşta kalma süresi miktarını ayarla"
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Ekran koruyucu seçin. Tam ekran video oynatma duraklatılırsa veya bir iletişim kutusu etkin olduğunda XBMC 'Karart' ekran koruyucusunu zorlar."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Ekran koruyucu seçin. Tam ekran video oynatma duraklatılırsa veya bir iletişim kutusu etkin olduğunda Kodi 'Karart' ekran koruyucusunu zorlar."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11246,8 +11254,8 @@ msgid "Preview the selected screensaver."
 msgstr "Seçilen ekran koruyucuyu göster."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "Müzik çalınıyorsa, XBMC ekran koruyucuyu görüntülemek yerine seçilen görsel öğeyi başlatacaktır."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Müzik çalınıyorsa, Kodi ekran koruyucuyu görüntülemek yerine seçilen görsel öğeyi başlatacaktır."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11294,8 +11302,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Film kitaplığına göz atarken 'Film kümeleri'ndeki filmleri grupla."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "XBMC başlatılırken yeni medya dosyalarını kontrol et."
+msgid "Check for new media files on Kodi startup."
+msgstr "Kodi başlatılırken yeni medya dosyalarını kontrol et."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11394,8 +11402,8 @@ msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "4:3 videolarının geniş ekranlarda görüntüleneceği yakınlaştırma düzeyini seçin."
 
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "VDPAU stüdyo düzey dönüştürme XBMC gibi gelişmiş uygulamalarda renk alanı dönüşümünü etkilemek için bir yol sağlar."
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "VDPAU stüdyo düzey dönüştürme Kodi gibi gelişmiş uygulamalarda renk alanı dönüşümünü etkilemek için bir yol sağlar."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11518,20 +11526,20 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "PVR/Canlı TV özellikleri genel ayarları kategorisi."
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "XBMC'nin Kişisel Video Kaydedici (PVR) özelliklerini etkinleştir. En az bir PVR eklentisinin yüklü olması gerekir."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Kodi'nin Kişisel Video Kaydedici (PVR) özelliklerini etkinleştir. En az bir PVR eklentisinin yüklü olması gerekir."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Kanal guruplarını PVR arka uçtan al (destekleniyorsa). Eğer arka uçta bulunmuyorsa kullanıcının oluşturduğu guruplar silinir."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "Kanalları arka uç kanal numarasına göre sırala, fakat kanallar için XBMC'nin kendi numaralandırmasını kullan."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Kanalları arka uç kanal numarasına göre sırala, fakat kanallar için Kodi'nin kendi numaralandırmasını kullan."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "XBMC üzerinde el ile yapılandırmak yerine arka uç numaralarını kullan."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Kodi üzerinde el ile yapılandırmak yerine arka uç numaralarını kullan."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11546,8 +11554,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Kanal ve EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "Eğer XBMC PVR arka uç sunucusu ile iletişim kuramaz ise 'bağlantı kesildi' bildirim penceresini göstermeyi engelle."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Eğer Kodi PVR arka uç sunucusu ile iletişim kuramaz ise 'bağlantı kesildi' bildirim penceresini göstermeyi engelle."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11557,17 +11565,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Kanal değiştirirken geçerli TV programının program bilgisini görüntüle."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Aşağıda tanımlanan program bilgisini birkaç saniye sonra otomatik olarak gizle."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Kanal değiştirdikten sonra ekran kontrolleri menüsünü kapat."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "'otomatik olarak gizle' ayarı açıldığında program bilgisi ne kadar süre boyunca gösterilsin."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11580,6 @@ msgstr "Eksik kanal simgeleri için tara."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Elektronik program rehberi ayarları kategorisi."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Göstermek için varsayılan elektronik program rehberi penceresi."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11598,16 +11594,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "CPU kullanımını azaltmak için TV oynatılırken EPG verilerini alma."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "EPG verisi, varsayılan olarak XBMC yeniden başlatıldığında EPG verisinin alınmasını hızlandırmak için yerel veritabanında depolanır."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "EPG verisi, varsayılan olarak Kodi yeniden başlatıldığında EPG verisinin alınmasını hızlandırmak için yerel veritabanında depolanır."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Kanal için EPG verisi alınamaz ise 'hiçbir bilgi yok' etiketlerini gizle."
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "XBMC'nin içindeki EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Kodi'nin içindeki EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11626,8 +11622,8 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Codec bilgisi penceresinde sinyal kalitesi bilgisini göster (eklenti ve arka uç tarafından destekleniyorsa)."
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
-msgstr "Kanal alınamadığı zaman XBMC kanal değiştirmek için ne kadar bekleyecek. Zaman zaman sinyal gücünü kaybeden havadan yayın kanalları için kullanışlıdır."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Kanal alınamadığı zaman Kodi kanal değiştirmek için ne kadar bekleyecek. Zaman zaman sinyal gücünü kaybeden havadan yayın kanalları için kullanışlıdır."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
@@ -11670,8 +11666,8 @@ msgid "Category for PVR power management settings, such as when to wake the PVR 
 msgstr "PVR güç yönetimi ayarları kategorisi, örneğin PVR arka uç sunucusu ne zaman uyansın."
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "XBMC çıkar veya hazırda bekletme moduna giderse aşağıdaki \"uyandırma\" komutunu çalıştırın. Sonraki zamanlanmış kayıt damgası parametre olarak geçirilir."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Kodi çıkar veya hazırda bekletme moduna giderse aşağıdaki \"uyandırma\" komutunu çalıştırın. Sonraki zamanlanmış kayıt damgası parametre olarak geçirilir."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11710,12 +11706,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Bir ebeveyn kilitli kanala erişmeye çalışırken tekrar pin kodu iste ve bu süre dolana kadar kodu sorma."
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "PVR arka uç XBMC'de bu ayarları değiştirmeyi destekliyorsa, PVR arka uca özel ayarlar kategorisi."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "PVR arka uç Kodi'de bu ayarları değiştirmeyi destekliyorsa, PVR arka uca özel ayarlar kategorisi."
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Bu seçenek eğer PVR arka uç ayarları destekliyorsa ve XBMC'de bu ayarlar değiştirilebiliyorsa PVR arka uca özel ayarları getirir."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Bu seçenek eğer PVR arka uç ayarları destekliyorsa ve Kodi'de bu ayarlar değiştirilebiliyorsa PVR arka uca özel ayarları getirir."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11742,8 +11738,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "Varsayılan sanatçı bilgisi kaynağını seçin. Seçenekler için Eklenti Yöneticisi'ne bakın."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "XBMC başlatılırken yeni ve kaldırılmış medya dosyalarını kontrol et."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Kodi başlatılırken yeni ve kaldırılmış medya dosyalarını kontrol et."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11762,16 +11758,16 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "Müzik çalma ile ilgili ayarları içeren kategori."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC otomatik olarak geçerli klasördeki sonraki öğeyi çalar. Örneğin, Dosyalar Görünümü: Bir parça çalındıktan sonra, XBMC otomatik olarak aynı klasördeki sonraki parçayı çalar."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Kodi otomatik olarak geçerli klasördeki sonraki öğeyi çalar. Örneğin, Dosyalar Görünümü: Bir parça çalındıktan sonra, Kodi otomatik olarak aynı klasördeki sonraki parçayı çalar."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr "Şarkılar seçildiğinde hemen çalmak yerine sıraya alınır."
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC, MP3Gain gibi bir program tarafından ses dosyalarına kodlanmış ReplayGain bilgisini okur ve buna göre ses seviyelerini normalleştirir."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi, MP3Gain gibi bir program tarafından ses dosyalarına kodlanmış ReplayGain bilgisini okur ve buna göre ses seviyelerini normalleştirir."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11826,8 +11822,8 @@ msgid "Used for formatting the second column in library lists."
 msgstr "Kitaplık listelerindeki ikinci sütunu biçimlendirmek için kullanılır."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC küçük resimleri uzak paylaşımlarda ve optik medya üzerinde arayacaktır. Bu genellikle ağ klasörlerinin listelenmesini yavaşlatabilir."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi küçük resimleri uzak paylaşımlarda ve optik medya üzerinde arayacaktır. Bu genellikle ağ klasörlerinin listelenmesini yavaşlatabilir."
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11874,8 +11870,8 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "Karaoke ile ilgili ayarları içeren kategori."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "Herhangi bir müzik dosyasını çalarken, XBMC eşleşen .cdg dosyasına bakar ve grafikleri görüntüler."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "Herhangi bir müzik dosyasını çalarken, Kodi eşleşen .cdg dosyasına bakar ve grafikleri görüntüler."
 
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
@@ -11986,8 +11982,8 @@ msgid "Category containing settings used for all services."
 msgstr "Bütün hizmetler için kullanılan ayarları içeren kategori."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "Çeşitli ağ hizmetlerini kullanırken XBMC kurulumu adını görüntüle."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Çeşitli ağ hizmetlerini kullanırken Kodi kurulumu adını görüntüle."
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -12006,28 +12002,20 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "UPnP istemcisini etkinleştir. Bu özellik herhangi bir UPnP sunucusundan ortam akışı yapmanızı ve oynatımı sunucudan kontrol etmenizi sağlar."
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "UPnP denetim noktasını etkinleştir. Bu özellik herhangi bir UPnP istemcisine ortam akışı yapmanızı sağlar ve oynatımı XBMC üzerinden kontrol etmenizi sağlar."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "UPnP denetim noktasını etkinleştir. Bu özellik herhangi bir UPnP istemcisine ortam akışı yapmanızı sağlar ve oynatımı Kodi üzerinden kontrol etmenizi sağlar."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "Web sunucusu hizmeti ile ilgili ayarları içeren kategori."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Dahili web sunucusu aracılığıyla XBMC kontrolü için uzak kullanıcıları etkinleştirin."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Dahili web sunucusu aracılığıyla Kodi kontrolü için uzak kullanıcıları etkinleştirin."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Web sunucu bağlantı noktasını tanımlayın."
-
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Web sunucu kullanıcı adını tanımlayın."
-
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Web sunucu parolasını tanımlayın."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12038,8 +12026,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "Uzaktan denetim hizmeti ile ilgili ayarları içeren kategori."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Bu bilgisayardaki programların XBMC'yi Web arabirimi veya JSON-RPC arabirimi protokolü tarafından kontrol etmesine izin ver."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Bu bilgisayardaki programların Kodi'yi Web arabirimi veya JSON-RPC arabirimi protokolü tarafından kontrol etmesine izin ver."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12054,8 +12042,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "Bağlanabilecek en çok istemciyi tanımla."
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "Ağ üzerindeki programların XBMC yi kontrol etmesine izin ver."
+msgid "Allow programs on the network to control Kodi."
+msgstr "Ağ üzerindeki programların Kodi yi kontrol etmesine izin ver."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12070,12 +12058,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "AirPlay için gereken zeroconf ağ bulma hizmeti ile ilgili ayarları içeren kategori."
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "Ağdaki uygulamaların XBMC'nin çalışan hizmetlerini bulmasına izin ver."
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "Ağdaki uygulamaların Kodi'nin çalışan hizmetlerini bulmasına izin ver."
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "XBMC'nin AirPlay aygıtlarından veya uygulamalardan içerik almasına izin ver."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "Kodi'nin AirPlay aygıtlarından veya uygulamalardan içerik almasına izin ver."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12098,16 +12086,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "Ağ üzerinde bir WINS sunucusu çalışıyorsa, buraya çalışma grubu adını girin. Aksi halde, boş bırakın."
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "XBMC'nin kurulu olduğu sistem ile ilgili ayarları içeren bölüm."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "Kodi'nin kurulu olduğu sistem ile ilgili ayarları içeren bölüm."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Paylaşılan dosyalar veya hizmetlere erişmeye çalışmadan hemen önce sunucu(ya/lara) otomatik olarak 'Wake-On-Lan' gönder."
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "Seçilen ekranda XBMC'yi pencere içinde veya tam ekranda görüntüle."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "Seçilen ekranda Kodi'yi pencere içinde veya tam ekranda görüntüle."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12118,12 +12106,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Kullanıcı arabirimi yenileme hızını değiştirir."
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "XBMC'yi tam ekran pencere içinde göster. Ana kazanç çoklu ekran yapılandırmaları içindir. XBMC diğer uygulamaları simge durumuna küçültmeden kullanılabilir. Bu daha fazla kaynak kullandığı için oynatım çok akıcı olmayabilir."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Kodi'yi tam ekran pencere içinde göster. Ana kazanç çoklu ekran yapılandırmaları içindir. Kodi diğer uygulamaları simge durumuna küçültmeden kullanılabilir. Bu daha fazla kaynak kullandığı için oynatım çok akıcı olmayabilir."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "Bir çoklu ekran yapılandırmasında, XBMC'yi görüntülemeyen ekranlar karartılmıştır."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "Bir çoklu ekran yapılandırmasında, Kodi'yi görüntülemeyen ekranlar karartılmıştır."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12210,12 +12198,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "Etkinleştirildiğinde, klavye okları sanal klavye üzerindeki seçimi hareket ettirir. Devre dışı olduğunda, metin üzerindeki imleci hareket ettirir."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "XBMC'yi kontrol etmek için bir fare veya dokunmatik ekran aygıtı kullanın. Not: devre dışı bırakmak klavye veya uzaktan kumanda mevcut değilse XBMC üzerindeki kontrolü kaybetmenize neden olacaktır."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Kodi'yi kontrol etmek için bir fare veya dokunmatik ekran aygıtı kullanın. Not: devre dışı bırakmak klavye veya uzaktan kumanda mevcut değilse Kodi üzerindeki kontrolü kaybetmenize neden olacaktır."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "XBMC yi kontrol etmek için joystick kullan."
+msgid "Use a joystick to control Kodi."
+msgstr "Kodi yi kontrol etmek için joystick kullan."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12246,8 +12234,8 @@ msgid "Configure the proxy server password."
 msgstr "Vekil sunucu şifresini ayarlayınız."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "Eğer sınırlı bant genişliğine sahipseniz, XBMC bu sınırlar içinde kalmaya çalışacaktır."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "Eğer sınırlı bant genişliğine sahipseniz, Kodi bu sınırlar içinde kalmaya çalışacaktır."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12258,12 +12246,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "Boştayken ekranı kapat. Hiçbir görüntü sinyali algılanmadığında ekranı kapatan TV'ler için kullanışlıdır."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "Kapatılmadan önce XBMC'nin ne kadar süre boşta kalacağını tanımlayın."
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "Kapatılmadan önce Kodi'nin ne kadar süre boşta kalacağını tanımlayın."
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "Uzun bir süre boşta kaldığında XBMC'nin ne yapması gerektiğini tanımlayın."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "Uzun bir süre boşta kaldığında Kodi'nin ne yapması gerektiğini tanımlayın."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12274,12 +12262,8 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Hata ayıklama günlüğünü aç veya kapat. Sorun giderme için kullanışlıdır."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "XBMC'nin içide alınan ekran görüntülerinin kaydedileceği klasör."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Hata ayıklama günlüğüne eklenecek ek kitaplıkları belirle."
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Kodi'nin içide alınan ekran görüntülerinin kaydedileceği klasör."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12290,12 +12274,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "Yönetici kilidi için kullanılacak PIN kodunu tanımlayın."
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "Eğer etkinse, başlangıçta XBMC'nin kilidini açmak için yönetici kilit kodu gereklidir."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "Eğer etkinse, başlangıçta Kodi'nin kilidini açmak için yönetici kilit kodu gereklidir."
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "XBMC kapatılmadan önce en fazla yeniden deneme sayısını tanımlayın."
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Kodi kapatılmadan önce en fazla yeniden deneme sayısını tanımlayın."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12370,8 +12354,8 @@ msgid "Specify the type of remote used."
 msgstr "Kullanılan uzaktan kumanda türünü belirt."
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "Her zaman XBMC yardımcısını çalıştırın, böylece uzaktan kumanda XBMC'yi başlatmak için kullanılabilir."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "Her zaman Kodi yardımcısını çalıştırın, böylece uzaktan kumanda Kodi'yi başlatmak için kullanılabilir."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12425,17 +12409,9 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Video kod çözmesinin yazılım (daha fazla CPU gerektirir) veya mümkünse donanım hızlandırması olup olmayacağını tanımlar."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopik mod (varsayılan)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopik mod"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "Hiçbiri"
+msgid "Disabled"
+msgstr "Devre dışı"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12461,21 +12437,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Donanım Temelli"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoscopic - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Stereoskopik videoların oynatma modu."
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Bana sor"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Tercih edilen modu kullan"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12489,26 +12453,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Film ile aynı (otomatik)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Oynatma durdurulunca stereoskopik modu devre dışı bırak"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Bu video stereoskopik. Oynatma modunu seçin"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Stereoskopik modu seç"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Tercih edilen mod"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Alternatif mod seç..."
@@ -12521,29 +12465,9 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Sesin nasıl downmix yapılacağını seçin, mesela 5.1'den 2.0'a: [Etkin] downmix yaparken orijinal ses kaynağının dinamik aralığını korur ancak ses şiddeti düşük olacaktır [Devre dışı] dinamik aralık sıkıştırılır ancak orijinal ses kaynağının ses seviyesini korur. Not - Dinamik aralık bir ses kaynağının en sessiz ve en gürültülü sesleri arasındaki farktır."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopik video modu"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Ters çevrilmiş stereoskopik mod"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Stereoskopik 3B videoların oynatma modunu ayarla."
-
-msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Oynatma durdurulduğunda XBMC'nin stereoskopik 3B modundan çıkmasını önler, bazı TV'ler TV'de görüntüleme modu değiştirilmeden 3 Boyutludan 2 Boyutluya geçişi tanımaz."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Kullanıcı arabiriminin stereoskopik 3B modunu değiştirir."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Tercih edilen Stereoskopik 3B modu."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12561,10 +12485,6 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Video dosyalarının donanımsal kod çözmesini etkinleştir."
 
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Stereoskopik altyazı derinliği"
-
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Stereoskopik 3B videolar için altyazı görsel derinliğini ayarlar. Değer ne kadar yüksek olursa altyazı izleyiciye daha yakın görünecektir."
@@ -12572,10 +12492,6 @@ msgstr "Stereoskopik 3B videolar için altyazı görsel derinliğini ayarlar. De
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Kapaklar ve fanart için yüksek kaliteli dokular kullan (daha fazla bellek kullanır)"
-
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Bellek tasarrufu için Grafik Kullanıcı Arabirimi çözünürlüğünü sınırlar. Video oynatımını etkilemez. Sınırsız için 1080 kullanın. Yeniden başlatma gerektirir."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12508,74 @@ msgstr "AirPlay hizmeti ile ilgili ayarları içeren kategori."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Video çıkışı ile ilgili ayarları içeren kategori."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmler"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV programı"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV programları"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "sezon"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "bölüm"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "bölüm"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videolar"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "müzik"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "müzik"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "sanatçı"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "sanatçılar"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "albüm"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albümler"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "şarkı"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "şarkılar"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12621,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Downmix yaparken orta kanalı artır."
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Tam ekranda printscreen, alt-tab ve ses ayarı tuşları gibi sistem tuşlarını etkinleştirir."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Daha yüksek artwork renk derinliğini etkinleştir"
@@ -12660,3 +12640,23 @@ msgstr "Uzak aygıttaki oynatımı durdurmak istiyor musunuz?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Ses çıkış bağlantısı üzerinden sadece Dolby Digital 5.1 gibi çok kanallı ses desteği varsa bunu seçin, bu AAC5.1 veya FLAC5.1 gibi çok kanallı sesi 5.1 saran ses ile dinlemenizi sağlar. Not - Bu çok fazla CPU gücü gerektirir bu yüzden Pi'de tavsiye edilmez."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Otomatik"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Limitsiz"

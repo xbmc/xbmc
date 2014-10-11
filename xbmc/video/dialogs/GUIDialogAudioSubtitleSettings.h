@@ -61,7 +61,6 @@ protected:
 
   float m_volume;
   int m_audioStream;
-  bool m_audioStreamStereoMode;
   bool m_passthrough;
   int m_subtitleStream;
   bool m_subtitleVisible;

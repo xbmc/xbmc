@@ -1,6 +1,3 @@
-#ifndef LINUXRENDERERGL_RENDERER
-#define LINUXRENDERERGL_RENDERER
-
 /*
  *      Copyright (C) 2007-2013 Team XBMC
  *      http://xbmc.org
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "system.h"
 
@@ -41,7 +40,7 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-namespace VAAPI   { struct CHolder; }
+namespace VAAPI   { class CVaapiRenderPicture; }
 namespace VDPAU   { class CVdpauRenderPicture; }
 
 #undef ALIGN
@@ -136,13 +135,13 @@ public:
   virtual void         ReleaseBuffer(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
-  virtual unsigned int GetProcessorSize();
+  virtual unsigned int GetOptimalBufferSize();
 
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(VDPAU::CVdpauRenderPicture* vdpau, int index);
 #endif
 #ifdef HAVE_LIBVA
-  virtual void         AddProcessor(VAAPI::CHolder& holder, int index);
+  virtual void         AddProcessor(VAAPI::CVaapiRenderPicture* vaapi, int index);
 #endif
 #ifdef TARGET_DARWIN
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
@@ -218,9 +217,8 @@ protected:
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
-  void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
-  void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
   struct
   {
@@ -282,7 +280,7 @@ protected:
     VDPAU::CVdpauRenderPicture *vdpau;
 #endif
 #ifdef HAVE_LIBVA
-    VAAPI::CHolder& vaapi;
+    VAAPI::CVaapiRenderPicture *vaapi;
 #endif
 #ifdef TARGET_DARWIN_OSX
     struct __CVBuffer *cvBufferRef;
@@ -353,6 +351,4 @@ inline int NP2( unsigned x ) {
     return ++x;
 #endif
 }
-#endif
-
 #endif

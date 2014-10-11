@@ -57,6 +57,7 @@ private:
   void Deinitialize();
   static void RefreshCoverArt();
   static void RefreshMetadata();
+  static void ResetMetadata();
 
   int m_port;
   static DllLibShairplay *m_pLibShairplay;//the lib
@@ -76,7 +77,6 @@ private:
 	    static void  audio_set_metadata(void *cls, void *session, const void *buffer, int buflen);
 	    static void  audio_set_coverart(void *cls, void *session, const void *buffer, int buflen);
       static void  audio_process(void *cls, void *session, const void *buffer, int buflen);
-      static void  audio_flush(void *cls, void *session);
       static void  audio_destroy(void *cls, void *session);
     };
 };

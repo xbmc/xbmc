@@ -58,6 +58,15 @@ namespace PVR
     CPVRClient(const cp_extension_t *ext);
     ~CPVRClient(void);
 
+    virtual void OnDisabled();
+    virtual void OnEnabled();
+    virtual ADDON::AddonPtr GetRunningInstance() const;
+    virtual bool OnPreInstall();
+    virtual void OnPostInstall(bool restart, bool update);
+    virtual void OnPreUnInstall();
+    virtual void OnPostUnInstall();
+    virtual bool CanInstall(const std::string &referer);
+
     /** @name PVR add-on methods */
     //@{
 
@@ -112,22 +121,22 @@ namespace PVR
     /*!
      * @return The name reported by the backend.
      */
-    CStdString GetBackendName(void) const;
+    const std::string& GetBackendName(void) const;
 
     /*!
      * @return The version string reported by the backend.
      */
-    CStdString GetBackendVersion(void) const;
+    const std::string& GetBackendVersion(void) const;
 
     /*!
      * @return The connection string reported by the backend.
      */
-    CStdString GetConnectionString(void) const;
+    const std::string& GetConnectionString(void) const;
 
     /*!
      * @return A friendly name for this add-on that can be used in log messages.
      */
-    CStdString GetFriendlyName(void) const;
+    const std::string& GetFriendlyName(void) const;
 
     /*!
      * @brief Get the disk space reported by the server.
@@ -312,7 +321,7 @@ namespace PVR
      * @param strNewName The new name of the timer.
      * @return PVR_ERROR_NO_ERROR if the timer has been renamed successfully.
      */
-    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName);
+    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
 
     /*!
      * @brief Update the timer information on the server.
@@ -393,7 +402,7 @@ namespace PVR
      * @param channel The channel to get the stream URL for.
      * @return The requested URL.
      */
-    CStdString GetLiveStreamURL(const CPVRChannel &channel);
+    std::string GetLiveStreamURL(const CPVRChannel &channel);
 
     /*!
      * @brief Check whether PVR backend supports pausing the currently playing stream
@@ -600,18 +609,18 @@ namespace PVR
     void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    CStdString             m_strHostName;          /*!< the host name */
+    std::string            m_strHostName;          /*!< the host name */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */
-    CStdString             m_strBackendName;       /*!< the cached backend version */
+    std::string            m_strBackendName;       /*!< the cached backend version */
     bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
-    CStdString             m_strBackendVersion;    /*!< the cached backend version */
+    std::string            m_strBackendVersion;    /*!< the cached backend version */
     bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
-    CStdString             m_strConnectionString;  /*!< the cached connection string */
+    std::string            m_strConnectionString;  /*!< the cached connection string */
     bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
-    CStdString             m_strFriendlyName;      /*!< the cached friendly name */
+    std::string            m_strFriendlyName;      /*!< the cached friendly name */
     bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
     bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */

@@ -22,6 +22,7 @@
 
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -35,7 +36,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
-using namespace std;
 using namespace PVR;
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :
@@ -62,6 +62,11 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_infoManager.RegisterObserver(this);
 }
 
+void CGUIWindowPVRRecordings::OnWindowLoaded()
+{
+  CONTROL_SELECT(CONTROL_BTNGROUPITEMS);
+}
+
 std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
 {
   if (StringUtils::StartsWith(m_vecItems->GetPath(), "pvr://recordings/"))
@@ -69,9 +74,9 @@ std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
   return "pvr://recordings/";
 }
 
-CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
+std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 {
-  CStdString resumeString;
+  std::string resumeString;
   if (item.IsPVRRecording())
   {
 
@@ -84,7 +89,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
       if (db.Open())
       {
         CBookmark bookmark;
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
+        std::string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
         if (db.GetResumeBookMark(itemPath, bookmark) )
           positionInSeconds = lrint(bookmark.timeInSeconds);
         db.Close();
@@ -109,7 +114,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
-    CStdString resumeString = GetResumeString(*pItem);
+    std::string resumeString = GetResumeString(*pItem);
     if (!resumeString.empty())
     {
       buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
@@ -131,9 +136,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   }
   
-  // Add delete button for all items except the All recordings directory
-  if (!g_PVRRecordings->IsAllRecordingsDirectory(*pItem.get()))
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+  buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
   if (pItem->HasPVRRecordingInfoTag() &&
       g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
@@ -172,11 +175,7 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 {
   m_thumbLoader.StopThread();
 
-  bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
-
-  AfterUpdate(*m_unfilteredItems);
-
-  return bReturn;
+  return CGUIWindowPVRBase::Update(strDirectory);
 }
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
@@ -197,7 +196,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
             case ACTION_PLAY:
             {
               CFileItemPtr pItem = m_vecItems->Get(iItem);
-              string resumeString = GetResumeString(*pItem);
+              std::string resumeString = GetResumeString(*pItem);
               if (!resumeString.empty())
               {
                 CContextButtons choices;
@@ -228,6 +227,12 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               break;
           }
         }
+      }
+      else if (message.GetSenderId() == CONTROL_BTNGROUPITEMS)
+      {
+        CGUIRadioButtonControl *radioButton = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNGROUPITEMS);
+        g_PVRRecordings->SetGroupItems(radioButton->IsSelected());
+        Refresh(true);
       }
       break;
     case GUI_MSG_REFRESH_LIST:
@@ -297,7 +302,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
     bReturn = true;
 
     CPVRRecording *recording = item->GetPVRRecordingInfoTag();
-    CStdString strNewName = recording->m_strTitle;
+    std::string strNewName = recording->m_strTitle;
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
@@ -335,49 +340,26 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
   return bReturn;
 }
 
-void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
+void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
 {
-  if (!items.IsEmpty())
+  if (items.IsEmpty())
+    return;
+
+  CFileItemList files;
+  VECFILEITEMS vecItems = items.GetList();
+  for (VECFILEITEMS::const_iterator it = vecItems.begin(); it != vecItems.end(); ++it)
   {
-    CFileItemList files;
-    for (int i = 0; i < items.Size(); i++)
+    if (!(*it)->m_bIsFolder)
+      files.Add((*it));
+  }
+
+  if (!files.IsEmpty())
+  {
+    if (m_database.Open())
     {
-      CFileItemPtr pItem = items[i];
-      if (!pItem->m_bIsFolder)
-        files.Add(pItem);
+      CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
+      m_database.Close();
     }
-
-    if (!files.IsEmpty())
-    {
-      files.SetPath(items.GetPath());
-      if (m_database.Open())
-      {
-        if (g_PVRRecordings->HasAllRecordingsPathExtension(files.GetPath()))
-        {
-          // Build a map of all files belonging to common subdirectories and call
-          // LoadVideoInfo for each item list
-          typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
-          typedef std::map<CStdString, CFileItemListPtr> DirectoryMap;
-
-          DirectoryMap directory_map;
-          for (int i = 0; i < files.Size(); i++)
-          {
-            CStdString strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
-            DirectoryMap::iterator it = directory_map.find(strDirectory);
-            if (it == directory_map.end())
-              it = directory_map.insert(std::make_pair(
-                  strDirectory, CFileItemListPtr(new CFileItemList(strDirectory)))).first;
-            it->second->Add(files[i]);
-          }
-
-          for (DirectoryMap::iterator it = directory_map.begin(); it != directory_map.end(); it++)
-            CGUIWindowVideoNav::LoadVideoInfo(*it->second, m_database, false);
-        }
-        else
-          CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
-        m_database.Close();
-      }
-      m_thumbLoader.Load(files);
-    }
+    m_thumbLoader.Load(files);
   }
 }

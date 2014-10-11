@@ -129,7 +129,7 @@ void CRemoteControl::Initialize()
   struct sockaddr_un addr;
   unsigned int now = XbmcThreads::SystemClockMillis();
 
-  if (!m_used || (now - m_lastInitAttempt) < (unsigned int)m_initRetryPeriod)
+  if (m_bInitialized || !m_used || (now - m_lastInitAttempt) < (unsigned int)m_initRetryPeriod)
     return;
   
   m_lastInitAttempt = now;

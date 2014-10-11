@@ -258,9 +258,9 @@ LIBADDON_DIRS=\
 CONFLUENCE_MEDIA=addons/skin.confluence/media
 SKIN_DIRS=$(CONFLUENCE_MEDIA)
 
-ifeq (@USE_SKIN_TOUCHED@,1)
-TOUCHED_MEDIA=addons/skin.touched/media
-SKIN_DIRS+=$(TOUCHED_MEDIA)
+ifeq (@USE_TOUCH_SKIN@,1)
+TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
+SKIN_DIRS+=$(TOUCH_SKIN_MEDIA)
 endif
 
 LIBS=@LIBS@
@@ -291,6 +291,7 @@ GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 
 CHECK_DIRS = xbmc/addons/test \
              xbmc/filesystem/test \
+             xbmc/music/tags/test \
              xbmc/utils/test \
              xbmc/video/test \
              xbmc/threads/test \
@@ -299,6 +300,7 @@ CHECK_DIRS = xbmc/addons/test \
              xbmc/test
 CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/filesystem/test/filesystemTest.a \
+             xbmc/music/tags/test/tagsTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/video/test/videoTest.a \
              xbmc/threads/test/threadTest.a \
@@ -316,6 +318,12 @@ $(WAYLAND_TEST_MODULE): force
 CHECK_EXTENSIONS = $(WAYLAND_TEST_MODULE)
 CHECK_LIBADD=@WAYLAND_TEST_LIBS@
 endif
+endif
+
+ifeq (@USE_SSE4@,1)
+LIBSSE4+=sse4
+sse4 : force
+	$(MAKE) -C xbmc/linux/sse4
 endif
 
 CHECK_PROGRAMS = xbmc-test
@@ -345,8 +353,8 @@ config.status: configure
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
-ifeq (@USE_SKIN_TOUCHED@,1)
-	 $(MAKE) -C $(TOUCHED_MEDIA)
+ifeq (@USE_TOUCH_SKIN@,1)
+	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
 endif
 else
 skins:
@@ -445,7 +453,7 @@ endif
 
 codecs: papcodecs dvdpcodecs dvdpextcodecs
 
-libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
+libs: $(LIBSSE4) libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
 externals: codecs libs visualizations screensavers libaddon pvraddons
 
@@ -572,7 +580,7 @@ ifeq (@USE_PVR_ADDONS@,1)
 	$(MAKE) -C pvr-addons install
 endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
-	@find -E system addons -type f -not -iregex ".*svn.*" \
+	@find -E system addons -type f -not -iregex ".*\.git.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
 		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
@@ -580,14 +588,14 @@ ifeq ($(findstring freebsd,@ARCH@), freebsd)
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
-	@find -E system addons -type f -not -iregex ".*svn.*" \
+	@find -E system addons -type f -not -iregex ".*\.git.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
 		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*\.git.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 
@@ -612,7 +620,7 @@ install-datas: install-scripts
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
 	@find -E addons language media sounds userdata system -type f \
-		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
@@ -620,13 +628,13 @@ ifeq ($(findstring bsd,@ARCH@), bsd)
 else
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 	@find -E addons language media sounds userdata system -type f \
-		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pvr|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|.*\.pvr|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 	@# Icons and links

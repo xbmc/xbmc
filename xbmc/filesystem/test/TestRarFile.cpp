@@ -22,7 +22,7 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "filesystem/NFSFile.h"
+#include "URL.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 #include "test/TestUtils.h"

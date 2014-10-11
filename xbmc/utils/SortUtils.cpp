@@ -68,12 +68,12 @@ string ByFile(SortAttribute attributes, const SortItem &values)
 {
   CURL url(values.at(FieldPath).asString());
   
-  return StringUtils::Format("%s %d", url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
+  return StringUtils::Format("%s %" PRId64, url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
 }
 
 string ByPath(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%s %d", values.at(FieldPath).asString().c_str(), values.at(FieldStartOffset).asInteger());
+  return StringUtils::Format("%s %" PRId64, values.at(FieldPath).asString().c_str(), values.at(FieldStartOffset).asInteger());
 }
 
 string ByLastPlayed(SortAttribute attributes, const SortItem &values)
@@ -325,7 +325,7 @@ string ByVideoCodec(SortAttribute attributes, const SortItem &values)
 
 string ByVideoAspectRatio(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%f %s", values.at(FieldVideoAspectRatio).asString().c_str(), ByLabel(attributes, values).c_str());
+  return StringUtils::Format("%.03f %s", values.at(FieldVideoAspectRatio).asFloat(), ByLabel(attributes, values).c_str());
 }
 
 string ByAudioChannels(SortAttribute attributes, const SortItem &values)
@@ -355,7 +355,7 @@ string ByBitrate(SortAttribute attributes, const SortItem &values)
 
 string ByListeners(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%i", values.at(FieldListeners).asInteger());;
+  return StringUtils::Format("%" PRId64, values.at(FieldListeners).asInteger());;
 }
 
 string ByRandom(SortAttribute attributes, const SortItem &values)

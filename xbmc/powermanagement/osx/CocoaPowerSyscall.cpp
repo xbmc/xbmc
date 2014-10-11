@@ -226,7 +226,7 @@ bool CCocoaPowerSyscall::HasBattery(void)
 
 int CCocoaPowerSyscall::BatteryLevel(void)
 {
-  return DarwinBatteryLevel();
+  return CDarwinUtils::BatteryLevel();
 }
 
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)

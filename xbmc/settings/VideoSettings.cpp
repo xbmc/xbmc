@@ -29,7 +29,7 @@
 
 CVideoSettings::CVideoSettings()
 {
-  m_DeinterlaceMode = VS_DEINTERLACEMODE_OFF;
+  m_DeinterlaceMode = VS_DEINTERLACEMODE_AUTO;
   m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_ViewMode = ViewModeNormal;

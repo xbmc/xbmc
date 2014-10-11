@@ -9,8 +9,8 @@ cd %TMP_PATH%
 
 copy include\* "%CUR_PATH%\include\" /Y
 copy lib\expat.lib "%CUR_PATH%\lib\libexpat.lib" /Y
-copy bin\libexpat-1.dll "%XBMC_PATH%\system\libexpat.dll"
+copy bin\libexpat-1.dll "%APP_PATH%\system\libexpat.dll"
 rem libexpat-1.dll for libfontconfig-1.dll which is needed for libass.dll
-copy bin\libexpat-1.dll "%XBMC_PATH%\system\players\dvdplayer\"
+copy bin\libexpat-1.dll "%APP_PATH%\system\players\dvdplayer\"
 
 cd %LOC_PATH%

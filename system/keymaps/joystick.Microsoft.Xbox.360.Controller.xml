@@ -397,6 +397,53 @@
       <hat id="1" position="right">NextChannelGroup</hat>
     </joystick>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Controller (Batarang wired controller (XBOX))</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>Xbox 360 Wireless Controller</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <altname>Gamepad F310 (Controller)</altname>
+      <button id="11">ChannelUp</button>
+      <button id="12">ChannelDown</button>
+      <button id="13">PreviousChannelGroup</button>
+      <button id="14">NextChannelGroup</button>
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">PreviousChannelGroup</hat>
+      <hat id="1" position="right">NextChannelGroup</hat>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <button id="12">PreviousChannelGroup</button>
+      <button id="13">NextChannelGroup</button>
+      <button id="14">ChannelUp</button>
+      <button id="15">ChannelDown</button>
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">PreviousChannelGroup</hat>
+      <hat id="1" position="right">NextChannelGroup</hat>
+    </joystick>
+  </FullscreenRadio>
   <FullscreenInfo>
     <joystick name="Controller (XBOX 360 For Windows)">
       <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>

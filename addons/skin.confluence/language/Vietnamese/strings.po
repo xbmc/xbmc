@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/xbmc-main/language/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Thông tin"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Hành động"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Đang phát"
@@ -111,6 +115,10 @@ msgstr "Quay Lại"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "Đang kiếm"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Các hiệu ứng định sẵn"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -164,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Hiển thị \"Tạm Dừng\" ở trình diễn ảnh"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Phát Trailers trong một cửa sổ [COLOR=grey3](Chỉ Hiển thị hộp thoại Thông tin của Video)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Tùy chọn tổng quan"
@@ -200,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Hiển thị các video được thêm vào gần đây"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Trang chủ Ứng dụng Menu-con"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ẩn hình nền Fanart"
@@ -207,6 +223,10 @@ msgstr "Ẩn hình nền Fanart"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Hiển thị hình nền \"Đang phát\" dạng video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Bật hiệu ứng nền \"Đang Chạy\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -220,9 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lời Bài Hát"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ẩn Fanart ở chế độ hiển thị toàn bộ màn hình"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lời Bài Hát của Addon"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Trang chủ Video Menu-con"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Trang chủ Nhạc Menu-con"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Trang chủ Hình ảnh Menu-con"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -231,6 +267,10 @@ msgstr "Bảng điều khiển Nhạc"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Bảng điều khiển Video"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Mức độ hiệu chỉnh"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -376,6 +416,10 @@ msgctxt "#31360"
 msgid "Watch as 2D"
 msgstr "Xem 2D"
 
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Thay đổi chế độ"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Đã bật"
@@ -420,21 +464,45 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]TUỲ CHỈNH ADD-ONS[/B][CR][CR]Quản lý những Add-on đã cài · Duyệt và cài các Add-on từ xbmc.org[CR]Thay đổi các thiết lập Add-on"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]HIỆU CHỈNH TV[/B][CR][CR]Thay đội thông tin · Quản lý các hiệu chỉnh của dữ liệu EPG"
+
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]TUỲ CHỈNH CÀI ĐẶT DỊCH VỤ[/B][CR][CR]Cài đặt điều khiển XBMC thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file[CR]Bật Zeroconf · Tuỳ chỉnh AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]TUỲ CHỈNH CÀI ĐẶT DỊCH VỤ[/B][CR][CR]Cài đặt điều khiển Kodi thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file[CR]Bật Zeroconf · Tuỳ chỉnh AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Trợ giúp lần đầu tiên...."
 
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Thẻ này chỉ ra rằng có một menu ẩn ở bên cạnh cửa sổ này trong đó có những hiệu chỉnh thêm cho mục này. Để truy cập menu này, hãy di chuyển  điều khiển từ xa hay bàn phím của bạn về phía trái hoặc đưa con trỏ chuột của bạn lên trên thẻ. [CR][CR]Nhấn \"Ok\" để đóng cửa sổ này. Cửa sổ này sẽ không xuất hiện lần sau."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Phụ đề sẵn có trong máy"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Đăng nhập"
+
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Chọn profile XBMC[CR]để tiếp tục đăng nhập"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Chọn profile Kodi[CR]để tiếp tục đăng nhập"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Hiện hoặc ẩn cửa màn hình nhập khi khởi động"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Chọn tài khoản sẽ được sử dụng trong trường hợp tắt màn hình đăng nhập"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr "Thời gian đã hẹn"
+msgstr "Lịch phát sóng"
 
 msgctxt "#31502"
 msgid "Live TV"
@@ -509,8 +577,8 @@ msgid "PICTURES"
 msgstr "Ảnh"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "TV trực tuyến"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -539,3 +607,7 @@ msgstr "Chơi đĩa"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "Hệ thống"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Dài phát thanh"

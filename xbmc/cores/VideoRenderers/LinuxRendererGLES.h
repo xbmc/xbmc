@@ -89,7 +89,8 @@ enum RenderMethod
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
   RENDER_EGLIMG = 0x200,
-  RENDER_MEDIACODEC = 0x400
+  RENDER_MEDIACODEC = 0x400,
+  RENDER_IMXMAP = 0x800
 };
 
 enum RenderQuality
@@ -142,7 +143,7 @@ public:
   virtual void         ReleaseBuffer(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
-  virtual unsigned int GetProcessorSize();
+  virtual unsigned int GetOptimalBufferSize();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -169,6 +170,9 @@ public:
 #if defined(TARGET_ANDROID)
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
+#endif
+#ifdef HAS_IMXVPU
+  virtual void         AddProcessor(CDVDVideoCodecIMXBuffer *codecinfo, int index);
 #endif
 
 protected:
@@ -209,6 +213,14 @@ protected:
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
 
+  void UploadOpenMaxTexture(int index);
+  void DeleteOpenMaxTexture(int index);
+  bool CreateOpenMaxTexture(int index);
+
+  void UploadIMXMAPTexture(int index);
+  void DeleteIMXMAPTexture(int index);
+  bool CreateIMXMAPTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -219,6 +231,7 @@ protected:
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
+  void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
 
   CFrameBufferObject m_fbo;
 
@@ -272,7 +285,7 @@ protected:
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
 #ifdef HAVE_LIBOPENMAX
-    OpenMaxVideoBuffer *openMaxBuffer;
+    OpenMaxVideoBufferHolder *openMaxBufferHolder;
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
     struct __CVBuffer *cvBufferRef;
@@ -284,6 +297,9 @@ protected:
 #if defined(TARGET_ANDROID)
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;
+#endif
+#ifdef HAS_IMXVPU
+    CDVDVideoCodecIMXBuffer *IMXBuffer;
 #endif
   };
 

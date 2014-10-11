@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Ossetic (http://www.transifex.com/projects/p/xbmc-main/language/os/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Уаг"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "Боныгъӕд"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc медиа центр"
+msgid "Kodi media center"
+msgstr "Kodi медиа центр"
 
 msgctxt "#11"
 msgid "Monday"
@@ -368,10 +368,6 @@ msgstr "Сбӕлвыр кӕн файлы халдих"
 msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Сбӕлвырд кӕн файлы хаст"
-
-msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Файлы хафт бӕлвырд уӕт?"
 
 msgctxt "#123"
 msgid "Copy these files?"

@@ -148,9 +148,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
-      OutputDebugString("Switching to GUI\n");
       g_windowManager.PreviousWindow();
-      OutputDebugString("Now in GUI\n");
       return true;
     }
     break;
@@ -601,7 +599,7 @@ void CGUIWindowFullScreen::FrameMove()
                                        , clockspeed - 100.0
                                        , g_renderManager.GetVSyncState().c_str());
 
-      strGeneralFPS = StringUtils::Format("%s\nW( fps:%02.2f %s ) %s"
+      strGeneralFPS = StringUtils::Format("%s\nW( fps:%02.2f %s )\n%s"
                                           , strGeneral.c_str()
                                           , g_infoManager.GetFPS()
                                           , strCores.c_str(), strClock.c_str() );

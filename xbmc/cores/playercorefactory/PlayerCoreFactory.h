@@ -44,9 +44,6 @@ enum EPLAYERCORES
   EPC_DVDPLAYER,
   EPC_MPLAYER,
   EPC_PAPLAYER,
-#if defined(HAS_OMXPLAYER)
-  EPC_OMXPLAYER,
-#endif
   EPC_EXTPLAYER,
   EPC_UPNPPLAYER,
 };
@@ -57,9 +54,6 @@ const PLAYERCOREID PCID_NONE = EPC_NONE;
 const PLAYERCOREID PCID_DVDPLAYER = EPC_DVDPLAYER;
 const PLAYERCOREID PCID_MPLAYER = EPC_MPLAYER;
 const PLAYERCOREID PCID_PAPLAYER = EPC_PAPLAYER;
-#if defined(HAS_OMXPLAYER)
-const PLAYERCOREID PCID_OMXPLAYER = EPC_OMXPLAYER;
-#endif
 
 class CPlayerCoreFactory : public ISettingsHandler
 {
@@ -70,6 +64,7 @@ public:
 
   PLAYERCOREID GetPlayerCore(const std::string& strCoreName) const;
   CPlayerCoreConfig* GetPlayerConfig(const std::string& strCoreName) const;
+  CPlayerCoreConfig* GetPlayerConfig(const PLAYERCOREID eCore) const;
   std::string GetPlayerName(const PLAYERCOREID eCore) const;
 
   IPlayer* CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const;
@@ -82,7 +77,7 @@ public:
 
   PLAYERCOREID GetDefaultPlayer( const CFileItem& item ) const;
 
-  PLAYERCOREID SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
+  PLAYERCOREID SelectPlayerDialog(const VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
   PLAYERCOREID SelectPlayerDialog(float posX, float posY) const;
 
   void OnPlayerDiscovered(const std::string& id, const std::string& name, EPLAYERCORES core);

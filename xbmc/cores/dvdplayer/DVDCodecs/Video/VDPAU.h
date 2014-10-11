@@ -492,7 +492,6 @@ public:
   void ClearRender(VdpVideoSurface surf);
   bool IsValid(VdpVideoSurface surf);
   VdpVideoSurface GetFree(VdpVideoSurface surf);
-  VdpVideoSurface GetAtIndex(int idx);
   VdpVideoSurface RemoveNext(bool skiprender = false);
   void Reset();
   int Size();

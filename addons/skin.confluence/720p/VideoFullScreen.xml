@@ -173,7 +173,7 @@
 					<height>25</height>
 					<align>left</align>
 					<font>font12</font>
-					<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumber, - ([COLOR=blue],[/COLOR])]</label>
+					<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumberLabel, - ([COLOR=blue],[/COLOR])]</label>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>VideoPlayer.Content(LiveTV)</visible>
@@ -368,7 +368,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1280</width>
-				<height>140</height>
+				<height>155</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label" id="10">
@@ -398,7 +398,7 @@
 				<left>50</left>
 				<top>100</top>
 				<width>1180</width>
-				<height>30</height>
+				<height>45</height>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -421,7 +421,7 @@
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
-			<top>165</top>
+			<top>180</top>
 			<control type="image">
 				<description>media info background image</description>
 				<left>0</left>

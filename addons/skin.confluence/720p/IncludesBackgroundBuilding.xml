@@ -8,7 +8,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture>$INFO[Skin.CurrentTheme,special://skin/backgrounds/,.jpg]</texture>
+			<texture fallback="special://skin/backgrounds/SKINDEFAULT.jpg">$INFO[Skin.CurrentTheme,special://skin/backgrounds/,.jpg]</texture>
 			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>

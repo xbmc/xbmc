@@ -50,7 +50,6 @@ namespace XFILE
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
     CURL url(urlZip);
-    std::string strArchive = url.GetHostName();
     std::string strOptions = url.GetOptions();
     std::string strPathInZip = url.GetFileName();
 

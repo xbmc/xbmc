@@ -43,6 +43,9 @@ namespace PVR
     void ResetObservers(void);
     void UnregisterObservers(void);
 
+  protected:
+    void UpdateSelectedItemPath();
+
   private:
     bool SelectPlayingFile(void);
 

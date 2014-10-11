@@ -485,6 +485,8 @@ public:
   bool SetSingleValue(const std::string &table, const std::string &fieldName, const std::string &strValue,
                       const std::string &conditionName = "", int conditionValue = -1);
 
+  int UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
+
   void DeleteMovie(int idMovie, bool bKeepId = false);
   void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
@@ -805,6 +807,8 @@ protected:
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
+  void UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
   void AddCast(int idMedia, const char *table, const char *field, const std::vector<SActorInfo> &cast);
   void AddArtistToMusicVideo(int lMVideo, int idArtist);

@@ -101,6 +101,7 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19019</label>
+					<onclick condition="Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)">NextChannelGroup</onclick>
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVChannels)</onclick>
 					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioChannels)</onclick>
 				</control>
@@ -111,6 +112,7 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>22020</label>
+					<onclick condition="Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)">NextChannelGroup</onclick>
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVGuide)</onclick>
 					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioGuide)</onclick>
 				</control>
@@ -160,6 +162,15 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
+				</control>
+				<control type="radiobutton" id="5">
+					<description>Group recording items by folder structure</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19270</label>
+					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
 				</control>
 				<control type="button" id="2">
 					<description>View As button</description>

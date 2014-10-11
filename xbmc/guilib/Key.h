@@ -72,15 +72,26 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
 
-#define KEY_VMOUSE          0xEFFF
-
 // 0xF000 -> 0xF200 is reserved for the keyboard; a keyboard press is either
 #define KEY_VKEY            0xF000 // a virtual key/functional key e.g. cursor left
 #define KEY_ASCII           0xF100 // a printable character in the range of TRUE ASCII (from 0 to 127) // FIXME make it clean and pure unicode! remove the need for KEY_ASCII
 #define KEY_UNICODE         0xF200 // another printable character whose range is not included in this KEY code
 
-// 0xE000 -> 0xE0FF is reserved for mouse actions
-#define KEY_MOUSE           0xE000
+// 0xE000 -> 0xEFFF is reserved for mouse actions
+#define KEY_VMOUSE          0xEFFF
+
+#define KEY_MOUSE_START            0xE000
+#define KEY_MOUSE_CLICK            0xE000
+#define KEY_MOUSE_RIGHTCLICK       0xE001
+#define KEY_MOUSE_MIDDLECLICK      0xE002
+#define KEY_MOUSE_DOUBLE_CLICK     0xE010
+#define KEY_MOUSE_LONG_CLICK       0xE020
+#define KEY_MOUSE_WHEEL_UP         0xE101
+#define KEY_MOUSE_WHEEL_DOWN       0xE102
+#define KEY_MOUSE_DRAG             0xE103
+#define KEY_MOUSE_MOVE             0xE104
+#define KEY_MOUSE_NOOP             0xEFFF
+#define KEY_MOUSE_END              0xEFFF
 
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
@@ -200,6 +211,8 @@
 #define ACTION_CHAPTER_OR_BIG_STEP_FORWARD       97 // Goto the next chapter, if not available perform a big step forward
 #define ACTION_CHAPTER_OR_BIG_STEP_BACK          98 // Goto the previous chapter, if not available perform a big step back
 
+#define ACTION_CYCLE_SUBTITLE         99 // switch to next subtitle of movie, but will not enable/disable the subtitles. Can be used in videoFullScreen.xml window id=2005
+
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
@@ -209,6 +222,7 @@
 #define ACTION_MOUSE_WHEEL_DOWN       105
 #define ACTION_MOUSE_DRAG             106
 #define ACTION_MOUSE_MOVE             107
+#define ACTION_MOUSE_LONG_CLICK       108
 #define ACTION_MOUSE_END              109
 
 #define ACTION_BACKSPACE          110

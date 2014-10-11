@@ -2,7 +2,7 @@
 <addon id="service.xbmc.versioncheck"
        name="XBMC Version Check"
       version="0.1.21"
-      provider-name="Team XBMC">
+      provider-name="Team-Kodi">
     <requires>
         <import addon="xbmc.addon" version="12.0.0"/>
         <import addon="xbmc.python" version="2.1.0"/>

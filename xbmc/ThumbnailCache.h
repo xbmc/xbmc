@@ -19,19 +19,9 @@
  *
  */
 
-#include "utils/StdString.h"
-
 #include <map>
 
 class CCriticalSection;
-class CVideoInfoTag;
-namespace MUSIC_INFO 
-{
-  class CMusicInfoTag;
-}
-class CAlbum;
-class CArtist;
-class CFileItem;
 
 class CThumbnailCache
 {

@@ -265,7 +265,22 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   vector<Field> fields;
   bool isVideo = false;
-  if (type == "songs")
+  if (type == "mixed")
+  {
+    fields.push_back(FieldGenre);
+    fields.push_back(FieldAlbum);
+    fields.push_back(FieldArtist);
+    fields.push_back(FieldAlbumArtist);
+    fields.push_back(FieldTitle);
+    fields.push_back(FieldYear);
+    fields.push_back(FieldTime);
+    fields.push_back(FieldTrackNumber);
+    fields.push_back(FieldFilename);
+    fields.push_back(FieldPath);
+    fields.push_back(FieldPlaycount);
+    fields.push_back(FieldLastPlayed);
+  }
+  else if (type == "songs")
   {
     fields.push_back(FieldGenre);
     fields.push_back(FieldAlbum);
@@ -684,7 +699,7 @@ std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorStrin
   // special-casing
   if (m_field == FieldTime)
   { // translate time to seconds
-    std::string seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(param));
+    std::string seconds = StringUtils::Format("%li", StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
@@ -755,7 +770,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 
     if (m_field == FieldGenre)
       query = negate + " EXISTS (SELECT 1 FROM genrelinkmusicvideo JOIN genre ON genre.idGenre=genrelinkmusicvideo.idGenre WHERE genrelinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
-    else if (m_field == FieldArtist)
+    else if (m_field == FieldArtist || m_field == FieldAlbumArtist)
       query = negate + " EXISTS (SELECT 1 FROM artistlinkmusicvideo JOIN actors ON actors.idActor=artistlinkmusicvideo.idArtist WHERE artistlinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
     else if (m_field == FieldStudio)
       query = negate + " EXISTS (SELECT 1 FROM studiolinkmusicvideo JOIN studio ON studio.idStudio=studiolinkmusicvideo.idStudio WHERE studiolinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
@@ -844,7 +859,7 @@ std::string CSmartPlaylistRule::GetField(int field, const std::string &type) con
 
 std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
 {
-  std::string rule, currentRule;
+  std::string rule;
   
   // translate the combinations into SQL
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)

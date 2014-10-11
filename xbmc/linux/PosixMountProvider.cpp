@@ -38,7 +38,7 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   std::vector<std::string> result;
 
   CRegExp reMount;
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   reMount.RegComp("on (.+) \\(([^,]+)");
 #else
   reMount.RegComp("on (.+) type ([^ ]+)");

@@ -35,6 +35,7 @@ namespace XBMCAddon
     class Monitor : public AddonCallback
     {
       String Id;
+      CEvent abortEvent;
     public:
       Monitor();
 
@@ -56,10 +57,13 @@ namespace XBMCAddon
 	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanFinished,library));
 	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,library));
       }
-      inline void    OnAbortRequested() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
+      inline void    OnCleanStarted(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanStarted,library)); }
+      inline void    OnCleanFinished(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanFinished,library)); }
       inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 
       inline const String& GetId() { return Id; }
+
+      void OnAbortRequested();
 #endif
 
       /**
@@ -126,9 +130,25 @@ namespace XBMCAddon
       virtual void    onDatabaseUpdated(const String database) { XBMC_TRACE; }
 
       /**
-       * onAbortRequested() -- onAbortRequested method.\n
+       * onCleanStarted(library) -- onCleanStarted method.\n
        * \n
-       * Will be called when XBMC requests Abort\n
+       * library : video/music as string\n
+       * \n
+       * Will be called when library clean has started and return video or music to indicate which library is being cleaned\n
+       */
+      virtual void    onCleanStarted(const String library) { XBMC_TRACE; }
+
+      /**
+       * onCleanFinished(library) -- onCleanFinished method.\n
+       * \n
+       * library : video/music as string\n
+       * \n
+       * Will be called when library clean has ended and return video or music to indicate which library has been cleaned\n
+       */
+      virtual void    onCleanFinished(const String library) { XBMC_TRACE; }
+
+      /**
+       * onAbortRequested() -- Deprecated, use waitForAbort() to be notified about this event.\n
        */
       virtual void    onAbortRequested() { XBMC_TRACE; }
 
@@ -142,6 +162,21 @@ namespace XBMCAddon
        * Will be called when XBMC receives or sends a notification\n
        */
       virtual void    onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
+
+      /**
+       * waitForAbort([timeout]) -- Block until abort is requested, or until timeout occurs. If an
+       *                            abort requested have already been made, return immediately.
+       *
+       * Returns True when abort have been requested, False if a timeout is given and the operation times out.
+       *
+       * timeout : [opt] float - timeout in seconds. Default: no timeout.\n
+       */
+      bool waitForAbort(double timeout = -1);
+
+      /**
+       * abortRequested() -- Returns True if abort has been requested.
+       */
+      bool abortRequested();
 
       virtual ~Monitor();
     };

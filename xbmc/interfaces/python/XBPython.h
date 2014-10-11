@@ -87,6 +87,8 @@ public:
   void OnDPMSDeactivated();
   void OnScanStarted(const std::string &library);
   void OnScanFinished(const std::string &library);
+  void OnCleanStarted(const std::string &library);
+  void OnCleanFinished(const std::string &library);
   void OnAbortRequested(const std::string &ID="");
   void OnNotification(const std::string &sender, const std::string &method, const std::string &data);
 

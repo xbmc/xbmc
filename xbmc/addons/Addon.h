@@ -178,6 +178,26 @@ public:
 
   void MarkAsDisabled() { m_enabled = false; }
 
+  /*! \brief callback for when this add-on is disabled.
+   Use to perform any needed actions (e.g. stop a service)
+   */
+  virtual void OnDisabled() {};
+
+  /*! \brief callback for when this add-on is enabled.
+   Use to perform any needed actions (e.g. start a service)
+   */
+  virtual void OnEnabled() {};
+
+  /*! \brief retrieve the running instance of an add-on if it persists while running.
+   */
+  virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
+
+  /*! \brief callbacks for special install/uninstall behaviour */
+  virtual bool OnPreInstall() { return false; };
+  virtual void OnPostInstall(bool restart, bool update) {};
+  virtual void OnPreUnInstall() {};
+  virtual void OnPostUnInstall() {};
+  virtual bool CanInstall(const std::string& referer) { return true; }
 protected:
   friend class CAddonCallbacksAddon;
 

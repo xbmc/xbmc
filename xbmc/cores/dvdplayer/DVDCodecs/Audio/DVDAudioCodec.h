@@ -130,7 +130,7 @@ public:
   /*
    * returns the nr of channels for the encoded audio stream
    */
-  virtual int GetEncodedChannels() { return 0; }
+  virtual int GetEncodedChannels() { return GetChannels(); }
 
   /*
    * returns the channel mapping

@@ -32,6 +32,8 @@ extern "C"
 #include <libbluray/overlay.h>
 }
 
+#define MAX_PLAYLIST_ID 99999
+
 class CDVDOverlayImage;
 class DllLibbluray;
 class IDVDPlayer;
@@ -80,8 +82,8 @@ public:
   virtual void OnPrevious()              {}
   virtual bool HasMenu();
   virtual bool IsInMenu();
-  virtual bool OnMouseMove(const CPoint &point)  { return false; }
-  virtual bool OnMouseClick(const CPoint &point) { return false; }
+  virtual bool OnMouseMove(const CPoint &point)  { return MouseMove(point); }
+  virtual bool OnMouseClick(const CPoint &point) { return MouseClick(point); }
   virtual double GetTimeStampCorrection()        { return 0.0; }
   virtual void SkipStill();
   virtual bool GetState(std::string &xmlstate)         { return false; }
@@ -89,6 +91,8 @@ public:
 
 
   void UserInput(bd_vk_key_e vk);
+  bool MouseMove(const CPoint &point);
+  bool MouseClick(const CPoint &point);
 
   int GetChapter();
   int GetChapterCount();

@@ -25,6 +25,6 @@ copy xasm.exe "%MINGW_INSTALL_PATH%\bin\xasm.exe" /Y
 copy mads.exe "%MINGW_INSTALL_PATH%\bin\mads.exe" /Y
 rem copy "%MINGW_INSTALL_PATH%\bin\mingw32-make.exe" "%MINGW_INSTALL_PATH%\bin\make.exe" /Y
 rem xcopy curl-7.21.0-devel-mingw32\include\curl "%CUR_PATH%\include\curl" /E /Q /I /Y
-rem copy curl-7.21.0-devel-mingw32\bin\*.dll "%XBMC_PATH%\system\" /Y
+rem copy curl-7.21.0-devel-mingw32\bin\*.dll "%APP_PATH%\system\" /Y
 
 cd %LOC_PATH%

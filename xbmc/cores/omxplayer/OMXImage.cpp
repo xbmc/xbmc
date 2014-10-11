@@ -49,6 +49,28 @@
 #define EXIF_TAG_ORIENTATION    0x0112
 
 
+// A helper for restricting threads calling GPU functions to limit memory use
+// Experimentally, 3 outstanding operations is optimal
+static XbmcThreads::ConditionVariable g_count_cond;
+static CCriticalSection               g_count_lock;
+static int g_count_val;
+
+static void limit_calls_enter()
+{
+  CSingleLock lock(g_count_lock);
+  while (g_count_val >= 3)
+    g_count_cond.wait(lock);
+  g_count_val++;
+}
+
+static void limit_calls_leave()
+{
+  CSingleLock lock(g_count_lock);
+  g_count_val--;
+  g_count_cond.notifyAll();
+}
+
+
 #ifdef CLASSNAME
 #undef CLASSNAME
 #endif
@@ -903,8 +925,10 @@ bool COMXImageFile::ReadFile(const std::string& inputFile)
 
 COMXImageDec::COMXImageDec()
 {
+  limit_calls_enter();
   m_decoded_buffer = NULL;
   OMX_INIT_STRUCTURE(m_decoded_format);
+  m_success = false;
 }
 
 COMXImageDec::~COMXImageDec()
@@ -913,21 +937,27 @@ COMXImageDec::~COMXImageDec()
 
   OMX_INIT_STRUCTURE(m_decoded_format);
   m_decoded_buffer = NULL;
+  limit_calls_leave();
 }
 
 void COMXImageDec::Close()
 {
   CSingleLock lock(m_OMXSection);
 
-  if(m_omx_decoder.IsInitialized())
+  if (!m_success)
   {
-    m_omx_decoder.FlushInput();
-    m_omx_decoder.FreeInputBuffers();
-  }
-  if(m_omx_resize.IsInitialized())
-  {
-    m_omx_resize.FlushOutput();
-    m_omx_resize.FreeOutputBuffers();
+    if(m_omx_decoder.IsInitialized())
+    {
+      m_omx_decoder.SetStateForComponent(OMX_StateIdle);
+      m_omx_decoder.FlushInput();
+      m_omx_decoder.FreeInputBuffers();
+    }
+    if(m_omx_resize.IsInitialized())
+    {
+      m_omx_resize.SetStateForComponent(OMX_StateIdle);
+      m_omx_resize.FlushOutput();
+      m_omx_resize.FreeOutputBuffers();
+    }
   }
   if(m_omx_tunnel_decode.IsInitialized())
     m_omx_tunnel_decode.Deestablish();
@@ -1180,6 +1210,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
 
   memcpy( (char*)pixels, m_decoded_buffer->pBuffer, stride * height);
 
+  m_success = true;
   Close();
   return true;
 }
@@ -1191,9 +1222,11 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
 
 COMXImageEnc::COMXImageEnc()
 {
+  limit_calls_enter();
   CSingleLock lock(m_OMXSection);
   OMX_INIT_STRUCTURE(m_encoded_format);
   m_encoded_buffer = NULL;
+  m_success = false;
 }
 
 COMXImageEnc::~COMXImageEnc()
@@ -1204,6 +1237,7 @@ COMXImageEnc::~COMXImageEnc()
   m_encoded_buffer = NULL;
   if(m_omx_encoder.IsInitialized())
     m_omx_encoder.Deinitialize();
+  limit_calls_leave();
 }
 
 bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsigned height, unsigned int pitch)
@@ -1416,9 +1450,11 @@ bool COMXImageEnc::CreateThumbnailFromSurface(unsigned char* buffer, unsigned in
 
 COMXImageReEnc::COMXImageReEnc()
 {
+  limit_calls_enter();
   m_encoded_buffer = NULL;
   m_pDestBuffer = NULL;
   m_nDestAllocSize = 0;
+  m_success = false;
 }
 
 COMXImageReEnc::~COMXImageReEnc()
@@ -1428,21 +1464,31 @@ COMXImageReEnc::~COMXImageReEnc()
     free (m_pDestBuffer);
   m_pDestBuffer = NULL;
   m_nDestAllocSize = 0;
+  limit_calls_leave();
 }
 
 void COMXImageReEnc::Close()
 {
   CSingleLock lock(m_OMXSection);
 
-  if(m_omx_decoder.IsInitialized())
+  if (!m_success)
   {
-    m_omx_decoder.FlushInput();
-    m_omx_decoder.FreeInputBuffers();
-  }
-  if(m_omx_encoder.IsInitialized())
-  {
-    m_omx_encoder.FlushOutput();
-    m_omx_encoder.FreeOutputBuffers();
+    if(m_omx_decoder.IsInitialized())
+    {
+      m_omx_decoder.SetStateForComponent(OMX_StateIdle);
+      m_omx_decoder.FlushInput();
+      m_omx_decoder.FreeInputBuffers();
+    }
+    if(m_omx_resize.IsInitialized())
+    {
+      m_omx_resize.SetStateForComponent(OMX_StateIdle);
+    }
+    if(m_omx_encoder.IsInitialized())
+    {
+      m_omx_encoder.SetStateForComponent(OMX_StateIdle);
+      m_omx_encoder.FlushOutput();
+      m_omx_encoder.FreeOutputBuffers();
+    }
   }
   if(m_omx_tunnel_decode.IsInitialized())
     m_omx_tunnel_decode.Deestablish();
@@ -1850,7 +1896,8 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
 
       if (nDestSize + m_encoded_buffer->nFilledLen > m_nDestAllocSize)
       {
-         m_nDestAllocSize = std::max(1024U*1024U, m_nDestAllocSize*2);
+         while (nDestSize + m_encoded_buffer->nFilledLen > m_nDestAllocSize)
+           m_nDestAllocSize = std::max(1024U*1024U, m_nDestAllocSize*2);
          m_pDestBuffer = realloc(m_pDestBuffer, m_nDestAllocSize);
       }
       memcpy((char *)m_pDestBuffer + nDestSize, m_encoded_buffer->pBuffer, m_encoded_buffer->nFilledLen);
@@ -1859,13 +1906,14 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     }
   }
 
-  Close();
-
   if(m_omx_decoder.BadState())
     return false;
 
   pDestBuffer = m_pDestBuffer;
   CLog::Log(LOGDEBUG, "%s::%s : %s %dx%d -> %dx%d\n", CLASSNAME, __func__, srcFile.GetFilename(), srcFile.GetWidth(), srcFile.GetHeight(), maxWidth, maxHeight);
+
+  m_success = true;
+  Close();
 
   return true;
 }
@@ -1878,26 +1926,34 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
 
 COMXTexture::COMXTexture()
 {
+  limit_calls_enter();
+  m_success = false;
 }
 
 COMXTexture::~COMXTexture()
 {
   Close();
+  limit_calls_leave();
 }
 
 void COMXTexture::Close()
 {
   CSingleLock lock(m_OMXSection);
 
-  if(m_omx_decoder.IsInitialized())
+  if (!m_success)
   {
-    m_omx_decoder.FlushInput();
-    m_omx_decoder.FreeInputBuffers();
-  }
-  if(m_omx_egl_render.IsInitialized())
-  {
-    m_omx_egl_render.FlushOutput();
-    m_omx_egl_render.FreeOutputBuffers();
+    if(m_omx_decoder.IsInitialized())
+    {
+      m_omx_decoder.SetStateForComponent(OMX_StateIdle);
+      m_omx_decoder.FlushInput();
+      m_omx_decoder.FreeInputBuffers();
+    }
+    if(m_omx_egl_render.IsInitialized())
+    {
+      m_omx_egl_render.SetStateForComponent(OMX_StateIdle);
+      m_omx_egl_render.FlushOutput();
+      m_omx_egl_render.FreeOutputBuffers();
+    }
   }
   if (m_omx_tunnel_decode.IsInitialized())
     m_omx_tunnel_decode.Deestablish();
@@ -2199,6 +2255,7 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
       eos = true;
     }
   }
+  m_success = true;
   Close();
   return true;
 }

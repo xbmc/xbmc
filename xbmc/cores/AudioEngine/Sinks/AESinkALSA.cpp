@@ -701,9 +701,9 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
       int bits    = snd_pcm_hw_params_get_sbits(hw_params);
       if (bits != fmtBits)
       {
-        /* if we opened in 32bit and only have 24bits, pack into 24 */
+        /* if we opened in 32bit and only have 24bits, signal it accordingly */
         if (fmtBits == 32 && bits == 24)
-          i = AE_FMT_S24NE4;
+          i = AE_FMT_S24NE4MSB;
         else
           continue;
       }
@@ -1343,21 +1343,6 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
             /* snd_hctl_close also closes ctlhandle */
             snd_hctl_close(hctl);
 
-            // regarding data formats we don't trust ELD
-            // push all passthrough formats to the list
-            AEDataFormatList::iterator it;
-            for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
-            {
-              if (!AE_IS_RAW(i))
-                continue;
-              it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
-              if (it == info.m_dataFormats.end())
-              {
-                info.m_dataFormats.push_back(i);
-                CLog::Log(LOGNOTICE, "CAESinkALSA::%s data format \"%s\" on device \"%s\" seems to be not supported.", __FUNCTION__, CAEUtil::DataFormatToStr(i), device.c_str());
-              }
-            }
-
             if (badHDMI)
             {
               /* 
@@ -1499,6 +1484,23 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
     if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
       info.m_dataFormats.push_back(i);
+  }
+
+  if (info.m_deviceType == AE_DEVTYPE_HDMI)
+  {
+    // regarding data formats we don't trust ELD
+    // push all passthrough formats to the list
+    AEDataFormatList::iterator it;
+    for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
+    {
+      if (!AE_IS_RAW(i))
+        continue;
+      it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
+      if (it == info.m_dataFormats.end())
+      {
+        info.m_dataFormats.push_back(i);
+      }
+    }
   }
 
   snd_pcm_close(pcmhandle);

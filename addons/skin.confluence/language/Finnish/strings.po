@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/xbmc-main/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "HAKEE"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Visualisoinnin esiasetukset"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Päättymisaika"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Näytä \"Tauko\" kuvaesityksessä"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Toista trailerit ikkunassa [COLOR=grey3](Vain videon informaatiodialogi)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Yleiset asetukset"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Näytä viimeksi lisätyt videot"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Kotisivu Ohjelmat Alavalikko"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Piilota taustan fanitaide"
@@ -211,6 +223,10 @@ msgstr "Piilota taustan fanitaide"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Näytä taustalla \"Nyt katsellaan\"-video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Näytä taustalla \"Nyt soi\"-visualisaatio"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,9 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sanoitukset"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Piilot fanitaide kun visualisointi toistetaan koko ruudussa"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Sanoitukset-lisäosa"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Kotisivu Videot Alavalikko"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Kotisivu Musiikki Alavalikko"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Kotisivu Kuvat Alavalikko"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,13 +464,21 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]MÄÄRITÄ TV-ASETUKSET[/B][CR][CR]Vaihda koko ruudun infoa · Hallitse EPG-tietojen asetuksia"
+
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Määritä XBMC:n kauko ohjaus käyttäen UPnP:tä ja HTTP:tä · Määritä tiedostonjako[CR]Kytke päälle Zeroconf · Määritä AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Määritä Kodi:n kauko ohjaus käyttäen UPnP:tä ja HTTP:tä · Määritä tiedostonjako[CR]Kytke päälle Zeroconf · Määritä AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ensimmäisen käynnistyksen apu..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Tämä välilehti merkitsee ikkunan sivussa olevan tämän osaston ekstravalikon. Käyttääksesi valikkoa, siirry vasemmalle kaukosäädintä, näppäimistöä tai hiiren kursoria käyttäen välilehdessä. [CR][CR]Paina \"Ok\" sulkeaksesi tämän ikkunan. Se ei ilmesty tämän jälkeen."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -449,8 +489,8 @@ msgid "Login"
 msgstr "Kirjaudu"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -537,8 +577,8 @@ msgid "PICTURES"
 msgstr "KUVAT"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "LIVE-TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -567,3 +607,7 @@ msgstr "TOISTA LEVY"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "JÄRJESTELMÄ"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Radio"

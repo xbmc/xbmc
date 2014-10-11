@@ -69,8 +69,10 @@ private:
   unsigned int     m_jobID;
   CGUIInfoLabel    m_url;
   CGUIInfoLabel    m_target;
+  CGUIInfoLabel    m_limit;
   std::string      m_currentUrl;
   std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
+  unsigned int     m_currentLimit;
   std::vector<CGUIStaticItemPtr> m_items;
   std::vector<InfoTagType> m_itemTypes;
   CCriticalSection m_section;
@@ -78,5 +80,5 @@ private:
   void FireJob();
   void RegisterListProvider(bool hasLibraryContent);
   bool UpdateURL();
-  static bool HasLibraryContent(const std::string &url);
+  bool UpdateLimit();
 };

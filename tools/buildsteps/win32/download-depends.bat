@@ -4,7 +4,7 @@ SETLOCAL
 
 SET CUR_PATH=%WORKSPACE%\project\BuildDependencies
 SET TMP_PATH=%WORKSPACE%\project\BuildDependencies\scripts\tmp
-SET XBMC_PATH=%WORKSPACE%
+SET APP_PATH=%WORKSPACE%
 
 cd %CUR_PATH%
 

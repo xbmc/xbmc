@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Albanian (http://www.transifex.com/projects/p/xbmc-main/language/sq/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -417,16 +417,16 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]KONFIGURO SHTESAT[/B][CR][CR]Menaxho shtesat e installuara · Shiko dhe installo shtesa nga xbmc.org[CR]Modifiko konfigurimet e shtesave."
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURO OPCIONET E SERVISEVE[/B][CR][CR]Konfiguro kontrollimin e XBMC'së nëpërmjet UPnP dhe HTTP · Konfiguro shpërndarjen e skedeve[CR]Aktivizo Zeroconf · Konfiguro AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGURO OPCIONET E SERVISEVE[/B][CR][CR]Konfiguro kontrollimin e Kodi'së nëpërmjet UPnP dhe HTTP · Konfiguro shpërndarjen e skedeve[CR]Aktivizo Zeroconf · Konfiguro AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ndihma për përdorimin e parë..."
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Zgjidh XBMC profilin [CR] në cilin don të paraqitesh dhe vazhdo"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Zgjidh Kodi profilin [CR] në cilin don të paraqitesh dhe vazhdo"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -505,8 +505,8 @@ msgid "PICTURES"
 msgstr "Fotografit"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "Live TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

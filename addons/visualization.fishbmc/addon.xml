@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.9"
+  version="4.0.11"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -13,6 +13,7 @@
     <summary lang="ar">إسلوب تخيلي يُظهِر مؤثراتاً بصرية تتضمن موجات ومؤثرات عين السمكة (مؤثرات ضبابية)</summary>
     <summary lang="bg">Визуализацията представя вълни и размиващи ефекти</summary>
     <summary lang="cs">Vizualizace zobrazující vlny a rozmazané efekty</summary>
+    <summary lang="cy">Delweddu'n dangos Tonau ac Effeithiau Pylu</summary>
     <summary lang="da">Visualisering som viser Waves og Blur effekter</summary>
     <summary lang="de">Visualisierung mit Wellen- und Weichzeichnungs-Effekten</summary>
     <summary lang="el">Οπτικοποίηση προβολής Κυμάτων και Εφέ Θαμπώματος</summary>
@@ -21,6 +22,7 @@
     <summary lang="en_NZ">Visualisation showing Waves and Blur Effects</summary>
     <summary lang="en_US">Visualization showing Waves and Blur Effects</summary>
     <summary lang="es">Visualización que muestra efectos de ondas y desenfoque</summary>
+    <summary lang="es_AR">Visualización que muestra efectos de ondas y difuminado.</summary>
     <summary lang="es_MX">Visualización que muestra olas y efectos de desenfoque</summary>
     <summary lang="et">Laine- ja uduefektidega visuaal</summary>
     <summary lang="fi">Aalto- ja sumennustehosteita näyttävä visualisaatio</summary>
@@ -31,10 +33,14 @@
     <summary lang="hr">Vizualizacija prikazuje valove i zamućene efekte</summary>
     <summary lang="hu">A vizualizáció Hullámokat és Elmosás Effekteket mutat.</summary>
     <summary lang="id">Visualisasi menunjukkan efek gelombang dan efek kabur.</summary>
+    <summary lang="is">Sjónræn upplifun með bylgjum og afskerpuáhrifum</summary>
     <summary lang="it">Visualizzazione mostrando Onde e Sfumature</summary>
+    <summary lang="ja">波とぼかしエフェクトを表示するビジュアライザー</summary>
     <summary lang="ko">물결 효과와 흐림 효과를 보여주는 시각화</summary>
+    <summary lang="lt">Vizualizacija atvaizduojanti bangas ir suliejimo efektus</summary>
     <summary lang="lv">Vizualizācija, rādot viļņus un izpludināšanas efektu</summary>
-    <summary lang="nl">Visualisatie waarbij Golven en Blur effecten worden getoond </summary>
+    <summary lang="nl">Visualisatie waarbij Golven- en Blureffecten worden getoond </summary>
+    <summary lang="no">Visualisering viser bølge- og uskarpeffekter</summary>
     <summary lang="pl">Wizualizacja prezentuje efekty fali i rozmycia</summary>
     <summary lang="pt">Uma visualização com Ondas e Efeitos de Desfocagem</summary>
     <summary lang="pt_BR">Visualização mostrando Ondas e Efeitos Borrados</summary>
@@ -44,31 +50,38 @@
     <summary lang="sv">Visualisering bestående av vågor- och blur-effekter</summary>
     <summary lang="ta_IN">அலைகள் மற்றும் தெளிவின்மை விளைவுகள் காண்பிக்கும் காட்சி அமைப்பு</summary>
     <summary lang="tg">Таҷассум бо шамоиши мавҷҳо ва таъсирҳои хирагӣ</summary>
+    <summary lang="tr">Görselleştirme Dalga ve Bulanıklık Efektlerini gösteriyor</summary>
+    <summary lang="vi">Hiển thị sử dụng hiệu ứng Sóng và Làm mờ</summary>
     <summary lang="zh">呈现波浪和模糊效果的可视化效果</summary>
     <description lang="af">fishBMC is gebasseer op fische, 'n onafhanklike klank visulasasie program. Die basiese prinsiep is: teken die golflente en smeer die tekening langs Vooraf gedefinieerde vektore. fische sluit ook gevorderde tempo ondekking in, wat 'n besondere visuele ervaring verseker.</description>
     <description lang="bg">fishBMC е създадена въз основа на fische - самостоятелен инструмент за визуализиране на звук. Основния принцип е изчертаване на вълнова функция и размиване по предварително определени вектори. В допълнение fische съдържа и разширена функция за засичане на ритъма, което би трябвало да гарантира великолепно визуално изживяване.</description>
     <description lang="cs">fishBMC je založeno na fische - samostatném nástorji pro vizualizaci zvuku. Základní princip: nakresli waveform a rozmaž obrázek podle předdefinováných směrů. Avšak fische také přidává pokročilou detekci rytmu a to garantuje nádherný vizuální zážitek.</description>
+    <description lang="cy">MAe fishBMC yn seiliedig ar fisch, offeryn delweddu sain. Y prif elfen yw: llunio'r ffurf ton a'i lusgo ar hyd fectorau wedi eu diffinioo ymlaen llaw. Hefyd, mae fisch yn cynnwys dull o ganfod curiad uwch, sy'n gwarantu profiad gweledol trawiadol.</description>
     <description lang="da">fishBMX er baseret på fische, et standard visualiserings værktøj. Det basale princip er: tegn waveformen og tvær tegning langs de prædefinerede vektorer. fische inkluderer også avanceret beat registrering, som garanterer en god visuel oplevelse.</description>
-    <description lang="de">fishBMC basiert auf fische, einem eigenständigen Ton-Visualisierungs-Programm. Das Grundprinzip ist: zeichne das Wellen-Spektrum und verwische die Zeichnung entlang festgelegter Vektoren. fische verfügt jedoch auch über eine fortgeschrittene Rhytmus-Erkennung, die ein großartiges visuelles Erlebnis garantiert.</description>
+    <description lang="de">fishBMC basiert auf fische, einem eigenständigen Ton-Visualisierungs-Programm. Das Grundprinzip ist: Zeichne das Wellen-Spektrum und verwische die Zeichnung entlang festgelegter Vektoren. fische verfügt jedoch auch über eine fortgeschrittene Rhytmus-Erkennung, die ein großartiges visuelles Erlebnis garantiert.</description>
     <description lang="el">Το fishBMC είναι βασισμένο στο fische, ένα ξεχωριστό εργαλείο ηχητικών οπτικοποιήσεων. Η βασική του αρχή είναι: σχεδίαση μιας κυματομορφής και χρωματισμός της εικόνας κατά μήκος προκαθορισμένων διανυσμάτων. Παρ'όλα αυτά, το fische περιλαμβάνει και ανεπτυγμένες μεθόδους εντοπισμού παλμών, γεγονός που εγγυάται μια εκπληκτική οπτική εμπειρία.</description>
     <description lang="en">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
     <description lang="en_AU">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
     <description lang="en_NZ">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
     <description lang="en_US">fishBMC is based on fische, a standalone sound visualization tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
     <description lang="es">fishBMC está basado en fische, una herramienta de visualización de sonido. El principio básico es dibujar la forma de onda y extenderla a lo largo de vectores predefinidos. Sin embargo, fische también incluye una avanzada detección de ritmos, lo cual garantiza una gran experiencia visual. </description>
+    <description lang="es_AR">fishBMC esta basado en fische, una herramienta independiente de visualización de sonidos. El principio básico es: dibujar la forma de onda y difuminar el dibujo a lo largo de los vectores predefinidos. Sin embargo fische También incorpora detección del ritmo avanzado, que garantiza realmente una gran experiencia visual.</description>
     <description lang="es_MX">fishBMC se basa en fische, una herramienta independiente de visualización de sonido. El principio principal es: dibujar la forma de onda y esfumar el dibujo en conjunto a vectores predefinidos. No obstante, fische también incorpora una detección avanzada de compás, lo que garantiza una gran experiencia visual.</description>
     <description lang="et">fishBMC baseerub fische visualiseerimistööriistal. Põhiprintsiibiks on: joonista laine ja määri see ettenähtud suundades laiali. fische sisaldab lisaks veel edasijõudnud rütmituvastajat, garanteerides nii vaatajale suurepärase elamuse. </description>
-    <description lang="fr">fishBMC est basé sur fische, un outil de visualisation sonore. Le principe de base est : dessiner des ondes et déplacer le tracé sur les vecteurs prédéfinit. Cependant fische incorpore aussi un système de détection des battements, ce qui garantie une grande expérience visuelle.</description>
+    <description lang="fr">fishBMC est basé sur fische, un outil de visualisation sonore. Le principe de base est : dessiner des ondes et déplacer le tracé sur les vecteurs prédéfinis. Cependant fische incorpore aussi un système de détection du rythme, ce qui garantie une grande expérience visuelle.</description>
     <description lang="fr_CA">fishBMX est basé sur fische, un outil de visualisation audio autonome. Le principe de base est : dessiner la forme de l'onde et altère le dessin suivant des vecteurs prédéfinis. Cependant fische incorpore aussi une détection améliorée du tempo, ce qui garantie une expérience visuelle de qualité</description>
     <description lang="gl">fishBMC está baseado en fische, unha ferramenta autónoma de visualización de sons. O principio básico é: debuxar as formas de onda e pintalas ao longo dos vectores predefinidos. E posíbel que fische tamén incorpore detección avanzada de golpes, que realmente garante unha grande experiencia visual.</description>
     <description lang="he">fishBMC מבוסס על fische, כלי לחיזוי סאונד. העקרון הבסיסי הוא: צייר צורת גל ומרח את הציור לאורך הוקטורים המוגדרים מראש. אבל fische הוא גם שילוב מקצועי של זיהוי מקצבים, אשר מעניק חווית חיזוי נהדרת.</description>
     <description lang="hr">fishBMC je temeljen na fische, samostalnom alatu zvučne vizualizacije. Osnovno načelo je: iscrtati valni oblik i razmazati crtež unaprijed određenim vektorima. Međutim fische isto uključuje napredno otkrivanje taktova, koje uistinu jamči sjajno vizualno iskustvo.</description>
     <description lang="hu">fishBMC a fische-n alapul, egy önálló hangvizualizációs eszköz. A fő célkitűzése: a hanghullám kirajzolása és előre megadott vektorok szerinti módosítása. Viszont a fische szintén alkalmaz egy haladó ütemérzékelőt, ami tényleg garantálja a nagyszerű vizuális élményt.</description>
     <description lang="id">fishBMC didasarkan fische, alat visualisasi suara yang berdiri sendiri. Prinsip dasarnya adalah mengambar gelombang dan mengaburkannya sepanjang vektor yang telah ditentukan. Namun fische juga mengikutsertakan deteksi ketukan yang canggih, yang akan menjamin pengalaman visual yang hebat.</description>
+    <description lang="is">fishBMC er byggður á fische, sjálfstæðu tóli fyrir sjóræna upplifun á hljóði. Grunnuppbyggingin er: teikna bylgjuformið og smyrðu það út eftir skilgreindum vektorum. En fische er líka með þróaða taktskynjun, sem tryggir frábæra sjónræna upplifun.</description>
     <description lang="it">fishBMC si basa su fische, uno strumento di visualizzazione del suono standalone. Il principio di base è: disegnare la forma d'onda e spalmare il disegno lungo i vettori predefiniti. Tuttavia fische incorpora anche il rilevamento di battito avanzato, che garantisce un'ottima esperienza visiva.</description>
-    <description lang="lt">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
+    <description lang="ko">fllshBMC는 fische에 기반을 둔 음성 시각화 도구입니다. 기본 동작원리는 미리 정의된 벡터에 따라 선과 번짐을 표시하는 것입니다. 거기에다 검증된 멋진 비주얼 경험에 기반한 향상된 비트 검출 결과도 더해 집니다.</description>
+    <description lang="lt">fishBMC paremtas fische, atskiru garso vizualizavimo įrankiu. Pagrindinis principas yra: piešti bangos formą ir ištaškyti piešinį išilgai iš anksto nustatytų vektorių. Taip pat fische turi įtrauktą pažangų dūžių aptikimą, kuris garantuoja didžiulį vizualinį įspūdį.</description>
     <description lang="lv">fishBMC pamatā ir savrups skaņas vizualizācijas rīks "fische". Pamatdoma ir zīmēt skaņas viļņus un iztriept tos pa iepriekš noteiktiem vektoriem. Tomēr fische iekļauta arī papildus ritma noteikšanas metode, kas patiešām garantē lielisku vizuālo baudījumu.</description>
-    <description lang="nl">FishBMC is gebaseerd op fische, een zelfstandige geluidsvisualisatie tool. Het basis principe is: Teken de golfvorm en veeg de tekening rondom voor ingestelde richting. Echter fische brengt eveneens geavanceerde beat detectie, wat echt een grote visuele beleving garandeerd.</description>
+    <description lang="nl">FishBMC is gebaseerd op fische, een zelfstandige geluidsvisualisatie tool. Het basis principe is: Teken de golfvorm en veeg de tekening rond ingestelde richtingen. Fische brengt eveneens geavanceerde beatdetectie, wat echt een grote visuele beleving garandeerd.</description>
+    <description lang="no">fishBMC er basert på fische, et selvstendig lydvisualiseringverktøy. Det grunnleggende prinsippet er: tegn bølgeformen og smør tegningen langs forhåndsdefinerte linjer. I tillegg inkluderer fische avansert rytmedeteksjon, noe som garanterer en flott, visuell opplevelse.</description>
     <description lang="pl">fishBMC bazuje na fische, samodzielnym narzędziu do wizualizacji muzyki. Podstawową zasadą jest generowanie wykresu fali i rozmazywanie go wzdłuż zdefiniowanych wektorów. Ponadto fische zawiera również zaawansowaną detekcję rytmu, co gwarantuje wspaniałe wrażenia wizualne.</description>
     <description lang="pt">O fishBMC é baseado no fische, uma ferramenta autónoma de visualização de sons. O princípio básico é desenhar a onda e deformar o desenho através de vectores pré-definidos. No entanto, o fische também incorpora detecção avançada de ritmos, garantindo uma excelente experiência visual.</description>
     <description lang="pt_BR">fishBMC é baseado no fische, uma ferramenta de visualização de som independente. O princípio básico é: desenhar a forma de onda e esmaecer o desenho ao longo de vetores pré-definidos. Entretanto fische também incorpora detecção avançada de batidas, o que realmente garante uma grande experiência visual.</description>
@@ -83,6 +96,7 @@
     <disclaimer lang="ar">إذا سبب هذا تحطم أى شيئ، فستبقي القطع ملكك!</disclaimer>
     <disclaimer lang="bg">Ако "счупи" нещо - парчетата остават за Вас!</disclaimer>
     <disclaimer lang="cs">Když se rozbije všechno, ještě ti zůstanou ty kousky.</disclaimer>
+    <disclaimer lang="cy">Os yw'n torri rhywbeth, eich darnau chi ydyn nhw.</disclaimer>
     <disclaimer lang="da">Hvis dette ødelægger noget, er stykkerne dine.</disclaimer>
     <disclaimer lang="de">Für eventuelle Schäden wird keine Haftung übernommen.</disclaimer>
     <disclaimer lang="el">Αν σπάσει τίποτα, θα σας μείνουν τα κομμάτια.</disclaimer>
@@ -91,18 +105,23 @@
     <disclaimer lang="en_NZ">If this breaks anything, the pieces remain yours.</disclaimer>
     <disclaimer lang="en_US">If this breaks anything, the pieces remain yours.</disclaimer>
     <disclaimer lang="es">Si esto rompe alguna cosa, te puedes quedar con los trozos.</disclaimer>
+    <disclaimer lang="es_AR">Si esto rompe algo, los pedazos son tuyos.</disclaimer>
     <disclaimer lang="es_MX">Si esto rompe algo, las piezas siguen siento tuyas.</disclaimer>
     <disclaimer lang="et">kui see midagi lõhub, siis võid tükid endale jätta</disclaimer>
     <disclaimer lang="fr">Si cela casse quelque chose, les pièces restent les vôtres.</disclaimer>
     <disclaimer lang="fr_CA">Si ça brise, vous gardez les morceaux.</disclaimer>
     <disclaimer lang="gl">Se isto estraga algunha cousa, pode quedar cas pezas.</disclaimer>
+    <disclaimer lang="he">אם זה שובר משהו, החתיכות יישארו שלך.</disclaimer>
     <disclaimer lang="hr">Ako ovo slomi nešto, komadići ostaju vama.</disclaimer>
     <disclaimer lang="hu">Ha ez összetör valamit attól a darabok még a tieid maradnak.</disclaimer>
     <disclaimer lang="id">Kalau ini merusakkan suatu, pecahannya tetap menjadi milik anda.</disclaimer>
+    <disclaimer lang="is">Ef þetta brýtur eitthvað þá máttu eiga brotin.</disclaimer>
     <disclaimer lang="it">se si rompe qualcosa, i cocci sono vostri.</disclaimer>
-    <disclaimer lang="lt">Jei tai sugenda nieko, gabaliukai lieka tavo.</disclaimer>
+    <disclaimer lang="ko">발생하는 모든 문제는 사용자의 책임하에 있습니다. </disclaimer>
+    <disclaimer lang="lt">Jei tai ką nors sugadins, gabalėliai liks jums.</disclaimer>
     <disclaimer lang="lv">Ja tas kaut ko saplēš, lauskas paliek tev.</disclaimer>
     <disclaimer lang="nl">Gebruik maken van deze visualisatie is op eigen risico.</disclaimer>
+    <disclaimer lang="no">Hvis noe blir ødelagt, så må du ordne opp selv.</disclaimer>
     <disclaimer lang="pl">Jeśli to rozbije cokolwiek, kawałki pozostaną Twoje.</disclaimer>
     <disclaimer lang="pt">Se isto quebrar alguma coisa, pode ficar com as peças.</disclaimer>
     <disclaimer lang="pt_BR">se isto quebrar algo, as peças serão suas.</disclaimer>
@@ -112,6 +131,7 @@
     <disclaimer lang="sv">Om detta skulle förstöra något så kan du behålla resterna.</disclaimer>
     <disclaimer lang="ta_IN">எதையாவது இது உடைக்குமேயானால், உடைந்த துகல்கள் உங்களுடையது.</disclaimer>
     <disclaimer lang="tg">Агар ин чизеро вайрон кунад, шумо қисмҳоро мегиред.</disclaimer>
+    <disclaimer lang="tr">Eğer bu bir şeyi bozarsa, sorumluluk size aittir.</disclaimer>
     <disclaimer lang="zh">用者责任自负。</disclaimer>
     <platform>linux osx</platform>
   </extension>

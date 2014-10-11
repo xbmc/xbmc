@@ -26,12 +26,22 @@
 #include <cmath>
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
+#define MINVALIDFRAMEDURATION DVD_MSEC_TO_TIME(8.33)   // For VFR detection, max framerate allowed is 120fps
+#define MAXVALIDFRAMEDURATION DVD_MSEC_TO_TIME(200.0)  // For VFR detection, min framerate allowed is 5fps
 
 using namespace std;
 
 CPullupCorrection::CPullupCorrection()
 {
+  ResetVFRDetection();
   Flush();
+}
+
+void CPullupCorrection::ResetVFRDetection(void)
+{
+  m_minframeduration = DVD_NOPTS_VALUE;
+  m_maxframeduration = DVD_NOPTS_VALUE;
+  m_VFRCounter = 0;
 }
 
 void CPullupCorrection::Flush()
@@ -82,7 +92,8 @@ void CPullupCorrection::Add(double pts)
   {
     if (m_haspattern)
     {
-      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f", GetDiff(0));
+      m_VFRCounter++;
+      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
       Flush();
     }
 
@@ -297,16 +308,57 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 }
 
 //calculate how long each frame should last from the saved pattern
+//Retreive also information of max and min frame rate duration, for VFR files case
 double CPullupCorrection::CalcFrameDuration()
 {
   if (!m_pattern.empty())
   {
     //take the average of all diffs in the pattern
-    double frameduration = 0.0;
-    for (unsigned int i = 0; i < m_pattern.size(); i++)
-      frameduration += m_pattern[i];
+    double frameduration;
+    double current, currentmin, currentmax;
 
+    currentmin = m_pattern[0];
+    currentmax = currentmin;
+    frameduration = currentmin;
+    for (unsigned int i = 1; i < m_pattern.size(); i++)
+    {
+      current = m_pattern[i];
+      if (current>currentmax)
+        currentmax = current;
+      if (current<currentmin)
+        currentmin = current;
+      frameduration += current;
+    }
     frameduration /= m_pattern.size();
+
+    // Update min and max frame duration, only if data is valid
+    if (m_minframeduration == DVD_NOPTS_VALUE)
+    {
+      if ((currentmin >= MINVALIDFRAMEDURATION) && (currentmin <= MAXVALIDFRAMEDURATION))
+        m_minframeduration = currentmin;
+    }
+    else
+    {
+      if ((currentmin < m_minframeduration) &&
+          ((currentmin >= MINVALIDFRAMEDURATION) && (currentmin <= MAXVALIDFRAMEDURATION)))
+        m_minframeduration = currentmin;
+    }
+
+    if (m_maxframeduration == DVD_NOPTS_VALUE)
+    {
+      if ((currentmax >= MINVALIDFRAMEDURATION) && (currentmax <= MAXVALIDFRAMEDURATION))
+        m_maxframeduration = currentmax;
+    }
+    else
+    {
+      if ((currentmax > m_maxframeduration) &&
+          ((currentmax >= MINVALIDFRAMEDURATION) && (currentmax <= MAXVALIDFRAMEDURATION)))
+        m_maxframeduration = currentmax;
+    }
+
+    //frameduration is not completely correct, use a common one if it's close
+    m_minframeduration = CDVDCodecUtils::NormalizeFrameduration(m_minframeduration);
+    m_maxframeduration = CDVDCodecUtils::NormalizeFrameduration(m_maxframeduration);
 
     //frameduration is not completely correct, use a common one if it's close
     return CDVDCodecUtils::NormalizeFrameduration(frameduration);

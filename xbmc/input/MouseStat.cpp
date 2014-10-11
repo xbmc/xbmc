@@ -31,7 +31,7 @@ CMouseStat::CMouseStat()
   m_speedX = m_speedY = 0;
   m_maxX = m_maxY = 0;
   memset(&m_mouseState, 0, sizeof(m_mouseState));
-  m_Action = ACTION_NOOP;
+  m_Key = KEY_MOUSE_NOOP;
 }
 
 CMouseStat::~CMouseStat()
@@ -104,9 +104,10 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   uint32_t now = CTimeUtils::GetFrameTime();
   bool bNothingDown = true;
   
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < MOUSE_MAX_BUTTON; i++)
   {
     bClick[i] = false;
+    bLongClick[i] = false;
     bDoubleClick[i] = false;
     bHold[i] = 0;
 
@@ -116,8 +117,11 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     switch (action)
     {
     case CButtonState::MB_SHORT_CLICK:
-    case CButtonState::MB_LONG_CLICK:
       bClick[i] = true;
+      bNothingDown = false;
+      break;
+    case CButtonState::MB_LONG_CLICK:
+      bLongClick[i] = true;
       bNothingDown = false;
       break;
     case CButtonState::MB_DOUBLE_CLICK:
@@ -136,41 +140,47 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   }
 
   // Now work out what action ID to send to XBMC.
-  // The bClick array is set true if CButtonState::Update spots a click
-  // i.e. a button down followed by a button up.
-  if (bClick[MOUSE_LEFT_BUTTON])
-    m_Action = ACTION_MOUSE_LEFT_CLICK;
-  else if (bClick[MOUSE_RIGHT_BUTTON])
-    m_Action = ACTION_MOUSE_RIGHT_CLICK;
-  else if (bClick[MOUSE_MIDDLE_BUTTON])
-    m_Action = ACTION_MOUSE_MIDDLE_CLICK;
 
-  // The bDoubleClick array is set true if CButtonState::Update spots a
-  // button down within double_click_time (500ms) of the last click
-  else if (bDoubleClick[MOUSE_LEFT_BUTTON])
-    m_Action = ACTION_MOUSE_DOUBLE_CLICK;
+  // ignore any mouse messages by default
+  m_Key = KEY_MOUSE_NOOP;
 
-  // The bHold array is set true if CButtonState::Update spots a mouse drag
-  else if (bHold[MOUSE_LEFT_BUTTON])
-    m_Action = ACTION_MOUSE_DRAG;
+  for (int button=0; button<MOUSE_MAX_BUTTON; ++button)
+  {
+    // The bClick array is set true if CButtonState::Update spots a click
+    // i.e. a button down followed by a button up.
+    if (bClick[button])
+      m_Key = KEY_MOUSE_CLICK + button;
+    // The bDoubleClick array is set true if CButtonState::Update spots a
+    // button down within double_click_time (500ms) of the last click
+    else if (bDoubleClick[button])
+      m_Key = KEY_MOUSE_DOUBLE_CLICK + button;
+    else if (bLongClick[button])
+      m_Key = KEY_MOUSE_LONG_CLICK + button;
 
-  // dz is +1 on wheel up and -1 on wheel down
-  else if (m_mouseState.dz > 0)
-    m_Action = ACTION_MOUSE_WHEEL_UP;
-  else if (m_mouseState.dz < 0)
-    m_Action = ACTION_MOUSE_WHEEL_DOWN;
+    if (m_Key != KEY_MOUSE_NOOP)
+      break;
+  }
 
-  // Check for a mouse move that isn't a drag, ignoring messages with no movement at all
-  else if (newEvent.type == XBMC_MOUSEMOTION && (m_mouseState.dx || m_mouseState.dy))
-    m_Action = ACTION_MOUSE_MOVE;
+  if (m_Key == KEY_MOUSE_NOOP)
+  {
+    // The bHold array is set true if CButtonState::Update spots a mouse drag
+    if (bHold[MOUSE_LEFT_BUTTON])
+      m_Key = KEY_MOUSE_DRAG;
 
-  // ignore any other mouse messages
-  else
-    m_Action = ACTION_NOOP;
+    // dz is +1 on wheel up and -1 on wheel down
+    else if (m_mouseState.dz > 0)
+      m_Key = KEY_MOUSE_WHEEL_UP;
+    else if (m_mouseState.dz < 0)
+      m_Key = KEY_MOUSE_WHEEL_DOWN;
+
+    // Check for a mouse move that isn't a drag, ignoring messages with no movement at all
+    else if (newEvent.type == XBMC_MOUSEMOTION && (m_mouseState.dx || m_mouseState.dy))
+      m_Key = KEY_MOUSE_MOVE;
+  }
 
   // activate the mouse pointer if we have an action or the mouse has moved far enough
-  if ((MovedPastThreshold() && m_Action == ACTION_MOUSE_MOVE) ||
-      (m_Action != ACTION_NOOP && m_Action != ACTION_MOUSE_MOVE))
+  if ((MovedPastThreshold() && m_Key == KEY_MOUSE_MOVE) ||
+      (m_Key != KEY_MOUSE_NOOP && m_Key != KEY_MOUSE_MOVE))
     SetActive();
 
   // reset the mouse state if nothing is held down
@@ -224,9 +234,9 @@ bool CMouseStat::MovedPastThreshold() const
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
-uint32_t CMouseStat::GetAction() const
+uint32_t CMouseStat::GetKey() const
 {
-  return m_Action;
+  return m_Key;
 }
 
 int CMouseStat::GetHold(int ButtonID) const

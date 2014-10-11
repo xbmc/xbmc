@@ -136,6 +136,7 @@
 #define WINDOW_RADIO_GUIDE                10622
 #define WINDOW_RADIO_TIMERS               10623
 #define WINDOW_RADIO_SEARCH               10624
+#define WINDOW_FULLSCREEN_RADIO           10625 // virtual window for PVR radio specific keymaps with fallback to WINDOW_VISUALISATION
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000

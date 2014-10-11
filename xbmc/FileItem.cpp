@@ -867,7 +867,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
   {
     if((IsPlayList() && !g_advancedSettings.m_playlistAsFolders)
-    || IsDVDImage())
+    || IsDiscImage())
       return true;
   }
 
@@ -911,7 +911,7 @@ bool CFileItem::IsNFO() const
   return URIUtils::HasExtension(m_strPath, ".nfo");
 }
 
-bool CFileItem::IsDVDImage() const
+bool CFileItem::IsDiscImage() const
 {
   return URIUtils::HasExtension(m_strPath, ".img|.iso|.nrg");
 }
@@ -944,7 +944,7 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 bool CFileItem::IsBDFile() const
 {
   std::string strFileName = URIUtils::GetFileName(m_strPath);
-  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv"));
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") || StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv"));
 }
 
 bool CFileItem::IsRAR() const

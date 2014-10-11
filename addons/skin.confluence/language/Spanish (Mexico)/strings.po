@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/xbmc-main/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,6 +115,10 @@ msgstr "REBOBINAR"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "BUSQUEDA"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Preajustes de Visualización"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -453,8 +457,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]CONFIGURAR AJUSTES DE TV[/B][CR][CR]Cambiar información de pantalla completa · Administrar ajustes de datos EPG"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control de XBMC a través de UPnP y HTTP · Configurar el uso compartido de archivos[CR]HabilitarZeroconf · Configurar AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control de Kodi a través de UPnP y HTTP · Configurar el uso compartido de archivos[CR]HabilitarZeroconf · Configurar AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -469,8 +473,8 @@ msgid "Local subtitle available"
 msgstr "Subtítulo local disponible"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Selecciona tu Perfil XBMC[CR]para iniciar sesión y continuar"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Selecciona tu Perfil Kodi[CR]para iniciar sesión y continuar"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -549,8 +553,8 @@ msgid "PICTURES"
 msgstr "IMAGENES"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "TV EN VIVO"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Estonian (http://www.transifex.com/projects/p/xbmc-main/language/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -469,8 +469,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]SEADISTA TV SEADEID[/B][CR][CR]Muuda täisekraani infot · Halda elektroonilise saatekava seadeid"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGUREERI TEENUSE SEADEID[/B][CR][CR]Seadista XBMC juhtimine UPnP ja HTTP kaudu · Seadista failide jagamine[CR]Luba Zeroconf · Konfigureeri AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGUREERI TEENUSE SEADEID[/B][CR][CR]Seadista Kodi juhtimine UPnP ja HTTP kaudu · Seadista failide jagamine[CR]Luba Zeroconf · Konfigureeri AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Lokaalsed subtiitrid on saadaval"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Logi sisse"
+
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vali enda XBMC profiil[CR]ja jätka"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Vali enda Kodi profiil[CR]ja jätka"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Käivitumisel näita või peida sisselogimiseekraan."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Vali profiil, mida kasutada käivitumisel, kui sisselogimise ekraan on keelatud."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -565,8 +577,8 @@ msgid "PICTURES"
 msgstr "PILDID "
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "OTSE TV"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

@@ -42,6 +42,34 @@
 #include "utils/StreamDetails.h"
 #include "threads/SystemClock.h"
 
+#ifdef HAS_OMXPLAYER
+#include "OMXCore.h"
+#include "OMXClock.h"
+#include "linux/RBP.h"
+#else
+
+// dummy class to avoid ifdefs where calls are made
+class OMXClock
+{
+public:
+  bool OMXInitialize(CDVDClock *clock) { return false; }
+  void OMXDeinitialize() {}
+  bool OMXIsPaused() { return false; }
+  bool OMXStop(bool lock = true) { return false; }
+  bool OMXStep(int steps = 1, bool lock = true) { return false; }
+  bool OMXReset(bool has_video, bool has_audio, bool lock = true) { return false; }
+  double OMXMediaTime(bool lock = true) { return 0.0; }
+  double OMXClockAdjustment(bool lock = true) { return 0.0; }
+  bool OMXMediaTime(double pts, bool lock = true) { return false; }
+  bool OMXPause(bool lock = true) { return false; }
+  bool OMXResume(bool lock = true) { return false; }
+  bool OMXSetSpeed(int speed, bool lock = true, bool pause_resume = false) { return false; }
+  bool OMXFlush(bool lock = true) { return false; }
+  bool OMXStateExecute(bool lock = true) { return false; }
+  void OMXStateIdle(bool lock = true) {}
+  bool HDMIClockSync(bool lock = true) { return false; }
+};
+#endif
 
 class CDVDInputStream;
 
@@ -77,6 +105,7 @@ public:
   const int        player;
   // stuff to handle starting after seek
   double   startpts;
+  double   originaldts;
 
   CCurrentStream(StreamType t, int i)
     : type(t)
@@ -98,6 +127,7 @@ public:
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
+    originaldts = DVD_NOPTS_VALUE;
   }
 
   double dts_end()
@@ -158,7 +188,7 @@ public:
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (SelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer);
+  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
 
@@ -187,10 +217,9 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
-  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
-  virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
+  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio->SetVolume(nVolume); }
+  virtual void SetMute(bool bOnOff)                             { m_dvdPlayerAudio->SetMute(bOnOff); }
+  virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio->SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(std::string& strAudioInfo);
   virtual void GetVideoInfo(std::string& strVideoInfo);
   virtual void GetGeneralInfo(std::string& strVideoInfo);
@@ -240,7 +269,7 @@ public:
 
   virtual std::string GetPlayingTitle();
 
-  virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
+  virtual bool SwitchChannel(PVR::CPVRChannel &channel);
   virtual bool CachePVRStream(void) const;
 
   enum ECacheState
@@ -256,12 +285,20 @@ public:
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
+
+  virtual bool ControlsVolume() {return m_omxplayer_mode;}
+
 protected:
   friend class CSelectionStreams;
 
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+
+  void CreatePlayers();
+  void DestroyPlayers();
+  void OMXDoProcessing();
+  bool OMXStillPlaying();
 
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
   bool OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset);
@@ -336,6 +373,7 @@ protected:
   void UpdateClockMaster();
   double m_UpdateApplication;
 
+  bool m_players_created;
   bool m_bAbortRequest;
 
   std::string  m_filename; // holds the actual filename
@@ -364,10 +402,10 @@ protected:
 
   CDVDMessageQueue m_messenger;     // thread messenger
 
-  CDVDPlayerVideo m_dvdPlayerVideo; // video part
-  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
-  CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
-  CDVDTeletextData m_dvdPlayerTeletext; // teletext part
+  IDVDStreamPlayerVideo *m_dvdPlayerVideo; // video part
+  IDVDStreamPlayerAudio *m_dvdPlayerAudio; // audio part
+  CDVDPlayerSubtitle *m_dvdPlayerSubtitle; // subtitle part
+  CDVDTeletextData *m_dvdPlayerTeletext; // teletext part
 
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
@@ -403,6 +441,10 @@ protected:
 
   friend class CDVDPlayerVideo;
   friend class CDVDPlayerAudio;
+#ifdef HAS_OMXPLAYER
+  friend class OMXPlayerVideo;
+  friend class OMXPlayerAudio;
+#endif
 
   struct SPlayerState
   {
@@ -493,4 +535,20 @@ protected:
   bool m_HasAudio;
 
   bool m_DemuxerPausePending;
+
+  // omxplayer variables
+  struct SOmxPlayerState
+  {
+    OMXClock av_clock;              // openmax clock component
+    EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
+    bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
+    bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
+    bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
+    float threshold;                // current fifo threshold required to come out of buffering
+    int video_fifo;                 // video fifo to gpu level
+    int audio_fifo;                 // audio fifo to gpu level
+    double last_check_time;         // we periodically check for gpu underrun
+    double stamp;                   // last media timestamp
+  } m_OmxPlayerState;
+  bool m_omxplayer_mode;            // using omxplayer acceleration
 };

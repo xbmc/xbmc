@@ -66,6 +66,7 @@
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
 #include "utils/RssReader.h"
+#include "Util.h"
 
 using namespace std;
 using namespace EPG;
@@ -116,7 +117,7 @@ static const ControlMapping controls[] =
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStdString &type)
 {
-  for (unsigned int i = 0; i < sizeof(controls) / sizeof(controls[0]); ++i)
+  for (unsigned int i = 0; i < ARRAY_SIZE(controls); ++i)
     if (StringUtils::EqualsNoCase(type, controls[i].name))
       return controls[i].type;
   return CGUIControl::GUICONTROL_UNKNOWN;
@@ -124,7 +125,7 @@ CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStd
 
 CStdString CGUIControlFactory::TranslateControlType(CGUIControl::GUICONTROLTYPES type)
 {
-  for (unsigned int i = 0; i < sizeof(controls) / sizeof(controls[0]); ++i)
+  for (unsigned int i = 0; i < ARRAY_SIZE(controls); ++i)
     if (type == controls[i].type)
       return controls[i].name;
   return "";
@@ -370,7 +371,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 void CGUIControlFactory::GetRectFromString(const CStdString &string, CRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
-  std::vector<std::string> strRect = StringUtils::Split(string, ",");
+  std::vector<std::string> strRect = StringUtils::Split(string, ',');
   if (strRect.size() == 1)
   {
     rect.x1 = (float)atof(strRect[0].c_str());

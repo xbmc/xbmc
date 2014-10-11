@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,28 +20,46 @@
  *
  */
 
-#include <stdio.h>
 #include <string>
+
+#if defined(TARGET_POSIX)
+#include "posix/PosixInterfaceForCLog.h"
+typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32InterfaceForCLog.h"
+typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
+#endif
 
 #include "commons/ilog.h"
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 
-#ifdef __GNUC__
-#define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
-#else
-#define ATTRIB_LOG_FORMAT
-#endif
+#include "utils/params_check_macros.h"
 
 class CLog
 {
 public:
+  CLog();
+  ~CLog(void);
+  static void Close();
+  static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM2_PRINTF_FORMAT;
+  static void LogFunction(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const char* format, ...) PARAM3_PRINTF_FORMAT;
+#define LogF(loglevel,format,...) LogFunction((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
+  static void MemDump(char *pData, int length);
+  static bool Init(const std::string& path);
+  static void PrintDebugString(const std::string& line); // universal interface for printing debug strings
+  static void SetLogLevel(int level);
+  static int  GetLogLevel();
+  static void SetExtraLogLevels(int level);
+  static bool IsLogLevelLogged(int loglevel);
 
+protected:
   class CLogGlobals
   {
   public:
-    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
-    FILE*       m_file;
+    CLogGlobals(void) : m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
+    ~CLogGlobals() {}
+    PlatformInterfaceForCLog m_platform;
     int         m_repeatCount;
     int         m_repeatLogLevel;
     std::string m_repeatLine;
@@ -49,21 +67,11 @@ public:
     int         m_extraLogLevels;
     CCriticalSection critSec;
   };
-
-  CLog();
-  virtual ~CLog(void);
-  static void Close();
-  static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
-  static void MemDump(char *pData, int length);
-  static bool Init(const char* path);
-  static void SetLogLevel(int level);
-  static int  GetLogLevel();
-  static void SetExtraLogLevels(int level);
-private:
-  static void OutputDebugString(const std::string& line);
+  class CLogGlobals m_globalInstance; // used as static global variable
+  static void LogString(int logLevel, const std::string& logString);
+  static bool WriteLogString(int logLevel, const std::string& logString);
 };
 
-#undef ATTRIB_LOG_FORMAT
 
 namespace XbmcUtils
 {
@@ -71,8 +79,8 @@ namespace XbmcUtils
   {
   public:
     virtual ~LogImplementation() {}
-    inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
+    inline virtual void log(int logLevel, IN_STRING const char* message) { CLog::Log(logLevel, "%s", message); }
   };
 }
 
-XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);
+XBMC_GLOBAL_REF(CLog, g_log);

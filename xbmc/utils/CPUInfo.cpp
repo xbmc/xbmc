@@ -26,11 +26,11 @@
 #if defined(TARGET_DARWIN)
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
+#include <mach-o/arch.h>
+#endif // defined(__ppc__) || defined (TARGET_DARWIN_IOS)
 #ifdef TARGET_DARWIN_OSX
 #include "osx/smc.h"
-#ifdef __ppc__
-#include <mach-o/arch.h>
-#endif
 #endif
 #endif
 
@@ -104,6 +104,7 @@ CCPUInfo::CCPUInfo(void)
 {
 #ifdef TARGET_POSIX
   m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
+  m_cpuInfoForFreq = false;
 #elif defined(TARGET_WINDOWS)
   m_cpuQueryFreq = NULL;
   m_cpuQueryLoad = NULL;
@@ -120,7 +121,7 @@ CCPUInfo::CCPUInfo(void)
       m_cpuCount = 1;
 
   // The model.
-#ifdef __ppc__
+#if defined(__ppc__) || defined (TARGET_DARWIN_IOS)
   const NXArchInfo *info = NXGetLocalArchInfo();
   if (info != NULL)
     m_cpuModel = info->description;
@@ -266,6 +267,13 @@ CCPUInfo::CCPUInfo(void)
     m_fProcTemperature = fopen("/sys/class/thermal/thermal_zone0/temp", "r");  // On Raspberry PIs
 
   m_fCPUFreq = fopen ("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq", "r");
+  if (!m_fCPUFreq)
+  {
+    m_cpuInfoForFreq = true;
+    m_fCPUFreq = fopen("/proc/cpuinfo", "r");
+  }
+  else
+    m_cpuInfoForFreq = false;
 
 
   FILE* fCPUInfo = fopen("/proc/cpuinfo", "r");
@@ -479,15 +487,9 @@ int CCPUInfo::getUsedPercentage()
   idleTicks -= m_idleTicks;
   ioTicks -= m_ioTicks;
 
-#ifdef TARGET_WINDOWS
-  if(userTicks + systemTicks == 0)
-    return m_lastUsedPercentage;
-  int result = (int) (double(userTicks + systemTicks - idleTicks) * 100.0 / double(userTicks + systemTicks) + 0.5);
-#else
   if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
     return m_lastUsedPercentage;
   int result = (int) (double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
-#endif
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
@@ -534,13 +536,31 @@ float CCPUInfo::getCPUFrequency()
   return (float)hz;
 #else
   int value = 0;
-  if (m_fCPUFreq)
+  if (m_fCPUFreq && !m_cpuInfoForFreq)
   {
     rewind(m_fCPUFreq);
     fflush(m_fCPUFreq);
     fscanf(m_fCPUFreq, "%d", &value);
+    value /= 1000.0;
   }
-  return value / 1000.0;
+  if (m_fCPUFreq && m_cpuInfoForFreq)
+  {
+    rewind(m_fCPUFreq);
+    fflush(m_fCPUFreq);
+    float mhz, avg=0.0;
+    int n, cpus=0;
+    while(EOF!=(n=fscanf(m_fCPUFreq," MHz : %f ", &mhz)))
+    {
+      if (n>0) {
+        cpus++;
+        avg += mhz;
+      }
+      fscanf(m_fCPUFreq,"%*s");
+    }
+
+    value = avg/cpus;
+  }
+  return value;
 #endif
 }
 
@@ -633,21 +653,13 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   FILETIME idleTime;
   FILETIME kernelTime;
   FILETIME userTime;
-  ULARGE_INTEGER ulTime;
-  unsigned long long coreUser, coreSystem, coreIdle;
-  GetSystemTimes( &idleTime, &kernelTime, &userTime );
-  ulTime.HighPart = userTime.dwHighDateTime;
-  ulTime.LowPart = userTime.dwLowDateTime;
-  user = coreUser = ulTime.QuadPart;
+  if (GetSystemTimes(&idleTime, &kernelTime, &userTime) == 0)
+    return false;
 
-  ulTime.HighPart = kernelTime.dwHighDateTime;
-  ulTime.LowPart = kernelTime.dwLowDateTime;
-  system = coreSystem = ulTime.QuadPart;
-
-  ulTime.HighPart = idleTime.dwHighDateTime;
-  ulTime.LowPart = idleTime.dwLowDateTime;
-  idle = coreIdle = ulTime.QuadPart;
-
+  idle = (uint64_t(idleTime.dwHighDateTime) << 32) + uint64_t(idleTime.dwLowDateTime);
+  // returned "kernelTime" includes "idleTime"
+  system = (uint64_t(kernelTime.dwHighDateTime) << 32) + uint64_t(kernelTime.dwLowDateTime) - idle;
+  user = (uint64_t(userTime.dwHighDateTime) << 32) + uint64_t(userTime.dwLowDateTime);
   nice = 0;
   io = 0;
 
@@ -676,12 +688,12 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
         }
       }
       else
-        curCore.m_fPct = (double(coreUser + coreSystem - coreIdle) * 100.0) / double(coreUser + coreSystem); // use CPU average as fallback
+        curCore.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
     }
   }
   else
     for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
-      it->second.m_fPct = (double(coreUser + coreSystem - coreIdle) * 100.0) / double(coreUser + coreSystem); // use CPU average as fallback
+      it->second.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
 #elif defined(TARGET_FREEBSD)
   long *cptimes;
   size_t len;

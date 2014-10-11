@@ -18,6 +18,10 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+  #include "config.h"
+#endif
+
 #if TARGET_WINDOWS
 #define PCRE_STATIC 1
 #ifdef _DEBUG
@@ -148,7 +152,13 @@ void CFTPParse::setTime(string str)
     time_struct.tm_mday = atoi(day.c_str());
 
     time_t t = time(NULL);
-    struct tm *current_time = localtime(&t);
+    struct tm *current_time;
+#ifdef LOCALTIME_R
+    struct tm result = {};
+    current_time = localtime_r(&t, &result);
+#else
+    current_time = localtime(&t);
+#endif
     if (pcrecpp::RE("(\\d{2}):(\\d{2})").FullMatch(year, &hour, &minute))
     {
       /* set the hour and minute */

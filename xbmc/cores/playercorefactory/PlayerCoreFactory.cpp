@@ -126,10 +126,16 @@ std::string CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore) const
 
 CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const std::string& strCoreName) const
 {
+  return GetPlayerConfig(GetPlayerCore(strCoreName));
+}
+
+CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const PLAYERCOREID eCore) const
+{
   CSingleLock lock(m_section);
-  PLAYERCOREID id = GetPlayerCore(strCoreName);
-  if (id != EPC_NONE) return m_vecCoreConfigs[id-1];
-  else return NULL;
+  if (eCore != EPC_NONE)
+    return m_vecCoreConfigs[eCore - 1];
+  else
+    return NULL;
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores ) const
@@ -263,7 +269,7 @@ PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item ) const
   return EPC_NONE;
 }
 
-PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY) const
+PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(const VECPLAYERCORES &vecCores, float posX, float posY) const
 {
   CContextButtons choices;
   if (vecCores.size())
@@ -335,13 +341,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
-
-#if defined(HAS_OMXPLAYER)
-    CPlayerCoreConfig* omxplayer = new CPlayerCoreConfig("OMXPlayer", EPC_OMXPLAYER, NULL);
-    omxplayer->m_bPlaysAudio = true;
-    omxplayer->m_bPlaysVideo = true;
-    m_vecCoreConfigs.push_back(omxplayer);
-#endif
 
     for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
       delete *it;

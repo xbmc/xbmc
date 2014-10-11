@@ -118,7 +118,7 @@
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
-      <play_pause>Pause</play_pause>
+      <play_pause>PlayPause</play_pause>
       <fastforward>FastForward</fastforward>
       <rewind>Rewind</rewind>
       <record/>
@@ -216,7 +216,7 @@
   </MyFiles>
   <MyMusicPlaylist>
     <keyboard>
-      <space>Back</space>
+      <n>Back</n>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
@@ -231,14 +231,14 @@
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
     <keyboard>
-      <space>Playlist</space>
+      <n>Playlist</n>
       <q>Queue</q>
       <delete>Delete</delete>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
     <keyboard>
-      <space>Playlist</space>
+      <n>Playlist</n>
       <q>Queue</q>
     </keyboard>
   </MyMusicLibrary>
@@ -448,20 +448,20 @@
   <MyVideoLibrary>
     <keyboard>
       <delete>Delete</delete>
-      <space>Playlist</space>
+      <n>Playlist</n>
       <w>ToggleWatched</w>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
     <keyboard>
-      <space>Playlist</space>
+      <n>Playlist</n>
       <q>Queue</q>
       <w>ToggleWatched</w>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
-      <space>Back</space>
+      <n>Back</n>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
@@ -529,6 +529,14 @@
       <down>ChannelDown</down>
     </keyboard>
   </FullscreenLiveTV>
+  <FullscreenRadio>
+    <keyboard>
+      <left>PreviousChannelGroup</left>
+      <right>NextChannelGroup</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </keyboard>
+  </FullscreenRadio>
   <PVROSDChannels>
     <keyboard>
       <backspace>Close</backspace>

@@ -50,6 +50,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
+#include "utils/MarkWatchedJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/Key.h"
@@ -743,7 +744,6 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   // check if the path contains a filter and temporarily remove it
   // so that the retrieved list of items is unfiltered
   bool canfilter = CanContainFilter(directory);
-  std::string filter;
   CURL url(directory);
   if (canfilter && url.HasOption("filter"))
     directory = RemoveParameterFromPath(directory, "filter");
@@ -1218,7 +1218,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString = StringUtils::Format("%ld%ld",
+    strHistoryString = StringUtils::Format("%i%i",
                                            pItem->m_lStartOffset,
                                            pItem->m_lEndOffset);
     strHistoryString += pItem->GetPath();
@@ -1569,6 +1569,14 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_MARK_WATCHED:
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
+      CMarkWatchedQueue::Get().AddJob(new CMarkWatchedJob(item, (button == CONTEXT_BUTTON_MARK_WATCHED)));
+      return true;
+    }
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);

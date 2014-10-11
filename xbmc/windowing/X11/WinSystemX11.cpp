@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 #include "system.h"
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || (defined(HAS_EGL) && defined(HAVE_X11))
 
 #include "WinSystemX11.h"
 #include "settings/DisplaySettings.h"
@@ -49,17 +49,24 @@
 
 using namespace std;
 
+#define EGL_NO_CONFIG (EGLConfig)0
+
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
+#if defined(HAS_GLX)
   m_glContext = NULL;
+#endif
+#if defined(HAS_EGL)
+  m_eglContext = EGL_NO_CONTEXT;
+  m_eglDisplay = EGL_NO_DISPLAY;
+#endif
   m_dpy = NULL;
   m_glWindow = 0;
   m_mainWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
   m_minimized = false;
   m_bIgnoreNextFocusMessage = false;
-  m_dpyLostTime = 0;
   m_invisibleCursor = 0;
   m_bIsInternalXrr = false;
 
@@ -100,6 +107,7 @@ bool CWinSystemX11::DestroyWindowSystem()
   }
 #endif
 
+#if defined(HAS_GLX)
   if (m_dpy)
   {
     if (m_glContext)
@@ -116,7 +124,18 @@ bool CWinSystemX11::DestroyWindowSystem()
     // crashes when shutting down via cec
 //    XCloseDisplay(m_dpy);
   }
+#endif
 
+#if defined(HAS_EGL)
+  if (m_eglDisplay)
+  {
+    if (m_eglContext != EGL_NO_CONTEXT)
+    {
+      eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      m_eglContext = EGL_NO_CONTEXT;
+    }
+  }
+#endif
   // m_SDLSurface is free()'d by SDL_Quit().
 
   return true;
@@ -136,11 +155,20 @@ bool CWinSystemX11::DestroyWindow()
   if (!m_mainWindow)
     return true;
 
+#if defined(HAS_GLX)
   if (m_glContext)
   {
     glFinish();
     glXMakeCurrent(m_dpy, None, NULL);
   }
+#endif
+#if defined(HAS_EGL)
+  if (m_eglContext)
+  {
+    glFinish();
+    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  }
+#endif
 
   if (m_invisibleCursor)
   {
@@ -152,7 +180,6 @@ bool CWinSystemX11::DestroyWindow()
   CWinEventsX11Imp::Quit();
 
   XUnmapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy,TRUE);
   XDestroyWindow(m_dpy, m_glWindow);
   XDestroyWindow(m_dpy, m_mainWindow);
   m_glWindow = 0;
@@ -209,7 +236,6 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-
 #if defined(HAS_XRANDR)
   XOutput out;
   XMode mode;
@@ -249,6 +275,28 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
           currmode.hz != mode.hz || currmode.id != mode.id)
       {
         CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+
+        // remember last position of mouse
+        Window root_return, child_return;
+        int root_x_return, root_y_return;
+        int win_x_return, win_y_return;
+        unsigned int mask_return;
+        bool isInWin = XQueryPointer(m_dpy, m_mainWindow, &root_return, &child_return,
+                                     &root_x_return, &root_y_return,
+                                     &win_x_return, &win_y_return,
+                                     &mask_return);
+
+        if (isInWin)
+        {
+          m_MouseX = win_x_return;
+          m_MouseY = win_y_return;
+        }
+        else
+        {
+          m_MouseX = -1;
+          m_MouseY = -1;
+        }
+
         OnLostDevice();
         m_bIsInternalXrr = true;
         g_xrandr.SetMode(out, mode);
@@ -347,8 +395,6 @@ void CWinSystemX11::UpdateResolutions()
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
-  string modename = "";
-
   if (out != NULL)
   {
     vector<XMode>::iterator modeiter;
@@ -453,8 +499,43 @@ bool CWinSystemX11::IsCurrentOutput(CStdString output)
   return (output.Equals("Default")) || (m_currentOutput.compare(output) == 0);
 }
 
+#if defined(HAS_EGL)
+EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
+{
+  EGLint attributes[] = {
+    EGL_NONE
+  };
+  EGLint numConfigs;
+  // TODO make dynamic
+  EGLConfig eglConfigs[1024];
+  EGLConfig eglConfig = EGL_NO_CONFIG;
+  if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, 1024, &numConfigs))
+  {
+    CLog::Log(LOGERROR, "Failed to query egl configs");
+    return EGL_NO_CONFIG;
+  }
+  for (EGLint i = 0;i < numConfigs;++i)
+  {
+    EGLint value;
+    if (!eglGetConfigAttrib(eglDisplay, eglConfigs[i], EGL_NATIVE_VISUAL_ID, &value))
+    {
+      CLog::Log(LOGERROR, "Failed to query EGL_NATIVE_VISUAL_ID for egl config.");
+      break;
+    }
+    if (value == (EGLint)vInfo->visualid) {
+      eglConfig = eglConfigs[i];
+      break;
+    }
+  }
+
+  return eglConfig;
+}
+
+#endif
+
 bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
 {
+#if defined(HAS_GLX)
   int value;
   if (glXGetConfig(m_dpy, vInfo, GLX_RGBA, &value) || !value)
     return false;
@@ -470,6 +551,29 @@ bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
     return false;
   if (glXGetConfig(m_dpy, vInfo, GLX_DEPTH_SIZE, &value) || value < 8)
     return false;
+#endif
+
+#if defined(HAS_EGL)
+  EGLConfig config = getEGLConfig(m_eglDisplay, vInfo);
+  if (config == EGL_NO_CONFIG)
+  {
+    CLog::Log(LOGERROR, "Failed to determine egl config for visual info");
+    return false;
+  }
+  EGLint value;
+
+  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_RED_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_GREEN_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_BLUE_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_ALPHA_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_DEPTH_SIZE, &value) || value < 24)
+    return false;
+ 
+#endif
   return true;
 }
 
@@ -477,6 +581,7 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
 {
   bool retVal = false;
 
+#if defined(HAS_GLX)
   if (m_glContext && !force)
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
@@ -484,6 +589,18 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
     glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
     return true;
   }
+#endif
+
+#if defined(HAS_EGL)
+  if (m_eglContext && !force)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
+    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext);
+    return true;
+  }
+#endif
+
 
   XVisualInfo vMask;
   XVisualInfo *visuals;
@@ -537,6 +654,7 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
   if (vInfo)
   {
     CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
+#if defined(HAS_GLX)
     if (m_glContext)
     {
       glXMakeCurrent(m_dpy, None, NULL);
@@ -553,10 +671,74 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
     }
     else
       CLog::Log(LOGERROR, "GLX Error: Could not create context");
+#endif
+#if defined(HAS_EGL)
+    if (m_eglContext)
+    {
+      eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      eglDestroyContext(m_eglDisplay, m_eglContext);
+      m_eglContext = EGL_NO_CONTEXT;
+      eglDestroySurface(m_eglDisplay, m_eglSurface);
+      m_eglSurface = EGL_NO_SURFACE;
+      eglTerminate(m_eglDisplay);
+      m_eglDisplay = EGL_NO_DISPLAY;
+      XSync(m_dpy, FALSE);
+      m_newGlContext = true;
+    }
+
+    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
+    if (m_eglDisplay == EGL_NO_DISPLAY)
+    {
+      CLog::Log(LOGERROR, "failed to get egl display\n");
+      return false;
+    }
+    if (!eglInitialize(m_eglDisplay, NULL, NULL))
+    {
+      CLog::Log(LOGERROR, "failed to initialize egl\n");
+      return false;
+    }
+
+    EGLConfig eglConfig = getEGLConfig(m_eglDisplay, vInfo);
+
+    if (eglConfig == EGL_NO_CONFIG)
+    {
+      CLog::Log(LOGERROR, "failed to get eglconfig for visual id\n");
+      return false;
+    }
+
+    if (m_eglSurface == EGL_NO_SURFACE)
+    {
+      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, eglConfig, m_glWindow, NULL);
+      if (m_eglSurface == EGL_NO_SURFACE)
+      {
+        CLog::Log(LOGERROR, "failed to create EGL window surface %d\n", eglGetError());
+        return false;
+      }
+    }
+
+    GLint contextAttributes[] = {
+      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_NONE
+    };
+    m_eglContext = eglCreateContext(m_eglDisplay, eglConfig, EGL_NO_CONTEXT, contextAttributes);
+    if (m_eglContext == EGL_NO_CONTEXT)
+    {
+      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      return false;
+    }
+
+    if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
+    {
+      CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+      return false;
+    }
+#endif
     XFree(vInfo);
   }
   else
-    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+  {
+    CLog::Log(LOGERROR, "EGL/GLX Error: vInfo is NULL!");
+  }
 
   return retVal;
 }
@@ -660,54 +842,20 @@ bool CWinSystemX11::Restore()
 bool CWinSystemX11::Hide()
 {
   XUnmapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy, False);
+  XFlush(m_dpy);
   return true;
 }
 bool CWinSystemX11::Show(bool raise)
 {
   XMapWindow(m_dpy, m_mainWindow);
-  XSync(m_dpy, False);
+  XFlush(m_dpy);
   m_minimized = false;
   return true;
-}
-
-void CWinSystemX11::CheckDisplayEvents()
-{
-#if defined(HAS_XRANDR) && defined(HAS_SDL_VIDEO_X11)
-  bool bGotEvent(false);
-  bool bTimeout(false);
-  XEvent Event;
-  while (XCheckTypedEvent(m_dpy, m_RREventBase + RRScreenChangeNotify, &Event))
-  {
-    if (Event.type == m_RREventBase + RRScreenChangeNotify)
-    {
-      CLog::Log(LOGDEBUG, "%s: Received RandR event %i", __FUNCTION__, Event.type);
-      bGotEvent = true;
-    }
-    XRRUpdateConfiguration(&Event);
-  }
-
-  // check fail safe timer
-  if (m_dpyLostTime && CurrentHostCounter() - m_dpyLostTime > (uint64_t)3 * CurrentHostFrequency())
-  {
-    CLog::Log(LOGERROR, "%s - no display event after 3 seconds", __FUNCTION__);
-    bTimeout = true;
-  }
-
-  if (bGotEvent || bTimeout)
-  {
-    NotifyXRREvent();
-
-    // reset fail safe timer
-    m_dpyLostTime = 0;
-  }
-#endif
 }
 
 void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
-  m_windowDirty = true;
 
   CSingleLock lock(g_graphicsContext);
 
@@ -722,7 +870,15 @@ void CWinSystemX11::NotifyXRREvent()
   {
     UpdateResolutions();
   }
-  m_bIsInternalXrr = false;
+
+  RecreateWindow();
+}
+
+void CWinSystemX11::RecreateWindow()
+{
+  m_windowDirty = true;
+
+  CSingleLock lock(g_graphicsContext);
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
@@ -748,7 +904,7 @@ void CWinSystemX11::NotifyXRREvent()
 
   if (!found)
   {
-    CLog::Log(LOGERROR, "CWinSystemX11::RefreshWindow - could not find resolution");
+    CLog::Log(LOGERROR, "CWinSystemX11::RecreateWindow - could not find resolution");
     i = RES_DESKTOP;
   }
 
@@ -756,7 +912,6 @@ void CWinSystemX11::NotifyXRREvent()
     g_graphicsContext.SetVideoResolution((RESOLUTION)i, true);
   else
     g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
-
 }
 
 void CWinSystemX11::OnLostDevice()
@@ -771,12 +926,7 @@ void CWinSystemX11::OnLostDevice()
       (*i)->OnLostDevice();
   }
 
-#if defined(HAS_SDL_VIDEO_X11)
-  // fail safe timer
-  m_dpyLostTime = CurrentHostCounter();
-#else
   CWinEventsX11Imp::SetXRRFailSafeTimer(3000);
-#endif
 }
 
 void CWinSystemX11::Register(IDispResource *resource)
@@ -812,14 +962,24 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 {
   bool changeWindow = false;
   bool changeSize = false;
-  bool mouseActive = false;
-  float mouseX = 0;
-  float mouseY = 0;
+  float mouseX = 0.5;
+  float mouseY = 0.5;
+
+  if (!m_mainWindow)
+  {
+    g_Mouse.SetActive(false);
+  }
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
   {
-    mouseActive = g_Mouse.IsActive();
-    if (mouseActive)
+    // set mouse to last known position
+    // we can't trust values after an xrr event
+    if (m_bIsInternalXrr && m_MouseX >= 0 && m_MouseY >= 0)
+    {
+      mouseX = (float)m_MouseX/m_nWidth;
+      mouseY = (float)m_MouseY/m_nHeight;
+    }
+    else if (!m_windowDirty)
     {
       Window root_return, child_return;
       int root_x_return, root_y_return;
@@ -829,15 +989,15 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
                                    &root_x_return, &root_y_return,
                                    &win_x_return, &win_y_return,
                                    &mask_return);
+
       if (isInWin)
       {
         mouseX = (float)win_x_return/m_nWidth;
         mouseY = (float)win_y_return/m_nHeight;
-        g_Mouse.SetActive(false);
       }
-      else
-        mouseActive = false;
     }
+
+    g_Mouse.SetActive(false);
     OnLostDevice();
     DestroyWindow();
     m_windowDirty = true;
@@ -848,6 +1008,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
   {
     EnableSystemScreenSaver(false);
 
+#if defined(HAS_GLX)
     GLint att[] =
     {
       GLX_RGBA,
@@ -859,6 +1020,21 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       GLX_DOUBLEBUFFER,
       None
     };
+#endif
+#if defined(HAS_EGL)
+    GLint att[] =
+    {
+      EGL_RED_SIZE, 8,
+      EGL_GREEN_SIZE, 8,
+      EGL_BLUE_SIZE, 8,
+      EGL_ALPHA_SIZE, 8,
+      EGL_BUFFER_SIZE, 32,
+      EGL_DEPTH_SIZE, 24,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      EGL_NONE
+    };
+#endif
+
     Colormap cmap;
     XSetWindowAttributes swa;
     XVisualInfo *vi;
@@ -875,7 +1051,42 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       y0 = out->y;
     }
 
+#if defined(HAS_GLX)
     vi = glXChooseVisual(m_dpy, m_nScreen, att);
+#endif
+#if defined(HAS_EGL)
+    if (m_eglDisplay == EGL_NO_DISPLAY)
+    {
+      m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
+      if (m_eglDisplay == EGL_NO_DISPLAY)
+      {
+        CLog::Log(LOGERROR, "failed to get egl display\n");
+	return false;
+      }
+      if (!eglInitialize(m_eglDisplay, NULL, NULL))
+      {
+	CLog::Log(LOGERROR, "failed to initialize egl display\n");
+	return false;
+      }
+    }
+
+    EGLint numConfigs;
+    EGLConfig eglConfig = 0;
+    if (!eglChooseConfig(m_eglDisplay, att, &eglConfig, 1, &numConfigs) || numConfigs == 0) {
+      CLog::Log(LOGERROR, "Failed to choose a config %d\n", eglGetError());
+    }
+
+    XVisualInfo x11_visual_info_template;
+    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, (EGLint*)&x11_visual_info_template.visualid)) {
+      CLog::Log(LOGERROR, "Failed to query native visual id\n");
+    }
+    int num_visuals;
+    vi = XGetVisualInfo(m_dpy,
+                        VisualIDMask,
+			&x11_visual_info_template,
+			&num_visuals);
+
+#endif
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
     bool hasWM = HasWindowManager();
@@ -929,6 +1140,15 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
     changeWindow = true;
     changeSize = true;
+
+#if defined(HAS_EGL)
+    m_eglSurface = eglCreateWindowSurface(m_eglDisplay, eglConfig, m_glWindow, NULL);
+    if (m_eglSurface == EGL_NO_SURFACE)
+    {
+      CLog::Log(LOGERROR, "failed to create egl window surface\n");
+      return false;
+    }
+#endif
   }
 
   if (!CWinEventsX11Imp::HasStructureChanged() && ((width != m_nWidth) || (height != m_nHeight)))
@@ -970,7 +1190,6 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       class_hints->res_class = (char*)classString.c_str();
       class_hints->res_name = (char*)classString.c_str();
 
-      XSync(m_dpy,False);
       XSetWMProperties(m_dpy, m_mainWindow, &windowName, &iconName,
                             NULL, 0, NULL, wm_hints,
                             class_hints);
@@ -981,27 +1200,34 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
       XSetWMProtocols(m_dpy, m_mainWindow, &wmDeleteMessage, 1);
     }
+
+    // placement of window may follow mouse
+    XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
+
     XMapRaised(m_dpy, m_glWindow);
     XMapRaised(m_dpy, m_mainWindow);
-    XSync(m_dpy,TRUE);
 
-    if (changeWindow && mouseActive)
-    {
-      XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
-    }
+    // discard events generated by creating the window, i.e. xrr events
+    XSync(m_dpy, TRUE);
 
     CDirtyRegionList dr;
     RefreshGlxContext(m_currentOutput.compare(output) != 0);
     XSync(m_dpy, FALSE);
     g_graphicsContext.Clear(0);
     g_graphicsContext.Flip(dr);
+#if defined(HAS_GLX)
     g_Windowing.ResetVSync();
+#endif
     m_windowDirty = false;
+    m_bIsInternalXrr = false;
 
+// what's this???
+#if defined(HAS_GLX)
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
     for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnResetDevice();
+#endif
   }
 
   return true;

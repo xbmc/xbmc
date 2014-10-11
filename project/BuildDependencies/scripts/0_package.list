@@ -12,7 +12,7 @@ gnutls-3.2.3-win32.zip
 jsonschemabuilder-1.0.0-win32-3.7z
 libass-0.10.2-win32.7z
 libbluray-0.4.0-win32.zip
-libiconv-1.13.1_1-win32-vc120.7z
+libiconv-1.14-win32-vc120.7z
 libjpeg-turbo-1.2.0-win32.7z
 libnfs-1.6.2-win32.7z
 libshairplay-41a66c9-win32.7z
@@ -22,6 +22,6 @@ libxslt-1.1.26_1-win32.7z
 mysqlclient-6.1.3-win32-vc120.7z
 pcre-8.34-win32-vc120.7z
 python-2.7.5-2-win32.7z
-sqlite-3.7.16.2-win32-vc120.7z
+sqlite-3.8.6-win32-vc120.7z
 taglib-1.9.1-win32-vc120.7z
 tinyxml-2.6.2_3-win32-vc120.7z

@@ -142,6 +142,19 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
+          <level>1</level>
+          <default>QWERTY</default>
+          <constraints>
+            <options>keyboardlayouts</options>
+            <delimiter>|</delimiter>
+            <minimumItems>1</minimumItems>
+            <maximumItems>3</maximumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
       </group>
       <group id="2">
         <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
@@ -496,7 +509,9 @@
           <constraints>
             <options>
               <option label="36521">0</option> <!-- ASK     -->
-              <option label="36522">1</option> <!-- Preferred mode -->
+              <option label="36524">1</option> <!-- Preferred mode -->
+              <option label="36509">2</option> <!-- Monoscopic / 2D -->
+              <option label="36028">100</option> <!-- Ignore -->
             </options>
           </constraints>
           <control type="spinner" format="integer" delayed="true"/>
@@ -572,14 +587,6 @@
             </options>
           </constraints>
           <control type="spinner" format="integer" />
-        </setting>
-        <setting id="videoplayer.useframemtdec" type="boolean" parent="videoplayer.decodingmethod" label="13440" help="36423">
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">0</dependency>
-          </dependencies>
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
         </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
@@ -715,6 +722,21 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.prefervaapirender" type="boolean" parent="videoplayer.usevaapi" label="13457" help="36433">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
+                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
+              </and>
+            </dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <dependencies>
@@ -724,8 +746,8 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usechd" type="boolean" label="13428" help="36159">
-          <requirement>HasCrystalHDDevice</requirement>
+        <setting id="videoplayer.useomxplayer" type="boolean" label="13458" help="13459">
+          <requirement>HAS_OMXPLAYER</requirement>
           <dependencies>
             <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
           </dependencies>
@@ -1002,6 +1024,20 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="disc.playback" type="integer" label="14102" help="37031">
+          <level>1</level>
+          <default>0</default> <!-- default -->
+          <constraints>
+            <options>
+              <option label="14104">0</option> <!-- show simplified menu -->
+              <option label="25003">1</option> <!-- show disc menu -->
+              <option label="14103">2</option> <!-- play main movie -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
     </category>
@@ -2265,10 +2301,13 @@
         </setting>
         <setting id="videoscreen.preferedstereoscopicmode" parent="videoscreen.stereoscopicmode" type="integer" label="36524" help="36540">
           <level>2</level>
-          <default>0</default>
+          <default>100</default> <!-- ENUM RENDER_STEREO_MODE_AUTO -->
           <constraints>
             <options>preferedstereoscopicviewmodes</options>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="list" format="integer"/>
         </setting>
       </group>
@@ -2551,11 +2590,6 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="input.remoteaskeyboard" type="boolean" label="21449" help="36376">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
           <level>0</level>
           <control type="toggle" />
@@ -2712,7 +2746,7 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36510">
+        <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36534">
           <level>1</level>
           <default></default>
           <constraints>

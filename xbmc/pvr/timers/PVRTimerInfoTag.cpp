@@ -35,7 +35,6 @@
 
 #include "epg/Epg.h"
 
-using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -43,7 +42,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {
   m_strTitle           = g_localizeStrings.Get(19056); // New Timer
   m_strDirectory       = "/";
-  m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
   m_iClientChannelUid  = PVR_VIRTUAL_CHANNEL_UID;
@@ -51,7 +49,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iLifetime          = CSettings::Get().GetInt("pvrrecord.defaultlifetime");
   m_bIsRepeating       = false;
   m_iWeekdays          = 0;
-  m_strFileNameAndPath = StringUtils::EmptyString;
   m_iChannelNumber     = 0;
   m_bIsRadio           = false;
   CEpgInfoTagPtr emptyTag;
@@ -71,7 +68,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channe
 {
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
-  m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
@@ -267,9 +263,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
     m_strSummary = StringUtils::Format("%s %s %s %s %s",
         StartAsLocalTime().GetAsLocalizedDate().c_str(),
         g_localizeStrings.Get(19159).c_str(),
-        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+        StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(),
-        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
+        EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else if (m_FirstDay.IsValid())
   {
@@ -284,9 +280,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         g_localizeStrings.Get(19156).c_str(),
         FirstDayAsLocalTime().GetAsLocalizedDate(false).c_str(),
         g_localizeStrings.Get(19159).c_str(),
-        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+        StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(),
-        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
+        EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else
   {
@@ -299,20 +295,20 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         m_iWeekdays & 0x20 ? g_localizeStrings.Get(19154).c_str() : "__",
         m_iWeekdays & 0x40 ? g_localizeStrings.Get(19155).c_str() : "__",
         g_localizeStrings.Get(19159).c_str(),
-        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+        StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(),
-        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
+        EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 }
 
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-CStdString CPVRTimerInfoTag::GetStatus() const
+std::string CPVRTimerInfoTag::GetStatus() const
 {
-  CStdString strReturn = g_localizeStrings.Get(305);
+  std::string strReturn = g_localizeStrings.Get(305);
   CSingleLock lock(m_critSection);
-  if (m_strFileNameAndPath == "pvr://timers/add.timer")
+  if (URIUtils::PathEquals(m_strFileNameAndPath, "pvr://timers/addtimer/"))
     strReturn = g_localizeStrings.Get(19026);
   else if (m_state == PVR_TIMER_STATE_CANCELLED || m_state == PVR_TIMER_STATE_ABORTED)
     strReturn = g_localizeStrings.Get(13106);
@@ -362,7 +358,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
   return true;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
+bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
 {
   {
     CSingleLock lock(m_critSection);
@@ -455,18 +451,18 @@ int CPVRTimerInfoTag::ChannelNumber() const
   return channeltag ? channeltag->ChannelNumber() : 0;
 }
 
-CStdString CPVRTimerInfoTag::ChannelName() const
+std::string CPVRTimerInfoTag::ChannelName() const
 {
-  CStdString strReturn;
+  std::string strReturn;
   CPVRChannelPtr channeltag = ChannelTag();
   if (channeltag)
     strReturn = channeltag->ChannelName();
   return strReturn;
 }
 
-CStdString CPVRTimerInfoTag::ChannelIcon() const
+std::string CPVRTimerInfoTag::ChannelIcon() const
 {
-  CStdString strReturn;
+  std::string strReturn;
   CPVRChannelPtr channeltag = ChannelTag();
   if (channeltag)
     strReturn = channeltag->IconPath();
@@ -532,9 +528,9 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
     newTag->m_strSummary= StringUtils::Format("%s %s %s %s %s",
                                               newTag->StartAsLocalTime().GetAsLocalizedDate().c_str(),
                                               g_localizeStrings.Get(19159).c_str(),
-                                              newTag->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+                                              newTag->StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
                                               g_localizeStrings.Get(19160).c_str(),
-                                              newTag->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
+                                              newTag->EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else
   {
@@ -588,7 +584,7 @@ CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
   return retVal;
 }
 
-void CPVRTimerInfoTag::GetNotificationText(CStdString &strText) const
+void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
 {
   CSingleLock lock(m_critSection);
   switch (m_state)
@@ -622,7 +618,7 @@ void CPVRTimerInfoTag::QueueNotification(void) const
 {
   if (CSettings::Get().GetBool("pvrrecord.timernotifications"))
   {
-    CStdString strMessage;
+    std::string strMessage;
     GetNotificationText(strMessage);
 
     if (!strMessage.empty())
@@ -667,23 +663,17 @@ void CPVRTimerInfoTag::UpdateChannel(void)
   m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByClient(m_iClientChannelUid, m_iClientId);
 }
 
-CStdString CPVRTimerInfoTag::Title(void) const
+const std::string& CPVRTimerInfoTag::Title(void) const
 {
-  CStdString strReturn;
-  strReturn = m_strTitle;
-  return strReturn;
+  return m_strTitle;
 }
 
-CStdString CPVRTimerInfoTag::Summary(void) const
+const std::string& CPVRTimerInfoTag::Summary(void) const
 {
-  CStdString strReturn;
-  strReturn = m_strSummary;
-  return strReturn;
+  return m_strSummary;
 }
 
-CStdString CPVRTimerInfoTag::Path(void) const
+const std::string& CPVRTimerInfoTag::Path(void) const
 {
-  CStdString strReturn;
-  strReturn = m_strFileNameAndPath;
-  return strReturn;
+  return m_strFileNameAndPath;
 }

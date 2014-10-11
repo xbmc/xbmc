@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
+#include "linux/RBP.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
 
@@ -370,7 +371,7 @@ static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
 
 static bool ClampToGUIDisplayLimits(int &width, int &height)
 {
-  float max_height = (float)CSettings::Get().GetInt("videoscreen.limitgui");
+  float max_height = (float)g_RBP.GetGUIResolutionLimit();
   float default_ar = 16.0f/9.0f;
   if (max_height < 540.0f || max_height > 1080.0f)
     max_height = 1080.0f;

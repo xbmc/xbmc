@@ -63,7 +63,7 @@ public:
   int GetInputBufferSize();
   void SubmitEOS();
   bool IsEOS();
-  bool SubmittedEOS() { return m_submitted_eos; }
+  bool SubmittedEOS() const { return m_submitted_eos; }
   bool BadState() { return m_omx_decoder.BadState(); };
 protected:
   // Video format

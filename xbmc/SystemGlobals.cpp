@@ -28,7 +28,6 @@
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/DirectoryCache.h"
 #include "GUIPassword.h"
-#include "LangInfo.h"
 #include "utils/LangCodeExpander.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
@@ -53,7 +52,6 @@
 #endif
 
   CXBMCRenderManager g_renderManager;
-  CLangInfo          g_langInfo;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;

@@ -35,10 +35,9 @@
 
 using namespace PVR;
 using namespace EPG;
-using namespace std;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
-  CPVRChannelGroup(bRadio, bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV, g_localizeStrings.Get(19287))
+  CPVRChannelGroup(bRadio, bRadio ? PVR_INTERNAL_GROUP_ID_RADIO : PVR_INTERNAL_GROUP_ID_TV, g_localizeStrings.Get(19287))
 {
   m_iHiddenChannels = 0;
   m_iGroupType      = PVR_GROUP_TYPE_INTERNAL;
@@ -75,8 +74,8 @@ void CPVRChannelGroupInternal::CheckGroupName(void)
   CSingleLock lock(m_critSection);
 
   /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
-  CStdString strNewGroupName = g_localizeStrings.Get(19287);
-  if (!m_strGroupName.Equals(strNewGroupName))
+  std::string strNewGroupName = g_localizeStrings.Get(19287);
+  if (m_strGroupName != strNewGroupName)
   {
     SetGroupName(strNewGroupName, true);
     UpdateChannelPaths();

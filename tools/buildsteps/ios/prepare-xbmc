@@ -2,5 +2,10 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=ios
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-#nothing on ios
-
+#fetch submodules
+cd $WORKSPACE
+if test -d $WORKSPACE/addons/skin.re-touched
+then
+rm -r $WORKSPACE/addons/skin.re-touched
+fi
+git submodule update --init $WORKSPACE/addons/skin.re-touched

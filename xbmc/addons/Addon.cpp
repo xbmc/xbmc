@@ -37,6 +37,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
+#include "Util.h"
 #include <vector>
 #include <string.h>
 #include <ostream>
@@ -92,7 +93,7 @@ static const TypeMapping types[] =
 
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (type == map.type)
@@ -108,7 +109,7 @@ const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 
 TYPE TranslateType(const std::string &string)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (string == map.name)
@@ -119,7 +120,7 @@ TYPE TranslateType(const std::string &string)
 
 const std::string GetIcon(const ADDON::TYPE& type)
 {
-  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
     const TypeMapping &map = types[index];
     if (type == map.type)
@@ -174,13 +175,13 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   : id(SS(plugin->identifier))
+  , type(ADDON_UNKNOWN)
   , version(SS(plugin->version))
   , minversion(SS(plugin->abi_bw_compatibility))
   , name(SS(plugin->name))
   , path(SS(plugin->plugin_path))
   , author(SS(plugin->provider_name))
   , stars(0)
-  , type(ADDON_UNKNOWN)
 {
   BuildDependencies(plugin);
 }

@@ -3,14 +3,14 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libiconv
-VERSION=1.13.1
+VERSION=1.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
           cp -f $(CONFIG_SUB) $(CONFIG_GUESS) libcharset/build-aux/; \
-          ./configure --prefix=$(PREFIX) --disable-shared
+          ./configure --prefix=$(PREFIX) --disable-shared --enable-extra-encodings
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 

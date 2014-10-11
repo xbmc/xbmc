@@ -1,6 +1,6 @@
 @ECHO OFF
 
-REM Batch file to download and build xbmc-pvr-addons and place them in xbmc's addons folder
+REM Batch file to download and build pvr-addons and place them in application's add-ons folder
 
 SET CUR_DIR=%CD%
 SET EXITCODE=0
@@ -9,7 +9,7 @@ SET DEPS_DIR=..\BuildDependencies
 SET TMP_DIR=%DEPS_DIR%\tmp
 
 SET LIBNAME=xbmc-pvr-addons
-SET VERSION=1832e602ce6d6ce43e2abbb497879beb944ab225
+SET VERSION=3949502043d520e4707bc3109abf3c6edb23cf67
 SET SOURCE=%LIBNAME%
 SET GIT_URL=git://github.com/opdenkamp/%LIBNAME%.git
 SET SOURCE_DIR=%TMP_DIR%\%SOURCE%
@@ -17,7 +17,7 @@ SET BUILT_ADDONS_DIR=%SOURCE_DIR%\addons
 
 REM check if MSBuild.exe is used because it requires different command line switches
 IF "%msbuildemitsolution%" == "1" (
-  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120\\"
+  set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /t:Build /p:Configuration="Release" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120\\" /m
 ) ELSE (
   set OPTS_EXE=%SOURCE_DIR%\project\VS2010Express\xbmc-pvr-addons.sln /build Release
 )
@@ -55,7 +55,7 @@ REM get the proper revision
 CALL %GITEXE% checkout %VERSION% > NUL 2>&1
 
 :build
-REM run DownloadBuildDeps.bat of xbmc-pvr-addons
+REM run DownloadBuildDeps.bat of pvr-addons
 CD "project\BuildDependencies"
 CALL DownloadBuildDeps.bat > NUL 2>&1
 CD "%CUR_DIR%"
@@ -70,7 +70,7 @@ IF %errorlevel%==1 (
 
 REM copy the built pvr addons into ADDONS_DIR
 CD "%BUILT_ADDONS_DIR%"
-SET ADDONS_DIR=..\..\..\..\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-pvr-addons
+SET ADDONS_DIR=..\..\..\..\Win32BuildSetup\BUILD_WIN32\addons\
 
 REM exclude some files
 ECHO addon.xml.in >  exclude.txt
@@ -92,7 +92,7 @@ RMDIR "%TMP_DIR%" /S /Q > NUL
 GOTO done
 
 :error
-ECHO No git command available. Unable to fetch and build xbmc-pvr-addons.
+ECHO No git command available. Unable to fetch and build pvr-addons.
 SET EXITCODE=1
 
 :fail

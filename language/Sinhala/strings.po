@@ -1,0 +1,5478 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Sinhala (http://www.transifex.com/projects/p/xbmc-main/language/si/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: si\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "වැඩ සටහන්"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "පින්තූර"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "සංගීත"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "වීඩියෝ"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "රූපවාහිනී-නියමුවා"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "සිටුවම්"
+
+msgctxt "#6"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "ගොනු කළමනාකරු"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "කාලගුණය"
+
+msgctxt "#9"
+msgid "Kodi media center"
+msgstr "Kodi මාධ්‍ය මධ්‍යස්ථානය"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "සඳුදා"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "අඟහරුවාදා"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "බදාදා"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "බෘහස්පතින්දා"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "සිකුරාදා"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "සෙනසුරාදා"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "ඉරිදා"
+
+msgctxt "#21"
+msgid "January"
+msgstr "ජනවරි"
+
+msgctxt "#22"
+msgid "February"
+msgstr "පෙබරවරි"
+
+msgctxt "#23"
+msgid "March"
+msgstr "මාර්තු"
+
+msgctxt "#24"
+msgid "April"
+msgstr "අප්‍රේල්"
+
+msgctxt "#25"
+msgid "May"
+msgstr "මැයි"
+
+msgctxt "#26"
+msgid "June"
+msgstr "ජුනි"
+
+msgctxt "#27"
+msgid "July"
+msgstr "ජුලි"
+
+msgctxt "#28"
+msgid "August"
+msgstr "අගෝස්තු"
+
+msgctxt "#29"
+msgid "September"
+msgstr "සැප්තැම්බර්"
+
+msgctxt "#30"
+msgid "October"
+msgstr "ඔක්තෝබර්"
+
+msgctxt "#31"
+msgid "November"
+msgstr "නොවැම්බර්"
+
+msgctxt "#32"
+msgid "December"
+msgstr "දෙසැම්බර්"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "සඳුදා"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "අඟහරුවාදා"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "බදාදා"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "බ්‍රහස්පතින්දා"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "සිකුරාදා"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "සෙනසුරාදා"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "ඉරිදා"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "ජනවාරි"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "පෙබරවාරි"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "මාර්තු"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "අප්‍රේල්"
+
+msgctxt "#55"
+msgid "May"
+msgstr "මැයි"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "ජුනි"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "ජූලි"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "අගෝස්තු"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "සැප්තැම්බර්"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "ඔක්තෝබර්"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "නොවැම්බර්"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "දෙසැම්බර්"
+
+msgctxt "#71"
+msgid "N"
+msgstr "N"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "NNE"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "NE"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "ENE"
+
+msgctxt "#75"
+msgid "E"
+msgstr "E"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "ESE"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "SE"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "SSE"
+
+msgctxt "#79"
+msgid "S"
+msgstr "S"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "SSW"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "SW"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "WSW"
+
+msgctxt "#83"
+msgid "W"
+msgstr "W"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "WNW"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "NW"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "NNW"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "වාර"
+
+msgctxt "#88"
+msgid "South"
+msgstr "දකුණ"
+
+msgctxt "#89"
+msgid "North"
+msgstr "උතුර"
+
+msgctxt "#90"
+msgid "West"
+msgstr "බටහිර"
+
+msgctxt "#91"
+msgid "East"
+msgstr "නැගෙනහිර"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "විචල්‍ය"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "දර්ශනය: ස්වයං"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "දර්ශනය: ස්වයං විශාල"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "දර්ශනය:සුරුවම"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "දර්ශනය: ලැයිස්තුව"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "සුපිරික්සන්න"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "වර්ග කරන්න: නම අනුව"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "වර්ග කරන්න: දිනය අනුව"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "වර්ග කරන්න: ප්‍රමාණය අනුව"
+
+msgctxt "#106"
+msgid "No"
+msgstr "නැහැ"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "ඔව්"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "රූටන දර්ශන"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "වෘද්ධාන්ගුලි නිර්මාණය කරන්න"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "මහපට ඇගිලි සටහන් නිර්මාණය කරන්න"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "කෙටිමාර්ගයන්"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "විරාමගත කරා"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "යාවත්කාල කිරීම අසාර්ථකයි"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "ස්ථාපනය අසාර්ථකයි"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "පිටපත් කරන්න"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "චලනය කරන්න"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "මකාදමන්න"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "නම වෙනස් කරන්න"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "නව පත්‍රිකාව"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr " ගොනු පිටපත් කිරීම සනාථ කරන්න "
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "ගොනු චලනය කිරීම සනාථ කරන්න"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "මෙම ගොනු පිටපත් කරන්නද?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "මෙම ගොනු චලනය කරන්නද?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "මෙම ගොනු මකා දමන්න ද? - ගොනු මකා දැමීම ඉවරකළ නොහැක!"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "ස්ථිතිය"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "කරුණු"
+
+msgctxt "#128"
+msgid "General"
+msgstr "සාමාන්‍ය"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "රූටන දර්ශන "
+
+msgctxt "#130"
+msgid "System info"
+msgstr "පද්ධති තොරතුරු  "
+
+msgctxt "#131"
+msgid "Display"
+msgstr "දර්ශනය වෙනවා"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "ඇල්බමය"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "කලාකරුවන්"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "ගීත"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "ප්‍රබේද"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "වාදන ලැයිස්තුව"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "සොයන්න "
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "පද්ධති තොරතුරු"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "උෂ්ණත්ව:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "කාලය"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "වර්තමාන"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "ගොඩනගනවා:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "ජාලය:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "සටහන් කරන්න:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "ස්ථීතකය "
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC ලිපිනය"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP ලිපිනය"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "සම්බන්ධ කරන්න"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "අර්ධ ද්විපත කරනය"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "සම්පුර්ණ ද්විපත කරනය"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "තැන්පත් කිරීම"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "ධාවනය කරනවා"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "නිදහස්"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "නිදහස් මතකයන්"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "ජාලයක් නැහැ"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "නිදහස "
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "භාවිතයේ නොමැත"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "තැටිය විවෘතයි"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "කියවමින් සිටිනවා"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "තැටියක් නැහැ"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "වත්මන් තැටිය"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "සම"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "ගොනු ක්‍රියාකාරිත්වය අවලංගු කරනවා"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "සම්මතකරනය"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr " වීඩියෝව ගැළපීමට දර්ශනශිග්‍රතාවය සකසන්න"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "දිනය මුදාහරින්න"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "4:3 සේ වීඩියෝ දර්ශනය කරන්න"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "ගති "
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "මෝස්තර"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "ගීතය "
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "අවධිය "
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "ඇල්බම් තෝරන්න "
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "මංතීරු "
+
+msgctxt "#183"
+msgid "Review"
+msgstr "විමර්ශනය"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "වෙහෙස නිවනවා"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "ඇල්බම් සොයනවා"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "නිවැරැදි  "
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "ඇල්බමයන් සොයාගත නොහැක"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "සියල්ල තෝරන්න"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "සුපරික්සිම කරන්න මාධ්‍ය තොරතුරැ"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "ආරක්ෂා කරන්න"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "කලවම් කිරීම"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "පිරිසිදු කරනවා"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "සුපිරික්සන්න "
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "සොයමින්..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "තොරතුරැ සොයාගත නොහැක"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "චිත්‍රපටය තෝරන්න:"
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "තොරතරු %ක් ප්‍රශ්න කරමින්"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "චිත්‍රපට තොරතුරු පූරණය වෙමින්"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "ජාල අතුරුමුහුණත්"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "ඇමිණුම්පේළි"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "සැලැස්මක ආකෘතිය"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "කැමැත්ත "
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "ඉවතලනවා "
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "සැලැස්මක් "
+
+msgctxt "#208"
+msgid "Play"
+msgstr "ක්‍රීඩා කරනවා"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "ඊළඟ "
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "පෙර"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "ක්‍රමාංකනය පරිශීලකයා මැදිහත් වෙනවා"
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "වීඩියෝව ක්‍රමාංකනය"
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "මෘදු වෙනවා"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "ශිග්‍ර ආරෝහණ වටිනාකම"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "ඒකක අනුපාත"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD ධාවකය"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "කරුණාකර තැටිය ඇතුළත් කරන්න"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "දුරස්ථ කොටස් කිරීම"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "ජාලය සම්බන්ධ කල නොහැක"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "අවලංගු කරනවා"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "වේගය "
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "ප්‍රලම්බකව මාරුව"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "පරීක්ෂණ මාදිරි..."
+
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "freedb.org මගින් ශ්‍රවණ CD තැටි නම් බලන්න"
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "කලවම් වදන ලැයිස්තුව ප්‍රවේශණය වෙමින්  "
+
+msgctxt "#229"
+msgid "HDD spindown time"
+msgstr "HDD බැමුම් කාලය "
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "චිත්‍රපට පෙරණ යන්ත්‍ර"
+
+msgctxt "#231"
+msgid "None"
+msgstr "කිසිවක් නැත"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "අභිප්‍රාය "
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "රේඛිය"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "අසමවර්ත "
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "පංචතය "
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "ගෞසියන් ගණය"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "කුඩාකිරිම"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "විශාල කිරීම"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "අවසානයේදී වාදන ලැයිස්තුව පිරිසිදු කරන්න"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "දර්ශන ක්‍රමය"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "සම්පුර්ණ තිරය #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "කවුළුගත කළ"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "අනුපාත නැවත ප්‍රාණවත් කරන්න"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "සම්පුර්ණ තිරය"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "ප්‍රමාණකරණය : (%i,%i)->(%i,%i) (ශීඝ්‍ර ආරෝහණය x%2.2f) AR:%2.2f:1 (ඒකක: %2.2f:1) (Vහුවමාරු: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "අකුරු පිටපත්"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "භාෂාව"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "සංගීත"
+
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "ගමනාන්ත නාමාවලිය තෝරන්න"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "නාලිකා ගණන"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS සමර්ථ ප්‍රතිග්‍රාහකයා"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "සිත්ගන්නා CD තොරතුරු "
+
+msgctxt "#257"
+msgid "Error"
+msgstr "දෝෂය"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "කියවීමෙන් සම්බන්ධකය පවරනවා "
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "වීවෘත වෙමින්"
+
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "ශබ්දවිකාශය"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "ආරම්භය සඳහා රැඳී සිටීම..."
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "අත් අකුරු නිමැවුම "
+
+msgctxt "#263"
+msgid "Allow control of Kodi via HTTP"
+msgstr "HTTP මගින් Kodi පාලනයට ඉඩදෙන්න "
+
+msgctxt "#264"
+msgid "Record"
+msgstr "පටිගත කරන්න "
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "පටිගත කිරීම නවත්වන්න "
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "වර්ග කරන්න: තැටි අනුව "
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "වර්ග කරන්න: කාලය අනුව "
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "වර්ග කරන්න: මාතෘකාව අනුව "
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "වර්ග කරන්න: ගායකයා අනුව "
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "වර්ග කරන්න: ඇල්බමය අනුව "
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "මුල් 100 "
+
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "ඉහල-වම දර්ශනය නොවීමේ ප්‍රතිඵලය "
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "පහත-දකුණ දර්ශනය නොවීමේ ප්‍රතිඵලය "
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "උපසිරැසි ස්ථානගත කරමින්  "
+
+msgctxt "#275"
+msgid "Pixel ratio adjustment"
+msgstr "ඒකක අනුපාත සිරුමාරුව "
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "දර්ශනය නොවීමේ ප්‍රමාණ වෙනස් කිරීමට ඊතලය සීරුමාරු කරන්න "
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "උපසිරැසි ස්ථානය වෙනස් කිරීමට පටිය සීරුමාරු කරන්න "
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "සෘජුකෝණාශ්‍රය සීරුමාරු කරන්න එවිට එය පරිපුර්ණ සමචතුරශ්‍රයකි."
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "කට්ටල අංග ප්‍රවේශණය කළ නොහැක "
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "නියත කට්ටල අගයන් භාවිතයෙන් "
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "කරුණාකර XML ගොනු පරික්ෂා කරන්න "
+
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "අයිතම %i  සොයාගත්තා "
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "ප්‍රතිඵල සොයන්න"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "ප්‍රතිඵලයක් සොයාගත නොහැක"
+
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "ශ්‍රව්‍ය භාෂාව ඉදිරිපත් කරා "
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "උපශීර්ෂ භාෂාව ඉදිරිපත් කරා "
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "උපසිරැසි"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "අකුරු"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "ප්‍රමාණය"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr "වේගවත් අන්තර සංකෝචනය "
+
+msgctxt "#291"
+msgid "Video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#292"
+msgid "Audio"
+msgstr "ශ්‍රවණ"
+
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "උපසිරැසි සඳහා විමසන්න "
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "පොත් යොමුව නිර්මාණය කරන්න "
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "පොත් යොමුව පවිත්‍ර කරන්න "
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "ශ්‍රවණ ඔෆ්සෙට් අංකය "
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "පොත් යොමු "
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 සමර්ථ ප්‍රතිග්‍රාහකයා"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 සමර්ථ ප්‍රතිග්‍රාහකයා"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 සමර්ථ ප්‍රතිග්‍රාහකයා"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "ප්‍රමාදය "
+
+msgctxt "#304"
+msgid "Language"
+msgstr "භාෂාව"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "ක්‍රියාත්මක කලා"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "අතරට කොළ නොදැමූ"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "උත්පාදක ප්‍රවාහයේ භාෂාව "
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=ස්වයං) "
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "පරිගණක දත්ත ගබඩාව ශෝධනය කරමින්... "
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "සුදානම් වෙමින් "
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "පරිගණක දත්ත ගබඩා දෝෂය"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "ගීත සොයමින්..."
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "පරිගණක දත්ත ගබඩාව ශෝධනය කිරීම සාර්ථකයි"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "ගීත ශෝධනය වෙමින්..."
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "ගීත ශෝධනය වීම දෝෂ සහගතයි..."
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "ගායකයන් ශෝධනය කරමින්..."
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "ගායකයන් ශෝධනය කිරීමේ දෝෂය..."
+
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "ප්‍රබේධ ශෝධනය කිරීම"
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "ප්‍රබේධ ශෝධනය  කිරීමේ වැරැද්ද "
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "මාර්ග ශෝධනය කිරීම "
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "මාර්ග ශෝධනය කිරීමේ වැරැද්ද "
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "ඇල්බම් ශෝධනය කිරීම "
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "ඇල්බම් ශෝධනය කිරීමේ වැරැද්ද "
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "වෙනස් කිරීම් ලිවීම "
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "වෙනස් කිරීම් ලිවීමේ වැරැද්ද"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "මෙයට යම් කාලයක් ගත වේ..."
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "සම්පීඩනය වන පරිගණක දත්ත ගබඩාව"
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "සම්පීඩනය වන පරිගණක දත්ත ගබඩාව"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "පුස්තකාලය ශෝධනය කිරීමට අවශ්‍යද? "
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "පුස්තකාලය ශෝධනය..."
+
+msgctxt "#335"
+msgid "Start"
+msgstr "පටන් ගැනීම"
+
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "ක්‍රමඅනුපාත පරිවර්ථනය "
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "විවිධ කලාකරුවන්"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "තැටිය වාදනය කරන්න"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "චිත්‍රපට"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "ක්‍රමඅනුපාත සීරුමාරු කරන්න "
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "කලාකරුවන්"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "වසර"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD හැකියාවක් ඇති ග්‍රාහකයා"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "සත්‍යHD හැකියාවක් ඇති ග්‍රාහකයා"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "වැඩ සටහන්"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "වහනවා"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "අදුරු"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "කලු"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "අකුරු අච්චු සලකුණු"
+
+msgctxt "#355"
+msgid "Screensaver time"
+msgstr "තිරපථ වෙලාව"
+
+msgctxt "#356"
+msgid "Screensaver mode"
+msgstr "තිරපත වර්ගය"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "කාලයට ක්‍රියාව නැවැත්වීම"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "සියලුම ඇල්බම්"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "අලුතින් ඇතුළත් කෙරූ ඇල්බම්"
+
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "තිරපත"
+
+msgctxt "#361"
+msgid "R. Slideshow"
+msgstr "R.රූටන දර්ශන"
+
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "තිරපතය නොපැහැදිලි තත්වයේ"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "වර්ග අනුව:ලිපිගොනුව "
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby සංඛාංක (AC3) සමර්ථ ප්‍රතිග්‍රාහකයා"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "වර්ග කරන්න: නම අනුව"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "වර්ග කරන්න: වසර අනුව"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "වර්ග කරන්න: ඇගයුම අනුව"
+
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "මාතෘකාව"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "අකුණු කුණාටු"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "අඩ වශයෙන් "
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "වැඩි වශයෙන්"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "අව්ව සහිත"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "වලාකුළු සහිත"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "හිම"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "වැස්ස"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "එළිය"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "පෙ.ව."
+
+msgctxt "#379"
+msgid "PM"
+msgstr "ප.ව."
+
+msgctxt "#380"
+msgid "Showers"
+msgstr "වැහි"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "ස්වල්ප"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "විසිරී"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "සුළඟ"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "ප්‍රබල"
+
+msgctxt "#385"
+msgid "Fair"
+msgstr "පැහැදිලි"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "පිරිසිදු කරනවා"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "වලාකුළු"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "කලින්"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "වහිනවා"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "හදිසි ලුහු වැසි"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "අඩු"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "මධ්‍යස්ථ"
+
+msgctxt "#393"
+msgid "High"
+msgstr "ඉහළ"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "ඝන මිදුම"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "තුනී මිදුම"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "ස්ථානය තෝරන්න"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "කාලය නැවත ප්‍රාණවත් කරන්න"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "උෂ්ණත්ව ඒකක"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "වේග ඒකක"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "කාලගුණය"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "තාවකාලික"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "වගේ දැනෙනවා"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "පාරජම්බුල දර්ශකය"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "සුළඟ "
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "තුෂාර අංකය"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "ආර්ද්‍රතාව"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "නියත අගයන්"
+
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "කාලගුණ සේවය විමසමින්"
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr "කාලගුණය ලබා ගැනීම සඳහා:"
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "කාලගුණ දත්ත ලබාගැනීම අසමර්ථයි"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "කාය වශයෙන්"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "මෙම ඇල්බමය සඳහා විමර්ශන නැත"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "සංක්ෂිප්ත බාගත වෙමින්"
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "ලබාගත නොහැක"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "දර්ශනය: විශාල සුරුවම"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "අඩු "
+
+msgctxt "#419"
+msgid "High"
+msgstr "ඉහළ "
+
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "ඇල්බමයේ තොරතුරු මකාදමන්න"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "තැටි තොරතුරු මකා දමන්න"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "තෝරන්න"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "ඇල්බම තොරතුරු සොයාගත නොහැක"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "තැටි තොරතුරු සොයාගත්තේ නොහැක"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "තැටිය"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "නිවැරදි CD/DVD තැටිය ඇතුල් කරන්න"
+
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "කරුණාකර පහත තැටිය ඇතුල් කරන්න:"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "වර්ග කරන්න: DVD අංකය අනුව"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "තාවකාලික මතකය නැත"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "චිත්‍රපටිය ලේඛනාලයෙන් ඉවත් කරන්න"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "සැබැවින්ම ඉවත් කරන්න ද '%s' ? "
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "සිට %s දී %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "වෙනත් තැටි ධාවකයක් අනාවරණය කර නැත"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "මෙම වීඩියෝව ක්‍රියා කරවීමට ඔබට වෙනත් තැටි ධාවකයක් අවශ්‍යයි"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "ඉවත්කළහැකි තැටිය"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "විවෘතවෙන ගොනුව"
+
+msgctxt "#439"
+msgid "Cache"
+msgstr "තාවකාලික මතකය"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "ස්ථානික ජාලය"
+
+msgctxt "#443"
+msgid "Internet"
+msgstr "අන්තර්ජාලය"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "ශ්‍රවණ"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "ස්වයංධාවන මාධ්‍යය"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "ක්‍රියාත්මක කලා"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "ස්ථම්භ"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "1 පෙළ ලිපිනය"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "2 පෙළ ලිපිනය"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "3 පෙළ ලිපිනය"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "4 පෙළ ලිපිනය"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "පේළි"
+
+msgctxt "#456"
+msgid "Mode"
+msgstr "ක්‍රමය"
+
+msgctxt "#457"
+msgid "Switch view"
+msgstr "දර්ශනය මාරුව"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "අතුරු"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "ශ්‍රවණ ප්‍රවාහය"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[ක්‍රියාකාරී]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "උපසිරැසි"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "පසුආලෝකය"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "දීප්තිය"
+
+msgctxt "#465"
+msgid "Contrast"
+msgstr "වෙනස"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "ගැමා"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "වර්ගය"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "OSD පිහිටුමවෙනස් වෙනස් කිරීමට පටිය චලනය කරන්න"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "OSD පිහිටුම"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "සම්මාන"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "වහනවා"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "සංගීතය පමණයි"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "සංගීතය සහ වීඩියෝව"
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "වාදන ලැයිස්තුව ප්‍රවේශණය කළ නොහැක"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "OSD"
+
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "සිවිය සහ භාෂාව"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "පෙනුම"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "ශ්‍රවණ කැමැත්ත"
+
+msgctxt "#482"
+msgid "About Kodi"
+msgstr "Kodi ගැන"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "ඇල්බමය මකා දමන්න"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "නැවත කිරීම"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "නැවත වරක් කිරීම"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "පත්‍රිකාව නැවත කිරීම"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "ඊළඟ ගීතය ස්වයංව වාදනය ක්‍රියා කරවන්න"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "-විශාල සුරුවම් භාවිතා කරන්න"
+
+msgctxt "#492"
+msgid "Resize VobSubs"
+msgstr "VobSubs ප්‍රමාණ වෙනස් කරන්න"
+
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "සංකීර්ණ තේරීම් (ප්‍රවීණයන්ට පමණයි!)"
+
+msgctxt "#494"
+msgid "Overall audio headroom"
+msgstr "සමස්ථ ශ්‍රවණ මුලික ස්ථානය"
+
+msgctxt "#495"
+msgid "Upsample videos to GUI resolution"
+msgstr "GUI විසර්ජනයට උඩුසාම්පල වීඩියෝ "
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "ක්‍රමාංකනය"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "ගොනු විස්ථීර්න පෙන්වන්න"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "වර්ග කරන්න: වර්ගය අනුව"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "මාර්ගගත බලන සේවාවට සම්බන්ධ කිරීම කල නොහැක"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "ඇල්බම තොරතුරු බාගත වීම අසාර්ථකයි "
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "ඇල්බම් නාමයන් සඳහා අවලෝකනය"
+
+msgctxt "#502"
+msgid "Open"
+msgstr "අරින්න "
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "කාර්ය බහුලයි "
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "හිස්"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "මාධ්‍ය තොරතුරු ගොනුවලින් ප්‍රවේශණය වෙමින්... "
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "වර්ග කරන්න: භාවිතය අනුව "
+
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "වීඩියෝ ආකාරය මාරුවීම ක්‍රියාත්මක කරන්න "
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "ආරම්භක කවුළුව "
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "නිවාස කවුළුව "
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "අතින් කට්ටල අංග සැකසීම"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "ප්‍රභේද "
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "අලුතින් ඇතුළත් කළ ඇල්බම "
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "ආරම්භ කරන්න "
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "තුළින් ආරම්භ කරන්න... "
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "සම්පාදන "
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "මුලාශ්‍රය ඉවත් කරන්න "
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "මාධ්‍යය මං මාරු කරන්න "
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "වාදන ලැයිස්තුව තෝරන්න "
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "නව වාදන ලැයිස්තුව... "
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "වාදන ලැයිස්තුවට එකතු කරන්න "
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "ලේඛනාලයට අතින් එකතු කරන්න "
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "මාතෘකාව ඇතුල් කරන්න "
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "දෝෂය: අනු පිටපත් මාතෘකාව  "
+
+msgctxt "#530"
+msgid "Select genre"
+msgstr "ප්‍රභේද තෝරන්න "
+
+msgctxt "#531"
+msgid "New genre"
+msgstr "නව ප්‍රභේදය "
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "අතින් එකතු කිරීම "
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "ප්‍රභේදය ඇතුළත් කරන්න "
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "දර්ශනය: %s "
+
+msgctxt "#535"
+msgid "List"
+msgstr "ලැයිස්තුව "
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "සුරුවම් "
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "විශාල ලැයිස්තුව "
+
+msgctxt "#538"
+msgid "Big icons"
+msgstr "විශාල සුරුවම් "
+
+msgctxt "#539"
+msgid "Wide"
+msgstr "පුළුල් "
+
+msgctxt "#540"
+msgid "Big wide"
+msgstr "මහත් පුළුල් "
+
+msgctxt "#541"
+msgid "Album icons"
+msgstr "ඇල්බම සුරුවම් "
+
+msgctxt "#542"
+msgid "DVD icons"
+msgstr "DVD සුරුවම් "
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#544"
+msgid "Media info"
+msgstr "මාධ්‍ය තොරතුරු "
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "ශ්‍රවණ දත්ත නිපදවන උපකරණය "
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "දත්ත නිපදවන උපකරණය පසුකර යන්න. "
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "මෙම ගායකයා සඳහා චරිතාපදානය නැත "
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "බහුනාලි ශ්‍රවණ ත්‍රිමාණයට යටිකලවම් කරන්න  "
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "වර්ග කරන්න: %s "
+
+msgctxt "#551"
+msgid "Name"
+msgstr "නම "
+
+msgctxt "#552"
+msgid "Date"
+msgstr "දිනය "
+
+msgctxt "#553"
+msgid "Size"
+msgstr "ප්‍රමාණය"
+
+msgctxt "#554"
+msgid "Track"
+msgstr "තැටිය "
+
+msgctxt "#555"
+msgid "Time"
+msgstr "කාලය "
+
+msgctxt "#556"
+msgid "Title"
+msgstr "මාතෘකාව"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "ගායකයා "
+
+msgctxt "#558"
+msgid "Album"
+msgstr "ඇල්බමය "
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "වාදන ලැයිස්තුව "
+
+msgctxt "#560"
+msgid "ID"
+msgstr "හඳුනාගැනීමේ අංකය "
+
+msgctxt "#561"
+msgid "File"
+msgstr "ගොනුව "
+
+msgctxt "#562"
+msgid "Year"
+msgstr "වසර"
+
+msgctxt "#563"
+msgid "Rating"
+msgstr "තක්සේරු කිරීම "
+
+msgctxt "#564"
+msgid "Type"
+msgstr "වර්ගය"
+
+msgctxt "#565"
+msgid "Usage"
+msgstr "භාවිතය "
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "ඇල්බම ගායකයා "
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "ගණන් කිරීම ක්‍රියාකරවන්න "
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "අවසානයට ක්‍රියා කරවූ "
+
+msgctxt "#569"
+msgid "Comment"
+msgstr "අර්ථ කථනය "
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "දිනය ඇතුළත් කළා "
+
+msgctxt "#571"
+msgid "Default"
+msgstr "නියත "
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "මැදිරිය "
+
+msgctxt "#573"
+msgid "Path"
+msgstr "පෙත "
+
+msgctxt "#574"
+msgid "Country"
+msgstr "රට "
+
+msgctxt "#575"
+msgid "In progress"
+msgstr "කෙරෙමින් පවතින "
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "ක්‍රියාත්මක කළ කාලයන් "
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "ගත් දිනය "
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "වර්ග කළ දිශාව  "
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "වර්ග කරන ක්‍රමය "
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "දර්ශන ආකාරය "
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "විවිධ පත්‍රිකා සඳහා දර්ශන මතක තබාගන්න "
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "ආරෝහණ "
+
+msgctxt "#585"
+msgid "Descending"
+msgstr "අවරෝහණ "
+
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "වාදන ලැයිස්තුව සංස්කරණය කරන්න "
+
+msgctxt "#587"
+msgid "Filter"
+msgstr "පෙරනය "
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "සාද ආකාරය අවලංගු කරන්න "
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "සාද ආකාරය "
+
+msgctxt "#590"
+msgid "Random"
+msgstr "අහඹු"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "වහනවා"
+
+msgctxt "#592"
+msgid "One"
+msgstr "එක "
+
+msgctxt "#593"
+msgid "All"
+msgstr "සියළු "
+
+msgctxt "#594"
+msgid "Off"
+msgstr "වහනවා"
+
+msgctxt "#595"
+msgid "Repeat: Off"
+msgstr "නැවත කරන්න: වහන්න "
+
+msgctxt "#596"
+msgid "Repeat: One"
+msgstr "නැවත කරන්න: එක  "
+
+msgctxt "#597"
+msgid "Repeat: All"
+msgstr "නැවත කරන්න: සියල්ල  "
+
+msgctxt "#600"
+msgid "Rip audio CD"
+msgstr "ශ්‍රවණ CD තැටිය වේගයෙන් දුවවන්න "
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "මධ්‍යස්ථ"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "ප්‍රමිත "
+
+msgctxt "#603"
+msgid "Extreme"
+msgstr "අත්‍යන්ත "
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "නිත්‍ය මාත්‍රා අනුපාතය "
+
+msgctxt "#605"
+msgid "Ripping..."
+msgstr "වේගයෙන් දුවවමින් "
+
+msgctxt "#607"
+msgid "To:"
+msgstr "වෙතට: "
+
+msgctxt "#608"
+msgid "Could not rip CD or track"
+msgstr "CD තැටිය හෝ තැටිය වේගයෙන් දිවවිය නොහැක "
+
+msgctxt "#609"
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath සකස් කර නැත "
+
+msgctxt "#610"
+msgid "Rip audio track"
+msgstr "ශ්‍රවණ තැටිය දුවවන්න "
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "අංකය ඇතුල් කරන්න "
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "මාත්‍රා/සාම්පල "
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "සාම්පල අනුපාතය "
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "ශ්‍රවණ CD තැටි "
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "සංකේතකය "
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "ගුණත්වය "
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "මාත්‍රා අනුපාතය"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "තැටි අංකය ඇතුළත් කරන්න "
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "සියළු ගීත "
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "කරමින් පවතින රූපවාහිනී දර්ශන "
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "දර්ශන ආකාරය  "
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "සාමාන්‍ය "
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "ශීඝ්‍ර ආරෝහණය "
+
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "ඇදීම 4:3 "
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "පුළුල් ශීඝ්‍ර ආරෝහණය  "
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "ඇදීම 16:9"
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "මුල් ප්‍රමාණය "
+
+msgctxt "#636"
+msgid "Custom"
+msgstr "ක්‍රමය"
+
+msgctxt "#639"
+msgid "Use track levels"
+msgstr "තැටි මට්ටම් භාවිතා කරන්න "
+
+msgctxt "#640"
+msgid "Use album levels"
+msgstr "ඇල්බම මට්ටම් භාවිතා කරන්න "
+
+msgctxt "#644"
+msgid "Crop black bars"
+msgstr "කළු පටි කපා දමන්න "
+
+msgctxt "#645"
+msgid "Need to unpack a big file. Continue?"
+msgstr "විශාල ගොනුවක් විචයනය කිරීමට අවශ්‍යයි. පවත්වාගෙන යන්නද? "
+
+msgctxt "#646"
+msgid "Remove from library"
+msgstr "ලේඛනාලයෙන් ඉවත් කරන්න"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "වීඩියෝ ලේඛනාලය නිර්යාත කරන්න "
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "වීඩියෝ ලේඛනාලය ගෙන්නන්න"
+
+msgctxt "#649"
+msgid "Importing"
+msgstr "ආයත කරමින් "
+
+msgctxt "#650"
+msgid "Exporting"
+msgstr "නිර්යාත කරමින් "
+
+msgctxt "#651"
+msgid "Browse for library"
+msgstr "ලේඛනාලය සඳහා විමසන්න  "
+
+msgctxt "#652"
+msgid "Years"
+msgstr "වර්ෂ "
+
+msgctxt "#653"
+msgid "Update library"
+msgstr "ලේඛනාලය යාවත් කාලින කරන්න "
+
+msgctxt "#654"
+msgid "Show debug info"
+msgstr "ක්‍රියා කරවන තොරතුරු පෙන්වන්න "
+
+msgctxt "#655"
+msgid "Browse for executable"
+msgstr "ක්‍රියාකර වීම සඳහා විමසන්න  "
+
+msgctxt "#656"
+msgid "Browse for playlist"
+msgstr "වාදන ලැයිස්තුව සඳහා විමසන්න  "
+
+msgctxt "#657"
+msgid "Browse for folder"
+msgstr "පත්‍රිකාව සඳහා විමසන්න  "
+
+msgctxt "#658"
+msgid "Song information"
+msgstr "ගීත තොරතුරු "
+
+msgctxt "#659"
+msgid "Non-linear stretch"
+msgstr "අරේඛිය ඇදීම "
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "ශබ්ද ප්‍රමාණ විස්තර කොට දැක්වීම "
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "නිර්යාත පත්‍රිකාව තෝරන්න "
+
+msgctxt "#662"
+msgid "This file is no longer available."
+msgstr "මෙම ගොනුව තව දුරටත් ලබාගත නොහැක. "
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "එය ලේඛනාලයෙන් ඉවත් කිරීමට ඔබ කැමතිද ? "
+
+msgctxt "#664"
+msgid "Browse for Script"
+msgstr "අත්පත සඳහා විමසන්න "
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "පීඩන මට්ටම් "
+
+msgctxt "#700"
+msgid "Cleaning up library"
+msgstr "ලේඛනාලය සුමට කිරීම "
+
+msgctxt "#701"
+msgid "Removing old songs from the library"
+msgstr "පරණ ගීත ලේඛනාලයෙන් ඉවත් කරමින් "
+
+msgctxt "#702"
+msgid "This path has been scanned before"
+msgstr "මෙම පෙත කලින් සුපිරික්සා කර තියෙනවා "
+
+msgctxt "#705"
+msgid "Network"
+msgstr "ජාලය "
+
+msgctxt "#706"
+msgid "Server"
+msgstr "මෙහෙයුම්කරු "
+
+msgctxt "#708"
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "අන්තර්ජාල සම්ප්‍රවේෂණයට HTTP ප්‍රතියුක්ත මෙහෙයුම්කරු භාවිතා කරන්න"
+
+msgctxt "#711"
+msgid "Internet Protocol (IP)"
+msgstr "අන්තර්ජාල කෙටුම්පත (IP)"
+
+msgctxt "#712"
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "අවලංගු තිර්ථයක් නිරුපණය කොට ඇත. අගය 1 සහ 65535 අතර විය යුතුය. "
+
+msgctxt "#713"
+msgid "HTTP proxy"
+msgstr "HTTP ප්‍රතියුක්තය "
+
+msgctxt "#715"
+msgid "Assignment"
+msgstr "පැවරුම "
+
+msgctxt "#716"
+msgid "Automatic (DHCP)"
+msgstr "ස්වයංක්‍රිය (DHCP)"
+
+msgctxt "#717"
+msgid "Manual (Static)"
+msgstr "අතින් කිරීම (ස්ථිතික) "
+
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP ලිපිනය"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "අන්තර්ජාල IP ලිපිනය බෙදන ක්‍රමය "
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "නියත ද්වාරය "
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS මෙහෙයුම්කරු "
+
+msgctxt "#723"
+msgid "Save & restart"
+msgstr "ආරක්ෂා කර නැවත ආරම්භ කරන්න "
+
+msgctxt "#724"
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "අවලංගු ලිපිනයක් නිරුපණය කොට ඇත. අගය AAA.BBB.CCC.DDD විය යුතුය.  "
+
+msgctxt "#725"
+msgid "with numbers between 0 and 255."
+msgstr " අංක 0 and 255 අතර."
+
+msgctxt "#726"
+msgid "Changes not saved. Continue without saving?"
+msgstr "වෙනස් කිරීම් ආරක්ෂා කොට නැත. ආරක්ෂා නොකර ඉදිරියට පවත්වාගෙන යන්නද? "
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "ජාල මෙහෙයුම්කරු "
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "FTP මෙහෙයුම්කරු "
+
+msgctxt "#730"
+msgid "Port"
+msgstr "තිර්ථය "
+
+msgctxt "#732"
+msgid "Save & apply"
+msgstr "ආරක්ෂා කර යොමු කරන්න "
+
+msgctxt "#733"
+msgid "Password"
+msgstr "මුරපදය"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "අවස්ථාව නැත "
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "අකුරු කට්ටලය "
+
+msgctxt "#736"
+msgid "Style"
+msgstr "හැඩය "
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "වර්ණය "
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "සාමාන්‍ය  "
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "තද අකුරු "
+
+msgctxt "#740"
+msgid "Italics"
+msgstr "ඇල අකුරු "
+
+msgctxt "#741"
+msgid "Bold italics"
+msgstr "තද ඇල අකුරු "
+
+msgctxt "#742"
+msgid "White"
+msgstr "සුදු "
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "කහ "
+
+msgctxt "#744"
+msgid "Files"
+msgstr "ගොනු "
+
+msgctxt "#745"
+msgid "No scanned information for this view"
+msgstr "මෙම දසුන සඳහා පිරික්සූ දත්ත නැත "
+
+msgctxt "#746"
+msgid "Please turn off library mode"
+msgstr "කරුණාකර ලේඛණාල ආකාරය වසා දමන්න "
+
+msgctxt "#747"
+msgid "Error loading image"
+msgstr "රූපය ප්‍රවේශණය වීම දෝෂ සහගතයි "
+
+msgctxt "#748"
+msgid "Edit path"
+msgstr "පෙත සංස්කරණය කරන්න "
+
+msgctxt "#749"
+msgid "Mirror image"
+msgstr "දර්පණ රූපය "
+
+msgctxt "#750"
+msgid "Are you sure?"
+msgstr "ඔබට විශ්වාස ද ? "
+
+msgctxt "#751"
+msgid "Removing source"
+msgstr "ප්‍රභවය ඉවත්කරමින් "
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "වැඩසටහන් පුරුක එකතු කරන්න "
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "වැඩසටහන් පෙත සංස්කරණය කරන්න "
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "වැඩසටහන් නම සංස්කරණය කරන්න "
+
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "පෙතේ ගැඹුර සංස්කරණය කරන්න "
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "දර්ශනය: විශාල ලැයිස්තුව "
+
+msgctxt "#760"
+msgid "Yellow"
+msgstr "කහ "
+
+msgctxt "#761"
+msgid "White"
+msgstr "සුදු "
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "නිල්"
+
+msgctxt "#763"
+msgid "Bright green"
+msgstr "තද කොළ"
+
+msgctxt "#764"
+msgid "Yellow green"
+msgstr "කහ කොළ"
+
+msgctxt "#765"
+msgid "Cyan"
+msgstr "මයුර නිල"
+
+msgctxt "#766"
+msgid "Light grey"
+msgstr "ලා අළු"
+
+msgctxt "#767"
+msgid "Grey"
+msgstr "අළු"
+
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "දෝශය%!!බෙදා වෙන්කිරීම ප්‍රයෝජනයට ගත නොහැක"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "ශ්‍රවන ආධානය"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "සොයමින් පවතී"
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "නිදර්ශන ෆෝල්ඩරය"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "ජාල අතුරු මුහුනත"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "රැහැන් රහිත ජාලයේ නම (ESSID)"
+
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "රැහැන් රහිත ජාලයේ මුර පදය"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "රැහැන් රහිත ආරක්ෂණය"
+
+msgctxt "#779"
+msgid "Save and apply network interface settings"
+msgstr "තැම්පත් කිරීම සහ අතුරුමුහුණත කට්ටල අංග වලට අදාළ කරවීම"
+
+msgctxt "#780"
+msgid "No encryption"
+msgstr "දත්ත රහස්පද බවට පත් කරන්නේ නැත"
+
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
+msgctxt "#784"
+msgid "Applying network interface settings. Please wait."
+msgstr "ජාල අතුරුමුහුණත කට්ටල අංග අදාළ වෙමින් පවතී.කරුණාකර මොහොතක් සිටින්න"
+
+msgctxt "#785"
+msgid "Network interface restarted successfully."
+msgstr "ජාලගත අතුරුමුහුණත නැවත ඇරබිම සාර්ථකයි"
+
+msgctxt "#786"
+msgid "Network interface did not start successfully."
+msgstr "ජාල අතුරුමුහුණත සාර්ථකව ආරම්භ වී නැත"
+
+msgctxt "#787"
+msgid "Interface disabled"
+msgstr "අතුරුමුහුණත ක්‍රියා විරහිතයි"
+
+msgctxt "#788"
+msgid "Network interface disabled successfully."
+msgstr "ජාලා අතුරුමුහුණත ක්‍රියාවිරහිත කිරීම සාර්ථකයි"
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "රැහැන් රහිත ජාලාවේ නම "
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "දුරස්ථ පාලනය"
+
+msgctxt "#791"
+msgid "Allow programs on this system to control Kodi"
+msgstr "මෙම පද්ධතියේ සියලුම වැඩ සටහන් Kodi පාලනයට"
+
+msgctxt "#792"
+msgid "Port"
+msgstr "තිර්ථය "
+
+msgctxt "#793"
+msgid "Port range"
+msgstr "තීර්ථ පරාසය"
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "වෙනත් පද්ධතිවල සියලුම වැඩ සටහන් Kodi පාලනයට"
+
+msgctxt "#795"
+msgid "Initial repeat delay (ms)"
+msgstr "ආරම්භයේ සිට නැවත කිරීමේ ප්‍රමාදය (මි.තත්.)"
+
+msgctxt "#796"
+msgid "Continuous repeat delay (ms)"
+msgstr "අඛණ්ඩව නැවත කිරීමේ ප්‍රමාදය (මි.තත්.)"
+
+msgctxt "#797"
+msgid "Maximum number of clients"
+msgstr "උපරිම සේවාදායකයන් ප්‍රමාණය"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "අන්තර්ජාල ප්‍රවේශය"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "ලේඛණාලය යාවත්කාලින කරන්න"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "ගොනු වල හැඳුනුම් සංකේතය සුපිරික්සීමට සංගීත ලේඛණාලයට  අවශ්‍යයි"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "ඔබ දැන් සුපිරික්සිමට කැමතිද ?"
+
+msgctxt "#850"
+msgid "Invalid port number entered"
+msgstr "අවලංගු තීර්ථ අංකයක් ඇතුළත් කර ඇත"
+
+msgctxt "#851"
+msgid "Valid port range is 1-65535"
+msgstr "වලංගු තීර්ථ අන්තරය 1-65535 වේ."
+
+msgctxt "#852"
+msgid "Valid port range is 1024-65535"
+msgstr "වලංගු තීර්ථ අන්තරය 1024-65535 වේ."
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "පින්තුර එකතුකරන්න..."
+
+msgctxt "#998"
+msgid "Add Music..."
+msgstr "සංගීතය එකතු කරන්න..."
+
+msgctxt "#999"
+msgid "Add Videos..."
+msgstr "වීඩියෝ එකතු කරන්න..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "පුර්ව දර්ශනය"
+
+msgctxt "#1001"
+msgid "Unable to connect"
+msgstr "සම්බන්ධ වීමට නොහැක"
+
+msgctxt "#1002"
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi  ජාල ස්ථානය වෙත සම්බන්ධ කිරීමට නොහැක."
+
+msgctxt "#1003"
+msgid "This could be due to the network not being connected."
+msgstr "මෙය ජාලයට සම්බන්ධ නොවීම නිසා සිදුවිය හැකියි"
+
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "වෙනයම් විදියකින් එකතු කිරීමට කැමතිද?"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP ලිපිනය"
+
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "ජාල ස්ථානය ඇතුළත් කරන්න"
+
+msgctxt "#1008"
+msgid "Protocol"
+msgstr "මුල කේතය"
+
+msgctxt "#1009"
+msgid "Server address"
+msgstr "මෙහෙයුම් ලිපිනය"
+
+msgctxt "#1010"
+msgid "Server name"
+msgstr "මෙහෙයුම්කරුගේ නම"
+
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "දුරස්ථ පෙත"
+
+msgctxt "#1012"
+msgid "Shared folder"
+msgstr "බෙදාගත් පත්‍රිකාව"
+
+msgctxt "#1013"
+msgid "Port"
+msgstr "තිර්ථය "
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "පරිශීලක නම"
+
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "ජාල මෙහෙයුම සඳහා විමසන්න  "
+
+msgctxt "#1016"
+msgid "Enter the network address of the server"
+msgstr "මෙහෙයුම්කරුගේ ජාල ලිපිනය ඇතුළත් කරන්න"
+
+msgctxt "#1017"
+msgid "Enter the path on the server"
+msgstr "මෙහෙයුම්කරුගේ පෙත ඇතුළත් කරන්න"
+
+msgctxt "#1018"
+msgid "Enter the port number"
+msgstr "තීර්ථ අංකය ඇතුළත් කරන්න"
+
+msgctxt "#1019"
+msgid "Enter the username"
+msgstr "පරිශීලක නම ඇතුළත් කරන්න"
+
+msgctxt "#1020"
+msgid "Add %s source"
+msgstr "ප්‍රභවය %s එකතු කරන්න"
+
+msgctxt "#1021"
+msgid "Enter the paths or browse for the media locations."
+msgstr "පෙත් ඇතුළත් කරන්න හෝ මාධ්‍ය ස්ථානය සඳහා විමසන්න."
+
+msgctxt "#1022"
+msgid "Enter a name for this media Source."
+msgstr "මෙම මාධ්‍ය ප්‍රභවය සඳහා නමක් ඇතුළත් කරන්න"
+
+msgctxt "#1023"
+msgid "Browse for new share"
+msgstr "නව කොටස සඳහා විමසන්න  "
+
+msgctxt "#1024"
+msgid "Browse"
+msgstr "විමසන්න "
+
+msgctxt "#1025"
+msgid "Could not retrieve directory information."
+msgstr "නාමාවලි තොරතුරු සොයාගැනීමට නොහැක."
+
+msgctxt "#1026"
+msgid "Add source"
+msgstr "ප්‍රභවය එකතු කරන්න"
+
+msgctxt "#1027"
+msgid "Edit source"
+msgstr "ප්‍රභවය සංස්කරණය කරන්න"
+
+msgctxt "#1028"
+msgid "Edit %s source"
+msgstr "%s ප්‍රභවය සංස්කරණය කරන්න"
+
+msgctxt "#1029"
+msgid "Enter the new label"
+msgstr "නව නම් පත ඇතුළත් කරන්න"
+
+msgctxt "#1030"
+msgid "Browse for image"
+msgstr "ඡායාරුප සඳහා විමසන්න  "
+
+msgctxt "#1031"
+msgid "Browse for image folder"
+msgstr "ඡායාරුප පත්‍රිකාව සඳහා විමසන්න"
+
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "ජාල ස්ථානය එකතු කරන්න..."
+
+msgctxt "#1033"
+msgid "Browse for file"
+msgstr "ගොනුව සඳහා විමසන්න  "
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "උප ලේඛණය"
+
+msgctxt "#1035"
+msgid "Enable submenu buttons"
+msgstr "උප ලේඛණ බොත්තම් ක්‍රියාත්මක කරන්න."
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "ප්‍රියතම"
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "වීඩියෝ සඳහා නියැලුම"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "සංගීතය සඳහා නියැලුම"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "පින්තූර සඳහා නියැලුම"
+
+msgctxt "#1040"
+msgid "Loading directory"
+msgstr "නාමාවලි පූරණය"
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "අයිතම %i වැරදි සොයාගත්තා"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr " %i  අයිතම වලින් %i වැරදි සොයාගත්තා"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "වැඩසටහන් සඳහා නියැලුම"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "නියැලුම කට්ටල අංග"
+
+msgctxt "#1046"
+msgid "Access points"
+msgstr "ප්‍රවේශ කරුණු"
+
+msgctxt "#1047"
+msgid "Other..."
+msgstr "වෙනත්..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "පරිශීලක නම"
+
+msgctxt "#1049"
+msgid "Script settings"
+msgstr "අත්පත කට්ටල අංග"
+
+msgctxt "#1050"
+msgid "Singles"
+msgstr "තනි රෝල් තහඩු"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "ජාල ලිපිනය ඇතුළත් කරන්න"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "බලපත්‍ර වර්ගය"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "ස්ථර4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "ස්ථර4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "ස්ථර5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "ස්ථර5 සමඟ දුරස්ථ dns විභේදනය"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "SMB සේවාදායකයා"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "ශ්‍රම වැඩ කණ්ඩායම"
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "නියත පරිශීලක නම"
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "නියත මුරපදය"
+
+msgctxt "#1207"
+msgid "WINS server"
+msgstr "WINS මෙහෙයුම්කරු "
+
+msgctxt "#1208"
+msgid "Mount SMB shares"
+msgstr "SMB කොටස් නැංවුම"
+
+msgctxt "#1210"
+msgid "Remove"
+msgstr "ඉවත් කරන්න"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "සංගීත"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "පින්තූර"
+
+msgctxt "#1214"
+msgid "Files"
+msgstr "ගොනු "
+
+msgctxt "#1215"
+msgid "Music & video "
+msgstr "සංගීතය සහ වීඩියෝව"
+
+msgctxt "#1216"
+msgid "Music & pictures"
+msgstr "සංගීතය සහ ඡයාරූප"
+
+msgctxt "#1217"
+msgid "Music & files"
+msgstr "සංගීතය සහ ගොනු"
+
+msgctxt "#1218"
+msgid "Video & pictures"
+msgstr "වීඩියෝ සහ ඡායරූප "
+
+msgctxt "#1219"
+msgid "Video & files"
+msgstr "වීඩියෝ සහ ගොනු"
+
+msgctxt "#1220"
+msgid "Pictures & files"
+msgstr "ඡායරූප සහ ගොනු"
+
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "සංගීතය සහ වීඩියෝව සහ ඡායරූප"
+
+msgctxt "#1222"
+msgid "Music & video & pictures & files"
+msgstr "සංගීතය සහ වීඩියෝව සහ ඡායරූප සහ ගොනු"
+
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#1226"
+msgid "Files & music & video"
+msgstr "ගොනු සහ සංගීතය සහ වීඩියෝව"
+
+msgctxt "#1227"
+msgid "Files & pictures & music"
+msgstr "ගොනු සහ ඡායාරූප සහ සංගීතය"
+
+msgctxt "#1228"
+msgid "Files & pictures & video"
+msgstr "ගොනු සහ ඡායාරූප සහ වීඩියෝව"
+
+msgctxt "#1229"
+msgid "Music & programs"
+msgstr "සංගීතය සහ වැඩසටහන් "
+
+msgctxt "#1230"
+msgid "Video & programs"
+msgstr "වීඩියෝ සහ වැඩ සටහන්"
+
+msgctxt "#1231"
+msgid "Pictures & programs"
+msgstr "ඡායරූප සහ වැඩ සටහන්"
+
+msgctxt "#1232"
+msgid "Music & video & pictures & programs"
+msgstr "සංගීතය සහ වීඩියෝව සහ ඡායරූප සහ වැඩසටහන්"
+
+msgctxt "#1233"
+msgid "Programs & video & music"
+msgstr "වැඩසටහන් සහ වීඩියෝව සහ සංගීතය"
+
+msgctxt "#1234"
+msgid "Programs & pictures & music"
+msgstr "වැඩසටහන් සහ ඡායාරූප සහ සංගීතය"
+
+msgctxt "#1235"
+msgid "Programs & pictures & video"
+msgstr "වැඩසටහන් සහ ඡායාරූප සහ වීඩියෝව"
+
+msgctxt "#1259"
+msgid "Zeroconf"
+msgstr "ශුන්‍යආකෘති"
+
+msgctxt "#1260"
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "ශුන්‍යආකෘති හරහා මෙම සේවා වෙනත් පද්ධතිවලට ප්‍රකාශ කරන්න"
+
+msgctxt "#1270"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Kodi වෙත ගුවන්විදුලි ප්‍රචාරයේ අඩංගුව ලැබීමට ඉඩ දෙන්න"
+
+msgctxt "#1271"
+msgid "Device name"
+msgstr "උපකරණයේ නම"
+
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "ආරක්ෂක මුරපදය භාවිතා කරන්න"
+
+msgctxt "#1273"
+msgid "AirPlay"
+msgstr "ගුවන්විදුලි ප්‍රචාරය"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "ගුවන්සුසරය"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "පෙරහන %s"
+
+msgctxt "#1300"
+msgid "Custom audio device"
+msgstr "ශ්‍රවණ උපකරණය වෙනස් කිරීම"
+
+msgctxt "#1301"
+msgid "Custom passthrough device"
+msgstr "උපකරණය පසුකර යාම වෙනස් කරන්න"
+
+msgctxt "#1396"
+msgid "Drifting"
+msgstr "උල්කටුව ඇල්ලීම"
+
+msgctxt "#1397"
+msgid "and"
+msgstr "සහ"
+
+msgctxt "#1398"
+msgid "Freezing"
+msgstr "ශිත ජනක"
+
+msgctxt "#1399"
+msgid "Late"
+msgstr "ප්‍රමාද"
+
+msgctxt "#1400"
+msgid "Isolated"
+msgstr "තනි"
+
+msgctxt "#1401"
+msgid "Thundershowers"
+msgstr "ගිගුරුම් වැසි"
+
+msgctxt "#1402"
+msgid "Thunder"
+msgstr "අකුණු"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "ඉරිදා"
+
+msgctxt "#1404"
+msgid "Heavy"
+msgstr "අධික"
+
+msgctxt "#1405"
+msgid "in"
+msgstr "තුළ"
+
+msgctxt "#1406"
+msgid "the"
+msgstr "රාශියකින් එකක් වෙන් කරන නාමපදයක් මුලට යොදන තනි පදය"
+
+msgctxt "#1407"
+msgid "Vicinity"
+msgstr "වටපිටාව "
+
+msgctxt "#1408"
+msgid "Ice"
+msgstr "හිමකැට "
+
+msgctxt "#1409"
+msgid "Crystals"
+msgstr "පළිඟු "
+
+msgctxt "#1410"
+msgid "Calm"
+msgstr "ශාන්ත "
+
+msgctxt "#1411"
+msgid "with"
+msgstr "සමඟ "
+
+msgctxt "#1412"
+msgid "windy"
+msgstr "සුළං සහිත"
+
+msgctxt "#1413"
+msgid "Patches"
+msgstr "අණ්ඩ"
+
+msgctxt "#1414"
+msgid "Thunderstorm"
+msgstr "අකුණු කුණාටුව"
+
+msgctxt "#1415"
+msgid "Drizzle"
+msgstr "පොද වැස්ස "
+
+msgctxt "#1416"
+msgid "Foggy"
+msgstr "මීදුමෙන් වැසුණු "
+
+msgctxt "#1417"
+msgid "Grains"
+msgstr "ධාන්‍ය "
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "අකුණු කුණාටු"
+
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "අඥාන "
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "මධ්‍යම "
+
+msgctxt "#1421"
+msgid "Very High"
+msgstr "බොහෝ උසස් "
+
+msgctxt "#1422"
+msgid "Windy"
+msgstr "සුළං සහිත"
+
+msgctxt "#1423"
+msgid "Mist"
+msgstr "මිදුම "
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "අඳුරු වූ "
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "මුනිස්සම් "
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "හිමකැට වැස්ස "
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "දුම "
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "ගිනි කඳු "
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "භස්ම "
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "කවුරුත් දන්නා "
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "ධූලි "
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "වැලි "
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "sirikada"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "සුළිය "
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "වැලි කුණාටුව "
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "සුළං හැමීම "
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "මුනිස්සම් "
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "කුඩා "
+
+msgctxt "#1439"
+msgid "and"
+msgstr "සහ"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "හිම වැස්ස "
+
+msgctxt "#1441"
+msgid "with"
+msgstr "සමඟ "
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "අවස්ථාව "
+
+msgctxt "#1443"
+msgid "of"
+msgstr "ගේ "
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "නළය "
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "වලාකුළ "
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "අඥාත "
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "ජව සුළං "
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "වර්ෂණය "
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "ආංශික "
+
+msgctxt "#1450"
+msgid "Put display to sleep when idle"
+msgstr "අක්‍රිය වූ පසු දර්ශනය උදාසීන කර දමන්න"
+
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "ධාවන කාලය "
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "හිස් ලැයිස්තුව "
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "පුර්ව ලැයිස්තුවට ආපසු ගියා මක්නිසාදයත් සක්‍රිය ලැයිස්තුව හිස් වී තිබෙනවා"
+
+msgctxt "#2100"
+msgid "Script failed! : %s"
+msgstr "අත්පත අසාර්ථකයි : %s "
+
+msgctxt "#2101"
+msgid "Newer version needed - See log"
+msgstr "නව පිටපත අවශ්‍යවිය - ලොගය බලන්න"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "නිවාස"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "වැඩ සටහන්"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "පින්තූර"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "ගොනු කළමනාකරු"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "සිටුවම්"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "සංගීත"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "වීඩියෝ"
+
+msgctxt "#10007"
+msgid "System information"
+msgstr "පද්දති තොරතුරු "
+
+msgctxt "#10008"
+msgid "Settings - General"
+msgstr "කට්ටල අංග- සාමාන්‍ය"
+
+msgctxt "#10009"
+msgid "Settings - Screen"
+msgstr "කට්ටල අංග- තිරය"
+
+msgctxt "#10010"
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "කට්ටල අංග- පෙනුම - GUI ක්‍රමාංකනය"
+
+msgctxt "#10011"
+msgid "Settings - Videos - Screen Calibration"
+msgstr "කට්ටල අංග- වීඩියෝ - GUI ක්‍රමාංකනය"
+
+msgctxt "#10012"
+msgid "Settings - Pictures"
+msgstr "කට්ටල අංග - පින්තූර "
+
+msgctxt "#10013"
+msgid "Settings - Programs"
+msgstr "කට්ටල අංග - වැඩ සටහන් "
+
+msgctxt "#10014"
+msgid "Settings - Weather"
+msgstr "කට්ටල අංග - කාලගුණය "
+
+msgctxt "#10015"
+msgid "Settings - Music"
+msgstr "කට්ටල අංග - සංගීතය"
+
+msgctxt "#10016"
+msgid "Settings - System"
+msgstr "කට්ටල අංග - පද්ධති"
+
+msgctxt "#10017"
+msgid "Settings - Videos"
+msgstr "කට්ටල අංග - වීඩියෝ"
+
+msgctxt "#10018"
+msgid "Settings - Network"
+msgstr "කට්ටල අංග - ජාල"
+
+msgctxt "#10019"
+msgid "Settings - Appearance"
+msgstr "කට්ටල අංග - පෙනුම"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "අකුරු පිටපත්"
+
+msgctxt "#10021"
+msgid "Web Browser"
+msgstr "ජාල විමසන්නා"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "වීඩියෝ"
+
+msgctxt "#10028"
+msgid "Videos/Playlist"
+msgstr "වීඩියෝ/වාදන ලැයිස්තුව"
+
+msgctxt "#10029"
+msgid "Login screen"
+msgstr "ඇතුල්වන තිරය"
+
+msgctxt "#10034"
+msgid "Settings - Profiles"
+msgstr "කට්ටල අංග - ආකෘති"
+
+msgctxt "#10035"
+msgid "Reset"
+msgstr "යළි පිහිටුවන්න"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "ප්‍රමිත "
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "උසස්"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "මෙම ප්‍රවර්ගයේ කට්ටල අංග යළි පිහිටුවීමට අවශ්‍යබව ඔබට විශ්වාස ද ?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "උදව් "
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "උදව් ලබාගත නොහැක "
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "ගොනු විමසන්නා "
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "ජාල සැලැස්ම"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "සන්නිවේදන ප්‍රභවය "
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "පැතිකඩ සැකසුම් "
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "අගුල් සැකසුම්"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "සංයුක්ත සැකසුම්"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "ප්‍රියතම"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "සිංදු/තොරතුරු"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "දැකුම්කළු වාදන ලැයිස්තු සම්පාදක "
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "දැකුම්කළු වාදන ලැයිස්තු නීති සම්පාදක "
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "පිංතුර/සැකසුම්"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "නියැලුම කට්ටල අංග"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "නියැලුම්/තොරතුරු "
+
+msgctxt "#10210"
+msgid "Looking for subtitles..."
+msgstr "උපසිරැසි සොයමින්...."
+
+msgctxt "#10211"
+msgid "Looking for or caching subtitles..."
+msgstr "උපසිරැසි සොයමින් හෝ රහසිගතව තබමින්"
+
+msgctxt "#10212"
+msgid "terminating"
+msgstr "නවත්වමින්....."
+
+msgctxt "#10213"
+msgid "buffering"
+msgstr "අවරෝධක කරමින් "
+
+msgctxt "#10214"
+msgid "Opening stream"
+msgstr "ප්‍රවාහය අරබමින් "
+
+msgctxt "#10500"
+msgid "Music/Playlist"
+msgstr "සංගීතය/සින්දු ලැයිස්තුව"
+
+msgctxt "#10501"
+msgid "Music/Files"
+msgstr "සිංදු/ගොනු "
+
+msgctxt "#10502"
+msgid "Music/Library"
+msgstr "සිංදු /ගබඩාව "
+
+msgctxt "#10503"
+msgid "Playlist editor"
+msgstr "සිංදු ලැයිස්තුව වෙනස් කරන්නා"
+
+msgctxt "#10504"
+msgid "Top 100 songs"
+msgstr "හොදම සිංදු  100"
+
+msgctxt "#10505"
+msgid "Top 100 albums"
+msgstr "හොදම ඇල්බම් 100"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "වැඩ සටහන්"
+
+msgctxt "#10507"
+msgid "Configuration"
+msgstr "හැඩගැස්සවීම්"
+
+msgctxt "#10508"
+msgid "Weather forecast"
+msgstr "කාලගුණ පුරෝකථනය"
+
+msgctxt "#10509"
+msgid "Network gaming"
+msgstr "ජාලගත ක්‍රීඩා"
+
+msgctxt "#10510"
+msgid "Extensions"
+msgstr "විස්තාරණය කිරීම "
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "පද්ධති තොරතුරු  "
+
+msgctxt "#10516"
+msgid "Music - Library"
+msgstr "සිංදු /ගබඩාව "
+
+msgctxt "#10517"
+msgid "Now Playing - Music"
+msgstr "දැන් වාදනය වෙමින් /සිංදු "
+
+msgctxt "#10522"
+msgid "Now Playing - Videos"
+msgstr "දැන් විකාශනය වෙමින් /වීඩියෝව"
+
+msgctxt "#10523"
+msgid "Album info"
+msgstr "ඇල්බම් තොරතුරු "
+
+msgctxt "#10524"
+msgid "Movie info"
+msgstr "චිත්‍රපට තොරතුරු "
+
+msgctxt "#12001"
+msgid "Music/Info"
+msgstr "සිංදු /තොරතුරු "
+
+msgctxt "#12003"
+msgid "Videos/Info"
+msgstr "වීඩියෝ/තොරතුරු "
+
+msgctxt "#12004"
+msgid "Scripts/Info"
+msgstr "පිටපත /තොරතුරු "
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "සම්පුර්ණ තිර වීඩියෝව "
+
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "සුචිය නැවත සැකසීම "
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "සිංදු කව්ළුව වෙත නැවත පැමිණීම "
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "වීඩියෝ කවුළුව වෙත නැවත පැමිණීම "
+
+msgctxt "#12021"
+msgid "Start from beginning"
+msgstr "මුල සිට ඇරබීම"
+
+msgctxt "#12022"
+msgid "Resume from %s"
+msgstr "%s සිට නැවත පටන් ගැනීම "
+
+msgctxt "#12310"
+msgid "0"
+msgstr "0"
+
+msgctxt "#12311"
+msgid "1"
+msgstr "1"
+
+msgctxt "#12312"
+msgid "2"
+msgstr "2 "
+
+msgctxt "#12313"
+msgid "3"
+msgstr "3 "
+
+msgctxt "#12314"
+msgid "4"
+msgstr "4 "
+
+msgctxt "#12315"
+msgid "5"
+msgstr "5 "
+
+msgctxt "#12316"
+msgid "6"
+msgstr "6 "
+
+msgctxt "#12317"
+msgid "7"
+msgstr "7 "
+
+msgctxt "#12318"
+msgid "8"
+msgstr "8 "
+
+msgctxt "#12319"
+msgid "9"
+msgstr "9 "
+
+msgctxt "#12320"
+msgid "c"
+msgstr "c "
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "හරි "
+
+msgctxt "#12322"
+msgid "*"
+msgstr "'"
+
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "අගුළු දමා ඇත! කේතය ඇතුළත් කරන්න..."
+
+msgctxt "#12326"
+msgid "Enter password"
+msgstr "මුරපදය ඇතුළත් කරන්න"
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "පාලක කේතය ඇතුළත් කරන්න "
+
+msgctxt "#12328"
+msgid "Enter unlock code"
+msgstr "අගුළු හරින කේතය ඇතුළත් කරන්න "
+
+msgctxt "#12329"
+msgid "or press C to cancel"
+msgstr "හෝ අවලංගු කිරීමට C ඔබන්න"
+
+msgctxt "#12330"
+msgid "Enter gamepad button combo and"
+msgstr "සෙල්ලම්කොට්ට බොත්තම සංයුක්තය ඇතුළත් කිරීම සහ"
+
+msgctxt "#12331"
+msgid "press OK, or Back to cancel"
+msgstr "හරි ඔබන්න, හෝ අවලංගු කිරීමට ආපසු"
+
+msgctxt "#12332"
+msgid "Set lock"
+msgstr "අගුළු සවි කරන්න "
+
+msgctxt "#12333"
+msgid "Unlock"
+msgstr "අගුළු අරිනවා "
+
+msgctxt "#12334"
+msgid "Reset lock"
+msgstr "අගුළු යළි පිහිටුවන්න "
+
+msgctxt "#12335"
+msgid "Remove lock"
+msgstr "අගුළු ඉවත් කරන්න "
+
+msgctxt "#12337"
+msgid "Numeric password"
+msgstr "සංඛ්‍යාත්මක මුරපදය "
+
+msgctxt "#12338"
+msgid "Gamepad button combo"
+msgstr "සෙල්ලම්කොට්ට බොත්තම සංයුක්තය "
+
+msgctxt "#12339"
+msgid "Full-text password"
+msgstr "සම්පුර්ණ- පෙළ මුරපදය "
+
+msgctxt "#12340"
+msgid "Enter new password"
+msgstr "නව මුරපදය ඇතුළත් කරන්න"
+
+msgctxt "#12341"
+msgid "Re-Enter new password"
+msgstr "නව මුරපදය නැවත ඇතුළත් කරන්න "
+
+msgctxt "#12342"
+msgid "Incorrect password,"
+msgstr "මුරපදය සාවද්‍යයි, "
+
+msgctxt "#12343"
+msgid "retries left "
+msgstr "නැවත උත්සහ කිරීම් ඉතිරි වී ඇත."
+
+msgctxt "#12344"
+msgid "Passwords entered did not match."
+msgstr "ඇතුළත් කළ මුරපදය ගැලපුනේ නැත."
+
+msgctxt "#12345"
+msgid "Access denied"
+msgstr "ප්‍රවේශය තහනම්"
+
+msgctxt "#12346"
+msgid "Password retry limit exceeded."
+msgstr "මුර පද නැවත ඇතුලත් කිරිමෙ වාර ගණන ඉක්මවන ලදී"
+
+msgctxt "#12348"
+msgid "Item locked"
+msgstr "අයිතම අගුළු ලා ඇත"
+
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "වීඩියෝ කලා ලේඛනාලය යාවත්කාලින කරමින් "
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "සකස් කරමින් %s "
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "ඔබේ වීඩියෝ ලේඛනාලයේ තාවකාලික කලා මතකය යාවත්කාලින වීම අවශ්‍යයි/ "
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "බාගත කිරීම් අවශ්‍ය නැත."
+
+msgctxt "#12353"
+msgid "Reactivate lock"
+msgstr "අගුළු නැවත සක්‍රිය කරන්න "
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "ඔබ දැන් එය යාවත්කාලින කිරීමට කැමතිද? "
+
+msgctxt "#12356"
+msgid "Change lock"
+msgstr "අගුළු වෙනස් කරන්න "
+
+msgctxt "#12357"
+msgid "Source lock"
+msgstr "ප්‍රභව අගුළු "
+
+msgctxt "#12358"
+msgid "Password entry was blank. Try again."
+msgstr "මුරපදය ඇතුල් කිරීම ව්‍යාකුල විය. නැවත උත්සහ කරන්න."
+
+msgctxt "#12360"
+msgid "Master lock"
+msgstr "පාලක අගුල "
+
+msgctxt "#12362"
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "පාලක අගුල සඳහා උත්සාහයන් ඉක්මවා ඇත්නම් පද්ධතිය නවත්වන්න"
+
+msgctxt "#12367"
+msgid "Master code is not valid"
+msgstr "පාලක කේතය වලංගු නැත."
+
+msgctxt "#12368"
+msgid "Please enter a valid master code"
+msgstr "කරුණාකර වලංගු පාලක කේතයක් ඇතුල් කරන්න "
+
+msgctxt "#12373"
+msgid "Settings & file manager"
+msgstr "කට්ටල අංග සහ ගොනු කළමනාකරු "
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "වීඩියෝ සියල්ල සඳහා පෙර තිබු පරිදි ලෙස පිහිටුවන්න "
+
+msgctxt "#12377"
+msgid "This will reset any previously saved values"
+msgstr "මෙමගින් පෙර ආරක්ෂාකල යම්කිසි අගයන් නැවත පිහිටවනු ලැබෙයි "
+
+msgctxt "#12378"
+msgid "Amount of time to display each image"
+msgstr "එක් එක් ඡායාරුපය දර්ශනය කිරීමට ගතවන කාල ප්‍රමාණය "
+
+msgctxt "#12379"
+msgid "Use pan and zoom effects"
+msgstr "ශීඝ්‍ර ආරෝහණ රංග ප්‍රයෝග සහ තැටිය භාවිත කරන්න "
+
+msgctxt "#12383"
+msgid "12 hour clock"
+msgstr "පැය 12 ඔරලෝසුව "
+
+msgctxt "#12384"
+msgid "24 hour clock"
+msgstr "පැය 24 ඔරලෝසුව "
+
+msgctxt "#12385"
+msgid "Day/Month"
+msgstr "දිනය/මාසය "
+
+msgctxt "#12386"
+msgid "Month/Day"
+msgstr "මාසය/දිනය "
+
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "පද්ධති යාවත්කාලින"
+
+msgctxt "#12391"
+msgid "Minutes"
+msgstr "මිනිත්තු "
+
+msgctxt "#12392"
+msgid "Hours"
+msgstr "පැය ගණන් "
+
+msgctxt "#12393"
+msgid "Days"
+msgstr "දින "
+
+msgctxt "#12394"
+msgid "Total uptime"
+msgstr "මුළු කාලය "
+
+msgctxt "#12395"
+msgid "Battery level"
+msgstr "ව්දුලිකෝෂ මට්ටම "
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "කාලගුණය"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "තිරපත"
+
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "මුළුතිරය OSD "
+
+msgctxt "#13000"
+msgid "System"
+msgstr "පද්ධතිය "
+
+msgctxt "#13001"
+msgid "Immediate HD spindown"
+msgstr "වහා සිදුවන HD බැමුම් "
+
+msgctxt "#13002"
+msgid "Video only"
+msgstr "වීඩියෝ පමණයි "
+
+msgctxt "#13003"
+msgid "- Delay"
+msgstr "- ප්‍රමාදය "
+
+msgctxt "#13004"
+msgid "- Minimum file duration"
+msgstr "- අවම ගොනු පවතින කාලය "
+
+msgctxt "#13005"
+msgid "Shutdown"
+msgstr "නවත්වන්න "
+
+msgctxt "#13008"
+msgid "Shutdown function"
+msgstr "කාර්යය නවත්වන්න "
+
+msgctxt "#13009"
+msgid "Quit"
+msgstr "පිටවෙන්න "
+
+msgctxt "#13010"
+msgid "Hibernate"
+msgstr "ශිශිරතරණය කරන්න "
+
+msgctxt "#13011"
+msgid "Suspend"
+msgstr "අත්හිටුවන්න "
+
+msgctxt "#13012"
+msgid "Exit"
+msgstr "පිටවෙන්න "
+
+msgctxt "#13013"
+msgid "Reboot"
+msgstr "නැවත ආරම්භ කරන්න "
+
+msgctxt "#13015"
+msgid "Power button action"
+msgstr "බලය සපයන බොත්තම් ක්‍රියාව "
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "පද්ධතිය බලය සැපයීම වළකන්න. "
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "අක්‍රිය ඉවත්වීම තහනම් "
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "අක්‍රිය ඉවත්වීමට ඉඩදෙන්න "
+
+msgctxt "#13020"
+msgid "Is another session active, perhaps over ssh?"
+msgstr "වෙනත් සැසියක් සක්‍රිය ද ? සමහර විට සශ් තුළ ? "
+
+msgctxt "#13021"
+msgid "Mounted removable harddrive"
+msgstr "ඉවත් කළ හැකි දෘඩාංග නංවන්න "
+
+msgctxt "#13022"
+msgid "Unsafe device removal"
+msgstr "අනාරක්ෂිත උපකරණය ඉවත්කිරීම "
+
+msgctxt "#13023"
+msgid "Successfully removed device"
+msgstr "උපකරණය සාර්ථකව ඉවත් කරන ලදී "
+
+msgctxt "#13024"
+msgid "Joystick plugged"
+msgstr "දුරස්ථ පාලකය පේනු කළා "
+
+msgctxt "#13025"
+msgid "Joystick unplugged"
+msgstr "දුරස්ථ පාලකය පේනුව ඉවත් කළා "
+
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "දුරස්ථ මෙහෙයුම්වලට ප්‍රවේශය ඇති කිරීමට උත්සාහ කරන්න  "
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "ස්ථානීය ජාලය අවදිව තබාගන්න (%s) "
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "ජාලය සම්බන්ධ කිරීම සඳහා රැඳී සිටිම..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "ස්ථානීය ජාලය අවදි කිරීම ක්‍රියාත්මක කිරීම අසාර්ථකයි "
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "මෙහෙයුම්කරු අවදි වීම සඳහා රැඳී සිටි "
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "මෙහෙයුම්කරු අවදි වීම සඳහා රැඳී සිටීම දීර්ඝ කළා"
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "සේවාවන් දියත් කිරීමට රැඳී සිටීම "
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC සොයාගැනීම "
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "%s සඳහා යාවත්කාලින කළා "
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "%s සඳහා සොයාගත්තා  "
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "%s සඳහා අසාර්ථක වුනා   "
+
+msgctxt "#13050"
+msgid "Running low on battery"
+msgstr "බැටරි බලය අවසන් වෙමින් පවතී "
+
+msgctxt "#13100"
+msgid "Flicker filter"
+msgstr "චංචලන පෙරහන "
+
+msgctxt "#13101"
+msgid "Let driver choose (requires restart)"
+msgstr "ධාවකය තෝරන්න (නැවත ඇරබිමක්  අවශ්‍ය වේ )"
+
+msgctxt "#13105"
+msgid "Vertical blank sync"
+msgstr "ලම්භක හිස් සමාවර්ථ "
+
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#13107"
+msgid "Enabled during video playback"
+msgstr "වීඩියෝ දර්ශනය කරන අවස්ථාවේ  ක්‍රියාකාරී වේ "
+
+msgctxt "#13108"
+msgid "Always enabled"
+msgstr "සැමවිටම ක්‍රියාකාරී වේ "
+
+msgctxt "#13109"
+msgid "Test & apply resolution"
+msgstr "පරික්ෂා කර විභේධනය යොදන්න "
+
+msgctxt "#13110"
+msgid "Save resolution?"
+msgstr "විභේදනය තැම්පත් කරන්න ? "
+
+msgctxt "#13112"
+msgid "High quality upscaling"
+msgstr "උසස් ගුණත්ව ඉහළපරිමාණඅංක"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#13114"
+msgid "Enabled for SD content"
+msgstr "SD අන්තර්ගතය ක්‍රියාකාරී කරන්න "
+
+msgctxt "#13115"
+msgid "Always enabled"
+msgstr "සැමවිටම ක්‍රියාකාරී වේ "
+
+msgctxt "#13116"
+msgid "Upscaling method"
+msgstr "ඉහළපරිමාණඅංක ක්‍රමය "
+
+msgctxt "#13117"
+msgid "Bicubic"
+msgstr "දෙඝන "
+
+msgctxt "#13118"
+msgid "Lanczos"
+msgstr "ලන්ක්සොස් "
+
+msgctxt "#13119"
+msgid "Sinc"
+msgstr "සින්ක් "
+
+msgctxt "#13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13121"
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ ඉහළපරිමාණඅංක මට්ටම "
+
+msgctxt "#13130"
+msgid "Blank other displays"
+msgstr "වෙනත් හිස් සංදර්ශකය  "
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#13132"
+msgid "Blank displays"
+msgstr "හිස් සංදර්ශකය "
+
+msgctxt "#13140"
+msgid "Active connections detected!"
+msgstr "ක්‍රියාකාරී සබැධුමක් අනාවරණය කරගන්නා ලදී"
+
+msgctxt "#13141"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "ඔබ මෙය කළහොත් ඔබට Kodi පාලනය කිරීමට නොහැකි වේවි"
+
+msgctxt "#13142"
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "නවදුරටත්. ඔබට සිද්ධි මෙහෙයුම නැවත්වීමට අවශ්‍ය බව විශ්වාස ද ? "
+
+msgctxt "#13144"
+msgid "Change Apple Remote mode?"
+msgstr "Apple දුරස්ථ ආකාරය වෙනස් කරනවද?"
+
+msgctxt "#13145"
+msgid "If you are currently using the Apple Remote to control"
+msgstr "ඔබ දැනට Apple දුරස්ථ ආකාරය භාවිතාකරමින් පවතී"
+
+msgctxt "#13146"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "Kodi සැකසුම් වෙනස් කිරීමෙන් ඔබේ හැකියාවන් වලට බලපෑමක් ඇති වේය හැක"
+
+msgctxt "#13147"
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "පාලනය කිරීම දිගටම පවත්වා ගැනීම .ඔබට ඉරිරියට කරගෙන යාම අවශ්‍යද?"
+
+msgctxt "#13159"
+msgid "Subnet mask"
+msgstr "උපජාල ආවරණය "
+
+msgctxt "#13160"
+msgid "Gateway"
+msgstr "ඇතුල්වීම/ද්වාරය "
+
+msgctxt "#13161"
+msgid "Primary DNS"
+msgstr "මුලික DNS"
+
+msgctxt "#13170"
+msgid "Never"
+msgstr "කිසි විටෙකත් නැති "
+
+msgctxt "#13171"
+msgid "Immediately"
+msgstr "සැනෙකින් "
+
+msgctxt "#13172"
+msgid "After %i secs"
+msgstr "තත්පර %i වලට පසුව "
+
+msgctxt "#13173"
+msgid "HDD install date:"
+msgstr "දෘඩාංගය පිහිටවූ දිනය : "
+
+msgctxt "#13174"
+msgid "HDD power cycle count:"
+msgstr "දෘඩාංගය බල චක්‍ර ගණනය "
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "පැතිකඩ "
+
+msgctxt "#13201"
+msgid "Delete profile '%s'?"
+msgstr "'%s' ආකෘතිය මකා දමන්න ? "
+
+msgctxt "#13204"
+msgid "Last loaded profile:"
+msgstr "අවසානයට ප්‍රවේෂණය කල  පැතිකඩ "
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "අඥාත "
+
+msgctxt "#13206"
+msgid "Overwrite"
+msgstr "ප්‍රතිස්ථාපනය "
+
+msgctxt "#13208"
+msgid "Alarm clock"
+msgstr "එලාම් ඔරලොසුව "
+
+msgctxt "#13209"
+msgid "Alarm clock interval (in minutes)"
+msgstr "එලාම් ඔරලෝසුවේ කාල පරාසය(මිනිත්තු)"
+
+msgctxt "#13210"
+msgid "Started, alarm in %im"
+msgstr "ආරම්භ විය .එලාම් මිනිත්තු %න් "
+
+msgctxt "#13211"
+msgid "Alarm!"
+msgstr "එලාම් !"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "අවලංගු කළ %im% ඉතිරි ය."
+
+msgctxt "#13213"
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+msgctxt "#13214"
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+msgctxt "#13249"
+msgid "Search for subtitles in RARs"
+msgstr "RAR වල උපසිරැසි සෙවීම "
+
+msgctxt "#13250"
+msgid "Browse for subtitle..."
+msgstr "උපසිරැසි සදහා විමසීම "
+
+msgctxt "#13251"
+msgid "Move item"
+msgstr "අයිටමය වෙනත් තැනකට ගෙන යාම "
+
+msgctxt "#13252"
+msgid "Move item here"
+msgstr "අයිතමය මෙතනට ගෙන ඒම"
+
+msgctxt "#13253"
+msgid "Cancel move"
+msgstr "වෙනත් තැනකට ගෙන යාම නැවත්වීම "
+
+msgctxt "#13270"
+msgid "Hardware:"
+msgstr "දෘඩාංග"
+
+msgctxt "#13271"
+msgid "CPU Usage:"
+msgstr "CPU භාවිතය "
+
+msgctxt "#13274"
+msgid "Connected, but no DNS is available."
+msgstr "සම්බන්ද වී ඇත ,නමුත් DNS ප්‍රයෝජනයට ගත නොහැක "
+
+msgctxt "#13275"
+msgid "Hard Disk"
+msgstr "දෘඩ තැටිය "
+
+msgctxt "#13276"
+msgid "DVD-ROM"
+msgstr "DVD රෝම්"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "තැන්පත් කිරීම"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "නියත "
+
+msgctxt "#13279"
+msgid "Network"
+msgstr "ජාලය "
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "දෘඩාංග "
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "මෙහෙයුම් පද්දතිය "
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU වේගය "
+
+msgctxt "#13286"
+msgid "Video encoder:"
+msgstr "වීඩියෝ සංකේතනය: "
+
+msgctxt "#13287"
+msgid "Screen resolution:"
+msgstr "තිර ප්‍රමාණය "
+
+msgctxt "#13292"
+msgid "A/V cable:"
+msgstr "A/V කේබලය"
+
+msgctxt "#13294"
+msgid "DVD region:"
+msgstr "DVD අවට ප්‍රදේශය "
+
+msgctxt "#13295"
+msgid "Internet:"
+msgstr "අන්තර්ජාලය "
+
+msgctxt "#13296"
+msgid "Connected"
+msgstr "සම්බන්ධ විය "
+
+msgctxt "#13297"
+msgid "Not connected. Check network settings."
+msgstr "සම්බන්ධ නොවිණි .ජාල සැකසුම් පරික්ෂා කරන්න "
+
+msgctxt "#13299"
+msgid "Target temperature"
+msgstr "ඉලක්ක උෂ්ණත්වය "
+
+msgctxt "#13300"
+msgid "Fan speed"
+msgstr "පංකා වේගය "
+
+msgctxt "#13301"
+msgid "Auto temperature control"
+msgstr "ස්වන්ක්‍රිය  උෂ්ණත්ව පාලනය "
+
+msgctxt "#13302"
+msgid "Fan speed override"
+msgstr "වටපත් වේගය ප්‍රතික්ෂේප කරන්න "
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "මුද්‍රිත අකුරු "
+
+msgctxt "#13304"
+msgid "Enable flipping bi-directional strings"
+msgstr "දෙදිශා පටි කරනම් චලිතය ක්‍රියාත්මක කරන්න "
+
+msgctxt "#13305"
+msgid "Show RSS news feeds"
+msgstr "RSS පුවත්  සංග්‍රහය පෙන්වන්න"
+
+msgctxt "#13306"
+msgid "Show parent folder items"
+msgstr "ජනක පත්‍රිකාව අයිතම පෙන්වන්න "
+
+msgctxt "#13307"
+msgid "Track naming template"
+msgstr "තැටි නම් කිරීමේ අච්චුව "
+
+msgctxt "#13308"
+msgid "Do you wish to reboot your system"
+msgstr "ඔබේ පද්ධතිය නැවත ආරම්භ කිරීමට  ඔබ කැමති ද ? "
+
+msgctxt "#13309"
+msgid "instead of just Kodi?"
+msgstr "Kodi පමණක් වෙනුවට ? "
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "ශීඝ්‍ර ආරෝහණ කාර්යය "
+
+msgctxt "#13311"
+msgid "Float effect"
+msgstr "ඉපිලුම් කාර්යය "
+
+msgctxt "#13312"
+msgid "Black bar reduction"
+msgstr "කළු පටිය අඩු කිරීම "
+
+msgctxt "#13313"
+msgid "Restart"
+msgstr "නැවත ආරම්භ කිරීම "
+
+msgctxt "#13314"
+msgid "Crossfade between songs"
+msgstr "ගීත අතර හරස් මැලෑයිම "
+
+msgctxt "#13315"
+msgid "Regenerate thumbnails"
+msgstr "මහපට ඇගිලි සටහන් ප්‍රතිජනනය කරන්න "
+
+msgctxt "#13316"
+msgid "Recursive thumbnails"
+msgstr "සමාවර්තනිය මහපට ඇගිලි සටහන්  "
+
+msgctxt "#13317"
+msgid "View slideshow"
+msgstr "රූටන දර්ශන බලන්න "
+
+msgctxt "#13318"
+msgid "Recursive slideshow"
+msgstr "සමාවර්තනිය රූටන දර්ශන "
+
+msgctxt "#13320"
+msgid "Stereo"
+msgstr "ත්‍රිමාණ "
+
+msgctxt "#13321"
+msgid "Left only"
+msgstr "වම පමණයි "
+
+msgctxt "#13322"
+msgid "Right only"
+msgstr "දකුණ පමණයි "
+
+msgctxt "#13323"
+msgid "Enable karaoke support"
+msgstr "උපසිරැසි උදව් ක්‍රියාත්මක කරන්න "
+
+msgctxt "#13324"
+msgid "Background transparency"
+msgstr "පාරදෘශ්‍ය පසුතලය "
+
+msgctxt "#13325"
+msgid "Foreground transparency"
+msgstr "පාරදෘශ්‍ය ඉදිරිතලය  "
+
+msgctxt "#13326"
+msgid "A/V delay"
+msgstr "A/V ප්‍රමාදය"
+
+msgctxt "#13327"
+msgid "Karaoke"
+msgstr "උපසිරැසි "
+
+msgctxt "#13328"
+msgid "%s not found"
+msgstr "%s සොයාගත්තේ නැත "
+
+msgctxt "#13329"
+msgid "Error opening %s"
+msgstr "%s විවෘත කිරීම දෝෂ සහගතයි "
+
+msgctxt "#13330"
+msgid "Unable to load %s"
+msgstr "%s ප්‍රවේශණය කිරීමට නොහැක "
+
+msgctxt "#13331"
+msgid "Error: Out of memory"
+msgstr "දෝෂය: මතකයෙන් පිටත "
+
+msgctxt "#13332"
+msgid "Move up"
+msgstr "ඉහළට චලනය කරන්න "
+
+msgctxt "#13333"
+msgid "Move down"
+msgstr "පහළට චලනය කරන්න "
+
+msgctxt "#13334"
+msgid "Edit label"
+msgstr "නම්පත සංස්කරණය කරන්න "
+
+msgctxt "#13335"
+msgid "Make default"
+msgstr "නියත කරන්න "
+
+msgctxt "#13336"
+msgid "Remove button"
+msgstr "ඉවත්වීමේ බොත්තම "
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "ලෙස ඉවත්වන්න "
+
+msgctxt "#13341"
+msgid "Green"
+msgstr "කොළ"
+
+msgctxt "#13342"
+msgid "Orange"
+msgstr "තැඹිලි "
+
+msgctxt "#13343"
+msgid "Red"
+msgstr "රතු "
+
+msgctxt "#13344"
+msgid "Cycle"
+msgstr "චක්‍රය "
+
+msgctxt "#13345"
+msgid "Switch LED off on playback"
+msgstr "LED පිලිවැයීම වසා දමන්න"
+
+msgctxt "#13346"
+msgid "Movie information"
+msgstr "චිත්‍රපටි තොරතුරු "
+
+msgctxt "#13347"
+msgid "Queue item"
+msgstr "පෝලිම් අයිතම "
+
+msgctxt "#13348"
+msgid "Search IMDb..."
+msgstr "IMDb සොයන්න... "
+
+msgctxt "#13349"
+msgid "Scan for new content"
+msgstr "නව පටුනක් සඳහා සුපිරික්සන්න "
+
+msgctxt "#13351"
+msgid "Album information"
+msgstr "ඇල්බම තොරතුරු "
+
+msgctxt "#13352"
+msgid "Scan item to library"
+msgstr "ලේඛනාලයට අයිතම පිරික්සන්න "
+
+msgctxt "#13353"
+msgid "Stop scanning"
+msgstr "පිරික්සීම නවත්වන්න "
+
+msgctxt "#13354"
+msgid "Render method"
+msgstr "ඉදිරිපත් කරන ක්‍රමය "
+
+msgctxt "#13355"
+msgid "Low quality pixel shader"
+msgstr "අඩු ගුණත්ව ඒකක මුවාව "
+
+msgctxt "#13356"
+msgid "Hardware overlays"
+msgstr "දෘඩාංග වසලන්න "
+
+msgctxt "#13357"
+msgid "High quality pixel shader"
+msgstr "උසස් ගුණත්ව ඒකක මුවාව "
+
+msgctxt "#13358"
+msgid "Play item"
+msgstr "අයිතම වාදනය කරන්න "
+
+msgctxt "#13359"
+msgid "Set artist thumb"
+msgstr "ගායක වෘද්ධාන්ගුලි සකස් කරන්න"
+
+msgctxt "#13360"
+msgid "Automatically generate thumbnails"
+msgstr "ස්වයංක්‍රියව මහපට ඇගිලි සටහන් ජනනය කරන්න "
+
+msgctxt "#13361"
+msgid "Enable voice"
+msgstr "කටහඬ ක්‍රියාත්මක කරන්න "
+
+msgctxt "#13375"
+msgid "Enable device"
+msgstr "උපකරණය ක්‍රියාත්මක කරන්න "
+
+msgctxt "#13376"
+msgid "Volume"
+msgstr "ශබ්දය "
+
+msgctxt "#13377"
+msgid "Default view mode"
+msgstr "නියත දර්ශන ආකාරය "
+
+msgctxt "#13378"
+msgid "Default brightness"
+msgstr "නියත දීප්තිය "
+
+msgctxt "#13379"
+msgid "Default contrast"
+msgstr "නියත wenaskam"
+
+msgctxt "#13380"
+msgid "Default gamma"
+msgstr "නියත ගැමා "
+
+msgctxt "#13381"
+msgid "Resume video"
+msgstr "වීඩියෝව නැවත පටන් ගන්න "
+
+msgctxt "#13382"
+msgid "Voice mask - Port 1"
+msgstr "ගීත ආවරණය - තීර්ථ 1"
+
+msgctxt "#13383"
+msgid "Voice mask - Port 2"
+msgstr "ගීත ආවරණය - තීර්ථ 2"
+
+msgctxt "#13384"
+msgid "Voice mask - Port 3"
+msgstr "ගීත ආවරණය - තීර්ථ 3"
+
+msgctxt "#13385"
+msgid "Voice mask - Port 4"
+msgstr "ගීත ආවරණය - තීර්ථ 4"
+
+msgctxt "#13386"
+msgid "Use time based seeking"
+msgstr "කාලය මත රඳන ඉල්ලීමක් භාවිතා කරන්න "
+
+msgctxt "#13387"
+msgid "Track naming template - right"
+msgstr "තැටි නම් කිරීමේ අච්චුව - දකුණ "
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "පෙරසැකසුම "
+
+msgctxt "#13391"
+msgid "Eject/Load"
+msgstr "බැහැර කරන්න/ප්‍රවේශණය කරන්න "
+
+msgctxt "#13393"
+msgid "Calculate size"
+msgstr "ප්‍රමාණය ගණනය කරන්න "
+
+msgctxt "#13394"
+msgid "Calculating folder size"
+msgstr "පත්‍රිකා ප්‍රමාණය ගණනය කරමින් "
+
+msgctxt "#13395"
+msgid "Video settings"
+msgstr "වීඩියෝ කට්ටල අංග "
+
+msgctxt "#13396"
+msgid "Audio and subtitle settings"
+msgstr "ශ්‍රවණ සහ උපසිරැසි කට්ටල අංග "
+
+msgctxt "#13397"
+msgid "Enable subtitles"
+msgstr "උපසිරැසි ක්‍රියාත්මක කරන්න' "
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "කෙටිමාර්ගයන්"
+
+msgctxt "#13399"
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "වර්ග කරන විට විශේෂ පදය නොසලකා හරින්න (උදා. \"ද\" )"
+
+msgctxt "#13400"
+msgid "Crossfade between songs on the same album"
+msgstr "එකම ඇල්බමයේ ගීත අතර හරස් මැලෑයිම "
+
+msgctxt "#13401"
+msgid "Browse for %s"
+msgstr "%s සඳහා විමසන්න  "
+
+msgctxt "#13402"
+msgid "Show track position"
+msgstr "තැටි පිහිටුම පෙන්නන්න "
+
+msgctxt "#13403"
+msgid "Clear default"
+msgstr "නියතයන් පවිත්‍ර කරන්න "
+
+msgctxt "#13404"
+msgid "Resume"
+msgstr "නැවත පටන් ගන්න "
+
+msgctxt "#13405"
+msgid "Get thumb"
+msgstr "වෘද්ධාන්ගුලි ලබා ගන්න "
+
+msgctxt "#13406"
+msgid "Picture information"
+msgstr "පින්තූර තොරතුරු "
+
+msgctxt "#13407"
+msgid "%s presets"
+msgstr "%s පෙරසැකසුම "
+
+msgctxt "#13408"
+msgid "(IMDb user rating)"
+msgstr "(IMDb පරිශීලක ඇගයුම)"
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "මුල් 250"
+
+msgctxt "#13410"
+msgid "Tune in on Last.fm"
+msgstr "Last.fm මත සුසර කරන්න"
+
+msgctxt "#13411"
+msgid "Minimum fan speed"
+msgstr "අවම පංකා වේගය "
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "මෙතැන් සිට වාදනය කරන්න "
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "බාගත වෙමින් "
+
+msgctxt "#13414"
+msgid "Include artists who appear only on compilations"
+msgstr "සම්පාදන මත පමණක් පෙනී සිටින ගායකයන් ඇතුළත් කරන්න "
+
+msgctxt "#13415"
+msgid "Render method"
+msgstr "ඉදිරිපත් කරන ක්‍රමය "
+
+msgctxt "#13416"
+msgid "Auto detect"
+msgstr "ස්වයංව අනාවරණය කරගන්න "
+
+msgctxt "#13417"
+msgid "Basic shaders (ARB)"
+msgstr "මුලික මුවාවන් (ARB)"
+
+msgctxt "#13418"
+msgid "Advanced shaders (GLSL)"
+msgstr "සංකීර්ණ මුවාවන් (GLSL)"
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "මෘදුකාංග "
+
+msgctxt "#13420"
+msgid "Remove safely"
+msgstr "ප්‍රවේශමෙන් ඉවත් කරන්න "
+
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13422"
+msgid "Start slideshow here"
+msgstr "රූටන දර්ශන මෙතනින් අරඹන්න "
+
+msgctxt "#13423"
+msgid "Remember for this path"
+msgstr "මෙම පෙත සඳහා මතක තබාගන්න "
+
+msgctxt "#13424"
+msgid "Use pixel buffer objects"
+msgstr "ඒකක අවරෝධක භාවිත කරන්න "
+
+msgctxt "#13425"
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (VDPAU)"
+
+msgctxt "#13426"
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (VAAPI)"
+
+msgctxt "#13427"
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (DXVA2)"
+
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (CrystalHD)"
+
+msgctxt "#13429"
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (VDADecoder)"
+
+msgctxt "#13430"
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (OpenMax)"
+
+msgctxt "#13431"
+msgid "Pixel Shaders"
+msgstr "ඒකක මුවාවන් "
+
+msgctxt "#13432"
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "දෘඩාංග ත්වරණයට ඉඩ දෙන්න  (VideoToolbox)"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "ඊළඟ වීඩියෝව ස්වයංව වාදනය ක්‍රියා කරවන්න "
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "මෙය පමණක් වාදනය කරන්න "
+
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "ඉහත පරිමාමණ සඳහා HQ පරිමාප ක්‍රියාත්මක කරන්න "
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "මෘදුකාංග "
+
+msgctxt "#13500"
+msgid "A/V sync method"
+msgstr "A/V සමකාලික ක්‍රමය "
+
+msgctxt "#13501"
+msgid "Audio clock"
+msgstr "ශ්‍රවණ ඔරලෝසුව "
+
+msgctxt "#13502"
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "වීඩියෝ ඔරලෝසුව (වැටීම/ශ්‍රවණ ඉත්තා) "
+
+msgctxt "#13503"
+msgid "Video clock (Resample audio)"
+msgstr "වීඩියෝ ඔරලෝසුව ( නැවත සාම්පල කල ශ්‍රවණ )"
+
+msgctxt "#13505"
+msgid "Resample quality"
+msgstr "නැවත සාම්පල කල ගුණත්ව "
+
+msgctxt "#13506"
+msgid "Low(fast)"
+msgstr "අඩු(වේගවත්) "
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "මධ්‍යස්ථ"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "ඉහළ"
+
+msgctxt "#13509"
+msgid "Really high(slow!)"
+msgstr "සැබවින්ම උසස්(මන්දගාමී!) "
+
+msgctxt "#13510"
+msgid "Sync playback to display"
+msgstr "දර්ශනයට සමකාලික පිරිවැයිම "
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "කලාව තෝරන්න "
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "වාර්තමාන කලාව "
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "දුරස්ථ කලාව "
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "දේශීය කලාව "
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "කලාව නැත "
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "කලාව එකතු කරන්න "
+
+msgctxt "#13550"
+msgid "Pause during refresh rate change"
+msgstr "නැවත ප්‍රාණවත් කිරීමේ අනුපාත වෙනස් කරන අතරතුර තාවකාලිකව නවතන්න "
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "වහන්න "
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f තත්පර "
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f තත්පර "
+
+msgctxt "#13600"
+msgid "Apple remote"
+msgstr "ඇපල් දුරස්ථකය "
+
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "ප්‍රමිත "
+
+msgctxt "#13620"
+msgid "Apple Remote Error"
+msgstr "ඇපල් දුරස්ථක දෝෂය "
+
+msgctxt "#14000"
+msgid "Stack"
+msgstr "රාක්කය "
+
+msgctxt "#14001"
+msgid "Unstack"
+msgstr "රාක්ක ආකාර නොවූ "
+
+msgctxt "#14003"
+msgid "Downloading playlist file..."
+msgstr "වාදන ලැයිස්තු ගොනු බාගත වෙමින් "
+
+msgctxt "#14004"
+msgid "Downloading streams list..."
+msgstr "ප්‍රවාහ ලැයිස්තු බාගත වෙමින් "
+
+msgctxt "#14005"
+msgid "Parsing streams list..."
+msgstr "ප්‍රවාහ ලැයිස්තු විග්‍රහ කරමින්  "
+
+msgctxt "#14006"
+msgid "Downloading streams list failed"
+msgstr "ප්‍රවාහ ලැයිස්තු බාගත වීම අසාර්ථකයි  "
+
+msgctxt "#14007"
+msgid "Downloading playlist file failed"
+msgstr "වාදන ලැයිස්තු ගොනු බාගත වීම අසාර්ථකයි  "
+
+msgctxt "#14009"
+msgid "Games directory"
+msgstr "ක්‍රීඩා නාමාවලිය "
+
+msgctxt "#14012"
+msgid "- Use large icons"
+msgstr "-විශාල සුරුවම් භාවිතා කරන්න "
+
+msgctxt "#14014"
+msgid "- Percentage"
+msgstr "- ප්‍රතිශත "
+
+msgctxt "#14018"
+msgid "View options"
+msgstr "වීඩියෝ කැමැත්ත "
+
+msgctxt "#14019"
+msgid "Change area code 1"
+msgstr "ක්ෂෙත්‍ර කේතාංක 1 වෙනස් කිරීම "
+
+msgctxt "#14020"
+msgid "Change area code 2"
+msgstr "ක්ෂෙත්‍ර කේතාංක 2 වෙනස් කිරීම "
+
+msgctxt "#14021"
+msgid "Change area code 3"
+msgstr "ක්ෂෙත්‍ර කේතාංක 3 වෙනස් කිරීම "
+
+msgctxt "#14022"
+msgid "Library"
+msgstr "ලේඛණාලය "
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "රුපවාහිනිය නැත "
+
+msgctxt "#14024"
+msgid "Enter the nearest large town"
+msgstr "ළඟම විශාල නගරය ඇතුළත් කරන්න "
+
+msgctxt "#14026"
+msgid "Video cache - DVD-ROM"
+msgstr "වීඩියෝ තාවකාලික මතකය - DVD-ROM"
+
+msgctxt "#14030"
+msgid "Audio cache - DVD-ROM"
+msgstr "ශ්‍රවණ තාවකාලික මතකය - DVD-ROM"
+
+msgctxt "#14034"
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD තාවකාලික මතකය - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "ස්ථානික ජාලය"
+
+msgctxt "#14036"
+msgid "Services"
+msgstr "සේවා "
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i මිනි. "
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i තත්. "
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i මිලි.තත්. "
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i කිලෝබයිට්/තත් "
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i කිලෝබයිට් "
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 ඩේසිබෙල් "
+
+msgctxt "#14051"
+msgid "Time format"
+msgstr "කාල ආකෘතිය "
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "දින ආකෘතිය  "
+
+msgctxt "#14061"
+msgid "Auto"
+msgstr "ස්වයං "
+
+msgctxt "#14062"
+msgid "Enter username for"
+msgstr "සඳහා පරිශීලක නම ඇතුළත් කරන්න "
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "දිනය සහ වේලාව "
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "දිනය හරිගස්සන්න "
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "කාලය හරිගස්සන්න "
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "පැය 24 HH:MM ආකෘතිය අනුව කාලය ඇතුළත් කරන්න "
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "DD/MM/YYYY ආකෘතිය අනුව දිනය ඇතුළත් කරන්න "
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "IP ලිපිනය ඇතුළත් කරන්න "
+
+msgctxt "#14069"
+msgid "Apply these settings now?"
+msgstr "මෙම කට්ටල සැකසුම් දැන් යොමු කරන්නද ? "
+
+msgctxt "#14070"
+msgid "Apply changes now"
+msgstr "දැන් වෙනස් කිරීම් යොමු කරන්නද ? "
+
+msgctxt "#14071"
+msgid "Allow file renaming and deletion"
+msgstr "ගොනුවේ නම වෙනස් කිරීම සහ මැකීම ඉඩ දෙන්න "
+
+msgctxt "#14074"
+msgid "Set timezone"
+msgstr "කාල කලාපය සකසන්න "
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "ප්‍රියතමයන්ට එකතු කරන්න "
+
+msgctxt "#14077"
+msgid "Remove from favourites"
+msgstr "ප්‍රියතමයන්ගෙන් ඉවත් කරන්න "
+
+msgctxt "#14078"
+msgid "Colours"
+msgstr "වර්ණ "
+
+msgctxt "#14079"
+msgid "Timezone country"
+msgstr "කාලකලාප රට "
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "කාලකලාපය "
+
+msgctxt "#14081"
+msgid "File lists"
+msgstr "ගොනු  ලැයිස්තු "
+
+msgctxt "#14086"
+msgid "Playback"
+msgstr "නැවත වාදනය "
+
+msgctxt "#14087"
+msgid "DVDs"
+msgstr "ඩි.වී.ඩි"
+
+msgctxt "#14088"
+msgid "Play DVDs automatically"
+msgstr "ස්‌වන්ක්‍රියව ඩි.වී.ඩි වාදනය කරන්න "
+
+msgctxt "#14089"
+msgid "Font to use for text subtitles"
+msgstr "උපසිරසි සදහා බාවිතා වන ෆොන්ට් "
+
+msgctxt "#14090"
+msgid "International"
+msgstr "ජාත්‍යන්තර "
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "අකුරු කට්ටලය "
+
+msgctxt "#14092"
+msgid "Debugging"
+msgstr "නිදොස්කරමින් "
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "සුරක්ෂිතතාව "
+
+msgctxt "#14094"
+msgid "Input devices"
+msgstr "දත්ත ඇතුල් කරන උපකරණය  "
+
+msgctxt "#14095"
+msgid "Power saving"
+msgstr "බලය ඉතිරිය "
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "වේගෙන් දුවවන්න "
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr "සිංදු සි.ඩි ඇතුලත් කිරීමේ ක්‍රියාව "
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "ක්‍රීඩා කරනවා"
+
+msgctxt "#15015"
+msgid "Remove"
+msgstr "ඉවත් කරන්න"
+
+msgctxt "#15016"
+msgid "Games"
+msgstr "ක්‍රීඩා "
+
+msgctxt "#15019"
+msgid "Add"
+msgstr "එකතු කරන්න "
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "මුරපදය"
+
+msgctxt "#15100"
+msgid "Library"
+msgstr "ලේඛණාලය "
+
+msgctxt "#15101"
+msgid "Database"
+msgstr "පරිගණක දත්ත ගබඩාව "
+
+msgctxt "#15102"
+msgid "* All albums"
+msgstr "සියලුම ඇල්බම් "
+
+msgctxt "#15103"
+msgid "* All artists"
+msgstr "සියලුම ගායකයන් "
+
+msgctxt "#15104"
+msgid "* All songs"
+msgstr "සියළු ගීත "
+
+msgctxt "#15105"
+msgid "* All genres"
+msgstr "සියලුම ප්‍රභේද "
+
+msgctxt "#15107"
+msgid "Buffering..."
+msgstr "අවරෝධක කරමින්  "
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "තේමාව "
+
+msgctxt "#15112"
+msgid "Default theme"
+msgstr "පද්දතියෙන් නියම කල  තේමාවන් "
+
+msgctxt "#15207"
+msgid "Connected"
+msgstr "සම්බන්ධ විය "
+
+msgctxt "#15208"
+msgid "Not connected"
+msgstr "සම්බන්ධ නොවිණි "
+
+msgctxt "#15213"
+msgid "Play using..."
+msgstr "භාවිතයෙන් ක්‍රියාකරවන්න "
+
+msgctxt "#15300"
+msgid "Path not found or invalid"
+msgstr "පථය "
+
+msgctxt "#16000"
+msgid "General"
+msgstr "සාමාන්‍ය"
+
+msgctxt "#16002"
+msgid "Internet lookup"
+msgstr "අන්තර්ජාලයේ සොයාබැලීම"
+
+msgctxt "#16003"
+msgid "Player"
+msgstr "වාදකයා "
+
+msgctxt "#16008"
+msgid "Enter new title"
+msgstr "නව මාතෘකාව ඇතුලත් කරන්න "
+
+msgctxt "#16009"
+msgid "Enter the movie name"
+msgstr "චිතපටයේ නම ඇතුලත් කරන්න "
+
+msgctxt "#16011"
+msgid "Enter the album name"
+msgstr "ඇල්බමයේ නම ඇතුලත් කරන්න "
+
+msgctxt "#16013"
+msgid "Enter new filename"
+msgstr "නව ලිපි නම ඇතුලත් කරන්න "
+
+msgctxt "#16014"
+msgid "Enter folder name"
+msgstr "ෆෝල්ඩරයේ නම ඇතුලත් කරන්න "
+
+msgctxt "#16018"
+msgid "None"
+msgstr "කිසිවක් නැත"
+
+msgctxt "#16019"
+msgid "Auto select"
+msgstr "ස්වන්ක්‍රිය තේරීම "
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "අවලංගු කිරීම"
+
+msgctxt "#16025"
+msgid "Enter the artist name"
+msgstr "කලකරුගේ නම ඇතුලත් කරන්න "
+
+msgctxt "#16033"
+msgid "Could not open database."
+msgstr "ඩේටා බේස් සදහා පිවිසිය නොහැක "
+
+msgctxt "#16034"
+msgid "Could not get songs from database."
+msgstr "ඩේටා බේසයෙන් සිංදු ලබා ගත නොහැක "
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "වහනවා"
+
+msgctxt "#16040"
+msgid "Auto"
+msgstr "ස්වයං "
+
+msgctxt "#16041"
+msgid "On"
+msgstr "අරිනවා /ක්‍රියාකාරී වෙනවා "
+
+msgctxt "#16100"
+msgid "All Videos"
+msgstr "සියලු වීඩියෝ"
+
+msgctxt "#16101"
+msgid "Unwatched"
+msgstr "නොබැලූ"
+
+msgctxt "#16102"
+msgid "Watched"
+msgstr "බැලූ "
+
+msgctxt "#16103"
+msgid "Mark as watched"
+msgstr "බැලූ ලෙස සලකුණු කරන්න "
+
+msgctxt "#16104"
+msgid "Mark as unwatched"
+msgstr "නොබැලූ ලෙස සලකුණු කරන්න "
+
+msgctxt "#16105"
+msgid "Edit title"
+msgstr "මාතෘකාව වෙනස් කරන්න "
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "දෙඝන "
+
+msgctxt "#16316"
+msgid "Auto"
+msgstr "ස්වයං "
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
+msgctxt "#19017"
+msgid "Recordings"
+msgstr "පටිගතකිරීම්"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "ඊළඟ "
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "පටිගතකිරීම්"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "නැවත වාදනය "
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "ස්වයං "
+
+msgctxt "#20007"
+msgid "Recordings"
+msgstr "පටිගතකිරීම්"
+
+msgctxt "#20043"
+msgid "Lock settings"
+msgstr "අගුල් සැකසුම්"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "මාධ්‍ය තොරතුරු "
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "ඇතුල්වන තිරය"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "ශීඝ්‍ර ආරෝහණය "
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "පරිශීලක නම"
+
+msgctxt "#20163"
+msgid "of"
+msgstr "ගේ "
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "FTP මෙහෙයුම්කරු "
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "ක්‍රමය"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "ගොනුව "
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "චිත්‍රපට"
+
+msgctxt "#20420"
+msgid "Never"
+msgstr "කිසි විටෙකත් නැති "
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "සාමාන්‍ය "
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "අරින්න "
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "සිටුවම්"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "සම්මතකරනය"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "අර්ථ කථනය "
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "රට "
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "අකුරු"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "ප්‍රමාණය"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "වර්ණ "
+
+msgctxt "#24007"
+msgid "Movie information"
+msgstr "චිත්‍රපටි තොරතුරු "
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "තිරපත"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "උපසිරැසි"
+
+msgctxt "#24016"
+msgid "Album information"
+msgstr "ඇල්බම තොරතුරු "
+
+msgctxt "#24018"
+msgid "Services"
+msgstr "සේවා "
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "කාලගුණය"
+
+msgctxt "#33002"
+msgid "Stream"
+msgstr "ප්‍රවාහය"
+
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "වර්ෂණය "
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "නාලිකා ගණන"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "කිසි විටෙකත් නැති "
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "පරිස්ථානය"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "නම "
+
+msgctxt "#36016"
+msgid "Connected"
+msgstr "සම්බන්ධ විය "
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "පටිගත කරන්න "
+
+msgctxt "#36502"
+msgid "Disabled"
+msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "ස්වයං "

@@ -37,7 +37,6 @@ using namespace EPG;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH, "MyPVRSearch.xml"),
-  m_bSearchStarted(false),
   m_bSearchConfirmed(false)
 {
 }
@@ -48,7 +47,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     return;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  if (pItem->GetLabel() != g_localizeStrings.Get(19027))
+  if (pItem->HasEPGInfoTag())
   {
     if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
     {
@@ -69,11 +68,18 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Epg info button */
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
     if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
         g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
+
+  buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
+}
+
+void CGUIWindowPVRSearch::OnWindowLoaded()
+{
+  CGUIMediaWindow::OnWindowLoaded();
+  m_searchfilter.Reset();
 }
 
 bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -122,19 +128,15 @@ bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON 
   return bReturn;
 }
 
-bool CGUIWindowPVRSearch::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 {
-  CGUIWindowPVRBase::Update(strDirectory);
+  items.Clear();
 
-  /* perform search */
-  Search();
-
-  return true;
-}
-
-void CGUIWindowPVRSearch::Search(void)
-{
-  m_vecItems->Clear();
+  CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search/", true));
+  item->SetLabel(g_localizeStrings.Get(19140));
+  item->SetLabelPreformated(true);
+  item->SetSpecialSort(SortSpecialOnTop);
+  items.Add(item);
 
   if (m_bSearchConfirmed)
   {
@@ -142,34 +144,23 @@ void CGUIWindowPVRSearch::Search(void)
     if (dlgProgress)
     {
       dlgProgress->SetHeading(194);
-      dlgProgress->SetLine(0, m_searchfilter.m_strSearchTerm);
-      dlgProgress->SetLine(1, "");
-      dlgProgress->SetLine(2, "");
+      dlgProgress->SetText(CVariant(m_searchfilter.m_strSearchTerm));
       dlgProgress->StartModal();
       dlgProgress->Progress();
     }
 
-    // TODO get this from the selected channel group
-    g_EpgContainer.GetEPGSearch(*m_vecItems, m_searchfilter);
+    // TODO should we limit the find similar search to the selected group?
+    g_EpgContainer.GetEPGSearch(items, m_searchfilter);
+
     if (dlgProgress)
       dlgProgress->Close();
 
-    if (m_vecItems->IsEmpty())
+    if (items.IsEmpty())
     {
       CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
       m_bSearchConfirmed = false;
     }
   }
-
-  if (m_vecItems->IsEmpty())
-  {
-    CFileItemPtr item(new CFileItem("pvr://guide/searchresults/empty.epg", false));
-    item->SetLabel(g_localizeStrings.Get(19027));
-    item->SetLabelPreformated(true);
-    m_vecItems->Add(item);
-  }
-
-  m_viewControl.SetItems(*m_vecItems);
 }
 
 bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
@@ -189,8 +180,13 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
           case ACTION_SHOW_INFO:
           case ACTION_SELECT_ITEM:
           case ACTION_MOUSE_LEFT_CLICK:
-            ActionShowSearch(pItem.get());
+          {
+            if (URIUtils::PathEquals(pItem->GetPath(), "pvr://guide/searchresults/search/"))
+              OpenDialogSearch();
+            else
+               ShowEPGInfo(pItem.get());
             return true;
+          }
 
           case ACTION_CONTEXT_MENU:
           case ACTION_MOUSE_RIGHT_CLICK:
@@ -216,7 +212,6 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
   {
     bReturn = true;
 
-    m_bSearchStarted = false;
     m_bSearchConfirmed = false;
     m_searchfilter.Reset();
 
@@ -268,39 +263,22 @@ bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUT
   return bReturn;
 }
 
-bool CGUIWindowPVRSearch::ActionShowSearch(CFileItem *item)
+void CGUIWindowPVRSearch::OpenDialogSearch()
 {
-  if (item->GetPath() == "pvr://guide/searchresults/empty.epg")
-    ShowSearchResults();
-  else
-    ShowEPGInfo(item);
+  CGUIDialogPVRGuideSearch* dlgSearch = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
 
-  return true;
-}
-
-void CGUIWindowPVRSearch::ShowSearchResults()
-{
-  /* Load search dialog */
-  CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
-
-  if (!pDlgInfo)
+  if (!dlgSearch)
     return;
 
-  if (!m_bSearchStarted)
-  {
-    m_bSearchStarted = true;
-    m_searchfilter.Reset();
-  }
-
-  pDlgInfo->SetFilterData(&m_searchfilter);
+  dlgSearch->SetFilterData(&m_searchfilter);
 
   /* Set channel type filter */
   m_searchfilter.m_bIsRadio = m_bRadio;
 
   /* Open dialog window */
-  pDlgInfo->DoModal();
+  dlgSearch->DoModal();
 
-  if (pDlgInfo->IsConfirmed())
+  if (dlgSearch->IsConfirmed())
   {
     m_bSearchConfirmed = true;
     Refresh(true);

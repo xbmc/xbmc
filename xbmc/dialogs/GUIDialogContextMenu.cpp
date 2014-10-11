@@ -60,11 +60,17 @@ using namespace std;
 
 void CContextButtons::Add(unsigned int button, const std::string &label)
 {
+  for (const_iterator i = begin(); i != end(); ++i)
+    if (i->first == button)
+      return; // already have this button
   push_back(pair<unsigned int, std::string>(button, label));
 }
 
 void CContextButtons::Add(unsigned int button, int label)
 {
+  for (const_iterator i = begin(); i != end(); ++i)
+    if (i->first == button)
+      return; // already have added this button
   push_back(pair<unsigned int, std::string>(button, g_localizeStrings.Get(label)));
 }
 
@@ -270,8 +276,6 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
     }
     if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
-
-    buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
   }
   if (share && LOCK_MODE_EVERYONE != CProfilesManager::Get().GetMasterProfile().getLockMode())
   {

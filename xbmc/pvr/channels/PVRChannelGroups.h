@@ -76,7 +76,7 @@ namespace PVR
      * @param strPath The path to the channel
      * @return The channel, or an empty fileitem when not found
      */
-    CFileItemPtr GetByPath(const CStdString &strPath) const;
+    CFileItemPtr GetByPath(const std::string &strPath) const;
 
     /*!
      * @brief Get a pointer to a channel group given it's ID.
@@ -90,7 +90,7 @@ namespace PVR
      * @param strName The name.
      * @return The group or NULL if it wan't found.
      */
-    CPVRChannelGroupPtr GetByName(const CStdString &strName) const;
+    CPVRChannelGroupPtr GetByName(const std::string &strName) const;
 
     /*!
      * @brief Get the group that contains all channels.
@@ -159,7 +159,7 @@ namespace PVR
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
      */
-    bool AddGroup(const CStdString &strName);
+    bool AddGroup(const std::string &strName);
 
     /*!
      * @brief Delete a group in this container.

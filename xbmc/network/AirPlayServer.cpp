@@ -508,11 +508,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
       response += responseHeader;
     }
 
-    if (responseBody.size() > 0)
-    {
-      response = StringUtils::Format("%sContent-Length: %d\r\n", response.c_str(), responseBody.size());
-    }
-    response += "\r\n";
+    response = StringUtils::Format("%sContent-Length: %ld\r\n\r\n", response.c_str(), responseBody.size());
 
     if (responseBody.size() > 0)
     {
@@ -574,7 +570,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
-    reverseHeader = StringUtils::Format("%sContent-Length: %d\r\n",reverseHeader.c_str(), reverseBody.size());
+    reverseHeader = StringUtils::Format("%sContent-Length: %ld\r\n",reverseHeader.c_str(), reverseBody.size());
     reverseHeader = StringUtils::Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(), m_sessionId.c_str());
     m_lastEvent = state;
   }
@@ -718,13 +714,13 @@ void CAirPlayServer::restoreVolume()
 int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
                                                 std::string& responseBody)
 {
-  std::string method = m_httpParser->getMethod();
-  std::string uri = m_httpParser->getUri();
-  std::string queryString = m_httpParser->getQueryString();
-  std::string body = m_httpParser->getBody();
-  std::string contentType = m_httpParser->getValue("content-type");
-  m_sessionId = m_httpParser->getValue("x-apple-session-id");
-  std::string authorization = m_httpParser->getValue("authorization");
+  std::string method = m_httpParser->getMethod() ? m_httpParser->getMethod() : "";
+  std::string uri = m_httpParser->getUri() ? m_httpParser->getUri() : "";
+  std::string queryString = m_httpParser->getQueryString() ? m_httpParser->getQueryString() : "";
+  std::string body = m_httpParser->getBody() ? m_httpParser->getBody() : "";
+  std::string contentType = m_httpParser->getValue("content-type") ? m_httpParser->getValue("content-type") : "";
+  m_sessionId = m_httpParser->getValue("x-apple-session-id") ? m_httpParser->getValue("x-apple-session-id") : "";
+  std::string authorization = m_httpParser->getValue("authorization") ? m_httpParser->getValue("authorization") : "";
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
   
@@ -1039,7 +1035,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     }
     else
     {
-      responseBody = StringUtils::Format(PLAYBACK_INFO_NOT_READY, duration, cachePosition, position, (playing ? 1 : 0), duration);
+      responseBody = StringUtils::Format(PLAYBACK_INFO_NOT_READY);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";     
     }
   }

@@ -219,6 +219,12 @@ namespace VIDEO
     g_windowManager.SendThreadMessage(msg);
   }
 
+  bool CVideoInfoScanner::IsExcluded(const CStdString& strDirectory) const
+  {
+    CStdString noMediaFile = URIUtils::AddFileToFolder(strDirectory, ".nomedia");
+    return CFile::Exists(noMediaFile);
+  }
+
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
     if (m_handle)
@@ -250,6 +256,12 @@ namespace VIDEO
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
+
+    if (IsExcluded(strDirectory))
+    {
+      CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", strDirectory.c_str());
+      return true;
+    }
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)

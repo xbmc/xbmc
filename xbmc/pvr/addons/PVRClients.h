@@ -144,7 +144,7 @@ namespace PVR
      * @param strName The friendly name of the client or an empty string when it wasn't found.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClientName(int iClientId, CStdString &strName) const;
+    bool GetClientName(int iClientId, std::string &strName) const;
 
     /*!
      * @bried Get all connected clients.
@@ -171,7 +171,7 @@ namespace PVR
     /*!
      * @return The friendly name of the client that is currently playing or an empty string if nothing is playing.
      */
-    const CStdString GetPlayingClientName(void) const;
+    const std::string GetPlayingClientName(void) const;
 
     /*!
      * @brief Read from an open stream.
@@ -233,7 +233,7 @@ namespace PVR
      * @brief Get the input format name of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
-    CStdString GetCurrentInputFormat(void) const;
+    std::string GetCurrentInputFormat(void) const;
 
     /*!
      * @return True if a live stream is playing, false otherwise.
@@ -268,7 +268,7 @@ namespace PVR
      * @param tag The channel to get the stream url for.
      * @return The requested stream url or an empty string if it wasn't found.
      */
-    CStdString GetStreamURL(const CPVRChannel &tag);
+    std::string GetStreamURL(const CPVRChannel &tag);
 
     /*!
      * @brief Switch an opened live tv stream to another channel.
@@ -354,7 +354,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was renamed successfully, false otherwise.
      */
-    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName);
+    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
 
     //@}
 
@@ -537,7 +537,7 @@ namespace PVR
 
     void Notify(const Observable &obs, const ObservableMessage msg);
 
-    bool GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const;
+    bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
 
     bool SupportsChannelScan(int iClientId) const;
     bool SupportsLastPlayedPosition(int iClientId) const;
@@ -627,7 +627,7 @@ namespace PVR
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
-    CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
+    std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */

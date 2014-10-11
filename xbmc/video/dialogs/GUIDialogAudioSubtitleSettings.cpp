@@ -84,7 +84,8 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
     m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::Get().GetBool("audiooutput.passthrough"));
 
-    m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, videoSettings.m_SubtitleOn);
+    // TODO: m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
+    //   \-> Unless subtitle visibility can change on the fly, while Dialog is up, this code should be removed.
     m_settingsManager->SetNumber(SETTING_SUBTITLE_DELAY, videoSettings.m_SubtitleDelay);
     // TODO (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.m_pPlayer->GetSubtitle());
   }
@@ -139,19 +140,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_AUDIO_STREAM)
   {
     m_audioStream = static_cast<const CSettingInt*>(setting)->GetValue();
-
-    // first check if it's a stereo track that we can change between stereo, left and right
-    if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
-    {
-      if (m_audioStreamStereoMode)
-      { // we're in the case we want - call the code to switch channels etc.
-        // update the screen setting...
-        videoSettings.m_AudioStream = -1 - m_audioStream;
-        // call monkeyh1's code here...
-        //bool bAudioOnAllSpeakers = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958) && CMediaSettings::Get().GetCurrentVideoSettings().m_OutputToAllSpeakers;
-        return;
-      }
-    }
     // only change the audio stream if a different one has been asked for
     if (g_application.m_pPlayer->GetAudioStream() != m_audioStream)
     {
@@ -396,50 +384,12 @@ bool CGUIDialogAudioSubtitleSettings::SupportsSubtitleFeature(int feature)
 
 void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, const std::string &settingId)
 {
-  m_audioStreamStereoMode = false;
   if (group == NULL || settingId.empty())
     return;
 
   m_audioStream = g_application.m_pPlayer->GetAudioStream();
   if (m_audioStream < 0)
     m_audioStream = 0;
-
-  // check if we have a single, stereo stream, and if so, allow us to split into
-  // left, right or both
-  if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
-  {
-    CStdString strAudioInfo;
-    g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
-
-    /* TODO:STRING_CLEANUP */
-    int iNumChannels = 0;
-    size_t pos = strAudioInfo.find("chns:");
-    if (pos != std::string::npos)
-      iNumChannels = static_cast<int>(strtol(strAudioInfo.substr(pos + 5).c_str(), NULL, 0));
-
-    std::string strAudioCodec;
-    if (strAudioInfo.size() > 7)
-      strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
-
-    bool bDTS = strAudioCodec.find("DTS") != std::string::npos;
-    bool bAC3 = strAudioCodec.find("AC3") != std::string::npos;
-
-    if (iNumChannels == 2 && !(bDTS || bAC3))
-    { // ok, enable these options
-/*      if (CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream == -1)
-      { // default to stereo stream
-        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = 0;
-      }*/
-      StaticIntegerSettingOptions options;
-      for (int i = 0; i < 3; ++i)
-        options.push_back(make_pair(i, 13320 + i));
-
-      m_audioStream = -CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream - 1;
-      m_audioStreamStereoMode = true;
-      AddSpinner(group, settingId, 460, 0, m_audioStream, options);
-      return;
-    }
-  }
 
   AddSpinner(group, settingId, 460, 0, m_audioStream, AudioStreamsOptionFiller);
 }
@@ -449,7 +399,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
   if (group == NULL || settingId.empty())
     return;
 
-  m_subtitleStream = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
   if (m_subtitleStream < 0)
     m_subtitleStream = 0;
 

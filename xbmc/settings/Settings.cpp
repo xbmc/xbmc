@@ -36,6 +36,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
+#include "input/KeyboardLayout.h"
 #include "input/MouseStat.h"
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -254,6 +255,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("timezones");
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
+  m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
 
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&g_advancedSettings);
@@ -509,7 +511,7 @@ void CSettings::InitializeVisibility()
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
 
-  if (!g_sysinfo.IsAppleTV2() || GetIOSVersion() >= 4.3)
+  if (!g_sysinfo.IsAppleTV2() || CDarwinUtils::GetIOSVersion() >= 4.3)
   {
     timezonecountry->SetRequirementsMet(false);
     timezone->SetRequirementsMet(false);
@@ -520,8 +522,8 @@ void CSettings::InitializeVisibility()
 void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-  ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.touched");
+#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+  ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.re-touched");
 #endif
 
 #if defined(TARGET_POSIX)
@@ -597,6 +599,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
 }
 
@@ -677,6 +680,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videoscreen.screenmode");
   settingSet.insert("videoscreen.vsync");
   settingSet.insert("videoscreen.monitor");
+  settingSet.insert("videoscreen.preferedstereoscopicmode");
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
 
   settingSet.clear();

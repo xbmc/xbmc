@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/xbmc-main/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "Inställningar"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "Väder"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "xbmc media center"
+msgid "Kodi media center"
+msgstr "Kodi media center"
 
 msgctxt "#11"
 msgid "Monday"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "Bekräfta flytt av fil"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "Bekräfta radering?"
+msgid "Confirm delete"
+msgstr "Bekräfta borttagning"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Webbgränssnitt"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Ljud-omkodare"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Slogan"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Storlek: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixlar: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Övervaka"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Skript"
@@ -914,8 +922,8 @@ msgid "Scripts output"
 msgstr "Skriptutdata"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "Tillåt kontroll av XBMC via HTTP"
+msgid "Allow control of Kodi via HTTP"
+msgstr "Tillåt kontroll av Kodi via HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1088,6 +1096,10 @@ msgstr "Originalströmmens språk"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Använd gränssnittets språk"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Tangentbordslayout"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1750,8 +1762,8 @@ msgid "Audio options"
 msgstr "Ljudalternativ"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr "Om XBMC"
+msgid "About Kodi"
+msgstr "Om Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1984,6 +1996,10 @@ msgstr "Ingen biografi för denna artist"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Mixa ned flerkanalsljud till stereo"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Nummer"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2402,12 +2418,60 @@ msgid "Compression level"
 msgstr "Kompressionsnivå"
 
 msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "Detaljerad loggning..."
+msgid "Enable component-specific logging"
+msgstr "Aktivera komponent-specifik loggning"
 
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Aktivera Dolby Digital-transkodning"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Specifiera komponent-specifik loggning..."
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "Utförlig loggning av SMB-bibliotek"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "Utförlig loggning av CURL-bibliotek (http, dav)"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "Utförlig loggning av CMYTH-bibliotek"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "Utförlig loggning av FFMPEG-bibliotek"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "Utförlig loggning av RTMP-bibliotek"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "Utförlig loggning av DBUS-anrop"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Utförlig loggning av JSON-RPC förfrågningar"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "Utförlig loggning av AUDIO-komponent"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Detaljerad loggning för AirTunes bibliotek"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Detaljerad loggning för UPnP komponenter"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Detaljerad loggning för CEC bibliotek"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2714,8 +2778,8 @@ msgid "Remote control"
 msgstr "Fjärrstyrning"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "Tillåt program på detta system att kontrollera XBMC"
+msgid "Allow programs on this system to control Kodi"
+msgstr "Tillåt program på detta system att kontrollera Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2726,8 +2790,8 @@ msgid "Port range"
 msgstr "Portintervall"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "Tillåt program på andra system att kontrollera XBMC"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "Tillåt program på andra system att kontrollera Kodi"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2790,8 +2854,8 @@ msgid "Unable to connect"
 msgstr "Kunde inte ansluta"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC kunde inte ansluta till nätverksplatsen."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi kunde inte ansluta till nätverksplatsen."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3142,8 +3206,8 @@ msgid "Allow volume control"
 msgstr "Tillåt volymkontroll"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "Tillåt XBMC att ta emot AirPlay-innehåll"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "Tillåt Kodi att ta emot AirPlay-innehåll"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4025,6 +4089,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "Batterinivå"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Auto uppdateringar: På"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Auto uppdateringar: Meddela"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Auto uppdateringar: Aldrig"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Väder"
@@ -4278,8 +4354,8 @@ msgid "Active connections detected!"
 msgstr "Aktiva anslutningar detekterade!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Om du fortsätter kanske du inte kan kontrollera XBMC"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "Om du fortsätter kanske du inte kan kontrollera Kodi"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4294,12 +4370,12 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "Om du för närvarande använder Apple-fjärren för att kontrollera"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC, om du ändrar denna inställning kan det påverka din förmåga"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "Kodi, om du ändrar denna inställning kan det påverka din förmåga"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
-msgstr "att kontrollera XBMC. Vill du fortsätta?"
+msgstr "att kontrollera Kodi. Vill du fortsätta?"
 
 msgctxt "#13159"
 msgid "Subnet mask"
@@ -4522,8 +4598,8 @@ msgid "Do you wish to reboot your system"
 msgstr "Vill du starta om hela systemet"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "istället för bara XBMC?"
+msgid "instead of just Kodi?"
+msgstr "istället för bara Kodi?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -4986,20 +5062,20 @@ msgid "Allow multi threaded software decoding"
 msgstr "Tillåt flertrådig mjukvaruavkodning"
 
 msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "Använd Mpeg-2 VDPAU"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Använd MPEG-2 VDPAU"
 
 msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-(1/2) codecs. Om avaktiverad kommer CPU'n att användas istället. Äldre Radeon-kort brukar generera segmenteringsfel med detta aktiverat."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-(1/2) kodecs. Ifall den är inaktiverad kommer CPU:n att användas istället. Äldre Radeon-kort har en tendens att ge upphov till fel vid aktivering."
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "Använd Mpeg-4 VDPAU"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Använd MPEG-4 VDPAU"
 
 msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-4 codec. Om avaktiverad kommer CPU'n att användas istället. Viss ION-hårdvara får problem om detta är aktiverat."
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-4 kodec. Ifall den är inaktiverad kommer CPU:n att användas istället. Viss ION-hårdvara kan skapa problem vid aktivering."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5010,20 +5086,20 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "Aktivera för att använda hårdvaruacceleration för codecs baserade på VC-1. Om avaktiverad kommer CPU'n att användas istället. AMD-hårdvara med VDPAU kan inte avkoda VC-1 Simple."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "Använd Mpeg-2 VAAPI"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Använd MPEG-2 VAAPI"
 
 msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-(1/2) codecs. Om avaktiverad kommer CPU'n att användas istället. Viss MPEG-2-material kan ha gröna artifakter."
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-(1/2) kodeks. Ifall den är inaktiverad kommer CPU:n att användas istället. Vissa MPEG-2 filmer kan visa gröna artifakter."
 
 msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "Använd Mpeg-4 VAAPI"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Använd MPEG-4 VAAPI"
 
 msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "Aktivera för att använda hårdvaruacceleration för MPEG-4 codec. Om avaktiverad kommer CPU'n att användas istället. "
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Aktivera det här alternativet för att använda hårdvarue-accelerering till MPEG-4 kodek. Ifall den är inaktiverad kommer CPU:n att användas istället."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5044,6 +5120,18 @@ msgstr "Mjukvara"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Hårdvaruacceleration"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Föredra VAAPI renderingsmetod"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Tillåt hårdvaruacceleration (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Använd OMXPlayer vid kodning av videofiler."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5142,8 +5230,8 @@ msgid "Apple remote"
 msgstr "Apple-fjärrkontroll"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "Tillåt att starta XBMC med fjärrkontrollen"
+msgid "Allow start of Kodi using the remote"
+msgstr "Tillåt att starta Kodi med fjärrkontrollen"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5314,8 +5402,8 @@ msgid "Network settings changed"
 msgstr "Nätverksinställningar ändrade"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC måste startas om för att slutföra din"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi måste startas om för att slutföra din"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5368,6 +5456,10 @@ msgstr "Datumformat"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Gränsnittsfilter"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5608,6 +5700,10 @@ msgstr "Navigeringsljud"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skalets egna"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Större teckensnittsstorlek"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5985,6 +6081,18 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Efterbearbetning"
@@ -6018,8 +6126,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "eller använd fraser för att få en exakt träff, som \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "Hitta liknande program"
+msgid "Find similar"
+msgstr "Hitta liknande"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6074,8 +6182,8 @@ msgid "PVR Backend %i - %s"
 msgstr "PVR-backend %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "TV-inspelningar"
+msgid "Recordings"
+msgstr "Inspelningar"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6179,7 +6287,7 @@ msgstr "Är du säker på att döpa om denna timer?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "Spelar in"
+msgstr "Inspelning"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
@@ -6264,10 +6372,6 @@ msgstr "Gå till början"
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Gå till slutet"
-
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "Standard EPG-fönster"
 
 msgctxt "#19066"
 msgid "Channel icons"
@@ -6417,9 +6521,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Var god byt till en annan kanal."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Gå till kanal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Ange mappnamnet för inspelningen"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Välj en kanal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6440,6 +6552,14 @@ msgstr "Ett oväntat fel uppstod. Försök igen senare eller kolla loggen för d
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR-backendfel. Se loggen för detaljer."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Ta bort den här inspelningen?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Ta bort alla inspelningar i den här mappen?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6544,6 +6664,10 @@ msgstr "Var god skapa en grupp först"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Namnet på den nya gruppen"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Sök..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6689,10 +6813,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Visa kanalinformation vid kanalbyten"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "Dölj kanalinformation automatiskt"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6705,9 +6825,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Dagar att visa i EPG"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "Längd för kanalinformation"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6730,8 +6850,8 @@ msgid "Continue last channel on startup"
 msgstr "Återuppta senast valda kanal vid start"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "Minimerad"
+msgid "Background"
+msgstr "Bakgrund"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6806,8 +6926,8 @@ msgid "Enter the name of the new channel"
 msgstr "Ange namnet på den nya kanalen"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "XBMC virtuellt backend"
+msgid "Kodi virtual backend"
+msgstr "Kodi virtuellt backend"
 
 msgctxt "#19210"
 msgid "Client"
@@ -7050,8 +7170,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Visa inte varningar med 'anslutning tappad'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* Alla inspelningar"
+msgid "Group Items"
+msgstr "Gruppera objekt"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -7112,6 +7232,18 @@ msgstr "Välj ikon"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Bläddra bland ikoner"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Sök efter kanal-ikoner"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Alla kanaler"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Förgrunden"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7502,8 +7634,8 @@ msgid "Screenshots"
 msgstr "Skärmdumpar"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "Använd XBMC"
+msgid "Use Kodi"
+msgstr "Använd Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8414,8 +8546,8 @@ msgid "Do you want to remove all items within"
 msgstr "Vill du ta bort alla objekt i"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr "XBMC-biblioteket för denna sökväg?"
+msgid "this path from the Kodi library?"
+msgstr "Kodi-biblioteket för denna sökväg?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -9393,6 +9525,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s till %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Externa)"
@@ -9626,8 +9762,8 @@ msgid "Reference service"
 msgstr "Referenstjänst"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "Tillåt kontroll av XBMC via UPnP"
+msgid "Allow control of Kodi via UPnP"
+msgstr "Tillåt kontroll av Kodi via UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10125,6 +10261,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Ändringslogg"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Sök efter uppdateringar"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Senast uppdaterad %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Vill du aktivera detta tillägg?"
@@ -10200,6 +10344,22 @@ msgstr "Tillägg krävs"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Prova ansluta igen?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Helper Tillägg"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Tilläggsbibliotek"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Informationsbibliotek"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Visualiseringsbibliotek"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10340,6 +10500,14 @@ msgstr "Intill videon"
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Anpassad plats"
+
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Auto-nedladdning av undertext"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Ladda ner första undertexten i söklistan automatiskt "
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10646,12 +10814,12 @@ msgid "This version of %s requires an"
 msgstr "Denna version av %s kräver en"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC-version större än %s för att köras."
+msgid "Kodi revision of %s or greater to run."
+msgstr "Kodi-version större än %s för att köras."
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "Var god uppdatera XBMC."
+msgid "Please update Kodi."
+msgstr "Var god uppdatera Kodi."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10933,10 +11101,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Inaktivera joystick när denna enhet finns"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "Tillåt systemknappar att användas i fullskärmsläge"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Plats"
@@ -10986,12 +11150,12 @@ msgid "Could not open the adaptor"
 msgstr "Kunde inte öppna adaptern"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "Enheter att starta när XBMC startas"
+msgid "Devices to power on when starting Kodi"
+msgstr "Enheter att starta när Kodi startas"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "Enheter att stänga av när XBMC stängs av"
+msgid "Devices to power off when stopping Kodi"
+msgstr "Enheter att stänga av när Kodi stängs av"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11030,8 +11194,8 @@ msgid "Connected to HDMI device"
 msgstr "Ansluten till HDMI-enhet"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "Gör XBMC till den aktiva källan vid start"
+msgid "Make Kodi the active source when starting"
+msgstr "Gör Kodi till den aktiva källan vid start"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11050,8 +11214,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "Misslyckades att tillämpa den nya konfigurationen. Var god kontrollera dina inställningar."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Skicka 'inaktiv källa' kommando när XBMC stoppas"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "Skicka 'inaktiv källa' kommando när Kodi stoppas"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -11106,8 +11270,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "TV och AVR-enhet (uttryckligen)"
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "libCEC-gränsnittsversionen stöds inte. %x är lägre än den version som stöds av XBMC (%x)"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "libCEC-gränsnittsversionen stöds inte. %x är lägre än den version som stöds av Kodi (%x)"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -11126,8 +11290,8 @@ msgid "Category containing all Skin related settings."
 msgstr "Kategori innehållandes alla skalrelaterade inställningar"
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "Välj skal för användargränssnittet. Detta kommer att definiera utseendet på XBMC."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Välj skal för användargränssnittet. Detta kommer att definiera utseendet på Kodi."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11150,8 +11314,8 @@ msgid "Resize the view of the user interface."
 msgstr "Byt storlek på gränssnittets vy."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "Välj det mediafönster XBMC visar vid uppstart."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "Välj det mediafönster Kodi visar vid uppstart."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11234,8 +11398,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Ange tiden av inaktivitet som krävs innan skärmsläckaren skall starta."
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Välj skärmsläckare. XBMC kommer att tona ned skärmen när video som spelas i fullskärm pausas, eller när en dialogruta är aktiv, oavsett vald skärmsläckare."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Välj skärmsläckare. Kodi kommer att tona ned skärmen när video som spelas i fullskärm pausas, eller när en dialogruta är aktiv, oavsett vald skärmsläckare."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11246,8 +11410,8 @@ msgid "Preview the selected screensaver."
 msgstr "Förhandsvisa den valda skärmsläckaren."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "Om musik spelas upp kommer XBMC att starta vald visualisering istället för att visa skärmsläckaren."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "Om musik spelas upp kommer Kodi att starta vald visualisering istället för att visa skärmsläckaren."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11294,8 +11458,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Gruppera filmer som 'filmsamlingar' när du bläddrar i filmbiblioteket."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "Leta efter nya mediafiler när XBMC startar."
+msgid "Check for new media files on Kodi startup."
+msgstr "Leta efter nya mediafiler när Kodi startar."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11394,8 +11558,8 @@ msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Välj den zoomnivå som videor i 4:3-format visas på bredbildsskärmar."
 
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
-msgstr "Studionivåfärgkonvertering (VDPAU) tillhandahåller ett sätt för avancerade applikationer som XBMC att påverka konverteringen av färgutrymmet."
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "Studionivåfärgkonvertering (VDPAU) tillhandahåller ett sätt för avancerade applikationer som Kodi att påverka konverteringen av färgutrymmet."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11518,20 +11682,20 @@ msgid "Category for general settings for PVR/Live TV features."
 msgstr "Kategori med inställningar för PVR/Live-TV"
 
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "Aktivera den Personliga Video Inspelaren (PVR) funktionen i XBMC. Detta kräver att minst ett PVR-tillägg är installerat."
+msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgstr "Aktivera den Personliga Video Inspelaren (PVR) funktionen i Kodi. Detta kräver att minst ett PVR-tillägg är installerat."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importera kanalgrupper från PVR-backenden (om det stöds). Detta kommer ta bort skapta grupper om de inte hittas på backenden."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "Sortera kanalerna efter kanalnumret på servern, men använd XBMC's egna numrering av kanaler."
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Sortera kanalerna efter kanalnumret på servern, men använd Kodi's egna numrering av kanaler."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "Använd numrering från backenden istället för att konfigurera det manuellt i XBMC."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "Använd numrering från backenden istället för att konfigurera det manuellt i Kodi."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11546,8 +11710,8 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Ta bort kanal/EPG-databasen och importera datan igen från backenden efteråt."
 
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
-msgstr "Förhindra att notifieringsfönstret som visar anslutningsproblem visas när XBMC inte lyckas kommunicera med PVR-servern."
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Förhindra att notifieringsfönstret som visar anslutningsproblem visas när Kodi inte lyckas kommunicera med PVR-servern."
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
@@ -11557,17 +11721,9 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr "Visa programinformation vid kanalbyten, som nuvarande TV-program."
 
-msgctxt "#36213"
-msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Göm programinformationen automatiskt efter det antal sekunder som angivits nedan."
-
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr "Göm OSD-kontrollerna efter kanalbyte."
-
-msgctxt "#36215"
-msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
-msgstr "Hur länge programinformationen skall visas när 'göm automatiskt'-inställningen är aktiverad."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11580,10 +11736,6 @@ msgstr "Sök efter saknade kanalikoner."
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
 msgstr "Kategori med EPG-inställningar."
-
-msgctxt "#36219"
-msgid "Default electronic programming guide window to show."
-msgstr "Standard EPG-fönster att visa."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11598,16 +11750,16 @@ msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Importera inte EPG-data under tiden du tittar på TV för att minimera CPU-användningen."
 
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "Som standard lagras EPG-data i en lokal databas för att påskynda importen när XBMC startas om."
+msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgstr "Som standard lagras EPG-data i en lokal databas för att påskynda importen när Kodi startas om."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Göm \"ingen information tillgänglig\"-etiketter när ingen EPG-data kan hämtas för en kanal."
 
 msgctxt "#36225"
-msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
-msgstr "Ta bort EPG-databasen i xbmc och återimportera datan från backenden efteråt."
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Ta bort EPG-databasen i Kodi och återimportera datan från backenden efteråt."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11626,8 +11778,8 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Visa information om signalkvalitet i codecinformationsfönstret (om det stöds av tillägget och backenden)."
 
 msgctxt "#36230"
-msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
-msgstr "Hur länge XBMC skall vänta med kanalbyte om kanalen inte kan mottagas. Användbar för fria kanaler som tidvis förlorar signalstyrka."
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Hur länge Kodi skall vänta med kanalbyte om kanalen inte kan mottagas. Användbar för fria kanaler som tidvis förlorar signalstyrka."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
@@ -11670,8 +11822,8 @@ msgid "Category for PVR power management settings, such as when to wake the PVR 
 msgstr "Kategori med inställningar för PVR-serverns energihantering, t.ex som när denna skall väckas."
 
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Kör uppvakningskommandot nedan när XBMC avslutas eller går in i strömsparläge. Tidsstämpeln för nästa planerade inspelning skickas som en parameter."
+msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Kör uppvakningskommandot nedan när Kodi avslutas eller går in i strömsparläge. Tidsstämpeln för nästa planerade inspelning skickas som en parameter."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11710,12 +11862,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Fråga efter PIN-koden igen vid försök av åtkomst till en föräldralåst kanal om koden inte blivit inslagen under denna tid."
 
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Kategori med specifika inställningar för din PVR-server, om den stöder konfigurering genom XBMC."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Kategori med specifika inställningar för din PVR-server, om den stöder konfigurering genom Kodi."
 
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
-msgstr "Detta alternativ tar dig till specifika inställningar för din PVR-server, om PVR-servern stöder konfigurering genom XBMC."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgstr "Detta alternativ tar dig till specifika inställningar för din PVR-server, om PVR-servern stöder konfigurering genom Kodi."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11742,8 +11894,8 @@ msgid "Select the default artist information source. See the Add-ons Manager for
 msgstr "Välj standardkälla för artistinformation. Se tilläggshanteraren för alternativ."
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "Leta efter nya och borttagna mediafiler när XBMC startar."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "Leta efter nya och borttagna mediafiler när Kodi startar."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11762,16 +11914,16 @@ msgid "Category containing settings for how music playback is handled."
 msgstr "Kategori med inställningar för hur musikuppspelning skall hanteras."
 
 msgctxt "#36265"
-msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC spelar automatiskt upp nästa objekt i nuvarande mapp. Till exempel, i filvyn: när ett spår har spelats kommer XBMC automatiskt spela upp nästa spår som ligger i samma mapp."
+msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgstr "Kodi spelar automatiskt upp nästa objekt i nuvarande mapp. Till exempel, i filvyn: när ett spår har spelats kommer Kodi automatiskt spela upp nästa spår som ligger i samma mapp."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr "När låtar blir valda kommer de att köas i stället för att spelas upp omedelbart."
 
 msgctxt "#36267"
-msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC kommer att läsa ReplayGain-informationen som är kodad i dina ljudfiler av ett program som MP3Gain och normaliserar ljudnivåerna i enlighet med informationen."
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi kommer att läsa ReplayGain-informationen som är kodad i dina ljudfiler av ett program som MP3Gain och normaliserar ljudnivåerna i enlighet med informationen."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11826,8 +11978,8 @@ msgid "Used for formatting the second column in library lists."
 msgstr "Används för formatering av den andra kolumnen i bibliotekslistor."
 
 msgctxt "#36281"
-msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XBMC kommer söka efter miniatyrbilder på utdelningar och optisk media. Detta kan ofta bromsa ner listningen av nätverksmappar."
+msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Kodi kommer söka efter miniatyrbilder på utdelningar och optisk media. Detta kan ofta bromsa ner listningen av nätverksmappar."
 
 msgctxt "#36282"
 msgid "Category containing settings for how CDs are handled."
@@ -11874,8 +12026,8 @@ msgid "Category containing the settings for how karaoke is handled."
 msgstr "Kategori med inställningar för hur karaoke skall hanteras."
 
 msgctxt "#36293"
-msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "När du spelar musikfiler försöker XBMC hitta en matchande .cdg-fil och visa dess grafik."
+msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgstr "När du spelar musikfiler försöker Kodi hitta en matchande .cdg-fil och visa dess grafik."
 
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
@@ -11986,8 +12138,8 @@ msgid "Category containing settings used for all services."
 msgstr "Kategori med inställningar för alla tjänster som används."
 
 msgctxt "#36321"
-msgid "Display name of the XBMC installation when using various network services."
-msgstr "Visa namnet på XBMC-installationen när diverse nätverkstjänster används."
+msgid "Display name of the Kodi installation when using various network services."
+msgstr "Visa namnet på Kodi-installationen när diverse nätverkstjänster används."
 
 msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
@@ -12006,28 +12158,28 @@ msgid "Enable the UPnP client. This allows you to stream media from any UPnP ser
 msgstr "Aktivera UPnP-klienten. Detta gör så att du kan strömma media från vilken UPnP-server som helst med en kontrollpunkt och låter dig kontrollera uppspelningen från den servern."
 
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
-msgstr "Aktivera kontrollpunkt för UPnP. Detta tillåter dig strömma media till vilken UPnP-klient som helst och kontrollera uppspelningen från XBMC."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgstr "Aktivera kontrollpunkt för UPnP. Detta tillåter dig strömma media till vilken UPnP-klient som helst och kontrollera uppspelningen från Kodi."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr "Kategori med inställningar för hur webbservertjänsten skall hanteras."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Tillåt fjärranvändare att kontrollera XMBC genom den inbyggda webbservern."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "Tillåt fjärranvändare att kontrollera Kodi genom den inbyggda webbservern."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Ange port för webbservern."
 
 msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "Ange användarnamn för webbservern."
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Ange användarnamnet för webbservern. Det här tar endast effekt när både användarnamnet och lösenordet har angivits."
 
 msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "Ange webbserverns lösenord."
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Ange lösenordet för webbservern. Det här tar endast effekt när både användarnamnet och lösenordet har angivits."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
@@ -12038,8 +12190,8 @@ msgid "Category containing settings for how the remote control service is handle
 msgstr "Kategori med inställningar för hur fjärrkontroll skall hanteras."
 
 msgctxt "#36334"
-msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Tillåt program på datorn att kontrollera XBMC genom webbgränsnittet eller gränssnittsprotokollet JSON-RPC."
+msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Tillåt program på datorn att kontrollera Kodi genom webbgränsnittet eller gränssnittsprotokollet JSON-RPC."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12054,8 +12206,8 @@ msgid "Define the maximum number of clients that can connect."
 msgstr "Ange maximalt antal klienter som kan ansluta."
 
 msgctxt "#36338"
-msgid "Allow programs on the network to control XBMC."
-msgstr "Tillåt program på nätverket att kontrollera XBMC."
+msgid "Allow programs on the network to control Kodi."
+msgstr "Tillåt program på nätverket att kontrollera Kodi."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12070,12 +12222,12 @@ msgid "Category containing settings for how the zeroconf network discovery servi
 msgstr "Kategori med inställningar för hur upptäckartjänsten för Zeroconf skall hanteras, krävs för AirPlay."
 
 msgctxt "#36342"
-msgid "Allows applications on the network to discover XBMC's running services."
-msgstr "Tillåter applikationer på nätverket att upptäcka XBMC's startade tjänster."
+msgid "Allows applications on the network to discover Kodi's running services."
+msgstr "Tillåter applikationer på nätverket att upptäcka Kodi's startade tjänster."
 
 msgctxt "#36343"
-msgid "Allows XBMC to receive content from other AirPlay devices or applications."
-msgstr "Tillåter XBMC att motta innehåll från andra AirPlay-enheter eller applikationer."
+msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgstr "Tillåter Kodi att motta innehåll från andra AirPlay-enheter eller applikationer."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
@@ -12098,16 +12250,16 @@ msgid "If a WINS server is running on the network, enter its workgroup name here
 msgstr "Om en WINS-server körs på nätverket, ange dess arbetsgruppnamn här. Annars lämna blankt."
 
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device XBMC is installed on."
-msgstr "Sektion som innehåller systemrelaterade inställningar för enheten XBMC är installera på."
+msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgstr "Sektion som innehåller systemrelaterade inställningar för enheten Kodi är installera på."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Skickar automatiskt 'Wake-On-Lan' till servrar strax innan försök att nå delade filer eller tjänster görs."
 
 msgctxt "#36351"
-msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "Visa XBMC i ett fönster, eller fullskärm på den valda bildskärmen."
+msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgstr "Visa Kodi i ett fönster, eller fullskärm på den valda bildskärmen."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12118,12 +12270,12 @@ msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Byter uppdateringsfrekvense som användargränsnittet visas i."
 
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "Visa XBMC i fullskärmsfönster. Flerskärmskonfigurationer tjänar mest på detta, då XBMC kan användas utan att behöva minimera andra applikationer. Detta använder mer resurser så uppspelning kan bli ojämn."
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Visa Kodi i fullskärmsfönster. Flerskärmskonfigurationer tjänar mest på detta, då Kodi kan användas utan att behöva minimera andra applikationer. Detta använder mer resurser så uppspelning kan bli ojämn."
 
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "I en flerskärmskonfiguration, kommer XBMC mörklägga de skärmar där XBMC inte visas ."
+msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgstr "I en flerskärmskonfiguration, kommer Kodi mörklägga de skärmar där Kodi inte visas ."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12210,12 +12362,12 @@ msgid "When activated, your keyboard arrows will move the selection on the virtu
 msgstr "Om aktiverad, kommer tangentbordspilarna flytta ditt val på det virtuella tangentbordet. Om inaktiverat, kommer de flytta markören på din text."
 
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
-msgstr "Använd en datormus eller en pekskärmsenhet för att styra XBMC. Obs: inaktivering kommer att leda till att du tappar kontroll över XBMC när inget tangentbord eller fjärrkontroll finns närvarande."
+msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgstr "Använd en datormus eller en pekskärmsenhet för att styra Kodi. Obs: inaktivering kommer att leda till att du tappar kontroll över Kodi när inget tangentbord eller fjärrkontroll finns närvarande."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "Använd en joystick för att kontrollera XBMC."
+msgid "Use a joystick to control Kodi."
+msgstr "Använd en joystick för att kontrollera Kodi."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12246,8 +12398,8 @@ msgid "Configure the proxy server password."
 msgstr "Konfigurera lösenord för proxyservern."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "Om du har begränsad bandbredd kommer XBMC försöka hålla sig inom dessa gränser."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "Om du har begränsad bandbredd kommer Kodi försöka hålla sig inom dessa gränser."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -12258,12 +12410,12 @@ msgid "Turn off display when idle. Useful for TVs that turn off when there is no
 msgstr "Stäng av skärm vid inaktivitet. Användbart för TV-apparater som stänger av sig själva när ingen bildsignal upptäcks."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
-msgstr "Ange hur länge XBMC tillåts vara inaktivt innan systemet stängs av."
+msgid "Define how long Kodi should idle before shutting down."
+msgstr "Ange hur länge Kodi tillåts vara inaktivt innan systemet stängs av."
 
 msgctxt "#36390"
-msgid "Define what action XBMC should do when it has been idle for a long period of time."
-msgstr "Ange vad XBMC ska göra när det varit inaktivt under en längre tid."
+msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgstr "Ange vad Kodi ska göra när det varit inaktivt under en längre tid."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12274,12 +12426,12 @@ msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Aktivera eller inaktivera debugloggning. Användbart för felsökning."
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "Mapp som skall användas för att spara skärmdumpar från XBMC."
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "Mapp som skall användas för att spara skärmdumpar från Kodi."
 
 msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "Specificera ytterligare bibliotek som ska ingå i felsökningsloggen. "
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Aktivera logg-meddelanden från ytterligare bibliotek, som ska inkluderas i loggen."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12290,12 +12442,12 @@ msgid "Define the PIN code used for the master lock."
 msgstr "Definiera PIN-koden som används för huvudlåset."
 
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup."
-msgstr "Om aktiverad, kommer huvudlåskoden att krävas för att låsa upp XBMC vid uppstart."
+msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgstr "Om aktiverad, kommer huvudlåskoden att krävas för att låsa upp Kodi vid uppstart."
 
 msgctxt "#36398"
-msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "Ange maximalt tillåtna försök innan XBMC avslutas."
+msgid "Define the maximum number of retries before Kodi is closed down."
+msgstr "Ange maximalt tillåtna försök innan Kodi avslutas."
 
 msgctxt "#36399"
 msgid "Category containing settings for the cache function."
@@ -12370,8 +12522,8 @@ msgid "Specify the type of remote used."
 msgstr "Specificera typen av fjärrkontroll som används."
 
 msgctxt "#36417"
-msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
-msgstr "Kör alltid ett XBMC-hjälpprogram så fjärren kan användas till att starta XBMC."
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "Kör alltid ett Kodi-hjälpprogram så fjärren kan användas till att starta Kodi."
 
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
@@ -12425,17 +12577,17 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Avgör om videoavkodning skall utföras av mjukvara (kräver mer CPU) eller med hårdvaruacceleration om det är möjligt."
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "Stereoskopiskt läge (nuvarande)"
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Välj layout för virtuella tangentbord."
 
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "Stereoskopiskt läge"
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Om VAAPI-rendering är aktiverad, så pressas CPU'n inte lika mycket men drivrutinen kan hänga sig."
 
 msgctxt "#36502"
-msgid "None"
-msgstr "Ingen"
+msgid "Disabled"
+msgstr "Inaktiverad"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12461,21 +12613,9 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hårdvarubaserad"
 
-msgctxt "#36509"
-msgid "Monoscopic - 2D"
-msgstr "Monoskopisk - 2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos."
-msgstr "Uppspelningsläge för stereoskopiska videor"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Fråga mig"
-
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "Använd föredraget läge"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12489,26 +12629,6 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Samma som filmen (autodetektera)"
 
-msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Inaktivera stereoskopiskt läge när uppspelningen är stoppad"
-
-msgctxt "#36527"
-msgid "This video is stereoscopic. Select playback mode"
-msgstr "Den här videon är stereoskopisk. Välj uppspelningsläge"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "Välj stereoskopiskt läge"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "Mono (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "Föredraget läge"
-
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Välj alternativt läge..."
@@ -12521,29 +12641,13 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr "Ange hur ljudet skall nedmixas, exempelvi från 5.1 till 2.0: [Aktiverat] - bibehåller originalets dynamiska omfång vid nedmixning men ljudvolymen kommer bli lägre [Avaktiverat] - ljudvolymen bibehålls men det dynamiska omfånget kommer komprimeras. Notera - Dynamiskt omfång är skillnaden mellan det lägsta och högsta ljudet i en ljukälla."
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "Stereoskopiskt läge för video"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "Inverterat stereoskopiskt läge"
-
-msgctxt "#36537"
-msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Ange uppspelningsläge för stereoskopiska 3D-filmer."
-
-msgctxt "#36538"
-msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Förhindrar XBMC att gå från stereoskopiskt 3D-läge när uppspelning har stoppats då inte alla TV-apparater känner av bytet från 3D till 2D utan att behöva byta läge fysiskt på TV:n."
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Specifiera ytterligare bibliotek, vars logg-meddelanden som ska inkluderas i loggen."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Ändrar det stereoskopiska 3D-läget i användargränssnittet."
-
-msgctxt "#36540"
-msgid "The preferred stereoscopic 3D mode."
-msgstr "Det föredragna stereoskopiska 3D-läget."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12561,10 +12665,6 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktivera hårdvaruavkodning av videofiler."
 
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "Stereoskopiskt djup för undertexter"
-
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Anger det visuella djupet för undertexter i stereoskopiska 3D-filmer. Ju högre värde, ju närmare upplever betraktaren att undertexterna hamnar."
@@ -12574,8 +12674,8 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Använd högkvalitetstexturer för fanart och omslag (använder mer minne)"
 
 msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
-msgstr "Begränsar GUI-upplösningen för att spara minne. Påverkar inte videouppspelning. Välj 1080 för obegränsad upplösning. Kräver omstart."
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Begränsar upplösningen av gränssnittet för att spara minne. Påverkar inte videouppspelningen. Kräver omstart."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12592,6 +12692,94 @@ msgstr "Kategori med inställningar för hur AirPlay-tjänsten skall hanteras."
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori med inställningar för hur videoutgången skall hanteras."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "filmer"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV-serie"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "TV-serier"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "säsong"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "säsonger"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "avsnitt"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "avsnitt"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "musikvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "musikvideos"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "samling"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "samlingar"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "videos"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artist"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artister"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "låt"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "låtar"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12637,10 +12825,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Höj centerkanalen vid nedmixning"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
-msgstr "Tillåter systemtangenter som printscreen, alt-tab och volymknappar i fullskärmsläge."
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Aktivera grafik med högre färgdjup"
@@ -12660,3 +12844,27 @@ msgstr "Vill du stoppa uppspelningen på fjärrenheten?"
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Välj detta om din ljudutgång endast stödjer multikanalsljud som Dolby Digital 5.1, detta tillåter multikanalsljud som t.ex. AAC5.1 eller FLAC5.1 att spelas upp i 5.1 surroundljud. Obs! Rekommenderas ej för Pi då detta använder mycket processorkraft."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Konfigurera inställningar för ljudomvandling, som ljudkvalité och komprimering"
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Obegränsat"

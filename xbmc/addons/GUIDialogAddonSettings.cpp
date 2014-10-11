@@ -51,6 +51,7 @@
 #include "utils/log.h"
 #include "Util.h"
 #include "URL.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 using namespace ADDON;
@@ -71,8 +72,8 @@ using XFILE::CDirectory;
 #define ID_BUTTON_DEFAULT               12
 #define CONTROL_HEADING_LABEL           20
 
-#define CONTROL_START_SETTING           100
-#define CONTROL_START_SECTION           200
+#define CONTROL_START_SECTION           100
+#define CONTROL_START_SETTING           200
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
@@ -341,7 +342,6 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           VECSOURCES localShares;
           if (!shares)
           {
-            VECSOURCES networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(localShares);
@@ -403,7 +403,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             bool bUseFileDirectories = false;
             if (option)
             {
-              vector<string> options = StringUtils::Split(option, "|");
+              vector<string> options = StringUtils::Split(option, '|');
               bUseThumbs = find(options.begin(), options.end(), "usethumbs") != options.end();
               bUseFileDirectories = find(options.begin(), options.end(), "treatasfolder") != options.end();
             }
@@ -459,7 +459,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           const char *strType = setting->Attribute("addontype");
           if (strType)
           {
-            vector<string> addonTypes = StringUtils::Split(strType, ",");
+            vector<string> addonTypes = StringUtils::Split(strType, ',');
             vector<ADDON::TYPE> types;
             for (vector<string>::iterator i = addonTypes.begin(); i != addonTypes.end(); ++i)
             {
@@ -475,7 +475,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (multiSelect)
               {
                 // construct vector of addon IDs (IDs are comma seperated in single string)
-                vector<string> addonIDs = StringUtils::Split(value, ",");
+                vector<string> addonIDs = StringUtils::Split(value, ',');
                 if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
                 {
                   value = StringUtils::Join(addonIDs, ",");
@@ -609,6 +609,12 @@ void CGUIDialogAddonSettings::CreateSections()
     if (label.empty())
       label = g_localizeStrings.Get(128);
 
+    if (buttonID >= CONTROL_START_SETTING)
+    {
+      CLog::Log(LOGERROR, "%s - cannot have more than %d categories - simplify your addon!", __FUNCTION__, CONTROL_START_SETTING - CONTROL_START_SECTION);
+      break;
+    }
+
     // add the category button
     if (button && group)
     {
@@ -710,7 +716,7 @@ void CGUIDialogAddonSettings::CreateControls()
               ((CGUIButtonControl *)pControl)->SetLabel2(GetAddonNames(value));
             else if (type == "select" && !lvalues.empty())
             {
-              vector<string> valuesVec = StringUtils::Split(lvalues, "|");
+              vector<string> valuesVec = StringUtils::Split(lvalues, '|');
               int selected = atoi(value.c_str());
               if (selected >= 0 && selected < (int)valuesVec.size())
               {
@@ -842,7 +848,7 @@ void CGUIDialogAddonSettings::CreateControls()
         float fMin = 0.0f;
         float fMax = 100.0f;
         float fInc = 1.0f;
-        vector<std::string> range = StringUtils::Split(XMLUtils::GetAttribute(setting, "range"), ",");
+        vector<std::string> range = StringUtils::Split(XMLUtils::GetAttribute(setting, "range"), ',');
         if (range.size() > 1)
         {
           fMin = (float)atof(range[0].c_str());
@@ -892,11 +898,6 @@ void CGUIDialogAddonSettings::CreateControls()
 
     setting = setting->NextSiblingElement("setting");
     controlId++;
-    if (controlId >= CONTROL_START_SECTION)
-    {
-      CLog::Log(LOGERROR, "%s - cannot have more than %d controls per category - simplify your addon!", __FUNCTION__, CONTROL_START_SECTION - CONTROL_START_SETTING);
-      break;
-    }
   }
   EnableControls();
 }
@@ -904,7 +905,7 @@ void CGUIDialogAddonSettings::CreateControls()
 std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDslist) const
 {
   std::string retVal;
-  vector<string> addons = StringUtils::Split(addonIDslist, ",");
+  vector<string> addons = StringUtils::Split(addonIDslist, ',');
   for (vector<string>::const_iterator it = addons.begin(); it != addons.end() ; it ++)
   {
     if (!retVal.empty())

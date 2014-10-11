@@ -39,17 +39,14 @@ namespace PVR
     bool                         m_bIsUpdating;
     PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
+    bool                         m_bGroupItems;
 
     virtual void UpdateFromClients(void);
-    virtual CStdString TrimSlashes(const CStdString &strOrig) const;
-    virtual const CStdString GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const;
-    virtual bool IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember = true) const;
-    virtual void GetContents(const CStdString &strDirectory, CFileItemList *results);
-    virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results);
+    virtual std::string TrimSlashes(const std::string &strOrig) const;
+    virtual const std::string GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const;
+    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
+    virtual void GetSubDirectories(const std::string &strBase, CFileItemList *results);
 
-    CStdString AddAllRecordingsPathExtension(const CStdString &strDirectory);
-    CStdString RemoveAllRecordingsPathExtension(const CStdString &strDirectory);
-    
     /**
      * @brief recursively deletes all recordings in the specified directory
      * @param item the directory
@@ -82,17 +79,17 @@ namespace PVR
      * @return whether the item was deleted successfully
      */
     bool Delete(const CFileItem &item);
-    bool RenameRecording(CFileItem &item, CStdString &strNewName);
+    bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
 
-    bool IsAllRecordingsDirectory(const CFileItem &item) const;
-    bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    CFileItemPtr GetByPath(const CStdString &path);
+    bool GetDirectory(const std::string& strPath, CFileItemList &items);
+    CFileItemPtr GetByPath(const std::string &path);
     CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
     void SetPlayCount(const CFileItem &item, int iPlayCount);
     void GetAll(CFileItemList &items);
     CFileItemPtr GetById(unsigned int iId) const;
 
-    bool HasAllRecordingsPathExtension(const CStdString &strDirectory) const;
+    void SetGroupItems(bool value) { m_bGroupItems = value; };
+    bool IsGroupItems() const { return m_bGroupItems; };
   };
 }

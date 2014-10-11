@@ -117,11 +117,16 @@ PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
     
     PLT_DeviceSignature signature = PLT_HttpHelper::GetDeviceSignature(request);
 
-    // XBox needs to see something behind a ':' to even show it
-    if (m_AddHostname && hostname.GetLength() > 0) {
-        m_FriendlyName += ": " + hostname;
-    } else if (m_FriendlyName.Find(":") == -1) {
-        m_FriendlyName += ": 1";
+    if (signature == PLT_DEVICE_XBOX /*|| signature == PLT_SONOS*/) {
+        // XBox needs to see something behind a ':' to even show it
+        if (m_AddHostname && hostname.GetLength() > 0) {
+            m_FriendlyName += ": " + hostname;
+        } else if (m_FriendlyName.Find(":") == -1) {
+            m_FriendlyName += ": 1";
+        }
+    }
+    else if (m_AddHostname && hostname.GetLength() > 0) {
+      m_FriendlyName += " (" + hostname + ")";
     }
 
     // change some things based on device signature from request

@@ -43,6 +43,7 @@ namespace JSONRPC
   {
   public:
     static JSONRPC_STATUS GetActivePlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetPlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetItem(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
@@ -67,7 +68,7 @@ namespace JSONRPC
     static int GetActivePlayers();
     static PlayerType GetPlayer(const CVariant &player);
     static int GetPlaylist(PlayerType player);
-    static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random);
+    static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath = "");
     static void SendSlideshowAction(int actionID);
     static void OnPlaylistChanged();
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const std::string &property, CVariant &result);

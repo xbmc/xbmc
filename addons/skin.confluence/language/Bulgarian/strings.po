@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-main/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -206,11 +206,11 @@ msgstr "Настройки"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Показвай наскоро добавените албуми"
+msgstr "Показвай последно добавените албуми"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Показвай наскоро добавените видео файлове"
+msgstr "Показвай последно добавените видео файлове"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -374,7 +374,7 @@ msgstr "Резолюция"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Наскоро добавени"
+msgstr "Последно добавени"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -469,8 +469,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]КОНФИГУРИРАЙТЕ ТЕЛЕВИЗИЯТА[/B][CR][CR]Променете пълно екранната информация · Управлявайте настройките за ЕПС данните"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настройте контрола над XBMC чрез UPnP и HTTP · Настройте споделянето на файлове[CR]Включете Zeroconf · Настройте AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настройте контрола над Kodi чрез UPnP и HTTP · Настройте споделянето на файлове[CR]Включете Zeroconf · Настройте AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -482,14 +482,14 @@ msgstr "Табът отляво обозначава наличието на м�
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Налични са локални субтитри"
+msgstr "Локално са налични субтитри"
 
 msgctxt "#31420"
 msgid "Login"
 msgstr "Влизане"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
+msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
 
 msgctxt "#31422"
@@ -577,8 +577,8 @@ msgid "PICTURES"
 msgstr "СНИМКИ"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "ТВ"
+msgid "TV"
+msgstr "ТЕЛЕВИЗИЯ"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -607,3 +607,7 @@ msgstr "ДИСК"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "СИСТЕМА"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "РАДИО"

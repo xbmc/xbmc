@@ -1,11 +1,11 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/xbmc-main/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,8 +38,8 @@ msgid "Settings"
 msgstr "הגדרות"
 
 msgctxt "#6"
-msgid "XBMC SVN"
-msgstr "XBMC SVN"
+msgid "Kodi SVN"
+msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
@@ -50,8 +50,8 @@ msgid "Weather"
 msgstr "מזג האויר"
 
 msgctxt "#9"
-msgid "xbmc media center"
-msgstr "XBMC מדיה סנטר"
+msgid "Kodi media center"
+msgstr "Kodi מדיה סנטר"
 
 msgctxt "#11"
 msgid "Monday"
@@ -390,8 +390,8 @@ msgid "Confirm file move"
 msgstr "אישור העברת קובץ"
 
 msgctxt "#122"
-msgid "Confirm file delete?"
-msgstr "לאשר את מחיקת הקובץ?"
+msgid "Confirm delete"
+msgstr "אשר מחיקה"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "ממשק אינטרנט"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "מקודדי שמע"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "סלוגן"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "גודל: (%i,%i)->(%i,%i) (זום x%2.2f) AR:%2.2f:1 (פיקסלים: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "מסך"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "סקריפטים"
@@ -879,7 +887,7 @@ msgstr "מספר ערוצים"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "מקלט עם תמיכה ב־DTS"
+msgstr "רסיבר עם תמיכה ב־DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -914,8 +922,8 @@ msgid "Scripts output"
 msgstr "פלט סקריפטים"
 
 msgctxt "#263"
-msgid "Allow control of XBMC via HTTP"
-msgstr "אפשר שליטה על XBMC דרך HTTP"
+msgid "Allow control of Kodi via HTTP"
+msgstr "אפשר שליטה על Kodi דרך HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1055,15 +1063,15 @@ msgstr "סימניות"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP1"
+msgstr "רסיבר עם תמיכה ב־MP1"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP2"
+msgstr "רסיבר עם תמיכה ב־MP2"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "מקלט עם תמיכה ב־MP3"
+msgstr "רסיבר עם תמיכה ב־MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1088,6 +1096,10 @@ msgstr "שפת שידור מקורית"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "שפת ממשק משתמש"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "מערך מקלדת"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1225,9 +1237,13 @@ msgctxt "#345"
 msgid "Year"
 msgstr "שנה"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalize levels on downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "מקלט עם תמיכה ב־DTS-HD"
+msgstr "רסיבר עם תמיכה ב־DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
@@ -1235,7 +1251,7 @@ msgstr "הפעל passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "מקלט עם תמיכה ב־TrueHD"
+msgstr "רסיבר עם תמיכה ב־TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1295,7 +1311,7 @@ msgstr "סדר לפי : קובץ"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "מקלט עם תמיכה ב־Dolby Digital (AC3)‎"
+msgstr "רסיבר עם תמיכה ב־Dolby Digital (AC3)‎"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1621,6 +1637,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "נגן אוטומטית"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "רסיבר עם תמיכה ב־Dolby Digital Plus (E-AC3)"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "פעיל"
@@ -1742,8 +1762,8 @@ msgid "Audio options"
 msgstr "אפשרויות אודיו"
 
 msgctxt "#482"
-msgid "About XBMC"
-msgstr " XBMC אודות"
+msgid "About Kodi"
+msgstr " Kodi אודות"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1976,6 +1996,10 @@ msgstr "אין ביוגרפיה לאמן זה"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "התאם אודיו רב-ערוצי לסטריאו"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "מספר"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2277,6 +2301,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "מותאם אישי"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "התאמת עוצמת הקול ReplayGain"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "השתמש בעוצמת הרצועה"
@@ -2284,6 +2316,14 @@ msgstr "השתמש בעוצמת הרצועה"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "השתמש בעוצמת האלבום"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "עוצמת PreAmp  - קבצי ReplayGain"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "עוצמת PreAmp - ללא קבצי ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2373,13 +2413,41 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "רמת דחיסה"
 
-msgctxt "#666"
-msgid "Verbose logging..."
-msgstr "רישום מפורט..."
-
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "הפעל Dolby Digital transcoding"
+
+msgctxt "#669"
+msgid "Verbose logging for SMB library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול SMB"
+
+msgctxt "#670"
+msgid "Verbose logging for CURL library (http, dav)"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול (CURL (http, dav"
+
+msgctxt "#671"
+msgid "Verbose logging for CMYTH library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול CMYTH"
+
+msgctxt "#672"
+msgid "Verbose logging for FFMPEG libraries"
+msgstr "פירוט ביומן הרישום על אירועי ספריות FFMPEG"
+
+msgctxt "#673"
+msgid "Verbose logging for RTMP library"
+msgstr "פירוט ביומן הרישום על אירועי פרוטוקול RTMP"
+
+msgctxt "#674"
+msgid "Verbose logging for DBUS calls"
+msgstr "פירוט ביומן הרישום על קריאות ל-DBUS"
+
+msgctxt "#675"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "פירוט ביומן הרישום על בקשות JSON-RPC"
+
+msgctxt "#676"
+msgid "Verbose logging for AUDIO component"
+msgstr "פירוט ביומן הרישום על רכיב AUDIO"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2471,7 +2539,7 @@ msgstr "שרת FTP"
 
 msgctxt "#730"
 msgid "Port"
-msgstr "פתחה"
+msgstr "פורט"
 
 msgctxt "#732"
 msgid "Save & apply"
@@ -2686,8 +2754,8 @@ msgid "Remote control"
 msgstr "שליטה מרחוק"
 
 msgctxt "#791"
-msgid "Allow programs on this system to control XBMC"
-msgstr "אפשר לתוכנות במערכת זו לשלוט על XBMC"
+msgid "Allow programs on this system to control Kodi"
+msgstr "אפשר לתוכנות במערכת זו לשלוט על Kodi"
 
 msgctxt "#792"
 msgid "Port"
@@ -2698,8 +2766,8 @@ msgid "Port range"
 msgstr "תווך פורטים"
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control XBMC"
-msgstr "אפשר לתוכנות במערכות אחרות לשלוט על XBMC"
+msgid "Allow programs on other systems to control Kodi"
+msgstr "אפשר לתוכנות במערכות אחרות לשלוט על Kodi"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2762,8 +2830,8 @@ msgid "Unable to connect"
 msgstr "חיבור נכשל"
 
 msgctxt "#1002"
-msgid "XBMC was unable to connect to the network location."
-msgstr "XBMC נכשל בחיבור לרשת המיקום."
+msgid "Kodi was unable to connect to the network location."
+msgstr "Kodi נכשל בחיבור לרשת המיקום."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -3114,8 +3182,8 @@ msgid "Allow volume control"
 msgstr "אפשר שליטת עוצמת קול"
 
 msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr "אפשר ל-XBMC לקבל תכני AirPlay"
+msgid "Allow Kodi to receive AirPlay content"
+msgstr "אפשר ל-Kodi לקבל תכני AirPlay"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -3989,6 +4057,18 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr "רמת סוללה"
 
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "עדכונים אוטומטים: פעיל"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "עדכונים אוטומטים: התראה"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "עדכונים אוטומטים: כבוי"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "מזג אויר"
@@ -4238,8 +4318,8 @@ msgid "Active connections detected!"
 msgstr "חיבורים פעילים זוהו!"
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr "אם תמשיך, ייתכן שלא תוכל לשלוט ב-XBMC יותר"
+msgid "If you proceed, you might not be able to control Kodi"
+msgstr "אם תמשיך, ייתכן שלא תוכל לשלוט ב-Kodi יותר"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
@@ -4254,8 +4334,8 @@ msgid "If you are currently using the Apple Remote to control"
 msgstr "אם אתה משתמש כרגע בשלט Apple כדי לשלוט"
 
 msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr "ב- XBMC. שינוי הגדרות אלה כנראה ישפיעו על היכולות שלך"
+msgid "Kodi, changing this setting might affect your ability"
+msgstr "ב- Kodi. שינוי הגדרות אלה כנראה ישפיעו על היכולות שלך"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4482,8 +4562,8 @@ msgid "Do you wish to reboot your system"
 msgstr "האם ברצונך לאתחל את המערכת"
 
 msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr "במקום רק את XBMC?"
+msgid "instead of just Kodi?"
+msgstr "במקום רק את Kodi?"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -4937,21 +5017,17 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "אפשר האצת חומרה (MediaCodec)"
 
-msgctxt "#13441"
-msgid "Use Mpeg-2 VDPAU"
-msgstr "השתמש ב- Mpeg-2 VDPAU"
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "אפשר פענוח multi threaded software"
 
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים Mpeg-(1/2). אם מבוטל יעשה שימוש במעבד במקום. כרטיסי Radeon ישנים לא מתפקדים כראוי כשאפשרות זו מופעלת."
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "השתמש ב- MPEG-2 VDPAU"
 
 msgctxt "#13443"
-msgid "Use Mpeg-4 VDPAU"
-msgstr "השתמש ב- Mpeg-4 VDPAU"
-
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודד Mpeg-4. אם מבוטל יעשה שימוש במעבד במקום. חלק חומרת IOS חווים בעיות כשאפשרות זו מופעלת."
+msgid "Use MPEG-4 VDPAU"
+msgstr "השתמש ב- MPEG-4 VDPAU"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -4962,20 +5038,8 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים מבוססי VC-1. אם מבוטל יעשה שימוש במעבד במקום. חומרת AMD עם VDPAU אינם יכולים לקודד VC-1."
 
 msgctxt "#13447"
-msgid "Use Mpeg-2 VAAPI"
-msgstr "השתמש ב- Mpeg-2 VAAPI"
-
-msgctxt "#13448"
-msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדים Mpeg-(1/2). אם מבוטל יעשה שימוש במעבד במקום. ישנם סרטי Mpeg-2 אשר מופיעים בהם סימנים ירוקים."
-
-msgctxt "#13449"
-msgid "Use Mpeg-4 VAAPI"
-msgstr "השתמש ב- Mpeg-4 VAAPI"
-
-msgctxt "#13450"
-msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
-msgstr "הפעל אפשרות זו כדי להשתמש בתאוצת חומרה עבור מקודדי Mpeg-4. אם מבוטל יעשה שימוש במעבד במקום."
+msgid "Use MPEG-2 VAAPI"
+msgstr "השתמש ב- MPEG-2 VAAPI"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5086,8 +5150,8 @@ msgid "Apple remote"
 msgstr "APPLE שלט"
 
 msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr "אפשר הפעלת XBMC בעזרת השלט"
+msgid "Allow start of Kodi using the remote"
+msgstr "אפשר הפעלת Kodi בעזרת השלט"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5209,13 +5273,33 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "הזן את העיר הגדולה הקרובה"
 
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "זכרון וידאו/אודיו/DVD - דיסק קשיח"
+
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "מטמון וידאו - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "זכרון וידאו - רשמת מקומית"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "זכרון וידאו - אינטרנט"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "מטמון אודיו - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "זכרון אודיו - רשמת מקומית"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "זכרון אודיו - אינטרנט"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5229,13 +5313,17 @@ msgctxt "#14036"
 msgid "Services"
 msgstr "שרותים"
 
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "זכרון DVD - רשת מקומית"
+
 msgctxt "#14038"
 msgid "Network settings changed"
 msgstr "הגדרות רשת שונו"
 
 msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr "XBMC דורש הפעלה מחדש כדי לשנות את"
+msgid "Kodi requires to restart to change your"
+msgstr "Kodi דורש הפעלה מחדש כדי לשנות את"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5288,6 +5376,10 @@ msgstr "מבנה תאריך"
 msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI פילטרים ב"
+
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5525,6 +5617,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "ברירת מחדל של המעטפת"
 
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "גופן גדול יותר"
+
 msgctxt "#15111"
 msgid "Theme"
 msgstr "ערכת נושא"
@@ -5548,6 +5644,10 @@ msgstr "לא מחובר"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "נגן באמצעות..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "השתמש בסנכרון A/V חלק"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5849,6 +5949,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "שיפור Lanczos3"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "אוטומטי"
@@ -5876,6 +5980,10 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
+
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "שיפור Spline36"
 
 msgctxt "#16324"
 msgid "Software Blend"
@@ -5922,8 +6030,8 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "או השתמש בביטויים כדי למצוא התאמה מדוייקת, כמו \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programs"
-msgstr "מצא תכנות דומות"
+msgid "Find similar"
+msgstr "מצא דומים"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -5978,8 +6086,8 @@ msgid "PVR Backend %i - %s"
 msgstr "ממשק האחורי PVR %i - %s"
 
 msgctxt "#19017"
-msgid "TV recordings"
-msgstr "הקלטת טלוויזיה"
+msgid "Recordings"
+msgstr "הקלטות"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6169,10 +6277,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "עבור לסיום"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr "חלון לוח שידורים ברירת מחדל"
-
 msgctxt "#19066"
 msgid "Channel icons"
 msgstr "סמלי ערוץ"
@@ -6321,9 +6425,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "אנא החלף לערוץ אחר."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "עבור לערוץ"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "הזן את שם התיקיה עבור ההקלטה"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "אנא בחר ערוץ"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6344,6 +6456,14 @@ msgstr "שגיאה בלתי צפויה. נסה שנית מאוחר יותר או
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "שגיאת ממשק האחורי PVR. בדוק יומן רישום לפרטים."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "למחוק הקלטה זו?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "למחוק את כל ההקלטות מתיקיה זו?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6448,6 +6568,10 @@ msgstr "בבקשה צור קבוצה לפני הפעולה"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "שם הקבוצה"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "חיפוש..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6593,10 +6717,6 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "הצג מידע ערוץ במעבר בין ערוצים"
 
-msgctxt "#19179"
-msgid "Automatically hide channel information"
-msgstr "הסתר מידע ערוץ האופן אוטומטי"
-
 msgctxt "#19180"
 msgid "TV"
 msgstr "טלוויזיה"
@@ -6609,9 +6729,9 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "ימים להצגה בלוח שידורים"
 
-msgctxt "#19184"
-msgid "Channel information duration"
-msgstr "משך זמן לתצוגת מידע ערוץ"
+msgctxt "#19183"
+msgid "Radio"
+msgstr "רדיו"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6634,8 +6754,8 @@ msgid "Continue last channel on startup"
 msgstr "בהפעלה מחדש התחל בערוץ אחרון שנצפה"
 
 msgctxt "#19190"
-msgid "Minimised"
-msgstr "ממוזער"
+msgid "Background"
+msgstr "רקע"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6710,8 +6830,8 @@ msgid "Enter the name of the new channel"
 msgstr "הזן את השם עבור הערוץ החדש"
 
 msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr "ממשק אחורי XBMC וירטואלי"
+msgid "Kodi virtual backend"
+msgstr "ממשק אחורי Kodi וירטואלי"
 
 msgctxt "#19210"
 msgid "Client"
@@ -6946,8 +7066,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "אל תציג אזהרות 'חיבור אבד'"
 
 msgctxt "#19270"
-msgid "* All recordings"
-msgstr "* כל ההקלטות"
+msgid "Group Items"
+msgstr "פריטי קבוצה"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
@@ -6963,7 +7083,7 @@ msgstr "הרחבה עבור ממשק אחורי שתאפשר שימוש ב-PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "בבקשה בקר בxbmc.org/pvr ע\"מ ללמוד יותר."
+msgstr "בבקשה בקר ב- xbmc.org/pvr ע\"מ ללמוד יותר."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7008,6 +7128,14 @@ msgstr "בחר סמל"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "עיין לסמל"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "מחפש סמלי ערוץ"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "כל הערוצים"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7398,8 +7526,8 @@ msgid "Screenshots"
 msgstr "תמונות מסך"
 
 msgctxt "#20009"
-msgid "Use XBMC"
-msgstr "השתמש ב XBMC"
+msgid "Use Kodi"
+msgstr "השתמש ב Kodi"
 
 msgctxt "#20011"
 msgid "Music playlists"
@@ -8306,7 +8434,7 @@ msgid "Do you want to remove all items within"
 msgstr "האם ברצונך להסיר את כל הפרטים מתוך"
 
 msgctxt "#20341"
-msgid "this path from the XBMC library?"
+msgid "this path from the Kodi library?"
 msgstr "נתיב זה ממסד הנתונים?"
 
 msgctxt "#20342"
@@ -9285,6 +9413,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s עד %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(חיצוני)"
@@ -9518,8 +9650,8 @@ msgid "Reference service"
 msgstr "Reference service"
 
 msgctxt "#21881"
-msgid "Allow control of XBMC via UPnP"
-msgstr "אפשר שליטה על XBMC דרך UPnP"
+msgid "Allow control of Kodi via UPnP"
+msgstr "אפשר שליטה על Kodi דרך UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -10013,6 +10145,14 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "לוג שינויים"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "חפש עדכונים"
+
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "עודכן לאחרונה %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "האם תרצה/י להפעיל הרחבה זו?"
@@ -10088,6 +10228,18 @@ msgstr "דרושה הרחבה"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "לנסות להתחבר מחדש?"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "ספריות הרחבות"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "ספריות מידע"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "ספריות חיזויים"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10192,6 +10344,10 @@ msgstr "הזן מחרוזת חיפוש"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "עדכן הכל"
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "צמוד לוידאו"
 
 msgctxt "#24125"
 msgid "Custom location"
@@ -10502,12 +10658,12 @@ msgid "This version of %s requires an"
 msgstr "גרסה זו של %s דורשת"
 
 msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr "דרושה גרסה %s של XBMC או יותר כדי לרוץ"
+msgid "Kodi revision of %s or greater to run."
+msgstr "דרושה גרסה %s של Kodi או יותר כדי לרוץ"
 
 msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr "אנא עדכן את XBMC."
+msgid "Please update Kodi."
+msgstr "אנא עדכן את Kodi."
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10785,10 +10941,6 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "לנטרל את הג׳ויסטיק כאשר התקן זה קיים"
 
-msgctxt "#35103"
-msgid "Enable system keys in fullscreen"
-msgstr "הפעל מפתחות מערכת במסך מלא"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "מיקום"
@@ -10834,12 +10986,12 @@ msgid "Could not open the adaptor"
 msgstr "אין אפשרות לפתוח את המתאם"
 
 msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr "התקנים אשר יפעלו כאשר מפעילים את XBMC"
+msgid "Devices to power on when starting Kodi"
+msgstr "התקנים אשר יפעלו כאשר מפעילים את Kodi"
 
 msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr "התקנים אשר יכבו כאשר מפסיקים את XBMC"
+msgid "Devices to power off when stopping Kodi"
+msgstr "התקנים אשר יכבו כאשר מפסיקים את Kodi"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -10870,8 +11022,8 @@ msgid "Connected to HDMI device"
 msgstr "מחובר להתקן HDMI"
 
 msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr "הפוך את XBMC למקור הפעיל כאשר מפעילים"
+msgid "Make Kodi the active source when starting"
+msgstr "הפוך את Kodi למקור הפעיל כאשר מפעילים"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10890,8 +11042,8 @@ msgid "Failed to set the new configuration. Please check your settings."
 msgstr "נכשל בהגדרת תצורה חדשה. אנא בדוק את ההגדרות שלך."
 
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "שלח פקודת 'מקור לא פעיל' כאשר עוצרים את XBMC"
+msgid "Send 'inactive source' command when stopping Kodi"
+msgstr "שלח פקודת 'מקור לא פעיל' כאשר עוצרים את Kodi"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -10942,8 +11094,8 @@ msgid "TV and AVR device (explicit)"
 msgstr "מקלט טלוויזיה "
 
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "גרסת ממשק libCEC . %x נמוכה מהגרסה ש XBMC (%x) תומך בה"
+msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgstr "גרסת ממשק libCEC . %x נמוכה מהגרסה ש Kodi (%x) תומך בה"
 
 msgctxt "#36041"
 msgid "* Item folder"
@@ -10958,8 +11110,8 @@ msgid "Change the look and feel of the user interface."
 msgstr "החלפת המראה והתחושה של ממשק המשתמש."
 
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "בחר את המעטפת בשביל ממשק המשתמש. זה יגדיר את המראה והתחושה של XBMC."
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "בחר את המעטפת בשביל ממשק המשתמש. זה יגדיר את המראה והתחושה של Kodi."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -10978,8 +11130,8 @@ msgid "Resize the view of the user interface."
 msgstr "שינוי גודל התצוגה של ממשק המשתמש."
 
 msgctxt "#36109"
-msgid "Select the media window that XBMC displays on startup."
-msgstr "בחר את חלון המדיה ש-XBMC מציג בהפעלה."
+msgid "Select the media window that Kodi displays on startup."
+msgstr "בחר את חלון המדיה ש-Kodi מציג בהפעלה."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11021,6 +11173,10 @@ msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "הצג את הסימן (..) ברשימות כדי לעבור לספריית האב"
 
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "מציג סיומות קבצים של קבצי מדיה. למשל, \"You enjoy Myself.mp3\" פשוט יוצג כ-\"You enjoy Myself\""
+
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
 msgstr "הצגת קבצים ותיקיות מוסתרים ברשימות הקבצים."
@@ -11030,8 +11186,8 @@ msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "זמן המתנה להפעלת שומר מסך  "
 
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "בחר את שומר המסך. XBMC ישתמש בכוח בשומר מסך 'Dim' כאשר נגינת סרט במסך מלא נעצרת או כאשר קופסת דיאלוג פעילה."
+msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "בחר את שומר המסך. Kodi ישתמש בכוח בשומר מסך 'Dim' כאשר נגינת סרט במסך מלא נעצרת או כאשר קופסת דיאלוג פעילה."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11042,8 +11198,8 @@ msgid "Preview the selected screensaver."
 msgstr "תצוגה מקדימה של שומר המסך."
 
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "אם מוזיקה מנוגנת, XBMC יתחיל את החיזוי הנבחר ובמקום להציג שומר מסך."
+msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgstr "אם מוזיקה מנוגנת, Kodi יתחיל את החיזוי הנבחר ובמקום להציג שומר מסך."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11082,8 +11238,8 @@ msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "קבץ סרטים כ'מארז סרטים' כאשר מעיינים בספרית סרטים."
 
 msgctxt "#36146"
-msgid "Check for new media files on XBMC startup."
-msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת XBMC."
+msgid "Check for new media files on Kodi startup."
+msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת Kodi."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11186,8 +11342,8 @@ msgid "Import channel groups from the PVR backend (if supported). Will delete us
 msgstr "ייבא קבוצת ערוצים מממשק אחורי PVR (אם נתמך). ימחק קבוצות משתמש שלא קיימות בממשק אחורי."
 
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "השתמש במספור מתוך ממשק אחורי, במקום הגדרה ידנית בתוך XBMC."
+msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgstr "השתמש במספור מתוך ממשק אחורי, במקום הגדרה ידנית בתוך Kodi."
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
@@ -11266,8 +11422,8 @@ msgid "Select the default album information source."
 msgstr "בחר את שירות ברירת המחדל לפרטי אלבום"
 
 msgctxt "#36259"
-msgid "Check for new and removed media files on XBMC startup."
-msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת XBMC."
+msgid "Check for new and removed media files on Kodi startup."
+msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת Kodi."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11288,6 +11444,10 @@ msgstr "בררת המחדל היא 89dB לפי התקן. ניתן לשנות א�
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "נגן דיסקים באופן אוטומטי בעת הכנסתם למחשב"
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "קרא את המידע השייך לתקליטור שמע ממסד נתונים באינטרנט."
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
@@ -11350,48 +11510,60 @@ msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "כאשר יש עדכוני ספריה עדכן את כל המכשירים."
 
 msgctxt "#36328"
-msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "אפשר שליטה מרחוק של ה-XBMC באמצעות שרת ה-WEB."
+msgid "Enable remote users to control Kodi through the built-in webserver."
+msgstr "אפשר שליטה מרחוק של ה-Kodi באמצעות שרת ה-WEB."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "הגדר פורט לשרת WEB"
 
-msgctxt "#36330"
-msgid "Define the webserver username."
-msgstr "הגדר שם משתמש לשרת WEB"
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "הגדר את פורט השלט הרחוק"
 
-msgctxt "#36331"
-msgid "Define the webserver password."
-msgstr "הגדר סיסמא לשרת ה-WEB שלך."
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "הגדרת תווך פורטים לשלט הרחוק"
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
 msgstr "חוזר על עיכוב ראשוני (ms)"
 
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "הפעל הגנת סיסמה לשירות האייר פליי."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "הגדר את סיסמת האייר פליי"
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי AC3."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי AC3."
 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי DTS."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי DTS."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי TrueHD."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי TrueHD."
 
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי DTS-HD."
+msgstr "יש לבחור באפשרות זאת אם הרסיבר שלך מסוגל לקודד תזרימי DTS-HD."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "בחר את המכשיר שיעשה בו שימוש כדי לנגן פורמטים מקודדים, אלו הפורמטים המופיעים למטה באפשרויות ה-'תמיכת רסיבר'"
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "הגדר איך צלילי הממשק יופעלו, כמו ניווט תפריט והודעות חשובות."
 
 msgctxt "#36378"
-msgid "Use a joystick to control XBMC."
-msgstr "שימוש בג׳ויסטיק לשליטה ב־XBMC."
+msgid "Use a joystick to control Kodi."
+msgstr "שימוש בג׳ויסטיק לשליטה ב־Kodi."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11418,20 +11590,16 @@ msgid "Configure the proxy server password."
 msgstr "הגדרת ססמת השרת המתווך."
 
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
-msgstr "אם על החיבור שלך יש הגבלת רוחב פס, מערכת XBMC תנסה להתאים עצמה למגבלות אלה."
+msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgstr "אם על החיבור שלך יש הגבלת רוחב פס, מערכת Kodi תנסה להתאים עצמה למגבלות אלה."
 
 msgctxt "#36389"
-msgid "Define how long XBMC should idle before shutting down."
+msgid "Define how long Kodi should idle before shutting down."
 msgstr "הגדר/י כמה זמן להמתין לפני כבוי"
 
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within XBMC."
-msgstr "התקייה לשמירת תצלומי מסך נלקחת מתוך ה-XBMC."
-
-msgctxt "#36394"
-msgid "Specify additional libraries to be included in the debug log."
-msgstr "הגדר הצגת ספריות נוספות לתצוגה בלוג הדיבאג."
+msgid "Folder used to save screenshots taken within Kodi."
+msgstr "התקייה לשמירת תצלומי מסך נלקחת מתוך ה-Kodi."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11485,17 +11653,9 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "הקלט"
 
-msgctxt "#36500"
-msgid "Stereoscopic mode (current)"
-msgstr "מצב סטריאוסקופי (נוכחי)"
-
-msgctxt "#36501"
-msgid "Stereoscopic mode"
-msgstr "מצב סטריאוסקופי"
-
 msgctxt "#36502"
-msgid "None"
-msgstr "ללא"
+msgid "Disabled"
+msgstr "מנוטרל"
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -11517,10 +11677,6 @@ msgctxt "#36521"
 msgid "Ask me"
 msgstr "שאל אותי"
 
-msgctxt "#36522"
-msgid "Use preferred mode"
-msgstr "השתמש במצב המועדף"
-
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "מצב מועדף"
@@ -11528,18 +11684,6 @@ msgstr "מצב מועדף"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "כמו הסרט (אוטומטית)"
-
-msgctxt "#36528"
-msgid "Select stereoscopic mode"
-msgstr "בחר מצב סטריאוסקופי"
-
-msgctxt "#36529"
-msgid "Mono (2D)"
-msgstr "מונו (2D)"
-
-msgctxt "#36530"
-msgid "Preferred mode"
-msgstr "מצב מועדף"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -11549,21 +11693,97 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "כמו הסרט"
 
-msgctxt "#36535"
-msgid "Stereoscopic mode of video"
-msgstr "מצב סטריאוסקופי של וידאו"
-
-msgctxt "#36536"
-msgid "Stereoscopic mode inverted"
-msgstr "מצב סטיראוסקופי הפוך"
-
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "אפשר פענוח חומרה של קבצי וידאו."
 
-msgctxt "#36545"
-msgid "Subtitle stereoscopic depth"
-msgstr "עומק כתוביות סטיראוסקופי"
+msgctxt "#36900"
+msgid "movie"
+msgstr "סרט"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "סרטים"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "סדרה"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "סדרות"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "עונה"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "עונות"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "פרק"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "פרקים"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "קליפ"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "קליפים"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "מארז"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "מארזים"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "וידאו"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "וידאו"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "מוסיקה"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "מוסיקה"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "אמן"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "אמנים"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "אלבום"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "אלבומים"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "שיר"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "שירים"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11597,6 +11817,10 @@ msgctxt "#37015"
 msgid "Browse Into"
 msgstr "לעיין בתוך"
 
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "בחר באופציה זו עם הרסיבר שלך מסוגל לקודד תזרימי E-AC3."
+
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "פלט אודיו כפול"
@@ -11620,3 +11844,23 @@ msgstr "האם ברצונך להפסיק את הניגון במכשיר המרו
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "בחר באפשרות זו רק אם היציאת אודיו תומכת באודיו רב ערוצי כמו Dolby Digital 5.1, זה מאפשר שמיעה באודיו רב ערוצי כמו AAC5.1 או FLAC5.1 בצליל היקפי. הערה - לא מומולץ במכשירי Pi כי זה דורש משאבי מעבד רבים."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "ללא הגבלה"

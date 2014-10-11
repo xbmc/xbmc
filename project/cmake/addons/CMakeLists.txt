@@ -8,6 +8,10 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+if(NOT CORE_SYSTEM_NAME)
+  string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
+endif()
+
 include(ExternalProject)
 
 ### setup all the necessary paths
@@ -78,27 +82,64 @@ endif()
 
 ### get and build all the binary addons
 # look for all the addons to be built
-file(GLOB addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
+file(GLOB_RECURSE addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
 foreach(addon ${addons})
-  file(STRINGS ${addon} def)
-  string(REPLACE " " ";" def ${def})
-  list(GET def 0 id)
-  list(GET def 1 url)
-  list(GET def 2 revision)
+  if(NOT (addon MATCHES platforms.txt))
+    file(STRINGS ${addon} def)
+    separate_arguments(def)
+    list(GET def 0 id)
 
-  list(FIND ADDONS_TO_BUILD ${id} idx)
-  if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
-    # make sure the output directory is clean
-    if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
-      file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
+    list(FIND ADDONS_TO_BUILD ${id} idx)
+    if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+      get_filename_component(dir ${addon} PATH)
+      set(platform_found FALSE)
+
+      # check if the addon has a platforms.txt
+      if(EXISTS ${dir}/platforms.txt)
+        # get all the specified platforms
+        file(STRINGS ${dir}/platforms.txt platforms)
+        separate_arguments(platforms)
+
+        # check if the addon should be built for the current platform
+        foreach(platform ${platforms})
+          if(${platform} STREQUAL "all" OR ${platform} STREQUAL ${CORE_SYSTEM_NAME})
+            set(platform_found TRUE)
+          endif()
+        endforeach()
+      else()
+        set(platform_found TRUE)
+      endif()
+
+      if (${platform_found})
+        # make sure the output directory is clean
+        if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
+          file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
+        endif()
+
+        # prepare the setup of the call to externalproject_add()
+        set(EXTERNALPROJECT_SETUP INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
+                                  CMAKE_ARGS ${BUILD_ARGS})
+
+        # get the URL and revision of the addon
+        list(LENGTH def deflength)
+        list(GET def 1 url)
+        # check if there's a third parameter in the file
+        if(deflength GREATER 2)
+          # the third parameter is considered as a revision of a git repository
+          list(GET def 2 revision)
+
+          externalproject_add(${id}
+                              GIT_REPOSITORY ${url}
+                              GIT_TAG ${revision}
+                              "${EXTERNALPROJECT_SETUP}"
+                             )
+        else()
+          externalproject_add(${id}
+                              URL ${url}
+                              "${EXTERNALPROJECT_SETUP}"
+                             )
+        endif()
+      endif()
     endif()
-
-    # add the addon as an external project for automatic building
-    externalproject_add(${id}
-                      GIT_REPOSITORY ${url}
-                      GIT_TAG ${revision}
-                      INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
-                      CMAKE_ARGS ${BUILD_ARGS}
-                     )
   endif()
 endforeach()

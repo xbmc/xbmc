@@ -2,7 +2,7 @@
 <addon id="metadata.local"
        name="Local information only"
        version="1.0.0"
-       provider-name="Team XBMC">
+       provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
   </requires>

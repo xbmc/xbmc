@@ -197,9 +197,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (CSmartPlaylist::IsMusicType(m_type))
       database.GetYearsNav("musicdb://years/", items);
-    if (m_type != "songs" &&
-        m_type != "albums" &&
-        m_type != "artists")
+    if (CSmartPlaylist::IsVideoType(m_type))
     {
       CFileItemList items2;
       videodatabase.GetYearsNav(basePath + "years/", items2, type);
@@ -230,17 +228,17 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldTitle)
   {
-    if (m_type == "songs")
+    if (m_type == "songs" || m_type == "mixed")
     {
       database.GetSongsNav("musicdb://songs/", items, -1, -1, -1);
       iLabel = 134;
     }
-    else if (m_type == "movies")
+    if (m_type == "movies")
     {
       videodatabase.GetMoviesNav(basePath + "titles/", items);
       iLabel = 20342;
     }
-    else if (m_type == "episodes")
+    if (m_type == "episodes")
     {
       videodatabase.GetEpisodesNav(basePath + "titles/-1/-1/", items);
       // we need to replace the db label (<season>x<episode> <title>) with the title only
@@ -249,13 +247,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
         format.FormatLabel(items[i].get());
       iLabel = 20360;
     }
-    else if (m_type == "musicvideos")
+    if (m_type == "musicvideos" || m_type == "mixed")
     {
       videodatabase.GetMusicVideosNav(basePath + "titles/", items);
       iLabel = 20389;
     }
-    else
-      assert(false);
   }
   else if (m_rule.m_field == FieldPlaylist || m_rule.m_field == FieldVirtualFolder)
   {
@@ -264,12 +260,15 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     // Note: This can cause infinite loops (playlist that refers to the same playlist) but I don't
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
-    std::string path = "special://videoplaylists/";
-    if (m_type == "songs" ||
-        m_type == "albums" ||
-        m_type == "artists")
-      path = "special://musicplaylists/";
-    XFILE::CDirectory::GetDirectory(path, items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+    if (CSmartPlaylist::IsVideoType(m_type))
+      XFILE::CDirectory::GetDirectory("special://videoplaylists/", items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+    if (CSmartPlaylist::IsMusicType(m_type))
+    {
+      CFileItemList items2;
+      XFILE::CDirectory::GetDirectory("special://musicplaylists/", items2, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+      items.Append(items2);
+    }
+
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
@@ -296,7 +295,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     VECSOURCES sources;
     if (m_type == "songs" || m_type == "mixed")
       sources = *CMediaSourceSettings::Get().GetSources("music");
-    if (m_type != "songs")
+    if (CSmartPlaylist::IsVideoType(m_type))
     {
       VECSOURCES sources2 = *CMediaSourceSettings::Get().GetSources("video");
       sources.insert(sources.end(),sources2.begin(),sources2.end());
@@ -527,7 +526,7 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const std::
   if (!editor) return false;
 
   editor->m_rule = rule;
-  editor->m_type = type == "mixed" ? "songs" : type;
+  editor->m_type = type;
   editor->DoModal(g_windowManager.GetActiveWindow());
   rule = editor->m_rule;
   return !editor->m_cancelled;

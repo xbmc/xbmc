@@ -40,6 +40,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "Util.h"
 
 extern "C" {
 #include "libavutil/crc.h"
@@ -64,7 +65,6 @@ static const uint16_t DTSFSCod   [] = {0, 8000, 16000, 32000, 0, 0, 11025, 22050
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
 COMXAudio::COMXAudio() :
-  m_pCallback       (NULL   ),
   m_Initialized     (false  ),
   m_CurrentVolume   (0      ),
   m_Mute            (false  ),
@@ -1067,7 +1067,7 @@ bool COMXAudio::ApplyVolume(void)
   OMX_INIT_STRUCTURE(mix);
   OMX_ERRORTYPE omx_err;
 
-  assert(sizeof(mix.coeff)/sizeof(mix.coeff[0]) == 64);
+  assert(ARRAY_SIZE(mix.coeff) == 64);
 
   if (m_amplification != 1.0)
   {
@@ -1392,26 +1392,7 @@ int COMXAudio::SetPlaySpeed(int iSpeed)
   return 0;
 }
 
-void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
-{
-  CSingleLock lock (m_critSection);
-  if(!m_Passthrough && !m_HWDecode)
-  {
-    m_pCallback = pCallback;
-    if (m_pCallback)
-      m_pCallback->OnInitialize(2, m_SampleRate, 32);
-  }
-  else
-    m_pCallback = NULL;
-}
-
-void COMXAudio::UnRegisterAudioCallback()
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = NULL;
-}
-
-unsigned int COMXAudio::GetAudioRenderingLatency()
+unsigned int COMXAudio::GetAudioRenderingLatency() const
 {
   CSingleLock lock (m_critSection);
 

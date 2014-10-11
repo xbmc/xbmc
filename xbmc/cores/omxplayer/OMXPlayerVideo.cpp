@@ -47,7 +47,7 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "guilib/GraphicContext.h"
 
-#include "OMXPlayer.h"
+#include "DVDPlayer.h"
 #include "linux/RBP.h"
 
 using namespace RenderManager;
@@ -159,7 +159,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints, COMXVideo *codec)
   return true;
 }
 
-bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
+void OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
@@ -180,8 +180,6 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   if(m_DllBcmHost.IsLoaded())
     m_DllBcmHost.Unload();
-
-  return true;
 }
 
 void OMXPlayerVideo::OnStartup()
@@ -393,7 +391,6 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESET");
-      m_omxVideo.Reset();
       m_started = false;
       m_nextOverlay = DVD_NOPTS_VALUE;
       m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -424,15 +421,27 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
-      COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
-      double pts = m_iCurrentPts;
-      double stamp = m_av_clock->OMXMediaTime();
+      CDVDPlayer::SPlayerState& state = ((CDVDMsgType<CDVDPlayer::SPlayerState>*)pMsg)->m_value;
 
-      if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
+      if (m_speed != DVD_PLAYSPEED_NORMAL && m_speed != DVD_PLAYSPEED_PAUSE)
+      {
+        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+          state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
+        else
+          state.timestamp = CDVDClock::GetAbsoluteClock();
+      }
       else
-        state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
-      state.timestamp = m_av_clock->GetAbsoluteClock();
+      {
+        double pts = m_iCurrentPts;
+        double stamp = m_av_clock->OMXMediaTime();
+        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+          state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
+        else
+          state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
+        state.timestamp = CDVDClock::GetAbsoluteClock();
+        if (stamp == 0.0) // cause message to be ignored
+          state.player = 0;
+      }
       state.player    = DVDPLAYER_VIDEO;
       m_messageParent.Put(pMsg->Acquire());
     }
@@ -521,6 +530,14 @@ void OMXPlayerVideo::Process()
   }
 }
 
+bool OMXPlayerVideo::StepFrame()
+{
+  if (!m_av_clock)
+    return false;
+  m_av_clock->OMXStep();
+  return true;
+}
+
 void OMXPlayerVideo::Flush()
 {
   m_flush = true;
@@ -584,11 +601,6 @@ int  OMXPlayerVideo::GetDecoderFreeSpace()
 void OMXPlayerVideo::SubmitEOS()
 {
   m_omxVideo.SubmitEOS();
-}
-
-bool OMXPlayerVideo::SubmittedEOS()
-{
-  return m_omxVideo.SubmittedEOS();
 }
 
 bool OMXPlayerVideo::IsEOS()

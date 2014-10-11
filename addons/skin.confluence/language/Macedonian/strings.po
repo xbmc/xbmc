@@ -1,14 +1,14 @@
-# XBMC Media Center language file
+# Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon Provider: Jezz_X, Team XBMC
+# Addon Provider: Jezz_X, Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Macedonian (http://www.transifex.com/projects/p/xbmc-main/language/mk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -111,6 +111,10 @@ msgstr "ПРЕМОТУВАЊЕ НАПРЕД"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕМОТУВАЊЕ НАЗАД"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ПРЕБАРУВАЊЕ"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
@@ -465,8 +469,8 @@ msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG
 msgstr "[B]КОНФИГУРИРАЈ ТВ ПОСТАВКИ[/B][CR][CR]Промени инфо на цел екран · Подесување на EPG податоци"
 
 msgctxt "#31410"
-msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]КОНФИГУРИРАЈ СЕРВИСНИ ПОДЕСУВАЊА[/B][CR][CR]Подеси контрола врз XBMC преку UPnP и HTTP · Конфигурирај споделување папки[CR]Овозможи Zeroconf ·Конфигурирај AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]КОНФИГУРИРАЈ СЕРВИСНИ ПОДЕСУВАЊА[/B][CR][CR]Подеси контрола врз Kodi преку UPnP и HTTP · Конфигурирај споделување папки[CR]Овозможи Zeroconf ·Конфигурирај AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -485,8 +489,8 @@ msgid "Login"
 msgstr "Најави се"
 
 msgctxt "#31421"
-msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Одберете ваш XBMC кориснички[CR]профил за најава, а потоа продолжете понатаму"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Одберете ваш Kodi кориснички[CR]профил за најава, а потоа продолжете понатаму"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -573,8 +577,8 @@ msgid "PICTURES"
 msgstr "Слики"
 
 msgctxt "#31952"
-msgid "LIVE TV"
-msgstr "ТВ во живо"
+msgid "TV"
+msgstr "ТВ"
 
 msgctxt "#31953"
 msgid "VIDEOS"

@@ -29,7 +29,7 @@
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
-#define NUM_BUFFERS 3
+#define NUM_BUFFERS 6
 
 class CSetting;
 
@@ -89,10 +89,11 @@ public:
   /**
    * Returns number of references a single buffer can retain when rendering a single frame
    */
-  virtual unsigned int GetProcessorSize() { return 0; }
+  virtual unsigned int GetOptimalBufferSize() { return 0; }
   virtual unsigned int GetMaxBufferSize() { return 0; }
   virtual void         SetBufferSize(int numBuffers) { }
   virtual void         ReleaseBuffer(int idx) { }
+  virtual bool         NeedBufferForRef(int idx) { return false; }
 
   virtual bool Supports(ERENDERFEATURE feature) { return false; }
 

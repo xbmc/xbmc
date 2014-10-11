@@ -27,19 +27,13 @@
 #include "utils/StringUtils.h"
 #include "MediaSource.h"
 
-#define ARRAY_SIZE(X)         ((int)(sizeof(X)/sizeof(X[0])))
+#define ARRAY_SIZE(X)         (sizeof(X)/sizeof((X)[0]))
 
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
 #define LEGAL_FATX            2
 
-namespace XFILE
-{
-  class IFileCallback;
-}
-
-class CFileItem;
 class CFileItemList;
 class CURL;
 

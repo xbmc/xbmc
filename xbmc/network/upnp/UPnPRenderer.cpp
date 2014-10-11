@@ -279,10 +279,10 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
 
         CStdString buffer;
 
-        buffer = StringUtils::Format("%ld", data["volume"].asInteger());
+        buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
         rct->SetStateVariable("Volume", buffer.c_str());
 
-        buffer = StringUtils::Format("%ld", 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+        buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
         rct->SetStateVariable("VolumeDb", buffer.c_str());
 
         rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
