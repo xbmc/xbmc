@@ -595,7 +595,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   if (!m_Passthrough)
   {
     bool upmix = CSettings::Get().GetBool("audiooutput.stereoupmix");
-    bool normalize = CSettings::Get().GetBool("audiooutput.normalizelevels");
+    bool normalize = !CSettings::Get().GetBool("audiooutput.maintainoriginalvolume");
     void *remapLayout = NULL;
 
     CAEChannelInfo stdLayout = (enum AEStdChLayout)CSettings::Get().GetInt("audiooutput.channels");

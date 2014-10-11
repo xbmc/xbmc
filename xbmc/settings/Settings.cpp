@@ -704,7 +704,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("audiooutput.audiodevice");
   settingSet.insert("audiooutput.passthroughdevice");
   settingSet.insert("audiooutput.streamsilence");
-  settingSet.insert("audiooutput.normalizelevels");
+  settingSet.insert("audiooutput.maintainoriginalvolume");
   settingSet.insert("lookandfeel.skin");
   settingSet.insert("lookandfeel.skinsettings");
   settingSet.insert("lookandfeel.font");
