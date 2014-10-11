@@ -129,38 +129,28 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
 
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
 {
-  bool handled(true);
-  if (action.GetID() == ACTION_BACKSPACE)
-  {
-    Backspace();
-  }
-  else if (action.GetID() == ACTION_ENTER)
-  {
+  bool handled = true;
+  if (action.GetID() == ACTION_ENTER)
     OnOK();
-  }
-  else if (action.GetID() == ACTION_CURSOR_LEFT)
-  {
-    MoveCursor( -1);
-  }
-  else if (action.GetID() == ACTION_CURSOR_RIGHT)
-  {
-    MoveCursor(1);
-  }
   else if (action.GetID() == ACTION_SHIFT)
-  {
     OnShift();
-  }
   else if (action.GetID() == ACTION_SYMBOLS)
-  {
     OnSymbols();
-  }
-  else if (action.GetID() >= KEY_ASCII)
-  { // send action to the edit control
+  // don't handle move left/right and select in the edit control
+  else if (action.GetID() == ACTION_MOVE_LEFT ||
+           action.GetID() == ACTION_MOVE_RIGHT ||
+           action.GetID() == ACTION_SELECT_ITEM)
+    handled = false;
+  else
+  {
+    handled = false;
+    // send action to edit control
     CGUIControl *edit = GetControl(CTL_EDIT);
     if (edit)
-      edit->OnAction(action);
+      handled = edit->OnAction(action);
   }
-  else // unhandled by us - let's see if the baseclass wants it
+
+  if (!handled) // unhandled by us - let's see if the baseclass wants it
     handled = CGUIDialog::OnAction(action);
 
   return handled;
