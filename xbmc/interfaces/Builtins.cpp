@@ -392,7 +392,17 @@ int CBuiltins::Execute(const std::string& execString)
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
     if (iWindow != WINDOW_INVALID)
     {
-      if (iWindow != g_windowManager.GetActiveWindow())
+      // compate the given directory param with the current active directory
+      bool bIsSameStartFolder = true;
+      if (!params.empty())
+      {
+        CGUIWindow *activeWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+        if (activeWindow && activeWindow->IsMediaWindow())
+          bIsSameStartFolder = ((CGUIMediaWindow*) activeWindow)->IsSameStartFolder(params[0]);
+      }
+
+      // activate window only if window and path differ from the current active window
+      if (iWindow != g_windowManager.GetActiveWindow() || !bIsSameStartFolder)
       {
         // disable the screensaver
         g_application.WakeUpScreenSaverAndDPMS();
