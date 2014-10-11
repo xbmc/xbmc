@@ -49,11 +49,14 @@ public:
   template<class T>
     bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
+
     CXBMCTinyXML doc;
     if (document)
       doc.Parse(document, TIXML_ENCODING_UNKNOWN);
-    else
+    else if (m_headPos < m_doc.size())
       doc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+    else
+      return false;
 
     return details.Load(doc.RootElement(), true, prioritise);
   }
