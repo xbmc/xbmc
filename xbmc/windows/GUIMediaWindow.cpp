@@ -364,7 +364,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
              m_vecItems->IsSourcesPath()) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
-          Refresh();
+          Refresh(true);
           m_viewControl.SetSelectedItem(iItem);
         }
         return true;
