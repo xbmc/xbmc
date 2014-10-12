@@ -80,7 +80,7 @@
   },
   "Files.Content": {
     "type": "string",
-    "enum": [ "video", "video.movies", "video.tvshows", "video.musicvideos", "audio.music", "pictures", "files", "programs" ]
+    "enum": [ "video", "video.movies", "video.tvshows", "video.musicvideos", "audio", "audio.music", "pictures", "files", "programs" ]
   },
   "List.Amount": {
     "type": "integer",
