@@ -304,15 +304,17 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
   if (media == "video" && contents.size() > 1)
   {
     ADDON::AddonPtr scraperAddon;
-    ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(ADDON::TranslateContent(contents[1])), scraperAddon);
-    ADDON::ScraperPtr scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(scraperAddon);
+    if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(ADDON::TranslateContent(contents[1])), scraperAddon))
+    {
+      ADDON::ScraperPtr scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(scraperAddon);
 
-    CVideoDatabase db;
-    db.Open();
+      CVideoDatabase db;
+      db.Open();
 
-    VIDEO::SScanSettings settings;
-    for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
-      db.SetScraperForPath(*itr, scraper, settings);
+      VIDEO::SScanSettings settings;
+      for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
+        db.SetScraperForPath(*itr, scraper, settings);
+    }
   }
 
   return ACK;
