@@ -223,10 +223,18 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
   case GUI_MSG_INPUT_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
+      // the edit control only handles these messages if it is either focues
+      // or its specific control ID is set in the message. As neither is the
+      // case here (focus is on one of the keyboard buttons) we have to force
+      // the control ID of the message to the control ID of the edit control
+      // (unfortunately we have to create a whole copy of the message object for that)
+      CGUIMessage messageCopy(message.GetMessage(), message.GetSenderId(), CTL_EDIT, message.GetParam1(), message.GetParam2(), message.GetItem());
+      messageCopy.SetLabel(message.GetLabel());
+
       // ensure this goes to the edit control
       CGUIControl *edit = GetControl(CTL_EDIT);
       if (edit)
-        edit->OnMessage(message);
+        edit->OnMessage(messageCopy);
 
       // close the dialog if requested
       if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetParam1() > 0)
