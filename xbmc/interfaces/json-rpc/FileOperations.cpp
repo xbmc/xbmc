@@ -312,6 +312,13 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
       db.Open();
 
       VIDEO::SScanSettings settings;
+
+      settings.parent_name      = parameterObject["parent_name"].asBoolean();
+      settings.parent_name_root = parameterObject["parent_name_root"].asBoolean();
+      settings.recurse          = parameterObject["recurse"].asBoolean();
+      settings.noupdate         = parameterObject["noupdate"].asBoolean();
+      settings.exclude          = parameterObject["exclude"].asBoolean();
+
       for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
         db.SetScraperForPath(*itr, scraper, settings);
     }
