@@ -18,6 +18,7 @@ function migrate_to_kodi () {
   mv $XBMC_HOME $APP_HOME
   chown -R mobile.mobile $APP_HOME
   echo "Migration complete"
+  touch $APP_HOME/.kodi_data_was_migrated
 }
 
 needs_kodi_migration
