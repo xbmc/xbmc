@@ -66,6 +66,7 @@ private:
   bool initializeModule(PythonModuleInitialization module);
   void addPath(const std::string& path); // add path in UTF-8 encoding
   void addNativePath(const std::string& path); // add path in system/Python encoding
+  void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
 
   std::string m_pythonPath;
   void *m_threadState;
