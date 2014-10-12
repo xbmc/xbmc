@@ -316,6 +316,16 @@ JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportL
         db.SetScraperForPath(*itr, scraper, settings);
     }
   }
+  else if (content == "audio.music")
+  {
+    CMusicDatabase db;
+    db.Open();
+
+    for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
+      db.AddPath(*itr);
+
+    db.Close();
+  }
 
   return ACK;
 }
