@@ -52,6 +52,7 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (sourcesFromType)
     sources = *sourcesFromType;
   g_mediaManager.GetRemovableDrives(sources);
+  g_mediaManager.GetNetworkLocations(sources, true);
 
   if (!sourcesFromType)
     return false;
