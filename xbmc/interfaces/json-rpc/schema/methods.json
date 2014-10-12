@@ -590,7 +590,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "name", "type": "string", "required": true },
-      { "name": "directory", "type": [ "string", { "$ref": "Array.String" } ], "required": true },
+      { "name": "directory", "type": [ "string", { "$ref": "Array.String", "required": true } ], "required": true },
       { "name": "content", "$ref": "Files.Content", "required": false }
     ],
     "returns": "string"
