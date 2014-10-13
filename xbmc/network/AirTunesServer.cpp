@@ -211,7 +211,7 @@ void CAirTunesServer::AudioOutputFunctions::audio_set_coverart(void *cls, void *
   CAirTunesServer::SetCoverArtFromBuffer((char *)buffer, buflen);
 }
 
-char *session="XBMC-AirTunes";
+char *session="Kodi-AirTunes";
 
 void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int channels, int samplerate)
 {
@@ -388,7 +388,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     txt.push_back(std::make_pair("vn",  "3"));
     txt.push_back(std::make_pair("da",  "true"));
     txt.push_back(std::make_pair("md",  "0,1,2"));
-    txt.push_back(std::make_pair("am",  "Xbmc,1"));
+    txt.push_back(std::make_pair("am",  "Kodi,1"));
     txt.push_back(std::make_pair("vs",  "130.14"));
 
     CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", appName, port, txt);

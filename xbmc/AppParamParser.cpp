@@ -25,6 +25,7 @@
 #include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
@@ -81,21 +82,23 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
 
 void CAppParamParser::DisplayVersion()
 {
-  printf("XBMC Media Center %s\n", g_infoManager.GetVersion().c_str());
-  printf("Copyright (C) 2005-2013 Team XBMC - http://xbmc.org\n");
+  printf("%s Media Center %s\n", g_infoManager.GetVersion().c_str(), g_infoManager.GetAppName().c_str());
+  printf("Copyright (C) 2005-2013 Team %s - http://kodi.tv\n", g_infoManager.GetAppName().c_str());
   exit(0);
 }
 
 void CAppParamParser::DisplayHelp()
 {
-  printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
+  std::string lcAppName = g_infoManager.GetAppName();
+  StringUtils::ToLower(lcAppName);
+  printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
   printf("Arguments:\n");
   printf("  -d <n>\t\tdelay <n> seconds before starting\n");
-  printf("  -fs\t\t\tRuns XBMC in full screen\n");
-  printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
+  printf("  -fs\t\t\tRuns %s in full screen\n", g_infoManager.GetAppName().c_str());
+  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", g_infoManager.GetAppName().c_str());
   printf("\t\t\tmanager and supporting applications. For example, that\n");
   printf("\t\t\tenables network settings.\n");
-  printf("  -p or --portable\tXBMC will look for configurations in install folder instead of ~/.xbmc\n");
+  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", g_infoManager.GetAppName().c_str(), lcAppName.c_str());
   printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
   printf("  -l or --lircdev\tLircDevice to use default is " LIRC_DEVICE " .\n");

@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "Util.h"
 
@@ -239,7 +240,9 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
   // send hello
   m = htsmsg_create_map();
   htsmsg_add_str(m, "method", "hello");
-  htsmsg_add_str(m, "clientname", "XBMC Media Center");
+  std::string fullAppName = CSysInfo::GetAppName();
+  fullAppName += " Media Center";
+  htsmsg_add_str(m, "clientname", fullAppName.c_str());
   htsmsg_add_u32(m, "htspversion", 1);
 
   // read welcome

@@ -382,7 +382,7 @@ static id KodiAppliance$controllerForIdentifier(KodiAppliance* self, SEL _cmd, i
 static void XBMCPopUpManager$_displayPopUp(BRPopUpManager *self, SEL _cmd, id up)
 {
   // suppress all popups
-  NSLog(@"%s suppressing popup - for the sake of XBMC.", __PRETTY_FUNCTION__);
+  NSLog(@"%s suppressing popup.", __PRETTY_FUNCTION__);
 }
 
 // helper function. If the given class responds to the selector

@@ -415,7 +415,7 @@ static void KodiController$controlWasActivated(KodiController* self, SEL _cmd)
 
 static void KodiController$controlWasDeactivated(KodiController* self, SEL _cmd) 
 {
-  NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
+  NSLog(@"forced by FrontRow to exit via controlWasDeactivated");
 
   [[self glView] stopAnimation];
   [[[self glView] layer] removeFromSuperlayer];
@@ -439,7 +439,7 @@ static void KodiController$ATVClientEventFromBREvent(KodiController* self, SEL _
 
   int remoteAction = [f_event remoteAction];
   unsigned int originator = [f_event originator];
-  CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i originator = %i", remoteAction, originator);
+  CLog::Log(LOGDEBUG,"KodiController: Button press remoteAction = %i originator = %i", remoteAction, originator);
   *isRepeatable = false;
   *isPressed = false;
 
@@ -714,7 +714,7 @@ static void KodiController$ATVClientEventFromBREvent(KodiController* self, SEL _
       return;
 
     default:
-      ELOG(@"XBMCPureController: Unknown button press remoteAction = %i", remoteAction);
+      ELOG(@"KodiController: Unknown button press remoteAction = %i", remoteAction);
       *result = ATV_INVALID_BUTTON;
   }
 }
@@ -938,7 +938,7 @@ static void KodiController$observeDefaultCenterStuff(KodiController* self, SEL _
   //NSLog(@"default: %@", [notification name]);
 
   if ([notification name] == UIApplicationDidReceiveMemoryWarningNotification)
-    NSLog(@"XBMC: %@", [notification name]);
+    NSLog(@"Kodi: %@", [notification name]);
   
   //if ([notification name] == kBRScreenSaverActivated)
   //  [m_glView stopAnimation];
