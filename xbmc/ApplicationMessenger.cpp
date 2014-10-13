@@ -39,6 +39,7 @@
 #include "guilib/GUIDialog.h"
 #include "guilib/Key.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/Resolution.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/IPlayer.h"
@@ -534,6 +535,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_SWITCHTOFULLSCREEN:
       if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
+      break;
+
+    case TMSG_SETVIDEORESOLUTION:
+      {
+        RESOLUTION res = (RESOLUTION)pMsg->param1;
+        bool forceUpdate = pMsg->param2 == 1 ? true : false;
+        g_graphicsContext.SetVideoResolution(res, forceUpdate);
+      }
       break;
 
     case TMSG_TOGGLEFULLSCREEN:
