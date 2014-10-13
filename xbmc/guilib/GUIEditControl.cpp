@@ -168,7 +168,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       OnPasteClipboard();
       return true;
     }
-    else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII && !m_edit.empty())
+    else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII && m_edit.empty())
     {
       // input from the keyboard (vkey, not ascii)
       BYTE b = action.GetID() & 0xFF;
