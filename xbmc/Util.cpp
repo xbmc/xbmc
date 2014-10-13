@@ -205,6 +205,9 @@ void CUtil::CleanString(const std::string& strFileName,
                         bool bRemoveExtension /* = false */,
                         bool bCleanChars /* = true */)
 {
+  CStdString strReTitle;
+  CStdString strReYear;
+
   strTitleAndYear = strFileName;
 
   if (strFileName == "..")
@@ -223,8 +226,20 @@ void CUtil::CleanString(const std::string& strFileName,
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetMatch(1);
-      strYear = reYear.GetMatch(2);
+      strReTitle = reYear.GetMatch("title");
+      strReYear = reYear.GetMatch("year");
+      if (!strReTitle.empty() && !strReYear.empty())
+      {
+        // regex contains named groups, use them
+        // ex: "(?P&lt;year&gt;[0-9]*)[ -]+(?P&lt;title&gt;.*)" on "1999 - Matrix" gives year:"1999", title:"Matrix"
+        strTitleAndYear = strReTitle;
+        strYear = strReYear;
+      }
+      else
+      {
+        strTitleAndYear = reYear.GetMatch(1);
+        strYear = reYear.GetMatch(2);
+      }
     }
   }
 
