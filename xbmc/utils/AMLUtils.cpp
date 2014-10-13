@@ -159,6 +159,22 @@ void aml_permissions()
   }
 }
 
+bool aml_support_hevc()
+{
+  char valstr[1024];
+  if(aml_get_sysfs_str("/sys/class/amstream/vcodec_profile", valstr, 1024) != 0)
+  {
+    return false;
+  }
+  char* p = strstr(valstr, "hevc:");
+  if(p == NULL)
+  {
+    return false;
+  }
+
+  return true;
+}
+
 enum AML_DEVICE_TYPE aml_get_device_type()
 {
   static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
@@ -173,8 +189,14 @@ enum AML_DEVICE_TYPE aml_get_device_type()
       aml_device_type = AML_DEVICE_TYPE_M3;
     else if (cpu_hardware.find("Meson6") != std::string::npos)
       aml_device_type = AML_DEVICE_TYPE_M6;
-    else if (cpu_hardware.find("Meson8") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M8;
+    else if ((cpu_hardware.find("Meson8") != std::string::npos) && (cpu_hardware.find("Meson8B") == std::string::npos))
+    {
+      if (aml_support_hevc())
+        aml_device_type = AML_DEVICE_TYPE_M8M2;
+      else
+        aml_device_type = AML_DEVICE_TYPE_M8;
+    } else if (cpu_hardware.find("Meson8B") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M8B;
     else
       aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
   }
