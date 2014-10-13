@@ -328,6 +328,7 @@
 				<textureslidernib>osd_slider_nib.png</textureslidernib>
 				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 				<visible>Player.Seeking</visible>
+				<info>Player.seekbar</info>
 			</control>
 		</control>
 	</controls>
