@@ -289,13 +289,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     { // input from the remote
       ClearMD5();
       m_edit.clear();
-      if (m_inputType == INPUT_TYPE_FILTER)
-      { // filtering - use single number presses
-        m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
-        UpdateText();
-      }
-      else
-        OnSMSCharacter(action.GetID() - REMOTE_0);
+      OnSMSCharacter(action.GetID() - REMOTE_0);
       return true;
     }
   }
