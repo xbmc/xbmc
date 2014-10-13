@@ -46,7 +46,8 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
   m_bitparser(NULL),
-  m_bitstream(NULL)
+  m_bitstream(NULL),
+  m_hevc(false)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -105,6 +106,17 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       }
       //m_bitparser = new CBitstreamParser();
       //m_bitparser->Open();
+      break;
+    case AV_CODEC_ID_HEVC:
+      m_pFormatName = "am-h265";
+        if (m_hints.extrasize < 22 || m_hints.extradata == NULL)
+        {
+          //CLog::Log(LOGNOTICE, "%s::%s - hvcC data too small or missing", CLASSNAME, __func__);
+          return false;
+        }
+        m_bitstream = new CBitstreamConverter();
+        m_convert_bitstream = m_bitstream->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
+        m_hevc = true;
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
@@ -207,7 +219,9 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
   if (pData)
   {
-    if (m_bitstream)
+    int demuxer_bytes = iSize;
+    uint8_t *demuxer_content = pData;
+    if (m_bitstream && !m_hevc)
     {
       if (!m_bitstream->Convert(pData, iSize))
         return VC_ERROR;
@@ -216,8 +230,18 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       iSize = m_bitstream->GetConvertSize();
     }
 
-    if (m_bitparser)
+    if (m_bitparser && !m_hevc)
       m_bitparser->FindIdrSlice(pData, iSize);
+
+    if (m_convert_bitstream && demuxer_content && m_hevc)
+    {
+      // convert demuxer packet from bitstream to bytestream (AnnexB)
+      if (m_bitstream->Convert(demuxer_content, demuxer_bytes))
+      {
+        demuxer_content = m_bitstream->GetConvertBuffer();
+        demuxer_bytes = m_bitstream->GetConvertSize();
+      }
+    }
 
     FrameRateTracking( pData, iSize, dts, pts);
   }

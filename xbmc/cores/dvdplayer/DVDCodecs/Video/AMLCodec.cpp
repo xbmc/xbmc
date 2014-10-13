@@ -274,6 +274,9 @@ public:
 #define CODEC_TAG_mjpeg (0x47504a4c)
 #define CODEC_TAG_jpeg  (0x6765706a)
 #define CODEC_TAG_mjpa  (0x61706a6d)
+#define CODEC_TAG_HEVC  (0x43564548)
+#define CODEC_TAG_hvc1  (0x31637668)
+#define CODEC_TAG_hev1  (0x31766568)
 
 #define RW_WAIT_TIME    (20 * 1000) // 20ms
 
@@ -450,6 +453,9 @@ static vformat_t codecid_to_vformat(enum AVCodecID id)
     case AV_CODEC_ID_H264:
       format = VFORMAT_H264;
       break;
+    case AV_CODEC_ID_HEVC:
+      format = VFORMAT_HEVC;
+      break;
     /*
     case AV_CODEC_ID_H264MVC:
       // H264 Multiview Video Coding (3d blurays)
@@ -540,6 +546,13 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case AV_CODEC_ID_H264:
       // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
+      break;
+    case AV_CODEC_ID_HEVC:
+    case CODEC_TAG_HEVC:
+    case CODEC_TAG_hev1:
+    case CODEC_TAG_hvc1:
+      // h265
+      dec_type = VIDEO_DEC_FORMAT_HEVC;
       break;
     /*
     case AV_CODEC_ID_H264MVC:
@@ -775,6 +788,58 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
 }
 
 /*************************************************************************/
+
+static int check_size_in_buffer(unsigned char *p, int len)
+{
+    unsigned int size;
+    unsigned char *q = p;
+    while ((q + 4) < (p + len)) {
+        size = (*q << 24) | (*(q + 1) << 16) | (*(q + 2) << 8) | (*(q + 3));
+        if (size & 0xff000000) {
+            return 0;
+        }
+
+        if (q + size + 4 == p + len) {
+            return 1;
+        }
+
+        q += size + 4;
+    }
+    return 0;
+}
+
+static int check_size_in_buffer3(unsigned char *p, int len)
+{
+    unsigned int size;
+    unsigned char *q = p;
+    while ((q + 3) < (p + len)) {
+        size = (*q << 16) | (*(q + 1) << 8) | (*(q + 2));
+
+        if (q + size + 3 == p + len) {
+            return 1;
+        }
+
+        q += size + 3;
+    }
+    return 0;
+}
+
+static int check_size_in_buffer2(unsigned char *p, int len)
+{
+    unsigned int size;
+    unsigned char *q = p;
+    while ((q + 2) < (p + len)) {
+        size = (*q << 8) | (*(q + 1));
+
+        if (q + size + 2 == p + len) {
+            return 1;
+        }
+
+        q += size + 2;
+    }
+    return 0;
+}
+
 static int m4s2_dx50_mp4v_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
 {
     if (size > pkt->hdr->size) {
@@ -893,6 +958,156 @@ static int divx3_data_prefeeding(am_packet_t *pkt, unsigned w, unsigned h)
         return PLAYER_FAILED;
     }
     return PLAYER_SUCCESS;
+}
+
+static int h264_update_frame_header(am_packet_t *pkt)
+{
+    int nalsize, size = pkt->data_size;
+    unsigned char *data = pkt->data;
+    unsigned char *p = data;
+    if (p != NULL) {
+        if (check_size_in_buffer(p, size)) {
+            while ((p + 4) < (data + size)) {
+                nalsize = (*p << 24) | (*(p + 1) << 16) | (*(p + 2) << 8) | (*(p + 3));
+                *p = 0;
+                *(p + 1) = 0;
+                *(p + 2) = 0;
+                *(p + 3) = 1;
+                p += (nalsize + 4);
+            }
+            return PLAYER_SUCCESS;
+        } else if (check_size_in_buffer3(p, size)) {
+            while ((p + 3) < (data + size)) {
+                nalsize = (*p << 16) | (*(p + 1) << 8) | (*(p + 2));
+                *p = 0;
+                *(p + 1) = 0;
+                *(p + 2) = 1;
+                p += (nalsize + 3);
+            }
+            return PLAYER_SUCCESS;
+        } else if (check_size_in_buffer2(p, size)) {
+            unsigned char *new_data;
+            int new_len = 0;
+
+            new_data = (unsigned char *)malloc(size + 2 * 1024);
+            if (!new_data) {
+                return PLAYER_NOMEM;
+            }
+
+            while ((p + 2) < (data + size)) {
+                nalsize = (*p << 8) | (*(p + 1));
+                *(new_data + new_len) = 0;
+                *(new_data + new_len + 1) = 0;
+                *(new_data + new_len + 2) = 0;
+                *(new_data + new_len + 3) = 1;
+                memcpy(new_data + new_len + 4, p + 2, nalsize);
+                p += (nalsize + 2);
+                new_len += nalsize + 4;
+            }
+
+            free(pkt->buf);
+
+            pkt->buf = new_data;
+            pkt->buf_size = size + 2 * 1024;
+            pkt->data = pkt->buf;
+            pkt->data_size = new_len;
+        }
+    } else {
+        CLog::Log(LOGERROR, "[%s]invalid pointer!\n", __FUNCTION__);
+        return PLAYER_FAILED;
+    }
+    return PLAYER_SUCCESS;
+}
+
+static int hevc_update_frame_header(am_packet_t * pkt)
+{
+    unsigned char *p = pkt->data;
+    // NAL has been formatted already, no need to update
+    if (p[0] == 0 && p[1] == 0 && p[2] == 0 && p[3] == 1) {
+        return PLAYER_SUCCESS;
+    }
+    // process like h264 for now.
+    return h264_update_frame_header(pkt);
+}
+
+static int hevc_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
+{
+    char nal_start_code[] = {0x0, 0x0, 0x0, 0x1};
+    int nalsize;
+    unsigned char* p;
+    unsigned char* extradata = buf;
+    int header_len = 0;
+    char* buffer = pkt->hdr->data;
+
+    p = extradata;
+    if ((p[0] == 0 && p[1] == 0 && p[2] == 0 && p[3] == 1)||(p[0] == 0 && p[1] == 0 && p[2] == 1 )
+        && size < HDR_BUF_SIZE) {
+        CLog::Log(LOGDEBUG, "add hevc header in stream before header len=%d", size);
+        memcpy(buffer, buf, size);
+        pkt->hdr->size = size;
+        return PLAYER_SUCCESS;
+    }
+
+    if (size < 4) {
+        return PLAYER_FAILED;
+    }
+
+    // TODO: maybe need to modify here.
+    if (p[0] || p[1] || p[2] > 1) {
+        /* It seems the extradata is encoded as hvcC format.
+         * Temporarily, we support configurationVersion==0 until 14496-15 3rd
+         * is finalized. When finalized, configurationVersion will be 1 and we
+         * can recognize hvcC by checking if extradata[0]==1 or not. */
+        int i, j, num_arrays, nal_len_size;
+        p += 21;  // skip 21 bytes
+        nal_len_size = *(p++) & 3 + 1;
+        num_arrays   = *(p++);
+        for (i = 0; i < num_arrays; i++) {
+            int type = *(p++) & 0x3f;
+            int cnt  = (*p << 8) | (*(p + 1));
+            p += 2;
+            CLog::Log(LOGDEBUG, "hvcC, nal type=%d, count=%d \n", type, cnt);
+
+            for (j = 0; j < cnt; j++) {
+                /** nal units in the hvcC always have length coded with 2 bytes */
+                nalsize = (*p << 8) | (*(p + 1));
+                memcpy(&(buffer[header_len]), nal_start_code, 4);
+                header_len += 4;
+                memcpy(&(buffer[header_len]), p + 2, nalsize);
+                header_len += nalsize;
+                p += (nalsize + 2);
+            }
+        }
+        if (header_len >= HDR_BUF_SIZE) {
+            CLog::Log(LOGDEBUG, "hvcC header_len %d is larger than max length\n", header_len);
+            return PLAYER_FAILED;
+        }
+        pkt->hdr->size = header_len;
+        CLog::Log(LOGDEBUG, "hvcC, nal header_len=%d \n", header_len);
+        return PLAYER_SUCCESS;
+    }
+    return PLAYER_FAILED;
+}
+
+static int hevc_write_header(am_private_t *para, am_packet_t *pkt)
+{
+    int ret = -1;
+
+    if (para->extradata) {
+        ret = hevc_add_header(para->extradata, para->extrasize, pkt);
+    }
+    if (ret == PLAYER_SUCCESS) {
+        if (1) {
+          pkt->codec = &para->vcodec;
+        } else {
+            CLog::Log(LOGDEBUG, "[hevc_add_header]invalid video codec!\n");
+            return PLAYER_EMPTY_P;
+        }
+
+        pkt->newflag = 1;
+        ret = write_av_packet(para, pkt);
+    }
+    return ret;
 }
 
 static int divx3_write_header(am_private_t *para, am_packet_t *pkt)
@@ -1071,6 +1286,11 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
 
         if (VFORMAT_H264 == para->video_format || VFORMAT_H264_4K2K == para->video_format) {
             ret = h264_write_header(para, pkt);
+            if (ret != PLAYER_SUCCESS) {
+                return ret;
+            }
+        } else if (VFORMAT_HEVC == para->video_format) {
+            ret = hevc_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
@@ -1399,6 +1619,8 @@ int set_header_info(am_private_t *para)
             pkt->hdr->size = 4;
             pkt->newflag = 1;
         }
+    } else if (para->video_format == VFORMAT_HEVC) {
+            hevc_update_frame_header(pkt);
     }
   }
   return PLAYER_SUCCESS;
@@ -1588,6 +1810,23 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
           am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       } else {
         CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, 4K supported only on Meson8.");
+        return false;
+      }
+      break;
+    case VFORMAT_HEVC:
+      if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) || (aml_get_device_type() == AML_DEVICE_TYPE_M8M2)) {
+		  if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) && ((am_private->gcodec.width > 1920) || (am_private->gcodec.height > 1088)))
+          {
+            CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, 4K HEVC is supported only on Amlogic S812 chip.");
+            return false;
+          }
+          am_private->gcodec.format = VIDEO_DEC_FORMAT_HEVC;
+          am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+          // h265 in an avi file
+          if (m_hints.ptsinvalid)
+            am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      } else {
+        CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, HEVC supported only on S805 and S812.");
         return false;
       }
       break; 
