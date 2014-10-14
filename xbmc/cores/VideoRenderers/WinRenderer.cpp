@@ -1285,7 +1285,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
           method == VS_SCALINGMETHOD_AUTO)
         return true;
-      else
+      else if (!g_advancedSettings.m_DXVAAllowHqScaling)
         return false;
     }
 
