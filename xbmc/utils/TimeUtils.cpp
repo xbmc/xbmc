@@ -74,7 +74,6 @@ unsigned int CTimeUtils::frameTime = 0;
 
 void CTimeUtils::Close()
 {
-  delete frameTimer;
   frameTimer = NULL;
 };
 
