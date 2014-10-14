@@ -734,7 +734,7 @@
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
