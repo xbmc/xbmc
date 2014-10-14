@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_LIBDIR@
+includedir=@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: TinyXML2
+Description: simple, small, C++ XML parser
+Version: @GENERIC_LIB_VERSION@
+Libs: -L${libdir} -ltinyxml2
+Cflags: -I${includedir}

@@ -15,6 +15,19 @@ set(BINARY_SIGNING_TOOL sign-updater.bat CACHE PATH "Path to the tool used to si
 
 include_directories(external)
 include_directories(external/TinyThread/source)
+include_directories(external/sha1 external/bsdiff)
+
+## PLEX
+if(NOT APPNAME)
+	set(APPNAME "Plex Home Theater")
+endif(NOT APPNAME)
+add_definitions(-DAPPNAME="${APPNAME}")
+
+option(DISABLE_GUI "Disable the installer GUI" OFF)
+if(DISABLE_GUI)
+	add_definitions(-DDISABLE_GUI)
+endif(DISABLE_GUI)
+## End PLEX
 
 ## PLEX
 if(NOT APPNAME)
@@ -66,6 +79,7 @@ endif()
 add_subdirectory(src)
 add_subdirectory(external/AnyOption)
 add_subdirectory(external/minizip)
-add_subdirectory(external/tinyxml)
+add_subdirectory(external/tinyxml2)
 add_subdirectory(external/TinyThread)
-
+add_subdirectory(external/bsdiff)
+add_subdirectory(external/sha1)

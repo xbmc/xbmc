@@ -1,3 +1,2 @@
 * Fixes
   - Fix avoid cinema trailers to play before a TV Show
- 

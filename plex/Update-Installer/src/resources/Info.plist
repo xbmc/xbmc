@@ -8,7 +8,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Mendeley Updater</string>
+	<string>Plex Updater</string>
 	<key>CFBundleIconFile</key>
 	<string>Mendeley Updater.icns</string>
 	<key>CFBundleIdentifier</key>

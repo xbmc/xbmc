@@ -107,6 +107,8 @@ target_link_libraries(updatershared
   tinyxml
   minizip
   tinythread
+  bspatch
+  sha1
 )
 
 if(LINUX)

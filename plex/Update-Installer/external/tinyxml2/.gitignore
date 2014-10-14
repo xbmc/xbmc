@@ -1,0 +1,13 @@
+# intermediate files
+Win32/
+x64/
+ipch/
+resources/out/
+tinyxml2/tinyxml2-cbp/bin/
+tinyxml2/tinyxml2-cbp/obj/
+*.sdf
+*.suo
+*.opensdf
+*.user
+*.depend
+*.layout
