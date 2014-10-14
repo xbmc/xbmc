@@ -164,4 +164,5 @@ void CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller(const CSetting *settin
     std::string name = it->GetName();
     list.push_back(make_pair(name, name));
   }
+  std::sort(list.begin(), list.end());
 }
