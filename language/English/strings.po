@@ -12074,6 +12074,8 @@ msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr ""
 
+#. Used as the type name for context item addons
+#: xbmc/addons/Addons.cpp
 msgctxt "#24025"
 msgid "Context Item"
 msgstr ""
