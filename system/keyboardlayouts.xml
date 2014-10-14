@@ -180,4 +180,64 @@
       <row>`~</row>
    </keyboard>
   </layout>
+  <layout name="Norwegian QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjkløæ</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLØÆ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Danish QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjklæø</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLÆØ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Swedish QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjklöä</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLÖÄ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
 </keyboardlayouts>
