@@ -20,18 +20,21 @@
 
 #include "KeyboardLayout.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include <set>
 
 #define KEYBOARD_LAYOUTS_XML "special://xbmc/system/keyboardlayouts.xml"
 
-CKeyboardLayout::CKeyboardLayout() : m_name("")
+CKeyboardLayout::CKeyboardLayout() : m_locale(""), m_variant("")
 {
 }
 
-CKeyboardLayout::CKeyboardLayout(const std::string &name, const TiXmlElement &element) : m_name(name)
+CKeyboardLayout::CKeyboardLayout(const std::string &localeName, const std::string &variantName, const TiXmlElement &element)
+  : m_locale(localeName), m_variant(variantName)
 {
   const TiXmlElement *keyboard = element.FirstChildElement("keyboard");
   while (keyboard)
@@ -89,6 +92,14 @@ CKeyboardLayout::~CKeyboardLayout(void)
 
 }
 
+std::string CKeyboardLayout::GetName() const
+{
+  std::string languageName;
+  if (!g_LangCodeExpander.Lookup(languageName, GetLocale()))
+    languageName = GetLocale();
+  return StringUtils::Format("%s %s", languageName.c_str(), GetVariant().c_str());
+}
+
 std::string CKeyboardLayout::GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers) const
 {
   Keyboards::const_iterator mod = m_keyboards.find(modifiers);
@@ -124,17 +135,6 @@ std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &cha
   return result;
 }
 
-CKeyboardLayout CKeyboardLayout::Load(const std::string& layout)
-{
-  std::vector<CKeyboardLayout> layouts = LoadLayouts();
-  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); it++)
-  {
-    if (it->GetName() == layout)
-      return *it;
-  }
-  return CKeyboardLayout();
-}
-
 std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
 {
   std::vector<CKeyboardLayout> result;
@@ -147,8 +147,14 @@ std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
       const TiXmlElement* layout = root->FirstChildElement("layout");
       while (layout)
       {
-        if (layout->Attribute("name"))
-          result.push_back(CKeyboardLayout(layout->Attribute("name"), *layout));
+        const char* locale = layout->Attribute("locale");
+        if (locale)
+        {
+          const char* variant = layout->Attribute("variant");
+          std::string variantName = variant != NULL ? variant : "";
+
+          result.push_back(CKeyboardLayout(locale, variantName, *layout));
+        }
         layout = layout->NextSiblingElement("layout");
       }
     }
@@ -156,13 +162,34 @@ std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
   return result;
 }
 
+std::vector<CKeyboardLayout> CKeyboardLayout::LoadActiveLayouts()
+{
+  std::vector<CKeyboardLayout> allLayouts = LoadLayouts();
+
+  const CSetting *setting = CSettings::Get().GetSetting("locale.keyboardlayouts");
+  std::vector<std::string> layoutIds;
+  if (setting)
+    layoutIds = StringUtils::Split(setting->ToString(), '|');
+
+  std::vector<CKeyboardLayout> result;
+  for (std::vector<CKeyboardLayout>::const_iterator it = allLayouts.begin(); it != allLayouts.end(); ++it)
+  {
+    std::string layoutId = it->GetLocale() + "_" + it->GetVariant();
+    if (std::find(layoutIds.begin(), layoutIds.end(), layoutId) != layoutIds.end())
+      result.push_back(*it);
+  }
+  return result;
+}
+
+
 void CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   std::vector<CKeyboardLayout> layouts = LoadLayouts();
   for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); it++)
   {
     std::string name = it->GetName();
-    list.push_back(make_pair(name, name));
+    std::string settingId = it->GetLocale() + "_" + it->GetVariant();
+    list.push_back(make_pair(name, settingId));
   }
   std::sort(list.begin(), list.end());
 }

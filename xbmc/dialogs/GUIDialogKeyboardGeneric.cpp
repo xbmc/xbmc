@@ -89,16 +89,9 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   // fill in the keyboard layouts
   m_currentLayout = 0;
   m_layouts.clear();
-  std::vector<CKeyboardLayout> keyLayouts = CKeyboardLayout::LoadLayouts();
-  const CSetting *setting = CSettings::Get().GetSetting("locale.keyboardlayouts");
-  std::vector<std::string> layouts;
-  if (setting)
-    layouts = StringUtils::Split(setting->ToString(), '|');
-  for (std::vector<CKeyboardLayout>::const_iterator j = keyLayouts.begin(); j != keyLayouts.end(); ++j)
-  {
-    if (std::find(layouts.begin(), layouts.end(), j->GetName()) != layouts.end())
-      m_layouts.push_back(*j);
-  }
+  std::vector<CKeyboardLayout> layouts = CKeyboardLayout::LoadActiveLayouts();
+  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); ++it)
+    m_layouts.push_back(*it);
 
   // set alphabetic (capitals)
   UpdateButtons();

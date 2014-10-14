@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="English QWERTY">
+  <layout locale="en" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiop</row>
@@ -24,7 +24,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="English AZERTY">
+  <layout locale="en" variant="AZERTY">
     <keyboard>
       <row>1234567890</row>
       <row>azertyuiop</row>
@@ -44,7 +44,7 @@ Default font lacks support for all characters
       <row>`~éèçà</row>
     </keyboard>
   </layout>
-  <layout name="English ABC">
+  <layout locale="en" variant="ABC">
     <keyboard>
       <row>0123456789</row>
       <row>abcdefghij</row>
@@ -64,7 +64,7 @@ Default font lacks support for all characters
       <row>`~</row>
    </keyboard>
   </layout>
-  <layout name="Bulgarian ЯВЕРТЪ">
+  <layout locale="bg" variant="ЯВЕРТЪ">
     <keyboard>
       <row>ч1234567890</row>
       <row>явертъуиопшщ</row>
@@ -84,7 +84,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Bulgarian АБВ">
+  <layout locale="bg" variant="АБВ">
     <keyboard>
       <row>0123456789</row>
       <row>абвгдежзий</row>
@@ -104,7 +104,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Russian ЙЦУКЕН">
+  <layout locale="ru" variant="ЙЦУКЕН">
     <keyboard>
       <row>ё1234567890</row>
       <row>йцукенгшщзхъ</row>
@@ -124,7 +124,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Russian АБВ">
+  <layout locale="ru" variant="АБВ">
     <keyboard>
       <row>0123456789</row>
       <row>абвгдеёжзий</row>
@@ -144,7 +144,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Hebrew QWERTY">
+  <layout locale="he" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>קראטוןםפ</row>
@@ -164,7 +164,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Hebrew ABC">
+  <layout locale="he" variant="ABC">
     <keyboard>
       <row>0123456789</row>
       <row>יטחזוהדגבא</row>
@@ -184,7 +184,7 @@ Default font lacks support for all characters
       <row>`~</row>
    </keyboard>
   </layout>
-  <layout name="Norwegian QWERTY">
+  <layout locale="no" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiopå</row>
@@ -204,7 +204,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Danish QWERTY">
+  <layout locale="da" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiopå</row>
@@ -224,7 +224,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Swedish QWERTY">
+  <layout locale="sv" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiopå</row>
@@ -244,7 +244,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Turkish QWERTY">
+  <layout locale="tr" variant="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuıopğü</row>
