@@ -754,6 +754,13 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\AudioEncoder.cpp">
+	  <ClCompile Include="..\..\xbmc\addons\ContextCategoryAddon.cpp">
+    <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextCategoryAddon.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextItemAddon.cpp">
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
@@ -934,6 +941,7 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIContextMenuManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
