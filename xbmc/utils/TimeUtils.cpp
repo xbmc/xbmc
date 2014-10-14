@@ -69,23 +69,15 @@ int64_t CurrentHostFrequency(void)
 #endif
 }
 
-CTimeSmoother *CTimeUtils::frameTimer = NULL;
+CTimeSmoother CTimeUtils::frameTimer = CTimeSmoother();
 unsigned int CTimeUtils::frameTime = 0;
-
-void CTimeUtils::Close()
-{
-  delete frameTimer;
-  frameTimer = NULL;
-};
 
 void CTimeUtils::UpdateFrameTime(bool flip)
 {
-  if (!frameTimer)
-    frameTimer = new CTimeSmoother();
   unsigned int currentTime = XbmcThreads::SystemClockMillis();
   if (flip)
-    frameTimer->AddTimeStamp(currentTime);
-  frameTime = frameTimer->GetNextFrameTime(currentTime);
+    frameTimer.AddTimeStamp(currentTime);
+  frameTime = frameTimer.GetNextFrameTime(currentTime);
 }
 
 unsigned int CTimeUtils::GetFrameTime()
