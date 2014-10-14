@@ -301,9 +301,8 @@ void CGUIDialogKeyboardGeneric::OnClickButton(int iButtonControl)
     if (pButton)
     {
       Character(pButton->GetDescription());
-      // reset the shift and symbol keys
+      // reset the shift keys
       if (m_bShift) OnShift();
-      if (m_keyType == SYMBOLS) OnSymbols();
     }
   }
 }
