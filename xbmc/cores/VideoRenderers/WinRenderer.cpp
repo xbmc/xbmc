@@ -174,6 +174,8 @@ void CWinRenderer::SelectRenderMethod()
           if (shader.Create())
           {
             m_renderMethod = RENDER_PS;
+            if (m_format == RENDER_FMT_DXVA)
+              m_format = RENDER_FMT_NV12;
             break;
           }
           else
