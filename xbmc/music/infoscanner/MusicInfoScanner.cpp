@@ -90,7 +90,8 @@ void CMusicInfoScanner::Process()
     {
       CGUIDialogExtendedProgressBar* dialog =
         (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-      m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
+      if (dialog)
+        m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
     }
 
     m_bCanInterrupt = true;
