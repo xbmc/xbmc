@@ -238,7 +238,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   if (m_item != NULL)
   {
       if (0 != PySys_SetObject((char*)"item", m_item))
-        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setSysParameter failed!", GetId(), m_sourceFile);
+        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setSysParameter failed!", GetId(), m_sourceFile.c_str());
   }
 
 #ifdef TARGET_WINDOWS
