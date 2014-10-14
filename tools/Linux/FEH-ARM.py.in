@@ -32,10 +32,7 @@ def error(errorLine):
     elif Output == "--error-output=SDL":
         createSDL(errorLine)
     else:
-        try:
-            print(errorLine)
-        except:
-            print(errorLine)
+        print errorLine
 
     exit(1)
 
@@ -145,7 +142,7 @@ def badColorDepth():
     for line in out.readlines():
         match = p.search(line)
         if (match is not None):
-            if int(match.group(1)) > 16:
+            if int(match.group(1)) >= 16:
                 bitDepth = False
             else:
                 bitDepth = True
@@ -169,8 +166,8 @@ if __name__=="__main__":
     if "--no-test" in sys.argv:
         exit(0)
 
-    if (badDirectRendering()):
-        error("XBMC needs hardware accelerated OpenGL rendering.\nInstall an appropriate graphics driver.\n\nPlease consult XBMC Wiki for supported hardware\nhttp://wiki.xbmc.org/?title=Supported_hardware")
+    if (@USE_X11@ == 1 and @USE_OPENGL@ == 1 and badDirectRendering()):
+        error("@APP_NAME@ needs hardware accelerated OpenGL rendering.\nInstall an appropriate graphics driver.\n\nPlease consult @APP_NAME@ Wiki for supported hardware\nhttp://xbmc.org/wiki/?title=Supported_hardware")
 
-    if (badColorDepth()):
-        error("XBMC cannot run unless the\nscreen color depth is atleast 24 bit.\n\nPlease reconfigure your screen.")
+    if (@USE_X11@ == 1 and badColorDepth()):
+        error("@APP_NAME@ cannot run unless the\nscreen color depth is atleast 24 bit.\n\nPlease reconfigure your screen.")
