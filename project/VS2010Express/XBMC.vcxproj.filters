@@ -754,8 +754,10 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\AudioEncoder.cpp">
-	  <ClCompile Include="..\..\xbmc\addons\ContextCategoryAddon.cpp">
-    <Filter>addons</Filter>
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextCategoryAddon.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\ContextCategoryAddon.cpp">
       <Filter>addons</Filter>
