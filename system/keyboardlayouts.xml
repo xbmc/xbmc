@@ -180,4 +180,44 @@
       <row>`~</row>
    </keyboard>
   </layout>
+  <layout name="Українська АБВ">
+    <keyboard>
+      <row>0123456789</row>
+      <row>абвгґдеєжзи</row>
+      <row>йклмнопрсту</row>
+      <row>фхцчшщьюя'</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789</row>
+      <row>АБВГҐДЕЄЖЗИ</row>
+      <row>ЙКЛМНОПРСТУ</row>
+      <row>ФХЦЧШЩЬЭЮЯ'</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Українська ЙЦУКЕН">
+    <keyboard>
+      <row>'1234567890</row>
+      <row>йцукенгшщзхї</row>
+      <row>фівапролджє</row>
+      <row>ґячсмитьбю</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>'1234567890</row>
+      <row>ЙЦУКЕНГШЩЗХЇ</row>
+      <row>ФІВАПРОЛДЖЄ</row>
+      <row>ҐЯЧСМИТЬБЮ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
 </keyboardlayouts>
