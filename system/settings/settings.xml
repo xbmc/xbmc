@@ -2202,6 +2202,14 @@
             <hidden>true</hidden>
           </control>
         </setting>
+        <setting id="services.airplayios8compat" type="boolean" parent="services.airplay" label="1268" help="36549">
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="services.airplay">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="smb" label="1200" help="36346">

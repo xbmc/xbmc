@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
+#include "filesystem/Directory.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -61,6 +62,7 @@ using namespace std;
 #define AIRPLAY_STATUS_NEED_AUTH           401
 #define AIRPLAY_STATUS_NOT_FOUND           404
 #define AIRPLAY_STATUS_METHOD_NOT_ALLOWED  405
+#define AIRPLAY_STATUS_PRECONDITION_FAILED 412
 #define AIRPLAY_STATUS_NOT_IMPLEMENTED     501
 #define AIRPLAY_STATUS_NO_RESPONSE_NEEDED  1000
 
@@ -219,9 +221,34 @@ bool CAirPlayServer::SetInternalCredentials(bool usePassword, const std::string&
   return true;
 }
 
+void ClearPhotoAssetCache()
+{
+  CLog::Log(LOGINFO, "AIRPLAY: Cleaning up photoassetcache");
+  // remove all cached photos
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory("special://temp/", items);
+  
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    if (!pItem->m_bIsFolder)
+    {
+      if (StringUtils::StartsWithNoCase(pItem->GetLabel(), "airplayasset") &&
+          (StringUtils::EndsWithNoCase(pItem->GetLabel(), ".jpg") ||
+           StringUtils::EndsWithNoCase(pItem->GetLabel(), ".png") ))
+      {
+        XFILE::CFile::Delete(pItem->GetPath());
+      }
+    }
+  }  
+}
+
 void CAirPlayServer::StopServer(bool bWait)
 {
   CSingleLock lock(ServerInstanceLock);
+  //clean up the photo cache temp folder
+  ClearPhotoAssetCache();
+
   if (ServerInstance)
   {
     ServerInstance->StopThread(bWait);
@@ -495,6 +522,9 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
       case AIRPLAY_STATUS_METHOD_NOT_ALLOWED:
         statusMsg = "Method Not Allowed";
         break;
+      case AIRPLAY_STATUS_PRECONDITION_FAILED:
+        statusMsg = "Precondition Failed";
+        break;
     }
 
     // Prepare the response
@@ -711,6 +741,29 @@ void CAirPlayServer::restoreVolume()
   }
 }
 
+void dumpPlist(DllLibPlist *pLibPlist, plist_t *dict)
+{
+  char *plist = NULL;
+  uint32_t len = 0;
+  pLibPlist->plist_to_xml(*dict,&plist, &len);
+  CLog::Log(LOGDEBUG, "AIRPLAY-DUMP: %s", plist);
+  
+}
+
+std::string getStringFromPlist(DllLibPlist *pLibPlist,plist_t node)
+{
+  std::string ret;
+  char *tmpStr = NULL;
+  pLibPlist->plist_get_string_val(node, &tmpStr);
+  ret = tmpStr;
+#ifdef TARGET_WINDOWS
+  pLibPlist->plist_free_string_val(tmpStr);
+#else
+  free(tmpStr);
+#endif
+  return ret;
+}
+
 int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
                                                 std::string& responseBody)
 {
@@ -721,6 +774,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   std::string contentType = m_httpParser->getValue("content-type") ? m_httpParser->getValue("content-type") : "";
   m_sessionId = m_httpParser->getValue("x-apple-session-id") ? m_httpParser->getValue("x-apple-session-id") : "";
   std::string authorization = m_httpParser->getValue("authorization") ? m_httpParser->getValue("authorization") : "";
+  std::string photoAction = m_httpParser->getValue("x-apple-assetaction") ? m_httpParser->getValue("x-apple-assetaction") : "";
+  std::string photoCacheId = m_httpParser->getValue("x-apple-assetkey") ? m_httpParser->getValue("x-apple-assetkey") : "";
+
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
   
@@ -812,6 +868,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   {
     std::string location;
     float position = 0.0;
+    bool startPlayback = true;
     m_lastEvent = EVENT_NONE;
 
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
@@ -820,7 +877,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
     }
-    else if (contentType == "application/x-apple-binary-plist")
+    else
     {
       CAirPlayServer::m_isPlaying++;    
       
@@ -831,7 +888,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
         const char* bodyChr = m_httpParser->getBody();
 
         plist_t dict = NULL;
-        m_pLibPlist->plist_from_bin(bodyChr, m_httpParser->getContentLength(), &dict);
+        if (contentType == "application/x-apple-binary-plist")
+          m_pLibPlist->plist_from_bin(bodyChr, m_httpParser->getContentLength(), &dict);
+        else
+          m_pLibPlist->plist_from_xml(bodyChr, m_httpParser->getContentLength(), &dict);
+
 
         if (m_pLibPlist->plist_dict_get_size(dict))
         {
@@ -846,14 +907,36 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Content-Location");
           if (tmpNode)
           {
-            char *tmpStr = NULL;
-            m_pLibPlist->plist_get_string_val(tmpNode, &tmpStr);
-            location=tmpStr;
-#ifdef TARGET_WINDOWS
-            m_pLibPlist->plist_free_string_val(tmpStr);
-#else
-            free(tmpStr);
-#endif
+            location = getStringFromPlist(m_pLibPlist, tmpNode);
+            tmpNode = NULL;
+          }
+          
+          tmpNode = m_pLibPlist->plist_dict_get_item(dict, "rate");
+          if (tmpNode)
+          {
+            double rate = 0;
+            m_pLibPlist->plist_get_real_val(tmpNode, &rate);
+            if (rate == 0.0)
+            {
+              startPlayback = false;
+            }
+            tmpNode = NULL;
+          }
+
+          // in newer protocol versions the location is given
+          // via host and path where host is ip:port and path is /path/file.mov
+          if (location.empty())
+              tmpNode = m_pLibPlist->plist_dict_get_item(dict, "host");
+          if (tmpNode)
+          {
+            location = "http://";
+            location += getStringFromPlist(m_pLibPlist, tmpNode);
+
+            tmpNode = m_pLibPlist->plist_dict_get_item(dict, "path");
+            if (tmpNode)
+            {
+              location += getStringFromPlist(m_pLibPlist, tmpNode);
+            }
           }
 
           if (dict)
@@ -866,28 +949,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           CLog::Log(LOGERROR, "Error parsing plist");
         }
         m_pLibPlist->Unload();
-      }
-    }
-    else
-    {
-      CAirPlayServer::m_isPlaying++;        
-      // Get URL to play
-      std::string contentLocation = "Content-Location: ";
-      size_t start = body.find(contentLocation);
-      if (start == std::string::npos)
-        return AIRPLAY_STATUS_NOT_IMPLEMENTED;
-      start += contentLocation.size();
-      int end = body.find('\n', start);
-      location = body.substr(start, end - start);
-
-      std::string startPosition = "Start-Position: ";
-      start = body.find(startPosition);
-      if (start != std::string::npos)
-      {
-        start += startPosition.size();
-        int end = body.find('\n', start);
-        std::string positionStr = body.substr(start, end - start);
-        position = (float)atof(positionStr.c_str());
       }
     }
 
@@ -903,6 +964,13 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       // one who will work well with airplay
       g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
       CApplicationMessenger::Get().MediaPlay(fileToPlay);
+
+      // allow starting the player paused in ios8 mode (needed by camera roll app)
+      if (CSettings::Get().GetBool("services.airplayios8compat") && !startPlayback)
+      {
+        CApplicationMessenger::Get().MediaPause();
+        g_application.m_pPlayer->SeekPercentage(position * 100.0f);
+      }
     }
   }
 
@@ -961,6 +1029,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
         CApplicationMessenger::Get().SendAction(ACTION_PREVIOUS_MENU);
       }
     }
+    ClearPhotoAssetCache();
   }
 
   // RAW JPEG data is contained in the request body
@@ -971,28 +1040,64 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
     }
-    else if (m_httpParser->getContentLength() > 0)
+    else if (m_httpParser->getContentLength() > 0 || photoAction == "displayCached")
     {
       XFILE::CFile tmpFile;
-      std::string tmpFileName = "special://temp/airplay_photo.jpg";
+      std::string tmpFileName = "special://temp/airplayasset";
+      bool showPhoto = true;
+      bool receivePhoto = true;
 
-      if( m_httpParser->getContentLength() > 3 &&
+      
+      if (photoAction == "cacheOnly")
+        showPhoto = false;
+      else if (photoAction == "displayCached")
+      {
+        receivePhoto = false;
+        if (photoCacheId.length())
+          CLog::Log(LOGDEBUG, "AIRPLAY: Trying to show from cache asset: %s", photoCacheId.c_str());
+      }
+      
+      if (photoCacheId.length())
+        tmpFileName += photoCacheId;
+      else
+        tmpFileName += "airplay_photo";
+             
+      if( receivePhoto && m_httpParser->getContentLength() > 3 &&
           m_httpParser->getBody()[1] == 'P' &&
           m_httpParser->getBody()[2] == 'N' &&
           m_httpParser->getBody()[3] == 'G')
       {
-        tmpFileName = "special://temp/airplay_photo.png";
+        tmpFileName += ".png";
+      }
+      else
+      {
+        tmpFileName += ".jpg";
       }
 
-      if (tmpFile.OpenForWrite(tmpFileName, true))
+      int writtenBytes=0;
+      if (receivePhoto)
       {
-        int writtenBytes=0;
-        writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
-        tmpFile.Close();
-
-        if (writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength())
+        if (tmpFile.OpenForWrite(tmpFileName, true))
         {
-          CApplicationMessenger::Get().PictureShow(tmpFileName);
+          writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
+          tmpFile.Close();
+        }
+        if (photoCacheId.length())
+          CLog::Log(LOGDEBUG, "AIRPLAY: Cached asset: %s", photoCacheId.c_str());
+      }
+
+      if (showPhoto)
+      {
+        if ((writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength()) || !receivePhoto)
+        {
+          if (!receivePhoto && !XFILE::CFile::Exists(tmpFileName))
+          {
+            status = AIRPLAY_STATUS_PRECONDITION_FAILED; //image not found in the cache
+            if (photoCacheId.length())
+              CLog::Log(LOGWARNING, "AIRPLAY: Asset %s not found in our cache.", photoCacheId.c_str());
+          }
+          else
+            CApplicationMessenger::Get().PictureShow(tmpFileName);
         }
         else
         {
@@ -1065,6 +1170,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   else if (uri == "/getProperty")
   {
     status = AIRPLAY_STATUS_NOT_FOUND;
+  }
+
+  else if (uri == "/fp-setup")
+  {
+    status = AIRPLAY_STATUS_PRECONDITION_FAILED;
   }  
 
   else if (uri == "200") //response OK from the event reverse message
