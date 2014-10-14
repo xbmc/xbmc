@@ -25,6 +25,9 @@
 #include "utils/fastmemcpy.h"
 #include "cores/FFmpeg.h"
 #include "Util.h"
+#ifdef HAS_DX
+#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
+#endif
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avcodec.lib")
@@ -362,7 +365,7 @@ bool CDVDCodecUtils::CopyDXVA2Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
   {
     case MAKEFOURCC('N','V','1','2'):
       {
-        IDirect3DSurface9* surface = (IDirect3DSurface9*)pSrc->data[3];
+        IDirect3DSurface9* surface = (IDirect3DSurface9*)(pSrc->dxva->surface);
 
         D3DLOCKED_RECT rectangle;
         if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
