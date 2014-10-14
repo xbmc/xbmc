@@ -1072,7 +1072,6 @@ void CGUIWindowHome::RefreshSectionsForServer(const CStdString &uuid)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::RemoveSectionsForServer(const CStdString &uuid)
 {
-  printf("Removing section for server %s\n", uuid.c_str());
   std::list<CStdString> sectionsToRemove;
   
   BOOST_FOREACH(nameSectionPair p, m_sections)
@@ -1082,7 +1081,6 @@ void CGUIWindowHome::RemoveSectionsForServer(const CStdString &uuid)
       sectionsToRemove.push_back(p.first);
   }
   
-  printf("found %d section ro remove for server %s\n", sectionsToRemove.size(), uuid.c_str());
   for (std::list<CStdString>::iterator it = sectionsToRemove.begin(); it != sectionsToRemove.end(); ++it )
   {
     m_sections.erase(*it);
