@@ -13,6 +13,7 @@ SRCS=Application.cpp \
      FileItem.cpp \
      FileItemListModification.cpp \
      GitRevision \
+     GUIContextMenuManager.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \
@@ -36,7 +37,6 @@ SRCS=Application.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
      XbmcContext.cpp \
-     GUIContextMenuManager.cpp \
 
 LIB=xbmc.a
 
