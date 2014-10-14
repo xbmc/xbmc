@@ -921,7 +921,7 @@ bool CApplication::CreateGUI()
             info.iWidth,
             info.iHeight,
             info.strMode.c_str());
-  g_windowManager.Initialize();
+  g_windowManager.Reset();
 
   return true;
 }
@@ -1244,7 +1244,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  if (g_windowManager.Initialized())
+  if (!IsHeadless())
   {
     CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
 
@@ -1786,7 +1786,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.AddMsgTarget(&CStereoscopicsManager::Get());
   g_windowManager.SetCallback(*this);
-  g_windowManager.Initialize();
+  g_windowManager.Reset();
   CTextureCache::Get().Initialize();
   g_audioManager.Enable(true);
   g_audioManager.Load();
@@ -1842,7 +1842,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_audioManager.Enable(false);
 
-  g_windowManager.DeInitialize();
+  g_windowManager.UnloadWindows();
   CTextureCache::Get().Deinitialize();
 
   // remove the skin-dependent window
