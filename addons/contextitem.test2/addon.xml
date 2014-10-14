@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="contextitem.test2"
+       name="ContextItem Test 2"
+       version="1.0.0"
+       provider-name="Fice">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.context.item" library="addon.py" label="30000" visible="Player.HasAudio">
+
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>Testcase 2 for Context Item Addons</summary>
+    <description>
+        Test that we use a string from the language file, if an integer is given in the label.
+    </description>
+  </extension>
+</addon>
