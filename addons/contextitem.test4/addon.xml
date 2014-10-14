@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
-  <extension point="xbmc.context.item" library="addon.py" visible="false">
+  <extension point="addon.context.item" library="addon.py" visible="false">
       <label>Test 4 (Never visible)</label>
       <label lang="de">Test 4 (Nie sichtbar)</label>
   </extension>

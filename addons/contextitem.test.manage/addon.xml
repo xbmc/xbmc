@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
-  <extension point="xbmc.context.item" visible="true" label="e.g. Set CD Art" parent="manage" library="addon.py">
+  <extension point="addon.context.item" visible="true" label="e.g. Set CD Art" parent="manage" library="addon.py">
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>

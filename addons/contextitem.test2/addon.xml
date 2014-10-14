@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
-  <extension point="xbmc.context.item" library="addon.py" label="30000" visible="Player.HasAudio">
+  <extension point="addon.context.item" library="addon.py" label="30000" visible="Player.HasAudio">
 
   </extension>
   <extension point="xbmc.addon.metadata">

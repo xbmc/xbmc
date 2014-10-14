@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
-  <extension point="xbmc.context.item" parent="contextcategory.1" library="addon.py" visible="true" label="Inside categorie 1 (but shows up in root)">
+  <extension point="addon.context.item" parent="contextcategory.1" library="addon.py" visible="true" label="Inside categorie 1 (but shows up in root)">
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
