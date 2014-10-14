@@ -12763,7 +12763,19 @@ msgctxt "#33038"
 msgid "%s day"
 msgstr ""
 
-#empty strings from id 33039 to 33048
+#. Used in the media source dialog. Will result in "SAP Streams"
+#: dialogs/GUIDialogMediaSource.cpp
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr ""
+
+#. Used in the media source dialog. Will result in "ReplayTV Devices" and "HDHomerun Devices"
+#: dialogs/GUIDialogMediaSource.cpp
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr ""
+
+#empty strings from id 33041 to 33048
 
 #: Unknown
 msgctxt "#33049"
