@@ -151,9 +151,6 @@ TEST_F(TestSystemInfo, GetOsPrettyNameWithVersion)
 TEST_F(TestSystemInfo, GetManufacturerName)
 {
   EXPECT_STRCASENE("unknown", g_sysinfo.GetManufacturerName().c_str()) << "'GetManufacturerName()' must return empty string instead of 'Unknown'";
-#ifdef TARGET_DARWIN
-  EXPECT_STREQ("Apple", g_sysinfo.GetManufacturerName().c_str()) << "'GetManufacturerName()' must return 'Apple'";
-#endif // TARGET_DARWIN
 }
 
 TEST_F(TestSystemInfo, GetModelName)
