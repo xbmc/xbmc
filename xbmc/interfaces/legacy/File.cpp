@@ -39,8 +39,8 @@ namespace XBMCAddon
 
       while(ret.remaining() > 0)
       {
-        int bytesRead = file->Read(ret.curPosition(), ret.remaining());
-        if (bytesRead == 0) // we consider this a failure or a EOF, can't tell which,
+        ssize_t bytesRead = file->Read(ret.curPosition(), ret.remaining());
+        if (bytesRead <= 0) // we consider this a failure or a EOF, can't tell which,
         {                   //  return whatever we have already.
           ret.flip();
           return ret;
@@ -56,7 +56,7 @@ namespace XBMCAddon
       DelayedCallGuard dg(languageHook);
       while (buffer.remaining() > 0)
       {
-        int bytesWritten = file->Write( buffer.curPosition(), buffer.remaining());
+        ssize_t bytesWritten = file->Write( buffer.curPosition(), buffer.remaining());
         if (bytesWritten == 0)       // this could be a failure (see HDFile, and XFileUtils) or
                                      //  it could mean something else when a negative number means an error
                                      //  (see CCurlFile). There is no consistency so we can only assume we're

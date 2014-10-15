@@ -140,10 +140,10 @@ DLLEXPORT void* XBMC_open_file_for_write(void *hdl, void* cb, const char* strFil
   return ((CB_AddOnLib*)cb)->OpenFileForWrite(((AddonCB*)hdl)->addonData, strFileName, bOverWrite);
 }
 
-DLLEXPORT unsigned int XBMC_read_file(void *hdl, void* cb, void* file, void* lpBuf, int64_t uiBufSize)
+DLLEXPORT ssize_t XBMC_read_file(void *hdl, void* cb, void* file, void* lpBuf, size_t uiBufSize)
 {
   if (cb == NULL)
-    return 0;
+    return -1;
 
   return ((CB_AddOnLib*)cb)->ReadFile(((AddonCB*)hdl)->addonData, file, lpBuf, uiBufSize);
 }
@@ -156,10 +156,10 @@ DLLEXPORT bool XBMC_read_file_string(void *hdl, void* cb, void* file, char *szLi
   return ((CB_AddOnLib*)cb)->ReadFileString(((AddonCB*)hdl)->addonData, file, szLine, iLineLength);
 }
 
-DLLEXPORT int XBMC_write_file(void *hdl, void* cb, void* file, const void* lpBuf, int64_t uiBufSize)
+DLLEXPORT ssize_t XBMC_write_file(void *hdl, void* cb, void* file, const void* lpBuf, size_t uiBufSize)
 {
   if (cb == NULL)
-    return false;
+    return -1;
 
   return ((CB_AddOnLib*)cb)->WriteFile(((AddonCB*)hdl)->addonData, file, lpBuf, uiBufSize);
 }

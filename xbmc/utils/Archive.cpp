@@ -377,9 +377,13 @@ void CArchive::FlushBuffer()
 {
   if (m_iMode == store && m_BufferPos != m_pBuffer)
   {
-    m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer);
-    m_BufferPos = m_pBuffer;
-    m_BufferRemain = CARCHIVE_BUFFER_MAX;
+    if (m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer) != m_BufferPos - m_pBuffer)
+      CLog::Log(LOGERROR, "%s: Error flushing buffer", __FUNCTION__);
+    else
+    {
+      m_BufferPos = m_pBuffer;
+      m_BufferRemain = CARCHIVE_BUFFER_MAX;
+    }
   }
 }
 
@@ -402,8 +406,12 @@ void CArchive::FillBuffer()
 {
   if (m_iMode == load && m_BufferRemain == 0)
   {
-    m_BufferRemain = m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
-    m_BufferPos = m_pBuffer;
+    ssize_t read = m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
+    if (read > 0)
+    {
+      m_BufferRemain = read;
+      m_BufferPos = m_pBuffer;
+    }
   }
 }
 

@@ -135,14 +135,14 @@ namespace XFILE
     virtual ~CNFSFile();
     virtual void Close();
     virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
     virtual bool Open(const CURL& url);
     virtual bool Exists(const CURL& url);
     virtual int Stat(const CURL& url, struct __stat64* buffer);
     virtual int Stat(struct __stat64* buffer);
     virtual int64_t GetLength();
     virtual int64_t GetPosition();
-    virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
     virtual int Truncate(int64_t iSize);
 
     //implement iocontrol for seek_possible for preventing the stat in File class for

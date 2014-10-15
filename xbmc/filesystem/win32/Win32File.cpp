@@ -173,14 +173,16 @@ void CWin32File::Close()
   m_filepathnameW.clear();
 }
 
-unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_hFile == INVALID_HANDLE_VALUE || !lpBuf)
-    return 0; // TODO: return -1
+    return -1;
 
-  // TODO: Reduce uiBufSize if required/oversized
-  unsigned int read = 0;
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  ssize_t read = 0;
 
   // if uiBufSize is larger than ReadFile() can read at one time (larger than DWORD_MAX)
   // repeat ReadFile until buffer is filled
@@ -190,7 +192,7 @@ unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
     if (!ReadFile(m_hFile, ((BYTE*)lpBuf) + read, (uiBufSize > DWORD_MAX) ? DWORD_MAX : (DWORD)uiBufSize, &lastRead, NULL))
     {
       m_filePos = -1;
-      return 0; // TODO: return -1
+      return -1;
     }
     read += lastRead;
     // if m_filePos is set - update it
@@ -209,7 +211,7 @@ unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
   return read;
 }
 
-int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_hFile == INVALID_HANDLE_VALUE || !lpBuf)
@@ -221,8 +223,10 @@ int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
     return -1;
   }
 
-  // TODO: fail on oversized uiBufSize
-  int written = 0;
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  ssize_t written = 0;
   while (uiBufSize > 0)
   {
     DWORD lastWritten = 0;

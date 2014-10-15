@@ -32,7 +32,7 @@ namespace XFILE
       virtual bool Exists(const CURL& url);
       virtual int Stat(const CURL& url, struct __stat64* buffer);
       
-      virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) {return -1;}
+      virtual ssize_t Read(void* lpBuf, size_t uiBufSize) {return -1;}
       virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) {return -1;}
       virtual void Close(){}
       virtual int64_t GetPosition() {return -1;}

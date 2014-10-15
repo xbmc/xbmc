@@ -29,14 +29,22 @@
 
 #pragma once
 
-#ifdef TARGET_POSIX
-#include "PlatformDefs.h" // for __stat64
-#endif
+#include "PlatformDefs.h" // for __stat64, ssize_t
 
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/stat.h>
 #include <string>
+
+#if !defined(SIZE_MAX) || !defined(SSIZE_MAX)
+#include <limits.h>
+#ifndef SIZE_MAX
+#define SIZE_MAX UINTPTR_MAX
+#endif // ! SIZE_MAX
+#ifndef SSIZE_MAX
+#define SSIZE_MAX INTPTR_MAX
+#endif // ! SSIZE_MAX
+#endif // ! SIZE_MAX || ! SSIZE_MAX
 
 #include "IFileTypes.h"
 
@@ -79,8 +87,24 @@ public:
    * @return zero of success, -1 otherwise.
    */
   virtual int Stat(struct __stat64* buffer);
-  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) = 0;
-  virtual int Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
+  /**
+   * Attempt to read bufSize bytes from currently opened file into buffer bufPtr.
+   * @param bufPtr  pointer to buffer
+   * @param bufSize size of the buffer
+   * @return number of successfully read bytes if any bytes were read and stored in
+   *         buffer, zero if no bytes are available to read (end of file was reached)
+   *         or undetectable error occur, -1 in case of any explicit error
+   */
+  virtual ssize_t Read(void* bufPtr, size_t bufSize) = 0;
+  /**
+   * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
+   * @param bufPtr  pointer to buffer
+   * @param bufSize size of the buffer
+   * @return number of successfully written bytes if any bytes were written,
+   *         zero if no bytes were written and no detectable error occur,
+   *         -1 in case of any explicit error
+   */
+  virtual ssize_t Write(const void* bufPtr, size_t bufSize) { return -1;}
   virtual bool ReadString(char *szLine, int iLineLength);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;

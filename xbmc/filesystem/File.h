@@ -84,9 +84,25 @@ public:
 
   bool Open(const std::string& strFileName, const unsigned int flags = 0);
   bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
-  unsigned int Read(void* lpBuf, int64_t uiBufSize);
+  /**
+   * Attempt to read bufSize bytes from currently opened file into buffer bufPtr.
+   * @param bufPtr  pointer to buffer
+   * @param bufSize size of the buffer
+   * @return number of successfully read bytes if any bytes were read and stored in
+   *         buffer, zero if no bytes are available to read (end of file was reached)
+   *         or undetectable error occur, -1 in case of any explicit error
+   */
+  ssize_t Read(void* bufPtr, size_t bufSize);
   bool ReadString(char *szLine, int iLineLength);
-  int Write(const void* lpBuf, int64_t uiBufSize);
+  /**
+   * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
+   * @param bufPtr  pointer to buffer
+   * @param bufSize size of the buffer
+   * @return number of successfully written bytes if any bytes were written,
+   *         zero if no bytes were written and no detectable error occur,
+   *         -1 in case of any explicit error
+   */
+  ssize_t Write(const void* bufPtr, size_t bufSize);
   void Flush();
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   int Truncate(int64_t iSize);

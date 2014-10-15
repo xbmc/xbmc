@@ -40,7 +40,7 @@ bool CHTTPFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-int CHTTPFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CHTTPFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   // Although we can not verify much, try to catch errors where we can
   if (!m_openedforwrite)
@@ -60,6 +60,6 @@ int CHTTPFile::Write(const void* lpBuf, int64_t uiBufSize)
     return -1;
 
   // Finally (and this is a clumsy hack) return the http response code
-  return (int) m_httpresponse;
+  return m_httpresponse;
 }
 

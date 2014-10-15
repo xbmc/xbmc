@@ -5070,7 +5070,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
     }
 
     while (!m_pDS->eof())
@@ -5083,7 +5084,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       else
         outdoc = songnum + '\t' + (CStdString)StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + '\t' + song.strTitle + '\t' + song.strFileName + "\r\n";
 
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
 
       if ((current % 50) == 0 && progress)
       {
@@ -5105,7 +5107,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if ( asHTML )
     {
       outdoc = "</table>\n</body>\n</html>\n";
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
     }
 
     file.Close();

@@ -637,10 +637,13 @@ int64_t CSFTPFile::Seek(int64_t iFilePosition, int iWhence)
   }
 }
 
-unsigned int CSFTPFile::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CSFTPFile::Read(void* lpBuf, size_t uiBufSize)
 {
   if (m_session && m_sftp_handle)
   {
+    if (uiBufSize > SSIZE_MAX)
+      uiBufSize = SSIZE_MAX;
+
     int rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
 
     if (rc >= 0)

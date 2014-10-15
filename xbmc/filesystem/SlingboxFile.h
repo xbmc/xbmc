@@ -33,7 +33,7 @@ namespace XFILE
     CSlingboxFile();
     virtual ~CSlingboxFile();
     virtual bool Open(const CURL& url);
-    virtual unsigned int Read(void * buffer, int64_t size);
+    virtual ssize_t Read(void * buffer, size_t size);
     virtual void Close();
     virtual bool SkipNext();
     
