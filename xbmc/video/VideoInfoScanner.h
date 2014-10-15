@@ -253,7 +253,6 @@ namespace VIDEO
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;
-    std::set<CStdString> m_pathsToCount;
     std::set<int> m_pathsToClean;
     CNfoFile m_nfoReader;
   };
