@@ -41,5 +41,6 @@ class CContextCategoryAddon : public CContextItemAddon, public ContextMenuManage
     virtual void AddIfVisible(const CFileItemPtr item, CContextButtons &visible);
     virtual ADDON::ContextAddonPtr GetChildWithID(const std::string& strID);
     virtual bool Execute(const CFileItemPtr itemPath);
+    virtual bool IsLogicalType(TYPE type) const { return IsType(type) || type == ADDON_CONTEXT_ITEM; }
 };
 }

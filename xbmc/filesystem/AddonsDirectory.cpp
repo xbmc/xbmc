@@ -28,6 +28,7 @@
 #include "addons/Repository.h"
 #include "addons/AddonInstaller.h"
 #include "addons/PluginSource.h"
+#include "addons/ContextItemAddon.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "SpecialProtocol.h"
@@ -139,20 +140,34 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     items.SetLabel(addon->Name());
   }
 
+  bool addManageCategory = false;
+
   if (path.GetFileName().empty())
   {
     if (groupAddons)
     {
+      //Context addons are two different types (items and categories). This stores if we have any of them,
+      //so we don't add two context addon types.
+      bool hasContextAddons = false;
+
       for (int i=ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
       {
         for (unsigned int j=0;j<addons.size();++j)
         {
           if (addons[j]->IsType((TYPE)i))
           {
-            CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
-            item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
+            TYPE type = (TYPE)i;
+            if (i == ADDON_CONTEXT_ITEM || i == ADDON_CONTEXT_CATEGORY)
+            {
+              if (hasContextAddons)
+                break; //already have context items!
+              hasContextAddons = true;
+              type = ADDON_CONTEXT_ITEM; //Make sure we always add the context item path and never the context category one!
+            }
+            CFileItemPtr item(new CFileItem(TranslateType(type, true)));
+            item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType(type,false)));
             item->m_bIsFolder = true;
-            std::string thumb = GetIcon((TYPE)i);
+            std::string thumb = GetIcon(type);
             if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
               item->SetArt("thumb", thumb);
             items.Add(item);
@@ -167,6 +182,8 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else
   {
     TYPE type = TranslateType(path.GetFileName());
+    if (type == ADDON_UNKNOWN && StringUtils::StartsWith(path.GetFileName(), "addon.context.item"))
+      type = ADDON_CONTEXT_ITEM;
     items.SetProperty("addoncategory",TranslateType(type, true));
     items.SetLabel(TranslateType(type, true));
     items.SetPath(strPath);
@@ -174,8 +191,49 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // FIXME: Categorisation of addons needs adding here
     for (unsigned int j=0;j<addons.size();++j)
     {
-      if (!addons[j]->IsType(type))
+      if (!addons[j]->IsLogicalType(type))
         addons.erase(addons.begin()+j--);
+    }
+
+    //TODO: empty categories show up... not sure what's the best way to hide them
+
+    if (type == ADDON_CONTEXT_ITEM && path.GetFileName() == "addon.context.item")
+    { //We want the root context menu entries. (empty parent)
+      //Since we can deal with unmet dependencies, we also want items whose parent is not available
+      for (unsigned int j = 0; j < addons.size(); ++j)
+      {
+        const ContextAddonPtr contextAddon = boost::static_pointer_cast<IContextItem>(addons[j]);
+        if (!contextAddon->GetParent().empty())
+        { //we are in the context item root directory, so do not show items with a parent
+          //(unless that parent is not available)
+
+          //special case for the core manage context category (it would fail to get a addon for that!)
+          if (contextAddon->GetParent() == MANAGE_CATEGORY_NAME)
+          {
+            addManageCategory = true;
+            addons.erase(addons.begin() + j--);
+            continue;
+          }
+
+          AddonPtr addon;
+          //TODO: this should get the addon, even if it's not installed?!?
+          CAddonMgr::Get().GetAddon(contextAddon->GetParent(), addon, ADDON_CONTEXT_CATEGORY, false);
+          if (addon)
+            addons.erase(addons.begin() + j--);
+        }
+      }
+    }
+    else if (type == ADDON_CONTEXT_ITEM)
+    {
+      std::string parent = URIUtils::GetFileName(path);
+      for (unsigned int j = 0; j < addons.size(); ++j)
+      {
+        const ContextAddonPtr contextAddon = boost::static_pointer_cast<IContextItem>(addons[j]);
+        if (contextAddon->GetParent() != parent)
+        { //wrong parent
+          addons.erase(addons.begin() + j--);
+        }
+      }
     }
   }
 
@@ -211,6 +269,20 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }
+  if (addManageCategory)
+  {
+    CFileItemPtr pItem(new CFileItem());
+    path.SetFileName(URIUtils::AddFileToFolder(path.GetFileName(), MANAGE_CATEGORY_NAME));
+    pItem->SetLabel(g_localizeStrings.Get(16106));
+    pItem->SetPath(path.Get());
+    pItem->m_bIsFolder = true;
+    pItem->SetProperty("Addon.Type", TranslateType(ADDON_CONTEXT_CATEGORY, true));
+    pItem->SetProperty("Addon.intType", TranslateType(ADDON_CONTEXT_CATEGORY));
+    pItem->SetProperty("Addon.Name", g_localizeStrings.Get(16106));
+    pItem->SetProperty("Addon.Description", g_localizeStrings.Get(16108));
+    pItem->SetProperty("Addon.Creator", "Team XBMC");
+    items.Add(pItem);
+  }
 
   return true;
 }
@@ -225,7 +297,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     if (reposAsFolders && addon->Type() == ADDON_REPOSITORY)
       pItem = FileItemFromAddon(addon, "addons://", true);
     else
-      pItem = FileItemFromAddon(addon, path.Get(), false);
+      pItem = FileItemFromAddon(addon, path.Get(), addon->IsType(ADDON_CONTEXT_CATEGORY));
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
@@ -253,7 +325,10 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const st
 
   // TODO: This can probably be done more efficiently
   CURL url(basePath);
-  url.SetFileName(addon->ID());
+  if (addon->IsType(ADDON_CONTEXT_CATEGORY)) //make sure the path to context item addons respects the hierarchy
+    url.SetFileName(URIUtils::AddFileToFolder(url.GetFileName(), addon->ID()));
+  else
+    url.SetFileName(addon->ID());
   std::string path(url.Get());
   if (folder)
     URIUtils::AddSlashAtEnd(path);

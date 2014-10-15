@@ -7212,6 +7212,8 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr ""
 
+#. The label of the 'manage' context menu
+#: xbmc/addons/GUIWindowAddonBrowser.cpp xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16106"
 msgid "Manage..."
 msgstr ""
@@ -7220,7 +7222,13 @@ msgctxt "#16107"
 msgid "Edit sort title"
 msgstr ""
 
-#empty strings from id 16108 to 16199
+#. Used as a description for the virtual context menu category shown in the Addon Browser
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#16108"
+msgid "Dummy for the build in 'Manage' context menu"
+msgstr ""
+
+#empty strings from id 16109 to 16199
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16200"
