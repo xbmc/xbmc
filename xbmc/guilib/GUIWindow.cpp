@@ -789,7 +789,7 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
-  if (!g_windowManager.Initialized())
+  if (g_application.IsHeadless())
     return false;     // can't load if we have no skin yet
   if(!NeedXMLReload())
     return true;
