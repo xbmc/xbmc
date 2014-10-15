@@ -622,5 +622,21 @@ namespace XBMCAddon
         item->SetProperty(property, *it);
       }
     }
+
+    xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
+    {
+      LOCKGUI;
+      if (item->HasVideoInfoTag())
+        return new xbmc::InfoTagVideo(*item->GetVideoInfoTag());
+      return new xbmc::InfoTagVideo();
+    }
+
+    xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
+    {
+      LOCKGUI;
+      if (item->HasMusicInfoTag())
+        return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
+      return new xbmc::InfoTagMusic();
+    }
   }
 }
