@@ -1333,3 +1333,21 @@ bool URIUtils::IsUsingFastSwitch(const CStdString& strFile)
 {
   return IsUDP(strFile) || IsTCP(strFile) || IsPVRChannel(strFile);
 }
+
+std::vector<std::string> URIUtils::ExpandPaths(const std::vector<std::string> &paths)
+{
+  std::vector<std::string> expandedPaths;
+  for (std::vector<std::string>::const_iterator path = paths.begin(); path != paths.end(); ++path)
+  {
+    if (IsMultiPath(*path))
+    {
+      std::vector<std::string> multiPaths;
+      CMultiPathDirectory::GetPaths(*path, multiPaths);
+      expandedPaths.insert(expandedPaths.end(), multiPaths.begin(), multiPaths.end());
+    }
+    else
+      expandedPaths.push_back(*path);
+  }
+
+  return expandedPaths;
+}

@@ -219,6 +219,8 @@ public:
    */
   static bool UpdateUrlEncoding(std::string &strFilename);
 
+  static std::vector<std::string> ExpandPaths(const std::vector<std::string> &paths);
+
 private:
   static std::string resolvePath(const std::string &path);
 };
