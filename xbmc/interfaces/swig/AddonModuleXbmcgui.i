@@ -43,6 +43,8 @@ using namespace xbmcgui;
 // not part of what swig parses.
 %feature("knownbasetypes") XBMCAddon::xbmcgui "AddonClass,AddonCallback"
 
+%feature("knownapitypes") XBMCAddon::xbmcgui "XBMCAddon::xbmc::InfoTagVideo,xbmc::InfoTagMusic"
+
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"
 
