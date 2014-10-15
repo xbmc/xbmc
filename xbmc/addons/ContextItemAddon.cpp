@@ -104,7 +104,7 @@ void IContextItem::OnEnabled()
 
 std::pair<unsigned int, std::string> IContextItem::ToNative()
 {
-  return make_pair<unsigned int, std::string>(GetMsgID(), GetLabel());
+  return make_pair(GetMsgID(), GetLabel());
 }
 
 CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
