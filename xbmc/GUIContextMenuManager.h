@@ -97,11 +97,13 @@ public:
    It checks if it belongs in the root, the core 'manage' submenu or a context category addon
    NOTE: if a context item has changed, just register it again and it will overwrite the old one
    NOTE: only 'enabled' context addons should be registered
+   NOTE: will always return if fallback is true
    \param the context item to register
+   \param fallback will add the item to the root menu, if it fails to add it to the correct parrent
    \sa ContextMenuManager::RegisterContextItem
    \sa Unregister
    */
-  void Register(ADDON::ContextAddonPtr contextAddon);
+  bool Register(ADDON::ContextAddonPtr contextAddon, bool fallback = true);
 protected:
   void Init();
 };

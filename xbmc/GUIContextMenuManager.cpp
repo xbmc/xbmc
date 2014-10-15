@@ -95,10 +95,29 @@ void BaseContextMenuManager::Init()
   //Make sure we load all context items on first usage...
   ADDON::VECADDONS categories;
   ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_CONTEXT_CATEGORY, categories);
+
+  bool allFailed = false;
+  while (!allFailed && categories.size() > 0)
+  {
+    allFailed = true;
+    for (int i = 0; i != categories.size(); ++i)
+    {
+      if (Register(boost::static_pointer_cast<IContextItem>(categories[i]), false))
+      {
+        allFailed = false;
+        categories.erase(categories.begin() + i);
+        --i;
+      }
+    }
+  }
+
+  //we failed to add some of the categories... add them with the fallback option
   ADDON::VECADDONS::iterator i;
   ADDON::VECADDONS::iterator end = categories.end();
-  for (i = categories.begin(); i != end; ++i)
+  for (i = categories.begin(); i != categories.end(); ++i)
+  {
     Register(boost::static_pointer_cast<IContextItem>(*i));
+  }
 
   ADDON::VECADDONS items;
   ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_CONTEXT_ITEM, items);
@@ -125,13 +144,19 @@ BaseContextMenuManager& BaseContextMenuManager::Get()
   return *contextManager;
 }
 
-void BaseContextMenuManager::Register(ContextAddonPtr contextAddon)
+bool BaseContextMenuManager::Register(ContextAddonPtr contextAddon, bool fallback /* = true */)
 {
   std::string parent = contextAddon->GetParent();
   if (parent.empty())
+  {
     RegisterContextItem(contextAddon);
+    return true;
+  }
   else if (parent == MANAGE_CATEGORY_NAME)
+  {
     CGUIDialogVideoInfo::manageContextAddonsMgr.RegisterContextItem(contextAddon);
+    return true;
+  }
   else
   {
     AddonPtr parentPtr = BaseContextMenuManager::Get().GetContextItemByID(parent);
@@ -139,13 +164,16 @@ void BaseContextMenuManager::Register(ContextAddonPtr contextAddon)
     {
       boost::shared_ptr<CContextCategoryAddon> parentCat = boost::static_pointer_cast<CContextCategoryAddon>(parentPtr);
       parentCat->RegisterContextItem(contextAddon);
+      return true;
     }
-    else
+    else  if (fallback)
     { //fallback... add it to the root menu!
       CLog::Log(LOGWARNING, "ADDON: %s - specified parent category '%s' not found. Context item will show up in root.", contextAddon->ID().c_str(), parent.c_str());
       BaseContextMenuManager::Get().RegisterContextItem(contextAddon);
+      return true;
     }
   }
+  return false;
 }
 
 void BaseContextMenuManager::Unregister(ADDON::ContextAddonPtr contextAddon)
