@@ -230,15 +230,20 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   if (m_argv != NULL)
     PySys_SetArgv(m_argc, m_argv);
 
-  XBMCAddon::xbmcgui::ListItem* arg = new XBMCAddon::xbmcgui::ListItem(item);
-
-  m_item = PythonBindings::makePythonInstance(arg,
-                                             &PythonBindings::TyXBMCAddon_xbmcgui_ListItem_Type.pythonType,
-                                              true);
-  if (m_item != NULL)
+  if (item)
   {
-      if (0 != PySys_SetObject((char*)"item", m_item))
+    CFileItemPtr copiedItem = CFileItemPtr(new CFileItem(*item.get())); //use a copy of the item, so the python script cannot manipulate the item directly
+
+    XBMCAddon::xbmcgui::ListItem* arg = new XBMCAddon::xbmcgui::ListItem(copiedItem);
+    m_item = PythonBindings::makePythonInstance(arg,
+                                                &PythonBindings::TyXBMCAddon_xbmcgui_ListItem_Type.pythonType,
+                                                true);
+
+    if (m_item != NULL)
+    {
+      if (0 != PySys_SetObject((char*)"listitem", m_item))
         CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setSysParameter failed!", GetId(), m_sourceFile.c_str());
+    }
   }
 
 #ifdef TARGET_WINDOWS
