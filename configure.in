@@ -2142,6 +2142,7 @@ if test "$use_x11" = "yes"; then
   USE_X11=1
   final_message="$final_message\n  X11:\t\tYes"
 else
+  USE_X11=0
   final_message="$final_message\n  X11:\t\tNo"
 fi
 
