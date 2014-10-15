@@ -244,6 +244,7 @@ void CUtil::CleanString(const std::string& strFileName,
       strTitleAndYear = reYear.GetMatch(1);
       strYear = reYear.GetMatch(2);
     }
+    break;
   }
 
   URIUtils::RemoveExtension(strTitleAndYear);
