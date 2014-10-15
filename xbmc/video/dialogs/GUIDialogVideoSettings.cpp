@@ -337,7 +337,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
-    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 464, usePopup);
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, -1, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
