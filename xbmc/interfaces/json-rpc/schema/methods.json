@@ -930,7 +930,8 @@
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
-      { "name": "directory", "type": "string", "default": "" }
+      { "name": "directory", "type": "string", "default": "" },
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -962,7 +963,9 @@
     "description": "Cleans the audio library from non-existent items",
     "transport": "Response",
     "permission": "RemoveData",
-    "params": [ ],
+    "params": [
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+    ],
     "returns": "string"
   },
   "VideoLibrary.GetMovies": {
@@ -1496,7 +1499,8 @@
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
-      { "name": "directory", "type": "string", "default": "" }
+      { "name": "directory", "type": "string", "default": "" },
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -1529,7 +1533,9 @@
     "description": "Cleans the video library from non-existent items",
     "transport": "Response",
     "permission": "RemoveData",
-    "params": [ ],
+    "params": [
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+    ],
     "returns": "string"
   },
   "GUI.ActivateWindow": {

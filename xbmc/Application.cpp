@@ -5548,13 +5548,13 @@ void CApplication::UpdateLibraries()
   if (CSettings::Get().GetBool("videolibrary.updateonstartup"))
   {
     CLog::LogF(LOGNOTICE, "Starting video library startup scan");
-    StartVideoScan("");
+    StartVideoScan("", !CSettings::Get().GetBool("videolibrary.backgroundupdate"));
   }
 
   if (CSettings::Get().GetBool("musiclibrary.updateonstartup"))
   {
     CLog::LogF(LOGNOTICE, "Starting music library startup scan");
-    StartMusicScan("");
+    StartMusicScan("", !CSettings::Get().GetBool("musiclibrary.backgroundupdate"));
   }
 }
 
@@ -5580,25 +5580,25 @@ void CApplication::StopMusicScan()
     m_musicInfoScanner->Stop();
 }
 
-void CApplication::StartVideoCleanup()
+void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 {
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->CleanDatabase();
+  m_videoInfoScanner->CleanDatabase(NULL, NULL, userInitiated);
 }
 
-void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
+void CApplication::StartVideoScan(const CStdString &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
 {
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->ShowDialog(true);
+  m_videoInfoScanner->ShowDialog(userInitiated);
 
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 
-void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
+void CApplication::StartMusicScan(const CStdString &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
@@ -5607,7 +5607,7 @@ void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
   { // setup default flags
     if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
       flags |= CMusicInfoScanner::SCAN_ONLINE;
-    if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
+    if (!userInitiated || CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
       flags |= CMusicInfoScanner::SCAN_BACKGROUND;
   }
 

@@ -1401,27 +1401,33 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "updatelibrary" && !params.empty())
   {
+    bool userInitiated = false;
+    if (params.size() > 2)
+      userInitiated = StringUtils::EqualsNoCase(params[2], "true");
     if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (g_application.IsMusicScanning())
         g_application.StopMusicScan();
       else
-        g_application.StartMusicScan(params.size() > 1 ? params[1] : "");
+        g_application.StartMusicScan(params.size() > 1 ? params[1] : "", userInitiated);
     }
     if (StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (g_application.IsVideoScanning())
         g_application.StopVideoScan();
       else
-        g_application.StartVideoScan(params.size() > 1 ? params[1] : "");
+        g_application.StartVideoScan(params.size() > 1 ? params[1] : "", userInitiated);
     }
   }
   else if (execute == "cleanlibrary")
   {
+    bool userInitiated = false;
+    if (params.size() > 1)
+      userInitiated = StringUtils::EqualsNoCase(params[1], "true");
     if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (!g_application.IsVideoScanning())
-         g_application.StartVideoCleanup();
+         g_application.StartVideoCleanup(userInitiated);
       else
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
     }
@@ -1432,7 +1438,7 @@ int CBuiltins::Execute(const std::string& execString)
         CMusicDatabase musicdatabase;
 
         musicdatabase.Open();
-        musicdatabase.Cleanup();
+        musicdatabase.Cleanup(userInitiated);
         musicdatabase.Close();
       }
       else
