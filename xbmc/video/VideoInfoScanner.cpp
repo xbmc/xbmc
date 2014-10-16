@@ -38,6 +38,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
@@ -101,6 +102,9 @@ namespace VIDEO
 
       SetPriority(GetMinPriority());
 
+      // get all sources that can be skipped because they are unavailable
+      std::vector<std::string> sourcesToSkip = CMediaSourceSettings::FindSourcesToSkip("video", m_pathsToScan, m_showDialog);
+
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
       // result in unexpected behaviour.
@@ -116,7 +120,7 @@ namespace VIDEO
          * occurs.
          */
         std::string directory = *m_pathsToScan.begin();
-        if (!CDirectory::Exists(directory))
+        if (URIUtils::IsInPath(directory, sourcesToSkip) || !CDirectory::Exists(directory))
         {
           /*
            * Note that this will skip clean (if m_bClean is enabled) if the directory really
