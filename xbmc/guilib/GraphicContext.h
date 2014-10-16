@@ -262,6 +262,9 @@ private:
     float scaleY;
   };
   void UpdateCameraPosition(const CPoint &camera);
+  // this method is indirectly called by the public SetVideoResolution
+  // it only works when called from mainthread (thats what SetVideoResolution ensures)
+  void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
   RESOLUTION_INFO m_windowResolution;
   std::stack<CPoint> m_cameras;
   std::stack<CPoint> m_origins;

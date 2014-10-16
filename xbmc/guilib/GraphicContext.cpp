@@ -363,7 +363,23 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   return false;
 }
 
+// call SetVideoResolutionInternal and ensure its done from mainthread
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
+{
+  if (g_application.IsCurrentThread())
+  {
+    SetVideoResolutionInternal(res, forceUpdate);
+  }
+  else
+  {
+    ThreadMessage msg = {TMSG_SETVIDEORESOLUTION};
+    msg.param1 = res;
+    msg.param2 = forceUpdate ? 1 : 0;
+    CApplicationMessenger::Get().SendMessage(msg, true);
+  }
+}
+
+void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
 
