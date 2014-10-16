@@ -362,6 +362,34 @@ public class Splash extends Activity {
     fXbmcHome = new File(sXbmcHome);
   }
 
+  private void MigrateUserData() {
+      String sOldUserDir = getExternalFilesDir(null).getParentFile().getParentFile() + "/org.xbmc.xbmc/files/.xbmc";
+      File fOldUserDir = new File(sOldUserDir);
+      File fNewUserDir = new File(getExternalFilesDir(null), ".@APP_NAME_LC@");
+      String sKodiMigrated = fNewUserDir.getAbsolutePath() + "/.kodi_data_was_migrated";
+      File fKodiMigrated = new File(sKodiMigrated);
+
+      Log.d(TAG, "External_dir = " + fOldUserDir);
+      if (fOldUserDir.exists() && !fNewUserDir.exists()) {
+        Log.d(TAG, "XBMC user data detected at " + fOldUserDir.getAbsolutePath() + ", migrating to " + fNewUserDir.getAbsolutePath());
+        if (!fNewUserDir.getParentFile().exists() && !fNewUserDir.getParentFile().mkdirs()) {
+          Log.d(TAG, "Error creating " + fNewUserDir.getParentFile().getAbsolutePath());
+          return;
+        }
+        if (fOldUserDir.renameTo(fNewUserDir)) {
+          try {
+            new FileOutputStream(fKodiMigrated).close();
+          } catch (IOException e1) {
+            e1.printStackTrace();
+          }
+          Log.d(TAG, "XBMC user data migrated to @APP_NAME@ successfully");
+        } else {
+          Log.d(TAG, "Error migrating XBMC user data");
+        }
+      }
+  }
+
+
   private boolean ParseCpuFeature() {
     ProcessBuilder cmd;
 
@@ -559,6 +587,8 @@ public class Splash extends Activity {
       mState = ChecksDone;
       
       SetupEnvironment();
+      MigrateUserData();
+
       if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs) {
         mState = CachingDone;
         mCachingDone = true;
