@@ -20,17 +20,21 @@
 
 #include "threads/SystemClock.h"
 #include "CacheStrategy.h"
-#ifdef TARGET_POSIX
-#include "PlatformInclude.h"
-#endif
+#include "IFile.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "SpecialProtocol.h"
-#ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for PRIdS, PRId64
-#endif
+#include "URL.h"
+#if defined(TARGET_POSIX)
+#include "posix/PosixFile.h"
+#define CacheLocalFile CPosixFile
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32File.h"
+#define CacheLocalFile CWin32File
+#endif // TARGET_WINDOWS
 
 using namespace XFILE;
 
@@ -58,8 +62,8 @@ void CCacheStrategy::ClearEndOfInput()
 }
 
 CSimpleFileCache::CSimpleFileCache()
-  : m_hCacheFileRead(NULL)
-  , m_hCacheFileWrite(NULL)
+  : m_cacheFileRead(new CacheLocalFile())
+  , m_cacheFileWrite(new CacheLocalFile())
   , m_hDataAvailEvent(NULL)
   , m_nStartPosition(0)
   , m_nWritePosition(0)
@@ -69,6 +73,8 @@ CSimpleFileCache::CSimpleFileCache()
 CSimpleFileCache::~CSimpleFileCache()
 {
   Close();
+  delete m_cacheFileRead;
+  delete m_cacheFileWrite;
 }
 
 int CSimpleFileCache::Open()
@@ -77,38 +83,26 @@ int CSimpleFileCache::Open()
 
   m_hDataAvailEvent = new CEvent;
 
-  std::string fileName = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
-  if(fileName.empty())
+  m_filename = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
+  if (m_filename.empty())
   {
     CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
     Close();
     return CACHE_RC_ERROR;
   }
 
-  m_hCacheFileWrite = CreateFile(fileName.c_str()
-            , GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_DELETE
-            , NULL
-            , CREATE_ALWAYS
-            , FILE_ATTRIBUTE_NORMAL
-            , NULL);
+  CURL fileURL(m_filename);
 
-  if(m_hCacheFileWrite == INVALID_HANDLE_VALUE)
+  if (!m_cacheFileWrite->OpenForWrite(fileURL, false))
   {
-    CLog::Log(LOGERROR, "%s - failed to create file %s with error code %d", __FUNCTION__, fileName.c_str(), GetLastError());
+    CLog::LogF(LOGERROR, "failed to create file \"%s\" for writing", m_filename.c_str());
     Close();
     return CACHE_RC_ERROR;
   }
 
-  m_hCacheFileRead = CreateFile(fileName.c_str()
-            , GENERIC_READ, FILE_SHARE_WRITE
-            , NULL
-            , OPEN_EXISTING
-            , FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE
-            , NULL);
-
-  if(m_hCacheFileRead == INVALID_HANDLE_VALUE)
+  if (!m_cacheFileRead->Open(fileURL))
   {
-    CLog::Log(LOGERROR, "%s - failed to open file %s with error code %d", __FUNCTION__, fileName.c_str(), GetLastError());
+    CLog::LogF(LOGERROR, "failed to open file \"%s\" for reading", m_filename.c_str());
     Close();
     return CACHE_RC_ERROR;
   }
@@ -123,33 +117,35 @@ void CSimpleFileCache::Close()
 
   m_hDataAvailEvent = NULL;
 
-  if (m_hCacheFileWrite)
-    CloseHandle(m_hCacheFileWrite);
+  m_cacheFileWrite->Close();
+  m_cacheFileRead->Close();
 
-  m_hCacheFileWrite = NULL;
+  if (!m_cacheFileRead->Delete(CURL(m_filename)))
+    CLog::LogF(LOGWARNING, "failed to delete temporary file \"%s\"", m_filename.c_str());
 
-  if (m_hCacheFileRead)
-    CloseHandle(m_hCacheFileRead);
-
-  m_hCacheFileRead = NULL;
+  m_filename.clear();
 }
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
 {
-  DWORD iWritten=0;
-  if (!WriteFile(m_hCacheFileWrite, pBuffer, iSize, &iWritten, NULL))
+  size_t written = 0;
+  while (iSize > 0)
   {
-    CLog::Log(LOGERROR, "%s - failed to write to file. err: %u",
-                          __FUNCTION__, GetLastError());
-    return CACHE_RC_ERROR;
+    const ssize_t lastWritten = m_cacheFileWrite->Write(pBuffer, (iSize > SSIZE_MAX) ? SSIZE_MAX : iSize);
+    if (lastWritten <= 0)
+    {
+      CLog::LogF(LOGERROR, "failed to write to file");
+      return CACHE_RC_ERROR;
+    }
+    m_nWritePosition += lastWritten;
+    iSize -= lastWritten;
+    written += lastWritten;
   }
-
-  m_nWritePosition += iWritten;
 
   // when reader waits for data it will wait on the event.
   m_hDataAvailEvent->Set();
 
-  return iWritten;
+  return written;
 }
 
 int64_t CSimpleFileCache::GetAvailableRead()
@@ -160,24 +156,31 @@ int64_t CSimpleFileCache::GetAvailableRead()
 int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   int64_t iAvailable = GetAvailableRead();
-  if ( iAvailable <= 0 ) {
+  if ( iAvailable <= 0 )
     return m_bEndOfInput? 0 : CACHE_RC_WOULD_BLOCK;
+
+  size_t toRead = ((int64_t)iMaxSize > iAvailable) ? (size_t)iAvailable : iMaxSize;
+
+  size_t readBytes = 0;
+  while (toRead > 0)
+  {
+    const ssize_t lastRead = m_cacheFileRead->Read(pBuffer, (toRead > SSIZE_MAX) ? SSIZE_MAX : toRead);
+    if (lastRead == 0)
+      break;
+    if (lastRead < 0)
+    {
+      CLog::LogF(LOGERROR, "failed to read from file");
+      return CACHE_RC_ERROR;
+    }
+    m_nReadPosition += lastRead;
+    toRead -= lastRead;
+    readBytes += lastRead;
   }
 
-  if (iMaxSize > (size_t)iAvailable)
-    iMaxSize = (size_t)iAvailable;
-
-  DWORD iRead = 0;
-  if (!ReadFile(m_hCacheFileRead, pBuffer, iMaxSize, &iRead, NULL)) {
-    CLog::Log(LOGERROR,"CSimpleFileCache::ReadFromCache - failed to read %" PRIdS" bytes.", iMaxSize);
-    return CACHE_RC_ERROR;
-  }
-  m_nReadPosition += iRead;
-
-  if (iRead > 0)
+  if (readBytes > 0)
     m_space.Set();
 
-  return iRead;
+  return readBytes;
 }
 
 int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
@@ -215,13 +218,13 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
     return CACHE_RC_ERROR;
   }
 
-  LARGE_INTEGER pos;
-  pos.QuadPart = iTarget;
-
-  if(!SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN))
+  m_nReadPosition = m_cacheFileRead->Seek(iTarget, SEEK_SET);
+  if (m_nReadPosition != iTarget)
+  {
+    CLog::LogF(LOGERROR, "can't seek file");
     return CACHE_RC_ERROR;
+  }
 
-  m_nReadPosition = iTarget;
   m_space.Set();
 
   return iFilePosition;
@@ -229,21 +232,15 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 
 void CSimpleFileCache::Reset(int64_t iSourcePosition, bool clearAnyway)
 {
-  LARGE_INTEGER pos;
   if (!clearAnyway && IsCachedPosition(iSourcePosition))
   {
-    pos.QuadPart = m_nReadPosition = iSourcePosition - m_nStartPosition;
-    SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN);
+    m_nReadPosition = m_cacheFileRead->Seek(iSourcePosition - m_nStartPosition, SEEK_SET);
     return;
   }
 
-  pos.QuadPart = 0;
-
-  SetFilePointerEx(m_hCacheFileWrite, pos, NULL, FILE_BEGIN);
-  SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN);
   m_nStartPosition = iSourcePosition;
-  m_nReadPosition = 0;
-  m_nWritePosition = 0;
+  m_nWritePosition = m_cacheFileWrite->Seek(0, SEEK_SET);
+  m_nReadPosition = m_cacheFileRead->Seek(0, SEEK_SET);
 }
 
 void CSimpleFileCache::EndOfInput()
