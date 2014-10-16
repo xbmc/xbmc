@@ -148,9 +148,11 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
-                                               CContextButtons& buttons)
+void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
+  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
+    return;
+
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   if (!pItem->IsPath("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
