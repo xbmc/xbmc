@@ -175,7 +175,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (!parameterObject["startdate"].asString().empty())
   {
     CDateTime startDate;
-    if (startDate.SetFromDateString(parameterObject["startdate"].asString()))
+    if (startDate.SetFromDBDateTime(parameterObject["startdate"].asString()) ||
+    	startDate.SetFromDBDate(parameterObject["startdate"].asString()))
       epgFilter.m_startDateTime = startDate;
     else
       return InvalidParams;
@@ -183,7 +184,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (!parameterObject["enddate"].asString().empty())
   {
     CDateTime endDate;
-    if (endDate.SetFromDateString(parameterObject["enddate"].asString()))
+    if (endDate.SetFromDBDateTime(parameterObject["enddate"].asString()) ||
+        endDate.SetFromDBDate(parameterObject["enddate"].asString()))
       epgFilter.m_endDateTime = endDate;
     else
       return InvalidParams;
