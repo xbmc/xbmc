@@ -172,6 +172,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   CFileItemList programFull;
   EpgSearchFilter epgFilter;
   epgFilter.Reset();
+  epgFilter.m_bIsRadio = channel->IsRadio();
   if (!parameterObject["startdate"].asString().empty())
   {
     CDateTime startDate;
