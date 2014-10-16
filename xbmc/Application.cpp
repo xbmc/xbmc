@@ -3574,9 +3574,7 @@ void CApplication::Stop(int exitCode)
   // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
   cleanup_emu_environ();
-  CTimeUtils::Close();
 
-  //
   Sleep(200);
 }
 

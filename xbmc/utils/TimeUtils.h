@@ -35,10 +35,9 @@ public:
   static void UpdateFrameTime(bool flip); ///< update the frame time.  Not threadsafe
   static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
   static CDateTime GetLocalTime(time_t time);
-  static void Close();
 
 private:
   static unsigned int frameTime;
-  static CTimeSmoother *frameTimer;
+  static CTimeSmoother frameTimer;
 };
 
