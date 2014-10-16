@@ -765,6 +765,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionOccurred())
   {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionOccurred: configure");
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -774,6 +775,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionOccurred())
   {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionOccurred: start");
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
