@@ -84,6 +84,11 @@ sub get_sources_xml {
 	    else {
 		$xml .= (" " x 12)."<path>".$path."</path>\n";
 	    }
+
+            if ($path ne "/" ) {
+              $xml .= (" " x 12)."<allowsharing>true</allowsharing>\n";
+            }
+
             $xml .= (" " x 8)."</source>\n";
         }
         $xml .= (" " x 4)."</$sourcetype>\n";
