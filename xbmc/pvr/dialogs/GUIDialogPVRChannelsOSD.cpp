@@ -112,17 +112,17 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
 {
   if (m_group)
   {
-    g_PVRManager.SetPlayingGroup(m_group);
-    m_group.reset();
-  }
+    if (m_group != GetPlayingGroup())
+    {
+      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), GetLastSelectedItemPath(m_group->GroupID()));
+      g_PVRManager.SetPlayingGroup(m_group);
+    }
+    else
+    {
+      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), m_viewControl.GetSelectedItemPath());
+    }
 
-  // set selected item path
-  int selectedItem = m_viewControl.GetSelectedItem();
-  if (selectedItem > -1)
-  {
-    CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
-    if (fileItem)
-      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), fileItem->GetPath());
+    m_group.reset();
   }
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
@@ -190,7 +190,7 @@ void CGUIDialogPVRChannelsOSD::Update()
       {
         m_group = group;
         m_viewControl.SetSelectedItem(CGUIWindowPVRBase::GetSelectedItemPath(channel->IsRadio()));
-        SaveSelectedItem(group->GroupID());
+        SaveSelectedItemPath(group->GroupID());
       }
     }
   }
@@ -204,7 +204,7 @@ void CGUIDialogPVRChannelsOSD::SaveControlStates()
 
   CPVRChannelGroupPtr group = GetPlayingGroup();
   if (group)
-    SaveSelectedItem(group->GroupID());
+    SaveSelectedItemPath(group->GroupID());
 }
 
 void CGUIDialogPVRChannelsOSD::RestoreControlStates()
@@ -214,7 +214,7 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   CPVRChannelGroupPtr group = GetPlayingGroup();
   if (group)
   {
-    m_viewControl.SetSelectedItem(GetLastSelectedItem(group->GroupID()));
+    m_viewControl.SetSelectedItem(GetLastSelectedItemPath(group->GroupID()));
   }
 }
 
@@ -333,15 +333,15 @@ void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMes
   }
 }
 
-void CGUIDialogPVRChannelsOSD::SaveSelectedItem(int iGroupID)
+void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)
 {
-  m_groupSelectedItems[iGroupID] = m_viewControl.GetSelectedItem();
+  m_groupSelectedItemPaths[iGroupID] = m_viewControl.GetSelectedItemPath();
 }
 
-int CGUIDialogPVRChannelsOSD::GetLastSelectedItem(int iGroupID) const
+std::string CGUIDialogPVRChannelsOSD::GetLastSelectedItemPath(int iGroupID) const
 {
-  std::map<int,int>::const_iterator it = m_groupSelectedItems.find(iGroupID);
-  if (it != m_groupSelectedItems.end())
+  std::map<int, std::string>::const_iterator it = m_groupSelectedItemPaths.find(iGroupID);
+  if (it != m_groupSelectedItemPaths.end())
     return it->second;
-  return 0;
+  return "";
 }
