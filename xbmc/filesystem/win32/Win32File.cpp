@@ -78,10 +78,9 @@ bool CWin32File::Open(const CURL& url)
   }
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
-  if (pathnameW.empty())
-    return false;
+  if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
+    return false; // pathnameW is empty or points to device ("\\?\x:")
 
-  assert(pathnameW.length() > 6); // 6 is length of "//?/x:"
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
   m_filepathnameW = pathnameW;
@@ -103,10 +102,9 @@ bool CWin32File::OpenForWrite(const CURL& url, bool bOverWrite /*= false*/)
     return false;
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
-  if (pathnameW.empty())
-    return false;
+  if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
+    return false; // pathnameW is empty or points to device ("\\?\x:")
 
-  assert(pathnameW.length() > 6); // 6 is length of "//?/x:"
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
   m_hFile = CreateFileW(pathnameW.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
