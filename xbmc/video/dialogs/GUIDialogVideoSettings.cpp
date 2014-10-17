@@ -325,11 +325,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddSpinner(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, entries);
   }
   if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
-    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, 216, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
-    AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, 225, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
-    AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, 217, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
     AddToggle(groupVideo, SETTING_VIDEO_POSTPROCESS, 16400, 0, videoSettings.m_PostProcess);
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
@@ -339,9 +339,9 @@ void CGUIDialogVideoSettings::InitializeSettings()
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_NOISE))
-    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, -1, usePopup);
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, 16312, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
-    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, -1, usePopup);
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, 16313, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideoPlayback, SETTING_VIDEO_NONLIN_STRETCH, 659, 0, videoSettings.m_CustomNonLinStretch);
 #endif
