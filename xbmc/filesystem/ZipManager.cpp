@@ -185,7 +185,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     if (mFile.Read(bufName.get(), ze.flength) != ze.flength)
       return false;
     std::string strName(bufName.get(), bufName.size());
-    strName.clear();
+    bufName.clear();
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
