@@ -1122,6 +1122,9 @@
 		B5011E3C19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
 		B5011E3D19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
 		B5011E3E19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
+		B5101B5819DFF8DD00294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
+		B5101B5919DFF8E300294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
+		B5101B5A19DFF8E400294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
 		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482874156CFCD8005A996F /* PVRClient.cpp */; };
 		C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482876156CFCD8005A996F /* PVRClients.cpp */; };
@@ -4656,6 +4659,8 @@
 		B5011E3A19AA496D005ADF89 /* MarkWatchedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkWatchedJob.h; sourceTree = "<group>"; };
 		B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkWatchedJob.cpp; sourceTree = "<group>"; };
 		B542632E19917D3500726998 /* params_check_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params_check_macros.h; sourceTree = "<group>"; };
+		B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayFile.cpp; sourceTree = "<group>"; };
+		B5101B5B19DFF8FC00294D1E /* BlurayFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayFile.h; sourceTree = "<group>"; };
 		B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixInterfaceForCLog.cpp; sourceTree = "<group>"; };
 		B542632A197D353B00726998 /* PosixInterfaceForCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixInterfaceForCLog.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
@@ -9103,6 +9108,8 @@
 				88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */,
 				F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */,
 				F5ED8D6B1551F91400842059 /* BlurayDirectory.h */,
+				B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */,
+				B5101B5B19DFF8FC00294D1E /* BlurayFile.h */,
 				E38E16990D25F9FA00618676 /* CacheStrategy.cpp */,
 				E38E169A0D25F9FA00618676 /* CacheStrategy.h */,
 				E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */,
@@ -11051,6 +11058,7 @@
 				F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
 				F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
 				E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
+				B5101B5819DFF8DD00294D1E /* BlurayFile.cpp in Sources */,
 				E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
 				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 				F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */,
@@ -12607,6 +12615,7 @@
 				DFF0F40E17528350002DA3A4 /* GUIViewStateVideo.cpp in Sources */,
 				DFF0F40F17528350002DA3A4 /* PlayerController.cpp in Sources */,
 				DFF0F41017528350002DA3A4 /* Teletext.cpp in Sources */,
+				B5101B5A19DFF8E400294D1E /* BlurayFile.cpp in Sources */,
 				DFF0F41117528350002DA3A4 /* VideoDatabase.cpp in Sources */,
 				DFF0F41217528350002DA3A4 /* VideoDbUrl.cpp in Sources */,
 				DFF0F41317528350002DA3A4 /* VideoInfoDownloader.cpp in Sources */,
@@ -13311,6 +13320,7 @@
 				E499127B174E5D8F00741B6D /* MultiPathFile.cpp in Sources */,
 				E499127C174E5D9900741B6D /* DirectoryNode.cpp in Sources */,
 				E499127D174E5D9900741B6D /* DirectoryNodeAlbum.cpp in Sources */,
+				B5101B5919DFF8E300294D1E /* BlurayFile.cpp in Sources */,
 				E499127E174E5D9900741B6D /* DirectoryNodeAlbumCompilations.cpp in Sources */,
 				E499127F174E5D9900741B6D /* DirectoryNodeAlbumCompilationsSongs.cpp in Sources */,
 				E4991280174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAdded.cpp in Sources */,

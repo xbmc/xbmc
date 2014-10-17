@@ -3071,6 +3071,9 @@
     <ClCompile Include="..\..\xbmc\utils\MarkWatchedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\BlurayFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6006,6 +6009,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\DiscSettings.h">
       <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\BlurayFile.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
