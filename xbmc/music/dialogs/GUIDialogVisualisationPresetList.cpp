@@ -68,12 +68,9 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       }
     }
     break;
-  case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
       m_viz = NULL;
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-      OnMessage(msg);
       Update();
     }
     break;
@@ -121,6 +118,15 @@ void CGUIDialogVisualisationPresetList::OnInitWindow()
   CGUIDialog::OnInitWindow();
 }
 
+void CGUIDialogVisualisationPresetList::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+  OnMessage(msg);
+  SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, "");
+  m_vecPresets->Clear();
+}
+
 void CGUIDialogVisualisationPresetList::Update()
 {
   m_vecPresets->Clear();
@@ -145,7 +151,7 @@ void CGUIDialogVisualisationPresetList::Update()
         pItem->SetLabel2(" ");
         m_vecPresets->Add(pItem);
       }
-      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecPresets);
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, m_currentPreset, 0, m_vecPresets);
       OnMessage(msg);
     }
   }
