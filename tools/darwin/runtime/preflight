@@ -77,13 +77,19 @@ sub get_sources_xml {
         while ( ($name, $path) = each( %{ $source } ) ) {
             $xml .= (" " x 8)."<source>\n";
             $xml .= (" " x 12)."<name>$name</name>\n";
-	    if ( $path =~ /(.*)\^\^(.*)/ ) {
-		$xml .= (" " x 12)."<path>".$1."</path>\n";
-		$xml .= (" " x 12)."<thumbnail>".$2."</thumbnail>\n";
-	    }
-	    else {
-		$xml .= (" " x 12)."<path>".$path."</path>\n";
-	    }
+
+            if ( $path =~ /(.*)\^\^(.*)/ ) {
+              $xml .= (" " x 12)."<path>".$1."</path>\n";
+              $xml .= (" " x 12)."<thumbnail>".$2."</thumbnail>\n";
+            }
+            else {
+              $xml .= (" " x 12)."<path>".$path."</path>\n";
+            }
+
+            if ($path ne "/" ) {
+              $xml .= (" " x 12)."<allowsharing>true</allowsharing>\n";
+            }
+
             $xml .= (" " x 8)."</source>\n";
         }
         $xml .= (" " x 4)."</$sourcetype>\n";
