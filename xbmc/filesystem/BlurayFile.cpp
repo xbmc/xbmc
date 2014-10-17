@@ -62,7 +62,7 @@ namespace XFILE
     return m_file.Stat(RemoveProtocol(url), buffer);
   }
 
-  unsigned int CBlurayFile::Read(void* lpBuf, int64_t uiBufSize)
+  ssize_t CBlurayFile::Read(void* lpBuf, size_t uiBufSize)
   {
     return m_file.Read(lpBuf, uiBufSize);
   }
