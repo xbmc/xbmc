@@ -109,10 +109,11 @@ namespace PVR
     CPVRChannelGroupPtr GetLastGroup(void) const;
     
     /*!
-     * @brief The group that was played last.
+     * @brief The group that was played last and optionally contains the given channel.
+     * @param iChannelID The channel ID
      * @return The last watched group.
      */
-    CPVRChannelGroupPtr GetLastPlayedGroup() const;
+    CPVRChannelGroupPtr GetLastPlayedGroup(int iChannelID = -1) const;
 
     /*!
      * @brief Get the list of groups.
