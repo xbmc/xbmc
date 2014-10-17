@@ -39,6 +39,7 @@ public:
 
 protected:
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
   void SetVisualisation(ADDON::CVisualisation *addon);
   void Update();
   ADDON::CVisualisation* m_viz; //TODO get rid
