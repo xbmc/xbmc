@@ -319,6 +319,9 @@
     <Filter Include="utils\win32">
       <UniqueIdentifier>{3adbba6a-6fbf-4192-b215-108d94bde1e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="video\videosync">
+      <UniqueIdentifier>{9775d5c0-c640-4606-a625-e6cdcf9f959e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3076,6 +3079,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\BlurayFile.cpp">
       <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\videosync\VideoSyncD3D.cpp">
+      <Filter>video\videosync</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6021,6 +6027,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\BlurayFile.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\videosync\VideoSyncD3D.h">
+      <Filter>video\videosync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\videosync\VideoSync.h">
+      <Filter>video\videosync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

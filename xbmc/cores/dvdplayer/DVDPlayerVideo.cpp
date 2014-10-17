@@ -164,7 +164,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
-  g_VideoReferenceClock.StopThread();
+  g_VideoReferenceClock.Stop();
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -205,9 +205,6 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
   {
     g_VideoReferenceClock.Create();
-    //we have to wait for the clock to start otherwise alsa can cause trouble
-    if (!g_VideoReferenceClock.WaitStarted(2000))
-      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
   }
 
   if(m_messageQueue.IsInited())

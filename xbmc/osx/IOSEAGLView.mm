@@ -36,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "XbmcContext.h"
+#include "WindowingFactory.h"
 #undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
@@ -457,7 +458,7 @@
   if (animationThread && [animationThread isExecuting] == YES)
   {
     if (g_VideoReferenceClock.IsRunning())
-      g_VideoReferenceClock.VblankHandler(CurrentHostCounter(), displayFPS);
+      g_Windowing.VblankHandler(CurrentHostCounter(), displayFPS);
   }
   [pool release];
 }
