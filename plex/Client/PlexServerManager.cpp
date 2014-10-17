@@ -295,8 +295,11 @@ void CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerManager::ClearBestServer()
 {
-  CLog::Log(LOGDEBUG, "CPlexServerManager::ClearBestServer clearing %s", m_bestServer->toString().c_str());
-  m_bestServer.reset();
+  if (m_bestServer)
+  {
+    CLog::Log(LOGDEBUG, "CPlexServerManager::ClearBestServer clearing %s", m_bestServer->toString().c_str());
+    m_bestServer.reset();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
