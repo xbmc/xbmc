@@ -51,6 +51,9 @@ public:
   bool AddShare(const std::string &type, const CMediaSource &share);
   bool UpdateShare(const std::string &type, const std::string &oldName, const CMediaSource &share);
 
+  static std::map<std::string, std::pair<bool, bool> > HandleSourceExistence(const std::string &type, const std::set<std::string> &paths,
+                                                                             bool showDialog, int headingLabel = 15012, int textLabel = 15013,
+                                                                             int okLabel = 20471, int cancelLabel = 20470);
   static std::vector<std::string> FindSourcesToSkip(const std::string &type, const std::set<std::string> &paths,
                                                     bool showDialog, int headingLabel = 15012, int textLabel = 15013,
                                                     int okLabel = 20471, int cancelLabel = 20470);
