@@ -40,7 +40,7 @@ namespace XFILE
 
       virtual bool          Open(const CURL& url);
       virtual void          Close();
-      virtual ssize_t       Read(void* lpBuf, size_t uiBufSize);
+      virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
       virtual int           GetChunkSize();
     private:
       struct hdhomerun_device_t* m_device;

@@ -94,7 +94,7 @@ int CMultiPathFile::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-ssize_t CMultiPathFile::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CMultiPathFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }

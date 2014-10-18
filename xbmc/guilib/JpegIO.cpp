@@ -526,10 +526,15 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
     delete [] rgbbuf;
 
   XFILE::CFile file;
-  const bool ret = file.OpenForWrite(destFile, true) && file.Write(result, outBufSize) == outBufSize;
+  if (file.OpenForWrite(destFile, true))
+  {
+    file.Write(result, outBufSize);
+    file.Close();
+    free(result);
+    return true;
+  }
   free(result);
-
-  return ret;
+  return false;
 }
 
 // override libjpeg's error function to avoid an exit() call

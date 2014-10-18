@@ -121,16 +121,12 @@ int CRTVFile::Stat(const CURL& url, struct __stat64* buffer)
 }
 
 //*********************************************************************************************
-ssize_t CRTVFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CRTVFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  ssize_t lenread;
+  size_t lenread;
 
   // Don't read if no connection is open!
-  if (!m_bOpened)
-    return -1;
-
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
+  if (!m_bOpened) return 0;
 
   // Read uiBufSize bytes from the m_rtvd connection
   lenread = rtv_read_file(m_rtvd, (char *) lpBuf, (size_t) uiBufSize);
@@ -141,7 +137,7 @@ ssize_t CRTVFile::Read(void *lpBuf, size_t uiBufSize)
   if(m_filePos + lenread > m_fileSize)
   {
     CLog::Log(LOGWARNING, "%s - RTV library read passed filesize, returning last chunk", __FUNCTION__);
-    lenread = (m_fileSize - m_filePos);
+    lenread = (size_t)(m_fileSize - m_filePos);
     m_filePos = m_fileSize;
     return lenread;
   }

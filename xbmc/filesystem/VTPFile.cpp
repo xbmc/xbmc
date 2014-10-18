@@ -92,13 +92,10 @@ bool CVTPFile::Open(const CURL& url2)
   return true;
 }
 
-ssize_t CVTPFile::Read(void* buffer, size_t size)
+unsigned int CVTPFile::Read(void* buffer, int64_t size)
 {
-  if (size > SSIZE_MAX)
-    size = SSIZE_MAX;
-
   if(m_socket == INVALID_SOCKET)
-    return -1;
+    return 0;
 
   fd_set         set_r, set_e;
   struct timeval tv;
@@ -115,7 +112,7 @@ ssize_t CVTPFile::Read(void* buffer, size_t size)
   if(res < 0)
   {
     CLog::Log(LOGERROR, "CVTPFile::Read - select failed");
-    return -1;
+    return 0;
   }
   if(res == 0)
   {
@@ -123,12 +120,17 @@ ssize_t CVTPFile::Read(void* buffer, size_t size)
     return 0;
   }
 
-  res = recv(m_socket, (char*)buffer, size, 0);
+  res = recv(m_socket, (char*)buffer, (size_t)size, 0);
   if(res < 0)
+  {
     CLog::Log(LOGERROR, "CVTPFile::Read - failed");
-
+    return 0;
+  }
   if(res == 0)
+  {
     CLog::Log(LOGERROR, "CVTPFile::Read - eof");
+    return 0;
+  }
 
   return res;
 }

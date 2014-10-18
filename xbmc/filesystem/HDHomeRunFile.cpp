@@ -106,11 +106,8 @@ bool CHomeRunFile::Open(const CURL &url)
   return true;
 }
 
-ssize_t CHomeRunFile::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CHomeRunFile::Read(void* lpBuf, int64_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
   size_t datasize;
 
   if(uiBufSize < VIDEO_DATA_PACKET_SIZE)
@@ -128,7 +125,7 @@ ssize_t CHomeRunFile::Read(void* lpBuf, size_t uiBufSize)
     if(ptr)
     {
       memcpy(lpBuf, ptr, datasize);
-      return datasize;
+      return (unsigned int)datasize;
     }
 
     if(timestamp.IsTimePast())
@@ -136,7 +133,7 @@ ssize_t CHomeRunFile::Read(void* lpBuf, size_t uiBufSize)
 
     Sleep(64);
   }
-  return datasize;
+  return (unsigned int)datasize;
 }
 
 void CHomeRunFile::Close()

@@ -83,12 +83,12 @@ int CSpecialProtocolFile::Stat(struct __stat64* buffer)
   return m_file.Stat(buffer);
 }
 
-ssize_t CSpecialProtocolFile::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CSpecialProtocolFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }
   
-ssize_t CSpecialProtocolFile::Write(const void* lpBuf, size_t uiBufSize)
+int CSpecialProtocolFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Write(lpBuf,uiBufSize);
 }

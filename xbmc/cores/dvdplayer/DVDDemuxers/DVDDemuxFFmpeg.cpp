@@ -1214,12 +1214,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
             XFILE::CFile file;
             if(pStream->codec->extradata && file.OpenForWrite(fileName))
             {
-              if (file.Write(pStream->codec->extradata, pStream->codec->extradata_size) != pStream->codec->extradata_size)
-              {
-                file.Close();
-                XFILE::CFile::Delete(fileName);
-                CLog::Log(LOGDEBUG, "%s: Error saving font file \"%s\"", __FUNCTION__, fileName.c_str());
-              }
+              file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
+              file.Close();
             }
           }
         }

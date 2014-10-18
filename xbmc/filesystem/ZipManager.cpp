@@ -82,7 +82,8 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   }
 
   unsigned int hdr;
-  if (mFile.Read(&hdr, 4)!=4 || Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
+  mFile.Read(&hdr, 4);
+  if( Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
@@ -106,18 +107,17 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   int extraBlockSize = searchSize % blockSize;
   // Signature is on 4 bytes
   // It could be between 2 blocks, so we need to read 3 extra bytes
-  auto_buffer buffer(blockSize + 3);
+  char *buffer = new char[blockSize+3];
   bool found = false;
 
   // Loop through blocks starting at the end of the file (minus ECDREC_SIZE-1)
   for (int nb=1; !found && (nb <= nbBlock); nb++)
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb),SEEK_SET);
-    if (mFile.Read(buffer.get(), blockSize + 3) != blockSize + 3)
-      return false;
+    mFile.Read(buffer,blockSize+3);
     for (int i=blockSize-1; !found && (i >= 0); i--)
     {
-      if ( Endian_SwapLE32(*((unsigned int*)(buffer.get()+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb)+i,SEEK_SET);
@@ -130,11 +130,10 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   if ( !found && (extraBlockSize > 0) )
   {
     mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize,SEEK_SET);
-    if (mFile.Read(buffer.get(), extraBlockSize + 3) != extraBlockSize + 3)
-      return false;
+    mFile.Read(buffer,extraBlockSize+3);
     for (int i=extraBlockSize-1; !found && (i >= 0); i--)
     {
-      if ( Endian_SwapLE32(*((unsigned int*)(buffer.get()+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize+i,SEEK_SET);
@@ -143,7 +142,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     }
   }
 
-  buffer.clear();
+  delete [] buffer;
 
   if ( !found )
   {
@@ -155,12 +154,10 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   unsigned int cdirOffset, cdirSize;
   // Get size of the central directory
   mFile.Seek(12,SEEK_CUR);
-  if (mFile.Read(&cdirSize, 4) != 4)
-    return false;
+  mFile.Read(&cdirSize,4);
   cdirSize = Endian_SwapLE32(cdirSize);
   // Get Offset of start of central directory with respect to the starting disk number
-  if (mFile.Read(&cdirOffset, 4) != 4)
-    return false;
+  mFile.Read(&cdirOffset,4);
   cdirOffset = Endian_SwapLE32(cdirOffset);
 
   // Go to the start of central directory
@@ -170,8 +167,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   while (mFile.GetPosition() < cdirOffset + cdirSize)
   {
     SZipEntry ze;
-    if (mFile.Read(temp, CHDR_SIZE) != CHDR_SIZE)
-      return false;
+    mFile.Read(temp,CHDR_SIZE);
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
     {
@@ -181,11 +177,9 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     }
 
     // Get the filename just after the central file header
-    auto_buffer bufName(ze.flength);
-    if (mFile.Read(bufName.get(), ze.flength) != ze.flength)
-      return false;
-    std::string strName(bufName.get(), bufName.size());
-    strName.clear();
+    std::string strName;
+    strName.resize(ze.flength);
+    mFile.Read(&strName[0], ze.flength);
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
@@ -203,8 +197,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
-    if (mFile.Read(&(ze.elength), 2) != 2)
-      return false;
+    mFile.Read(&(ze.elength),2);
     ze.elength = Endian_SwapLE16(ze.elength);
 
     // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length

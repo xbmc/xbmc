@@ -863,14 +863,16 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
     strFileName.c_str(), GetLastError());
     return false;
   }
-  ssize_t written = 0;
-  if (strData.size() > 0)
-    written = file.Write(strData.c_str(), strData.size());
+  if (strData.size())
+    file.Write(strData.c_str(), strData.size());
+  file.Close();
 
   if (pdwSize != NULL)
-    *pdwSize = written > 0 ? written : 0;
+  {
+    *pdwSize = strData.size();
+  }
 
-  return written == strData.size();
+  return true;
 }
 
 // Detect whether we are "online" or not! Very simple and dirty!
@@ -1025,7 +1027,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-ssize_t CCurlFile::Write(const void* lpBuf, size_t uiBufSize)
+int CCurlFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (!(m_opened && m_forWrite) || m_inError)
     return -1;
@@ -1386,7 +1388,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CCurlFile::CReadState::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
   if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))
@@ -1406,7 +1408,7 @@ unsigned int CCurlFile::CReadState::Read(void* lpBuf, size_t uiBufSize)
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize))
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %" PRId64", size %" PRId64, __FUNCTION__, m_filePos, m_fileSize);
-    return -1;
+    return 0;
   }
 
   return 0;

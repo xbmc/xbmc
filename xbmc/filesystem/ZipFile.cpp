@@ -283,11 +283,8 @@ int CZipFile::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CZipFile::Read(void* lpBuf, int64_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
   if (m_bCached)
     return mFile.Read(lpBuf,uiBufSize);
 
@@ -331,7 +328,7 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
       if (iMessage < 0)
       {
         Close();
-        return -1; // READ ERROR
+        return 0; // READ ERROR
       }
 
       m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false; // more info in input buffer
@@ -349,15 +346,13 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
     {
       return 0; // we are past eof, this shouldn't happen but test anyway
     }
-    ssize_t iResult = mFile.Read(lpBuf,uiBufSize);
-    if (iResult < 0)
-      return -1;
+    unsigned int iResult = mFile.Read(lpBuf,uiBufSize);
     m_iZipFilePos += iResult;
     m_iFilePos += iResult;
     return iResult;
   }
   else
-    return -1; // shouldn't happen. compression method checked in open
+    return false; // shouldn't happen. compression method checked in open
 }
 
 void CZipFile::Close()
@@ -440,9 +435,9 @@ bool CZipFile::ReadString(char* szLine, int iLineLength)
 
 bool CZipFile::FillBuffer()
 {
-  ssize_t sToRead = 65535;
+  unsigned int sToRead = 65535;
   if (m_iZipFilePos+65535 > mZipItem.csize)
-    sToRead = mZipItem.csize-m_iZipFilePos;
+    sToRead = static_cast<int>(mZipItem.csize-m_iZipFilePos);
 
   if (sToRead <= 0)
     return false; // eof!

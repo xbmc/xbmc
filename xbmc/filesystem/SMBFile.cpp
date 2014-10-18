@@ -508,14 +508,9 @@ int CSMBFile::Truncate(int64_t size)
   return 0;
 }
 
-ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CSMBFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
-  if (m_fd == -1)
-    return -1;
-
+  if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
   /* work around stupid bug in samba */
@@ -528,7 +523,7 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if( uiBufSize >= 64*1024-2 )
     uiBufSize = 64*1024-2;
 
-  ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 
   if ( bytesRead < 0 && errno == EINVAL )
   {
@@ -537,9 +532,12 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   }
 
   if ( bytesRead < 0 )
+  {
     CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
+    return 0;
+  }
 
-  return bytesRead;
+  return (unsigned int)bytesRead;
 }
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
@@ -570,7 +568,7 @@ void CSMBFile::Close()
   m_fd = -1;
 }
 
-ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
+int CSMBFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return -1;
   DWORD dwNumberOfBytesWritten = 0;
@@ -580,7 +578,7 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
-  return dwNumberOfBytesWritten;
+  return (int)dwNumberOfBytesWritten;
 }
 
 bool CSMBFile::Delete(const CURL& url)

@@ -589,11 +589,13 @@ int udf25::GetUDFCache(UDFCacheType type, uint32_t nr, void *data)
 
 int udf25::ReadAt( int64_t pos, size_t len, unsigned char *data )
 {
-  if (m_fp->Seek(pos, SEEK_SET) != pos)
+  int64_t ret;
+  ret = m_fp->Seek(pos, SEEK_SET);
+  if(ret != pos)
     return -1;
 
-  ssize_t ret = m_fp->Read(data, len);
-  if ( ret < len)
+  ret = m_fp->Read(data, len);
+  if(ret < (int64_t)len)
   {
     CLog::Log(LOGERROR, "udf25::ReadFile - less data than requested available!" );
     return (int)ret;
