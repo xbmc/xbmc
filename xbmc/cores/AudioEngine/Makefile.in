@@ -26,11 +26,14 @@ SRCS += Sinks/AESinkProfiler.cpp
 
 SRCS += Sinks/AESinkPi.cpp
 
+SRCS += AEResampleFactory.cpp
+
 SRCS += Engines/ActiveAE/ActiveAE.cpp
 SRCS += Engines/ActiveAE/ActiveAESink.cpp
 SRCS += Engines/ActiveAE/ActiveAEStream.cpp
 SRCS += Engines/ActiveAE/ActiveAESound.cpp
-SRCS += Engines/ActiveAE/ActiveAEResample.cpp
+SRCS += Engines/ActiveAE/ActiveAEResampleFFMPEG.cpp
+SRCS += Engines/ActiveAE/ActiveAEResamplePi.cpp
 SRCS += Engines/ActiveAE/ActiveAEBuffer.cpp
 
 ifeq (@USE_ANDROID@,1)

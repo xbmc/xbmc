@@ -29,7 +29,7 @@
 
 namespace ActiveAE
 {
-  class CActiveAEResample;
+  class IAEResample;
 };
 
 class DVDPlayerCodec : public ICodec
@@ -71,7 +71,7 @@ private:
   bool m_bInited;
   bool m_bCanSeek;
 
-  ActiveAE::CActiveAEResample *m_pResampler;
+  ActiveAE::IAEResample *m_pResampler;
   uint8_t *m_audioPlanes[8];
   int m_planes;
   bool m_needConvert;

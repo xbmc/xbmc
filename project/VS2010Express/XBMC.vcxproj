@@ -196,11 +196,12 @@
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEFactory.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResampleFFMPEG.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESound.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEStream.cpp" />
@@ -813,15 +814,17 @@
     </CustomBuild>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.h" />
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResampleFFMPEG.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESound.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEStream.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AE.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AEResample.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AEEncoder.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AESink.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AESound.h" />

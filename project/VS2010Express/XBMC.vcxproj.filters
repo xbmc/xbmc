@@ -2262,6 +2262,9 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEFactory.cpp">
       <Filter>cores\AudioEngine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp">
       <Filter>cores\AudioEngine</Filter>
     </ClCompile>
@@ -2936,7 +2939,7 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.cpp">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.cpp">
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResampleFFMPEG.cpp">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.cpp">
@@ -5279,10 +5282,16 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h">
       <Filter>cores\AudioEngine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h">
       <Filter>cores\AudioEngine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AE.h">
+      <Filter>cores\AudioEngine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AEResample.h">
       <Filter>cores\AudioEngine\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Interfaces\AEEncoder.h">
@@ -5847,7 +5856,7 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.h">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.h">
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResampleFFMPEG.h">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.h">

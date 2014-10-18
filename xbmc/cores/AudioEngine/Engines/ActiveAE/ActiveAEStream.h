@@ -98,7 +98,7 @@ protected:
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
   CSoundPacket *m_remapBuffer;
-  CActiveAEResample *m_remapper;
+  IAEResample *m_remapper;
   int m_clockId;
 
   // only accessed by engine

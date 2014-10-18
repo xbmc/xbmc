@@ -15953,3 +15953,8 @@ msgstr ""
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr ""

@@ -58,8 +58,9 @@ enum AEQuality
   AE_QUALITY_HIGH       = 50, /* Best sound processing quality */
 
   /* Optional quality levels */
-  AE_QUALITY_REALLYHIGH = 100 /* Uncompromised optional quality level,
+  AE_QUALITY_REALLYHIGH = 100, /* Uncompromised optional quality level,
                                usually with unmeasurable and unnoticeable improvement */ 
+  AE_QUALITY_GPU        = 101, /* GPU acceleration */
 };
 
 /**

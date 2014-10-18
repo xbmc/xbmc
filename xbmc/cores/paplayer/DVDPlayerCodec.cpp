@@ -20,7 +20,7 @@
 
 #include "DVDPlayerCodec.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResample.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
@@ -234,17 +234,17 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   if (NeedConvert(m_DataFormat))
   {
     m_needConvert = true;
-    m_pResampler = new ActiveAE::CActiveAEResample();
-    m_pResampler->Init(ActiveAE::CActiveAEResample::GetAVChannelLayout(m_ChannelInfo),
+    m_pResampler = ActiveAE::CAEResampleFactory::Create();
+    m_pResampler->Init(CAEUtil::GetAVChannelLayout(m_ChannelInfo),
                        m_ChannelInfo.Count(),
                        m_SampleRate,
-                       ActiveAE::CActiveAEResample::GetAVSampleFormat(AE_FMT_FLOAT),
+                       CAEUtil::GetAVSampleFormat(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToUsedBits(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToDitherBits(AE_FMT_FLOAT),
-                       ActiveAE::CActiveAEResample::GetAVChannelLayout(m_ChannelInfo),
+                       CAEUtil::GetAVChannelLayout(m_ChannelInfo),
                        m_ChannelInfo.Count(),
                        m_SampleRate,
-                       ActiveAE::CActiveAEResample::GetAVSampleFormat(m_DataFormat),
+                       CAEUtil::GetAVSampleFormat(m_DataFormat),
                        CAEUtil::DataFormatToUsedBits(m_DataFormat),
                        CAEUtil::DataFormatToDitherBits(m_DataFormat),
                        false,
