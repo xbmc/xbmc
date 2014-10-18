@@ -20,6 +20,7 @@
 
 #include "LanguageInvokerThread.h"
 #include "ScriptInvocationManager.h"
+#include "FileItem.h"
 
 CLanguageInvokerThread::CLanguageInvokerThread(ILanguageInvoker *invoker, CScriptInvocationManager *invocationManager)
   : ILanguageInvoker(NULL),
@@ -42,13 +43,14 @@ InvokerState CLanguageInvokerThread::GetState()
   return m_invoker->GetState();
 }
 
-bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments)
+bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item /*= CFileItemPtr()*/)
 {
   if (m_invoker == NULL || script.empty())
     return false;
 
   m_script = script;
   m_args = arguments;
+  m_item = item;
 
   Create();
   return true;
@@ -89,7 +91,7 @@ void CLanguageInvokerThread::Process()
   if (m_invoker == NULL)
     return;
 
-  m_invoker->Execute(m_script, m_args);
+  m_invoker->Execute(m_script, m_args, m_item);
 }
 
 void CLanguageInvokerThread::OnExit()

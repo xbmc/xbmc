@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="contextitem.cat2.test1"
+       name="ContextItem Test 4"
+       version="1.0.0"
+       provider-name="Fice">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="addon.context.item" parent="contextcategory.2" library="addon.py" visible="true" label="In Category 2 Test 1">
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>Testitem 1 for having several items in a category</summary>
+    <description>
+    </description>
+  </extension>
+</addon>

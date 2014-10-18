@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="contextcategory.2"
+       name="Add or Remove from Favourites"
+       version="1.0.0"
+       provider-name="Xbmc">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="addon.context.category" visible="true" label="Category 2" library="addon.py">
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>Category 2 for Context Item Addons</summary>
+    <description>This category should always show up, as we have two sub items
+    </description>
+  </extension>
+</addon>

@@ -26,21 +26,24 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+typedef struct _object PyObject;
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
   CPythonInvoker(ILanguageInvocationHandler *invocationHandler);
   virtual ~CPythonInvoker();
 
-  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>());
-
+  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>(), const CFileItemPtr item = CFileItemPtr());
   virtual bool IsStopping() const { return m_stop || ILanguageInvoker::IsStopping(); }
 
   typedef void (*PythonModuleInitialization)();
   
 protected:
   // implementation of ILanguageInvoker
-  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item);
   virtual bool stop(bool abort);
   virtual void onExecutionFailed();
 
@@ -48,8 +51,7 @@ protected:
   virtual std::map<std::string, PythonModuleInitialization> getModules() const;
   virtual const char* getInitializationScript() const;
   virtual void onInitialization();
-  // actually a PyObject* but don't wanna draw Python.h include into the header
-  virtual void onPythonModuleInitialization(void* moduleDict);
+  virtual void onPythonModuleInitialization(PyObject* moduleDict);
   virtual void onDeinitialization();
 
   virtual void onSuccess() { }
@@ -72,6 +74,8 @@ private:
   void *m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;
+
+  PyObject* m_item;
 
   static CCriticalSection s_critical;
 };

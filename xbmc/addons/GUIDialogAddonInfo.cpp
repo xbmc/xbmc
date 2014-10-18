@@ -41,6 +41,7 @@
 #include "pvr/PVRManager.h"
 #include "Util.h"
 #include "interfaces/Builtins.h"
+#include "ContextItemAddon.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7

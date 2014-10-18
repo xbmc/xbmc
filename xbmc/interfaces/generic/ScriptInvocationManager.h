@@ -30,6 +30,8 @@ class ILanguageInvocationHandler;
 class ILanguageInvoker;
 class CLanguageInvokerThread;
 typedef boost::shared_ptr<CLanguageInvokerThread> CLanguageInvokerThreadPtr;
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 class CScriptInvocationManager
 {
@@ -45,7 +47,7 @@ public:
   bool HasLanguageInvoker(const std::string &script) const;
   ILanguageInvoker* GetLanguageInvoker(const std::string &script) const;
 
-  int Execute(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
+  int Execute(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>(), const CFileItemPtr item = CFileItemPtr());
   bool Stop(int scriptId, bool wait = false);
   bool Stop(const std::string &scriptPath, bool wait = false);
 

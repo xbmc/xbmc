@@ -45,6 +45,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "GUIContextMenuManager.h"
 
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"

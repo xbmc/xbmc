@@ -1621,7 +1621,10 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   default:
     break;
   }
-  return false;
+  ADDON::ContextAddonPtr context_item = BaseContextMenuManager::Get().GetContextItemByID(button);
+  if (context_item==0)
+    return false;
+  return context_item->Execute(m_vecItems->Get(itemNumber));
 }
 
 const CGUIViewState *CGUIMediaWindow::GetViewState() const

@@ -158,19 +158,21 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& 
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) // allow disabled addons
-    return;
-
-  if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
+  if (CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) //allow disabled addons
   {
-    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
-    buttons.Add(CONTEXT_BUTTON_REFRESH,24035);
+    if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
+    {
+      buttons.Add(CONTEXT_BUTTON_SCAN,24034);
+      buttons.Add(CONTEXT_BUTTON_REFRESH,24035);
+    }
+
+    buttons.Add(CONTEXT_BUTTON_INFO,24003);
+
+    if (addon->HasSettings())
+      buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
   }
 
-  buttons.Add(CONTEXT_BUTTON_INFO,24003);
-
-  if (addon->HasSettings())
-    buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
+  BaseContextMenuManager::Get().AppendVisibleContextItems(pItem, buttons);
 }
 
 bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,

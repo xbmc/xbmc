@@ -25,6 +25,9 @@
 #include "ILanguageInvocationHandler.h"
 #include "addons/IAddon.h"
 
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
 class CLanguageInvokerThread;
 
 typedef enum {
@@ -45,12 +48,12 @@ public:
   { }
   virtual ~ILanguageInvoker() { }
 
-  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>())
+  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>(), const CFileItemPtr item = CFileItemPtr())
   {
     if (m_invocationHandler)
       m_invocationHandler->OnScriptStarted(this);
 
-    return execute(script, arguments);
+    return execute(script, arguments, item);
   }
   virtual bool Stop(bool abort = false) { return stop(abort); }
 
@@ -65,7 +68,7 @@ public:
 protected:
   friend class CLanguageInvokerThread;
 
-  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments) = 0;
+  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item) = 0;
   virtual bool stop(bool abort) = 0;
 
   virtual void onExecutionFailed()

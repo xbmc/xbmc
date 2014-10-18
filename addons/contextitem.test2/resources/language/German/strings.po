@@ -1,0 +1,10 @@
+# XBMC Media Center language file
+# Addon Name: Contextitem test2
+# Addon id: contextitem.test2
+# Addon version: 0.3
+# Addon Provider: Fice
+
+
+msgctxt "#30000"
+msgid "Test 2 (sichtbar wenn DVD eingelegt)"
+msgstr ""

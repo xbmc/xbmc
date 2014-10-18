@@ -23,6 +23,8 @@
 #include "threads/Thread.h"
 
 class CScriptInvocationManager;
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 class CLanguageInvokerThread : public ILanguageInvoker, protected CThread
 {
@@ -33,7 +35,7 @@ public:
   virtual InvokerState GetState();
 
 protected:
-  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item = CFileItemPtr());
   virtual bool stop(bool wait);
 
   virtual void OnStartup();
@@ -46,4 +48,5 @@ private:
   CScriptInvocationManager *m_invocationManager;
   std::string m_script;
   std::vector<std::string> m_args;
+  CFileItemPtr m_item;
 };

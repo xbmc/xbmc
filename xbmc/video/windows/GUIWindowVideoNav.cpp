@@ -933,6 +933,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
+    BaseContextMenuManager::Get().AppendVisibleContextItems(item, buttons);
   }
 }
 

@@ -10,6 +10,8 @@ SRCS=Addon.cpp \
      AddonStatusHandler.cpp \
      AddonVersion.cpp \
      AudioEncoder.cpp \
+     ContextCategoryAddon.cpp \
+     ContextItemAddon.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \

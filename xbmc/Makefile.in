@@ -13,6 +13,7 @@ SRCS=Application.cpp \
      FileItem.cpp \
      FileItemListModification.cpp \
      GitRevision \
+     GUIContextMenuManager.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \
