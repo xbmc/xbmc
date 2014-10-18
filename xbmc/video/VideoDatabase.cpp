@@ -8376,6 +8376,34 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   return cleanedIDs;
 }
 
+void CVideoDatabase::UpdateProgress(CGUIDialogProgressBarHandle *handle, CGUIDialogProgress *progress, int current, int total, bool &canceled)
+{
+  canceled = false;
+  if (handle == NULL && progress == NULL)
+    return;
+
+  int percentage = current * 100 / total;
+  if (handle != NULL)
+    handle->SetPercentage(static_cast<float>(percentage));
+  else
+  {
+    // only update the percentage value if it has changed to avoid constantly
+    // re-drawing the whole progress dialog which is very slow
+    if (percentage != progress->GetPercentage())
+    {
+      progress->SetPercentage(percentage);
+      progress->Progress();
+    }
+
+    // check if the process was canceled
+    if (progress->IsCanceled())
+    {
+      progress->Close();
+      canceled = true;
+    }
+  }
+}
+
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
 {
   // get all tvshows
