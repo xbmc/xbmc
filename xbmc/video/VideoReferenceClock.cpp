@@ -28,9 +28,13 @@
 #include "threads/SingleLock.h"
 #include "guilib/GraphicContext.h"
 #include "video/videosync/VideoSync.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(HAS_GLX)
 #include "video/videosync/VideoSyncGLX.h"
+#endif
+#if defined(HAVE_X11)
+#include "video/videosync/VideoSyncDRM.h"
 #endif
 #if defined(TARGET_WINDOWS)
 #include "video/videosync/VideoSyncD3D.h"
@@ -90,8 +94,15 @@ void CVideoReferenceClock::Process()
   while(!m_bStop)
   {
     //set up the vblank clock
+#if defined(HAVE_X11)
+  std::string gpuvendor = g_Windowing.GetRenderVendor();
+  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  if (gpuvendor.compare(0, 5, "intel") == 0)
+    m_pVideoSync = new CVideoSyncDRM();
 #if defined(HAS_GLX)
+  else
     m_pVideoSync = new CVideoSyncGLX();
+#endif
 #elif defined(TARGET_WINDOWS)
     m_pVideoSync = new CVideoSyncD3D();
 #elif defined(TARGET_DARWIN)
