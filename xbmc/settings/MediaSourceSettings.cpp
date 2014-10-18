@@ -19,9 +19,13 @@
  */
 
 #include "MediaSourceSettings.h"
+#include "ApplicationMessenger.h"
 #include "URL.h"
 #include "Util.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -493,4 +497,29 @@ bool CMediaSourceSettings::SetSources(TiXmlNode *root, const char *section, cons
   }
 
   return true;
+}
+
+bool CMediaSourceSettings::PromptForSource(const std::string& path, int headingLabel, int textLabel, int okLabel, int cancelLabel)
+{
+  CGUIDialogYesNo *dialog = static_cast<CGUIDialogYesNo*>(g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO));
+  if (dialog == NULL)
+    return false;
+
+  CURL parentUrl(path);
+  dialog->SetHeading(headingLabel);
+  dialog->SetText(StringUtils::Format(g_localizeStrings.Get(textLabel).c_str(), parentUrl.GetWithoutUserDetails().c_str()));
+  dialog->SetChoice(0, cancelLabel);
+  dialog->SetChoice(1, okLabel);
+
+  //send message and wait for user input
+  ThreadMessage msg =
+  {
+    TMSG_DIALOG_DOMODAL,
+    WINDOW_DIALOG_YES_NO,
+    (unsigned int)g_windowManager.GetActiveWindow()
+  };
+  CApplicationMessenger::Get().SendMessage(msg, true);
+
+  // if the user decides to retry, do the whole procedure again
+  return dialog->IsConfirmed();
 }

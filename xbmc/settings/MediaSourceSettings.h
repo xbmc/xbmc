@@ -51,6 +51,8 @@ public:
   bool AddShare(const std::string &type, const CMediaSource &share);
   bool UpdateShare(const std::string &type, const std::string &oldName, const CMediaSource &share);
 
+  static bool PromptForSource(const std::string& path, int headingLabel, int textLabel, int okLabel, int cancelLabel);
+
 protected:
   CMediaSourceSettings();
   CMediaSourceSettings(const CMediaSourceSettings&);
