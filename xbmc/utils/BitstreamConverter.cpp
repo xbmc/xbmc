@@ -419,7 +419,13 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
       // valid hvcC data (bitstream) always starts with the value 1 (version)
       if(m_to_annexb)
       {
-        if ( in_extradata[0] == 1 )
+        // TODO: from Amlogic
+        /* It seems the extradata is encoded as hvcC format.
+         * Temporarily, we support configurationVersion==0 until 14496-15 3rd
+         * is finalized. When finalized, configurationVersion will be 1 and we
+         * can recognize hvcC by checking if extradata[0]==1 or not. */
+
+        if (in_extradata[0] || in_extradata[1] || in_extradata[2] > 1)
         {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open bitstream to annexb init");
           m_extrasize = in_extrasize;
