@@ -504,6 +504,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   CStdString strSubLang;
   g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
 
+  bool addLangToEnd = CSettings::Get().GetBool("subtitles.addlangtoend");
+
   // Iterate over all items to transfer
   for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)
   {
@@ -513,7 +515,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
     // construct subtitle path
     CStdString strSubExt = URIUtils::GetExtension(strUrl);
-    CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+    CStdString strSubName;
+    if (addLangToEnd)
+      strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+    else
+      strSubName = StringUtils::Format("%s%s", strFileName.c_str(), strSubExt.c_str());
 
     // Handle URL encoding:
     CStdString strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
@@ -560,7 +566,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
         if(CFile::Exists(strUrl))
         {
-          CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
+          CStdString strSubNameIdx;
+          if (addLangToEnd)
+            strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
+          else
+            strSubNameIdx = StringUtils::Format("%s.idx", strFileName.c_str(), strSubLang.c_str());
           // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
           CFile::Copy(strUrl, strDestFile);
