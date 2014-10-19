@@ -1101,6 +1101,10 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
 
 void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
+#if HAVE_LIBUDEV
+  m_deviceMonitor.Start();
+#endif
+
   /* ensure that ALSA has been initialized */
   snd_lib_error_set_handler(sndLibErrorHandler);
   if(!snd_config || force)
@@ -1611,5 +1615,9 @@ void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *fun
   }
   va_end(arg);
 }
+
+#if HAVE_LIBUDEV
+CALSADeviceMonitor CAESinkALSA::m_deviceMonitor; // ARGH
+#endif
 
 #endif

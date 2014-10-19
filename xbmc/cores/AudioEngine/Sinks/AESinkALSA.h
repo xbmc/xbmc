@@ -24,12 +24,17 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Sinks/alsa/ALSADeviceMonitor.h"
 #include <stdint.h>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 
 #include "threads/CriticalSection.h"
+
+// ARGH... this is apparently needed to avoid FDEventMonitor
+// being destructed before CALSA*Monitor below.
+#include "linux/FDEventMonitor.h"
 
 class CAESinkALSA : public IAESink
 {
@@ -81,6 +86,11 @@ private:
   // support fragmentation, e.g. looping in the sink to get a certain amount of data onto the device
   bool              m_fragmented;
   unsigned int      m_originalPeriodSize;
+
+#if HAVE_LIBUDEV
+  static CALSADeviceMonitor m_deviceMonitor;
+#endif
+
   struct ALSAConfig
   {
     unsigned int sampleRate;

@@ -49,6 +49,7 @@ SRCS += Sinks/osx/CoreAudioHelpers.cpp
 SRCS += Sinks/osx/CoreAudioStream.cpp
 else
 SRCS += Sinks/AESinkALSA.cpp
+SRCS += Sinks/alsa/ALSADeviceMonitor.cpp
 SRCS += Sinks/AESinkOSS.cpp
 ifeq (@USE_PULSE@,1)
 SRCS += Sinks/AESinkPULSE.cpp
