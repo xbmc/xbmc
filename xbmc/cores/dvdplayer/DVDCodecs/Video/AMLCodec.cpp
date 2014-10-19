@@ -1580,7 +1580,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_H264_4K2K:
-      if (aml_get_device_type() == AML_DEVICE_TYPE_M8) {
+      if ((aml_get_device_type() == AML_DEVICE_TYPE_M8) || (aml_get_device_type() == AML_DEVICE_TYPE_M8M2)) {
         am_private->gcodec.format = VIDEO_DEC_FORMAT_H264_4K2K;
         am_private->gcodec.param  = (void*)EXTERNAL_PTS;
         // h264 in an avi file
@@ -1653,7 +1653,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
   m_display_rect = g_graphicsContext.GetViewWindow();
-  if (aml_get_device_type() == AML_DEVICE_TYPE_M8)
+  if ((aml_get_device_type() == AML_DEVICE_TYPE_M8)  || (aml_get_device_type() == AML_DEVICE_TYPE_M8B) || (aml_get_device_type() == AML_DEVICE_TYPE_M8M2))
   {
     char mode[256] = {0};
     aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
