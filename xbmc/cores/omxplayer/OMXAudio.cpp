@@ -1800,15 +1800,3 @@ unsigned int COMXAudio::SyncAC3(BYTE* pData, unsigned int iSize)
   m_LostSync = true;
   return iSize;
 }
-
-void COMXAudio::CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
-{
-  if (newSize > *oldSize)
-  {
-    if (*buffer)
-      _aligned_free(*buffer);
-    *buffer = _aligned_malloc(newSize, 16);
-    *oldSize = newSize;
-  }
-  memset(*buffer, 0x0, *oldSize);
-}

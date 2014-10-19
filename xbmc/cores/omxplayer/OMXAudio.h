@@ -157,7 +157,6 @@ protected:
   COMXCoreTunel     m_omx_tunnel_splitter_analog;
   COMXCoreTunel     m_omx_tunnel_splitter_hdmi;
 
-  static void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
   CCriticalSection m_critSection;
 };
 #endif
