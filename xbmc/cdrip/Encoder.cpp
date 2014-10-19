@@ -105,8 +105,8 @@ int CEncoder::FileWrite(const void *pBuffer, uint32_t iBytes)
   if (!m_file)
     return -1;
 
-  ssize_t dwBytesWritten = m_file->Write(pBuffer, iBytes);
-  if (dwBytesWritten <= 0)
+  uint32_t dwBytesWritten = m_file->Write(pBuffer, iBytes);
+  if (!dwBytesWritten)
     return -1;
 
   return dwBytesWritten;

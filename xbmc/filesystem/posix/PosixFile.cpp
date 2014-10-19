@@ -111,11 +111,11 @@ void CPosixFile::Close()
 }
 
 
-ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CPosixFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_fd < 0 || !lpBuf)
-    return -1;
+    return 0; // TODO: return -1
   
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
@@ -124,7 +124,7 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
   if (res < 0)
   {
     Seek(0, SEEK_CUR); // force update file position
-    return -1;
+    return 0; // TODO: return -1
   }
   
   if (m_filePos >= 0)
@@ -147,10 +147,10 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
 #endif
   }
 
-  return res;
+  return (unsigned int) res;
 }
 
-ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
+int CPosixFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   assert(lpBuf != NULL);
   if (m_fd < 0 || !m_allowWrite || !lpBuf)

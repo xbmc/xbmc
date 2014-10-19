@@ -130,10 +130,10 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       return false;
     }
 
-    static const int iBufferSize = 128 * 1024;
+    int iBufferSize = 128 * 1024;
 
     auto_buffer buffer(iBufferSize);
-    ssize_t iRead, iWrite;
+    int iRead, iWrite;
 
     UINT64 llFileSize = file.GetLength();
     UINT64 llPos = 0;
@@ -158,7 +158,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       iWrite = 0;
       while(iWrite < iRead)
       {
-        ssize_t iWrite2 = newFile.Write(buffer.get() + iWrite, iRead - iWrite);
+        int iWrite2 = newFile.Write(buffer.get()+iWrite, iRead-iWrite);
         if(iWrite2 <=0)
           break;
         iWrite+=iWrite2;
@@ -495,19 +495,16 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
   return -1;
 }
 
-ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
-    return -1;
-
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
+    return 0;
 
   if(m_pBuffer)
   {
     if(m_flags & READ_TRUNCATED)
     {
-      const ssize_t nBytes = m_pBuffer->sgetn(
+      unsigned int nBytes = m_pBuffer->sgetn(
         (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
       if (m_bitStreamStats && nBytes>0)
@@ -516,7 +513,7 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
     }
     else
     {
-      const ssize_t nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
+      unsigned int nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
       if (m_bitStreamStats && nBytes>0)
         m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
@@ -527,24 +524,20 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   {
     if(m_flags & READ_TRUNCATED)
     {
-      const ssize_t nBytes = m_pFile->Read(lpBuf, uiBufSize);
+      unsigned int nBytes = m_pFile->Read(lpBuf, uiBufSize);
       if (m_bitStreamStats && nBytes>0)
         m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
     }
     else
     {
-      ssize_t done = 0;
+      unsigned int done = 0;
       while((uiBufSize-done) > 0)
       {
-        const ssize_t curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
-        if (curr <= 0)
-        {
-          if (curr < 0 && done == 0)
-            return -1;
-
+        int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+        if(curr<=0)
           break;
-        }
+
         done+=curr;
       }
       if (m_bitStreamStats && done > 0)
@@ -556,7 +549,6 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
-    return -1;
   }
   return 0;
 }
@@ -741,7 +733,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
+int CFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pFile || !lpBuf)
     return -1;

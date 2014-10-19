@@ -269,14 +269,11 @@ bool CRarFile::OpenForWrite(const CURL& url)
   return false;
 }
 
-ssize_t CRarFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CRarFile::Read(void *lpBuf, int64_t uiBufSize)
 {
 #ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
-    return -1;
-
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
+    return 0;
 
   if (m_bUseFile)
     return m_File.Read(lpBuf,uiBufSize);
@@ -287,7 +284,7 @@ ssize_t CRarFile::Read(void *lpBuf, size_t uiBufSize)
   if( !m_pExtract->GetDataIO().hBufferEmpty->WaitMSec(5000) )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
-    return -1;
+    return 0;
   }
 
 
@@ -354,10 +351,15 @@ ssize_t CRarFile::Read(void *lpBuf, size_t uiBufSize)
 
   m_pExtract->GetDataIO().hBufferEmpty->Set();
 
-  return (ssize_t)(uiBufSize-uicBufSize);
+  return static_cast<unsigned int>(uiBufSize-uicBufSize);
 #else
   return 0;
 #endif
+}
+
+unsigned int CRarFile::Write(void *lpBuf, int64_t uiBufSize)
+{
+  return 0;
 }
 
 void CRarFile::Close()
@@ -525,7 +527,7 @@ int64_t CRarFile::GetPosition()
   return m_iFilePosition;
 }
 
-ssize_t CRarFile::Write(const void* lpBuf, size_t uiBufSize)
+int CRarFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   return -1;
 }

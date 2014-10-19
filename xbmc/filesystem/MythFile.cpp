@@ -492,17 +492,14 @@ int64_t CMythFile::GetLength()
   return -1;
 }
 
-ssize_t CMythFile::Read(void* buffer, size_t size)
+unsigned int CMythFile::Read(void* buffer, int64_t size)
 {
   /* check for any events */
   HandleEvents();
 
   /* file might have gotten closed */
   if(!m_recorder && !m_file)
-    return -1;
-
-  if (size > SSIZE_MAX)
-    size = SSIZE_MAX;
+    return 0;
 
   int ret;
   if(m_recorder)
@@ -511,8 +508,10 @@ ssize_t CMythFile::Read(void* buffer, size_t size)
     ret = m_dll->file_read(m_file, (char*)buffer, (unsigned long)size);
 
   if(ret < 0)
+  {
     CLog::Log(LOGERROR, "%s - cmyth read returned error %d", __FUNCTION__, ret);
-
+    return 0;
+  }
   return ret;
 }
 

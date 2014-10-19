@@ -634,16 +634,12 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   return ret;
 }
 
-ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CNFSFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
-  ssize_t numberOfBytesRead = 0;
+  int numberOfBytesRead = 0;
   CSingleLock lock(gNfsConnection);
   
-  if (m_pFileHandle == NULL || m_pNfsContext == NULL )
-    return -1;
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
 
   numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);  
 
@@ -653,9 +649,11 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
   
   //something went wrong ...
   if (numberOfBytesRead < 0) 
+  {
     CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
-
-  return numberOfBytesRead;
+    return 0;
+  }
+  return (unsigned int)numberOfBytesRead;
 }
 
 int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)
@@ -720,13 +718,13 @@ void CNFSFile::Close()
 //this was a bitch!
 //for nfs write to work we have to write chunked
 //otherwise this could crash on big files
-ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
+int CNFSFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
-  size_t numberOfBytesWritten = 0;
+  int numberOfBytesWritten = 0;
   int writtenBytes = 0;
-  size_t leftBytes = uiBufSize;
+  int64_t leftBytes = uiBufSize;
   //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
-  size_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : (size_t)gNfsConnection.GetMaxWriteChunkSize();
+  int64_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
   
   CSingleLock lock(gNfsConnection);
   
@@ -753,10 +751,7 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
-      if (numberOfBytesWritten == 0)
-        return -1;
-
+      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));        
       break;
     }     
   }

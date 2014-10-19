@@ -67,13 +67,9 @@ bool CISOFile::Open(const CURL& url)
 }
 
 //*********************************************************************************************
-ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
+unsigned int CISOFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  if (!m_bOpened)
-    return -1;
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
+  if (!m_bOpened) return 0;
   char *pData = (char *)lpBuf;
 
   if (m_cache.getSize() > 0)
@@ -103,8 +99,10 @@ ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
     }
     return lTotalBytesRead;
   }
-
-  return m_isoReader.ReadFile( m_hFile, (uint8_t*)pData, (long)uiBufSize);;
+  int iResult = m_isoReader.ReadFile( m_hFile, (uint8_t*)pData, (long)uiBufSize);
+  if (iResult == -1)
+    return 0;
+  return iResult;
 }
 
 //*********************************************************************************************

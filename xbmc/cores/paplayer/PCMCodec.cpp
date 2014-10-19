@@ -73,7 +73,7 @@ int PCMCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize = 0;
 
-  ssize_t iAmountRead = m_file.Read(pBuffer, 2 * (size / 2));
+  int iAmountRead = m_file.Read(pBuffer, 2 * (size / 2));
   if (iAmountRead > 0)
   {
     uint16_t *buffer = (uint16_t*) pBuffer;

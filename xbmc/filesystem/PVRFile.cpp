@@ -101,12 +101,9 @@ void CPVRFile::Close()
   g_PVRManager.CloseStream();
 }
 
-ssize_t CPVRFile::Read(void* buffer, size_t size)
+unsigned int CPVRFile::Read(void* buffer, int64_t size)
 {
-  if (size > SSIZE_MAX)
-    size = SSIZE_MAX;
-
-  return g_PVRManager.IsStarted() ? g_PVRClients->ReadStream((BYTE*)buffer, size) : -1;
+  return g_PVRManager.IsStarted() ? g_PVRClients->ReadStream((BYTE*)buffer, size) : 0;
 }
 
 int64_t CPVRFile::GetLength()

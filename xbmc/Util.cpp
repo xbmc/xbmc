@@ -575,11 +575,12 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
   {
     XBMC::XBMC_MD5 md5;
     char temp[1024];
-    while (true)
+    int pos=0;
+    int read=1;
+    while (read > 0)
     {
-      ssize_t read = file.Read(temp,1024);
-      if (read <= 0)
-        break;
+      read = file.Read(temp,1024);
+      pos += read;
       md5.append(temp,read);
     }
     result = md5.getDigest();
