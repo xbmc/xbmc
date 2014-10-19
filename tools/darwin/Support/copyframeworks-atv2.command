@@ -53,18 +53,18 @@ EXTERNAL_LIBS=$XBMC_DEPENDS
 TARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION
 TARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME
 
-TARGET_BINARY=$TARGET_CONTENTS/XBMC
+TARGET_BINARY=$TARGET_CONTENTS/$APP_NAME
 TARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks
-DYLIB_NAMEPATH=@executable_path/Appliances/XBMC.frappliance/Frameworks
-XBMC_HOME=$TARGET_CONTENTS/XBMCData/XBMCHome
+DYLIB_NAMEPATH=@executable_path/Appliances/$APP_NAME.frappliance/Frameworks
+XBMC_HOME=$TARGET_CONTENTS/AppData/AppHome
 
 mkdir -p "$TARGET_CONTENTS"
-mkdir -p "$TARGET_CONTENTS/XBMCData/XBMCHome"
+mkdir -p "$TARGET_CONTENTS/AppData/AppHome"
 # start clean so we don't keep old dylibs
 rm -rf "$TARGET_CONTENTS/Frameworks"
 mkdir -p "$TARGET_CONTENTS/Frameworks"
 
-echo "Package $TARGET_BUILD_DIR/XBMC"
+echo "Package $TARGET_BUILD_DIR/$APP_NAME"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"

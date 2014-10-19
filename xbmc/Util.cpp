@@ -20,6 +20,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "CompileInfo.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -445,10 +446,12 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
         given_path[n] = '\0';
 
       #if defined(TARGET_DARWIN_IOS)
-        strcat(given_path, "/XBMCData/XBMCHome/");
+        strcat(given_path, "/AppData/AppHome/");
       #else
         // Assume local path inside application bundle.
-        strcat(given_path, "../Resources/XBMC/");
+        strcat(given_path, "../Resources/");
+        strcat(given_path, CCompileInfo::GetAppName());
+        strcat(given_path, "/");
       #endif
 
       // Convert to real path.
@@ -468,12 +471,13 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
   }
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
+  /* Change strPath accordingly when target is APP_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
   std::string installPath = INSTALL_PATH;
   std::string binInstallPath = BIN_INSTALL_PATH;
-  if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
+
+  if (!strTarget.compare("APP_HOME") && installPath.compare(binInstallPath))
   {
     int pos = strPath.length() - binInstallPath.length();
     CStdString tmp = strPath;

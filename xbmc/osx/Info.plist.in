@@ -7,15 +7,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>CFBundleGetInfoString</key>
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleIconFile</key>
-	<string>xbmc.icns</string>
+	<string>@APP_NAME_LC@.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.teamxbmc.xbmc</string>
+	<string>org.xbmc.@APP_NAME_LC@</string>
 	<key>CFBundleName</key>
-	<string>XBMC</string>
+	<string>@APP_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,6 +23,6 @@
 	<key>CFBundleVersion</key>
 	<string>r####</string>
 	<key>CFBundleSignature</key>
-	<string>xbmc</string>
+	<string>@APP_NAME@</string>
 </dict>
 </plist>

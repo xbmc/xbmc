@@ -5,6 +5,6 @@ xbmc/libs/*
 xbmc/obj/*
 xbmc/res/drawable/splash.png
 xbmc/src/R.java
-xbmc/src/org/xbmc/xbmc/*.class
+xbmc/src/org/xbmc/kodi/*.class
 xbmc/classes.dex
 tmp/*

@@ -32,6 +32,7 @@
 
 #include <taglib/id3v1genres.h>
 #include "cddb.h"
+#include "CompileInfo.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
@@ -871,10 +872,12 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Send the Hello message
-  CStdString version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  std::string version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  std::string lcAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lcAppName);
   if (version.find(" ") != std::string::npos)
     version = version.substr(0, version.find(" "));
-  CStdString strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
+  std::string strGreeting = "cddb hello " + lcAppName + " kodi.tv " + CCompileInfo::GetAppName() + " " + version;
   if ( ! Send(strGreeting.c_str()) )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", strGreeting.c_str());

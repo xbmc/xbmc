@@ -1421,10 +1421,10 @@ const CharCodeConvertionWithHack CharCode2To3[189] =
   { "za", "zha", NULL },
   { "zh", "chi", "zho" },
   { "zu", "zul", NULL },
-  { "zv", "und", NULL }, // XBMC intern mapping for missing "Undetermined" iso639-1 code
-  { "zx", "zxx", NULL }, // XBMC intern mapping for missing "No linguistic content" iso639-1 code
-  { "zy", "mis", NULL }, // XBMC intern mapping for missing "Miscellaneous languages" iso639-1 code
-  { "zz", "mul", NULL }  // XBMC intern mapping for missing "Multiple languages" iso639-1 code
+  { "zv", "und", NULL }, // Kodi intern mapping for missing "Undetermined" iso639-1 code
+  { "zx", "zxx", NULL }, // Kodi intern mapping for missing "No linguistic content" iso639-1 code
+  { "zy", "mis", NULL }, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
+  { "zz", "mul", NULL }  // Kodi intern mapping for missing "Multiple languages" iso639-1 code
 };
 
 // Based on ISO 3166

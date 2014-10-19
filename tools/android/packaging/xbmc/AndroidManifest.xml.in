@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.xbmc.xbmc"
+    package="org.xbmc.@APP_NAME_LC@"
     android:versionCode="@APP_VERSION_CODE@"
     android:versionName="@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@" >
 
@@ -63,7 +63,7 @@
             android:name=".Main"
             android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen"
             android:finishOnTaskLaunch="true"
-            android:label="XBMC"
+            android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
@@ -71,7 +71,7 @@
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data
                 android:name="android.app.lib_name"
-                android:value="xbmc" />
+                android:value="@APP_NAME_LC@" />
         </activity>
     </application>
 

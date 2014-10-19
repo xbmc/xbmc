@@ -269,19 +269,19 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=$(sort @INCLUDES@)
 
-CLEAN_FILES=xbmc.bin xbmc-xrandr libxbmc.so
+CLEAN_FILES=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr lib@APP_NAME_LC@.so
 
-DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
-        tools/Linux/xbmc-standalone.sh autom4te.cache config.h.in~ \
+DISTCLEAN_FILES=config.h config.log config.status tools/Linux/@APP_NAME_LC@.sh \
+        tools/Linux/@APP_NAME_LC@-standalone.sh autom4te.cache config.h.in~ \
         system/libcpluff-@ARCH@.so
 
 ifeq (@USE_LIBXBMC@,1)
-FINAL_TARGETS+=libxbmc.so
+FINAL_TARGETS+=lib@APP_NAME_LC@.so
 ifeq (@USE_ANDROID@,1)
 FINAL_TARGETS+=skins
 endif
 else
-FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
+FINAL_TARGETS=@APP_NAME_LC@.bin skins @APP_NAME_LC@-xrandr
 endif
 FINAL_TARGETS+=Makefile externals
 
@@ -326,7 +326,7 @@ sse4 : force
 	$(MAKE) -C xbmc/linux/sse4
 endif
 
-CHECK_PROGRAMS = xbmc-test
+CHECK_PROGRAMS = @APP_NAME_LC@-test
 
 CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
 
@@ -406,7 +406,7 @@ dvdpcodecs: dllloader
 	$(MAKE) -C lib/libdvd
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
-dvdpextcodecs: libxbmc.so 
+dvdpextcodecs: lib@APP_NAME_LC@.so
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
 else
 dvdpextcodecs:
@@ -518,36 +518,36 @@ $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 # Binary Addon bindings
 include xbmc/addons/addon-bindings.mk
 
-libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
+lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -read_only_relocs suppress
 else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
+@APP_NAME_LC@.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
 endif
 
-xbmc-xrandr: xbmc-xrandr.c
+@APP_NAME_LC@-xrandr: xbmc-xrandr.c
 ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
-	@echo "excluding xbmc-xrandr"
+	@echo "excluding @APP_NAME_LC@-xrandr"
 else
-	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
+	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o @APP_NAME_LC@-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
 endif
 
 tools/TexturePacker/TexturePacker: xbmc/guilib/XBTF.h
 	$(MAKE) -C tools/TexturePacker/
 
 
-install-bin: xbmc.bin # developement convenience target
+install-bin: @APP_NAME_LC@.bin # developement convenience target
 	sudo install -d $(DESTDIR)$(libdir)
-	sudo install xbmc.bin $(DESTDIR)$(libdir)/xbmc
+	sudo install @APP_NAME_LC@.bin $(DESTDIR)$(libdir)/@APP_NAME_LC@
 
 ifeq ($(findstring osx,@ARCH@), osx)
 	# TODO: add osx install
@@ -561,16 +561,16 @@ apk-clean:
 	make -C tools/android/packaging clean
 
 install-binaries: install-scripts
-	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"
-	@install -d $(DESTDIR)$(libdir)/xbmc
+	@echo "Copying @APP_NAME_LC@ binary to $(DESTDIR)$(libdir)/@APP_NAME_LC@/"
+	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 ifeq (1,@USE_XRANDR@)
-	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
+	@install @APP_NAME_LC@-xrandr $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@-xrandr
 endif
 ifeq (@USE_LIBXBMC@,1)
-	@install libxbmc.so $(DESTDIR)$(libdir)/xbmc/libxbmc.so
+	@install lib@APP_NAME_LC@.so $(DESTDIR)$(libdir)/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 else
-	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
-	@echo "You can run XBMC with the command 'xbmc'"
+	@install @APP_NAME_LC@.bin $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@.bin
+	@echo "You can run @APP_NAME_LC@ with the command '@APP_NAME_LC@'"
 endif
 endif
 
@@ -582,31 +582,34 @@ endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*\.git.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
-		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/@APP_NAME_LC@/\`dirname '{}'\`\"" \; \
 		-and \
-		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
+		-exec install "{}" $(DESTDIR)$(libdir)/@APP_NAME_LC@/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 	@find -E system addons -type f -not -iregex ".*\.git.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
-		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/@APP_NAME_LC@/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*\.git.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*\.git.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
-	@install tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
-	@install tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
-	@install -d $(DESTDIR)$(datarootdir)/xbmc
-	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
+	@install tools/Linux/@APP_NAME_LC@.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@
+	@cd $(DESTDIR)$(bindir); [ -L xbmc ] || ln -s @APP_NAME_LC@ xbmc
+	@install tools/Linux/@APP_NAME_LC@-standalone.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
+	@cd $(DESTDIR)$(bindir); [ -L xbmc-standalone ] ||  ln -s @APP_NAME_LC@-standalone xbmc-standalone
+	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
+	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/FEH.py
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
-	@install -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
+	@install -m 0644 tools/Linux/@APP_NAME_LC@-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
+	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
@@ -615,15 +618,15 @@ install-datas: install-scripts
 		install -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
 	@install -m 0644 "docs/README.linux" "$(DESTDIR)$(docdir)/README.linux"
 	@echo "Done!"
-	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
-	@install -d $(DESTDIR)$(datarootdir)/xbmc
+	@echo "Copying system files to $(DESTDIR)$(datarootdir)/@APP_NAME_LC@"
+	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
 	@find -E addons language media sounds userdata system -type f \
 		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
-		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/@APP_NAME_LC@/\`dirname '{}'\`\"" \; \
 		-and \
-		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
+		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
@@ -634,42 +637,42 @@ ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|.*\.pvr|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.dll|.*\.pvr|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
-	@install -m 0644 tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/xbmc.desktop
+	@install -m 0644 tools/Linux/@APP_NAME_LC@.desktop $(DESTDIR)$(datarootdir)/applications/@APP_NAME_LC@.desktop
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
-	@install -m 0644 media/icon48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
+	@install -m 0644 media/icon48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/@APP_NAME_LC@.png
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
-	@install -m 0644 media/icon256x256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
+	@install -m 0644 media/icon256x256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/@APP_NAME_LC@.png
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
-	@echo "Copying bindings to $(DESTDIR)$(includedir)/xbmc"
-	@install -d $(DESTDIR)$(includedir)/xbmc
+	@echo "Copying bindings to $(DESTDIR)$(includedir)/@APP_NAME_LC@"
+	@install -d $(DESTDIR)$(includedir)/@APP_NAME_LC@
 	@for f in $(BINDINGS); do \
-	  install -m 0644 $$f $(DESTDIR)$(includedir)/xbmc ; \
+	  install -m 0644 $$f $(DESTDIR)$(includedir)/@APP_NAME_LC@ ; \
 	done
 	@for f in project/cmake/*.cmake; do \
-	  install -m 0644 $$f $(DESTDIR)$(libdir)/xbmc; \
+	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
 	done
 	@for f in project/cmake/scripts/common/*.cmake; do \
-	  install -m 0644 $$f $(DESTDIR)$(libdir)/xbmc; \
+	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
 	done
 
 uninstall:
-	@echo "Removing XBMC..."
-	@rm -rf $(DESTDIR)$(libdir)/xbmc
-	@rm -rf $(DESTDIR)$(datarootdir)/xbmc $(DESTDIR)$(bindir)/xbmc
-	@rm -rf $(DESTDIR)$(bindir)/xbmc-standalone
-	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
-	@rm -rf $(libdir)/libXBMC_*
-	@rm -rf $(prefix)/include/xbmc
+	@echo "Removing Kodi..."
+	@rm -rf $(DESTDIR)$(libdir)/@APP_NAME_LC@
+	@rm -rf $(DESTDIR)$(datarootdir)/@APP_NAME_LC@ $(DESTDIR)$(bindir)/@APP_NAME_LC@
+	@rm -rf $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
+	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
+	@rm -rf $(libdir)/lib@APP_NAME_LC@_*
+	@rm -rf $(prefix)/include/@APP_NAME_LC@
 	@echo "Done!"
 
-clean-xbmc.bin:
-	rm -f xbmc.bin
+clean-@APP_NAME_LC@.bin:
+	rm -f @APP_NAME_LC@.bin
 	for d in $(BIN_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-eventclients:
 	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
@@ -713,7 +716,7 @@ $(GTEST_DIR)/Makefile: force
 $(CHECK_LIBS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
-xbmc-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
+@APP_NAME_LC@-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
 else

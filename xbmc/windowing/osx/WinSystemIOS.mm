@@ -43,7 +43,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #if defined(TARGET_DARWIN_IOS_ATV2)
-#import "atv2/XBMCController.h"
+#import "atv2/KodiController.h"
 #else
 #import "ios/XBMCController.h"
 #endif

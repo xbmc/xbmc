@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=@APP_NAME@
+Comment=This session will start @APP_NAME@ Media Center
+Exec=@APP_NAME_LC@-standalone
+TryExec=@APP_NAME_LC@-standalone
+Type=Application

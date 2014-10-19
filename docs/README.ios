@@ -16,9 +16,9 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a platform port of XBMC for the Apple iOS operating system. 
+This is a platform port of Kodi for the Apple iOS operating system. 
 The current build system supports Xcode 3.2.6 or Xcode 4.3.x with iOS SDK 4.2/4.3/5.1
-There are two ways to build XBMC for Mac.
+There are two ways to build Kodi for Mac.
 
 1) command-line or
 2) Xcode.
@@ -26,7 +26,7 @@ There are two ways to build XBMC for Mac.
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
 
-XBMC for iOS is composed of a main binary with numerous dynamic libraries and
+Kodi for iOS is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
@@ -39,8 +39,8 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ git clone git://github.com/xbmc/xbmc.git xbmc
- $ cd xbmc
+ $ git clone git://github.com/xbmc/xbmc.git Kodi
+ $ cd Kodi
  $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
  The following commands will build using the latest iOS SDK found on your 
  system.
 
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=arm-apple-darwin
@@ -110,7 +110,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 Both Xcode and Terminal compilation require that build environment be setup
 from the step 3.1.
 
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ make -C tools/depends/target/xbmc
  $ make clean
  $ make xcode_depends
@@ -118,11 +118,11 @@ from the step 3.1.
 -----------------------------------------------------------------------------
 4.1 Using Xcode
 -----------------------------------------------------------------------------
-Start XCode and open the XBMC project (XBMC.xcodeproj)
-located in $HOME/XBMC.
+Start XCode and open the Kodi project (Kodi.xcodeproj)
+located in $HOME/Kodi.
 
 There are two relevant build configurations : Release and Debug. Compile always for device
-end not simulator and select the wanted target (either XBMC-iOS or XBMC-ATV2)
+end not simulator and select the wanted target (either Kodi-iOS or Kodi-ATV2)
 
 If you have selected a specific iOS SDK Version in step 3.1 then you might need 
 to adapt the active target to use the same iOS SDK version. Else build will fail 
@@ -135,14 +135,14 @@ of the ATV2 project manually to "default/clang".
 4.2 Using Terminal (command-line)
 -----------------------------------------------------------------------------
 
- $ cd $HOME/XBMC
- $ xcodebuild -project XBMC.xcodeproj -target XBMC-iOS -configuration Release build \
+ $ cd $HOME/Kodi
+ $ xcodebuild -project Kodi.xcodeproj -target Kodi-iOS -configuration Release build \
    ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.2 \
    SDKROOT=iphoneos4.2
 
 or
 
- $ xcodebuild -project XBMC.xcodeproj -target XBMC-ATV2 -configuration Release build \
+ $ xcodebuild -project Kodi.xcodeproj -target Kodi-ATV2 -configuration Release build \
   ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.2 \
   SDKROOT=iphoneos4.2
  
@@ -153,20 +153,20 @@ or
 5. Packaging
 -----------------------------------------------------------------------------
 
-This section describes how to package XBMC in a deb image for
+This section describes how to package Kodi in a deb image for
 distribution.
 
-  1. build XBMC for iOS or ATV2 from XCode so that the application bundle is 
+  1. build Kodi for iOS or ATV2 from XCode so that the application bundle is 
      correctly updated.
 
   2. 
-   $ cd tools/darwin/packaging/xbmc-atv2
+   $ cd tools/darwin/packaging/atv2
    or
-   $ cd tools/darwin/packaging/xbmc-ios
+   $ cd tools/darwin/packaging/ios
 
-  3. $ chmod +x ./mkdeb-xbmc-atv2.sh && ./mkdeb-xbmc-atv2.sh release
+  3. $ chmod +x ./mkdeb-atv2.sh && ./mkdeb-atv2.sh release
      or
-     $ chmod +x ./mkdeb-xbmc-ios.sh && ./mkdeb-xbmc-ios.sh release
+     $ chmod +x ./mkdeb-ios.sh && ./mkdeb-ios.sh release
      
   4. Use release or debug - you have to be sure that you build the corresponding 
      version before.
@@ -200,12 +200,12 @@ distribution.
 8. Usage/Development on un-jailbroken devices (only interesting for official apple developers!)
 ------------------------------------------------------------------------------
 
-If you are a developer with an official apple code signing identity you can deploy XBMC
+If you are a developer with an official apple code signing identity you can deploy Kodi
 via xcode to work on it on non-jailbroken devices. For this to happen you just need to alter the
 Xcode project by setting your codesign identity. After that the last buildstep in our support script
 will do a full sign of all binaries and the bundle with the given identity (all *.viz, *.pvr, *.so files
-Xcode doesn't know anything about). This should allow you to deploy XBMC to all non-jailbroken devices
-which you can deploy normal apps to. In that case (XBMC will be sandboxed like any other app) - all XBMC
+Xcode doesn't know anything about). This should allow you to deploy Kodi to all non-jailbroken devices
+which you can deploy normal apps to. In that case (Kodi will be sandboxed like any other app) - all Kodi
 files are then located in the sandboxed "Documents" folder and can be easily accessed via iTunes file
 sharing.
 Keep in mind that no hardware acceleration will be possible without jailbreaking!

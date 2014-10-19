@@ -24,6 +24,8 @@
 #include "EventLoop.h"
 #include "XBMCApp.h"
 #include "android/jni/SurfaceTexture.h"
+#include "utils/StringUtils.h"
+#include "CompileInfo.h"
 
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {
@@ -82,7 +84,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   if (vm->GetEnv(reinterpret_cast<void**>(&env), version) != JNI_OK)
     return -1;
 
-  jclass cMain = env->FindClass("org/xbmc/xbmc/Main");
+  std::string appName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(appName);
+  std::string mainClass = "org/xbmc/" + appName + "/Main";
+  std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
+  std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
+
+  jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
   {
     JNINativeMethod mOnNewIntent = {
@@ -93,7 +101,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     env->RegisterNatives(cMain, &mOnNewIntent, 1);
   }
 
-  jclass cBroadcastReceiver = env->FindClass("org/xbmc/xbmc/XBMCBroadcastReceiver");
+  jclass cBroadcastReceiver = env->FindClass(bcReceiver.c_str());
   if(cBroadcastReceiver)
   {
     JNINativeMethod mOnReceive =  {
@@ -104,7 +112,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     env->RegisterNatives(cBroadcastReceiver, &mOnReceive, 1);
   }
 
-  jclass cFrameAvailableListener = env->FindClass("org/xbmc/xbmc/XBMCOnFrameAvailableListener");
+  jclass cFrameAvailableListener = env->FindClass(frameListener.c_str());
   if(cFrameAvailableListener)
   {
     JNINativeMethod mOnFrameAvailable = {

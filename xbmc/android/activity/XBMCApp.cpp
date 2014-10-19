@@ -71,6 +71,7 @@
 #include "android/jni/Cursor.h"
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
+#include "CompileInfo.h"
 
 #define GIGABYTES       1073741824
 
@@ -93,7 +94,7 @@ std::vector<androidPackage> CXBMCApp::m_applications;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIContext(nativeActivity)
-  , CJNIBroadcastReceiver("org/xbmc/xbmc/XBMCBroadcastReceiver")
+  , CJNIBroadcastReceiver("org/xbmc/kodi/XBMCBroadcastReceiver")
   , m_wakeLock(NULL)
 {
   m_activity = nativeActivity;
@@ -251,7 +252,10 @@ bool CXBMCApp::getWakeLock()
   if (m_wakeLock)
     return true;
 
-  m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock("org.xbmc.xbmc"));
+  std::string appName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(appName);
+  std::string className = "org.xbmc." + appName;
+  m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(className.c_str()));
 
   return true;
 }
@@ -266,7 +270,8 @@ void CXBMCApp::run()
   m_initialVolume = GetSystemVolume();
 
   CJNIIntent startIntent = getIntent();
-  android_printf("XBMC Started with action: %s\n",startIntent.getAction().c_str());
+
+  android_printf("%s Started with action: %s\n", CCompileInfo::GetAppName(), startIntent.getAction().c_str());
 
   std::string filenameToPlay = GetFilenameFromIntent(startIntent);
   if (!filenameToPlay.empty())
@@ -274,7 +279,7 @@ void CXBMCApp::run()
     int argc = 2;
     const char** argv = (const char**) malloc(argc*sizeof(char*));
 
-    std::string exe_name("XBMC");
+    std::string exe_name(CCompileInfo::GetAppName());
     argv[0] = exe_name.c_str();
     argv[1] = filenameToPlay.c_str();
 
@@ -606,17 +611,21 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
+  std::string appName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(appName);
+  std::string className = "org.xbmc." + appName;
+
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
   if (xbmcHome.empty())
   {
     std::string cacheDir = getCacheDir().getAbsolutePath();
-    setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-    setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("APP_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv("APP_HOME", (cacheDir + "/apk/assets").c_str(), 0);
   }
   else
   {
-    setenv("XBMC_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
-    setenv("XBMC_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("APP_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv("APP_HOME", (xbmcHome + "/assets").c_str(), 0);
   }
 
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
@@ -624,7 +633,7 @@ void CXBMCApp::SetupEnv()
   {
     CJNIFile androidPath = getExternalFilesDir("");
     if (!androidPath)
-      androidPath = getDir("org.xbmc.xbmc", 1);
+      androidPath = getDir(className.c_str(), 1);
 
     if (androidPath)
       externalDir = androidPath.getAbsolutePath();
@@ -633,7 +642,7 @@ void CXBMCApp::SetupEnv()
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
   else
-    setenv("HOME", getenv("XBMC_TEMP"), 0);
+    setenv("HOME", getenv("APP_TEMP"), 0);
 }
 
 std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)

@@ -17,7 +17,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
   if [ -f "/Users/Shared/buildslave/keychain_unlock.sh" ]; then
     /Users/Shared/buildslave/keychain_unlock.sh
   fi
-  ${GEN_ENTITLEMENTS} "org.xbmc.xbmc-ios" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
+  ${GEN_ENTITLEMENTS} "org.xbmc.kodi-ios" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
   codesign -v -f -s "iPhone Developer" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
   
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
@@ -25,7 +25,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
     echo Doing a full bundle sign using genuine identity "${CODE_SIGN_IDENTITY}"
     for binext in $LIST_BINARY_EXTENSIONS
     do
-      codesign -fvvv -s "${CODE_SIGN_IDENTITY}" -i org.xbmc.xbmc-ios `find ${CODESIGNING_FOLDER_PATH} -name "*.$binext"` ${CODESIGNING_FOLDER_PATH}
+      codesign -fvvv -s "${CODE_SIGN_IDENTITY}" -i org.xbmc.kodi-ios `find ${CODESIGNING_FOLDER_PATH} -name "*.$binext"` ${CODESIGNING_FOLDER_PATH}
     done
     echo In case your app crashes with SIG_SIGN check the variable LIST_BINARY_EXTENSIONS in tools/darwin/Support/Codesign.command
   fi

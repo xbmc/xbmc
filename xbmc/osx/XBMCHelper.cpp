@@ -27,6 +27,7 @@
 #include "XBMCHelper.h"
 #include "PlatformDefs.h"
 #include "Util.h"
+#include "CompileInfo.h"
 
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -66,7 +67,7 @@ XBMCHelper::XBMCHelper()
   , m_port(0)
   , m_errorStarting(false)
 {
-  // Compute the XBMC_HOME path.
+  // Compute the APP_HOME path.
   CStdString homePath;
   CUtil::GetHomePath(homePath);
   m_homepath = homePath;
@@ -87,7 +88,7 @@ XBMCHelper::XBMCHelper()
 
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
-  m_configFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
+  m_configFile += "/Library/Application Support/" + std::string(CCompileInfo::GetAppName()) + "/XBMCHelper.conf";
 }
 
 /////////////////////////////////////////////////////////////////////////////

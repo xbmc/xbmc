@@ -29,7 +29,7 @@ of one found in libcrystax. Thanks crystax!
   {
     // Find the launch intent for a package and start its activity
     CJNIPackageManager manager = getPackageManager();
-    CJNIIntent intent = manager.getLaunchIntentForPackage("org.xbmc.xbmc");
+    CJNIIntent intent = manager.getLaunchIntentForPackage("org.xbmc.kodi");
     startActivity(sendIntent);
   }
 

@@ -3,7 +3,7 @@ TOC
 2. Getting the source code
 3. Install required libs
   3.1. Install Xcode
-  3.2. Install XBMC build depends
+  3.2. Install Kodi build depends
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -13,16 +13,16 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a platform port of XBMC for the Apple OSX operating system. 10.6, 10.7
+This is a platform port of Kodi for the Apple OSX operating system. 10.6, 10.7
 10.8 and 10.9 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
 are the recommended versions.
-There are 3 ways to build XBMC for Mac, from command-line with make, from command-line
+There are 3 ways to build Kodi for Mac, from command-line with make, from command-line
 using xcodebuild or from Xcode.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
 
-XBMC for Mac is composed of a main binary with numerous dynamic libraries and
+Kodi for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
 On Snow Leopard (OSX 10.6.x) we recommend using Xcode 3.2.6.
@@ -43,7 +43,7 @@ anymore.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ git clone git://github.com/xbmc/xbmc.git xbmc
+ $ git clone git://github.com/xbmc/xbmc.git Kodi
 
 -----------------------------------------------------------------------------
 3.0 Install XCODE
@@ -79,20 +79,20 @@ constellations of Xcode and osx versions (to be updated once we know more):
 5. XCode 6.0.1 against OSX SDK 10.9 (M)
 
 -----------------------------------------------------------------------------
-3.1 Install XBMC build depends
+3.1 Install Kodi build depends
 -----------------------------------------------------------------------------
  The following commands will build using the latest OSX SDK found on your
  system.
 
 3.1.1 Compiling as 32 Bit binary
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=i386-apple-darwin
  $ make
 
 3.1.2 Compiling as 64 Bit binary
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=x86_64-apple-darwin
@@ -119,46 +119,46 @@ first. This is a simple step and involves the following:
 4.a Compilation by using command-line building via xcodebuild or
     by compiling via Xcode GUI
 
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ make -C tools/depends/target/xbmc
  $ make clean
  $ make xcode_depends
 
 4.b Compilation by using command-line building via make (experimental)
 
- $ cd $HOME/XBMC
+ $ cd $HOME/Kodi
  $ make -C tools/depends/target/xbmc
  $ make clean
 
 The configure operation will setup the build environment for codecs and
-internal libraries that are used by XBMC. This step is required for both Xcode
+internal libraries that are used by Kodi. This step is required for both Xcode
 and command-line building. The "make clean" ensures that there are no stale
 binaries from git that might cause problems.
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode
 -----------------------------------------------------------------------------
-Start XCode and open the XBMC project (XBMC.xcodeproj) located in $HOME/XBMC.
-For development, XBMC is run from the $HOME/XBMC directory and needs to have
-the XBMC_HOME environment variable set to know where that directory is located.
-To set XBMC_HOME environment variable:
+Start XCode and open the Kodi project (Kodi.xcodeproj) located in $HOME/Kodi.
+For development, Kodi is run from the $HOME/Kodi directory and needs to have
+the APP_HOME environment variable set to know where that directory is located.
+To set APP_HOME environment variable:
 
 Xcode 3.2.6
- Menu -> Project -> Edit Active Executable "XBMC", click "Arguments" tab and
- add "XBMC_HOME" as an enviroment variable. Set the value to the path to the
- XBMC root folder. For example, "/Users/bigdog/Documents/XBMC"
+ Menu -> Project -> Edit Active Executable "Kodi", click "Arguments" tab and
+ add "APP_HOME" as an enviroment variable. Set the value to the path to the
+ Kodi root folder. For example, "/Users/bigdog/Documents/Kodi"
 
 Xcode 4.3.x and later
- Menu -> Product -> Edit Sheme -> "Run XBMC"/"Debug" -> Add XBMC_HOME into 
- the List of "Environment Variables".Set the value to the path to thev XBMC 
- root folder. For example, "/Users/bigdog/Documents/XBMC"	
+ Menu -> Product -> Edit Sheme -> "Run Kodi"/"Debug" -> Add APP_HOME into
+ the List of "Environment Variables". Set the value to the path to the Kodi
+ root folder. For example, "/Users/bigdog/Documents/Kodi"	
 
-There are two build targets "XBMC" and "XBMC.app" (each in 32Bit and 64Bit flavour) 
-with debug and release settings. The "XBMC" target is used for rapid build and 
-debug cycles while the "XBMC.app" target is used to build a self contained 
+There are two build targets "Kodi" and "Kodi.app" (each in 32Bit and 64Bit flavour) 
+with debug and release settings. The "Kodi" target is used for rapid build and 
+debug cycles while the "Kodi.app" target is used to build a self contained 
 OSX application.
 
-Set the build target to "XBMC" or "XBMC.app" and be sure to select the same 
+Set the build target to "Kodi" or "Kodi.app" and be sure to select the same 
 architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 64Bit), 
 then build. 
 
@@ -171,21 +171,21 @@ You can see the progress in "Build Results". There are a large number of static
 and dynamic libaries that will need to be built. Once these are built, 
 subsequent builds will be faster.
 
-After the build, you can ether run XBMC for Mac from Xcode or run it from
+After the build, you can ether run Kodi for Mac from Xcode or run it from
 the command-line. If you run it from the command-line, make sure your set
-the XBMC_HOME environment variable (export XBMC_HOME=$HOME/XBMC). Then, to
+the APP_HOME environment variable (export APP_HOME=$HOME/Kodi). Then, to
 run the debug version:
 
-$ ./build/Debug/XBMC
+$ ./build/Debug/Kodi
 
 Or the release version:
 
-$ ./build/Release/XBMC
+$ ./build/Release/Kodi
 
 You can also build via Xcode from the command-line using the following:
 
 $ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=i386 \
-  -target "XBMC.app" -project XBMC.xcodeproj
+  -target "Kodi.app" -project Kodi.xcodeproj
 
 You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
 variables to the same architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 
@@ -202,29 +202,29 @@ you could try xcodebuild from the command-line (normally unneeded - for advanced
 developers).
 
  a)
- $ cd $HOME/XBMC
- $ export XBMC_HOME=`pwd`
+ $ cd $HOME/Kodi
+ $ export APP_HOME=`pwd`
  $ make xcode_depends
- $ xcodebuild -sdk macosx10.7 -project XBMC.xcodeproj -target XBMC.app ONLY_ACTIVE_ARCH=YES \
+ $ xcodebuild -sdk macosx10.7 -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
    ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
  b) building via make
- $ cd $HOME/XBMC
- $ export XBMC_HOME=`pwd`
+ $ cd $HOME/Kodi
+ $ export APP_HOME=`pwd`
  $ make
- $ ./xbmc.bin
+ $ ./Kodi.bin
 
 -----------------------------------------------------------------------------
 5. Packaging
 -----------------------------------------------------------------------------
-This section describes how to package XBMC in a disk image for
+This section describes how to package Kodi in a disk image for
 distribution.
 
-  1. build XBMC.app from XCode so that the application bundle is correctly updated.
+  1. build Kodi.app from XCode so that the application bundle is correctly updated.
 
-  2. $ cd tools/darwin/packaging/xbmc-osx
+  2. $ cd tools/darwin/packaging/osx
 
-  3. $ ./mkdmg-xbmc-osx.sh release
+  3. $ ./mkdmg-osx.sh release
 
   4. Use release or debug - you have to be sure that you build the corresponding
      version before.

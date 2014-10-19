@@ -45,19 +45,19 @@ if os.path.exists("../../lib/python"):
     ICON_PATH = "../../icons/"
 else:
     # fallback to system wide modules
-    from xbmc.bt.hid import HID
-    from xbmc.bt.bt import bt_lookup_name
-    from xbmc.xbmcclient import XBMCClient
-    from xbmc.ps3 import sixaxis
-    from xbmc.ps3_remote import process_keys as process_remote
-    from xbmc.defs import *
+    from kodi.bt.hid import HID
+    from kodi.bt.bt import bt_lookup_name
+    from kodi.xbmcclient import XBMCClient
+    from kodi.ps3 import sixaxis
+    from kodi.ps3_remote import process_keys as process_remote
+    from kodi.defs import *
     try:
-        from xbmc.ps3 import sixwatch
+        from kodi.ps3 import sixwatch
     except Exception, e:
         print "Failed to import sixwatch now disabled: " + str(e)
         sixwatch = None
     try:
-        import xbmc.zeroconf as zeroconf
+        import kodi.zeroconf as zeroconf
     except:
         zeroconf = None
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 REVISION="${1}"
 COMPRESS="gzip"
-WORKDIR="xbmc-${REVISION}"
+WORKDIR="kodi-${REVISION}"
 
 if [[ -z "${REVISION}" ]]; then echo "Usage: ${0} tag|branch|commit [gzip|xz|...]" && exit 1; fi
 if [[ -d "${WORKDIR}" ]]; then echo "${WORKDIR} dir exists, refusing to overwrite" && exit 1; fi
