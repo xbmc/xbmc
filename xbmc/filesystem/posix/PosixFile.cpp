@@ -169,7 +169,7 @@ ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_filePos >= 0)
     m_filePos += res; // if m_filePos was known - update it
   
-  return (int)res;
+  return res;
 }
 
 int64_t CPosixFile::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
