@@ -530,7 +530,7 @@ extern "C"
     if (bWrite)
       bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CUtil::ValidatePath(str));
+      bResult = pFile->Open(CUtil::ValidatePath(str), READ_TRUNCATED);
 
     if (bResult)
     {
