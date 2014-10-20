@@ -2499,7 +2499,7 @@ OUTPUT_FILES="Makefile \
     xbmc/osx/Info.plist \
     xbmc/osx/ios/XBMCIOS-Info.plist \
     xbmc/osx/atv2/XBMCATV2-Info.plist \
-    project/cmake/xbmc-config.cmake \
+    project/cmake/kodi-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
     tools/android/packaging/Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java \

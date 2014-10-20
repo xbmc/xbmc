@@ -337,7 +337,7 @@ lib/cpluff/stamp-h1
 /project/output
 
 # /project/cmake
-/project/cmake/xbmc-config.cmake
+/project/cmake/kodi-config.cmake
 /project/cmake/*.error
 /project/cmake/addons/build
 /project/cmake/addons/depends/build
