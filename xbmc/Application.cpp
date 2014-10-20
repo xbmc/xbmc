@@ -1251,7 +1251,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("XBMC_HOME", xbmcPath);
+  CEnvironment::setenv("APP_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
