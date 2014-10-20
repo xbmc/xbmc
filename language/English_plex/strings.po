@@ -1099,3 +1099,16 @@ msgstr "Playlist is empty"
 msgctxt "#52612"
 msgid "Add to Playlist"
 msgstr "Add to Playlist"
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr "MyPlex provides a number of features which requires a login"
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr "Improved server discovery, config-free remote access,"
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr "Queueing and recommending video, Sharing your media"
+

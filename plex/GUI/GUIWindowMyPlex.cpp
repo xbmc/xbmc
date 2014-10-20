@@ -189,11 +189,11 @@ void CGUIWindowMyPlex::Close(bool forceClose, int nextWindowID, bool enableSound
 {
   if (!g_plexApplication.myPlexManager->IsSignedIn())
   {
-    bool ok = CGUIDialogYesNo::ShowAndGetInput("Are you sure?",
-                                               "MyPlex provides a number of features which requires a login:",
-                                               "Improved server discovery, config-free remote access,",
-                                               "Queueing and recommending video, Sharing you media",
-                                               "No!", "Yes");
+    bool ok = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(750),
+                                               g_localizeStrings.Get(52620),
+                                               g_localizeStrings.Get(52621),
+                                               g_localizeStrings.Get(52622),
+                                               g_localizeStrings.Get(106), g_localizeStrings.Get(107));
     if (!ok)
       CApplicationMessenger::Get().ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
     else if (m_goHome)
