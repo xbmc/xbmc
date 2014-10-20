@@ -100,6 +100,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
       g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
+
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()

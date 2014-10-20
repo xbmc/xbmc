@@ -74,6 +74,8 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   }
 
   buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
+
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
 void CGUIWindowPVRSearch::OnWindowLoaded()
