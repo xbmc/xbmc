@@ -91,6 +91,10 @@ enum iosPlatform
   iPadMini2Wifi,
   iPadMini2Cellular,
   iPhone6,
+  iPadAir2Wifi,
+  iPadAir2Cellular,
+  iPadMini3Wifi,
+  iPadMini3Cellular,
   iPhone6Plus,        //from here on list devices with retina support which have scale == 3.0
 };
 
@@ -147,6 +151,11 @@ enum iosPlatform getIosPlatform()
   if ([platform isEqualToString:@"iPad4,2"])      return iPadAirCellular;
   if ([platform isEqualToString:@"iPad4,4"])      return iPadMini2Wifi;
   if ([platform isEqualToString:@"iPad4,5"])      return iPadMini2Cellular;
+  if ([platform isEqualToString:@"iPad4,7"])      return iPadMini3Wifi;
+  if ([platform isEqualToString:@"iPad4,8"])      return iPadMini3Cellular;
+  if ([platform isEqualToString:@"iPad4,9"])      return iPadMini3Cellular;
+  if ([platform isEqualToString:@"iPad5,3"])      return iPadAir2Wifi;
+  if ([platform isEqualToString:@"iPad5,4"])      return iPadAir2Cellular;
   
   if ([platform isEqualToString:@"AppleTV2,1"])   return AppleTV2;
 #endif
