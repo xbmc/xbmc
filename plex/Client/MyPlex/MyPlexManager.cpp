@@ -91,7 +91,7 @@ void CMyPlexManager::BroadcastState()
     }
     case STATE_NOT_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
-      if (m_lastError == ERROR_WRONG_CREDS && g_windowManager.GetActiveWindow() != WINDOW_SETTINGS_SYSTEM)
+      if (m_lastError == ERROR_WRONG_CREDS && g_windowManager.GetActiveWindow() != WINDOW_SETTINGS_SYSTEM && m_homeId != -1)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20117), "Please try again", 3000, false);
       break;
     case STATE_REFRESH:
