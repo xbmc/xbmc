@@ -505,7 +505,6 @@ CSurfaceContext::~CSurfaceContext()
 void CSurfaceContext::AddSurface(IDirect3DSurface9* surf)
 {
   CSingleLock lock(m_section);
-  surf->AddRef();
   m_state[surf] = 0;
   m_freeSurfaces.push_back(surf);
 }
