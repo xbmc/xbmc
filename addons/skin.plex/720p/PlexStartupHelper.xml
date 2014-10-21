@@ -50,10 +50,10 @@
 			<control type="image">
 				<description>Poster image</description>
 				<posx>0</posx>
-				<posy>35</posy>
+				<posy>40</posy>
 				<width>350</width>
-				<height>300</height>
-				<texture>logo-myplex.png</texture>
+				<height>280</height>
+				<texture>plex-chevron-alone-middle.png</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
 			</control>
 			<!-- description text -->

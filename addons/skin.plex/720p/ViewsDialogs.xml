@@ -53,56 +53,61 @@
 	</include>
 	<!-- User avatar -->
 	<include name="DialogUserAvatar">
-	<control type="group">	
-		<posy>10</posy>		
-		<posx>10</posx>
-		<control type="image">
-			<width>90</width>
-			<height>90</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="round.png" background="true">round.png</texture>
-			<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+		<control type="group">
+			<posy>10</posy>
+			<posx>10</posx>
+			<control type="image">
+				<width>90</width>
+				<height>90</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round.png" background="true">round.png</texture>
+				<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>5</posx>
+				<width>80</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round.png" background="true" fallback="default-square-small.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
 		</control>
-		<control type="image">
-			<posy>5</posy>		
-			<posx>5</posx>
-			<width>80</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="round.png" background="true" fallback="default-square-small.png">$INFO[ListItem.Art(thumb)]</texture>
-		</control>
-	</control>
 	</include>
 	<include name="DialogUserAvatarBg">
-	<control type="image">
-		<posx>0</posx>
-		<posy>1</posy>
-		<width>560</width>
-		<height>108</height>
-		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-		<texture diffuse="mask-wide-big.png" background="true" blur="50">$INFO[ListItem.Art(thumb)]</texture>
-	</control>
-	<control type="image">
-		<posx>0</posx>
-		<posy>1</posy>
-		<width>560</width>
-		<height>108</height>
-		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-		<texture background="true">mask-wide-big.png</texture>
-		<colordiffuse>black</colordiffuse>	
-		<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-	</control>
-	<control type="image">
-		<posx>0</posx>
-		<posy>38</posy>
-		<width>560</width>
-		<height>72</height>
-		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-		<texture background="true">base-rounded-half.png</texture>
-		<colordiffuse>black</colordiffuse>	
-		<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-	</control>	
+		<control type="image">
+			<posx>0</posx>
+			<posy>1</posy>
+			<width>560</width>
+			<height>108</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture diffuse="mask-wide-big.png" background="true" blur="50">$INFO[ListItem.Art(thumb)]</texture>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>1</posy>
+			<width>560</width>
+			<height>108</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture background="true">mask-wide-big.png</texture>
+			<colordiffuse>black</colordiffuse>
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>38</posy>
+			<width>560</width>
+			<height>72</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture background="true">base-rounded-half.png</texture>
+			<colordiffuse>black</colordiffuse>
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+		</control>
 	</include>
+	<variable name="UserTitle1">
+		<value condition="!IsEmpty(ListItem.Property(protected))">PROTECTED</value>
+		<value condition="!IsEmpty(ListItem.Property(admin))">ADMIN</value>
+		<value condition="!IsEmpty(ListItem.Property(managed))">MANAGED</value>
+	</variable>
 	<!-- variables to modify the position/appearance of the audio/subs selection window -->
 	<include name="AudioSubtitleStreamPickerWindowPosition">
 		<posy>-60</posy>
@@ -214,7 +219,11 @@
 						<scrolltime>200</scrolltime>
 						<texturefocus>-</texturefocus>
 						<itemlayout height="110">
+<<<<<<< HEAD
 						<include>DialogUserAvatarBg</include>
+=======
+							<include>DialogUserAvatarBg</include>
+>>>>>>> plex-skin/master
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
@@ -239,6 +248,7 @@
 								<font>Regular-16</font>
 								<textcolor>Unfocused</textcolor>
 								<textoffsetx>120</textoffsetx>
+<<<<<<< HEAD
 							</control>	
 								<control type="label">
 									<posx>0</posx>
@@ -254,6 +264,23 @@
 						</itemlayout>
 						<focusedlayout height="110">
 						<include>DialogUserAvatarBg</include>
+=======
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>120</textoffsetx>
+							</control>
+							<include>DialogUserAvatar</include>
+						</itemlayout>
+						<focusedlayout height="110">
+							<include>DialogUserAvatarBg</include>
+>>>>>>> plex-skin/master
 							<control type="label">
 								<width>560</width>
 								<height>50</height>
@@ -262,6 +289,7 @@
 								<textcolor>Focused</textcolor>
 								<textoffsetx>120</textoffsetx>
 							</control>
+<<<<<<< HEAD
 								<control type="label">
 									<posx>0</posx>
 									<posy>36</posy>
@@ -282,6 +310,28 @@
 									<textcolor>Focused</textcolor>
 									<textoffsetx>120</textoffsetx>
 								</control>
+=======
+							<control type="label">
+								<posx>0</posx>
+								<posy>36</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>email@plex.tv</label>
+								<font>Regular-16</font>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>120</textoffsetx>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>120</textoffsetx>
+							</control>
+>>>>>>> plex-skin/master
 							<include>DialogUserAvatar</include>
 							<control type="image">
 								<posx>0</posx>

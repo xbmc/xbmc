@@ -1045,7 +1045,7 @@ msgstr ""
 #empty string with id 32002
 
 msgctxt "#32003"
-msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
+msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]Plex[/B].  [CR][CR][B]Plex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]Plex[/B] account, you can create one now at [COLOR=orange]http://www.plex.tv[/COLOR] before continuing."
 msgstr ""
 
 #Other
