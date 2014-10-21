@@ -31,6 +31,7 @@ bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
   root->QueryStringAttribute("queueEmail", &queueEmail);
   root->QueryStringAttribute("queueUid", &queueUID);
   root->QueryStringAttribute("cloudsyncdevice", &cloudSyncDevice);
+  root->QueryBoolAttribute("restricted", &restricted);
 
   for (TiXmlElement* element = root->FirstChildElement(); element; element = element->NextSiblingElement())
   {

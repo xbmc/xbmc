@@ -27,7 +27,7 @@ class CMyPlexUserInfo
       ROLE_USER = 16
     };
 
-    CMyPlexUserInfo() : roles(ROLE_USER), id(-1) {}
+    CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false) {}
 
     bool SetFromXmlElement(TiXmlElement* root);
 
@@ -44,6 +44,8 @@ class CMyPlexUserInfo
     std::string subscriptionPlan;
     std::vector<std::string> features;
     CDateTime joinedAt;
+
+    bool restricted;
 
     int roles;
 
@@ -67,6 +69,7 @@ class CMyPlexUserInfo
       features = other.features;
       joinedAt = other.joinedAt;
       roles = other.roles;
+      restricted = other.restricted;
     }
 };
 

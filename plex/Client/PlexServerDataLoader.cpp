@@ -96,7 +96,7 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
       sectionList->SetProperty("serverUUID", j->m_server->GetUUID());
       sectionList->SetProperty("serverName", j->m_server->GetName());
 
-      if (j->m_server->GetOwned())
+      if (j->m_server->GetOwned() || g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted)
         m_sectionMap[j->m_server->GetUUID()] = sectionList;
       else
         m_sharedSectionsMap[j->m_server->GetUUID()] = sectionList;
