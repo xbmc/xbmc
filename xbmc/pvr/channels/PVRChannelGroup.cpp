@@ -428,34 +428,20 @@ CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
   return empty;
 }
 
-CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(unsigned int iCurrentChannel /* = -1 */) const
+CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
 {
   CSingleLock lock(m_critSection);
 
-  time_t tCurrentLastWatched(0), tMaxLastWatched(0);
-  if (iCurrentChannel > 0)
-  {
-    CPVRChannelPtr channel = GetByChannelID(iCurrentChannel);
-    if (channel.get())
-    {
-      CDateTime::GetCurrentDateTime().GetAsTime(tMaxLastWatched);
-      channel->SetLastWatched(tMaxLastWatched);
-      channel->Persist();
-    }
-  }
-
   CPVRChannelPtr returnChannel;
-  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
-    PVRChannelGroupMember groupMember = m_members.at(iChannelPtr);
-
-    if (g_PVRClients->IsConnectedClient(groupMember.channel->ClientID()) &&
-        groupMember.channel->LastWatched() > 0 &&
-        (tMaxLastWatched == 0 || groupMember.channel->LastWatched() < tMaxLastWatched) &&
-        (tCurrentLastWatched == 0 || groupMember.channel->LastWatched() > tCurrentLastWatched))
+    CPVRChannelPtr channel = (*it).channel;
+    if (channel->ChannelID() != iCurrentChannel &&
+        g_PVRClients->IsConnectedClient(channel->ClientID()) &&
+        channel->LastWatched() > 0 &&
+        (!returnChannel || channel->LastWatched() > returnChannel->LastWatched()))
     {
-      returnChannel = groupMember.channel;
-      tCurrentLastWatched = returnChannel->LastWatched();
+      returnChannel = channel;
     }
   }
 
