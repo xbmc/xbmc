@@ -192,8 +192,6 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
   [tmpStr appendString:appName];
   [tmpStr appendString:@"/system/AppleScripts"];
   NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:tmpStr];
-  CFRelease(appName);
-  CFRelease(tmpStr);
 
   // Check whether a script exists in the app bundle's AppleScripts folder
   if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
@@ -233,8 +231,6 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
   [tmpStr appendString:@"/userdata/Thumbnails/%@-%@.png"];
   NSString* pngFile = [[NSString stringWithFormat:tmpStr,
     bundleIdentifier, iconName] stringByExpandingTildeInPath];
-  CFRelease(appName);
-  CFRelease(tmpStr);
 
   // If no PNG has been created, open the ICNS file & convert
   if (![[NSFileManager defaultManager] fileExistsAtPath:pngFile])

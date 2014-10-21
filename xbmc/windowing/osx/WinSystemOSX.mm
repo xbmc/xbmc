@@ -734,7 +734,6 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   string = [NSMutableString stringWithUTF8String:CCompileInfo::GetAppName()];
   [string appendString:@" Entertainment Center" ];
   [ [ [new_context view] window] setTitle:string ];
-  [ string release ];
 
   m_glContext = new_context;
   m_lastOwnedContext = new_context;
