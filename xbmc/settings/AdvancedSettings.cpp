@@ -366,7 +366,7 @@ void CAdvancedSettings::Initialize()
   m_imageRes = 1080;
 
   m_bForceJpegImageFormat = false;
-  m_bUseMatroskaTranscodes = false;
+  m_bUseMatroskaTranscodes = true;
 
   /* END PLEX */
 
