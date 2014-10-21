@@ -219,11 +219,7 @@
 						<scrolltime>200</scrolltime>
 						<texturefocus>-</texturefocus>
 						<itemlayout height="110">
-<<<<<<< HEAD
-						<include>DialogUserAvatarBg</include>
-=======
 							<include>DialogUserAvatarBg</include>
->>>>>>> plex-skin/master
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
@@ -248,23 +244,6 @@
 								<font>Regular-16</font>
 								<textcolor>Unfocused</textcolor>
 								<textoffsetx>120</textoffsetx>
-<<<<<<< HEAD
-							</control>	
-								<control type="label">
-									<posx>0</posx>
-									<posy>62</posy>
-									<width>560</width>
-									<height>50</height>
-									<label>RESTRICTED</label>
-									<font>Bold-16</font>
-									<textcolor>Unfocused</textcolor>
-									<textoffsetx>120</textoffsetx>
-								</control>
-							<include>DialogUserAvatar</include>
-						</itemlayout>
-						<focusedlayout height="110">
-						<include>DialogUserAvatarBg</include>
-=======
 							</control>
 							<control type="label">
 								<posx>0</posx>
@@ -280,7 +259,6 @@
 						</itemlayout>
 						<focusedlayout height="110">
 							<include>DialogUserAvatarBg</include>
->>>>>>> plex-skin/master
 							<control type="label">
 								<width>560</width>
 								<height>50</height>
@@ -289,28 +267,6 @@
 								<textcolor>Focused</textcolor>
 								<textoffsetx>120</textoffsetx>
 							</control>
-<<<<<<< HEAD
-								<control type="label">
-									<posx>0</posx>
-									<posy>36</posy>
-									<width>560</width>
-									<height>50</height>
-									<label>email@plex.tv</label>
-									<font>Regular-16</font>
-									<textcolor>Unfocused</textcolor>
-									<textoffsetx>120</textoffsetx>
-								</control>
-								<control type="label">
-									<posx>0</posx>
-									<posy>62</posy>
-									<width>560</width>
-									<height>50</height>
-									<label>PIN</label>
-									<font>Bold-16</font>
-									<textcolor>Focused</textcolor>
-									<textoffsetx>120</textoffsetx>
-								</control>
-=======
 							<control type="label">
 								<posx>0</posx>
 								<posy>36</posy>
@@ -331,7 +287,6 @@
 								<textcolor>Focused</textcolor>
 								<textoffsetx>120</textoffsetx>
 							</control>
->>>>>>> plex-skin/master
 							<include>DialogUserAvatar</include>
 							<control type="image">
 								<posx>0</posx>
