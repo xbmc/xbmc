@@ -623,7 +623,7 @@ msgstr "Nummers"
 
 msgctxt "#183"
 msgid "Review"
-msgstr "Review"
+msgstr "Recensie"
 
 msgctxt "#184"
 msgid "Refresh"
