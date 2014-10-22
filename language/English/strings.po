@@ -12377,7 +12377,10 @@ msgctxt "#24025"
 msgid "Context Items"
 msgstr ""
 
-#empty string with id 24026
+#: xbmc/addons/Addon.cpp
+msgctxt "#24026"
+msgid "Languages"
+msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24027"
@@ -12896,7 +12899,12 @@ msgctxt "#24131"
 msgid "Enable to parse for CC in video stream. Puts slightly more load on the CPU"
 msgstr ""
 
-#empty strings from id 24132 to 24998
+#: xbmc/addons/LanguageResource.cpp
+msgctxt "#24132"
+msgid "Would you like to switch to this language?"
+msgstr ""
+
+#empty strings from id 24133 to 24998
 
 msgctxt "#24999"
 msgid "Hide incompatible"

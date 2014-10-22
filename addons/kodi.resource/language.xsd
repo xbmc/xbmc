@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="charsets">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="gui">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="unicodefont" type="xs:boolean"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="subtitle" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="sorttokens" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="token" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="separators" type="xs:string"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="dvd" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="menu" type="xs:string" minOccurs="0"/>
+              <xs:element name="audio" type="xs:string" minOccurs="0"/>
+              <xs:element name="subtitle" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="point" type="xs:string" use="required"/>
+      <xs:attribute name="id" type="simpleIdentifier"/>
+      <xs:attribute name="name" type="xs:string"/>
+      <xs:attribute name="locale" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
+      <xs:attribute name="region" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="simpleIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^.]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
