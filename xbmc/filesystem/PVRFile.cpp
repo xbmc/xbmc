@@ -106,7 +106,15 @@ ssize_t CPVRFile::Read(void* buffer, size_t size)
   if (size > SSIZE_MAX)
     size = SSIZE_MAX;
 
-  return g_PVRManager.IsStarted() ? g_PVRClients->ReadStream((BYTE*)buffer, size) : -1;
+  if (!g_PVRManager.IsStarted())
+    return -1;
+
+  // TODO: Fix overflow in case of sizeof(int) != sizeof(size_t)
+  const int ret = g_PVRClients->ReadStream((BYTE*)buffer, size);
+  if (ret < 0)
+    return -1;
+
+  return ret;
 }
 
 int64_t CPVRFile::GetLength()
