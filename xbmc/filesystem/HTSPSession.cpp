@@ -241,7 +241,7 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
   m = htsmsg_create_map();
   htsmsg_add_str(m, "method", "hello");
   std::string fullAppName = CSysInfo::GetAppName();
-  fullAppName += " Media Center";
+  fullAppName += " Entertainment Center";
   htsmsg_add_str(m, "clientname", fullAppName.c_str());
   htsmsg_add_u32(m, "htspversion", 1);
 
