@@ -1108,6 +1108,10 @@ msgctxt "#52614"
 msgid "Enter playlist name"
 msgstr "Enter playlist name"
 
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr "Playlist could not be created."
+
 msgctxt "#52620"
 msgid "MyPlex provides a number of features which requires a login"
 msgstr "MyPlex provides a number of features which requires a login"

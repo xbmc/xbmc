@@ -344,11 +344,10 @@ bool CPlexMediaServerClient::createPlayList(CPlexServerPtr server, CStdString na
   url.SetOption("smart", smart ? "1" : "0");
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
-  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "POST", msg);
-
+  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "POST", msg, 52615);
   if (block)
   {
-    return g_plexApplication.busy.blockWaitingForJob(job, NULL);
+    return g_plexApplication.busy.blockWaitingForJob(job, this);
   }
   else
   {

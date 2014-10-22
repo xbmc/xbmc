@@ -324,10 +324,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
           {
             CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
 
-            if (g_plexApplication.mediaServerClient->createPlayList(server, playlistName, item, false, true))
-            {
-
-            }
+            g_plexApplication.mediaServerClient->createPlayList(server, playlistName, item, false, true);
           }
           return true;
         }
