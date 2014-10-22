@@ -129,7 +129,8 @@ TiXmlElement *CMyPlexManager::GetXml(const CURL &url, bool POST)
   {
     CLog::Log(LOGERROR, "CMyPlexManager::GetXml failed to fetch %s : %ld", url.Get().c_str(), file.GetLastHTTPResponseCode());
 
-    if (file.GetLastHTTPResponseCode() == 401)
+    // we need to check for 401 or 422, both can mean that the token is wrong
+    if (file.GetLastHTTPResponseCode() == 401 || file.GetLastHTTPResponseCode() == 422)
     {
       m_lastError = ERROR_WRONG_CREDS;
       m_state = STATE_NOT_LOGGEDIN;
