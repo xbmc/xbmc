@@ -278,7 +278,7 @@ void CPlexMediaServerClient::deleteItem(const CFileItemPtr &item)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::deleteItemFromPath(const CStdString path)
 {
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_UPDATE, 0, 0, 0, 0);
   AddJob(new CPlexMediaServerClientJob(path, "DELETE", msg, 16205));
 }
 
@@ -294,7 +294,7 @@ void CPlexMediaServerClient::movePlayListItem(CFileItemPtr item, CFileItemPtr af
   else
     url.SetOption("after", "0");
 
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_UPDATE, 0, 0, 0, 0);
   AddJob(new CPlexMediaServerClientJob(url.Get(), "PUT", msg, 16205));
 }
 
@@ -306,7 +306,7 @@ bool CPlexMediaServerClient::addItemToPlayList(CPlexServerPtr server, CFileItemP
   CStdString uri = CPlexPlayQueueManager::getURIFromItem(*item);
   url.SetOption("uri", uri);
   
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_UPDATE, 0, 0, 0, 0);
   CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "PUT", msg);
   
   if (block)
