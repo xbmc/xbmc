@@ -67,7 +67,7 @@ XBMCHelper::XBMCHelper()
   , m_port(0)
   , m_errorStarting(false)
 {
-  // Compute the APP_HOME path.
+  // Compute the KODI_HOME path.
   CStdString homePath;
   CUtil::GetHomePath(homePath);
   m_homepath = homePath;
