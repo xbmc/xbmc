@@ -458,6 +458,7 @@ lib/cpluff/stamp-h1
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
 /tools/android/packaging/xbmc/strings.xml
+/tools/android/packaging/xbmc/res/values
 
 #/tools/depends
 /tools/depends/native/JsonSchemaBuilder/bin/
