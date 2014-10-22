@@ -16,6 +16,9 @@
 #include "GUI/GUIDialogPlayListSelection.h"
 #include "GUI/GUIDialogPlexError.h"
 #include "Client/PlexServer.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "LocalizeStrings.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
@@ -90,6 +93,11 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_PLEX_PL_ADDTO);
+  action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  m_ActionSettings.push_back(*action);
+
+  action = new ACTION_SETTING(ACTION_PLEX_PL_CREATE);
   action->WindowSettings[WINDOW_HOME].contextMenuVisisble = true;
   action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
   m_ActionSettings.push_back(*action);
@@ -306,6 +314,25 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
         }
         break;
       }
+
+      case ACTION_PLEX_PL_CREATE:
+      {
+        if (IsItemPlaylistCompatible(item))
+        {
+          CStdString playlistName;
+          if (CGUIKeyboardFactory::ShowAndGetInput(playlistName, g_localizeStrings.Get(52614), false))
+          {
+            CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+
+            if (g_plexApplication.mediaServerClient->createPlayList(server, playlistName, item, false, true))
+            {
+
+            }
+          }
+          return true;
+          break;
+        }
+      }
     }
   }
 
@@ -326,6 +353,8 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
       PlayAll(container, true);
       return true;
       break;
+
+
       
   }
 
@@ -458,6 +487,15 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
         buttons.Add(actionID, 52612);
       }
       break;
+    }
+
+    case ACTION_PLEX_PL_CREATE:
+    {
+      if (IsItemPlaylistCompatible(item))
+      {
+        buttons.Add(actionID, 52613);
+        break;
+      }
     }
   }
 }
