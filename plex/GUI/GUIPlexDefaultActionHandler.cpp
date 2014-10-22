@@ -330,8 +330,8 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
             }
           }
           return true;
-          break;
         }
+        break;
       }
     }
   }
@@ -494,8 +494,8 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       if (IsItemPlaylistCompatible(item))
       {
         buttons.Add(actionID, 52613);
-        break;
       }
+      break;
     }
   }
 }
