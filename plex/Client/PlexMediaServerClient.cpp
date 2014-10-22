@@ -319,3 +319,40 @@ bool CPlexMediaServerClient::addItemToPlayList(CPlexServerPtr server, CFileItemP
     return true;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexMediaServerClient::createPlayList(CPlexServerPtr server, CStdString name, CFileItemPtr item, bool smart, bool block)
+{
+  CURL url = server->BuildPlexURL("/playlists");
+
+  url.SetOption("title", name);
+
+  ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
+  if (type == PLEX_MEDIA_TYPE_MUSIC)
+    url.SetOption("type", "audio");
+  else if (type == PLEX_MEDIA_TYPE_VIDEO)
+    url.SetOption("type", "video");
+  else
+  {
+    CLog::Log(LOGERROR, "CPlexMediaServerClient : type %d is not supported for creating playlists", type);
+    return false;
+  }
+
+  CStdString uri = CPlexPlayQueueManager::getURIFromItem(*item);
+  url.SetOption("uri", uri);
+
+  url.SetOption("smart", smart ? "1" : "0");
+
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "POST", msg);
+
+  if (block)
+  {
+    return g_plexApplication.busy.blockWaitingForJob(job, NULL);
+  }
+  else
+  {
+    AddJob(job);
+    return true;
+  }
+}
