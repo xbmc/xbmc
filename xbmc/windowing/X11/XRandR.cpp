@@ -31,6 +31,7 @@
 #include "../xbmc/utils/log.h"
 #include "threads/SystemClock.h"
 #include "CompileInfo.h"
+#include "utils/SystemInfo.h"
 
 #if defined(TARGET_FREEBSD)
 #include <sys/types.h>
@@ -55,7 +56,7 @@ bool CXRandR::Query(bool force, bool ignoreoff)
 
   m_bInit = true;
 
-  if (getenv("APP_BIN_HOME") == NULL)
+  if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()) == NULL)
     return false;
 
   m_outputs.clear();
@@ -75,9 +76,9 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   std::string cmd;
   std::string appname = CCompileInfo::GetAppName();
   StringUtils::ToLower(appname);
-  if (getenv("APP_BIN_HOME"))
+  if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()))
   {
-    cmd  = getenv("APP_BIN_HOME");
+    cmd  = getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str());
     cmd += "/" + appname + "-xrandr";
     cmd = StringUtils::Format("%s -q --screen %d", cmd.c_str(), screennum);
   }
@@ -163,9 +164,9 @@ bool CXRandR::TurnOffOutput(CStdString name)
   std::string appname = CCompileInfo::GetAppName();
   StringUtils::ToLower(appname);
 
-  if (getenv("APP_BIN_HOME"))
+  if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()))
   {
-    cmd  = getenv("APP_BIN_HOME");
+    cmd  = getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str());
     cmd += "/" + appname + "-xrandr";
     cmd = StringUtils::Format("%s --screen %d --output %s --off", cmd.c_str(), output->screen, name.c_str());
   }
@@ -328,8 +329,10 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   StringUtils::ToLower(appname);
   char cmd[255];
 
-  if (getenv("APP_BIN_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --screen %d --output %s --mode %s", getenv("APP_BIN_HOME"),appname.c_str(), outputFound.screen, outputFound.name.c_str(), modeFound.id.c_str());
+  if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()))
+    snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --screen %d --output %s --mode %s", 
+               getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()),appname.c_str(),
+               outputFound.screen, outputFound.name.c_str(), modeFound.id.c_str());
   else
     return false;
   CLog::Log(LOGINFO, "XRANDR: %s", cmd);
@@ -419,9 +422,9 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
     std::string appname = CCompileInfo::GetAppName();
     StringUtils::ToLower(appname);
 
-    if (getenv("APP_BIN_HOME"))
+    if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()))
     {
-      snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("APP_BIN_HOME"),
+      snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()),
                appname.c_str(), name.c_str(), strModeLine.c_str());
       if (system(cmd) != 0)
         CLog::Log(LOGERROR, "Unable to create modeline \"%s\"", name.c_str());
@@ -429,9 +432,9 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 
     for (unsigned int i = 0; i < m_outputs.size(); i++)
     {
-      if (getenv("APP_BIN_HOME"))
+      if (getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()))
       {
-        snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv("APP_BIN_HOME"),
+        snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv(std::string(CSysInfo::GetAppNameUpperCase()).append("_BIN_HOME").c_str()),
                  appname.c_str(), m_outputs[i].name.c_str(), name.c_str());
         if (system(cmd) != 0)
           CLog::Log(LOGERROR, "Unable to add modeline \"%s\"", name.c_str());

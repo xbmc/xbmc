@@ -587,7 +587,7 @@ void CApplication::Preflight()
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
-  setenv("APP_HOME", install_path.c_str(), 0);
+  setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
@@ -1078,14 +1078,14 @@ bool CApplication::InitDirectoriesLinux()
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
   StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "APP_HOME";
-  const char* envAppBinHome = "APP_BIN_HOME";
-  const char* envAppTemp = "APP_TEMP";
+  const std::string envAppHome = CSysInfo::GetAppNameUpperCase() + "_HOME";
+  const std::string envAppBinHome = CSysInfo::GetAppNameUpperCase() + "_BIN_HOME";
+  const std::string envAppTemp = CSysInfo::GetAppNameUpperCase() + "_TEMP";
 
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
-  if (getenv(envAppHome))
-    appPath = getenv(envAppHome);
+  if (getenv(envAppHome.c_str()))
+    appPath = getenv(envAppHome.c_str());
   else
   {
     appPath = appBinPath;
@@ -1104,8 +1104,8 @@ bool CApplication::InitDirectoriesLinux()
   }
 
   /* Set some environment variables */
-  setenv(envAppBinHome, appBinPath.c_str(), 0);
-  setenv(envAppHome, appPath.c_str(), 0);
+  setenv(envAppBinHome.c_str(), appBinPath.c_str(), 0);
+  setenv(envAppHome.c_str(), appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
@@ -1117,8 +1117,8 @@ bool CApplication::InitDirectoriesLinux()
 
     CStdString strTempPath = userHome;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
+    if (getenv(envAppTemp.c_str()))
+      strTempPath = getenv(envAppTemp.c_str());
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1171,7 +1171,7 @@ bool CApplication::InitDirectoriesOSX()
 
   std::string appPath;
   CUtil::GetHomePath(appPath);
-  setenv("APP_HOME", appPath.c_str(), 0);
+  setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
@@ -1251,7 +1251,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("APP_HOME", xbmcPath);
+  CEnvironment::setenv(CSysInfo::GetAppNameUpperCase() + "_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
@@ -1262,7 +1262,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  CEnvironment::setenv("APP_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
+  CEnvironment::setenv(CSysInfo::GetAppNameUpperCase() + "_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
 
   CreateUserDirs();
 

@@ -118,6 +118,7 @@ AC_DEFUN([XB_PUSH_FLAGS], [
 # version can be overridden by setting the following as ENV vars when running configure
 APP_NAME=${APP_NAME-$(${AWK} '/APP_NAME/ {print $2}' version.txt)}
 APP_NAME_LC=$(echo $APP_NAME | ${AWK} '{print tolower($0)}')
+APP_NAME_UC=$(echo $APP_NAME | tr '[:lower:]' '[:upper:]')
 APP_VERSION_MAJOR=${APP_VERSION_MAJOR-$(${AWK} '/VERSION_MAJOR/ {print $2}' version.txt)}
 APP_VERSION_MINOR=${APP_VERSION_MINOR-$(${AWK} '/VERSION_MINOR/ {print $2}' version.txt)}
 APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.txt)}
@@ -129,6 +130,7 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG}"
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)
+  AC_SUBST(APP_NAME_UC)
   AC_SUBST(APP_VERSION_MAJOR)
   AC_SUBST(APP_VERSION_MINOR)
   AC_SUBST(APP_VERSION_TAG)

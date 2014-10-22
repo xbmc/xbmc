@@ -3,16 +3,16 @@
 die("No HOME set, cannot install defaults.\n")
     if !$ENV{'HOME'};
 
-die("No APP_HOME set, cannot install defaults.\n")
-    if !$ENV{'APP_HOME'};
+die("No KODI_HOME set, cannot install defaults.\n")
+    if !$ENV{'KODI_HOME'};
 
 sub get_home {
     return $ENV{'HOME'} if defined $ENV{'HOME'};
 }
 
 sub get_extras {
-    # APP_HOME is assumed to be always setup
-    return $ENV{'APP_HOME'}."/extras/" if get_os() eq "osx";
+    # KODI_HOME is assumed to be always setup
+    return $ENV{'KODI_HOME'}."/extras/" if get_os() eq "osx";
     return;
 }
 

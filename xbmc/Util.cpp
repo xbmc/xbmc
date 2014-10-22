@@ -97,6 +97,7 @@
 #endif
 
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#include "utils/SystemInfo.h"
 
 using namespace std;
 
@@ -405,7 +406,10 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
 {
-  strPath = CEnvironment::getenv(strTarget);
+  if (strTarget.empty())
+    strPath = CEnvironment::getenv(CSysInfo::GetAppNameUpperCase() + "_HOME");
+  else
+    strPath = CEnvironment::getenv(strTarget);
 
 #ifdef TARGET_WINDOWS
   if (strPath.find("..") != std::string::npos)
@@ -471,13 +475,13 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
   }
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  /* Change strPath accordingly when target is APP_HOME and when INSTALL_PATH
+  /* Change strPath accordingly when target is KODI_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
   std::string installPath = INSTALL_PATH;
   std::string binInstallPath = BIN_INSTALL_PATH;
 
-  if (!strTarget.compare("APP_HOME") && installPath.compare(binInstallPath))
+  if (strTarget.empty() && installPath.compare(binInstallPath))
   {
     int pos = strPath.length() - binInstallPath.length();
     CStdString tmp = strPath;
