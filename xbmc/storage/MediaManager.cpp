@@ -222,7 +222,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     
 #ifdef HAS_ZEROCONF
     share.strPath = "zeroconf://";
-    share.strName = "Zeroconf Browser";
+    share.strName = g_localizeStrings.Get(20262);
     locations.push_back(share);
 #endif
   }
