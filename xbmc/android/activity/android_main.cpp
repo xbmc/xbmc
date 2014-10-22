@@ -26,6 +26,7 @@
 #include "android/jni/SurfaceTexture.h"
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"
+#include "utils/SystemInfo.h"
 
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {
@@ -84,11 +85,9 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   if (vm->GetEnv(reinterpret_cast<void**>(&env), version) != JNI_OK)
     return -1;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string mainClass = "org/xbmc/" + appName + "/Main";
-  std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
-  std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
+  std::string mainClass = "org/xbmc/" + CSysInfo::GetAppNameLowerCase() + "/Main";
+  std::string bcReceiver = "org/xbmc/" + CSysInfo::GetAppNameLowerCase() + "/XBMCBroadcastReceiver";
+  std::string frameListener = "org/xbmc/" + CSysInfo::GetAppNameLowerCase() + "/XBMCOnFrameAvailableListener";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)

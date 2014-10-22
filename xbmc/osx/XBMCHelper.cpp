@@ -27,7 +27,6 @@
 #include "XBMCHelper.h"
 #include "PlatformDefs.h"
 #include "Util.h"
-#include "CompileInfo.h"
 
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -88,7 +87,7 @@ XBMCHelper::XBMCHelper()
 
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
-  m_configFile += "/Library/Application Support/" + std::string(CCompileInfo::GetAppName()) + "/XBMCHelper.conf";
+  m_configFile += "/Library/Application Support/" + std::string(CSysInfo::GetAppName()) + "/XBMCHelper.conf";
 }
 
 /////////////////////////////////////////////////////////////////////////////

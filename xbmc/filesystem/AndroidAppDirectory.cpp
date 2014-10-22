@@ -30,7 +30,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
-#include "CompileInfo.h"
+#include "utils/SystemInfo.h"
 
 using namespace XFILE;
 using namespace std;
@@ -48,9 +48,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string dirname = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(dirname);
   CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str()); 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string className = "org.xbmc." + appName;
+  std::string className = "org.xbmc." + CSysInfo::GetAppNameLowerCase();
 
   if (dirname == "apps")
   {

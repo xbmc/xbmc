@@ -23,8 +23,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StdString.h"
-#include "utils/StringUtils.h"
-#include "CompileInfo.h"
+#include "utils/SystemInfo.h"
 
 #include "test/TestUtils.h"
 
@@ -48,9 +47,7 @@ TEST_F(Testlog, Log)
   XFILE::CFile file;
   CRegExp regex;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
+  logfile = CSpecialProtocol::TranslatePath("special://temp/") + CSysInfo::GetAppNameLowerCase() + ".log";
   EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
@@ -104,9 +101,7 @@ TEST_F(Testlog, MemDump)
   CRegExp regex;
   char refdata[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
+  logfile = CSpecialProtocol::TranslatePath("special://temp/") + CSysInfo::GetAppNameLowerCase() + ".log";
   EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
@@ -138,9 +133,7 @@ TEST_F(Testlog, SetLogLevel)
 {
   CStdString logfile;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
+  logfile = CSpecialProtocol::TranslatePath("special://temp/") + CSysInfo::GetAppNameLowerCase() + ".log";
   EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 

@@ -20,7 +20,6 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
-#include "CompileInfo.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -454,7 +453,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
       #else
         // Assume local path inside application bundle.
         strcat(given_path, "../Resources/");
-        strcat(given_path, CCompileInfo::GetAppName());
+        strcat(given_path, CSysInfo::GetAppName().c_str());
         strcat(given_path, "/");
       #endif
 

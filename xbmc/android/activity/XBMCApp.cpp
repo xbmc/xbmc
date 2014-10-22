@@ -253,9 +253,7 @@ bool CXBMCApp::getWakeLock()
   if (m_wakeLock)
     return true;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string className = "org.xbmc." + appName;
+  std::string className = "org.xbmc." + CSysInfo::GetAppNameLowerCase();
   m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(className.c_str()));
 
   return true;
@@ -612,9 +610,7 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string className = "org.xbmc." + appName;
+  std::string className = "org.xbmc." + CSysInfo::GetAppNameLowerCase();
 
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
   if (xbmcHome.empty())
