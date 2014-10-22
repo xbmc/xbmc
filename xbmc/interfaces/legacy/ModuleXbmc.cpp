@@ -178,7 +178,7 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      std::string lang = CSettings::Get().GetString("locale.language");
+      std::string lang = g_langInfo.GetEnglishLanguageName();
 
       switch (format)
       {

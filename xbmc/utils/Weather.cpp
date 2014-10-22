@@ -227,10 +227,14 @@ void CWeatherJob::FormatTemperature(std::string &text, int temp)
 void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
+  std::string language = CORE_LANGUAGE_DEFAULT;
+  CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::Get().GetSetting("locale.language"));
+  if (languageSetting != NULL)
+    language = languageSetting->GetDefault();
 
   // Try the strings PO file first
   CPODocument PODoc;
-  if (PODoc.LoadFile("special://xbmc/language/English/strings.po"))
+  if (PODoc.LoadFile(URIUtils::AddFileToFolder(CLangInfo::GetLanguagePath(language), "strings.po")))
   {
     int counter = 0;
 
@@ -265,7 +269,7 @@ void CWeatherJob::LoadLocalizedToken()
             "fallback to strings.xml file");
 
   // We load the tokens from the strings.xml file
-  std::string strLanguagePath = "special://xbmc/language/English/strings.xml";
+  std::string strLanguagePath = URIUtils::AddFileToFolder(CLangInfo::GetLanguagePath(language), "strings.xml");
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strLanguagePath) || !xmlDoc.RootElement())

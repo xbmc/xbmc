@@ -116,7 +116,7 @@
       <group id="1">
         <setting id="locale.language" type="addon" label="248" help="36114">
           <level>0</level>
-          <default>English</default>
+          <default>resource.language.en_gb</default>
           <constraints>
             <addontype>kodi.resource.language</addontype>
           </constraints>
@@ -848,7 +848,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>languages</options>
+            <options>languagenames</options>
             <delimiter>,</delimiter>
             <minimumItems>1</minimumItems>
             <maximumItems>3</maximumItems>
