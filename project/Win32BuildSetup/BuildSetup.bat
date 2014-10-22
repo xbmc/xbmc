@@ -205,8 +205,7 @@ set WORKSPACE=%CD%\..\..
   copy ..\..\LICENSE.GPL BUILD_WIN32\application > NUL
   copy ..\..\known_issues.txt BUILD_WIN32\application > NUL
   xcopy dependencies\*.* BUILD_WIN32\application /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  
-  xcopy ..\..\language BUILD_WIN32\application\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+
   xcopy ..\..\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
