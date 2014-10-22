@@ -165,10 +165,12 @@ extern "C" void Render()
     gettimeofday(&now, NULL);
     double current = (double)now.tv_sec + ((double)now.tv_usec / (double)CLOCKS_PER_SEC);
 
+    if (m_nextFrameTime == 0.0) m_nextFrameTime = current;
+
     // We're supposed to show m_decoder->getFramesPerSecond() frames in one second.
     if (current >= m_nextFrameTime)
     {	// We don't care to adjust for the exact timing
-	m_nextFrameTime = current + m_secondsPerFrame - (current - m_nextFrameTime);
+	m_nextFrameTime += m_secondsPerFrame;
 
 	while (true)
         {
