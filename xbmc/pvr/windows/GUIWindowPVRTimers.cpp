@@ -81,6 +81,8 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
   }
+
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
 bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
