@@ -46,38 +46,93 @@
 
 
 
-<language locale="nz">
-  <charsets>
-    <gui>CP1252</gui>
-    <subtitle>CP1252</subtitle>
-  </charsets>
-
-  <dvd>
-    <menu>en</menu>
-    <audio>en</audio>
-    <subtitle>en</subtitle>
-  </dvd>
-
+<language locale="en">
   <regions>
-    <region name="New Zealand (12h)" locale="NZ">
+    <region name="USA (12h)" locale="US">
+      <dateshort>MM/DD/YYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>F</tempunit>
+      <speedunit>mph</speedunit>
+    </region>
+
+    <region name="USA (24h)" locale="US">
+      <dateshort>MM/DD/YYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>F</tempunit>
+      <speedunit>mph</speedunit>
+    </region>
+
+    <region name="UK (12h)" locale="GB">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>mph</speedunit>
+      <timezone>GMT</timezone>
+    </region>
+
+    <region name="UK (24h)" locale="GB">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>mph</speedunit>
+      <timezone>GMT</timezone>
+    </region>
+
+    <region name="Canada" locale="CA">
+      <dateshort>MM/DD/YYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+
+    <region name="Australia (12h)" locale="AU">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>UTC+12</timezone>
+      <timezone>GMT</timezone>
     </region>
-    <region name="New Zealand (24h)" locale="NZ">
+
+    <region name="Australia (24h)" locale="AU">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>UTC+12</timezone>
+      <timezone>GMT</timezone>
+    </region>
+    
+    <region name="Central Europe" locale="DE">
+      <dateshort>DD-MM-YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CET</timezone>
+    </region>
+
+    <region name="India (12h)" locale="IN">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>GMT</timezone>
+    </region>
+
+    <region name="India (24h)" locale="IN">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>IST</timezone>
     </region>
   </regions>
-
-  <sorttokens>
-    <token>The</token>
-  </sorttokens>
 </language>
