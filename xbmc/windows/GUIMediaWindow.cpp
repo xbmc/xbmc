@@ -1928,6 +1928,12 @@ bool CGUIMediaWindow::IsFiltered()
          (m_canFilterAdvanced && !m_filter.IsEmpty());
 }
 
+bool CGUIMediaWindow::IsSameStartFolder(const std::string &dir)
+{
+  const std::string startFolder = GetStartFolder(dir);
+  return StringUtils::StartsWith(m_vecItems->GetPath(), startFolder);
+}
+
 bool CGUIMediaWindow::Filter(bool advanced /* = true */)
 {
   // basic filtering
