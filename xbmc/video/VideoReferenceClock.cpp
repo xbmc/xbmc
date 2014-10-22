@@ -35,6 +35,8 @@
 #endif
 #if defined(HAVE_X11)
 #include "video/videosync/VideoSyncDRM.h"
+#elif defined(TARGET_RASPBERRY_PI)
+#include "video/videosync/VideoSyncPi.h"
 #endif
 #if defined(TARGET_WINDOWS)
 #include "video/videosync/VideoSyncD3D.h"
@@ -107,6 +109,8 @@ void CVideoReferenceClock::Process()
     m_pVideoSync = new CVideoSyncD3D();
 #elif defined(TARGET_DARWIN)
     m_pVideoSync = new CVideoSyncCocoa();
+#elif defined(TARGET_RASPBERRY_PI)
+    m_pVideoSync = new CVideoSyncPi();
 #endif
 
     if (m_pVideoSync)
