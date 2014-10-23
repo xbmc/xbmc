@@ -53,6 +53,9 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
     if (m_item->HasProperty("url"))
       options.AddOption("url", m_item->GetProperty("url").asString());
 
+    if (m_item->HasProperty("playQueueVersion"))
+      options.AddOption("playQueueVersion", m_item->GetProperty("playQueueVersion").asString());
+
     if (CPlexTimelineManager::GetItemDuration(m_item) > 0)
     {
       durationStr = boost::lexical_cast<std::string>(CPlexTimelineManager::GetItemDuration(m_item));

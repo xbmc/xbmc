@@ -272,6 +272,8 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
     {
       if (m_list->Get(i)->HasProperty("extraType"))
         m_list->Get(i)->SetProperty("avoidPrompts", true);
+
+      m_list->Get(i)->SetProperty("playQueueVersion", m_list->GetProperty("playQueueVersion").asString());
     }
 
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);

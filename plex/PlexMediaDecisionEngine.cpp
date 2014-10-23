@@ -125,6 +125,7 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
     resolvedItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
     resolvedItem.SetProperty("avoidPrompts", item.GetProperty("avoidPrompts"));
     resolvedItem.SetProperty("playQueueID", item.GetProperty("playQueueID"));
+    resolvedItem.SetProperty("playQueueVersion", item.GetProperty("playQueueVersion"));
     resolvedItem.GetMusicInfoTag()->SetDatabaseId(PlexUtils::GetItemListID(item), "video");
 
     if (item.HasProperty("playQueueItemID") && !resolvedItem.HasProperty("playQueueItemID"))
