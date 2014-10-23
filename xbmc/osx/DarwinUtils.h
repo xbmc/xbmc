@@ -34,7 +34,7 @@ public:
   static bool        IsAppleTV2(void);
   static bool        IsMavericks(void);
   static bool        IsSnowLeopard(void);
-  static bool        DeviceHasRetina(void);
+  static bool        DeviceHasRetina(double &scale);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
   static float       GetIOSVersion(void);
