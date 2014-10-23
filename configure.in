@@ -589,6 +589,7 @@ READELF="${READELF:-readelf}"
 NM="${NM:-nm}"
 
 # host detection and setup
+unset target_platform
 case $host in
   i*86*-linux-android*)
      target_platform=target_android
@@ -793,7 +794,6 @@ if echo "$ARCH" | grep -q "freebsd" ; then
 fi
 if test "$host_vendor" = "apple" ; then
   # standard application paths
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
   if test "$use_arch" != "arm"; then
     LIBS="$LIBS -framework ApplicationServices"
     LIBS="$LIBS -framework AudioUnit"
@@ -916,9 +916,6 @@ AC_CHECK_TYPES([std::u16string, std::u32string], [], [], [[#include <string>]])
 AC_CHECK_TYPES([char16_t, char32_t])
 AC_CHECK_SIZEOF([wchar_t])
 AC_LANG_POP([C++])
-
-# Add top source directory for all builds so we can use config.h
-INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
 
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
