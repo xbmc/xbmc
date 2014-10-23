@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #this is the list of binaries we have to sign for beeing able to run un-jailbroken
-LIST_BINARY_EXTENSIONS="dylib so 0 vis"
+LIST_BINARY_EXTENSIONS="dylib so 0 vis pvr"
 
 export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
 
@@ -25,7 +25,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
     echo Doing a full bundle sign using genuine identity "${CODE_SIGN_IDENTITY}"
     for binext in $LIST_BINARY_EXTENSIONS
     do
-      codesign -fvvv -s "${CODE_SIGN_IDENTITY}" -i org.xbmc.kodi-ios `find ${CODESIGNING_FOLDER_PATH} -name "*.$binext"` ${CODESIGNING_FOLDER_PATH}
+      codesign -fvvv -s "${CODE_SIGN_IDENTITY}" -i org.xbmc.kodi-ios `find ${CODESIGNING_FOLDER_PATH} -name "*.$binext" -type f` ${CODESIGNING_FOLDER_PATH}
     done
     echo In case your app crashes with SIG_SIGN check the variable LIST_BINARY_EXTENSIONS in tools/darwin/Support/Codesign.command
   fi
