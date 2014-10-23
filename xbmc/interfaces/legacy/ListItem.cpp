@@ -250,7 +250,7 @@ namespace XBMCAddon
       if (item->HasVideoInfoTag())
       {
         std::ostringstream oss;
-        oss << item->GetVideoInfoTag()->GetDuration() / 60;
+        oss << item->GetVideoInfoTag()->GetDuration();
         return oss.str();
       }
       return "0";
@@ -354,7 +354,7 @@ namespace XBMCAddon
           else if (key == "sorttitle")
             item->GetVideoInfoTag()->m_strSortTitle = value;
           else if (key == "duration")
-            item->GetVideoInfoTag()->m_duration = CVideoInfoTag::GetDurationFromMinuteString(value);
+            item->GetVideoInfoTag()->m_duration = strtol(value.c_str(), NULL, 10);
           else if (key == "studio")
             item->GetVideoInfoTag()->m_studio = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);            
           else if (key == "tagline")
