@@ -1,4 +1,4 @@
-AC_DEFUN([XBMC_SETUP_ARCH_DEFINES],[
+AC_DEFUN([KODI_SETUP_ARCH_PROFILE],[
 
 # host detection and setup
 case $host in
