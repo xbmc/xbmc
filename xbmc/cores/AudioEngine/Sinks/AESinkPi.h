@@ -57,8 +57,13 @@ private:
   bool                 m_Initialized;
   uint32_t             m_submitted;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
+  COMXCoreComponent   *m_omx_output;
+  COMXCoreComponent    m_omx_splitter;
   COMXCoreComponent    m_omx_render;
+  COMXCoreComponent    m_omx_render_slave;
   bool                 m_passthrough;
+  COMXCoreTunel        m_omx_tunnel_splitter;
+  COMXCoreTunel        m_omx_tunnel_splitter_slave;
 };
 
 #endif
