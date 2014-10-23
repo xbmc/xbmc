@@ -20,9 +20,8 @@
 
 //#define DEBUG_VERBOSE 1
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-#include "config.h"
-#elif defined(TARGET_WINDOWS)
+#include "PlatformConfig.h"
+#if defined(TARGET_WINDOWS)
 #include "system.h"
 #endif
 

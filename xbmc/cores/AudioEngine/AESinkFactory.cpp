@@ -20,6 +20,7 @@
 
 #include "AESinkFactory.h"
 #include "Interfaces/AESink.h"
+#include "PlatformConfig.h"
 #if defined(TARGET_WINDOWS)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"

@@ -20,6 +20,7 @@
 */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_X11_WIN_EVENTS
 

@@ -19,6 +19,7 @@
  */
 
 #include "ZeroconfBrowserAvahi.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AVAHI
 

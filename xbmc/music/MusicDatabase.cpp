@@ -21,6 +21,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "MusicDatabase.h"
 #include "network/cddb.h"
 #include "filesystem/DirectoryCache.h"

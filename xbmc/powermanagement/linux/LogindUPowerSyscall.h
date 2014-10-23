@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 
 #include "powermanagement/IPowerSyscall.h"

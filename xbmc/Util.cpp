@@ -20,6 +20,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "CompileInfo.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
@@ -51,6 +52,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif

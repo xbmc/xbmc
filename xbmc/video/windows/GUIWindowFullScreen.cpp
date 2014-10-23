@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"

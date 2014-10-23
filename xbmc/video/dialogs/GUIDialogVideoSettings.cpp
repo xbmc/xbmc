@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIDialogVideoSettings.h"
 #include "GUIPassword.h"
 #include "addons/Skin.h"

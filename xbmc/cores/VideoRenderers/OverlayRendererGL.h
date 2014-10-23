@@ -22,6 +22,7 @@
 #pragma once
 #include "system_gl.h"
 #include "OverlayRenderer.h"
+#include "PlatformConfig.h"
 
 class CDVDOverlay;
 class CDVDOverlayImage;

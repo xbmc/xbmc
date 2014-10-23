@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "PowerManager.h"
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"

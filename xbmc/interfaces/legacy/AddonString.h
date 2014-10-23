@@ -21,9 +21,7 @@
 #pragma once
 
 #include <string>
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 namespace XBMCAddon
 {

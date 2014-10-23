@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"

@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"

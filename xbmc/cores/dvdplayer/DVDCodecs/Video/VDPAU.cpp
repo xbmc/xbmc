@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
 #include "windowing/WindowingFactory.h"

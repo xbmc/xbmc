@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "websocket/WebSocketManager.h"
 #include "Network.h"
+#include "PlatformConfig.h"
 
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";

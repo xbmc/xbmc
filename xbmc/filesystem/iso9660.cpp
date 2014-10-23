@@ -47,6 +47,7 @@ ISO9660
 #include "utils/CharsetConverter.h"
 #include "threads/SingleLock.h"
 #include "IFile.h"
+#include "PlatformConfig.h"
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.

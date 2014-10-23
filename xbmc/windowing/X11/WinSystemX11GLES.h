@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "PlatformConfig.h"
 #if defined(HAS_GLES) && defined(HAVE_X11)
 
 #include "WinSystemX11.h"

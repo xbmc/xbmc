@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "ApplicationMessenger.h"
 #include "Application.h"
 

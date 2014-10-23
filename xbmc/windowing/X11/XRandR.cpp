@@ -20,6 +20,7 @@
 
 #include "XRandR.h"
 
+#include "PlatformConfig.h"
 #ifdef HAS_XRANDR
 
 #include <string.h>

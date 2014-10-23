@@ -29,6 +29,7 @@
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
+#include "PlatformConfig.h"
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif

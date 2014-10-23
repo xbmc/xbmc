@@ -21,6 +21,7 @@
 #include <limits.h>
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
 #include "network/DNSNameCache.h"

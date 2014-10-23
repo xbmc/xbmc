@@ -20,6 +20,7 @@
  */
 
 #include "system.h" // for HAS_XRANDR, and Win32 types
+#include "PlatformConfig.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 

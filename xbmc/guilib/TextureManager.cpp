@@ -35,6 +35,7 @@
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include <assert.h>
+#include "PlatformConfig.h"
 
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures

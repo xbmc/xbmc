@@ -31,9 +31,7 @@ class CDVDInputStream;
 #pragma warning(disable:4244)
 #endif
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"

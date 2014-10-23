@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #if defined(HAS_MMAL)
 
 #include <interface/mmal/mmal.h>

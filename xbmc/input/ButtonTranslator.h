@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 #include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK
+#include "PlatformConfig.h"
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"

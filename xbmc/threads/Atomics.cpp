@@ -20,6 +20,7 @@
 
 #include "Atomics.h"
 #include "system.h"
+#include "PlatformConfig.h"
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr

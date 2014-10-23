@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowScreensaver.h"
 #include "addons/AddonManager.h"
 #include "Application.h"

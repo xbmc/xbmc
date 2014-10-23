@@ -21,6 +21,7 @@
 #pragma once
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_GL
 #include "system_gl.h"

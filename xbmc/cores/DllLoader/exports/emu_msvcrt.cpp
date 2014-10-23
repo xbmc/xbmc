@@ -36,6 +36,7 @@
 #include <sys/timeb.h>
 #endif
 #include "system.h" // for HAS_DVD_DRIVE
+#include "PlatformConfig.h"
 #ifdef HAS_DVD_DRIVE
   #ifdef TARGET_POSIX
     #include <sys/ioctl.h>

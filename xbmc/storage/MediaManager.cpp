@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"

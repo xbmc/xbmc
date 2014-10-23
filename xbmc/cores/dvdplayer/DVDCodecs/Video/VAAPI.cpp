@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAVE_LIBVA
 #include "windowing/WindowingFactory.h"
 #include "VAAPI.h"

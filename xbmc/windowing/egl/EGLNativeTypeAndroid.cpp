@@ -25,6 +25,7 @@
 #include "guilib/gui3d.h"
 #if defined(TARGET_ANDROID)
   #include "android/activity/XBMCApp.h"
+  #include "PlatformConfig.h"
   #if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
     #include "utils/AMLUtils.h"
   #endif

@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUIWindowWeather.h"

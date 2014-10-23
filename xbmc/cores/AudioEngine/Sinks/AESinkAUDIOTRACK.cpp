@@ -23,6 +23,7 @@
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "android/activity/XBMCApp.h"
 #include "settings/Settings.h"
+#include "PlatformConfig.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif

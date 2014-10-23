@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifndef USE_VCHIQ_ARM
 #define USE_VCHIQ_ARM
 #endif
@@ -29,8 +30,7 @@
 #define HAVE_VMCS_CONFIG
 #endif
 
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
-#include "config.h"
+#if !defined(TARGET_WINDOWS)
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 

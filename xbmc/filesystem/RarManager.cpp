@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "RarManager.h"
 #include "Util.h"
 #include "utils/CharsetConverter.h"

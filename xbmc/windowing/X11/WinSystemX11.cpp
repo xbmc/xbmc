@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_GLX) || (defined(HAS_EGL) && defined(HAVE_X11))
 

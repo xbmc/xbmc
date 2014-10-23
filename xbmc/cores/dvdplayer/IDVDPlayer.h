@@ -22,6 +22,7 @@
 
 #include "DVDStreamInfo.h"
 #include "DVDMessageQueue.h"
+#include "PlatformConfig.h"
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;

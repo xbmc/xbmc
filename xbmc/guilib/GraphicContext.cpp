@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "Application.h"

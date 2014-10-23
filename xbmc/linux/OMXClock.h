@@ -21,6 +21,7 @@
 #ifndef _AVCLOCK_H_
 #define _AVCLOCK_H_
 
+#include "PlatformConfig.h"
 #if defined(HAVE_OMXLIB)
 
 #include "OMXCore.h"

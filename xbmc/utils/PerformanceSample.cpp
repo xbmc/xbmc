@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "PerformanceSample.h"
 
 #ifdef TARGET_POSIX

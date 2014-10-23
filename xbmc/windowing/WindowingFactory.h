@@ -22,6 +22,7 @@
 #define WINDOWING_FACTORY_H
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if   defined(TARGET_WINDOWS) && defined(HAS_GL)
 #include "windows/WinSystemWin32GL.h"

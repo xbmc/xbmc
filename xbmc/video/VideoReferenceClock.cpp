@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #include <list>
 #include "utils/StdString.h"
 #include "VideoReferenceClock.h"

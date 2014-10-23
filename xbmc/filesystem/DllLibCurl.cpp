@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "DllLibCurl.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

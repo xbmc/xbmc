@@ -37,6 +37,7 @@
 #include "XBIRRemote.h"
 #include "Util.h"
 #include <boost/shared_ptr.hpp>
+#include "PlatformConfig.h"
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"

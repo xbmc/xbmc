@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "OverlayRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"

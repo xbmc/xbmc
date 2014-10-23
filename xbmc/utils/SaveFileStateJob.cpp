@@ -35,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
+#include "PlatformConfig.h"
 
 bool CSaveFileStateJob::DoWork()
 {

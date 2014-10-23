@@ -19,6 +19,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include "PlatformConfig.h"
 #if defined(HAVE_WAYLAND_XBMC_PROTO)
 
 #include <boost/noncopyable.hpp>

@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_ALSA
 
 #include "cores/AudioEngine/Interfaces/AESink.h"

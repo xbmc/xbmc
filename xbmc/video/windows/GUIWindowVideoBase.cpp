@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"

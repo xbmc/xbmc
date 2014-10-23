@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "PlatformConfig.h"
 #if defined(HAVE_LIBGL)
 /*
  *      Copyright (C) 2005-2013 Team XBMC

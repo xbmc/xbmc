@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"

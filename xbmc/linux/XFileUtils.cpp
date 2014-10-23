@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "PlatformInclude.h"
 #include "XFileUtils.h"
 #include "XTimeUtils.h"

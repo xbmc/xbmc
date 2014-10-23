@@ -21,6 +21,7 @@
 #include "Screenshot.h"
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include <vector>
 
 #include "Util.h"

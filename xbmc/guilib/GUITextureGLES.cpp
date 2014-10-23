@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #if defined(HAS_GLES)
 #include "GUITextureGLES.h"
 #endif

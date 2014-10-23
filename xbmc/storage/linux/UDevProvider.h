@@ -20,6 +20,7 @@
  */
 
 #include "storage/IStorageProvider.h"
+#include "PlatformConfig.h"
 
 #ifdef HAVE_LIBUDEV
 

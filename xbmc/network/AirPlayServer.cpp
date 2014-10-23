@@ -22,6 +22,7 @@
 
 #include "network/Network.h"
 #include "AirPlayServer.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AIRPLAY
 

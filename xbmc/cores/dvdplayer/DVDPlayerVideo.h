@@ -28,6 +28,7 @@
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
 #include "DVDTSCorrection.h"
+#include "PlatformConfig.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif

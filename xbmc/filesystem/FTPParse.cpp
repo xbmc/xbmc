@@ -18,9 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 #if TARGET_WINDOWS
 #define PCRE_STATIC 1

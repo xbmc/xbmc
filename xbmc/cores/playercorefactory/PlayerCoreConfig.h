@@ -25,6 +25,7 @@
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
+#include "PlatformConfig.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
 #endif

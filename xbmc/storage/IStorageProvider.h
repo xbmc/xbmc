@@ -19,6 +19,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #include "MediaSource.h"
 #ifdef HAS_DVD_DRIVE
 #include "cdioSupport.h"

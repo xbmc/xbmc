@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShader.h"
 #include "settings/AdvancedSettings.h"

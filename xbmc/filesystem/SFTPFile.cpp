@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "SFTPFile.h"
+#include "PlatformConfig.h"
 #ifdef HAS_FILESYSTEM_SFTP
 #include "threads/SingleLock.h"
 #include "utils/log.h"

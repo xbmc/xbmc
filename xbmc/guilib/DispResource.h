@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "PlatformConfig.h"
 #if defined(HAS_GLX) || defined(HAS_EGL) || defined(TARGET_DARWIN)
 class IDispResource
 {

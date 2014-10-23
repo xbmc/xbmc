@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "AppParamParser.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"

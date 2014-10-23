@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
 #include "utils/log.h"

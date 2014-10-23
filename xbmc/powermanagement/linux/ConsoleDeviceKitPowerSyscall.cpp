@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "ConsoleDeviceKitPowerSyscall.h"
 #include "utils/log.h"
 

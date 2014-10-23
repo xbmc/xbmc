@@ -21,6 +21,7 @@
 #pragma once
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "XBTF.h"

@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "input/MouseStat.h"
 #include "Application.h"

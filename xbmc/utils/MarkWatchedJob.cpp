@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"

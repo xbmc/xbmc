@@ -18,6 +18,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"

@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "ProfilesManager.h"
 #include "Application.h"
 #include "DatabaseManager.h"

@@ -28,6 +28,7 @@
 #include "IFile.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
+#include "PlatformConfig.h"
 
 class CmdExtract;
 class CommandData;

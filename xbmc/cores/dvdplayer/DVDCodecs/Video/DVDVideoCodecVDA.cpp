@@ -18,7 +18,7 @@
  *
  */
 
-#include "config.h"
+#include "PlatformConfig.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "system_gl.h"

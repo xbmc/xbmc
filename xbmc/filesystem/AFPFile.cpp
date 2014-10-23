@@ -23,6 +23,7 @@
 //////////////////////////////////////////////////////////////////////
 #ifdef TARGET_POSIX
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_FILESYSTEM_AFP)
 #include "AFPFile.h"

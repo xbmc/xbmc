@@ -20,6 +20,7 @@
  */
 
 #include "UDevProvider.h"
+#include "PlatformConfig.h"
 
 #ifdef HAVE_LIBUDEV
 

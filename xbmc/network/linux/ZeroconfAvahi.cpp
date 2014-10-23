@@ -20,6 +20,7 @@
 
 #include "PlatformDefs.h"
 #include "ZeroconfAvahi.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AVAHI
 

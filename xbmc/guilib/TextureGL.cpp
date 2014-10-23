@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"

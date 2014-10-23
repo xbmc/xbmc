@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_LIBRTMP
 
 #include "DVDInputStream.h"

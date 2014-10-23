@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowPictures.h"
 #include "URL.h"
 #include "Util.h"
