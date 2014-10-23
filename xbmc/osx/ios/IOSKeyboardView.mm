@@ -114,7 +114,7 @@ static CEvent keyboardFinishedEvent;
   }
   CGFloat kbHeight = _kbRect.size.width;
 #if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
+  if (GetIOSVersion() >= 8.0)
     kbHeight =_kbRect.size.height;
 #endif
 
@@ -122,7 +122,7 @@ static CEvent keyboardFinishedEvent;
     _textField.frame.origin.y : 
     MIN(self.bounds.size.height - kbHeight, self.bounds.size.height/5*3) - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
 
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
+  if (GetIOSVersion() >= 8.0)
     y = _kbRect.origin.y - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
 
   _heading.frame = CGRectMake(0, y, headingW, INPUT_BOX_HEIGHT);

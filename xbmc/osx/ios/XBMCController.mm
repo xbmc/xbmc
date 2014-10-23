@@ -328,7 +328,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
 #if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
+  if (GetIOSVersion() < 8.0)
 #endif
   {
     orientation = toInterfaceOrientation;
@@ -752,7 +752,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   orientation = UIInterfaceOrientationLandscapeLeft;
 
 #if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
+  if (GetIOSVersion() < 8.0)
 #endif
   {
     /* We start in landscape mode */
@@ -786,7 +786,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)loadView
 {
   [super loadView];
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
+  if (GetIOSVersion() >= 8.0)
   {
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.autoresizesSubviews = YES;

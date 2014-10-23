@@ -44,7 +44,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
     UIScreen *pCurrentScreen = [UIScreen mainScreen];
     CGRect keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.height, pCurrentScreen.bounds.size.width);
 #if __IPHONE_8_0
-    if (CDarwinUtils::GetIOSVersion() >= 8.0)
+    if (GetIOSVersion() >= 8.0)
       keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.width, pCurrentScreen.bounds.size.height);
 #endif
 //    LOG(@"kb: kb frame: %@", NSStringFromCGRect(keyboardFrame));

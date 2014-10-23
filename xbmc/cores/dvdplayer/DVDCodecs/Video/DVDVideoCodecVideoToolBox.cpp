@@ -1395,7 +1395,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
 
     if (m_DropPictures)
     {
-      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+      if (GetIOSVersion() >= 8.0)
         decoderFlags = kVTDecoderDecodeFlags_DontEmitFrameIOS8;
       else
         decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
