@@ -2023,7 +2023,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
               if (URIUtils::HasExtension(strItem, sub_exts[i]))
               {
                 vecSubtitles.push_back( items[j]->GetPath() ); 
-                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, CURL::GetRedacted(items[j]->GetPath()).c_str() );
               }
             }
           }
@@ -2059,7 +2059,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
             strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
-              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", CURL::GetRedacted(vecSubtitles[i]).c_str(), strDest.c_str());
               vecSubtitles.push_back(strDest);
             }
           }
