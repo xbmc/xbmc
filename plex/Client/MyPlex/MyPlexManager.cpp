@@ -279,6 +279,8 @@ int CMyPlexManager::DoScanMyPlex()
     return FAILURE_TMOUT;
   }
 
+  m_havePlexServers = true;
+
   return SUCCESS_TMOUT;
 }
 
@@ -333,13 +335,18 @@ int CMyPlexManager::DoRemoveAllServers()
   // remove ALL servers, since we want to make sure that no
   // local connections with tokens are still around
   //
-  g_plexApplication.serverManager->RemoveAllServers();
+  if (m_havePlexServers)
+  {
+    g_plexApplication.serverManager->RemoveAllServers();
 
-  // Clear out queue and recommendations
-  g_plexApplication.dataLoader->RemoveServer(m_myplex);
+    // Clear out queue and recommendations
+    g_plexApplication.dataLoader->RemoveServer(m_myplex);
 
-  if (g_application.IsPlayingFullScreenVideo())
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Lost connection to myPlex", "You need to relogin", 5000, false);
+    if (g_application.IsPlayingFullScreenVideo())
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Lost connection to myPlex", "You need to relogin", 5000, false);
+
+    m_havePlexServers = false;
+  }
 
   return FAILURE_TMOUT;
 }

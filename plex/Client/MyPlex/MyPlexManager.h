@@ -34,7 +34,7 @@ class CMyPlexManager : public CThread
       ERROR_TMEOUT
     };
 
-    CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1) {}
+    CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1), m_havePlexServers(false) {}
 
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
 
@@ -92,4 +92,5 @@ class CMyPlexManager : public CThread
     CMyPlexPinInfo m_currentPinInfo;
 
     CXBMCTinyXML m_doc;
+    bool m_havePlexServers;
 };
