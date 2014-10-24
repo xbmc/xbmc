@@ -49,39 +49,19 @@
 						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
 						<control type="image">
 							<description>PIN # bg</description>
-							<posx>0</posx>
-							<width>100</width>
+							<posx>-20</posx>
+							<width>500</width>
 							<height>150</height>
-							<include>Orange</include>
-						</control>
-						<control type="image">
-							<description>PIN # bg</description>
-							<posx>120</posx>
-							<width>100</width>
-							<height>150</height>
-							<include>Orange</include>
-						</control>
-						<control type="image">
-							<description>PIN # bg</description>
-							<posx>240</posx>
-							<width>100</width>
-							<height>150</height>
-							<include>Orange</include>
-						</control>
-						<control type="image">
-							<description>PIN # bg</description>
-							<posx>360</posx>
-							<width>100</width>
-							<height>150</height>
-							<include>Orange</include>
+							<include>Black</include>
 						</control>
 					</control>
 					<control type="label" id="10082">
 						<posy>15</posy>
-						<posx>10</posx>
-						<width>480</width>
+						<posx>0</posx>
+						<width>460</width>
 						<height>150</height>
-						<font>Bold-144</font>
+						<align>center</align>
+						<font>Bold-124</font>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
 				</control>
