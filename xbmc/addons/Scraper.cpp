@@ -388,7 +388,7 @@ bool CScraper::Load()
   }
 
   if (!result)
-    CLog::Log(LOGWARNING, "failed to load scraper XML");
+    CLog::Log(LOGWARNING, "failed to load scraper XML from %s", LibPath().c_str());
   return m_fLoaded = result;
 }
 
