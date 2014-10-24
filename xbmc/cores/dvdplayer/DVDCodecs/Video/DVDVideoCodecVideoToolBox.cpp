@@ -1512,37 +1512,38 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(TARGET_DARWIN_IOS)
-    // allow rendering without scaledown for all
-    // retina devices (which have enough power to handle it)
-    double scale = 0.0;
-    if (!CDarwinUtils::DeviceHasRetina(scale))
-    {
-      // decoding, scaling and rendering above 1920 x 800 runs into
-      // some bandwidth limit. detect and scale down to reduce
-      // the bandwidth requirements.
-      int width_clamp = 1280;
-      if ((width * height) > (1920 * 800))
-        width_clamp = 960;
+  double scale = 0.0;
 
-      int new_width = CheckNP2(width);
-      if (width != new_width)
-      {
-        // force picture width to power of two and scale up height
-        // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
-        // and the CVPixelBufferPixel gets created using some
-        // strange alignment when width is non-standard.
-        double w_scaler = (double)new_width / width;
-        width = new_width;
-        height = height * w_scaler;
-      }
-      // scale output pictures down to 720p size for display
-      if (width > width_clamp)
-      {
-        double w_scaler = (float)width_clamp / width;
-        width = width_clamp;
-        height = height * w_scaler;
-      }
-    }
+  // decoding, scaling and rendering above 1920 x 800 runs into
+  // some bandwidth limit. detect and scale down to reduce
+  // the bandwidth requirements.
+  int width_clamp = 1280;
+  if ((width * height) > (1920 * 800))
+    width_clamp = 960;
+
+  // allow rendering without scaledown for all
+  // retina devices (which have enough power to handle it)
+  if (CDarwinUtils::DeviceHasRetina(scale))
+    width_clamp = 1920;
+
+  int new_width = CheckNP2(width);
+  if (width != new_width)
+  {
+    // force picture width to power of two and scale up height
+    // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
+    // and the CVPixelBufferPixel gets created using some
+    // strange alignment when width is non-standard.
+    double w_scaler = (double)new_width / width;
+    width = new_width;
+    height = height * w_scaler;
+  }
+  // scale output pictures down to 720p size for display
+  if (width > width_clamp)
+  {
+    double w_scaler = (float)width_clamp / width;
+    width = width_clamp;
+    height = height * w_scaler;
+  }
   #endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(
     NULL, // CFAllocatorRef allocator
