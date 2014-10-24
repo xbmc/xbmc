@@ -1,5 +1,4 @@
 #include "PlexServerManager.h"
-
 #include "PlexNetworkServiceBrowser.h"
 
 #include <boost/foreach.hpp>
@@ -200,8 +199,8 @@ void CPlexServerManager::UpdateFromDiscovery(const CPlexServerPtr& server)
   CSingleLock lk(m_serverManagerLock);
 
   CPlexServerPtr mergedServer = MergeServer(server);
-  NotifyAboutServer(mergedServer, mergedServer->GetActiveConnection());
-  SetBestServer(mergedServer, false);
+  if (mergedServer->GetActiveConnection())
+    NotifyAboutServer(mergedServer, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
