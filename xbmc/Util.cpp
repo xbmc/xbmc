@@ -2158,7 +2158,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   else if (URIUtils::GetExtension(strStream) == ".sub" && URIUtils::IsInArchive(strStream))
   {
     // exclude parsing of vobsub file names that embedded in an archive
-    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, strStream.c_str());
+    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, CURL::GetRedacted(strStream).c_str());
     toParse.clear();
   }
 
@@ -2216,7 +2216,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   if (info.flag == 0)
     info.flag = CDemuxStream::FLAG_NONE;
 
-  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s",
+             __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(strStream).c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file
