@@ -304,7 +304,8 @@ bool CUDisksProvider::HasUDisks()
 
 void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)
 {
-  CLog::Log(LOGDEBUG|LOGDBUS, "UDisks: DeviceAdded (%s)", object);
+  if (g_advancedSettings.CanLogComponent(LOGDBUS))
+    CLog::Log(LOGDEBUG, "UDisks: DeviceAdded (%s)", object);
 
   if (m_AvailableDevices[object])
   {
@@ -319,7 +320,8 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
 
-  CLog::Log(LOGDEBUG|LOGDBUS, "UDisks: DeviceAdded - %s", device->toString().c_str());
+  if (g_advancedSettings.CanLogComponent(LOGDBUS))
+    CLog::Log(LOGDEBUG, "UDisks: DeviceAdded - %s", device->toString().c_str());
 
   if (device->m_isMounted && device->IsApproved())
   {
@@ -331,7 +333,8 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
 
 void CUDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
 {
-  CLog::Log(LOGDEBUG|LOGDBUS, "UDisks: DeviceRemoved (%s)", object);
+  if (g_advancedSettings.CanLogComponent(LOGDBUS))
+    CLog::Log(LOGDEBUG, "UDisks: DeviceRemoved (%s)", object);
 
   CUDiskDevice *device = m_AvailableDevices[object];
   if (device)
@@ -346,7 +349,8 @@ void CUDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *
 
 void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *callback)
 {
-  CLog::Log(LOGDEBUG|LOGDBUS, "UDisks: DeviceChanged (%s)", object);
+  if (g_advancedSettings.CanLogComponent(LOGDBUS))
+    CLog::Log(LOGDEBUG, "UDisks: DeviceChanged (%s)", object);
 
   CUDiskDevice *device = m_AvailableDevices[object];
   if (device == NULL)
@@ -368,7 +372,8 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
 
-    CLog::Log(LOGDEBUG|LOGDBUS, "UDisks: DeviceChanged - %s", device->toString().c_str());
+    if (g_advancedSettings.CanLogComponent(LOGDBUS))
+      CLog::Log(LOGDEBUG, "UDisks: DeviceChanged - %s", device->toString().c_str());
   }
 }
 

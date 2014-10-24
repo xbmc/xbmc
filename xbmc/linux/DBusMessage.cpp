@@ -28,7 +28,8 @@ CDBusMessage::CDBusMessage(const char *destination, const char *object, const ch
   m_message = dbus_message_new_method_call (destination, object, interface, method);
   m_haveArgs = false;
 
-  CLog::Log(LOGDEBUG|LOGDBUS, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
+  if (g_advancedSettings.CanLogComponent(LOGDBUS))
+    CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
 CDBusMessage::~CDBusMessage()
