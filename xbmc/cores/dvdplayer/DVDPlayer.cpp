@@ -686,7 +686,7 @@ bool CDVDPlayer::OpenInputStream()
       BOOST_FOREACH(CFileItemPtr stream, part->m_mediaPartStreams)
       {
         if (stream->GetProperty("streamType").asInteger() == PLEX_STREAM_SUBTITLE &&
-            stream->GetProperty("index").asInteger() == -1)
+            stream->GetProperty("index").asInteger(-1) == -1)
         {
           SelectionStream s;
           s.type     = STREAM_SUBTITLE;
