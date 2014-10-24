@@ -748,26 +748,25 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
           }
 
           /* Create Channel items */
-          int iLastChannelNumber = -1;
+          int iLastChannelID = -1;
           ItemsPtr itemsPointer;
           itemsPointer.start = 0;
           for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
           {
             const CEpgInfoTag* tag = ((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag();
-            int iCurrentChannelNumber = tag->PVRChannelNumber();
-            if (iCurrentChannelNumber != iLastChannelNumber)
+            CPVRChannelPtr channel = tag->ChannelTag();
+            if (!channel)
+              continue;
+            int iCurrentChannelID = channel->ChannelID();
+            if (iCurrentChannelID != iLastChannelID)
             {
-              CPVRChannelPtr channel = tag->ChannelTag();
-              if (!channel)
-                continue;
-
               if (i > 0)
               {
                 itemsPointer.stop = i-1;
                 m_epgItemsPtr.push_back(itemsPointer);
                 itemsPointer.start = i;
               }
-              iLastChannelNumber = iCurrentChannelNumber;
+              iLastChannelID = iCurrentChannelID;
               CGUIListItemPtr item(new CFileItem(*channel));
               m_channelItems.push_back(item);
             }
