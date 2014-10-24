@@ -68,6 +68,7 @@ TEST_F(PlexServerManagerTest, updateAndRemove)
 
   serverMgr->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
 
+  EXPECT_TRUE(serverMgr->GetBestServer());
   EXPECT_TRUE(server->Equals(serverMgr->GetBestServer()));
 
   PlexServerList emptyList;
