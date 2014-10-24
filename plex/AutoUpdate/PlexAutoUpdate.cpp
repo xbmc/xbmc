@@ -251,7 +251,7 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
   bool isDelta = m_downloadPackage->GetProperty("delta").asBoolean();
   std::string packageStr = isDelta ? "delta" : "full";
   m_localManifest = "special://temp/autoupdate/manifest-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".xml";
-  m_localBinary = "special://temp/autoupdate/binary-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".zip";
+  m_localBinary = "special://temp/autoupdate/" + m_downloadItem->GetProperty("fileName").asString();
 
 
   if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString(), true))
@@ -444,48 +444,6 @@ void CPlexAutoUpdate::OnJobProgress(unsigned int jobID, unsigned int progress, u
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexAutoUpdate::RenameLocalBinary()
-{
-  CXBMCTinyXML doc;
-
-  doc.LoadFile(m_localManifest);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGWARNING, "CPlexAutoUpdate::RenameLocalBinary failed to parse mainfest!");
-    return false;
-  }
-
-  std::string newName;
-  TiXmlElement *el = doc.RootElement()->FirstChildElement();
-  while(el)
-  {
-    if (el->ValueStr() == "packages" || el->ValueStr() == "package")
-    {
-      el=el->FirstChildElement();
-      continue;
-    }
-    if (el->ValueStr() == "name")
-    {
-      newName = el->GetText();
-      break;
-    }
-
-    el = el->NextSiblingElement();
-  }
-
-  if (newName.empty())
-  {
-    CLog::Log(LOGWARNING, "CPlexAutoUpdater::RenameLocalBinary failed to get the new name from the manifest!");
-    return false;
-  }
-
-  std::string bpath = CSpecialProtocol::TranslatePath(m_localBinary);
-  std::string tgd = CSpecialProtocol::TranslatePath("special://temp/autoupdate/" + newName + ".zip");
-
-  return CopyFile(bpath.c_str(), tgd.c_str(), false);
-}
-
 #ifdef TARGET_POSIX
 #include <signal.h>
 #endif
@@ -552,9 +510,6 @@ void CPlexAutoUpdate::UpdateAndRestart()
 #ifdef TARGET_POSIX
   chmod(updater.c_str(), 0755);
 #endif
-
-  if (!RenameLocalBinary())
-    return;
 
   std::string script = CSpecialProtocol::TranslatePath(m_localManifest);
   std::string packagedir = CSpecialProtocol::TranslatePath("special://temp/autoupdate");
