@@ -438,15 +438,43 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     if (methodType == GET)
     {
-      // handle If-Modified-Since or If-Unmodified-Since
-      string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-      string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Unmodified-Since");
+      bool cacheable = true;
+
+      // handle Cache-Control
+      string cacheControl = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Cache-Control");
+      if (!cacheControl.empty())
+      {
+        vector<string> cacheControls = StringUtils::Split(cacheControl, ",");
+        for (vector<string>::const_iterator it = cacheControls.begin(); it != cacheControls.end(); ++it)
+        {
+          string control = *it;
+          control = StringUtils::Trim(control);
+
+          // handle no-cache
+          if (control.compare("no-cache") == 0)
+            cacheable = false;
+        }
+      }
+
+      if (cacheable)
+      {
+        // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
+        string pragma = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Pragma");
+        if (pragma.compare("no-cache") == 0)
+          cacheable = false;
+      }
+
       if (lastModified.IsValid())
       {
+        // handle If-Modified-Since or If-Unmodified-Since
+        string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
+        string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Unmodified-Since");
+
         CDateTime ifModifiedSinceDate;
         CDateTime ifUnmodifiedSinceDate;
-        // handle If-Modified-Since
-        if (ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
+        // handle If-Modified-Since (but only if the response is cacheable)
+        if (cacheable &&
+            ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
             lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
         {
           getData = false;
