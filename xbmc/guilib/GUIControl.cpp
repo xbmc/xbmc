@@ -210,6 +210,9 @@ bool CGUIControl::OnAction(const CAction &action)
       OnRight();
       return true;
 
+    case ACTION_SHOW_INFO:
+      return OnInfo();
+
     case ACTION_NAV_BACK:
       return OnBack();
 
@@ -259,6 +262,22 @@ void CGUIControl::OnRight()
 bool CGUIControl::OnBack()
 {
   return Navigate(ACTION_NAV_BACK);
+}
+
+bool CGUIControl::OnInfo()
+{
+  // Do not override window action
+  CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), ACTION_SHOW_INFO, 0);
+  if (!SendWindowMessage(msg))
+  {
+    CGUIAction action = GetNavigateAction(ACTION_SHOW_INFO);
+    if (action.HasAnyActions())
+    {
+      action.ExecuteActions(GetID(), GetParentID());
+      return true;
+    }
+  }
+  return false;
 }
 
 void CGUIControl::OnNextControl()
