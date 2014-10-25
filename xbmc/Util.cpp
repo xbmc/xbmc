@@ -2023,7 +2023,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
               if (URIUtils::HasExtension(strItem, sub_exts[i]))
               {
                 vecSubtitles.push_back( items[j]->GetPath() ); 
-                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, CURL::GetRedacted(items[j]->GetPath()).c_str() );
               }
             }
           }
@@ -2059,7 +2059,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
             strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
-              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", CURL::GetRedacted(vecSubtitles[i]).c_str(), strDest.c_str());
               vecSubtitles.push_back(strDest);
             }
           }
@@ -2158,7 +2158,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   else if (URIUtils::GetExtension(strStream) == ".sub" && URIUtils::IsInArchive(strStream))
   {
     // exclude parsing of vobsub file names that embedded in an archive
-    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, strStream.c_str());
+    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, CURL::GetRedacted(strStream).c_str());
     toParse.clear();
   }
 
@@ -2216,7 +2216,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   if (info.flag == 0)
     info.flag = CDemuxStream::FLAG_NONE;
 
-  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s",
+             __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(strStream).c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file
