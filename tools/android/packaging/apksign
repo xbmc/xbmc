@@ -1,0 +1,10 @@
+#!/bin/bash
+usage(){
+	echo "Usage: $0 <keystore_filename> <keystore_password> <key_name> [<key_password>]"
+	exit 1
+}
+
+[[ $# -lt 3 ]] && usage
+
+make apk-sign SIGN_STORE=$1 SIGN_STOREPASS=$2 SIGN_KEY=$3 SIGN_KEYPASS=$4 
+
