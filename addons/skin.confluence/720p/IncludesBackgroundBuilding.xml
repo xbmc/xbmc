@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="CommonBackground">
-		<control type="image">
+		<control type="ffmpeg">
 			<description>Normal Default Background Image</description>
 			<left>0</left>
 			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture fallback="special://skin/backgrounds/SKINDEFAULT.jpg">$INFO[Skin.CurrentTheme,special://skin/backgrounds/,.jpg]</texture>
+			<texture
+			fallback="special://skin/backgrounds/SKINDEFAULT.jpg">/test.mp4</texture>
+			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
+			<include>VisibleFadeEffect</include>
+		</control>
+		<control type="ffmpeg">
+			<description>Normal Default Background Image</description>
+			<left>100</left>
+			<top>100</top>
+			<width>320</width>
+			<height>180</height>
+			<aspectratio>scale</aspectratio>
+			<texture
+			fallback="special://skin/backgrounds/SKINDEFAULT.jpg">/test.mp4</texture>
+			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
+			<include>VisibleFadeEffect</include>
+		</control>
+		<control type="ffmpeg">
+			<description>Normal Default Background Image</description>
+			<left>860</left>
+			<top>100</top>
+			<width>320</width>
+			<height>180</height>
+			<aspectratio>scale</aspectratio>
+			<texture
+			fallback="special://skin/backgrounds/SKINDEFAULT.jpg">/test.mp4</texture>
 			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
