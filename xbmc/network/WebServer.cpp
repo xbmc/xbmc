@@ -438,14 +438,16 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     if (methodType == GET)
     {
-      // handle If-Modified-Since
+      // handle If-Modified-Since or If-Unmodified-Since
       string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-      if (!ifModifiedSince.empty() && lastModified.IsValid())
+      string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Unmodified-Since");
+      if (lastModified.IsValid())
       {
         CDateTime ifModifiedSinceDate;
-        ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
-
-        if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
+        CDateTime ifUnmodifiedSinceDate;
+        // handle If-Modified-Since
+        if (ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
+            lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
         {
           getData = false;
           response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
@@ -454,6 +456,10 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
           responseCode = MHD_HTTP_NOT_MODIFIED;
         }
+        // handle If-Unmodified-Since
+        else if (ifUnmodifiedSinceDate.SetFromRFC1123DateTime(ifUnmodifiedSince) &&
+          lastModified.GetAsUTCDateTime() > ifUnmodifiedSinceDate)
+          return SendErrorResponse(connection, MHD_HTTP_PRECONDITION_FAILED, methodType);
       }
 
       if (getData)
