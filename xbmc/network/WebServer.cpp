@@ -582,7 +582,8 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
 
   // set the Expires header
-  CDateTime expiryTime = CDateTime::GetCurrentDateTime();
+  CDateTime now = CDateTime::GetCurrentDateTime();
+  CDateTime expiryTime = now;
   if (StringUtils::EqualsNoCase(mimeType, "text/html") ||
       StringUtils::EqualsNoCase(mimeType, "text/css") ||
       StringUtils::EqualsNoCase(mimeType, "application/javascript"))
@@ -590,6 +591,10 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   else
     expiryTime += CDateTimeSpan(365, 0, 0, 0);
   AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+
+  // set the Cache-Control header
+  int maxAge = (expiryTime - now).GetSecondsTotal();
+  AddHeader(response, "Cache-Control", StringUtils::Format("max-age=%d, public", maxAge));
 
   return MHD_YES;
 }
