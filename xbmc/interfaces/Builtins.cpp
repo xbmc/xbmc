@@ -467,7 +467,9 @@ int CBuiltins::Execute(const std::string& execString)
     {
       AddonPtr script;
       std::string scriptpath(params[0]);
-      if (CAddonMgr::Get().GetAddon(params[0], script))
+      if (CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT) ||
+          CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT_WEATHER) ||
+          CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT_LYRICS))
         scriptpath = script->LibPath();
 
       // split the path up to find the filename
