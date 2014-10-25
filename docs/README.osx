@@ -14,7 +14,7 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of Kodi for the Apple OSX operating system. 10.6, 10.7
-10.8 and 10.9 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
+10.8, 10.9 and 10.10 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
 are the recommended versions.
 There are 3 ways to build Kodi for Mac, from command-line with make, from command-line
 using xcodebuild or from Xcode.
@@ -29,13 +29,14 @@ On Snow Leopard (OSX 10.6.x) we recommend using Xcode 3.2.6.
 On Lion (OSX 10.7.x) we recommend using Xcode 4.3.x.
 On Mountain Lion (OSX 10.8.1) we recommend using Xcode 4.4.
 On Mavericks (OSX 10.9.3) we recommend using Xcode 5.1.1 or 6.0.1.
+On Yosemite (OSX 10.10) we recommend using Xcode 6.1.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
 character itself should NOT be typed as part of the command.
 
-ATTENTION: When using Mountain Lion (OSX 10.8.x) or Mavericks (10.9.x) you need to download and install
-XQuartz from https://xquartz.macosforge.org/landing/ since its not part of OSX
+ATTENTION: When using Mountain Lion (OSX 10.8.x), Mavericks (10.9.x) or Yosemite (10.10.x) you 
+need to download and install XQuartz from https://xquartz.macosforge.org/landing/ since its not part of OSX
 anymore.
 
 -----------------------------------------------------------------------------
@@ -50,7 +51,7 @@ anymore.
 -----------------------------------------------------------------------------
 See point 3.0a below for an updated list of supported/tested Xcode/osx constellations!!!
 
-Install latest Xcode (6.0.1 or 3.2.6 as of the writing). You can download it from
+Install latest Xcode (6.1.0 or 3.2.6 as of the writing). You can download it from
 
 1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
 2. In the MacOSX AppStore (Xcode 4.3.x and later). 
@@ -65,6 +66,7 @@ Xcode 4.3.x only runs on 10.7.x (Lion).
 Xcode 4.4 only runs on 10.8.x (Mountain Lion).
 Xcode 5.1.1 runs on 10.8.x and 10.9.x (Mavericks).
 Xcode 6.0.1 runs on 10.9.4 and later (Mavericks).
+Xcode 6.1 runs on 10.9.5 and later (Mavericks).
 
 -----------------------------------------------------------------------------
 3.0a Supported Xcode and OSX constellations
@@ -77,6 +79,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 3. XCode 4.6 against OSX SDK 10.6, 10.7 and 10.8 on 10.7.x (Lion) and 10.8.x (ML)
 4. XCode 5.1.1 against OSX SDK 10.8 (ML) and 10.9 (M)
 5. XCode 6.0.1 against OSX SDK 10.9 (M)
+6. XCode 6.1.0 against OSX SDK 10.10 (Y)
 
 -----------------------------------------------------------------------------
 3.1 Install Kodi build depends

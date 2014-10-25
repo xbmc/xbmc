@@ -17,7 +17,7 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of Kodi for the Apple iOS operating system. 
-The current build system supports Xcode 3.2.6 or Xcode 4.3.x with iOS SDK 4.2/4.3/5.1
+The current build system supports Xcode 3.2.6, 4.3.x, 5.x.x, 6.0.1, 6.1.0 with iOS SDK 4.3/5.1/6/7/8/8.1
 There are two ways to build Kodi for Mac.
 
 1) command-line or
@@ -48,7 +48,7 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 See point 3.0a below for an updated list of supported Xcode/osx constellations!!!
 
-Install latest Xcode (5.1.1 as of the writing). You can download it from 
+Install latest Xcode (6.1.0 as of the writing). You can download it from 
 
 1. The MacOSX AppStore (Xcode). 
 
@@ -60,10 +60,11 @@ automatically once they are invoked from the cmdline.
 Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
 Xcode 4.3.x only runs on 10.7.x (Lion).
 Xcode 5.x.x only runs on 10.8.x and later.
-
+Xcode 6.0.1 only runs on 10.9.4 and later.
+Xcpde 6.1.0 only runs on 10.9.5 and later.
 
 The preferred iOS SDK Version is 4.3 (when using Xcode 3.2.6) or 5.1 (when using
-Xcode 4.3.x) or 7.x (when using Xcode 5.x.x)
+Xcode 4.3.x) or 7.x (when using Xcode 5.x.x) or 8.x (when using Xcode 6.x.x)
 
 -----------------------------------------------------------------------------
 3.0a Supported Xcode and OSX constellations
@@ -77,6 +78,8 @@ constellations of Xcode and osx versions (to be updated once we know more):
 3.a Building against iOS SDK 6.0 will only allow to run on targets with iOS 5.1 and below.
     There is no support for devices running iOS 6.0 for now!
 4. Xcode 5.1.1 against iOS SDK 7.0 and 7.1 on 10.9.x (Mavericks)
+5. Xcode 6.0.1 against iOS SDK 8.0 on 10.9.x (Mavericks)
+6. Xcode 6.1.0 against iOS SDK 8.1 on 10.10.x (Yosemite)
 
 -----------------------------------------------------------------------------
 3.1 Install Cross libs and runtime environment
@@ -137,14 +140,14 @@ of the ATV2 project manually to "default/clang".
 
  $ cd $HOME/Kodi
  $ xcodebuild -project Kodi.xcodeproj -target Kodi-iOS -configuration Release build \
-   ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.2 \
-   SDKROOT=iphoneos4.2
+   ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.3 \
+   SDKROOT=iphoneos4.3
 
 or
 
  $ xcodebuild -project Kodi.xcodeproj -target Kodi-ATV2 -configuration Release build \
-  ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.2 \
-  SDKROOT=iphoneos4.2
+  ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.3 \
+  SDKROOT=iphoneos4.3
  
  Make sure to set SDKROOT to the iOS SDK you want to use. This should be the same
  you used on point 3.1!
