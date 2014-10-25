@@ -27,6 +27,7 @@
 // ffmpeg
 #include "filesystem/SpecialProtocol.h"
 #include "Texture.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -320,11 +321,16 @@ bool CGUITextureBase::AllocResources()
 
   if (m_info.useFFmpeg)
   {
+
     CStdString realPath = CSpecialProtocol::TranslatePath(m_info.filename);
     m_decoder = new FFmpegVideoDecoder();
 
+    CLog::Log(LOGDEBUG, "GUITexture::FFmpeg AllocResources %s (%s)", m_info.filename.c_str(), realPath.c_str());
+
     if (!(m_isAllocated = m_decoder->open(realPath) ? FFMPEG : FFMPEG_FAILED))
     {
+      CLog::Log(LOGDEBUG, "GUITexture::FFmpeg Failed");
+
       delete m_decoder;
       return false;
     }
@@ -332,8 +338,13 @@ bool CGUITextureBase::AllocResources()
     m_lastFrameTime  = 0;
     m_millisPerFrame = (unsigned int)(1000.0 / m_decoder->getFramesPerSecond());
 
-    m_frame = new CTexture(m_decoder->getWidth(), m_decoder->getHeight(), XB_FMT_A8R8G8B8);
-    m_texture.Add(m_frame, 0);
+    unsigned int width  = m_decoder->getWidth();
+    unsigned int height = m_decoder->getHeight();
+
+    m_frame = new CTexture(width, height, XB_FMT_A8R8G8B8);
+    m_texture.Set(m_frame, width, height);
+
+    CLog::Log(LOGDEBUG, "GUITexture::FFmpeg Frame Set");
 
     changed = true;
   }
@@ -497,6 +508,8 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
   if (m_isAllocated == FFMPEG)
   {
+    CLog::Log(LOGDEBUG, "GUITexture::FFmpeg FreeResources");
+
     m_decoder->close();
     delete m_decoder;
     delete m_frame;
@@ -536,6 +549,8 @@ void CGUITextureBase::SetInvalid()
 
 bool CGUITextureBase::UpdateFFmpeg(unsigned int currentTime)
 {
+//  CLog::Log(LOGDEBUG, "GUITexture::UpdateFFmpeg %d - %d = %d", currentTime, m_lastFrameTime, currentTime - m_lastFrameTime);
+
   if ((!m_frame) || ((currentTime - m_lastFrameTime) < m_millisPerFrame))
     return false;
 
@@ -544,10 +559,14 @@ bool CGUITextureBase::UpdateFFmpeg(unsigned int currentTime)
     if ((m_texture.m_loops) && (m_currentLoop + 1 >= m_texture.m_loops))
       return false;
 
+//    CLog::Log(LOGDEBUG, "GUITexture::UpdateFFmpeg Loop %d", m_currentLoop);
+
     m_currentLoop++;
     m_decoder->seek(0.0);
     m_decoder->nextFrame(m_frame);
   }
+
+//  CLog::Log(LOGDEBUG, "GUITexture::UpdateFFmpeg Yay");
 
   m_lastFrameTime = currentTime;
   return true;
