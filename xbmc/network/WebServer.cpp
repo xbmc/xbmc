@@ -135,17 +135,16 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *connection)
 {
   CSingleLock lock(server->m_critSection);
+
   if (!server->m_needcredentials)
     return true;
 
-  const char *strbase = "Basic ";
-  const char *headervalue = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
-  if (NULL == headervalue)
-    return false;
-  if (strncmp(headervalue, strbase, strlen(strbase)))
+  const char *base = "Basic ";
+  string authorization = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
+  if (authorization.empty() || !StringUtils::StartsWith(authorization, base))
     return false;
 
-  return (server->m_Credentials64Encoded.compare(headervalue + strlen(strbase)) == 0);
+  return server->m_Credentials64Encoded.compare(StringUtils::Mid(authorization.c_str(), strlen(base))) == 0;
 }
 
 #if (MHD_VERSION >= 0x00040001)
