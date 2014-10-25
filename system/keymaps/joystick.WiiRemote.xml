@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -45,17 +45,17 @@
       <button id="5">Select</button>
       <button id="6">Back</button>
       <button id="7">VolumeDown</button>
-      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="8">ActivateWindow(Home)</button>
       <button id="9">VolumeUp</button>
       <button id="10">ContextMenu</button>
-      <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="11">ActivateWindow(PlayerControls)</button>
     </joystick>
   </global>
   <Home>
     <joystick name="WiiRemote">
       <button id="8">Fullscreen</button>
-      <button id="10">XBMC.ActivateWindow(Favourites)</button>
-      <button id="11">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="10">ActivateWindow(Favourites)</button>
+      <button id="11">ActivateWindow(ShutdownMenu)</button>
     </joystick>
   </Home>
   <MyFiles>
@@ -126,7 +126,7 @@
       <button id="4">SkipPrevious</button>
       <button id="5">OSD</button>
       <button id="6">Info</button>
-      <button id="8">XBMC.ActivateWindow(music)</button>
+      <button id="8">ActivateWindow(music)</button>
       <button id="10">IncreaseRating</button>
       <button id="11">DecreaseRating</button>
     </joystick>
@@ -139,8 +139,8 @@
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="WiiRemote">
-      <button id="10">XBMC.ActivateWindow(VisualisationPresetList)</button>
-      <button id="11">XBMC.ActivateWindow(MusicPlaylist)</button>
+      <button id="10">ActivateWindow(VisualisationPresetList)</button>
+      <button id="11">ActivateWindow(MusicPlaylist)</button>
     </joystick>
   </VisualisationSettings>
   <SlideShow>

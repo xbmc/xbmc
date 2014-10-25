@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -50,9 +50,9 @@
       <button id="11">Screenshot</button> <!-- l3 - left analog -->
       <button id="5"></button>    <!-- r1 -->      
       <button id="8"></button>  <!-- r2 -->
-      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button> <!-- R3 - right analog -->      
+      <button id="12">ActivateWindow(ShutdownMenu)</button> <!-- R3 - right analog -->      
       <button id="9"></button>  <!-- select -->      
-      <button id="10">XBMC.ActivateWindow(PlayerControls)</button>  <!-- start --> 
+      <button id="10">ActivateWindow(PlayerControls)</button>  <!-- start --> 
       <!-- Left Analog Left and Right-->
       <axis limit="-1" id="0">AnalogSeekBack</axis>        
       <axis limit="+1" id="0">AnalogSeekForward</axis>

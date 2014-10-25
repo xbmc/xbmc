@@ -3,7 +3,7 @@
 <keymap>
   <global>
     <keyboard>
-      <home>XBMC.ActivateWindow(Home)</home>
+      <home>ActivateWindow(Home)</home>
       <f3>OSD</f3>         <!-- EPG: same as Guide (ctrl-G) on MCE remote -->
       <f3 mod="shift">ActivateWindow(video)</f3>    <!-- Red -->
       <f4 mod="shift">ActivateWindow(music)</f4>    <!-- Green -->

@@ -31,7 +31,7 @@ except:
 def usage():
     print "kodi-send [OPTION] --action=ACTION"
     print 'Example'
-    print '\tkodi-send --host=192.168.0.1 --port=9777 --action="XBMC.Quit"'
+    print '\tkodi-send --host=192.168.0.1 --port=9777 --action="Quit"'
     print "Options"
     print "\t-?, --help\t\t\tWill bring up this message"
     print "\t--host=HOST\t\t\tChoose what HOST to connect to (default=localhost)"

@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -50,7 +50,7 @@
       <button id="10">FullScreen</button>
       <button id="12">VolumeUp</button>
       <button id="11">VolumeDown</button>
-      <button id="13">XBMC.ActivateWindow(Home)</button>
+      <button id="13">ActivateWindow(Home)</button>
       <hat    id="1" position="left">Left</hat>
       <hat    id="1" position="right">Right</hat>
       <hat    id="1" position="up">Up</hat>

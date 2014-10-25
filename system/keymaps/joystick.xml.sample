@@ -42,10 +42,10 @@
       <button id="5">Queue</button>
       <button id="6">Playlist</button>
       <button id="7">PreviousMenu</button>
-      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="8">ActivateWindow(Home)</button>
       <!-- Left stick click activates the shutdown menu. -->
-      <button id="9">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="10">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="9">ActivateWindow(ShutdownMenu)</button>
+      <button id="10">ActivateWindow(PlayerControls)</button>
       <button id="11">Up</button>
       <button id="12">Down</button>
       <button id="13">Left</button>
@@ -70,7 +70,7 @@
   </global>
   <Home>
     <joystick>
-      <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+      <button id="8">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
   <MyFiles>
@@ -166,10 +166,10 @@
     <joystick>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
-      <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
-      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="3">ActivateWindow(MusicOSD)</button>
+      <button id="5">ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="10">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="10">ActivateWindow(MusicOSD)</button>
       <button id="11">SkipNext</button>
       <button id="12">SkipPrevious</button>
       <button id="13">PreviousPreset</button>

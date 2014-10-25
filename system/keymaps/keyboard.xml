@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -99,11 +99,11 @@
       <power>ActivateWindow(shutdownmenu)</power>
       <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
-      <e>XBMC.ActivateWindow(TVGuide)</e>
-      <h>XBMC.ActivateWindow(TVChannels)</h>
-      <j>XBMC.ActivateWindow(RadioChannels)</j>
-      <k>XBMC.ActivateWindow(TVRecordings)</k>
-      <b>XBMC.ActivateWindow(TVTimers)</b>
+      <e>ActivateWindow(TVGuide)</e>
+      <h>ActivateWindow(TVChannels)</h>
+      <j>ActivateWindow(RadioChannels)</j>
+      <k>ActivateWindow(TVRecordings)</k>
+      <b>ActivateWindow(TVTimers)</b>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -111,7 +111,7 @@
       <browser_stop/>
       <browser_search/>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <browser_home>ActivateWindow(Home)</browser_home>
       <volume_mute>Mute</volume_mute>
       <volume_down>VolumeDown</volume_down>
       <volume_up>VolumeUp</volume_up>
@@ -123,7 +123,7 @@
       <rewind>Rewind</rewind>
       <record/>
       <launch_mail></launch_mail>
-      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <launch_media_select>ActivateWindow(MyMusic)</launch_media_select>
       <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
       <launch_app2_pc_icon>ActivateWindow(MyPrograms)</launch_app2_pc_icon>
       <launch_file_browser/>
@@ -158,13 +158,13 @@
   </global>
   <LoginScreen>
     <keyboard>
-      <end mod="ctrl">XBMC.ShutDown()</end>
+      <end mod="ctrl">ShutDown()</end>
     </keyboard>
   </LoginScreen>
   <Home>
     <keyboard>
       <i>info</i>
-      <end mod="ctrl">XBMC.ShutDown()</end>
+      <end mod="ctrl">ShutDown()</end>
     </keyboard>
   </Home>
   <VirtualKeyboard>
@@ -268,7 +268,7 @@
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <c>Playlist</c>
-      <v>XBMC.ActivateWindow(Teletext)</v>
+      <v>ActivateWindow(Teletext)</v>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
@@ -318,8 +318,8 @@
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
-      <g>XBMC.ActivateWindow(PVROSDGuide)</g>
-      <c>XBMC.ActivateWindow(PVROSDChannels)</c>
+      <g>ActivateWindow(PVROSDGuide)</g>
+      <c>ActivateWindow(PVROSDChannels)</c>
     </keyboard>
   </Visualisation>
   <MusicOSD>
