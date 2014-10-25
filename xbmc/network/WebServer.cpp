@@ -54,6 +54,11 @@
 
 #define CONTENT_RANGE_FORMAT  "bytes %" PRId64 "-%" PRId64 "/%" PRId64
 
+#define HEADER_NEWLINE        "\r\n"
+#define HEADER_SEPARATOR      HEADER_NEWLINE HEADER_NEWLINE
+#define HEADER_BOUNDARY       "--"
+#define HEADER_VALUE_NO_CACHE "no-cache"
+
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
@@ -134,7 +139,7 @@ bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *conn
     return true;
 
   const char *strbase = "Basic ";
-  const char *headervalue = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Authorization");
+  const char *headervalue = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
   if (NULL == headervalue)
     return false;
   if (strncmp(headervalue, strbase, strlen(strbase)))
@@ -386,7 +391,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
   if (response == NULL)
     return MHD_NO;
 
-  AddHeader(response, "Location", strURL);
+  AddHeader(response, MHD_HTTP_HEADER_LOCATION, strURL);
   return MHD_YES;
 }
 
@@ -441,7 +446,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       bool cacheable = true;
 
       // handle Cache-Control
-      string cacheControl = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Cache-Control");
+      string cacheControl = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
       if (!cacheControl.empty())
       {
         vector<string> cacheControls = StringUtils::Split(cacheControl, ",");
@@ -451,7 +456,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
           control = StringUtils::Trim(control);
 
           // handle no-cache
-          if (control.compare("no-cache") == 0)
+          if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
             cacheable = false;
         }
       }
@@ -459,16 +464,16 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       if (cacheable)
       {
         // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
-        string pragma = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Pragma");
-        if (pragma.compare("no-cache") == 0)
+        string pragma = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
+        if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
           cacheable = false;
       }
 
       if (lastModified.IsValid())
       {
         // handle If-Modified-Since or If-Unmodified-Since
-        string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-        string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Unmodified-Since");
+        string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_MODIFIED_SINCE);
+        string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_UNMODIFIED_SINCE);
 
         CDateTime ifModifiedSinceDate;
         CDateTime ifUnmodifiedSinceDate;
@@ -493,12 +498,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       if (getData)
       {
         // handle Range header
-        context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Range"), fileLength, context->ranges, firstPosition, lastPosition);
+        context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE), fileLength, context->ranges, firstPosition, lastPosition);
 
         // handle If-Range header but only if the Range header is present
         if (!context->ranges.empty())
         {
-          string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Range");
+          string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
           if (!ifRange.empty() && lastModified.IsValid())
           {
             CDateTime ifRangeDate;
@@ -547,9 +552,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
         // build part of the boundary with the optional Content-Type header
         // "--<boundary>\r\nContent-Type: <content-type>\r\n
-        context->boundaryWithHeader = "\r\n--" + context->boundary + "\r\n";
+        context->boundaryWithHeader = HEADER_NEWLINE HEADER_BOUNDARY + context->boundary + HEADER_NEWLINE;
         if (!context->contentType.empty())
-          context->boundaryWithHeader += "Content-Type: " + context->contentType + "\r\n";
+          context->boundaryWithHeader += MHD_HTTP_HEADER_CONTENT_TYPE ": " + context->contentType + HEADER_NEWLINE;
 
         // for every range, we need to add a boundary with header
         for (HttpRanges::const_iterator range = context->ranges.begin(); range != context->ranges.end(); range++)
@@ -557,14 +562,14 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
           // we need to temporarily add the Content-Range header to the
           // boundary to be able to determine the length
           string completeBoundaryWithHeader = context->boundaryWithHeader;
-          completeBoundaryWithHeader += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT,
+          completeBoundaryWithHeader += StringUtils::Format(MHD_HTTP_HEADER_CONTENT_RANGE ": " CONTENT_RANGE_FORMAT,
                                                             range->first, range->second, range->second - range->first + 1);
-          completeBoundaryWithHeader += "\r\n\r\n";
+          completeBoundaryWithHeader += HEADER_SEPARATOR;
 
           totalLength += completeBoundaryWithHeader.size();
         }
         // and at the very end a special end-boundary "\r\n--<boundary>--"
-        totalLength += 4 + context->boundary.size() + 2;
+        totalLength += strlen(HEADER_SEPARATOR) + strlen(HEADER_BOUNDARY) + context->boundary.size() + strlen(HEADER_BOUNDARY);
       }
 
       // set the initial write position
@@ -583,7 +588,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // add Content-Range header
     if (ranged)
-      AddHeader(response, "Content-Range", StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength));
+      AddHeader(response, MHD_HTTP_HEADER_CONTENT_RANGE, StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength));
   }
   else
   {
@@ -595,19 +600,19 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     if (response == NULL)
       return MHD_NO;
 
-    AddHeader(response, "Content-Length", contentLength);
+    AddHeader(response, MHD_HTTP_HEADER_CONTENT_LENGTH, contentLength);
   }
 
   // add "Accept-Ranges: bytes" header
-  AddHeader(response, "Accept-Ranges", "bytes");
+  AddHeader(response, MHD_HTTP_HEADER_ACCEPT_RANGES, "bytes");
 
   // set the Content-Type header
   if (!mimeType.empty())
-    AddHeader(response, "Content-Type", mimeType);
+    AddHeader(response, MHD_HTTP_HEADER_CONTENT_TYPE, mimeType);
 
   // set the Last-Modified header
   if (lastModified.IsValid())
-    AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
+    AddHeader(response, MHD_HTTP_HEADER_LAST_MODIFIED, lastModified.GetAsRFC1123DateTime());
 
   // set the Expires header
   CDateTime now = CDateTime::GetCurrentDateTime();
@@ -618,11 +623,11 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     expiryTime += CDateTimeSpan(1, 0, 0, 0);
   else
     expiryTime += CDateTimeSpan(365, 0, 0, 0);
-  AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+  AddHeader(response, MHD_HTTP_HEADER_EXPIRES, expiryTime.GetAsRFC1123DateTime());
 
   // set the Cache-Control header
   int maxAge = (expiryTime - now).GetSecondsTotal();
-  AddHeader(response, "Cache-Control", StringUtils::Format("max-age=%d, public", maxAge));
+  AddHeader(response, MHD_HTTP_HEADER_CACHE_CONTROL, StringUtils::Format("max-age=%d, public", maxAge));
 
   return MHD_YES;
 }
@@ -703,7 +708,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   if (context->rangeCount > 1 && context->ranges.empty())
   {
     // put together the end-boundary
-    string endBoundary = "\r\n--" + context->boundary + "--";
+    string endBoundary = HEADER_NEWLINE HEADER_BOUNDARY + context->boundary + HEADER_BOUNDARY;
     if ((unsigned int)max != endBoundary.size())
       return -1;
 
@@ -724,7 +729,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   {
     // put together the boundary for the current range
     string boundary = context->boundaryWithHeader;
-    boundary += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT, start, end, end - start + 1) + "\r\n\r\n";
+    boundary += StringUtils::Format(MHD_HTTP_HEADER_CONTENT_RANGE ": " CONTENT_RANGE_FORMAT, start, end, end - start + 1) + HEADER_SEPARATOR;
 
     // copy the boundary into the buffer
     memcpy(buf, boundary.c_str(), boundary.size());
