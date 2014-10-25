@@ -754,7 +754,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
     context->file->Seek(context->writePosition);
 
   // read data from the file
-  ssize_t res = context->file->Read(buf, maximum);
+  ssize_t res = context->file->Read(buf, static_cast<size_t>(maximum));
   if (res <= 0)
     return -1;
 
