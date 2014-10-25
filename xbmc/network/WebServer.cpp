@@ -23,11 +23,15 @@
 #endif
 
 #include "WebServer.h"
+
 #ifdef HAS_WEB_SERVER
+#include <boost/make_shared.hpp>
+
 #include "URL.h"
 #include "Util.h"
 #include "XBDateTime.h"
 #include "filesystem/File.h"
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/Base64.h"
@@ -36,7 +40,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include <boost/make_shared.hpp>
 
 //#define WEBSERVER_DEBUG
 
@@ -55,6 +58,12 @@ using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
 
+typedef struct ConnectionHandler
+{
+  IHTTPRequestHandler *requestHandler;
+  struct MHD_PostProcessor *postprocessor;
+} ConnectionHandler;
+
 typedef struct {
   boost::shared_ptr<CFile> file;
   HttpRanges ranges;
@@ -70,13 +79,13 @@ typedef struct {
 vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 
 CWebServer::CWebServer()
-{
-  m_running = false;
-  m_daemon_ip6 = NULL;
-  m_daemon_ip4 = NULL;
-  m_needcredentials = true;
-  m_Credentials64Encoded = "eGJtYzp4Ym1j"; // xbmc:xbmc
-}
+  : m_daemon_ip6(NULL),
+    m_daemon_ip4(NULL),
+    m_running(false),
+    m_needcredentials(false),
+    m_Credentials64Encoded("eGJtYzp4Ym1j") // xbmc:xbmc
+
+{ }
 
 int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
@@ -84,7 +93,7 @@ int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *
     return MHD_NO;
 
   map<string, string> *arguments = (map<string, string> *)cls;
-  arguments->insert(pair<string, string>(key, value != NULL ? value : StringUtils::Empty));
+  arguments->insert(make_pair(key, value != NULL ? value : ""));
   return MHD_YES; 
 }
 
@@ -94,37 +103,33 @@ int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const c
     return MHD_NO;
 
   multimap<string, string> *arguments = (multimap<string, string> *)cls;
-  arguments->insert(pair<string, string>(key, value != NULL ? value : StringUtils::Empty));
+  arguments->insert(make_pair(key, value != NULL ? value : ""));
   return MHD_YES; 
 }
 
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
-  int ret;
-  struct MHD_Response *response;
-
-  response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+  struct MHD_Response *response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
   if (!response)
     return MHD_NO;
 
-  ret = AddHeader(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  int ret = AddHeader(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
   ret |= AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
-    MHD_destroy_response (response);
+    MHD_destroy_response(response);
     return MHD_NO;
   }
 
-  ret = MHD_queue_response (connection, MHD_HTTP_UNAUTHORIZED, response);
-
-  MHD_destroy_response (response);
+  ret = MHD_queue_response(connection, MHD_HTTP_UNAUTHORIZED, response);
+  MHD_destroy_response(response);
 
   return ret;
 }
 
 bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *connection)
 {
-  CSingleLock lock (server->m_critSection);
+  CSingleLock lock(server->m_critSection);
   if (!server->m_needcredentials)
     return true;
 
@@ -132,7 +137,7 @@ bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *conn
   const char *headervalue = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Authorization");
   if (NULL == headervalue)
     return false;
-  if (strncmp (headervalue, strbase, strlen(strbase)))
+  if (strncmp(headervalue, strbase, strlen(strbase)))
     return false;
 
   return (server->m_Credentials64Encoded.compare(headervalue + strlen(strbase)) == 0);
@@ -185,8 +190,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
           {
             // If the content-type is application/x-ww-form-urlencoded or multipart/form-data
             // we can use MHD's POST processor
-            if (stricmp(contentType.c_str(), MHD_HTTP_POST_ENCODING_FORM_URLENCODED) == 0 ||
-                stricmp(contentType.c_str(), MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA) == 0)
+            if (StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) ||
+                StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
             {
               // Get a new MHD_PostProcessor
               conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler);
@@ -354,7 +359,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
 
   multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
-    AddHeader(response, it->first.c_str(), it->second.c_str());
+    AddHeader(response, it->first, it->second);
 
   MHD_queue_response(request.connection, responseCode, response);
   MHD_destroy_response(response);
@@ -377,13 +382,12 @@ HTTPMethod CWebServer::GetMethod(const char *method)
 
 int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &strURL, struct MHD_Response *&response)
 {
-  response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
-  if (response)
-  {
-    AddHeader(response, "Location", strURL.c_str());
-    return MHD_YES;
-  }
-  return MHD_NO;
+  response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+  if (response == NULL)
+    return MHD_NO;
+
+  AddHeader(response, "Location", strURL);
+  return MHD_YES;
 }
 
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode)
@@ -400,188 +404,186 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   }
 #endif
 
-  if (file->Open(strURL, READ_NO_CACHE))
+  if (!file->Open(strURL, READ_NO_CACHE))
   {
-    bool getData = true;
-    bool ranged = false;
-    int64_t fileLength = file->GetLength();
+    CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
+    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
+  }
 
-    // try to get the file's last modified date
-    CDateTime lastModified;
-    if (!GetLastModifiedDateTime(file.get(), lastModified))
-      lastModified.Reset();
+  bool getData = true;
+  bool ranged = false;
+  int64_t fileLength = file->GetLength();
 
-    // get the MIME type for the Content-Type header
-    std::string ext = URIUtils::GetExtension(strURL);
-    StringUtils::ToLower(ext);
-    string mimeType = CreateMimeTypeFromExtension(ext.c_str());
+  // try to get the file's last modified date
+  CDateTime lastModified;
+  if (!GetLastModifiedDateTime(file.get(), lastModified))
+    lastModified.Reset();
 
-    if (methodType != HEAD)
+  // get the MIME type for the Content-Type header
+  std::string ext = URIUtils::GetExtension(strURL);
+  StringUtils::ToLower(ext);
+  string mimeType = CreateMimeTypeFromExtension(ext.c_str());
+
+  if (methodType != HEAD)
+  {
+    int64_t firstPosition = 0;
+    int64_t lastPosition = fileLength - 1;
+    uint64_t totalLength = 0;
+    std::auto_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
+    context->file = file;
+    context->rangesLength = fileLength;
+    context->contentType = mimeType;
+    context->boundaryWritten = false;
+    context->writePosition = 0;
+
+    if (methodType == GET)
     {
-      int64_t firstPosition = 0;
-      int64_t lastPosition = fileLength - 1;
-      uint64_t totalLength = 0;
-      std::auto_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
-      context->file = file;
-      context->rangesLength = fileLength;
-      context->contentType = mimeType;
-      context->boundaryWritten = false;
-      context->writePosition = 0;
-
-      if (methodType == GET)
+      // handle If-Modified-Since
+      string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
+      if (!ifModifiedSince.empty() && lastModified.IsValid())
       {
-        // handle If-Modified-Since
-        string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-        if (!ifModifiedSince.empty() && lastModified.IsValid())
+        CDateTime ifModifiedSinceDate;
+        ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
+
+        if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
         {
-          CDateTime ifModifiedSinceDate;
-          ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
+          getData = false;
+          response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+          if (response == NULL)
+            return MHD_NO;
 
-          if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
-          {
-            getData = false;
-            response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-            if (response == NULL)
-              return MHD_NO;
-
-            responseCode = MHD_HTTP_NOT_MODIFIED;
-          }
-        }
-
-        if (getData)
-        {
-          // handle Range header
-          context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Range"), fileLength, context->ranges, firstPosition, lastPosition);
-
-          // handle If-Range header but only if the Range header is present
-          if (!context->ranges.empty())
-          {
-            string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Range");
-            if (!ifRange.empty() && lastModified.IsValid())
-            {
-              CDateTime ifRangeDate;
-              ifRangeDate.SetFromRFC1123DateTime(ifRange);
-
-              // check if the last modification is newer than the If-Range date
-              // if so we have to server the whole file instead
-              if (lastModified.GetAsUTCDateTime() > ifRangeDate)
-                context->ranges.clear();
-            }
-          }
+          responseCode = MHD_HTTP_NOT_MODIFIED;
         }
       }
 
       if (getData)
       {
-        // if there are no ranges, add the whole range
-        if (context->ranges.empty() || context->rangesLength == fileLength)
+        // handle Range header
+        context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Range"), fileLength, context->ranges, firstPosition, lastPosition);
+
+        // handle If-Range header but only if the Range header is present
+        if (!context->ranges.empty())
         {
-          if (context->rangesLength == fileLength)
-            context->ranges.clear();
-
-          context->ranges.push_back(HttpRange(0, fileLength - 1));
-          context->rangesLength = fileLength;
-          firstPosition = 0;
-          lastPosition = fileLength - 1;
-        }
-        else
-          responseCode = MHD_HTTP_PARTIAL_CONTENT;
-
-        // remember the total number of ranges
-        context->rangeCount = context->ranges.size();
-        // remember the total length
-        totalLength = context->rangesLength;
-
-        // we need to remember whether we are ranged because the range length
-        // might change and won't be reliable anymore for length comparisons
-        ranged = context->rangeCount > 1 || context->rangesLength < fileLength;
-
-        // adjust the MIME type and range length in case of multiple ranges
-        // which requires multipart boundaries
-        if (context->rangeCount > 1)
-        {
-          context->boundary = GenerateMultipartBoundary();
-          mimeType = "multipart/byteranges; boundary=" + context->boundary;
-
-          // build part of the boundary with the optional Content-Type header
-          // "--<boundary>\r\nContent-Type: <content-type>\r\n
-          context->boundaryWithHeader = "\r\n--" + context->boundary + "\r\n";
-          if (!context->contentType.empty())
-            context->boundaryWithHeader += "Content-Type: " + context->contentType + "\r\n";
-
-          // for every range, we need to add a boundary with header
-          for (HttpRanges::const_iterator range = context->ranges.begin(); range != context->ranges.end(); range++)
+          string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Range");
+          if (!ifRange.empty() && lastModified.IsValid())
           {
-            // we need to temporarily add the Content-Range header to the
-            // boundary to be able to determine the length
-            string completeBoundaryWithHeader = context->boundaryWithHeader;
-            completeBoundaryWithHeader += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT,
-                                                              range->first, range->second, range->second - range->first + 1);
-            completeBoundaryWithHeader += "\r\n\r\n";
+            CDateTime ifRangeDate;
+            ifRangeDate.SetFromRFC1123DateTime(ifRange);
 
-            totalLength += completeBoundaryWithHeader.size();
+            // check if the last modification is newer than the If-Range date
+            // if so we have to server the whole file instead
+            if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+              context->ranges.clear();
           }
-          // and at the very end a special end-boundary "\r\n--<boundary>--"
-          totalLength += 4 + context->boundary.size() + 2;
         }
+      }
+    }
 
-        // set the initial write position
-        context->writePosition = context->ranges.begin()->first;
+    if (getData)
+    {
+      // if there are no ranges, add the whole range
+      if (context->ranges.empty() || context->rangesLength == fileLength)
+      {
+        if (context->rangesLength == fileLength)
+          context->ranges.clear();
 
-        // create the response object
-        response = MHD_create_response_from_callback(totalLength,
-                                                     2048,
-                                                     &CWebServer::ContentReaderCallback, context.get(),
-                                                     &CWebServer::ContentReaderFreeCallback);
-        if (response == NULL)
-          return MHD_NO;
-        
-        context.release(); // ownership was passed to mhd
+        context->ranges.push_back(HttpRange(0, fileLength - 1));
+        context->rangesLength = fileLength;
+        firstPosition = 0;
+        lastPosition = fileLength - 1;
+      }
+      else
+        responseCode = MHD_HTTP_PARTIAL_CONTENT;
+
+      // remember the total number of ranges
+      context->rangeCount = context->ranges.size();
+      // remember the total length
+      totalLength = context->rangesLength;
+
+      // we need to remember whether we are ranged because the range length
+      // might change and won't be reliable anymore for length comparisons
+      ranged = context->rangeCount > 1 || context->rangesLength < fileLength;
+
+      // adjust the MIME type and range length in case of multiple ranges
+      // which requires multipart boundaries
+      if (context->rangeCount > 1)
+      {
+        context->boundary = GenerateMultipartBoundary();
+        mimeType = "multipart/byteranges; boundary=" + context->boundary;
+
+        // build part of the boundary with the optional Content-Type header
+        // "--<boundary>\r\nContent-Type: <content-type>\r\n
+        context->boundaryWithHeader = "\r\n--" + context->boundary + "\r\n";
+        if (!context->contentType.empty())
+          context->boundaryWithHeader += "Content-Type: " + context->contentType + "\r\n";
+
+        // for every range, we need to add a boundary with header
+        for (HttpRanges::const_iterator range = context->ranges.begin(); range != context->ranges.end(); range++)
+        {
+          // we need to temporarily add the Content-Range header to the
+          // boundary to be able to determine the length
+          string completeBoundaryWithHeader = context->boundaryWithHeader;
+          completeBoundaryWithHeader += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT,
+                                                            range->first, range->second, range->second - range->first + 1);
+          completeBoundaryWithHeader += "\r\n\r\n";
+
+          totalLength += completeBoundaryWithHeader.size();
+        }
+        // and at the very end a special end-boundary "\r\n--<boundary>--"
+        totalLength += 4 + context->boundary.size() + 2;
       }
 
-      // add Content-Range header
-      if (ranged)
-        AddHeader(response, "Content-Range", StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength).c_str());
-    }
-    else
-    {
-      getData = false;
+      // set the initial write position
+      context->writePosition = context->ranges.begin()->first;
 
-      std::string contentLength = StringUtils::Format("%" PRId64, fileLength);
-
-      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+      // create the response object
+      response = MHD_create_response_from_callback(totalLength, 2048,
+                                                   &CWebServer::ContentReaderCallback,
+                                                   context.get(),
+                                                   &CWebServer::ContentReaderFreeCallback);
       if (response == NULL)
         return MHD_NO;
-
-      AddHeader(response, "Content-Length", contentLength);
+        
+      context.release(); // ownership was passed to mhd
     }
 
-    // add "Accept-Ranges: bytes" header
-    AddHeader(response, "Accept-Ranges", "bytes");
-
-    // set the Content-Type header
-    if (!mimeType.empty())
-      AddHeader(response, "Content-Type", mimeType.c_str());
-
-    // set the Last-Modified header
-    if (lastModified.IsValid())
-      AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
-
-    // set the Expires header
-    CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    if (StringUtils::EqualsNoCase(mimeType, "text/html") ||
-        StringUtils::EqualsNoCase(mimeType, "text/css") ||
-        StringUtils::EqualsNoCase(mimeType, "application/javascript"))
-      expiryTime += CDateTimeSpan(1, 0, 0, 0);
-    else
-      expiryTime += CDateTimeSpan(365, 0, 0, 0);
-    AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+    // add Content-Range header
+    if (ranged)
+      AddHeader(response, "Content-Range", StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength));
   }
   else
   {
-    CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
+    getData = false;
+
+    std::string contentLength = StringUtils::Format("%" PRId64, fileLength);
+
+    response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+    if (response == NULL)
+      return MHD_NO;
+
+    AddHeader(response, "Content-Length", contentLength);
   }
+
+  // add "Accept-Ranges: bytes" header
+  AddHeader(response, "Accept-Ranges", "bytes");
+
+  // set the Content-Type header
+  if (!mimeType.empty())
+    AddHeader(response, "Content-Type", mimeType);
+
+  // set the Last-Modified header
+  if (lastModified.IsValid())
+    AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
+
+  // set the Expires header
+  CDateTime expiryTime = CDateTime::GetCurrentDateTime();
+  if (StringUtils::EqualsNoCase(mimeType, "text/html") ||
+      StringUtils::EqualsNoCase(mimeType, "text/css") ||
+      StringUtils::EqualsNoCase(mimeType, "application/javascript"))
+    expiryTime += CDateTimeSpan(1, 0, 0, 0);
+  else
+    expiryTime += CDateTimeSpan(365, 0, 0, 0);
+  AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
   return MHD_YES;
 }
@@ -599,6 +601,7 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
         payloadSize = strlen(PAGE_FILE_NOT_FOUND);
         payload = (void *)PAGE_FILE_NOT_FOUND;
         break;
+
       case MHD_HTTP_NOT_IMPLEMENTED:
         payloadSize = strlen(NOT_SUPPORTED);
         payload = (void *)NOT_SUPPORTED;
@@ -606,17 +609,19 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
     }
   }
 
-  response = MHD_create_response_from_data (payloadSize, payload, MHD_NO, MHD_NO);
-  if (response)
+  response = MHD_create_response_from_data(payloadSize, payload, MHD_NO, MHD_NO);
+  if (response != NULL)
     return MHD_YES;
+
   return MHD_NO;
 }
 
 int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response)
 {
-  response = MHD_create_response_from_data (size, data, free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
-  if (response)
+  response = MHD_create_response_from_data(size, data, free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
+  if (response != NULL)
     return MHD_YES;
+
   return MHD_NO;
 }
 
@@ -626,8 +631,8 @@ int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorTy
   int ret = CreateErrorResponse(connection, errorType, method, response);
   if (ret == MHD_YES)
   {
-    ret = MHD_queue_response (connection, errorType, response);
-    MHD_destroy_response (response);
+    ret = MHD_queue_response(connection, errorType, response);
+    MHD_destroy_response(response);
   }
 
   return ret;
@@ -781,7 +786,7 @@ bool CWebServer::Start(int port, const string &username, const string &password)
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
     }
     
-    m_daemon_ip4 = StartMHD(0 , port);
+    m_daemon_ip4 = StartMHD(0, port);
     
     m_running = (m_daemon_ip6 != NULL) || (m_daemon_ip4 != NULL);
     if (m_running)
@@ -789,6 +794,7 @@ bool CWebServer::Start(int port, const string &username, const string &password)
     else
       CLog::Log(LOGERROR, "WebServer: Failed to start the webserver");
   }
+
   return m_running;
 }
 
@@ -818,31 +824,29 @@ bool CWebServer::IsStarted()
 
 void CWebServer::SetCredentials(const string &username, const string &password)
 {
-  CSingleLock lock (m_critSection);
-  std::string str = username + ':' + password;
+  CSingleLock lock(m_critSection);
 
-  Base64::Encode(str.c_str(), m_Credentials64Encoded);
+  Base64::Encode(username + ':' + password, m_Credentials64Encoded);
   m_needcredentials = !password.empty();
 }
 
 bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
-  if (CFile::Exists(path))
-  {
-    protocol = "http";
-    string url;
-    std::string strPath = path;
-    if (StringUtils::StartsWith(strPath, "image://") ||
-       (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
-      url = "image/";
-    else
-      url = "vfs/";
-    url += CURL::Encode(strPath);
-    details["path"] = url;
-    return true;
-  }
+  if (!CFile::Exists(path))
+    return false;
 
-  return false;
+  protocol = "http";
+  string url;
+  std::string strPath = path;
+  if (StringUtils::StartsWith(strPath, "image://") ||
+      (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
+    url = "image/";
+  else
+    url = "vfs/";
+  url += CURL::Encode(strPath);
+  details["path"] = url;
+
+  return true;
 }
 
 bool CWebServer::Download(const char *path, CVariant &result)
@@ -899,7 +903,7 @@ std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection,
   if (value == NULL)
     return "";
 
-  if (stricmp(key.c_str(), MHD_HTTP_HEADER_CONTENT_TYPE) == 0)
+  if (StringUtils::EqualsNoCase(key, MHD_HTTP_HEADER_CONTENT_TYPE))
   {
     // Work around a bug in firefox (see https://bugzilla.mozilla.org/show_bug.cgi?id=416178)
     // by cutting of anything that follows a ";" in a "Content-Type" header field
@@ -932,8 +936,11 @@ int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum M
 
 std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
-  if (strcmp(ext, ".kar") == 0)   return "audio/midi";
-  if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
+  if (strcmp(ext, ".kar") == 0)
+    return "audio/midi";
+  if (strcmp(ext, ".tbn") == 0)
+    return "image/jpeg";
+
   return CMime::GetMimeType(ext);
 }
 
