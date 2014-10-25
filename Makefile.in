@@ -332,7 +332,7 @@ CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
-	@echo 'XBMC built successfully'
+	@echo '@APP_NAME@ built successfully'
 	@echo '-----------------------'
 
 include Makefile.include
@@ -662,7 +662,7 @@ endif
 	done
 
 uninstall:
-	@echo "Removing Kodi..."
+	@echo "Removing @APP_NAME@..."
 	@rm -rf $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@rm -rf $(DESTDIR)$(datarootdir)/@APP_NAME_LC@ $(DESTDIR)$(bindir)/@APP_NAME_LC@
 	@rm -rf $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
