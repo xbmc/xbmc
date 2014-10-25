@@ -15,6 +15,11 @@ where
 Reserved filenames (for additional information on how to build an addon)
 are:
   * platforms.txt: list of platforms to build an addon for (or "all")
+  * multi.txt list of "sub-addons" that are part of the addon's source with a
+    sub-directory for every addon listed on a separate line. The main addon will
+    only be downloaded and extracted but not built. Every listed sub-addon's
+    sub-directory will be directly copied from the addon's source to the
+    installation directory.
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
