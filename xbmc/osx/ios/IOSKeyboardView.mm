@@ -132,6 +132,10 @@ static CEvent keyboardFinishedEvent;
 -(void)keyboardWillShow:(NSNotification *) notification{
   NSDictionary* info = [notification userInfo];
   CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+#if !__IPHONE_8_0
+  if (GetIOSVersion() >= 8.0)
+    kbRect = [self convertRect:kbRect fromView:nil];
+#endif
   LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
   _kbRect = kbRect;
   [self setNeedsLayout];
