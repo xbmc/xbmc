@@ -203,138 +203,190 @@
 					<height>4</height>
 					<texture>separator.png</texture>
 				</control>
-				<control type="label">
-					<description>current feels like label</description>
+				<control type="grouplist">
 					<left>0</left>
 					<top>400</top>
 					<width>170</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[402] :</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
+					<height>180</height>
+					<itemgap>0</itemgap>
+					<control type="label">
+						<description>current feels like label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[402] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.FeelsLike))</visible>
+					</control>
+					<control type="label">
+						<description>current dew label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[405] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.DewPoint))</visible>
+					</control>
+					<control type="label">
+						<description>current humidity label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[406] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Humidity))</visible>
+					</control>
+					<control type="label">
+						<description>current UV Index label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[403] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.UVIndex))</visible>
+					</control>
+					<control type="label">
+						<description>current Precipitation label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[33021] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Precipitation))</visible>
+					</control>
+					<control type="label">
+						<description>current Wind label</description>
+						<left>0</left>
+						<top>0</top>
+						<width>170</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[404] :</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Wind))</visible>
+					</control>
 				</control>
-				<control type="label">
-					<description>current dew label</description>
-					<left>0</left>
-					<top>430</top>
-					<width>170</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[405] :</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current humidity label</description>
-					<left>0</left>
-					<top>460</top>
-					<width>170</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[406] :</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current UV Index label</description>
-					<left>0</left>
-					<top>490</top>
-					<width>170</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[403] :</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current Wind label</description>
-					<left>0</left>
-					<top>520</top>
-					<width>170</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[404] :</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current feels like Value</description>
+				<control type="grouplist">
 					<left>185</left>
 					<top>400</top>
 					<width>300</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>$INFO[Window.Property(Current.FeelsLike)]$INFO[System.TemperatureUnits]</label>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current dew Value</description>
-					<left>185</left>
-					<top>430</top>
-					<width>300</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>$INFO[Window.Property(Current.DewPoint)]$INFO[System.TemperatureUnits]</label>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current humidity Value</description>
-					<left>185</left>
-					<top>460</top>
-					<width>300</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<info>Window.Property(Current.Humidity)</info>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current UV Index Value</description>
-					<left>185</left>
-					<top>490</top>
-					<width>300</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<info>Window.Property(Current.UVIndex)</info>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>current Wind Value</description>
-					<left>185</left>
-					<top>520</top>
-					<width>300</width>
-					<height>35</height>
-					<font>font13</font>
-					<align>left</align>
-					<aligny>center</aligny>
-					<info>Window.Property(Current.Wind)</info>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
+					<height>180</height>
+					<itemgap>0</itemgap>
+					<control type="label">
+						<description>current feels like Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(Current.FeelsLike)]$INFO[System.TemperatureUnits]</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.FeelsLike))</visible>
+					</control>
+					<control type="label">
+						<description>current dew Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(Current.DewPoint)]$INFO[System.TemperatureUnits]</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.DewPoint))</visible>
+					</control>
+					<control type="label">
+						<description>current humidity Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>Window.Property(Current.Humidity)</info>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Humidity))</visible>
+					</control>
+					<control type="label">
+						<description>current UV Index Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>Window.Property(Current.UVIndex)</info>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.UVIndex))</visible>
+					</control>
+					<control type="label">
+						<description>current Precipitation Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>Window.Property(Current.Precipitation)</info>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Precipitation))</visible>
+					</control>
+					<control type="label">
+						<description>current Wind Value</description>
+						<left>0</left>
+						<top>0</top>
+						<width>300</width>
+						<height>28</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>Window.Property(Current.Wind)</info>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Current.Wind))</visible>
+					</control>
 				</control>
 				<control type="group">
-					<visible>!IsEmpty(Window.Property(36Hour.IsFetched))</visible>
+					<visible>!IsEmpty(Window.Property(Today.IsFetched))</visible>
 					<control type="label">
 						<description>Sunrise Label</description>
 						<left>30</left>
@@ -347,6 +399,7 @@
 						<label>$LOCALIZE[33027] : [COLOR=white]$INFO[Window.Property(Today.Sunrise)][/COLOR]</label>
 						<textcolor>grey2</textcolor>
 						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Today.Sunrise))</visible>
 					</control>
 					<control type="label">
 						<description>Sunset label</description>
@@ -360,339 +413,11 @@
 						<label>$LOCALIZE[33028] : [COLOR=white]$INFO[Window.Property(Today.Sunset)][/COLOR]</label>
 						<textcolor>grey2</textcolor>
 						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window.Property(Today.Sunset))</visible>
 					</control>
 				</control>
 			</control>
 			<control type="group">
-				<visible>IsEmpty(Window.Property(Today.IsFetched))</visible>
-				<left>580</left>
-				<top>40</top>
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>650</width>
-					<height>620</height>
-					<texture border="20">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>0</left>
-					<top>612</top>
-					<width>650</width>
-					<height>64</height>
-					<texture border="10">ContentPanelMirror.png</texture>
-				</control>
-				<control type="image">
-					<left>8</left>
-					<top>5</top>
-					<width>634</width>
-					<height>45</height>
-					<texture>dialogheader.png</texture>
-				</control>
-				<control type="label">
-					<description>header label</description>
-					<left>20</left>
-					<top>15</top>
-					<width>610</width>
-					<height>30</height>
-					<font>font13_title</font>
-					<label>10508</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="list" id="50">
-					<left>15</left>
-					<top>60</top>
-					<width>600</width>
-					<height>541</height>
-					<onleft>9000</onleft>
-					<onright>61</onright>
-					<onup>50</onup>
-					<ondown>50</ondown>
-					<viewtype label="535">list</viewtype>
-					<pagecontrol>61</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<itemlayout height="135" width="600">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>600</width>
-							<height>136</height>
-							<texture border="0,5,0,5">MenuItemNF.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>600</width>
-							<height>136</height>
-							<texture border="0,5,0,5">MenuItemNF.png</texture>
-						</control>
-						<control type="label">
-							<left>150</left>
-							<top>5</top>
-							<width>300</width>
-							<height>25</height>
-							<font>font13_title</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="image">
-							<left>460</left>
-							<top>0</top>
-							<width>135</width>
-							<height>135</height>
-							<aspectratio>keep</aspectratio>
-							<texture>$INFO[ListItem.ActualIcon]</texture>
-						</control>
-						<control type="label">
-							<left>30</left>
-							<top>35</top>
-							<width>390</width>
-							<height>30</height>
-							<font>font13</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[COLOR=grey2]$LOCALIZE[419] : [/COLOR]$INFO[ListItem.Property(HighTemp)]$INFO[ListItem.Property(TempUnits)]     [COLOR=grey2]$LOCALIZE[418] : [/COLOR]$INFO[ListItem.Property(LowTemp)]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
-						</control>
-						<control type="textbox">
-							<left>30</left>
-							<top>70</top>
-							<width>400</width>
-							<height>50</height>
-							<font>font13</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<label>$INFO[ListItem.Property(Outlook)]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="135" width="600">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>600</width>
-							<height>136</height>
-							<texture border="0,2,0,2">MenuItemNF.png</texture>
-							<visible>!Control.HasFocus(50)</visible>
-							<include>VisibleFadeEffect</include>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>600</width>
-							<height>136</height>
-							<texture border="0,2,0,2">MenuItemNF.png</texture>
-							<visible>!Control.HasFocus(50)</visible>
-							<include>VisibleFadeEffect</include>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>600</width>
-							<height>136</height>
-							<texture border="10">button-focus2.png</texture>
-							<visible>Control.HasFocus(50)</visible>
-							<include>VisibleFadeEffect</include>
-						</control>
-						<control type="label">
-							<left>150</left>
-							<top>5</top>
-							<width>300</width>
-							<height>25</height>
-							<font>font13_title</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="image">
-							<left>460</left>
-							<top>0</top>
-							<width>135</width>
-							<height>135</height>
-							<aspectratio>keep</aspectratio>
-							<texture>$INFO[ListItem.ActualIcon]</texture>
-						</control>
-						<control type="label">
-							<left>30</left>
-							<top>35</top>
-							<width>390</width>
-							<height>30</height>
-							<font>font13</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[COLOR=grey2]$LOCALIZE[419] : [/COLOR]$INFO[ListItem.Property(HighTemp)]$INFO[ListItem.Property(TempUnits)]     [COLOR=grey2]$LOCALIZE[418] : [/COLOR]$INFO[ListItem.Property(LowTemp)]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
-						</control>
-						<control type="textbox">
-							<left>30</left>
-							<top>70</top>
-							<width>400</width>
-							<height>50</height>
-							<font>font13</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<label>$INFO[ListItem.Property(Outlook)]</label>
-						</control>
-					</focusedlayout>
-					<content>
-						<item>
-							<label>$LOCALIZE[31909]</label>
-							<icon>-</icon>
-							<onclick>noop</onclick>
-							<visible>!Weather.IsFetched</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day0.Title)]</label>
-							<icon>$INFO[Window.Property(Day0.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day0.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day0.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day0.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day0.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day1.Title)]</label>
-							<icon>$INFO[Window.Property(Day1.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day1.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day1.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day1.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day1.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day2.Title)]</label>
-							<icon>$INFO[Window.Property(Day2.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day2.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day2.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day2.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day2.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day3.Title)]</label>
-							<icon>$INFO[Window.Property(Day3.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day3.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day3.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day3.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day3.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day4.Title)]</label>
-							<icon>$INFO[Window.Property(Day4.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day4.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day4.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day4.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day4.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day5.Title)]</label>
-							<icon>$INFO[Window.Property(Day5.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day5.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day5.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day5.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day5.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day6.Title)]</label>
-							<icon>$INFO[Window.Property(Day6.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day6.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day6.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day6.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day6.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day7.Title)]</label>
-							<icon>$INFO[Window.Property(Day7.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day7.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day7.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day7.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day7.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day8.Title)]</label>
-							<icon>$INFO[Window.Property(Day8.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day8.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day8.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day8.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day8.Title))</visible>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(Day9.Title)]</label>
-							<icon>$INFO[Window.Property(Day9.OutlookIcon)]</icon>
-							<property name="HighTemp">$INFO[Window.Property(Day9.HighTemp)]</property>
-							<property name="LowTemp">$INFO[Window.Property(Day9.LowTemp)]</property>
-							<property name="Outlook">$INFO[Window.Property(Day9.Outlook)]</property>
-							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
-							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day9.Title))</visible>
-						</item>
-					</content>
-				</control>
-				<control type="scrollbar" id="61">
-					<left>615</left>
-					<top>60</top>
-					<width>25</width>
-					<height>540</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>50</onleft>
-					<onright>9000</onright>
-					<showonepage>true</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(50)</visible>
-				</control>
-				<control type="label">
-					<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
-					<description>number of files/pages</description>
-					<left>90</left>
-					<top>627</top>
-					<width>570</width>
-					<font>font12</font>
-					<align>right</align>
-					<scroll>true</scroll>
-					<textcolor>grey</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[12393] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
-				</control>
-			</control>
-			<control type="group">
-				<visible>!IsEmpty(Window.Property(Today.IsFetched))</visible>
 				<left>580</left>
 				<top>40</top>
 				<control type="image">
@@ -717,11 +442,12 @@
 					<texture>dialogheader.png</texture>
 				</control>
 				<control type="group" id="50">
-					<include condition="!IsEmpty(Window.Property(Daily.IsFetched))">Weather10DayForcast</include>
-					<include condition="!IsEmpty(Window.Property(36Hour.IsFetched))">Weather36HourForcast</include>
-					<include condition="!IsEmpty(Window.Property(Weekend.IsFetched))">WeatherWeekendForcast</include>
-					<include condition="!IsEmpty(Window.Property(Hourly.IsFetched))">WeatherHourlyForcast</include>
-					<include condition="!IsEmpty(Window.Property(Alerts.IsFetched)) + !IsEmpty(Window.Property(Map.IsFetched))">WeatherMapAlerts</include>
+					<include>WeatherDaily</include>
+					<include>Weather36Hour</include>
+					<include>WeatherWeekend</include>
+					<include>WeatherHourly</include>
+					<include>WeatherMaps</include>
+					<include>WeatherAlerts</include>
 				</control>
 			</control>
 		</control>
@@ -778,7 +504,7 @@
 					</control>
 				</control>
 				<control type="button" id="302">
-					<description>10 day forcast button</description>
+					<description>Daily forcast button</description>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>31904</label>
@@ -810,12 +536,20 @@
 					<visible>!IsEmpty(Window.Property(Hourly.IsFetched))</visible>
 				</control>
 				<control type="button" id="306">
-					<description>Map and alerts button</description>
+					<description>Maps button</description>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>31910</label>
 					<onfocus>SetProperty(Weather.CurrentView,map)</onfocus>
-					<visible>!IsEmpty(Window.Property(Alerts.IsFetched)) + !IsEmpty(Window.Property(Map.IsFetched))">WeatherMapAlerts</visible>
+					<visible>!IsEmpty(Window.Property(Map.IsFetched))</visible>
+				</control>
+				<control type="button" id="307">
+					<description>Alerts button</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>33050</label>
+					<onfocus>SetProperty(Weather.CurrentView,alerts)</onfocus>
+					<visible>!IsEmpty(Window.Property(Alerts.IsFetched))</visible>
 				</control>
 				<control type="label" id="201">
 					<width>250</width>

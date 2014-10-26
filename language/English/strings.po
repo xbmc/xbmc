@@ -69,37 +69,38 @@ msgstr ""
 
 #empty string with id 10
 
-#: Used in Confluence
+#strings from 11 to 17 are reserved for weather translation
+#. Weather token
 msgctxt "#11"
 msgid "Monday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#12"
 msgid "Tuesday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#13"
 msgid "Wednesday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#14"
 msgid "Thursday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#15"
 msgid "Friday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#16"
 msgid "Saturday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#17"
 msgid "Sunday"
 msgstr ""
@@ -3811,8 +3812,113 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr ""
 
-#empty strings from id 1302 to 1395
-#strings from 1396 to 1449 are reserved for weather translation
+#empty strings from id 1302 to 1374
+#strings from 1350 to 1449 are reserved for weather translation
+
+#. Weather token
+msgctxt "#1375"
+msgid "Temperature"
+msgstr ""
+
+#. Weather token
+msgctxt "#1376"
+msgid "Pressure"
+msgstr ""
+
+#. Weather token
+msgctxt "#1377"
+msgid "Proximity"
+msgstr ""
+
+#. Weather token
+msgctxt "#1378"
+msgid "Intensity"
+msgstr ""
+
+#. Weather token
+msgctxt "#1379"
+msgid "Ragged"
+msgstr ""
+
+#. Weather token
+msgctxt "#1380"
+msgid "Very"
+msgstr ""
+
+#. Weather token
+msgctxt "#1381"
+msgid "Extreme"
+msgstr ""
+
+#. Weather token
+msgctxt "#1382"
+msgid "Whirls"
+msgstr ""
+
+#. Weather token
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr ""
+
+#. Weather token
+msgctxt "#1384"
+msgid "Broken"
+msgstr ""
+
+#. Weather token
+msgctxt "#1385"
+msgid "Tornado"
+msgstr ""
+
+#. Weather token
+msgctxt "#1386"
+msgid "Tropical"
+msgstr ""
+
+#. Weather token
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr ""
+
+#. Weather token
+msgctxt "#1388"
+msgid "Cold"
+msgstr ""
+
+#. Weather token
+msgctxt "#1389"
+msgid "Windy"
+msgstr ""
+
+#. Weather token
+msgctxt "#1390"
+msgid "Settings"
+msgstr ""
+
+#. Weather token
+msgctxt "#1391"
+msgid "Breeze"
+msgstr ""
+
+#. Weather token
+msgctxt "#1392"
+msgid "Gentle"
+msgstr ""
+
+#. Weather token
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr ""
+
+#. Weather token
+msgctxt "#1394"
+msgid "Severe"
+msgstr ""
+
+#. Weather token
+msgctxt "#1395"
+msgid "Violent"
+msgstr ""
 
 #. Weather token
 msgctxt "#1396"
