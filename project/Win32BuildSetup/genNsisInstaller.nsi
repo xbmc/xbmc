@@ -352,15 +352,6 @@ Section "Uninstall"
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
     RMDir /r "$APPDATA\${APP_NAME}\"
     RMDir /r "$INSTDIR\portable_data\"
-  ${Else}
-    ;Check if %appdata%\${APP_NAME}\userdata and portable_data contain no guisettings.xml
-    ;If that file does not exists, then delete those folders and $INSTDIR
-    IfFileExists $INSTDIR\portable_data\userdata\guisettings.xml +2
-      RMDir /r "$INSTDIR\portable_data\"
-      RMDir "$INSTDIR\"
-    IfFileExists "$APPDATA\${APP_NAME}\userdata\guisettings.xml" +2
-      RMDir /r "$APPDATA\${APP_NAME}\userdata\"
-      RMDir "$APPDATA\${APP_NAME}"
   ${EndIf}
   RMDir "$INSTDIR"
 
