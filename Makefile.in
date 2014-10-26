@@ -249,6 +249,12 @@ else
   INSTALL_FILTER+= .*visualization\.goom.*
 endif
 
+ifneq (@DISABLE_VIDEOVIS@,1)
+  VIS_DIRS+= xbmc/visualizations/video
+else
+  INSTALL_FILTER+= .*visualization\.video.*
+endif
+
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
 	lib/addons/library.xbmc.codec \

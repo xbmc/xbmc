@@ -83,6 +83,7 @@ static const ControlMapping controls[] =
     {"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
     {"image",             CGUIControl::GUICONTROL_IMAGE},
     {"largeimage",        CGUIControl::GUICONTROL_IMAGE},
+    {"ffmpeg",            CGUIControl::GUICONTROL_IMAGE},
     {"image",             CGUIControl::GUICONTROL_BORDEREDIMAGE},
     {"label",             CGUIControl::GUICONTROL_LABEL},
     {"label",             CGUIControl::GUICONTROL_LISTLABEL},
@@ -1299,6 +1300,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   {
     if (strType == "largeimage")
       texture.useLarge = true;
+
+    else if (strType == "ffmpeg")
+      texture.useFFmpeg = true;
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.empty() && borderStr.empty())
