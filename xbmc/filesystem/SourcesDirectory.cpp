@@ -18,10 +18,12 @@
  *
  */
 
+#include "system.h"
 #include "SourcesDirectory.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "Directory.h"
 #include "FileItem.h"
 #include "File.h"
 #include "profiles/ProfilesManager.h"
@@ -49,14 +51,22 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   VECSOURCES sources;
   VECSOURCES *sourcesFromType = CMediaSourceSettings::Get().GetSources(type);
-  if (sourcesFromType)
-    sources = *sourcesFromType;
-  g_mediaManager.GetRemovableDrives(sources);
-
   if (!sourcesFromType)
     return false;
 
-  return GetDirectory(sources, items);
+  sources = *sourcesFromType;
+  g_mediaManager.GetRemovableDrives(sources);
+
+  if (!GetDirectory(sources, items))
+    return false;
+
+#ifdef HAS_UPNP
+  CFileItemList upnpServers;
+  if (CDirectory::GetDirectory("upnp://", upnpServers))
+    items.Append(upnpServers);
+#endif
+
+  return true;
 }
 
 bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &items)

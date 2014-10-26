@@ -184,9 +184,14 @@ public:
     // PLT_MediaBrowser methods
     virtual bool OnMSAdded(PLT_DeviceDataReference& device)
     {
+        // update any open upnp:// path
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
+
+        // update any open source view
+        CGUIMessage updateSourcesMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+        g_windowManager.SendThreadMessage(updateSourcesMessage);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -194,9 +199,14 @@ public:
     {
         PLT_SyncMediaBrowser::OnMSRemoved(device);
 
+        // update any open upnp:// path
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
+
+        // update any open source view
+        CGUIMessage updateSourcesMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+        g_windowManager.SendThreadMessage(updateSourcesMessage);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }

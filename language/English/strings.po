@@ -10174,7 +10174,12 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr ""
 
-#empty strings from id 20262 to 20299
+#: xbmc/storage/MediaManager.cpp
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr ""
+
+#empty strings from id 20263 to 20299
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20300"
