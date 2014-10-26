@@ -288,7 +288,7 @@ namespace XBMCAddon
        *        Once you use a keyword, all following arguments require the keyword.\n
        * \n
        * example:
-       *   - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])n
+       *   - listitem.addContextMenuItems([('Theater Showtimes', 'RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])n
        */
       void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false) throw (ListItemException);
 

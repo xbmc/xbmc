@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -84,37 +84,37 @@
       <!-- # enter 	-->      <button id="36">Select</button>
       <!-- Mute		-->      <button id="25">Mute</button>
       <!-- Aspect	-->      <button id="61">AspectRatio</button>
-      <!-- F1		-->      <button id="53">XBMC.ActivateWindow(Music)</button>
-      <!-- F3		-->      <button id="55">XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</button>
-      <!-- F2		-->      <button id="54">XBMC.ActivateWindow(videolibrary,movietitles,return)</button>
-      <!-- F4		-->      <button id="56">XBMC.ActivateWindow(Weather)</button>
+      <!-- F1		-->      <button id="53">ActivateWindow(Music)</button>
+      <!-- F3		-->      <button id="55">ActivateWindow(videolibrary,tvshowtitles,return)</button>
+      <!-- F2		-->      <button id="54">ActivateWindow(videolibrary,movietitles,return)</button>
+      <!-- F4		-->      <button id="56">ActivateWindow(Weather)</button>
       <!-- F5			-->  <button id="93">OSD</button>
-      <!-- F7			-->  <button id="95">XBMC.ActivateWindow(Home)</button>
-      <!-- F6			-->  <button id="94">XBMC.ActivateWindow(Scripts)</button>
-      <!-- F8			-->  <button id="96">XBMC.ActivateWindow(favourites)</button>
+      <!-- F7			-->  <button id="95">ActivateWindow(Home)</button>
+      <!-- F6			-->  <button id="94">ActivateWindow(Scripts)</button>
+      <!-- F8			-->  <button id="96">ActivateWindow(favourites)</button>
       <!-- F9			-->  <button id="73">ShowVideoMenu</button>
       <!-- F10			-->  <button id="74">ShowSubtitles</button>
       <!-- F11			-->  <button id="75">NextSubtitle</button>
-      <!-- F12			-->  <button id="76">XBMC.ActivateWindow(VideoFiles)</button>
+      <!-- F12			-->  <button id="76">ActivateWindow(VideoFiles)</button>
       <!-- F13			-->  <button id="63">Playlist</button>
       <!-- F14			-->  <button id="64">AudioNextLanguage</button>
       <!-- Large Down	-->  <button id="82">PageDown</button>
       <!-- Large Up	-->      <button id="81">PageUp</button>
-      <!-- pwrToggle   -->   <button id="66">XBMC.ShutDown()</button>
+      <!-- pwrToggle   -->   <button id="66">ShutDown()</button>
       <!-- Queue	-->      <button id="62">Queue</button>
-      <!-- Sleep	-->      <button id="46">XBMC.Suspend()</button>
+      <!-- Sleep	-->      <button id="46">Suspend()</button>
       <!-- Red		-->      <button id="83">CodecInfo</button>
-      <!-- Green	-->      <button id="84">XBMC.ActivateWindow(Settings)</button>
+      <!-- Green	-->      <button id="84">ActivateWindow(Settings)</button>
       <!-- Yellow	-->      <button id="85">xbmc.ActivateWindow(SystemSettings)</button>
-      <!-- Blue		-->      <button id="86">XBMC.ActivateWindow(SystemInfo)</button>
+      <!-- Blue		-->      <button id="86">ActivateWindow(SystemInfo)</button>
     </joystick>
   </global>
   <Home>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">XBMC.ActivateWindow(PlayerControls)</button>
-      <!-- Info  	-->      <button id="31">XBMC.ActivateWindow(Settings)</button>
-      <!-- Exit 	-->      <button id="51">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <!-- #enter	-->      <button id="36">XBMC.ActivateWindow(SystemInfo)</button>
+      <!-- menu       	-->      <button id="6">ActivateWindow(PlayerControls)</button>
+      <!-- Info  	-->      <button id="31">ActivateWindow(Settings)</button>
+      <!-- Exit 	-->      <button id="51">ActivateWindow(ShutdownMenu)</button>
+      <!-- #enter	-->      <button id="36">ActivateWindow(SystemInfo)</button>
       <!-- 1 		-->      <button id="11">ToggleFullScreen</button>
     </joystick>
   </Home>
@@ -208,8 +208,8 @@
       <!-- menu       	-->      <button id="6">OSD</button>
       <!-- Prev		-->      <button id="32">LockPreset</button>
       <!-- Info  	-->      <button id="31">Info</button>
-      <!-- F8		-->      <button id="96">XBMC.ActivateWindow(VisualisationPresetList)</button>
-      <!-- F9		-->      <button id="73">XBMC.ActivateWindow(VisualisationSettings)</button>
+      <!-- F8		-->      <button id="96">ActivateWindow(VisualisationPresetList)</button>
+      <!-- F9		-->      <button id="73">ActivateWindow(VisualisationSettings)</button>
     </joystick>
   </Visualisation>
   <MusicOSD>

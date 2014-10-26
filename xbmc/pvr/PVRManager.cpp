@@ -129,9 +129,9 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   if (settingId == "pvrmanager.enabled")
   {
     if (((CSettingBool*)setting)->GetValue())
-      CApplicationMessenger::Get().ExecBuiltIn("XBMC.StartPVRManager", false);
+      CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
     else
-      CApplicationMessenger::Get().ExecBuiltIn("XBMC.StopPVRManager", false);
+      CApplicationMessenger::Get().ExecBuiltIn("StopPVRManager", false);
   }
   else if (settingId == "pvrparental.enabled")
   {

@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -60,24 +60,24 @@
       <display>FullScreen</display>
       <start>PreviousMenu</start>
       <record>Record</record>
-      <eject>XBMC.EjectTray()</eject>
+      <eject>EjectTray()</eject>
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
-      <power>XBMC.ShutDown()</power>
-      <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
-      <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
-      <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(TVChannels)</mytv>
-      <guide>XBMC.ActivateWindow(TVGuide)</guide>
-      <livetv>XBMC.ActivateWindow(TVChannels)</livetv>
-      <liveradio>XBMC.ActivateWindow(RadioChannels)</liveradio>
-      <recordedtv>XBMC.ActivateWindow(TVRecordings)</recordedtv>
-      <epgsearch>XBMC.ActivateWindow(TVSearch)</epgsearch>
-      <red>XBMC.ActivateWindow(TVChannels)</red>
-      <green>XBMC.ActivateWindow(MyVideos)</green>
-      <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
-      <blue>XBMC.ActivateWindow(MyPictures)</blue>
+      <power>ShutDown()</power>
+      <myvideo>ActivateWindow(MyVideos)</myvideo>
+      <mymusic>ActivateWindow(MyMusic)</mymusic>
+      <mypictures>ActivateWindow(MyPictures)</mypictures>
+      <mytv>ActivateWindow(TVChannels)</mytv>
+      <guide>ActivateWindow(TVGuide)</guide>
+      <livetv>ActivateWindow(TVChannels)</livetv>
+      <liveradio>ActivateWindow(RadioChannels)</liveradio>
+      <recordedtv>ActivateWindow(TVRecordings)</recordedtv>
+      <epgsearch>ActivateWindow(TVSearch)</epgsearch>
+      <red>ActivateWindow(TVChannels)</red>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>JumpSMS2</two>
@@ -93,9 +93,9 @@
   </global>
   <Home>
     <remote>
-      <info>XBMC.ActivateWindow(SystemInfo)</info>
-      <clear>XBMC.ActivateWindow(Weather)</clear>
-      <hash>XBMC.ActivateWindow(Settings)</hash>
+      <info>ActivateWindow(SystemInfo)</info>
+      <clear>ActivateWindow(Weather)</clear>
+      <hash>ActivateWindow(Settings)</hash>
     </remote>
   </Home>
   <MyTVRecordings>
@@ -187,8 +187,8 @@
       <select>OSD</select>
       <title>CodecInfo</title>
       <info>Info</info>
-      <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
-      <teletext>XBMC.ActivateWindow(Teletext)</teletext>
+      <guide>ActivateWindow(PVROSDGuide)</guide>
+      <teletext>ActivateWindow(Teletext)</teletext>
       <subtitle>NextSubtitle</subtitle>
       <star>NextSubtitle</star>
       <language>AudioNextLanguage</language>
@@ -224,12 +224,12 @@
       <down>DecreaseRating</down>
       <back>Back</back>
       <title>CodecInfo</title>
-      <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
+      <select>ActivateWindow(VisualisationPresetList)</select>
       <menu>OSD</menu>
       <start>OSD</start>
       <info>Info</info>
-      <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
-      <playlist>XBMC.ActivateWindow(PVROSDChannels)</playlist>
+      <guide>ActivateWindow(PVROSDGuide)</guide>
+      <playlist>ActivateWindow(PVROSDChannels)</playlist>
     </remote>
   </Visualisation>
   <MusicOSD>

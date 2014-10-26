@@ -39,7 +39,7 @@ class TiXmlNode;
 struct CButtonAction
 {
   int id;
-  std::string strID; // needed for "XBMC.ActivateWindow()" type actions
+  std::string strID; // needed for "ActivateWindow()" type actions
 };
 ///
 /// singleton class to map from buttons to actions

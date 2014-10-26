@@ -9,7 +9,7 @@
       <button id="3">Back</button>
       <button id="7">FullScreen</button>
       <button id="8">ContextMenu</button>
-      <button id="10">XBMC.ActivateWindow(Home)</button>
+      <button id="10">ActivateWindow(Home)</button>
       <button id="11">ActivateWindow(shutdownmenu)</button>
       <button id="12">Screenshot</button>
 
@@ -31,7 +31,7 @@
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
-      <button id="3">XBMC.ActivateWindow(Favourites)</button>
+      <button id="3">ActivateWindow(Favourites)</button>
     </joystick>
   </Home>
 
@@ -97,7 +97,7 @@
       <altname>Logitech RumblePad 2 USB</altname>
       <button id="2">Pause</button>
       <button id="3">Stop</button>
-      <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="4">ActivateWindow(VisualisationPresetList)</button>
       <button id="5">Rewind</button>
       <button id="6">FastForward</button>
       <button id="10">OSD</button>

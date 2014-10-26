@@ -4,7 +4,7 @@
     <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" order="2" />
-    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
+    <setting key="flip_keyboard" value="VideoLibrary.Search" label="36002" order="3" />
     <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
   </peripheral>
 

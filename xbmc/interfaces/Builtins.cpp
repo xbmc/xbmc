@@ -258,7 +258,7 @@ void CBuiltins::GetHelp(std::string &help)
 
 int CBuiltins::Execute(const std::string& execString)
 {
-  // Get the text after the "XBMC."
+  // Deprecated. Get the text after the "XBMC."
   std::string execute;
   vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
@@ -545,7 +545,7 @@ int CBuiltins::Execute(const std::string& execString)
       g_RarManager.ExtractArchive(params[0],strDestDirect);
 #endif
     else
-      CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
+      CLog::Log(LOGERROR, "Extract, No archive given");
   }
   else if (execute == "runplugin")
   {
@@ -560,7 +560,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
+      CLog::Log(LOGERROR, "RunPlugin called with no arguments.");
     }
   }
   else if (execute == "runaddon")
@@ -614,7 +614,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
+      CLog::Log(LOGERROR, "RunAddon called with no arguments.");
     }
   }
   else if (execute == "notifyall")
@@ -628,13 +628,13 @@ int CBuiltins::Execute(const std::string& execString)
       ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
     }
     else
-      CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
+      CLog::Log(LOGERROR, "NotifyAll needs two parameters");
   }
   else if (execute == "playmedia")
   {
     if (!params.size())
     {
-      CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
+      CLog::Log(LOGERROR, "PlayMedia called with empty parameter");
       return -3;
     }
 
@@ -733,7 +733,7 @@ int CBuiltins::Execute(const std::string& execString)
       // play media
       if (!g_application.PlayMedia(item, playlist))
       {
-        CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", params[0].c_str());
+        CLog::Log(LOGERROR, "PlayMedia could not play media: %s", params[0].c_str());
         return false;
       }
     }
@@ -742,7 +742,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     if (!params.size())
     {
-      CLog::Log(LOGERROR, "XBMC.ShowPicture called with empty parameter");
+      CLog::Log(LOGERROR, "ShowPicture called with empty parameter");
       return -2;
     }
     CGUIMessage msg(GUI_MSG_SHOW_PICTURE, 0, 0);
@@ -754,7 +754,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     if (!params.size())
     {
-      CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
+      CLog::Log(LOGERROR, "SlideShow called with empty parameter");
       return -2;
     }
     std::string beginSlidePath;
@@ -810,7 +810,7 @@ int CBuiltins::Execute(const std::string& execString)
     g_application.WakeUpScreenSaverAndDPMS();
     if (!params.size())
     {
-      CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
+      CLog::Log(LOGERROR, "PlayerControl called with empty parameter");
       return -3;
     }
     if (paramlow ==  "play")
@@ -1441,7 +1441,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (!g_application.IsVideoScanning())
          g_application.StartVideoCleanup(userInitiated);
       else
-        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
+        CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
     }
     else if (StringUtils::EqualsNoCase(params[0], "music"))
     {
@@ -1454,7 +1454,7 @@ int CBuiltins::Execute(const std::string& execString)
         musicdatabase.Close();
       }
       else
-        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+        CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute == "exportlibrary" && !params.empty())

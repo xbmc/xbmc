@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -49,10 +49,10 @@
       <button id="6">ContextMenu</button>
       <button id="7"/>
       <button id="8"/>
-      <button id="9">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="9">ActivateWindow(PlayerControls)</button>
       <button id="10"/>
       <button id="11">Screenshot</button>
-      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="12">ActivateWindow(ShutdownMenu)</button>
       <button id="13">Up</button>
       <button id="14">Right</button>
       <button id="15">Down</button>
@@ -71,7 +71,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="3">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+      <button id="3">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
   <MyFiles>
@@ -179,7 +179,7 @@
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">CodecInfo</button>
-      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="5">ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
       <button id="9">OSD</button>
       <button id="13">NextPreset</button>

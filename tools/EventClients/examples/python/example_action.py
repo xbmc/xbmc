@@ -27,7 +27,7 @@ def main():
             xbmc.send_action(sys.argv[1], ACTION_EXECBUILTIN)
         except Exception, e:
             print str(e)
-            xbmc.send_action("XBMC.ActivateWindow(ShutdownMenu)")
+            xbmc.send_action("ActivateWindow(ShutdownMenu)")
     
 
     # ok we're done, close the connection
