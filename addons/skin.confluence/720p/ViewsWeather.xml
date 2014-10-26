@@ -1499,7 +1499,7 @@
 	</include>
 	<include name="WeatherAlerts">
 		<control type="group">
-			<visible>StringCompare(Window.Property(Weather.CurrentView),alerts) + !(IsEmpty(Window.Property(Alerts.IsFetched)</visible>
+			<visible>StringCompare(Window.Property(Weather.CurrentView),alerts) + !IsEmpty(Window.Property(Alerts.IsFetched))</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="996">
 				<description>Hidden Button for focus</description>
