@@ -4541,7 +4541,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 90;
+  return 91;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
