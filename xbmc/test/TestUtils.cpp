@@ -43,7 +43,6 @@ public:
   bool Create(const std::string &suffix)
   {
     char tmp[MAX_PATH];
-    int fd;
 
     m_ptempFileDirectory = CSpecialProtocol::TranslatePath("special://temp/");
     m_ptempFilePath = m_ptempFileDirectory + "xbmctempfileXXXXXX";
@@ -64,6 +63,7 @@ public:
     }
     m_ptempFilePath = tmp;
 #else
+    int fd;
     if ((fd = mkstemps(tmp, suffix.length())) < 0)
     {
       m_ptempFilePath = "";
