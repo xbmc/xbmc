@@ -4279,8 +4279,10 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
     CPlexMediaDecisionEngine plexMDE;
     if (plexMDE.resolveItem(item, newItem))
     {
-     // Matroska seeking check
-      if (CPlexTranscoderClient::getItemTranscodeMode(item) == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV)
+      // Matroska seeking check
+      CPlexTranscoderClient::PlexTranscodeMode mode = CPlexTranscoderClient::getItemTranscodeMode(item);
+
+      if (mode == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV)
       {
         if (item.HasProperty("viewOffsetSeek"))
         {
@@ -4290,7 +4292,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
           newItem.SetProperty("viewOffset", offsetSeek);
           newItem.m_lStartOffset = item.m_lStartOffset = ((offsetSeek / 10) - newItem.m_lEndOffset) * 0.75;
         }
-        else if (newItem.m_lStartOffset == STARTOFFSET_RESUME)
+        else if (mode == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_HLS && newItem.m_lStartOffset == STARTOFFSET_RESUME)
         {
           CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(newItem.GetProperty("plexserver").asString());
           

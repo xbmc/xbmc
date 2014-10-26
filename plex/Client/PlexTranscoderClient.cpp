@@ -372,7 +372,7 @@ std::string CPlexTranscoderClient::GetCurrentSession()
 CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getServerTranscodeMode(const CPlexServerPtr& server)
 {
   if (!server)
-    return PLEX_TRANSCODE_MODE_UNKNOWN;
+    return PLEX_TRANSCODE_MODE_NONE;
 
   if (g_advancedSettings.m_bUseMatroskaTranscodes)
   {
@@ -389,6 +389,9 @@ CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getServerTransco
 ///////////////////////////////////////////////////////////////////////////////
 CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getItemTranscodeMode(const CFileItem& item)
 {
+  if (item.GetProperty("plexDidTranscode").asBoolean(false) == false)
+    return PLEX_TRANSCODE_MODE_NONE;
+
   CFileItemPtr pItem(new CFileItem(item));
   CPlexServerPtr pServer = g_plexApplication.serverManager->FindFromItem(pItem);
   return getServerTranscodeMode(pServer);

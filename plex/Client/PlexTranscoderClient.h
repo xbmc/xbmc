@@ -29,7 +29,7 @@ public:
 
   enum PlexTranscodeMode
   {
-    PLEX_TRANSCODE_MODE_UNKNOWN = 0,
+    PLEX_TRANSCODE_MODE_NONE = 0,
     PLEX_TRANSCODE_MODE_HLS = 1,
     PLEX_TRANSCODE_MODE_MKV = 2
   };
