@@ -377,7 +377,7 @@ CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getServerTransco
   if (g_advancedSettings.m_bUseMatroskaTranscodes)
   {
     CPlexServerVersion serverVersion(server->GetVersion());
-    CPlexServerVersion needVersion("0.9.9.7.435-abc123");
+    CPlexServerVersion needVersion("0.9.10.0.0-abc123");
     if (serverVersion > needVersion)
       return PLEX_TRANSCODE_MODE_MKV;
   }
