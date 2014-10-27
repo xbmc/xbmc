@@ -621,8 +621,14 @@ void CPlexAutoUpdate::UpdateAndRestart()
 	PROCESS_INFORMATION processInfo;
 	ZeroMemory(&processInfo,sizeof(processInfo));
 
+  // set a working directory, otherwise it will fail
+  // to remove the current dir.
+  //
+  char tmpDir[MAX_PATH + 1];
+  if (GetTempPath(MAX_PATH, tmpDir) == 0)
+    strcpy(tmpDir, "c:\\");
 
-  if (CreateProcess(updater.c_str(), arguments, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &processInfo) == 0)
+  if (CreateProcess(updater.c_str(), arguments, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, tmpDir, &startupInfo, &processInfo) == 0)
   {
     CLog::Log(LOGWARNING, "CPlexAutoUpdate::UpdateAndRestart CreateProcess failed! %d", GetLastError());
   }
