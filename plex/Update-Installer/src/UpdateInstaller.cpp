@@ -18,6 +18,7 @@ UpdateInstaller::UpdateInstaller()
     m_installed(0)
 {
   m_tempDir = FileUtils::tempPath();
+  LOG(Info, "Using tmpdir: " + m_tempDir);
 }
 
 void UpdateInstaller::setWaitPid(PLATFORM_PID pid)
@@ -107,6 +108,8 @@ std::string UpdateInstaller::friendlyErrorForError(const FileUtils::IOException&
   return friendlyError;
 }
 
+#define DID_CANCEL() { if (m_observer && m_observer->didCancel()) { throw std::string("Update canceled"); } }
+
 void UpdateInstaller::run() throw()
 {
   if (!m_script || !m_script->isValid())
@@ -195,6 +198,8 @@ void UpdateInstaller::run() throw()
       LOG(Info, "Copy bundle");
       copyBundle();
 
+      DID_CANCEL();
+
       LOG(Info, "Patching files");
       patchFiles();
 
@@ -204,8 +209,13 @@ void UpdateInstaller::run() throw()
       LOG(Info, "Uninstalling removed files");
       uninstallFiles();
 
+      DID_CANCEL();
+
       LOG(Info, "Verifying files against manifest");
       verifyAgainstManifest();
+
+      // last chance
+      DID_CANCEL();
 
       LOG(Info, "Moving bundle inplace");
       FileUtils::moveFile(m_targetDir.c_str(), backupDir.c_str());
@@ -236,21 +246,27 @@ void UpdateInstaller::run() throw()
         m_observer->updateError(friendlyError);
       }
     }
-
-    if (m_observer)
+    else if (m_observer)
     {
       m_observer->updateMessage("Finishing up...");
     }
 
     try
     {
+      LOG(Info, "Removing backups and other cruft...");
       if (FileUtils::fileExists(backupDir.c_str()))
         FileUtils::rmdirRecursive(backupDir.c_str());
+
+      if (FileUtils::fileExists(m_installDir.c_str()) && m_installDir != m_targetDir)
+        FileUtils::rmdirRecursive(m_installDir.c_str());
+
+      FileUtils::rmdir(m_tempDir.c_str());
     }
     catch (const FileUtils::IOException& exception)
     {
       error = exception.what();
-      LOG(Error, std::string("Failed to cleanup: " + m_targetDir + ".bak" + " - " + error));
+      // Log about it, but since we are done no need to do anything else
+      LOG(Error, std::string("Failed to cleanup: " + error));
     }
 
     if (m_observer)
@@ -380,7 +396,15 @@ void UpdateInstaller::copyBundle()
   {
     m_observer->updateMessage("Creating Backup...");
   }
+
   m_installDir = m_tempDir + '/' + FileUtils::fileName(m_targetDir.c_str());
+
+  if (FileUtils::fileExists(m_installDir.c_str()))
+  {
+    LOG(Warn, "Backup directory " + m_installDir + " - removing it.");
+    FileUtils::rmdirRecursive(m_installDir.c_str());
+  }
+
   FileUtils::copyTree(m_targetDir, m_installDir);
 }
 
@@ -391,12 +415,22 @@ void UpdateInstaller::patchFiles()
   {
     m_observer->updateMessage("Patching Files...");
   }
+
+  std::string patchDir = m_tempDir + "/__patches/";
+  if (!FileUtils::fileExists(patchDir.c_str()))
+  {
+    FileUtils::mkpath(patchDir.c_str());
+  }
+
   for (; iter != m_script->patches().end(); iter++)
   {
     patchFile(*iter);
     ++m_installed;
     updateProgress();
+    DID_CANCEL();
   }
+
+  FileUtils::rmdirRecursive(patchDir.c_str());
 }
 
 void UpdateInstaller::installFiles()
@@ -411,6 +445,8 @@ void UpdateInstaller::installFiles()
     installFile(*iter);
     ++m_installed;
     updateProgress();
+
+    DID_CANCEL();
   }
 }
 
@@ -508,6 +544,12 @@ bool UpdateInstaller::checkAccess()
   {
     FileUtils::touch(testFile.c_str());
     FileUtils::removeFile(testFile.c_str());
+
+    // we need to make sure that we can rename the current binary dir as well
+    // since that directory might not have the same rights.
+    //
+    FileUtils::moveFile(m_targetDir.c_str(), (m_targetDir + std::string(".bak")).c_str());
+    FileUtils::moveFile((m_targetDir + std::string(".bak")).c_str(), m_targetDir.c_str());
     return true;
   }
   catch (const FileUtils::IOException& error)

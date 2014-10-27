@@ -20,7 +20,7 @@
 class UpdateDialogPrivate
 {
 public:
-  UpdateDialogPrivate() : hadError(false)
+  UpdateDialogPrivate() : hadError(false), _didCancel(false)
   {
   }
 
@@ -31,12 +31,14 @@ public:
   NSTextField* progressLabel;
   NSProgressIndicator* progressBar;
   bool hadError;
+  bool _didCancel;
 };
 
 @implementation UpdateDialogDelegate
 - (void)finishClicked
 {
   [NSApp stop:self];
+  dialog->_didCancel = true;
 }
 - (void)reportUpdateError:(id)arg
 {
@@ -69,6 +71,7 @@ public:
 
   [message appendString:@"  Click 'Finish' to restart the application."];
   [dialog->progressLabel setTitleWithMnemonic:message];
+  [dialog->finishButton setTitle:@"Finish"];
   [message release];
 }
 
@@ -161,6 +164,9 @@ void UpdateDialogCocoa::exec()
 
 void UpdateDialogCocoa::updateError(const std::string& errorMessage)
 {
+  // Oops, something errored, we need to make sure to present that to the user then and
+  // not just auto quit
+  setAutoClose(false);
   [d->delegate performSelectorOnMainThread:@selector(reportUpdateError:)
                                 withObject:[NSString stringWithUTF8String:errorMessage.c_str()]
                              waitUntilDone:false];
@@ -202,4 +208,9 @@ void UpdateDialogCocoa::quit()
 {
   LOG(Log::Info, "Qutting!");
   [NSApp terminate:nil];
+}
+
+bool UpdateDialogCocoa::didCancel()
+{
+  return d->_didCancel;
 }

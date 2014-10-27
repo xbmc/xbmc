@@ -13,7 +13,8 @@ public:
   {
     UpdateFailed,
     UpdateProgress,
-    UpdateFinished
+    UpdateFinished,
+    UpdateText
   };
 
   UpdateMessage(void* receiver, Type type)

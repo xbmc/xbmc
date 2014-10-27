@@ -58,7 +58,7 @@ void registerWindowClass()
   RegisterClassEx(&wcex);
 }
 
-UpdateDialogWin32::UpdateDialogWin32() : m_hadError(false)
+UpdateDialogWin32::UpdateDialogWin32() : m_hadError(false), m_didCancel(false)
 {
   registerWindowClass();
 }
@@ -84,7 +84,7 @@ UpdateDialogWin32::~UpdateDialogWin32()
 void UpdateDialogWin32::init(int /* argc */, char** /* argv */)
 {
   int width = 300;
-  int height = 130;
+  int height = 140;
 
   DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
   m_window.CreateEx(0 /* dwExStyle */, updateDialogClassName /* class name */,
@@ -101,8 +101,7 @@ void UpdateDialogWin32::init(int /* argc */, char** /* argv */)
   setDefaultFont(m_finishButton);
 
   m_progressBar.SetRange(0, 100);
-  m_finishButton.SetWindowText("Finish");
-  m_finishButton.EnableWindow(false);
+  m_finishButton.SetWindowText("Cancel");
   m_progressLabel.SetWindowText("Installing Updates");
 
   m_window.SetWindowPos(0, 0, 0, width, height, 0);
@@ -120,6 +119,7 @@ void UpdateDialogWin32::exec()
 
 void UpdateDialogWin32::updateError(const std::string& errorMessage)
 {
+  setAutoClose(false);
   UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateFailed);
   message->message = errorMessage;
   SendNotifyMessage(m_window.GetHwnd(), WM_USER, reinterpret_cast<WPARAM>(message), 0);
@@ -160,6 +160,7 @@ UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM wParam, LPARAM l
     {
       if (reinterpret_cast<HWND>(lParam) == m_finishButton.GetHwnd())
       {
+        m_didCancel = true;
         quit();
       }
     }
@@ -171,6 +172,11 @@ UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM wParam, LPARAM l
         UpdateMessage* message = reinterpret_cast<UpdateMessage*>(wParam);
         switch (message->type)
         {
+          case UpdateMessage::UpdateText:
+          {
+            m_progressLabel.SetWindowText(message->message.c_str());
+            break;
+          }
           case UpdateMessage::UpdateFailed:
           {
             m_hadError = true;
@@ -185,6 +191,7 @@ UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM wParam, LPARAM l
           {
             std::string message;
             m_finishButton.EnableWindow(true);
+            m_finishButton.SetWindowText("Finish");
             if (m_hadError)
             {
               message = "Update failed.";
@@ -213,5 +220,12 @@ void UpdateDialogWin32::installWindowProc(CWnd* window)
 
 void UpdateDialogWin32::updateMessage(const std::string &message)
 {
-	
+  UpdateMessage* msg = new UpdateMessage(UpdateMessage::UpdateText);
+  msg->message = message;
+  SendNotifyMessage(m_window.GetHwnd(), WM_USER, reinterpret_cast<WPARAM>(msg), 0); 
+}
+
+bool UpdateDialogWin32::didCancel()
+{
+  return m_didCancel;
 }

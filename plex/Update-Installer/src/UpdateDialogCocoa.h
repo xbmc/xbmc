@@ -21,6 +21,7 @@ public:
   virtual void updateProgress(int percentage);
   virtual void updateFinished();
   virtual void updateMessage(const std::string& message);
+  virtual bool didCancel();
 
   static void* createAutoreleasePool();
   static void releaseAutoreleasePool(void* data);
