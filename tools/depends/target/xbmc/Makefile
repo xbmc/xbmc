@@ -10,20 +10,29 @@ export CFLAGS+=-O3
 
 # configuration settings
 CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
-  ./configure --prefix=$(PREFIX)
+  ./configure --prefix=$(PREFIX) $(DEBUG)
 
 ifeq ($(OS),android)
 CONFIGURE += --enable-codec=libstagefright,amcodec
+endif
+
+ifeq ($(Configuration),Release)
+DEBUG = --enable-debug=no
 endif
 
 CONFIGURE += $(CONFIG_EXTRA)
 
 all: $(SOURCE)/lib$(APP_NAME).so
 
+release: DEBUG=--enable-debug=no
+release: $(SOURCE)/lib$(APP_NAME).so
+
+debug: DEBUG=--enable-debug=yes
+debug: $(SOURCE)/lib$(APP_NAME).so
 
 $(SOURCE)/lib$(APP_NAME).so:
 	cd $(SOURCE); BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
-	cd $(SOURCE); $(CONFIGURE)
+	cd $(SOURCE); echo $(CONFIGURE)
 
 ../../Makefile.include:
 	$(error Please run configure)
