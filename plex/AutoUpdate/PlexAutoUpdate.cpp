@@ -250,9 +250,8 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
 
   bool isDelta = m_downloadPackage->GetProperty("delta").asBoolean();
   std::string packageStr = isDelta ? "delta" : "full";
-  m_localManifest = "special://temp/autoupdate/manifest-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".xml";
-  m_localBinary = "special://temp/autoupdate/" + m_downloadItem->GetProperty("fileName").asString();
-
+  m_localManifest = "special://temp/autoupdate/manifest-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".xml.bz2";
+  m_localBinary = "special://temp/autoupdate/" + m_downloadPackage->GetProperty("fileName").asString();
 
   if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString(), true))
   {
