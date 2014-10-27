@@ -1347,8 +1347,8 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
   m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
 
-  // double tap prevention timeout in ms
-  m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+  // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
+  m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms") / 50;
 }
 
 void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)
