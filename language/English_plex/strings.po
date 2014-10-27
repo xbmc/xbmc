@@ -794,8 +794,8 @@ msgid "Shared Content"
 msgstr "Shared Content"
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Queue"
+msgid "Watch Later"
+msgstr "Watch Later"
 
 msgctxt "#44022"
 msgid "Recommended"
