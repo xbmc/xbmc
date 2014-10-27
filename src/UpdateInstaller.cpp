@@ -544,6 +544,12 @@ bool UpdateInstaller::checkAccess()
   {
     FileUtils::touch(testFile.c_str());
     FileUtils::removeFile(testFile.c_str());
+
+    // we need to make sure that we can rename the current binary dir as well
+    // since that directory might not have the same rights.
+    //
+    FileUtils::moveFile(m_targetDir.c_str(), (m_targetDir + std::string(".bak")).c_str());
+    FileUtils::moveFile((m_targetDir + std::string(".bak")).c_str(), m_targetDir.c_str());
     return true;
   }
   catch (const FileUtils::IOException& error)
