@@ -2178,9 +2178,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   if (result != toParse.end()) // if we have anything to parse
   {
     std::string inputString(result, toParse.end());
-    std::string delimiters(" .-");
     std::vector<std::string> tokens;
-    StringUtils::Tokenize(inputString, tokens, delimiters);
+    StringUtils::Tokenize(inputString, tokens, g_advancedSettings.m_subtitlesDelimiter);
 
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
