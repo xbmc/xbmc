@@ -475,7 +475,7 @@
 			<height>720</height>
 			<!-- list titles & bg's & arrows (see includes on top for formatting) -->
 			<control type="group">
-				<!-- "on deck" & "queue" -->
+				<!-- "on deck" & "Watch Later" -->
 				<control type="group">
 					<!-- with "recently added" or "recommended" or "PQ video" -->
 					<control type="group">
@@ -494,7 +494,7 @@
 						</control>
 						<control type="label" id="8002">
 							<include>ListTitle</include>
-							<label>Queue</label>
+							<label>Watch Later</label>
 							<visible>[Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						</control>
 						<control type="label" id="8002">
@@ -525,7 +525,7 @@
 						</control>
 						<control type="label" id="8002">
 							<include>ListTitle</include>
-							<label>Queue</label>
+							<label>Watch Later</label>
 							<visible>[Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
 						</control>
 						<control type="label" id="8002">
@@ -543,7 +543,7 @@
 				<!-- "recently added" & "recently used" & "recommendations" & "play lists" -->
 				<control type="group">
 					<visible>Control.IsVisible(11000) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | Control.IsVisible(11005) | [Control.IsVisible(11006) + !Control.IsVisible(11007)] | [Control.IsVisible(11006) + Control.IsVisible(11007)]</visible>
-					<!-- with "on deck" or "queue + recommendations" or "PQ music" -->
+					<!-- with "on deck" or "Watch Later + recommendations" or "PQ music" -->
 					<control type="group">
 						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)] | [Control.IsVisible(11006) + Control.IsVisible(11007)]</visible>
 						<posy>666</posy>
@@ -810,7 +810,7 @@
 					</control>
 				</control>
 			</control>
-			<!-- "Queue" & "Recommendations" -->
+			<!-- "Watch Later" & "Recommendations" -->
 			<control type="grouplist" id="5200">
 				<visible>true</visible>
 				<posx>0</posx>
@@ -822,7 +822,7 @@
 				<onright>350</onright>
 				<onleft>350</onleft>
 				<orientation>vertical</orientation>
-				<!-- Queue (11003) -->
+				<!-- Watch Later (11003) -->
 				<control type="group" id="7003">
 					<height>230</height>
 					<control type="fixedlist" id="11003">
