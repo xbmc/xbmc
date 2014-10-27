@@ -260,6 +260,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "searchinprogress", SYSTEM_SEARCH_IN_PROGRESS },
                                   { "selectedplexmediaserver", SYSTEM_SELECTED_PLEX_MEDIA_SERVER },
                                   { "updateisavailable", SYSTEM_UPDATE_IS_AVAILABLE },
+                                  { "userisrestricted", SYSTEM_USER_ISRESTRICTED },
                                   { "noplexservers",    SYSTEM_NO_PLEX_SERVERS },
                                   /* END PLEX */
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
@@ -2496,6 +2497,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = false;
     if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
       bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() - 1)); // not last song
+  }
+  else if (condition == SYSTEM_USER_ISRESTRICTED)
+  {
+    bReturn = false;
+    if (g_plexApplication.myPlexManager && g_plexApplication.myPlexManager->IsSignedIn())
+      bReturn = g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted;
   }
   /* END PLEX */
   else if (g_application.IsPlaying())
