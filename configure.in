@@ -1036,7 +1036,7 @@ else
     fi
   else
     AC_MSG_RESULT(== WARNING: OpenGL support is disabled. ${APP_NAME} will run VERY slow. ==)
-    AC_CHECK_LIB([SDL_gfx],[main])
+    AC_CHECK_LIB([SDL2_gfx],[main])
   fi
 fi
 
@@ -1201,6 +1201,7 @@ if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
+    AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
   fi
 else
 if test "$target_platform" != "target_android" ; then
@@ -1220,9 +1221,15 @@ else
   AC_MSG_NOTICE($dbus_disabled)
 fi
   if test "x$use_sdl" != "xno"; then
-    PKG_CHECK_MODULES([SDL],   [sdl],
-      [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
-      AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([SDL2],   [sdl2], 
+      [AC_DEFINE([SDL_VERSION],[2],["SDL major version"])
+       INCLUDES="$INCLUDES $SDL2_CFLAGS"; LIBS="$LIBS $SDL2_LIBS";],
+      [PKG_CHECK_MODULES([SDL],   [sdl],
+        [AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
+         INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"; use_joystick=no],
+        [AC_MSG_ERROR($missing_library)])
+      ]
+    )
     AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
@@ -2083,7 +2090,7 @@ fi
 
 if test "$use_joystick" = "yes"; then
   final_message="$final_message\n  Joystick:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
+  AC_DEFINE([HAS_SDL_JOYSTICK],[1],["Define to 1 if using SDL joystick"])
 else
   final_message="$final_message\n  Joystick:\tNo"
 fi

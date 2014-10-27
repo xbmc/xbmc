@@ -58,7 +58,7 @@ LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
-    DEPENDS += libsdl linux-system-libs
+    DEPENDS += libsdl2 linux-system-libs
     LINUX_SYSTEM_LIBS = linux-system-libs
   endif
   DEPENDS += alsa-lib
@@ -98,7 +98,7 @@ openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
-libsdl: $(LINUX_SYSTEM_LIBS)
+libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 

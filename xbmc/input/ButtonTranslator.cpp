@@ -33,8 +33,10 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/RegExp.h"
 #include "XBIRRemote.h"
 #include "Util.h"
+#include <boost/shared_ptr.hpp>
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -759,10 +761,11 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
   string joyname = JOYSTICK_DEFAULT_MAP; // default global map name
-  vector<string> joynames;
+  vector<boost::shared_ptr<CRegExp> > joynames;
   map<int, string> buttonMap;
   map<int, string> axisMap;
-  map<int, string> hatMap;
+  AxesConfig axesConfig;
+  ActionMap hatMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
   if (pJoy && pJoy->Attribute("name"))
@@ -770,7 +773,14 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   else
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
 
-  joynames.push_back(joyname);
+  boost::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
+  if (!re->RegComp(JoynameToRegex(joyname), CRegExp::StudyRegExp))
+  {
+    CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyname.c_str());
+    return;
+  }
+  else 
+    joynames.push_back(re);
 
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
@@ -811,6 +821,17 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           axisMap[id] = action;
           axisMap[-id] = action;
         }
+
+        if (windowID == -1) {
+          // in <global> we can override the rest state value of axes and whether they are triggers
+          bool trigger = false;
+          int restStateValue = 0;
+          pButton->QueryBoolAttribute("trigger", &trigger);
+          pButton->QueryIntAttribute("rest", &restStateValue);
+          // if it deviates from the defaults
+          if (trigger || restStateValue != 0)
+            axesConfig.push_back(AxisConfig(id, trigger, restStateValue));
+        }
       }
       else if (type == "hat")
       {
@@ -834,29 +855,79 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
         CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
     }
     else if (type == "altname")
-      joynames.push_back(action);
+    {
+      boost::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
+      if (!altRe->RegComp(JoynameToRegex(action), CRegExp::StudyRegExp))
+        CLog::Log(LOGNOTICE, "Ignoring invalid joystick altname regex: '%s'", action.c_str());
+      else
+        joynames.push_back(altRe);
+    }
     else
       CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
 
     pButton = pButton->NextSiblingElement();
   }
-  vector<string>::iterator it = joynames.begin();
+  vector<boost::shared_ptr<CRegExp> >::iterator it = joynames.begin();
   while (it!=joynames.end())
   {
-    m_joystickButtonMap[*it][windowID] = buttonMap;
-    m_joystickAxisMap[*it][windowID] = axisMap;
-    m_joystickHatMap[*it][windowID] = hatMap;
+    MergeMap(*it, &m_joystickButtonMap, windowID, buttonMap);
+    MergeMap(*it, &m_joystickAxisMap, windowID, axisMap);
+    MergeMap(*it, &m_joystickHatMap, windowID, hatMap);
+    if (windowID == -1) 
+      m_joystickAxesConfigs[*it] = axesConfig;
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
   }
 }
 
-bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, std::string& strAction, bool &fullrange)
+std::string CButtonTranslator::JoynameToRegex(const std::string& joyName) const
+{
+  if (joyName.empty()) 
+    return joyName;
+
+  // names already presented as regex are identified by a leading /
+  else if (joyName[0] == '/') 
+    return joyName.substr(1);
+
+  // the others we'll have to escape
+  return "\\Q" + joyName + "\\E";
+}
+
+void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap *joystick, int windowID, const ActionMap &map)
+{
+  // find or create WindowMap entry, match on pattern equality
+  JoystickMap::iterator jit;
+  for (jit = joystick->begin(); jit != joystick->end(); jit++)
+  {
+    if (jit->first->GetPattern() == joyName->GetPattern())
+      break;
+  }
+  WindowMap* w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
+    // find or create ActionMap, and merge it
+  (*w)[windowID].insert(map.begin(), map.end());
+}
+
+CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
+{
+  JoystickMap::const_iterator it;
+  for (it = maps.begin(); it != maps.end(); it++)
+  {
+    if (it->first->RegFind(joyName) >= 0)
+    {
+      // CLog::Log(LOGDEBUG, "Regex %s matches joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
+      break;
+    }
+    // CLog::Log(LOGDEBUG, "No match: %s for joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
+  }
+  return it;
+}
+
+bool CButtonTranslator::TranslateJoystickString(int window, const std::string& joyName, int id, short inputType, int& action, std::string& strAction, bool &fullrange)
 {
   fullrange = false;
 
   // resolve the correct JoystickMap
-  map<string, JoystickMap> *jmap;
+  JoystickMap *jmap;
   if (inputType == JACTIVE_AXIS)
     jmap = &m_joystickAxisMap;
   else if (inputType == JACTIVE_BUTTON)
@@ -869,15 +940,15 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
     return false;
   }
 
-  map<string, JoystickMap>::iterator it = jmap->find(szDevice);
+  JoystickMap::const_iterator it = FindWindowMap(joyName, *jmap);
   if (it==jmap->end())
   {
-    it = jmap->find(JOYSTICK_DEFAULT_MAP); // default global map name
+    it = FindWindowMap(JOYSTICK_DEFAULT_MAP, *jmap); // default global map name
     if (it==jmap->end())
       return false;
   }
 
-  JoystickMap wmap = it->second;
+  WindowMap wmap = it->second;
 
   // try to get the action from the current window
   action = GetActionCode(window, id, wmap, strAction, fullrange);
@@ -934,12 +1005,12 @@ int CButtonTranslator::GetActionCode(int window, int action)
 /*
  * Translates a joystick input to an action code
  */
-int CButtonTranslator::GetActionCode(int window, int id, const JoystickMap &wmap, std::string &strAction, bool &fullrange) const
+int CButtonTranslator::GetActionCode(int window, int id, const WindowMap &wmap, std::string &strAction, bool &fullrange) const
 {
   int action = 0;
   bool found = false;
 
-  JoystickMap::const_iterator it = wmap.find(window);
+  WindowMap::const_iterator it = wmap.find(window);
   if (it != wmap.end())
   {
     const map<int, string> &windowbmap = it->second;

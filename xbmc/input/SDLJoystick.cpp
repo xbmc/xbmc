@@ -20,32 +20,26 @@
 
 #include "system.h"
 #include "SDLJoystick.h"
-#include "ButtonTranslator.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/RegExp.h"
 
 #include <math.h>
+#include <boost/shared_ptr.hpp>
 
 #ifdef HAS_SDL_JOYSTICK
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 using namespace std;
 
 CJoystick::CJoystick()
 {
-  Reset(true);
   m_joystickEnabled = false;
-  m_NumAxes = 0;
-  m_AxisId = 0;
-  m_JoyId = 0;
-  m_ButtonId = 0;
-  m_HatId = 0;
-  m_HatState = SDL_HAT_CENTERED;
-  m_ActiveFlags = JACTIVE_NONE;
   SetDeadzone(0);
+  Reset();
 }
 
 void CJoystick::OnSettingChanged(const CSetting *setting)
@@ -56,6 +50,16 @@ void CJoystick::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == "input.enablejoystick")
     SetEnabled(((CSettingBool*)setting)->GetValue() && PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
+}
+
+void CJoystick::Reset()
+{
+  m_AxisIdx = -1;
+  m_ButtonIdx = -1;
+  m_HatIdx = -1;
+  m_HatState = SDL_HAT_CENTERED;
+  for (std::vector<AxisState>::iterator it = m_Axes.begin(); it != m_Axes.end(); ++it)
+    it->reset();
 }
 
 void CJoystick::Initialize()
@@ -69,92 +73,70 @@ void CJoystick::Initialize()
     return;
   }
 
-  // clear old joystick names
-  m_JoystickNames.clear();
-
-  // any open ones? if so, close them.
-  if (m_Joysticks.size()>0)
-  {
-    for(size_t idJoy = 0; idJoy < m_Joysticks.size(); idJoy++)
-    {
-      // any joysticks unplugged?
-      if(SDL_JoystickOpened(idJoy))
-        SDL_JoystickClose(m_Joysticks[idJoy]);
-    }
-    m_Joysticks.clear();
-    m_JoyId = -1;
-  }
+  Reset();
 
   // Set deadzone range
   SetDeadzone(g_advancedSettings.m_controllerDeadzone);
 
-  // any joysticks connected?
-  if (SDL_NumJoysticks()>0)
-  {
-    // load joystick names and open all connected joysticks
-    for (int i = 0 ; i<SDL_NumJoysticks() ; i++)
-    {
-      SDL_Joystick *joy = SDL_JoystickOpen(i);
-
-#if defined(TARGET_DARWIN)
-      // On OS X, the 360 controllers are handled externally, since the SDL code is
-      // really buggy and doesn't handle disconnects.
-      //
-      if (std::string(SDL_JoystickName(i)).find("360") != std::string::npos)
-      {
-        CLog::Log(LOGNOTICE, "Ignoring joystick: %s", SDL_JoystickName(i));
-        continue;
-      }
-#endif
-      if (joy)
-      {
-        // Some (Microsoft) Keyboards are recognized as Joysticks by modern kernels
-        // Don't enumerate them
-        // https://bugs.launchpad.net/ubuntu/+source/linux/+bug/390959
-        // NOTICE: Enabled Joystick: Microsoft Wired Keyboard 600
-        // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
-        // NOTICE: Enabled Joystick: Microsoft Microsoft® 2.4GHz Transceiver v6.0
-        // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
-        // also checks if we have at least 1 button, fixes 
-        // NOTICE: Enabled Joystick: ST LIS3LV02DL Accelerometer
-        // Details: Total Axis: 3 Total Hats: 0 Total Buttons: 0
-        int num_axis = SDL_JoystickNumAxes(joy);
-        int num_buttons = SDL_JoystickNumButtons(joy);
-        if ((num_axis > 20 && num_buttons > 50) || num_buttons == 0)
-        {
-          CLog::Log(LOGNOTICE, "Ignoring Joystick %s Axis: %d Buttons: %d: invalid device properties",
-           SDL_JoystickName(i), num_axis, num_buttons);
-        }
-        else
-        {
-          m_JoystickNames.push_back(string(SDL_JoystickName(i)));
-          CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
-          CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
-            num_axis, SDL_JoystickNumHats(joy), num_buttons);
-          m_Joysticks.push_back(joy);
-        }
-      }
-      else
-      {
-        m_JoystickNames.push_back(string(""));
-      }
-    }
-  }
-  
-  // disable joystick events, since we'll be polling them
-  SDL_JoystickEventState(SDL_DISABLE);
+  // joysticks will be loaded once SDL sees them
 }
 
-void CJoystick::Reset(bool axis /*=false*/)
+void CJoystick::AddJoystick(int joyIndex)
 {
-  if (axis)
+  SDL_Joystick *joy = SDL_JoystickOpen(joyIndex);
+  if (!joy)
+    return;
+
+  std::string joyName = std::string(SDL_JoystickName(joy));
+
+
+  // Some (Microsoft) Keyboards are recognized as Joysticks by modern kernels
+  // Don't enumerate them
+  // https://bugs.launchpad.net/ubuntu/+source/linux/+bug/390959
+  // NOTICE: Enabled Joystick: Microsoft Wired Keyboard 600
+  // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
+  // NOTICE: Enabled Joystick: Microsoft Microsoft® 2.4GHz Transceiver v6.0
+  // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
+  // also checks if we have at least 1 button, fixes
+  // NOTICE: Enabled Joystick: ST LIS3LV02DL Accelerometer
+  // Details: Total Axis: 3 Total Hats: 0 Total Buttons: 0
+  int num_axis = SDL_JoystickNumAxes(joy);
+  int num_buttons = SDL_JoystickNumButtons(joy);
+  int num_hats = SDL_JoystickNumHats(joy);
+  if ((num_axis > 20 && num_buttons > 50) || num_buttons == 0)
   {
-    SetAxisActive(false);
-    for (int i = 0 ; i<MAX_AXES ; i++)
-    {
-      ResetAxis(i);
-    }
+    CLog::Log(LOGNOTICE, "Ignoring Joystick %s Axis: %d Buttons: %d: invalid device properties",
+      joyName.c_str(), num_axis, num_buttons);
+    return;
   }
+
+  // get details
+  CLog::Log(LOGNOTICE, "Enabled Joystick: %s", joyName.c_str());
+  CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
+    num_axis, num_hats, num_buttons);
+
+  // store joystick and its instance id for lookups
+  int id = SDL_JoystickInstanceID(joy);
+  m_Joysticks[id] = joy;
+  m_Axes.resize(m_Axes.size() + num_axis);
+
+  // all indices may have changed in m_Joysticks, so we have to invalidate m_Axes
+  ApplyAxesConfigs();
+  Reset();
+}
+
+void CJoystick::RemoveJoystick(int id)
+{
+  CLog::Log(LOGDEBUG, "Joystick with id %d removed", id);
+
+  // invalidate our current values
+  SDL_Joystick *joy = m_Joysticks[id];
+  m_Axes.resize(m_Axes.size() - SDL_JoystickNumAxes(joy));
+  SDL_JoystickClose(joy);
+  m_Joysticks.erase(id);
+  // all indices may have changed in m_Joysticks, so we have to invalidate m_Axes
+  ApplyAxesConfigs();
+  Reset();
 }
 
 void CJoystick::Update()
@@ -162,116 +144,87 @@ void CJoystick::Update()
   if (!IsEnabled())
     return;
 
-  int buttonId    = -1;
-  int axisId      = -1;
-  int hatId       = -1;
-  int numj        = m_Joysticks.size();
-  if (numj <= 0)
-    return;
-
   // update the state of all opened joysticks
   SDL_JoystickUpdate();
+  int axisNum;
+  int buttonIdx = -1, buttonNum;
+  int hatIdx = -1, hatNum;
 
   // go through all joysticks
-  for (int j = 0; j<numj; j++)
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
   {
-    SDL_Joystick *joy = m_Joysticks[j];
+    SDL_Joystick *joy = it->second;
     int numb = SDL_JoystickNumButtons(joy);
     int numhat = SDL_JoystickNumHats(joy);
     int numax = SDL_JoystickNumAxes(joy);
-    numax = (numax>MAX_AXES)?MAX_AXES:numax;
-    int axisval;
     uint8_t hatval;
 
-    // get button states first, they take priority over axis
     for (int b = 0 ; b<numb ; b++)
     {
       if (SDL_JoystickGetButton(joy, b))
       {
-        m_JoyId = SDL_JoystickIndex(joy);
-        buttonId = b+1;
-        j = numj-1;
+        buttonIdx = MapButton(joy, b);
         break;
       }
     }
-    
+
     for (int h = 0; h < numhat; h++)
     {
       hatval = SDL_JoystickGetHat(joy, h);
       if (hatval != SDL_HAT_CENTERED)
       {
-        m_JoyId = SDL_JoystickIndex(joy);
-        hatId = h + 1;
+        hatIdx = MapHat(joy, h);
         m_HatState = hatval;
-        j = numj-1;
         break; 
       }
     }
 
     // get axis states
-    m_NumAxes = numax;
     for (int a = 0 ; a<numax ; a++)
     {
-      axisval = SDL_JoystickGetAxis(joy, a);
-      axisId = a+1;
-      if (axisId<=0 || axisId>=MAX_AXES)
-      {
-        CLog::Log(LOGERROR, "Axis Id out of range. Maximum supported axis: %d", MAX_AXES);
-      }
-      else
-      {
-        m_Amount[axisId] = axisval;  //[-32768 to 32767]
-      }
-    }
-    m_AxisId = GetAxisWithMaxAmount();
-    if (m_AxisId)
-    {
-      m_JoyId = SDL_JoystickIndex(joy);
-      j = numj-1;
-      break;
+      int axisIdx = MapAxis(joy, a);
+      m_Axes[axisIdx].val = SDL_JoystickGetAxis(joy, a);
     }
   }
 
-  if(hatId==-1)
+  SDL_Joystick *joy;
+  m_AxisIdx = GetAxisWithMaxAmount();
+  if (m_AxisIdx >= 0)
   {
-    if(m_HatId!=0)
-      CLog::Log(LOGDEBUG, "Joystick %d hat %u Centered", m_JoyId, hatId);
+    MapAxis(m_AxisIdx, joy, axisNum);
+    // CLog::Log(LOGDEBUG, "Joystick %d Axis %d Amount %d", JoystickIndex(joy), axisNum + 1, m_Axes[m_AxisIdx].val);
+  }
+
+  if (hatIdx == -1 && m_HatIdx != -1)
+  {
+    // now centered
+    MapHat(m_HatIdx, joy, hatNum);
+    CLog::Log(LOGDEBUG, "Joystick %d hat %u hat centered", JoystickIndex(joy), hatNum + 1);
     m_pressTicksHat = 0;
-    SetHatActive(false);
-    m_HatId = 0;
   }
-  else
+  else if (hatIdx != m_HatIdx)
   {
-    if(hatId!=m_HatId)
-    {
-      CLog::Log(LOGDEBUG, "Joystick %d hat %u Down", m_JoyId, hatId);
-      m_HatId = hatId;
-      m_pressTicksHat = SDL_GetTicks();
-    }
-    SetHatActive();
+    MapHat(hatIdx, joy, hatNum);
+    CLog::Log(LOGDEBUG, "Joystick %d hat %u value %d", JoystickIndex(joy), hatNum + 1, m_HatState);
+    m_pressTicksHat = SDL_GetTicks();
   }
+  m_HatIdx = hatIdx;
 
-  if (buttonId==-1)
+  if (buttonIdx == -1 && m_ButtonIdx != -1)
   {
-    if (m_ButtonId!=0)
-    {
-      CLog::Log(LOGDEBUG, "Joystick %d button %d Up", m_JoyId, m_ButtonId);
-    }
+    MapButton(m_ButtonIdx, joy, buttonNum);
+    CLog::Log(LOGDEBUG, "Joystick %d button %d Up", JoystickIndex(joy), buttonNum + 1);
     m_pressTicksButton = 0;
-    SetButtonActive(false);
-    m_ButtonId = 0;
+    m_ButtonIdx = -1;
   }
-  else
+  else if (buttonIdx != m_ButtonIdx)
   {
-    if (buttonId!=m_ButtonId)
-    {
-      CLog::Log(LOGDEBUG, "Joystick %d button %d Down", m_JoyId, buttonId);
-      m_ButtonId = buttonId;
-      m_pressTicksButton = SDL_GetTicks();
-    }
-    SetButtonActive();
+    MapButton(buttonIdx, joy, buttonNum);
+    CLog::Log(LOGDEBUG, "Joystick %d button %d Down", JoystickIndex(joy), buttonNum + 1);
+    m_pressTicksButton = SDL_GetTicks();
   }
-
+  m_ButtonIdx = buttonIdx;
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)
@@ -279,185 +232,128 @@ void CJoystick::Update(SDL_Event& joyEvent)
   if (!IsEnabled())
     return;
 
-  int buttonId = -1;
-  int axisId = -1;
-  int joyId = -1;
-  DECLARE_UNUSED(bool,ignore = false)
-  DECLARE_UNUSED(bool,axis = false);
-
   switch(joyEvent.type)
   {
-  case SDL_JOYBUTTONDOWN:
-    m_JoyId = joyId = joyEvent.jbutton.which;
-    m_ButtonId = buttonId = joyEvent.jbutton.button + 1;
-    m_pressTicksButton = SDL_GetTicks();
-    SetButtonActive();
-    CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
+  // we do not handle the button/axis/hat events here because
+  // only Update() is equipped to handle keyrepeats
+  case SDL_JOYDEVICEADDED:
+    AddJoystick(joyEvent.jdevice.which);
     break;
 
-  case SDL_JOYAXISMOTION:
-    joyId = joyEvent.jaxis.which;
-    axisId = joyEvent.jaxis.axis + 1;
-    m_NumAxes = SDL_JoystickNumAxes(m_Joysticks[joyId]);
-    if (axisId<=0 || axisId>=MAX_AXES)
-    {
-      CLog::Log(LOGERROR, "Axis Id out of range. Maximum supported axis: %d", MAX_AXES);
-      ignore = true;
-      break;
-    }
-    axis = true;
-    m_JoyId = joyId;
-    if (joyEvent.jaxis.value==0)
-    {
-      ignore = true;
-      m_Amount[axisId] = 0;
-    }
-    else
-    {
-      m_Amount[axisId] = joyEvent.jaxis.value; //[-32768 to 32767]
-    }
-    m_AxisId = GetAxisWithMaxAmount();
-    CLog::Log(LOGDEBUG, "Joystick %d Axis %d Amount %d", joyId, axisId, m_Amount[axisId]);
-    break;
-
-  case SDL_JOYHATMOTION:
-    m_JoyId = joyId = joyEvent.jbutton.which;
-    m_HatId = joyEvent.jhat.hat + 1;
-    m_pressTicksHat = SDL_GetTicks();
-    m_HatState = joyEvent.jhat.value;
-    SetHatActive(m_HatState != SDL_HAT_CENTERED);
-    CLog::Log(LOGDEBUG, "Joystick %d Hat %d Down with position %d", joyId, buttonId, m_HatState);
-    break;
-
-  case SDL_JOYBALLMOTION:
-    ignore = true;
-    break;
-    
-  case SDL_JOYBUTTONUP:
-    m_pressTicksButton = 0;
-    SetButtonActive(false);
-    CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
-
-  default:
-    ignore = true;
+  case SDL_JOYDEVICEREMOVED:
+    RemoveJoystick(joyEvent.jdevice.which);
     break;
   }
 }
 
-bool CJoystick::GetHat(int &id, int &position,bool consider_repeat) 
+bool CJoystick::GetHat(std::string &joyName, int &id, int &position, bool consider_repeat)
 {
   if (!IsEnabled() || !IsHatActive())
-  {
-    id = position = 0;
     return false;
-  }
+
+  SDL_Joystick *joy;
+  MapHat(m_HatIdx, joy, id);
+  joyName = std::string(SDL_JoystickName(joy));
   position = m_HatState;
-  id = m_HatId;
+
   if (!consider_repeat)
     return true;
 
-  static uint32_t lastPressTicks = 0;
-  static uint32_t lastTicks = 0;
-  static uint32_t nowTicks = 0;
-
-  if ((m_HatId>=0) && m_pressTicksHat)
+  static uint32_t lastPressTicksHat = 0;
+  // allow it if it is the first press
+  if (lastPressTicksHat < m_pressTicksHat)
   {
-    // return the id if it's the first press
-    if (lastPressTicks!=m_pressTicksHat)
-    {
-      lastPressTicks = m_pressTicksHat;
-      return true;
-    }
-    nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicksHat)<500) // 500ms delay before we repeat
-      return false;
-    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
-      return false;
-
-    lastTicks = nowTicks;
+    lastPressTicksHat = m_pressTicksHat;
+    return true;
   }
+  uint32_t nowTicks = SDL_GetTicks();
+  if (nowTicks - m_pressTicksHat < 500) // 500ms delay before we repeat
+    return false;
+  if (nowTicks - lastPressTicksHat < 100) // 100ms delay before successive repeats
+    return false;
+  lastPressTicksHat = nowTicks;
 
   return true;
-} 
+}
 
-bool CJoystick::GetButton(int &id, bool consider_repeat)
+bool CJoystick::GetButton(std::string &joyName, int& id, bool consider_repeat)
 {
   if (!IsEnabled() || !IsButtonActive())
-  {
-    id = 0;
     return false;
-  }
+
+  SDL_Joystick *joy;
+  MapButton(m_ButtonIdx, joy, id);
+  joyName = SDL_JoystickName(joy);
+
   if (!consider_repeat)
+    return true;
+
+  static uint32_t lastPressTicksButton = 0;
+  // allow it if it is the first press
+  if (lastPressTicksButton < m_pressTicksButton)
   {
-    id = m_ButtonId;
+    lastPressTicksButton = m_pressTicksButton;
     return true;
   }
+  uint32_t nowTicks = SDL_GetTicks();
+  if (nowTicks - m_pressTicksButton < 500) // 500ms delay before we repeat
+    return false;
+  if (nowTicks - lastPressTicksButton < 100) // 100ms delay before successive repeats
+    return false;
 
-  static uint32_t lastPressTicks = 0;
-  static uint32_t lastTicks = 0;
-  static uint32_t nowTicks = 0;
-
-  if ((m_ButtonId>=0) && m_pressTicksButton)
-  {
-    // return the id if it's the first press
-    if (lastPressTicks!=m_pressTicksButton)
-    {
-      lastPressTicks = m_pressTicksButton;
-      id = m_ButtonId;
-      return true;
-    }
-    nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicksButton)<500) // 500ms delay before we repeat
-    {
-      return false;
-    }
-    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
-    {
-      return false;
-    }
-    lastTicks = nowTicks;
-  }
-  id = m_ButtonId;
+  lastPressTicksButton = nowTicks;
   return true;
 }
 
-bool CJoystick::GetAxis (int &id)
+bool CJoystick::GetAxis(std::string &joyName, int& id) const
 { 
   if (!IsEnabled() || !IsAxisActive()) 
-  {
-    id = 0;
-    return false; 
-  }
-  id = m_AxisId; 
-  return true; 
+    return false;
+
+  SDL_Joystick *joy;
+  MapAxis(m_AxisIdx, joy, id);
+  joyName = std::string(SDL_JoystickName(joy));
+
+  return true;
 }
 
-int CJoystick::GetAxisWithMaxAmount()
+int CJoystick::GetAxisWithMaxAmount() const
 {
-  static int maxAmount;
-  static int axis;
-  axis = 0;
-  maxAmount = 0;
-  int tempf;
-  for (int i = 1 ; i<=m_NumAxes ; i++)
+  int maxAmount= 0, axis = -1;
+  for (size_t i = 0; i < m_Axes.size(); i++)
   {
-    tempf = abs(m_Amount[i]);
-    if (tempf>m_DeadzoneRange && tempf>maxAmount)
+    int deadzone = m_Axes[i].trigger ? 0 : m_DeadzoneRange,
+        amount = abs(m_Axes[i].val - m_Axes[i].rest);
+    if (amount > deadzone && amount > maxAmount)
     {
-      maxAmount = tempf;
+      maxAmount = amount;
       axis = i;
     }
   }
-  SetAxisActive(0 != maxAmount);
   return axis;
 }
 
-float CJoystick::GetAmount(int axis)
+float CJoystick::GetAmount(std::string &joyName, int axisNum) const
 {
-  if (m_Amount[axis] > m_DeadzoneRange)
-    return (float)(m_Amount[axis]-m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
-  if (m_Amount[axis] < -m_DeadzoneRange)
-    return (float)(m_Amount[axis]+m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
+  // find matching SDL_Joystick*
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
+    if (std::string(SDL_JoystickName(it->second)) == joyName)
+      break;
+
+  if (it == m_Joysticks.end())
+    return 0; // invalid joy name
+
+  int axisIdx = MapAxis(it->second, axisNum);
+  int amount = m_Axes[axisIdx].val - m_Axes[axisIdx].rest;
+  int range = MAX_AXISAMOUNT - m_Axes[axisIdx].rest;
+  // deadzones on axes are undesirable
+  int deadzone = m_Axes[axisIdx].trigger ? 0 : m_DeadzoneRange;
+  if (amount > deadzone)
+    return (float)(amount - deadzone) / (float)(range - deadzone);
+  else if (amount < -deadzone)
+    return (float)(amount + deadzone) / (float)(range - deadzone);
+
   return 0;
 }
 
@@ -485,13 +381,12 @@ float CJoystick::SetDeadzone(float val)
 
 bool CJoystick::ReleaseJoysticks()
 {
+  // close open joysticks
+  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
+    SDL_JoystickClose(it->second);
   m_Joysticks.clear();
-  m_JoystickNames.clear();
-  m_HatId = 0;
-  m_ButtonId = 0;
-  m_HatState = SDL_HAT_CENTERED;
-  m_ActiveFlags = JACTIVE_NONE;
-  Reset(true);
+  m_Axes.clear();
+  Reset();
 
   // Restart SDL joystick subsystem
   SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
@@ -509,6 +404,152 @@ bool CJoystick::Reinitialize()
   Initialize();
 
   return true;
+}
+
+void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
+{
+  m_AxesConfigs.clear();
+  m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());
+}
+
+void CJoystick::ApplyAxesConfigs()
+{
+  // load axes configuration from keymap
+  int axesCount = 0;
+  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); it++)
+  {
+    std::string joyName(SDL_JoystickName(it->second));
+    std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
+    for (axesCfg = m_AxesConfigs.begin(); axesCfg != m_AxesConfigs.end(); axesCfg++)
+    {
+      if (axesCfg->first->RegFind(joyName) >= 0)
+        break;
+    }
+    if (axesCfg != m_AxesConfigs.end())
+    {
+      for (AxesConfig::const_iterator it = axesCfg->second.begin(); it != axesCfg->second.end(); ++it)
+      {
+        int axis = axesCount + it->axis - 1;
+        m_Axes[axis].trigger = it->isTrigger;
+        m_Axes[axis].rest = it->rest;
+      }
+    }
+    axesCount += SDL_JoystickNumAxes(it->second);
+  }
+}
+  
+int CJoystick::JoystickIndex(const std::string &joyName) const
+{
+  int i = 0;
+  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
+  {
+    if (joyName == std::string(SDL_JoystickName(it->second)))
+      return i;
+    i++;
+  }
+  return -1;
+}
+
+int CJoystick::JoystickIndex(SDL_Joystick *joy) const
+{
+  int i = 0;
+  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
+  {
+    if (it->second == joy)
+      return i;
+    i++;
+  }
+  return -1;
+}
+
+int CJoystick::MapAxis(SDL_Joystick *joy, int axisNum) const
+{
+  int idx = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && it->second != joy; ++it)
+    idx += SDL_JoystickNumAxes(it->second);
+  if (it == m_Joysticks.end())
+    return -1;
+  else
+    return idx + axisNum;
+}
+
+void CJoystick::MapAxis(int axisIdx, SDL_Joystick *&joy, int &axisNum) const
+{
+  int axisCount = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && axisCount + SDL_JoystickNumAxes(it->second) <= axisIdx; ++it)
+    axisCount += SDL_JoystickNumAxes(it->second);
+  if (it != m_Joysticks.end())
+  {
+    joy = it->second;
+    axisNum = axisIdx - axisCount;
+  }
+  else
+  {
+    joy = NULL;
+    axisNum = -1;
+  }
+}
+
+int CJoystick::MapButton(SDL_Joystick *joy, int buttonNum) const
+{
+  int idx = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && it->second != joy; ++it)
+    idx += SDL_JoystickNumButtons(it->second);
+  if (it == m_Joysticks.end())
+    return -1;
+  else
+    return idx + buttonNum;
+}
+
+void CJoystick::MapButton(int buttonIdx, SDL_Joystick *&joy, int &buttonNum) const
+{
+  int buttonCount = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && buttonCount + SDL_JoystickNumButtons(it->second) <= buttonIdx; ++it)
+    buttonCount += SDL_JoystickNumButtons(it->second);
+  if (it != m_Joysticks.end())
+  {
+    joy = it->second;
+    buttonNum = buttonIdx - buttonCount;
+  }
+  else
+  {
+    joy = NULL;
+    buttonNum = -1;
+  }
+}
+
+int CJoystick::MapHat(SDL_Joystick *joy, int hatNum) const
+{
+  int idx = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && it->second != joy; ++it)
+    idx += SDL_JoystickNumHats(it->second);
+  if (it == m_Joysticks.end())
+    return -1;
+  else
+    return idx + hatNum;
+}
+
+void CJoystick::MapHat(int hatIdx, SDL_Joystick *&joy, int& hatNum) const
+{
+  int hatCount = 0;
+  std::map<int, SDL_Joystick*>::const_iterator it;
+  for (it = m_Joysticks.begin(); it != m_Joysticks.end() && hatCount + SDL_JoystickNumHats(it->second) <= hatIdx; ++it)
+    hatCount += SDL_JoystickNumHats(it->second);
+  if (it != m_Joysticks.end())
+  {
+    joy = it->second;
+    hatNum = hatIdx - hatCount;
+  }
+  else
+  {
+    joy = NULL;
+    hatNum = -1;
+  }
 }
 
 #endif
