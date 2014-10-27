@@ -61,7 +61,7 @@ Xcode 3.2.6 only runs on 10.6.x (Snow Leopard).
 Xcode 4.3.x only runs on 10.7.x (Lion).
 Xcode 5.x.x only runs on 10.8.x and later.
 Xcode 6.0.1 only runs on 10.9.4 and later.
-Xcpde 6.1.0 only runs on 10.9.5 and later.
+Xcode 6.1.0 only runs on 10.9.5 and later.
 
 The preferred iOS SDK Version is 4.3 (when using Xcode 3.2.6) or 5.1 (when using
 Xcode 4.3.x) or 7.x (when using Xcode 5.x.x) or 8.x (when using Xcode 6.x.x)
