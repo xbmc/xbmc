@@ -219,8 +219,8 @@ public:
 
   void LoadProfile(unsigned int idx);
   bool CECToggleState();
-  bool CECActivateSource();
-  bool CECStandby();
+  void CECActivateSource();
+  void CECStandby();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

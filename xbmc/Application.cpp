@@ -2366,16 +2366,18 @@ bool CApplication::OnKey(const CKey& key)
 
   if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState") || StringUtils::StartsWithNoCase(action.GetName(),"CECStandby"))
   {
-    bool ret = true;
-
-    CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
     // do not wake up the screensaver right after switching off the playing device
     if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState"))
-      ret = CApplicationMessenger::Get().CECToggleState();
+    {
+      CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
+      if (!CApplicationMessenger::Get().CECToggleState())
+        return true;
+    }
     else
-      ret = CApplicationMessenger::Get().CECStandby();
-    if (!ret) /* display is switched off */
+    {
+      CApplicationMessenger::Get().CECStandby();
       return true;
+    }
   }
 
   ResetScreenSaver();
