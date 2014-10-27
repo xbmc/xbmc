@@ -419,6 +419,8 @@ void CAdvancedSettings::Initialize()
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
+  m_fileNameDelimiter = ".-_ ";
+
   m_initialized = true;
 }
 
@@ -436,6 +438,9 @@ bool CAdvancedSettings::Load()
   // Add the list of disc stub extensions (if any) to the list of video extensions
   if (!m_discStubExtensions.empty())
     m_videoExtensions += "|" + m_discStubExtensions;
+
+  if (m_subtitlesDelimiter.empty())
+    m_subtitlesDelimiter = m_fileNameDelimiter;
 
   return true;
 }
@@ -736,6 +741,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       // Get default global display latency
       XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
     }
+    XMLUtils::GetString(pElement, "subsdelimiter", m_subtitlesDelimiter);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

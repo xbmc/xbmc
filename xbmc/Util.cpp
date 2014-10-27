@@ -2016,8 +2016,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
           else
             token = strItem.substr(isoFileNameNoExt.length());
 
-          // FIXME/TODO add an AdvancedSetting for custom delimiters
-          if (token.find_first_of(".- ") != 0)
+          if (token.find_first_of(g_advancedSettings.m_subtitlesDelimiter) != 0)
             continue;
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
