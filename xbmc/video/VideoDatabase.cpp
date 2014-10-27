@@ -3193,14 +3193,13 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
-      m_pDS->exec(strSQL.c_str());
-
-      // TODO: Why are we invalidating paths here?
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
+
+      strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
+      m_pDS->exec(strSQL.c_str());
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
