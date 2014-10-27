@@ -577,11 +577,11 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             // however this is quicker to implement and subsequently purge when a
             // better solution presents itself
             std::string child_id((const char*)id);
-            if      (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))          parent = "musicdb://";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))          parent = "library://video/";
-            else if (StringUtils::StartsWithNoCase(child_id, "sources://video/"))                   parent = "library://video/";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/music/")) parent = "special://musicplaylists/";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/video/")) parent = "special://videoplaylists/";
+            if      (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))                                                            parent = "musicdb://";
+            else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))                                                            parent = "library://video/";
+            else if (StringUtils::StartsWithNoCase(child_id, "sources://video/"))                                                                     parent = "library://video/";
+            else if (StringUtils::StartsWithNoCase(child_id, URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music"))) parent = "special://musicplaylists/";
+            else if (StringUtils::StartsWithNoCase(child_id, URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video"))) parent = "special://videoplaylists/";
             else parent = "sources://video/"; // this can only match video sources
         }
 
@@ -747,12 +747,12 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 
     if (URIUtils::IsVideoDb(items.GetPath()) ||
         StringUtils::StartsWithNoCase(items.GetPath(), "library://video/") ||
-        StringUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/video/")) {
+        StringUtils::StartsWithNoCase(items.GetPath(), URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video"))) {
 
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
     else if (URIUtils::IsMusicDb(items.GetPath()) ||
-        StringUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/music/")) {
+        StringUtils::StartsWithNoCase(items.GetPath(), URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music"))) {
 
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
