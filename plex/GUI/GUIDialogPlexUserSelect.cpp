@@ -1,6 +1,7 @@
 #include "GUIDialogPlexUserSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "guilib/GUIWindowManager.h"
 
 #include "FileItem.h"
 #include "PlexBusyIndicator.h"
@@ -59,8 +60,18 @@ void CGUIDialogPlexUserSelect::OnSelected()
     CStdString pin;
     if (item->GetProperty("protected").asInteger() == 1)
     {
-      if (!CGUIDialogNumeric::ShowAndGetNumber(pin, "Enter PIN"))
-        close = false;
+      CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+      if (diag)
+      {
+        diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, "");
+        diag->SetHeading("Enter PIN");
+        diag->DoModal();
+
+        if (diag->IsAutoClosed() && (!diag->IsConfirmed() || diag->IsCanceled()))
+          close = false;
+        else
+          diag->GetOutput(&pin);
+      }
     }
     g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1), pin);
   }
