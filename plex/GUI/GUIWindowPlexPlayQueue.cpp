@@ -143,7 +143,7 @@ bool CGUIWindowPlexPlayQueue::OnMessage(CGUIMessage& message)
     }
 
     case GUI_MSG_WINDOW_INIT:
-      m_vecItems->SetPath("");
+      break;
 
     case GUI_MSG_WINDOW_DEINIT:
       m_vecItems->SetProperty("PlexEditMode", "");
