@@ -616,7 +616,7 @@ long CDecoder::Release()
   if (m_vaapiConfigured == true)
   {
     CSingleLock lock(m_DecoderSection);
-    CLog::Log(LOGNOTICE,"VAAPI::Release pre-cleanup");
+    CLog::Log(LOGDEBUG,"VAAPI::Release pre-cleanup");
 
     Message *reply;
     if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
@@ -832,7 +832,7 @@ int CDecoder::Check(AVCodecContext* avctx)
 
   if (state == VAAPI_LOST)
   {
-    CLog::Log(LOGNOTICE,"VAAPI::Check waiting for display reset event");
+    CLog::Log(LOGDEBUG,"VAAPI::Check waiting for display reset event");
     if (!m_DisplayEvent.WaitMSec(4000))
     {
       CLog::Log(LOGERROR, "VAAPI::Check - device didn't reset in reasonable time");
@@ -2157,7 +2157,7 @@ bool COutput::EnsureBufferPool()
 
     if (!pic->glx.glPixmap)
     {
-      CLog::Log(LOGINFO, "VAAPI::COutput::EnsureBufferPool - Could not create glPixmap");
+      CLog::Log(LOGERROR, "VAAPI::COutput::EnsureBufferPool - Could not create glPixmap");
       return false;
     }
 
@@ -2174,7 +2174,7 @@ bool COutput::EnsureBufferPool()
 
   m_bufferPool.procPicId = 0;
 
-  CLog::Log(LOGNOTICE, "VAAPI::COutput::InitBufferPool - Surfaces created");
+  CLog::Log(LOGDEBUG, "VAAPI::COutput::InitBufferPool - Surfaces created");
   return true;
 }
 
@@ -2327,7 +2327,7 @@ bool COutput::CreateGlxContext()
 
   if (!m_glPixmap)
   {
-    CLog::Log(LOGINFO, "VAAPI::COutput::CreateGlxContext - Could not create glPixmap");
+    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - Could not create glPixmap");
     return false;
   }
 
@@ -2335,11 +2335,11 @@ bool COutput::CreateGlxContext()
 
   if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
   {
-    CLog::Log(LOGINFO, "VAAPI::COutput::CreateGlxContext - Could not make Pixmap current");
+    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - Could not make Pixmap current");
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "VAAPI::COutput::CreateGlxContext - created context");
+  CLog::Log(LOGDEBUG, "VAAPI::COutput::CreateGlxContext - created context");
   return true;
 }
 
@@ -2915,7 +2915,7 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   bool use_filter = true;
   if (!m_dllSSE4.Load())
   {
-    CLog::Log(LOGNOTICE,"VAAPI::SupportsFilter failed loading sse4 lib");
+    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
     return false;
   }
 
@@ -2930,17 +2930,17 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   VAStatus status = vaDeriveImage(config.dpy, surface, &image);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGNOTICE,"VAAPI::SupportsFilter vaDeriveImage not supported");
+    CLog::Log(LOGWARNING,"VAAPI::SupportsFilter vaDeriveImage not supported");
     use_filter = false;
   }
   if (image.format.fourcc != VA_FOURCC_NV12)
   {
-    CLog::Log(LOGNOTICE,"VAAPI::SupportsFilter image format not NV12");
+    CLog::Log(LOGWARNING,"VAAPI::SupportsFilter image format not NV12");
     use_filter = false;
   }
   if ((image.pitches[0] % 64) || (image.pitches[1] % 64))
   {
-    CLog::Log(LOGNOTICE,"VAAPI::SupportsFilter patches no multiple of 64");
+    CLog::Log(LOGWARNING,"VAAPI::SupportsFilter patches no multiple of 64");
     use_filter = false;
   }
   CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
