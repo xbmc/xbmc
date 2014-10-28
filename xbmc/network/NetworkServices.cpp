@@ -400,6 +400,27 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
   }
 }
 
+bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+{
+  if (setting == NULL)
+    return false;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "services.webserverusername")
+  {
+    CSettingString *webserverusername = (CSettingString*)setting;
+    // if webserverusername is xbmc and pw is empty we treat it as unaltered
+    // and change the username to kodi - part of rebrand
+    if (CSettings::Get().GetString("services.webserverusername") == "xbmc &&
+        CSettings::Get().GetString("services.webserverpassword").empty())
+    {
+      webserverusername->Reset();//reset to default which is kodi atm...
+      return true;
+    }
+  }
+  return false;
+}
+
 void CNetworkServices::Start()
 {
   StartZeroconf();
