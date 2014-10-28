@@ -67,6 +67,13 @@ public:
     return "serverDataLoader";
   }
 
+  void Refresh()
+  {
+    CSingleLock lk(m_dataLock);
+    m_forceRefresh = true;
+    g_plexApplication.timer->RestartTimeout(5, this);
+  }
+
 private:
   bool m_stopped;
   void OnTimeout();
@@ -80,6 +87,8 @@ private:
   ServerDataMap m_channelMap;
 
   ServerDataMap m_sharedSectionsMap;
+
+  bool m_forceRefresh;
 };
 
 typedef boost::shared_ptr<CPlexServerDataLoader> CPlexServerDataLoaderPtr;

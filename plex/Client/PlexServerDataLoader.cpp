@@ -22,7 +22,7 @@ using namespace XFILE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader()
-  : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
+  : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false), m_forceRefresh(false)
 {
   g_plexApplication.timer->SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
@@ -325,6 +325,15 @@ void CPlexServerDataLoader::OnTimeout()
     return;
   }
 
+  if (m_forceRefresh)
+  {
+    CSingleLock lk(m_dataLock);
+
+    m_sectionMap.clear();
+    m_sharedSectionsMap.clear();
+    m_channelMap.clear();
+  }
+
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
   {
@@ -333,9 +342,10 @@ void CPlexServerDataLoader::OnTimeout()
 
     if (p.second->GetUUID() != "myplex")
     {
-      if (p.second->GetLastRefreshed() == 0 ||
+      if (m_forceRefresh ||
+          (p.second->GetLastRefreshed() == 0 ||
           ((p.second->GetOwned() && p.second->GetLastRefreshed() > OWNED_SERVER_REFRESH) ||
-          (!p.second->GetOwned() && p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH)))
+          (!p.second->GetOwned() && p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH))))
       {
         CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout refreshing data for %s",
                   p.second->GetName().c_str());
@@ -343,6 +353,9 @@ void CPlexServerDataLoader::OnTimeout()
       }
     }
   }
+
+  if (m_forceRefresh)
+    m_forceRefresh = false;
 
   g_plexApplication.timer->SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }

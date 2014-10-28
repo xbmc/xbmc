@@ -324,6 +324,11 @@ int CMyPlexManager::DoRefreshUserInfo()
   /* hooray final state! */
   m_state = STATE_LOGGEDIN;
 
+  // our restricted flag might have been updated
+  // so let's refresh all our shares
+  //
+  g_plexApplication.dataLoader->Refresh();
+
   BroadcastState();
 
   /* Also we want it to go scan directly */
