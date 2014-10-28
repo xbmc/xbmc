@@ -372,7 +372,7 @@
 #include "plex/GUI/GUIDialogPlexGlobalCacher.h"
 #include "plex/GUI/GUIDialogPlexVideoOSD.h"
 #include "plex/GUI/GUIWindowPlexPlaylistSelection.h"
-#include "plex/GUI/GUIDialogPlaylistSelection.h"
+#include "plex/GUI/GUIDialogPlayListSelection.h"
 #include "plex/GUI/GUIDialogPlexUserSelect.h"
 /* END PLEX */
 
