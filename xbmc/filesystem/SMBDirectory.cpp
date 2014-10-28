@@ -248,7 +248,9 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, CURL::GetRedacted(s).c_str());
+  if (g_advancedSettings.CanLogComponent(LOGSAMBA))
+    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Using authentication url %s", CURL::GetRedacted(s).c_str());
+
   { CSingleLock lock(smb);
     fd = smbc_opendir(s.c_str());
   }
