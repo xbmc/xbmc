@@ -1113,18 +1113,18 @@
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
-		B542632B197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
-		B542632C197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
-		B542632D197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
-		B5011E4119AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
-		B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
-		B5011E4319AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5011E3C19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
 		B5011E3D19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
 		B5011E3E19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
+		B5011E4119AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
+		B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
+		B5011E4319AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5101B5819DFF8DD00294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
 		B5101B5919DFF8E300294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
 		B5101B5A19DFF8E400294D1E /* BlurayFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */; };
+		B542632B197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
+		B542632C197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
+		B542632D197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
 		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482874156CFCD8005A996F /* PVRClient.cpp */; };
 		C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482876156CFCD8005A996F /* PVRClients.cpp */; };
@@ -4658,15 +4658,15 @@
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		AEC0083315ACAC7C0099888C /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
-		B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixFile.cpp; sourceTree = "<group>"; };
-		B5011E4019AF3B56005ADF89 /* PosixFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixFile.h; sourceTree = "<group>"; };
 		B5011E3A19AA496D005ADF89 /* MarkWatchedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkWatchedJob.h; sourceTree = "<group>"; };
 		B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkWatchedJob.cpp; sourceTree = "<group>"; };
-		B542632E19917D3500726998 /* params_check_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params_check_macros.h; sourceTree = "<group>"; };
+		B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixFile.cpp; sourceTree = "<group>"; };
+		B5011E4019AF3B56005ADF89 /* PosixFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixFile.h; sourceTree = "<group>"; };
 		B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayFile.cpp; sourceTree = "<group>"; };
 		B5101B5B19DFF8FC00294D1E /* BlurayFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayFile.h; sourceTree = "<group>"; };
 		B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixInterfaceForCLog.cpp; sourceTree = "<group>"; };
 		B542632A197D353B00726998 /* PosixInterfaceForCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixInterfaceForCLog.h; sourceTree = "<group>"; };
+		B542632E19917D3500726998 /* params_check_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params_check_macros.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C8482874156CFCD8005A996F /* PVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClient.cpp; sourceTree = "<group>"; };
@@ -5220,7 +5220,6 @@
 		E38E14F50D25F9F900618676 /* SoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoLoader.h; sourceTree = "<group>"; };
 		E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DummyVideoPlayer.cpp; sourceTree = "<group>"; };
 		E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummyVideoPlayer.h; sourceTree = "<group>"; };
-		E38E14FB0D25F9F900618676 /* dvd_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_config.h; sourceTree = "<group>"; };
 		E38E14FC0D25F9F900618676 /* DVDAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudio.cpp; sourceTree = "<group>"; };
 		E38E14FD0D25F9F900618676 /* DVDAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudio.h; sourceTree = "<group>"; };
 		E38E14FE0D25F9F900618676 /* DVDClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDClock.cpp; sourceTree = "<group>"; };
@@ -8782,7 +8781,6 @@
 				E38E15480D25F9F900618676 /* DVDDemuxers */,
 				E38E15570D25F9FA00618676 /* DVDInputStreams */,
 				E38E158E0D25F9FA00618676 /* DVDSubtitles */,
-				E38E14FB0D25F9F900618676 /* dvd_config.h */,
 				E38E14FC0D25F9F900618676 /* DVDAudio.cpp */,
 				E38E14FD0D25F9F900618676 /* DVDAudio.h */,
 				E38E14FE0D25F9F900618676 /* DVDClock.cpp */,
