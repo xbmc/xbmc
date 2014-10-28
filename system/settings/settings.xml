@@ -2030,10 +2030,13 @@
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
           <level>1</level>
-          <default>xbmc</default>
+          <default>kodi</default>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <dependencies>
             <dependency type="enable" setting="services.webserver">true</dependency>
           </dependencies>
