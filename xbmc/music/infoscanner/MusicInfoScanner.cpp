@@ -130,6 +130,7 @@ void CMusicInfoScanner::Process()
            * the entire source is offline we totally empty the music database in one go.
            */
           CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__, it->c_str());
+          m_seenPaths.insert(*it);
           continue;
         }
         else if (!DoScan(*it))
@@ -254,6 +255,7 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
   m_fileCountReader.StopThread();
   StopThread();
   m_pathsToScan.clear();
+  m_seenPaths.clear();
   m_flags = flags;
 
   if (strDirectory.empty())
@@ -391,6 +393,12 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 {
   if (m_handle)
     m_handle->SetText(Prettify(strDirectory));
+
+  std::set<std::string>::const_iterator it = m_seenPaths.find(strDirectory);
+  if (it != m_seenPaths.end())
+    return true;
+
+  m_seenPaths.insert(strDirectory);
 
   // Discard all excluded files defined by m_musicExcludeRegExps
   vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
