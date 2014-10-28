@@ -36,7 +36,7 @@
 #define LOGIND_PATH  "/org/freedesktop/login1"
 #define LOGIND_IFACE "org.freedesktop.login1.Manager"
 
-CLogindUPowerSyscall::CLogindUPowerSyscall()
+CLogindUPowerSyscall::CLogindUPowerSyscall() : CCommonCapabilitiesPowerSyscall()
 {
   m_delayLockFd = -1;
   m_lowBattery = false;
@@ -50,10 +50,10 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   if (!m_hasUPower)
     CLog::Log(LOGINFO, "LogindUPowerSyscall - UPower not found, battery information will not be available");
 
-  m_canPowerdown = LogindCheckCapability("CanPowerOff");
-  m_canReboot    = LogindCheckCapability("CanReboot");
-  m_canHibernate = LogindCheckCapability("CanHibernate");
-  m_canSuspend   = LogindCheckCapability("CanSuspend");
+  SetCanPowerdown(LogindCheckCapability("CanPowerOff"));
+  SetCanReboot(LogindCheckCapability("CanReboot"));
+  SetCanHibernate(LogindCheckCapability("CanHibernate"));
+  SetCanSuspend(LogindCheckCapability("CanSuspend"));
 
   InhibitDelayLock();
 
@@ -114,26 +114,6 @@ bool CLogindUPowerSyscall::Suspend()
 bool CLogindUPowerSyscall::Hibernate()
 {
   return LogindSetPowerState("Hibernate");
-}
-
-bool CLogindUPowerSyscall::CanPowerdown()
-{
-  return m_canPowerdown;
-}
-
-bool CLogindUPowerSyscall::CanSuspend()
-{
-  return m_canSuspend;
-}
-
-bool CLogindUPowerSyscall::CanHibernate()
-{
-  return m_canHibernate;
-}
-
-bool CLogindUPowerSyscall::CanReboot()
-{
-  return m_canReboot;
 }
 
 bool CLogindUPowerSyscall::HasLogind()

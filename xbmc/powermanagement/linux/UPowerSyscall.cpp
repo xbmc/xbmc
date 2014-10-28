@@ -57,6 +57,7 @@ double CUPowerSource::BatteryLevel()
 }
 
 CUPowerSyscall::CUPowerSyscall()
+    : CCommonCapabilitiesPowerSyscall()
 {
   CLog::Log(LOGINFO, "Selected UPower as PowerSyscall");
 
@@ -82,9 +83,6 @@ CUPowerSyscall::CUPowerSyscall()
     dbus_connection_unref(m_connection);
     m_connection = NULL;
   }
-
-  m_CanPowerdown = false;
-  m_CanReboot    = false;
 
   UpdateCapabilities();
 
@@ -131,26 +129,6 @@ bool CUPowerSyscall::Hibernate()
 bool CUPowerSyscall::Reboot()
 {
   return false;
-}
-
-bool CUPowerSyscall::CanPowerdown()
-{
-  return m_CanPowerdown;
-}
-
-bool CUPowerSyscall::CanSuspend()
-{
-  return m_CanSuspend;
-}
-
-bool CUPowerSyscall::CanHibernate()
-{
-  return m_CanHibernate;
-}
-
-bool CUPowerSyscall::CanReboot()
-{
-  return m_CanReboot;
 }
 
 int CUPowerSyscall::BatteryLevel()
@@ -262,8 +240,8 @@ bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 
 void CUPowerSyscall::UpdateCapabilities()
 {
-  m_CanSuspend   = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanSuspend").asBoolean(false);
-  m_CanHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanHibernate").asBoolean(false);
+  SetCanSuspend(CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanSuspend").asBoolean(false));
+  SetCanHibernate(CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanHibernate").asBoolean(false));
 }
 
 #endif

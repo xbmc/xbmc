@@ -26,8 +26,8 @@
 
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
-  m_CanPowerdown = ConsoleKitMethodCall("CanStop");
-  m_CanReboot    = ConsoleKitMethodCall("CanRestart");
+  SetCanPowerdown(ConsoleKitMethodCall("CanStop"));
+  SetCanReboot(ConsoleKitMethodCall("CanRestart"));
 }
 
 bool CConsoleUPowerSyscall::Powerdown()

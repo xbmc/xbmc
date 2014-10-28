@@ -26,11 +26,12 @@
 #include "DBusUtil.h"
 
 CConsoleDeviceKitPowerSyscall::CConsoleDeviceKitPowerSyscall()
+    : CPowerSyscallWithoutEvents()
 {
-  m_CanPowerdown = ConsoleKitMethodCall("CanStop");
-  m_CanSuspend   = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend").asBoolean();
-  m_CanHibernate = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate").asBoolean();
-  m_CanReboot    = ConsoleKitMethodCall("CanRestart");
+  SetCanPowerdown(ConsoleKitMethodCall("CanStop"));
+  SetCanSuspend(CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend").asBoolean());
+  SetCanHibernate(CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate").asBoolean());
+  SetCanReboot(ConsoleKitMethodCall("CanRestart"));
 }
 
 bool CConsoleDeviceKitPowerSyscall::Powerdown()
@@ -59,23 +60,6 @@ bool CConsoleDeviceKitPowerSyscall::Reboot()
 {
   CDBusMessage message("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "Restart");
   return message.SendSystem() != NULL;
-}
-
-bool CConsoleDeviceKitPowerSyscall::CanPowerdown()
-{
-  return m_CanPowerdown;
-}
-bool CConsoleDeviceKitPowerSyscall::CanSuspend()
-{
-  return m_CanSuspend;
-}
-bool CConsoleDeviceKitPowerSyscall::CanHibernate()
-{
-  return m_CanHibernate;
-}
-bool CConsoleDeviceKitPowerSyscall::CanReboot()
-{
-  return m_CanReboot;
 }
 
 int CConsoleDeviceKitPowerSyscall::BatteryLevel()
