@@ -7977,6 +7977,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsStack(fullPath))
         fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
+      // get the actual archive path
+      if (URIUtils::IsInArchive(fullPath))
+        fullPath = CURL(fullPath).GetHostName();
+
       // remove optical, non-existing files
       if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
