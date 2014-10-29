@@ -54,7 +54,7 @@ CPosixFile::~CPosixFile()
 // local helper
 static std::string getFilename(const CURL& url)
 {
-  assert(url.GetProtocol().empty()); // function suitable only for local files
+  assert(url.GetProtocol().empty() || url.IsProtocol("file")); // function suitable only for local files
   
   std::string filename(url.GetFileName());
   if (IsAliasShortcut(filename))
