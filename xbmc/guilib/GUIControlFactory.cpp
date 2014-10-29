@@ -1301,8 +1301,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     if (strType == "largeimage")
       texture.useLarge = true;
 
+#ifdef USE_FFMPEG_CONTROL
     else if (strType == "ffmpeg")
       texture.useFFmpeg = true;
+#endif
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.empty() && borderStr.empty())

@@ -124,13 +124,15 @@ public:
 
   bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
   bool IsAllocated() const { return m_isAllocated != NO; };
-  bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED || m_isAllocated == FFMPEG_FAILED; };
+  bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
 protected:
   bool CalculateSize();
   void LoadDiffuseImage();
   bool AllocateOnDemand();
+#ifdef USE_FFMPEG_CONTROL
   bool UpdateFFmpeg(unsigned int currentTime);
+#endif
   bool UpdateAnimFrame();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
@@ -168,7 +170,7 @@ protected:
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, FFMPEG, NORMAL_FAILED, LARGE_FAILED, FFMPEG_FAILED };
+  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, FFMPEG, NORMAL_FAILED, LARGE_FAILED };
   ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;
@@ -177,11 +179,13 @@ protected:
   CTextureArray m_diffuse;
   CTextureArray m_texture;
 
+#ifdef USE_FFMPEG_CONTROL
   // ffmpeg
   FFmpegVideoDecoder *m_decoder;
   CBaseTexture *m_frame;
   unsigned int m_millisPerFrame;
   unsigned int m_lastFrameTime;
+#endif
 };
 
 

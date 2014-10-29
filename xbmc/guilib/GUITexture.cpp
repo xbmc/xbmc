@@ -25,9 +25,11 @@
 #include "utils/MathUtils.h"
 
 // ffmpeg
+#ifdef USE_FFMPEG_CONTROL
 #include "filesystem/SpecialProtocol.h"
 #include "Texture.h"
 #include "utils/log.h"
+#endif
 
 using namespace std;
 
@@ -88,7 +90,9 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_currentLoop = 0;
 
   // ffmpeg
+#ifdef USE_FFMPEG_CONTROL
   m_frame = 0;
+#endif
 
   m_allocateDynamically = false;
   m_isAllocated = NO;
@@ -130,7 +134,9 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_currentLoop = 0;
 
   // ffmpeg
+#ifdef USE_FFMPEG_CONTROL
   m_frame = 0;
+#endif
 
   m_isAllocated = NO;
   m_invalid = true;
@@ -166,8 +172,10 @@ bool CGUITextureBase::Process(unsigned int currentTime)
   // check if we need to allocate our resources
   changed |= AllocateOnDemand();
 
+#ifdef USE_FFMPEG_CONTROL
   if (m_info.useFFmpeg)
     changed |= UpdateFFmpeg(currentTime);
+#endif
 
   if (m_texture.size() > 1)
     changed |= UpdateAnimFrame();
@@ -319,36 +327,36 @@ bool CGUITextureBase::AllocResources()
 
   bool changed = false;
 
+#ifdef USE_FFMPEG_CONTROL
   if (m_info.useFFmpeg)
   {
-
     CStdString realPath = CSpecialProtocol::TranslatePath(m_info.filename);
     m_decoder = new FFmpegVideoDecoder();
 
     CLog::Log(LOGDEBUG, "GUITexture::FFmpeg AllocResources %s (%s)", m_info.filename.c_str(), realPath.c_str());
-
-    if (!(m_isAllocated = m_decoder->open(realPath) ? FFMPEG : FFMPEG_FAILED))
+    
+    if (!m_decoder->open(realPath))
     {
       CLog::Log(LOGDEBUG, "GUITexture::FFmpeg Failed");
-
       delete m_decoder;
-      return false;
     }
+    else
+    {
+      m_isAllocated    = FFMPEG;
+      m_lastFrameTime  = 0;
+      m_millisPerFrame = (unsigned int)(1000.0 / m_decoder->getFramesPerSecond());
 
-    m_lastFrameTime  = 0;
-    m_millisPerFrame = (unsigned int)(1000.0 / m_decoder->getFramesPerSecond());
+      unsigned int width  = m_decoder->getWidth();
+      unsigned int height = m_decoder->getHeight();
 
-    unsigned int width  = m_decoder->getWidth();
-    unsigned int height = m_decoder->getHeight();
+      m_frame = new CTexture(width, height, XB_FMT_A8R8G8B8);
+      m_texture.Set(m_frame, width, height);
 
-    m_frame = new CTexture(width, height, XB_FMT_A8R8G8B8);
-    m_texture.Set(m_frame, width, height);
-
-    CLog::Log(LOGDEBUG, "GUITexture::FFmpeg Frame Set");
-
-    changed = true;
+      changed = true;
+    }
   }
-  else if (m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename))
+#endif
+  if (m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename))
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
@@ -506,6 +514,7 @@ bool CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
+#ifdef USE_FFMPEG_CONTROL
   if (m_isAllocated == FFMPEG)
   {
     CLog::Log(LOGDEBUG, "GUITexture::FFmpeg FreeResources %s", m_info.filename.c_str());
@@ -515,7 +524,9 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
     delete m_frame;
     m_frame = 0;
   }
-  else if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
+  else 
+#endif
+  if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
     g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
   else if (m_isAllocated == NORMAL && m_texture.size())
     g_TextureManager.ReleaseTexture(m_info.filename, immediately);
@@ -547,6 +558,7 @@ void CGUITextureBase::SetInvalid()
   m_invalid = true;
 }
 
+#ifdef USE_FFMPEG_CONTROL
 bool CGUITextureBase::UpdateFFmpeg(unsigned int currentTime)
 {
 //  CLog::Log(LOGDEBUG, "GUITexture::UpdateFFmpeg %d - %d = %d", currentTime, m_lastFrameTime, currentTime - m_lastFrameTime);
@@ -571,6 +583,7 @@ bool CGUITextureBase::UpdateFFmpeg(unsigned int currentTime)
   m_lastFrameTime = currentTime;
   return true;
 }
+#endif
 
 bool CGUITextureBase::UpdateAnimFrame()
 {
