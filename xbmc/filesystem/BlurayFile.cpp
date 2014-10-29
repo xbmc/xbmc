@@ -20,71 +20,31 @@
 
 #include "system.h"
 #ifdef HAVE_LIBBLURAY
+#include <assert.h>
+
 #include "BlurayFile.h"
 #include "URL.h"
-#include "utils/StringUtils.h"
 
 namespace XFILE
 {
 
   CBlurayFile::CBlurayFile(void)
-  {
-  }
+    : COverrideFile(false)
+  { }
 
   CBlurayFile::~CBlurayFile(void)
-  {
-    Close();
-  }
+  { }
 
-  CURL CBlurayFile::RemoveProtocol(const CURL& url)
+  std::string CBlurayFile::TranslatePath(const CURL& url)
   {
     assert(url.IsProtocol("bluray"));
 
     std::string host = url.GetHostName();
     std::string filename = url.GetFileName();
     if (host.empty() || filename.empty())
-      return CURL();
-    return CURL(host.append(filename));
-  }
+      return "";
 
-  bool CBlurayFile::Open(const CURL& url)
-  {
-    return m_file.Open(RemoveProtocol(url));
-  }
-
-  bool CBlurayFile::Exists(const CURL& url)
-  {
-    return m_file.Exists(RemoveProtocol(url));
-  }
-
-  int CBlurayFile::Stat(const CURL& url, struct __stat64* buffer)
-  {
-    return m_file.Stat(RemoveProtocol(url), buffer);
-  }
-
-  ssize_t CBlurayFile::Read(void* lpBuf, size_t uiBufSize)
-  {
-    return m_file.Read(lpBuf, uiBufSize);
-  }
-
-  int64_t CBlurayFile::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
-  {
-    return m_file.Seek(iFilePosition, iWhence);
-  }
-
-  void CBlurayFile::Close()
-  {
-    m_file.Close();
-  }
-
-  int64_t CBlurayFile::GetPosition()
-  {
-    return m_file.GetPosition();
-  }
-
-  int64_t CBlurayFile::GetLength()
-  {
-    return m_file.GetLength();
+    return host.append(filename);
   }
 } /* namespace XFILE */
 #endif
