@@ -1366,8 +1366,13 @@ CStdString CGUIPlexMediaWindow::GetLevelURL()
     level = 1;
   else
     level = 0;
+
+  CStdString userName = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
   
   CStdString levelUrl = m_sectionRoot.Get() + "/level/";
   levelUrl += boost::lexical_cast<std::string>(level);
+  if (!userName.IsEmpty())
+    levelUrl += "/user/" + userName;
+
   return  levelUrl;
 }
