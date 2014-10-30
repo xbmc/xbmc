@@ -144,7 +144,7 @@ apk-sign:
 	@rm images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
 	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(CPU)-debug.apk created"
 
-$(PREFIX)/lib/xbmc/libxbmc.so: $(SRCLIBS)
+$(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc
 
 $(SRCLIBS):
