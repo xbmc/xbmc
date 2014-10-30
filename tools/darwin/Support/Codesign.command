@@ -21,7 +21,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
   codesign -v -f -s "iPhone Developer" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
   
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
-  if ! [ -z "${CODE_SIGN_IDENTITY}" ] && [ "${CODE_SIGN_IDENTITY}" != "iPhone Developer" ] && [ "${CODE_SIGN_IDENTITY}" != "Don't Code Sign"  ]; then
+  if ! [ -z "${CODE_SIGN_IDENTITY}" ] && [[ `codesign -s iPhone\ Developer:\  2>&1` != "iPhone Developer: : no identity found" ]] && [ "${CODE_SIGN_IDENTITY}" != "Don't Code Sign"  ]; then
     echo Doing a full bundle sign using genuine identity "${CODE_SIGN_IDENTITY}"
     for binext in $LIST_BINARY_EXTENSIONS
     do
