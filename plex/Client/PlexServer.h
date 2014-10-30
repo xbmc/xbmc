@@ -36,7 +36,7 @@ class CPlexServer : public boost::enable_shared_from_this<CPlexServer>
 {
 public:
   CPlexServer(const CStdString& uuid, const CStdString& name, bool owned, bool synced = false)
-    : m_owned(owned), m_uuid(uuid), m_name(name), m_synced(synced), m_lastRefreshed(0) {}
+    : m_owned(owned), m_uuid(uuid), m_name(name), m_synced(synced), m_lastRefreshed(0), m_home(false) {}
 
   CPlexServer() {}
 
@@ -67,6 +67,7 @@ public:
   bool GetOwned() const { return m_owned; }
   bool IsComplete() const { return m_complete; }
   bool GetSynced() const { return m_synced; }
+  bool GetHome() const { return m_home; }
 
   CPlexServerPtr GetShared() { return shared_from_this(); }
   CPlexConnectionPtr GetActiveConnection() const;
@@ -87,6 +88,7 @@ public:
   void SetUUID(const CStdString &uuid) { m_uuid = uuid; }
   void SetName(const CStdString &name) { m_name = name; }
   void SetOwned(bool owned) { m_owned = owned; }
+  void SetHome(bool home) { m_home = home; }
   void SetOwner(const CStdString &owner) { m_owner = owner; }
   void SetSynced(bool synced) { m_synced = synced; }
   void SetVersion(const CStdString& version) { m_version = version; }
@@ -122,6 +124,7 @@ public:
 
 private:
   bool m_owned;
+  bool m_home;
   bool m_synced;
   CStdString m_uuid;
   CStdString m_name;

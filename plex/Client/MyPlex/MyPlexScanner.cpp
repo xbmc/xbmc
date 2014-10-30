@@ -53,6 +53,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
       CStdString uuid = serverItem->GetProperty("machineIdentifier").asString();
       CStdString name = serverItem->GetProperty("name").asString();
       bool owned = serverItem->GetProperty("owned").asBoolean();
+      bool home = serverItem->GetProperty("home").asBoolean(false);
 
       if (uuid.empty() || name.empty())
         continue;
@@ -61,6 +62,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
 
       if (serverItem->HasProperty("sourceTitle"))
         server->SetOwner(serverItem->GetProperty("sourceTitle").asString());
+      server->SetHome(home);
 
       CStdString address = serverItem->GetProperty("address").asString();
       CStdString token = serverItem->GetProperty("accessToken").asString();
