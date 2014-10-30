@@ -46,7 +46,20 @@ void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, C
   {
     CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
     if (fjob)
+    {
+      for (int i = 0; i < fjob->m_items.Size(); i ++)
+      {
+        CFileItemPtr item = fjob->m_items.Get(i);
+        if (item->GetProperty("restricted").asInteger() == 0)
+          item->ClearProperty("restricted");
+        if (item->GetProperty("protected").asInteger() == 0)
+          item->ClearProperty("protected");
+        if (item->GetProperty("admin").asInteger() == 0)
+          item->ClearProperty("admin");
+      }
+
       Add(fjob->m_items);
+    }
   }
 }
 
