@@ -19,6 +19,7 @@
 
 #include "LocalizeStrings.h"
 #include "Client/PlexServerDataLoader.h"
+#include "PlexFilterManager.h"
 
 #include "dialogs/GUIDialogKaiToast.h"
 
@@ -328,6 +329,7 @@ int CMyPlexManager::DoRefreshUserInfo()
   // so let's refresh all our shares
   //
   g_plexApplication.dataLoader->Refresh();
+  g_plexApplication.filterManager->loadFiltersFromDisk();
 
   BroadcastState();
 

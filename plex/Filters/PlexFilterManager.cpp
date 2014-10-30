@@ -9,32 +9,44 @@
 #include "PlexSectionFilter.h"
 #include "File.h"
 #include "SpecialProtocol.h"
+#include "PlexApplication.h"
+#include "Client/MyPlex/MyPlexManager.h"
 
 #include "XBMCTinyXML.h"
 
 #define PLEX_FILTER_MANAGER_XML_PATH "special://profile/plexfiltermanager.xml"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string CPlexFilterManager::getFilterXMLPath()
+{
+  std::string userName = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+  if (!userName.empty())
+    return "special://profile/plexfiltermanager_" + userName + ".xml";
+
+  return PLEX_FILTER_MANAGER_XML_PATH;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexFilterManager::CPlexFilterManager()
 {
-  /* myplex playlist filters */
-  m_myPlexPlaylistFilter = CPlexSectionFilterPtr(new CPlexMyPlexPlaylistFilter(CURL("plexserver://myplex/pms/playlists")));
-  m_filtersMap["plexserver://myplex/pms/playlists"] = m_myPlexPlaylistFilter;
-
   loadFiltersFromDisk();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexFilterManager::loadFiltersFromDisk()
 {
-  CLog::Log(LOGDEBUG, "CPlexFilterManager::loadFiltersFromDisk loading from %s", CSpecialProtocol::TranslatePath(PLEX_FILTER_MANAGER_XML_PATH).c_str());
-  if (!XFILE::CFile::Exists(PLEX_FILTER_MANAGER_XML_PATH))
+  CLog::Log(LOGDEBUG, "CPlexFilterManager::loadFiltersFromDisk loading from %s", CSpecialProtocol::TranslatePath(getFilterXMLPath()).c_str());
+  if (!XFILE::CFile::Exists(getFilterXMLPath()))
     return;
 
   CXBMCTinyXML doc;
-  doc.LoadFile(PLEX_FILTER_MANAGER_XML_PATH);
+  doc.LoadFile(getFilterXMLPath());
   if (doc.RootElement())
   {
+    m_filtersMap.clear();
+    m_myPlexPlaylistFilter = CPlexSectionFilterPtr(new CPlexMyPlexPlaylistFilter(CURL("plexserver://myplex/pms/playlists")));
+    m_filtersMap["plexserver://myplex/pms/playlists"] = m_myPlexPlaylistFilter;
+
     TiXmlElement *root = doc.RootElement();
     TiXmlElement *section = root->FirstChildElement();
 
@@ -132,7 +144,7 @@ void CPlexFilterManager::saveFiltersToDisk()
   }
 
   doc.InsertEndChild(root);
-  doc.SaveFile(PLEX_FILTER_MANAGER_XML_PATH);
+  doc.SaveFile(getFilterXMLPath());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

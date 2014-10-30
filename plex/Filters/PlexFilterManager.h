@@ -29,7 +29,9 @@ class CPlexFilterManager : public IJobCallback
     void loadFilterForSection(const std::string& sectionUrl, bool forceReload = false);
     CPlexSectionFilterPtr getFilterForSection(const std::string& sectionUrl);
 
+    void loadFiltersFromDisk();
     void saveFiltersToDisk();
+    static std::string getFilterXMLPath();
   private:
     void onFilterLoaded(const std::string &sectionUrl);
 
@@ -37,7 +39,6 @@ class CPlexFilterManager : public IJobCallback
 
     CCriticalSection m_filterSection;
     std::map<std::string, CPlexSectionFilterPtr> m_filtersMap;
-    void loadFiltersFromDisk();
 
     CPlexSectionFilterPtr m_myPlexPlaylistFilter;
 };
