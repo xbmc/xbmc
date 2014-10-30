@@ -42,6 +42,8 @@ bool CGUIDialogPlexUserSelect::OnAction(const CAction &action)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
+  std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+
   if (job && success)
   {
     CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
@@ -59,6 +61,7 @@ void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, C
       }
 
       Add(fjob->m_items);
+      SetSelected(currentUsername);
     }
   }
 }
