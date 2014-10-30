@@ -38,6 +38,7 @@ class CMyPlexUserInfo
     std::string queueUID;
     std::string cloudSyncDevice;
     std::string authToken;
+    std::string thumb;
 
     bool subscription;
     std::string subscriptionStatus;

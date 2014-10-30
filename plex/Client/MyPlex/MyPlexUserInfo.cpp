@@ -20,6 +20,7 @@ bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
   root->QueryIntAttribute("id", &id);
   root->QueryStringAttribute("email", &email);
   root->QueryStringAttribute("username", &username);
+  root->QueryStringAttribute("thumb", &thumb);
 
   // if we don't get a username, try if there is a
   // title attribute, this happens when we switch

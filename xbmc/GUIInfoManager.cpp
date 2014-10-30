@@ -262,6 +262,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "updateisavailable", SYSTEM_UPDATE_IS_AVAILABLE },
                                   { "userisrestricted", SYSTEM_USER_ISRESTRICTED },
                                   { "noplexservers",    SYSTEM_NO_PLEX_SERVERS },
+                                  { "currentuser",      SYSTEM_CURRENT_USER },
+                                  { "currentuserthumb", SYSTEM_CURRENT_USER_THUMB },
                                   /* END PLEX */
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "dvdready",         SYSTEM_DVDREADY },
@@ -2032,6 +2034,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
 
     return ret;
   }
+  case SYSTEM_CURRENT_USER:
+    strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+    break;
+  case SYSTEM_CURRENT_USER_THUMB:
+    strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().thumb;
+    break;
   /* END PLEX */
 
   }
