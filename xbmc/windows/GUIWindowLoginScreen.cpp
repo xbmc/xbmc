@@ -318,6 +318,11 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // start PVR related services
   g_application.StartPVRManager();
 
+  // reset and wake up
+  g_application.ResetScreenSaver();
+  g_application.WakeUpScreenSaverAndDPMS();
+  g_application.ResetSystemIdleTimer();
+
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();
