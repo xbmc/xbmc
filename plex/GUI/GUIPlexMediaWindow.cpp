@@ -111,7 +111,8 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       if (message.GetParam1() == GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
       {
-        if (!message.GetStringParam().empty() && message.GetStringParam() == m_vecItems->GetProperty("plexserver").asString())
+        if (!message.GetStringParam().empty() && message.GetStringParam() == m_vecItems->GetProperty("plexserver").asString() &&
+            g_windowManager.GetActiveWindow() == GetID())
         {
           CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage got a notice that server that we are browsing is going away, returning home");
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
