@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <window id="109">
-	<defaultcontrol always="true">11</defaultcontrol>
+	<defaultcontrol always="true">21</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<zorder>1</zorder>
 	<coordinates>
