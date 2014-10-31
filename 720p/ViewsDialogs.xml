@@ -80,7 +80,7 @@
 			<width>560</width>
 			<height>108</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-wide-big.png" background="true" blur="10">$INFO[ListItem.Art(thumb)]</texture>
+			<texture diffuse="mask-wide-big.png" background="true" blur="40">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 		<control type="image">
 			<posx>0</posx>
@@ -103,9 +103,51 @@
 			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<include name="DialogUserIcons">
+		<control type="image">
+			<posx>102</posx>
+			<posy>16</posy>
+			<width>50</width>
+			<height>12</height>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+			<texture>icon-admin.png</texture>
+			<colordiffuse>orangeLight</colordiffuse>
+			<visible>!IsEmpty(ListItem.Property(admin))</visible>
+		</control>
+		<control type="image">
+			<posx>514</posx>
+			<posy>14</posy>
+			<width>50</width>
+			<height>16</height>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+			<texture>icon-selected.png</texture>
+			<colordiffuse>FF5CB85C</colordiffuse>
+			<visible>ListItem.IsSelected</visible>
+		</control>
+		<control type="image">
+			<posx>102</posx>
+			<posy>79</posy>
+			<width>50</width>
+			<height>12</height>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+			<texture>icon-pin.png</texture>
+			<colordiffuse>FF5CB85C</colordiffuse>
+			<visible>!IsEmpty(ListItem.Property(protected))</visible>
+		</control>
+		<control type="image">
+			<posx>102</posx>
+			<posy>79</posy>
+			<width>50</width>
+			<height>12</height>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+			<texture>icon-pinless.png</texture>
+			<colordiffuse>Unfocused</colordiffuse>
+			<visible>IsEmpty(ListItem.Property(protected))</visible>
+		</control>
+	</include>
 	<variable name="UserTitle1">
-		<value condition="!IsEmpty(ListItem.Property(protected))">PROTECTED</value>
-		<value condition="!IsEmpty(ListItem.Property(admin))">ADMIN</value>
+		<value condition="IsEmpty(ListItem.Property(managed))">PIN</value>
+		<!--><value condition="!IsEmpty(ListItem.Property(admin))">ADMIN</value>-->
 		<value condition="!IsEmpty(ListItem.Property(managed))">MANAGED</value>
 	</variable>
 	<!-- variables to modify the position/appearance of the audio/subs selection window -->
@@ -234,13 +276,23 @@
 								<font>Bold-16</font>
 								<textcolor>white</textcolor>
 								<textoffsetx>120</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(admin))</visible>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<font>Bold-16</font>
+								<textcolor>white</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(admin))</visible>
 							</control>
 							<control type="label">
 								<posx>0</posx>
 								<posy>36</posy>
 								<width>560</width>
 								<height>50</height>
-								<label>email@plex.tv</label>
+								<label>$INFO[ListItem.Property(email)]</label>
 								<font>Regular-16</font>
 								<textcolor>Unfocused</textcolor>
 								<textoffsetx>120</textoffsetx>
@@ -254,8 +306,33 @@
 								<font>Bold-16</font>
 								<textcolor>Unfocused</textcolor>
 								<textoffsetx>120</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(managed))</visible>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Unfocused</textcolor>
+								<selectedcolor>Unfocused</selectedcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>FF5CB85C</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + !IsEmpty(ListItem.Property(protected))</visible>
 							</control>
 							<include>DialogUserAvatar</include>
+							<include>DialogUserIcons</include>
 						</itemlayout>
 						<focusedlayout height="110">
 							<include>DialogUserAvatarBg</include>
@@ -266,13 +343,23 @@
 								<font>Bold-16</font>
 								<textcolor>Focused</textcolor>
 								<textoffsetx>120</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(admin))</visible>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<font>Bold-16</font>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(admin))</visible>
 							</control>
 							<control type="label">
 								<posx>0</posx>
 								<posy>36</posy>
 								<width>560</width>
 								<height>50</height>
-								<label>email@plex.tv</label>
+								<label>$INFO[ListItem.Property(email)]</label>
 								<font>Regular-16</font>
 								<textcolor>Unfocused</textcolor>
 								<textoffsetx>120</textoffsetx>
@@ -286,8 +373,33 @@
 								<font>Bold-16</font>
 								<textcolor>Focused</textcolor>
 								<textoffsetx>120</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(managed))</visible>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Unfocused</textcolor>
+								<selectedcolor>Unfocused</selectedcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
+							</control>							
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>FF5CB85C</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + !IsEmpty(ListItem.Property(protected))</visible>
 							</control>
 							<include>DialogUserAvatar</include>
+							<include>DialogUserIcons</include>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
@@ -1414,6 +1526,11 @@
 		<align>center</align>
 		<aligny>center</aligny>
 	</include>
+	<include name="KeyboardPINFont">
+		<font>Bold-42</font>
+		<align>center</align>
+		<aligny>center</aligny>
+	</include>
 	<include name="KeyboardButton">
 		<font>Regular-18</font>
 		<align>center</align>
@@ -2457,6 +2574,194 @@
 						<onleft>8</onleft>
 						<onright>307</onright>
 						<onup>505</onup>
+						<ondown>501</ondown>
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="KeyboardPIN">
+		<control type="group">
+			<include>KeyboardBG</include>
+			<visible>!Window.IsVisible(103)</visible>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="90" time="200">WindowOpen</animation>
+			<animation effect="fade" start="90" end="0" time="200">WindowClose</animation>
+			<!-- text field bg -->
+			<control type="grouplist">
+				<posy>215</posy>
+				<width>1280</width>
+				<height>105</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>horizontal</orientation>
+				<control type="image">
+					<width>320</width>
+					<height>105</height>
+					<include>Black</include>
+				</control>
+			</control>
+			<control type="grouplist">
+				<itemgap>5</itemgap>
+				<width>1280</width>
+				<height>720</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>vertical</orientation>
+				<!-- Row 0 -->
+				<control type="grouplist">
+					<width>1280</width>
+					<height>105</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="label" id="4">
+						<description>Edit Text</description>
+						<width>320</width>
+						<height>105</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[12323]</label>
+						<textcolor>orangeLight</textcolor>
+						<disabledcolor>white</disabledcolor>
+						<include>KeyboardPINFont</include>
+					</control>
+				</control>
+				<!-- Row 1 -->
+				<control type="grouplist" id="501">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="11">
+						<description>'1' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>23</onup>
+						<ondown>16</ondown>
+						<label>$LOCALIZE[12311]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="12">
+						<description>'2' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>23</onup>
+						<ondown>17</ondown>
+						<label>$LOCALIZE[12312]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="13">
+						<description>'3' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>21</onup>
+						<ondown>18</ondown>
+						<label>$LOCALIZE[12313]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="14">
+						<description>'4' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>21</onup>
+						<ondown>19</ondown>
+						<label>$LOCALIZE[12314]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="15">
+						<description>'5' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>21</onup>
+						<ondown>10</ondown>
+						<label>$LOCALIZE[12315]</label>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- Row 2 -->
+				<control type="grouplist" id="502">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="16">
+						<description>'6' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>11</onup>
+						<ondown>23</ondown>
+						<label>$LOCALIZE[12316]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="17">
+						<description>'7' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>12</onup>
+						<ondown>23</ondown>
+						<label>$LOCALIZE[12317]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="18">
+						<description>'8' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>13</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12318]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="19">
+						<description>'9' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>14</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12319]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="10">
+						<description>'0' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>15</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12310]</label>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- Row 3 -->
+				<control type="grouplist" id="503">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="23">
+						<description>BACKSPACE button</description>
+						<width>125</width>
+						<onleft>503</onleft>
+						<onright>503</onright>
+						<onup>502</onup>
+						<ondown>501</ondown>
+						<include>KeyboardButtonBig</include>
+						<label>&#x21A4;</label>
+					</control>
+					<control type="button" id="21">
+						<description>DONE button</description>
+						<width>190</width>
+						<onleft>503</onleft>
+						<onright>503</onright>
+						<onup>502</onup>
 						<ondown>501</ondown>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[20177]</label>

@@ -6,5 +6,6 @@
 	<controls>
 		<!-- ViewsDialog.xml -->
 		<include >DialogUserSwitch</include>
+		<include>debugInfos</include>
 	</controls>
 </window>
