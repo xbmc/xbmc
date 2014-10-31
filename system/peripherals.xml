@@ -26,7 +26,7 @@
     <setting key="port" type="string" value="" label="36022" order="15" />
 
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
-    <setting key="device_name" type="string" value="XBMC" configurable="0" />
+    <setting key="device_name" type="string" value="Kodi" configurable="0" />
     <setting key="device_type" type="int" value="1" configurable="0" />
     <setting key="wake_devices_advanced" type="string" value="" configurable="0" />
     <setting key="standby_devices_advanced" type="string" value="" configurable="0" />
