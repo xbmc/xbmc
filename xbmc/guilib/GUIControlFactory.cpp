@@ -587,7 +587,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
   if (StringUtils::IsNaturalNumber(fallback))
     fallback = g_localizeStrings.Get(atoi(fallback.c_str()));
   else
-    g_charsetConverter.unknownToUTF8(fallback);
+    g_charsetConverter.UnknownToUtf8(fallback);
   infoLabel.SetLabel(label, fallback, parentID);
   return true;
 }
@@ -640,7 +640,7 @@ std::string CGUIControlFactory::FilterLabel(const std::string &label)
   if (StringUtils::IsNaturalNumber(viewLabel))
     viewLabel = g_localizeStrings.Get(atoi(label.c_str()));
   else
-    g_charsetConverter.unknownToUTF8(viewLabel);
+    g_charsetConverter.UnknownToUtf8(viewLabel);
   return viewLabel;
 }
 

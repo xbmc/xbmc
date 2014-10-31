@@ -1,0 +1,11 @@
+--- common/unicode/uconfig.h	2014-10-03 18:11:02.000000000 +0200
++++ common/unicode/uconfig2.h	2014-11-15 00:50:25.776535200 +0100
+@@ -15,6 +15,8 @@
+ #ifndef __UCONFIG_H__
+ #define __UCONFIG_H__
+ 
++#define U_USING_ICU_NAMESPACE 1
++#define U_NO_DEFAULT_INCLUDE_UTF_HEADERS 1
+ 
+ /*!
+  * \file

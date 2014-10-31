@@ -350,7 +350,7 @@ bool CCharsetDetection::ConvertHtmlToUtf8(const std::string& htmlContent, std::s
     usedHtmlCharset = "WINDOWS-1252";
 
   CLog::Log(LOGWARNING, "%s: Can't correctly convert to UTF-8 charset, converting as \"%s\"", __FUNCTION__, usedHtmlCharset.c_str());
-  g_charsetConverter.ToUtf8(usedHtmlCharset, htmlContent, converted, false);
+  g_charsetConverter.ToUtf8(usedHtmlCharset, htmlContent, converted);
 
   return false;
 }
@@ -396,7 +396,7 @@ bool CCharsetDetection::ConvertPlainTextToUtf8(const std::string& textContent, s
   }
 
   // try system default charset
-  if (g_charsetConverter.systemToUtf8(textContent, converted, true))
+  if (g_charsetConverter.TrySystemToUtf8(textContent, converted))
   {
     usedCharset = "char"; // synonym to system charset
     return true;
@@ -421,7 +421,7 @@ bool CCharsetDetection::ConvertPlainTextToUtf8(const std::string& textContent, s
     usedCharset = "WINDOWS-1252";
 
   CLog::Log(LOGWARNING, "%s: Can't correctly convert to UTF-8 charset, converting as \"%s\"", __FUNCTION__, usedCharset.c_str());
-  g_charsetConverter.ToUtf8(usedCharset, textContent, converted, false);
+  g_charsetConverter.ToUtf8(usedCharset, textContent, converted);
 
   return false;
 }
@@ -434,7 +434,7 @@ bool CCharsetDetection::checkConversion(const std::string& srcCharset, const std
 
   if (srcCharset != "UTF-8")
   {
-    if (g_charsetConverter.ToUtf8(srcCharset, src, dst, true))
+    if (g_charsetConverter.TryToUtf8(srcCharset, src, dst))
       return true;
   }
   else if (CUtf8Utils::isValidUtf8(src))

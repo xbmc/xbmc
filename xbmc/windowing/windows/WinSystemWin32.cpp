@@ -697,8 +697,8 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
       if (foundScreen)
       {
         std::string monitorStr, adapterStr;
-        g_charsetConverter.wToUTF8(ddMon.DeviceString, monitorStr);
-        g_charsetConverter.wToUTF8(ddAdapter.DeviceString, adapterStr);
+        g_charsetConverter.WToUtf8(ddMon.DeviceString, monitorStr);
+        g_charsetConverter.WToUtf8(ddAdapter.DeviceString, adapterStr);
         CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", monitorStr.c_str(), adapterStr.c_str(), adapter);
 
         // get information about the display's current position and display mode

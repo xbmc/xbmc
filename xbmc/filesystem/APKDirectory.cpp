@@ -79,7 +79,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     zip_stat_init(&sb);
     if (zip_stat_index(zip_archive, zip_index, zip_flags, &sb) != -1)
     {
-      g_charsetConverter.unknownToUTF8(test_name);
+      g_charsetConverter.UnknownToUtf8(test_name);
       CFileItemPtr pItem(new CFileItem(test_name));      
       pItem->m_dwSize    = sb.size;
       pItem->m_dateTime  = sb.mtime;    

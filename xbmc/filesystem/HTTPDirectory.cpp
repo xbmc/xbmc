@@ -97,10 +97,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       std::wstring wName, wLink, wConverted;
       if (fileCharset.empty())
-        g_charsetConverter.unknownToUTF8(strNameTemp);
-      g_charsetConverter.utf8ToW(strNameTemp, wName, false);
+        g_charsetConverter.UnknownToUtf8(strNameTemp);
+      g_charsetConverter.Utf8ToW(strNameTemp, wName);
       HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
-      g_charsetConverter.wToUTF8(wConverted, strNameTemp);
+      g_charsetConverter.WToUtf8(wConverted, strNameTemp);
       URIUtils::RemoveSlashAtEnd(strNameTemp);
 
       std::string strLinkBase = strLink;
@@ -118,10 +118,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       strLinkTemp = CURL::Decode(strLinkTemp);
       if (fileCharset.empty())
-        g_charsetConverter.unknownToUTF8(strLinkTemp);
-      g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
+        g_charsetConverter.UnknownToUtf8(strLinkTemp);
+      g_charsetConverter.Utf8ToW(strLinkTemp, wLink);
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
-      g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
+      g_charsetConverter.WToUtf8(wConverted, strLinkTemp);
 
       if (StringUtils::EndsWith(strNameTemp, "..>") &&
           StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
@@ -139,10 +139,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
          * due to the ; also being allowed as URL option seperator
          */
         if (fileCharset.empty())
-          g_charsetConverter.unknownToUTF8(strLinkBase);
-        g_charsetConverter.utf8ToW(strLinkBase, wLink, false);
+          g_charsetConverter.UnknownToUtf8(strLinkBase);
+        g_charsetConverter.Utf8ToW(strLinkBase, wLink);
         HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
-        g_charsetConverter.wToUTF8(wConverted, strLinkBase);
+        g_charsetConverter.WToUtf8(wConverted, strLinkBase);
 
         url2.SetFileName(strBasePath + strLinkBase);
         url2.SetOptions(strLinkOptions);

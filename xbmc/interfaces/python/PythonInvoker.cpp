@@ -237,7 +237,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
-  g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
+  g_charsetConverter.SystemToUtf8(m_pythonPath, pyPathUtf8);
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), pyPathUtf8.c_str());
 #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
@@ -274,7 +274,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       //  passing a FILE* to python from an fopen has the potential to crash.
       std::string nativeFilename(realFilename); // filename in system encoding
 #ifdef TARGET_WINDOWS
-      if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
+      if (!g_charsetConverter.Utf8ToSystem(nativeFilename))
       {
         CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
         return false;
@@ -651,8 +651,8 @@ void CPythonInvoker::addPath(const std::string& path)
   if (path.empty())
     return;
 
-  std::string nativePath(path);
-  if (!g_charsetConverter.utf8ToSystem(nativePath, true))
+  std::string nativePath;
+  if (!g_charsetConverter.Utf8ToSystemSafe(path, nativePath))
   {
     CLog::Log(LOGERROR, "%s: can't convert UTF-8 path \"%s\" to system encoding", __FUNCTION__, path.c_str());
     return;

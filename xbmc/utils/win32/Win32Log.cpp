@@ -33,7 +33,7 @@ void CWin32Log::LogW(int loglevel, const wchar_t* format, ...)
     if (!strDataW.empty())
     {
       std::string strDataUtf8;
-      if (g_charsetConverter.wToUTF8(strDataW, strDataUtf8, false) && !strDataUtf8.empty())
+      if (g_charsetConverter.WToUtf8(strDataW, strDataUtf8) && !strDataUtf8.empty())
         LogString(loglevel, strDataUtf8);
       else
         PrintDebugString(__FUNCTION__ ": Can't convert log wide string to UTF-8");
@@ -56,7 +56,7 @@ void CWin32Log::LogFunctionW(int loglevel, const char* functionName, const wchar
         funcNameStr.assign(functionName).append(": ");
 
       std::string strDataUtf8;
-      if (g_charsetConverter.wToUTF8(strDataW, strDataUtf8, false) && !strDataUtf8.empty())
+      if (g_charsetConverter.WToUtf8(strDataW, strDataUtf8) && !strDataUtf8.empty())
         LogString(loglevel, funcNameStr + strDataUtf8);
       else
         PrintDebugString(__FUNCTION__ ": Can't convert log wide string to UTF-8");

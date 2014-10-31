@@ -243,8 +243,8 @@ void CScraper::ClearCache()
 // the CCurlFile object is passed in so that URL fetches can be canceled from other threads
 // throws CScraperError abort on internal failures (e.g., parse errors)
 std::vector<std::string> CScraper::Run(const std::string& function,
-                                       const CScraperUrl& scrURL,
-                                       CCurlFile& http,
+                                 const CScraperUrl& scrURL,
+                                 CCurlFile& http,
                                        const std::vector<std::string>* extras)
 {
   if (!Load())

@@ -173,7 +173,7 @@ std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &cha
   for (std::u32string::const_iterator it = chars32.begin(); it != chars32.end(); ++it)
   {
     std::u32string char32(1, *it);
-    result.push_back(g_charsetConverter.utf32ToUtf8(char32));
+    result.push_back(g_charsetConverter.Utf32ToUtf8(char32));
   }
 
   return result;

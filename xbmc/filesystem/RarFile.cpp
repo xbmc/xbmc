@@ -708,11 +708,11 @@ bool CRarFile::OpenInArchive()
 
         if (wcslen(m_pArc->NewLhd.FileNameW) > 0)
         {
-          g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
+          g_charsetConverter.WToUtf8(m_pArc->NewLhd.FileNameW, strFileName);
         }
         else
         {
-          g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
+          g_charsetConverter.UnknownToUtf8(m_pArc->NewLhd.FileName, strFileName);
         }
 
         /* replace back slashes into forward slashes */

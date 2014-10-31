@@ -97,7 +97,7 @@ const std::string& CGUIListItem::GetLabel2() const
 
 void CGUIListItem::SetSortLabel(const std::string &label)
 {
-  g_charsetConverter.utf8ToW(label, m_sortLabel, false);
+  g_charsetConverter.Utf8ToW(label, m_sortLabel);
   // no need to invalidate - this is never shown in the UI
 }
 

@@ -24,23 +24,31 @@
 int remove_utf8(const char* __filename)
 {
   std::wstring filenameW;
-  g_charsetConverter.utf8ToW(__filename, filenameW, false);
+  if (!g_charsetConverter.Utf8ToWSystemSafe(__filename, filenameW))
+    return -1;
   return ::DeleteFileW(filenameW.c_str()) ? 0 : -1;
 }
 
 int rename_utf8(const char* __old, const char* __new)
 {
   std::wstring oldW, newW;
-  g_charsetConverter.utf8ToW(__old, oldW, false);
-  g_charsetConverter.utf8ToW(__new, newW, false);
-  return ::MoveFileW(oldW.c_str(), newW.c_str()) ? 0 : -1;
+  if (g_charsetConverter.Utf8ToWSystemSafe(__old, oldW) &&
+      g_charsetConverter.Utf8ToWSystemSafe(__new, newW))
+  {
+    return ::MoveFileW(oldW.c_str(), newW.c_str()) ? 0 : -1;
+  }
+  return -1;
 }
 
 FILE* fopen64_utf8(const char* __filename, const char* __modes)
 {
   std::wstring filenameW, modesW;
-  g_charsetConverter.utf8ToW(__filename, filenameW, false);
-  g_charsetConverter.utf8ToW(__modes, modesW, false);
-  return _wfopen(filenameW.c_str(), modesW.c_str());
+  if (g_charsetConverter.Utf8ToWSystemSafe(__filename, filenameW) &&
+      g_charsetConverter.Utf8ToWSystemSafe(__modes, modesW))
+  {
+    return _wfopen(filenameW.c_str(), modesW.c_str());
+  }
+  errno = EINVAL;
+  return NULL;
 }
 

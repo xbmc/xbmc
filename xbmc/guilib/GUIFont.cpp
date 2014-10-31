@@ -37,7 +37,7 @@ CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,
     initialPos = pos;
     SetSpeed(speed ? speed : defaultSpeed);
     std::wstring wsuffix;
-    g_charsetConverter.utf8ToW(scrollSuffix, wsuffix);
+    g_charsetConverter.Utf8ToW(scrollSuffix, wsuffix);
     suffix.clear();
     suffix.reserve(wsuffix.size());
     for (vecText::size_type i = 0; i < wsuffix.size(); i++)
@@ -58,7 +58,7 @@ float CScrollInfo::GetPixelsPerFrame()
   m_lastFrameTime = currentTime;
   // do an exponential moving average of the frame time
   if (delta)
-    m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
+  m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
   return pixelSpeed * m_averageFrameTime;
 }
@@ -143,7 +143,7 @@ bool CGUIFont::UpdateScrollInfo(const vecText &text, CScrollInfo &scrollInfo)
   float scrollAmount = fabs(scrollInfo.GetPixelsPerFrame() * g_graphicsContext.GetGUIScaleX());
 
   if (!scrollInfo.m_widthValid)
-  {
+        {
     /* Calculate the pixel width of the complete string */
     scrollInfo.m_textWidth = GetTextWidth(text);
     scrollInfo.m_totalWidth = scrollInfo.m_textWidth + GetTextWidth(scrollInfo.suffix);

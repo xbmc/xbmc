@@ -454,7 +454,7 @@ bool CWinEventsX11Imp::MessagePump()
           {
             std::string data(WinEvents->m_keybuf, len);
             std::wstring keys;
-            g_charsetConverter.utf8ToW(data, keys, false);
+            g_charsetConverter.Utf8ToW(data, keys);
 
             if (keys.length() == 0)
             {

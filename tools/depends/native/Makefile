@@ -10,7 +10,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         pcre-native swig-native rpl-native \
         libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
-        google-breakpad-native
+        google-breakpad-native libicu-native
 
 
 ifeq ($(OS),ios)

@@ -111,7 +111,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         lDuration = atoi(strLength.c_str());
         iComma++;
         strInfo = strLine.substr(iComma);
-        g_charsetConverter.unknownToUTF8(strInfo);
+        g_charsetConverter.UnknownToUtf8(strInfo);
       }
     }
     else if (StringUtils::StartsWith(strLine, OffsetMarker))
@@ -161,7 +161,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
 
       if (strFileName.length() > 0)
       {
-        g_charsetConverter.unknownToUTF8(strFileName);
+        g_charsetConverter.UnknownToUtf8(strFileName);
 
         // If no info was read from from the extended tag information, use the file name
         if (strInfo.length() == 0)
@@ -242,7 +242,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
       file.Write(strLine.c_str(),strLine.size());
     }
     std::string strFileName = ResolveURL(item);
-    g_charsetConverter.utf8ToStringCharset(strFileName);
+    g_charsetConverter.Utf8ToStringCharset(strFileName);
     strLine = StringUtils::Format("%s\n",strFileName.c_str());
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error

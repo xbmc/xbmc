@@ -293,7 +293,13 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
           std::wstring unicodeText, unicodeText2;
 
-          g_charsetConverter.utf8ToW(htmlText, unicodeText2, m_rtlText);
+          if (m_rtlText)
+          {
+            std::string htmlText2(htmlText);
+            g_charsetConverter.ReverseRTL(htmlText2, htmlText);
+          }
+
+          g_charsetConverter.Utf8ToW(htmlText, unicodeText2);
           html.ConvertHTMLToW(unicodeText2, unicodeText);
 
           mTagElements.insert(StrPair(*i, unicodeText));
@@ -357,7 +363,12 @@ bool CRssReader::Parse(int iFeed)
     {
       std::string strChannel = titleNode->FirstChild()->Value();
       std::wstring strChannelUnicode;
-      g_charsetConverter.utf8ToW(strChannel, strChannelUnicode, m_rtlText);
+      if (m_rtlText)
+      {
+        std::string strChannelTemp(strChannel);
+        g_charsetConverter.ReverseRTL(strChannelTemp, strChannel);
+      }
+      g_charsetConverter.Utf8ToW(strChannel, strChannelUnicode);
       AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
       AddString(L":", RSS_COLOR_CHANNEL, iFeed);

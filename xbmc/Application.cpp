@@ -2760,7 +2760,6 @@ bool CApplication::Cleanup()
 
     g_localizeStrings.Clear();
     g_LangCodeExpander.Clear();
-    g_charsetConverter.clear();
     g_directoryCache.Clear();
     CButtonTranslator::GetInstance().Clear();
 #ifdef HAS_EVENT_SERVER

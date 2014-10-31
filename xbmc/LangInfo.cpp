@@ -115,7 +115,7 @@ static TemperatureInfo temperatureInfo[] = {
 };
 
 #define TEMPERATURE_INFO_SIZE     sizeof(temperatureInfo) / sizeof(TemperatureInfo)
-#define TEMP_UNIT_STRINGS         20027
+#define TEMP_UNIT_STRINGS 20027
 
 typedef struct SpeedInfo {
   CSpeed::Unit unit;
@@ -138,7 +138,7 @@ static SpeedInfo speedInfo[] = {
 };
 
 #define SPEED_INFO_SIZE           sizeof(speedInfo) / sizeof(SpeedInfo)
-#define SPEED_UNIT_STRINGS        20200
+#define SPEED_UNIT_STRINGS 20200
 
 #define SETTING_REGIONAL_DEFAULT  "regional"
 
@@ -313,7 +313,6 @@ void CLangInfo::CRegion::SetGlobalLocale()
   g_langInfo.m_systemLocale = current_locale; // TODO: move to CLangInfo class
   std::locale::global(current_locale);
 #endif
-  g_charsetConverter.resetSystemCharset();
   CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 }
 
@@ -527,9 +526,8 @@ bool CLangInfo::Load(const std::string& strLanguage)
     }
 
     const std::string& strName = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_COUNTRY);
-    SetCurrentRegion(strName);
-  }
-  g_charsetConverter.reinitCharsetsFromSettings();
+      SetCurrentRegion(strName);
+    }
 
   return true;
 }
@@ -757,9 +755,9 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
 
   if (reloadServices)
   {
-    // also tell our weather and skin to reload as these are localized
-    g_weatherManager.Refresh();
-    g_PVRManager.LocalizationChanged();
+  // also tell our weather and skin to reload as these are localized
+  g_weatherManager.Refresh();
+  g_PVRManager.LocalizationChanged();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
 
@@ -1148,7 +1146,7 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
 {
   std::string preparedTimeFormat = timeFormat;
   if (use24HourClock)
-  {
+    {
     // replace all "h" with "H"
     StringUtils::Replace(preparedTimeFormat, 'h', 'H');
 
