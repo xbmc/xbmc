@@ -11,6 +11,8 @@ testMain
 *.sublime-*
 # KDevelop 4
 *.kdev4
+# gedit
+*~
 
 # generated files etc
 config.cache
