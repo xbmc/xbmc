@@ -15,12 +15,14 @@ endif()
 include(ExternalProject)
 
 ### setup all the necessary paths
-if(NOT XBMCROOT)
-  set(XBMCROOT ${PROJECT_SOURCE_DIR}/../../..)
+if(NOT APP_ROOT AND NOT XBMCROOT)
+  set(APP_ROOT ${PROJECT_SOURCE_DIR}/../../..)
+elseif(NOT APP_ROOT)
+  file(TO_CMAKE_PATH "${XBMCROOT}" APP_ROOT)
 else()
-  file(TO_CMAKE_PATH "${XBMCROOT}" XBMCROOT)
+  file(TO_CMAKE_PATH "${APP_ROOT}" APP_ROOT)
 endif()
-get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
+get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
 
 if(NOT WIN32)
   if(NOT DEPENDS_PATH)
@@ -71,7 +73,7 @@ endif()
 
 if(NOT WIN32)
   # copy the prepare-env.cmake script to the depends path so that we can include it
-  file(COPY ${XBMCROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/kodi)
+  file(COPY ${APP_ROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/kodi)
 
   # add the location of prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
   list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/kodi)

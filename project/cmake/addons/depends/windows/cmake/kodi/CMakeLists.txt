@@ -6,12 +6,14 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
 ### setup all the necessary paths
-if(NOT XBMCROOT)
-  set(XBMCROOT ${PROJECT_SOURCE_DIR}/../../../../../../..)
+if(NOT APP_ROOT AND NOT XBMCROOT)
+  set(APP_ROOT ${PROJECT_SOURCE_DIR}/../../../../../../..)
+elseif(NOT APP_ROOT)
+  file(TO_CMAKE_PATH "${XBMCROOT}" APP_ROOT)
 else()
-  file(TO_CMAKE_PATH "${XBMCROOT}" XBMCROOT)
+  file(TO_CMAKE_PATH "${APP_ROOT}" APP_ROOT)
 endif()
-get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
+get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
   message(FATAL_ERROR "CMAKE_INSTALL_PREFIX (${CMAKE_INSTALL_PREFIX}) is not a valid target directory.")
@@ -25,7 +27,7 @@ get_filename_component(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" ABSOLUTE)
 set(DEPENDS_PATH "${CMAKE_INSTALL_PREFIX}")
 
 # copy the prepare-env.cmake script so that we can include it
-file(COPY ${XBMCROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${APP_ROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${CMAKE_BINARY_DIR})
 
 # include prepare-env.cmake which contains the logic to install the addon header bindings etc
 include(prepare-env)
