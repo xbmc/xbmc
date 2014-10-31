@@ -27,6 +27,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #include "utils/auto_buffer.h"
 
 // forward definition

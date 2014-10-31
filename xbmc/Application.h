@@ -21,6 +21,7 @@
  */
 
 #include "system.h" // for HAS_DVD_DRIVE et. al.
+#include "PlatformConfig.h"
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"

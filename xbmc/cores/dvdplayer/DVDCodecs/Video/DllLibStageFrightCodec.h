@@ -20,9 +20,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-#include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 #include "DynamicDll.h"
 #include "DVDVideoCodec.h"

@@ -20,9 +20,7 @@
 
 // TODO: Need a uniform way of returning an error status
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 #include "network/Network.h"
 
 #include "ModuleXbmc.h"

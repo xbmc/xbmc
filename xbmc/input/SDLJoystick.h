@@ -22,6 +22,7 @@
 #define SDL_JOYSTICK_H
 
 #include "system.h" // for HAS_SDL_JOYSTICK
+#include "PlatformConfig.h"
 #include "settings/lib/ISettingCallback.h"
 #include <vector>
 #include <string>

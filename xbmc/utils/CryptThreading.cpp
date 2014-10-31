@@ -26,9 +26,8 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#else
+#include "PlatformConfig.h"
+#if defined (TARGET_WINDOWS)
 #define HAVE_OPENSSL
 #endif
 

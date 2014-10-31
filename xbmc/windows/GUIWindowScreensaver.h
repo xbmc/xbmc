@@ -21,6 +21,7 @@
  */
 
 #include "guilib/GUIWindow.h"
+#include "PlatformConfig.h"
 #ifdef HAS_SCREENSAVER
 #include "addons/ScreenSaver.h"
 #endif

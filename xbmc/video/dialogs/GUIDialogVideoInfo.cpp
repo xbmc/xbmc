@@ -54,6 +54,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+#include "PlatformConfig.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif

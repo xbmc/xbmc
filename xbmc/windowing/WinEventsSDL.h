@@ -23,6 +23,7 @@
 #define WINDOW_EVENTS_SDL_H
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_SDL
 #if SDL_VERSION == 1

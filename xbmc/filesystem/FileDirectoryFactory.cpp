@@ -20,6 +20,7 @@
 
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "FileDirectoryFactory.h"

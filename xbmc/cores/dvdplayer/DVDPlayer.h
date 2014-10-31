@@ -41,6 +41,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StreamDetails.h"
 #include "threads/SystemClock.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_OMXPLAYER
 #include "OMXCore.h"

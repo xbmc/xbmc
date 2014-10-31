@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_PULSEAUDIO
 #include "AESinkPULSE.h"
 #include "utils/log.h"

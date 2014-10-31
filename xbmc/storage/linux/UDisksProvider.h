@@ -19,6 +19,7 @@
  *
  */
 #include "storage/IStorageProvider.h"
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #include "DBusUtil.h"
 

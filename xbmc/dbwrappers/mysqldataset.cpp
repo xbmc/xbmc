@@ -26,6 +26,7 @@
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
 #include "Util.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"

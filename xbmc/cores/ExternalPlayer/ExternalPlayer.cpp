@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "signal.h"
 #include "limits.h"
 #include "CompileInfo.h"

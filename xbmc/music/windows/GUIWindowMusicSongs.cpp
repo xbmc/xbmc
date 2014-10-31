@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindowMusicSongs.h"
 #include "Util.h"
 #include "GUIInfoManager.h"

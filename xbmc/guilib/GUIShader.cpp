@@ -20,6 +20,7 @@
 
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if HAS_GLES == 2
 

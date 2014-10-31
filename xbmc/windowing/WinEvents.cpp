@@ -21,6 +21,7 @@
 #include "WinEvents.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
+#include "PlatformConfig.h"
 
 #if   defined(TARGET_WINDOWS)
 #include "windows/WinEventsWin32.h"

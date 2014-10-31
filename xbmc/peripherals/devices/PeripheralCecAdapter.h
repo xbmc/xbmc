@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if !defined(HAVE_LIBCEC)
 #include "Peripheral.h"

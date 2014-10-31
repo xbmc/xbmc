@@ -18,7 +18,7 @@
  *
  */
 
-#include "config.h"
+#include "PlatformConfig.h"
 #include <limits.h>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>

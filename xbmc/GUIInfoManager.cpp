@@ -20,6 +20,7 @@
 
 #include "network/Network.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"

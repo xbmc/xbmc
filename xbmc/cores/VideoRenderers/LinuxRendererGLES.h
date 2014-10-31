@@ -21,6 +21,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #if HAS_GLES == 2
 
 #include "system_gl.h"

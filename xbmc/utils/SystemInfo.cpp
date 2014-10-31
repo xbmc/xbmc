@@ -22,6 +22,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 #include "SystemInfo.h"
 #ifndef TARGET_POSIX
 #include <conio.h>

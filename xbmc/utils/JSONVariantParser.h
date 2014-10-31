@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "Variant.h"
 
 #include <yajl/yajl_parse.h>

@@ -23,6 +23,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_AIRPLAY
 
 #include <map>

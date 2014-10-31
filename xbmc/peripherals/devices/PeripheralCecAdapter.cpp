@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"

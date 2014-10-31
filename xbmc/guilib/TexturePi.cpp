@@ -25,6 +25,7 @@
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"

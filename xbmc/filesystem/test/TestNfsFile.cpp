@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #if defined(HAS_FILESYSTEM_NFS)
 #include "filesystem/NFSFile.h"
 #include "test/TestUtils.h"

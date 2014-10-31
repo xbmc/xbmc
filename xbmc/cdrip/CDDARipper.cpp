@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_CDDA_RIPPER
 

@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "settings/lib/ISettingCallback.h"

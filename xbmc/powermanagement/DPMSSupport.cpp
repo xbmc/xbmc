@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "DPMSSupport.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"

@@ -29,6 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "URL.h"
 #include "filesystem/File.h"
+#include "PlatformConfig.h"
 
 #include <math.h>
 

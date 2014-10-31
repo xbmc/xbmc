@@ -20,10 +20,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-
+#include "PlatformConfig.h"
 #include <cstdarg>
 
 #include "utils/log.h"

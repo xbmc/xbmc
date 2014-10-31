@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_SDL_WIN_EVENTS
 
 #include "WinEvents.h"

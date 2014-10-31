@@ -21,9 +21,7 @@
 
 #if defined(TARGET_RASPBERRY_PI)
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 #ifndef __GNUC__
 #pragma warning(push)
 #pragma warning(disable:4244)

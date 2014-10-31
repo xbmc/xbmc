@@ -24,6 +24,7 @@
  */
 
 #include "system_gl.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_GLX)
 #include <GL/glx.h>

@@ -26,7 +26,7 @@
 /* Include config.h to define (or not) WORDS_BIGENDIAN
    File created by configure */
 #if defined(TARGET_POSIX)
-#include "config.h"
+#include "PlatformConfig.h"
 #include <inttypes.h>
 #endif
 #ifdef TARGET_WINDOWS

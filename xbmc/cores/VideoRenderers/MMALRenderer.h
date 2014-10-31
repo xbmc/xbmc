@@ -20,6 +20,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_MMAL
 
 #include "guilib/GraphicContext.h"

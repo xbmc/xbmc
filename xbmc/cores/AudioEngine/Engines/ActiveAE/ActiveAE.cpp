@@ -19,6 +19,7 @@
  */
 
 #include "ActiveAE.h"
+#include "PlatformConfig.h"
 
 using namespace ActiveAE;
 #include "ActiveAESound.h"

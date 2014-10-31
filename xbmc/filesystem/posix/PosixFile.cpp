@@ -25,9 +25,7 @@
 #include "URL.h"
 #include "utils/log.h"
 
-#ifdef HAVE_CONFIG_H
-#include "config.h" // for HAVE_POSIX_FADVISE
-#endif // HAVE_CONFIG_H
+#include "PlatformConfig.h"
 
 #include <sys/stat.h>
 #include <fcntl.h>

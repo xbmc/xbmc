@@ -21,10 +21,8 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
 #include <vector>
 #include "libavcodec/avcodec.h"
 

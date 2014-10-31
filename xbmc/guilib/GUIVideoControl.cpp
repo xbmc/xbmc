@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "Application.h"

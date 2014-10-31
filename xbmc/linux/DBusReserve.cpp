@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #include "DBusReserve.h"
 

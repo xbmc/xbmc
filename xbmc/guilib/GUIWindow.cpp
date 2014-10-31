@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
 #include "Key.h"

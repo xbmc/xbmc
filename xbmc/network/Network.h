@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #include "settings/lib/ISettingCallback.h"
 

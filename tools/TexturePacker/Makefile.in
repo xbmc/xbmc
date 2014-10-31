@@ -17,6 +17,7 @@ CXXFLAGS_FOR_BUILD += \
   -I. \
   -I@abs_top_srcdir@/lib \
   -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/posix \
   -I@abs_top_srcdir@/xbmc/linux
 
 LDFLAGS_FOR_BUILD += -lSDL_image -lSDL -llzo2

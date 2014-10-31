@@ -22,6 +22,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/log.h"
 #include "system.h"
+#include "PlatformConfig.h"
 
 using namespace std;
 

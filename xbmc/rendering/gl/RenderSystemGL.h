@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "PlatformConfig.h"
 #if defined(HAVE_LIBGL)
 
 #include "system.h"

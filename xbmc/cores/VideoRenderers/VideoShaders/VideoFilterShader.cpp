@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
 #include <string>

@@ -19,9 +19,7 @@
  */
 
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 #include "Picture.h"
 #include "settings/AdvancedSettings.h"

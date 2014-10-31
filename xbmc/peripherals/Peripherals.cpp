@@ -30,6 +30,7 @@
 #include "devices/PeripheralImon.h"
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
+#include "PlatformConfig.h"
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"

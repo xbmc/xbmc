@@ -21,6 +21,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "LogindUPowerSyscall.h"
 #include "utils/log.h"
 

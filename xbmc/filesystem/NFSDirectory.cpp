@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"

@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAVE_LIBBLURAY
 #include "BlurayFile.h"
 #include "URL.h"

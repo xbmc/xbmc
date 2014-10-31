@@ -24,6 +24,7 @@
 #include "utils/fastmemcpy.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "PlatformConfig.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {

@@ -28,6 +28,8 @@
  *
  */
 #include "system.h"
+#include "PlatformConfig.h"
+
 #if defined(HAS_LINUX_EVENTS)
 
 #if defined(HAS_LIBAMCODEC)

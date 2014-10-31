@@ -21,6 +21,7 @@
 #pragma once
 
 #include "TextureGL.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_OMXPLAYER)
 

@@ -25,6 +25,7 @@
 #include "threads/Atomics.h"
 #if defined (TARGET_WINDOWS)
 #include "system.h" // For HAS_SDL_JOYSTICK
+#include "PlatformConfig.h"
 #if defined (HAS_SDL_JOYSTICK)
 #include "input/windows/WINJoystick.h"
 #endif // HAS_SDL_JOYSTICK

@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "Variant.h"
 #include <yajl/yajl_gen.h>
 #ifdef HAVE_YAJL_YAJL_VERSION_H

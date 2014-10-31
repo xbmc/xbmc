@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "CodecFactory.h"
 #include "OGGcodec.h"
 #include "ModplugCodec.h"

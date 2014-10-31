@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "UnrarXLib/rar.hpp"
 #include "utils/StringUtils.h"
+#include "PlatformConfig.h"
 
 #ifndef TARGET_POSIX
 #include <process.h>

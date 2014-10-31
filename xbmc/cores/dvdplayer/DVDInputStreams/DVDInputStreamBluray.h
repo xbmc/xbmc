@@ -20,6 +20,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #include "DVDInputStream.h"
 #include <list>
 #include <boost/shared_ptr.hpp>

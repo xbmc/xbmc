@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #if defined(HAS_GL)
 #include "GUITextureGL.h"
 #endif

@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #if   defined(TARGET_WINDOWS)
 #define HAVE_PERIPHERAL_BUS_USB 1
 #include "win32/PeripheralBusUSB.h"

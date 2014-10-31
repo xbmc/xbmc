@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "GUIFont.h"
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"

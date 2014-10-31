@@ -30,6 +30,7 @@
 #include "network/DNSNameCache.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "PlatformConfig.h"
 
 #pragma comment(lib, "dnssd.lib")
 

@@ -18,6 +18,7 @@
  *
  */
 #include "DeviceKitDisksProvider.h"
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"

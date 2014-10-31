@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"

@@ -32,6 +32,7 @@
 // and will be optimized out.
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "system_gl.h"
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);

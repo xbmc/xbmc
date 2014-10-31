@@ -23,6 +23,7 @@
 #include "UDevProvider.h"
 #include "UDisksProvider.h"
 #include "PosixMountProvider.h"
+#include "PlatformConfig.h"
 
 class CLinuxStorageProvider : public IStorageProvider
 {

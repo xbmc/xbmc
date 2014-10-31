@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"
+#include "PlatformConfig.h"
 
 #include <math.h>
 #include <boost/shared_ptr.hpp>

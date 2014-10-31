@@ -2,6 +2,7 @@ ARCH=@ARCH@
 
 INCLUDES  = -I.
 INCLUDES += -I@abs_top_srcdir@/xbmc
+INCLUDES += -I@abs_top_srcdir@/xbmc/posix
 INCLUDES += -I@abs_top_srcdir@/xbmc/linux
 INCLUDES += -I@abs_top_srcdir@/xbmc/utils
 INCLUDES += -I@abs_top_srcdir@/xbmc/guilib

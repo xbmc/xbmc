@@ -33,9 +33,7 @@
 #include <errno.h>
 #include <iconv.h>
 
-#if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
+#include "PlatformConfig.h"
 
 #ifdef WORDS_BIGENDIAN
   #define ENDIAN_SUFFIX "BE"

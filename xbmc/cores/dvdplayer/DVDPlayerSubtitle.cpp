@@ -36,7 +36,7 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #ifdef TARGET_POSIX
-#include "config.h"
+#include "PlatformConfig.h"
 #endif
 
 using namespace std;

@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #if defined(HAVE_LIBOPENMAX)
 
 #include "DVDVideoCodec.h"

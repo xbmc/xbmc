@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "threads/Thread.h"
 
 #include "ActiveAESink.h"

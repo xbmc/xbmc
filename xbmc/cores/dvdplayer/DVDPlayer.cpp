@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "PlatformConfig.h"
 #include "DVDPlayer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
