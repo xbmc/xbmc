@@ -70,14 +70,14 @@ else()
 endif()
 
 if(NOT WIN32)
-  # copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
-  file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
+  # copy the kodi-prepare-env.cmake script to the depends path so that we can include it
+  file(COPY ${XBMCROOT}/project/cmake/scripts/common/kodi-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/kodi)
 
-  # add the location of xbmc-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
-  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/xbmc)
+  # add the location of kodi-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
+  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/kodi)
 
-  # include xbmc-prepare-env.cmake which contains the logic to install the addon header bindings etc
-  include(xbmc-prepare-env)
+  # include kodi-prepare-env.cmake which contains the logic to install the addon header bindings etc
+  include(kodi-prepare-env)
 endif()
 
 ### get and build all the binary addons

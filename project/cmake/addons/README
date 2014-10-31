@@ -33,8 +33,8 @@ specific paths:
   * XBMCROOT points to the root directory of the xbmc project (default is the
     absolute representation of ../../.. starting from this directory).
   * PACKAGE_ZIP=1 will mean the add-ons will be 'packaged' into a common folder,
-    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/xbmc/addons and
-    <CMAKE_INSTALL_PREFIX>/share/xbmc/addons.
+    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/kodi/addons and
+    <CMAKE_INSTALL_PREFIX>/share/kodi/addons.
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
 
