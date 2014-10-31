@@ -1185,7 +1185,7 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
     break;
   }
 
-  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && g_advancedSettings.CanLogComponent(LOGCEC)))
+  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && CLog::IsLogLevelLogged(LOGDEBUG) && g_advancedSettings.CanLogComponent(LOGCEC)))
     CLog::Log(iLevel, "%s - %s", __FUNCTION__, message.message);
 
   return 1;
