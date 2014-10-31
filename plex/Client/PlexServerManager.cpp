@@ -318,7 +318,7 @@ void CPlexServerManager::ServerReachabilityDone(const CPlexServerPtr& server, bo
   
   if (success)
   {
-    if (server->GetOwned() &&
+    if ((server->GetOwned() || server->GetHome()) &&
         (server->GetServerClass().empty() || !server->GetServerClass().Equals(PLEX_SERVER_CLASS_SECONDARY)))
       SetBestServer(server, false);
     NotifyAboutServer(server);
