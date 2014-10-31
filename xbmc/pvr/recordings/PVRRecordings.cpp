@@ -288,16 +288,23 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
         continue;
       }
 
-      pItem->GetPVRRecordingInfoTag()->SetPlayCount(count);
+      if (!pItem->HasPVRRecordingInfoTag())
+        continue;
 
-      // Clear resume bookmark
-      if (count > 0)
+      CPVRRecordingPtr recording = GetByFileItem(*pItem);
+      if (recording)
       {
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-        pItem->GetPVRRecordingInfoTag()->SetLastPlayedPosition(0);
-      }
+        recording->SetPlayCount(count);
 
-      database.SetPlayCount(*pItem, count);
+        // Clear resume bookmark
+        if (count > 0)
+        {
+          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+          recording->SetLastPlayedPosition(0);
+        }
+
+        database.SetPlayCount(*pItem, count);
+      }
     }
 
     database.Close();
@@ -362,20 +369,6 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
   }
 
   return false;
-}
-
-void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
-{
-  if (!item.HasPVRRecordingInfoTag())
-    return;
-
-  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
-  CPVRRecordingPtr foundRecording = GetById(recording->m_iClientId, recording->m_strRecordingId);
-  if (foundRecording)
-  {
-    CSingleLock lock(m_critSection);
-    foundRecording->SetPlayCount(iPlayCount);
-  }
 }
 
 void CPVRRecordings::GetAll(CFileItemList &items)
@@ -443,6 +436,12 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
     retVal = it->second;
 
   return retVal;
+}
+
+CPVRRecordingPtr CPVRRecordings::GetByFileItem(const CFileItem &item) const
+{
+  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
+  return GetById(recording->m_iClientId, recording->m_strRecordingId);
 }
 
 void CPVRRecordings::Clear()
