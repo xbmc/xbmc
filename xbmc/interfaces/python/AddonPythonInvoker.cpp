@@ -130,6 +130,6 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CAddonPythonIn
 const char* CAddonPythonInvoker::getInitializationScript() const
 {
   bool bwcompatMode = (m_addon.get() == NULL ||
-                       m_addon->GetDependencyVersion("xbmc.python") <= ADDON::AddonVersion("1.0"));
+                       m_addon->GetDependencyVersion("addon.python") <= ADDON::AddonVersion("1.0"));
   return bwcompatMode ? RUNSCRIPT_BWCOMPATIBLE : RUNSCRIPT_COMPLIANT;
 }

@@ -58,7 +58,7 @@ CRepository::CRepository(const cp_extension_t *ext)
   {
     AddonVersion version("0.0.0");
     AddonPtr addonver;
-    if (CAddonMgr::Get().GetAddon("xbmc.addon", addonver))
+    if (CAddonMgr::Get().GetAddon("addon", addonver))
       version = addonver->Version();
     for (size_t i = 0; i < ext->configuration->num_children; ++i)
     {

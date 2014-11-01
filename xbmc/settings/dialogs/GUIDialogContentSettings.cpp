@@ -110,7 +110,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           std::string content = m_vecItems->Get(iSelected)->GetPath().substr(14);
           OnCancel();
           Close();
-          CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
+          CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/addon.metadata.scraper." + content + ",return)");
           return true;
         }
 

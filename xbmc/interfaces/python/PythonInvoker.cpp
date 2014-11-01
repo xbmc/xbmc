@@ -544,11 +544,11 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
-  ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
+  ADDON::AddonVersion version = m_addon->GetDependencyVersion("addon.python");
   PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",
+  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the addon.python api",
             GetId(), m_sourceFile.c_str(), m_addon->ID().c_str(), version.asString().c_str());
 }
 
