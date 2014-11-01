@@ -282,7 +282,7 @@ namespace XBMCAddon
        *   - action          : string or unicode - any built-in function to perform.
        * replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).
        * \n
-       * List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n
+       * List of functions - http://kodi.wiki/view/List_of_Built_In_Functions \n
        * \n
        * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
        *        Once you use a keyword, all following arguments require the keyword.\n

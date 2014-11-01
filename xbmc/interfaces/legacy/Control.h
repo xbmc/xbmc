@@ -132,7 +132,7 @@ namespace XBMCAddon
        * visible          : string - Visible condition.\n
        * allowHiddenFocus : bool - True=gains focus even if hidden.
        * 
-       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions 
+       * List of Conditions - http://kodi.wiki/view/List_of_Boolean_Conditions
        * 
        * example:
        *   - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)
@@ -146,7 +146,7 @@ namespace XBMCAddon
        * 
        * enable           : string - Enable condition.
        * 
-       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions 
+       * List of Conditions - http://kodi.wiki/view/List_of_Boolean_Conditions
        * 
        * example:
        *   - self.button.setEnableCondition('System.InternetState')
@@ -161,7 +161,7 @@ namespace XBMCAddon
        *   - event        : string - The event to animate.
        *   - attr         : string - The whole attribute string separated by spaces.
        * 
-       * Animating your skin - http://wiki.xbmc.org/?title=Animating_Your_Skin 
+       * Animating your skin - http://kodi.wiki/view/Animating_Your_Skin
        * 
        * example:
        *   - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])
