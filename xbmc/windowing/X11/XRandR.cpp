@@ -117,6 +117,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
     xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
     xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
+    xoutput.crtc = (output->Attribute("crtc") != NULL ? atoi(output->Attribute("crtc")) : 0);
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
     if (output->Attribute("rotation") != NULL
@@ -475,6 +476,24 @@ XOutput* CXRandR::GetOutput(CStdString outputName)
     }
   }
   return result;
+}
+
+int CXRandR::GetCrtc(int x, int y)
+{
+  int crtc = 0;
+  for (unsigned int i = 0; i < m_outputs.size(); ++i)
+  {
+    if (!m_outputs[i].isConnected)
+      continue;
+
+    if ((m_outputs[i].x <= x && (m_outputs[i].x+m_outputs[i].w) > x) &&
+        (m_outputs[i].y <= y && (m_outputs[i].y+m_outputs[i].h) > y))
+    {
+      crtc = m_outputs[i].crtc;
+      break;
+    }
+  }
+  return crtc;
 }
 
 CXRandR g_xrandr;

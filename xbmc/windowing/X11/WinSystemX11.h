@@ -87,6 +87,7 @@ public:
   void GetConnectedOutputs(std::vector<CStdString> *outputs);
   bool IsCurrentOutput(CStdString output);
   void RecreateWindow();
+  int GetCrtc() { return m_crtc; }
 
 protected:
   bool RefreshGlxContext(bool force);
@@ -118,12 +119,14 @@ protected:
   bool                         m_bIsInternalXrr;
   bool                         m_newGlContext;
   int m_MouseX, m_MouseY;
+  int m_crtc;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
   bool CreateIconPixmap();
   bool HasWindowManager();
+  void UpdateCrtc();
 
   CStopWatch m_screensaverReset;
 };

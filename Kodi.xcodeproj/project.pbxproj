@@ -1285,6 +1285,9 @@
 		DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
+		DFA0E8C519FD6BEE00269A92 /* VideoSyncCocoa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA0E8C319FD6BEE00269A92 /* VideoSyncCocoa.cpp */; };
+		DFA0E8C719FD7BD100269A92 /* VideoSyncCocoa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA0E8C319FD6BEE00269A92 /* VideoSyncCocoa.cpp */; };
+		DFA0E8C819FD7BD100269A92 /* VideoSyncCocoa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA0E8C319FD6BEE00269A92 /* VideoSyncCocoa.cpp */; };
 		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
@@ -5012,6 +5015,9 @@
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFile.cpp; sourceTree = "<group>"; };
 		DF9A71ED1639C8F6005ECB2E /* HTTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFile.h; sourceTree = "<group>"; };
+		DFA0E8C219FD6BEE00269A92 /* VideoSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoSync.h; path = videosync/VideoSync.h; sourceTree = "<group>"; };
+		DFA0E8C319FD6BEE00269A92 /* VideoSyncCocoa.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncCocoa.cpp; path = videosync/VideoSyncCocoa.cpp; sourceTree = "<group>"; };
+		DFA0E8C419FD6BEE00269A92 /* VideoSyncCocoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoSyncCocoa.h; path = videosync/VideoSyncCocoa.h; sourceTree = "<group>"; };
 		DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WakeOnAccess.cpp; sourceTree = "<group>"; };
 		DFA8157D16713B1200E4E597 /* WakeOnAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WakeOnAccess.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
@@ -7213,6 +7219,7 @@
 			isa = PBXGroup;
 			children = (
 				43FAC88612D6363B00F67914 /* dialogs */,
+				DFA0E8C619FD6BFC00269A92 /* videosync */,
 				43FAC88812D6364800F67914 /* windows */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
 				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
@@ -8305,6 +8312,16 @@
 				DF8990201709BB5400B35C21 /* ViewStateSettings.h */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		DFA0E8C619FD6BFC00269A92 /* videosync */ = {
+			isa = PBXGroup;
+			children = (
+				DFA0E8C219FD6BEE00269A92 /* VideoSync.h */,
+				DFA0E8C319FD6BEE00269A92 /* VideoSyncCocoa.cpp */,
+				DFA0E8C419FD6BEE00269A92 /* VideoSyncCocoa.h */,
+			);
+			name = videosync;
 			sourceTree = "<group>";
 		};
 		DFB15B1F15F8FB8100CDF0DE /* osx */ = {
@@ -11646,6 +11663,7 @@
 				7CCDA209192753E30074CF51 /* ContentDirectorywSearchSCPD.cpp in Sources */,
 				7CCDA214192753E30074CF51 /* PltDidl.cpp in Sources */,
 				7CCDA21D192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
+				DFA0E8C519FD6BEE00269A92 /* VideoSyncCocoa.cpp in Sources */,
 				7CCDA226192753E30074CF51 /* PltMediaBrowser.cpp in Sources */,
 				7CCDA22F192753E30074CF51 /* PltMediaCache.cpp in Sources */,
 				7CCDA238192753E30074CF51 /* PltMediaItem.cpp in Sources */,
@@ -11978,6 +11996,7 @@
 				DFF0F16F17528350002DA3A4 /* DVDDemuxPVRClient.cpp in Sources */,
 				DFF0F17017528350002DA3A4 /* DVDDemuxShoutcast.cpp in Sources */,
 				DFF0F17117528350002DA3A4 /* DVDDemuxUtils.cpp in Sources */,
+				DFA0E8C819FD7BD100269A92 /* VideoSyncCocoa.cpp in Sources */,
 				DFF0F17217528350002DA3A4 /* DVDDemuxVobsub.cpp in Sources */,
 				DFF0F17317528350002DA3A4 /* DVDFactoryDemuxer.cpp in Sources */,
 				DFF0F17417528350002DA3A4 /* DVDFactoryInputStream.cpp in Sources */,
@@ -13661,6 +13680,7 @@
 				E49913DA174E5F8D00741B6D /* Picture.cpp in Sources */,
 				E49913DB174E5F8D00741B6D /* PictureInfoLoader.cpp in Sources */,
 				E49913DC174E5F8D00741B6D /* PictureInfoTag.cpp in Sources */,
+				DFA0E8C719FD7BD100269A92 /* VideoSyncCocoa.cpp in Sources */,
 				E49913DD174E5F8D00741B6D /* PictureThumbLoader.cpp in Sources */,
 				E49913DE174E5F8D00741B6D /* SlideShowPicture.cpp in Sources */,
 				E49913DF174E5F8D00741B6D /* PlayList.cpp in Sources */,

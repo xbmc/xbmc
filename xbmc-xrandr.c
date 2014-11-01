@@ -3005,9 +3005,9 @@ main (int argc, char **argv)
 	    if (mode)
 	    {
 		if (crtc_info) {
-		    printf (" w=\"%d\" h=\"%d\" x=\"%d\" y=\"%d\"",
+		    printf (" w=\"%d\" h=\"%d\" x=\"%d\" y=\"%d\" crtc=\"%d\"",
 			    crtc_info->width, crtc_info->height,
-			    crtc_info->x, crtc_info->y);
+			    crtc_info->x, crtc_info->y, crtc->crtc.index);
 		} else {
 		    printf (" w=\"%d\" h=\"%d\" x=\"%d\" y=\"%d\"",
 			    mode->width, mode->height, output->x, output->y);

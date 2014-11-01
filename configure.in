@@ -1340,6 +1340,9 @@ if test "$use_x11" = "yes" && test "$host_vendor" != "apple"; then
   PKG_CHECK_MODULES([XEXT],  [xext],
     [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([DRM],  [libdrm],
+    [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
+    AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_X11], [1], [Define to 1 if you have X11 libs installed.])
 else
   AC_MSG_RESULT($x11_disabled)

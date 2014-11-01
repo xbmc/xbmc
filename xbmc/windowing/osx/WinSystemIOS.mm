@@ -36,6 +36,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
+#include "video/videosync/VideoSyncCocoa.h"
 #include <vector>
 #undef BOOL
 
@@ -57,6 +58,7 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
 
   m_iVSyncErrors = 0;
   m_bIsBackgrounded = false;
+  m_VideoSync = NULL;
 }
 
 CWinSystemIOS::~CWinSystemIOS()
@@ -344,8 +346,15 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
     (*i)->OnAppFocusChange(focus);
 }
 
-void CWinSystemIOS::InitDisplayLink(void)
+void CWinSystemIOS::VblankHandler(int64_t nowtime, double fps)
 {
+  if (m_VideoSync)
+    m_VideoSync->VblankHandler(nowtime, fps);
+}
+
+void CWinSystemIOS::InitDisplayLink(CVideoSyncCocoa *syncImpl)
+{
+  m_VideoSync = syncImpl;
 }
 void CWinSystemIOS::DeinitDisplayLink(void)
 {
