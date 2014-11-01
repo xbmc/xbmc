@@ -1268,8 +1268,8 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
-  // use the same client version as libCEC version
-  m_configuration.clientVersion = CEC_CLIENT_VERSION_CURRENT;
+  // client version matches the version of libCEC that we originally used the API from
+  m_configuration.clientVersion = CEC_CLIENT_VERSION_2_2_0;
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
@@ -1347,8 +1347,13 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
   m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
 
-  // double tap prevention timeout in ms
+#if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
+  // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
+  m_configuration.iDoubleTapTimeout50Ms = GetSettingInt("double_tap_timeout_ms") / 50;
+#else
+  // backwards compatibility. will be removed once the next major release of libCEC is out
   m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+#endif
 }
 
 void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)
