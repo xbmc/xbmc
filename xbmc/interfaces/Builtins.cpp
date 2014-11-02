@@ -465,12 +465,21 @@ int CBuiltins::Execute(const std::string& execString)
     else
 #endif
     {
-      AddonPtr script;
-      std::string scriptpath(params[0]);
-      if (CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT) ||
-          CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT_WEATHER) ||
-          CAddonMgr::Get().GetAddon(params[0], script, ADDON_SCRIPT_LYRICS))
-        scriptpath = script->LibPath();
+      AddonPtr addon;
+      std::string scriptpath;
+      if (CAddonMgr::Get().GetAddon(params[0], addon))
+      {
+        //Get the correct extension point to run
+        if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
+            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
+            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
+            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+          scriptpath = addon->LibPath();
+        else
+          CLog::Log(LOGERROR, "RunScript called for invalid add-on id '%s'. Not a script.", params[0].c_str());
+      }
+      else
+        scriptpath = params[0];
 
       // split the path up to find the filename
       vector<string> argv = params;
@@ -478,7 +487,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (!filename.empty())
         argv[0] = filename;
 
-      CScriptInvocationManager::Get().Execute(scriptpath, script, argv);
+      CScriptInvocationManager::Get().Execute(scriptpath, addon, argv);
     }
   }
 #if defined(TARGET_DARWIN_OSX)
@@ -605,7 +614,8 @@ int CBuiltins::Execute(const std::string& execString)
       }
       else if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS))
+               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
+               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
         // Pass the script name (params[0]) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunScript
         cmd = StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str());
