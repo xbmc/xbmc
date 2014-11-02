@@ -181,7 +181,6 @@ static const ActionMapping actions[] =
         {"analogseekforward" , ACTION_ANALOG_SEEK_FORWARD},
         {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
         {"showpreset"        , ACTION_VIS_PRESET_SHOW},
-        {"presetlist"        , ACTION_VIS_PRESET_LIST},
         {"nextpreset"        , ACTION_VIS_PRESET_NEXT},
         {"previouspreset"    , ACTION_VIS_PRESET_PREV},
         {"lockpreset"        , ACTION_VIS_PRESET_LOCK},
