@@ -28,6 +28,7 @@
 namespace EPG
 {
   class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 
 namespace PVR
@@ -75,11 +76,16 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
-    bool GetPlayingTag(EPG::CEpgInfoTag &tag) const;
+    /*!
+     * @brief Get the currently playing EPG tag.
+     * @return The currently playing EPG tag or NULL if no EPG tag is playing.
+     */
+    EPG::CEpgInfoTagPtr GetPlayingTag() const;
 
     /*!
-    * @brief Get playing TV group.
-    */
+     * @brief Get playing TV group.
+     * @return The currently playing TV group or NULL if no TV group is playing.
+     */
     std::string GetPlayingTVGroup();
 
   private:
@@ -176,7 +182,7 @@ namespace PVR
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
     XbmcThreads::EndTime            m_ToggleShowInfo;
-    EPG::CEpgInfoTag *              m_playingEpgTag;
+    EPG::CEpgInfoTagPtr             m_playingEpgTag;
 
     CCriticalSection                m_critSection;
   };

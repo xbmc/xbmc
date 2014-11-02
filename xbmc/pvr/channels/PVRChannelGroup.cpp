@@ -1096,12 +1096,12 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || m_members.at(iChannelPtr).channel->IsHidden())
       continue;
 
-    CEpgInfoTag epgNow;
-    if (!epg->InfoTagNow(epgNow))
+    CEpgInfoTagPtr epgNow(epg->GetTagNow());
+    if (!epgNow)
       continue;
 
     CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->Path());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
@@ -1122,12 +1122,12 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || m_members.at(iChannelPtr).channel->IsHidden())
       continue;
 
-    CEpgInfoTag epgNow;
-    if (!epg->InfoTagNext(epgNow))
+    CEpgInfoTagPtr epgNext(epg->GetTagNext());
+    if (!epgNext)
       continue;
 
-    CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
+    CFileItemPtr entry(new CFileItem(epgNext));
+    entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->Path());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);

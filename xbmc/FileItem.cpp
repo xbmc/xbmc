@@ -110,22 +110,24 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-CFileItem::CFileItem(const CEpgInfoTag& tag)
+CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
 {
   Initialize();
 
-  m_strPath = tag.Path();
   m_bIsFolder = false;
-  *GetEPGInfoTag() = tag;
-  SetLabel(tag.Title());
-  m_strLabel2 = tag.Plot();
-  m_dateTime = tag.StartAsLocalTime();
+  m_epgInfoTag = tag;
+  if (tag)
+  {
+    m_strPath = tag->Path();
+    SetLabel(tag->Title());
+    m_strLabel2 = tag->Plot();
+    m_dateTime = tag->StartAsLocalTime();
 
-  if (!tag.Icon().empty())
-    SetIconImage(tag.Icon());
-  else if (tag.HasPVRChannel() && !tag.ChannelTag()->IconPath().empty())
-    SetIconImage(tag.ChannelTag()->IconPath());
-
+    if (!tag->Icon().empty())
+      SetIconImage(tag->Icon());
+    else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
+      SetIconImage(tag->ChannelTag()->IconPath());
+  }
   FillInMimeType(false);
 }
 
@@ -133,14 +135,13 @@ CFileItem::CFileItem(const CPVRChannel& channel)
 {
   Initialize();
 
-  CEpgInfoTag epgNow;
-  bool bHasEpgNow = channel.GetEPGNow(epgNow);
+  CEpgInfoTagPtr epgNow(channel.GetEPGNow());
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = bHasEpgNow ? epgNow.Title() :
+  m_strLabel2 = epgNow ? epgNow->Title() :
       CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
 
@@ -153,9 +154,9 @@ CFileItem::CFileItem(const CPVRChannel& channel)
       musictag->SetTitle(m_strLabel2);
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
-      if (bHasEpgNow)
-        musictag->SetGenre(epgNow.Genre());
-      musictag->SetDuration(bHasEpgNow ? epgNow.GetDuration() : 3600);
+      if (epgNow)
+        musictag->SetGenre(epgNow->Genre());
+      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
       musictag->SetLoaded(true);
       musictag->SetComment("");
       musictag->SetLyrics("");
@@ -228,7 +229,6 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
@@ -256,6 +256,12 @@ CFileItem::CFileItem(const std::string& strLabel)
 {
   Initialize();
   SetLabel(strLabel);
+}
+
+CFileItem::CFileItem(const char* strLabel)
+{
+  Initialize();
+  SetLabel(std::string(strLabel));
 }
 
 CFileItem::CFileItem(const CURL& path, bool bIsFolder)
@@ -308,7 +314,6 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_epgInfoTag;
   delete m_pvrChannelInfoTag;
   delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
@@ -316,7 +321,6 @@ CFileItem::~CFileItem(void)
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
@@ -360,18 +364,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   if (item.HasEPGInfoTag())
-  {
-    m_epgInfoTag = GetEPGInfoTag();
-    if (m_epgInfoTag)
-      *m_epgInfoTag = *item.m_epgInfoTag;
-  }
+    m_epgInfoTag = item.m_epgInfoTag;
   else
-  {
-    if (m_epgInfoTag)
-      delete m_epgInfoTag;
-
-    m_epgInfoTag = NULL;
-  }
+    m_epgInfoTag.reset();
 
   if (item.HasPVRChannelInfoTag())
   {
@@ -450,7 +445,6 @@ void CFileItem::Initialize()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
@@ -493,8 +487,7 @@ void CFileItem::Reset()
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  delete m_epgInfoTag;
-  m_epgInfoTag=NULL;
+  m_epgInfoTag.reset();
   delete m_pvrChannelInfoTag;
   m_pvrChannelInfoTag=NULL;
   delete m_pvrRecordingInfoTag;
@@ -3110,14 +3103,6 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
-}
-
-CEpgInfoTag* CFileItem::GetEPGInfoTag()
-{
-  if (!m_epgInfoTag)
-    m_epgInfoTag = new CEpgInfoTag;
-
-  return m_epgInfoTag;
 }
 
 CPVRChannel* CFileItem::GetPVRChannelInfoTag()

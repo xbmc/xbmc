@@ -753,7 +753,10 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
           itemsPointer.start = 0;
           for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
           {
-            const CEpgInfoTag* tag = ((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag();
+            const CEpgInfoTagPtr tag(((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag());
+            if (!tag)
+              continue;
+
             CPVRChannelPtr channel = tag->ChannelTag();
             if (!channel)
               continue;
@@ -855,10 +858,11 @@ void CGUIEPGGridContainer::UpdateItems()
 
   for (unsigned int row = 0; row < m_epgItemsPtr.size(); ++row)
   {
-    CDateTime gridCursor  = m_gridStart; //reset cursor for new channel
-    unsigned long progIdx = m_epgItemsPtr[row].start;
-    unsigned long lastIdx = m_epgItemsPtr[row].stop;
-    int iEpgId            = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->EpgID();
+    CDateTime gridCursor      = m_gridStart; //reset cursor for new channel
+    unsigned long progIdx     = m_epgItemsPtr[row].start;
+    unsigned long lastIdx     = m_epgItemsPtr[row].stop;
+    const CEpgInfoTagPtr info = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag();
+    int iEpgId                = info ? info->EpgID() : -1;
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -867,8 +871,8 @@ void CGUIEPGGridContainer::UpdateItems()
       while (progIdx <= lastIdx)
       {
         CGUIListItemPtr item = m_programmeItems[progIdx];
-        const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
-        if (tag == NULL)
+        const CEpgInfoTagPtr tag(((CFileItem *)item.get())->GetEPGInfoTag());
+        if (!tag)
         {
           progIdx++;
           continue;
@@ -901,7 +905,7 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         if (!item)
         {
-          CEpgInfoTag gapTag;
+          CEpgInfoTagPtr gapTag(CEpgInfoTag::CreateDefaultTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block ; i > block - itemSize; i--)
           {
@@ -910,8 +914,9 @@ void CGUIEPGGridContainer::UpdateItems()
         }
         else
         {
-          const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
-          m_gridIndex[row][savedBlock].item->SetProperty("GenreType", tag->GenreType());
+          const CEpgInfoTagPtr tag(((CFileItem *)item.get())->GetEPGInfoTag());
+          if (tag)
+            m_gridIndex[row][savedBlock].item->SetProperty("GenreType", tag->GenreType());
         }
 
         m_gridIndex[row][savedBlock].originWidth = itemSize*m_blockSize;

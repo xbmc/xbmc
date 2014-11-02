@@ -133,11 +133,17 @@ int EpgSearchFilter::RemoveDuplicates(CFileItemList &results)
 
   for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
   {
-    const CEpgInfoTag *epgentry_1 = results.Get(iResultPtr)->GetEPGInfoTag();
+    const CEpgInfoTagPtr epgentry_1(results.Get(iResultPtr)->GetEPGInfoTag());
+    if (!epgentry_1)
+      continue;
+
     for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
     {
-      const CEpgInfoTag *epgentry_2 = results.Get(iTagPtr)->GetEPGInfoTag();
       if (iResultPtr == iTagPtr)
+        continue;
+
+      const CEpgInfoTagPtr epgentry_2(results.Get(iTagPtr)->GetEPGInfoTag());
+      if (!epgentry_2)
         continue;
 
       if (epgentry_1->Title()       != epgentry_2->Title() ||
@@ -207,7 +213,7 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
 
     for (int iResultPtr = 0; iResultPtr < results.Size(); iResultPtr++)
     {
-      const CEpgInfoTag *epgentry  = results.Get(iResultPtr)->GetEPGInfoTag();
+      const CEpgInfoTagPtr epgentry(results.Get(iResultPtr)->GetEPGInfoTag());
 
       /* no match */
       if (!epgentry ||
@@ -244,7 +250,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
 
     for (int iResultPtr = 0; iResultPtr < results.Size(); iResultPtr++)
     {
-      const CEpgInfoTag *epgentry = results.Get(iResultPtr)->GetEPGInfoTag();
+      const CEpgInfoTagPtr epgentry(results.Get(iResultPtr)->GetEPGInfoTag());
       if (!epgentry ||
           *epgentry->ChannelTag() != *timer->ChannelTag() ||
           epgentry->StartAsUTC()   <  timer->StartAsUTC() ||

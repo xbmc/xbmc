@@ -157,7 +157,7 @@ namespace PVR
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
-    void SetEpgInfoTag(EPG::CEpgInfoTagPtr tag);
+    void SetEpgInfoTag(EPG::CEpgInfoTagPtr &tag);
     void ClearEpgTag(void);
 
     void UpdateChannel(void);

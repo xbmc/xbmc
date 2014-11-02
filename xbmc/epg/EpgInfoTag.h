@@ -44,9 +44,17 @@ namespace EPG
   {
     friend class CEpg;
     friend class CEpgDatabase;
-    friend class PVR::CPVRTimerInfoTag;
 
   public:
+    /*!
+     * @brief Create a new empty event .
+     */
+    static CEpgInfoTagPtr CreateDefaultTag();
+
+  private:
+    /*!
+     * @brief Create a new empty event.
+     */
     CEpgInfoTag(void);
 
     /*!
@@ -60,16 +68,23 @@ namespace EPG
      */
     CEpgInfoTag(const EPG_TAG &data);
 
-    /*!
-     * @brief Create a new EPG infotag with 'tag' as content.
-     * @param tag The tag's content.
-     */
+    // Prevent copy construction, even for CEpgInfoTag instances and friends.
+    // Note: Only declared, but intentionally not implemented
+    //       to prevent compiler generated copy ctor and to force 
+    //       a linker error in case somebody tries to call it.
     CEpgInfoTag(const CEpgInfoTag &tag);
+
+    // Prevent copy by assignment, even for CEpgInfoTag instances and friends.
+    // Note: Only declared, but intentionally not implemented
+    //       to prevent compiler generated assignment operator and to force 
+    //       a linker error in case somebody tries to call it.
+    CEpgInfoTag &operator =(const CEpgInfoTag &other);
+
+  public:
     virtual ~CEpgInfoTag();
 
     bool operator ==(const CEpgInfoTag& right) const;
     bool operator !=(const CEpgInfoTag& right) const;
-    CEpgInfoTag &operator =(const CEpgInfoTag &other);
 
     virtual void Serialize(CVariant &value) const;
 
@@ -464,7 +479,8 @@ namespace EPG
      * @return True if something changed, false otherwise.
      */
     bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
-  protected:
+
+  private:
     /*!
      * @brief Hook that is called when the start date changed.
      */

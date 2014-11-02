@@ -32,6 +32,9 @@
 namespace EPG
 {
   class CEpg;
+  class CEpgInfoTag;
+  typedef boost::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
+
 }
 
 namespace PVR
@@ -411,7 +414,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    bool GetEPGNow(EPG::CEpgInfoTag &tag) const;
+    EPG::CEpgInfoTagPtr GetEPGNow() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -421,7 +424,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    bool GetEPGNext(EPG::CEpgInfoTag &tag) const;
+    EPG::CEpgInfoTagPtr GetEPGNext() const;
 
     /*!
      * @return Don't use an EPG for this channel if set to false.
