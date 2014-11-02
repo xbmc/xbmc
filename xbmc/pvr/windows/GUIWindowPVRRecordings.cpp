@@ -325,6 +325,8 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 
     if (g_PVRRecordings->SetRecordingsPlayCount(item, playCount))
     {
+      // Advance the selected item one notch
+      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
       Refresh(true);
       bReturn = true;
     }
