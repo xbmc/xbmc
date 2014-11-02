@@ -152,9 +152,13 @@ void CVideoReferenceClock::Process()
     SingleLock.Leave();
 
     //clean up the vblank clock
-    m_pVideoSync->Cleanup();
-    delete m_pVideoSync;
-    m_pVideoSync = NULL;
+    if (m_pVideoSync)
+    {
+      m_pVideoSync->Cleanup();
+      delete m_pVideoSync;
+      m_pVideoSync = NULL;
+    }
+
     if (!SetupSuccess)
       break;
   }
