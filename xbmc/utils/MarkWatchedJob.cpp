@@ -94,8 +94,16 @@ bool CMarkWatchedJob::DoWork()
     {
       CFileItemPtr pItem = *iter;
       if (m_bMark)
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-      database.SetPlayCount(*pItem, m_bMark ? 1 : 0);
+      {
+        std::string path(pItem->GetPath());
+        if (pItem->HasVideoInfoTag())
+          path = pItem->GetVideoInfoTag()->GetPath();
+
+        database.ClearBookMarksOfFile(path, CBookmark::RESUME);
+        database.IncrementPlayCount(*pItem);
+      }
+      else
+        database.SetPlayCount(*pItem, 0);
     }
 
     database.CommitTransaction();
