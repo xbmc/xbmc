@@ -96,15 +96,13 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   if (triggerEvents && !OnSettingsLoading())
     return false;
 
-  if (!Deserialize(root, loadedSettings))
+  if (!Deserialize(root, updated, loadedSettings))
     return false;
 
   bool ret = true;
   // load any ISubSettings implementations
   if (triggerEvents)
     ret = Load(root);
-
-  updated = UpdateSettings(root);
 
   if (triggerEvents)
     OnSettingsLoaded();
@@ -176,6 +174,14 @@ void CSettingsManager::Clear()
 
 bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
+  bool updated = false;
+  return LoadSetting(node, settingId, updated);
+}
+
+bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &settingId, bool &updated)
+{
+  updated = false;
+
   if (node == NULL)
     return false;
 
@@ -183,7 +189,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &set
   if (setting == NULL)
     return false;
 
-  return LoadSetting(node, setting);
+  return LoadSetting(node, setting, updated);
 }
 
 void CSettingsManager::SetInitialized()
@@ -692,8 +698,10 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
   return true;
 }
   
-bool CSettingsManager::Deserialize(const TiXmlNode *node, std::map<std::string, CSetting*> *loadedSettings /* = NULL */)
+bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, CSetting*> *loadedSettings /* = NULL */)
 {
+  updated = false;
+
   if (node == NULL)
     return false;
 
@@ -701,8 +709,13 @@ bool CSettingsManager::Deserialize(const TiXmlNode *node, std::map<std::string, 
 
   for (SettingMap::iterator it = m_settings.begin(); it != m_settings.end(); ++it)
   {
-    if (LoadSetting(node, it->second.setting) && loadedSettings != NULL)
-      loadedSettings->insert(make_pair(it->first, it->second.setting));
+    bool settingUpdated = false;
+    if (LoadSetting(node, it->second.setting, settingUpdated))
+    {
+      updated |= settingUpdated;
+      if (loadedSettings != NULL)
+        loadedSettings->insert(make_pair(it->first, it->second.setting));
+    }
   }
 
   return true;
@@ -946,8 +959,10 @@ bool CSettingsManager::Load(const TiXmlNode *settings)
   return ok;
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting)
+bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting, bool &updated)
 {
+  updated = false;
+
   if (node == NULL || setting == NULL)
     return false;
 
@@ -971,11 +986,9 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting)
   if (settingElement == NULL)
     return false;
 
-  // check if the default="true" attribute is set for the value in which case
-  // we don't have to read the actual setting value
-  const char *isDefault = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
-  if (isDefault != NULL && StringUtils::EqualsNoCase(isDefault, "true"))
-    return true;
+  // check if the default="true" attribute is set for the value
+  const char *isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
+  bool isDefault = isDefaultAttribute != NULL && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
 
   if (!setting->FromString(settingElement->FirstChild() != NULL ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
   {
@@ -983,25 +996,17 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting)
     return false;
   }
 
+  // check if we need to perform any update logic for the setting
+  const std::set<CSettingUpdate>& updates = setting->GetUpdates();
+  for (std::set<CSettingUpdate>::const_iterator update = updates.begin(); update != updates.end(); ++update)
+    updated |= UpdateSetting(node, setting, *update);
+
+  // the setting's value hasn't been updated and is the default value
+  // so we can reset it to the default value (in case the default value has changed)
+  if (!updated && isDefault)
+    setting->Reset();
+
   return true;
-}
-
-bool CSettingsManager::UpdateSettings(const TiXmlNode *root)
-{
-  bool updated = false;
-  CSharedLock lock(m_settingsCritical);
-
-  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
-  {
-    const std::set<CSettingUpdate>& updates = setting->second.setting->GetUpdates();
-    if (updates.empty())
-      continue;
-
-    for (std::set<CSettingUpdate>::const_iterator update = updates.begin(); update != updates.end(); ++update)
-      updated |= UpdateSetting(root, setting->second.setting, *update);
-  }
-
-  return updated;
 }
 
 bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, const CSettingUpdate& update)
