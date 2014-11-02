@@ -216,6 +216,7 @@ protected:
   std::map<CArtistCredit, CArtist> m_artistCache;
 
   std::set<std::string> m_pathsToScan;
+  std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;
 };
