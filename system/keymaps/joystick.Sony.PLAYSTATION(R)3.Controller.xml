@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
 <!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
 
 <!-- The format is:                      -->
 <!--    <device>                         -->
@@ -26,39 +24,461 @@
 <!--   See the sample PS3 controller configuration below for the format.                      -->
 <!--                                                                                          -->
 <!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   Do 'cat /proc/bus/input/devices' or see your kodi log file  to find the names of       -->
 <!--   detected joysticks. The name used in the configuration should match the detected name. -->
 <!--                                                                                          -->
 <!--  Button Ids:                                                                             -->
 <!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--   in kodi.log when they are pressed. Use your log to map custom buttons to actions.      -->
 <!--                                                                                          -->
+<!-- Button Mappings           :               -->
+<!--                                           -->
+<!-- ID              Button                    -->
+<!--                                           -->
+<!-- 1               Select                    -->
+<!-- 2               Left stick button         -->
+<!-- 3               Right stick button        -->
+<!-- 4               Start                     -->
+<!-- 5               D-pad up                  -->
+<!-- 6               D-pad right               -->
+<!-- 7               D-pad down                -->
+<!-- 8               D-pad left                -->
+<!-- 9               Left trigger              -->
+<!-- 10              Right trigger             -->
+<!-- 11              Left shoulder             -->
+<!-- 12              Right shoulder            -->
+<!-- 13              ^ (triangle)              -->
+<!-- 14              O (circle)                -->
+<!-- 15              X                         -->
+<!-- 16              [] (square)               -->
+<!-- 17              PS (center button)        -->
+<!--                                           -->
+
 <!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
+<!-- Note that nearly all buttons are pressure sensitive, although this is quite useless      -->
+<!--                                           -->
+<!-- ID              Axis                      -->
+<!--                                           -->
+<!-- 1               Left stick horizontal     -->
+<!-- 2               Left stick vertical       -->
+<!-- 3               Right stick horizontal    -->
+<!-- 4               Right stick vertical      -->
+<!-- 9               D-pad up                  -->
+<!-- 10              D-pad right               -->
+<!-- 11              D-pad down                -->
+<!-- 11              D-pad left                -->
+<!-- 13              Left trigger              -->
+<!-- 14              Right trigger             -->
+<!-- 15              Left shoulder             -->
+<!-- 16              Right shoulder            -->
+<!-- 17              ^ (triangle)              -->
+<!-- 18              O (circle)                -->
+<!-- 19              X                         -->
+<!-- 20              [] (square)               -->
 <keymap>
   <global>
     <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
       <altname>PLAYSTATION(R)3 Controller</altname>
       <altname>PS3 Controller</altname>
-      <altname>Sony Computer Entertainment Wireless Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
       <button id="15">Select</button>
       <button id="14">Back</button>
-      <button id="16">FullScreen</button>
-      <button id="13">Queue</button>
-      <button id="11">PreviousMenu</button>
-      <button id="8">Left</button>
-      <button id="6">Right</button>
+      <button id="16">ContextMenu</button>
+      <button id="13">FullScreen</button>
+      <button id="11">Queue</button>
+      <button id="12">Playlist</button>
+      <button id="1">PreviousMenu</button>
+      <button id="4">ActivateWindow(Home)</button>
+      <button id="17">ActivateWindow(Home)</button>
+      <button id="2">ActivateWindow(ShutdownMenu)</button>
+      <button id="3">ActivateWindow(PlayerControls)</button>
+      <axis id="1">AnalogSeekForward</axis>
+      <axis id="2">AnalogSeekBack</axis>
+      <axis id="3">VolumeUp</axis>
+      <axis id="4">VolumeDown</axis>
+      <axis trigger="true" rest="-32768" id="13">ScrollUp</axis>
+      <axis trigger="true" rest="-32768" id="14">ScrollDown</axis>
       <button id="5">Up</button>
       <button id="7">Down</button>
-      <button id="2">Screenshot</button>
-      <button id="3">ActivateWindow(ShutdownMenu)</button>
-      <button id="4">ActivateWindow(PlayerControls)</button>
-      <axis limit="+1" id="4">VolumeDown</axis>
-      <axis limit="-1" id="4">VolumeUp</axis>
-      <axis limit="+1" id="1">AnalogSeekForward</axis>
-      <axis limit="-1" id="1">AnalogSeekBack</axis>
-      <axis limit="+1" id="13">ScrollUp</axis>
-      <axis limit="+1" id="14">ScrollDown</axis>
+      <button id="8">Left</button>
+      <button id="6">Right</button>
+	  
+      <!-- ignore other buttons (mapped to axes) -->
+      <axis id="5" rest="-32768">noop</axis>
+      <axis id="6" rest="-32768">noop</axis>
+      <axis id="7" rest="-32768">noop</axis>
+      <axis id="8" rest="-32768">noop</axis>
+      <axis id="9" rest="-32768">noop</axis>
+      <axis id="10" rest="-32768">noop</axis>
+      <axis id="11" rest="-32768">noop</axis>
+      <axis id="12" rest="-32768">noop</axis>
+      <axis id="15" rest="-32768">noop</axis>
+      <axis id="16" rest="-32768">noop</axis>
+      <axis id="17" rest="-32768">noop</axis>
+      <axis id="18" rest="-32768">noop</axis>
+      <axis id="19" rest="-32768">noop</axis>
+      <axis id="20" rest="-32768">noop</axis>
+      <axis id="21" rest="-32768">noop</axis>
+      <axis id="22" rest="-32768">noop</axis>
+      <axis id="23" rest="-32768">noop</axis>
     </joystick>
   </global>
+  <Home>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="4">Skin.ToggleSetting(HomeViewToggle)</button>
+    </joystick>
+  </Home>
+  <MyFiles>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="12">Highlight</button>
+    </joystick>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="11">Delete</button>
+    </joystick>
+  </MyMusicPlaylist>
+  <FullscreenVideo>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="15">Pause</button>
+      <button id="14">Stop</button>
+      <button id="16">OSD</button>
+      <button id="11">AspectRatio</button>
+      <button id="12">ShowSubtitles</button>
+      <button id="1">SmallStepBack</button>
+      <button id="4">Info</button>
+      <button id="17">ActivateWindow(Home)</button>
+      <button id="2">ActivateWindow(ShutdownMenu)</button>
+      <button id="3">AudioNextLanguage</button>
+      <axis id="13">AnalogRewind</axis>
+      <axis id="14">AnalogFastForward</axis>
+      <button id="5">ChapterOrBigStepForward</button>
+      <button id="7">ChapterOrBigStepBack</button>
+      <button id="8">StepBack</button>
+      <button id="6">StepForward</button>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="5">ChannelUp</button>
+      <button id="7">ChannelDown</button>
+      <button id="8">PreviousChannelGroup</button>
+      <button id="6">NextChannelGroup</button>
+    </joystick>
+  </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="5">ChannelUp</button>
+      <button id="7">ChannelDown</button>
+      <button id="8">PreviousChannelGroup</button>
+      <button id="6">NextChannelGroup</button>
+    </joystick>
+  </FullscreenRadio>
+  <FullscreenInfo>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+      <button id="16">OSD</button>
+      <button id="4">Close</button>
+      <axis id="13">AnalogRewind</axis>
+      <axis id="14">AnalogFastForward</axis>
+    </joystick>
+  </FullscreenInfo>
+  <PlayerControls>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">Close</button>
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+    </joystick>
+  </PlayerControls>
+  <Visualisation>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="15">Pause</button>
+      <button id="14">Stop</button>
+      <button id="16">ActivateWindow(MusicOSD)</button>
+      <button id="11">ActivateWindow(VisualisationPresetList)</button>
+      <button id="12">Info</button>
+      <button id="3">ActivateWindow(MusicOSD)</button>
+      <axis id="13">AnalogRewind</axis>
+      <axis id="14">AnalogFastForward</axis>
+      <button id="5">SkipNext</button>
+      <button id="7">SkipPrevious</button>
+      <button id="8">PreviousPreset</button>
+      <button id="6">NextPreset</button>
+    </joystick>
+  </Visualisation>
+  <MusicOSD>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">Close</button>
+      <button id="12">Info</button>
+    </joystick>
+  </MusicOSD>
+  <VisualisationSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </VisualisationPresetList>
+  <SlideShow>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="15">Pause</button>
+      <button id="14">Stop</button>
+      <button id="13">ZoomNormal</button>
+      <button id="11">Rotate</button>
+      <button id="12">CodecInfo</button>
+      <axis id="1">AnalogMove</axis>
+      <axis id="2">AnalogMove</axis>
+      <axis id="13">ZoomOut</axis>
+      <axis id="14">ZoomIn</axis>
+      <button id="5">ZoomIn</button>
+      <button id="7">ZoomOut</button>
+      <button id="8">PreviousPicture</button>
+      <button id="6">NextPicture</button>
+    </joystick>
+  </SlideShow>
+  <ScreenCalibration>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">ResetCalibration</button>
+      <button id="11">NextResolution</button>
+      <button id="12">NextCalibration</button>
+    </joystick>
+  </ScreenCalibration>
+  <GUICalibration>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">ResetCalibration</button>
+      <button id="11">NextResolution</button>
+      <button id="12">NextCalibration</button>
+    </joystick>
+  </GUICalibration>
+  <VideoOSD>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">Close</button>
+    </joystick>
+  </VideoOSD>
+  <VideoMenu>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Stop</button>
+      <button id="16">OSD</button>
+      <button id="11">AspectRatio</button>
+      <button id="4">Info</button>
+    </joystick>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="11">AspectRatio</button>
+      <button id="16">Close</button>
+    </joystick>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="11">AspectRatio</button>
+      <button id="16">Close</button>
+    </joystick>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="11">Delete</button>
+    </joystick>
+  </VideoBookmarks>
+  <MyVideoPlaylist>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="11">Delete</button>
+    </joystick>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">BackSpace</button>
+      <button id="13">Symbols</button>
+      <button id="11">Shift</button>
+      <button id="2">Enter</button>
+      <axis id="13">CursorLeft</axis>
+      <axis id="14">CursorRight</axis>
+    </joystick>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+      <button id="16">Close</button>
+    </joystick>
+  </ContextMenu>
+  <Scripts>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="16">Info</button>
+    </joystick>
+  </Scripts>
+  <Settings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">PreviousMenu</button>
+    </joystick>
+  </Settings>
+  <AddonInformation>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </TextViewer>
+  <shutdownmenu>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">PreviousMenu</button>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </shutdownmenu>
+  <submenu>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">PreviousMenu</button>
+    </joystick>
+  </submenu>
+  <MusicInformation>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </MusicInformation>
+  <MovieInformation>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">Close</button>
+    </joystick>
+  </MovieInformation>
+  <NumericInput>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">BackSpace</button>
+      <button id="2">Enter</button>
+    </joystick>
+  </NumericInput>
+  <GamepadInput>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="3">Stop</button>
+    </joystick>
+  </GamepadInput>
+  <LockSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">PreviousMenu</button>
+      <button id="3">Close</button>
+    </joystick>
+  </LockSettings>
+  <ProfileSettings>
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
+      <altname>PLAYSTATION(R)3 Controller</altname>
+      <altname>PS3 Controller</altname>
+      <altname>Sony Computer Entertainment Wireless Controller</altname>      
+      <button id="14">PreviousMenu</button>
+      <button id="3">Close</button>
+    </joystick>
+  </ProfileSettings>
 </keymap>
