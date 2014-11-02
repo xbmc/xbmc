@@ -113,12 +113,21 @@ void CALSADeviceMonitor::FDEventCallback(int id, int fd, short revents, void *da
     const char* action = udev_device_get_action(device);
     const char* soundInitialized = udev_device_get_property_value(device, "SOUND_INITIALIZED");
 
+    if (!action || !soundInitialized)
+      continue;
+
     /* cardX devices emit a "change" event when ready (i.e. all subdevices added) */
-    if (action && soundInitialized &&
-        (strcmp(action, "change") == 0 || strcmp(action, "remove") == 0))
+    if (strcmp(action, "change") == 0)
     {
+      CLog::Log(LOGDEBUG, "CALSADeviceMonitor - ALSA card added (\"%s\", \"%s\")", udev_device_get_syspath(device), udev_device_get_devpath(device));
       audioDevicesChanged = true;
     }
+    else if (strcmp(action, "remove") == 0)
+    {
+      CLog::Log(LOGDEBUG, "CALSADeviceMonitor - ALSA card removed");
+      audioDevicesChanged = true;
+    }
+
     udev_device_unref(device);
   }
 
