@@ -610,9 +610,7 @@ bool CGUIWindowPVRBase::ActionDeleteRecording(CFileItem *item)
 {
   bool bReturn = false;
 
-  /* check if the recording tag is valid */
-  CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_strRecordingId.empty())
+  if (!item->IsPVRRecording() && !item->m_bIsFolder)
     return bReturn;
 
   /* show a confirmation dialog */
