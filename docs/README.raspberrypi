@@ -21,7 +21,7 @@ For example :
 mkdir /opt/kodi-raspberrypi
 cd /opt/kodi-raspberrypi
 
-Checkout xbmc :
+Checkout kodi :
 
 git clone https://github.com/xbmc/xbmc.git kodi
 
