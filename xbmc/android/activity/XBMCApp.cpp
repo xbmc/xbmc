@@ -72,6 +72,7 @@
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
 #include "CompileInfo.h"
+#include "utils/SystemInfo.h"
 
 #define GIGABYTES       1073741824
 
@@ -252,9 +253,7 @@ bool CXBMCApp::getWakeLock()
   if (m_wakeLock)
     return true;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string className = "org.xbmc." + appName;
+  std::string className = "org.xbmc." + CSysInfo::GetAppNameLowerCase();
   m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(className.c_str()));
 
   return true;
@@ -611,21 +610,19 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string className = "org.xbmc." + appName;
+  std::string className = "org.xbmc." + CSysInfo::GetAppNameLowerCase();
 
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
   if (xbmcHome.empty())
   {
     std::string cacheDir = getCacheDir().getAbsolutePath();
-    setenv("APP_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
-    setenv("APP_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+    setenv((CSysInfo::GetAppNameUpperCase() + "_BIN_HOME").c_str(), (cacheDir + "/apk/assets").c_str(), 0);
+    setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), (cacheDir + "/apk/assets").c_str(), 0);
   }
   else
   {
-    setenv("APP_BIN_HOME", (xbmcHome + "/assets").c_str(), 0);
-    setenv("APP_HOME", (xbmcHome + "/assets").c_str(), 0);
+    setenv((CSysInfo::GetAppNameUpperCase() + "_BIN_HOME").c_str(), (xbmcHome + "/assets").c_str(), 0);
+    setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), (xbmcHome + "/assets").c_str(), 0);
   }
 
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
@@ -642,7 +639,7 @@ void CXBMCApp::SetupEnv()
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
   else
-    setenv("HOME", getenv("APP_TEMP"), 0);
+    setenv("HOME", getenv((CSysInfo::GetAppNameUpperCase() + "_TEMP").c_str()), 0);
 }
 
 std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)

@@ -280,7 +280,6 @@
 #include "video/dialogs/GUIDialogSubtitles.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
-#include "CompileInfo.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -589,7 +588,7 @@ void CApplication::Preflight()
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
-  setenv("APP_HOME", install_path.c_str(), 0);
+  setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
@@ -645,9 +644,7 @@ bool CApplication::Create()
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
-    std::string lcAppName = CCompileInfo::GetAppName();
-    StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", CSysInfo::GetAppNameLowerCase().c_str(),
       CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
@@ -735,9 +732,7 @@ bool CApplication::Create()
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Local hostname: %s", m_network->GetHostName().c_str());
-  std::string lowerAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), CSysInfo::GetAppNameLowerCase().c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -1082,17 +1077,16 @@ bool CApplication::InitDirectoriesLinux()
     userHome = "/root";
 
   std::string appBinPath, appPath;
-  std::string appName = CCompileInfo::GetAppName();
-  std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "APP_HOME";
-  const char* envAppBinHome = "APP_BIN_HOME";
-  const char* envAppTemp = "APP_TEMP";
+  std::string appName = CSysInfo::GetAppName();
+  std::string dotLowerAppName = "." + CSysInfo::GetAppNameLowerCase();;
+  const std::string envAppHome = CSysInfo::GetAppNameUpperCase() + "_HOME";
+  const std::string envAppBinHome = CSysInfo::GetAppNameUpperCase() + "_BIN_HOME";
+  const std::string envAppTemp = CSysInfo::GetAppNameUpperCase() + "_TEMP";
 
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
-  if (getenv(envAppHome))
-    appPath = getenv(envAppHome);
+  if (getenv(envAppHome.c_str()))
+    appPath = getenv(envAppHome.c_str());
   else
   {
     appPath = appBinPath;
@@ -1111,8 +1105,8 @@ bool CApplication::InitDirectoriesLinux()
   }
 
   /* Set some environment variables */
-  setenv(envAppBinHome, appBinPath.c_str(), 0);
-  setenv(envAppHome, appPath.c_str(), 0);
+  setenv(envAppBinHome.c_str(), appBinPath.c_str(), 0);
+  setenv(envAppHome.c_str(), appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
@@ -1124,8 +1118,8 @@ bool CApplication::InitDirectoriesLinux()
 
     CStdString strTempPath = userHome;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
+    if (getenv(envAppTemp.c_str()))
+      strTempPath = getenv(envAppTemp.c_str());
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1178,7 +1172,7 @@ bool CApplication::InitDirectoriesOSX()
 
   std::string appPath;
   CUtil::GetHomePath(appPath);
-  setenv("APP_HOME", appPath.c_str(), 0);
+  setenv((CSysInfo::GetAppNameUpperCase() + "_HOME").c_str(), appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
@@ -1196,18 +1190,16 @@ bool CApplication::InitDirectoriesOSX()
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appPath);
     CSpecialProtocol::SetXBMCPath(appPath);
+    std::string appName = CSysInfo::GetAppName();
     #if defined(TARGET_DARWIN_IOS)
-      std::string appName = CCompileInfo::GetAppName();
       CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
       CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
     #else
-      std::string appName = CCompileInfo::GetAppName();
       CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
       CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
     #endif
 
-    std::string dotLowerAppName = "." + appName;
-    StringUtils::ToLower(dotLowerAppName);
+    std::string dotLowerAppName = "." + CSysInfo::GetAppNameLowerCase();
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
       std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
@@ -1258,7 +1250,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("APP_HOME", xbmcPath);
+  CEnvironment::setenv(CSysInfo::GetAppNameUpperCase() + "_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
@@ -1269,7 +1261,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  CEnvironment::setenv("APP_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
+  CEnvironment::setenv(CSysInfo::GetAppNameUpperCase() + "_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
 
   CreateUserDirs();
 

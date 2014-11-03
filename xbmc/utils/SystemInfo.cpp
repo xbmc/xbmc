@@ -442,6 +442,30 @@ const std::string& CSysInfo::GetAppName(void)
   return appName;
 }
 
+const std::string& CSysInfo::GetAppNameUpperCase(void)
+{
+  static std::string appNameUpperCase;
+  if (appNameUpperCase.empty())
+  {
+    appNameUpperCase = GetAppName();
+    StringUtils::ToUpper(appNameUpperCase);
+  }
+
+  return appNameUpperCase;
+}
+
+const std::string& CSysInfo::GetAppNameLowerCase(void)
+{
+  static std::string appNameLowerCase;
+  if (appNameLowerCase.empty())
+  {
+    appNameLowerCase = GetAppName();
+    StringUtils::ToLower(appNameLowerCase);
+  }
+
+  return appNameLowerCase;
+}
+
 bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   bool bRet= false;
