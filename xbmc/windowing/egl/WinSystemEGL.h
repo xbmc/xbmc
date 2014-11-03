@@ -29,6 +29,7 @@
 #include "windowing/WinSystem.h"
 
 class CEGLWrapper;
+class IDispResource;
 
 class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {
@@ -55,6 +56,8 @@ public:
   virtual bool  Restore() ;
   virtual bool  Hide();
   virtual bool  Show(bool raise = true);
+  virtual void  Register(IDispResource *resource);
+  virtual void  Unregister(IDispResource *resource);
 
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
@@ -79,6 +82,8 @@ protected:
 
   CEGLWrapper           *m_egl;
   std::string           m_extensions;
+  CCriticalSection             m_resourceSection;
+  std::vector<IDispResource*>  m_resources;
 };
 
 XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);

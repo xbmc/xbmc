@@ -11,6 +11,8 @@ testMain
 *.sublime-*
 # KDevelop 4
 *.kdev4
+# gedit
+*~
 
 # generated files etc
 config.cache
@@ -91,9 +93,9 @@ config.log
 /Makefile.depend
 /config.status
 /configure
-/xbmc.bin
-/xbmc-test
-/xbmc-xrandr
+/kodi.bin
+/kodi-test
+/kodi-xrandr
 /git_revision.h
 /libtool
 /*.patch
@@ -337,6 +339,7 @@ lib/cpluff/stamp-h1
 /project/output
 
 # /project/cmake
+/project/cmake/kodi-config.cmake
 /project/cmake/xbmc-config.cmake
 /project/cmake/*.error
 /project/cmake/addons/build
@@ -450,9 +453,16 @@ lib/cpluff/stamp-h1
 # /skin/Confluence/
 /skin/Confluence/BUILD
 
-#
+#/tools/android
 /tools/android/packaging/xbmc/AndroidManifest.xml
-/tools/darwin/packaging/xbmc-osx/mkdmg-xbmc-osx.sh
+/tools/android/packaging/Makefile
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
+/tools/android/packaging/xbmc/strings.xml
+
+#/tools/depends
 /tools/depends/native/JsonSchemaBuilder/bin/
 /tools/depends/native/JsonSchemaBuilder/native/
 /tools/depends/target/ffmpeg/.ffmpeg-installed
@@ -462,6 +472,7 @@ lib/cpluff/stamp-h1
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
+/tools/EventClients/Makefile
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
 /tools/EventClients/Clients/WiiRemote/WiiRemote
@@ -469,12 +480,18 @@ lib/cpluff/stamp-h1
 # /tools/darwin/
 /tools/darwin/Configurations/App.xcconfig
 /tools/darwin/Configurations/Common.xcconfig
-/tools/darwin/packaging/xbmc-ios/mkdeb-xbmc-ios.sh
-/tools/darwin/packaging/xbmc-atv2/mkdeb-xbmc-atv2.sh
+/tools/darwin/packaging/ios/mkdeb-ios.sh
+/tools/darwin/packaging/atv2/mkdeb-atv2.sh
+/tools/darwin/packaging/osx/mkdmg-osx.sh
+/tools/darwin/packaging/migrate_to_kodi_ios.sh
+/tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh
 
 # /tools/Linux/
-/tools/Linux/xbmc.sh
-/tools/Linux/xbmc-standalone.sh
+/tools/Linux/kodi.sh
+/tools/Linux/kodi-standalone.sh
+/tools/Linux/kodi-xsession.desktop
+/tools/Linux/FEH-ARM.py
+/tools/Linux/FEH.py
 
 # /tools/osx
 /tools/osx/XBMCHelper
@@ -582,6 +599,8 @@ lib/cpluff/stamp-h1
 # /xbmc/osx/
 /xbmc/osx/Makefile
 /xbmc/osx/Info.plist
+/xbmc/osx/ios/XBMCIOS-Info.plist
+/xbmc/osx/atv2/XBMCATV2-Info.plist
 
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile

@@ -459,12 +459,28 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     devicename << cardinfo.shortname << " " << cardinfo.longname;
     info.m_displayName = devicename.str();
 
-    if (info.m_displayName.find("HDMI") != std::string::npos)
+    info.m_dataFormats.push_back(AE_FMT_S16NE);
+    info.m_dataFormats.push_back(AE_FMT_S32NE);
+    if (info.m_displayName.find("HDMI") != std::string::npos
+    ||  info.m_displayName.find("DisplayPort") != std::string::npos)
+    {
       info.m_deviceType = AE_DEVTYPE_HDMI;
+      info.m_dataFormats.push_back(AE_FMT_AC3);
+      info.m_dataFormats.push_back(AE_FMT_DTS);
+      info.m_dataFormats.push_back(AE_FMT_EAC3);
+      info.m_dataFormats.push_back(AE_FMT_TRUEHD);
+      info.m_dataFormats.push_back(AE_FMT_DTSHD);
+    }
     else if (info.m_displayName.find("Digital") != std::string::npos)
+    {
       info.m_deviceType = AE_DEVTYPE_IEC958;
+      info.m_dataFormats.push_back(AE_FMT_AC3);
+      info.m_dataFormats.push_back(AE_FMT_DTS);
+    }
     else
+    {
       info.m_deviceType = AE_DEVTYPE_PCM;
+    }
  
     oss_audioinfo ainfo;
     memset(&ainfo, 0, sizeof(ainfo));

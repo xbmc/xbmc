@@ -79,7 +79,7 @@ static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
 static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
 #endif
 
-#if defined(EGL_KHR_reusable_sync)
+#if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
 static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
 static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
@@ -174,7 +174,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
     glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
 #endif
 
-#if defined(EGL_KHR_reusable_sync)
+#if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
   if (!eglCreateSyncKHR) {
     eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC) eglGetProcAddress("eglCreateSyncKHR");
   }

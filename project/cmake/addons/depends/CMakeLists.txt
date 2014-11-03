@@ -1,4 +1,4 @@
-project(xbmc-addons-depends)
+project(kodi-addons-depends)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -14,7 +14,7 @@ endif()
 
 include(ExternalProject)
 
-if(NOT CMAKE_INSTALL_PREFIX)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/../output/depends)
 else()
   file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)

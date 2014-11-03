@@ -610,9 +610,7 @@ bool CGUIWindowPVRBase::ActionDeleteRecording(CFileItem *item)
 {
   bool bReturn = false;
 
-  /* check if the recording tag is valid */
-  CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_strRecordingId.empty())
+  if (!item->IsPVRRecording() && !item->m_bIsFolder)
     return bReturn;
 
   /* show a confirmation dialog */
@@ -715,11 +713,5 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  int selectedItem = m_viewControl.GetSelectedItem();
-  if (selectedItem > -1)
-  {
-    CFileItemPtr fileItem = m_vecItems->Get(selectedItem);
-    if (fileItem)
-      m_selectedItemPaths.at(m_bRadio) = fileItem->GetPath();
-  }
+  m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
 }

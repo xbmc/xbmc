@@ -103,8 +103,10 @@
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
 
-#ifdef HAS_SDL
+#if SDL_VERSION == 1
 #include <SDL/SDL.h>
+#elif SDL_VERSION == 2
+#include <SDL2/SDL.h>
 #endif
 
 #if defined(FILESYSTEM) && !defined(TARGET_POSIX)
@@ -281,6 +283,7 @@
 #include "video/dialogs/GUIDialogSubtitles.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
+#include "CompileInfo.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -566,7 +569,7 @@ extern "C" void __stdcall cleanup_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
-// over to the user data directory in Application Support/XBMC.
+// over to the user data directory in Application Support/Kodi.
 //
 static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
 {
@@ -592,7 +595,7 @@ void CApplication::Preflight()
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
-  setenv("XBMC_HOME", install_path.c_str(), 0);
+  setenv("APP_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
@@ -648,7 +651,9 @@ bool CApplication::Create()
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
+    std::string lcAppName = CCompileInfo::GetAppName();
+    StringUtils::ToLower(lcAppName);
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
       CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
@@ -736,7 +741,9 @@ bool CApplication::Create()
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Local hostname: %s", m_network->GetHostName().c_str());
-  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_advancedSettings.m_logFolder.c_str());
+  std::string lowerAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lowerAppName);
+  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -1002,6 +1009,11 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
+#ifdef HAS_SDL_JOYSTICK
+  // Pass the mapping of axis to triggers to g_Joystick
+  g_Joystick.LoadAxesConfigs(CButtonTranslator::GetInstance().GetAxesConfigs());
+#endif
+
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             info.iWidth,
@@ -1018,14 +1030,14 @@ bool CApplication::InitWindow()
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW), OnEvent))
+  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW), OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
   }
 #else
   bool bFullScreen = CDisplaySettings::Get().GetCurrentResolution() != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, CDisplaySettings::Get().GetCurrentResolutionInfo(), OnEvent))
+  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::Get().GetCurrentResolutionInfo(), OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
@@ -1052,13 +1064,13 @@ bool CApplication::InitDirectoriesLinux()
 /*
    The following is the directory mapping for Platform Specific Mode:
 
-   special://xbmc/          => [read-only] system directory (/usr/share/xbmc)
-   special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
+   special://xbmc/          => [read-only] system directory (/usr/share/kodi)
+   special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
                                installations like skins, screensavers, etc.
-                               ($HOME/.xbmc)
+                               ($HOME/.kodi)
                                NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.xbmc/userdata)
+                               mapped to special://home/userdata ($HOME/.kodi/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -1068,55 +1080,63 @@ bool CApplication::InitDirectoriesLinux()
 */
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  CStdString userName;
+  std::string userName;
   if (getenv("USER"))
     userName = getenv("USER");
   else
     userName = "root";
 
-  CStdString userHome;
+  std::string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
-  xbmcPath = getenv("XBMC_HOME");
+  std::string appBinPath, appPath;
+  std::string appName = CCompileInfo::GetAppName();
+  std::string dotLowerAppName = "." + appName;
+  StringUtils::ToLower(dotLowerAppName);
+  const char* envAppHome = "APP_HOME";
+  const char* envAppBinHome = "APP_BIN_HOME";
+  const char* envAppTemp = "APP_TEMP";
 
-  if (xbmcPath.empty())
+
+  CUtil::GetHomePath(appBinPath, envAppBinHome);
+  if (getenv(envAppHome))
+    appPath = getenv(envAppHome);
+  else
   {
-    xbmcPath = xbmcBinPath;
-    /* Check if xbmc binaries and arch independent data files are being kept in
+    appPath = appBinPath;
+    /* Check if binaries and arch independent data files are being kept in
      * separate locations. */
-    if (!CDirectory::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
+    if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
     {
       /* Attempt to locate arch independent data files. */
-      CUtil::GetHomePath(xbmcPath);
-      if (!CDirectory::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
+      CUtil::GetHomePath(appPath);
+      if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
       {
-        fprintf(stderr, "Unable to find path to XBMC data files!\n");
+        fprintf(stderr, "Unable to find path to %s data files!\n", appName.c_str());
         exit(1);
       }
     }
   }
 
   /* Set some environment variables */
-  setenv("XBMC_BIN_HOME", xbmcBinPath.c_str(), 0);
-  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
+  setenv(envAppBinHome, appBinPath.c_str(), 0);
+  setenv(envAppHome, appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
+    CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
 
     CStdString strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
-    if (getenv("XBMC_TEMP"))
-      strTempPath = getenv("XBMC_TEMP");
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1127,18 +1147,18 @@ bool CApplication::InitDirectoriesLinux()
   }
   else
   {
-    URIUtils::AddSlashAtEnd(xbmcPath);
-    g_advancedSettings.m_logFolder = xbmcPath;
+    URIUtils::AddSlashAtEnd(appPath);
+    g_advancedSettings.m_logFolder = appPath;
 
-    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    CStdString strTempPath = xbmcPath;
+    CStdString strTempPath = appPath;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
-    if (getenv("XBMC_TEMP"))
-      strTempPath = getenv("XBMC_TEMP");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
     CreateUserDirs();
 
@@ -1161,19 +1181,19 @@ bool CApplication::InitDirectoriesOSX()
   else
     userName = "root";
 
-  CStdString userHome;
+  std::string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcPath;
-  CUtil::GetHomePath(xbmcPath);
-  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
+  std::string appPath;
+  CUtil::GetHomePath(appPath);
+  setenv("APP_HOME", appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
-  fontconfigPath = xbmcPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  fontconfigPath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
 #endif
 
@@ -1185,29 +1205,33 @@ bool CApplication::InitDirectoriesOSX()
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
     #if defined(TARGET_DARWIN_IOS)
-      CSpecialProtocol::SetHomePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/userdata");
+      std::string appName = CCompileInfo::GetAppName();
+      CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
     #else
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+      std::string appName = CCompileInfo::GetAppName();
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
     #endif
 
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  CStdString(CDarwinUtils::GetAppRootFolder()) + "/XBMC/temp");
+      std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
     #else
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
+      std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
       CDirectory::Create(strTempPath);
-      strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+      strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
     #endif
     CSpecialProtocol::SetTempPath(strTempPath);
 
     // xbmc.log file location
     #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + CStdString(CDarwinUtils::GetAppRootFolder());
+      strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
     #else
       strTempPath = userHome + "/Library/Logs";
     #endif
@@ -1218,15 +1242,15 @@ bool CApplication::InitDirectoriesOSX()
   }
   else
   {
-    URIUtils::AddSlashAtEnd(xbmcPath);
-    g_advancedSettings.m_logFolder = xbmcPath;
+    URIUtils::AddSlashAtEnd(appPath);
+    g_advancedSettings.m_logFolder = appPath;
 
-    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCPath(appPath);
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
 
-    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1245,7 +1269,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("XBMC_HOME", xbmcPath);
+  CEnvironment::setenv("APP_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
@@ -1256,7 +1280,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  CEnvironment::setenv("XBMC_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
+  CEnvironment::setenv("APP_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
 
   CreateUserDirs();
 
@@ -1518,6 +1542,9 @@ bool CApplication::Initialize()
   g_Joystick.SetEnabled(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+
+  // show info dialog about moved configuration files if needed
+  ShowAppMigrationMessage();
 
   return true;
 }
@@ -2374,16 +2401,18 @@ bool CApplication::OnKey(const CKey& key)
 
   if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState") || StringUtils::StartsWithNoCase(action.GetName(),"CECStandby"))
   {
-    bool ret = true;
-
-    CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
     // do not wake up the screensaver right after switching off the playing device
     if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState"))
-      ret = CApplicationMessenger::Get().CECToggleState();
+    {
+      CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
+      if (!CApplicationMessenger::Get().CECToggleState())
+        return true;
+    }
     else
-      ret = CApplicationMessenger::Get().CECStandby();
-    if (!ret) /* display is switched off */
+    {
+      CApplicationMessenger::Get().CECStandby();
       return true;
+    }
   }
 
   ResetScreenSaver();
@@ -2958,9 +2987,10 @@ bool CApplication::ProcessGamepad(float frameTime)
     return false;
 
   int iWin = GetActiveWindowID();
-  int bid = 0;
+  int keymapId, joyId;
   g_Joystick.Update();
-  if (g_Joystick.GetButton(bid))
+  std::string joyName;
+  if (g_Joystick.GetButton(joyName, joyId))
   {
     // reset Idle Timer
     m_idleTimer.StartZero();
@@ -2968,36 +2998,33 @@ bool CApplication::ProcessGamepad(float frameTime)
     ResetScreenSaver();
     if (WakeUpScreenSaverAndDPMS())
     {
-      g_Joystick.Reset(true);
+      g_Joystick.Reset();
       return true;
     }
 
     int actionID;
     CStdString actionName;
     bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_BUTTON, actionID, actionName, fullrange))
+    keymapId = joyId + 1;
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
-    else
-    {
-      g_Joystick.Reset();
-    }
   }
-  if (g_Joystick.GetAxis(bid))
+  if (g_Joystick.GetAxis(joyName, joyId))
   {
-    if (g_Joystick.GetAmount() < 0)
+    keymapId = joyId + 1;
+    if (g_Joystick.GetAmount(joyName, joyId) < 0)
     {
-      bid = -bid;
+      keymapId = -keymapId;
     }
 
     int actionID;
     CStdString actionName;
     bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_AXIS, actionID, actionName, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -3005,19 +3032,16 @@ bool CApplication::ProcessGamepad(float frameTime)
         return true;
       }
 
-      CAction action(actionID, fullrange ? (g_Joystick.GetAmount() + 1.0f)/2.0f : fabs(g_Joystick.GetAmount()), 0.0f, actionName);
-      g_Joystick.Reset();
+      float amount = g_Joystick.GetAmount(joyName, joyId);
+      CAction action(actionID, fullrange ? (amount + 1.0f)/2.0f : fabs(amount), 0.0f, actionName);
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
-    else
-    {
-      g_Joystick.ResetAxis(abs(bid));
-    }
   }
   int position = 0;
-  if (g_Joystick.GetHat(bid, position))
+  if (g_Joystick.GetHat(joyName, joyId, position))
   {
+    keymapId = joyId + 1;
     // reset Idle Timer
     m_idleTimer.StartZero();
 
@@ -3032,12 +3056,11 @@ bool CApplication::ProcessGamepad(float frameTime)
     CStdString actionName;
     bool fullrange;
 
-    bid = position<<16|bid;
+    keymapId = position << 16 | keymapId;
 
-    if (bid && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
+    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
@@ -3246,9 +3269,6 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    if (WakeUpScreenSaverAndDPMS())
      return true;
 
-#ifdef HAS_SDL_JOYSTICK
-   g_Joystick.Reset();
-#endif
    g_Mouse.SetActive(false);
 
    int iWin = GetActiveWindowID();
@@ -3257,7 +3277,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    bool fullRange = false;
 
    // Translate using regular joystick translator.
-   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, inputType, actionID, actionName, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName, wKeyID, inputType, actionID, actionName, fullRange))
      return ExecuteInputAction( CAction(actionID, fAmount, 0.0f, actionName, holdTime) );
    else
      CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
@@ -3609,9 +3629,7 @@ void CApplication::Stop(int exitCode)
   // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
   cleanup_emu_environ();
-  CTimeUtils::Close();
 
-  //
   Sleep(200);
 }
 
@@ -4568,7 +4586,8 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
   if(result)
   {
     // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
-    CVariant data(bPowerOffKeyPressed);
+    CVariant data(CVariant::VariantTypeObject);
+    data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
   }
 
@@ -5035,6 +5054,26 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
     }
   }
   return true;
+}
+
+// inform the user that the configuration data has moved from old XBMC location
+// to new Kodi location - if applicable
+void CApplication::ShowAppMigrationMessage()
+{
+  // .kodi_migration_complete will be created from the installer/packaging
+  // once an old XBMC configuration was moved to the new Kodi location
+  // if this is the case show the migration info to the user once which
+  // tells him to have a look into the wiki where the move of configuration
+  // is further explained.
+  if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
+      !CFile::Exists("special://home/.kodi_migration_info_shown"))
+  {
+    CGUIDialogOK::ShowAndGetInput(24128, 0, 24129, 0);
+    CFile tmpFile;
+    // create the file which will prevent this dialog from appearing in the future
+    tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");
+    tmpFile.Close();
+  }
 }
 
 void CApplication::Process()
@@ -5595,13 +5634,13 @@ void CApplication::UpdateLibraries()
   if (CSettings::Get().GetBool("videolibrary.updateonstartup"))
   {
     CLog::LogF(LOGNOTICE, "Starting video library startup scan");
-    StartVideoScan("");
+    StartVideoScan("", !CSettings::Get().GetBool("videolibrary.backgroundupdate"));
   }
 
   if (CSettings::Get().GetBool("musiclibrary.updateonstartup"))
   {
     CLog::LogF(LOGNOTICE, "Starting music library startup scan");
-    StartMusicScan("");
+    StartMusicScan("", !CSettings::Get().GetBool("musiclibrary.backgroundupdate"));
   }
 }
 
@@ -5627,25 +5666,25 @@ void CApplication::StopMusicScan()
     m_musicInfoScanner->Stop();
 }
 
-void CApplication::StartVideoCleanup()
+void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 {
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->CleanDatabase();
+  m_videoInfoScanner->CleanDatabase(NULL, NULL, userInitiated);
 }
 
-void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
+void CApplication::StartVideoScan(const CStdString &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
 {
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->ShowDialog(true);
+  m_videoInfoScanner->ShowDialog(userInitiated);
 
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 
-void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
+void CApplication::StartMusicScan(const CStdString &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
@@ -5654,7 +5693,7 @@ void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
   { // setup default flags
     if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
       flags |= CMusicInfoScanner::SCAN_ONLINE;
-    if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
+    if (!userInitiated || CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
       flags |= CMusicInfoScanner::SCAN_BACKGROUND;
   }
 

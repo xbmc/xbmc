@@ -20,6 +20,7 @@
 
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
+#include "CompileInfo.h"
 #include "utils/log.h"
 
 #include "storage/IoSupport.h"
@@ -451,7 +452,7 @@ extern "C" int WINAPI dllGetStartupInfoA(LPSTARTUPINFOA lpStartupInfo)
   lpStartupInfo->lpDesktop = NULL;
   lpStartupInfo->lpReserved = NULL;
   lpStartupInfo->lpReserved2 = 0;
-  lpStartupInfo->lpTitle = (LPTSTR)"XBMC";
+  lpStartupInfo->lpTitle = (LPTSTR)CCompileInfo::GetAppName();
   lpStartupInfo->wShowWindow = 0;
   return 1;
 }

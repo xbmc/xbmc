@@ -21,9 +21,9 @@
 
 import sys
 try:
-    from xbmc.xbmcclient import *
-    from xbmc.bt.bt import *
-    from xbmc.defs import *
+    from kodi.xbmcclient import *
+    from kodi.bt.bt import *
+    from kodi.defs import *
 except:
     sys.path.append('../../lib/python')
     from xbmcclient import *

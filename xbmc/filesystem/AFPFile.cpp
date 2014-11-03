@@ -530,11 +530,11 @@ int CAFPFile::Stat(const CURL& url, struct __stat64* buffer)
   return iResult;
 }
 
-unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
+ssize_t CAFPFile::Read(void *lpBuf, size_t uiBufSize)
 {
   CSingleLock lock(gAfpConnection);
   if (m_pFp == NULL || !m_pAfpVol)
-    return 0;
+    return -1;
 
   if (uiBufSize > AFP_MAX_READ_SIZE)
     uiBufSize = AFP_MAX_READ_SIZE;
@@ -548,7 +548,7 @@ unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
 
 #endif
   int eof = 0;
-  int bytesRead = gAfpConnection.GetImpl()->afp_wrap_read(m_pAfpVol,
+  ssize_t bytesRead = gAfpConnection.GetImpl()->afp_wrap_read(m_pAfpVol,
     name, (char *)lpBuf,(size_t)uiBufSize, m_fileOffset, m_pFp, &eof);
   if (bytesRead > 0)
     m_fileOffset += bytesRead;
@@ -556,10 +556,10 @@ unsigned int CAFPFile::Read(void *lpBuf, int64_t uiBufSize)
   if (bytesRead < 0)
   {
     CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
-    return 0;
+    return -1;
   }
 
-  return (unsigned int)bytesRead;
+  return bytesRead;
 }
 
 int64_t CAFPFile::Seek(int64_t iFilePosition, int iWhence)
@@ -610,13 +610,13 @@ void CAFPFile::Close()
   }
 }
 
-int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CAFPFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   CSingleLock lock(gAfpConnection);
   if (m_pFp == NULL || !m_pAfpVol)
    return -1;
 
-  int numberOfBytesWritten = 0;
+  ssize_t numberOfBytesWritten = 0;
   uid_t uid;
   gid_t gid;
 
@@ -631,7 +631,7 @@ int CAFPFile::Write(const void* lpBuf, int64_t uiBufSize)
     name = m_pFp->basename;
 #endif
   numberOfBytesWritten = gAfpConnection.GetImpl()->afp_wrap_write(m_pAfpVol,
-    name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp, uid, gid);
+    name, (const char *)lpBuf, uiBufSize, m_fileOffset, m_pFp, uid, gid);
 
   if (numberOfBytesWritten > 0)
     m_fileOffset += numberOfBytesWritten;

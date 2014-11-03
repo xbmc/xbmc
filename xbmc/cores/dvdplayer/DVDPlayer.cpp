@@ -2112,7 +2112,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, m_omxplayer_mode, true, false, true));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -2130,7 +2130,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, m_omxplayer_mode, true, false, true));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -3411,7 +3411,7 @@ void CDVDPlayer::UpdateClockMaster()
 void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
 {
   double startpts;
-  if(accurate)
+  if(accurate && !m_omxplayer_mode)
     startpts = pts;
   else
     startpts = DVD_NOPTS_VALUE;
@@ -4432,33 +4432,4 @@ bool CDVDPlayer::CachePVRStream(void) const
   return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
-}
-
-void CDVDPlayer::OMXGetRenderFeatures(std::vector<int> &renderFeatures)
-{
-  if (m_omxplayer_mode)
-  {
-    renderFeatures.push_back(RENDERFEATURE_STRETCH);
-    renderFeatures.push_back(RENDERFEATURE_CROP);
-    renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
-    renderFeatures.push_back(RENDERFEATURE_ZOOM);
-  }
-}
-
-void CDVDPlayer::OMXGetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
-{
-  if (m_omxplayer_mode)
-  {
-    deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
-  }
-}
-
-void CDVDPlayer::OMXGetDeinterlaceModes(std::vector<int> &deinterlaceModes)
-{
-  if (m_omxplayer_mode)
-  {
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_OFF);
-    deinterlaceModes.push_back(VS_DEINTERLACEMODE_FORCE);
-  }
 }

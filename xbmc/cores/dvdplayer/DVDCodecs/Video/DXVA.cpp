@@ -347,12 +347,15 @@ bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outForm
   outFormat = D3DFMT_UNKNOWN;
   UINT output_count = 0;
   D3DFORMAT *output_list = NULL;
+
+  // iterate through our predifined dxva modes and find the first matching for desired codec
+  // once we found a mode, get a target we support in render_targets
   for (const dxva2_mode_t* mode = dxva2_modes; mode->name && outFormat == D3DFMT_UNKNOWN; mode++)
   {
     if (mode->codec != codec)
       continue;
 
-    for (unsigned i = 0; i < m_input_count; i++)
+    for (unsigned i = 0; i < m_input_count && outFormat == D3DFMT_UNKNOWN; i++)
     {
       if (!IsEqualGUID(m_input_list[i], *mode->guid))
         continue;
@@ -365,14 +368,16 @@ bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outForm
         break;
       }
 
-      for (unsigned j = 0; render_targets[j] != D3DFMT_UNKNOWN; j++)
+      for (unsigned j = 0; render_targets[j] != D3DFMT_UNKNOWN && outFormat == D3DFMT_UNKNOWN; j++)
       {
         for (unsigned k = 0; k < output_count; k++)
-        if (output_list[k] == render_targets[j])
         {
-          inGuid = m_input_list[i];
-          outFormat = output_list[k];
-          break;
+          if (output_list[k] == render_targets[j])
+          {
+            inGuid = m_input_list[i];
+            outFormat = output_list[k];
+            break;
+          }
         }
       }
     }
@@ -500,7 +505,6 @@ CSurfaceContext::~CSurfaceContext()
 void CSurfaceContext::AddSurface(IDirect3DSurface9* surf)
 {
   CSingleLock lock(m_section);
-  surf->AddRef();
   m_state[surf] = 0;
   m_freeSurfaces.push_back(surf);
 }

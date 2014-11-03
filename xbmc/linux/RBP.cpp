@@ -32,6 +32,7 @@ CRBP::CRBP()
   m_omx_initialized = false;
   m_DllBcmHost      = new DllBcmHost();
   m_OMX             = new COMXCore();
+  m_element = 0;
 }
 
 CRBP::~CRBP()
@@ -52,6 +53,9 @@ bool CRBP::Initialize()
     return false;
 
   m_DllBcmHost->bcm_host_init();
+
+  uint32_t vc_image_ptr;
+  m_resource = vc_dispmanx_resource_create( VC_IMAGE_RGB565, 1, 1, &vc_image_ptr );
 
   m_omx_initialized = m_OMX->Initialize();
   if(!m_omx_initialized)
@@ -155,6 +159,36 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
     *pstride = stride;
   return image;
 }
+
+void CRBP::WaitVsync(void)
+{
+  DISPMANX_DISPLAY_HANDLE_T display = vc_dispmanx_display_open( 0 /*screen*/ );
+  DISPMANX_UPDATE_HANDLE_T update = vc_dispmanx_update_start(0);
+
+  VC_DISPMANX_ALPHA_T alpha = { (DISPMANX_FLAGS_ALPHA_T)(DISPMANX_FLAGS_ALPHA_FROM_SOURCE | DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS), 120, /*alpha 0->255*/ 0 };
+  VC_RECT_T       src_rect;
+  VC_RECT_T       dst_rect;
+  vc_dispmanx_rect_set( &src_rect, 0, 0, 1 << 16, 1 << 16 );
+  vc_dispmanx_rect_set( &dst_rect, 0, 0, 1, 1 );
+
+  if (m_element)
+    vc_dispmanx_element_remove( update, m_element );
+
+  m_element = vc_dispmanx_element_add( update,
+                                            display,
+                                            2000,               // layer
+                                            &dst_rect,
+                                            m_resource,
+                                            &src_rect,
+                                            DISPMANX_PROTECTION_NONE,
+                                            &alpha,
+                                            NULL,             // clamp
+                                            (DISPMANX_TRANSFORM_T)0 );
+
+  vc_dispmanx_update_submit_sync(update);
+  vc_dispmanx_display_close( display );
+}
+
 
 void CRBP::Deinitialize()
 {

@@ -40,7 +40,7 @@ namespace XFILE
     virtual bool Exists(const CURL& url);
     virtual int Stat(struct __stat64* buffer);
     virtual int Stat(const CURL& url, struct __stat64* buffer);
-    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
     //virtual bool ReadString(char *szLine, int iLineLength);
     virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
     virtual void Close();
@@ -59,7 +59,7 @@ namespace XFILE
     char m_szBuffer[65535];     // 64k buffer for compressed data
     char* m_szStringBuffer;
     char* m_szStartOfStringBuffer; // never allocated!
-    int m_iDataInStringBuffer;
+    size_t m_iDataInStringBuffer;
     int m_iRead;
     bool m_bFlush;
     bool m_bCached;

@@ -27,18 +27,18 @@ First install the git package provided by your distribution.
 Then from a terminal, type:
 
 .0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git xbmc
+.1  $ git clone git://github.com/xbmc/xbmc.git kodi
 
 Note: You can clone any specific branch.
 
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git xbmc
+.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers
 -----------------------------------------------------------------------------
 
 You will then need the required libraries. The following is the list of packages
-that are used to build XBMC packages on Debian/Ubuntu (with all supported
+that are used to build Kodi packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
 Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
@@ -47,12 +47,12 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libavfilter-dev, libavformat-dev, libavutil-dev, libbluetooth-dev, libbluray-dev,
   libboost-dev, libboost-thread-dev, libbz2-dev, libcap-dev, libcdio-dev, libcec-dev,
   libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev, 
-  libenca-dev, libflac-dev, libfontconfig-dev, libfreetype6-dev, libfribidi-dev, 
+  libenca-dev, libfontconfig-dev, libfreetype6-dev, libfribidi-dev, 
   libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libhal-dev, 
   libhal-storage-dev, libiso9660-dev, libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, 
   libmad0-dev, libmicrohttpd-dev, libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev, libmysqlclient-dev,
   libnfs-dev, libogg-dev, libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpostproc-dev,
-  libpulse-dev, librtmp-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
+  libpulse-dev, librtmp-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libsdl2-dev,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, 
   libswscale-dev, libtag1-dev (>= 1.8), libtiff-dev, libtinyxml-dev, libtool,
   libudev-dev, libusb-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxinerama-dev,
@@ -64,27 +64,27 @@ Note: For developers and anyone else who compiles frequently it is recommended t
    $ sudo apt-get install ccache
 
 -----------------------------------------------------------------------------
-3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
+3.1. Using the Kodi PPA to get all build dependencies (Debian/Ubuntu only)
 -----------------------------------------------------------------------------
 
 For this, you need to specify the PPA in your apt sources.
 Please find them on the following wiki link:
 Note: See README.ubuntu as well
 
-http://wiki.xbmc.org/index.php?title=Team_XBMC_PPA
+http://kodi.wiki/index.php?title=Official_Ubuntu_PPA
 
 Update apt:
    $ sudo apt-get update
 
 The command to get the build dependencies, used to compile the version on the PPA.
 
-   $ sudo apt-get build-dep xbmc
+   $ sudo apt-get build-dep kodi
 
 -----------------------------------------------------------------------------
 4. How to compile
 -----------------------------------------------------------------------------
 
-To create the XBMC executable manually perform these steps:
+To create the Kodi executable manually perform these steps:
 
 .0  $ ./bootstrap
 
@@ -104,26 +104,26 @@ Note: From v14 with commit 4090a5f a new API for binary audio encoder addons is 
 
 .3  $ make install
 
-This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
+This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
 
 Note: You may need to run this with sudo (sudo make install) if your user doesn't have write permissions
 to the prefix you have provided (as in the default case, /usr/local).
 
-Tip: To override the location that XBMC is installed, use PREFIX=<path>.
+Tip: To override the location that Kodi is installed, use PREFIX=<path>.
 For example.
 
-    $ make install DESTDIR=$HOME/xbmc
+    $ make install DESTDIR=$HOME/kodi
 
 -----------------------------------------------------------------------------
 4.1. Test Suite
 -----------------------------------------------------------------------------
 
-XBMC has a test suite which uses the Google C++ Testing Framework.
-This framework is provided directly in XBMC's source tree.
+Kodi has a test suite which uses the Google C++ Testing Framework.
+This framework is provided directly in Kodi's source tree.
 It has very little requirements, in order to build and run.
 See the README file for the framework at 'lib/gtest/README' for specific requirements.
 
-To compile and run XBMC's test suite:
+To compile and run Kodi's test suite:
 The configure option '--enable-gtest' is enabled by default during the configure stage.
 Once configured, to build the testsuite, type the following:
 
@@ -134,7 +134,7 @@ To compile the test suite without running it, type the following.
     $ make testsuite
 
 The test suite program can be run manually as well.
-The name of the test suite program is 'xbmc-test' and will build in the XBMC source tree.
+The name of the test suite program is 'xbmc-test' and will build in the Kodi source tree.
 To bring up the 'help' notes for the program, type the following:
 
     $ ./xbmc-test --gtest_help
@@ -158,28 +158,28 @@ the framework has not been configured, and then silently succeed (i.e. it will n
 5. How to run
 -----------------------------------------------------------------------------
 
-How to run XBMC depends on the type of installation you have done.
-It is possible to run XBMC without the requirement to install XBMC anywhere else.
+How to run Kodi depends on the type of installation you have done.
+It is possible to run Kodi without the requirement to install Kodi anywhere else.
 In this case, type the following from the top source directory.
 
-    $ ./xbmc.bin
+    $ ./kodi.bin
 
 Or run in 'portable' mode
 
-    $ ./xbmc.bin -p
+    $ ./kodi.bin -p
 
-If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX,
-you can just issue 'xbmc' in a terminal session.
+If you chose to install Kodi using '/usr' or '/usr/local' as the PREFIX,
+you can just issue 'kodi' in a terminal session.
 
-If you have overridden PREFIX to install XBMC into some non-standard location,
-you will have to run XBMC by directly running 'xbmc.bin'.
+If you have overridden PREFIX to install Kodi into some non-standard location,
+you will have to run Kodi by directly running 'kodi.bin'.
 
 For example:
 
-    $ $HOME/xbmc/usr/lib/xbmc.bin
+    $ $HOME/kodi/usr/lib/kodi/kodi.bin
 
 You should still run the wrapper via
-    $ $PREFIX/bin/xbmc
+    $ $PREFIX/bin/kodi
 
 If you wish to use VDPAU decoding you will now have to change the Render Method
 in Settings->Videos->Player from "Auto Detect" to "VDPAU".
@@ -200,6 +200,6 @@ you will either need to rerun configure with the correct prefix for this step to
 If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
 you should also run:
 
-.1  $ rm -rf ~/.xbmc
+.1  $ rm -rf ~/.kodi
 
 EOF

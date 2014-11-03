@@ -46,7 +46,10 @@ size_t COggCallback::ReadCallback(void *ptr, size_t size, size_t nmemb, void *da
   if (!pCallback)
     return 0;
 
-  return pCallback->m_file.Read(ptr, size*nmemb);
+  const ssize_t res = pCallback->m_file.Read(ptr, size*nmemb);
+  if (res < 0)
+    return 0;
+  return res;
 }
 
 int COggCallback::SeekCallback(void *datasource, ogg_int64_t offset, int whence)

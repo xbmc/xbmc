@@ -91,6 +91,7 @@ public:
   bool SendIRCommand(uint8_t ucCommand);
 
 protected:
+  void init();
   // Function used to send and receive messages to and from the Slingbox
   struct MessageHeader;
   bool SendReceiveMessage(SOCKET socSocket, MessageHeader * pHeader,

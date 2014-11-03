@@ -52,11 +52,11 @@
       <button id="8">ScrollDown</button>
 
       <!-- Home -->
-      <button id="11">XBMC.ActivateWindow(Home)</button>
+      <button id="11">ActivateWindow(Home)</button>
 
       <!-- Left/Right stick click -->
-      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="13">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="12">ActivateWindow(ShutdownMenu)</button>
+      <button id="13">ActivateWindow(PlayerControls)</button>
 
       <!-- D-Pad -->
       <button id="14">Up</button>

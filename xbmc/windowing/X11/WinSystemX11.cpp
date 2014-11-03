@@ -38,6 +38,7 @@
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
+#include "CompileInfo.h"
 #include <X11/Xatom.h>
 
 #if defined(HAS_XRANDR)
@@ -216,10 +217,13 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     }
   }
 
-  if(m_nWidth  == newWidth
-  && m_nHeight == newHeight
-  && m_userOutput.compare(m_currentOutput) == 0)
+  if(m_nWidth  == newWidth &&
+     m_nHeight == newHeight &&
+     m_userOutput.compare(m_currentOutput) == 0)
+  {
+    UpdateCrtc();
     return true;
+  }
 
   if (!SetWindow(newWidth, newHeight, false, m_userOutput))
   {
@@ -1174,8 +1178,9 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XWMHints *wm_hints;
       XClassHint *class_hints;
       XTextProperty windowName, iconName;
-      std::string titleString = "XBMC Media Center";
-      std::string classString = "xbmc.bin";
+
+      std::string titleString = CCompileInfo::GetAppName();
+      std::string classString = titleString;
       char *title = (char*)titleString.c_str();
 
       XStringListToTextProperty(&title, 1, &windowName);
@@ -1229,6 +1234,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       (*i)->OnResetDevice();
 #endif
   }
+
+  UpdateCrtc();
 
   return true;
 }
@@ -1419,6 +1426,18 @@ bool CWinSystemX11::HasWindowManager()
     XFree(data);
 
   return true;
+}
+
+void CWinSystemX11::UpdateCrtc()
+{
+  XWindowAttributes winattr;
+  int posx, posy;
+  Window child;
+  XGetWindowAttributes(m_dpy, m_mainWindow, &winattr);
+  XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_nScreen), winattr.x, winattr.y,
+                        &posx, &posy, &child);
+
+  m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2);
 }
 
 #endif

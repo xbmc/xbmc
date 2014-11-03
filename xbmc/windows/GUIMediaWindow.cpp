@@ -364,7 +364,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
              m_vecItems->IsSourcesPath()) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
-          Refresh();
+          Refresh(true);
           m_viewControl.SetSelectedItem(iItem);
         }
         return true;
@@ -1935,6 +1935,12 @@ bool CGUIMediaWindow::IsFiltered()
 {
   return (!m_canFilterAdvanced && !GetProperty("filter").empty()) ||
          (m_canFilterAdvanced && !m_filter.IsEmpty());
+}
+
+bool CGUIMediaWindow::IsSameStartFolder(const std::string &dir)
+{
+  const std::string startFolder = GetStartFolder(dir);
+  return StringUtils::StartsWith(m_vecItems->GetPath(), startFolder);
 }
 
 bool CGUIMediaWindow::Filter(bool advanced /* = true */)

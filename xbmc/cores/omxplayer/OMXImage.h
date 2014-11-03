@@ -94,7 +94,7 @@ class COMXImageFile
 public:
   COMXImageFile();
   virtual ~COMXImageFile();
-  bool ReadFile(const std::string& inputFile);
+  bool ReadFile(const std::string& inputFile, int orientation = 0);
   int  GetOrientation() { return m_orientation; };
   unsigned int GetWidth()  { return m_width; };
   unsigned int GetHeight() { return m_height; };
@@ -102,7 +102,7 @@ public:
   const uint8_t *GetImageBuffer() { return (const uint8_t *)m_image_buffer; };
   const char *GetFilename() { return m_filename; };
 protected:
-  OMX_IMAGE_CODINGTYPE GetCodingType(unsigned int &width, unsigned int &height);
+  OMX_IMAGE_CODINGTYPE GetCodingType(unsigned int &width, unsigned int &height, int orientation);
   uint8_t           *m_image_buffer;
   unsigned long     m_image_size;
   unsigned int      m_width;

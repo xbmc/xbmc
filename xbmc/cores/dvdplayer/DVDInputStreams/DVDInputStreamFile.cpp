@@ -113,12 +113,16 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
 {
   if(!m_pFile) return -1;
 
-  unsigned int ret = m_pFile->Read(buf, buf_size);
+  ssize_t ret = m_pFile->Read(buf, buf_size);
+
+  if (ret < 0)
+    return -1; // player will retry read in case of error until playback is stopped
 
   /* we currently don't support non completing reads */
-  if( ret == 0 ) m_eof = true;
+  if (ret == 0) 
+    m_eof = true;
 
-  return (int)(ret & 0xFFFFFFFF);
+  return (int)ret;
 }
 
 int64_t CDVDInputStreamFile::Seek(int64_t offset, int whence)

@@ -23,6 +23,7 @@
 #include "EncoderFFmpeg.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
@@ -161,7 +162,7 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
   int result = reader.Read(stream, 1024);
 
   // return if rip is done or on some kind of error
-  if (!result)
+  if (result <= 0)
     return 1;
 
   // encode data
@@ -203,7 +204,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   // we have to set the tags before we init the Encoder
   std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(),NULL,10));
 
-  encoder->SetComment("Ripped with XBMC");
+  encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
   encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(),
                                       g_advancedSettings.m_musicItemSeparator));
   encoder->SetTitle(m_tag.GetTitle());

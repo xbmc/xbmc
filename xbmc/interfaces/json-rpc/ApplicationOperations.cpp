@@ -116,7 +116,7 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
   else if (property == "muted")
     result = g_application.IsMuted();
   else if (property == "name")
-    result = "XBMC";
+    result = CCompileInfo::GetAppName();
   else if (property == "version")
   {
     result = CVariant(CVariant::VariantTypeObject);

@@ -1,4 +1,4 @@
-XBMC ADDONS
+KODI ADDONS
 ===========
 This directory contains the cmake-based buildsystem for addons. It looks into
 the "addons" sub-directory and parses all *.txt files recursively. Each addon
@@ -30,11 +30,11 @@ specific paths:
     builds.
   * DEPENDS_PATH points to the directory containing the "include" and "lib"
     directories of the addons' dependencies.
-  * XBMCROOT points to the root directory of the xbmc project (default is the
+  * APP_ROOT points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
   * PACKAGE_ZIP=1 will mean the add-ons will be 'packaged' into a common folder,
-    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/xbmc/addons and
-    <CMAKE_INSTALL_PREFIX>/share/xbmc/addons.
+    rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/kodi/addons and
+    <CMAKE_INSTALL_PREFIX>/share/kodi/addons.
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
 
@@ -57,7 +57,7 @@ In case of additional options the call might look like this
 
   cmake <path> [-G <generator>] \
         -DCMAKE_BUILD_TYPE=Release \
-        -DXBMCROOT="<path-to-xbmc-root>" \
+        -DAPP_ROOT="<path-to-app-root>" \
         -DARCH_DEFINES="-DTARGET_LINUX" \
         -DDEPENDS_PATH="<path-to-built-depends>" \
         -DCMAKE_INSTALL_PREFIX="<path-to-install-directory"

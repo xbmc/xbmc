@@ -20,7 +20,7 @@
 
 #include "App.xcconfig"
 
-PRODUCT_NAME = XBMC
+PRODUCT_NAME = $(APP_NAME)
 //build against latest
 SDKROOT = iphoneos
 IPHONEOS_DEPLOYMENT_TARGET = 4.2

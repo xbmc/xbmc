@@ -124,8 +124,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
   {
     if (m_pOverlay->iPTSStopTime < pts + duration)
       m_pOverlay->iPTSStopTime = pts + duration;
-    m_output = true;
-    return OC_OVERLAY;
+    return 0;
   }
 
   if(m_pOverlay)

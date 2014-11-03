@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2013 Team XBMC
-# http://xbmc.org
+# http://kodi.tv
 #
 # This Program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ function archiveRepo {
     cd $REPO_DIR || exit 1
     git clean -xfd
     echo $REV > VERSION
-    DEST="xbmc-${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+    DEST="kodi-${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
     tar -czf ${DEST}.tar.gz -h --exclude .git $(basename $REPO_DIR)

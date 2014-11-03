@@ -396,7 +396,11 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
     CreateSettings();
 
   // set focus correctly depending on whether there are categories visible or not
-  m_defaultControl = m_pOriginalCategoryButton != NULL ? CATEGORY_GROUP_ID : SETTINGS_GROUP_ID;
+  if (m_pOriginalCategoryButton == NULL &&
+     (m_defaultControl <= 0 || m_defaultControl == CATEGORY_GROUP_ID))
+    m_defaultControl = SETTINGS_GROUP_ID;
+  else if (m_pOriginalCategoryButton != NULL && m_defaultControl <= 0)
+    m_defaultControl = CATEGORY_GROUP_ID;
 }
 
 void CGUIDialogSettingsBase::FreeControls()

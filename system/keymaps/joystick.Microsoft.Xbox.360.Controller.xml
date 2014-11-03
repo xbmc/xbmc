@@ -14,7 +14,7 @@
 <!--    </device>                                               -->
 
 <!-- Note that the action can be a built-in function.           -->
-<!-- eg <button id="x">XBMC.ActivateWindow(Home)</button>       -->
+<!-- eg <button id="x">ActivateWindow(Home)</button>       -->
 <!-- would automatically go to Home on the press of button 'x'. -->
 
 <!-- Joystick Name: Xbox 360 Wireless Receiver                  -->
@@ -47,7 +47,9 @@
 <!-- 13              D-Pad Right               -->
 <!-- 14              D-Pad Up                  -->
 <!-- 15              D-Pad Down                -->
-<!-- Axis 6 +1/-1    Triggers - malfunctioning -->
+<!-- Axis 3 +1/-1    Triggers left/right (win) -->
+<!-- Axis 3          Left Trigger (linux)      -->
+<!-- Axis 6          Right Trigger (linux)     -->
 
 <!-- Axis Mappings:                   -->
 <!--                                  -->
@@ -90,6 +92,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <!-- A selects. B goes back. X gets context menu. Y goes fullscreen and back. -->
       <button id="1">Select</button>
       <button id="2">Back</button>
@@ -99,10 +102,10 @@
       <button id="5">Queue</button>
       <button id="6">Playlist</button>
       <button id="7">PreviousMenu</button>
-      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="8">ActivateWindow(Home)</button>
       <!-- Left stick click activates the shutdown menu. -->
-      <button id="9">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="10">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="9">ActivateWindow(ShutdownMenu)</button>
+      <button id="10">ActivateWindow(PlayerControls)</button>
       <button id="11">Up</button>
       <button id="12">Down</button>
       <button id="13">Left</button>
@@ -112,8 +115,8 @@
       <axis id="1" limit="+1">AnalogSeekForward</axis>
       <axis id="2" limit="-1">AnalogSeekForward</axis>
       <axis id="2" limit="+1">AnalogSeekBack</axis>
-      <axis id="3" limit="+1">ScrollUp</axis>
-      <axis id="3" limit="-1">ScrollDown</axis>
+      <axis id="3" trigger="true" limit="+1">ScrollUp</axis>
+      <axis id="3" trigger="true" limit="-1">ScrollDown</axis>
       <!-- Push up on the right stick for volueme up. Push down for volume down. -->
       <axis id="5" limit="-1">VolumeUp</axis>
       <axis id="5" limit="+1">VolumeDown</axis>
@@ -134,6 +137,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="1">Select</button>
       <button id="2">Back</button>
       <button id="3">ContextMenu</button>
@@ -141,10 +145,10 @@
       <button id="5">Queue</button>
       <button id="6">Playlist</button>
       <button id="7">PreviousMenu</button>
-      <button id="8">XBMC.ActivateWindow(Home)</button>
-      <button id="9">XBMC.ActivateWindow(Home)</button>
-      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="8">ActivateWindow(Home)</button>
+      <button id="9">ActivateWindow(Home)</button>
+      <button id="10">ActivateWindow(ShutdownMenu)</button>
+      <button id="11">ActivateWindow(PlayerControls)</button>
       <button id="12">Left</button>
       <button id="13">Right</button>
       <button id="14">Up</button>
@@ -153,12 +157,12 @@
       <axis id="1" limit="+1">AnalogSeekForward</axis>
       <axis id="2" limit="-1">AnalogSeekForward</axis>
       <axis id="2" limit="+1">AnalogSeekBack</axis>
+      <axis id="3" trigger="true" rest="-32768">ScrollUp</axis>
       <axis id="4" limit="-1">VolumeDown</axis>
       <axis id="4" limit="+1">VolumeUp</axis>
       <axis id="5" limit="-1">VolumeUp</axis>
       <axis id="5" limit="+1">VolumeDown</axis>
-      <axis id="6" limit="-1">ScrollUp</axis>
-      <axis id="6" limit="+1">ScrollDown</axis>
+      <axis id="6" trigger="true" rest="-32768">ScrollDown</axis>
       <hat id="1" position="up">Up</hat>
       <hat id="1" position="down">Down</hat>
       <hat id="1" position="left">Left</hat>
@@ -183,7 +187,8 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
-      <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
+      <button id="8">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -195,7 +200,8 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+      <altname>Razer Sabertooth</altname>
+      <button id="8">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
   <MyFiles>
@@ -216,6 +222,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="6">Highlight</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -228,6 +235,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="6">Highlight</button>
     </joystick>
   </MyFiles>
@@ -249,6 +257,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="5">Delete</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -261,6 +270,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="5">Delete</button>
     </joystick>
   </MyMusicPlaylist>
@@ -286,6 +296,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <!--
             A pauses and starts the video.
             B stops the video.
@@ -328,6 +339,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
@@ -335,15 +347,15 @@
       <button id="6">ShowSubtitles</button>
       <button id="7">SmallStepBack</button>
       <button id="8">Info</button>
-      <button id="9">XBMC.ActivateWindow(Home)</button>  <!-- guide -->
-      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
+      <button id="9">ActivateWindow(Home)</button>  <!-- guide -->
+      <button id="10">ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
       <button id="11">AudioNextLanguage</button>  <!-- right stick -->
       <button id="12">StepBack</button>
       <button id="13">StepForward</button>
       <button id="14">ChapterOrBigStepForward</button>
       <button id="15">ChapterOrBigStepBack</button>
-      <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
       <hat id="1" position="up">BigStepForward</hat>
       <hat id="1" position="down">BigStepBack</hat>
       <hat id="1" position="left">StepBack</hat>
@@ -368,6 +380,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="11">ChannelUp</button>
       <button id="12">ChannelDown</button>
       <button id="13">PreviousChannelGroup</button>
@@ -387,6 +400,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="12">PreviousChannelGroup</button>
       <button id="13">NextChannelGroup</button>
       <button id="14">ChannelUp</button>
@@ -462,6 +476,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
@@ -478,11 +493,12 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
-      <axis id="6" limit="+1">AnalogRewind</axis>
-      <axis id="6" limit="-1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
@@ -503,6 +519,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">Close</button>
       <button id="9">Close</button>
       <button id="10">Close</button>
@@ -517,6 +534,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">Close</button>
       <button id="10">Close</button>
       <button id="11">Close</button>
@@ -540,12 +558,13 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
-      <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
-      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="3">ActivateWindow(MusicOSD)</button>
+      <button id="5">ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="10">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="10">ActivateWindow(MusicOSD)</button>
       <button id="11">SkipNext</button>
       <button id="12">SkipPrevious</button>
       <button id="13">PreviousPreset</button>
@@ -567,18 +586,19 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
-      <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
-      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="3">ActivateWindow(MusicOSD)</button>
+      <button id="5">ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="11">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="11">ActivateWindow(MusicOSD)</button>
       <button id="12">PreviousPreset</button>
       <button id="13">NextPreset</button>
       <button id="14">SkipPrevious</button>
       <button id="15">SkipNext</button>
-      <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis>
+      <axis id="3">AnalogRewind</axis>
+      <axis id="6">AnalogFastForward</axis>
       <hat id="1" position="up">SkipNext</hat>
       <hat id="1" position="down">SkipPrevious</hat>
       <hat id="1" position="left">PreviousPreset</hat>
@@ -603,6 +623,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
     </joystick>
@@ -616,6 +637,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
     </joystick>
@@ -638,6 +660,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -650,6 +673,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </VisualisationSettings>
@@ -671,6 +695,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -683,6 +708,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </VisualisationPresetList>
@@ -704,6 +730,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="4">ZoomNormal</button>
@@ -732,6 +759,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="4">ZoomNormal</button>
@@ -743,8 +771,8 @@
       <button id="15">ZoomOut</button>
       <axis id="1">AnalogMove</axis>
       <axis id="2">AnalogMove</axis>
-      <axis id="6" limit="+1">ZoomOut</axis>
-      <axis id="6" limit="-1">ZoomIn</axis>
+      <axis id="3">ZoomOut</axis>
+      <axis id="6">ZoomIn</axis>
       <hat id="1" position="up">ZoomIn</hat>
       <hat id="1" position="down">ZoomOut</hat>
       <hat id="1" position="left">PreviousPicture</hat>
@@ -769,6 +797,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -783,6 +812,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -806,6 +836,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -820,6 +851,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -843,6 +875,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -855,6 +888,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">Close</button>
     </joystick>
   </VideoOSD>
@@ -876,6 +910,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
@@ -891,6 +926,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
@@ -915,6 +951,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -928,6 +965,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -950,6 +988,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -963,6 +1002,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -985,6 +1025,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="5">Delete</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -997,6 +1038,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="5">Delete</button>
     </joystick>
   </VideoBookmarks>
@@ -1022,6 +1064,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="5">Delete</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1034,6 +1077,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="5">Delete</button>
     </joystick>
   </MyVideoPlaylist>
@@ -1055,6 +1099,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+	  <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
@@ -1072,12 +1117,13 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
       <button id="10">Enter</button>
-      <axis id="6" limit="+1">CursorLeft</axis>
-      <axis id="6" limit="-1">CursorRight</axis>
+      <axis id="3">CursorLeft</axis>
+      <axis id="6">CursorRight</axis>
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>
@@ -1098,6 +1144,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
       <button id="3">Close</button>
     </joystick>
@@ -1111,6 +1158,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
       <button id="3">Close</button>
     </joystick>
@@ -1133,6 +1181,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="3">Info</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1145,6 +1194,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="3">Info</button>
     </joystick>
   </Scripts>
@@ -1166,6 +1216,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1178,6 +1229,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
   </Settings>
@@ -1199,6 +1251,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1211,6 +1264,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonInformation>
@@ -1232,6 +1286,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1244,6 +1299,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
@@ -1265,6 +1321,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1277,6 +1334,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </TextViewer>
@@ -1298,6 +1356,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">PreviousMenu</button>
       <button id="9">PreviousMenu</button>
     </joystick>
@@ -1311,6 +1370,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">PreviousMenu</button>
       <button id="10">PreviousMenu</button>
     </joystick>
@@ -1333,6 +1393,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1345,6 +1406,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
   </submenu>
@@ -1366,6 +1428,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1378,6 +1441,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </MusicInformation>
@@ -1399,6 +1463,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1411,6 +1476,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">Close</button>
     </joystick>
   </MovieInformation>
@@ -1432,6 +1498,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">BackSpace</button>
       <button id="9">Enter</button>
     </joystick>
@@ -1445,6 +1512,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">BackSpace</button>
       <button id="10">Enter</button>
     </joystick>
@@ -1467,6 +1535,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="9">Stop</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
@@ -1479,6 +1548,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="11">Stop</button>
     </joystick>
   </GamepadInput>
@@ -1500,6 +1570,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
     </joystick>
@@ -1513,6 +1584,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>
@@ -1535,6 +1607,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
+      <altname>Razer Sabertooth Elite (Controller)</altname>
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
     </joystick>
@@ -1548,6 +1621,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
+      <altname>Razer Sabertooth</altname>
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>

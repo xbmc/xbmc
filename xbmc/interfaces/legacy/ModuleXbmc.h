@@ -89,7 +89,7 @@ namespace XBMCAddon
      * List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions 
      * 
      * example:
-     *   - xbmc.executebuiltin('XBMC.RunXBE(c:\\avalaunch.xbe)')
+     *   - xbmc.executebuiltin('RunXBE(c:\\avalaunch.xbe)')
      */
     void executebuiltin(const char* function, bool wait = false);
 

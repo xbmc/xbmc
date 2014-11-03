@@ -66,7 +66,8 @@ enum {
 enum {
   // tells the decoder not to bother returning a CVPixelBuffer
   // in the outputCallback. The output callback will still be called.
-  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 0
+  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 0,
+  kVTDecoderDecodeFlags_DontEmitFrameIOS8 = 1 << 1
 };
 enum {
   // decode and return buffers for all frames currently in flight.
@@ -1375,7 +1376,12 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     frameInfo = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
 
     if (m_DropPictures)
-      decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
+    {
+      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrameIOS8;
+      else
+        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
+    }
 
     // submit for decoding
     status = VTDecompressionSessionDecodeFrame(m_vt_session, sampleBuff, decoderFlags, frameInfo, 0);
@@ -1506,36 +1512,38 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(TARGET_DARWIN_IOS)
-    //TODO - remove the clamp for ipad3 when CVOpenGLESTextureCacheCreateTextureFromImage
-    //has been planted ...
-    //if (!DarwinIsIPad3())
-    {
-      // decoding, scaling and rendering above 1920 x 800 runs into
-      // some bandwidth limit. detect and scale down to reduce
-      // the bandwidth requirements.
-      int width_clamp = 1280;
-      if ((width * height) > (1920 * 800))
-        width_clamp = 960;
+  double scale = 0.0;
 
-      int new_width = CheckNP2(width);
-      if (width != new_width)
-      {
-        // force picture width to power of two and scale up height
-        // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
-        // and the CVPixelBufferPixel gets created using some
-        // strange alignment when width is non-standard.
-        double w_scaler = (double)new_width / width;
-        width = new_width;
-        height = height * w_scaler;
-      }
-      // scale output pictures down to 720p size for display
-      if (width > width_clamp)
-      {
-        double w_scaler = (float)width_clamp / width;
-        width = width_clamp;
-        height = height * w_scaler;
-      }
-    }
+  // decoding, scaling and rendering above 1920 x 800 runs into
+  // some bandwidth limit. detect and scale down to reduce
+  // the bandwidth requirements.
+  int width_clamp = 1280;
+  if ((width * height) > (1920 * 800))
+    width_clamp = 960;
+
+  // allow rendering without scaledown for all
+  // retina devices (which have enough power to handle it)
+  if (CDarwinUtils::DeviceHasRetina(scale))
+    width_clamp = 1920;
+
+  int new_width = CheckNP2(width);
+  if (width != new_width)
+  {
+    // force picture width to power of two and scale up height
+    // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
+    // and the CVPixelBufferPixel gets created using some
+    // strange alignment when width is non-standard.
+    double w_scaler = (double)new_width / width;
+    width = new_width;
+    height = height * w_scaler;
+  }
+  // scale output pictures down to 720p size for display
+  if (width > width_clamp)
+  {
+    double w_scaler = (float)width_clamp / width;
+    width = width_clamp;
+    height = height * w_scaler;
+  }
   #endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(
     NULL, // CFAllocatorRef allocator

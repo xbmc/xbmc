@@ -322,12 +322,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
       break;
     }
     XFILE::CFile file;
-    if (file.OpenForWrite(iconfile, true))
-    {
-      file.Write((const void *)payload, psize);
-      file.Close();
-    }
-    else
+    if (!file.OpenForWrite(iconfile, true) || file.Write((const void *)payload, psize) != psize)
     {
       CLog::Log(LOGERROR, "ES: Could not write icon file");
       m_eLogoType = LT_NONE;
@@ -596,12 +591,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
     }
 
     XFILE::CFile file;
-    if (file.OpenForWrite(iconfile, true))
-    {
-      file.Write((const void *)payload, psize);
-      file.Close();
-    }
-    else
+    if (!file.OpenForWrite(iconfile, true) || file.Write((const void *)payload, psize) != psize)
     {
       CLog::Log(LOGERROR, "ES: Could not write icon file");
       m_eLogoType = LT_NONE;

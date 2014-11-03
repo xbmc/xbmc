@@ -35,11 +35,15 @@
 class CKey;
 class CAction;
 class TiXmlNode;
+struct AxisConfig;
+class CRegExp;
+typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
+namespace boost { template <typename T> class shared_ptr; }
 
 struct CButtonAction
 {
   int id;
-  std::string strID; // needed for "XBMC.ActivateWindow()" type actions
+  std::string strID; // needed for "ActivateWindow()" type actions
 };
 ///
 /// singleton class to map from buttons to actions
@@ -91,9 +95,11 @@ public:
 
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  bool TranslateJoystickString(int window, const char* szDevice, int id,
+  bool TranslateJoystickString(int window, const std::string& szDevice, int id,
                                short inputType, int& action, std::string& strAction,
                                bool &fullrange);
+
+  const std::map<boost::shared_ptr<CRegExp>, AxesConfig>& GetAxesConfigs() { return m_joystickAxesConfigs; };
 #endif
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
@@ -109,8 +115,10 @@ private:
   int GetActionCode(int window, int action);
   int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
-  int GetActionCode(int window, int id, const JoystickMap &wmap, std::string &strAction, bool &fullrange) const;
+  typedef std::map<int, std::string> ActionMap; // <button/axis, action>
+  typedef std::map<int, ActionMap > WindowMap; // <window, actionMap>
+  typedef std::map<boost::shared_ptr<CRegExp>, WindowMap> JoystickMap; // <joystick, windowMap>
+  int GetActionCode(int window, int id, const WindowMap &wmap, std::string &strAction, bool &fullrange) const;
 #endif
   int GetFallbackWindow(int windowID);
 
@@ -139,10 +147,13 @@ private:
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   void MapJoystickActions(int windowID, TiXmlNode *pJoystick);
-
-  std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
-  std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
-  std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
+  std::string JoynameToRegex(const std::string& joyName) const;
+  void MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap *joystick, int windowID, const ActionMap &actionMap);
+  JoystickMap::const_iterator FindWindowMap(const std::string& joyName, const JoystickMap &maps) const;
+  JoystickMap m_joystickButtonMap;                        // <joy name, button map>
+  JoystickMap m_joystickAxisMap;                          // <joy name, axis map>
+  JoystickMap m_joystickHatMap;                           // <joy name, hat map>
+  std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_joystickAxesConfigs;   // <joy name, axes config>
 #endif
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);

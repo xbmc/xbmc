@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -37,7 +37,7 @@
 <!--   Coming soon.                                                                           -->
 <keymap>
   <global>
-    <joystick name="Sony PLAYSTATION(R)3 Controller">
+    <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
       <altname>PLAYSTATION(R)3 Controller</altname>
       <altname>PS3 Controller</altname>
       <altname>Sony Computer Entertainment Wireless Controller</altname>
@@ -51,8 +51,8 @@
       <button id="5">Up</button>
       <button id="7">Down</button>
       <button id="2">Screenshot</button>
-      <button id="3">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="4">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="3">ActivateWindow(ShutdownMenu)</button>
+      <button id="4">ActivateWindow(PlayerControls)</button>
       <axis limit="+1" id="4">VolumeDown</axis>
       <axis limit="-1" id="4">VolumeUp</axis>
       <axis limit="+1" id="1">AnalogSeekForward</axis>

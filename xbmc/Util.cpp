@@ -20,6 +20,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
+#include "CompileInfo.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -104,8 +105,6 @@ using namespace MEDIA_DETECT;
 #endif
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
-static const int64_t SECS_BETWEEN_EPOCHS = 11644473600LL;
-static const int64_t SECS_TO_100NS = 10000000;
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -447,10 +446,12 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
         given_path[n] = '\0';
 
       #if defined(TARGET_DARWIN_IOS)
-        strcat(given_path, "/XBMCData/XBMCHome/");
+        strcat(given_path, "/AppData/AppHome/");
       #else
         // Assume local path inside application bundle.
-        strcat(given_path, "../Resources/XBMC/");
+        strcat(given_path, "../Resources/");
+        strcat(given_path, CCompileInfo::GetAppName());
+        strcat(given_path, "/");
       #endif
 
       // Convert to real path.
@@ -470,12 +471,13 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
   }
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
+  /* Change strPath accordingly when target is APP_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
   std::string installPath = INSTALL_PATH;
   std::string binInstallPath = BIN_INSTALL_PATH;
-  if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
+
+  if (!strTarget.compare("APP_HOME") && installPath.compare(binInstallPath))
   {
     int pos = strPath.length() - binInstallPath.length();
     CStdString tmp = strPath;
@@ -577,12 +579,11 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
   {
     XBMC::XBMC_MD5 md5;
     char temp[1024];
-    int pos=0;
-    int read=1;
-    while (read > 0)
+    while (true)
     {
-      read = file.Read(temp,1024);
-      pos += read;
+      ssize_t read = file.Read(temp,1024);
+      if (read <= 0)
+        break;
       md5.append(temp,read);
     }
     result = md5.getDigest();
@@ -2022,7 +2023,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
               if (URIUtils::HasExtension(strItem, sub_exts[i]))
               {
                 vecSubtitles.push_back( items[j]->GetPath() ); 
-                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, CURL::GetRedacted(items[j]->GetPath()).c_str() );
               }
             }
           }
@@ -2058,7 +2059,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
             strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
-              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", CURL::GetRedacted(vecSubtitles[i]).c_str(), strDest.c_str());
               vecSubtitles.push_back(strDest);
             }
           }
@@ -2157,7 +2158,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   else if (URIUtils::GetExtension(strStream) == ".sub" && URIUtils::IsInArchive(strStream))
   {
     // exclude parsing of vobsub file names that embedded in an archive
-    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, strStream.c_str());
+    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, CURL::GetRedacted(strStream).c_str());
     toParse.clear();
   }
 
@@ -2215,7 +2216,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   if (info.flag == 0)
     info.flag = CDemuxStream::FLAG_NONE;
 
-  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s",
+             __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(strStream).c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file

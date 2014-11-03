@@ -78,10 +78,9 @@ bool CWin32File::Open(const CURL& url)
   }
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
-  if (pathnameW.empty())
-    return false;
+  if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
+    return false; // pathnameW is empty or points to device ("\\?\x:")
 
-  assert(pathnameW.length() > 6); // 6 is length of "//?/x:"
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
   m_filepathnameW = pathnameW;
@@ -103,10 +102,9 @@ bool CWin32File::OpenForWrite(const CURL& url, bool bOverWrite /*= false*/)
     return false;
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
-  if (pathnameW.empty())
-    return false;
+  if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
+    return false; // pathnameW is empty or points to device ("\\?\x:")
 
-  assert(pathnameW.length() > 6); // 6 is length of "//?/x:"
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
   m_hFile = CreateFileW(pathnameW.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
@@ -173,14 +171,19 @@ void CWin32File::Close()
   m_filepathnameW.clear();
 }
 
-unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
 {
-  assert(lpBuf != NULL);
-  if (m_hFile == INVALID_HANDLE_VALUE || !lpBuf)
-    return 0; // TODO: return -1
+  if (m_hFile == INVALID_HANDLE_VALUE)
+    return -1;
 
-  // TODO: Reduce uiBufSize if required/oversized
-  unsigned int read = 0;
+  assert(lpBuf != NULL || uiBufSize == 0);
+  if (lpBuf == NULL && uiBufSize != 0)
+    return -1;
+
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  ssize_t read = 0;
 
   // if uiBufSize is larger than ReadFile() can read at one time (larger than DWORD_MAX)
   // repeat ReadFile until buffer is filled
@@ -188,7 +191,10 @@ unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
   {
     DWORD lastRead = 0;
     if (!ReadFile(m_hFile, ((BYTE*)lpBuf) + read, (uiBufSize > DWORD_MAX) ? DWORD_MAX : (DWORD)uiBufSize, &lastRead, NULL))
-      return 0; // TODO: return -1
+    {
+      m_filePos = -1;
+      return -1;
+    }
     read += lastRead;
     // if m_filePos is set - update it
     if (m_filePos >= 0)
@@ -206,10 +212,13 @@ unsigned int CWin32File::Read(void* lpBuf, int64_t uiBufSize)
   return read;
 }
 
-int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
+ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
 {
-  assert(lpBuf != NULL);
-  if (m_hFile == INVALID_HANDLE_VALUE || !lpBuf)
+  if (m_hFile == INVALID_HANDLE_VALUE)
+    return -1;
+
+  assert(lpBuf != NULL || uiBufSize == 0);
+  if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 
   if (!m_allowWrite)
@@ -218,14 +227,19 @@ int CWin32File::Write(const void* lpBuf, int64_t uiBufSize)
     return -1;
   }
 
-  // TODO: fail on oversized uiBufSize
-  int written = 0;
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  ssize_t written = 0;
   while (uiBufSize > 0)
   {
     DWORD lastWritten = 0;
     const DWORD toWrite = uiBufSize > DWORD_MAX ? DWORD_MAX : (DWORD)uiBufSize;
     if (!WriteFile(m_hFile, ((const BYTE*)lpBuf) + written, toWrite, &lastWritten, NULL))
+    {
+      m_filePos = -1;
       return -1;
+    }
     written += lastWritten;
     uiBufSize -= lastWritten;
     // if m_filePos is set - update it
@@ -424,10 +438,9 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     return -1;
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
-  if (pathnameW.empty())
-    return -1;
+  if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
+    return -1; // pathnameW is empty or points to device ("\\?\x:"), on win32 stat() for devices is not supported
 
-  assert(pathnameW.length() > 6); // 6 is length of "//?/x:"
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
   // get maximum information about file from search function

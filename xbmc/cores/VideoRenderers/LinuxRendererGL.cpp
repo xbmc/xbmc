@@ -2533,7 +2533,6 @@ bool CLinuxRendererGL::UploadVAAPITexture(int index)
 #ifdef HAVE_LIBVA
   VAAPI::CVaapiRenderPicture *vaapi = m_buffers[index].vaapi;
 
-  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE &plane = fields[FIELD_FULL][0];
 
@@ -2541,6 +2540,9 @@ bool CLinuxRendererGL::UploadVAAPITexture(int index)
   {
     return false;
   }
+
+  if (!vaapi->CopyGlx())
+    return false;
 
   plane.id = vaapi->texture;
 

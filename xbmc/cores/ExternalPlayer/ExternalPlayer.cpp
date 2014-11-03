@@ -22,6 +22,7 @@
 #include "system.h"
 #include "signal.h"
 #include "limits.h"
+#include "CompileInfo.h"
 #include "threads/SingleLock.h"
 #include "ExternalPlayer.h"
 #include "windowing/WindowingFactory.h"
@@ -106,6 +107,8 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   try
   {
     m_bIsPlaying = true;
+    m_time = 0;
+    m_playbackStartTime = XbmcThreads::SystemClockMillis();
     m_launchFilename = file.GetPath();
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
     Create();
@@ -290,13 +293,13 @@ void CExternalPlayer::Process()
 
   if (m_hidexbmc && !m_islauncher)
   {
-    CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s: Hiding %s window", __FUNCTION__, CCompileInfo::GetAppName());
     g_Windowing.Hide();
   }
 #if defined(TARGET_WINDOWS)
   else if (currentStyle & WS_EX_TOPMOST)
   {
-    CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s: Lowering %s window", __FUNCTION__, CCompileInfo::GetAppName());
     SetWindowPos(g_hWnd,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
   }
 
@@ -336,7 +339,7 @@ void CExternalPlayer::Process()
   {
     if (m_hidexbmc)
     {
-      CLog::Log(LOGNOTICE, "%s: XBMC cannot stay hidden for a launcher process", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s: %s cannot stay hidden for a launcher process", __FUNCTION__, CCompileInfo::GetAppName());
       g_Windowing.Show(false);
     }
 
@@ -360,14 +363,14 @@ void CExternalPlayer::Process()
 
   if (currentStyle & WS_EX_TOPMOST)
   {
-    CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s: Showing %s window TOPMOST", __FUNCTION__, CCompileInfo::GetAppName());
     SetWindowPos(g_hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     SetForegroundWindow(g_hWnd);
   }
   else
 #endif
   {
-    CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s: Showing %s window", __FUNCTION__, CCompileInfo::GetAppName());
     g_Windowing.Show();
   }
 

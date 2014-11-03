@@ -42,7 +42,8 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 {
   CStdString uriPath = CSpecialProtocol::TranslatePath(uri);
   CStdString basePath = CSpecialProtocol::TranslatePath(baseURI);
-  return StringUtils::StartsWith(uriPath, basePath);
+
+  return !basePath.empty() && StringUtils::StartsWith(uriPath, basePath);
 }
 
 /* returns filename extension including period of filename */
@@ -814,6 +815,36 @@ bool URIUtils::IsFTP(const CStdString& strFile)
          IsProtocol(strFile2, "ftps");
 }
 
+bool URIUtils::IsUDP(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return IsProtocol(strFile2, "udp");
+}
+
+bool URIUtils::IsTCP(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return IsProtocol(strFile2, "tcp");
+}
+
+bool URIUtils::IsPVRChannel(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
+}
+
 bool URIUtils::IsDAV(const CStdString& strFile)
 {
   CStdString strFile2(strFile);
@@ -1296,4 +1327,9 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
   
   strFilename = newFilename;
   return true;
+}
+
+bool URIUtils::IsUsingFastSwitch(const CStdString& strFile)
+{
+  return IsUDP(strFile) || IsTCP(strFile) || IsPVRChannel(strFile);
 }

@@ -129,38 +129,28 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
 
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
 {
-  bool handled(true);
-  if (action.GetID() == ACTION_BACKSPACE)
-  {
-    Backspace();
-  }
-  else if (action.GetID() == ACTION_ENTER)
-  {
+  bool handled = true;
+  if (action.GetID() == ACTION_ENTER)
     OnOK();
-  }
-  else if (action.GetID() == ACTION_CURSOR_LEFT)
-  {
-    MoveCursor( -1);
-  }
-  else if (action.GetID() == ACTION_CURSOR_RIGHT)
-  {
-    MoveCursor(1);
-  }
   else if (action.GetID() == ACTION_SHIFT)
-  {
     OnShift();
-  }
   else if (action.GetID() == ACTION_SYMBOLS)
-  {
     OnSymbols();
-  }
-  else if (action.GetID() >= KEY_ASCII)
-  { // send action to the edit control
+  // don't handle move left/right and select in the edit control
+  else if (action.GetID() == ACTION_MOVE_LEFT ||
+           action.GetID() == ACTION_MOVE_RIGHT ||
+           action.GetID() == ACTION_SELECT_ITEM)
+    handled = false;
+  else
+  {
+    handled = false;
+    // send action to edit control
     CGUIControl *edit = GetControl(CTL_EDIT);
     if (edit)
-      edit->OnAction(action);
+      handled = edit->OnAction(action);
   }
-  else // unhandled by us - let's see if the baseclass wants it
+
+  if (!handled) // unhandled by us - let's see if the baseclass wants it
     handled = CGUIDialog::OnAction(action);
 
   return handled;
@@ -233,10 +223,18 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
   case GUI_MSG_INPUT_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
+      // the edit control only handles these messages if it is either focues
+      // or its specific control ID is set in the message. As neither is the
+      // case here (focus is on one of the keyboard buttons) we have to force
+      // the control ID of the message to the control ID of the edit control
+      // (unfortunately we have to create a whole copy of the message object for that)
+      CGUIMessage messageCopy(message.GetMessage(), message.GetSenderId(), CTL_EDIT, message.GetParam1(), message.GetParam2(), message.GetItem());
+      messageCopy.SetLabel(message.GetLabel());
+
       // ensure this goes to the edit control
       CGUIControl *edit = GetControl(CTL_EDIT);
       if (edit)
-        edit->OnMessage(message);
+        edit->OnMessage(messageCopy);
 
       // close the dialog if requested
       if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetParam1() > 0)
@@ -303,9 +301,8 @@ void CGUIDialogKeyboardGeneric::OnClickButton(int iButtonControl)
     if (pButton)
     {
       Character(pButton->GetDescription());
-      // reset the shift and symbol keys
+      // reset the shift keys
       if (m_bShift) OnShift();
-      if (m_keyType == SYMBOLS) OnSymbols();
     }
   }
 }

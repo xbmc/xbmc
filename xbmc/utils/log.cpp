@@ -23,6 +23,7 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StringUtils.h"
+#include "CompileInfo.h"
 
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -109,7 +110,9 @@ bool CLog::Init(const std::string& path)
   // the log folder location is initialized in the CAdvancedSettings
   // constructor and changed in CApplication::Create()
 
-  return s_globals.m_platform.OpenLogFile(path + "xbmc.log", path + "xbmc.old.log");
+  std::string appName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(appName);
+  return s_globals.m_platform.OpenLogFile(path + appName + ".log", path + appName + ".old.log");
 }
 
 void CLog::MemDump(char *pData, int length)

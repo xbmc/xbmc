@@ -267,7 +267,7 @@ namespace PVR
      * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
      * @return The requested channel.
      */
-    CFileItemPtr GetLastPlayedChannel(unsigned int iCurrentChannel = -1) const;
+    CFileItemPtr GetLastPlayedChannel(int iCurrentChannel = -1) const;
 
     /*!
      * @brief Get a channel given it's channel number.

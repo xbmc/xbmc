@@ -2,9 +2,19 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-cd $WORKSPACE;make apk
+if [ "x$BUILD_OBB" == "xtrue" ]
+then
+  cd $WORKSPACE;make apk-obb-unsigned
+else
+  cd $WORKSPACE;make apk-unsigned
+fi
+$RUN_SIGNSTEP
 
 #rename for upload
 #e.x. xbmc-20130314-8c2fb31-Frodo-x86.apk
-UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-x86.apk"
-mv xbmcapp-x86-*.apk $UPLOAD_FILENAME
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-x86"
+mv kodiapp-x86-*.apk $UPLOAD_FILENAME.apk
+if [ -f *.obb ] 
+then
+  mv *.obb $UPLOAD_FILENAME.obb
+fi

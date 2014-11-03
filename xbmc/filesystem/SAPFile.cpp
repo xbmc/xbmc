@@ -27,6 +27,7 @@
 
 #include <sys/stat.h>
 #include <vector>
+#include <limits>
 
 using namespace std;
 using namespace XFILE;
@@ -111,9 +112,14 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 }
 
 
-unsigned int CSAPFile::Read(void *lpBuf, int64_t uiBufSize)
+ssize_t CSAPFile::Read(void *lpBuf, size_t uiBufSize)
 {
-  return (unsigned int)m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+  if (uiBufSize > std::numeric_limits<std::streamsize>::max())
+    uiBufSize = (size_t)std::numeric_limits<std::streamsize>::max();
+
+  return (ssize_t)m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
 }
 
 void CSAPFile::Close()

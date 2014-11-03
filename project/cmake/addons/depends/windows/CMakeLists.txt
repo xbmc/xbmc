@@ -1,4 +1,4 @@
-project(xbmc-addons-depends-windows)
+project(kodi-addons-depends-windows)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -10,7 +10,7 @@ endif()
 
 include(ExternalProject)
 
-if(NOT CMAKE_INSTALL_PREFIX)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
   message(FATAL_ERROR "CMAKE_INSTALL_PREFIX (${CMAKE_INSTALL_PREFIX}) is not a valid target directory.")
 else()
   file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)

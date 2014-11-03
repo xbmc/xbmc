@@ -36,8 +36,8 @@ namespace XFILE
     virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
     virtual void Close();
 
-    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
-    virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
+    virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
     virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
     virtual int Truncate(int64_t toSize);
     virtual int64_t GetPosition();

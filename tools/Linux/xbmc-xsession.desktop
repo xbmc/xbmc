@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=XBMC
-Comment=This session will start XBMC Media Center
-Exec=xbmc-standalone
-TryExec=xbmc-standalone
-Type=Application

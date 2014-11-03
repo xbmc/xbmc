@@ -114,16 +114,19 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CFileCDDA::Read(void* lpBuf, size_t uiBufSize)
 {
   if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
-    return 0;
+    return -1;
+
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
 
   // limit number of sectors that fits in buffer by m_iSectorCount
   int iSectorCount = std::min((int)uiBufSize / CDIO_CD_FRAMESIZE_RAW, m_iSectorCount);
 
   if (iSectorCount <= 0)
-    return 0;
+    return -1;
 
   // Are there enough sectors left to read
   if (m_lsnCurrent + iSectorCount > m_lsnEnd)
@@ -150,7 +153,7 @@ unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
     if (iSectorCount <= 10)
     {
       CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
-      return 0;
+      return -1;
     }
 
     iSectorCount = 10;

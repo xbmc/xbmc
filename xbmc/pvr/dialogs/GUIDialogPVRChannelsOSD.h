@@ -59,9 +59,9 @@ namespace PVR
 
   private:
     CPVRChannelGroupPtr m_group;
-    std::map<int,int> m_groupSelectedItems;
-    void SaveSelectedItem(int iGroupID);
-    int GetLastSelectedItem(int iGroupID) const;
+    std::map<int, std::string> m_groupSelectedItemPaths;
+    void SaveSelectedItemPath(int iGroupID);
+    std::string GetLastSelectedItemPath(int iGroupID) const;
   };
 }
 

@@ -70,13 +70,15 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
-      m_headPos = m_doc.find("<episodedetails", m_headPos);
-      bNfo = GetDetails(details);
-      while (m_headPos!=std::string::npos && details.m_iEpisode != episode)
+      while (m_headPos != std::string::npos && details.m_iEpisode != episode)
       {
-        m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
+        m_headPos = m_doc.find("<episodedetails", m_headPos);
+        if (m_headPos == std::string::npos)
+          break;
+
         bNfo  = GetDetails(details);
         infos++;
+        m_headPos++;
       }
       if (details.m_iEpisode != episode)
       {

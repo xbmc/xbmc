@@ -129,9 +129,9 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   if (settingId == "pvrmanager.enabled")
   {
     if (((CSettingBool*)setting)->GetValue())
-      CApplicationMessenger::Get().ExecBuiltIn("XBMC.StartPVRManager", false);
+      CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
     else
-      CApplicationMessenger::Get().ExecBuiltIn("XBMC.StopPVRManager", false);
+      CApplicationMessenger::Get().ExecBuiltIn("StopPVRManager", false);
   }
   else if (settingId == "pvrparental.enabled")
   {
@@ -709,10 +709,12 @@ bool CPVRManager::ContinueLastChannel(void)
   if (channel && channel->HasPVRChannelInfoTag())
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'", __FUNCTION__, channel->GetPVRChannelInfoTag()->ChannelName().c_str());
-    SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
+    SetPlayingGroup(m_channelGroups->GetLastPlayedGroup(channel->GetPVRChannelInfoTag()->ChannelID()));
     StartPlayback(channel->GetPVRChannelInfoTag(), (CSettings::Get().GetInt("pvrplayback.startlast") == CONTINUE_LAST_CHANNEL_IN_BACKGROUND));
     return true;
   }
+
+  CLog::Log(LOGDEBUG, "PVRManager - %s - no last played channel to continue playback found", __FUNCTION__);
 
   return false;
 }
@@ -1577,8 +1579,10 @@ void CPVRManager::UpdateLastWatched(CPVRChannel &channel)
   CDateTime::GetCurrentDateTime().GetAsTime(tNow);
 
   // update last watched timestamp for channel
-  channel.SetLastWatched(tNow);
-  channel.Persist();
+  // NOTE: method could be called with a fileitem copy as argument so we need to obtain the right channel instance
+  CPVRChannelPtr channelPtr = m_channelGroups->GetChannelById(channel.ChannelID());
+  channelPtr->SetLastWatched(tNow);
+  channelPtr->Persist();
 
   // update last watched timestamp for group
   CPVRChannelGroupPtr group = GetPlayingGroup(channel.IsRadio());

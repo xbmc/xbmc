@@ -21,6 +21,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../removelegacy.patch
 	cd $(PLATFORM); patch -p0 < ../android.patch
 	cd $(PLATFORM); patch -p0 < ../md5.patch
+	cd $(PLATFORM); patch -p1 < ../darwin.patch
 	sed -ie "s|-fstack-protector|-fnostack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
 	sed -ie "s|add_subdirectory(examples)||" "$(PLATFORM)/CMakeLists.txt"
 	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DTHREADS_PTHREAD_ARG=0 VERBOSE=1 .. 

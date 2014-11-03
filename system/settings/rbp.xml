@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
   <section id="videos">
-    <category id="videoplayer">
-      <group id="2">
-        <setting id="videoplayer.synctype">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
     <category id="videoacceleration">
       <group id="1">
         <visible>false</visible>
@@ -61,10 +54,8 @@
     </category>
     <category id="audiooutput">
       <group id="1">
-        <setting id="audiooutput.dualaudio" type="boolean" label="37017" help="36542">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
+        <setting id="audiooutput.processquality">
+          <default>101</default> <!-- AE_QUALITY_GPU -->
         </setting>
       </group>
       <group id="3">

@@ -1,0 +1,37 @@
+diff --git a/include/libssh/misc.h b/include/libssh/misc.h
+index 9897c4e..fe4f602 100644
+--- a/include/libssh/misc.h
++++ b/include/libssh/misc.h
+@@ -35,8 +35,12 @@ int ssh_is_ipaddr_v4(const char *str);
+ int ssh_is_ipaddr(const char *str);
+ 
+ /* macro for byte ordering */
++#if !defined(ntohll)
+ uint64_t ntohll(uint64_t);
++#endif
++#if !defined(htonll)
+ #define htonll(x) ntohll(x)
++#endif
+ 
+ /* list processing */
+ 
+diff --git a/src/misc.c b/src/misc.c
+index 008be1b..3c2d8bb 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -286,6 +286,7 @@ int ssh_is_ipaddr(const char *str) {
+ 
+ #endif /* _WIN32 */
+ 
++#if !defined(ntohll)
+ uint64_t ntohll(uint64_t a) {
+ #ifdef WORDS_BIGENDIAN
+   return a;
+@@ -298,6 +299,7 @@ uint64_t ntohll(uint64_t a) {
+   return ((((uint64_t) low) << 32) | ( high));
+ #endif
+ }
++#endif
+ 
+ char *ssh_lowercase(const char* str) {
+   char *new, *p;

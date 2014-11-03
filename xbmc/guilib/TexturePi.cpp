@@ -142,8 +142,8 @@ bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned in
       if (okay)
       {
         m_hasAlpha = false;
-        if (autoRotate && orientation)
-          m_orientation = orientation - 1;
+        if (autoRotate)
+          m_orientation = orientation;
         return true;
       }
     }

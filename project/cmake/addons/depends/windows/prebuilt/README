@@ -1,4 +1,4 @@
-XBMC WIN32 PREBUILT ADDON DEPENDENCIES
+KODI WIN32 PREBUILT ADDON DEPENDENCIES
 ======================================
 This directory contains a file or sub-directory for every prebuilt dependency
 used by one of the addons being built. There are two different modes supported.

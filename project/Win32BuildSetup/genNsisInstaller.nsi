@@ -109,6 +109,10 @@ Function HandleUserdataMigration
       ${AndIfNot} ${FileExists} "$APPDATA\${APP_NAME}\*.*"
           Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
           MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC userdata folder was moved to the new ${APP_NAME} userdata location.$\nThis to make the transition as smooth as possible without any user interactions needed."
+          ;mark that it was migrated in the filesystem - kodi will show another info message during first Kodi startup
+          ;for really making sure that the user has read that message.
+          FileOpen $0 "$APPDATA\${APP_NAME}\.kodi_data_was_migrated" w
+          FileClose $0
       ${EndIf}
   ${Else}
     ; old installation was found but not uninstalled - inform the user
@@ -348,15 +352,6 @@ Section "Uninstall"
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
     RMDir /r "$APPDATA\${APP_NAME}\"
     RMDir /r "$INSTDIR\portable_data\"
-  ${Else}
-    ;Check if %appdata%\${APP_NAME}\userdata and portable_data contain no guisettings.xml
-    ;If that file does not exists, then delete those folders and $INSTDIR
-    IfFileExists $INSTDIR\portable_data\userdata\guisettings.xml +2
-      RMDir /r "$INSTDIR\portable_data\"
-      RMDir "$INSTDIR\"
-    IfFileExists "$APPDATA\${APP_NAME}\userdata\guisettings.xml" +2
-      RMDir /r "$APPDATA\${APP_NAME}\userdata\"
-      RMDir "$APPDATA\${APP_NAME}"
   ${EndIf}
   RMDir "$INSTDIR"
 

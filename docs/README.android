@@ -4,8 +4,8 @@ TOC
 3. Getting the source code
 4. Installing the required Ubuntu packages
 5. How to compile
-6. Installing XBMC in an Android system
-7. Running and debugging XBMC in an Android system
+6. Installing Kodi in an Android system
+7. Running and debugging Kodi in an Android system
 8. Architecture
 9. Useful Commands
 
@@ -25,7 +25,7 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 2. Installing the required Ubuntu packages
 -----------------------------------------------------------------------------
-These are the minimum packages necessary for building XBMC. Non-Ubuntu
+These are the minimum packages necessary for building Kodi. Non-Ubuntu
 users will need to get the equivalents.
 
    # sudo apt-get install build-essential default-jdk git curl autoconf \
@@ -33,6 +33,10 @@ users will need to get the equivalents.
 
 If you run a 64bit operating system you will also need to get ia32-libs
 
+ ubuntu >= 14.04:
+   # sudo apt-get install lib32stdc++6 lib32z1 lib32z1-dev
+
+ older versions:
    # sudo apt-get install ia32-libs
    
 The following versions are used on our continuous integration system "jenkins". Other (newer)
@@ -46,7 +50,7 @@ JRE: openjre-6-jre (java version "1.6.0_27")
 3. Installing and setting up the Android environment
 -----------------------------------------------------------------------------
 
-To develop XBMC for Android the Android SDK and NDK are required.
+To develop Kodi for Android the Android SDK and NDK are required.
 
 --------------------------------------------------------------------
 3.1. Getting the Android SDK and NDK
@@ -56,7 +60,7 @@ To get the Android SDK, go to http://developer.android.com/sdk and
 download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
 
-[NOTICE] Compiling XBMC for Android requires Android NDK
+[NOTICE] Compiling Kodi for Android requires Android NDK
          Revision r9. For the SDK just use the latest available. 
          It will work.
 
@@ -93,7 +97,7 @@ install some android packages using the Android SDK Manager:
 3.3. Setup the Android toolchain
 --------------------------------------------------------------------
 
-To be able to compile XBMC and the libraries it depends on for the
+To be able to compile Kodi and the libraries it depends on for the
 Android platform you first need to setup an Android toolchain using
 the Android NDK which you earlier extracted to <android-ndk>. The
 following commands will create a toolchain suitable for the most
@@ -101,7 +105,7 @@ common scenario.
 The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
 specifies where the resulting toolchain should be installed (your choice). 
 
-[NOTICE] XBMC uses the android API Version 14 and gcc version 4.8!
+[NOTICE] Kodi uses the android API Version 14 and gcc version 4.8!
 
 Building for arm architecture:
 
@@ -140,15 +144,15 @@ Make sure to pick a toolchain for your desired architecture.
 -----------------------------------------------------------------------------
 
    # cd $HOME
-   # git clone git://github.com/xbmc/xbmc.git xbmc-android
-   # cd xbmc-android
+   # git clone git://github.com/xbmc/xbmc.git kodi-android
+   # cd kodi-android
    # git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 5. How to compile
 -----------------------------------------------------------------------------
 
-Compiling XBMC for Android consists of compiling the libraries XBMC depends
+Compiling Kodi for Android consists of compiling the libraries Kodi depends
 on with the Android toolchain and creating an Android Application Package
 (APK) which can be installed in an Android system.
 
@@ -156,7 +160,7 @@ on with the Android toolchain and creating an Android Application Package
 5.1. Building dependencies
 --------------------------------------------------------------------
 
-   # cd $HOME/xbmc-android/tools/depends
+   # cd $HOME/kodi-android/tools/depends
    # ./bootstrap
    # ./configure --help
 
@@ -178,10 +182,10 @@ on with the Android toolchain and creating an Android Application Package
    "Dependencies built successfully." appears.
 
 --------------------------------------------------------------------
-5.2. Building XBMC
+5.2. Building Kodi
 --------------------------------------------------------------------
 
-   # cd $HOME/xbmc-android
+   # cd $HOME/kodi-android
    # make -C tools/depends/target/xbmc
    # make
    # make apk
@@ -190,15 +194,15 @@ on with the Android toolchain and creating an Android Application Package
    subsequent builds can be run with a simple 'make' and 'make apk'.
 
 -----------------------------------------------------------------------------
-6. Installing XBMC in an Android system
+6. Installing Kodi in an Android system
 -----------------------------------------------------------------------------
 
-To install XBMC through the previously built APK in an Android system you can
+To install Kodi through the previously built APK in an Android system you can
 either install it on a real device (smartphone/tablet/...) running Android
  >= 2.3.x.
 
 --------------------------------------------------------------------
-6.1. Installing XBMC on the Android device
+6.1. Installing Kodi on the Android device
 --------------------------------------------------------------------
 
 Make sure your Android device is connected to your computer through
@@ -208,7 +212,7 @@ device's Android settings:
   - Applications
     [X] Unknown sources
 
-   # cd $HOME/xbmc-android/tools/android/packaging
+   # cd $HOME/kodi-android/tools/android/packaging
    # adb devices
    # adb -s <device-id> install -r images/xbmcapp-debug.apk
       
@@ -217,17 +221,17 @@ The <device-id> can be retrieved from the list returned by the
 your device.
 
 -----------------------------------------------------------------------------
-7. Running and debugging XBMC in an Android system
+7. Running and debugging Kodi in an Android system
 -----------------------------------------------------------------------------
 
-After installing XBMC's APK in an Android system you can start it using its
+After installing Kodi's APK in an Android system you can start it using its
 Launcher icon in Android's Application Launcher.
 
 --------------------------------------------------------------------
-7.1. Debugging XBMC
+7.1. Debugging Kodi
 --------------------------------------------------------------------
 
-To be able to see what is happening while running XBMC you first need
+To be able to see what is happening while running Kodi you first need
 to enable USB debugging in your Android settings (this is already done
 when using the emulator):
 
@@ -253,18 +257,18 @@ to cd to tools/android/packaging/xbmc and execute it from there.
 
   # ndk-gdb --start --delay=0
 
-This will open the installed version of XBMC and break. The warnings can be
+This will open the installed version of Kodi and break. The warnings can be
 ignored as we have setup the appropriate paths already.
 
 --------------------------------------------------------------------
 8. Architecture
 --------------------------------------------------------------------
 
-During the early days of the android port, xbmc was launched via a stub lib
-that then dlopen'd libxbmc. This was done to get around bionic's poor handling
-of shared libs. We now compile everything into libxbmc itself so that it has
+During the early days of the android port, Kodi was launched via a stub lib
+that then dlopen'd libkodi. This was done to get around bionic's poor handling
+of shared libs. We now compile everything into libkodi itself so that it has
 no runtime dependencies beyond system libs. Done this way, we're able to launch
-into libxbmc directly.
+into libkodi directly.
 
 But we still hit Bionic's loader's deficiencies when we dlopen a lib. There are
 two main issues to overcome for loading:
@@ -313,10 +317,10 @@ is 'tools/android/packaging' and that the proper sdk/ndk paths are set.
 -Install a new build over the existing one
   # adb -e install -r images/xbmcapp-debug.apk
 
--Launch XBMC on the emulator without the GUI
+-Launch Kodi on the emulator without the GUI
   # adb shell am start -a android.intent.action.MAIN -n org.xbmc.xbmc/android.app.NativeActivity
 
--Kill a misbehaving XBMC
+-Kill a misbehaving Kodi
   # adb shell ps | grep org.xbmc | awk '{print $2}' | xargs adb shell kill
 
 -Filter logcat messages by a specific tag (e.g. "XBMC")

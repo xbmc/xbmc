@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# usage: ./mkdmg-osx.sh release/debug (case insensitive)
+# Allows us to run mkdmg-osx.sh from anywhere in the three, rather than the tools/darwin/packaging/osx folder only
+SWITCH=`echo $1 | tr [A-Z] [a-z]`
+DIRNAME=`dirname $0`
+
+if [ ${SWITCH:-""} = "debug" ]; then
+  echo "Packaging Debug target for OSX"
+  APP="$DIRNAME/../../../../build/Debug/@APP_NAME@.app"
+elif [ ${SWITCH:-""} = "release" ]; then
+  echo "Packaging Release target for OSX"
+  APP="$DIRNAME/../../../../build/Release/@APP_NAME@.app"
+else
+  echo "You need to specify the build target"
+  exit 1 
+fi
+
+if [ ! -d $APP ]; then
+  echo "@APP_NAME@.app not found! are you sure you built $1 target?"
+  exit 1
+fi
+ARCHITECTURE=`file $APP/Contents/MacOS/@APP_NAME@ | awk '{print $NF}'`
+
+PACKAGE=org.xbmc.@APP_NAME_LC@-osx
+
+VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
+REVISION=0~@APP_VERSION_TAG_LC@
+ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
+
+echo Creating $PACKAGE package version $VERSION revision $REVISION
+${SUDO} rm -rf $DIRNAME/$ARCHIVE
+
+if [ -e "/Volumes/$ARCHIVE" ]
+then 
+  umount /Volumes/$ARCHIVE
+fi
+
+$DIRNAME/dmgmaker.pl $APP $ARCHIVE
+
+echo "done"

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
 <keyboardlayouts>
-  <layout name="QWERTY">
+  <layout name="English QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiop</row>
@@ -20,7 +24,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="AZERTY">
+  <layout name="English AZERTY">
     <keyboard>
       <row>1234567890</row>
       <row>azertyuiop</row>
@@ -40,7 +44,7 @@
       <row>`~éèçà</row>
     </keyboard>
   </layout>
-  <layout name="ABC">
+  <layout name="English ABC">
     <keyboard>
       <row>0123456789</row>
       <row>abcdefghij</row>
@@ -60,7 +64,7 @@
       <row>`~</row>
    </keyboard>
   </layout>
-  <layout name="Български ЯВЕРТЪ">
+  <layout name="Bulgarian ЯВЕРТЪ">
     <keyboard>
       <row>ч1234567890</row>
       <row>явертъуиопшщ</row>
@@ -80,7 +84,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Български АБВ">
+  <layout name="Bulgarian АБВ">
     <keyboard>
       <row>0123456789</row>
       <row>абвгдежзий</row>
@@ -100,7 +104,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Русская ЙЦУКЕН">
+  <layout name="Russian ЙЦУКЕН">
     <keyboard>
       <row>ё1234567890</row>
       <row>йцукенгшщзхъ</row>
@@ -120,7 +124,7 @@
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Русская АБВ">
+  <layout name="Russian АБВ">
     <keyboard>
       <row>0123456789</row>
       <row>абвгдеёжзий</row>
@@ -179,5 +183,85 @@
       <row>'",.&lt;&gt;/?\|</row>
       <row>`~</row>
    </keyboard>
+  </layout>
+  <layout name="Norwegian QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjkløæ</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLØÆ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Danish QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjklæø</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLÆØ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Swedish QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopå</row>
+      <row>asdfghjklöä</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPÅ</row>
+      <row>ASDFGHJKLÖÄ</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout name="Turkish QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuıopğü</row>
+      <row>asdfghjklşi</row>
+      <row>zxcvbnmöç</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPĞÜ</row>
+      <row>ASDFGHJKLŞİ</row>
+      <row>ZXCVBNMÖÇ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
   </layout>
 </keyboardlayouts>

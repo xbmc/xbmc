@@ -1,0 +1,85 @@
+From 25c5ffe9eb2213fc18ab498320fbf9af79e1250d Mon Sep 17 00:00:00 2001
+From: Maks Naumov <maksqwe1@ukr.net>
+Date: Mon, 25 Aug 2014 21:45:02 +0300
+Subject: [PATCH] SlingboxLib: Fix alternative CSlingbox constructor
+
+CSlingbox::CSlingbox(const char * szAddress, unsigned int uiPort /* = 5001 */) {
+  // Call default constructor
+  CSlingbox();
+  ...
+}
+
+"CSlingbox();" - object is created and immediately removed.
+Therefore with CSlingbox(const char * szAddress, unsigned int uiPort /* = 5001 */) class members will not be initialized.
+---
+ lib/SlingboxLib/SlingboxLib.cpp | 32 +++++++++++++++++++-------------
+ lib/SlingboxLib/SlingboxLib.h   |  1 +
+ 2 files changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/lib/SlingboxLib/SlingboxLib.cpp b/lib/SlingboxLib/SlingboxLib.cpp
+index f2d7017..0632e6f 100644
+--- a/lib/SlingboxLib/SlingboxLib.cpp
++++ b/lib/SlingboxLib/SlingboxLib.cpp
+@@ -41,24 +41,16 @@ typedef int socklen_t;
+ // Default constructor.
+ CSlingbox::CSlingbox()
+ {
+-  // Set all variables to default/invalid values
+-  m_socCommunication = INVALID_SOCKET;
+-  m_socStream = INVALID_SOCKET;
+-  memset(m_szAddress, 0, sizeof(m_szAddress));
+-  m_uiPort = 0;
+-  m_usCode = 0;
+-  m_usSequence = 0;
+-  m_iChannel = -1;
+-  m_iInput = -1;
+-  memset(&m_receivedMessages, 0, sizeof(m_receivedMessages));
++  // initialize all members
++  init();
+ }
+ 
+ // Alternative constructor used to set the address (IP or hostname) and port of the
+-// Slingbox we want to connect to.  If no port is specified default port 5001 is used.
++// Slingbox we want to connect to. If no port is specified default port 5001 is used.
+ CSlingbox::CSlingbox(const char * szAddress, unsigned int uiPort /* = 5001 */)
+ {
+-  // Call default constructor
+-  CSlingbox();
++  // initialize all members
++  init();
+ 
+   // Set address and port variables to passed values
+   SetAddress(szAddress, uiPort);
+@@ -74,6 +66,20 @@ CSlingbox::~CSlingbox()
+     CloseSocket(m_socCommunication);
+ }
+ 
++// Function used to initialize class members
++void CSlingbox::init()
++{
++  // Set all variables to default/invalid values
++  m_socCommunication = INVALID_SOCKET;
++  m_socStream = INVALID_SOCKET;
++  memset(m_szAddress, 0, sizeof(m_szAddress));
++  m_uiPort = 0;
++  m_usCode = 0;
++  m_usSequence = 0;
++  m_iChannel = -1;
++  m_iInput = -1;
++  memset(&m_receivedMessages, 0, sizeof(m_receivedMessages));
++}
+ // Function used to find a Slingbox.  Address and port of found Slingbox can be
+ // retrieved with the GetAddress function afterwards.
+ bool CSlingbox::FindSlingbox(unsigned int uiTimeout /* = 10 */)
+diff --git a/lib/SlingboxLib/SlingboxLib.h b/lib/SlingboxLib/SlingboxLib.h
+index ad368f0..a8835bc 100644
+--- a/lib/SlingboxLib/SlingboxLib.h
++++ b/lib/SlingboxLib/SlingboxLib.h
+@@ -91,6 +91,7 @@ class CSlingbox
+   bool SendIRCommand(uint8_t ucCommand);
+ 
+ protected:
++  void init();
+   // Function used to send and receive messages to and from the Slingbox
+   struct MessageHeader;
+   bool SendReceiveMessage(SOCKET socSocket, MessageHeader * pHeader,

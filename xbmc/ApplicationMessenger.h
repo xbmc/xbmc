@@ -91,6 +91,7 @@ namespace MUSIC_INFO
 #define TMSG_CECTOGGLESTATE       316
 #define TMSG_CECACTIVATESOURCE    317
 #define TMSG_CECSTANDBY           318
+#define TMSG_SETVIDEORESOLUTION   319
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -218,8 +219,8 @@ public:
 
   void LoadProfile(unsigned int idx);
   bool CECToggleState();
-  bool CECActivateSource();
-  bool CECStandby();
+  void CECActivateSource();
+  void CECStandby();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

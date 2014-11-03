@@ -122,8 +122,7 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
   {
     TiXmlPrinter printer;
     Accept(&printer);
-    file.Write(printer.CStr(), printer.Size());
-    return true;
+    return file.Write(printer.CStr(), printer.Size()) == printer.Size();
   }
   return false;
 }

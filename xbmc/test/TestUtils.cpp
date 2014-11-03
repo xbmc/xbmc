@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #ifdef TARGET_WINDOWS
 #include <windows.h>
@@ -43,7 +44,6 @@ public:
   bool Create(const std::string &suffix)
   {
     char tmp[MAX_PATH];
-    int fd;
 
     m_ptempFileDirectory = CSpecialProtocol::TranslatePath("special://temp/");
     m_ptempFilePath = m_ptempFileDirectory + "xbmctempfileXXXXXX";
@@ -64,6 +64,7 @@ public:
     }
     m_ptempFilePath = tmp;
 #else
+    int fd;
     if ((fd = mkstemps(tmp, suffix.length())) < 0)
     {
       m_ptempFilePath = "";
@@ -107,7 +108,7 @@ CXBMCTestUtils &CXBMCTestUtils::Instance()
 
 std::string CXBMCTestUtils::ReferenceFilePath(const std::string& path)
 {
-  return CSpecialProtocol::TranslatePath("special://xbmc") + path;
+  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("special://xbmc", path));
 }
 
 bool CXBMCTestUtils::SetReferenceFileBasePath()

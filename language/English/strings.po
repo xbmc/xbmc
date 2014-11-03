@@ -69,37 +69,38 @@ msgstr ""
 
 #empty string with id 10
 
-#: Used in Confluence
+#strings from 11 to 17 are reserved for weather translation
+#. Weather token
 msgctxt "#11"
 msgid "Monday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#12"
 msgid "Tuesday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#13"
 msgid "Wednesday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#14"
 msgid "Thursday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#15"
 msgid "Friday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#16"
 msgid "Saturday"
 msgstr ""
 
-#: Used in Confluence
+#. Weather token
 msgctxt "#17"
 msgid "Sunday"
 msgstr ""
@@ -1455,7 +1456,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#346"
-msgid "Normalize levels on downmix"
+msgid "Maintain original volume on downmix"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3761,9 +3762,13 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr ""
 
-#empty strings from id 1261 to 1268
+#empty strings from id 1261 to 1267
 
 #: system/settings/settings.xml
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr ""
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr ""
@@ -3807,8 +3812,113 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr ""
 
-#empty strings from id 1302 to 1395
-#strings from 1396 to 1449 are reserved for weather translation
+#empty strings from id 1302 to 1374
+#strings from 1350 to 1449 are reserved for weather translation
+
+#. Weather token
+msgctxt "#1375"
+msgid "Temperature"
+msgstr ""
+
+#. Weather token
+msgctxt "#1376"
+msgid "Pressure"
+msgstr ""
+
+#. Weather token
+msgctxt "#1377"
+msgid "Proximity"
+msgstr ""
+
+#. Weather token
+msgctxt "#1378"
+msgid "Intensity"
+msgstr ""
+
+#. Weather token
+msgctxt "#1379"
+msgid "Ragged"
+msgstr ""
+
+#. Weather token
+msgctxt "#1380"
+msgid "Very"
+msgstr ""
+
+#. Weather token
+msgctxt "#1381"
+msgid "Extreme"
+msgstr ""
+
+#. Weather token
+msgctxt "#1382"
+msgid "Whirls"
+msgstr ""
+
+#. Weather token
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr ""
+
+#. Weather token
+msgctxt "#1384"
+msgid "Broken"
+msgstr ""
+
+#. Weather token
+msgctxt "#1385"
+msgid "Tornado"
+msgstr ""
+
+#. Weather token
+msgctxt "#1386"
+msgid "Tropical"
+msgstr ""
+
+#. Weather token
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr ""
+
+#. Weather token
+msgctxt "#1388"
+msgid "Cold"
+msgstr ""
+
+#. Weather token
+msgctxt "#1389"
+msgid "Windy"
+msgstr ""
+
+#. Weather token
+msgctxt "#1390"
+msgid "Settings"
+msgstr ""
+
+#. Weather token
+msgctxt "#1391"
+msgid "Breeze"
+msgstr ""
+
+#. Weather token
+msgctxt "#1392"
+msgid "Gentle"
+msgstr ""
+
+#. Weather token
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr ""
+
+#. Weather token
+msgctxt "#1394"
+msgid "Severe"
+msgstr ""
+
+#. Weather token
+msgctxt "#1395"
+msgid "Violent"
+msgstr ""
 
 #. Weather token
 msgctxt "#1396"
@@ -10064,7 +10174,12 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr ""
 
-#empty strings from id 20262 to 20299
+#: xbmc/storage/MediaManager.cpp
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr ""
+
+#empty strings from id 20263 to 20299
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20300"
@@ -12182,7 +12297,7 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr ""
 
-#: xbmc/addons/AddonsDirectory.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24049"
 msgid "Incompatible"
 msgstr ""
@@ -12533,7 +12648,19 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr ""
 
-#empty strings from id 24128 to 24999
+#. Info dialog after migrating userdata from xbmc to kodi
+#: xbmc/Application.cpp
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr ""
+
+#. Info dialog after migrating userdata from xbmc to kodi
+#: xbmc/Application.cpp
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgstr ""
+
+#empty strings from id 24130 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -12763,7 +12890,19 @@ msgctxt "#33038"
 msgid "%s day"
 msgstr ""
 
-#empty strings from id 33039 to 33048
+#. Used in the media source dialog. Will result in "SAP Streams"
+#: dialogs/GUIDialogMediaSource.cpp
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr ""
+
+#. Used in the media source dialog. Will result in "ReplayTV Devices" and "HDHomerun Devices"
+#: dialogs/GUIDialogMediaSource.cpp
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr ""
+
+#empty strings from id 33041 to 33048
 
 #: Unknown
 msgctxt "#33049"
@@ -15580,7 +15719,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> Normalize levels on downmix" with label #346
 #: settings/DisplaySettings.cpp
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr ""
 
 #. Description of setting "System -> Debugging -> Component-specific logging..." with label #668
@@ -15670,7 +15809,13 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr ""
 
-#empty strings from id 36549 to 36599
+#. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
+#: system/settings/settings.xml
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr ""
+
+#empty strings from id 36550 to 36599
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022
@@ -15930,6 +16075,11 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38010"
+msgid "GPU accelerated"
 msgstr ""
 
 #. 55000-55100 reserved for DSPlayer

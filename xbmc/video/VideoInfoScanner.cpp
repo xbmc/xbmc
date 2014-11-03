@@ -123,7 +123,7 @@ namespace VIDEO
            * doesn't exist rather than a NAS being switched off.  A manual clean from settings
            * will still pick up and remove it though.
            */
-          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan%s.", __FUNCTION__, directory.c_str(), m_bClean ? " and clean" : "");
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan%s.", __FUNCTION__, CURL::GetRedacted(directory).c_str(), m_bClean ? " and clean" : "");
           m_pathsToScan.erase(m_pathsToScan.begin());
         }
         else if (!DoScan(directory))
@@ -172,17 +172,20 @@ namespace VIDEO
     m_pathsToScan.clear();
     m_pathsToClean.clear();
 
+    m_database.Open();
     if (strDirectory.empty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
       // we go.
-      m_database.Open();
       m_database.GetPaths(m_pathsToScan);
-      m_database.Close();
     }
     else
-    {
-      m_pathsToScan.insert(strDirectory);
+    { // scan all the paths of this subtree that is in the database
+      vector< pair<int, string> > subpaths;
+      m_database.GetSubPaths(m_strStartDir, subpaths);
+      for (vector< pair<int, string> >::iterator it = subpaths.begin(); it < subpaths.end(); ++it)
+        m_pathsToScan.insert(it->second);
     }
+    m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
 
     StopThread();
@@ -219,6 +222,12 @@ namespace VIDEO
     g_windowManager.SendThreadMessage(msg);
   }
 
+  bool CVideoInfoScanner::IsExcluded(const CStdString& strDirectory) const
+  {
+    CStdString noMediaFile = URIUtils::AddFileToFolder(strDirectory, ".nomedia");
+    return CFile::Exists(noMediaFile);
+  }
+
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
     if (m_handle)
@@ -250,6 +259,12 @@ namespace VIDEO
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
+
+    if (IsExcluded(strDirectory))
+    {
+      CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", CURL::GetRedacted(strDirectory).c_str());
+      return true;
+    }
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
@@ -826,7 +841,7 @@ namespace VIDEO
       episode.isFolder = false;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
-                episode.strPath.c_str(), episode.iSeason, episode.iEpisode);
+                CURL::GetRedacted(episode.strPath).c_str(), episode.iSeason, episode.iEpisode);
       return true;
     }
 
@@ -851,7 +866,7 @@ namespace VIDEO
       episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
-        __FUNCTION__, episode.strPath.c_str(), tag->m_firstAired.GetAsDBDateTime().c_str(),
+        __FUNCTION__, CURL::GetRedacted(episode.strPath).c_str(), tag->m_firstAired.GetAsDBDateTime().c_str(),
                 episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
       return true;
     }
@@ -873,7 +888,7 @@ namespace VIDEO
       episode.iEpisode = -1;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG,"%s - found match for: '%s', title: '%s'", __FUNCTION__,
-                episode.strPath.c_str(), episode.strTitle.c_str());
+                CURL::GetRedacted(episode.strPath).c_str(), episode.strTitle.c_str());
       return true;
     }
 
@@ -885,7 +900,7 @@ namespace VIDEO
     if (tag->m_iSeason == 0 && tag->m_iEpisode == 0)
     {
       CLog::Log(LOGDEBUG,"%s - found exclusion match for: %s. Both Season and Episode are 0. Item will be ignored for scanning.",
-                __FUNCTION__, item->GetPath().c_str());
+                __FUNCTION__, CURL::GetRedacted(item->GetPath()).c_str());
       return true;
     }
 
@@ -926,7 +941,7 @@ namespace VIDEO
         if (!GetAirDateFromRegExp(reg, episode))
           continue;
 
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", strLabel.c_str(),
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", CURL::GetRedacted(strLabel).c_str(),
                   episode.cDate.GetAsLocalizedDate().c_str(), expression[i].regexp.c_str());
       }
       else
@@ -934,7 +949,7 @@ namespace VIDEO
         if (!GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason))
           continue;
 
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(),
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", CURL::GetRedacted(strLabel).c_str(),
                   episode.iSeason, episode.iEpisode, expression[i].regexp.c_str());
       }
 
@@ -1437,7 +1452,7 @@ namespace VIDEO
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Asked to lookup episode %s"
                             " online, but we have no episode guide. Check your tvshow.nfo and make"
-                            " sure the <episodeguide> tag is in place.", file->strPath.c_str());
+                            " sure the <episodeguide> tag is in place.", CURL::GetRedacted(file->strPath).c_str());
         continue;
       }
 

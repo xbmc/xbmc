@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <stdint.h>
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -34,10 +35,26 @@
 #define JACTIVE_HAT_DOWN  0x04
 #define JACTIVE_HAT_LEFT  0x08
 
-#define MAX_AXES 8
+struct AxisState {
+  int val;
+  int rest;
+  bool trigger;
+  AxisState() : val(0), rest(0), trigger(false) { }
+  void reset() { val = rest; }
+};
+
+struct AxisConfig {
+  int axis;
+  bool isTrigger;
+  int rest;
+  AxisConfig(int axis, bool isTrigger, int rest) : axis(axis), isTrigger(isTrigger), rest(rest) { }
+};
+
+typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
+class CRegExp;
+namespace boost { template <typename T> class shared_ptr; }
 
 // Class to manage all connected joysticks
-
 class CJoystick : public ISettingCallback
 {
 public:
@@ -45,56 +62,60 @@ public:
   ~CJoystick();
 
   virtual void OnSettingChanged(const CSetting *setting);
-
   void Initialize();
-  void Reset(bool axis=false);
-  void ResetAxis(int axisId) { m_Amount[axisId] = 0; }
+  void Reset();
   void Update();
-  bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id);
-  bool GetHat (int &id, int &position, bool consider_repeat=true);
-  std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
-  int GetAxisWithMaxAmount();
-  float GetAmount(int axis);
-  float GetAmount() { return GetAmount(m_AxisId); }
+
+  bool GetButton(std::string &joyName, int &id, bool consider_repeat = true);
+  bool GetAxis(std::string &joyName, int &id);
+  bool GetHat(std::string &joyName, int &id, int &position, bool consider_repeat = true);
+  float GetAmount(const std::string &joyName, int axisNum) const;
+
   bool IsEnabled() const { return m_joystickEnabled; }
   void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
   bool Reinitialize();
   void Acquire();
+  typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
+  void LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs);
 
 private:
-  void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
-  void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
-  void SetHatActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_HAT):(m_ActiveFlags&(~JACTIVE_HAT)); }
-  bool IsButtonActive() { return (m_ActiveFlags & JACTIVE_BUTTON) == JACTIVE_BUTTON; }
-  bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
-  bool IsHatActive() { return (m_ActiveFlags & JACTIVE_HAT) == JACTIVE_HAT; }
+  bool IsButtonActive() const { return m_ButtonIdx != -1; }
+  bool IsAxisActive() const { return m_AxisIdx != -1; }
+  bool IsHatActive() const { return m_HatIdx != -1; }
 
   void ReleaseJoysticks();
+
+  int GetAxisWithMaxAmount() const;
+  int JoystickIndex(const std::string &joyName) const;
+  int JoystickIndex(LPDIRECTINPUTDEVICE8 joy) const;
+  int MapAxis(LPDIRECTINPUTDEVICE8 joy, int axisNum) const; // <joy, axis> --> axisIdx
+  void MapAxis(int axisIdx, LPDIRECTINPUTDEVICE8 &joy, int &axisNum) const; // axisIdx --> <joy, axis>
+  int MapButton(LPDIRECTINPUTDEVICE8 joy, int buttonNum) const; // <joy, button> --> buttonIdx
+  void MapButton(int buttonIdx, LPDIRECTINPUTDEVICE8 &joy, int &buttonNum) const; // buttonIdx --> <joy, button>
+  int MapHat(LPDIRECTINPUTDEVICE8 joy, int hatNum) const; // <joy, hat> --> hatIdx
+  void MapHat(int hatIdx, LPDIRECTINPUTDEVICE8 &joy, int &hatNum) const; // hatIdx --> <joy, hat>
+
   static BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance, VOID* pContext );
   static BOOL CALLBACK EnumObjectsCallback( const DIDEVICEOBJECTINSTANCE* pdidoi, VOID* pContext );
 
-  int m_Amount[MAX_AXES];
-  int m_AxisId;
-  int m_ButtonId;
-  uint8_t m_HatState;
-  int m_HatId;
-  int m_JoyId;
-  int m_NumAxes;
+  std::vector<AxisState> m_Axes;
+  int m_AxisIdx; // active axis
+  int m_ButtonIdx; // active button
+  uint8_t m_HatState; // state of active hat
+  int m_HatIdx; // active hat
+
   int m_DeadzoneRange;
   bool m_joystickEnabled;
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
-  uint8_t m_ActiveFlags;
-  uint32_t m_lastPressTicks;
-  uint32_t m_lastTicks;
   CCriticalSection m_critSection;
 
   LPDIRECTINPUT8  m_pDI;
   std::vector<LPDIRECTINPUTDEVICE8> m_pJoysticks;
   std::vector<std::string> m_JoystickNames;
   std::vector<DIDEVCAPS> m_devCaps;
+  std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
 };
 
 extern CJoystick g_Joystick;

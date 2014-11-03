@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<allowoverlay>no</allowoverlay>
-	<defaultcontrol>9000</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<left>0</left>
@@ -248,42 +247,48 @@
 							<visible>Control.IsVisible(119)</visible>
 						</item>
 						<item id="2">
+							<label>$LOCALIZE[344]</label>
+							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(210)] $LOCALIZE[31025]</label2>
+							<onclick>noop</onclick>
+							<visible>Control.IsVisible(219)</visible>
+						</item>
+						<item id="3">
 							<label>$LOCALIZE[20343]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(120)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(129)</visible>
 						</item>
-						<item id="3">
+						<item id="4">
 							<label>$LOCALIZE[33054]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(130)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(139)</visible>
 						</item>
-						<item id="4">
+						<item id="5">
 							<label>$LOCALIZE[20360]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(140)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(149)</visible>
 						</item>
-						<item id="5">
+						<item id="6">
 							<label>$LOCALIZE[20389]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(150)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(159)</visible>
 						</item>
-						<item id="6">
+						<item id="7">
 							<label>$LOCALIZE[133]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(160)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(169)</visible>
 						</item>
-						<item id="7">
+						<item id="8">
 							<label>$LOCALIZE[132]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(170)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
 							<visible>Control.IsVisible(179)</visible>
 						</item>
-						<item id="8">
+						<item id="9">
 							<label>$LOCALIZE[134]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(180)] $LOCALIZE[31025]</label2>
 							<onclick>noop</onclick>
@@ -634,7 +639,239 @@
 							<label>([COLOR=blue]$INFO[Container(111).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(111).CurrentPage]/$INFO[Container(111).NumPages][/COLOR])</label>
 							<visible>Container(9000).Hasfocus(1)</visible>
 						</control>
-
+					</control>
+					<control type="group" id="219">
+						<left>0</left>
+						<top>0</top>
+						<width>750</width>
+						<height>530</height>
+						<control type="label" id="210">
+							<!-- Hide this Control off the screen because we use the list above to pass to it instead -->
+							<left>2000</left>
+							<top>2000</top>
+							<width>100</width>
+							<height>0</height>
+							<label>-</label>
+							<font>-</font>
+							<textcolor>-</textcolor>
+						</control>
+						<control type="panel" id="211">
+							<visible>Container(9000).HasFocus(2)</visible>
+							<include>VisibleFadeEffect</include>
+							<left>0</left>
+							<top>0</top>
+							<width>750</width>
+							<height>530</height>
+							<onleft>9000</onleft>
+							<onright>218</onright>
+							<onup>211</onup>
+							<ondown>211</ondown>
+							<viewtype label="535">panel</viewtype>
+							<preloaditems>2</preloaditems>
+							<pagecontrol>118</pagecontrol>
+							<itemlayout width="375" height="130">
+								<control type="image">
+									<left>0</left>
+									<top>0</top>
+									<width>370</width>
+									<height>125</height>
+									<texture border="5">button-nofocus.png</texture>
+								</control>
+								<control type="image">
+									<left>5</left>
+									<top>5</top>
+									<width>80</width>
+									<height>115</height>
+									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
+								</control>
+								<control type="image">
+									<left>50</left>
+									<top>70</top>
+									<width>30</width>
+									<height>30</height>
+									<texture>OverlayWatched.png</texture>
+									<visible>IntegerGreaterThan(ListItem.Property(PlayCount),0)</visible>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>10</top>
+									<width>265</width>
+									<height>12</height>
+									<label>[B]$INFO[ListItem.Label][/B]</label>
+									<font>font12</font>
+									<textcolor>white</textcolor>
+									<aligny>center</aligny>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>30</top>
+									<width>265</width>
+									<height>15</height>
+									<label>$INFO[ListItem.Property(Year),, - ]$INFO[ListItem.Property(Duration),, $LOCALIZE[12391]]</label>
+									<font>font12</font>
+									<textcolor>grey2</textcolor>
+									<aligny>center</aligny>
+									<visible>!SubString(ListItem.Property(Duration),min)</visible>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>30</top>
+									<width>265</width>
+									<height>15</height>
+									<label>$INFO[ListItem.Property(Year),, - ]$INFO[ListItem.Property(Duration)]</label>
+									<font>font12</font>
+									<textcolor>grey2</textcolor>
+									<aligny>center</aligny>
+									<visible>SubString(ListItem.Property(Duration),min)</visible>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(Tagline)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(PlotOutline)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+									<visible>IsEmpty(ListItem.Property(TagLine))</visible>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(Plot)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+									<visible>IsEmpty(ListItem.Property(TagLine)) + IsEmpty(ListItem.Property(PlotOutline))</visible>
+								</control>
+							</itemlayout>
+							<focusedlayout width="375" height="130">
+								<control type="image">
+									<left>0</left>
+									<top>0</top>
+									<width>370</width>
+									<height>125</height>
+									<texture border="5">button-focus2.png</texture>
+								</control>
+								<control type="image">
+									<left>5</left>
+									<top>5</top>
+									<width>80</width>
+									<height>115</height>
+									<texture background="true">$INFO[ListItem.Icon]</texture>
+									<aspectratio>keep</aspectratio>
+								</control>
+								<control type="image">
+									<left>50</left>
+									<top>70</top>
+									<width>30</width>
+									<height>30</height>
+									<texture>OverlayWatched.png</texture>
+									<visible>IntegerGreaterThan(ListItem.Property(PlayCount),0)</visible>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>10</top>
+									<width>265</width>
+									<height>12</height>
+									<label>[B]$INFO[ListItem.Label][/B]</label>
+									<font>font12</font>
+									<textcolor>white</textcolor>
+									<aligny>center</aligny>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>30</top>
+									<width>265</width>
+									<height>15</height>
+									<label>$INFO[ListItem.Property(Year),, - ]$INFO[ListItem.Property(Duration),, $LOCALIZE[12391]]</label>
+									<font>font12</font>
+									<textcolor>grey2</textcolor>
+									<aligny>center</aligny>
+									<visible>!SubString(ListItem.Property(Duration),min)</visible>
+								</control>
+								<control type="label">
+									<left>100</left>
+									<top>30</top>
+									<width>265</width>
+									<height>15</height>
+									<label>$INFO[ListItem.Property(Year),, - ]$INFO[ListItem.Property(Duration)]</label>
+									<font>font12</font>
+									<textcolor>grey2</textcolor>
+									<aligny>center</aligny>
+									<visible>SubString(ListItem.Property(Duration),min)</visible>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(Tagline)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(PlotOutline)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+									<visible>IsEmpty(ListItem.Property(TagLine))</visible>
+								</control>
+								<control type="textbox">
+									<left>100</left>
+									<top>45</top>
+									<width>265</width>
+									<height>75</height>
+									<label>$INFO[ListItem.Property(Plot)]</label>
+									<font>font10</font>
+									<textcolor>white</textcolor>
+									<visible>IsEmpty(ListItem.Property(TagLine)) + IsEmpty(ListItem.Property(PlotOutline))</visible>
+								</control>
+							</focusedlayout>
+						</control>
+						<control type="scrollbar" id="218">
+							<left>770</left>
+							<top>0</top>
+							<width>25</width>
+							<height>530</height>
+							<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+							<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+							<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+							<textureslidernib>ScrollBarNib.png</textureslidernib>
+							<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+							<onleft>211</onleft>
+							<onright>9000</onright>
+							<showonepage>false</showonepage>
+							<orientation>vertical</orientation>
+							<visible>Container(9000).Hasfocus(2)</visible>
+						</control>
+						<control type="label">
+							<description>number of files/pages in list text label</description>
+							<left>250</left>
+							<top>530</top>
+							<width>500</width>
+							<height>35</height>
+							<font>font12</font>
+							<align>right</align>
+							<aligny>center</aligny>
+							<scroll>true</scroll>
+							<textcolor>grey</textcolor>
+							<label>([COLOR=blue]$INFO[Container(211).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(211).CurrentPage]/$INFO[Container(211).NumPages][/COLOR])</label>
+							<visible>Container(9000).Hasfocus(2)</visible>
+						</control>
 					</control>
 					<control type="group" id="129">
 						<left>0</left>
@@ -652,7 +889,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="121">
-							<visible>Container(9000).HasFocus(2)</visible>
+							<visible>Container(9000).HasFocus(3)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -794,7 +1031,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(2)</visible>
+							<visible>Container(9000).HasFocus(3)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -808,7 +1045,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(121).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(121).CurrentPage]/$INFO[Container(121).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(2)</visible>
+							<visible>Container(9000).HasFocus(3)</visible>
 						</control>
 					</control>
 					<control type="group" id="139">
@@ -827,7 +1064,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="131">
-							<visible>Container(9000).HasFocus(3)</visible>
+							<visible>Container(9000).HasFocus(4)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -927,7 +1164,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(3)</visible>
+							<visible>Container(9000).HasFocus(4)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -941,7 +1178,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(131).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(131).CurrentPage]/$INFO[Container(131).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(3)</visible>
+							<visible>Container(9000).HasFocus(4)</visible>
 						</control>
 					</control>
 					<control type="group" id="149">
@@ -960,7 +1197,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="141">
-							<visible>Container(9000).HasFocus(4)</visible>
+							<visible>Container(9000).HasFocus(5)</visible>
 							<left>0</left>
 							<top>0</top>
 							<width>750</width>
@@ -1097,7 +1334,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(4)</visible>
+							<visible>Container(9000).HasFocus(5)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -1111,7 +1348,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(141).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(141).CurrentPage]/$INFO[Container(141).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(4)</visible>
+							<visible>Container(9000).HasFocus(5)</visible>
 						</control>
 					</control>
 					<control type="group" id="159">
@@ -1130,7 +1367,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="151">
-							<visible>Container(9000).HasFocus(5)</visible>
+							<visible>Container(9000).HasFocus(6)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -1288,7 +1525,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(5)</visible>
+							<visible>Container(9000).HasFocus(6)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -1302,7 +1539,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(151).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(151).CurrentPage]/$INFO[Container(151).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(5)</visible>
+							<visible>Container(9000).HasFocus(6)</visible>
 						</control>
 					</control>
 					<control type="group" id="169">
@@ -1321,7 +1558,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="161">
-							<visible>Container(9000).HasFocus(6)</visible>
+							<visible>Container(9000).HasFocus(7)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -1441,7 +1678,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(6)</visible>
+							<visible>Container(9000).HasFocus(7)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -1455,7 +1692,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(161).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(161).CurrentPage]/$INFO[Container(161).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(6)</visible>
+							<visible>Container(9000).HasFocus(7)</visible>
 						</control>
 					</control>
 					<control type="group" id="179">
@@ -1474,7 +1711,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="171">
-							<visible>Container(9000).HasFocus(7)</visible>
+							<visible>Container(9000).HasFocus(8)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -1594,7 +1831,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(7)</visible>
+							<visible>Container(9000).HasFocus(8)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -1608,7 +1845,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(171).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(171).CurrentPage]/$INFO[Container(171).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(7)</visible>
+							<visible>Container(9000).HasFocus(8)</visible>
 						</control>
 					</control>
 					<control type="group" id="189">
@@ -1627,7 +1864,7 @@
 							<textcolor>-</textcolor>
 						</control>
 						<control type="panel" id="181">
-							<visible>Container(9000).HasFocus(8)</visible>
+							<visible>Container(9000).HasFocus(9)</visible>
 							<include>VisibleFadeEffect</include>
 							<left>0</left>
 							<top>0</top>
@@ -1769,7 +2006,7 @@
 							<onright>9000</onright>
 							<showonepage>false</showonepage>
 							<orientation>vertical</orientation>
-							<visible>Container(9000).Hasfocus(8)</visible>
+							<visible>Container(9000).HasFocus(9)</visible>
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
@@ -1783,7 +2020,7 @@
 							<scroll>true</scroll>
 							<textcolor>grey</textcolor>
 							<label>([COLOR=blue]$INFO[Container(181).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(181).CurrentPage]/$INFO[Container(181).NumPages][/COLOR])</label>
-							<visible>Container(9000).Hasfocus(8)</visible>
+							<visible>Container(9000).HasFocus(9)</visible>
 						</control>
 					</control>
 				</control>

@@ -188,16 +188,13 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
-  // add addon module dependecies
+  // add all addon module dependecies to path
   if (m_addon)
   {
-    ADDON::ADDONDEPS deps = m_addon.get()->GetDeps();
-    for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
-    {
-      ADDON::AddonPtr addon;
-      if (ADDON::CAddonMgr::Get().GetAddon(it->first, addon, ADDON::ADDON_SCRIPT_MODULE))
-        addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
-    }
+    std::set<std::string> paths;
+    getAddonModuleDeps(m_addon, paths);
+    for (std::set<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
+      addPath(*it);
   }
 
   // we want to use sys.path so it includes site-packages
@@ -607,6 +604,26 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
 
   module();
   return true;
+}
+
+void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)
+{
+  ADDON::ADDONDEPS deps = addon->GetDeps();
+  for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
+  {
+    //Check if dependency is a module addon
+    ADDON::AddonPtr dependency;
+    if (ADDON::CAddonMgr::Get().GetAddon(it->first, dependency, ADDON::ADDON_SCRIPT_MODULE))
+    {
+      std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
+      if (paths.find(path) == paths.end())
+      {
+        // add it and its dependencies
+        paths.insert(path);
+        getAddonModuleDeps(dependency, paths);
+      }
+    }
+  }
 }
 
 void CPythonInvoker::addPath(const std::string& path)

@@ -26,6 +26,7 @@
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "Application.h"
+#include "CompileInfo.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
@@ -729,10 +730,10 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   [new_context makeCurrentContext];
 
   // set the window title
-  NSString *string;
-  string = [ [ NSString alloc ] initWithUTF8String:"XBMC Media Center" ];
+  NSMutableString *string;
+  string = [NSMutableString stringWithUTF8String:CCompileInfo::GetAppName()];
+  [string appendString:@" Entertainment Center" ];
   [ [ [new_context view] window] setTitle:string ];
-  [ string release ];
 
   m_glContext = new_context;
   m_lastOwnedContext = new_context;

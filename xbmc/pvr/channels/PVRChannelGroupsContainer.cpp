@@ -265,17 +265,22 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
 
 CFileItemPtr CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
 {
-  CPVRChannelGroupPtr group = GetLastPlayedGroup();
-  if (group)
-    return group->GetLastPlayedChannel();
+  CFileItemPtr channelTV = m_groupsTV->GetGroupAll()->GetLastPlayedChannel();
+  CFileItemPtr channelRadio = m_groupsRadio->GetGroupAll()->GetLastPlayedChannel();
 
-  return CFileItemPtr(new CFileItem);
+  if (!channelTV ||
+      !channelTV->HasPVRChannelInfoTag() ||
+      (channelRadio && channelRadio->HasPVRChannelInfoTag() &&
+       channelRadio->GetPVRChannelInfoTag()->LastWatched() > channelTV->GetPVRChannelInfoTag()->LastWatched()))
+     return channelRadio;
+
+  return channelTV;
 }
 
-CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetLastPlayedGroup() const
+CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetLastPlayedGroup(int iChannelID /* = -1 */) const
 {
-  CPVRChannelGroupPtr groupTV = m_groupsTV->GetLastPlayedGroup();
-  CPVRChannelGroupPtr groupRadio = m_groupsRadio->GetLastPlayedGroup();
+  CPVRChannelGroupPtr groupTV = m_groupsTV->GetLastPlayedGroup(iChannelID);
+  CPVRChannelGroupPtr groupRadio = m_groupsRadio->GetLastPlayedGroup(iChannelID);
 
   if (!groupTV || (groupRadio && groupTV->LastWatched() < groupRadio->LastWatched()))
     return groupRadio;

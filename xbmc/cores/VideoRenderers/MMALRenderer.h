@@ -104,11 +104,6 @@ protected:
   unsigned int         m_destHeight;
   int                  m_neededBuffers;
 
-  Features m_renderFeatures;
-  Features m_deinterlaceMethods;
-  Features m_deinterlaceModes;
-  Features m_scalingMethods;
-
   CRect                     m_src_rect;
   CRect                     m_dst_rect;
   RENDER_STEREO_MODE        m_video_stereo_mode;

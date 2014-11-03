@@ -24,6 +24,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "CompileInfo.h"
 
 #undef BOOL
 
@@ -91,6 +92,12 @@ enum iosPlatform
   iPadAirCellular,
   iPadMini2Wifi,
   iPadMini2Cellular,
+  iPhone6,
+  iPadAir2Wifi,
+  iPadAir2Cellular,
+  iPadMini3Wifi,
+  iPadMini3Cellular,
+  iPhone6Plus,        //from here on list devices with retina support which have scale == 3.0
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -139,6 +146,8 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPhone5,4") eDev = iPhone5CGlobal;
     else if (devStr == "iPhone6,1") eDev = iPhone5SGSM;
     else if (devStr == "iPhone6,2") eDev = iPhone5SGlobal;
+    else if (devStr == "iPhone7,1") eDev = iPhone6Plus;
+    else if (devStr == "iPhone7,2") eDev = iPhone6;
     else if (devStr == "iPod1,1") eDev = iPodTouch1G;
     else if (devStr == "iPod2,1") eDev = iPodTouch2G;
     else if (devStr == "iPod3,1") eDev = iPodTouch3G;
@@ -163,6 +172,11 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPad4,2") eDev = iPadAirCellular;
     else if (devStr == "iPad4,4") eDev = iPadMini2Wifi;
     else if (devStr == "iPad4,5") eDev = iPadMini2Cellular;
+    else if (devStr == "iPad4,7") eDev = iPadMini3Wifi;
+    else if (devStr == "iPad4,8") eDev = iPadMini3Cellular;
+    else if (devStr == "iPad4,9") eDev = iPadMini3Cellular;
+    else if (devStr == "iPad5,3") eDev = iPadAir2Wifi;
+    else if (devStr == "iPad5,4") eDev = iPadAir2Cellular;
     else if (devStr == "AppleTV2,1") eDev = AppleTV2;
   }
 #endif
@@ -211,7 +225,7 @@ bool CDarwinUtils::IsSnowLeopard(void)
   return isSnowLeopard == 1;
 }
 
-bool CDarwinUtils::DeviceHasRetina(void)
+bool CDarwinUtils::DeviceHasRetina(double &scale)
 {
   static enum iosPlatform platform = iDeviceUnknown;
 
@@ -221,6 +235,19 @@ bool CDarwinUtils::DeviceHasRetina(void)
     platform = getIosPlatform();
   }
 #endif
+  scale = 1.0; //no retina
+
+  // see http://www.paintcodeapp.com/news/iphone-6-screens-demystified
+  if (platform >= iPhone4 && platform < iPhone6Plus)
+  {
+    scale = 2.0; // 2x render retina
+  }
+
+  if (platform >= iPhone6Plus)
+  {
+    scale = 3.0; //3x render retina + downscale
+  }
+
   return (platform >= iPhone4);
 }
 
@@ -299,20 +326,21 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
   path[0] = 0;
   *pathsize = 0;
 
-  // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
-  if (XBMCfrapp != NULL)
+  // a) Kodi frappliance running under ATV2
+  Class Frapp = NSClassFromString(@"AppATV2Detector");
+  if (Frapp != NULL)
   {
-    pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"Frameworks" ofType:@""];
+    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:@"Frameworks" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
     return 0;
   }
 
-  // b) XBMC application running under IOS
+  // b) Kodi application running under IOS
   pathname = [[NSBundle mainBundle] executablePath];
-  if (pathname && strstr([pathname UTF8String], "XBMC.app/XBMC"))
+  std::string appName = std::string(CCompileInfo::GetAppName()) + ".app/" + std::string(CCompileInfo::GetAppName());
+  if (pathname && strstr([pathname UTF8String], appName.c_str()))
   {
     strcpy(path, [pathname UTF8String]);
     // Move backwards to last "/"
@@ -324,7 +352,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
     return 0;
   }
 
-  // d) XBMC application running under OSX
+  // d) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
@@ -345,7 +373,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
     return 0;
   }
 
-  // e) XBMC OSX binary running under xcode or command-line
+  // e) Kodi OSX binary running under xcode or command-line
   // but only if it's not for python. In this case, let python
   // use it's internal compiled paths.
   if (!forPython)
@@ -366,19 +394,20 @@ int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
   // see if we can figure out who we are
   NSString *pathname;
 
-  // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
-  if (XBMCfrapp != NULL)
+  // a) Kodi frappliance running under ATV2
+  Class Frapp = NSClassFromString(@"AppATV2Detector");
+  if (Frapp != NULL)
   {
-    pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
+    NSString *appName = [NSString stringWithUTF8String:CCompileInfo::GetAppName()];
+    pathname = [[NSBundle bundleForClass:Frapp] pathForResource:appName ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
     return 0;
   }
 
-  // b) XBMC application running under IOS
-  // c) XBMC application running under OSX
+  // b) Kodi application running under IOS
+  // c) Kodi application running under OSX
   pathname = [[NSBundle mainBundle] executablePath];
   strcpy(path, [pathname UTF8String]);
   *pathsize = strlen(path);
@@ -438,7 +467,7 @@ bool CDarwinUtils::HasVideoToolboxDecoder(void)
 
   if (DecoderAvailable == -1)
   {
-    Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
+    Class XBMCfrapp = NSClassFromString(@"AppATV2Detector");
     if (XBMCfrapp != NULL)
     {
       // atv2 has seatbelt profile key removed so nothing to do here

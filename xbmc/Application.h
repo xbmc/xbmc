@@ -198,6 +198,7 @@ public:
   void ActivateScreenSaver(bool forceType = false);
   void CloseNetworkShares();
 
+  void ShowAppMigrationMessage();
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();
@@ -244,10 +245,27 @@ public:
   bool IsMusicScanning() const;
   bool IsVideoScanning() const;
 
-  void StartVideoCleanup();
+  /*!
+   \brief Starts a video library cleanup.
+   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
+   */
+  void StartVideoCleanup(bool userInitiated = true);
 
-  void StartVideoScan(const CStdString &path, bool scanAll = false);
-  void StartMusicScan(const CStdString &path, int flags = 0);
+  /*!
+   \brief Starts a video library update.
+   \param path The path to scan or "" (empty string) for a global scan.
+   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
+   \param scanAll Whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned).
+   */
+  void StartVideoScan(const CStdString &path, bool userInitiated = true, bool scanAll = false);
+
+  /*!
+   \brief Starts a music library update.
+   \param path The path to scan or "" (empty string) for a global scan.
+   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
+   \param flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
+   */
+  void StartMusicScan(const CStdString &path, bool userInitiated = true, int flags = 0);
   void StartMusicAlbumScan(const CStdString& strDirectory, bool refresh=false);
   void StartMusicArtistScan(const CStdString& strDirectory, bool refresh=false);
 

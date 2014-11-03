@@ -41,9 +41,13 @@ inline static std::wstring prepareWin32DirectoryName(const std::string& strPath)
     return std::wstring(); // empty string
 
   std::wstring nameW(CWIN32Util::ConvertPathToWin32Form(strPath));
-  if (!nameW.empty() && nameW.back() == L'\\')
-    nameW.pop_back(); // remove slash at the end if any
-
+  if (!nameW.empty())
+  {
+    if (nameW.back() == L'\\')
+      nameW.pop_back(); // remove slash at the end if any
+    if (nameW.length() == 6 && nameW.back() == L':') // 6 is the length of "\\?\x:"
+      nameW.push_back(L'\\'); // always add backslash for root folders
+  }
   return nameW;
 }
 

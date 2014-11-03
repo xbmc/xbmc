@@ -19,10 +19,18 @@
  *
  */
 
+#include <stdint.h>
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
+
+#ifdef TARGET_WINDOWS
+#ifndef _SSIZE_T_DEFINED
+typedef intptr_t ssize_t;
+#define _SSIZE_T_DEFINED
+#endif // !_SSIZE_T_DEFINED
+#endif // TARGET_WINDOWS
 
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
@@ -35,9 +43,9 @@ typedef void (*AddOnFreeString)(const void* addonData, char* str);
 
 typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
 typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
-typedef unsigned int (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
+typedef ssize_t (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
 typedef bool (*AddOnReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
-typedef int (*AddOnWriteFile)(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize);
+typedef ssize_t (*AddOnWriteFile)(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize);
 typedef void (*AddOnFlushFile)(const void* addonData, void* file);
 typedef int64_t (*AddOnSeekFile)(const void* addonData, void* file, int64_t iFilePosition, int iWhence);
 typedef int (*AddOnTruncateFile)(const void* addonData, void* file, int64_t iSize);

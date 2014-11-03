@@ -30,6 +30,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
+#include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
 
@@ -218,7 +219,7 @@ bool CEncoderFFmpeg::Init(audioenc_callbacks &callbacks)
   SetTag("genre"       , m_strGenre);
   SetTag("title"       , m_strTitle);
   SetTag("track"       , m_strTrack);
-  SetTag("encoder"     , "XBMC FFmpeg Encoder");
+  SetTag("encoder"     , CSysInfo::GetAppName() + " FFmpeg Encoder");
 
   /* write the header */
   if (avformat_write_header(m_Format, NULL) != 0)

@@ -1155,7 +1155,7 @@ void CGUIWindowMusicBase::OnInitWindow()
         flags |= CMusicInfoScanner::SCAN_ONLINE;
       if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
         flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-      g_application.StartMusicScan("", flags);
+      g_application.StartMusicScan("", true, flags);
       CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
       CSettings::Get().Save();
     }

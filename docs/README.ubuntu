@@ -22,11 +22,11 @@ Note that the '$' character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
 .0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git xbmc
+.1  $ git clone git://github.com/xbmc/xbmc.git kodi
 
 Note: You can clone any specific branch.
 
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git xbmc
+.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
 
 -----------------------------------------------------------------------------
 3. Installing the required Ubuntu packages
@@ -54,9 +54,9 @@ Add the unstable and build-depends PPAs:
 .3  $ sudo apt-get update
 
 Here is the magic command to get the build dependencies (used to compile the version on the PPA).
-    $ sudo apt-get build-dep xbmc
+    $ sudo apt-get build-dep kodi
 
-Optional: If you do not want XBMC to be installed via PPA, you can removed the PPAs again:
+Optional: If you do not want Kodi to be installed via PPA, you can removed the PPAs again:
     $ sudo add-apt-repository -r ppa:team-xbmc/xbmc-nightly
     $ sudo add-apt-repository -r ppa:team-xbmc/xbmc-ppa-build-depends
 
@@ -65,7 +65,7 @@ Note: Do not use "aptitude" for the build-dep command. It doesn't resolve everyt
     $ sudo apt-get install ccache
 
 Tip: For those with multiple computers at home is to try out distcc
-    (fully unsupported from XBMC of course)
+    (fully unsupported from Kodi of course)
     $ sudo apt-get install distcc
 
 -----------------------------------------------------------------------------
@@ -74,12 +74,15 @@ Tip: For those with multiple computers at home is to try out distcc
 
 For Ubuntu (all versions >= 7.04):
 
-    $ sudo apt-get install automake bison build-essential cmake curl cvs default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev libboost-dev libboost-thread-dev libbz2-dev libcap-dev libcdio-dev libcurl3 libcurl4-gnutls-dev libdbus-1-dev libenca-dev libflac-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libglew-dev libiso9660-dev libjasper-dev libjpeg-dev liblzo2-dev libmad0-dev libmicrohttpd-dev libmodplug-dev libmpeg2-4-dev libmpeg3-dev libmysqlclient-dev libnfs-dev libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsmbclient-dev libsqlite3-dev libssh-dev libssl-dev libtiff-dev libtinyxml-dev libtool libudev-dev libusb-dev libvdpau-dev libvorbisenc2 libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils nasm pmount python-dev python-imaging python-sqlite swig unzip yasm zip zlib1g-dev
+    $ sudo apt-get install automake bison build-essential cmake curl cvs default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev libboost-dev libboost-thread-dev libbz2-dev libcap-dev libcdio-dev libcurl3 libcurl4-gnutls-dev libdbus-1-dev libenca-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libglew-dev libiso9660-dev libjasper-dev libjpeg-dev liblzo2-dev libmad0-dev libmicrohttpd-dev libmodplug-dev libmpeg2-4-dev libmpeg3-dev libmysqlclient-dev libnfs-dev libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl2-dev libsmbclient-dev libsqlite3-dev libssh-dev libssl-dev libtiff-dev libtinyxml-dev libtool libudev-dev libusb-dev libvdpau-dev libvorbisenc2 libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils nasm pmount python-dev python-imaging python-sqlite swig unzip yasm zip zlib1g-dev
 
 For >= 10.10:
     $ sudo apt-get install autopoint libltdl-dev
+	
+For >= 12.10:
+	$ sudo apt-get install libtag1-dev
 
-On 8.10 and older versions, libcurl is outdated and thus XBMC will not compile properly.
+On 8.10 and older versions, libcurl is outdated and thus Kodi will not compile properly.
 In this case you will have to manually compile the latest version.
     $ wget http://curl.sourceforge.net/download/curl-7.19.7.tar.gz
     $ tar -xzf curl-7.19.7.tar.gz
@@ -89,13 +92,13 @@ In this case you will have to manually compile the latest version.
     $ sudo make install
 
 For <= 12.04
-XBMC needs a new version of taglib other than what is available at this time.
+Kodi needs a new version of taglib other than what is available at this time.
 We supply a Makefile in lib/taglib to make it easy to install into /usr/local.
     $ sudo apt-get remove libtag1-dev
     $ make -C lib/taglib
     $ sudo make -C lib/taglib install
 
-or use prepackaged from the XBMC PPA.
+or use prepackaged from the Kodi PPA.
 
     $ sudo apt-get install libtag1-dev
 
@@ -115,8 +118,8 @@ See README.linux
 -----------------------------------------------------------------------------
 5. Uninstalling
 -----------------------------------------------------------------------------
-Remove any PPA installed XBMC.
-    $ sudo apt-get remove xbmc*
+Remove any PPA installed Kodi.
+    $ sudo apt-get remove kodi* xbmc*
 
-See README.linux/Uninstalling for removing compiled versions of XBMC.
+See README.linux/Uninstalling for removing compiled versions of Kodi.
 EOF

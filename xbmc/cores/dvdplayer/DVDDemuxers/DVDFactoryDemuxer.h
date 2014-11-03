@@ -26,5 +26,5 @@ class CDVDInputStream;
 class CDVDFactoryDemuxer
 {
 public:
-  static CDVDDemux* CreateDemuxer(CDVDInputStream* pInputStream);
+  static CDVDDemux* CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo = false);
 };

@@ -3,9 +3,9 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.1.4
-SOURCE=$(LIBNAME)-$(VERSION)-2
-ARCHIVE=$(SOURCE).tar.gz
+VERSION=2.2.0
+SOURCE=$(LIBNAME)-$(VERSION)
+ARCHIVE=$(SOURCE)-3.tar.gz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-rpi \

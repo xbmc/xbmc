@@ -2514,26 +2514,31 @@ bool CMusicDatabase::CleanupOrphanedItems()
   return true;
 }
 
-int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
+int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
 {
   if (NULL == m_pDB.get()) return ERROR_DATABASE;
   if (NULL == m_pDS.get()) return ERROR_DATABASE;
 
   int ret = ERROR_OK;
+  CGUIDialogProgress* pDlgProgress = NULL;
   unsigned int time = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGNOTICE, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
   ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanStarted");
 
   // first cleanup any songs with invalid paths
-  if (pDlgProgress)
+  if (bShowProgress)
   {
-    pDlgProgress->SetHeading(700);
-    pDlgProgress->SetLine(0, "");
-    pDlgProgress->SetLine(1, 318);
-    pDlgProgress->SetLine(2, 330);
-    pDlgProgress->SetPercentage(0);
-    pDlgProgress->StartModal();
-    pDlgProgress->ShowProgressBar(true);
+    pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (pDlgProgress)
+    {
+      pDlgProgress->SetHeading(700);
+      pDlgProgress->SetLine(0, "");
+      pDlgProgress->SetLine(1, 318);
+      pDlgProgress->SetLine(2, 330);
+      pDlgProgress->SetPercentage(0);
+      pDlgProgress->StartModal();
+      pDlgProgress->ShowProgressBar(true);
+    }
   }
   if (!CleanupSongs())
   {
@@ -2605,6 +2610,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
     pDlgProgress->SetLine(1, 331);
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Progress();
+    pDlgProgress->Close();
   }
   time = XbmcThreads::SystemClockMillis() - time;
   CLog::Log(LOGNOTICE, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
@@ -2817,21 +2823,16 @@ void CMusicDatabase::Clean()
 
   if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
   {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (dlgProgress)
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
     {
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
-      {
-        int iReturnString = musicdatabase.Cleanup(dlgProgress);
-        musicdatabase.Close();
+      int iReturnString = musicdatabase.Cleanup();
+      musicdatabase.Close();
 
-        if (iReturnString != ERROR_OK)
-        {
-          CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
-        }
+      if (iReturnString != ERROR_OK)
+      {
+        CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
       }
-      dlgProgress->Close();
     }
   }
 }
@@ -5069,7 +5070,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
     }
 
     while (!m_pDS->eof())
@@ -5082,7 +5084,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       else
         outdoc = songnum + '\t' + (CStdString)StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + '\t' + song.strTitle + '\t' + song.strFileName + "\r\n";
 
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
 
       if ((current % 50) == 0 && progress)
       {
@@ -5104,7 +5107,8 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if ( asHTML )
     {
       outdoc = "</table>\n</body>\n</html>\n";
-      file.Write( outdoc, outdoc.size() );
+      if (file.Write(outdoc, outdoc.size()) != outdoc.size())
+        return; // error
     }
 
     file.Close();

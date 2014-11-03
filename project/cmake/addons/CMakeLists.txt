@@ -1,4 +1,4 @@
-project(xbmc-addons)
+project(kodi-addons)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -15,12 +15,14 @@ endif()
 include(ExternalProject)
 
 ### setup all the necessary paths
-if(NOT XBMCROOT)
-  set(XBMCROOT ${PROJECT_SOURCE_DIR}/../../..)
+if(NOT APP_ROOT AND NOT XBMCROOT)
+  set(APP_ROOT ${PROJECT_SOURCE_DIR}/../../..)
+elseif(NOT APP_ROOT)
+  file(TO_CMAKE_PATH "${XBMCROOT}" APP_ROOT)
 else()
-  file(TO_CMAKE_PATH "${XBMCROOT}" XBMCROOT)
+  file(TO_CMAKE_PATH "${APP_ROOT}" APP_ROOT)
 endif()
-get_filename_component(XBMCROOT "${XBMCROOT}" ABSOLUTE)
+get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
 
 if(NOT WIN32)
   if(NOT DEPENDS_PATH)
@@ -38,7 +40,7 @@ if(NOT WIN32)
   endif()
 endif()
 
-if(NOT CMAKE_INSTALL_PREFIX)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/output/addons")
 endif()
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
@@ -70,14 +72,14 @@ else()
 endif()
 
 if(NOT WIN32)
-  # copy the xbmc-prepare-env.cmake script to the depends path so that we can include it
-  file(COPY ${XBMCROOT}/project/cmake/scripts/common/xbmc-prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/xbmc)
+  # copy the prepare-env.cmake script to the depends path so that we can include it
+  file(COPY ${APP_ROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${DEPENDS_PATH}/lib/kodi)
 
-  # add the location of xbmc-prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
-  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/xbmc)
+  # add the location of prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
+  list(APPEND CMAKE_MODULE_PATH ${DEPENDS_PATH}/lib/kodi)
 
-  # include xbmc-prepare-env.cmake which contains the logic to install the addon header bindings etc
-  include(xbmc-prepare-env)
+  # include prepare-env.cmake which contains the logic to install the addon header bindings etc
+  include(prepare-env)
 endif()
 
 ### get and build all the binary addons

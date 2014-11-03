@@ -69,6 +69,8 @@ TEST_F(TestZipFile, Read)
   CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(zipUrl, itemlist, "",
     XFILE::DIR_FLAG_NO_FILE_DIRS));
+  EXPECT_GT(itemlist.Size(), 0);
+  EXPECT_FALSE(itemlist[0]->GetPath().empty());
   strpathinzip = itemlist[0]->GetPath();
   ASSERT_TRUE(file.Open(strpathinzip));
   EXPECT_EQ(0, file.GetPosition());

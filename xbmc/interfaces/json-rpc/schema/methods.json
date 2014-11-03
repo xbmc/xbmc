@@ -157,7 +157,12 @@
       },
       { "name": "options", "type": "object", "additionalProperties": false,
         "properties": {
-          "playercoreid": { "type": [ "null", { "type": "integer", "minimum": 1, "required": true } ], "default": null },
+          "playercoreid": { "type": [
+              "null",
+			  { "type": "string", "enum": [ "default" ], "required": true },
+              { "type": "integer", "minimum": 1, "required": true }
+            ],
+            "default": null },
           "shuffled": { "$ref": "Optional.Boolean" },
           "repeat": { "type": [ "null", { "$ref": "Player.Repeat", "required": true } ], "default": null },
           "resume": { "type": [
@@ -925,7 +930,8 @@
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
-      { "name": "directory", "type": "string", "default": "" }
+      { "name": "directory", "type": "string", "default": "" },
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -957,7 +963,9 @@
     "description": "Cleans the audio library from non-existent items",
     "transport": "Response",
     "permission": "RemoveData",
-    "params": [ ],
+    "params": [
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+    ],
     "returns": "string"
   },
   "VideoLibrary.GetMovies": {
@@ -1491,7 +1499,8 @@
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
-      { "name": "directory", "type": "string", "default": "" }
+      { "name": "directory", "type": "string", "default": "" },
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -1524,7 +1533,9 @@
     "description": "Cleans the video library from non-existent items",
     "transport": "Response",
     "permission": "RemoveData",
-    "params": [ ],
+    "params": [
+      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+    ],
     "returns": "string"
   },
   "GUI.ActivateWindow": {

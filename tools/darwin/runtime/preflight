@@ -1,18 +1,18 @@
 #!/usr/bin/perl
 
 die("No HOME set, cannot install defaults.\n")
-    if !$ENV{HOME};
+    if !$ENV{'HOME'};
 
-die("No XBMC_HOME set, cannot install defaults.\n")
-    if !$ENV{'XBMC_HOME'};
+die("No APP_HOME set, cannot install defaults.\n")
+    if !$ENV{'APP_HOME'};
 
 sub get_home {
     return $ENV{'HOME'} if defined $ENV{'HOME'};
 }
 
 sub get_extras {
-    # XBMC_HOME is assumed to be always setup
-    return $ENV{'XBMC_HOME'}."/extras/" if get_os() eq "osx";
+    # APP_HOME is assumed to be always setup
+    return $ENV{'APP_HOME'}."/extras/" if get_os() eq "osx";
     return;
 }
 
@@ -29,6 +29,19 @@ sub get_xbmc_home {
     return;
 }
 
+sub get_app_home {
+    my $os = get_os();
+    my $home = get_home();
+    return if !defined $home;
+    if ( $os eq "osx" ) {
+        return $home."/Library/Application Support/Kodi";
+    }
+    elsif ( $os eq "linux" ) {
+        return $home."/.kodi";
+    }
+    return;
+}
+
 sub get_os {
     if ( defined $ENV{'OSTYPE'} && $ENV{'OSTYPE'} =~ /linux/ ) {
         return "linux";
@@ -37,13 +50,13 @@ sub get_os {
 }
 
 sub get_userdata_path {
-    my $xhome = get_xbmc_home();
-    return if !defined $xhome;
-    return "$xhome/userdata";
+    my $apphome = get_app_home();
+    return if !defined $apphome;
+    return "$apphome/userdata";
 }
 
 sub setup_sources {
-    my $xbmchome = get_xbmc_home();
+    my $apphome = get_app_home();
     my $userdata = get_userdata_path();
     my $sources = $userdata."/sources.xml";
 
@@ -77,13 +90,19 @@ sub get_sources_xml {
         while ( ($name, $path) = each( %{ $source } ) ) {
             $xml .= (" " x 8)."<source>\n";
             $xml .= (" " x 12)."<name>$name</name>\n";
-	    if ( $path =~ /(.*)\^\^(.*)/ ) {
-		$xml .= (" " x 12)."<path>".$1."</path>\n";
-		$xml .= (" " x 12)."<thumbnail>".$2."</thumbnail>\n";
-	    }
-	    else {
-		$xml .= (" " x 12)."<path>".$path."</path>\n";
-	    }
+
+            if ( $path =~ /(.*)\^\^(.*)/ ) {
+              $xml .= (" " x 12)."<path>".$1."</path>\n";
+              $xml .= (" " x 12)."<thumbnail>".$2."</thumbnail>\n";
+            }
+            else {
+              $xml .= (" " x 12)."<path>".$path."</path>\n";
+            }
+
+            if ($path ne "/" ) {
+              $xml .= (" " x 12)."<allowsharing>true</allowsharing>\n";
+            }
+
             $xml .= (" " x 8)."</source>\n";
         }
         $xml .= (" " x 4)."</$sourcetype>\n";
@@ -95,8 +114,8 @@ sub get_sources_xml {
 sub get_default_sources {
     my $sources = {};
     my $home = get_home();
-    my $xbmchome = get_xbmc_home();
-    return if !defined $xbmchome;
+    my $apphome = get_app_home();
+    return if !defined $apphome;
 
     $sources->{'programs'} = {};
     $sources->{'video'} = {};
@@ -126,31 +145,41 @@ sub get_default_sources {
     return $sources;
 }
 
-sub first_xbmc_run() {
-    my $home =  get_xbmc_home();
+sub first_app_run() {
+    my $home =  get_app_home();
     if ( ! -f "$home/.setup_complete" ) {
         return 1;
     }
     return;
 }
 
-sub first_xbmc_version_run() {
-    my $home =  get_xbmc_home();
+sub first_app_version_run() {
+    my $home =  get_app_home();
     if ( ! -f "$home/.setup_complete" ) {
         return 1;
     }
     return;
 }
 
-sub setup_default_xbmc() {
+sub needs_kodi_migration() {
+    my $xbmchome = get_xbmc_home();
+    my $apphome = get_app_home();
+    #check if there is an old XBMC folder to migrate
+    if ( -d "$xbmchome" && ! -d "$apphome" ) {
+        return 1;
+    }
+    return;
+}
+
+sub setup_default_app() {
     my $extras = get_extras();
-    my $xhome = get_xbmc_home();
+    my $apphome = get_app_home();
     my $userdata = get_userdata_path();
 
     die("No extras :(\n")
         if !defined $extras;
     die("No XBMC home folder :(\n")
-        if !defined $xhome;
+        if !defined $apphome;
     die ("No userdata folder :(\n")
         if !defined $userdata;
 
@@ -160,17 +189,30 @@ sub setup_default_xbmc() {
     `cp -fRv "$extras/user/" "$userdata"`;
 
     setup_sources();
-    `touch -f "$xhome/.setup_complete"`;
+    `touch -f "$apphome/.setup_complete"`;
 }
 
-sub setup_version_xbmc() {
+sub setup_version_app() {
     #TODO
 }
 
-if (first_xbmc_run()) {
-    setup_default_xbmc();
+#migration from XBMC to Kodi
+sub migrate_to_kodi() {
+    my $xbmchome = get_xbmc_home();
+    my $apphome = get_app_home();
+    print "mv $xbmchome $apphome";
+   `mv "$xbmchome" "$apphome"`;
+   `touch -f "$apphome/.kodi_data_was_migrated"`;
 }
 
-if (first_xbmc_version_run()) {
-    setup_version_xbmc();
+if (needs_kodi_migration()) {
+    migrate_to_kodi();
+}
+
+if (first_app_run()) {
+    setup_default_app();
+}
+
+if (first_app_version_run()) {
+    setup_version_app();
 }

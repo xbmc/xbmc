@@ -101,14 +101,19 @@ bool CMarkWatchedJob::DoWork()
     for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
     {
       CFileItemPtr pItem = *iter;
-	  if (m_bMark)
-	  {
+      if (m_bMark)
+      {
+        std::string path(pItem->GetPath());
+        if (pItem->HasVideoInfoTag())
+          path = pItem->GetVideoInfoTag()->GetPath();
 #ifdef HAS_DS_PLAYER
-		  dspdb.ClearEditionOfFile(pItem->GetPath());
+        dspdb.ClearEditionOfFile(pItem->GetPath());
 #endif
-		  database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-	  }
-      database.SetPlayCount(*pItem, m_bMark ? 1 : 0);
+        database.ClearBookMarksOfFile(path, CBookmark::RESUME);
+        database.IncrementPlayCount(*pItem);
+      }
+      else
+        database.SetPlayCount(*pItem, 0);
     }
 
     database.CommitTransaction();

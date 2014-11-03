@@ -3193,14 +3193,13 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
-      m_pDS->exec(strSQL.c_str());
-
-      // TODO: Why are we invalidating paths here?
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
+
+      strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
+      m_pDS->exec(strSQL.c_str());
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -3403,14 +3402,13 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
-      m_pDS->exec(strSQL.c_str());
-
-      // TODO: Why are we invalidating paths here?
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
+
+      strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
+      m_pDS->exec(strSQL.c_str());
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -7977,6 +7975,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsStack(fullPath))
         fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
+      // get the actual archive path
+      if (URIUtils::IsInArchive(fullPath))
+        fullPath = CURL(fullPath).GetHostName();
+
       // remove optical, non-existing files
       if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
@@ -8090,7 +8092,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning paths that don't exist and have content set...", __FUNCTION__);
-    sql = "SELECT path.idPath, path.strPath FROM path "
+    sql = "SELECT path.idPath, path.strPath, path.idParentPath FROM path "
             "WHERE NOT ((strContent IS NULL OR strContent = '') "
                    "AND (strSettings IS NULL OR strSettings = '') "
                    "AND (strHash IS NULL OR strHash = '') "
@@ -8100,8 +8102,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     while (!m_pDS->eof())
     {
       std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
-      if ((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-          (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false)))
+      // Check if we have a decision for the parent path
+      std::map<int, bool>::const_iterator pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
+      if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
+           (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
+          ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
+           (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();

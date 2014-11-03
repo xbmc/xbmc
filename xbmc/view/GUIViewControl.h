@@ -46,6 +46,7 @@ public:
   void SetSelectedItem(const std::string &itemPath);
 
   int GetSelectedItem() const;
+  std::string GetSelectedItemPath() const;
   void SetFocused();
 
   bool HasControl(int controlID) const;

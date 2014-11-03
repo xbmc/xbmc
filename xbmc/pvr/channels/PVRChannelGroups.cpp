@@ -337,14 +337,15 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
   return empty;
 }
 
-CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup() const
+CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1 */) const
 {
   CSingleLock lock(m_critSection);
 
   CPVRChannelGroupPtr group;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()))
+    if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()) &&
+        (iChannelID == -1 || (iChannelID >= 0 && (*it)->IsGroupMember(iChannelID))))
       group = (*it);
   }
 

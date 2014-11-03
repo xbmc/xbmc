@@ -26,6 +26,7 @@
 
 #include <sys/stat.h>
 #include <errno.h>
+#include <limits.h>
 
 using namespace std;
 using namespace XFILE;
@@ -65,15 +66,18 @@ bool CUDFFile::Open(const CURL& url)
 }
 
 //*********************************************************************************************
-unsigned int CUDFFile::Read(void *lpBuf, int64_t uiBufSize)
+ssize_t CUDFFile::Read(void *lpBuf, size_t uiBufSize)
 {
-  if (!m_bOpened) return 0;
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+  if (uiBufSize > LONG_MAX)
+    uiBufSize = LONG_MAX;
+
+  if (!m_bOpened)
+    return -1;
   char *pData = (char *)lpBuf;
 
-  int iResult = m_udfIsoReaderLocal.ReadFile( m_hFile, (unsigned char*)pData, (long)uiBufSize);
-  if (iResult == -1)
-    return 0;
-  return iResult;
+  return m_udfIsoReaderLocal.ReadFile( m_hFile, (unsigned char*)pData, (long)uiBufSize);
 }
 
 //*********************************************************************************************

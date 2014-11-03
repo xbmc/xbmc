@@ -74,10 +74,11 @@ bool CFileAndroidApp::Exists(const CURL& url)
   return false;
 }
 
-unsigned int CFileAndroidApp::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CFileAndroidApp::Read(void* lpBuf, size_t uiBufSize)
 {
-  CXBMCApp::GetIcon(m_appname, lpBuf, uiBufSize);
-  return uiBufSize;
+  if(CXBMCApp::GetIcon(m_appname, lpBuf, uiBufSize))
+    return uiBufSize; // FIXME: not full buffer may be used
+  return -1;
 }
 
 void CFileAndroidApp::Close()

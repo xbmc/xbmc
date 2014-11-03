@@ -82,8 +82,8 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 {
 
 #ifdef HAS_DS_PLAYER
-	m_scalingMethod = 0;
-	m_dsStats = 0;	 
+  m_scalingMethod = 0;
+  m_dsStats = 0;	 
 #endif
 
 }
@@ -107,20 +107,20 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_InterlaceMethod = static_cast<EINTERLACEMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   { 
-	  m_dsStats = static_cast<DS_STATS>(static_cast<const CSettingInt*>(setting)->GetValue());
-	  g_dsSettings.pRendererSettings->displayStats = (DS_STATS)m_dsStats;
+    m_dsStats = static_cast<DS_STATS>(static_cast<const CSettingInt*>(setting)->GetValue());
+    g_dsSettings.pRendererSettings->displayStats = (DS_STATS)m_dsStats;
   }
   else if (settingId == SETTING_VIDEO_SCALINGMETHOD)
 #ifdef HAS_DS_PLAYER
   { 
     if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-	{ 
-		m_scalingMethod = static_cast<EDSSCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
-		videoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD)m_scalingMethod);
-	}
-	else 
+  { 
+    m_scalingMethod = static_cast<EDSSCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+    videoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD)m_scalingMethod);
+  }
+  else 
 #endif
-	  videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+    videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_DS_PLAYER
   }
 #endif
@@ -154,8 +154,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
       videoSettings.m_CustomPixelRatio = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
       videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
-	else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
-		videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
+    else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
+      videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
 
     if (!m_viewModeChanged)
     {
@@ -167,7 +167,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
         g_renderManager.SetViewMode(videoSettings.m_ViewMode);
     }
   }
-
   else if (settingId == SETTING_VIDEO_POSTPROCESS)
     videoSettings.m_PostProcess = static_cast<const CSettingBool*>(setting)->GetValue();
   else if (settingId == SETTING_VIDEO_BRIGHTNESS)
@@ -180,7 +179,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_NoiseReduction = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_VDPAU_SHARPNESS)
     videoSettings.m_Sharpness = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-
 #endif
   else if (settingId == SETTING_VIDEO_STEREOSCOPICMODE)
     videoSettings.m_StereoMode = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -207,20 +205,19 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   // TODO
   else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)
     Save();
-
 #ifdef HAS_DS_PLAYER
   else if (settingId == VIDEO_SETTINGS_DS_FILTERS)
   {
-	  IBaseFilter *pBF = NULL;
-	  CStdStringW strNameW;
+    IBaseFilter *pBF = NULL;
+    CStdStringW strNameW;
 
-	  g_charsetConverter.utf8ToW(setting->ToString(), strNameW);
-	  if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
-	  {
-		  //Showing the property page for this filter
-		  m_pDSPropertyPage = new CDSPropertyPage(pBF);
-		  m_pDSPropertyPage->Initialize();
-	  }
+    g_charsetConverter.utf8ToW(setting->ToString(), strNameW);
+    if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
+    {
+      //Showing the property page for this filter
+      m_pDSPropertyPage = new CDSPropertyPage(pBF);
+      m_pDSPropertyPage->Initialize();
+    }
   }
 #endif
 }
@@ -249,165 +246,163 @@ void CGUIDialogVideoSettings::Save()
 
 void CGUIDialogVideoSettings::InitializeSettings()
 {
-	CGUIDialogSettingsManualBase::InitializeSettings();
+  CGUIDialogSettingsManualBase::InitializeSettings();
 
-	CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
-	if (category == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
+  CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
+  if (category == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
 
-	// get all necessary setting groups
-	CSettingGroup *groupVideo = AddGroup(category);
-	if (groupVideo == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
-	CSettingGroup *groupVideoPlayback = AddGroup(category);
-	if (groupVideoPlayback == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
-	CSettingGroup *groupStereoscopic = AddGroup(category);
-	if (groupStereoscopic == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
-	CSettingGroup *groupSaveAsDefault = AddGroup(category);
-	if (groupSaveAsDefault == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
+  // get all necessary setting groups
+  CSettingGroup *groupVideo = AddGroup(category);
+  if (groupVideo == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupVideoPlayback = AddGroup(category);
+  if (groupVideoPlayback == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupStereoscopic = AddGroup(category);
+  if (groupStereoscopic == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupSaveAsDefault = AddGroup(category);
+  if (groupSaveAsDefault == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
 
-	CSettingGroup *groupDSFilter = AddGroup(category);
-	if (groupDSFilter == NULL)
-	{
-		CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-		return;
-	}
+  CSettingGroup *groupDSFilter = AddGroup(category);
+  if (groupDSFilter == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
 
-	bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
+  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-	CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
 
-	StaticIntegerSettingOptions entries;
-	if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
-		entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
-	if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
-		entries.push_back(make_pair(16040, VS_DEINTERLACEMODE_AUTO));
-	if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
-		entries.push_back(make_pair(16041, VS_DEINTERLACEMODE_FORCE));
-	if (!entries.empty())
-		AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
+  StaticIntegerSettingOptions entries;
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+    entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+    entries.push_back(make_pair(16040, VS_DEINTERLACEMODE_AUTO));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+    entries.push_back(make_pair(16041, VS_DEINTERLACEMODE_FORCE));
+  if (!entries.empty())
+    AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
 
-	entries.clear();
-	entries.push_back(make_pair(16019, VS_INTERLACEMETHOD_AUTO));
-	entries.push_back(make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
-	entries.push_back(make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
-	entries.push_back(make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
-	entries.push_back(make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
-	entries.push_back(make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
-	entries.push_back(make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
-	entries.push_back(make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-	entries.push_back(make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
-	entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
-	entries.push_back(make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
-	entries.push_back(make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
-	entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
-	entries.push_back(make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
-	entries.push_back(make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
-	entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
-	entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
-	entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
-	entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
-	entries.push_back(make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
-	entries.push_back(make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
-	entries.push_back(make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
+  entries.clear();
+  entries.push_back(make_pair(16019, VS_INTERLACEMETHOD_AUTO));
+  entries.push_back(make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
+  entries.push_back(make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
+  entries.push_back(make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
+  entries.push_back(make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
+  entries.push_back(make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
+  entries.push_back(make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
+  entries.push_back(make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
+  entries.push_back(make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
+  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
+  entries.push_back(make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
+  entries.push_back(make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
+  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
+  entries.push_back(make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
+  entries.push_back(make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
+  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
+  entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
+  entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
+  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
+  entries.push_back(make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
+  entries.push_back(make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
+  entries.push_back(make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
 
-	/* remove unsupported methods */
-	for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
-	{
-		if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
-			it++;
-		else
-			it = entries.erase(it);
-	}
+  /* remove unsupported methods */
+  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
+  {
+    if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
+      it++;
+    else
+      it = entries.erase(it);
+  }
 
-	if (!entries.empty())
-	{
-		CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
+  if (!entries.empty())
+  {
+    CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
 
-		CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
-		dependencyDeinterlaceModeOff.And()
-			->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
-		SettingDependencies depsDeinterlaceModeOff;
-		depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
-		settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
-	}
-
-#ifdef HAS_DS_PLAYER
-	if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER)
-	{
-#endif
-		entries.clear();
-		entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
-		entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
-		entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC));
-		entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
-		entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
-		entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
-		entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
-		entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
-		entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
-		//  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
-		entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
-		entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
-		entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-		entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
-		entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
-		entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
-
-		/* remove unsupported methods */
-		for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
-		{
-			if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
-				it++;
-			else
-				it = entries.erase(it);
-		}
-
-		AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+    CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyDeinterlaceModeOff.And()
+      ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsDeinterlaceModeOff;
+    depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
+    settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
+  }
 
 #ifdef HAS_DS_PLAYER
-	}
-	else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-	{
-		entries.clear();
-		entries.push_back(make_pair(55005, DS_SCALINGMETHOD_NEAREST_NEIGHBOR));
-		entries.push_back(make_pair(55006, DS_SCALINGMETHOD_BILINEAR ));
-		entries.push_back(make_pair(55007, DS_SCALINGMETHOD_BILINEAR_2));
-		entries.push_back(make_pair(55008, DS_SCALINGMETHOD_BILINEAR_2_60));
-		entries.push_back(make_pair(55009, DS_SCALINGMETHOD_BILINEAR_2_75));
-		entries.push_back(make_pair(55010, DS_SCALINGMETHOD_BILINEAR_2_100));
-
-		m_scalingMethod = videoSettings.GetDSPlayerScalingMethod();
-		AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(m_scalingMethod), entries);
-
-		
-		entries.clear();
-		entries.push_back(make_pair(55011, DS_STATS_NONE));
-		entries.push_back(make_pair(55012, DS_STATS_1));
-		entries.push_back(make_pair(55013, DS_STATS_2));
-		entries.push_back(make_pair(55014, DS_STATS_3));
-		AddSpinner(groupVideo, VIDEO_SETTINGS_DS_STATS, 55015, 0, static_cast<int>(m_dsStats), entries);
-	}
+  if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER)
+  {
 #endif
+    entries.clear();
+    entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
+    entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
+    entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC));
+    entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
+    entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
+    entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
+    entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
+    entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
+    entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
+    //  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
+    entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
+    entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
+    entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
+    entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
+    entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
+    entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
+    /* remove unsupported methods */
+    for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
+    {
+      if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+        it++;
+      else
+        it = entries.erase(it);
+    }
+
+    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+
+#ifdef HAS_DS_PLAYER
+  }
+  else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+  {
+    entries.clear();
+    entries.push_back(make_pair(55005, DS_SCALINGMETHOD_NEAREST_NEIGHBOR));
+    entries.push_back(make_pair(55006, DS_SCALINGMETHOD_BILINEAR ));
+    entries.push_back(make_pair(55007, DS_SCALINGMETHOD_BILINEAR_2));
+    entries.push_back(make_pair(55008, DS_SCALINGMETHOD_BILINEAR_2_60));
+    entries.push_back(make_pair(55009, DS_SCALINGMETHOD_BILINEAR_2_75));
+    entries.push_back(make_pair(55010, DS_SCALINGMETHOD_BILINEAR_2_100));
+
+    m_scalingMethod = videoSettings.GetDSPlayerScalingMethod();
+    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(m_scalingMethod), entries);
+
+    entries.clear();
+    entries.push_back(make_pair(55011, DS_STATS_NONE));
+    entries.push_back(make_pair(55012, DS_STATS_1));
+    entries.push_back(make_pair(55013, DS_STATS_2));
+    entries.push_back(make_pair(55014, DS_STATS_3));
+    AddSpinner(groupVideo, VIDEO_SETTINGS_DS_STATS, 55015, 0, static_cast<int>(m_dsStats), entries);
+ }
+#endif
 
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.Supports(RENDERFEATURE_CROP))
@@ -421,53 +416,53 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddSpinner(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, entries);
   }
   if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
-    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, 216, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
-    AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, 225, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
-    AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, -1, usePopup);
+    AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, 217, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
     AddToggle(groupVideo, SETTING_VIDEO_POSTPROCESS, 16400, 0, videoSettings.m_PostProcess);
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_BRIGHTNESS, 464, 0, static_cast<int>(videoSettings.m_Brightness), 14047, 1, 464, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
-    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 464, usePopup);
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
-    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 464, usePopup);
+    AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
 /*
 #ifdef HAS_DS_PLAYER
   if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
   {
-	  SettingInfo setting;
-	  setting.type = SettingInfo::BUTTON;
-	  setting.id = VIDEO_SETTINGS_DS_FILTERS;
+    SettingInfo setting;
+    setting.type = SettingInfo::BUTTON;
+    setting.id = VIDEO_SETTINGS_DS_FILTERS;
 
-	  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
-	  {
-		  if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
-			  continue;
+    BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
+    {
+      if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
+        continue;
 
-		  Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
-		  CAUUID pPages;
-		  if (pProp)
-		  {
-			  pProp->GetPages(&pPages);
-			  if (pPages.cElems > 0)
-			  {
-				  g_charsetConverter.wToUTF8(GetFilterName(pBF), setting.name);
-				  m_settings.push_back(setting);
-			  }
-			  CoTaskMemFree(pPages.pElems);
-		  }
-	  }
-	  EndEnumFilters
+      Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
+      CAUUID pPages;
+      if (pProp)
+      {
+        pProp->GetPages(&pPages);
+        if (pPages.cElems > 0)
+        {
+          g_charsetConverter.wToUTF8(GetFilterName(pBF), setting.name);
+          m_settings.push_back(setting);
+        }
+        CoTaskMemFree(pPages.pElems);
+      }
+    }
+    EndEnumFilters
   }
 #endif
   */
   if (g_renderManager.Supports(RENDERFEATURE_NOISE))
-    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, -1, usePopup);
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, 16312, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
-    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, -1, usePopup);
+    AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, 16313, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideoPlayback, SETTING_VIDEO_NONLIN_STRETCH, 659, 0, videoSettings.m_CustomNonLinStretch);
 #endif

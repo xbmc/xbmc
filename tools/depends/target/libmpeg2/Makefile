@@ -32,8 +32,10 @@ endif
 	cd $(PLATFORM); patch -p0 < ../05-upstream-motion_comp_arm_s.S-is-not-PIC-enough.patch
 ifeq ($(OS),ios)
 	case $(XCODE_VERSION) in \
-	5.* | 5.*.*) \
-	cd $(PLATFORM); patch -p1 < ../06-dont-asm-motion-comp.patch \
+	4.* | 4.*.*) \
+	;;\
+	*) \
+	cd $(PLATFORM); patch -p0 < ../06-motion_comp_arm_s.S-even_more_pic.patch \
 	;;\
 	esac
 endif

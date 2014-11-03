@@ -1505,7 +1505,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (item->m_bIsFolder)
       {
-        m_database.SetPathHash(strPath,""); // to force scan
         OnScan(strPath, true);
       }
       else
@@ -2089,7 +2088,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
 
 void CGUIWindowVideoBase::OnScan(const CStdString& strPath, bool scanAll)
 {
-    g_application.StartVideoScan(strPath, scanAll);
+    g_application.StartVideoScan(strPath, true, scanAll);
 }
 
 std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
@@ -2171,7 +2170,7 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
 
   if (bScan)
   {
-    g_application.StartVideoScan(path, true);
+    g_application.StartVideoScan(path, true, true);
   }
 }
 

@@ -1,4 +1,4 @@
-XBMC WIN32 ADDON DEPENDENCIES
+KODI WIN32 ADDON DEPENDENCIES
 =============================
 This directory contains the cmake-based buildsystem for dependencies (currently
 only prebuilt) used by one or multiple addons. The buildsystem looks into the

@@ -351,7 +351,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
               && (bypassSettings))
         {
           bPlaying = true;
-          CStdString strExec = StringUtils::Format("XBMC.RecursiveSlideShow(%s)", pItem->GetPath().c_str());
+          CStdString strExec = StringUtils::Format("RecursiveSlideShow(%s)", pItem->GetPath().c_str());
           CBuiltins::Execute(strExec);
           return true;
         }
@@ -428,7 +428,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
-        CStdString strExec = StringUtils::Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CStdString strExec = StringUtils::Format("RecursiveSlideShow(%s)", strDrive.c_str());
         CBuiltins::Execute(strExec);
         break;
       }

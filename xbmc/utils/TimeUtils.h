@@ -35,13 +35,12 @@ public:
   static void UpdateFrameTime(bool flip); ///< update the frame time.  Not threadsafe
   static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
   static CDateTime GetLocalTime(time_t time);
-  static void Close();
 #ifdef HAS_DS_PLAYER
   static int64_t GetPerfCounter();
 #endif
 
 private:
   static unsigned int frameTime;
-  static CTimeSmoother *frameTimer;
+  static CTimeSmoother frameTimer;
 };
 

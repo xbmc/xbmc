@@ -45,9 +45,9 @@
 #include <libsmbclient.h>
 
 #if defined(TARGET_DARWIN)
-#define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"
+#define XBMC_SMB_MOUNT_PATH "Library/Application Support/Kodi/Mounts/"
 #else
-#define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
+#define XBMC_SMB_MOUNT_PATH "/media/kodi/smb/"
 #endif
 
 struct CachedDirEntry
@@ -248,7 +248,9 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, CURL::GetRedacted(s).c_str());
+  if (g_advancedSettings.CanLogComponent(LOGSAMBA))
+    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Using authentication url %s", CURL::GetRedacted(s).c_str());
+
   { CSingleLock lock(smb);
     fd = smbc_opendir(s.c_str());
   }

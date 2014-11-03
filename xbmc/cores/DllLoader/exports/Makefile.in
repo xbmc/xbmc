@@ -19,5 +19,5 @@ exports_python_linux.o : exports_python_linux.cpp
 wrapper.def : wrapper.o
 	nm wrapper.o | grep __wrap | awk '{printf("%s ", $$3);}' | sed "s/___wrap_/__wrap_/g" | sed "s/__wrap_/-Wl,-wrap,/g" > $@
 ifeq (@USE_ANDROID@,1)
-	echo "-L$(prefix)/lib/dummy-libxbmc/ -lxbmc" >> $@
+	echo "-L$(prefix)/lib/dummy-lib@APP_NAME_LC@/ -l@APP_NAME_LC@" >> $@
 endif

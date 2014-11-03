@@ -84,6 +84,7 @@ public:
   int h;
   int x;
   int y;
+  int crtc;
   int wmm;
   int hmm;
   std::vector<XMode> modes;
@@ -107,6 +108,7 @@ public:
   bool IsOutputConnected(CStdString name);
   bool TurnOffOutput(CStdString name);
   bool TurnOnOutput(CStdString name);
+  int GetCrtc(int x, int y);
   //bool Has1080i();
   //bool Has1080p();
   //bool Has720p();

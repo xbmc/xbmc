@@ -41,24 +41,16 @@ typedef int socklen_t;
 // Default constructor.
 CSlingbox::CSlingbox()
 {
-  // Set all variables to default/invalid values
-  m_socCommunication = INVALID_SOCKET;
-  m_socStream = INVALID_SOCKET;
-  memset(m_szAddress, 0, sizeof(m_szAddress));
-  m_uiPort = 0;
-  m_usCode = 0;
-  m_usSequence = 0;
-  m_iChannel = -1;
-  m_iInput = -1;
-  memset(&m_receivedMessages, 0, sizeof(m_receivedMessages));
+  // initialize all members
+  init();
 }
 
 // Alternative constructor used to set the address (IP or hostname) and port of the
-// Slingbox we want to connect to.  If no port is specified default port 5001 is used.
+// Slingbox we want to connect to. If no port is specified default port 5001 is used.
 CSlingbox::CSlingbox(const char * szAddress, unsigned int uiPort /* = 5001 */)
 {
-  // Call default constructor
-  CSlingbox();
+  // initialize all members
+  init();
 
   // Set address and port variables to passed values
   SetAddress(szAddress, uiPort);
@@ -74,6 +66,20 @@ CSlingbox::~CSlingbox()
     CloseSocket(m_socCommunication);
 }
 
+// Function used to initialize class members
+void CSlingbox::init()
+{
+  // Set all variables to default/invalid values
+  m_socCommunication = INVALID_SOCKET;
+  m_socStream = INVALID_SOCKET;
+  memset(m_szAddress, 0, sizeof(m_szAddress));
+  m_uiPort = 0;
+  m_usCode = 0;
+  m_usSequence = 0;
+  m_iChannel = -1;
+  m_iInput = -1;
+  memset(&m_receivedMessages, 0, sizeof(m_receivedMessages));
+}
 // Function used to find a Slingbox.  Address and port of found Slingbox can be
 // retrieved with the GetAddress function afterwards.
 bool CSlingbox::FindSlingbox(unsigned int uiTimeout /* = 10 */)

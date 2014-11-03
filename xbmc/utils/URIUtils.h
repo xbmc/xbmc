@@ -119,6 +119,8 @@ public:
   static bool IsDOSPath(const CStdString &path);
   static bool IsDVD(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
+  static bool IsUDP(const CStdString& strFile);
+  static bool IsTCP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsSlingbox(const CStdString& strFile);
@@ -159,6 +161,8 @@ public:
   static bool IsAndroidApp(const CStdString& strFile);
   static bool IsLibraryFolder(const CStdString& strFile);
   static bool IsLibraryContent(const std::string& strFile);
+  static bool IsPVRChannel(const CStdString& strFile);
+  static bool IsUsingFastSwitch(const CStdString& strFile);
 
   static void AddSlashAtEnd(std::string& strFolder);
   static bool HasSlashAtEnd(const std::string& strFile, bool checkURL = false);

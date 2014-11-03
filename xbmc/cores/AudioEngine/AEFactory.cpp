@@ -328,6 +328,8 @@ void CAEFactory::SettingOptionsAudioQualityLevelsFiller(const CSetting *setting,
     list.push_back(std::make_pair(g_localizeStrings.Get(13508), AE_QUALITY_HIGH));
   if(AE->SupportsQualityLevel(AE_QUALITY_REALLYHIGH))
     list.push_back(std::make_pair(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
+  if(AE->SupportsQualityLevel(AE_QUALITY_GPU))
+    list.push_back(std::make_pair(g_localizeStrings.Get(38010), AE_QUALITY_GPU));
 }
 
 void CAEFactory::SettingOptionsAudioStreamsilenceFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)

@@ -47,7 +47,7 @@ static const char *options = "hs:umt:vxa:z:";
 void usage(void)
 {
   printf("%s (version %s)\n", PROGNAME, PROGVERS);
-  printf("   Sends Apple Remote events to XBMC.\n\n");
+  printf("   Sends Apple Remote events to Kodi.\n\n");
   printf("Usage: %s [OPTIONS...]\n\nOptions:\n", PROGNAME);
   printf("  -h, --help           print this help message and exit.\n");
   printf("  -s, --server <addr>  send events to the specified IP.\n");
@@ -55,8 +55,8 @@ void usage(void)
   printf("  -u, --universal      runs in Universal Remote mode.\n");
   printf("  -t, --timeout <ms>   timeout length for sequences (default: 500ms).\n");
   printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as additional idenfier to buttons)\n");
-  printf("  -a, --appPath        path to XBMC.app (MenuPress launch support).\n");
-  printf("  -z, --appHome        path to XBMC.app/Content/Resources/XBMX \n");
+  printf("  -a, --appPath        path to Kodi.app (MenuPress launch support).\n");
+  printf("  -z, --appHome        path to Kodi.app/Content/Resources \n");
   printf("  -v, --verbose        prints lots of debugging information.\n");
 }
 
@@ -65,7 +65,7 @@ void ReadConfig()
 {
 	// Compute filename.
   std::string strFile = getenv("HOME");
-  strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
+  strFile += "/Library/Application Support/Kodi/XBMCHelper.conf";
   
 	// Open file.
   std::ifstream ifs(strFile.c_str());

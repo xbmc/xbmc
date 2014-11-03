@@ -57,7 +57,7 @@ bool CImageFile::Exists(const CURL& url)
   bool needsRecaching = false;
   std::string cachedFile = CTextureCache::Get().CheckCachedImage(url.Get(), false, needsRecaching);
   if (!cachedFile.empty())
-    return CFile::Exists(cachedFile);
+    return CFile::Exists(cachedFile, false);
 
   // need to check if the original can be cached on demand and that the file exists 
   if (!CTextureCache::CanCacheImageURL(url))
@@ -85,7 +85,7 @@ int CImageFile::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CImageFile::Read(void* lpBuf, int64_t uiBufSize)
+ssize_t CImageFile::Read(void* lpBuf, size_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }

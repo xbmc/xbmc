@@ -144,7 +144,7 @@
         </setting>
         <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
           <level>1</level>
-          <default>QWERTY</default>
+          <default>English QWERTY</default>
           <constraints>
             <options>keyboardlayouts</options>
             <delimiter>|</delimiter>
@@ -2091,7 +2091,7 @@
       <group id="1">
         <setting id="services.devicename" type="string" label="1271" help="36321">
           <level>0</level>
-          <default>XBMC</default>
+          <default>Kodi</default>
           <control type="edit" format="string" />
         </setting>
       </group>
@@ -2318,6 +2318,14 @@
           <control type="edit" format="string">
             <hidden>true</hidden>
           </control>
+        </setting>
+        <setting id="services.airplayios8compat" type="boolean" parent="services.airplay" label="1268" help="36549">
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="services.airplay">true</dependency>
+          </dependencies>
+          <control type="toggle" />
         </setting>
       </group>
     </category>
@@ -2547,8 +2555,8 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="audiooutput.normalizelevels" type="boolean" label="346" help="36533">
-          <level>2</level>
+        <setting id="audiooutput.maintainoriginalvolume" type="boolean" label="346" help="36533">
+          <level>3</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
@@ -2860,12 +2868,12 @@
         </setting>
         <setting id="debug.extralogging" type="boolean" label="666" help="36394">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36534">
           <level>1</level>
-          <default></default>
+          <default>32,64,128,256,512,1024,2048,4096,16384,32768</default>
           <constraints>
             <options>loggingcomponents</options>
             <delimiter>,</delimiter>

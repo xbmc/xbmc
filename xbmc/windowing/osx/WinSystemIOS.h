@@ -30,6 +30,7 @@
 #include "threads/CriticalSection.h"
 
 class IDispResource;
+class CVideoSyncCocoa;
 
 class CWinSystemIOS : public CWinSystemBase, public CRenderSystemGLES
 {
@@ -67,7 +68,8 @@ public:
   virtual int GetNumScreens();    
   virtual int GetCurrentScreen();
   
-          void InitDisplayLink(void);
+          void InitDisplayLink(CVideoSyncCocoa *syncImpl);
+          void VblankHandler(int64_t nowtime, double fps);
           void DeinitDisplayLink(void);
           double GetDisplayLinkFPS(void);
           void OnAppFocusChange(bool focus);
@@ -85,6 +87,7 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   bool         m_bIsBackgrounded;
+  CVideoSyncCocoa *m_VideoSync;
   
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);

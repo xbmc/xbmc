@@ -190,25 +190,6 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
-  if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
-  {
-    m_renderFeatures.clear();
-    m_scalingMethods.clear();
-    m_deinterlaceModes.clear();
-    m_deinterlaceMethods.clear();
-
-    if (m_RenderFeaturesCallBackFn)
-    {
-      (*m_RenderFeaturesCallBackFn)(m_RenderFeaturesCallBackCtx, m_renderFeatures);
-      // after setting up m_renderFeatures, we are done with the callback
-      m_RenderFeaturesCallBackFn = NULL;
-      m_RenderFeaturesCallBackCtx = NULL;
-    }
-    g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
-    g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
-    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
-    g_application.m_pPlayer->GetScalingMethods(m_scalingMethods);
-  }
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -480,8 +461,6 @@ void CMMALRenderer::UnInit()
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
-  m_RenderFeaturesCallBackFn = NULL;
-  m_RenderFeaturesCallBackCtx = NULL;
 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
@@ -511,13 +490,6 @@ bool CMMALRenderer::RenderCapture(CRenderCapture* capture)
 
 bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 {
-  // Player controls render, let it dictate available deinterlace modes
-  if (m_format == RENDER_FMT_BYPASS)
-  {
-    Features::iterator itr = std::find(m_deinterlaceModes.begin(),m_deinterlaceModes.end(), mode);
-    return itr != m_deinterlaceModes.end();
-  }
-
   if(mode == VS_DEINTERLACEMODE_OFF
   || mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
@@ -528,13 +500,6 @@ bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {
-  // Player controls render, let it dictate available deinterlace methods
-  if (m_format == RENDER_FMT_BYPASS)
-  {
-    Features::iterator itr = std::find(m_deinterlaceMethods.begin(),m_deinterlaceMethods.end(), method);
-    return itr != m_deinterlaceMethods.end();
-  }
-
   if (method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
 
@@ -543,13 +508,6 @@ bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CMMALRenderer::Supports(ERENDERFEATURE feature)
 {
-  // Player controls render, let it dictate available render features
-  if (m_format == RENDER_FMT_BYPASS)
-  {
-    Features::iterator itr = std::find(m_renderFeatures.begin(),m_renderFeatures.end(), feature);
-    return itr != m_renderFeatures.end();
-  }
-
   if (feature == RENDERFEATURE_STRETCH         ||
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_ROTATION        ||
@@ -562,12 +520,6 @@ bool CMMALRenderer::Supports(ERENDERFEATURE feature)
 
 bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 {
-  // Player controls render, let it dictate available scaling methods
-  if (m_format == RENDER_FMT_BYPASS)
-  {
-    Features::iterator itr = std::find(m_scalingMethods.begin(),m_scalingMethods.end(), method);
-    return itr != m_scalingMethods.end();
-  }
   return false;
 }
 

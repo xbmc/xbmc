@@ -1,0 +1,26 @@
+.TH KODI-SEND "1" "October 2014" "kodi-send"
+.SH NAME
+xbmc\-send \- program to send some action to Kodi
+.SH SYNOPSIS
+xbmc\-send [OPTION] \fB\-\-action\fR=\fIACTION\fR
+.SH DESCRIPTION
+This program is used for sending actions for Kodi.
+.PP
+Example
+.IP
+kodi\-send \fB\-\-host\fR=\fI192\fR.168.0.1 \fB\-\-port\fR=\fI9777\fR \fB\-\-action=\fR"Quit"
+.PP
+Options
+.TP
+\-?, \fB\-\-help\fR
+Display help message
+.TP
+\fB\-\-host\fR=\fIHOST\fR
+Choose what HOST to connect to (default=localhost)
+.TP
+\fB\-\-port\fR=\fIPORT\fR
+Choose what PORT to connect to (default=9777)
+.TP
+\fB\-\-action\fR=\fIACTION\fR
+Sends an action to Kodi, this option can be added multiple times to create a macro.
+

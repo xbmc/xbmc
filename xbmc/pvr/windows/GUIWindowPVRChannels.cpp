@@ -105,6 +105,8 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     buttons.Add(CONTEXT_BUTTON_FILTER, 19249);                                        /* filter channels */
     buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);                                    /* update EPG information */
   }
+
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)

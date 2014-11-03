@@ -4,7 +4,7 @@
     <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" order="2" />
-    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
+    <setting key="flip_keyboard" value="VideoLibrary.Search" label="36002" order="3" />
     <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
   </peripheral>
 
@@ -26,11 +26,11 @@
     <setting key="port" type="string" value="" label="36022" order="15" />
 
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
-    <setting key="device_name" type="string" value="XBMC" configurable="0" />
+    <setting key="device_name" type="string" value="Kodi" configurable="0" />
     <setting key="device_type" type="int" value="1" configurable="0" />
     <setting key="wake_devices_advanced" type="string" value="" configurable="0" />
     <setting key="standby_devices_advanced" type="string" value="" configurable="0" />
-    <setting key="double_tap_timeout_ms" type="int" min="0" value="2000" configurable="0" />
+    <setting key="double_tap_timeout_ms" type="int" min="0" value="300" configurable="0" />
   </peripheral>
 
   <peripheral vendor_product="2548:1001,2548:1002" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">

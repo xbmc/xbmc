@@ -14,22 +14,22 @@ crosscompile environment.
 2. Installing and setting up the buildroot environment
 -----------------------------------------------------------------------------
 
-Create a top level directory where you checkout xbmc and buildroot.
+Create a top level directory where you checkout Kodi and buildroot.
 
 For example :
 
-mkdir /opt/xbmc-raspberrypi
-cd /opt/xbmc-raspberrypi
+mkdir /opt/kodi-raspberrypi
+cd /opt/kodi-raspberrypi
 
-Checkout xbmc :
+Checkout kodi :
 
-git clone https://github.com/xbmc/xbmc.git
+git clone https://github.com/xbmc/xbmc.git kodi
 
 Checkout buildroot :
 
 git clone https://github.com/huceke/buildroot-rbp.git
 
-cd /opt/xbmc-raspberrypi/buildroot-rbp
+cd /opt/kodi-raspberrypi/buildroot-rbp
 
-Follow the instructions in README.rbp how to build the system and xbmc.
+Follow the instructions in README.rbp how to build the system and Kodi.
 

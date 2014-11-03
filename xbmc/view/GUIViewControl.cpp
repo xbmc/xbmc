@@ -175,6 +175,22 @@ int CGUIViewControl::GetSelectedItem() const
   return GetSelectedItem(m_visibleViews[m_currentView]);
 }
 
+std::string CGUIViewControl::GetSelectedItemPath() const
+{
+  if (m_currentView < 0 || (size_t)m_currentView >= m_visibleViews.size())
+    return "";
+
+  int selectedItem = GetSelectedItem(m_visibleViews[m_currentView]);
+  if (selectedItem > -1)
+  {
+    CFileItemPtr fileItem = m_fileItems->Get(selectedItem);
+    if (fileItem)
+      return fileItem->GetPath();
+  }
+
+  return "";
+}
+
 void CGUIViewControl::SetSelectedItem(int item)
 {
   if (!m_fileItems || item < 0 || item >= m_fileItems->Size())

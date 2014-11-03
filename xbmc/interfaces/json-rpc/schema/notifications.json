@@ -340,7 +340,11 @@
     "description": "The screensaver has been deactivated.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "null", "required": true }
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "shuttingdown": { "type": "boolean", "required": true }
+        }
+      }
     ],
     "returns": null
   },

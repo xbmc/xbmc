@@ -76,7 +76,12 @@ FileName TagLibVFSStream::name() const
 ByteVector TagLibVFSStream::readBlock(TagLib::ulong length)
 {
   ByteVector byteVector(static_cast<TagLib::uint>(length));
-  byteVector.resize(m_file.Read(byteVector.data(), length));
+  ssize_t read = m_file.Read(byteVector.data(), length);
+  if (read > 0)
+    byteVector.resize(read);
+  else
+    byteVector.clear();
+
   return byteVector;
 }
 
@@ -142,7 +147,9 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
   // special case.  We're also using File::writeBlock() just for the tag.
   // That's a bit slower than using char *'s so, we're only doing it here.
   seek(readPosition);
-  int bytesRead = m_file.Read(aboutToOverwrite.data(), bufferLength);
+  ssize_t bytesRead = m_file.Read(aboutToOverwrite.data(), bufferLength);
+  if (bytesRead <= 0)
+    return; // error
   readPosition += bufferLength;
 
   seek(writePosition);
@@ -160,6 +167,8 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // to overwrite.  Appropriately increment the readPosition.
     seek(readPosition);
     bytesRead = m_file.Read(aboutToOverwrite.data(), bufferLength);
+    if (bytesRead <= 0)
+      return; // error
     aboutToOverwrite.resize(bytesRead);
     readPosition += bufferLength;
 
@@ -171,7 +180,8 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // Seek to the write position and write our buffer.  Increment the
     // writePosition.
     seek(writePosition);
-    m_file.Write(buffer.data(), buffer.size());
+    if (m_file.Write(buffer.data(), buffer.size()) < buffer.size())
+      return; // error
     writePosition += buffer.size();
 
     buffer = aboutToOverwrite;
@@ -209,7 +219,8 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
       clear();
 
     seek(writePosition);
-    m_file.Write(buffer.data(), bytesRead);
+    if (m_file.Write(buffer.data(), bytesRead) != bytesRead)
+      return; // error
     writePosition += bytesRead;
   }
   truncate(writePosition);

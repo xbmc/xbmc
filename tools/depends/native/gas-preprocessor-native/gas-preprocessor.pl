@@ -86,7 +86,7 @@ if (grep /\.c$/, @gcc_cmd) {
 } elsif (grep /\.[sS]$/, @gcc_cmd) {
     # asm file, just do C preprocessor
     @preprocess_c_cmd = (@gcc_cmd, "-E");
-} elsif (grep /-(v|-version|dumpversion)/, @gcc_cmd) {
+} elsif (grep /-(v|h|-version|dumpversion)/, @gcc_cmd) {
     # pass -v/--version along, used during probing. Matching '-v' might have
     # uninteded results but it doesn't matter much if gas-preprocessor or
     # the compiler fails.
@@ -97,6 +97,8 @@ if (grep /\.c$/, @gcc_cmd) {
 if ($as_type eq "armasm") {
 
     $preprocess_c_cmd[0] = "cpp";
+    push(@preprocess_c_cmd, "-U__ELF__");
+    push(@preprocess_c_cmd, "-U__MACH__");
 
     @preprocess_c_cmd = grep ! /^-nologo$/, @preprocess_c_cmd;
     # Remove -ignore XX parameter pairs from preprocess_c_cmd
@@ -264,15 +266,22 @@ if ($force_thumb) {
 # note that the handling of arguments is probably overly permissive vs. gas
 # but it should be the same for valid cases
 while (<INPUT>) {
+    # remove lines starting with '#', preprocessing is done, '#' at start of
+    # the line indicates a comment for all supported archs (aarch64, arm, ppc
+    # and x86). Also strips line number comments but since they are off anyway
+    # it is no loss.
+    s/^#.*$//;
     # remove all comments (to avoid interfering with evaluating directives)
     s/(?<!\\)$inputcomm.*//x;
     # Strip out windows linefeeds
     s/\r$//;
-    # Strip out line number comments - armasm can handle them in a separate
-    # syntax, but since the line numbers are off they are only misleading.
-    s/^#\s+(\d+).*//          if $as_type =~ /armasm/;
 
-    parse_line($_);
+    foreach my $subline (split(";", $_)) {
+        # Add newlines at the end of lines that don't already have one
+        chomp $subline;
+        $subline .= "\n";
+        parse_line($subline);
+    }
 }
 
 sub eval_expr {
@@ -393,7 +402,7 @@ sub parse_line {
     } elsif ($macro_level == 0) {
         expand_macros($line);
     } else {
-        if ($line =~ /\.macro\s+([\d\w\.]+)\s*(.*)/) {
+        if ($line =~ /\.macro\s+([\d\w\.]+)\s*,?\s*(.*)/) {
             $current_macro = $1;
 
             # commas in the argument list are optional, so only use whitespace as the separator
@@ -824,7 +833,7 @@ sub handle_serialized_line {
             $labels_seen{$1} = 1;
         }
 
-        if ($line =~ s/^(\d+)://) {
+        if ($line =~ s/^\s*(\d+)://) {
             # Convert local labels into unique labels. armasm (at least in
             # RVCT) has something similar, but still different enough.
             # By converting to unique labels we avoid any possible
@@ -985,7 +994,7 @@ sub handle_serialized_line {
 
         $line =~ s/fmxr/vmsr/;
         $line =~ s/fmrx/vmrs/;
-        $line =~ s/fadds/vadd/;
+        $line =~ s/fadds/vadd.f32/;
     }
 
     # catch unknown section names that aren't mach-o style (with a comma)

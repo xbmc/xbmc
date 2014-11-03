@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -44,14 +44,14 @@
       <Y>Queue</Y>
       <white>ContextMenu</white>
       <black/>
-      <start>XBMC.ActivateWindow(PlayerControls)</start>
+      <start>ActivateWindow(PlayerControls)</start>
       <back>PreviousMenu</back>
       <dpadleft>Left</dpadleft>
       <dpadright>Right</dpadright>
       <dpadup>Up</dpadup>
       <dpaddown>Down</dpaddown>
       <leftthumbbutton>Screenshot</leftthumbbutton>
-      <rightthumbbutton>XBMC.ActivateWindow(ShutdownMenu)</rightthumbbutton>
+      <rightthumbbutton>ActivateWindow(ShutdownMenu)</rightthumbbutton>
       <leftanalogtrigger>ScrollUp</leftanalogtrigger>
       <rightanalogtrigger>ScrollDown</rightanalogtrigger>
       <rightthumbstickleft>AnalogSeekBack</rightthumbstickleft>
@@ -62,7 +62,7 @@
   </global>
   <Home>
     <gamepad>
-      <black>XBMC.Skin.ToggleSetting(HomeViewToggle)</black>
+      <black>Skin.ToggleSetting(HomeViewToggle)</black>
     </gamepad>
   </Home>
   <MyFiles>
@@ -144,7 +144,7 @@
     <gamepad>
       <A>Pause</A>
       <B>Stop</B>
-      <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
+      <Y>ActivateWindow(VisualisationPresetList)</Y>
       <black>CodecInfo</black>
       <white>Info</white>
       <start>OSD</start>

@@ -24,6 +24,7 @@
 #include "addons/Skin.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
+#include "CompileInfo.h"
 #include "input/ButtonTranslator.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIFontManager.h"
@@ -103,12 +104,14 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     GlobalMemoryStatusEx(&stat);
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
+    std::string lcAppName = CCompileInfo::GetAppName();
+    StringUtils::ToLower(lcAppName);
 #if !defined(TARGET_POSIX)
-    info = StringUtils::Format("LOG: %sxbmc.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", g_advancedSettings.m_logFolder.c_str(),
+    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
                                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info = StringUtils::Format("LOG: %sxbmc.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-XBMC %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(),
+    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-XBMC %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
                                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
   }

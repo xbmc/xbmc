@@ -1,0 +1,98 @@
+--- libmpeg2/motion_comp_arm_s.S	2014-09-24 23:27:41.000000000 +0200
++++ libmpeg2/motion_comp_arm_s.S	2014-09-24 23:01:06.000000000 +0200
+@@ -22,7 +22,7 @@
+ 	.text
+ 
+ @ ----------------------------------------------------------------
+-	.align
++	.align 2
+ #if defined(__APPLE__) && defined(__arm__)
+ 	.global _MC_put_o_16_arm
+ _MC_put_o_16_arm:
+@@ -36,10 +36,10 @@
+ 	and r4, r1, #3
+ 	ldrb r4, [pc, r4]
+ 	add pc, pc, r4, lsl #2
+-	.byte (MC_put_o_16_arm_align0 - 0f)>>2
+-	.byte (MC_put_o_16_arm_align1 - 0f)>>2
+-	.byte (MC_put_o_16_arm_align2 - 0f)>>2
+-	.byte (MC_put_o_16_arm_align3 - 0f)>>2
++	.byte (MC_put_o_16_arm_align0 - MC_put_o_16_arm_align0)>>2
++	.byte (MC_put_o_16_arm_align1 - MC_put_o_16_arm_align1)>>2
++	.byte (MC_put_o_16_arm_align2 - MC_put_o_16_arm_align2)>>2
++	.byte (MC_put_o_16_arm_align3 - MC_put_o_16_arm_align3)>>2
+ 0:
+ 
+ MC_put_o_16_arm_align0:
+@@ -86,7 +86,7 @@
+         ldmfd sp!, {r4-r11, pc} @@ update PC with LR content.
+ 
+ @ ----------------------------------------------------------------
+-	.align
++	.align 2
+ #if defined(__APPLE__) && defined(__arm__)
+ 	.global _MC_put_o_8_arm
+ _MC_put_o_8_arm:
+@@ -100,10 +100,10 @@
+ 	and r4, r1, #3
+ 	ldrb r4, [pc, r4]
+ 	add pc, pc, r4, lsl #2
+-	.byte (MC_put_o_8_arm_align0 - 0f)>>2
+-	.byte (MC_put_o_8_arm_align1 - 0f)>>2
+-	.byte (MC_put_o_8_arm_align2 - 0f)>>2
+-	.byte (MC_put_o_8_arm_align3 - 0f)>>2
++	.byte (MC_put_o_8_arm_align0 - MC_put_o_8_arm_align0)>>2
++	.byte (MC_put_o_8_arm_align1 - MC_put_o_8_arm_align1)>>2
++	.byte (MC_put_o_8_arm_align2 - MC_put_o_8_arm_align2)>>2
++	.byte (MC_put_o_8_arm_align3 - MC_put_o_8_arm_align3)>>2
+ 0:
+ 
+ MC_put_o_8_arm_align0:
+@@ -159,7 +159,7 @@
+ 	add \rW2, \rW2, r10
+ .endm
+ 
+-	.align
++	.align 2
+ #if defined(__APPLE__) && defined(__arm__)
+ 	.global _MC_put_x_16_arm
+ _MC_put_x_16_arm:
+@@ -175,10 +175,10 @@
+ 	mvn r12, r11
+ 	ldrb r4, [pc, r4]
+ 	add pc, pc, r4, lsl #2
+-	.byte (MC_put_x_16_arm_align0 - 0f)>>2
+-	.byte (MC_put_x_16_arm_align1 - 0f)>>2
+-	.byte (MC_put_x_16_arm_align2 - 0f)>>2
+-	.byte (MC_put_x_16_arm_align3 - 0f)>>2
++	.byte (MC_put_x_16_arm_align0 - MC_put_x_16_arm_align0)>>2
++	.byte (MC_put_x_16_arm_align1 - MC_put_x_16_arm_align1)>>2
++	.byte (MC_put_x_16_arm_align2 - MC_put_x_16_arm_align2)>>2
++	.byte (MC_put_x_16_arm_align3 - MC_put_x_16_arm_align3)>>2
+ 0:
+ 	  .word 0x01010101
+ 
+@@ -255,7 +255,7 @@
+         ldmfd sp!, {r4-r11,pc} @@ update PC with LR content.
+ 
+ @ ----------------------------------------------------------------
+-	.align
++	.align 2
+ #if defined(__APPLE__) && defined(__arm__)
+ 	.global _MC_put_x_8_arm
+ _MC_put_x_8_arm:
+@@ -271,10 +271,10 @@
+ 	mvn r12, r11
+ 	ldrb r4, [pc, r4]
+ 	add pc, pc, r4, lsl #2
+-	.byte (MC_put_x_8_arm_align0 - 0f)>>2
+-	.byte (MC_put_x_8_arm_align1 - 0f)>>2
+-	.byte (MC_put_x_8_arm_align2 - 0f)>>2
+-	.byte (MC_put_x_8_arm_align3 - 0f)>>2
++	.byte (MC_put_x_8_arm_align0 - MC_put_x_8_arm_align0)>>2
++	.byte (MC_put_x_8_arm_align1 - MC_put_x_8_arm_align1)>>2
++	.byte (MC_put_x_8_arm_align2 - MC_put_x_8_arm_align2)>>2
++	.byte (MC_put_x_8_arm_align3 - MC_put_x_8_arm_align3)>>2
+ 0:
+ 	  .word 0x01010101
+ 

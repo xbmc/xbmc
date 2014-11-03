@@ -3,7 +3,7 @@ XBMC_PLATFORM_DIR=linux64
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 cd $WORKSPACE;make -j$BUILDTHREADS testsuite
-cd $WORKSPACE;./xbmc-test --gtest_output=xml:gtestresults.xml
+cd $WORKSPACE;./kodi-test --gtest_output=xml:gtestresults.xml
 awk '{ if ($1 == "<testcase" && match($0, "notrun")) print substr($0,0,length($0)-2) "><skipped/></testcase>"; else print $0;}' gtestresults.xml > gtestresults-skipped.xml
 rm gtestresults.xml
 mv gtestresults-skipped.xml gtestresults.xml
