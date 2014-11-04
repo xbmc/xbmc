@@ -39,6 +39,7 @@ public:
   virtual int Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio) = 0;
   virtual int64_t GetDelay(int64_t base) = 0;
   virtual int GetBufferedSamples() = 0;
+  virtual bool WantsNewSamples(int samples) = 0;
   virtual int CalcDstSampleCount(int src_samples, int dst_rate, int src_rate) = 0;
   virtual int GetSrcBufferSize(int samples) = 0;
   virtual int GetDstBufferSize(int samples) = 0;
