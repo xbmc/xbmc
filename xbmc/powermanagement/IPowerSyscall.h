@@ -62,10 +62,38 @@ public:
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback) = 0;
 };
 
-class CPowerSyscallWithoutEvents : public IPowerSyscall
+class CCommonCapabilitiesPowerSyscall : public IPowerSyscall
 {
 public:
-  CPowerSyscallWithoutEvents() { m_OnResume = false; m_OnSuspend = false; }
+  CCommonCapabilitiesPowerSyscall() {
+    m_canPowerdown = false;
+    m_canSuspend = false;
+    m_canHibernate = false;
+    m_canReboot = false;
+  };
+  virtual ~CCommonCapabilitiesPowerSyscall() {}
+  virtual bool CanPowerdown() {return m_canPowerdown;}
+  virtual bool CanSuspend() {return m_canSuspend;}
+  virtual bool CanHibernate() {return m_canHibernate;}
+  virtual bool CanReboot() {return m_canReboot;}
+  virtual void SetCanPowerdown(bool value) {m_canPowerdown = value;}
+  virtual void SetCanSuspend(bool value) {m_canSuspend = value;};
+  virtual void SetCanHibernate(bool value) {m_canHibernate = value;}
+  virtual void SetCanReboot(bool value) {m_canReboot = value;}
+private:
+  bool m_canPowerdown;
+  bool m_canSuspend;
+  bool m_canHibernate;
+  bool m_canReboot;
+};
+
+class CPowerSyscallWithoutEvents : public CCommonCapabilitiesPowerSyscall
+{
+public:
+  CPowerSyscallWithoutEvents()
+      : CCommonCapabilitiesPowerSyscall() {
+    m_OnResume = false; m_OnSuspend = false;
+  }
 
   virtual bool Suspend() { m_OnSuspend = true; return false; }
   virtual bool Hibernate() { m_OnSuspend = true; return false; }

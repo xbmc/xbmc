@@ -43,7 +43,7 @@ private:
   double m_batteryLevel;
 };
 
-class CUPowerSyscall : public IPowerSyscall
+class CUPowerSyscall : public CCommonCapabilitiesPowerSyscall
 {
 public:
   CUPowerSyscall();
@@ -52,19 +52,10 @@ public:
   virtual bool Suspend();
   virtual bool Hibernate();
   virtual bool Reboot();
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
   virtual int  BatteryLevel();
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
   static bool HasUPower();
 protected:
-  bool m_CanPowerdown;
-  bool m_CanSuspend;
-  bool m_CanHibernate;
-  bool m_CanReboot;
-
   void UpdateCapabilities();
 private:
   std::list<CUPowerSource> m_powerSources;
