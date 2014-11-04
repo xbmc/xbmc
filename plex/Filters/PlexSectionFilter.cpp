@@ -37,8 +37,11 @@ bool CPlexSectionFilter::loadFilters()
     {
       CFileItemPtr primaryFilter = list.Get(i);
 
-      if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
-        continue;
+      if (m_sectionType != PLEX_DIR_TYPE_HOME_MOVIES)
+      {
+        if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
+          continue;
+      }
 
       if (advancedFilters && (m_sectionType == PLEX_DIR_TYPE_MOVIE))
       {
