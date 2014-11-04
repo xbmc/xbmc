@@ -114,14 +114,22 @@ void CALSAHControlMonitor::Stop()
 
 int CALSAHControlMonitor::HCTLCallback(snd_hctl_elem_t *elem, unsigned int mask)
 {
-  /*
-   * Currently we just re-enumerate on any change.
-   * Custom callbacks for handling other control monitoring may be implemented when needed.
-   */
+  /* _REMOVE is a special value instead of a bit and must be checked first */
+  if (mask == SND_CTL_EVENT_MASK_REMOVE)
+  {
+    /* Either the device was removed (which is handled in ALSADeviceMonitor instead)
+     * or snd_hctl_close() got called. */
+    return 0;
+  }
+
   if (mask & SND_CTL_EVENT_MASK_VALUE)
   {
     CLog::Log(LOGDEBUG, "CALSAHControlMonitor - Monitored ALSA hctl value changed");
 
+    /*
+     * Currently we just re-enumerate on any change.
+     * Custom callbacks for handling other control monitoring may be implemented when needed.
+     */
     CAEFactory::DeviceChange();
   }
 
