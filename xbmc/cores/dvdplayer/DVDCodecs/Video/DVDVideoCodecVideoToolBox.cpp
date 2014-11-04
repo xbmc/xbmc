@@ -1542,7 +1542,7 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   // allow rendering without scaledown for all
   // retina devices (which have enough power to handle it)
   if (DarwinHasRetina(scale))
-    width_clamp = 1920;
+    width_clamp = 1280;
 
   int new_width = CheckNP2(width);
   if (width != new_width)
