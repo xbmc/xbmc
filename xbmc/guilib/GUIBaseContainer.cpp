@@ -32,6 +32,7 @@
 #include "utils/MathUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "listproviders/IListProvider.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -561,7 +562,10 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
   do
   {
     CGUIListItemPtr item = m_items[i];
-    if (0 == strnicmp(SortUtils::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
+    std::string label = item->GetLabel();
+    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
+      label = SortUtils::RemoveArticles(label);
+    if (0 == strnicmp(label.c_str(), m_match.c_str(), m_match.size()))
     {
       SelectItem(i);
       return;
