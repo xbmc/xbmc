@@ -739,8 +739,6 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
   if (item->m_bIsFolder && !newUrl.empty())
   {
     CURL u(m_vecItems->GetPath());
-    m_lastSelectedIndex[u.GetUrlWithoutOptions()] = iItem;
-    m_viewControl.SetSelectedItem(0);
     if (!Update(newUrl, true))
       ShowShareErrorMessage(item.get());
     return true;
