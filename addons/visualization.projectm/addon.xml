@@ -5,7 +5,7 @@
   name="projectM"
   provider-name="Team-Kodi">
   <extension
-    point="xbmc.player.musicviz"
+    point="addon.player.musicviz"
     library_linux="projectM.vis"
     library_wingl="projectM_win32.vis"
     library_osx="projectM.vis">
@@ -15,7 +15,7 @@
       </userdirs>
     </settings>
   </extension>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">projectM vat jou op 'n vlug deur die klankgolwe wat jy hoor</summary>
     <summary lang="ar">مشروع M يجعلك تطير بين موحات الصوت التي تسمعها</summary>
     <summary lang="be">projectM takes you flying through the soundwaves you're hearing</summary>

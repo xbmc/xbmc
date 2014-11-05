@@ -3,8 +3,8 @@
        name="Black"
        version="1.0.22"
        provider-name="Team-Kodi">
-  <extension point="xbmc.ui.screensaver" library=""/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.ui.screensaver" library=""/>
+  <extension point="addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm swart maak.</summary>
     <summary lang="am">መመልከቻ ማዳኛ የእርስዎን መመልከቻ ጥቁር ያደርገዋል </summary>
     <summary lang="ar">شاشة التوقف التي تحول شاشتك لأسود</summary>

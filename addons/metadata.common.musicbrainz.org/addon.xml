@@ -6,9 +6,9 @@
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.library"
+  <extension point="addon.metadata.scraper.library"
              library="musicbrainz.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на музикална инф. от MusicBrainz</summary>
     <summary lang="en">MusicBrainz Music Scraper Library</summary>

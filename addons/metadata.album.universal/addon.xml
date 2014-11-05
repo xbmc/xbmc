@@ -11,10 +11,10 @@
     <import addon="metadata.common.musicbrainz.org" version="2.0.2"/>
     <import addon="metadata.common.theaudiodb.com" version="1.7.3"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.albums"
+  <extension point="addon.metadata.scraper.albums"
              language="en"
              library="albumuniversal.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">Universele Skraper vir Albums</summary>
     <summary lang="ast">Scraper universal pa álbumes</summary>
     <summary lang="be">Universal Scraper for Albums</summary>

@@ -5,9 +5,9 @@
   name="DirectX Spectrum"
   provider-name="Team-Kodi">
   <extension
-    point="xbmc.player.musicviz"
+    point="addon.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">Visualisering wat 'n roterende 3D Spektrum Analiseerder vertoon</summary>
     <summary lang="ar">تصور عرض محلل طيف دوار 3 الأبعاد</summary>
     <summary lang="be">Visualisation showing a rotating 3D Spectrum Analyzer</summary>

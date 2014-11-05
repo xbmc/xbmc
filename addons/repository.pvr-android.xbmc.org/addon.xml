@@ -7,14 +7,14 @@
     <import addon="xbmc.addon" version="12.0.0"/>
     <import addon="xbmc.pvr" version="1.9.0"/>
   </requires>
-	<extension point="xbmc.addon.repository"
+	<extension point="addon.repository"
 		name="Official XBMC.org PVR Add-on Repository">
 		<info compressed="true">http://mirrors.xbmc.org/addons/gotham/pvr/android/addons.xml</info>
 		<checksum>http://mirrors.xbmc.org/addons/gotham/pvr/android/addons.xml.md5</checksum>
 		<datadir zip="true">http://mirrors.xbmc.org/addons/gotham/pvr/android</datadir>
 		<hashes>true</hashes>
 	</extension>
-	<extension point="xbmc.addon.metadata">
+	<extension point="addon.metadata">
 		<summary lang="am">ከ XBMC.org የ PVR ተጨማ-ሪዎች መግጠሚያ </summary>
 		<summary lang="ar">ثبت اضافة البي في ار PVR من موقع xbmc.org</summary>
 		<summary lang="bg">Инсталира PVR добавки от XBMC.org</summary>

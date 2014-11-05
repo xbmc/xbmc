@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
-	<extension point="xbmc.addon.repository"
+	<extension point="addon.repository"
 		name="Official XBMC.org Add-on Repository">
 		<dir minversion="13.0.0">
 			<info compressed="true">http://mirrors.xbmc.org/addons/gotham/addons.xml</info>
@@ -25,7 +25,7 @@
 		<datadir zip="true">http://mirrors.xbmc.org/addons/frodo</datadir>
 		<hashes>true</hashes>
 	</extension>
-	<extension point="xbmc.addon.metadata">
+	<extension point="addon.metadata">
 		<summary lang="af">Installeer Byvoegsels vanaf XBMC.org</summary>
 		<summary lang="am">ከ XBMC.org ተጨማ-ሪዎች መግጠሚያ </summary>
 		<summary lang="ar">ثبت إضافات من موقع إكس بى إم سى الرسمى</summary>

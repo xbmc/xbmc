@@ -5,9 +5,9 @@
   name="Vortex"
   provider-name="Team-Kodi">
   <extension
-    point="xbmc.player.musicviz"
+    point="addon.player.musicviz"
     library_windx="Vortex_win32dx.vis"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">Vortex Visualisasie van die XBOX paket</summary>
     <summary lang="ar">تصور دوامة من حزمة XBOX</summary>
     <summary lang="bg">Визуализацията Vortex  от пакета за XBOX</summary>

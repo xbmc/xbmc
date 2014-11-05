@@ -10,10 +10,10 @@
     <import addon="metadata.common.themoviedb.org" version="2.12.1"/>
     <import addon="plugin.video.youtube" version="4.4.10" optional="true"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.movies"
+  <extension point="addon.metadata.scraper.movies"
              language="en"
              library="tmdb.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">TMDB Fliek Skraper</summary>
     <summary lang="be">TMDB Movie Scraper</summary>
     <summary lang="bg">Сваля инф. за филми от TMDB</summary>
