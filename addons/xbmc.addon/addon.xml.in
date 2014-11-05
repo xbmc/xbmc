@@ -6,4 +6,6 @@
   </requires>
   <extension-point id="metadata" schema="metadata.xsd"/>
   <extension-point id="repository" schema="repository.xsd"/>
+  <extension-point id="context.item" schema="contextitem.xsd"/>
+  <extension-point id="context.category" schema="contextcategory.xsd"/>
 </addon>
