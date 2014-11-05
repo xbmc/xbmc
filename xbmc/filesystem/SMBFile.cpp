@@ -516,6 +516,14 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if (m_fd == -1)
     return -1;
 
+  // Some external libs (libass) use test read with zero size and 
+  // null buffer pointer to check whether file is readable, but 
+  // libsmbclient always return "-1" if called with null buffer 
+  // regardless of buffer size.
+  // To overcome this, force return "0" in that case.
+  if (uiBufSize == 0 && lpBuf == NULL)
+    return 0;
+
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
   /* work around stupid bug in samba */
