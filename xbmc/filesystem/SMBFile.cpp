@@ -533,21 +533,37 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   /* also worse, a request of exactly 64k will return */
   /* as if eof, client has a workaround for windows */
   /* thou it seems other servers are affected too */
-  if( uiBufSize >= 64*1024-2 )
-    uiBufSize = 64*1024-2;
-
-  ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
-
-  if ( bytesRead < 0 && errno == EINVAL )
+  // FIXME: does this workaround still required?
+  ssize_t totalRead = 0;
+  uint8_t* buf = (uint8_t*)lpBuf;
+  do
   {
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
-    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
-  }
+    const ssize_t readSize = (uiBufSize >= 64 * 1024 - 2) ? 64 * 1024 - 2 : uiBufSize;
+    ssize_t r = smbc_read(m_fd, buf + totalRead, readSize);
+    if (r < 0)
+    {
+      if (errno == EINVAL)
+      {
+        CLog::LogF(LOGWARNING, "Error %d: \"%s\" - Retrying", errno, strerror(errno));
+        r = smbc_read(m_fd, buf + totalRead, readSize);
+      }
+      if (r < 0)
+      {
+        CLog::LogF(LOGERROR, "Error %d: \"%s\"", errno, strerror(errno));
+        if (totalRead == 0)
+          return -1;
 
-  if ( bytesRead < 0 )
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
+        break;
+      }
+    }
 
-  return bytesRead;
+    totalRead += r;
+    uiBufSize -= r;
+    if (r != readSize)
+      break;
+  } while (uiBufSize > 0);
+
+  return totalRead;
 }
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
