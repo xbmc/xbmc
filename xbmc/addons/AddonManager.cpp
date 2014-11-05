@@ -76,7 +76,9 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   if (settings)
     CheckUserDirs(settings);
 
-  const TYPE type = TranslateType(props->ext_point_id);
+  std::string extensionPoint = props->ext_point_id;
+  LegacyToType(extensionPoint); //In case it's an old 'xbmc.FOO' extension point, use the new 'addons.FOO' ones
+  const TYPE type = TranslateType(extensionPoint);
   switch (type)
   {
     case ADDON_PLUGIN:
@@ -420,15 +422,13 @@ bool CAddonMgr::HasOutdatedAddons()
   return GetAllOutdatedAddons(dummy);
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
+void CAddonMgr::GetAddons(const std::string ext_point, VECADDONS &addons, bool enabled)
 {
   CSingleLock lock(m_critSection);
-  addons.clear();
   if (!m_cp_context)
-    return false;
+    return;
   cp_status_t status;
   int num;
-  std::string ext_point(TranslateType(type));
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
@@ -450,6 +450,18 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
     }
   }
   m_cpluff->release_info(m_cp_context, exts);
+}
+
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
+{
+  addons.clear();
+
+  std::string strType = TranslateType(type);
+  GetAddons(strType, addons, enabled);
+
+  if (TypeToLegacy(strType))
+    GetAddons(strType, addons, enabled);
+
   return addons.size() > 0;
 }
 
@@ -683,7 +695,11 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     return false;
   const cp_extension_t *metadata = GetExtension(plugin, "addon.metadata");
   if (!metadata)
-    return false;
+  {
+    metadata = GetExtension(plugin, "xbmc.addon.metadata");
+    if (!metadata)
+      return false;
+  }
 
   vector<std::string> platforms;
   if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
@@ -788,9 +804,10 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
   // grab a relevant extension point, ignoring our addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("addon.metadata", info->extensions[i].ext_point_id) &&
-        0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
-        (type.empty() || 0 == strcmp(type.c_str(), info->extensions[i].ext_point_id)))
+    std::string extPoint = info->extensions[i].ext_point_id;
+    LegacyToType(extPoint); //Make sure we deal with the new, and not the legacy extension points
+    if (extPoint != "addon.metadata" &&
+       (type.empty() || type == extPoint))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
     }

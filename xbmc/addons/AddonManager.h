@@ -202,6 +202,8 @@ namespace ADDON
     AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info,
                                     const std::string& type="");
 
+    void GetAddons(const std::string ext_point, VECADDONS &addons, bool enabled);
+
     /*! \brief Check whether this addon is supported on the current platform
      \param info the plugin descriptor
      \return true if the addon is supported, false otherwise.

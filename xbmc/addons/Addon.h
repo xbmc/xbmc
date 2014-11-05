@@ -41,6 +41,16 @@ namespace ADDON
 const std::string   TranslateType(const TYPE &type, bool pretty=false);
 const std::string   GetIcon(const TYPE &type);
       TYPE          TranslateType(const std::string &string);
+/*! \brief updates legacy extensions point types starting with "xbmc." to the new ones
+    \param string containing a old extension point name like xbmc.FOO
+    \return true if given string has been updated
+*/
+bool LegacyToType(std::string &string);
+/*! \brief updates the string from a new addons.FOO extension point, to the old xbmc.FOO
+    \param string containing a new extension point name like addons.FOO
+    \return true if given string has been updated
+ */
+bool TypeToLegacy(std::string &string);
 
 class AddonProps : public ISerializable
 {

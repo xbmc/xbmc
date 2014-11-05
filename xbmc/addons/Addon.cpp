@@ -91,6 +91,40 @@ static const TypeMapping types[] =
    {"addon.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
    {"addon.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
+typedef struct
+{
+  const char* legacy;
+  const char* type;
+} LegacyTypeMapping;
+
+static const LegacyTypeMapping legacyTypes[] =
+  {{"xbmc.metadata.scraper.albums",     "addon.metadata.scraper.albums"},
+   {"xbmc.metadata.scraper.artists",    "addon.metadata.scraper.artists"},
+   {"xbmc.metadata.scraper.movies",     "addon.metadata.scraper.movies"},
+   {"xbmc.metadata.scraper.musicvideos","addon.metadata.scraper.musicvideos"},
+   {"xbmc.metadata.scraper.tvshows",    "addon.metadata.scraper.tvshows"},
+   {"xbmc.metadata.scraper.library",    "addon.metadata.scraper.library"},
+   {"xbmc.ui.screensaver",              "addon.ui.screensaver"},
+   {"xbmc.player.musicviz",             "addon.player.musicviz"},
+   {"xbmc.python.pluginsource",         "addon.python.pluginsource"},
+   {"xbmc.python.script",               "addon.python.script"},
+   {"xbmc.python.weather",              "addon.python.weather"},
+   {"xbmc.python.lyrics",               "addon.python.lyrics"},
+   {"xbmc.python.library",              "addon.python.library"},
+   {"xbmc.python.module",               "addon.python.module"},
+   {"xbmc.subtitle.module",             "addon.subtitle.module"},
+   {"xbmc.gui.skin",                    "addon.gui.skin"},
+   {"xbmc.gui.webinterface",            "addon.gui.webinterface"},
+   {"xbmc.addon.repository",            "addon.addon.repository"},
+   {"xbmc.pvrclient",                   "addon.pvrclient"},
+   {"xbmc.addon.video",                 "addon.video"},
+   {"xbmc.addon.audio",                 "addon.audio"},
+   {"xbmc.addon.image",                 "addon.image"},
+   {"xbmc.addon.executable",            "addon.executable"},
+   {"xbmc.audioencoder",                "addon.audioencoder"},
+   {"xbmc.service",                     "addon.service"},
+   {"xbmc.addon.metadata",              "addon.metadata"}};
+
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
@@ -116,6 +150,34 @@ TYPE TranslateType(const std::string &string)
       return map.type;
   }
   return ADDON_UNKNOWN;
+}
+
+bool LegacyToType(std::string &string)
+{
+  for (unsigned int index=0; index < ARRAY_SIZE(legacyTypes); ++index)
+  {
+    const LegacyTypeMapping &map = legacyTypes[index];
+    if (string == map.legacy)
+    {
+      string = map.type;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool TypeToLegacy(std::string &string)
+{
+  for (unsigned int index=0; index < ARRAY_SIZE(legacyTypes); ++index)
+  {
+    const LegacyTypeMapping &map = legacyTypes[index];
+    if (string == map.type)
+    {
+      string = map.legacy;
+      return true;
+    }
+  }
+  return false;
 }
 
 const std::string GetIcon(const ADDON::TYPE& type)
@@ -148,7 +210,11 @@ AddonProps::AddonProps(const cp_extension_t *ext)
   , stars(0)
 {
   if (ext->ext_point_id)
-    type = TranslateType(ext->ext_point_id);
+  {
+    std::string point = ext->ext_point_id;
+    LegacyToType(point);
+    type = TranslateType(point);
+  }
 
   icon = "icon.png";
   fanart = URIUtils::AddFileToFolder(path, "fanart.jpg");
