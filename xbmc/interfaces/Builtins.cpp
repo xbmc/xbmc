@@ -467,6 +467,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       AddonPtr addon;
       std::string scriptpath;
+      // Test to see if the param is an addon ID
       if (CAddonMgr::Get().GetAddon(params[0], addon))
       {
         //Get the correct extension point to run
@@ -474,9 +475,16 @@ int CBuiltins::Execute(const std::string& execString)
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+        {
           scriptpath = addon->LibPath();
+        }
         else
-          CLog::Log(LOGERROR, "RunScript called for invalid add-on id '%s'. Not a script.", params[0].c_str());
+        {
+          //Run a random extension point (old behaviour).
+          CAddonMgr::Get().GetAddon(params[0], addon);
+          scriptpath = addon->LibPath();
+          CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
+        }
       }
       else
         scriptpath = params[0];
