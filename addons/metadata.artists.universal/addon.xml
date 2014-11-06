@@ -14,6 +14,9 @@
   <extension point="addon.metadata.scraper.artists"
              language="en"
              library="artistuniversal.xml"/>
+  <extension point="xbmc.metadata.scraper.artists"
+             language="en"
+             library="artistuniversal.xml"/>
   <extension point="addon.metadata">
     <summary lang="af">Universal Skraper vir Kunstenaars</summary>
     <summary lang="ar">ماسحة الفنان العالمية</summary>

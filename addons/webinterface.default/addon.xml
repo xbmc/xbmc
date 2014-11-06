@@ -10,6 +10,8 @@
   </requires>
   <extension
     point="addon.gui.webinterface"/>
+  <extension
+    point="xbmc.gui.webinterface"/>
   <extension point="addon.metadata">
     <summary lang="af">Span Kodi Web Koppelvlak. (Kodi se verstek web koppelvlak)</summary>
     <summary lang="am">የ Kodi የዌብ ገጽታዎች (የ Kodi ነባር የዌብ ገጽታዎች)</summary>

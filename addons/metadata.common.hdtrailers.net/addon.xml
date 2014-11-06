@@ -8,6 +8,8 @@
   </requires>
   <extension point="addon.metadata.scraper.library"
              library="hdtrailers.xml"/>
+  <extension point="xbmc.metadata.scraper.library"
+             library="hdtrailers.xml"/>
   <extension point="addon.metadata">
     <summary lang="en">HD-Trailers.net Scraper Library</summary>
     <summary lang="de">Scraper für Trailer von HD-Trailers.net</summary>

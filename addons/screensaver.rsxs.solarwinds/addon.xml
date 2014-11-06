@@ -11,6 +11,10 @@
     point="addon.ui.screensaver"
     library_linux="Solarwinds.xbs"
     library_osx="Solarwinds.xbs"/>
+  <extension
+    point="xbmc.ui.screensaver"
+    library_linux="Solarwinds.xbs"
+    library_osx="Solarwinds.xbs"/>
   <extension point="addon.metadata">
     <summary lang="af">'n Betoverende deeltjie effek sluimerskerm</summary>
     <summary lang="ar">أداة ساحرة تؤثر بشاشة التوقف</summary>

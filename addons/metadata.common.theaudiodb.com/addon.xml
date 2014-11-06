@@ -8,6 +8,8 @@
   </requires>
   <extension point="addon.metadata.scraper.library"
              library="tadb.xml"/>
+  <extension point="xbmc.metadata.scraper.library"
+             library="tadb.xml"/>
   <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на музикална инф. от TheAudioDb</summary>

@@ -8,6 +8,8 @@
   </requires>
   <extension point="addon.metadata.scraper.library"
              library="htbackdrops.xml"/>
+  <extension point="xbmc.metadata.scraper.library"
+             library="htbackdrops.xml"/>
   <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на инф. от HTBackdrops</summary>

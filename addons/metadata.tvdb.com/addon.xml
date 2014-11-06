@@ -6,6 +6,10 @@
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
+  <extension point="addon.metadata.scraper.tvshows"
+             language="multi"
+             library="tvdb.xml"
+             cachepersistence="00:15"/>
   <extension point="xbmc.metadata.scraper.tvshows"
              language="multi"
              library="tvdb.xml"

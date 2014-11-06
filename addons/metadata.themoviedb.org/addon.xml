@@ -13,6 +13,9 @@
   <extension point="addon.metadata.scraper.movies"
              language="en"
              library="tmdb.xml"/>
+  <extension point="xbmc.metadata.scraper.movies"
+             language="en"
+             library="tmdb.xml"/>
   <extension point="addon.metadata">
     <summary lang="af">TMDB Fliek Skraper</summary>
     <summary lang="be">TMDB Movie Scraper</summary>

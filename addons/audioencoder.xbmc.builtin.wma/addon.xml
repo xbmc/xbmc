@@ -11,6 +11,10 @@
     point="addon.audioencoder"
     extension=".wma"
     library_linux="dummy.so"/>
+  <extension
+    point="xbmc.audioencoder"
+    extension=".wma"
+    library_linux="dummy.so"/>
   <extension point="addon.metadata">
     <summary lang="en">WMA Audio Encoder</summary>
     <description lang="en">WMA Audio Encoder</description>

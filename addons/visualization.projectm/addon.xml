@@ -15,6 +15,17 @@
       </userdirs>
     </settings>
   </extension>
+  <extension
+    point="xbmc.player.musicviz"
+    library_linux="projectM.vis"
+    library_wingl="projectM_win32.vis"
+    library_osx="projectM.vis">
+    <settings>
+      <userdirs>
+        <userdir path="special://profile/addon_data/visualization.projectm"/>
+      </userdirs>
+    </settings>
+  </extension>
   <extension point="addon.metadata">
     <summary lang="af">projectM vat jou op 'n vlug deur die klankgolwe wat jy hoor</summary>
     <summary lang="ar">مشروع M يجعلك تطير بين موحات الصوت التي تسمعها</summary>

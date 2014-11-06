@@ -11,6 +11,11 @@
     point="addon.ui.screensaver"
     library_linux="Euphoria.xbs"
     library_osx="Euphoria.xbs"/>
+  </requires>
+  <extension
+    point="xbmc.ui.screensaver"
+    library_linux="Euphoria.xbs"
+    library_osx="Euphoria.xbs"/>
   <extension point="addon.metadata">
     <summary lang="af">Omtrent so psigedelies soos sluimerskerm kan kom</summary>
     <summary lang="ar">حول الحصول على مهدء كشاشة التوقف</summary>

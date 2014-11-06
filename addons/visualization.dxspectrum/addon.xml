@@ -7,6 +7,9 @@
   <extension
     point="addon.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
+  <extension
+    point="xbmc.player.musicviz"
+    library_windx="Spectrum_win32dx.vis"/>
   <extension point="addon.metadata">
     <summary lang="af">Visualisering wat 'n roterende 3D Spektrum Analiseerder vertoon</summary>
     <summary lang="ar">تصور عرض محلل طيف دوار 3 الأبعاد</summary>

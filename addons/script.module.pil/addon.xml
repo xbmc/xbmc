@@ -8,6 +8,8 @@
   </requires>
   <extension point="addon.python.module"
              library="lib" />
+  <extension point="xbmc.python.module"
+             library="lib" />
   <extension point="addon.metadata">
     <platform>all</platform>
   </extension>

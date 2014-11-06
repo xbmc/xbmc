@@ -11,6 +11,9 @@
   <extension point="addon.metadata.scraper.musicvideos"
              language="en"
              library="tadb.xml"/>
+  <extension point="xbmc.metadata.scraper.musicvideos"
+             language="en"
+             library="tadb.xml"/>
   <extension point="addon.metadata">
     <summary lang="af">theaudiodb.com Musiek Video Skraper</summary>
     <summary lang="be">theaudiodb.com Music Video Scraper</summary>

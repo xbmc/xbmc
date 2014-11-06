@@ -4,6 +4,7 @@
        version="1.0.22"
        provider-name="Team-Kodi">
   <extension point="addon.ui.screensaver" library=""/>
+  <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm verdof</summary>
     <summary lang="ar">شاشة توقف تمكن من تظليم الشاشة</summary>

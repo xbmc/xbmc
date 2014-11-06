@@ -11,6 +11,10 @@
     point="addon.ui.screensaver"
     library_linux="Plasma.xbs"
     library_osx="Plasma.xbs"/>
+  <extension
+    point="xbmc.ui.screensaver"
+    library_linux="Plasma.xbs"
+    library_osx="Plasma.xbs"/>
   <extension point="addon.metadata">
     <summary lang="af">Seker die tweede mees psigedeliese sluimerskerm ooit</summary>
     <summary lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء على الإطلاق</summary>

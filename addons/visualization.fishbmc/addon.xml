@@ -8,6 +8,10 @@
     point="addon.player.musicviz"
     library_linux="fishbmc.vis"
     library_osx="fishbmc.vis"/>
+   <extension
+    point="xbmc.player.musicviz"
+    library_linux="fishbmc.vis"
+    library_osx="fishbmc.vis"/>
   <extension point="addon.metadata">
     <summary lang="af">Visualisasie wat Golwe en Wasigheid effek wys</summary>
     <summary lang="ar">إسلوب تخيلي يُظهِر مؤثراتاً بصرية تتضمن موجات ومؤثرات عين السمكة (مؤثرات ضبابية)</summary>

@@ -8,6 +8,8 @@
   </requires>
   <extension point="addon.metadata.scraper.library"
              library="amazonde.xml"/>
+  <extension point="xbmc.metadata.scraper.library"
+             library="amazonde.xml"/>
   <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="en">amazon.de Scraper Library</summary>

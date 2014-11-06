@@ -10,6 +10,12 @@
     library_windx="Waveform_win32.vis"
     library_osx="Waveform.vis"
     library_android="libvisWaveform.so"/>
+  <extension
+    point="xbmc.player.musicviz"
+    library_linux="Waveform.vis"
+    library_windx="Waveform_win32.vis"
+    library_osx="Waveform.vis"
+    library_android="libvisWaveform.so"/>
   <extension point="addon.metadata">
     <summary lang="af">Visualisering wat 2 golfvorm grafieke op die skerm vertoon</summary>
     <summary lang="ar">التصوير يظهر2 رسم بياني موجي على الشاشة</summary>

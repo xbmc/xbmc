@@ -7,6 +7,9 @@
   <extension
     point="addon.player.musicviz"
     library_windx="Vortex_win32dx.vis"/>
+  <extension
+    point="xbmc.player.musicviz"
+    library_windx="Vortex_win32dx.vis"/>
   <extension point="addon.metadata">
     <summary lang="af">Vortex Visualisasie van die XBOX paket</summary>
     <summary lang="ar">تصور دوامة من حزمة XBOX</summary>
