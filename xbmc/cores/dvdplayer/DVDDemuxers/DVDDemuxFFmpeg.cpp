@@ -931,9 +931,11 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+
+  int idx = av_find_default_stream_index(m_pFormatContext);
+  if (idx >= 0)
   {
-    AVStream *stream = m_pFormatContext->streams[i];
+    AVStream *stream = m_pFormatContext->streams[idx];
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
     {
       double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
