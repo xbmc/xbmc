@@ -166,7 +166,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         std::string name(itemPath);
         URIUtils::RemoveSlashAtEnd(name);
-        item.SetLabel(URIUtils::GetFileName(CURL::Decode(name)));
+        item.SetLabel(CURL::Decode(URIUtils::GetFileName(name)));
       }
 
       if (item.m_bIsFolder)

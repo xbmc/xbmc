@@ -309,7 +309,7 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
     iPos += 2;
     std::wstring num;
     int base = 10;
-    if (strStripped[iPos+1] == L'x')
+    if (strStripped[iPos] == L'x')
     {
       base = 16;
       iPos++;
@@ -317,7 +317,7 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
 
     size_t i = iPos;
     while (iPos < strStripped.size() &&
-           (base==16?iswxdigit(strStripped[iPos]):iswdigit(strStripped[iPos])))
+          (base == 16 ? iswxdigit(strStripped[iPos]) : iswdigit(strStripped[iPos])))
       iPos++; 
 
     num = strStripped.substr(i, iPos-i);

@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
 
 NOTE! The GPL below is copyrighted by the Free Software Foundation, but
-the instance of code that it refers to (XBMC) is copyrighted by the
+the instance of code that it refers to (Kodi) is copyrighted by the
 authors who actually wrote it.
 
 ---------------------------------------------------------------------------

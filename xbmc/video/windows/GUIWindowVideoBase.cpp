@@ -1453,7 +1453,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (item->m_bIsFolder)
       {
-        m_database.SetPathHash(strPath,""); // to force scan
         OnScan(strPath, true);
       }
       else

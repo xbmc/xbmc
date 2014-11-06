@@ -101,6 +101,8 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
       break;
     case ADAPTERTYPE_RPI:
       result.m_mappedBusType = PERIPHERAL_BUS_RPI;
+      /** the Pi's adapter cannot be removed, no need to rescan */
+      m_bNeedsPolling = false;
       break;
     default:
       break;

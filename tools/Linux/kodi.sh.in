@@ -104,8 +104,8 @@ print_crash_report()
     fi
     single_stacktrace "$PWD" 1
     # Find in plugins directories
-    if [ $APP_HOME ]; then
-      BASEDIR=$APP_HOME
+    if [ $KODI_HOME ]; then
+      BASEDIR=$KODI_HOME
     else
       BASEDIR="$LIBDIR/${bin_name}/"
     fi

@@ -66,8 +66,8 @@ IF "%dependency%" NEQ "" (
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDON_DEPENDS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
-      -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/xbmc-c-flag-overrides.cmake" ^
-      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/xbmc-cxx-flag-overrides.cmake" ^ ^
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/c-flag-overrides.cmake" ^
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/cxx-flag-overrides.cmake" ^ ^
       -DCMAKE_INSTALL_PREFIX=%ADDONS_OUTPUT_PATH% ^
       -DARCH_DEFINES="-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_USE_32BIT_TIME_T -D_WINSOCKAPI_" ^
       -DDEPENDS_TO_BUILD="%DEPENDS_TO_BUILD%"

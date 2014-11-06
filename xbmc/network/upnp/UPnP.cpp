@@ -184,14 +184,9 @@ public:
     // PLT_MediaBrowser methods
     virtual bool OnMSAdded(PLT_DeviceDataReference& device)
     {
-        // update any open upnp:// path
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
-
-        // update any open source view
-        CGUIMessage updateSourcesMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-        g_windowManager.SendThreadMessage(updateSourcesMessage);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -199,14 +194,9 @@ public:
     {
         PLT_SyncMediaBrowser::OnMSRemoved(device);
 
-        // update any open upnp:// path
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
-
-        // update any open source view
-        CGUIMessage updateSourcesMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-        g_windowManager.SendThreadMessage(updateSourcesMessage);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
@@ -598,12 +588,12 @@ CUPnP::CreateServer(int port /* = 0 */)
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
 
-    device->m_ModelName        = "XBMC Media Center";
+    device->m_ModelName        = "Kodi";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
-    device->m_ModelDescription = "XBMC Media Center - Media Server";
-    device->m_ModelURL         = "http://xbmc.org/";
-    device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://xbmc.org/";
+    device->m_ModelDescription = "Kodi - Media Server";
+    device->m_ModelURL         = "http://kodi.tv/";
+    device->m_Manufacturer     = "XBMC Foundation";
+    device->m_ManufacturerURL  = "http://kodi.tv/";
 
     device->SetDelegate(device);
     return device;
@@ -680,12 +670,12 @@ CUPnP::CreateRenderer(int port /* = 0 */)
         NPT_HttpUrl(m_IP,
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
-    device->m_ModelName        = "XBMC Media Center";
+    device->m_ModelName        = "Kodi";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
-    device->m_ModelDescription = "XBMC Media Center - Media Renderer";
-    device->m_ModelURL         = "http://xbmc.org/";
-    device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://xbmc.org/";
+    device->m_ModelDescription = "Kodi - Media Renderer";
+    device->m_ModelURL         = "http://kodi.tv/";
+    device->m_Manufacturer     = "XBMC Foundation";
+    device->m_ManufacturerURL  = "http://kodi.tv/";
 
     return device;
 }

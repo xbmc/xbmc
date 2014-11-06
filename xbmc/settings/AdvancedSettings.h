@@ -365,9 +365,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bPVRAutoScanIconsUserSet; /*!< @brief mark channel icons populated by auto scan as "user set" */
     int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in ms before the numeric dialog auto closes when confirmchannelswitch is disabled */
 
-    bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
-                               //otherwise it will use the windows refreshrate
-
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup

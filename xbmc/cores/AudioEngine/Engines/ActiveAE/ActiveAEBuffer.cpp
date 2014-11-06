@@ -248,8 +248,6 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   }
   else if (m_procSample || !m_freeSamples.empty())
   {
-    // GetBufferedSamples is not accurate because of rounding errors
-    int out_samples = m_resampler->GetBufferedSamples();
     int free_samples;
     if (m_procSample)
       free_samples = m_procSample->pkt->max_nb_samples - m_procSample->pkt->nb_samples;
@@ -258,7 +256,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
 
     bool skipInput = false;
     // avoid that ffmpeg resample buffer grows too large
-    if (out_samples > free_samples * 2 && !m_empty)
+    if (!m_resampler->WantsNewSamples(free_samples) && !m_empty)
       skipInput = true;
 
     bool hasInput = !m_inputSamples.empty();
@@ -288,11 +286,11 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
         m_planes[i] = m_procSample->pkt->data[i] + start;
       }
 
-      out_samples = m_resampler->Resample(m_planes,
-                                          m_procSample->pkt->max_nb_samples - m_procSample->pkt->nb_samples,
-                                          in ? in->pkt->data : NULL,
-                                          in ? in->pkt->nb_samples : 0,
-                                          m_resampleRatio);
+      int out_samples = m_resampler->Resample(m_planes,
+                                              m_procSample->pkt->max_nb_samples - m_procSample->pkt->nb_samples,
+                                              in ? in->pkt->data : NULL,
+                                              in ? in->pkt->nb_samples : 0,
+                                              m_resampleRatio);
       m_procSample->pkt->nb_samples += out_samples;
       busy = true;
       m_empty = (out_samples == 0);

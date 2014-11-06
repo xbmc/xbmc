@@ -217,10 +217,13 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     }
   }
 
-  if(m_nWidth  == newWidth
-  && m_nHeight == newHeight
-  && m_userOutput.compare(m_currentOutput) == 0)
+  if(m_nWidth  == newWidth &&
+     m_nHeight == newHeight &&
+     m_userOutput.compare(m_currentOutput) == 0)
+  {
+    UpdateCrtc();
     return true;
+  }
 
   if (!SetWindow(newWidth, newHeight, false, m_userOutput))
   {
@@ -1232,6 +1235,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 #endif
   }
 
+  UpdateCrtc();
+
   return true;
 }
 
@@ -1421,6 +1426,18 @@ bool CWinSystemX11::HasWindowManager()
     XFree(data);
 
   return true;
+}
+
+void CWinSystemX11::UpdateCrtc()
+{
+  XWindowAttributes winattr;
+  int posx, posy;
+  Window child;
+  XGetWindowAttributes(m_dpy, m_mainWindow, &winattr);
+  XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_nScreen), winattr.x, winattr.y,
+                        &posx, &posy, &child);
+
+  m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2);
 }
 
 #endif

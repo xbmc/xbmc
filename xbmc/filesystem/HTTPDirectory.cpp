@@ -108,7 +108,8 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       // split link with url options
       size_t pos = strLinkBase.find('?');
-      if (pos != std::string::npos) {
+      if (pos != std::string::npos)
+      {
         strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
@@ -133,6 +134,16 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
         CURL url2(url);
+
+        /* NOTE: Force any &...; encoding (e.g. &amp;) into % encoding else CURL objects interpret them incorrectly
+         * due to the ; also being allowed as URL option seperator
+         */
+        if (fileCharset.empty())
+          g_charsetConverter.unknownToUTF8(strLinkBase);
+        g_charsetConverter.utf8ToW(strLinkBase, wLink, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strLinkBase);
+
         url2.SetFileName(strBasePath + strLinkBase);
         url2.SetOptions(strLinkOptions);
         pItem->SetURL(url2);

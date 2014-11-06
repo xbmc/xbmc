@@ -165,6 +165,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   if (len < 0)
   {
     CLog::Log(LOGERROR, "%s - avcodec_decode_subtitle returned failure", __FUNCTION__);
+    Flush();
     return OC_ERROR;
   }
 
@@ -235,7 +236,10 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
 
     if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
       return NULL;
+
     AVSubtitleRect& rect = *m_Subtitle.rects[m_SubtitleIndex];
+    if (rect.pict.data[0] == NULL)
+      return NULL;
 
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 

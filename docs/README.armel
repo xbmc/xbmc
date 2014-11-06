@@ -14,7 +14,7 @@ TOC
 7. How to run
 	7.1 Obtaining the Packages
 	7.2 Installing the Files
-	7.3 Running XBMC
+	7.3 Running Kodi
 8. Troubleshooting
 
 
@@ -22,12 +22,12 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a port of XBMC for use on ARM Architecture.
-As this is not an official version of XBMC, in-depth testing on various setups has not been done. USE WITH CAUTION!
+This is a port of Kodi for use on ARM Architecture.
+As this is not an official version of Kodi, in-depth testing on various setups has not been done. USE WITH CAUTION!
 For the purpose of this port, the following Hardware and Software was used.
 Software: Scratchbox (cross-compiler) on a Linux (Ubuntu) machine.
 Hardware: BeagleBoard (ARM Cortex-A8 with IMG POWERVR SGX).
-The source code is based on XBMC for Linux - version 9.11 (Camelot).
+The source code is based on Kodi for Linux - version 9.11 (Camelot).
 
 All lines that are prefixed with the '$' character are commands that need to be typed into a standard linux terminal
 All lines that are prefixed with the '>' character are commands that need to be typed into scratchbox
@@ -162,7 +162,7 @@ In order to continue, you will need the SGX SDK from TI's website.
 Once you have installed said SDK on a standard Linux machine, copy the neccessary .h and .so files to the appropriate directories in scratchbox:
 e.g /scratchbox/users/<username>/targets/<target_name>/usr/include/EGL/egl.h
 These files will also need to be transferred over to the board eventually.
-NOTE: XBMC has only been tested with the following versions of the OMAP35x Graphics SDK:
+NOTE: Kodi has only been tested with the following versions of the OMAP35x Graphics SDK:
 3.00.00.05, 3.00.00.06, 3.00.00.08, 3.00.00.09
 
 
@@ -170,7 +170,7 @@ NOTE: XBMC has only been tested with the following versions of the OMAP35x Graph
 6. How to compile
 -----------------------------------------------------------------------------
 
-To create the XBMC executable manually perform these following steps:
+To create the Kodi executable manually perform these following steps:
 
 	-----------------------------------------------------------------------------
 	6.1 Configure & Make:
@@ -179,7 +179,7 @@ To create the XBMC executable manually perform these following steps:
         $ ./bootstrap
 	    > ./configure --enable-gles
 
-    This will configure XBMC inside scratchbox ready for compilation on ARM.
+    This will configure Kodi inside scratchbox ready for compilation on ARM.
     Because the default is to build for OpenGL, we require the --enable-gles flag to be set for OpenGL ES 2.0.
     (Note: No OpenGL ES 1.x available)
 	Now, build with the following:
@@ -191,12 +191,12 @@ To create the XBMC executable manually perform these following steps:
 	-----------------------------------------------------------------------------
 
 	There is no need to do 'make install' as we dont want it installed into scratchbox.
-	There is also the slight problem of the fact that scratchbox's 'find' command is outdated and wont execute xbmc's 'make install' correctly.
+	There is also the slight problem of the fact that scratchbox's 'find' command is outdated and wont execute Kodi's 'make install' correctly.
 	Instead, use the provided shell script:
 		> cd /tools/arm/arm-scripts/
 		> ./create-xbmcfile.sh
 		
-	This will create a tar file tools/arm/arm-scripts/xbmc.tar.bz2 containing the xbmc files, ready for you to transfer to the board.
+	This will create a tar file tools/arm/arm-scripts/xbmc.tar.bz2 containing the Kodi files, ready for you to transfer to the board.
 
 
 -----------------------------------------------------------------------------
@@ -238,14 +238,14 @@ It is also assumed that you have it setup with either Angstrom or Ubuntu.
 		# tar xjf armel-pkgs.tar.bz2 -C /
 		# tar xjf xbmc.tar.bz2 -C /usr/
 
-	After this initial setup, during development, you should only need to replace /usr/share/xbmc/xbmc.bin with the newly created binary.
+	After this initial setup, during development, you should only need to replace /usr/share/kodi/kodi.bin with the newly created binary.
 	
 	-----------------------------------------------------------------------------
-	7.3 Running XBMC:
+	7.3 Running Kodi:
 	-----------------------------------------------------------------------------
 
-	Now, run XBMC by executing the binary:
-		# /usr/share/xbmc/xbmc.bin
+	Now, run Kodi by executing the binary:
+		# /usr/share/kodi/kodi.bin
 		
 	Run the binary and not the script as the script will fail.
 	
@@ -256,7 +256,7 @@ It is also assumed that you have it setup with either Angstrom or Ubuntu.
 	
 If it fails to run correctly, there are a few things to try out.
 First, is there any helpful output on the terminal?
-Check the log file, usually located ~/.xbmc/temp/xbmc.log
+Check the log file, usually located ~/.kodi/temp/kodi.log
 It may have failed because of a missing package.
 If so, you will need to download the appropriate armel package from packages.debian.org,
 Extract the files with the command: dpkg-deb -x packagename.deb /path/to/extract/to
@@ -264,10 +264,10 @@ Then tarball the extracted files: tar cjf pkg.tar.bz2 /path/to/extracted/files
 Then transfer them to the board, and extract: tar xjf pkg.tar.bz2
 This is because the .deb files cannot be extracted in Angstrom.
 
-If this is not the case, try various different parameters for xbmc.bin such as:
-xbmc.bin --standalone
-xbmc.bin -p
-xbmc.bin -fs
-Or build with debug for a more in-depth xbmc.log file by ommitting the line --disable-debug on configure.
+If this is not the case, try various different parameters for kodi.bin such as:
+kodi.bin --standalone
+kodi.bin -p
+kodi.bin -fs
+Or build with debug for a more in-depth kodi.log file by ommitting the line --disable-debug on configure.
 
 Feel free to contact me on mcgeagh@xbmc.org

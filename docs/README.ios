@@ -205,10 +205,12 @@ distribution.
 
 If you are a developer with an official apple code signing identity you can deploy Kodi
 via xcode to work on it on non-jailbroken devices. For this to happen you just need to alter the
-Xcode project by setting your codesign identity. After that the last buildstep in our support script
+Xcode project by setting your codesign identity. Be sure to not just select the "iPhone Developer" shortcut
+but instead select your full identity "iPhone Developer: your name (your id)" (this is important else our sign
+script won't detect a real sign identity). After that the last buildstep in our support script
 will do a full sign of all binaries and the bundle with the given identity (all *.viz, *.pvr, *.so files
 Xcode doesn't know anything about). This should allow you to deploy Kodi to all non-jailbroken devices
 which you can deploy normal apps to. In that case (Kodi will be sandboxed like any other app) - all Kodi
 files are then located in the sandboxed "Documents" folder and can be easily accessed via iTunes file
 sharing.
-Keep in mind that no hardware acceleration will be possible without jailbreaking!
+Keep in mind that no hardware acceleration will be possible without jailbreaking when using iOS < Version 8.

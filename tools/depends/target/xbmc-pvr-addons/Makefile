@@ -16,7 +16,9 @@ export GIT_WORK_TREE=$(PLATFORM)
 export MYSQL_CONFIG=$(PREFIX)/bin/mysql_config
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --enable-addons-with-dependencies
+VERSION.TXT := $(XBMCROOT)/version.txt
+APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
+CONFIGURE=./configure --prefix=$(PREFIX) --libdir=$(PREFIX)/lib/$(APP_NAME)/addons --datadir=$(PREFIX)/share/$(APP_NAME)/addons --enable-addons-with-dependencies
 
 all: .installed-$(PLATFORM)
 

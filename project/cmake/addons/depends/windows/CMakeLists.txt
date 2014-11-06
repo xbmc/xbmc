@@ -1,4 +1,4 @@
-project(xbmc-addons-depends-windows)
+project(kodi-addons-depends-windows)
 
 cmake_minimum_required(VERSION 2.8)
 

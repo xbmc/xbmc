@@ -855,8 +855,22 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_CONTENTS_MENU:
-  case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_CONTENTS_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_ROOT_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_ROOT_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_TOP_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TOP_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_DVD_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_DVD_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
     xbmcKey.iButton = XINPUT_IR_REMOTE_MENU;
     PushCecKeypress(xbmcKey);
     break;
@@ -1053,6 +1067,11 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_SELECT_AV_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_AUDIO_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
+  case CEC_USER_CONTROL_CODE_NUMBER_ENTRY_MODE:
+  case CEC_USER_CONTROL_CODE_NUMBER11:
+  case CEC_USER_CONTROL_CODE_NUMBER12:
+  case CEC_USER_CONTROL_CODE_SELECT_BROADCAST_TYPE:
+  case CEC_USER_CONTROL_CODE_SELECT_SOUND_PRESENTATION:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
     break;
@@ -1185,7 +1204,7 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
     break;
   }
 
-  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && g_advancedSettings.CanLogComponent(LOGCEC)))
+  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && CLog::IsLogLevelLogged(LOGDEBUG) && g_advancedSettings.CanLogComponent(LOGCEC)))
     CLog::Log(iLevel, "%s - %s", __FUNCTION__, message.message);
 
   return 1;
@@ -1268,8 +1287,8 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
-  // use the same client version as libCEC version
-  m_configuration.clientVersion = CEC_CLIENT_VERSION_CURRENT;
+  // client version matches the version of libCEC that we originally used the API from
+  m_configuration.clientVersion = CEC_CLIENT_VERSION_2_2_0;
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
@@ -1347,8 +1366,13 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
   m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
 
-  // double tap prevention timeout in ms
+#if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
+  // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
+  m_configuration.iDoubleTapTimeout50Ms = GetSettingInt("double_tap_timeout_ms") / 50;
+#else
+  // backwards compatibility. will be removed once the next major release of libCEC is out
   m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+#endif
 }
 
 void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)

@@ -843,12 +843,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     }
     case TMSG_CECACTIVATESOURCE:
     {
-      *((bool*)pMsg->lpVoid) = g_peripherals.ToggleDeviceState(STATE_ACTIVATE_SOURCE);
+      g_peripherals.ToggleDeviceState(STATE_ACTIVATE_SOURCE);
       break;
     }
     case TMSG_CECSTANDBY:
     {
-      *((bool*)pMsg->lpVoid) = g_peripherals.ToggleDeviceState(STATE_STANDBY);
+      g_peripherals.ToggleDeviceState(STATE_STANDBY);
       break;
     }
     case TMSG_START_ANDROID_ACTIVITY:
@@ -1396,29 +1396,19 @@ bool CApplicationMessenger::CECToggleState()
 
   ThreadMessage tMsg = {TMSG_CECTOGGLESTATE};
   tMsg.lpVoid = (void*)&result;
-  SendMessage(tMsg, false);
+  SendMessage(tMsg, true);
 
   return result;
 }
 
-bool CApplicationMessenger::CECActivateSource()
+void CApplicationMessenger::CECActivateSource()
 {
-  bool result;
-
   ThreadMessage tMsg = {TMSG_CECACTIVATESOURCE};
-  tMsg.lpVoid = (void*)&result;
   SendMessage(tMsg, false);
-
-  return result;
 }
 
-bool CApplicationMessenger::CECStandby()
+void CApplicationMessenger::CECStandby()
 {
-  bool result;
-
   ThreadMessage tMsg = {TMSG_CECSTANDBY};
-  tMsg.lpVoid = (void*)&result;
   SendMessage(tMsg, false);
-
-  return result;
 }

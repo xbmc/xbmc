@@ -172,17 +172,20 @@ namespace VIDEO
     m_pathsToScan.clear();
     m_pathsToClean.clear();
 
+    m_database.Open();
     if (strDirectory.empty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
       // we go.
-      m_database.Open();
       m_database.GetPaths(m_pathsToScan);
-      m_database.Close();
     }
     else
-    {
-      m_pathsToScan.insert(strDirectory);
+    { // scan all the paths of this subtree that is in the database
+      vector< pair<int, string> > subpaths;
+      m_database.GetSubPaths(m_strStartDir, subpaths);
+      for (vector< pair<int, string> >::iterator it = subpaths.begin(); it < subpaths.end(); ++it)
+        m_pathsToScan.insert(it->second);
     }
+    m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
 
     StopThread();

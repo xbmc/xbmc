@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [13.9.705], [http://issues.kodi.tv])
+AC_INIT([kodi], [13.9.801], [http://issues.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -1340,6 +1340,9 @@ if test "$use_x11" = "yes" && test "$host_vendor" != "apple"; then
   PKG_CHECK_MODULES([XEXT],  [xext],
     [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([DRM],  [libdrm],
+    [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
+    AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_X11], [1], [Define to 1 if you have X11 libs installed.])
 else
   AC_MSG_RESULT($x11_disabled)
@@ -2506,6 +2509,7 @@ OUTPUT_FILES="Makefile \
     xbmc/osx/Info.plist \
     xbmc/osx/ios/XBMCIOS-Info.plist \
     xbmc/osx/atv2/XBMCATV2-Info.plist \
+    project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
     tools/android/packaging/Makefile \

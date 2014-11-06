@@ -1,4 +1,4 @@
-XBMC ADDON DEPENDENCIES
+KODI ADDON DEPENDENCIES
 =======================
 This directory contains the cmake-based buildsystem for addon dependencies. It
 looks into the "common" and the "<platform>/cmake" sub-directories and parses
@@ -36,7 +36,7 @@ specific paths:
     builds.
   * CORE_SYSTEM_NAME is the name of the platform (e.g. "linux" or "android") in
     lower-case (defaults to lowercase(CMAKE_SYSTEM_NAME)).
-  * XBMCROOT points to the root directory of the xbmc project (default is the
+  * APP_ROOT points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
@@ -56,6 +56,6 @@ In case of additional options the call might look like this
 
   cmake <path> [-G <generator>] \
         -DCMAKE_BUILD_TYPE=Release \
-        -DXBMCROOT="<path-to-xbmc-root>" \
+        -DAPP_ROOT="<path-to-project-root>" \
         -DARCH_DEFINES="-DTARGET_LINUX" \
         -DCMAKE_INSTALL_PREFIX="<path-to-install-directory"

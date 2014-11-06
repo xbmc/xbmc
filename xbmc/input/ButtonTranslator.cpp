@@ -181,7 +181,6 @@ static const ActionMapping actions[] =
         {"analogseekforward" , ACTION_ANALOG_SEEK_FORWARD},
         {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
         {"showpreset"        , ACTION_VIS_PRESET_SHOW},
-        {"presetlist"        , ACTION_VIS_PRESET_LIST},
         {"nextpreset"        , ACTION_VIS_PRESET_NEXT},
         {"previouspreset"    , ACTION_VIS_PRESET_PREV},
         {"lockpreset"        , ACTION_VIS_PRESET_LOCK},
@@ -1409,6 +1408,10 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton == "subtitle") buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
   else if (strButton == "language") buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
   else if (strButton == "eject") buttonCode = XINPUT_IR_REMOTE_EJECT;
+  else if (strButton == "contentsmenu") buttonCode = XINPUT_IR_REMOTE_CONTENTS_MENU;
+  else if (strButton == "rootmenu") buttonCode = XINPUT_IR_REMOTE_ROOT_MENU;
+  else if (strButton == "topmenu") buttonCode = XINPUT_IR_REMOTE_TOP_MENU;
+  else if (strButton == "dvdmenu") buttonCode = XINPUT_IR_REMOTE_DVD_MENU;
   else if (strButton == "print") buttonCode = XINPUT_IR_REMOTE_PRINT;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
