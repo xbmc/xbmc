@@ -806,6 +806,25 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std:
 }
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
+                                           const std::string& type,
+                                           bool translateLegacy)
+{
+    // grab a relevant extension point, ignoring our addon.metadata extension point
+  for (unsigned int i = 0; i < info->num_extensions; ++i)
+  {
+    std::string extPoint = info->extensions[i].ext_point_id;
+    if (translateLegacy)
+      LegacyToType(extPoint); //Make sure we deal with the new, and not the legacy extension points
+    if (extPoint != "addon.metadata" &&
+        (type.empty() || type == extPoint))
+    { // note that Factory takes care of whether or not we have platform support
+      return Factory(&info->extensions[i]);
+    }
+  }
+  return AddonPtr();
+}
+
+AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
                                            const std::string& type)
 {
   if (!info)
@@ -815,19 +834,16 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
   { // no extensions, so we need only the dep information
     return AddonPtr(new CAddon(info));
   }
-
-  // grab a relevant extension point, ignoring our addon.metadata extension point
-  for (unsigned int i = 0; i < info->num_extensions; ++i)
+  //Alway prefer the new extension point. If that was unsuccessfull, try again but this time
+  //by also trying legacy extension point type.
+  AddonPtr result;
+  result = GetAddonFromDescriptor(info, type, false);
+  if (!result)
   {
-    std::string extPoint = info->extensions[i].ext_point_id;
-    LegacyToType(extPoint); //Make sure we deal with the new, and not the legacy extension points
-    if (extPoint != "addon.metadata" &&
-       (type.empty() || type == extPoint))
-    { // note that Factory takes care of whether or not we have platform support
-      return Factory(&info->extensions[i]);
-    }
+    result = GetAddonFromDescriptor(info, type, true);
   }
-  return AddonPtr();
+
+  return result;
 }
 
 // FIXME: This function may not be required
