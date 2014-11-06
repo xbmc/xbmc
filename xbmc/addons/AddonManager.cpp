@@ -422,8 +422,17 @@ bool CAddonMgr::HasOutdatedAddons()
   return GetAllOutdatedAddons(dummy);
 }
 
+template<typename OBJ, typename ID_TYPE>
+struct IDFinder{
+  IDFinder(const ID_TYPE& id) : id(id) {}
+  bool operator()(const boost::shared_ptr<OBJ> obj) { return obj->ID() == id; }
+  const ID_TYPE id;
+};
+
 void CAddonMgr::GetAddons(const std::string ext_point, VECADDONS &addons, bool enabled)
 {
+  int duplicateCheckRange = addons.size();
+
   CSingleLock lock(m_critSection);
   if (!m_cp_context)
     return;
@@ -435,6 +444,12 @@ void CAddonMgr::GetAddons(const std::string ext_point, VECADDONS &addons, bool e
     const cp_extension_t *props = exts[i];
     if (IsAddonDisabled(props->plugin->identifier) != enabled)
     {
+      if (duplicateCheckRange)
+      {
+        VECADDONS::iterator end = addons.begin() + duplicateCheckRange;
+        if(std::find_if(addons.begin(), end, IDFinder<IAddon, string>(props->plugin->identifier))!=end)
+          continue; //We already have that addon
+      }
       AddonPtr addon(Factory(props));
       if (addon)
       {
