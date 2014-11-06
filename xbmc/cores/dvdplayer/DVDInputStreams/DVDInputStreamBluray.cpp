@@ -383,19 +383,8 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   if(m_navmode)
   {
-    int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
-    if(region == 0)
-    {
-      CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - region dvd must be set in setting, assuming region 1");
-      region = 1;
-    }
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_REGION_CODE,  region);
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_PARENTAL,     0);
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, 0);
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG,   g_langInfo.GetDVDAudioLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG,      g_langInfo.GetDVDSubtitleLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG,    g_langInfo.GetDVDMenuLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, "us");
+    SetupPlayerSettings();
+
     m_dll->bd_register_overlay_proc (m_bd, this, bluray_overlay_cb);
 #ifdef HAVE_LIBBLURAY_BDJ
     m_dll->bd_register_argb_overlay_proc (m_bd, this, bluray_overlay_argb_cb, NULL);
@@ -1127,6 +1116,23 @@ void CDVDInputStreamBluray::SkipStill()
 bool CDVDInputStreamBluray::HasMenu()
 {
   return m_navmode;
+}
+
+void CDVDInputStreamBluray::SetupPlayerSettings()
+{
+  int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
+  if (region == 0)
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - region dvd must be set in setting, assuming region 1");
+    region = 1;
+  }
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_REGION_CODE, region);
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PARENTAL, 0);
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, 0);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG, g_langInfo.GetDVDAudioLanguage().c_str());
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG, g_langInfo.GetDVDSubtitleLanguage().c_str());
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, g_langInfo.GetDVDMenuLanguage().c_str());
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, "us");
 }
 
 #endif
