@@ -319,7 +319,8 @@ int64_t CSMBFile::GetPosition()
 
 int64_t CSMBFile::GetLength()
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return -1;
   return m_fileSize;
 }
 
