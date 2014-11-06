@@ -139,7 +139,8 @@ function getBranchName ()
   else
     #if we are in detached head state
     #fetch the first non-pullrequest branch we can find with HEAD
-    git branch -r --contains HEAD | sed "/origin\/pr\//d" | head -n1 | awk '{gsub(".*/","");print $1}'
+    #also only grep in remotes that match current GITHUB_REPO
+    git branch -r --contains HEAD | sed "/origin\/pr\//d" | grep $GITHUB_REPO | head -n1 | awk '{gsub(".*/","");print $1}'
   fi
 }
 
