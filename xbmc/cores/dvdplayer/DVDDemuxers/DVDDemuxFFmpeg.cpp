@@ -170,7 +170,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_pFormatContext = NULL;
   m_pInput = NULL;
   m_ioContext = NULL;
-  m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_currentPts = DVD_NOPTS_VALUE;
   m_bMatroska = false;
   m_bAVI = false;
   m_speed = DVD_PLAYSPEED_NORMAL;
@@ -204,7 +204,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   AVInputFormat* iformat = NULL;
   std::string strFile;
   m_streaminfo = streaminfo;
-  m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_currentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_program = UINT_MAX;
   const AVIOInterruptCB int_cb = { interrupt_cb, this };
@@ -522,7 +522,7 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
     av_read_frame_flush(m_pFormatContext);
 
-  m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_currentPts = DVD_NOPTS_VALUE;
 
   m_pkt.result = -1;
   av_free_packet(&m_pkt.pkt);
@@ -540,12 +540,12 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
   if(m_speed != DVD_PLAYSPEED_PAUSE && iSpeed == DVD_PLAYSPEED_PAUSE)
   {
-    m_pInput->Pause((double)m_iCurrentPts);
+    m_pInput->Pause(m_currentPts);
     av_read_pause(m_pFormatContext);
   }
   else if(m_speed == DVD_PLAYSPEED_PAUSE && iSpeed != DVD_PLAYSPEED_PAUSE)
   {
-    m_pInput->Pause((double)m_iCurrentPts);
+    m_pInput->Pause(m_currentPts);
     av_read_play(m_pFormatContext);
   }
   m_speed = iSpeed;
@@ -774,8 +774,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->duration =  DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num / stream->time_base.den);
 
         // used to guess streamlength
-        if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
-          m_iCurrentPts = pPacket->dts;
+        if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
+          m_currentPts = pPacket->dts;
 
 
         // check if stream has passed full duration, needed for live streams
@@ -898,10 +898,10 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
       UpdateCurrentPTS();
   }
 
-  if(m_iCurrentPts == DVD_NOPTS_VALUE)
+  if(m_currentPts == DVD_NOPTS_VALUE)
     CLog::Log(LOGDEBUG, "%s - unknown position after seek", __FUNCTION__);
   else
-    CLog::Log(LOGDEBUG, "%s - seek ended up on time %d", __FUNCTION__, (int)(m_iCurrentPts / DVD_TIME_BASE * 1000));
+    CLog::Log(LOGDEBUG, "%s - seek ended up on time %d", __FUNCTION__, (int)(m_currentPts / DVD_TIME_BASE * 1000));
 
   // in this case the start time is requested time
   if(startpts)
@@ -930,8 +930,8 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-
+  m_currentPts = DVD_NOPTS_VALUE;
+  
   int idx = av_find_default_stream_index(m_pFormatContext);
   if (idx >= 0)
   {
@@ -939,8 +939,8 @@ void CDVDDemuxFFmpeg::UpdateCurrentPTS()
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
     {
       double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
-      if(m_iCurrentPts == DVD_NOPTS_VALUE || m_iCurrentPts > ts )
-        m_iCurrentPts = ts;
+      if(m_currentPts == DVD_NOPTS_VALUE || m_currentPts > ts )
+        m_currentPts = ts;
     }
   }
 }
@@ -1359,14 +1359,14 @@ int CDVDDemuxFFmpeg::GetChapter()
     return ich->GetChapter();
 
   if(m_pFormatContext == NULL
-  || m_iCurrentPts == DVD_NOPTS_VALUE)
+  || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
   for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
   {
     AVChapter *chapter = m_pFormatContext->chapters[i];
-    if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
-    && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
+    if(m_currentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
+    && m_currentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
       return i + 1;
   }
 
