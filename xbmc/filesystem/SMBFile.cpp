@@ -596,14 +596,12 @@ void CSMBFile::Close()
 ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (m_fd == -1) return -1;
-  DWORD dwNumberOfBytesWritten = 0;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   smb.Init();
   CSingleLock lock(smb);
-  dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
-  return dwNumberOfBytesWritten;
+  return  smbc_write(m_fd, (void*)lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)
