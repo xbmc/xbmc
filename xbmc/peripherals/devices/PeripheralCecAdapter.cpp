@@ -855,8 +855,22 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_CONTENTS_MENU:
-  case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_CONTENTS_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_ROOT_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_ROOT_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_TOP_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TOP_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_DVD_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_DVD_MENU;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
     xbmcKey.iButton = XINPUT_IR_REMOTE_MENU;
     PushCecKeypress(xbmcKey);
     break;
@@ -1053,6 +1067,11 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_SELECT_AV_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_AUDIO_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
+  case CEC_USER_CONTROL_CODE_NUMBER_ENTRY_MODE:
+  case CEC_USER_CONTROL_CODE_NUMBER11:
+  case CEC_USER_CONTROL_CODE_NUMBER12:
+  case CEC_USER_CONTROL_CODE_SELECT_BROADCAST_TYPE:
+  case CEC_USER_CONTROL_CODE_SELECT_SOUND_PRESENTATION:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
     break;

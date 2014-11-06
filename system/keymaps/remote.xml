@@ -53,6 +53,8 @@
       <pageminus>PageDown</pageminus>
       <back>Back</back>
       <menu>PreviousMenu</menu>
+      <contentsmenu>PreviousMenu</contentsmenu>
+      <rootmenu>PreviousMenu</rootmenu>
       <title>ContextMenu</title>
       <info>Info</info>
       <skipplus>SkipNext</skipplus>
@@ -183,6 +185,8 @@
       <down>ChapterOrBigStepBack</down>
       <back>Back</back>
       <menu>OSD</menu>
+      <contentsmenu>OSD</contentsmenu>
+      <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <select>OSD</select>
       <title>CodecInfo</title>
@@ -209,11 +213,15 @@
       <title>CodecInfo</title>
       <info>Back</info>
       <menu>OSD</menu>
+      <contentsmenu>OSD</contentsmenu>
+      <rootmenu>OSD</rootmenu>
     </remote>
   </FullscreenInfo>
   <PlayerControls>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
     </remote>
   </PlayerControls>
   <Visualisation>
@@ -226,6 +234,8 @@
       <title>CodecInfo</title>
       <select>ActivateWindow(VisualisationPresetList)</select>
       <menu>OSD</menu>
+      <contentsmenu>OSD</contentsmenu>
+      <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <info>Info</info>
       <guide>ActivateWindow(PVROSDGuide)</guide>
@@ -235,6 +245,8 @@
   <MusicOSD>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <title>Info</title>
       <info>CodecInfo</info>
     </remote>
@@ -242,11 +254,15 @@
   <VisualisationSettings>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
     </remote>
   </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
     </remote>
   </VisualisationPresetList>
   <SlideShow>
@@ -285,12 +301,16 @@
   <VideoOSD>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <start>Back</start>
     </remote>
   </VideoOSD>
   <VideoMenu>
     <remote>
       <menu>OSD</menu>
+      <contentsmenu>OSD</contentsmenu>
+      <rootmenu>OSD</rootmenu>
       <info>Info</info>
       <title>CodecInfo</title>
       <zero>Number0</zero>
@@ -311,18 +331,24 @@
   <OSDVideoSettings>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <start>Back</start>
     </remote>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <start>Back</start>
     </remote>
   </OSDAudioSettings>
   <VideoBookmarks>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <start>Back</start>
       <zero>Delete</zero>
     </remote>
@@ -493,11 +519,15 @@
   <LockSettings>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
     </remote>
   </LockSettings>
   <ProfileSettings>
     <remote>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
     </remote>
   </ProfileSettings>
   <PictureInfo>
@@ -525,6 +555,8 @@
       <blue>Blue</blue>
       <info>Info</info>
       <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
       <start>Back</start>
       <teletext>Back</teletext>
     </remote>
@@ -554,6 +586,8 @@
     <remote>
       <back>Close</back>
       <menu>Close</menu>
+      <contentsmenu>Close</contentsmenu>
+      <rootmenu>Close</rootmenu>
       <start>Close</start>
       <playlist>Close</playlist>
     </remote>
@@ -562,6 +596,8 @@
     <remote>
       <back>Close</back>
       <menu>Close</menu>
+      <contentsmenu>Close</contentsmenu>
+      <rootmenu>Close</rootmenu>
       <start>Close</start>
       <guide>Close</guide>
     </remote>
@@ -570,12 +606,16 @@
     <remote>
       <back>Close</back>
       <menu>Close</menu>
+      <contentsmenu>Close</contentsmenu>
+      <rootmenu>Close</rootmenu>
     </remote>
   </PVROSDDirector>
   <PVROSDCutter>
     <remote>
       <back>Close</back>
       <menu>Close</menu>
+      <contentsmenu>Close</contentsmenu>
+      <rootmenu>Close</rootmenu>
     </remote>
   </PVROSDCutter>
   <MyTVSettings>
