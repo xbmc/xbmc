@@ -310,13 +310,11 @@ CSMBFile::~CSMBFile()
 
 int64_t CSMBFile::GetPosition()
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return -1;
   smb.Init();
   CSingleLock lock(smb);
-  int64_t pos = smbc_lseek(m_fd, 0, SEEK_CUR);
-  if ( pos < 0 )
-    return 0;
-  return pos;
+  return smbc_lseek(m_fd, 0, SEEK_CUR);
 }
 
 int64_t CSMBFile::GetLength()
