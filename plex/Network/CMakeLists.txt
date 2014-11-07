@@ -1,6 +1,8 @@
 set(net_SRCS NetworkInterface.cpp NetworkInterface.h  NetworkServiceAdvertiser.h  NetworkServiceAdvertiserPMS.h  NetworkServiceBase.h  NetworkServiceBrowser.h  NetworkService.h  PlexNetworkServiceAdvertiser.h)
 if(TARGET_COMMON_LINUX)
   list(APPEND net_SRCS NetworkInterfaceLinux.cpp)
+elseif(TARGET_FREEBSD)
+  list(APPEND net_SRCS NetworkInterfaceBSD.cpp)
 else(TARGET_COMMON_LINUX)
   list(APPEND net_SRCS NetworkInterfaceWin32.cpp)
 endif(TARGET_COMMON_LINUX)

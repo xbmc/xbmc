@@ -8,8 +8,8 @@ if(TARGET_WIN32)
   set(ae_SRCS ${ae_SRCS} AESinkWASAPI.cpp AESinkWASAPI.h AESinkDirectSound.cpp AESinkDirectSound.h)
 endif(TARGET_WIN32)
 
-if(TARGET_COMMON_LINUX)
+if(TARGET_COMMON_LINUX OR TARGET_FREEBSD)
   set(ae_SRCS ${ae_SRCS} AESinkOSS.cpp AESinkOSS.h)
-endif(TARGET_COMMON_LINUX)
+endif(TARGET_COMMON_LINUX OR TARGET_FREEBSD)
 
 add_sources(${ae_SRCS})

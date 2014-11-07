@@ -1,7 +1,7 @@
 find_all_sources(. storage_SRCS)
 if(TARGET_COMMON_DARWIN)
   find_all_sources(osx storage_os_SRCS)
-elseif(TARGET_COMMON_LINUX)
+elseif(TARGET_COMMON_LINUX OR TARGET_FREEBSD)
   find_all_sources(linux storage_os_SRCS)
 elseif(TARGET_WIN32)
   find_all_sources(windows storage_os_SRCS)

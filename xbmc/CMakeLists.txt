@@ -3,12 +3,16 @@ peripherals pictures playlists powermanagement programs rendering settings stora
 utils video windowing windows pvr commons epg main test)
 
 if(TARGET_COMMON_DARWIN)
-	list(APPEND subdirs osx)
+  list(APPEND subdirs osx)
 endif(TARGET_COMMON_DARWIN)
 
 if(TARGET_POSIX)
-	list(APPEND subdirs linux)
+  list(APPEND subdirs linux)
 endif(TARGET_POSIX)
+
+if(TARGET_FREEBSD)
+  list(APPEND subdirs freebsd)
+endif(TARGET_FREEBSD)
 
 if(TARGET_WIN32)
   list(APPEND subdirs win32)
@@ -30,7 +34,7 @@ foreach(f ${PlexOwnedFiles})
 endforeach()
 
 if(NOT ENABLE_DVD_DRIVE)
-	list(REMOVE_ITEM xbmc_SRCS ./Autorun.cpp)
+  list(REMOVE_ITEM xbmc_SRCS ./Autorun.cpp)
 endif()
 
 get_property(ALL_SRCS GLOBAL PROPERTY SRCS_LIST)

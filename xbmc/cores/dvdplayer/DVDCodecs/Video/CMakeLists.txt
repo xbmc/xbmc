@@ -8,7 +8,7 @@ if(NOT TARGET_WIN32)
 	list(REMOVE_ITEM video_SRCS ./DXVA.cpp)
 endif()
 
-if (NOT TARGET_LINUX)
+if (NOT TARGET_LINUX AND NOT TARGET_FREEBSD)
 	list(REMOVE_ITEM video_SRCS ./VDPAU.cpp)
 	list(REMOVE_ITEM video_SRCS ./VAAPI.cpp)
 endif()

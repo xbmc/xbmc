@@ -1,8 +1,8 @@
-if(TARGET_COMMON_LINUX)
+if(TARGET_COMMON_LINUX OR TARGET_FREEBSD)
   add_subdirectory(linux)
-elseif(TARGET_WIN32)
+elseif(TARGET_WIN32 OR TARGET_FREEBSD)
   add_subdirectory(windows)
-endif(TARGET_COMMON_LINUX)
+endif(TARGET_COMMON_LINUX OR TARGET_FREEBSD)
 
 find_all_sources(. input_SRCS)
 if(TARGET_WIN32)
