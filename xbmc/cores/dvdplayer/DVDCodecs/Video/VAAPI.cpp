@@ -1451,6 +1451,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
+      break;
 
     case O_TOP_CONFIGURED_IDLE:
       if (port == NULL) // timeout
