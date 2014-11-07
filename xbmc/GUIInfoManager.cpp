@@ -4333,8 +4333,13 @@ void CGUIInfoManager::UpdateAVInfo()
       g_application.m_pPlayer->GetVideoStreamInfo(video);
       g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), audio);
 
-      m_videoInfo = video;
-      m_audioInfo = audio;
+      {
+        // Gui Thread and Python API can call this
+        // overwriting members will lead to corruption
+        CSingleLock lock(m_critUpdate);
+        m_videoInfo = video;
+        m_audioInfo = audio;
+      }
       m_AVInfoValid = true;
     }
   }

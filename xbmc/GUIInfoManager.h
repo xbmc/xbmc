@@ -958,6 +958,7 @@ protected:
   SPlayerAudioStreamInfo m_audioInfo;
 
   CCriticalSection m_critInfo;
+  CCriticalSection m_critUpdate;
 };
 
 /*!
