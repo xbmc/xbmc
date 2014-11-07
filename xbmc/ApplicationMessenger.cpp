@@ -1281,7 +1281,7 @@ void CApplicationMessenger::SendText(const std::string &aTextString, bool closeK
   if (!window)
     return;
 
-  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
+  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, window->GetFocusedControlID());
   msg.SetLabel(aTextString);
   msg.SetParam1(closeKeyboard ? 1 : 0);
   SendGUIMessage(msg, window->GetID());
