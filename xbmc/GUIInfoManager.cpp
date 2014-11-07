@@ -3617,7 +3617,6 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.m_pPlayer->IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
 
-  UpdateAVInfo();
   switch (item)
   {
   case MUSICPLAYER_PLAYLISTLEN:
@@ -3634,6 +3633,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_BITRATE:
     {
+      UpdateAVInfo();
       CStdString strBitrate = "";
       if (m_audioInfo.bitrate > 0)
         strBitrate = StringUtils::Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
@@ -3642,6 +3642,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_CHANNELS:
     {
+      UpdateAVInfo();
       CStdString strChannels = "";
       if (m_audioInfo.channels > 0)
       {
@@ -3652,6 +3653,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
     {
+      UpdateAVInfo();
       CStdString strBitsPerSample = "";
       if (m_audioInfo.bitspersample > 0)
         strBitsPerSample = StringUtils::Format("%i", m_audioInfo.bitspersample);
@@ -3660,6 +3662,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_SAMPLERATE:
     {
+      UpdateAVInfo();
       CStdString strSampleRate = "";
       if (m_audioInfo.samplerate > 0)
         strSampleRate = StringUtils::Format("%.5g", ((double)m_audioInfo.samplerate / 1000.0));
@@ -3668,6 +3671,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_CODEC:
     {
+      UpdateAVInfo();
       return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
     }
     break;
