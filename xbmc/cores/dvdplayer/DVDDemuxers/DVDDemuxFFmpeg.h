@@ -147,7 +147,7 @@ protected:
 
   AVIOContext* m_ioContext;
 
-  double   m_iCurrentPts; // used for stream length estimation
+  double   m_currentPts; // used for stream length estimation
   bool     m_bMatroska;
   bool     m_bAVI;
   int      m_speed;
