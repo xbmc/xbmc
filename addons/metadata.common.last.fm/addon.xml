@@ -10,7 +10,7 @@
              library="lastfm.xml"/>
   <extension point="xbmc.metadata.scraper.library"
              library="lastfm.xml"/>
-  <extension point="addon.addon.metadata">
+  <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на инф. от LastFM</summary>
     <summary lang="en">LastFM Scraper Library</summary>
