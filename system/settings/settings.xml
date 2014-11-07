@@ -2759,7 +2759,7 @@
         </setting>
         <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36534">
           <level>1</level>
-          <default>32,64,128,256,512,1024,2048,4096,16384,32768</default>
+          <default>32768</default>
           <constraints>
             <options>loggingcomponents</options>
             <delimiter>,</delimiter>
