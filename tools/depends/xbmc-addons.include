@@ -1,5 +1,3 @@
--include Makefile.include
-
 ifeq ($(PLATFORM),)
   PLATFORM = native
 endif
@@ -33,6 +31,6 @@ endif
 	mkdir -p $(PLATFORM); \
          cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX) $(CMAKE_EXTRA) \
-         -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ ;\
+         -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          $(MAKE);
 	touch $@
