@@ -653,7 +653,7 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
   
   //something went wrong ...
   if (numberOfBytesRead < 0) 
-    CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+    CLog::Log(LOGERROR, "%s - Error( %" PRId64", %s )", __FUNCTION__, (int64_t)numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
 
   return numberOfBytesRead;
 }
