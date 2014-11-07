@@ -383,7 +383,7 @@ Section "VS2010 C++ re-distributable Package (x86)" SEC_VCREDIST2
   DetailPrint "Running VS2010 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full 
   SetOutPath "$TEMP\vc2010"
-  File "${app_root}\..\dependencies\vcredist\2008\vcredist_x86.exe"
+  File "${app_root}\..\dependencies\vcredist\2010\vcredist_x86.exe"
   ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q' $VSRedistSetupError
   RMDir /r "$TEMP\vc2010"
   DetailPrint "Finished VS2010 re-distributable setup"
