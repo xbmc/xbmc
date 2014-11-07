@@ -115,7 +115,7 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
     m_dst_chan_layout = 0;
     for (unsigned int out=0; out<remapLayout->Count(); out++)
     {
-      m_dst_chan_layout += (uint64_t) (1 << out);
+      m_dst_chan_layout += (uint64_t) 1 << out;
       int idx = CAEUtil::GetAVChannelIndex((*remapLayout)[out], m_src_chan_layout);
       if (idx >= 0)
       {

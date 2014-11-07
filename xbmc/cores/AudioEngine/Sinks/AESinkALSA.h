@@ -66,7 +66,7 @@ private:
   snd_pcm_chmap_t* SelectALSAChannelMap(const CAEChannelInfo& info);
 #endif
 
-  void           GetAESParams(const AEAudioFormat format, std::string& params);
+  void           GetAESParams(const AEAudioFormat& format, std::string& params);
   void           HandleError(const char* name, int err);
 
   std::string       m_initDevice;
