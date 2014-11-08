@@ -2,7 +2,7 @@
 <language locale="ru">
   <charsets>
     <gui unicodefont="true">utf-8</gui>
-    <subtitle>utf-8</subtitle>
+    <subtitle>CP1251</subtitle>
   </charsets>
   <dvd>
     <menu>ru</menu>
