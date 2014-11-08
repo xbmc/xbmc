@@ -45,6 +45,7 @@
 
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
+#include "cores/DataCacheCore.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "Application.h"
@@ -486,6 +487,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       Update(s);
     }
   }
+  g_dataCacheCore.SignalAudioInfoChange();
+  g_dataCacheCore.SignalVideoInfoChange();
 }
 
 void CDVDPlayer::CreatePlayers()
@@ -3229,6 +3232,9 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
       stream->SetDiscard(AVDISCARD_ALL);
     }
   }
+
+  g_dataCacheCore.SignalAudioInfoChange();
+  g_dataCacheCore.SignalVideoInfoChange();
 
   return res;
 }

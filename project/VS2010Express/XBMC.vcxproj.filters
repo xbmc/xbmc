@@ -3083,6 +3083,9 @@
     <ClCompile Include="..\..\xbmc\video\videosync\VideoSyncD3D.cpp">
       <Filter>video\videosync</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DataCacheCore.cpp">
+      <Filter>cores</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6033,6 +6036,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\videosync\VideoSync.h">
       <Filter>video\videosync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h">
+      <Filter>cores</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

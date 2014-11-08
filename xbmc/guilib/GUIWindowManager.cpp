@@ -639,7 +639,7 @@ void CGUIWindowManager::FrameMove()
   for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
     (*it)->FrameMove();
 
-  g_infoManager.m_AVInfoValid = false;
+  g_infoManager.UpdateAVInfo();
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
