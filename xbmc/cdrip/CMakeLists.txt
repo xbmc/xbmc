@@ -1,5 +1,7 @@
 find_all_sources(. cdrip_SRCS)
 list(REMOVE_ITEM cdrip_SRCS ./EncoderFFmpeg.cpp)
 list(REMOVE_ITEM cdrip_SRCS ./EncoderFFmpeg.h)
+list(REMOVE_ITEM cdrip_SRCS ./EncoderLame.cpp)
+list(REMOVE_ITEM cdrip_SRCS ./EncoderLame.h)
 list(REMOVE_ITEM cdrip_SRCS ./CDDARipper.cpp)
 add_sources(${cdrip_SRCS})
