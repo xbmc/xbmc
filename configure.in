@@ -771,13 +771,8 @@ CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS"
 
 if test "$use_optimizations" = "yes"; then
   final_message="$final_message\n  Optimization:\tYes"
-  if test "$target_platform" = "target_raspberry_pi"; then
-    CXXFLAGS="$CXXFLAGS"
-    CFLAGS="$CFLAGS"
-  else
-    CXXFLAGS="-O2 $CXXFLAGS"
-    CFLAGS="-O2 $CFLAGS"
-  fi
+  CXXFLAGS="-O2 $CXXFLAGS"
+  CFLAGS="-O2 $CFLAGS"
 else
   final_message="$final_message\n  Optimization:\tNo"
 fi
