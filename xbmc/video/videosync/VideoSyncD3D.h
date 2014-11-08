@@ -34,6 +34,7 @@ public:
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();
   virtual float GetFps();
+  virtual void RefreshChanged();
 
   virtual void OnCreateDevice() {}
   virtual void OnDestroyDevice();
