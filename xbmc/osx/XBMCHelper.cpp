@@ -132,6 +132,11 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     }
   }
 
+  if (settingId == "input.appleremotealwayson")
+  {
+    HandleLaunchAgent();
+  }
+
   return true;
 }
 
