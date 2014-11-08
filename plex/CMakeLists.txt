@@ -168,6 +168,11 @@ endif()
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES PDB_NAME "Plex Home Theater")
 
+if(TARGET_POSIX)
+  # Allow shared libraries to call plexhometheater functions
+  set_target_properties(${PLEX_TARGET_NAME} PROPERTIES ENABLE_EXPORTS 1)
+endif(TARGET_POSIX)
+
 if(ENABLE_DUMP_SYMBOLS)
   message(STATUS "Generating breakpad symbols")
   GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
