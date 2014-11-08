@@ -595,7 +595,7 @@ void CApplication::Preflight()
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
-  setenv("APP_HOME", install_path.c_str(), 0);
+  setenv("KODI_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
 #endif
@@ -1096,9 +1096,9 @@ bool CApplication::InitDirectoriesLinux()
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
   StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "APP_HOME";
-  const char* envAppBinHome = "APP_BIN_HOME";
-  const char* envAppTemp = "APP_TEMP";
+  const char* envAppHome = "KODI_HOME";
+  const char* envAppBinHome = "KODI_BIN_HOME";
+  const char* envAppTemp = "KODI_TEMP";
 
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
@@ -1189,7 +1189,7 @@ bool CApplication::InitDirectoriesOSX()
 
   std::string appPath;
   CUtil::GetHomePath(appPath);
-  setenv("APP_HOME", appPath.c_str(), 0);
+  setenv("KODI_HOME", appPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
@@ -1269,7 +1269,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  CEnvironment::setenv("APP_HOME", xbmcPath);
+  CEnvironment::setenv("KODI_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
@@ -1280,7 +1280,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  CEnvironment::setenv("APP_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
+  CEnvironment::setenv("KODI_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
 
   CreateUserDirs();
 

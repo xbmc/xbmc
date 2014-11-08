@@ -1058,7 +1058,7 @@ bool CPVRClients::UpdateAddons(void)
   {
     // No PVR add-ons could be found
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
-    // Please visit xbmc.org/pvr to learn more.
+    // Please visit http://kodi.wiki/view/PVR to learn more.
     m_bNoAddonWarningDisplayed = true;
     CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
     CSettings::Get().SetBool("pvrmanager.enabled", false);

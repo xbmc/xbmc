@@ -310,18 +310,17 @@ CSMBFile::~CSMBFile()
 
 int64_t CSMBFile::GetPosition()
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return -1;
   smb.Init();
   CSingleLock lock(smb);
-  int64_t pos = smbc_lseek(m_fd, 0, SEEK_CUR);
-  if ( pos < 0 )
-    return 0;
-  return pos;
+  return smbc_lseek(m_fd, 0, SEEK_CUR);
 }
 
 int64_t CSMBFile::GetLength()
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return -1;
   return m_fileSize;
 }
 
@@ -516,6 +515,14 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if (m_fd == -1)
     return -1;
 
+  // Some external libs (libass) use test read with zero size and 
+  // null buffer pointer to check whether file is readable, but 
+  // libsmbclient always return "-1" if called with null buffer 
+  // regardless of buffer size.
+  // To overcome this, force return "0" in that case.
+  if (uiBufSize == 0 && lpBuf == NULL)
+    return 0;
+
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
   /* work around stupid bug in samba */
@@ -525,21 +532,37 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   /* also worse, a request of exactly 64k will return */
   /* as if eof, client has a workaround for windows */
   /* thou it seems other servers are affected too */
-  if( uiBufSize >= 64*1024-2 )
-    uiBufSize = 64*1024-2;
-
-  ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
-
-  if ( bytesRead < 0 && errno == EINVAL )
+  // FIXME: does this workaround still required?
+  ssize_t totalRead = 0;
+  uint8_t* buf = (uint8_t*)lpBuf;
+  do
   {
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
-    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
-  }
+    const ssize_t readSize = (uiBufSize >= 64 * 1024 - 2) ? 64 * 1024 - 2 : uiBufSize;
+    ssize_t r = smbc_read(m_fd, buf + totalRead, readSize);
+    if (r < 0)
+    {
+      if (errno == EINVAL)
+      {
+        CLog::LogF(LOGWARNING, "Error %d: \"%s\" - Retrying", errno, strerror(errno));
+        r = smbc_read(m_fd, buf + totalRead, readSize);
+      }
+      if (r < 0)
+      {
+        CLog::LogF(LOGERROR, "Error %d: \"%s\"", errno, strerror(errno));
+        if (totalRead == 0)
+          return -1;
 
-  if ( bytesRead < 0 )
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
+        break;
+      }
+    }
 
-  return bytesRead;
+    totalRead += r;
+    uiBufSize -= r;
+    if (r != readSize)
+      break;
+  } while (uiBufSize > 0);
+
+  return totalRead;
 }
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
@@ -573,14 +596,12 @@ void CSMBFile::Close()
 ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (m_fd == -1) return -1;
-  DWORD dwNumberOfBytesWritten = 0;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   smb.Init();
   CSingleLock lock(smb);
-  dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
-  return dwNumberOfBytesWritten;
+  return  smbc_write(m_fd, (void*)lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)

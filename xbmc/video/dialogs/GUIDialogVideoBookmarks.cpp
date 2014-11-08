@@ -185,7 +185,11 @@ void CGUIDialogVideoBookmarks::Delete(int item)
   {
     CVideoDatabase videoDatabase;
     videoDatabase.Open();
-    videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[item],m_bookmarks[item].type);
+    std::string path(g_application.CurrentFile());
+    if (g_application.CurrentFileItem().HasProperty("original_listitem_url") &&
+       !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
+      path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+    videoDatabase.ClearBookMarkOfFile(path, m_bookmarks[item], m_bookmarks[item].type);
     videoDatabase.Close();
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }

@@ -498,14 +498,17 @@ int CBuiltins::Execute(const std::string& execString)
 #endif
   else if (execute == "stopscript")
   {
-    std::string scriptpath(params[0]);
-
-    // Test to see if the param is an addon ID
-    AddonPtr script;
-    if (CAddonMgr::Get().GetAddon(params[0], script))
-      scriptpath = script->LibPath();
-
-    CScriptInvocationManager::Get().Stop(scriptpath);
+    // FIXME: This does not work for addons with multiple extension points!
+    // Are there any use for this? TODO: Fix hack in CScreenSaver::Destroy() and deprecate.
+    if (!params.empty())
+    {
+      std::string scriptpath(params[0]);
+      // Test to see if the param is an addon ID
+      AddonPtr script;
+      if (CAddonMgr::Get().GetAddon(params[0], script))
+        scriptpath = script->LibPath();
+      CScriptInvocationManager::Get().Stop(scriptpath);
+    }
   }
   else if (execute == "system.exec")
   {

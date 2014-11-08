@@ -35,6 +35,7 @@ public:
   int Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio);
   int64_t GetDelay(int64_t base);
   int GetBufferedSamples();
+  bool WantsNewSamples(int samples) { return GetBufferedSamples() <= samples; }
   int CalcDstSampleCount(int src_samples, int dst_rate, int src_rate);
   int GetSrcBufferSize(int samples);
   int GetDstBufferSize(int samples);
