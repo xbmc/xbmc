@@ -1521,10 +1521,10 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   if ((width * height) > (1920 * 800))
     width_clamp = 960;
 
-  // allow rendering without scaledown for all
-  // retina devices (which have enough power to handle it)
+  // for retina devices it should be safe [tm] to
+  // loosen the clamp a bit to 1280 pixels width
   if (CDarwinUtils::DeviceHasRetina(scale))
-    width_clamp = 1920;
+    width_clamp = 1280;
 
   int new_width = CheckNP2(width);
   if (width != new_width)
