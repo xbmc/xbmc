@@ -144,7 +144,7 @@
         </setting>
         <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
           <level>1</level>
-          <default>English QWERTY</default>
+          <default>en_QWERTY</default>
           <constraints>
             <options>keyboardlayouts</options>
             <delimiter>|</delimiter>

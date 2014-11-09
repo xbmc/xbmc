@@ -41,9 +41,11 @@ class CKeyboardLayout
 {
 public:
   CKeyboardLayout();
-  CKeyboardLayout(const std::string &name, const TiXmlElement& element);
+  CKeyboardLayout(const std::string &localeName, const std::string &variantName, const TiXmlElement& element);
   virtual ~CKeyboardLayout(void);
-  const std::string& GetName() const { return m_name; }
+  std::string GetName() const;
+  const std::string& GetLocale() const { return m_locale; }
+  const std::string& GetVariant() const { return m_variant; }
   std::string GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers = 0) const;
 
   enum MODIFIER_KEYS
@@ -53,16 +55,15 @@ public:
     MODIFIER_KEY_SYMBOL = 0x02
   };
 
-  /*! \brief helper to load a keyboard layout
-   \param layout the layout to load.
-   \return a CKeyboardLayout.
-   */
-  static CKeyboardLayout Load(const std::string &layout);
-
-  /*! \brief helper to list available keyboard layouts
-   \return a vector of CKeyboardLayouts with the layout names.
+  /** \brief helper to list available keyboard layouts
+   *  \return a vector of CKeyboardLayouts with the layout names.
    */
   static std::vector<CKeyboardLayout> LoadLayouts();
+
+  /** \brief load currently selected layout from settings
+   *  \return a vector of CKeyboardLayouts with the layout names.
+   */
+  static std::vector<CKeyboardLayout> LoadActiveLayouts();
 
   static void SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void* data);
 
@@ -72,6 +73,7 @@ private:
   typedef std::vector< std::vector<std::string> > KeyboardRows;
   typedef std::map<unsigned int, KeyboardRows> Keyboards;
 
-  std::string m_name;
+  std::string m_locale;
+  std::string m_variant;
   Keyboards   m_keyboards;
 };
