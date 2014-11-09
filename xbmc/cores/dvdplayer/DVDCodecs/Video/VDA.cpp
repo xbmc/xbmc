@@ -36,7 +36,7 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags)
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
 
 CDecoder::CDecoder()
-: m_renderbuffers_count(0)
+: m_renderbuffers_count(3)
 {
   m_ctx = (vda_context*)calloc(1, sizeof(vda_context));
 }
