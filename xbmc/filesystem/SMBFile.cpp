@@ -222,8 +222,11 @@ std::string CSMB::URLEncode(const CURL &url)
   if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
   {
     flat += URLEncode(url.GetUserName());
-    flat += ":";
-    flat += URLEncode(url.GetPassWord());
+    if(url.GetPassWord().length() > 0)
+    {
+      flat += ":";
+      flat += URLEncode(url.GetPassWord());
+    }
     flat += "@";
   }
   flat += URLEncode(url.GetHostName());
