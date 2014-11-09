@@ -7,8 +7,9 @@
         <import addon="xbmc.addon" version="12.0.0"/>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
+    <extension point="addon.service" library="service.py" start="login"/>
     <extension point="xbmc.service" library="service.py" start="login"/>
-    <extension point="xbmc.addon.metadata">
+    <extension point="addon.metadata">
         <summary lang="be">XBMC Version Check checks if you are running latest released version.</summary>
         <summary lang="bg">Проверява дали ползвате най-новата версия на XBMC.</summary>
         <summary lang="ca">XBMC Version Check comprova si està utilitzant la última versió publicada.</summary>

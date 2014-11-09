@@ -97,6 +97,22 @@ void CAddonDatabase::UpdateTables(int version)
   {
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
   }
+  if (version < 17)
+  {
+    //Update old addon extension points to the new ones
+    m_pDS2->query("SELECT id, type FROM addon");
+
+    while (!m_pDS2->eof())
+    {
+      std::string addonType = m_pDS2->fv(1).get_asString();
+      if (LegacyToType(addonType))
+      {
+        std::string sql = PrepareSQL("update addon set type='%s' where id=%i", addonType.c_str(), m_pDS2->fv(0).get_asInt());
+        m_pDS->exec(sql);
+      }
+      m_pDS2->next();
+    }
+  }
 }
 
 int CAddonDatabase::AddAddon(const AddonPtr& addon,

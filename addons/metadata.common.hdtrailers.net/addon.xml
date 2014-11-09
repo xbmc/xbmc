@@ -6,9 +6,11 @@
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
+  <extension point="addon.metadata.scraper.library"
+             library="hdtrailers.xml"/>
   <extension point="xbmc.metadata.scraper.library"
              library="hdtrailers.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="en">HD-Trailers.net Scraper Library</summary>
     <summary lang="de">Scraper für Trailer von HD-Trailers.net</summary>
     <summary lang="es">Scraper de Trailers de HD-Trailers.net</summary>

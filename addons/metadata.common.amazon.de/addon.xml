@@ -6,9 +6,11 @@
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
+  <extension point="addon.metadata.scraper.library"
+             library="amazonde.xml"/>
   <extension point="xbmc.metadata.scraper.library"
              library="amazonde.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="en">amazon.de Scraper Library</summary>
     <description lang="en">Download Music information from amazon.de</description>

@@ -6,9 +6,11 @@
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
+  <extension point="addon.python.module"
+             library="lib" />
   <extension point="xbmc.python.module"
              library="lib" />
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <platform>all</platform>
   </extension>
 </addon>

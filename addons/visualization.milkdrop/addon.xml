@@ -5,9 +5,12 @@
   name="MilkDrop"
   provider-name="Team-Kodi">
   <extension
+    point="addon.player.musicviz"
+    library_windx="MilkDrop_win32dx.vis"/>
+  <extension
     point="xbmc.player.musicviz"
     library_windx="MilkDrop_win32dx.vis"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">MilkDrop laat jou sweef deur die klankgolwe wat jy hoor</summary>
     <summary lang="ar">يحلق بك MilkDrop فوق الموجات الصوتية اللتي تسمع</summary>
     <summary lang="be">MilkDrop takes you flying through the soundwaves you're hearing</summary>

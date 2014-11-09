@@ -360,7 +360,7 @@ bool CScraper::Load()
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
     {
-      if (itr->first == "xbmc.metadata")
+      if (itr->first == "addon.metadata")
       {
         ++itr;
         continue;

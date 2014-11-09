@@ -5,11 +5,16 @@
   name="OpenGL Spectrum"
   provider-name="Team-Kodi">
   <extension
+    point="addon.player.musicviz"
+    library_linux="opengl_spectrum.vis"
+    library_osx="opengl_spectrum.vis"
+    library_android="libvisopengl_spectrum.so" />
+  <extension
     point="xbmc.player.musicviz"
     library_linux="opengl_spectrum.vis"
     library_osx="opengl_spectrum.vis"
     library_android="libvisopengl_spectrum.so" />
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">Visualisering wys a roterende 3D Spektrum Analiseerder</summary>
     <summary lang="ar">عارض يظهر طيف محلل دوري ثلاثي الأبعاد</summary>
     <summary lang="be">Visualisation showing a rotating 3D Spectrum Analyzer</summary>

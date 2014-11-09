@@ -8,10 +8,13 @@
     <import addon="metadata.common.fanart.tv" version="3.1.0"/>
     <import addon="metadata.common.theaudiodb.com" version="1.7.3"/>
   </requires>
+  <extension point="addon.metadata.scraper.musicvideos"
+             language="en"
+             library="tadb.xml"/>
   <extension point="xbmc.metadata.scraper.musicvideos"
              language="en"
              library="tadb.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <summary lang="af">theaudiodb.com Musiek Video Skraper</summary>
     <summary lang="be">theaudiodb.com Music Video Scraper</summary>
     <summary lang="bg">Сваля инф. за музикални клипове от theaudiodb.com</summary>

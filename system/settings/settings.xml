@@ -7,7 +7,7 @@
           <level>0</level>
           <default>skin.confluence</default>
           <constraints>
-            <addontype>xbmc.gui.skin</addontype>
+            <addontype>addon.gui.skin</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -234,7 +234,7 @@
           <level>0</level>
           <default>screensaver.xbmc.builtin.dim</default>
           <constraints>
-            <addontype>xbmc.ui.screensaver</addontype>
+            <addontype>addon.ui.screensaver</addontype>
             <allowempty>true</allowempty>
           </constraints>
           <updates>
@@ -989,7 +989,7 @@
           <level>1</level>
           <default>-</default>
           <constraints>
-            <addontype>xbmc.subtitle.module</addontype>
+            <addontype>addon.subtitle.module</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -997,7 +997,7 @@
           <level>1</level>
           <default>-</default>
           <constraints>
-            <addontype>xbmc.subtitle.module</addontype>
+            <addontype>addon.subtitle.module</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -1048,21 +1048,21 @@
           <level>4</level>
           <default>metadata.themoviedb.org</default>
           <constraints>
-            <addontype>xbmc.metadata.scraper.movies</addontype>
+            <addontype>addon.metadata.scraper.movies</addontype>
           </constraints>
         </setting>
         <setting id="scrapers.tvshowsdefault" type="addon" label="21414" help="36199">
           <level>4</level>
           <default>metadata.tvdb.com</default>
           <constraints>
-            <addontype>xbmc.metadata.scraper.tvshows</addontype>
+            <addontype>addon.metadata.scraper.tvshows</addontype>
           </constraints>
         </setting>
         <setting id="scrapers.musicvideosdefault" type="addon" label="21415" help="36200">
           <level>4</level>
           <default>metadata.musicvideos.theaudiodb.com</default>
           <constraints>
-            <addontype>xbmc.metadata.scraper.musicvideos</addontype>
+            <addontype>addon.metadata.scraper.musicvideos</addontype>
           </constraints>
           <updates>
             <update type="change" />
@@ -1503,7 +1503,7 @@
           <level>1</level>
           <default>metadata.album.universal</default>
           <constraints>
-            <addontype>xbmc.metadata.scraper.albums</addontype>
+            <addontype>addon.metadata.scraper.albums</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -1511,7 +1511,7 @@
           <level>1</level>
           <default>metadata.artists.universal</default>
           <constraints>
-            <addontype>xbmc.metadata.scraper.artists</addontype>
+            <addontype>addon.metadata.scraper.artists</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -1640,7 +1640,7 @@
           <level>0</level>
           <default>visualization.glspectrum</default>
           <constraints>
-            <addontype>xbmc.player.musicviz</addontype>
+            <addontype>addon.player.musicviz</addontype>
             <allowempty>true</allowempty>
           </constraints>
           <control type="button" format="addon" />
@@ -1753,7 +1753,7 @@
           <level>0</level>
           <default>audioencoder.xbmc.builtin.wav</default>
           <constraints>
-            <addontype>xbmc.audioencoder</addontype>
+            <addontype>addon.audioencoder</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -1954,7 +1954,7 @@
           <level>0</level>
           <default></default>
           <constraints>
-            <addontype>xbmc.python.weather</addontype>
+            <addontype>addon.python.weather</addontype>
             <allowempty>true</allowempty>
           </constraints>
           <control type="button" format="addon" />
@@ -2059,7 +2059,7 @@
           <level>1</level>
           <default>webinterface.default</default>
           <constraints>
-            <addontype>xbmc.gui.webinterface</addontype>
+            <addontype>addon.gui.webinterface</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>

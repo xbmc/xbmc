@@ -6,9 +6,11 @@
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
+  <extension point="addon.metadata.scraper.library"
+             library="imdb.xml"/>
   <extension point="xbmc.metadata.scraper.library"
              library="imdb.xml"/>
-  <extension point="xbmc.addon.metadata">
+  <extension point="addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на инф. от IMDB</summary>
     <summary lang="en">IMDB Scraper Library</summary>

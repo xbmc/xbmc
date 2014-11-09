@@ -14,7 +14,15 @@
     effectslowdown="0.75">
     <res width="1280" height="720" aspect="16:9" default="true" folder="720p" />
   </extension>
-  <extension point="xbmc.addon.metadata">
+  <extension
+    point="addon.gui.skin"
+    defaultthemename="textures.xbt"
+    debugging="false"
+    effectslowdown="0.75">
+    <res width="1280" height="720" aspect="16:9" default="true" folder="720p" />
+  </extension>
+
+  <extension point="addon.metadata">
     <summary lang="af">Confluence tema deur Jezz_X. (Kodi se standaard tema)</summary>
     <summary lang="ar">جلد "كونفليونس" من صنع Jezz_x. (الجلد المبدأى لبرنامج إكس بى إم سى)</summary>
     <summary lang="be">Confluence skin by Jezz_X. (Kodi's default skin)</summary>

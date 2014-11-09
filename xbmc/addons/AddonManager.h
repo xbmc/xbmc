@@ -186,6 +186,9 @@ namespace ADDON
   private:
     void LoadAddons(const std::string &path,
                     std::map<std::string, AddonPtr>& unresolved);
+    AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info,
+                                    const std::string& type,
+                                    bool translateLegacy);
 
     /* libcpluff */
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
@@ -201,6 +204,8 @@ namespace ADDON
      */
     AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info,
                                     const std::string& type="");
+
+    void GetAddons(const std::string ext_point, VECADDONS &addons, bool enabled);
 
     /*! \brief Check whether this addon is supported on the current platform
      \param info the plugin descriptor

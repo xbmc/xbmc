@@ -648,7 +648,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
   std::string referer = StringUtils::Format("Referer=%s-%s.zip",m_addon->ID().c_str(),m_addon->Version().asString().c_str());
   for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
   {
-    if (it->first == "xbmc.metadata")
+    if (it->first == "addon.metadata" || it->first == "xbmc.addon.metadata")
       continue;
 
     const std::string &addonID = it->first;
