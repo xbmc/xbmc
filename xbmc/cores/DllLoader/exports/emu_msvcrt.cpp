@@ -1150,16 +1150,15 @@ extern "C"
 
   int dll_fread(void * buffer, size_t size, size_t count, FILE * stream)
   {
+    if (size == 0 || count == 0)
+      return 0;
+
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
       int iItemsRead = dll_read(fd, buffer, count * size);
       if (iItemsRead >= 0)
-      {
-        if (size)
-          iItemsRead /= size;
-        return iItemsRead;
-      }
+        return iItemsRead /= size;
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1441,6 +1440,9 @@ extern "C"
 
   size_t dll_fwrite(const void * buffer, size_t size, size_t count, FILE* stream)
   {
+    if (size == 0 || count == 0)
+      return 0;
+
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
       char* buf = (char*)malloc(size * count + 1);
