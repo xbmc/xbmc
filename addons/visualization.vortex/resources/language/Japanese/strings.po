@@ -32,6 +32,14 @@ msgctxt "#30003"
 msgid "Lock Preset"
 msgstr "プリセットをロック"
 
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "遷移を利用"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "最初のプリセットを停止"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "FPS を表示"

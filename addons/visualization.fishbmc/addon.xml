@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.11"
+  version="4.0.12"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -35,7 +35,7 @@
     <summary lang="id">Visualisasi menunjukkan efek gelombang dan efek kabur.</summary>
     <summary lang="is">Sjónræn upplifun með bylgjum og afskerpuáhrifum</summary>
     <summary lang="it">Visualizzazione mostrando Onde e Sfumature</summary>
-    <summary lang="ja">波とぼかしエフェクトを表示するビジュアライザー</summary>
+    <summary lang="ja">ウェーブとブラー エフェクトを表示するビジュアライザー</summary>
     <summary lang="ko">물결 효과와 흐림 효과를 보여주는 시각화</summary>
     <summary lang="lt">Vizualizacija atvaizduojanti bangas ir suliejimo efektus</summary>
     <summary lang="lv">Vizualizācija, rādot viļņus un izpludināšanas efektu</summary>
@@ -77,6 +77,7 @@
     <description lang="id">fishBMC didasarkan fische, alat visualisasi suara yang berdiri sendiri. Prinsip dasarnya adalah mengambar gelombang dan mengaburkannya sepanjang vektor yang telah ditentukan. Namun fische juga mengikutsertakan deteksi ketukan yang canggih, yang akan menjamin pengalaman visual yang hebat.</description>
     <description lang="is">fishBMC er byggður á fische, sjálfstæðu tóli fyrir sjóræna upplifun á hljóði. Grunnuppbyggingin er: teikna bylgjuformið og smyrðu það út eftir skilgreindum vektorum. En fische er líka með þróaða taktskynjun, sem tryggir frábæra sjónræna upplifun.</description>
     <description lang="it">fishBMC si basa su fische, uno strumento di visualizzazione del suono standalone. Il principio di base è: disegnare la forma d'onda e spalmare il disegno lungo i vettori predefiniti. Tuttavia fische incorpora anche il rilevamento di battito avanzato, che garantisce un'ottima esperienza visiva.</description>
+    <description lang="ja">fishBMC は、fische というスタンドアロンの音声可視化ツールを基礎にしています。基本的な原理は、描いた波形を事前に定義したベクトルに沿ってにじませます。また fische には高度なビート検出が組み込まれており、本当に素晴らしいビジュアル体験を保証します。</description>
     <description lang="ko">fllshBMC는 fische에 기반을 둔 음성 시각화 도구입니다. 기본 동작원리는 미리 정의된 벡터에 따라 선과 번짐을 표시하는 것입니다. 거기에다 검증된 멋진 비주얼 경험에 기반한 향상된 비트 검출 결과도 더해 집니다.</description>
     <description lang="lt">fishBMC paremtas fische, atskiru garso vizualizavimo įrankiu. Pagrindinis principas yra: piešti bangos formą ir ištaškyti piešinį išilgai iš anksto nustatytų vektorių. Taip pat fische turi įtrauktą pažangų dūžių aptikimą, kuris garantuoja didžiulį vizualinį įspūdį.</description>
     <description lang="lv">fishBMC pamatā ir savrups skaņas vizualizācijas rīks "fische". Pamatdoma ir zīmēt skaņas viļņus un iztriept tos pa iepriekš noteiktiem vektoriem. Tomēr fische iekļauta arī papildus ritma noteikšanas metode, kas patiešām garantē lielisku vizuālo baudījumu.</description>
@@ -117,6 +118,7 @@
     <disclaimer lang="id">Kalau ini merusakkan suatu, pecahannya tetap menjadi milik anda.</disclaimer>
     <disclaimer lang="is">Ef þetta brýtur eitthvað þá máttu eiga brotin.</disclaimer>
     <disclaimer lang="it">se si rompe qualcosa, i cocci sono vostri.</disclaimer>
+    <disclaimer lang="ja">これが何かを壊しても、あなたにはかけらが残ります。</disclaimer>
     <disclaimer lang="ko">발생하는 모든 문제는 사용자의 책임하에 있습니다. </disclaimer>
     <disclaimer lang="lt">Jei tai ką nors sugadins, gabalėliai liks jums.</disclaimer>
     <disclaimer lang="lv">Ja tas kaut ko saplēš, lauskas paliek tev.</disclaimer>

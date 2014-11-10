@@ -34,7 +34,7 @@ msgstr "Voreinstellung sperren"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
-msgstr "Erlaube Übergänge"
+msgstr "Übergänge erlauben"
 
 msgctxt "#30005"
 msgid "Stop first preset"

@@ -26,7 +26,7 @@ msgstr "低"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "ノーマル"
+msgstr "中"
 
 msgctxt "#30003"
 msgid "High"
@@ -34,7 +34,11 @@ msgstr "高"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "エクストリーム (高音質)"
+msgstr "最高"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "神経質モード [より多くのモード変更]"
 
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
@@ -50,8 +54,12 @@ msgstr "低"
 
 msgctxt "#30009"
 msgid "Normal"
-msgstr "ノーマル"
+msgstr "中"
 
 msgctxt "#30010"
 msgid "High"
 msgstr "高"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "永続ファイルを使う [起動の高速化]"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.16"
+  version="2.2.17"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -96,7 +96,7 @@
     <description lang="fr">Interface Web par défaut d'Kodi; Adaptée aux dispositifs de toutes résolutions</description>
     <description lang="fr_CA">Interface Web par défaut d'Kodi - Conçue pour les dispositifs de toutes résolutions</description>
     <description lang="gl">Interface web predefinida para Kodi, deseñada para dispositivos de todas as resolucións</description>
-    <description lang="he">ממשק דפדפן ברירת המחדל עבור Kodi; מתאים למכשירים בעלי רזולוציות שונות</description>
+    <description lang="he">ממשק דפדפן ברירת המחדל עבור Kodi; מותאם למכשירים בעלי אבחנות שונות</description>
     <description lang="hr">Uobičajeno web sučelje za Kodi; Dizajnirano za uređaje svih razlučivosti</description>
     <description lang="hu">Az Kodi alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
     <description lang="hy">Նախնական տեսք Kodi-ի համար; Նախատեսված է բոլոր կրիչների համար</description>
@@ -112,7 +112,7 @@
     <description lang="my">Kodi အတွက် မူရင်း ဝက်ဘ် အသွင်ပြင် ၊ စက်များ အားလုံး၏ resolutions အတွက် ရေးဆွဲထားသည်။</description>
     <description lang="nl">Standaard Kodi-webinterface; geschikt voor alle resoluties</description>
     <description lang="no">Standard nettgrensesnitt for Kodi; Laget for alle oppløsninger</description>
-    <description lang="pl">Domyślny interfejs webowy Kodi; Zaprojektowany dla urządzeń o dowolnej rozdzielczości</description>
+    <description lang="pl">Domyślny interfejs webowy Kodi; Zaprojektowany dla urządzeń o ekranach w dowolnej rozdzielczości</description>
     <description lang="pt">Interface da Web predefinida do Kodi. Criada para dispositivos em qualquer resolução</description>
     <description lang="pt_BR">Interface web padrão para Kodi; Concebida para dispositivos de todas as resoluções</description>
     <description lang="ro">Interfață web implicită pentru Kodi, realizată de echipa Kodi pentru dispozitive cu orice rezoluție.</description>

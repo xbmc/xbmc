@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.22"
+  version="1.0.23"
   name="Euphoria"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -34,7 +34,7 @@
     <summary lang="eu">Pantaila-babesleetatik psikodelikoena</summary>
     <summary lang="fi">Mahdollisesti kaikkein psykedeelisin näytönsäästäjä</summary>
     <summary lang="fr">Difficilement plus psychédélique comme économiseur d'écran</summary>
-    <summary lang="fr_CA">Pas plus psychédélique comme économiseur d'écran</summary>
+    <summary lang="fr_CA">Il y a pas d'économiseur d'écran plus psychédélique</summary>
     <summary lang="gl">Máis ou menos tan psicodélico como o pode ser un protector de pantalla</summary>
     <summary lang="he">זהו פחות או יותר שומר המסך הכי פסיכדלי שיש</summary>
     <summary lang="hr">Psihodeličan koliko čuvar zaslona može biti </summary>
