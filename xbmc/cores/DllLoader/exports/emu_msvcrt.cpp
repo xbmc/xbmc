@@ -1167,7 +1167,7 @@ extern "C"
       return fread(buffer, size, count, stream);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
+    return 0;
   }
 
   int dll_fgetc(FILE* stream)
@@ -1475,7 +1475,7 @@ extern "C"
       }
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
+    return 0;
   }
 
   int dll_fflush(FILE* stream)
