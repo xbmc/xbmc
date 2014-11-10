@@ -206,11 +206,11 @@ msgstr "Options"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Afficher les albums récemment ajoutés"
+msgstr "Afficher les albums ajoutés récemment"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Afficher les vidéos récemment ajoutées"
+msgstr "Afficher les vidéos ajoutées récemment"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
@@ -374,7 +374,7 @@ msgstr "Résolution"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Récemment ajouté"
+msgstr "Ajouté récemment"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -426,11 +426,11 @@ msgstr "Activé"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Habillage par défaut"
+msgstr "Valeur par défaut de l'habillage"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Habillage par défaut sans majuscule"
+msgstr "Valeur par défaut de l'habillage sans majuscule"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -442,27 +442,27 @@ msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options de listage des vidéos[CR]Définir la police des sous-titres"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer votre musithèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons · Définir les options de karaoké"
+msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer la musithèque · Définir les options de lecture · Changer les options de listage de la musique · Paramétrer les envois de chansons · Définir les options de karaoké"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de lecture · Configurer les diaporamas"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de lilstage des images · Configurer les diaporamas"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définir trois villes pour lesquelles recueillir les informations météorologiques"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définir trois villes pour lesquelles recueillir des informations météorologiques"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]CONFIGURER LES PARAMÈTRES DU SYSTÈME[/B][CR][CR]Configurer et calibrer les écrans · Configurer les sorties audio · Configurer les télécommandes[CR]Régler les options de gestion d'énergie · Activer le débogage · Configurer le verrou maître"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURER LES ADDICIELS[/B][CR][CR]Gérer vos addiciels installés · Rechercher et installer des addiciels depuis xbmc.org[CR]Modifier les paramètres des addiciels"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]CONFIGURER LES ADDICIELS[/B][CR][CR]Gérer les addiciels installés - Parcourir et installer des addiciels à partir de kodi.tv[CR]Modifier les paramètres des addiciels"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Prévisions pour la fin de semaine"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Prévisions sur 10 jours"
+msgid "Daily Forecast"
+msgstr "Prévisions quotidiennes"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Récupération des infos de prévision…"
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Carte & Alertes"
+msgid "Maps"
+msgstr "Cartes"
 
 msgctxt "#31950"
 msgid "WEATHER"

@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]设置系统选项[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电选项 · 启用调试 · 设置主机锁定"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 xbmc.org 浏览并安装插件 · 修改插件设置"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 kodi.tv 浏览并安装插件 · 修改插件设置"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "一周预报"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10日预报"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "天气预报"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "获取天气信息..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "地图 & 警报"
+msgid "Maps"
+msgstr "地图"
 
 msgctxt "#31950"
 msgid "WEATHER"

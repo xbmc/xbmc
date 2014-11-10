@@ -437,7 +437,7 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ضبط إعدادات النظام[/B][CR][CR]ضبط ومعايره طُرُق العرض - ضبط مخارج الصوت - ضبط التحكم عن بعد[CR]ضبط إعدادات توفير الطاقه - ضبط وضع المعالجه - ضبط القفل الرئيسى"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
 msgstr "[B]ضبط إعدادات الملحقات[/B][CR][CR]ضبط الملحقات المُثبته - تصفح وتثبيت الملحقات عبر موقع إكس بى إم سى الرسمى[CR]ضبط إعدادات مُلحق معين"
 
 msgctxt "#31410"
@@ -516,10 +516,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "توقعات طقس نهايه الاسبوع"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "توقعات الطقس للـ 10 ايام القادمه"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "توقعات الطقس"
@@ -533,8 +529,8 @@ msgid "Fetching forecast info..."
 msgstr "يَجِلِب توقعات الطقس..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "الخريطه و التحذيرات"
+msgid "Maps"
+msgstr "الخرائط"
 
 msgctxt "#31950"
 msgid "WEATHER"

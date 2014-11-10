@@ -30,11 +30,11 @@ msgstr "Arbeitet..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Verstecke Info"
+msgstr "Information ausblenden"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Anzeige-Optionen"
+msgstr "Anzeigeoptionen"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -74,7 +74,7 @@ msgstr "Poster"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "Fankunst"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
@@ -461,7 +461,7 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGURIERE SYSTEM-EINSTELLUNGEN[/B][CR][CR]Konfiguriere und kalibriere Bildschirme · Konfiguriere Audioausgabe · Setze Fernbedienungseinstellungen[CR]Setze Energiespar-Optionen · Aktiviere Debugging · Richte die Master-Sperre ein"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons · Installiere Addons[CR]Passe Addon-Einstellungen an"
 
 msgctxt "#31409"
@@ -506,7 +506,7 @@ msgstr "Geplante Zeit"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "Live-Fernsehen"
 
 msgctxt "#31503"
 msgid "Add Group"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Wochenend-Prognose"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10-Tage-Prognose"
+msgid "Daily Forecast"
+msgstr "Tägliche Prognose"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -562,11 +562,11 @@ msgstr "Niederschlagswahrscheinlichkeit"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Lade Wetterbericht..."
+msgstr "Prognoseinformationen werden abgerufen..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Karte & Alarme"
+msgid "Maps"
+msgstr "Karten"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -578,7 +578,7 @@ msgstr "BILDER"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "TV"
+msgstr "FERNSEHEN"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -590,7 +590,7 @@ msgstr "FILME"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV-SERIEN"
+msgstr "FERNSEHSERIEN"
 
 msgctxt "#31956"
 msgid "MUSIC"

@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]Configura las opciones de SISTEMA[/B][CR][CR]Configura y calibra la pantalla - Configura salida de audio - Configura mandos a distancia[CR]Establece las opciones de ahorro de energía - Habilita depuración de errores - Configura bloqueo maestro"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · Busca e instala addons desde xbmc.org[CR]Modifica la configuración de los addons"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · Busca e instala addons desde kodi.tv[CR]Modifica la configuración de los addons"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Pronóstico semanal"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Pronóstico de 10 días"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Pronóstico"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Obteniendo información meteorológica..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Mapa y alertas"
+msgid "Maps"
+msgstr "Mapas"
 
 msgctxt "#31950"
 msgid "WEATHER"

@@ -480,10 +480,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Հանգստյան օրերի տեսություն"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10-օրյա տեսություն"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Տեսություն"
@@ -495,10 +491,6 @@ msgstr "Սպասվող տեղումներ"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Եղանակի տեսություն"
-
-msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Քարտեզ և տեղեկացումներ"
 
 msgctxt "#31950"
 msgid "WEATHER"

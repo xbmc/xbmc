@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]システム設定[/B][CR][CR]画面の設定・調整 - オーディオ出力設定 - リモートコントローラー設定[CR]省電力設定 - デバッグの有効化 - マスターロック設定"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]アドオン設定[/B][CR][CR]インストール済みアドオン管理 - xbmc.orgからアドオンを検索・インストール[CR]アドオン設定変更"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]アドオン設定[/B][CR][CR]インストール済みアドオン管理 - kodi.tvからアドオンを検索・インストール[CR]アドオン設定変更"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "週末の予報"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10日予報"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "予報"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "天気予報データ取得中..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "マップ＆アラート"
+msgid "Maps"
+msgstr "マップ"
 
 msgctxt "#31950"
 msgid "WEATHER"

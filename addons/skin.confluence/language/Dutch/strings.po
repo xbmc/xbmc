@@ -214,7 +214,7 @@ msgstr "Toon recent toegevoegde video's"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Beginscherm Programma`s submenu"
+msgstr "Beginscherm Programma's submenu"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -250,15 +250,15 @@ msgstr "Songtekst Add-on"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Begin Scherm Video's Submenu"
+msgstr "Beginscherm Video's submenu"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Begin Scherm Muziek Submenu"
+msgstr "Beginscherm Muziek submenu"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Begin Scherm Afbeeldingen Submenu"
+msgstr "Beginscherm Afbeeldingen submenu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]SYSTEEMINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer en kalibreer schermen · Configureer geluidsuitgang · Configureer invoerapparaten en energiebeheeropties · Schakel debugging in · Configureer vergrendelingsopties"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-on instellingen"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via kodi.tv.[CR]Wijzig Add-oninstellingen"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Weekend voorspelling"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 Dagen voorspelling"
+msgid "Daily Forecast"
+msgstr "Dagelijkse voorspelling"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Weersvoorspelling ophalen..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Kaart & waarschuwingen"
+msgid "Maps"
+msgstr "Kaarten"
 
 msgctxt "#31950"
 msgid "WEATHER"

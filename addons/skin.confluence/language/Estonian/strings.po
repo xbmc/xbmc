@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGUREERI SÜSTEEMI SEADEID[/B][CR][CR]Seadista ja kalibreeri ekraane · Konfigureeri heliväljundit · Seadista kaugjuhtimine[CR]Määra energiasäästu valikud· Luba silumine · Seadista pealukk"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGUREERI LISAMOODULEID[/B][CR][CR]Halda enda lisamooduleid · Sirvi ja paigalda lisamooduleid aadressilt xbmc.org[CR]Muuda lisamoodulite seadeid"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]KONFIGUREERI LISAMOODULEID[/B][CR][CR]Halda enda lisamooduleid · Sirvi ja paigalda lisamooduleid aadressilt kodi.tv[CR]Muuda lisamoodulite seadeid"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Nädalalõpu prognoos"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Kümne päeva prognoos"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Ilmateade"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Ilmateate andmete hankimine..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Kaart ja hoiatused"
+msgid "Maps"
+msgstr "Kaardid"
 
 msgctxt "#31950"
 msgid "WEATHER"

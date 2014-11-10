@@ -461,12 +461,12 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]НАЛАШТУВАННЯ ПАРАМЕТРІВ СИСТЕМИ[/B][CR][CR]Налаштування та калібрування дисплеїв • Налаштування виведення аудіо[CR]Налаштування дистанційного керування • Налаштування параметрів енергозбереження[CR]Увімкнення налагодження • Налаштування блокування"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]НАЛАШТУВАННЯ НАДБУДОВ[/B][CR][CR]Керування встановленими надбудовами • Встановлення надбудов з xbmc.org[CR]Зміна налаштувань надбудов"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]НАЛАШТУВАННЯ НАДБУДОВ[/B][CR][CR]Керування встановленими надбудовами • Встановлення надбудов з kodi.tv[CR]Зміна налаштувань надбудов"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]КОНФІГУРАЦІЯ НАЛАШТУВАНЬ ТБ[/B][CR][CR]Змінити інформацію повного екрану · Керувати налаштуваннями даних телегіда"
+msgstr "[B]НАЛАШТУВАННЯ ТБ[/B][CR][CR]Параметри повноекранної інформації · Налаштування показу телепрограми (EPG)"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Прогноз на вихідні"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Прогноз на 10 днів"
+msgid "Daily Forecast"
+msgstr "Щоденний прогноз"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Отримання прогнозу…"
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Мапи та попередження"
+msgid "Maps"
+msgstr "Карти"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -574,7 +574,7 @@ msgstr "ПОГОДА"
 
 msgctxt "#31951"
 msgid "PICTURES"
-msgstr "МАЛЮНКИ"
+msgstr "ФОТО"
 
 msgctxt "#31952"
 msgid "TV"
@@ -590,7 +590,7 @@ msgstr "ФІЛЬМИ"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "ТВ-ШОУ"
+msgstr "СЕРІАЛИ"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -607,3 +607,7 @@ msgstr "ПРОГРАВАННЯ ДИСКУ"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "СИСТЕМА"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "РАДІО"

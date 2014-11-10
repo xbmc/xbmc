@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]TUỲ CHỈNH CÀI ĐẶT HỆ THỐNG[/B][CR][CR]Cài đặt và điều chỉnh màn hình · Chỉnh đầu ra audio · Cài đặt điều khiển từ xa[CR]Đặt chế độ tiết kiệm năng lượng · Bật chế độ tìm sửa lỗi · Đặt khoá chủ"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]TUỲ CHỈNH ADD-ONS[/B][CR][CR]Quản lý những Add-on đã cài · Duyệt và cài các Add-on từ xbmc.org[CR]Thay đổi các thiết lập Add-on"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]TUỲ CHỈNH ADD-ONS[/B][CR][CR]Quản lý những Add-on đã cài · Duyệt và cài các Add-on từ kodi.tv[CR]Thay đổi các thiết lập Add-on"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Dự báo cuối tuần"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Thời Tiết - 10 Ngày"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Dự báo"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Đang tải dữ liệu thời tiết..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Bản đồ & Cảnh Báo"
+msgid "Maps"
+msgstr "Bản đồ"
 
 msgctxt "#31950"
 msgid "WEATHER"

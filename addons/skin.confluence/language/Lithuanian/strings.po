@@ -118,7 +118,7 @@ msgstr "PAIEŠKA"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Vizualizacijos išankstinės parinktys"
+msgstr "Išankstinės vizualizacijos parinktys"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -174,7 +174,7 @@ msgstr "Rodyti \"Pauzė\" nuotraukų skaidrių peržiūroje"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Atkurti anonsus lange [COLOR=grey3](Tik vaizdo įrašo informacijos dialogo lange)[/COLOR]"
+msgstr "Atkurti anonsus lange [COLOR=grey3](Vaizdo dialogo lange)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -438,7 +438,7 @@ msgstr "Arial pagrindu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGŪRUOTI IŠVAIZDOS NUSTATYMAS[/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną[CR]Pakeisti failų sąrašo atvaizdavimo parinktis · Nustatyti ekrano užsklandą"
+msgstr "[B]KONFIGŪRUOTI IŠVAIZDOS NUSTATYMUS[/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną[CR]Pakeisti failų sąrašo atvaizdavimo parinktis · Nustatyti ekrano užsklandą"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -454,15 +454,15 @@ msgstr "[B]KONFIGŪRUOTI NUOTRAUKŲ NUSTATYMUS[/B][CR][CR]Nustatyti nuotraukų s
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]KONFIGŪRUOTI ORŲ NUSTATYMUS[/B][CR][CR]Nustatykite tris miestus, kuriems norite gauti orų informaciją"
+msgstr "[B]KONFIGŪRUOTI ORŲ NUSTATYMUS[/B][CR][CR]Nustatykite tris miestus gauti orų informacijai"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]KONFIGŪRUOTI SISTEMOS NUSTATYMUS[/B][CR][CR]Nustatyti ir kalibruoti ekranus · Nustatyti garso išvestį · Nustatyti nuotolinį valdymą[CR]Nustatyti energijos taupymo parinktis · Įjungti derinimą · Nustatyti valdytojo užraktą"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGŪRUOTI PRIEDUS[/B][CR][CR]Tvarkyti įdiegtus priedus · Naršyti ir įdiegti priedus iš xbmc.org[CR]Keisti priedo nustatymus"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]KONFIGŪRUOTI PRIEDUS[/B][CR][CR]Tvarkyti įdiegtus priedus · Naršyti ir įdiegti priedus iš kodi.tv[CR]Modifikuoti priedų nustatymus"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -478,7 +478,7 @@ msgstr "Pirmo paleidimo pagalba..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR]Paspauskite \"OK\", norėdami uždaryti šį langą ir jis daugiau nebus rodomas."
+msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR]Norėdami uždaryti šį langą spauskite \"OK\",  ir jis daugiau nebus rodomas."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -542,15 +542,15 @@ msgstr "36 valandų prognozė"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
-msgstr "Valandinė prognozė"
+msgstr "Valandos prognozė"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Savaitgalio prognozė"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 dienų prognozė"
+msgid "Daily Forecast"
+msgstr "Dienos prognozė"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Atsiunčiama prognozės informacija..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Žemėlapis ir įspėjimai"
+msgid "Maps"
+msgstr "Žemėlapai"
 
 msgctxt "#31950"
 msgid "WEATHER"

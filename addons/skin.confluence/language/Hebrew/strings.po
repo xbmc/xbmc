@@ -26,7 +26,7 @@ msgstr "אפשרויות חשמל"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "עובד ..."
+msgstr "עובד..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -126,23 +126,23 @@ msgstr "זמן סיום"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "מיון: סדר עולה"
+msgstr "סדר מיון: עולה"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "מיון: סדר יורד"
+msgstr "סדר מיון: יורד"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "פתח רשימת השמעה"
+msgstr "פתח רשימת ניגון"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "שמור רשימת השמעה"
+msgstr "שמור רשימת ניגון"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "סגור רשימת השמעה"
+msgstr "סגור רשימת ניגון"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -150,7 +150,7 @@ msgstr "קבצי מוזיקת מערכת"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "רשימת השמעה נוכחית"
+msgstr "רשימת ניגון נוכחית"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -170,7 +170,7 @@ msgstr "רקע"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "הראה \"הפסקה\" במצגת תמונות"
+msgstr "הצג \"הפסקה\" במצגת תמונות"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
@@ -178,11 +178,11 @@ msgstr "נגן קדימונים בחלון"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "אפשרות שונות"
+msgstr "אפשרויות שונות"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "החבא סימול \"נצפה\" משמות קבצי וידאו [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "הסתר סימול \"נצפה\" משמות קבצי וידאו [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -230,7 +230,7 @@ msgstr "הצג חיזוי \"מנגן עכשיו\" ברקע"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "נגן נעימות של סדרות טלוויזיה בספריית סדרות הטלווויזיה (תוסף TvTunes)"
+msgstr "נגן נעימת סדרה בספריית הוידאו (הרחבת TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -246,7 +246,7 @@ msgstr "הסתר חיזוי פאנארט במסך מלא"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "תוספי מילים לשירים"
+msgstr "הרחבת מילות לשירים"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -282,7 +282,7 @@ msgstr "בחר את השיר שלך"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "מקור למילים לשירים"
+msgstr "מקור מילות שירים"
 
 msgctxt "#31206"
 msgid "Found"
@@ -310,7 +310,7 @@ msgstr "ספק מידע"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "החבא פאנארט"
+msgstr "הסתר פאנארט"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -362,7 +362,7 @@ msgstr "שודר"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "אפשרויות רשימת השמעה"
+msgstr "אפשרויות רשימת ניגון"
 
 msgctxt "#31326"
 msgid "Created"
@@ -370,7 +370,7 @@ msgstr "נוצר"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "רזולוציה"
+msgstr "אבחנה"
 
 msgctxt "#31328"
 msgid "Recently Added"
@@ -382,7 +382,7 @@ msgstr "[B]הטיימר נקבע![/B] [COLOR=grey2] - כיבוי מערכת או
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "לחץ על הכפתור כדי לנגן[CR][CR]טריילר"
+msgstr "לחץ על הכפתור כדי לנגן[CR][CR]קדימון"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -406,7 +406,7 @@ msgstr "הרצה אחורה"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "צפריט סרט"
+msgstr "תפריט סרט"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -414,7 +414,7 @@ msgstr "הורד כתוביות"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "צפה בדו-מימד"
+msgstr "צפה כ־2D"
 
 msgctxt "#31361"
 msgid "Change mode"
@@ -426,7 +426,7 @@ msgstr "פעיל"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "ברירת מחדל של הסקין"
+msgstr "ברירת מחדל המעטפת"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
@@ -434,11 +434,11 @@ msgstr "Skin default with no Caps"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Arial based"
+msgstr "מבוסס Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]שינוי הגדרות מראה[/B][CR][CR]שנה את הסקין, קבע את השפה והאזור, שנה אפשרויות הצגת קבצים[CR]הגדר שומר מסך"
+msgstr "[B]שינוי הגדרות מראה[/B][CR][CR]שנה את המעטפת, קבע את השפה והאזור, שנה אפשרויות הצגת קבצים[CR]הגדר שומר מסך"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -461,16 +461,16 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]שינוי הגדרות מערכת[/B][CR][CR]הגדר וכייל צגים, הגדר יציאת שמע, הגדר שלט רחוק[CR]קבע העדפות חיסכון בחשמל, הפעל דיבוג, הגדר קוד נעילה ראשי"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]שינוי הגדרות הרחבות[/B][CR][CR]נהל את ההרחבות המותקנות אצלך, עיין והתקן הרחבות נוספות מxbmc.org[CR]שנה הגדרות הרחבות"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]הגדר הרחבות[/B][CR][CR] ניהול הרחבות מותקנות · עיון בהרחבות מ־kodi.tv והתקנתן[CR]שינוי הגדרות הרחבה"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]התאם הגדרות טלווזיה[/B][CR][CR]שנה מידע במסך מלא · נהל מידע לוחות שידורים"
+msgstr "[B]התאמת הגדרות טלוויזיה[/B][CR][CR]שנה מידע במסך מלא · נהל מידע לוחות שידורים"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]שינוי הגדרות שירותים[/B][CR][CR]הגדר שליטה על Kodi בUPnP וHTTP, הגדר שיתוף קבצים[CR]הפעל Zeroconf, הגדר את AirPlay"
+msgstr "[B]שינוי הגדרות שירותים[/B][CR][CR]הגדרות שליטה על Kodi באמצעות UPnP ו־HTTP · הגדרות שיתוף קבצים[CR]הפעלת Zeroconf · הגדרות AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -490,7 +490,7 @@ msgstr "כניסה"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "בחר בפרופיל משתמש Kodi [CR]שלך כדי להתחבר ולהמשיך"
+msgstr "יש לבחור פרופיל משתמש[CR]לשם כניסה ל-Kodi"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "תחזית לסופ\"ש"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "תחזית ל-10 ימים"
+msgid "Daily Forecast"
+msgstr "תחזית יומית"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -558,15 +558,15 @@ msgstr "תחזית"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
-msgstr "סיכוי לרטיבות"
+msgstr "סיכוי למשקעים"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "משיג פרטי תחזית..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "מפה & התראות"
+msgid "Maps"
+msgstr "מפות"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -607,3 +607,7 @@ msgstr "השמעת דיסק"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "מערכת"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "רדיו"

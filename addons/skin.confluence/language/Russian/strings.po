@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СИСТЕМЫ[/B][CR][CR]Настройка и калибровка дисплеев • Настройка вывода аудио • Настройка[CR]дистанционного управления • Настройка параметров энергосбережения • Включение отладки • Настройка блокировки"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]НАСТРОЙКА ДОПОЛНЕНИЙ[/B][CR][CR]Управление установленными дополнениями • Установка дополнений с xbmc.org[CR]Настройка дополнений"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]КОНФИГУРАЦИЯ ДОПОЛНЕНИЙ[/B][CR][CR]Управление дополнениями - Поиск и установка дополнений с kodi.tv[CR]Настройки дополнений"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Прогноз на выходные"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Прогноз на 10 дней"
+msgid "Daily Forecast"
+msgstr "Ежедневный прогноз"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Получение прогноза…"
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Карта и предупреждения"
+msgid "Maps"
+msgstr "Карты"
 
 msgctxt "#31950"
 msgid "WEATHER"

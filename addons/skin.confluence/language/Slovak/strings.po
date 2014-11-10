@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavenie obrazovky · Nastavenie zvukového výstupu[CR]Možnosti úsporného režimu · Ukladanie informácií · Konfigurácia rodičovského zámku"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z xbmc.org[CR]Nastavenie doplnkov"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z kodi.tv[CR]Nastavenie doplnkov"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Predpoveď na víkend"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Predpoveď na 10 dní"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Predpoveď"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Zisťujem informácie o počasí..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Mapa a upozornenia"
+msgid "Maps"
+msgstr "Mapy"
 
 msgctxt "#31950"
 msgid "WEATHER"

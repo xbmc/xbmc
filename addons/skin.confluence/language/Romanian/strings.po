@@ -445,8 +445,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]CONFIGURAȚI SETĂRI SISTEM[/B][CR][CR]Configurați și calibrați afișaje · Configurați ieșire audio · Instalați telecomenzi[CR]Alegeți opțiuni de economisire energie · Activați depanare · Configurați blocarea principală"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la xbmc.org[CR]Modificați setări suplimente"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la kodi.tv[CR]Modificați setări suplimente"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -532,10 +532,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Previziune weekend"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Previziune pe 10 zile"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Previziune"
@@ -549,8 +545,8 @@ msgid "Fetching forecast info..."
 msgstr "Preluare informații previziune..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Harti & Alerte"
+msgid "Maps"
+msgstr "Hărți"
 
 msgctxt "#31952"
 msgid "TV"

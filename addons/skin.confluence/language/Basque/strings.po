@@ -312,6 +312,10 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Lehen exekuzio laguntza..."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Azpititulu lokala erabilgarri"
+
 msgctxt "#31420"
 msgid "Login"
 msgstr "Sartu"
@@ -356,10 +360,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Astebukaerako iragarpena"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 eguneko iragarpena"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Iragarpena"
@@ -373,8 +373,8 @@ msgid "Fetching forecast info..."
 msgstr "Iragarpen argibideak eskuratzen"
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Mapa eta alertak"
+msgid "Maps"
+msgstr "Mapak"
 
 msgctxt "#31950"
 msgid "WEATHER"
