@@ -1466,15 +1466,19 @@ extern "C"
     }
     else
     {
-      int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-      if (fd >= 0)
+      CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
+      if (pFile != NULL)
       {
-        int iItemsWritten = dll_write(fd, buffer, count * size);
-        if (iItemsWritten >= 0)
+        size_t written = 0;
+        const size_t bufSize = size * count;
+        do // fwrite() must write all data until whole buffer is written or error occurs
         {
-          iItemsWritten /= size;
-          return iItemsWritten;
-        }
+          const ssize_t w = pFile->Write(((int8_t*)buffer) + written, bufSize - written);
+          if (w <= 0)
+            break;
+          written += w;
+        } while (bufSize > written);
+        return written / size;
       }
       else if (!IS_STD_STREAM(stream))
       {
