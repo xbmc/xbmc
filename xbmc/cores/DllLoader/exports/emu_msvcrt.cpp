@@ -1153,12 +1153,19 @@ extern "C"
     if (size == 0 || count == 0)
       return 0;
 
-    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-    if (fd >= 0)
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
+    if (pFile != NULL)
     {
-      int iItemsRead = dll_read(fd, buffer, count * size);
-      if (iItemsRead >= 0)
-        return iItemsRead /= size;
+      size_t read = 0;
+      const size_t bufSize = size * count;
+      do // fread() must read all data until buffer is filled or eof/error occurs
+      {
+        const ssize_t r = pFile->Read(((int8_t*)buffer) + read, bufSize - read);
+        if (r <= 0)
+          break;
+        read += r;
+      } while (bufSize > read);
+      return read / size;
     }
     else if (!IS_STD_STREAM(stream))
     {
