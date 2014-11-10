@@ -741,6 +741,10 @@ msgctxt "#444"
 msgid "Video"
 msgstr "വീഡിയോ"
 
+msgctxt "#558"
+msgid "Album"
+msgstr "കൃതി"
+
 msgctxt "#719"
 msgid "IP address"
 msgstr "ഐ പി വിലാസം"
@@ -760,6 +764,10 @@ msgstr "വീഡിയോ"
 msgctxt "#1213"
 msgid "Pictures"
 msgstr "ചിത്രങ്ങള്‍"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "പണിപ്പലക"
 
 msgctxt "#1403"
 msgid "Sun"
@@ -817,9 +825,17 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "വീഡിയോ"
 
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "സി പി യു"
+
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "കുറുക്കുവഴി"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "വ്യാ"
 
 msgctxt "#14098"
 msgid "Play"
@@ -833,9 +849,33 @@ msgctxt "#19031"
 msgid "Next"
 msgstr "അടുത്തത്"
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "ഇ"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "മാര്‍"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "ന"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "സ"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "ഞാ"
+
 msgctxt "#20177"
 msgid "Done"
 msgstr "ശരി"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "വീഡിയോ"
 
 msgctxt "#21417"
 msgid "Settings"
@@ -848,3 +888,19 @@ msgstr "വ്യക്തത"
 msgctxt "#24027"
 msgid "Weather"
 msgstr "കാലാവസ്ഥ"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "വീഡിയോ"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "ചലച്ചിതങ്ങള്‍"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "പാട്ട്"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "ഗാനം"

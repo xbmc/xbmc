@@ -3097,6 +3097,26 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "தனிபயன் கடந்து செல்லும் சாதனம்"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "அளவற்றது"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "சுழல்"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "udaindhulladhu"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "கொந்தளிப்பான"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "அமைப்புக்கள்"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "பெயர்ச்சி"
@@ -3444,6 +3464,10 @@ msgstr "அமைப்புக்கள் - சுயவிவரம்"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "மீட்டமை"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "அடிப்படை"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -5205,10 +5229,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "பின்னணி"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "DVDகளை தாங்காக வாசிக்கவும்"
@@ -5696,6 +5716,10 @@ msgstr "தேடல் சொற்களை AND, OR மற்றும்/அ�
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "அல்லது சரியான பொருத்தத்திற்கு வாக்கியங்களை பயன்படுத்தவும், உதாரனத்திற்க்கு \"The wizard of Oz\"."
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "இதே போன்றவை கண்டறிய"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6189,6 +6213,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "புதிய குழுவின் பெயர்"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "தேடல்..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "குழு"
@@ -6666,8 +6694,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "தங்களுக்கு ஒரு டியுனர், பின்தள மென்பொருள், மற்றும் இன்னொரு"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "மேலும் தகவலுக்கு தயவு கூர்ந்து xbmc.org/pvr இனைய தளத்தை பார்க்கவும்."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "மேலும் தகவலுக்கு தயவு கூர்ந்து kodi.tv/pvr இனைய தளத்தை பார்க்கவும்."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10696,6 +10724,34 @@ msgstr "அத்தியாயம்"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "அத்தியாயங்கள்"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "அமைக்கவும்"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "அமைப்பு"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "வீடியோ"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "நிகழ்படம்"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "ஆல்பம்"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "பாடல்"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "பாடல்கள்"
 
 msgctxt "#37022"
 msgid "UPnP Player"

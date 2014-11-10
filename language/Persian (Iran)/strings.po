@@ -3017,6 +3017,18 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "وسیله ی عبور بدون تغییر صدای دلخواه"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "بی نهایت"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "طوفانی"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "تنظیمات"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "پیشامد"
@@ -3120,6 +3132,10 @@ msgstr "طوفانی"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "غبار"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "نور"
 
 msgctxt "#1439"
 msgid "and"
@@ -3260,6 +3276,10 @@ msgstr "تنظیمات - پروفایل ها"
 msgctxt "#10037"
 msgid "Standard"
 msgstr "استاندارد"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "کمک"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -4020,6 +4040,10 @@ msgstr "کنترل خودکار دما"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "افزایش بیشتر سرعت فن"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "فونت"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4829,10 +4853,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "پخش"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "دی‌وی‌دی‌ها"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "پخش خودکار DVDها "
@@ -5292,6 +5312,30 @@ msgstr "بعدی"
 msgctxt "#19040"
 msgid "Timer"
 msgstr "تایمر"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "شرق"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "مارس"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "روشن"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "شمال"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "جنوب"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "نور"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -6445,9 +6489,21 @@ msgctxt "#20429"
 msgid "Separate"
 msgstr "جدا"
 
+msgctxt "#20434"
+msgid "Sets"
+msgstr "ثبت"
+
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "فن آرت"
+
+msgctxt "#20452"
+msgid "episode"
+msgstr "قسمت"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "ویدیو"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -6469,9 +6525,21 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr "نظر"
 
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "در حال باز کردن"
+
 msgctxt "#21866"
 msgid "Category"
 msgstr "دسته بندی"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "فونت"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "ناحیه"
 
 msgctxt "#21875"
 msgid "Country"
@@ -6484,6 +6552,10 @@ msgstr "فونت"
 msgctxt "#22031"
 msgid "Size"
 msgstr "اندازه"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "پسوندها"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -6525,6 +6597,10 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr "رشته ی جستجو را وارد کنید"
 
+msgctxt "#33031"
+msgid "Coverflow"
+msgstr "دیوار"
+
 msgctxt "#33069"
 msgid "Backgrounds"
 msgstr "پس زمیته ها"
@@ -6532,6 +6608,10 @@ msgstr "پس زمیته ها"
 msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "این فایل چند بخشی است, قسمت مورد نظر را برای پخش انتخاب کنید."
+
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA"
 
 msgctxt "#34100"
 msgid "Number of channels"
@@ -6569,6 +6649,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "غیر فعال"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "سخت افزار"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "سریال"
@@ -6576,6 +6660,34 @@ msgstr "سریال"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "سریال‌ها"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "قسمت"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "ثبت"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "ویدیو"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "ویدیوها"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "آلبوم"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "ترانه"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "ترانه ها"
 
 msgctxt "#37026"
 msgid "Auto"

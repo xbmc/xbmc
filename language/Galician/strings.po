@@ -1229,10 +1229,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Ano"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizar o nivel ao diminuír as canles"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor compatíbel con DTS-HD"
@@ -2445,6 +2441,18 @@ msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "Rexistro detallado do compoñente de SON"
 
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Rexistro detallado da biblioteca AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Rexistro detallado dos compoñentes UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Rexistro detallado da biblioteca CEC"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Limpar bibloteca"
@@ -2792,6 +2800,10 @@ msgstr "A biblioteca de música precisa de volver verificar as etiquetas dos fic
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Gustaríache escanear agora?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "dispoñíbel %s de %s"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3208,6 +3220,46 @@ msgstr "Dispositivo de audio personalizado"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositivo de pasarela personalizado"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Presión"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximidade"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensidade"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Moi"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extremo"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Remuíños"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Roto"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Ventoso"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Configuración da caché"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5029,10 +5081,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleración hardware (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Permitir software de decodificación multi hilo"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Usar MPEG-2 VDPAU"
@@ -5538,8 +5586,8 @@ msgid "Playback"
 msgstr "Reprodución"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
+msgid "Discs"
+msgstr "Discos"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5596,6 +5644,14 @@ msgstr "Deter a extracción do CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Aceleración"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Modo de reprodución do Blu-ray"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Amosar menú simplificado"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7130,8 +7186,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "complemento para o motor que lle permita usar o PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Por favor visita xbmc.org/pvr para saber máis."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Por favor visita kodi.tv/pvr para saber máis."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7180,6 +7236,10 @@ msgstr "Buscar icona"
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Todas as canles"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Primeiro plano"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -10421,6 +10481,10 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Ubicación personalizada"
 
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Descargar auto. o primeiro subtítulo"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificacións"
@@ -10434,8 +10498,8 @@ msgid "Select from all titles ..."
 msgstr "Seleccionar dende tódolos títulos..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Amosar menús do Blu-ray"
+msgid "Show Blu-ray menu"
+msgstr "Amosar o menú do Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10624,6 +10688,14 @@ msgstr "Fin de semana"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "Día %s"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "Fluxos %s"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "Dispositivos %s"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12401,6 +12473,14 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Escoller a disposición do teclado virtual."
 
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modo 3D estereoscópico (actual)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Modo 3D estereoscópico"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Desactivado"
@@ -12429,6 +12509,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Baseado no Hardware"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscópico (2D)"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Preguntar"
@@ -12448,6 +12532,10 @@ msgstr "Seleccionar modo alternativo..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "O mesmo do filme"
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modo de vídeo 3D estereoscópico"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12524,6 +12612,14 @@ msgstr "episodio"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodios"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Estabrecer"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Conxuntos"
 
 msgctxt "#36912"
 msgid "video"

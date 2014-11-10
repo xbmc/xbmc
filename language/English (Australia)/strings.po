@@ -1237,10 +1237,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Year"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalize levels on downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD capable receiver"
@@ -2821,6 +2817,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Would you like to scan now?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s of %s available"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Invalid port number entered"
@@ -3236,6 +3236,34 @@ msgstr "Custom audio device"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Custom passthrough device"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperature"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Pressure"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extreme"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Whirls"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Broken"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Windy"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Settings"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5085,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Allow hardware acceleration (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Allow multi threaded software decoding"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Use MPEG-2 VDPAU"
@@ -5576,10 +5600,6 @@ msgstr "Queue songs on selection"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Playback"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7186,8 +7206,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on for the backend to be able to use PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Please visit xbmc.org/pvr to learn more."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Please visit kodi.tv/pvr to learn more."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10521,10 +10541,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Select from all titles ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Show Blu-ray menus"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Play main title: %d"
@@ -12541,10 +12557,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Enable hardware video decode using AMLogic decoder."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12585,6 +12597,14 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "If enabled VAAPI render method is preferred. This puts less load on the CPU but driver may hang!"
 
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoscopic 3D mode (current)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoscopic 3D mode"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Disabled"
@@ -12613,6 +12633,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware Based"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopic (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Playback mode of stereoscopic 3D videos"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Ask me"
@@ -12629,6 +12657,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Same as movie (autodetect)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Disable stereoscopic 3D mode when playback ended"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Select playback mode"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Select stereoscopic 3D mode"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Select alternate mode..."
@@ -12637,17 +12677,33 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Same as movie"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Specify additional libraries whose log messages are to be included in the log."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoscopic 3D mode of video"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Invert Stereoscopic 3D mode (flip eyes)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialogue to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Changes the stereoscopic 3D mode of the user interface."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "The preferred mode in which stereoscopic 3D media such as videos should be played."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12664,6 +12720,10 @@ msgstr "Enable this to make dialogueue louder compared to background sounds when
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoscopic 3D depth of subtitles"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

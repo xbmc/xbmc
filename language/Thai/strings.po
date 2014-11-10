@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "ส่วนติดต่อผ่านเว็บ"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "ตัวถอดรหัสเสียง"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "คำโปรย"
@@ -848,6 +852,10 @@ msgstr "เต็มจอ"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "จอแสดงผล"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1089,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "ภาษาของส่วนติดต่อผู้ใช้"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "คีย์บอร์ด เลเอาท์"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=อัตโนมัติ)"
@@ -1226,8 +1238,8 @@ msgid "Year"
 msgstr "ปี"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "ปรับระดับเสียงให้ปกติ เมื่อรวมช่องเสียง"
+msgid "Maintain original volume on downmix"
+msgstr "รักษาระดับความดัง เมื่อรวมช่องเสียง"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1984,6 +1996,10 @@ msgstr "ไม่พบประวัติศิลปินคนนี้"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "รวมสัญญาณเสียงหลายช่องไปยังระบบสเตอริโอ"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "หมายเลข"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -3200,6 +3216,34 @@ msgstr "ปรับแต่งอุปกรณ์เสียง"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "ปรับแต่งอุปกรณ์ส่งผ่านเสียง"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "อุณหภูมิ"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "ความกดอากาศ"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "สูงสุด"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "พายุ"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "เสียหาย"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "ลมแรง"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "การตั้งค่า"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5021,9 +5065,9 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "ยอมให้ใช้การถอดรหัสด้วยซอฟท์แวร์ แบบหลายงาน"
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "ใช้งาน MPEG-4 VDPAU"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5032,6 +5076,10 @@ msgstr "ใช้งาน VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "เปิดใช้ตัวเลือกนี้ เพื่อใข้การเร่งความเร็วด้วยฮาร์ดแวร์ สำหรับการเข้ารหัสหลัก VC-1. ถ้าปิดใช้งาน จะใช้ซีพียูแทน. ฮาร์ดแวร์ AMD ที่ใช้ VDPAU ไม่สามารถถอดรหัส VC-1 แบบพื้นๆได้."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "ใช้งาน MPEG-2 VAAPI"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5492,10 +5540,6 @@ msgstr "จัดลำดับเพลงเมื่อเลือก"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "เล่นเพลง"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "ดีวีดี"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -6028,6 +6072,10 @@ msgstr "แยกคำค้นหาโดยใช้ AND, OR และ / ห
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "หรือใช้วลีที่จะหาจับคู่ที่ตรงกันเช่น \"Wizard of Oz\""
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "พบวิดีโอที่คล้ายกัน"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -7074,8 +7122,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "ส่วนเสริม เพื่อให้ backend สามารถใช้งาน PVR ได้."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "กรุณาเยี่ยมชม xbmc.org/pvr เพื่อเรียนรู้เพิ่มเติม"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "กรุณาเยี่ยมชม kodi.tv/pvr เพื่อเรียนรู้เพิ่มเติม"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10381,10 +10429,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "เลือกจากชื่อเรื่องทั้งหมด ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "แสดง เมนูบลูเรย์"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "เล่นชื่อเรื่องหลัก: %d"
@@ -12389,10 +12433,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "เปิดใช้งาน การถอดรหัสวิดีโอด้วยฮาร์ดแวร์ โดยใช้ ตัวถอดรหัส AMLogic."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "ใช้การถอดรหัส หลายงานในแต่ละเฟรม ด้วยซอฟท์แวร์ (เชื่อถือได้น้อยกว่าค่าเริ่มต้นคือ โหมดงานเดี่ยว)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "เลือกการกระทำเมื่อรายการ EPG ถูกเลือก: [แสดงเมนูเนื้อหา] จะเปิดเมนูเนื้อหาจากการกระทำที่คุณสามารถเลือกใช้ต่อไป; [เปลียนไปยังช่องรายการ] จะปรับไปยังช่องรายการนั้นทันที; [แสดงข้อมูล] จะแสดงรายละเอียด ที่ประกอบด้วยเนื้อเรื่องย่อและตัวเลือกเพิ่มเติม; [บันทึก] จะสร้างตัวตั้งเวลาบันทึก สำหรับรายการที่เลือก."
@@ -12477,10 +12517,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "แบบเดียวกับภาพยนตร์"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "เลือกวิธีการรวมช่องสัญญาณเสียง, ตัวอย่างเช่น จาก 5.1 ไปยัง 2.0: [เปิดใช้งาน] ยังคงช่วงไดนามิคของแหล่งกำเนิดเสียงเดิมเมื่อรวมช่องสัญญาณเสียง แต่ความดังจะลดลง [ปิดใช้งาน] รักษาระดับความดังของเสียงเดิม แต่ช่วงไดนามิคจะถูกบีบอัด. หมายเหตุ - ช่วงไดนามิกคือความแตกต่างระหว่างเสียงเงียบที่สุดและดังที่สุดในเสียงต้นฉบับ."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "เปลี่ยนโหมดการแสดงผล 3 มิติ ของส่วนติดต่อผู้ใช้."
@@ -12548,6 +12584,22 @@ msgstr "ตอน"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "ตอน"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "ตั้งค่า"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "ตั้งค่า"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "วิดีโอ"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "วิดีโอ"
 
 msgctxt "#36914"
 msgid "music"

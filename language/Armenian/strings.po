@@ -23,7 +23,7 @@ msgstr "Նկարներ"
 
 msgctxt "#2"
 msgid "Music"
-msgstr "Երգ-Երաժշտություն"
+msgstr "Երաժշտություն"
 
 msgctxt "#3"
 msgid "Videos"
@@ -31,7 +31,7 @@ msgstr "Տեսանյութեր"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "TV-գիդ"
+msgstr "Հեռուստագիդ"
 
 msgctxt "#5"
 msgid "Settings"
@@ -187,23 +187,39 @@ msgstr "Հուլ"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "Օգոս"
+msgstr "Օգս"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "Սեպտ"
+msgstr "Սեպ"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "Հոկտ"
+msgstr "Հոկ"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "Նոյեմ"
+msgstr "Նոյ"
 
 msgctxt "#62"
 msgid "Dec"
 msgstr "Դեկ"
+
+msgctxt "#71"
+msgid "N"
+msgstr "Հս"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "ՀսՀսԱե"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "ՀսԱե"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "Աե․ Հս․ Աե․"
 
 msgctxt "#88"
 msgid "South"
@@ -279,7 +295,7 @@ msgstr "Ստեղծել էսքիզ"
 
 msgctxt "#111"
 msgid "Shortcuts"
-msgstr "Հղումներ"
+msgstr "Դյուրանցումներ"
 
 msgctxt "#112"
 msgid "Paused"
@@ -295,11 +311,11 @@ msgstr "Ծրագրի ներդրումը ձախողվեց"
 
 msgctxt "#115"
 msgid "Copy"
-msgstr "Պատճեն"
+msgstr "Պատճենել"
 
 msgctxt "#116"
 msgid "Move"
-msgstr "Տեղափոխում"
+msgstr "Տեղափոխել"
 
 msgctxt "#117"
 msgid "Delete"
@@ -311,11 +327,11 @@ msgstr "Վերանվանել"
 
 msgctxt "#119"
 msgid "New folder"
-msgstr "Նոր թղթապանակ"
+msgstr "Նոր պանակ"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Հաստատել ֆայլի պատճենը"
+msgstr "Հաստատել ֆայլի պատճենումը"
 
 msgctxt "#121"
 msgid "Confirm file move"
@@ -407,7 +423,7 @@ msgstr "Ընթացիկ."
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "Կառուցել."
+msgstr "Տարբերակ."
 
 msgctxt "#145"
 msgid "Network:"
@@ -447,7 +463,7 @@ msgstr "Դուպլեքս"
 
 msgctxt "#154"
 msgid "Storage"
-msgstr "Շտեմարան"
+msgstr "Պահոց"
 
 msgctxt "#155"
 msgid "Drive"
@@ -507,7 +523,7 @@ msgstr "%ներ-%ներ"
 
 msgctxt "#169"
 msgid "Resolution"
-msgstr "Լուծում"
+msgstr "Լուծաչափ"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
@@ -551,7 +567,7 @@ msgstr "Տեսություն"
 
 msgctxt "#184"
 msgid "Refresh"
-msgstr "Թարմեցնել"
+msgstr "Թարմացնել"
 
 msgctxt "#185"
 msgid "Searching album"
@@ -603,11 +619,15 @@ msgstr "Ընտրել ֆիլմը."
 
 msgctxt "#197"
 msgid "Querying %s info"
-msgstr "Հարցման %ների մանրամասներ"
+msgstr "Հայցվում են %s մասին տեղեկություններ"
 
 msgctxt "#198"
 msgid "Loading movie details"
 msgstr "Բեռնել ֆիլմի մանրամասները"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Վեբ միջներես"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -615,15 +635,19 @@ msgstr "Կարգախոս"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Շրջագիծ"
+msgstr "Սյուժեն ամփոփ"
 
 msgctxt "#205"
 msgid "Votes"
 msgstr "Քվեներ"
 
+msgctxt "#206"
+msgid "Cast"
+msgstr "Նկարահավել են"
+
 msgctxt "#207"
 msgid "Plot"
-msgstr "Տարածք"
+msgstr "Սյուժե"
 
 msgctxt "#208"
 msgid "Play"
@@ -647,7 +671,11 @@ msgstr "Տեսանյութի շտկում"
 
 msgctxt "#216"
 msgid "Zoom amount"
-msgstr "Քանակի ավելացում"
+msgstr "Խոշորացման չափ"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "Պիքսելների հարաբերություն"
 
 msgctxt "#219"
 msgid "Please insert disc"
@@ -731,7 +759,7 @@ msgstr "Պատուհանային"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Թարմեցման հաճախականություն"
+msgstr "Հաճախականություն"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -739,7 +767,7 @@ msgstr "Ամբողջ էկրանով"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Շտկում. (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Չափս. (%i,%i)->(%i,%i) (Խոշորացում x%2.2f) AR:%2.2f:1 (Պիքսելներ %2.2f:1) (Ուղհայց շեղում: %2.2f)"
 
 msgctxt "#248"
 msgid "Language"
@@ -787,7 +815,7 @@ msgstr "Թույլ տալ Kodi վերահսկողությունը HTTP միջո�
 
 msgctxt "#264"
 msgid "Record"
-msgstr "Ձայնագրում"
+msgstr "Ձայնագրել"
 
 msgctxt "#265"
 msgid "Stop Rec."
@@ -803,7 +831,7 @@ msgstr "Դասավորել ըստ՝ ժամանակի"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Դասավորել ըստ՝ անվանակարգի"
+msgstr "Դասավորել ըստ՝ անվանան"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
@@ -843,7 +871,7 @@ msgstr "Խնդրում ենք ստուգել XML ֆայլերը"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "Գտնվել է %-ի նյութ"
+msgstr "Գտնվել է %i տարր"
 
 msgctxt "#283"
 msgid "Search results"
@@ -867,7 +895,7 @@ msgstr "Ենթավերնագրեր"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Տառաշար"
+msgstr "Տառատեսակ"
 
 msgctxt "#289"
 msgid "Size"
@@ -932,6 +960,14 @@ msgstr "Ոչ հաջորդական"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Հոսքի բնօրինակ լեզուն"
+
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Միջներեսի լեզու"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Ստեղնաշարի դասավորություն"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1113,6 +1149,10 @@ msgctxt "#367"
 msgid "Sort by: Rating"
 msgstr "Դասավորել ըստ՝ Ճանաչվածության"
 
+msgctxt "#368"
+msgid "IMDb"
+msgstr "ԱյԷմԴիԲի"
+
 msgctxt "#369"
 msgid "Title"
 msgstr "Վերնագիր"
@@ -1227,11 +1267,11 @@ msgstr "Նշել տեղայնքը"
 
 msgctxt "#397"
 msgid "Refresh time"
-msgstr "Թարմենցնել ժամանակը"
+msgstr "Թարմացման ժամանակը"
 
 msgctxt "#398"
 msgid "Temperature units"
-msgstr "Ջերմաստիճանի չափանիշ"
+msgstr "Ջերմաստիճանի միավոր"
 
 msgctxt "#399"
 msgid "Speed units"
@@ -1259,7 +1299,7 @@ msgstr "Քամի"
 
 msgctxt "#405"
 msgid "Dew point"
-msgstr "Հալման ջերմաստիճան"
+msgstr "Ցողի ջերմաստիճան"
 
 msgctxt "#406"
 msgid "Humidity"
@@ -1319,7 +1359,7 @@ msgstr "Ջնջել CD տեղեկություններ"
 
 msgctxt "#424"
 msgid "Select"
-msgstr "Նշել"
+msgstr "Ընտրել"
 
 msgctxt "#425"
 msgid "No album information found"
@@ -1347,7 +1387,7 @@ msgstr "Շարել ըստ. DVD#"
 
 msgctxt "#431"
 msgid "No cache"
-msgstr "No cache"
+msgstr "Առանց քեշի"
 
 msgctxt "#432"
 msgid "Remove movie from library"
@@ -1371,7 +1411,7 @@ msgstr "Հարկավոր է CD/DVD սարք՝ տեսանյութը դիտելո�
 
 msgctxt "#437"
 msgid "Removable disk"
-msgstr "Ճկուն սկավառակ"
+msgstr "Հեռացվելի սկավառակ"
 
 msgctxt "#438"
 msgid "Opening file"
@@ -1380,6 +1420,10 @@ msgstr "Ֆայլը բացվում է"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Պահեստ"
+
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Կոշտ սկավառակ"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1391,7 +1435,7 @@ msgstr "Լոկալ ցանց"
 
 msgctxt "#443"
 msgid "Internet"
-msgstr "Ինտերնետ"
+msgstr "Համացանց"
 
 msgctxt "#444"
 msgid "Video"
@@ -1459,7 +1503,7 @@ msgstr "[ակտիվ]"
 
 msgctxt "#462"
 msgid "Subtitle"
-msgstr "Ենթավերնագիր"
+msgstr "Ենթագիր"
 
 msgctxt "#463"
 msgid "Backlight"
@@ -1471,7 +1515,7 @@ msgstr "Պայծառություն"
 
 msgctxt "#465"
 msgid "Contrast"
-msgstr "Հակադիր"
+msgstr "Կոնտրաստ"
 
 msgctxt "#466"
 msgid "Gamma"
@@ -1491,7 +1535,7 @@ msgstr "OSD դիրքորոշում"
 
 msgctxt "#470"
 msgid "Credits"
-msgstr "Վարկեր"
+msgstr "Հիշատակումներ"
 
 msgctxt "#474"
 msgid "Off"
@@ -1513,9 +1557,13 @@ msgctxt "#478"
 msgid "OSD"
 msgstr "OSD"
 
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "Տեսք և լեզու"
+
 msgctxt "#480"
 msgid "Appearance"
-msgstr "Հայտնվել"
+msgstr "Տեսք"
 
 msgctxt "#481"
 msgid "Audio options"
@@ -1601,6 +1649,10 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Դասավորել ըստ՝ Օգտագործման"
 
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Միացնել վիզուալիզացիան"
+
 msgctxt "#511"
 msgid "Enable video mode switching"
 msgstr "Միացնել ռեժիմների տեսատարբերակը"
@@ -1631,7 +1683,7 @@ msgstr "Սկսել"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Սկսել -ում"
+msgstr "Սկսել հետևայլում"
 
 msgctxt "#521"
 msgid "Compilations"
@@ -1643,7 +1695,7 @@ msgstr "Հեռացնել աղբյուրը"
 
 msgctxt "#523"
 msgid "Switch media"
-msgstr "Անցնել ԶԼՄ-ների"
+msgstr "Փոխել սկավառակը"
 
 msgctxt "#524"
 msgid "Select playlist"
@@ -1691,7 +1743,7 @@ msgstr "Տեսք. %"
 
 msgctxt "#535"
 msgid "List"
-msgstr "Ցուցակ"
+msgstr "Ցանկ"
 
 msgctxt "#536"
 msgid "Icons"
@@ -1699,19 +1751,19 @@ msgstr "Նշաններ"
 
 msgctxt "#537"
 msgid "Big list"
-msgstr "Մեծ ցուցակ"
+msgstr "Խոշոր ցանկ"
 
 msgctxt "#538"
 msgid "Big icons"
-msgstr "Մեծ նշաններ"
+msgstr "Խոշոր պատկերներ"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Լայնք"
+msgstr "Լայն"
 
 msgctxt "#540"
 msgid "Big wide"
-msgstr "Մեծ լայնք"
+msgstr "Խոշոր լայն"
 
 msgctxt "#541"
 msgid "Album icons"
@@ -1961,9 +2013,17 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Նմուշի չափը"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Վիրտուալ պանակ"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Աուդիո CDներ"
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "Կոդավորիչ"
 
 msgctxt "#622"
 msgid "Quality"
@@ -1979,7 +2039,7 @@ msgstr "Ներառել ձայնուղու համարը"
 
 msgctxt "#625"
 msgid "All songs of"
-msgstr "-ի բոլոր երգերը"
+msgstr "Հետևյալի բոլոր երգերը"
 
 msgctxt "#626"
 msgid "In progress TV shows"
@@ -2053,9 +2113,53 @@ msgctxt "#733"
 msgid "Password"
 msgstr "Գաղտնաբառ"
 
+msgctxt "#735"
+msgid "Character set"
+msgstr "Կոդավորում"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Ոճ"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Գույն"
+
 msgctxt "#738"
 msgid "Normal"
 msgstr "Նորմալ"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "Թավատառ"
+
+msgctxt "#740"
+msgid "Italics"
+msgstr "Շեղատառ"
+
+msgctxt "#741"
+msgid "Bold italics"
+msgstr "Թավ և շեղատառ"
+
+msgctxt "#742"
+msgid "White"
+msgstr "Սպիտակ"
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "Դեղին"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "Ֆայլ"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "Ձայնադարան"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Ինտերնետ"
 
 msgctxt "#1006"
 msgid "IP address"
@@ -2073,9 +2177,33 @@ msgctxt "#1213"
 msgid "Pictures"
 msgstr "Նկարներ"
 
+msgctxt "#1214"
+msgid "Files"
+msgstr "Ֆայլ"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Էքստրեմալ"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Կարգավորումներ"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "Կիր"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "Ամպրոպ"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Խավար"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "Սկիզբ"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -2117,21 +2245,49 @@ msgctxt "#10511"
 msgid "System info"
 msgstr "Համակարգի մանրամասները"
 
+msgctxt "#12321"
+msgid "Ok"
+msgstr "Լավ"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Եղանակ"
+
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "OSD"
 
 msgctxt "#13277"
 msgid "Storage"
 msgstr "Շտեմարան"
 
+msgctxt "#13278"
+msgid "Default"
+msgstr "Նախնական"
+
 msgctxt "#13280"
 msgid "Video"
 msgstr "Տեսադարան"
 
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU:"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Տառաշար"
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "Ստանդարտ"
+
 msgctxt "#13350"
 msgid "Current playlist"
 msgstr "Ընթացիկ նվագացանկ"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "Ստանդարտ"
 
 msgctxt "#13398"
 msgid "Shortcuts"
@@ -2152,6 +2308,10 @@ msgstr "Անջատել"
 msgctxt "#13611"
 msgid "Standard"
 msgstr "Ստանդարտ"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Հնգ"
 
 msgctxt "#14098"
 msgid "Play"
@@ -2185,13 +2345,37 @@ msgctxt "#19099"
 msgid "Service"
 msgstr "Ծառայություն"
 
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Մարտ"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Շբթ"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Խավար"
+
 msgctxt "#19190"
 msgid "Background"
 msgstr "Ֆոն"
 
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Կարգավիճակ"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "Կրիչ"
+
 msgctxt "#20109"
 msgid "Zoom"
 msgstr "Խոշորացում"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "Լավ"
 
 msgctxt "#20331"
 msgid "File"
@@ -2200,6 +2384,18 @@ msgstr "Ֆայլ"
 msgctxt "#20342"
 msgid "Movies"
 msgstr "Ֆիլմեր"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Ստուդիա"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "Ալբոմ"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Տեսադարան"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -2220,6 +2416,14 @@ msgstr "Լուծում"
 msgctxt "#21806"
 msgid "Comment"
 msgstr "Մեկնաբանություն"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Բացում"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "Տառաշար"
 
 msgctxt "#21875"
 msgid "Country"
@@ -2272,3 +2476,39 @@ msgstr "Անվանում"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Ձայնագրում"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Տեսադարան"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Տեսանյութեր"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Ալբոմ"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Երգ"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Կատարումներ"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Անսահմանափակ"

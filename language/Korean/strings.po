@@ -395,11 +395,11 @@ msgstr "삭제 확인"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "이 파일을 복사 하겠습니까?"
+msgstr "이 파일을 복사하겠습니까?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "이 파일을 이동 하겠습니까?"
+msgstr "이 파일을 이동하겠습니까?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
@@ -1187,7 +1187,7 @@ msgstr "데이터베이스 압축 오류"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "라이브러리를 정리 하시겠습니까?"
+msgstr "라이브러리를 정리하겠습니까?"
 
 msgctxt "#334"
 msgid "Clean library..."
@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "연도"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "다운믹스 노멀라이즈"
+msgid "Maintain original volume on downmix"
+msgstr "다운믹스할 때 원래 음량 유지"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1579,7 +1579,7 @@ msgstr "라이브러리에서 영화 제거"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr " '%s' 을(를) 제거 하시겠습니까?"
+msgstr " '%s' 을(를) 제거하겠습니까?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -1591,7 +1591,7 @@ msgstr "광 디스크 드라이브 없음"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr "광 디스크 드라이브가 있어야 이 동영상을 재생할 수 있습니다"
+msgstr "이 비디오를 재생하려면 광 디스크 드라이브가 필요합니다."
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2335,7 +2335,7 @@ msgstr "검은 여백 잘라내기"
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
-msgstr "큰 파일의 압축풀기가 필요함 . 계속 하시겠습니까?"
+msgstr "큰 파일의 압축을 풀어야 합니다. 계속 진행하겠습니까?"
 
 msgctxt "#646"
 msgid "Remove from library"
@@ -2407,7 +2407,7 @@ msgstr "이 파일은 더 이상 사용할 수 없습니다."
 
 msgctxt "#663"
 msgid "Would you like to remove it from the library?"
-msgstr "라이브러리에서 제거 하시겠습니까?"
+msgstr "라이브러리에서 제거하겠습니까?"
 
 msgctxt "#664"
 msgid "Browse for Script"
@@ -2551,7 +2551,7 @@ msgstr "AAA.BBB.CCC.DDD 값 이어야 합니다."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
-msgstr "변경이 저장되지 않음. 저장않고 계속 하시겠습니까?"
+msgstr "변경 내용이 저장되지 않았습니다. 저장하지 않고 계속 진행하겠습니까?"
 
 msgctxt "#727"
 msgid "Web server"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "지금 검색하겠습니까?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s개 (총 %s개 중) 사용 가능"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "잘못된 포트 번호가 입력됨"
@@ -2863,7 +2867,7 @@ msgstr "네트워크가 연결되지 않아 발생했습니다."
 
 msgctxt "#1004"
 msgid "Would you like to add it anyway?"
-msgstr "그래도 추가 하시겠습니까?"
+msgstr "그래도 추가하겠습니까?"
 
 msgctxt "#1006"
 msgid "IP address"
@@ -2979,11 +2983,11 @@ msgstr "파일 찾기"
 
 msgctxt "#1034"
 msgid "Submenu"
-msgstr "하위메뉴"
+msgstr "하위 메뉴"
 
 msgctxt "#1035"
 msgid "Enable submenu buttons"
-msgstr "하위메뉴 버튼 사용"
+msgstr "하위 메뉴 버튼 사용"
 
 msgctxt "#1036"
 msgid "Favourites"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Zeroconf를 통해 서비스를 다른 시스템에 알림"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 호환 모드"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "음량 제어 허용"
@@ -3236,6 +3244,90 @@ msgstr "사용자 지정 오디오 장치"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "사용자 지정 패스스루 장치"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "온도"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "기압"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "근접"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "강도"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "거친"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "매우"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "최대"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "회오리바람"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "맑음"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "작동 안됨"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "토네이도"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "열대성"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "허리케인"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "찬"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "센바람"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "설정"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "산들바람"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "온화한"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "강풍에 가까운 강한 바람"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "심한"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "격렬한"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3623,7 +3715,7 @@ msgstr "도움말 없음"
 
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
-msgstr "현재 보이는 설정을 모두 기본값으로 초기화합니다"
+msgstr "이 범주의 모든 설정을 기본값으로 초기화합니다."
 
 msgctxt "#10046"
 msgid "No categories available"
@@ -4283,7 +4375,7 @@ msgstr "해상도 테스트 & 적용"
 
 msgctxt "#13110"
 msgid "Save resolution?"
-msgstr "해상도를 저장 하겠습니까?"
+msgstr "해상도를 저장하겠습니까?"
 
 msgctxt "#13111"
 msgid "Would you like to keep this change?"
@@ -4359,11 +4451,11 @@ msgstr "진행할 경우, Kodi를 제어할 수 없음"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "사용 안 함. 이벤트 서버를 중지 하시겠습니까?"
+msgstr "사용 안 함. 이벤트 서버를 중지하겠습니까?"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
-msgstr "애플 리모트 모드를 변경 하시겠습니까?"
+msgstr "애플 리모트 모드를 변경하겠습니까?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
@@ -4375,7 +4467,7 @@ msgstr "사용한다면, 이 설정의 변경은  Kodi 를 제어하는데"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
-msgstr "영향을 주게됩니다. 진행 하시겠습니까?"
+msgstr "영향을 주게됩니다. 진행하겠습니까?"
 
 msgctxt "#13159"
 msgid "Subnet mask"
@@ -4419,7 +4511,7 @@ msgstr "프로파일"
 
 msgctxt "#13201"
 msgid "Delete profile '%s'?"
-msgstr "'%s' 프로파일을 삭제 하시겠습니까?"
+msgstr "'%s' 프로파일을 삭제하겠습니까?"
 
 msgctxt "#13204"
 msgid "Last loaded profile:"
@@ -4759,7 +4851,7 @@ msgstr "앨범 정보"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "라이브러리에 항목 검색"
+msgstr "검색하여 라이브러리에 추가"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -5056,10 +5148,6 @@ msgstr "하드웨어 가속 허용 (amcodec)"
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "하드웨어 가속 허용 (MediaCodec)"
-
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "다중 스레드 소프트웨어 디코딩 허용"
 
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
@@ -5407,7 +5495,7 @@ msgstr "다음 설정을 변경하려면 Kodi를 다시 시작하여야 합니�
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
-msgstr "재시작이 필요합니다. 지금 재시작 하시겠습니까?"
+msgstr "재시작이 필요합니다. 지금 다시 시작하겠습니까?"
 
 msgctxt "#14041"
 msgid "Internet connection bandwidth limitation"
@@ -5519,7 +5607,7 @@ msgstr "IP주소 입력"
 
 msgctxt "#14069"
 msgid "Apply these settings now?"
-msgstr "설정을 지금 적용 하시겠습니까?"
+msgstr "설정을 지금 적용하겠습니까?"
 
 msgctxt "#14070"
 msgid "Apply changes now"
@@ -5578,8 +5666,8 @@ msgid "Playback"
 msgstr "재생"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
+msgid "Discs"
+msgstr "디스크"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5637,13 +5725,25 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr "가속"
 
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "블루레이 재생 모드"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "본 영화 재생"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "간단한 메뉴"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "사용할 수 없는 소스"
 
 msgctxt "#15013"
 msgid "What would you like to do with media items from %s"
-msgstr "%s 의 미디어 항목을 어떻게 처리하시겠습니까?"
+msgstr "%s 의 미디어 항목을 어떻게 처리하겠습니까?"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -6395,7 +6495,7 @@ msgstr "재생 중인 위치로 이동"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "EPG 갱신 주기"
+msgstr "EPG 업데이트 간격"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
@@ -7186,8 +7286,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "PVR 사용을 위한 백엔드 애드온"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "xbmc.org/pvr 에서 자세한 정보를 확인하세요."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "좀 더 알아보려면 kodi.tv/pvr을(를) 방문해보세요."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7647,7 +7747,7 @@ msgstr "비디오 재생목록"
 
 msgctxt "#20013"
 msgid "Do you wish to launch the game?"
-msgstr "이 게임을 실행 하시겠습니까?"
+msgstr "이 게임을 실행하겠습니까?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
@@ -7731,7 +7831,7 @@ msgstr "마스터 모드 나가기"
 
 msgctxt "#20047"
 msgid "Create profile '%s'?"
-msgstr "프로파일 '%s' 을(를) 만드시겠습니까?"
+msgstr "프로파일 '%s' 을(를) 만들겠습니까?"
 
 msgctxt "#20048"
 msgid "Start with fresh settings"
@@ -7867,7 +7967,7 @@ msgstr "바로가기 버튼 사용"
 
 msgctxt "#20082"
 msgid "Show programs in main menu"
-msgstr "메인메뉴에 프로그램 표시"
+msgstr "메인 메뉴에 프로그램 표시"
 
 msgctxt "#20083"
 msgid "Show music info"
@@ -7947,11 +8047,11 @@ msgstr "마스터 모드 사용시 항상 마스터 잠금 코드 입력"
 
 msgctxt "#20102"
 msgid "or copy from default?"
-msgstr "또는 기본값을 복사 하시겠습니까?"
+msgstr "또는 기본값을 복사하겠습니까?"
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
-msgstr "프로파일에 변경사항을 저장 하시겠습니까?"
+msgstr "프로파일에 변경 사항을 저장하겠습니까?"
 
 msgctxt "#20104"
 msgid "Old settings found."
@@ -7959,7 +8059,7 @@ msgstr "오래된 설정을 찾았습니다."
 
 msgctxt "#20105"
 msgid "Do you want to use them?"
-msgstr "이것을 사용 하시겠습니까?"
+msgstr "이것을 사용하겠습니까?"
 
 msgctxt "#20106"
 msgid "Old media sources found."
@@ -8015,7 +8115,7 @@ msgstr "마스터 잠금이 설정이 필요합니다."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
-msgstr "지금 설정 하시겠습니까?"
+msgstr "지금 설정하겠습니까?"
 
 msgctxt "#20120"
 msgid "Loading program information"
@@ -8075,7 +8175,7 @@ msgstr "네트워크 위치 제거"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
-msgstr "폴더를 검색 하시겠습니까?"
+msgstr "폴더를 검색하겠습니까?"
 
 msgctxt "#20136"
 msgid "Memory unit"
@@ -8271,7 +8371,7 @@ msgstr "스킨 새로고침"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
-msgstr "EXIF 정보를 이용해 사진 회전"
+msgstr "EXIF 정보를 이용하여 사진 회전"
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
@@ -8303,7 +8403,7 @@ msgstr "디버그 로그 사용"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
-msgstr "업데이트중에 추가 정보 다운로드"
+msgstr "업데이트 중에 추가 정보 다운로드"
 
 msgctxt "#20193"
 msgid "Default service for album information"
@@ -8409,6 +8509,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf 탐색"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "웹 서버 디렉터리 (HTTP)"
@@ -8423,7 +8527,7 @@ msgstr "폴더에 쓸수 없음:"
 
 msgctxt "#20303"
 msgid "Do you want to skip and proceed?"
-msgstr "건너뛰고 진행 하시겠습니까?"
+msgstr "건너뛰고 진행하겠습니까?"
 
 msgctxt "#20304"
 msgid "RSS Feed"
@@ -8511,7 +8615,7 @@ msgstr "파일"
 
 msgctxt "#20332"
 msgid "Use file or folder names in lookups?"
-msgstr "검색에 파일이나 폴더 이름을 사용 하시겠습니까?"
+msgstr "검색에 파일이나 폴더 이름을 사용하겠습니까?"
 
 msgctxt "#20333"
 msgid "Set content"
@@ -8523,7 +8627,7 @@ msgstr "폴더"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "콘텐츠를 순환 찾기 하시겠습니까?"
+msgstr "콘텐츠를 순환 찾기 하겠습니까?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8651,7 +8755,7 @@ msgstr "* 모든 시즌"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "시청한것 숨기기"
+msgstr "시청한 항목 숨기기"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -8695,7 +8799,7 @@ msgstr "TV 쇼 정보 새로고침"
 
 msgctxt "#20378"
 msgid "Refresh info for all episodes?"
-msgstr "모든 에피소드 정보를 새로고치겠습니까?"
+msgstr "모든 에피소드 정보를 새로 고치겠습니까?"
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
@@ -8843,7 +8947,7 @@ msgstr "새 콘텐츠 검색"
 
 msgctxt "#20416"
 msgid "First aired"
-msgstr "초연"
+msgstr "첫 방송"
 
 msgctxt "#20417"
 msgid "Writer"
@@ -8899,11 +9003,11 @@ msgstr "분리 파일"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "썸네일 및 팬아트를 내보내시겠습니까?"
+msgstr "썸네일 및 팬아트를 내보내겠습니까?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
-msgstr "기존 파일에 덮어쓰겠습니까?"
+msgstr "기존 파일에 덮어 쓰겠습니까?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
@@ -8955,7 +9059,7 @@ msgstr "이 경로의 모든 항목 정보를"
 
 msgctxt "#20444"
 msgid "items within this path?"
-msgstr "새로고치겠습니까?"
+msgstr "새로 고치겠습니까?"
 
 msgctxt "#20445"
 msgid "Fanart"
@@ -8979,7 +9083,7 @@ msgstr "원격 서버에 연결할 수 없음"
 
 msgctxt "#20450"
 msgid "Would you like to continue scanning?"
-msgstr "검색을 계속 하시겠습니까?"
+msgstr "검색을 계속하겠습니까?"
 
 msgctxt "#20451"
 msgid "Countries"
@@ -9079,7 +9183,7 @@ msgstr "채널 완전삭제: %s 실패!"
 
 msgctxt "#21335"
 msgid "Are you sure to start the stream?"
-msgstr "스트림을 시작 하시겠습니까?"
+msgstr "스트림을 시작하겠습니까?"
 
 msgctxt "#21336"
 msgid "Connecting to: %s"
@@ -9847,7 +9951,7 @@ msgstr "시작할 때 라이브러리 업데이트"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "라이브러리 업데이트 진행 숨기기"
+msgstr "라이브러리 업데이트 진행 상태 숨기기"
 
 msgctxt "#22002"
 msgid "DNS suffix"
@@ -10271,7 +10375,7 @@ msgstr "마지막 업데이트: %s"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "이 애드온을 사용함으로 하시겠습니까?"
+msgstr "이 애드온을 사용함으로 설정하겠습니까?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
@@ -10343,7 +10447,7 @@ msgstr "애드온 필요함"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
-msgstr "재연결 하시겠습니까?"
+msgstr "다시 연결하겠습니까?"
 
 msgctxt "#24081"
 msgid "Helper Add-ons"
@@ -10391,11 +10495,11 @@ msgstr "시스템에서 사용하지 않겠습니까?"
 
 msgctxt "#24098"
 msgid "Broken"
-msgstr "깨짐"
+msgstr "작동 안됨"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "이 스킨으로 변경 하시겠습니까?"
+msgstr "이 스킨으로 변경하겠습니까?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -10509,6 +10613,14 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "검색결과에서 첫 번째 자막을 자동으로 받기"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "환경설정 파일이 이동되었습니다"
+
+msgctxt "#24129"
+msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
+msgstr "Kodi 환경설정 파일이 새 위치로 이동되었습니다. http://kodi.wiki/view/Migration_from_Kodi_to_Kodi 를 참고하세요. 이 안내문은 다시 표시되지 않습니다!"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "알림"
@@ -10522,8 +10634,8 @@ msgid "Select from all titles ..."
 msgstr "타이틀 선택 ..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "블루레이 메뉴 보기"
+msgid "Show Blu-ray menu"
+msgstr "블루레이 메뉴"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10712,6 +10824,14 @@ msgstr "주말"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s 일"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s 스트림"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s 장치"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -11743,7 +11863,7 @@ msgstr "백엔드에서 며칠 분의 EPG 데이터를 가져올 것인지를 �
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends."
-msgstr "백엔드에서 EPG 데이터를 가져오는 시간 간격."
+msgstr "백엔드에서 EPG 데이터를 가져오는 시간 간격입니다."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11755,7 +11875,7 @@ msgstr "기본적으로, Kodi를 시작할 때 데이터를 가져오는 속도�
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "채널의 EPG 데이터를 찾지 못하는 경우에 보여주는 \"정보 없음\" 표시를 숨김."
+msgstr "채널의 EPG 데이터를 찾지 못하는 경우에 보여주는 \"정보 없음\" 표시를 숨깁니다."
 
 msgctxt "#36225"
 msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
@@ -12411,11 +12531,11 @@ msgstr "유휴상태일 때 디스플레이를 끕니다. 화면 신호가 없�
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
-msgstr "설정한 시간동안 유휴상태가 계속되면 아래 옵션에서 선택한 종료기능이 동작합니다."
+msgstr "설정한 시간동안 유휴상태가 계속되면 아래 옵션에서 선택한 종료 기능이 동작합니다."
 
 msgctxt "#36390"
 msgid "Define what action Kodi should do when it has been idle for a long period of time."
-msgstr "위 옵션에서 설정한 시간동안 유휴상태가 계속되면 선택한 종료기능이 동작합니다."
+msgstr "위 옵션에서 설정한 시간동안 유휴상태가 계속되면 선택한 종료 기능이 동작합니다."
 
 msgctxt "#36391"
 msgid "Category containing settings for debugging functions."
@@ -12541,10 +12661,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "AMLogic 디코더를 사용하여 비디오를 하드웨어 디코드합니다."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "프레임-멀티-스레드 디코딩을 사용합니다 (기본 단일 스레드 모드에 비해 신뢰도가 떨어집니다)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "EPG 항목을 선택했을 때의 동작입니다: [컨텍스트 메뉴 표시] 는 해당 항목에서 선택할 수 있는 추가 동작을 컨텍스트 메뉴로 보여줍니다; [채널로  변경] 관련 채널로 이동하여 시청합니다; [정보 보기] 줄거리와 추가 옵션을 포함하는 상세 정보를 보여줍니다; [녹화] 선택한 항목을 예약 녹화합니다."
@@ -12584,6 +12700,14 @@ msgstr "가상 키보드 레이아웃을 선택합니다."
 msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "VAAPI 렌더링 방식을 우선적으로 사용하면 CPU 부하를 줄일 수 있지만 드라이버가 멈출 수 있습니다."
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "하드웨어 가속 허용 (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "동영상 재생에 MMAL 가속 DVDPlayer 디코딩을 사용합니다."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
@@ -12631,7 +12755,7 @@ msgstr "3D 비디오 재생 모드"
 
 msgctxt "#36521"
 msgid "Ask me"
-msgstr "물어 보기"
+msgstr "물어보기"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12647,7 +12771,7 @@ msgstr "영상과 동일 (자동 감지)"
 
 msgctxt "#36526"
 msgid "Disable stereoscopic 3D mode when playback ended"
-msgstr "재생이 정지되면 3D 모드 종료"
+msgstr "재생이 끝나면 3D 모드 종료"
 
 msgctxt "#36527"
 msgid "Select playback mode"
@@ -12666,8 +12790,8 @@ msgid "Same as movie"
 msgstr "영상과 동일"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "다운믹스(Ex. 5.1 채널을 2.0 채널로 출력) 방식을 선택합니다: [사용함] 원 소스의 다이내믹 레인지를 유지하지만 음량은 낮아집니다. [사용 안 함] 원 소스의 음량 수준을 유지하지만 다이내믹 레인지는 좁아집니다. 참고 - 다이내믹 레인지는 특정 오디오 소스에서 가장 큰 소리와 가장 작은 소리 사이의 범위입니다."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "다운믹스 방식을 선택합니다. (예: 5.1 채널을 2.0 채널로): [사용함] 소스의 음량 수준을 유지하지만 다이내믹 레인지가 좁아집니다. [사용 안 함] 소스의 다이내믹 레인지를 유지하지만 음량이 낮아집니다. 참고 - 다이내믹 레인지는 특정 오디오 소스에서 가장 시끄러운 소리와 가장 조용한 소리의 범위입니다. 영화의 대사가 잘 들리지 않으면 이 옵션을 켜세요."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
@@ -12680,6 +12804,10 @@ msgstr "비디오 3D 모드"
 msgctxt "#36536"
 msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "3D 모드 반전 (좌우 변환)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "3D 비디오 재생 모드를 선택합니다. [물어보기] 재생할 때 마다 원하는 모드를 선택할 수 있는 대화창을 표시합니다. [우선 모드] '시스템 -> 비디오 출력' 영역에서 설정한 우선모드를 사용합니다. [모노(2D)] 비디오를 2D 방식으로 재생합니다. [무시] 3D 관련 작업과 처리를 사용하지 않습니다."
 
 msgctxt "#36538"
 msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
@@ -12724,6 +12852,10 @@ msgstr "커버와 팬아트에서 고품질의 텍스처를 사용합니다 (더
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "메모리 절약을 위하여 GUI 해상도를 제한합니다. 비디오 재생에는 영향을 주지 않습니다. 설정 후 다시 시작하여야 합니다."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "iOS 8 호환 모드로 AirPlay를 사용합니다. 이전 iOS 기기에서 Kodi를 인식하는데 문제가 있다면 이 옵션을 끄세요. 이 옵션을 변경하면 Kodi를 다시 시작하여야 적용됩니다!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12916,3 +13048,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "제한 없음"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "블루레이를 열고 재생하는 방법을 선택합니다. 디스크 메뉴는 아직 완전히 지원하지 않으며 문제를 일으킬 수 있습니다."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU 가속"

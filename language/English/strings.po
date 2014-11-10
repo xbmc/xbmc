@@ -69,7 +69,6 @@ msgstr ""
 
 #empty string with id 10
 
-#strings from 11 to 17 are reserved for weather translation
 #. Weather token
 msgctxt "#11"
 msgid "Monday"
@@ -6215,7 +6214,7 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
-# empty string with id 13440
+#empty string with id 13440
 
 #: system/settings/settings.xml
 msgctxt "#13441"
@@ -8713,7 +8712,7 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
+msgid "Please visit kodi.tv/pvr to learn more."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -16076,6 +16075,8 @@ msgstr ""
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
+
+#empty strings from id 37032 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

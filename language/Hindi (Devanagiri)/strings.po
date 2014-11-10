@@ -205,6 +205,10 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "देक"
 
+msgctxt "#83"
+msgid "W"
+msgstr "टेके"
+
 msgctxt "#88"
 msgid "South"
 msgstr "दक्षिण"
@@ -2629,6 +2633,14 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "प्रोग्राम्स और तस्वीरें और वीडियो"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "चरम"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "सेट्टिंग"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "सुन"
@@ -2637,9 +2649,17 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "गरज"
 
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "धुंधला"
+
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "जब नींद निष्क्रिय प्रदर्शित रखो"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "प्रारंभ"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -2672,6 +2692,10 @@ msgstr "अलेक्हें"
 msgctxt "#10025"
 msgid "Videos"
 msgstr "विडियो"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "बुनियादी"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -2777,9 +2801,17 @@ msgctxt "#13283"
 msgid "Operating system:"
 msgstr "प्रचालन तंत्र:"
 
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "सी.पी.यू"
+
 msgctxt "#13286"
 msgid "Video encoder:"
 msgstr "वीडियो एनकोडर:"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "फ़ॉन्ट"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
@@ -2957,6 +2989,10 @@ msgctxt "#14095"
 msgid "Power saving"
 msgstr "बिजली बचाने के"
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "ठुर्स"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "खेलना"
@@ -2992,6 +3028,18 @@ msgstr "वीडियो पोस्ट - प्रसंस्करण"
 msgctxt "#19031"
 msgid "Next"
 msgstr "अगला"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "मार्च  "
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "सैट"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "धुंधला"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -3093,6 +3141,10 @@ msgctxt "#20331"
 msgid "File"
 msgstr "फ़ाइल"
 
+msgctxt "#20334"
+msgid "Folder"
+msgstr "फोल्डर"
+
 msgctxt "#20342"
 msgid "Movies"
 msgstr "सिनेमा"
@@ -3101,9 +3153,17 @@ msgctxt "#20369"
 msgid "Show plot for unwatched items"
 msgstr "उन्वात्चेद मदों के लिए साजिश दिखाएँ"
 
+msgctxt "#20388"
+msgid "Studios"
+msgstr "स्टूडियो"
+
 msgctxt "#20393"
 msgid "Music video information"
 msgstr "संगीत वीडियो की जानकारी"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "एल्बम"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
@@ -3165,6 +3225,10 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr "टिप्पणी"
 
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "डिस्क उद्घताना"
+
 msgctxt "#21862"
 msgid "Caption"
 msgstr "शीर्षक"
@@ -3184,6 +3248,10 @@ msgstr "विशेष निर्देश"
 msgctxt "#21866"
 msgid "Category"
 msgstr "श्रेणी"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "फ़ॉन्ट"
 
 msgctxt "#21874"
 msgid "State"
@@ -3340,3 +3408,27 @@ msgstr "लिखना"
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "विकलांग"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "हार्डवेयर"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "विडियो"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "विडियो"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "एल्बम"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "संगीता"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "गीतें"

@@ -3069,6 +3069,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "උපකරණය පසුකර යාම වෙනස් කරන්න"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "අත්‍යන්ත "
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "සුළිය "
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "සුළං සහිත"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "සිටුවම්"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "උල්කටුව ඇල්ලීම"
@@ -5065,10 +5081,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "නැවත වාදනය "
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "ඩි.වී.ඩි"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "ස්‌වන්ක්‍රියව ඩි.වී.ඩි වාදනය කරන්න "
@@ -5293,6 +5305,30 @@ msgctxt "#19031"
 msgid "Next"
 msgstr "ඊළඟ "
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "E"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "මාර්තු"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "අරිනවා /ක්‍රියාකාරී වෙනවා "
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "N"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "S"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "අදුරු"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "පටිගතකිරීම්"
@@ -5300,6 +5336,10 @@ msgstr "පටිගතකිරීම්"
 msgctxt "#19177"
 msgid "Playback"
 msgstr "නැවත වාදනය "
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "ක්‍රමය"
 
 msgctxt "#19647"
 msgid "Motoring"
@@ -5329,6 +5369,10 @@ msgctxt "#20142"
 msgid "Username"
 msgstr "පරිශීලක නම"
 
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "DVD රෝම්"
+
 msgctxt "#20163"
 msgid "of"
 msgstr "ගේ "
@@ -5336,6 +5380,10 @@ msgstr "ගේ "
 msgctxt "#20173"
 msgid "FTP server"
 msgstr "FTP මෙහෙයුම්කරු "
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "නිවැරැදි  "
 
 msgctxt "#20190"
 msgid "Custom"
@@ -5349,9 +5397,21 @@ msgctxt "#20342"
 msgid "Movies"
 msgstr "චිත්‍රපට"
 
+msgctxt "#20388"
+msgid "Studios"
+msgstr "මැදිරිය "
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "ඇල්බමය "
+
 msgctxt "#20420"
 msgid "Never"
 msgstr "කිසි විටෙකත් නැති "
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "වීඩියෝ කිරීම"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -5373,6 +5433,14 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr "අර්ථ කථනය "
 
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "වීවෘත වෙමින්"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "අකුරු"
+
 msgctxt "#21875"
 msgid "Country"
 msgstr "රට "
@@ -5388,6 +5456,10 @@ msgstr "ප්‍රමාණය"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "වර්ණ "
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "විස්තාරණය කිරීම "
 
 msgctxt "#24007"
 msgid "Movie information"
@@ -5472,6 +5544,30 @@ msgstr "පටිගත කරන්න "
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "අක්‍රිය කර ඇත."
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "දෘඩාංග "
+
+msgctxt "#36912"
+msgid "video"
+msgstr "වීඩියෝ කිරීම"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "වීඩියෝ"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "ඇල්බමය "
+
+msgctxt "#36920"
+msgid "song"
+msgstr "ගීතය "
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "ගීත"
 
 msgctxt "#37026"
 msgid "Auto"

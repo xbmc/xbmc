@@ -3145,6 +3145,34 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Kohandatud passthrough seade"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatuur"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Rõhk"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ülim"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Tuisupöörised"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Vigane"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "tuuline"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Seaded"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "triiviv"
@@ -4913,10 +4941,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Luba riistvaraline kiirendus (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Luba mitmelõimeline tarkvaraline dekodeerimine"
-
 msgctxt "#13454"
 msgid "Decoding method"
 msgstr "Dekodeerimise meetod"
@@ -5348,10 +5372,6 @@ msgstr "Lisa valitud lood mängukavva"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Taasesitus"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD plaadid"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5849,6 +5869,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "või kasuta täpsemaks otsinguks väljendeid, näiteks \"The wizard of Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Leia sarnaseid"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Elektroonlise saatekava import klientidelt"
@@ -6344,6 +6368,10 @@ msgstr "Palun tee grupi nimekiri"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Uue grupi nimi"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Otsimine..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6858,8 +6886,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Lisamoodul põhja jaoks, et kasutada PVR'i."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Lisainfo saamiseks külasta xbmc.org/pvr"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Lisainfo saamiseks külasta kodi.tv/pvr"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -11336,6 +11364,34 @@ msgstr "osa"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "osad"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Määra"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Setid"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videod"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Laul"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Laulud"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"

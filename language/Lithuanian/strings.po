@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Metai"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizuoti lygius permiksuojant"
+msgid "Maintain original volume on downmix"
+msgstr "Išlaikyti originalią apimtį Downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Norėtumėte nuskaityti dabar?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s iš %s prieinama"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Įvestas neteisingas prievado numeris"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Pranešti apie šias paslaugas kitoms sistemoms naudojant Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 suderinamumo režimu"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Leisti valdyti garsumą"
@@ -3236,6 +3244,90 @@ msgstr "Savas garso įrenginys"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Savas tranzitinio ryšio įrenginys"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatūra"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Slėgis"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Artumas"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensyvumas"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Nupastovus"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Labai"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstremalus"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Audra"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Giedras dangus"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Sugadintas"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornadas"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropinis"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Uraganas"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Šaltas"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vėjuota"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Nustatymai"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brizas"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Švelnus"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Stiprus vėjas, beveik audra"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Žvarbus"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Audringas"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5149,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Leisti aparatinės įrangos spartinimą (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Leisti kelių gijų programinės įrangos dekodavimą"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Naudoti MPEG-2 VDPAU"
@@ -5578,8 +5666,8 @@ msgid "Playback"
 msgstr "Atkūrimas"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD diskai"
+msgid "Discs"
+msgstr "Diskas"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5724,18 @@ msgstr "Stabdyti CD perrašymą"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Spartinimas"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Blu-ray atkūrimo režimas"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Atkurti pagrindinį filmą"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Rodyti supaprastintą meniu"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7186,8 +7286,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "priedo, kad galėtumėte naudoti PVR funkciją."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Apsilankykite xbmc.org/pvr, norėdami sužinoti daugiau."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Aplankykite kodi.tv/pvr, norėdami sužinoti daugiau."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8408,6 +8508,10 @@ msgstr "Saugus apvalkalas (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple bylų valdymo protokolas (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf naršyklė"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10509,6 +10613,14 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Automatiškai atsiųsti pirmus subtitrus iš paieškos rezultatų sąrašo"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Konfigūracija buvo perkelta"
+
+msgctxt "#24129"
+msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
+msgstr "Kodi konfigūracija buvo perkelta į naują vietą. Daugiau informacijos galite gauti http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - šis pranešimas daugiau rodomas nebus!"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Pranešimai"
@@ -10522,7 +10634,7 @@ msgid "Select from all titles ..."
 msgstr "Pasirinkti iš visų įrašų..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
+msgid "Show Blu-ray menu"
 msgstr "Rodyti Blu-ray meniu"
 
 msgctxt "#25004"
@@ -10712,6 +10824,14 @@ msgstr "Savaitgalis"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s diena"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Srautai"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Įrenginiai"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12541,10 +12661,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Įjungti aparatinė įrangos viazdo dekodavimą naudojant AMLogic dekoderį."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Įgalina 'frame-multi-threaded' programinės įrangos dekodavimą (mažiau patikimas nei numatytasis vienos gijos būdas)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Pasirinkite kas nutiks pasirinkus EPG elementą: [Rodyti kontekstinį meniu] suktyvins kontekstinį meniu, kuriame galėsite pasirinkti tolimesnius veiksmus; [Įjungti kanalą] iš karto paleis atitinkamą kanalą; [Rodyti informaciją] parodys išsamią informaciją su siužetu ir tolimesniais pasirinkimais; [Įrašyti] sukurs įrašymo laikmatį pasirinktam elementui."
@@ -12585,6 +12701,14 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "Jei įjungta VAAPI. Bus mažiau apkrautas CPU, tačiau gali sutrikti tvarkyklės darbas!"
 
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Leisti aparatinės įrangos spartinimą (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Naudoti DVDPlayer vaizdo failų dekodavimui su MMAL spartinimu."
+
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
 msgstr "Stereoskopinis 3D režimas (dabartinis)"
@@ -12623,7 +12747,7 @@ msgstr "Pagrįstas aparatine įranga"
 
 msgctxt "#36509"
 msgid "Monoscopic (2D)"
-msgstr "Monoslopinis (2D)"
+msgstr "Monoskopinis (2D)"
 
 msgctxt "#36520"
 msgid "Playback mode of stereoscopic 3D videos"
@@ -12666,8 +12790,8 @@ msgid "Same as movie"
 msgstr "Toks pat kaip ir filmo"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Pasirinkite kaip permiksuoti garsą, pvz, iš 5.1 į 2.0: [Įjungta] išlaiko dinaminį originalaus garso šaltinio diapazoną, tačiau garsumo lygis bus mažesnis [Išjungta] išlaiko originalaus garso šaltinio garsumo lygį, tačiau dinaminis diapazonas yra suglaudinamas. Pastaba - dinaminis diapazonas yra skirtumas tarp tyliausio ir garsiausio garso garso šaltinyje."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Pasirinkite kaip permiksuoti garsą, pavyzdžiui, iš 5.1 į 2.0: [Įjungta] išlaiko originalaus garso srauto garsumo lygį, tačiau dinaminis diapazonas yra suglaudinamas. [Išjungta] išlaiko originalaus garso srauto dinaminį diapazoną permiksuojant, tačiau garsumo lygis bus mažesnis. Pastaba - dinaminis diapazonas yra skirtumas tarp tyliausio ir garsiausio garsų garso šaltinyje. Įjunkite šį nustatymą, jei filmo dialogai yra vos girdimi."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
@@ -12680,6 +12804,10 @@ msgstr "Stereoskopinis 3D vaizdo režimas"
 msgctxt "#36536"
 msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "Invertuoti Stereoskopinį 3D režimą (apversti akis)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Pasirinkite, kuriuo stereoskopiniu režimu turi būti atkurti 3D vaizdo įrašai. [Paklausti manęs] kiekvienam atkūrimui bus rodomas dialogas, kuriame bus galima pasirinkti norimą režimą. [Pageidautinas režimas] bus naudojamas pageidaujamas režimas, nurodytas 'Sistema -> Aparatinė vaizdo įranga' nustatymų skyriuje. [Monoskopinis (2D)] vaizdo įrašas bus atkurtas mono/2D režimu. [Ignoruoti] bus išjungtas bet koks stereoskopinis 3D apdorojimas ir tvarkymas."
 
 msgctxt "#36538"
 msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
@@ -12724,6 +12852,10 @@ msgstr "Naudoti aukštesnės kokybės tekstūras viršeliams ir FanArt (naudoja 
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Apriboja GUI raišką, kad naudotų mažiau atminties. Tai neturi įtakos vaizdo atkūrimui. Reikia paleisti iš naujo."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Naudoti su IOS8 suderinamą AirPlay palaikymą. Jei su senesniais IOS įrenginiais kyla bėdų aptinkant Kodi kaip galimą paskirties įrenginį, pamėginkite išjungti šią parinktį. Pakeitimas įsigalioja tik iš naujo paleidus Kodi!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12916,3 +13048,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Neribotas"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Nurodo kaip turėtų būti atidaromi/atkuriami Blu-ray diskai. Disko meniu kol kas nėra pilnai nepalaikomas ir gali sukelti problemų."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU spartinimas"

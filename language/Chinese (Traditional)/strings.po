@@ -1225,10 +1225,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "年份"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "下降混合的正規化程度"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 相容接收機"
@@ -3201,6 +3197,30 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "自訂直通輸出裝置"
 
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "氣壓"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "最高"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "旋"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "已損壞"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "風"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "系統設定"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "移動"
@@ -4997,10 +5017,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "允許硬體加速 (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "允許多執行緒軟體解碼"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "使用 MPEG-2 VDPAU"
@@ -5500,10 +5516,6 @@ msgstr "選中歌曲加入播放清單"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "播放"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -6028,6 +6040,10 @@ msgstr "使用 AND、OR 和/或 NOT 來分開搜尋的字串"
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "或使用片語以精確地尋找，例如 \"The wizard of Oz\"。"
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "尋找相似的"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -7050,8 +7066,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "為後端設計的附加元件才能使用 PVR 功能。"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "請拜訪 xbmc.org/pvr 以取得更多資訊。"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "請拜訪 kodi.tv/pvr 以取得更多資訊。"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10357,10 +10373,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "從所有標題中選擇..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "顯示藍光光碟選單"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "播放主標題：%d"
@@ -12241,10 +12253,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "啟用 AMLogic 硬體解碼。"
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "使用框架多執行緒軟體解碼(和預設單執行緒模式相比可靠度較低)。"
-
 msgctxt "#36425"
 msgid "Show context menu"
 msgstr "顯示內容選單"
@@ -12309,10 +12317,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "和電影相同"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "選擇聲音要如何下降混合，例如從 5.1 到 2.0：[啟用] 維持原本聲音來源的動態範圍，但會稍微變小聲。[停用] 維持原本聲音的大小，但動態範圍會被壓縮。注意 - 動態範圍指的是原本聲音最小聲和最大聲的差距。"
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "變更使用者介面的 3D 立體模式。"
@@ -12357,6 +12361,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "此分類包含如何處理影像輸出的設定。"
 
+msgctxt "#36901"
+msgid "movies"
+msgstr "電影"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "電視劇"
@@ -12372,6 +12380,34 @@ msgstr "集"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "集"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "設定"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "影片集"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "視訊"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "視訊"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "專輯"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "歌曲"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "歌曲"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"

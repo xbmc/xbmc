@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Година"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Нормализирай нивата при смесване"
+msgid "Maintain original volume on downmix"
+msgstr "Поддържай нивото на звука при смесване"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1403,7 +1403,7 @@ msgstr "Ясно"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "Облачно"
+msgstr "Облачност"
 
 msgctxt "#388"
 msgid "Early"
@@ -3237,6 +3237,54 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Задайте устройство, което да декодира звука"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Температура"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Налягане"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Интензитет"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Изключително"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Вихрушки"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Ясно небе"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Повредена"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Торнадо"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Ураган"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Ветровито"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Настройки"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Бриз"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Плаващи"
@@ -3447,7 +3495,7 @@ msgstr "Вихрушки"
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr "Валеж"
+msgstr "Валежи"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -5057,10 +5105,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Разреши хардуерното ускорение (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Включи многопоточното софтуерно декодиране"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Ползвай Mpeg-2 VDPAU"
@@ -5578,8 +5622,8 @@ msgid "Playback"
 msgstr "Възпроизвеждане"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-та"
+msgid "Discs"
+msgstr "Дискове"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5680,18 @@ msgstr "Спиране извличането на диска"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Ускорение"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Режим на възпроизвеждане за Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Възпроизвеждай филма"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Показвай опростено меню"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7178,8 +7234,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Добавка за сървъра, за да може да се ползва ПВР."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "За да научите повече посетете www.xbmc.org/pvr"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "За да научите повече посетете www.kodi.tv/pvr"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7225,13 +7281,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Преглед за икона"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Търсене за икона на канала"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Всички канали"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
-msgstr "Друго/Нейзвестно"
+msgstr "Друго/Неизвестно"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
@@ -7255,7 +7315,7 @@ msgstr "Комедия"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "Сапунки/Мелодрами/Фолклор"
+msgstr "Сапунки/Мелодрами/Фолклорни"
 
 msgctxt "#19506"
 msgid "Romance"
@@ -7571,7 +7631,7 @@ msgstr "Комедия"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "Сапунки/Мелодрами/Фолклор"
+msgstr "Сапунки/Мелодрами/Фолклорни"
 
 msgctxt "#19682"
 msgid "Romance"
@@ -8392,6 +8452,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf браузър"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -9371,7 +9435,7 @@ msgstr "Име на плейлиста"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Намери елемети, за които е вярно:"
+msgstr "Намери елементи, за които е вярно:"
 
 msgctxt "#21435"
 msgid "Edit"
@@ -10475,7 +10539,7 @@ msgstr "Обнови всички"
 
 msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
-msgstr "Опцията активира автоматично режима \"На пауза\" докато трае търсенето на субтитирите и възобновява възпроизвеждането веднага след като субтитрите бъдат достъпни."
+msgstr "Опцията активира автоматично режима \"На пауза\" докато трае търсенето на субтитрите и възобновява възпроизвеждането веднага след като субтитрите бъдат достъпни."
 
 msgctxt "#24124"
 msgid "Next to the video"
@@ -10493,6 +10557,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Първите субтитри от списъка с резултати, от търсене, ще бъдат сваляни автоматично."
 
+msgctxt "#24129"
+msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
+msgstr "Конфигурационните файлове са преместени на ново място за версия Kodi. Моля, прочетете http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - съобщението няма да бъде показано втори път!"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Известия"
@@ -10506,8 +10574,8 @@ msgid "Select from all titles ..."
 msgstr "Избор измежду всички заглавия..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Покажи Blu-ray менюто"
+msgid "Show Blu-ray menu"
+msgstr "Показвай Blu-ray менюто"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10696,6 +10764,14 @@ msgstr "Уикенд"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s ден"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s потоци"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s потоци"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -11291,7 +11367,7 @@ msgstr "Променете цветовете на избрания облик."
 
 msgctxt "#36107"
 msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
-msgstr "Избере шрифтовете на потребителския интерфейс. Шрифтовите комбинации се настройват от избрания облик."
+msgstr "Избере шрифтовете на потребителския интерфейс. Комбинациите от шрифтове се настройват от избрания облик."
 
 msgctxt "#36108"
 msgid "Resize the view of the user interface."
@@ -11627,7 +11703,7 @@ msgstr "Позиция за субтитрите на екрана."
 
 msgctxt "#36193"
 msgid "Category containing settings for how DVDs are handled."
-msgstr "Категорията съдържа всички настройки свързани с DVD дисковете."
+msgstr "Категорията съдържа всички настройки свързани с дисковете."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -12103,7 +12179,7 @@ msgstr "Раздел съдържащ настройки за метеороло
 
 msgctxt "#36316"
 msgid "Category containing settings for how weather addons are handled."
-msgstr "Категорията съдържа всички настройки свързани с управлението на добавките за метеорологичната прогоза."
+msgstr "Категорията съдържа всички настройки свързани с управлението на добавките за метеорологичната прогноза."
 
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
@@ -12391,7 +12467,7 @@ msgstr "Категорията съдържа всички настройки с
 
 msgctxt "#36388"
 msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
-msgstr "Изключва дисплея при бездействие. Опцията е полезна когато разполагате с телевизор който може да се изклюва когато сигнала към него бъде прекъснат."
+msgstr "Изключва дисплея при бездействие. Опцията е полезна когато разполагате с телевизор който може да се изключва когато сигнала към него бъде прекъснат."
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
@@ -12525,10 +12601,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Включете хардуерното декодиране на видео файлове от AMLogic декодер."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Включете многопоточното софтуерно декодиране (по-малко надеждно, отколкото стандартния еднопоточен режим)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Изберете какво трябва да се случва, когато е избран елемента ЕПС: [Покажи контекстното меню] ще задейства контекстното меню, от където можете да изберете по-нататъшните си действия; [Превключи на канал] незабавно ще превключи на съответния канал; [Покажи информация] ще покаже подробна информация за сюжета и допълнителните възможности; [Запис] ще създаде брояч за записване за избрания елемент."
@@ -12568,6 +12640,14 @@ msgstr "Изберете подредба за вирт. клавиатура"
 msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "Определя VAAPI рендъра като стандартен. Резултат от включването на опцията е по-малко натоварване на централния процесор, но има вероятност от проблеми с драйвърите."
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Разреши хардуерното ускорение (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Активира ползването на DVDPlayer за декодиране на видео файлове с MMAL ускорение."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
@@ -12650,8 +12730,8 @@ msgid "Same as movie"
 msgstr "Според филма"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Изберете как да се смесва аудиото, например от 5.1 до 2.0: [Вкл.] поддържа изходния динамичен диапазон на оригиналния аудио източник при смесване, но при това ниво на звука ще бъде по-ниско [Изкл.] поддържа ниво на звука на оригиналния аудио източник обаче динамичния диапазон се компресира. Забележка: динамичния диапазон е разликата между най-тихите и най-силните звуци в аудио източника."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Изберете как да се смесва аудиото, например от 5.1 до 2.0: [Вкл.] поддържа нивото на звука на аудио източника, но динамичния диапазон се компресира. [Изкл.] поддържа изходния динамичен диапазон на аудио източника при смесване, но нивото на звука ще бъде по-ниско. Забележка: динамичния диапазон е разликата между най-тихите и най-силните звуци в аудио източника. Включете опцията ако едва чувате диалога във филмите."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
@@ -12664,6 +12744,10 @@ msgstr "Стереоскопичен режим за видео"
 msgctxt "#36536"
 msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "Обърнат стереоскопичен режим"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Изберете режим за възпроизвеждане на 3D стереоскопични видео файлове. [Запитване] - извежда прозорец за избор на режим преди всяко възпроизвеждане. [Предпочитан режим] - прилага автоматично режима избран в Настройки > Система > Видео изход. [Моноскопичен - 2D] - всички видео файлове ще бъдат възпроизвеждани в режим \"моно\" / 2D. [Игнорирай] - изключва всякаква поддръжка и обработка на 3D стереоскопични файлове"
 
 msgctxt "#36538"
 msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
@@ -12900,3 +12984,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Неограничен"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Определя как Blu-ray дисковете да се отварят/възпроизвеждат. Менютата не се поддържат напълно, все още, поради което могат да са проблемни."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Хардуерно ускорен"

@@ -1109,6 +1109,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konverzija brzine sličica"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Brzo"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Različiti izvođači"
@@ -2869,6 +2873,14 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Prilagođen prolazni uređaj"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstremno"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Поставке"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "klizavo"
@@ -2952,6 +2964,10 @@ msgstr "grad"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "grmljavina"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Zatamni"
 
 msgctxt "#1439"
 msgid "and"
@@ -3088,6 +3104,10 @@ msgstr "Ekran za prijavu"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Postavke - Profili"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Osnovno"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -3832,6 +3852,10 @@ msgstr "Automat. kontrolisanje temperature"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Nametni brzinu ventilatora"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Slova"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4605,10 +4629,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Reprodukcija"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ovi"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Automatski reprodukuj DVD-ove"
@@ -4640,6 +4660,10 @@ msgstr "Ulazni uređaji"
 msgctxt "#14095"
 msgid "Power saving"
 msgstr "Ušteda energije"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "čet"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5005,6 +5029,10 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Prebaci na kanal"
 
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Brzo"
+
 msgctxt "#19017"
 msgid "Recordings"
 msgstr "Snimci"
@@ -5012,6 +5040,26 @@ msgstr "Snimci"
 msgctxt "#19031"
 msgid "Next"
 msgstr "Sledeće"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "I"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "mar"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "S"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "J"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Zatamni"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -5024,6 +5072,10 @@ msgstr "Reprodukcija"
 msgctxt "#19190"
 msgid "Background"
 msgstr "Pozadina"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Režim"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -6701,6 +6753,10 @@ msgctxt "#21452"
 msgid "Get More..."
 msgstr "Nađi jos..."
 
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Brzo"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Ime datoteke"
@@ -7749,6 +7805,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Onemogućeno"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardver"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV serija"
@@ -7764,6 +7824,34 @@ msgstr "epizoda"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "epizode"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Postavi"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Postavke scene"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Filmovi"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Pesma"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Numere"
 
 msgctxt "#37026"
 msgid "Auto"

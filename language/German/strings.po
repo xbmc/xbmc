@@ -383,11 +383,11 @@ msgstr "Neuer Ordner"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Kopieren bestätigen"
+msgstr "Datei kopieren bestätigen"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Verschieben bestätigen"
+msgstr "Datei verschieben bestätigen"
 
 msgctxt "#122"
 msgid "Confirm delete"
@@ -395,15 +395,15 @@ msgstr "Löschen bestätigen"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "Diese Datei(en) kopieren?"
+msgstr "Diese Dateien kopieren?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "Diese Datei(en) verschieben?"
+msgstr "Diese Dateien verschieben?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Diese Datei(en) wirklich löschen? - Kann nicht rückgängig gemacht werden!"
+msgstr "Diese Dateien wirklich löschen? - Löschen kann nicht rückgängig gemacht werden!"
 
 msgctxt "#126"
 msgid "Status"
@@ -439,7 +439,7 @@ msgstr "Interpreten"
 
 msgctxt "#134"
 msgid "Songs"
-msgstr "Titel"
+msgstr "Songs"
 
 msgctxt "#135"
 msgid "Genres"
@@ -455,7 +455,7 @@ msgstr "Suchen"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "System-Informationen"
+msgstr "Systeminformationen"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -535,7 +535,7 @@ msgstr "Video"
 
 msgctxt "#158"
 msgid "Free memory"
-msgstr "Freier RAM"
+msgstr "Freier Speicher"
 
 msgctxt "#159"
 msgid "No link"
@@ -603,7 +603,7 @@ msgstr "Stimmungen"
 
 msgctxt "#176"
 msgid "Styles"
-msgstr "Stil"
+msgstr "Stile"
 
 msgctxt "#179"
 msgid "Song"
@@ -619,7 +619,7 @@ msgstr "Album auswählen"
 
 msgctxt "#182"
 msgid "Tracks"
-msgstr "Song-Liste"
+msgstr "Stücke"
 
 msgctxt "#183"
 msgid "Review"
@@ -675,11 +675,11 @@ msgstr "Keine Informationen gefunden!"
 
 msgctxt "#196"
 msgid "Select movie:"
-msgstr "Titel wählen:"
+msgstr "Film auswählen:"
 
 msgctxt "#197"
 msgid "Querying %s info"
-msgstr "Suche %s in Online-Datenbank..."
+msgstr "%s-Info wird gesucht..."
 
 msgctxt "#198"
 msgid "Loading movie details"
@@ -687,7 +687,7 @@ msgstr "Lade Filminformationen"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Webinterface"
+msgstr "Weboberfläche"
 
 msgctxt "#200"
 msgid "Audio encoders"
@@ -699,7 +699,7 @@ msgstr "Zusammenfassung"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Handlungs-Übersicht"
+msgstr "Handlungsübersicht"
 
 msgctxt "#205"
 msgid "Votes"
@@ -715,7 +715,7 @@ msgstr "Handlung"
 
 msgctxt "#208"
 msgid "Play"
-msgstr "Abspielen"
+msgstr "Wiedergeben"
 
 msgctxt "#209"
 msgid "Next"
@@ -731,7 +731,7 @@ msgstr "Benutzeroberfläche kalibrieren..."
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Bildschirm kalibrieren..."
+msgstr "Video kalibrieren..."
 
 msgctxt "#215"
 msgid "Soften"
@@ -779,7 +779,7 @@ msgstr "Testbilder..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Audio CD Titelnamen mit freedb.org abgleichen"
+msgstr "Audio-CD-Stücknamen mit freedb.org abgleichen"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -787,7 +787,7 @@ msgstr "Zufällige Reihenfolge der Wiedergabeliste nach dem Laden"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "Festplatten Abschaltzeit"
+msgstr "Festplatten-Abschaltzeit"
 
 msgctxt "#230"
 msgid "Video filters"
@@ -851,7 +851,7 @@ msgstr "Vollbild"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Anpassen: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1) (VShift: %2.2f)"
+msgstr "Größenanpassung: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1) (VShift: %2.2f)"
 
 msgctxt "#246"
 msgid "Monitor"
@@ -875,11 +875,11 @@ msgstr "Visualisierung"
 
 msgctxt "#251"
 msgid "Select destination directory"
-msgstr "Zielordner wählen"
+msgstr "Zielverzeichnis auswählen"
 
 msgctxt "#252"
 msgid "Stereo upmix"
-msgstr "Stereo upmix"
+msgstr "Stereo Upmix"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -887,7 +887,7 @@ msgstr "Anzahl der Kanäle"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "DTS-fähiger Receiver"
+msgstr "DTS-fähiger Empfänger"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -895,7 +895,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "Suche CD-Informationen"
+msgstr "CD-Informationen werden abgerufen"
 
 msgctxt "#257"
 msgid "Error"
@@ -919,11 +919,11 @@ msgstr "Warte auf Start..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Skript-Ausgabe"
+msgstr "Skriptausgabe"
 
 msgctxt "#263"
 msgid "Allow control of Kodi via HTTP"
-msgstr "Steuerung über HTTP zulassen"
+msgstr "Steuerung von Kodi über HTTP erlauben"
 
 msgctxt "#264"
 msgid "Record"
@@ -935,23 +935,23 @@ msgstr "Aufnahme beenden"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sortiere nach: Titel-Nr."
+msgstr "Sortieren nach: Stück"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Sortiere nach: Zeit"
+msgstr "Sortieren nach: Zeit"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Sortiere nach: Titel"
+msgstr "Sortieren nach: Titel"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Sortiere nach: Interpret"
+msgstr "Sortieren nach: Interpret"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Sortiere nach: Album"
+msgstr "Sortieren nach: Album"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -967,7 +967,7 @@ msgstr "Bildbereich unten rechts ausrichten"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
-msgstr "Position der Untertitel"
+msgstr "Untertitelposition"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
@@ -995,7 +995,7 @@ msgstr "Standardeinstellungen verwenden"
 
 msgctxt "#281"
 msgid "Please check the XML files"
-msgstr "Bitte überprüfe die XML-Dateien"
+msgstr "Bitte überprüfen Sie die XML-Dateien"
 
 msgctxt "#282"
 msgid "Found %i items"
@@ -1011,7 +1011,7 @@ msgstr "Keine Ergebnisse gefunden"
 
 msgctxt "#285"
 msgid "Preferred audio language"
-msgstr "Bevorzugte Tonspur"
+msgstr "Bevorzugte Audiosprache"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
@@ -1055,7 +1055,7 @@ msgstr "Lesezeichen löschen"
 
 msgctxt "#297"
 msgid "Audio offset"
-msgstr "Tonspur-Verschiebung"
+msgstr "Audioversatz"
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -1063,15 +1063,15 @@ msgstr "Lesezeichen"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "MP1-fähiger Receiver"
+msgstr "MP1-fähiger Empfänger"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "MP2-fähiger Receiver"
+msgstr "MP2-fähiger Empfänger"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "MP3-fähiger Receiver"
+msgstr "MP3-fähiger Empfänger"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1091,11 +1091,11 @@ msgstr "Nicht-interleaved"
 
 msgctxt "#308"
 msgid "Original stream's language"
-msgstr "ursprüngliche Sprache des Streams"
+msgstr "Ursprüngliche Sprache des Streams"
 
 msgctxt "#309"
 msgid "User interface language"
-msgstr "Sprache der Benutzeroberfläche"
+msgstr "Benutzeroberflächensprache"
 
 msgctxt "#310"
 msgid "Keyboard layouts"
@@ -1103,7 +1103,7 @@ msgstr "Tastaturbelegungen"
 
 msgctxt "#312"
 msgid "(0=auto)"
-msgstr "(0=auto)"
+msgstr "(0=automatisch)"
 
 msgctxt "#313"
 msgid "Cleaning database"
@@ -1119,7 +1119,7 @@ msgstr "Datenbankfehler"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "Durchsuche Titel..."
+msgstr "Durchsuche Songs..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1127,11 +1127,11 @@ msgstr "Die Datenbank wurde erfolgreich bereinigt"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "Titel werden bereinigt..."
+msgstr "Songs werden bereinigt..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Fehler beim Bereinigen der Titel"
+msgstr "Fehler beim Bereinigen der Songs"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
@@ -1211,7 +1211,7 @@ msgstr "Fest eingestellt"
 
 msgctxt "#339"
 msgid "Optimized"
-msgstr "optimiert"
+msgstr "Optimiert"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1219,7 +1219,7 @@ msgstr "Verschiedene Interpreten"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Disc abspielen"
+msgstr "Disc wiedergeben"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1227,7 +1227,7 @@ msgstr "Filme"
 
 msgctxt "#343"
 msgid "Adjust framerate"
-msgstr "Framerate anpassen"
+msgstr "Bildwechselfrequenz anpassen"
 
 msgctxt "#344"
 msgid "Actors"
@@ -1238,20 +1238,20 @@ msgid "Year"
 msgstr "Jahr"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Pegel beim Heruntermischen normalisieren"
+msgid "Maintain original volume on downmix"
+msgstr "Originallautstärke in der Heruntermischung beibehalten"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "DTS-HD-fähiger Receiver"
+msgstr "DTS-HD-fähiger Empfänger"
 
 msgctxt "#348"
 msgid "Enable passthrough"
-msgstr "Verwende Passthrough"
+msgstr "Passthrough aktivieren"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "TrueHD-fähiger Receiver"
+msgstr "TrueHD-fähiger Empfänger"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1271,15 +1271,15 @@ msgstr "Schwarz"
 
 msgctxt "#354"
 msgid "Matrix trails"
-msgstr "Matrix Effekt"
+msgstr "Matrix-Effekt"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Aktivieren nach"
+msgstr "Bildschirmschonerzeit"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Bildschirmschoner"
+msgstr "Bildschirmschonermodus"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1307,23 +1307,23 @@ msgstr "Bildschirm verdunkeln um"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Sortiere nach: Datei"
+msgstr "Sortieren nach: Datei"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "Dolby Digital (AC3)-fähiger Receiver"
+msgstr "Dolby Digital (AC3)-fähiger Empfänger"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Sortiere nach: Namen"
+msgstr "Sortieren nach: Name"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Sortiere nach: Jahr"
+msgstr "Sortieren nach: Jahr"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Sortiere nach: Bewertung"
+msgstr "Sortieren nach: Bewertung"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1339,19 +1339,19 @@ msgstr "Gewitter"
 
 msgctxt "#371"
 msgid "Partly"
-msgstr "teilweise"
+msgstr "Teilweise"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "weitgehend"
+msgstr "Weitgehend"
 
 msgctxt "#373"
 msgid "Sunny"
-msgstr "sonnig"
+msgstr "Sonnig"
 
 msgctxt "#374"
 msgid "Cloudy"
-msgstr "bewölkt"
+msgstr "Bewölkt"
 
 msgctxt "#375"
 msgid "Snow"
@@ -1363,15 +1363,15 @@ msgstr "Regen"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "leichter"
+msgstr "Heller"
 
 msgctxt "#378"
 msgid "AM"
-msgstr "vormittags"
+msgstr "Vormittags"
 
 msgctxt "#379"
 msgid "PM"
-msgstr "nachmittags"
+msgstr "Nachmittags"
 
 msgctxt "#380"
 msgid "Showers"
@@ -1379,11 +1379,11 @@ msgstr "Schauer"
 
 msgctxt "#381"
 msgid "Few"
-msgstr "wenige"
+msgstr "Wenig"
 
 msgctxt "#382"
 msgid "Scattered"
-msgstr "vereinzelt"
+msgstr "Vereinzelt"
 
 msgctxt "#383"
 msgid "Wind"
@@ -1391,15 +1391,15 @@ msgstr "Wind"
 
 msgctxt "#384"
 msgid "Strong"
-msgstr "starker"
+msgstr "Stark"
 
 msgctxt "#385"
 msgid "Fair"
-msgstr "schön"
+msgstr "Schön"
 
 msgctxt "#386"
 msgid "Clear"
-msgstr "klar"
+msgstr "Klar"
 
 msgctxt "#387"
 msgid "Clouds"
@@ -1407,7 +1407,7 @@ msgstr "Wolken"
 
 msgctxt "#388"
 msgid "Early"
-msgstr "morgens"
+msgstr "Morgens"
 
 msgctxt "#389"
 msgid "Shower"
@@ -1419,15 +1419,15 @@ msgstr "Windböen"
 
 msgctxt "#391"
 msgid "Low"
-msgstr "tief"
+msgstr "Tief"
 
 msgctxt "#392"
 msgid "Medium"
-msgstr "mittel"
+msgstr "Mittel"
 
 msgctxt "#393"
 msgid "High"
-msgstr "hoch"
+msgstr "Hoch"
 
 msgctxt "#394"
 msgid "Fog"
@@ -1439,7 +1439,7 @@ msgstr "Dunst"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Städteauswahl"
+msgstr "Standort auswählen"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1447,11 +1447,11 @@ msgstr "Aktualisierungsintervall der Wetterdaten"
 
 msgctxt "#398"
 msgid "Temperature units"
-msgstr "Temperatur anzeigen in"
+msgstr "Temperatureinheiten"
 
 msgctxt "#399"
 msgid "Speed units"
-msgstr "Windstärke anzeigen in"
+msgstr "Geschwindigkeitseinheiten"
 
 msgctxt "#400"
 msgid "Weather"
@@ -1487,15 +1487,15 @@ msgstr "Standard"
 
 msgctxt "#410"
 msgid "Accessing weather service"
-msgstr "Verbinde mit Wetterservice"
+msgstr "Verbinde mit Wetterdienst"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "Erhalte Wetter-Informationen für:"
+msgstr "Erhalte Wetterinformationen für:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
-msgstr "Wetter-Informationen können nicht geladen werden"
+msgstr "Wetterinformationen können nicht geladen werden"
 
 msgctxt "#413"
 msgid "Manual"
@@ -1515,7 +1515,7 @@ msgstr "Nicht verfügbar"
 
 msgctxt "#417"
 msgid "View: Big icons"
-msgstr "Große Symbole"
+msgstr "Ansicht: Große Symbole"
 
 msgctxt "#418"
 msgid "Low"
@@ -1571,7 +1571,7 @@ msgstr "Sortieren nach: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
-msgstr "Keinen Cache verwenden"
+msgstr "Kein Cache"
 
 msgctxt "#432"
 msgid "Remove movie from library"
@@ -1639,7 +1639,7 @@ msgstr "Medien automatisch abspielen"
 
 msgctxt "#448"
 msgid "Dolby Digital Plus (E-AC3) capable receiver"
-msgstr "Dolby Digital Plus (E-AC3)-fähiger Receiver"
+msgstr "Dolby Digital Plus (E-AC3)-fähiger Empfänger"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1675,11 +1675,11 @@ msgstr "Modus"
 
 msgctxt "#457"
 msgid "Switch view"
-msgstr "Ansicht ändern"
+msgstr "Ansicht wechseln"
 
 msgctxt "#458"
 msgid "Limit sampling rate (kHz)"
-msgstr "Beschränke Samplingrate (kHz)"
+msgstr "Abtastrate begrenzen (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1687,7 +1687,7 @@ msgstr "Untertitel"
 
 msgctxt "#460"
 msgid "Audio stream"
-msgstr "Tonspur"
+msgstr "Audiostream"
 
 msgctxt "#461"
 msgid "[active]"
@@ -1719,7 +1719,7 @@ msgstr "Typ"
 
 msgctxt "#468"
 msgid "Move the bar to change the OSD position"
-msgstr "Die Leiste bewegen, um die OSD-Position einzustellen"
+msgstr "Die Leiste bewegen, um die OSD-Position zu verändern"
 
 msgctxt "#469"
 msgid "OSD position"
@@ -1727,7 +1727,7 @@ msgstr "OSD-Position"
 
 msgctxt "#470"
 msgid "Credits"
-msgstr "Anerkennung"
+msgstr "Danksagung"
 
 msgctxt "#474"
 msgid "Off"
@@ -1735,7 +1735,7 @@ msgstr "Aus"
 
 msgctxt "#475"
 msgid "Music only"
-msgstr "nur Musik"
+msgstr "Nur Musik"
 
 msgctxt "#476"
 msgid "Music & video"
@@ -1751,7 +1751,7 @@ msgstr "OSD"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "Skin und Sprache"
+msgstr "Skin & Sprache"
 
 msgctxt "#480"
 msgid "Appearance"
@@ -1759,7 +1759,7 @@ msgstr "Darstellung"
 
 msgctxt "#481"
 msgid "Audio options"
-msgstr "Audioeinstellungen"
+msgstr "Audiooptionen"
 
 msgctxt "#482"
 msgid "About Kodi"
@@ -1767,7 +1767,7 @@ msgstr "Über Kodi"
 
 msgctxt "#485"
 msgid "Delete album"
-msgstr "Lösche Album"
+msgstr "Album löschen"
 
 msgctxt "#486"
 msgid "Repeat"
@@ -1783,11 +1783,11 @@ msgstr "Inhalt eines Ordners wiederholen"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Automatisch nächstes Stück abspielen"
+msgstr "Automatisch nächstes Stück wiedergeben"
 
 msgctxt "#491"
 msgid "- Use big icons"
-msgstr "- Große Symbole"
+msgstr "- Große Symbole verwenden"
 
 msgctxt "#492"
 msgid "Resize VobSubs"
@@ -1815,11 +1815,11 @@ msgstr "Dateityp-Erweiterungen anzeigen"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Sortiere nach: Typ"
+msgstr "Sortieren nach: Typ"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
-msgstr "Verbindung mit Online-Service konnte nicht hergestellt werden"
+msgstr "Verbindung mit Onlinedienst konnte nicht hergestellt werden"
 
 msgctxt "#500"
 msgid "Downloading album information failed"
@@ -1847,15 +1847,15 @@ msgstr "Metainformationen werden geladen..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Sortiere nach: Gebrauch"
+msgstr "Sortieren nach: Gebrauch"
 
 msgctxt "#510"
 msgid "Enable visualisations"
-msgstr "Visualisierung verwenden"
+msgstr "Visualisierungen aktivieren"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
-msgstr "Video-Modus auf Basis der Abspiel-Region wechseln"
+msgstr "Videomoduswechsel aktivieren"
 
 msgctxt "#512"
 msgid "Startup window"
@@ -1979,11 +1979,11 @@ msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "Medien Informationen"
+msgstr "Medieninformationen"
 
 msgctxt "#545"
 msgid "Audio output device"
-msgstr "Audio Ausgabegerät"
+msgstr "Audioausgabegerät"
 
 msgctxt "#546"
 msgid "Passthrough output device"
@@ -2003,7 +2003,7 @@ msgstr "Nummer"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "Sortiere nach: %s"
+msgstr "Sortieren nach: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -2019,7 +2019,7 @@ msgstr "Größe"
 
 msgctxt "#554"
 msgid "Track"
-msgstr "Nummer"
+msgstr "Stück"
 
 msgctxt "#555"
 msgid "Time"
@@ -2043,7 +2043,7 @@ msgstr "Wiedergabeliste"
 
 msgctxt "#560"
 msgid "ID"
-msgstr "ID"
+msgstr "Kennung"
 
 msgctxt "#561"
 msgid "File"
@@ -2059,7 +2059,7 @@ msgstr "Bewertung"
 
 msgctxt "#564"
 msgid "Type"
-msgstr "Video-Modus auf Basis der Abspiel-Region wechseln"
+msgstr "Typ"
 
 msgctxt "#565"
 msgid "Usage"
@@ -2067,7 +2067,7 @@ msgstr "Gebrauch"
 
 msgctxt "#566"
 msgid "Album artist"
-msgstr "Album-Interpret"
+msgstr "Albuminterpret"
 
 msgctxt "#567"
 msgid "Play count"
@@ -2123,11 +2123,11 @@ msgstr "Sortiermethode"
 
 msgctxt "#582"
 msgid "View mode"
-msgstr "Ansicht"
+msgstr "Ansichtsmodus"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
-msgstr "Ansicht für einzelne Ordner speichern"
+msgstr "Ansicht für verschiedene Ordner behalten"
 
 msgctxt "#584"
 msgid "Ascending"
@@ -2191,19 +2191,19 @@ msgstr "Audio-CD rippen"
 
 msgctxt "#601"
 msgid "Medium"
-msgstr "Mittlere Qualität"
+msgstr "Mittel"
 
 msgctxt "#602"
 msgid "Standard"
-msgstr "Standard-Qualität"
+msgstr "Standard"
 
 msgctxt "#603"
 msgid "Extreme"
-msgstr "Höchste Qualität"
+msgstr "Extrem"
 
 msgctxt "#604"
 msgid "Constant bitrate"
-msgstr "konstante Bitrate"
+msgstr "Konstante Bitrate"
 
 msgctxt "#605"
 msgid "Ripping..."
@@ -2211,7 +2211,7 @@ msgstr "Rippe..."
 
 msgctxt "#607"
 msgid "To:"
-msgstr "Zielordner:"
+msgstr "An:"
 
 msgctxt "#608"
 msgid "Could not rip CD or track"
@@ -2219,11 +2219,11 @@ msgstr "CD oder Titel konnte nicht gerippt werden!"
 
 msgctxt "#609"
 msgid "CDDARipPath is not set."
-msgstr "CD Ziel-Pfad ist nicht konfiguriert."
+msgstr "CDDA-Rip-Pfad ist nicht festgelegt."
 
 msgctxt "#610"
 msgid "Rip audio track"
-msgstr "Titel rippen"
+msgstr "Audiostück rippen"
 
 msgctxt "#611"
 msgid "Enter number"
@@ -2247,7 +2247,7 @@ msgstr "Audio-CDs"
 
 msgctxt "#621"
 msgid "Encoder"
-msgstr "Encoder"
+msgstr "Kodierer"
 
 msgctxt "#622"
 msgid "Quality"
@@ -2263,7 +2263,7 @@ msgstr "Titelnummer mit einbeziehen"
 
 msgctxt "#625"
 msgid "All songs of"
-msgstr "Alle Titel von"
+msgstr "Alle Songs von"
 
 msgctxt "#626"
 msgid "In progress TV shows"
@@ -2271,7 +2271,7 @@ msgstr "Begonnene TV-Serien"
 
 msgctxt "#629"
 msgid "View mode"
-msgstr "Ansicht"
+msgstr "Ansichtsmodus"
 
 msgctxt "#630"
 msgid "Normal"
@@ -2283,15 +2283,15 @@ msgstr "Zoom"
 
 msgctxt "#632"
 msgid "Stretch 4:3"
-msgstr "4:3 Ausgabe"
+msgstr "4:3 strecken"
 
 msgctxt "#633"
 msgid "Wide Zoom"
-msgstr "14:9 Ausgabe"
+msgstr "Breite Vergrößerung"
 
 msgctxt "#634"
 msgid "Stretch 16:9"
-msgstr "16:9 Ausgabe"
+msgstr "16:9 strecken"
 
 msgctxt "#635"
 msgid "Original Size"
@@ -2311,11 +2311,11 @@ msgstr "Lautstärke-Anpassung der Wiedergabe-Verstärkung "
 
 msgctxt "#639"
 msgid "Use track levels"
-msgstr "Benutze Titel-Lautstärke"
+msgstr "Stück-Lautstärke verwenden"
 
 msgctxt "#640"
 msgid "Use album levels"
-msgstr "Benutze Album-Lautstärke"
+msgstr "Album-Lautstärke verwenden"
 
 msgctxt "#641"
 msgid "PreAmp Level - ReplayGained files"
@@ -2331,7 +2331,7 @@ msgstr "Übersteuerung bei Wiedergabe-Verstärkung vermeiden"
 
 msgctxt "#644"
 msgid "Crop black bars"
-msgstr "Schwarze Balken entfernen"
+msgstr "Schwarze Balken abschneiden"
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
@@ -2387,11 +2387,11 @@ msgstr "Nach einem Ordner suchen"
 
 msgctxt "#658"
 msgid "Song information"
-msgstr "Titelinformationen"
+msgstr "Songinformationen"
 
 msgctxt "#659"
 msgid "Non-linear stretch"
-msgstr "Nichtlineare Vergrößerung"
+msgstr "Nichtlineare Streckung"
 
 msgctxt "#660"
 msgid "Volume amplification"
@@ -2399,7 +2399,7 @@ msgstr "Lautstärkeverstärkung"
 
 msgctxt "#661"
 msgid "Choose export folder"
-msgstr "Wähle Export-Ordner"
+msgstr "Exportordner auswählen"
 
 msgctxt "#662"
 msgid "This file is no longer available."
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Jetzt scannen?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s von %s verfügbar"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Ungültige Port-Nummer eingegeben"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Zeroconf-Veröffentlichung"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8-Kompatibilitätsmodus"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Lautstärkeregelung erlauben"
@@ -3236,6 +3244,78 @@ msgstr "Benutzerdefiniertes Audiogerät"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Benutzerdefiniertes Audiogerät für Passthrough"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatur"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Druck"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Nähe"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensität"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Sehr"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extrem"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Wirbel"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Klarer Himmel"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Defekt"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropisch"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Hurrikan"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Kalt"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Windig"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Cache-Einstellungen"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brise"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Schwache Brise"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Starker Wind, steifer Wind"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3455,7 +3535,7 @@ msgstr "Teil"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Energiesparmodus des Bildschirms aktivieren"
+msgstr "Bildschirm während Leerlauf in den Ruhezustand versetzen"
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -5057,10 +5137,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Hardwarebeschleunigung erlauben (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Erlaube Multi-Prozess-Software-Dekodierung"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "MPEG-2 VDPAU verwenden"
@@ -5578,8 +5654,8 @@ msgid "Playback"
 msgstr "Wiedergabe"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
+msgid "Discs"
+msgstr "Discs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5712,18 @@ msgstr "Rippen der CD stoppen"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Beschleunigung"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Blu-ray-Wiedergabemodus"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Hauptfilm wiedergeben"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Vereinfachtes Menü anzeigen"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6085,6 +6173,10 @@ msgctxt "#16327"
 msgid "VAAPI Bob"
 msgstr "VAAPI Bob"
 
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Bewegungsadaptiv"
+
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Bewegungskompensiert"
@@ -6095,7 +6187,7 @@ msgstr "Video Nachbearbeitung"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
-msgstr "Bildschirm Sleep Timeout"
+msgstr "Bildschrimruhezustand-Zeitüberschreitung"
 
 msgctxt "#17997"
 msgid "%i MByte"
@@ -7182,8 +7274,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Client-Addon um PVR nutzen zu können."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Bitte besuchen Sie xbmc.org/pvr für Details."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Bitte besuchen Sie kodi.tv/pvr um mehr zu erfahren."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8404,6 +8496,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf-Browser"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10505,6 +10601,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Ersten Untertitel aus der Suchergebnisliste automatisch herunterladen"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Konfiguration wurde verschoben"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Benachrichtigungen"
@@ -10518,8 +10618,8 @@ msgid "Select from all titles ..."
 msgstr "Wähle aus allen Titeln"
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Zeige Blu-ray Menüs"
+msgid "Show Blu-ray menu"
+msgstr "Blu-ray-Menü anzeigen"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10708,6 +10808,14 @@ msgstr "Wochenende"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s Tag"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Streams"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Geräte"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -11495,7 +11603,7 @@ msgstr "Aktiviert VDPAU-Hardware-Dekodierung von Videodateien. Hauptsächlich ge
 
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
-msgstr "Aktiviere VAAPI Hardwaredecoding für Videos. Hauptsächlich verwendet für Intel- und einige AMD-Grafikadapter."
+msgstr "VAAPI-Hardwaredekodierung für Videodateien aktivieren. Hauptsächlich verwendet für Intel- und einige AMD-Grafikkarten."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -12537,10 +12645,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Hardware-Videodekodierung mit AMLogic-Dekoder aktivieren."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Aktiviere die Multi-Prozess-Software-Dekodierung (unzuverlässiger als der Standard Einzel-Prozess-Modus)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Aktion beim Auswählen eines EPG-Eintrags: \n[Kontext-Menü anzeigen] - öffnet das kontextabhängige Menü, von welchem aus weitere Aktionen gewählt werden können. \n[Zum Kanal wechseln] - wechselt unverzüglich zum entsprechenden Kanal. \n[Informationen anzeigen] - zeigt detaillierte Informationen, wie die Inhaltsangabe sowie weitere Optionen. \n[Aufnehmen] - erstellt einen Aufnahme-Timer für den gewählten Eintrag."
@@ -12576,6 +12680,18 @@ msgstr "Legt fest, ob die Videodekodierung mittels Software (benötigt mehr CPU-
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Wählen Sie virtuelle Tastaturbelegungen."
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Wenn aktiviert, welches VAAPI-Renderverfahren wird bevorzugt. Dies entlastet die CPU, aber der Treiber könnte sich aufhängen!"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Hardwarebeschleunigung erlauben (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "DVD-Spieler für die Dekodierung von Videodateien mit MMAL-Beschleunigung verwenden."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
@@ -12657,10 +12773,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Wie Film"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Ton-Downmix, z.B. von '5.1' auf '2.0': \n[Aktiviert] - behält die Dynamik des Quellmaterials bei, reduziert dabei jedoch die Lautstärke. \n[Deaktiviert] - behält die Lautstärke des Quellmaterials bei, verringert hierzu jedoch die Dynamik. Hinweis: Die Dynamik ist die Differenz zwischen dem leisesten und lautesten Ton innerhalb eines Quellmaterials."
-
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Angabe von zusätzlichen Bibliotheken, deren Log-Messages im Log aufgenommen werden sollen."
@@ -12668,6 +12780,10 @@ msgstr "Angabe von zusätzlichen Bibliotheken, deren Log-Messages im Log aufgeno
 msgctxt "#36535"
 msgid "Stereoscopic 3D mode of video"
 msgstr "Stereoskopischer 3D-Modus des Videos"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Stereoskopischen 3D-Modus invertieren (Augen umdrehen)"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12900,3 +13016,7 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Unbeschränkt"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU-beschleunigt"

@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Dosya taşımayı onayla"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Silmeyi onayla"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Bu dosyalar kopyalansın mı?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Web arabirimi"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Ses kodlayıcı"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Hakkında"
@@ -844,6 +852,10 @@ msgstr "Tam ekran"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Boyutlandırma: (%i,%i)->(%i,%i) (Yakınlaştırma x%2.2f) AR:%2.2f:1 (Pikseller: %2.2f:1) (DKaydırma: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Ekran"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1085,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Kullanıcı arabirimi dili"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Klavye düzeni"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=otomatik)"
@@ -1222,8 +1238,8 @@ msgid "Year"
 msgstr "Yıl"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Downmix'te düzeyleri normalleştir"
+msgid "Maintain original volume on downmix"
+msgstr "Downmix yaparken özgün ses düzeyini koru"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2401,29 +2417,37 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Sıkıştırma düzeyi"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Bileşene özel kayıt tutmayı etkinleştir"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Dolby Digital kod çevrimini etkinleştir."
 
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Bileşene özel kayıt tutmayı belirt..."
+
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
-msgstr "SMB kütüphanesi için ayrıntılı günlük"
+msgstr "SMB kitaplığı için ayrıntılı günlük"
 
 msgctxt "#670"
 msgid "Verbose logging for CURL library (http, dav)"
-msgstr "CURL kütüphanesi (http, dav) için ayrıntılı günlük"
+msgstr "CURL kitaplığı (http, dav) için ayrıntılı günlük"
 
 msgctxt "#671"
 msgid "Verbose logging for CMYTH library"
-msgstr "CMYTH kütüphanesi için ayrıntılı günlük"
+msgstr "CMYTH kitaplığı için ayrıntılı günlük"
 
 msgctxt "#672"
 msgid "Verbose logging for FFMPEG libraries"
-msgstr "FFMPEG kütüphaneleri için ayrıntılı günlük"
+msgstr "FFMPEG kitaplıkları için ayrıntılı günlük"
 
 msgctxt "#673"
 msgid "Verbose logging for RTMP library"
-msgstr "RTMP kütüphanesi için ayrıntılı günlük"
+msgstr "RTMP kitaplığı için ayrıntılı günlük"
 
 msgctxt "#674"
 msgid "Verbose logging for DBUS calls"
@@ -2436,6 +2460,18 @@ msgstr "JSON-RPC istekleri için ayrıntılı günlük"
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "SES bileşeni için ayrıntılı günlük"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "AirTunes kitaplığı için ayrıntılı günlük"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "UPnP bileşenleri için ayrıntılı kayıt tutma"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "CEC kitaplığı için ayrıntılı günlük"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2779,11 +2815,15 @@ msgstr "Kitaplık Güncellemesi"
 
 msgctxt "#800"
 msgid "Music library needs to rescan tags from files."
-msgstr "Müzik kütüphanesinin etiketler için dosyadan tekrar taramaya ihtiyacı var."
+msgstr "Müzik kitaplığı etiketler için dosyalardan tekrar taramaya ihtiyacı var."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Şimdi tarama yapmak ister misiniz?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s / %s kullanılabilir"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3165,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Bu hizmetleri Zeroconf üzerinden diğer sistemlere bildir"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 uyumluluk modu"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Ses kontrolünü aç"
@@ -3200,6 +3244,74 @@ msgstr "Özel ses aygıtı"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Özel doğrudan geçiş aygıtı"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Sıcaklık"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Basınç"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extreme"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Kasırgaları"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Gökyüzü açık"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Bozuk"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Hortum"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropikal"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Kasırga"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Soğuk"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Rüzgarlı"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Ayarlar"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Meltem"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Hafif"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Sert rüzgar"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Kuvvetli"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Şiddetli"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4059,7 +4171,7 @@ msgstr "Otomatik güncellemeler: Etkin"
 
 msgctxt "#12397"
 msgid "Auto updates: Notify"
-msgstr "Otomatik güncellemeler: Bildirmek"
+msgstr "Otomatik güncellemeler: Bildir"
 
 msgctxt "#12398"
 msgid "Auto updates: Never"
@@ -5021,9 +5133,21 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Donanım hızlandırmasına izin ver (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Çok iş parçacıklı yazılım kod çözmesine izin ver."
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "MPEG-2 VDPAU kullan"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "MPEG-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Eski Radeon kartları bu etkin ise hata verme eğilimindedir."
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "MPEG-4 VDPAU Kullan"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "MPEG-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı ION donanımları bu seçenek varsayılan olarak etkin olduğundan sorunlar yaratabilir."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5032,6 +5156,22 @@ msgstr "VC-1 VDPAU Kullan"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "VC-1 tabanlı codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. VDPAU bulunan AMD Donanımı VC-1 Simple kodunu çözemez."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "MPEG-2 VAAPI Kullan"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "MPEG-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı MPEG-2 videolarda yeşil yapılar olabilir."
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "MPEG-4 VAAPI Kullan"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "MPEG-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5052,6 +5192,18 @@ msgstr "Yazılım"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Donanım hızlandırmalı"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "VAAPI işleyici yöntemini tercih et"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Donanım hızlandırmasına izin ver (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Video dosyalarının kod çözmesi için OMXPlayer kullan."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5377,6 +5529,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Grafik Kullanıcı Arabirimi filtreleri"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Arka plan taramasını kullan"
@@ -5494,8 +5650,8 @@ msgid "Playback"
 msgstr "Kayıttan yürüt"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD'ler"
+msgid "Discs"
+msgstr "Diskler"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5552,6 +5708,18 @@ msgstr "CD kopyalamayı durdur"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Video Hızlandırma"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Blu-ray oynatma modu"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Ana film'i oynat"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Basitleştirilmiş menüyü göster"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -5616,6 +5784,10 @@ msgstr "Menü sesleri"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Dış görünüm varsayılanı"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Daha büyük yazı tipi boyutu"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5993,6 +6165,18 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -6024,6 +6208,10 @@ msgstr "Arama kelimelerini AND, OR ve/veya NOT kullanarak ayırın."
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "veya tam bir eşleşme bulmak için \"The wizard of Oz\" gibi ifadeleri kullanabilirsiniz."
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Benzerlerini bul"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6425,6 +6613,10 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Kayıt için klasör adını girin"
 
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Lütfen bir kanal seçin"
+
 msgctxt "#19106"
 msgid "Next timer on"
 msgstr "Bir sonraki zamanlayıcı"
@@ -6444,6 +6636,14 @@ msgstr "Beklenmeyen bir hata oluştu. Daha sonra tekrar deneyin veya detaylar i�
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR arka uç hatası. Detaylar için günlük dosyasına bakın."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Kayıt silinsin mi?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Bu klasördeki tüm kayıtlar silinsin mi?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -7053,6 +7253,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "'bağlantı kesildi' uyarılarını gösterme"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Gruplanmış Öğeler"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Hiçbir PVR eklentisi bulunamadı"
@@ -7066,8 +7270,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "ve arka uç için eklentiye ihtiyacınınız var."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Daha fazla bilgi için xbmc.org/pvr sitesini ziyaret ediniz."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Daha fazla bilgi için kodi.tv/pvr sitesini ziyaret ediniz."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7113,9 +7317,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Simgeye gözat"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Kanal logoları aranıyor"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Tüm Kanallar"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Ön Plan"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8281,6 +8493,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf Tarayıcısı"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Web sunucu dizini (HTTP)"
@@ -8787,7 +9003,7 @@ msgstr "Küçük resimleri ve video bilgilerini çıkart"
 
 msgctxt "#20434"
 msgid "Sets"
-msgstr "Setler"
+msgstr "Kümeler"
 
 msgctxt "#20435"
 msgid "Combine split video items"
@@ -9396,6 +9612,10 @@ msgstr "%d ile %d arasında"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s ile %s arasında"
+
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -10133,6 +10353,10 @@ msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Güncellemeleri denetle"
 
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Son güncelleme %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Bu eklentiyi etkinleştirmek ister misiniz?"
@@ -10209,9 +10433,21 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Yeniden bağlanmayı denemek istiyor musunuz?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Yardımcı Eklentiler"
+
 msgctxt "#24082"
 msgid "Add-on libraries"
-msgstr "Eklenti kütüphaneleri"
+msgstr "Eklenti kitaplıkları"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Bilgi kitaplıkları"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Görsel öğe kitaplıkları"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10353,6 +10589,22 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Özel konum"
 
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "İlk altyazıyı otomatik indir"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Arama sonuçlarındaki ilk altyazıyı otomatık olarak indir"
+
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Yapılandırma taşındı"
+
+msgctxt "#24129"
+msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
+msgstr "Kodi yapılandırması yeni bir konuma taşındı. Lütfen http://kodi.wiki/view/Migration_from_Kodi_to_Kodi adresine bakın - bu mesaj tekrar gösterilmeyecek!"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Bildirimler"
@@ -10366,8 +10618,8 @@ msgid "Select from all titles ..."
 msgstr "Bütün başlıklardan seç ..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Blu-ray menülerini göster"
+msgid "Show Blu-ray menu"
+msgstr "Blu-ray menüsünü göster"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10556,6 +10808,14 @@ msgstr "Hafta Sonu"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s günlük"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Akışları"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Aygıtları"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -10795,7 +11055,7 @@ msgstr "7.1"
 
 msgctxt "#34111"
 msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
-msgstr "Oynatma veya GUI sesleri için herhangi bir ses gerekli olmadığındaki davranışı seçin. [Her zaman] - sürekli duyulamaz sinyal çıkışı, bu yeni sesler için çıktı aygıtını canlı tutar ancak bu da diğer uygulamaların seslerini engelleyebilir. [1- 10 Dakika] - Her zaman ile aynı olmasının dışında seçilen süreden sonra askıda bekleme durumuna girer [Kapalı] - ses çıkışı askıda bekleme durumuna girer. Not - ses askıda bekleme durumuna girerse sesler çalmayabilir."
+msgstr "Oynatma veya Grafik Kullanıcı Arabirimi sesleri için herhangi bir ses gerekli olmadığındaki davranışı seçin. [Her zaman] - sürekli duyulamaz sinyal çıkışı, bu yeni sesler için çıktı aygıtını canlı tutar ancak bu da diğer uygulamaların seslerini engelleyebilir. [1- 10 Dakika] - Her zaman ile aynı olmasının dışında seçilen süreden sonra askıda bekleme durumuna girer [Kapalı] - ses çıkışı askıda bekleme durumuna girer. Not - ses askıda bekleme durumuna girerse sesler çalmayabilir."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -10995,11 +11255,11 @@ msgstr "Bağdaştırıcı açılamıyor"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting Kodi"
-msgstr "Kodi başlatılınca aygıtları aç"
+msgstr "Kodi başlatılırken açılacak aygıtlar"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping Kodi"
-msgstr "Kodi durdurulunca aygıtları kapat"
+msgstr "Kodi durdurulunca kapatılacak aygıtlar"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -11159,7 +11419,7 @@ msgstr "Kullanıcı arabirimi görünümünü yeniden boyutlandır."
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
-msgstr "Kodi nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
+msgstr "Kodi'nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the user interface."
@@ -11287,7 +11547,7 @@ msgstr "Video kitaplığını etkinleştir."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "İzlenmemiş bölüm bilgisini Video Kütüphanesinde göster."
+msgstr "İzlenmemiş bölüm bilgisini Video Kitaplığında göster."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -11431,7 +11691,7 @@ msgstr "Videolardan codec, en boy oranı gibi meta veri bilgilerini ve küçük 
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
-msgstr "Bir dosya kütüphaneye tarandığında başlık olarak dosya adı yerine metadata başlığı görüntülenir."
+msgstr "Bir dosya kitaplık için tarandığında başlık olarak dosya adı yerine meta veri başlığı görüntülenir."
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
@@ -11747,7 +12007,7 @@ msgstr "Hiçbir bilgi mevcut değil."
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
-msgstr "MüzikKıtaplığı veritabanını XML dosyasına dışa aktar. Bu isteğe bağlı olarak geçerli XML dosyalarının üzerine yazılır."
+msgstr "Müzik Kıtaplığı veritabanını XML dosyasına dışa aktar. Bu isteğe bağlı olarak geçerli XML dosyalarının üzerine yazılır."
 
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
@@ -12017,6 +12277,14 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Web sunucu bağlantı noktasını tanımlayın."
 
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Web sunucusu kullanıcı adını tanımla. Bu yalnızca kullanıcı adı ve parola ayarlandığında etkili olur."
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Web sunucusu parolasını tanımla. Bu yalnızca kullanıcı adı ve parola ayarlandığında etkili olur."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Eklenti Yöneticisi ile hangi web arayüzünü kullanmak istediğinizi seçin."
@@ -12043,7 +12311,7 @@ msgstr "Bağlanabilecek en çok istemciyi tanımla."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control Kodi."
-msgstr "Ağ üzerindeki programların Kodi yi kontrol etmesine izin ver."
+msgstr "Ağ üzerindeki programların Kodi'yi kontrol etmesine izin ver."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12123,7 +12391,7 @@ msgstr "Kullanıcı arabirimi taramasını ayarlar. Görüntülenen resimin ekra
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
-msgstr "Ekran donanım kalibrasyonu için test kalıpları."
+msgstr "Ekran donanımını ayarlamak için test kalıpları."
 
 msgctxt "#36359"
 msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
@@ -12191,7 +12459,7 @@ msgstr "Giriş aygıtları ile ilgili ayarları içeren kategori."
 
 msgctxt "#36375"
 msgid "Configure any attached peripheral devices."
-msgstr "Takılı çevre aygıtlarını yapılandır."
+msgstr "Takılı çevre aygıtlarını yapılandırın."
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -12203,7 +12471,7 @@ msgstr "Kodi'yi kontrol etmek için bir fare veya dokunmatik ekran aygıtı kull
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."
-msgstr "Kodi yi kontrol etmek için joystick kullan."
+msgstr "Kodi'yi kontrol etmek için joystick kullan."
 
 msgctxt "#36379"
 msgid "Category containing settings for internet access."
@@ -12211,27 +12479,27 @@ msgstr "İnternet erişimi ile ilgili ayarları içeren kategori."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
-msgstr "İnternet bağlantınız bir vekil sunucu kullanıyor ise, burada ayarlayınız."
+msgstr "İnternet bağlantınız bir vekil sunucu kullanıyor ise, burada yapılandırın."
 
 msgctxt "#36381"
 msgid "Configure which proxy type is used."
-msgstr "Ne tip bir vekil sunucu kullanıldığını ayarlayınız."
+msgstr "Ne tip bir vekil sunucu kullanıldığını yapılandırın."
 
 msgctxt "#36382"
 msgid "Configure the proxy server address."
-msgstr "Vekil sunucu adresini ayarlayınız."
+msgstr "Vekil sunucu adresini yapılandırın."
 
 msgctxt "#36383"
 msgid "Configure the proxy server port."
-msgstr "Vekil sunucu bağlantı noktasını yapılandır."
+msgstr "Vekil sunucu bağlantı noktasını yapılandırın."
 
 msgctxt "#36384"
 msgid "Configure the proxy server username."
-msgstr "Vekil sunucu kullanıcı adını ayarlayınız."
+msgstr "Vekil sunucu kullanıcı adını yapılandırın."
 
 msgctxt "#36385"
 msgid "Configure the proxy server password."
-msgstr "Vekil sunucu şifresini ayarlayınız."
+msgstr "Vekil sunucu şifresini yapılandırın."
 
 msgctxt "#36386"
 msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
@@ -12263,7 +12531,11 @@ msgstr "Hata ayıklama günlüğünü aç veya kapat. Sorun giderme için kullan
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
-msgstr "Kodi'nin içide alınan ekran görüntülerinin kaydedileceği klasör."
+msgstr "Kodi'nin içinde alınan ekran görüntülerinin kaydedileceği klasör."
+
+msgctxt "#36394"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Ek kitaplıklardan hata ayıklama günlüğüne dahil edilecek günlük iletilerini etkinleştir."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12373,10 +12645,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "AMLogic kod çözücü kullanarak donanımsal video kod çözmesini etkinleştir"
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Kare çok iş parçacıklı yazılım kod çözmeyi etkinleştirir (varsayılan tek iş parçacıklı moda göre daha az güvenilir)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Bir EPG öğesi seçildiğinde ne olacağını seçin: [İçerik menüsünü göster] daha fazla eylem seçebileceğiniz içerik menüsünü tetikler; [Kanal değiştir] ilgili kanala ağnında geçer; [Bilgileri görüntüle] içerik ile ayrıntılı bilgi ve daha fazla seçenek gösterir; [Kayıt] seçili öğe için bir kayıt zamanlayıcısı yaratır."
@@ -12403,11 +12671,35 @@ msgstr "Ses çıkış bağlantısı yalnızca Dolby Digital 5.1 gibi çok kanall
 
 msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
-msgstr "Görüntü İşleme hızlandırmasının nasıl olacağını yapılandırın. Bu, kod çözme ve ölçeklendirme gibi şeyleri içerir."
+msgstr "Görüntü işleme hızlandırmasının nasıl olacağını yapılandırın. Bu, kod çözme ve ölçeklendirme gibi şeyleri içerir."
 
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Video kod çözmesinin yazılım (daha fazla CPU gerektirir) veya mümkünse donanım hızlandırması olup olmayacağını tanımlar."
+
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Sanak klavye düzenlerini seç"
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Etkinleştirilirse VAAPI işleyici yöntemi tercih edilir. Bu CPU'ya daha az yük bindirir fakat sürücü kilitlenebilir!"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Donanım hızlandırmasına izin ver (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Video dosyalarının kod çözmesi için MMAL hızlandırmalı DVDPlayer'ı kullan."
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoskopik 3B modu (varsayılan)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoskopik 3B modu"
 
 msgctxt "#36502"
 msgid "Disabled"
@@ -12437,6 +12729,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Donanım Temelli"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopic (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Stereoskopik 3B videoları oynatma modu"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Bana sor"
@@ -12453,6 +12753,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Film ile aynı (otomatik)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Oynatma durdurulunca stereoskopik 3B modu devre dışı bırak"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Oynatma modunu seç"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Stereoskopik 3B modu seç"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Alternatif mod seç..."
@@ -12462,12 +12774,36 @@ msgid "Same as movie"
 msgstr "Film ile aynı"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Sesin nasıl downmix yapılacağını seçin, mesela 5.1'den 2.0'a: [Etkin] downmix yaparken orijinal ses kaynağının dinamik aralığını korur ancak ses şiddeti düşük olacaktır [Devre dışı] dinamik aralık sıkıştırılır ancak orijinal ses kaynağının ses seviyesini korur. Not - Dinamik aralık bir ses kaynağının en sessiz ve en gürültülü sesleri arasındaki farktır."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Sesin nasıl downmix yapılacağını seçin, mesela 5.1'den 2.0'a: [Etkin] downmix yaparken özgün ses kaynağının ses seviyesini korur ancak dinamik aralık sıkıştırılır. [Devre dışı] downmix yaparken özgün ses kaynağının dinamik aralığını korur ancak ses şiddeti düşük olacaktır. Not - Dinamik aralık bir ses kaynağının en sessiz ve en gürültülü sesleri arasındaki farktır. Film diyalogları zorlukla duyulabiliyor ise bu ayarı etkinleştirin."
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Hata ayıklama günlüğüne eklenecek ek kitaplıkları belirle."
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoskopik 3B video modu"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Ters çevrilmiş Stereoskopik 3B mod (flip eyes)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Stereoskopik 3B videoların hangi modda oynatılacağını seçin. [Bana sor]  her oynatım için istenen modu seçmek için bir iletişim kutusu gösterilir. [Tercih edilen mod] 'Sistemi -> Video donanım' ayarları bölümündeki belirtilen tercih modunu kullanır. [Monoscopic (2D)] videoyu mono/2D oynatır. [Yoksay] herhangi bir stereoskopik 3B işlemesini devre dışı bırakır"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Etkin] Oynatım sona erdiğinde Grafik Kullanıcı Arabirimini (ve bazı televizyonlar) 2B moduna geri döndür. [Devre dışı] Grafik Kullanıcı Arabirimi ve TV stereoskopik 3B modunda kalır. Video çalma listeleri için stereoskopik 3B modu, stereoskopik olmayan videolar için bile değişmez."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Kullanıcı arabiriminin stereoskopik 3B modunu değiştirir."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Stereoskopik 3B medya ve böyle videoların oynatılması için tercih edilen mod."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12485,6 +12821,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Video dosyalarının donanımsal kod çözmesini etkinleştir."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoskopik 3B altyazıların derinliği"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Stereoskopik 3B videolar için altyazı görsel derinliğini ayarlar. Değer ne kadar yüksek olursa altyazı izleyiciye daha yakın görünecektir."
@@ -12492,6 +12832,14 @@ msgstr "Stereoskopik 3B videolar için altyazı görsel derinliğini ayarlar. De
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Kapaklar ve fanart için yüksek kaliteli dokular kullan (daha fazla bellek kullanır)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Bellek tasarrufu için Grafik Kullanıcı Arabirimi çözünürlüğünü sınırlar. Video oynatımını etkilemez. Yeniden başlatma gerektirir."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "iOS 8 uyumlu AirPlay desteği kullan. Eğer eski iOS cihazları ile Kodi'yi geçerli bir hedef olarak algılamada sorun yaşıyorsanız bunu kapatmayı deneyin. Bu seçenek yalnızca Kodi yeniden başlatılınca etkili olur!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12529,13 +12877,33 @@ msgctxt "#36904"
 msgid "season"
 msgstr "sezon"
 
+msgctxt "#36905"
+msgid "seasons"
+msgstr "sezonlar"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "bölüm"
 
 msgctxt "#36907"
 msgid "episodes"
-msgstr "bölüm"
+msgstr "bölümler"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "müzik videosu"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "müzik videoları"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "küme"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "kümeler"
 
 msgctxt "#36912"
 msgid "video"
@@ -12641,6 +13009,10 @@ msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Ses çıkış bağlantısı üzerinden sadece Dolby Digital 5.1 gibi çok kanallı ses desteği varsa bunu seçin, bu AAC5.1 veya FLAC5.1 gibi çok kanallı sesi 5.1 saran ses ile dinlemenizi sağlar. Not - Bu çok fazla CPU gücü gerektirir bu yüzden Pi'de tavsiye edilmez."
 
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Kalite ve sıkıştırma düzeyi gibi ses kodlayıcısı ayarlarını yapılandır."
+
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Otomatik"
@@ -12660,3 +13032,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Limitsiz"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Blu-ray'lerin nasıl oynatılacağını/açılacağını belirtir. Disk menüleri henüz tam olarak desteklenmemektedir ve sorunlara neden olabilir."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU hızlandırmalı"
