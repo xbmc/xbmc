@@ -602,7 +602,19 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return pFile->Write(buffer, uiSize);
+      errno = NOERROR;
+      const ssize_t ret = pFile->Write(buffer, uiSize);
+      if (ret < 0)
+      {
+        const int err = errno; // help compiler to optimize, "errno" can be macro
+        if (err == NOERROR ||
+            (err != EAGAIN && err != EFBIG && err != EINTR && err != EIO && err != ENOSPC && err != EPIPE && err != EWOULDBLOCK &&
+             err != ECONNRESET &&
+             err != ENOBUFS && err != ENXIO &&
+             err != EACCES && err != ENETDOWN && err != ENETUNREACH))
+          errno = EIO; // exact errno is unknown or incorrect, use default error number
+      }
+      return ret;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -611,6 +623,7 @@ extern "C"
       return write(fd, buffer, uiSize);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    errno = EBADF;
     return -1;
   }
 
