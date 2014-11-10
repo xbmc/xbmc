@@ -80,6 +80,7 @@ CGUIDialogAddonSettings::CGUIDialogAddonSettings()
 {
   m_currentSection = 0;
   m_totalSections = 1;
+  m_saveToDisk = false;
 }
 
 CGUIDialogAddonSettings::~CGUIDialogAddonSettings(void)
