@@ -211,7 +211,6 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
     std::string heading = StringUtils::Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
-    pDialog->m_changed = false;
     pDialog->m_addon = addon;
     pDialog->m_saveToDisk = saveToDisk;
     pDialog->DoModal();
