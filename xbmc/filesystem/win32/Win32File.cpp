@@ -180,6 +180,17 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 
+  if (uiBufSize == 0)
+  { // allow "test" read with zero size
+    XUTILS::auto_buffer dummyBuf(255);
+    DWORD bytesRead = 0;
+    if (!ReadFile(m_hFile, dummyBuf.get(), 0, &bytesRead, NULL))
+      return -1;
+
+    assert(bytesRead != 0);
+    return 0;
+  }
+
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
 
@@ -225,6 +236,18 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
   {
     CLog::LogF(LOGERROR, "Attempt to write file opened for reading");
     return -1;
+  }
+
+  if (uiBufSize == 0)
+  { // allow "test" write with zero size
+    XUTILS::auto_buffer dummyBuf(255);
+    dummyBuf.get()[0] = 0;
+    DWORD bytesWritten = 0;
+    if (!WriteFile(m_hFile, dummyBuf.get(), 0, &bytesWritten, NULL))
+      return -1;
+
+    assert(bytesWritten != 0);
+    return 0;
   }
 
   if (uiBufSize > SSIZE_MAX)
