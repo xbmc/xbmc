@@ -236,8 +236,26 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
     if (controlId == iControl)
     {
       const CGUIControl* control = GetControl(controlId);
-      const std::string   id = XMLUtils::GetAttribute(setting, "id");
+      const std::string id = XMLUtils::GetAttribute(setting, "id");
       const std::string type = XMLUtils::GetAttribute(setting, "type");
+
+      //Special handling for actions: does not require id attribute. TODO: refactor me.
+      if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON && type == "action")
+      {
+        const char *option = setting->Attribute("option");
+        std::string action = XMLUtils::GetAttribute(setting, "action");
+        if (!action.empty())
+        {
+          // replace $CWD with the url of plugin/script
+          StringUtils::Replace(action, "$CWD", m_addon->Path());
+          StringUtils::Replace(action, "$ID", m_addon->ID());
+          if (option)
+            bCloseDialog = (strcmpi(option, "close") == 0);
+          CApplicationMessenger::Get().ExecBuiltIn(action);
+        }
+        break;
+      }
+
       if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON &&
           !id.empty() && !type.empty())
       {
@@ -410,19 +428,6 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 
             if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, label, value, bUseThumbs, bUseFileDirectories))
               ((CGUIButtonControl*) control)->SetLabel2(value);
-          }
-        }
-        else if (type == "action")
-        {
-          std::string action = XMLUtils::GetAttribute(setting, "action");
-          if (!action.empty())
-          {
-            // replace $CWD with the url of plugin/script
-            StringUtils::Replace(action, "$CWD", m_addon->Path());
-            StringUtils::Replace(action, "$ID", m_addon->ID());
-            if (option)
-              bCloseDialog = (strcmpi(option, "close") == 0);
-            CApplicationMessenger::Get().ExecBuiltIn(action);
           }
         }
         else if (type == "date")
