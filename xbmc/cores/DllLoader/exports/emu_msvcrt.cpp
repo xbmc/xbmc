@@ -2209,22 +2209,25 @@ extern "C"
   int dll_filbuf(FILE *fp)
   {
     if (fp == NULL)
-      return 0;
+      return EOF;
 
     if(IS_STD_STREAM(fp))
-      return 0;
+      return EOF;
 
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
     if (pFile)
     {
-      int data;
+      unsigned char data;
       if(pFile->Read(&data, 1) == 1)
-        return data;
+      {
+        pFile->Seek(-1, SEEK_CUR);
+        return (int)data;
+      }
       else
-        return 0;
+        return EOF;
     }
 #ifdef TARGET_POSIX
-    return 0;
+    return EOF;
 #else
     return _filbuf(fp);
 #endif
