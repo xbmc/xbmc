@@ -10617,10 +10617,6 @@ msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Konfiguracja została przeniesiona"
 
-msgctxt "#24129"
-msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
-msgstr "Konfiguracja Kodi została przeniesiona do nowej lokalizacji. Zapoznaj się z informacjami na stronie Wiki http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - ta wiadomość nie będzie więcej wyświetlana."
-
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Powiadomienia"

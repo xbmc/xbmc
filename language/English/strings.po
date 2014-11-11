@@ -68,6 +68,7 @@ msgid "Kodi media center"
 msgstr ""
 
 #empty string with id 10
+#strings from 11 to 17 are reserved for weather translation
 
 #. Weather token
 msgctxt "#11"

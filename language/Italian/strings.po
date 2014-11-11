@@ -1239,7 +1239,7 @@ msgstr "Anno"
 
 msgctxt "#346"
 msgid "Maintain original volume on downmix"
-msgstr "Conserva il volume originale nel downmix"
+msgstr "Mantieni il volume originale nel downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2995,15 +2995,15 @@ msgstr "Preferiti"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Addon Video"
+msgstr "Add-on video"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Addon Musica"
+msgstr "Add-on musica"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Addon Immagini"
+msgstr "Add-on immagini"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -3019,7 +3019,7 @@ msgstr "Trovati %i di %i elementi"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
-msgstr "Addon Programmi"
+msgstr "Add-on programmi"
 
 msgctxt "#1044"
 msgid "Set plug-in thumb"
@@ -3027,7 +3027,7 @@ msgstr "Imposta icona plugin"
 
 msgctxt "#1045"
 msgid "Add-on settings"
-msgstr "Impostazioni addon"
+msgstr "Impostazioni add-on"
 
 msgctxt "#1046"
 msgid "Access points"
@@ -3253,6 +3253,14 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "Pressione"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Prossimità"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensità"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Estremo"
@@ -3271,7 +3279,7 @@ msgstr "Ventoso"
 
 msgctxt "#1390"
 msgid "Settings"
-msgstr "Impostazioni cache"
+msgstr "Impostazioni"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3639,7 +3647,7 @@ msgstr "Esperto"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Esplora addon"
+msgstr "Browser add-on"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -3723,11 +3731,11 @@ msgstr "Immagini/Info"
 
 msgctxt "#10140"
 msgid "Add-on settings"
-msgstr "Impostazioni addon"
+msgstr "Impostazioni add-on"
 
 msgctxt "#10146"
 msgid "Add-ons/Info"
-msgstr "Addon/Info"
+msgstr "Add-on/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4335,7 +4343,7 @@ msgstr "Disabilitato"
 
 msgctxt "#13114"
 msgid "Enabled for SD content"
-msgstr "Abilitato per Contenuto SD"
+msgstr "Abilitato per contenuto SD"
 
 msgctxt "#13115"
 msgid "Always enabled"
@@ -6443,7 +6451,7 @@ msgstr "Intervallo di aggiornamento dell' EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Non conservare l'EPD nel database"
+msgstr "Non conservare l'EPG nel database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -7027,7 +7035,7 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
-msgstr "Nessun addon PVR può essere abilitato. Controlla le impostazioni o il log per maggiori informazioni"
+msgstr "Nessun add-on PVR può essere abilitato. Controlla le impostazioni o il log per maggiori informazioni."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -7051,7 +7059,7 @@ msgstr "Registrazione cancellata"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr "Chiudi il canale OSD dopo aver cambiato canale"
+msgstr "Chiudi l'OSD del canale dopo aver cambiato canale"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates during playback"
@@ -7071,7 +7079,7 @@ msgstr "Mostra un avviso all'aggiornamento del timer"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
-msgstr "Usa i numeri dei canali del backend (funziona solo con 1 addon PVR abilitato)"
+msgstr "Usa i numeri dei canali del backend (funziona solo con 1 add-on PVR abilitato)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7095,7 +7103,7 @@ msgstr "Inizializzazione thread in background"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
-msgstr "Nessun componente PVR abilitato"
+msgstr "Nessun add-on PVR abilitato"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -7103,7 +7111,7 @@ msgstr "Il manager PVR è stato abilitato senza alcun"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "Addon PVR abilitato. Abilita almeno un addon"
+msgstr "add-on PVR abilitato. Abilita almeno un add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -7219,7 +7227,7 @@ msgstr "Raggruppa elementi"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
-msgstr "Nessun componente PVR è stato trovato"
+msgstr "Nessun add-on PVR è stato trovato"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -7227,7 +7235,7 @@ msgstr "TI serve un sintonizzatore, un software di backend e un"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "addon per il backend per poter usare PVR."
+msgstr "add-on per il backend per poter usare PVR."
 
 msgctxt "#19274"
 msgid "Please visit kodi.tv/pvr to learn more."
@@ -8452,6 +8460,10 @@ msgstr "Shell sicura(SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Browser Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10103,19 +10115,19 @@ msgstr "Premi OK al termine della riproduzione"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr "Addon"
+msgstr "Add-on"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Addon"
+msgstr "Add-on"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr "Opzioni addon"
+msgstr "Opzioni add-on"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "Informazioni addon"
+msgstr "Informazioni add-on"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -10139,7 +10151,7 @@ msgstr "Visualizzazione"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr "Addon repository"
+msgstr "Add-on repository"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -10191,7 +10203,7 @@ msgstr "Disabilitato"
 
 msgctxt "#24024"
 msgid "Add-on disabled"
-msgstr "Addon disabilitato"
+msgstr "Add-on disabilitato"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -10207,7 +10219,7 @@ msgstr "Servizio informazioni meteorologiche"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
-msgstr "Questo addon non può essere configurato"
+msgstr "Questo add-on non può essere configurato"
 
 msgctxt "#24031"
 msgid "Error loading settings"
@@ -10215,11 +10227,11 @@ msgstr "Errore nel caricamento delle impostazioni"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "Tutti gli addon"
+msgstr "Tutti gli add-on"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "Scarica addon"
+msgstr "Scarica add-on"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -10243,7 +10255,7 @@ msgstr "Installa"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Addon disabilitato"
+msgstr "Add-on disabilitati"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -10263,19 +10275,19 @@ msgstr "Aggiornamenti disponibili"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
-msgstr "Dipendenze non soddisfatte. Si prega di contattare l'autore dell'addon."
+msgstr "Dipendenze non soddisfatte. Si prega di contattare l'autore dell'add-on."
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
-msgstr "L'addon non ha una struttura corretta"
+msgstr "L'add-on non ha una struttura corretta"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "%s è usato al momento dai seguenti addon"
+msgstr "%s è in uso dai seguenti add-on installati"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
-msgstr "Questo addon non può essere rimosso"
+msgstr "Questo add-on non può essere disinstallato"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -10287,7 +10299,7 @@ msgstr "Incompatibile"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
-msgstr "Addon disponibili"
+msgstr "Add-on disponibili"
 
 msgctxt "#24051"
 msgid "Version:"
@@ -10315,19 +10327,19 @@ msgstr "Ultimo aggiornamento %s"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "Vuoi abilitare questo addon?"
+msgstr "Vuoi abilitare questo add-on?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "Vuoi disabilitare questo addon?"
+msgstr "Vuoi disabilitare questo add-on?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Aggiornamento per l'Addon-on disponibile!"
+msgstr "Aggiornamento per l'add-on disponibile!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Addon abilitati"
+msgstr "Add-on abilitati"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -10335,19 +10347,19 @@ msgstr "Auto aggiornamento"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Addon ablitato"
+msgstr "Add-on ablitato"
 
 msgctxt "#24065"
 msgid "Add-on updated"
-msgstr "Addon aggiornato"
+msgstr "Add-on aggiornato"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Cancella il download dell'addon?"
+msgstr "Cancella il download dell'add-on?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Download dell'addon in corso"
+msgstr "Add-on attualmente in dowload"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -10359,7 +10371,7 @@ msgstr "Aggiorna"
 
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
-msgstr "L'addon non può essere caricato"
+msgstr "L'add-on non può essere caricato."
 
 msgctxt "#24071"
 msgid "An unknown error has occurred."
@@ -10383,7 +10395,7 @@ msgstr "Disabilita"
 
 msgctxt "#24076"
 msgid "Add-on Required"
-msgstr "Addon Richiesto"
+msgstr "Add-on necessario"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -10395,7 +10407,7 @@ msgstr "Addon di aiuto"
 
 msgctxt "#24082"
 msgid "Add-on libraries"
-msgstr "Librerie Add-on"
+msgstr "Add-on librerie"
 
 msgctxt "#24083"
 msgid "Information libraries"
@@ -10407,15 +10419,15 @@ msgstr "Librerie per la visualizzazione"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
-msgstr "Riavvio dell'addon"
+msgstr "Riavvio dell'add-on"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Blocca il Gestore addon"
+msgstr "Blocca il Gestore add-on"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
-msgstr "Questo addon non può essere disabilitato"
+msgstr "Questo add-on non può essere disabilitato"
 
 msgctxt "#24094"
 msgid "(current)"
@@ -10427,7 +10439,7 @@ msgstr "(in blacklist)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Questo addon è incompatibile o è stato segnalato non funzionante nel repository."
+msgstr "L'add-on è incompatibile o è stato segnalato come non funzionante nel repository."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10443,11 +10455,11 @@ msgstr "Vuoi passare a questa skin?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "Per usare questa funzione occorre scaricare un addon:"
+msgstr "Per usare questa funzione devi scaricare un add-on:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Vuoi scaricare questo Addon?"
+msgstr "Vuoi scaricare questo add-on?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
@@ -10459,7 +10471,7 @@ msgstr "Mancano alcuni file della skin"
 
 msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
-msgstr "L'addon è incompatibile a causa di dipendenze non soddisfatte."
+msgstr "L'add-on è incompatibile a causa di dipendenze non soddisfatte."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
@@ -10556,10 +10568,6 @@ msgstr "Scarica automaticamente il primo sottotitolo della lista risultati ricer
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "La configurazione è stata spostata"
-
-msgctxt "#24129"
-msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
-msgstr "La configurazione di Kodi è stata spostata nel nuovo percorso. Per favore fai riferimento a http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - Questo messaggio non verrà più mostrato!"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11723,11 +11731,11 @@ msgstr "Nessuna informazione disponibile."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Seleziona la fonte predefinita per le info film. Le opzioni si trovano nel Gestore addon."
+msgstr "Seleziona la fonte predefinita per le info film. Consulta il Gestore add-on per le opzioni."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Seleziona la fonte predefinita per le info show TV. Le opzioni si trovano nel Gestore addon."
+msgstr "Seleziona la fonte predefinita per le info serie TV. Consulta il Gestore add-on per le opzioni."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11743,7 +11751,7 @@ msgstr "Categoria per le impostazioni generali delle funzioni PVR/Live TV."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
-msgstr "Abilita la funzionalità Personal Video Recorder (PVR) in Kodi. Questo richiede che sia installato almeno un addon PVR"
+msgstr "Abilita la funzionalità Personal Video Recorder (PVR) in Kodi. Questo richiede che sia installato almeno un add-on PVR."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11783,7 +11791,7 @@ msgstr "Mostra le informazioni del programma quando si cambia canale, come la se
 
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
-msgstr "Chiude le i controlli on-screen dopo aver cambiato canale."
+msgstr "Chiude i controlli on-screen dopo aver cambiato canale."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11835,7 +11843,7 @@ msgstr "Continua con l'ultimo canale all'avvio."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
-msgstr "Mostra informazioni sulla qualità del segnale nella finestra di informazioni sul codec (se supportato sia dall'addon che dal backend)"
+msgstr "Mostra informazioni sulla qualità del segnale nella finestra di informazioni sul codec (se supportato dall'add-on e dal backend)"
 
 msgctxt "#36230"
 msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
@@ -11859,19 +11867,19 @@ msgstr "Durata della registrazione istantanea quando premi il tasto registra."
 
 msgctxt "#36235"
 msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
-msgstr "Priorità della registrazione. Un valore più altro significa maggiore priorità. Non supportato da tutti gli addon e backend."
+msgstr "Priorità della registrazione. Un valore più altro significa maggiore priorità. Non supportato da tutti gli add-on e backend."
 
 msgctxt "#36236"
 msgid "Delete recording after this time. Not supported by all Add-ons and backends."
-msgstr "Cancella registrazione trascorso questo periodo. Non supportato da tutti gli addon e backend."
+msgstr "Cancella registrazione trascorso questo periodo. Non supportato da tutti gli add-on e backend."
 
 msgctxt "#36237"
 msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
-msgstr "Inizia registrazione in anticipo di questo periodo. Non supportato da tutti gli addon e backend."
+msgstr "Inizia registrazione in anticipo di questo periodo. Non supportato da tutti gli add-on e backend."
 
 msgctxt "#36238"
 msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
-msgstr "Termina la registrazione dopo questo tempo. Non supportato da tutti gli addon e backend."
+msgstr "Termina la registrazione dopo questo tempo. Non supportato da tutti gli add-on e backend."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11951,7 +11959,7 @@ msgstr "Seleziona la sorgente di default per le informazioni sugli album."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Seleziona la sorgente predefinita di informazioni sull'artista. Consulta il Gestore addon per le opzioni."
+msgstr "Seleziona la sorgente predefinita di informazioni sull'artista. Consulta il Gestore add-on per le opzioni."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on Kodi startup."
@@ -12179,7 +12187,7 @@ msgstr "Sezione che contiene impostazioni relative al tempo."
 
 msgctxt "#36316"
 msgid "Category containing settings for how weather addons are handled."
-msgstr "Categoria contenente impostazioni per la gestione degli addon del tempo."
+msgstr "Categoria contenente impostazioni per la gestione degli add-on del meteo."
 
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
@@ -12187,7 +12195,7 @@ msgstr "Seleziona fino a tre localitá le quali verrá visualizzato il meteo"
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Specifica la sorgente predefinita per il meteo. Vedi il Gestore addon per le opzioni."
+msgstr "Specifica la sorgente predefinita per le informazioni meteo. Consulta il Gestore add-on per le opzioni."
 
 msgctxt "#36319"
 msgid "Section containing settings for how network services are handled."
@@ -12243,7 +12251,7 @@ msgstr "Specifica la password per il webserver. Questo ha effetto solo quando si
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Seleziona l'interfaccia web installata attraverso il Gestore addon."
+msgstr "Seleziona tra le interfacce web installate attraverso il Gestore add-on."
 
 msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."
@@ -12855,11 +12863,11 @@ msgstr "video musicali"
 
 msgctxt "#36910"
 msgid "set"
-msgstr "Imposta"
+msgstr "set"
 
 msgctxt "#36911"
 msgid "sets"
-msgstr "Set"
+msgstr "set"
 
 msgctxt "#36912"
 msgid "video"

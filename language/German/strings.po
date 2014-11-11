@@ -595,7 +595,7 @@ msgstr "Veröffentlichungsdatum"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "4:3 Videos darstellen als"
+msgstr "4:3-Videos darstellen als"
 
 msgctxt "#175"
 msgid "Moods"
@@ -1783,7 +1783,7 @@ msgstr "Inhalt eines Ordners wiederholen"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Automatisch nächstes Stück wiedergeben"
+msgstr "Automatisch nächsten Titel wiedergeben"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -2319,7 +2319,7 @@ msgstr "Album-Lautstärke verwenden"
 
 msgctxt "#641"
 msgid "PreAmp Level - ReplayGained files"
-msgstr "Vorverstärker Level - Dateien mit Wiedergabe-Verstärkung"
+msgstr "Vorverstärker-Level - Dateien mit Wiedergabe-Verstärkung"
 
 msgctxt "#642"
 msgid "PreAmp Level - Non ReplayGained files"
@@ -3215,7 +3215,7 @@ msgstr "Lautstärkeregelung erlauben"
 
 msgctxt "#1270"
 msgid "Allow Kodi to receive AirPlay content"
-msgstr "AirPlay Inhalte empfangen"
+msgstr "AirPlay-Inhalte empfangen"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -4343,7 +4343,7 @@ msgstr "Wie Treiber (benötigt Neustart)"
 
 msgctxt "#13105"
 msgid "Vertical blank sync"
-msgstr "Vertical Blank Synchronisation"
+msgstr "Vertical-Blank-Synchronisation"
 
 msgctxt "#13106"
 msgid "Disabled"
@@ -4927,7 +4927,7 @@ msgstr "Zeitbasiertes Vor-/Zurückspulen"
 
 msgctxt "#13387"
 msgid "Track naming template - right"
-msgstr "Formatvorlage für Musiktitel-Dateinamen rechts"
+msgstr "Formatvorlage für Musiktitel-Dateinamen - rechts"
 
 msgctxt "#13388"
 msgid "Preset"
@@ -5639,7 +5639,7 @@ msgstr "Dateilisten"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
-msgstr "EXIF Bildinformationen zeigen"
+msgstr "EXIF-Bildinformationen zeigen"
 
 msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
@@ -5647,7 +5647,7 @@ msgstr "Benutze Vollbildfenster anstatt echtes Vollbild"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
-msgstr "Reihenfolge der Lieder nach Auswahl"
+msgstr "Titel bei Auswahl in Wiedergabeliste einreihen"
 
 msgctxt "#14086"
 msgid "Playback"
@@ -7255,7 +7255,7 @@ msgstr "Die Labels 'Keine Informationen verfügbar' ausblenden"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Die Warnungen 'Verbindung verloren' ausblenden"
+msgstr "Die 'Verbindung verloren'-Warnungen ausblenden"
 
 msgctxt "#19270"
 msgid "Group Items"
@@ -8919,7 +8919,7 @@ msgstr "Reduzieren"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "TV-Serien Staffeln reduzieren"
+msgstr "TV-Serien-Staffeln reduzieren"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -9219,7 +9219,7 @@ msgstr "Video- & alternatives Untertitel-Verzeichnis"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "ASS/SSA Untertitel Schriftarten ignorieren"
+msgstr "ASS/SSA-Untertitelschriftarten ignorieren"
 
 msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
@@ -9235,7 +9235,7 @@ msgstr "Vorschaubild"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
-msgstr "Erzwungene DVD-Player Region"
+msgstr "Erzwungene DVD-Player-Region"
 
 msgctxt "#21373"
 msgid "Video output"
@@ -10023,7 +10023,7 @@ msgstr "Erlaube Fehler im Seitenverhältnis, um schwarze Balken zu vermeiden"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
-msgstr "Video Dateien in Listen aufnehmen"
+msgstr "Videodateien in Listen aufnehmen"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
@@ -10091,7 +10091,7 @@ msgstr "schwarz/weiß"
 
 msgctxt "#22079"
 msgid "Default select action"
-msgstr "Standard Auswahl Aktion"
+msgstr "Standard-Auswahlaktion"
 
 msgctxt "#22080"
 msgid "Choose"
@@ -11227,7 +11227,7 @@ msgstr "Gerätekennung"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adaptor"
-msgstr "Pulse-Eight CEC Adapter"
+msgstr "Pulse-Eight-CEC-Adapter"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
@@ -11255,15 +11255,15 @@ msgstr "Der Adapter konnte nicht geöffnet werden"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting Kodi"
-msgstr "Geräte, die den TV anschalten, wenn Kodi startet"
+msgstr "Beim Starten von Kodi einzuschaltende Geräte"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping Kodi"
-msgstr "Geräte, die den TV ausschalten, wenn Kodi beendet wird"
+msgstr "Beim Beenden von Kodi auszuschaltende Geräte"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Geräte in Standby versetzen, wenn der Bilschirmschoner aktiviert wird"
+msgstr "Geräte bei Bildschirmschoneraktivierung in Standby versetzen"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
@@ -11275,7 +11275,7 @@ msgstr "Der CEC Port konnte nicht gefunden werden. Manuell einstellen."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adaptor. Please check your settings."
-msgstr "Der CEC Adapter konnte nicht initialisiert werden. Bitte Einstellungen prüfen."
+msgstr "Der CEC-Adapter konnte nicht initialisiert werden. Bitte Einstellungen prüfen."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -11287,7 +11287,7 @@ msgstr "Verbunden"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
-msgstr "Der CEC Adapter konnte nicht initialisiert werden: libCEC ist nicht auf dem System verfügbar"
+msgstr "Der CEC-Adapter konnte nicht initialisiert werden: libCEC ist nicht auf dem System verfügbar"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -11299,7 +11299,7 @@ msgstr "Verbunden mit HDMI-Gerät"
 
 msgctxt "#36020"
 msgid "Make Kodi the active source when starting"
-msgstr "Beim Starten, Kodi als aktive HDMI-Quelle melden"
+msgstr "Beim Starten Kodi als aktive HDMI-Quelle melden"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -11319,11 +11319,11 @@ msgstr "Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prü
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping Kodi"
-msgstr "Beim Beenden, Kodi als inaktive HDMI-Quelle melden"
+msgstr "Beim Beenden Kodi als inaktive HDMI-Quelle melden"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Geräte in Standby versetzen, wenn Kodi in Bereitschaft versetzt wird"
+msgstr "Geräte in Standby versetzen, wenn Kodi in Standby versetzt wird"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -11343,15 +11343,15 @@ msgstr "Verbindung unterbrochen"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adaptor"
-msgstr "Dieser Benutzer hat nicht die nötige Berechtigung, den CEC Adapter zu öffnen."
+msgstr "Dieser Benutzer hat nicht die nötige Berechtigung, den CEC-Adapter zu öffnen."
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adaptor"
-msgstr "Der Port ist belegt. Nur ein Programm kann auf den CEC Adapter zugreifen"
+msgstr "Der Port ist belegt. Nur ein Programm kann auf den CEC-Adapter zugreifen"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr "Wiedergabe pausieren, wenn eine andere Quelle ausgewählt wird."
+msgstr "Wiedergabe pausieren, wenn eine andere Quelle ausgewählt wird"
 
 msgctxt "#36035"
 msgid "Always"
@@ -11735,7 +11735,7 @@ msgstr "Wähle die Schriftzeichen der Untertitel."
 
 msgctxt "#36190"
 msgid "Override ASS/SSA subtitles fonts."
-msgstr "ASS/SSA Untertitel Schriftarten überschreiben"
+msgstr "ASS/SSA-Untertitelschriftarten überschreiben."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -12379,7 +12379,7 @@ msgstr "Zeigt Kodi in einem Vollbild-Fenster. Der größte Vorteil ergibt sich f
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
-msgstr "In einer Konfiguration mit mehreren Bildschirmen alle ausschalten, auf denen kein Kodi angezeigt wird."
+msgstr "In einer Konfiguration mit mehreren Bildschirmen alle ausschalten, auf denen Kodi nicht angezeigt wird."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."

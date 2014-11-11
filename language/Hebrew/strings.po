@@ -31,7 +31,7 @@ msgstr "וידאו"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "מדריך טלוויזיה"
+msgstr "לוח שידורים"
 
 msgctxt "#5"
 msgid "Settings"
@@ -395,15 +395,15 @@ msgstr "אישור מחיקה"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "האם להעתיק קבצים אלו?"
+msgstr "האם להעתיק קבצים אלה ?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "האם להעביר קבצים אלו?"
+msgstr "האם להעביר קבצים אלה ?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "האם למחוק קבצים אלו? - לא ניתן לשחזר קבצים שנמחקו!"
+msgstr "האם למחוק קבצים אלה ? - לא ניתן לשחזר קבצים שנמחקו!"
 
 msgctxt "#126"
 msgid "Status"
@@ -751,7 +751,7 @@ msgstr "כונן DVD"
 
 msgctxt "#219"
 msgid "Please insert disc"
-msgstr "הכנס דיסק בבקשה"
+msgstr "יש להכניס דיסק"
 
 msgctxt "#220"
 msgid "Remote share"
@@ -763,7 +763,7 @@ msgstr "הרשת אינה מחוברת"
 
 msgctxt "#222"
 msgid "Cancel"
-msgstr "בטל"
+msgstr "ביטול"
 
 msgctxt "#224"
 msgid "Speed"
@@ -1291,7 +1291,7 @@ msgstr "כל האלבומים"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "אלבומים אחרונים"
+msgstr "אלבומים שנוספו לאחרונה"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1503,7 +1503,7 @@ msgstr "ידני"
 
 msgctxt "#414"
 msgid "No review for this album"
-msgstr "אין סקירות עבור אלבום זה"
+msgstr "אין סקירה לאלבום זה"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
@@ -1711,7 +1711,7 @@ msgstr "ניגודיות"
 
 msgctxt "#466"
 msgid "Gamma"
-msgstr "גאמה"
+msgstr "גמא"
 
 msgctxt "#467"
 msgid "Type"
@@ -1743,7 +1743,7 @@ msgstr "מוזיקה ווידאו"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
-msgstr "נכשל בטעינת רשימת השמעה"
+msgstr "נכשל בטעינת רשימת ניגון"
 
 msgctxt "#478"
 msgid "OSD"
@@ -1779,7 +1779,7 @@ msgstr "חזור פעם אחת"
 
 msgctxt "#488"
 msgid "Repeat folder"
-msgstr "חזור רשימת השמעה לתיקיה"
+msgstr "חזרה על תיקיה"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
@@ -1895,7 +1895,7 @@ msgstr "הסר מקור"
 
 msgctxt "#523"
 msgid "Switch media"
-msgstr "החלף מדיה"
+msgstr "החלפת מדיה"
 
 msgctxt "#524"
 msgid "Select playlist"
@@ -2067,7 +2067,7 @@ msgstr "שימוש"
 
 msgctxt "#566"
 msgid "Album artist"
-msgstr "אלבום אמן"
+msgstr "אמן אלבום"
 
 msgctxt "#567"
 msgid "Play count"
@@ -2079,7 +2079,7 @@ msgstr "נוגן לאחרונה"
 
 msgctxt "#569"
 msgid "Comment"
-msgstr "הערות"
+msgstr "הערה"
 
 msgctxt "#570"
 msgid "Date added"
@@ -2103,7 +2103,7 @@ msgstr "ארץ"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "בתהליך"
+msgstr "בתהליך צפיה"
 
 msgctxt "#576"
 msgid "Times played"
@@ -2283,7 +2283,7 @@ msgstr "זום"
 
 msgctxt "#632"
 msgid "Stretch 4:3"
-msgstr "4:3 מתח"
+msgstr "מתיחה 4:3"
 
 msgctxt "#633"
 msgid "Wide Zoom"
@@ -2391,7 +2391,7 @@ msgstr "פרטי שיר"
 
 msgctxt "#659"
 msgid "Non-linear stretch"
-msgstr "Non-linear stretch"
+msgstr "מתיחה לא קווית"
 
 msgctxt "#660"
 msgid "Volume amplification"
@@ -2639,7 +2639,7 @@ msgstr "הפוך תמונה"
 
 msgctxt "#750"
 msgid "Are you sure?"
-msgstr "האם אתה בטוח?"
+msgstr "האם להחיל את השינויים?"
 
 msgctxt "#751"
 msgid "Removing source"
@@ -2867,7 +2867,7 @@ msgstr "זהו כנראה עקב הרשת שאיננה מחוברת."
 
 msgctxt "#1004"
 msgid "Would you like to add it anyway?"
-msgstr "האם ברצונך להוסיף בכל זאת?"
+msgstr "האם בכל זאת להוסיף?"
 
 msgctxt "#1006"
 msgid "IP address"
@@ -2927,19 +2927,19 @@ msgstr "הזן שם משתמש"
 
 msgctxt "#1020"
 msgid "Add %s source"
-msgstr "%s הוסף מקור"
+msgstr "הוספת מקור %s"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "הזן נתיב או עיין למיקום המדיה."
+msgstr "יש להזין נתיב או לעיין לקביעת מיקום המדיה."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
-msgstr "הזן שם למקור מדיה זה."
+msgstr "יש להזין שם עבור מקור המדיה."
 
 msgctxt "#1023"
 msgid "Browse for new share"
-msgstr "עיין לשיתוף חדש"
+msgstr "עיון לשיתוף חדש"
 
 msgctxt "#1024"
 msgid "Browse"
@@ -2947,11 +2947,11 @@ msgstr "עיון"
 
 msgctxt "#1025"
 msgid "Could not retrieve directory information."
-msgstr "בעיה בקבלת פרטי הספריה."
+msgstr "נכשל בקבלת פרטי הספריה."
 
 msgctxt "#1026"
 msgid "Add source"
-msgstr "הוסף מקור"
+msgstr "הוספת מקור"
 
 msgctxt "#1027"
 msgid "Edit source"
@@ -2959,7 +2959,7 @@ msgstr "ערוך מקור"
 
 msgctxt "#1028"
 msgid "Edit %s source"
-msgstr "%s ערוך מקור"
+msgstr "עריכת מקור %s"
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -2975,7 +2975,7 @@ msgstr "עיין לתמונת תיקיה"
 
 msgctxt "#1032"
 msgid "Add network location..."
-msgstr "הוסף מיקום רשת..."
+msgstr "הוספת מיקום רשת..."
 
 msgctxt "#1033"
 msgid "Browse for file"
@@ -3003,7 +3003,7 @@ msgstr "הרחבות מוזיקה"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "הרחבות תמונות"
+msgstr "הרחבות תמונה"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -3019,7 +3019,7 @@ msgstr "קיבל %i מתוך %i פריטים"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
-msgstr "הרחבות תוכנות"
+msgstr "הרחבות תוכנה"
 
 msgctxt "#1044"
 msgid "Set plug-in thumb"
@@ -3235,7 +3235,7 @@ msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
-msgstr "סנן %s"
+msgstr "סינון %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3335,7 +3335,7 @@ msgstr "זולג"
 
 msgctxt "#1397"
 msgid "and"
-msgstr "ו"
+msgstr "ו־"
 
 msgctxt "#1398"
 msgid "Freezing"
@@ -3371,7 +3371,7 @@ msgstr "ב-"
 
 msgctxt "#1406"
 msgid "the"
-msgstr "ה"
+msgstr "ה־"
 
 msgctxt "#1407"
 msgid "Vicinity"
@@ -4127,7 +4127,7 @@ msgstr "הגדרות & הקבצים שלי"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr "קבע כברירת מחדל עבור כל קבצי הווידאו"
+msgstr "קבע כברירת מחדל לכל קבצי הווידאו"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4911,7 +4911,7 @@ msgstr "ניגודיות ברירת מחדל"
 
 msgctxt "#13380"
 msgid "Default gamma"
-msgstr "גאמה ברירת מחדל"
+msgstr "גמא ברירת מחדל"
 
 msgctxt "#13381"
 msgid "Resume video"
@@ -4963,11 +4963,11 @@ msgstr "השתמש בחיזוי בעת ניגון שמע"
 
 msgctxt "#13393"
 msgid "Calculate size"
-msgstr "חשב גודל"
+msgstr "חישוב נפח"
 
 msgctxt "#13394"
 msgid "Calculating folder size"
-msgstr "מחשב גודל תקייה"
+msgstr "מחשב נפח תיקיה"
 
 msgctxt "#13395"
 msgid "Video settings"
@@ -5627,11 +5627,11 @@ msgstr "השתמש בשעון קיץ"
 
 msgctxt "#14076"
 msgid "Add to favourites"
-msgstr "הוסף למועדפים"
+msgstr "הוספה למועדפים"
 
 msgctxt "#14077"
 msgid "Remove from favourites"
-msgstr "הסר ממועדפים"
+msgstr "הסרה ממועדפים"
 
 msgctxt "#14078"
 msgid "Colours"
@@ -5827,7 +5827,7 @@ msgstr "לא מחובר"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "נגן באמצעות..."
+msgstr "ניגון באמצעות..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronisation"
@@ -5907,7 +5907,7 @@ msgstr "הזן שם קובץ חדש"
 
 msgctxt "#16014"
 msgid "Enter folder name"
-msgstr "הזן שם ספריה חדשה"
+msgstr "יש להזין שם ספריה"
 
 msgctxt "#16015"
 msgid "Enter directory"
@@ -5919,7 +5919,7 @@ msgstr "אפשרויות זמינות: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
 
 msgctxt "#16017"
 msgid "Enter search string"
-msgstr "הזן מחרוזת חיפוש"
+msgstr "יש להזין מחרוזת חיפוש"
 
 msgctxt "#16018"
 msgid "None"
@@ -5927,7 +5927,7 @@ msgstr "ללא"
 
 msgctxt "#16019"
 msgid "Auto select"
-msgstr "חיפוש אוטומטי"
+msgstr "בחירה אוטומטית"
 
 msgctxt "#16020"
 msgid "De-interlace"
@@ -5939,7 +5939,7 @@ msgstr "Bob"
 
 msgctxt "#16022"
 msgid "Bob (inverted)"
-msgstr "Bob (inverted)"
+msgstr "Bob (הפוך)"
 
 msgctxt "#16024"
 msgid "Cancelling..."
@@ -5951,7 +5951,7 @@ msgstr "הזן שם האמן"
 
 msgctxt "#16026"
 msgid "Playback failed"
-msgstr "ניגון רשימת השמעה בוטל"
+msgstr "הניגון נכשל"
 
 msgctxt "#16027"
 msgid "One or more items failed to play."
@@ -5991,7 +5991,7 @@ msgstr "רשימת ניגון מצב מסיבה"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "De-interlace (Half)"
+msgstr "De-interlace (חצי)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
@@ -6131,7 +6131,7 @@ msgstr "חדות (VDPAU)"
 
 msgctxt "#16314"
 msgid "Inverse Telecine"
-msgstr "Inverse Telecine"
+msgstr "Telecine הפוך"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
@@ -6143,11 +6143,11 @@ msgstr "אוטומטי"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
-msgstr "Temporal (Half)"
+msgstr "Temporal (חצי)"
 
 msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
-msgstr "Temporal/Spatial (Half)"
+msgstr "Temporal/Spatial (חצי)"
 
 msgctxt "#16319"
 msgid "DXVA"
@@ -6171,7 +6171,7 @@ msgstr "Spline36 משופר"
 
 msgctxt "#16324"
 msgid "Software Blend"
-msgstr "Software Blend"
+msgstr "Blend תוכנתי"
 
 msgctxt "#16325"
 msgid "VDPAU - Bob"
@@ -6195,7 +6195,7 @@ msgstr "VAAPI Motion Compensated"
 
 msgctxt "#16400"
 msgid "Post-processing"
-msgstr "Post-processing"
+msgstr "עיבוד גמר"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
@@ -7351,19 +7351,19 @@ msgstr "אחר\\לא ידוע"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
-msgstr "סרט \\ דרמה"
+msgstr "סרט\\דרמה"
 
 msgctxt "#19501"
 msgid "Detective/Thriller"
-msgstr "מותחן \\ בלשי"
+msgstr "מותחן\\בלשי"
 
 msgctxt "#19502"
 msgid "Adventure/Western/War"
-msgstr "הרפתקאות \\ מערבון \\ מלחמה"
+msgstr "הרפתקאות\\מערבון\\מלחמה"
 
 msgctxt "#19503"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr "מדע בדיוני / פנטזיה / אימה"
+msgstr "מדע בדיוני\\פנטזיה\\אימה"
 
 msgctxt "#19504"
 msgid "Comedy"
@@ -7371,7 +7371,7 @@ msgstr "קומדיה"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "סבון / מלודרמה / פולקלור"
+msgstr "סבון\\מלודרמה\\פולקלור"
 
 msgctxt "#19506"
 msgid "Romance"
@@ -7379,19 +7379,19 @@ msgstr "רומנטי"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "קלסי / דתי / סרט הסטורי / דרמה"
+msgstr "קלסי\\דתי\\סרט היסטורי\\דרמה"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr "סרט למבוגרים / דרמה"
+msgstr "סרט למבוגרים\\דרמה"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"
-msgstr "חדשות / אקטואליה"
+msgstr "חדשות\\אקטואליה"
 
 msgctxt "#19517"
 msgid "News/Weather Report"
-msgstr "חדשות/מזג אוויר"
+msgstr "חדשות\\מזג אוויר"
 
 msgctxt "#19518"
 msgid "News Magazine"
@@ -7403,7 +7403,7 @@ msgstr "תעודה"
 
 msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
-msgstr "דיון / ראיון / עימות"
+msgstr "דיון\\ראיון\\עימות"
 
 msgctxt "#19532"
 msgid "Show/Game Show"
@@ -7411,15 +7411,15 @@ msgstr "הצגה "
 
 msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
-msgstr "הצעה / חידון / תחרות"
+msgstr "הצעה/חידון/תחרות"
 
 msgctxt "#19534"
 msgid "Variety Show"
-msgstr "מגוון תוכניות"
+msgstr "מגוון תכניות"
 
 msgctxt "#19535"
 msgid "Talk Show"
-msgstr "תוכנית אירוח"
+msgstr "תכנית אירוח"
 
 msgctxt "#19548"
 msgid "Sports"
@@ -7439,7 +7439,7 @@ msgstr "כדורגל"
 
 msgctxt "#19552"
 msgid "Tennis/Squash"
-msgstr "טניס / סקווש"
+msgstr "טניס\\סקווש"
 
 msgctxt "#19553"
 msgid "Team Sports"
@@ -7463,15 +7463,15 @@ msgstr "ספורט חורף"
 
 msgctxt "#19558"
 msgid "Equestrian"
-msgstr "ספורט רכוב(סוסים)"
+msgstr "ספורט רכוב (סוסים)"
 
 msgctxt "#19559"
 msgid "Martial Sports"
-msgstr "אומנויות לוחמה"
+msgstr "אמנויות לחימה"
 
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
-msgstr "ילדים / נוער"
+msgstr "ילדים\\נוער"
 
 msgctxt "#19565"
 msgid "Pre-school Children's Programmes"
@@ -7479,19 +7479,19 @@ msgstr "תכניות לגיל הרך"
 
 msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
-msgstr "בידור לגילים 6-14"
+msgstr "בידור לגילאים 6-14"
 
 msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
-msgstr "בידור לגילים 10-16"
+msgstr "בידור לגילאים 10-16"
 
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
-msgstr "תוכניות סברה / חינוכיות / בית הספר"
+msgstr "תכניות הסברה\\חינוכיות\\לבית הספר"
 
 msgctxt "#19569"
 msgid "Cartoons/Puppets"
-msgstr "מצויר / הנפשה"
+msgstr "מצויר\\הנפשה"
 
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
@@ -7499,7 +7499,7 @@ msgstr "מוזיקה / בלט / ריקוד"
 
 msgctxt "#19581"
 msgid "Rock/Pop"
-msgstr "רוק / פופ"
+msgstr "רוק\\פופ"
 
 msgctxt "#19582"
 msgid "Serious/Classical Music"
@@ -7507,11 +7507,11 @@ msgstr "מוזיקה  קלאסית"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
-msgstr "שירי עם / מוזיקה מסורתית"
+msgstr "שירי עם\\מוזיקה מסורתית"
 
 msgctxt "#19584"
 msgid "Musical/Opera"
-msgstr "מוזיקה / אופרה"
+msgstr "מוזיקה\\אופרה"
 
 msgctxt "#19585"
 msgid "Ballet"
@@ -7519,7 +7519,7 @@ msgstr "בלט"
 
 msgctxt "#19596"
 msgid "Arts/Culture"
-msgstr "אומנויות / תרבות"
+msgstr "אמנויות\\תרבות"
 
 msgctxt "#19597"
 msgid "Performing Arts"
@@ -7535,7 +7535,7 @@ msgstr "דת"
 
 msgctxt "#19600"
 msgid "Popular Culture/Traditional Arts"
-msgstr "תרבות פופולרית / אומנויות מסורתיות"
+msgstr "תרבות פופולרית\\אמנויות מסורתיות"
 
 msgctxt "#19601"
 msgid "Literature"
@@ -7543,7 +7543,7 @@ msgstr "ספרות"
 
 msgctxt "#19602"
 msgid "Film/Cinema"
-msgstr "סרטים / קולנוע"
+msgstr "סרטים\\קולנוע"
 
 msgctxt "#19603"
 msgid "Experimental Film/Video"
@@ -7551,7 +7551,7 @@ msgstr "שידורי נסיון"
 
 msgctxt "#19604"
 msgid "Broadcasting/Press"
-msgstr "שידור / עיתונות"
+msgstr "תשדיר\\עיתונות"
 
 msgctxt "#19605"
 msgid "New Media"
@@ -7559,7 +7559,7 @@ msgstr "מדיה חדשה"
 
 msgctxt "#19606"
 msgid "Arts/Culture Magazines"
-msgstr "אמנויות / מגזיני תרבות"
+msgstr "אמנויות\\מגזיני תרבות"
 
 msgctxt "#19607"
 msgid "Fashion"
@@ -7567,43 +7567,43 @@ msgstr "אופנה"
 
 msgctxt "#19612"
 msgid "Social/Political/Economics"
-msgstr "חברתי / פוליטי / כלכלה"
+msgstr "חברתי\\פוליטי\\כלכלה"
 
 msgctxt "#19613"
 msgid "Magazines/Reports/Documentary"
-msgstr "מגזינים / דווחית / תעודה"
+msgstr "מגזינים\\דווחית\\תעודה"
 
 msgctxt "#19614"
 msgid "Economics/Social Advisory"
-msgstr "כלכלה / יעוץ כלכלי"
+msgstr "כלכלה\\יעוץ כלכלי"
 
 msgctxt "#19615"
 msgid "Remarkable People"
-msgstr "אנשים מדהימים"
+msgstr "אנשים יוצאי דופן"
 
 msgctxt "#19628"
 msgid "Education/Science/Factual"
-msgstr "חינוך / מדע / עובדתי"
+msgstr "חינוך\\מדע\\עובדתי"
 
 msgctxt "#19629"
 msgid "Nature/Animals/Environment"
-msgstr "טבע / בעלי חיים / סביבה"
+msgstr "טבע\\בעלי חיים\\סביבה"
 
 msgctxt "#19630"
 msgid "Technology/Natural Sciences"
-msgstr "מדעי טכנולוגיה / מדעי הטבע"
+msgstr "טכנולוגי\\מדעי הטבע"
 
 msgctxt "#19631"
 msgid "Medicine/Physiology/Psychology"
-msgstr "רפואה / פיזיולוגיה / פסיכולוגיה"
+msgstr "רפואה\\פיזיולוגיה\\פסיכולוגיה"
 
 msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
-msgstr "מדינות זרות / משלחות"
+msgstr "מדינות זרות\\משלחות"
 
 msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
-msgstr "חברתי / מדעי הרוח"
+msgstr "חברתי\\מדעי הרוח"
 
 msgctxt "#19634"
 msgid "Further Education"
@@ -7615,11 +7615,11 @@ msgstr "שפות"
 
 msgctxt "#19644"
 msgid "Leisure/Hobbies"
-msgstr "פנאי / תחביבים"
+msgstr "פנאי\\תחביבים"
 
 msgctxt "#19645"
 msgid "Tourism/Travel"
-msgstr "תיירות / טיולים"
+msgstr "תיירות\\טיולים"
 
 msgctxt "#19646"
 msgid "Handicraft"
@@ -7639,7 +7639,7 @@ msgstr "בישול"
 
 msgctxt "#19650"
 msgid "Advertisement/Shopping"
-msgstr "פרסום / קניות"
+msgstr "פרסום\\קניות"
 
 msgctxt "#19651"
 msgid "Gardening"
@@ -7671,15 +7671,15 @@ msgstr "דרמה"
 
 msgctxt "#19677"
 msgid "Detective/Thriller"
-msgstr "בלשי / מותחן"
+msgstr "בלשי\\מותחן"
 
 msgctxt "#19678"
 msgid "Adventure/Western/War"
-msgstr "הרפתקאות / מערבון / מלחמתי"
+msgstr "הרפתקאות\\מערבון\\מלחמתי"
 
 msgctxt "#19679"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr "מדע בדיוני / פנטזיה / אימה"
+msgstr "מדע בדיוני\\פנטזיה\\אימה"
 
 msgctxt "#19680"
 msgid "Comedy"
@@ -7687,7 +7687,7 @@ msgstr "קומדיה"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "סבון / מלודרמה / פולקלור"
+msgstr "סבון\\מלודרמה\\פולקלור"
 
 msgctxt "#19682"
 msgid "Romance"
@@ -7695,7 +7695,7 @@ msgstr "רומנטי"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
-msgstr "דתי / הסטורי"
+msgstr "דתי\\היסטורי"
 
 msgctxt "#19684"
 msgid "Adult"
@@ -7927,7 +7927,7 @@ msgstr "התחל עם מקורות מדיה חדשים"
 
 msgctxt "#20072"
 msgid "Make sure the selected folder is writable"
-msgstr "ודא כי התיקיה הנבחרת ניתנת לכתיבה"
+msgstr "יש לוודא כי התיקיה הנבחרת ניתנת לכתיבה"
 
 msgctxt "#20073"
 msgid "and that the new folder name is valid"
@@ -8147,19 +8147,19 @@ msgstr "ניתוק"
 
 msgctxt "#20128"
 msgid "Go to root"
-msgstr "לך לראשי"
+msgstr "מעבר לראשי"
 
 msgctxt "#20129"
 msgid "Weave"
-msgstr "ארוג"
+msgstr "Weave"
 
 msgctxt "#20130"
 msgid "Weave (inverted)"
-msgstr "ארוג (הפוך)"
+msgstr "Weave (הפוך)"
 
 msgctxt "#20131"
 msgid "Blend"
-msgstr "מזג"
+msgstr "Blend"
 
 msgctxt "#20132"
 msgid "Restart video"
@@ -8167,11 +8167,11 @@ msgstr "התחל וידאו מחדש"
 
 msgctxt "#20133"
 msgid "Edit network location"
-msgstr "ערוך מיקום רשת"
+msgstr "עריכת מיקום רשת"
 
 msgctxt "#20134"
 msgid "Remove network location"
-msgstr "הסר מיקום רשת"
+msgstr "הסרת מיקום רשת"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
@@ -8443,19 +8443,19 @@ msgstr "כאשר מאופשר, כל מידע על אלבומים ואמנים ש
 
 msgctxt "#20240"
 msgid "Android music"
-msgstr "מוזיקה מונפשת"
+msgstr "מוזיקה מ־Android"
 
 msgctxt "#20241"
 msgid "Android videos"
-msgstr "סרטים מונפשים"
+msgstr "סרטים מ־Android"
 
 msgctxt "#20242"
 msgid "Android pictures"
-msgstr "תמונות מונפשות"
+msgstr "תמונות מ־Android"
 
 msgctxt "#20243"
 msgid "Android photos"
-msgstr "צילומים מונפשים"
+msgstr "צילומים מ־Android"
 
 msgctxt "#20244"
 msgid "Android Apps"
@@ -8543,7 +8543,7 @@ msgstr "DHCP שרת:"
 
 msgctxt "#20309"
 msgid "Make new folder"
-msgstr "צור תיקיה חדשה"
+msgstr "יצירת תיקיה חדשה"
 
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
@@ -8975,7 +8975,7 @@ msgstr "תמיד"
 
 msgctxt "#20423"
 msgid "Has trailer"
-msgstr "יש קדימון"
+msgstr "קיים קדימון"
 
 msgctxt "#20424"
 msgid "False"
@@ -9031,7 +9031,7 @@ msgstr "ליצא תמונות ממוזערות לשחקנים?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
-msgstr "בחר פאנארט"
+msgstr "יש לבחור פאנארט"
 
 msgctxt "#20438"
 msgid "Local fanart"
@@ -9195,7 +9195,7 @@ msgstr "מכשיר TuxBox"
 
 msgctxt "#21359"
 msgid "Add media share..."
-msgstr "הוסף שיתוף מדיה..."
+msgstr "הוספת שיתוף מדיה..."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
@@ -9215,11 +9215,11 @@ msgstr "נוצרה סימניית פרק"
 
 msgctxt "#21364"
 msgid "Edit media share"
-msgstr "ערוך שיתוף מדיה"
+msgstr "עריכת שיתוף מדיה"
 
 msgctxt "#21365"
 msgid "Remove media share"
-msgstr "הסר סיתוף מדיה"
+msgstr "הסרת שיתוף מדיה"
 
 msgctxt "#21366"
 msgid "Custom subtitle folder"
@@ -9367,11 +9367,11 @@ msgstr "לא מכיל"
 
 msgctxt "#21402"
 msgid "is"
-msgstr "הוא"
+msgstr "שווה ל־"
 
 msgctxt "#21403"
 msgid "is not"
-msgstr "הוא לא"
+msgstr "לא שווה ל־"
 
 msgctxt "#21404"
 msgid "starts with"
@@ -9379,15 +9379,15 @@ msgstr "מתחיל עם"
 
 msgctxt "#21405"
 msgid "ends with"
-msgstr "נגמר עם"
+msgstr "מסתיים עם"
 
 msgctxt "#21406"
 msgid "greater than"
-msgstr "גדול יותר מ"
+msgstr "גדול מ־"
 
 msgctxt "#21407"
 msgid "less than"
-msgstr "פחות מ"
+msgstr "פחות מ־"
 
 msgctxt "#21408"
 msgid "after"
@@ -9483,7 +9483,7 @@ msgstr "יורד"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
-msgstr "ערוך רשימת ניגון חכמה"
+msgstr "עריכת רשימת ניגון חכמה"
 
 msgctxt "#21433"
 msgid "Name of the playlist"
@@ -9499,11 +9499,11 @@ msgstr "- ערוך"
 
 msgctxt "#21436"
 msgid "%i items"
-msgstr " פריטים %i"
+msgstr "%i פריטים"
 
 msgctxt "#21437"
 msgid "New smart playlist..."
-msgstr "רשימת השמעה ניגון חדשה..."
+msgstr "רשימת ניגון חכמה חדשה..."
 
 msgctxt "#21438"
 msgid "%c Drive"
@@ -9579,11 +9579,11 @@ msgstr "המטמון התמלא לפני שהגיע לכמות הנחוצה לנ
 
 msgctxt "#21456"
 msgid "External storage"
-msgstr "אכסון חיצוני"
+msgstr "אחסון חיצוני"
 
 msgctxt "#21457"
 msgid "Watched episode count"
-msgstr "מונה פרקים שנצפו "
+msgstr "מספר פרקים שנצפו"
 
 msgctxt "#21458"
 msgid "Group by"
@@ -10159,7 +10159,7 @@ msgstr "לחץ על אישור כדי לנטרל את הנגן"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
-msgstr "לחץ אישור כאשר ההשמעה הסתיימה"
+msgstr "יש ללחוץ על אישור בסיום הניגון"
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -10211,19 +10211,19 @@ msgstr "מילות שירים"
 
 msgctxt "#24014"
 msgid "TV information"
-msgstr "פרטי טלוויזיה"
+msgstr "פרטי סדרה"
 
 msgctxt "#24015"
 msgid "Music video information"
-msgstr "פרטי קליפים"
+msgstr "פרטי קליפ"
 
 msgctxt "#24016"
 msgid "Album information"
-msgstr "פרטי אלבומים"
+msgstr "פרטי אלבום"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr "פרטי אמנים"
+msgstr "פרטי אמן"
 
 msgctxt "#24018"
 msgid "Services"
@@ -10231,7 +10231,7 @@ msgstr "שירותים"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "לקוחות טלוויזיה חיה"
+msgstr "לקוח טלוויזיה חיה"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -10279,7 +10279,7 @@ msgstr "כל ההרחבות"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "קבל הרחבות"
+msgstr "התקנת הרחבות"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -10307,11 +10307,11 @@ msgstr "הרחבות מנוטרלות"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
-msgstr "(נקה הגדרות קיימות)"
+msgstr "(ניקוי הגדרות קיימות)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
-msgstr "התקן מקובץ zip"
+msgstr "התקנה מקובץ zip"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
@@ -10331,7 +10331,7 @@ msgstr "להרחבה אין את המבנה הנכון"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "ההרחבה(ות) להלן עושות שימוש ב-%s"
+msgstr "ההרחבה(ות) להלן עושה(ות) שימוש ב-%s"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
@@ -10367,7 +10367,7 @@ msgstr "לוג שינויים"
 
 msgctxt "#24055"
 msgid "Check for updates"
-msgstr "חפש עדכונים"
+msgstr "חיפוש עדכונים"
 
 msgctxt "#24056"
 msgid "Last updated %s"
@@ -10403,7 +10403,7 @@ msgstr "הרחבה עודכנה"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "בטל הורדת הרחבה?"
+msgstr "האם לבטל הורדת הרחבה?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
@@ -10491,7 +10491,7 @@ msgstr "ההרחבה איננה תואמת או שסומנת כלא תקינה �
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
-msgstr "תרצה לנטרל אותה אצלך במערכת?"
+msgstr "האם לנטרל את ההרחבה במערכת?"
 
 msgctxt "#24098"
 msgid "Broken"
@@ -10499,15 +10499,15 @@ msgstr "לא תקין"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "תרצה להחליף למעטפת זו?"
+msgstr "האם להחליף למעטפת זו?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "לשימוש ביכולת זו עליך להוריד הרחבה:"
+msgstr "לשימוש ביכולת זו יש להוריד הרחבה:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "ברצונך להוריד הרחבה זו?"
+msgstr "האם להוריד הרחבה זו?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
@@ -10617,10 +10617,6 @@ msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "קבצי ההגדרות הועברו"
 
-msgctxt "#24129"
-msgid "The configuration of Kodi has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - this message will not be shown again!"
-msgstr "קבצי ההגדרות הועברו למיקום חדש עקב המעבר מ־Kodi ל־Kodi. פנה אל http://kodi.wiki/view/Migration_from_Kodi_to_Kodi - הודעה זו לא תוצג שוב!"
-
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "הודעות"
@@ -10647,7 +10643,7 @@ msgstr "כותרת: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr "בחר פריט השמעה"
+msgstr "יש לבחור פריט ניגון"
 
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
@@ -10775,7 +10771,7 @@ msgstr "נצפה"
 
 msgctxt "#33026"
 msgid "Departure from normal"
-msgstr "פרידה מהרגיל"
+msgstr "שונה מגדר הרגיל"
 
 msgctxt "#33027"
 msgid "Sunrise"
@@ -11239,7 +11235,7 @@ msgstr "ספק"
 
 msgctxt "#35504"
 msgid "Product ID"
-msgstr "מוצר ID"
+msgstr "מזהה מוצר"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adaptor"
