@@ -150,7 +150,7 @@ void CPlexFilterManager::saveFiltersToDisk()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexSectionFilterPtr CPlexFilterManager::getFilterForSection(const std::string &sectionUrl)
 {
-  if (sectionUrl == m_myPlexPlaylistFilter->getFilterUrl())
+  if (m_myPlexPlaylistFilter && sectionUrl == m_myPlexPlaylistFilter->getFilterUrl())
     return m_myPlexPlaylistFilter;
 
   CSingleLock lk(m_filterSection);
