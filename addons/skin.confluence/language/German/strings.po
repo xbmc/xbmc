@@ -118,7 +118,7 @@ msgstr "SUCHLAUF"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Visualisierungs-Voreinstellung"
+msgstr "Visualisierungs-Presets"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -274,7 +274,7 @@ msgstr "Einstellungsebene"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Tastenkürzel"
+msgstr "Verknüpfungen"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
@@ -438,7 +438,7 @@ msgstr "Arial-basiert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURIERE DARSTELLUNGSEINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilisten Optionen[CR]Setze Bildschirmschoner"
+msgstr "[B]KONFIGURIERE DARSTELLUNGSEINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilistenoptionen[CR]Setze Bildschirmschoner"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -466,7 +466,7 @@ msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons �
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]KONFIGURIERE TV-EINSTELLUNGEN[/B][CR][CR]Ändere die Vollbild Information - Verwalte EPG-Daten-Einstellungen"
+msgstr "[B]KONFIGURIERE TV-EINSTELLUNGEN[/B][CR][CR]Ändere die Vollbildinformationen - Verwalte EPG-Daten-Einstellungen"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"

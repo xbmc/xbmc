@@ -34,7 +34,7 @@ msgstr "Nascondi informazioni"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Vedi Opzioni"
+msgstr "Opzioni vista"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -46,7 +46,7 @@ msgstr "Durata totale"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "File - Musica"
+msgstr "Musica - File"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -62,7 +62,7 @@ msgstr "Oggetti"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Opzioni Varie"
+msgstr "Opzioni varie"
 
 msgctxt "#31027"
 msgid "Location"
@@ -126,11 +126,11 @@ msgstr "Orario fine riproduzione"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordina: Crescente"
+msgstr "Ordina: crescente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordina: Decrescente"
+msgstr "Ordina: decrescente"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -150,7 +150,7 @@ msgstr "Suoni di sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Playlist corrente "
+msgstr "Playlist corrente"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -158,7 +158,7 @@ msgstr "Questo file è stato accorpato, scegli la parte da cui vuoi iniziare."
 
 msgctxt "#31061"
 msgid "Current Selected"
-msgstr "Correntemente Selezionato"
+msgstr "Correntemente selezionato"
 
 msgctxt "#31101"
 msgid "Home screen options"
@@ -246,7 +246,7 @@ msgstr "Nascondi fanart nella visualizzazione full screen"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Addon Testi"
+msgstr "Add-on testi"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -342,7 +342,7 @@ msgstr "Opzioni scansione contenuti"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Imposta il percorso per le immagini fanart"
+msgstr "Imposta il percorso per le fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -547,6 +547,10 @@ msgstr "Previsioni orarie"
 msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Previsioni per il weekend"
+
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Previsioni giornaliere"
 
 msgctxt "#31905"
 msgid "Forecast"
