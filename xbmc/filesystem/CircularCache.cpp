@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -74,6 +74,18 @@ void CCircularCache::Close()
   delete[] m_buf;
 #endif
   m_buf = NULL;
+}
+
+size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
+{
+  CSingleLock lock(m_sync);
+
+  size_t back  = (size_t)(m_cur - m_beg); // Backbuffer size
+  size_t front = (size_t)(m_end - m_cur); // Frontbuffer size
+  size_t limit = m_size - std::min(back, m_size_back) - front;
+
+  // Never return more than limit and size requested by caller
+  return std::min(iRequestSize, limit);
 }
 
 /**

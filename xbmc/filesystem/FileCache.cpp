@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -219,7 +219,7 @@ void CFileCache::Process()
     {
       m_seekEvent.Reset();
       int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
-      cacheReachEOF = cacheMaxPos == m_source.GetLength();
+      cacheReachEOF = (cacheMaxPos == m_source.GetLength());
       bool sourceSeekFailed = false;
       if (!cacheReachEOF)
       {
@@ -239,7 +239,7 @@ void CFileCache::Process()
         assert(m_writePos == cacheMaxPos);
         average.Reset(m_writePos);
         limiter.Reset(m_writePos);
-        m_cacheFull = false;
+        m_cacheFull = (m_pCache->GetMaxWriteSize(m_chunkSize) == 0);
         m_nSeekResult = m_seekPos;
       }
 
@@ -263,6 +263,9 @@ void CFileCache::Process()
         break;
       }
     }
+
+    size_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
+    m_cacheFull = (maxWrite == 0);
 
     ssize_t iRead = 0;
     if (!cacheReachEOF)
@@ -300,13 +303,10 @@ void CFileCache::Process()
       }
       else if (iWrite == 0)
       {
-        m_cacheFull = true;
         average.Pause();
         m_pCache->m_space.WaitMSec(5);
         average.Resume();
       }
-      else
-        m_cacheFull = false;
 
       iTotalWrite += iWrite;
 

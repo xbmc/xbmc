@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -124,6 +124,11 @@ void CSimpleFileCache::Close()
     CLog::LogF(LOGWARNING, "failed to delete temporary file \"%s\"", m_filename.c_str());
 
   m_filename.clear();
+}
+
+size_t CSimpleFileCache::GetMaxWriteSize(const size_t& iRequestSize)
+{
+  return iRequestSize; // Can always write since it's on disk
 }
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
@@ -298,6 +303,11 @@ void CDoubleCache::Close()
     delete m_pCacheOld;
     m_pCacheOld = NULL;
   }
+}
+
+size_t CDoubleCache::GetMaxWriteSize(const size_t& iRequestSize)
+{
+  return m_pCache->GetMaxWriteSize(iRequestSize); // NOTE: Check the active cache only
 }
 
 int CDoubleCache::WriteToCache(const char *pBuffer, size_t iSize)
