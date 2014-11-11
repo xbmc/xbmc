@@ -38,6 +38,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIFontManager.h"
+#include "cores/DataCacheCore.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -644,6 +645,7 @@ void CXBMCRenderManager::SetViewMode(int iViewMode)
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
+  g_dataCacheCore.SignalVideoInfoChange();
 }
 
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
@@ -863,6 +865,7 @@ void CXBMCRenderManager::UpdateResolution()
       g_graphicsContext.SetVideoResolution(res);
     }
     m_bReconfigured = false;
+    g_dataCacheCore.SignalVideoInfoChange();
   }
 }
 
