@@ -235,13 +235,23 @@ bool CPlexServer::UpdateReachability()
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
+    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted && conn->m_type != CPlexConnection::CONNECTION_MYPLEX)
+    {
+      CLog::Log(LOGINFO, "CPlexServer::UpdateReachability skipping connection %s since we are restricted", conn->toString().c_str());
+      m_connectionsLeft --;
+      continue;
+    }
+    
     m_connTestThreads.push_back(new CPlexServerConnTestThread(conn, GetShared()));
   }
   lk.unlock();
 
   /* Three minutes should be enough ? */
-  if (!m_testEvent.WaitMSec(1000 * 120))
-    CLog::Log(LOGWARNING, "CPlexServer::UpdateReachability waited 2 minutes and connection testing didn't finish.");
+  if (m_connectionsLeft != 0)
+  {
+    if (!m_testEvent.WaitMSec(1000 * 120))
+      CLog::Log(LOGWARNING, "CPlexServer::UpdateReachability waited 2 minutes and connection testing didn't finish.");
+  }
 
   /* kill any left over threads */
   lk.lock();
