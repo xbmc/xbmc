@@ -66,8 +66,7 @@ enum {
 enum {
   // tells the decoder not to bother returning a CVPixelBuffer
   // in the outputCallback. The output callback will still be called.
-  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 0,
-  kVTDecoderDecodeFlags_DontEmitFrameIOS8 = 1 << 1
+  kVTDecoderDecodeFlags_DontEmitFrame = 1 << 1,
 };
 enum {
   // decode and return buffers for all frames currently in flight.
@@ -1377,10 +1376,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
 
     if (m_DropPictures)
     {
-      if (CDarwinUtils::GetIOSVersion() >= 8.0)
-        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrameIOS8;
-      else
-        decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
+      decoderFlags = kVTDecoderDecodeFlags_DontEmitFrame;
     }
 
     // submit for decoding
