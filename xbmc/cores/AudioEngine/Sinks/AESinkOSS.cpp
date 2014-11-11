@@ -72,7 +72,7 @@ CAESinkOSS::~CAESinkOSS()
   Deinitialize();
 }
 
-std::string CAESinkOSS::GetDeviceUse(const AEAudioFormat format, const std::string &device)
+std::string CAESinkOSS::GetDeviceUse(const AEAudioFormat& format, const std::string &device)
 {
 #ifdef OSS4
   if (AE_IS_RAW(format.m_dataFormat))
@@ -334,7 +334,7 @@ void CAESinkOSS::Deinitialize()
     close(m_fd);
 }
 
-inline CAEChannelInfo CAESinkOSS::GetChannelLayout(AEAudioFormat format)
+inline CAEChannelInfo CAESinkOSS::GetChannelLayout(const AEAudioFormat& format)
 {
   unsigned int count = 0;
 

@@ -3657,9 +3657,6 @@
 		F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CC234818150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CC234918150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
-		F5CC238818150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
-		F5CC238918150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
-		F5CC238A18150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
 		F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
@@ -6211,8 +6208,6 @@
 		F5CC230B18150118006B5E91 /* AESinkFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESinkFactory.h; sourceTree = "<group>"; };
 		F5CC234518150277006B5E91 /* AESinkNULL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkNULL.cpp; path = Sinks/AESinkNULL.cpp; sourceTree = "<group>"; };
 		F5CC234618150277006B5E91 /* AESinkNULL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkNULL.h; path = Sinks/AESinkNULL.h; sourceTree = "<group>"; };
-		F5CC238618150768006B5E91 /* AESinkProfiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkProfiler.cpp; path = Sinks/AESinkProfiler.cpp; sourceTree = "<group>"; };
-		F5CC238718150768006B5E91 /* AESinkProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkProfiler.h; path = Sinks/AESinkProfiler.h; sourceTree = "<group>"; };
 		F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE60813D3C89700225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
@@ -10184,8 +10179,6 @@
 				F5CC228A1814F7E9006B5E91 /* AESinkDARWINOSX.h */,
 				F5CC234518150277006B5E91 /* AESinkNULL.cpp */,
 				F5CC234618150277006B5E91 /* AESinkNULL.h */,
-				F5CC238618150768006B5E91 /* AESinkProfiler.cpp */,
-				F5CC238718150768006B5E91 /* AESinkProfiler.h */,
 			);
 			name = Sinks;
 			sourceTree = "<group>";
@@ -11614,7 +11607,6 @@
 				F5CC2305181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230E18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234918150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238A18150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				7C8AE84E189DE3CD00C33786 /* CoreAudioChannelLayout.cpp in Sources */,
 				7C8AE84F189DE3CD00C33786 /* CoreAudioDevice.cpp in Sources */,
 				7C8AE850189DE3CD00C33786 /* CoreAudioHardware.cpp in Sources */,
@@ -12815,7 +12807,6 @@
 				F5CC2304181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230D18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234818150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238918150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2518AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
 				7CF0504D190A1D7200222135 /* FFmpeg.cpp in Sources */,
 				7CF05058191195DA00222135 /* MediaType.cpp in Sources */,
@@ -14008,7 +13999,6 @@
 				F5CC2303181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230C18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238818150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2418AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
 				7CF0504C190A1D7200222135 /* FFmpeg.cpp in Sources */,
 				7CF05057191195DA00222135 /* MediaType.cpp in Sources */,
