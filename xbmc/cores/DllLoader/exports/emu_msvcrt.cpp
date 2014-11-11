@@ -2236,27 +2236,29 @@ extern "C"
   int dll_flsbuf(int data, FILE *fp)
   {
     if (fp == NULL)
-      return 0;
+      return EOF;
 
     if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
     {
       CLog::Log(LOGDEBUG, "dll_flsbuf() - %c", data);
-      return 1;
+      return data;
     }
 
     if(IS_STD_STREAM(fp))
-      return 0;
+      return EOF;
 
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
     if (pFile)
     {
-      if(pFile->Write(&data, 1) == 1)
-        return 1;
+      pFile->Flush();
+      unsigned char c = (unsigned char)data;
+      if(pFile->Write(&c, 1) == 1)
+        return data;
       else
-        return 0;
+        return EOF;
     }
 #ifdef TARGET_POSIX
-    return 0;
+    return EOF;
 #else
     return _flsbuf(data, fp);
 #endif
