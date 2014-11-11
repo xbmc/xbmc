@@ -34,7 +34,7 @@ class CMyPlexManager : public CThread
       ERROR_TMEOUT
     };
 
-    CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1), m_havePlexServers(false) {}
+    CMyPlexManager();
 
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
 
@@ -64,6 +64,7 @@ class CMyPlexManager : public CThread
     int DoScanMyPlex();
     int DoRefreshUserInfo();
     int DoRemoveAllServers();
+    void CacheUserInfo(TiXmlElement* userXml);
 
     void BroadcastState();
     TiXmlElement* GetXml(const CURL &url, bool POST=false);

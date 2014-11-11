@@ -27,9 +27,28 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 
+#include "File.h"
+
 
 #define FAILURE_TMOUT 3600
 #define SUCCESS_TMOUT 30 * 60
+
+CMyPlexManager::CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1), m_havePlexServers(false)
+{
+  if (!g_guiSettings.GetString("myplex.uid").IsEmpty())
+  {
+    CStdString cachePath = "special://profile/plexuserinfo_" + g_guiSettings.GetString("myplex.uid") + ".xml";
+    if (XFILE::CFile::Exists(cachePath))
+    {
+      CXBMCTinyXML doc;
+      if (doc.LoadFile(cachePath))
+      {
+        m_currentUserInfo.SetFromXmlElement(doc.RootElement());
+        CLog::Log(LOGINFO, "MyPlexManager::init using cached userinfo for %s", m_currentUserInfo.username.c_str());
+      }
+    }
+  }
+}
 
 void
 CMyPlexManager::Process()
@@ -312,15 +331,16 @@ int CMyPlexManager::DoRefreshUserInfo()
 
     return FAILURE_TMOUT;
   }
-
+  
   /* update the token in our global store */
   g_guiSettings.SetString("myplex.token", userInfo.authToken.c_str());
-
+  g_guiSettings.SetString("myplex.uid", boost::lexical_cast<std::string>(userInfo.id).c_str());
   /* reset pin information */
   m_currentPinInfo = CMyPlexPinInfo();
 
   /* update current user info */
   m_currentUserInfo = userInfo;
+  CacheUserInfo(root);
 
   /* hooray final state! */
   m_state = STATE_LOGGEDIN;
@@ -335,6 +355,17 @@ int CMyPlexManager::DoRefreshUserInfo()
 
   /* Also we want it to go scan directly */
   return 0;
+}
+
+void CMyPlexManager::CacheUserInfo(TiXmlElement *userXml)
+{
+  CXBMCTinyXML doc;
+  
+  TiXmlDeclaration decl("1.0", "utf-8", "");
+  doc.InsertEndChild(decl);
+  doc.InsertEndChild(*userXml);
+  
+  doc.SaveFile("special://profile/plexuserinfo_" + boost::lexical_cast<std::string>(m_currentUserInfo.id) + ".xml");
 }
 
 int CMyPlexManager::DoRemoveAllServers()

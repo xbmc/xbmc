@@ -56,9 +56,10 @@ void PlexApplication::Start()
 {
   timer = CPlexGlobalTimerPtr(new CPlexGlobalTimer);
 
+  myPlexManager = new CMyPlexManager;
+
   dataLoader = CPlexServerDataLoaderPtr(new CPlexServerDataLoader);
   serverManager = CPlexServerManagerPtr(new CPlexServerManager);
-  myPlexManager = new CMyPlexManager;
   remoteSubscriberManager = new CPlexRemoteSubscriberManager;
   mediaServerClient = CPlexMediaServerClientPtr(new CPlexMediaServerClient);
   analytics = new CPlexAnalytics;
