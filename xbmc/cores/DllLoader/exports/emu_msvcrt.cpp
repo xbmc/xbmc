@@ -783,7 +783,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-      return dll_close(fd);
+      return dll_close(fd) == 0 ? 0 : EOF;
     }
     else if (!IS_STD_STREAM(stream))
     {
