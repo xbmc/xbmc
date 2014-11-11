@@ -19,7 +19,7 @@ class CPlexServerCacheDatabase : public CDatabase
     bool storeConnection(const CStdString& uuid, const CPlexConnectionPtr& connection);
     bool clearTables();
 
-    virtual int GetMinVersion() const { return 1; }
+    virtual int GetMinVersion() const { return 2; }
     virtual const char* GetBaseDBName() const { return "PlexServerCache"; }
 };
 

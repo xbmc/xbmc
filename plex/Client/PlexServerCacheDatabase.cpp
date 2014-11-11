@@ -15,7 +15,7 @@ bool CPlexServerCacheDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "CPlexServerCacheDatabase::CreateTables create server table");
-    m_pDS->exec("CREATE TABLE server ( uuid text primary key, name text, version text, owner text, synced bool, owned bool, serverClass text, supportsDeletion bool, supportsVideoTranscoding bool, supportsAudioTranscoding bool, transcoderQualities text, transcoderBitrates text, transcoderResolutions text );\n");
+    m_pDS->exec("CREATE TABLE server ( uuid text primary key, name text, version text, owner text, synced bool, owned bool, home bool, serverClass text, supportsDeletion bool, supportsVideoTranscoding bool, supportsAudioTranscoding bool, transcoderQualities text, transcoderBitrates text, transcoderResolutions text );\n");
     CLog::Log(LOGINFO, "CPlexServerCacheDatabase::CreateTables create connections table");
     m_pDS->exec("CREATE TABLE connections ( serverUUID text, host text, port integer, token text, type integer, scheme text );\n");
     CLog::Log(LOGINFO, "CPlexServerCacheDatabase::CreateTables create connections table index");
@@ -59,9 +59,9 @@ bool CPlexServerCacheDatabase::storeServer(const CPlexServerPtr &server)
   CStdString bitrates = StringUtils::Join(server->GetTranscoderBitrates(), ",");
   CStdString resolutions = StringUtils::Join(server->GetTranscoderResolutions(), ",");
 
-  CStdString sql = PrepareSQL("insert into server values ('%s', '%s', '%s', '%s', %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s');",
+  CStdString sql = PrepareSQL("insert into server values ('%s', '%s', '%s', '%s', %i, %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s');",
                               server->GetUUID().c_str(), server->GetName().c_str(), server->GetVersion().c_str(), server->GetOwner().c_str(),
-                              server->GetSynced(), server->GetOwned(), server->GetServerClass().c_str(), server->SupportsDeletion(),
+                              server->GetSynced(), server->GetOwned(), server->GetHome(), server->GetServerClass().c_str(), server->SupportsDeletion(),
                               server->SupportsVideoTranscoding(), server->SupportsAudioTranscoding(), qualities.c_str(),
                               bitrates.c_str(), resolutions.c_str());
   try
@@ -120,6 +120,7 @@ bool CPlexServerCacheDatabase::getCachedServers(std::vector<CPlexServerPtr>& ser
       CStdString uuid = m_pDS->fv("uuid").get_asString();
       bool owned = m_pDS->fv("owned").get_asBool();
       bool synced = m_pDS->fv("synced").get_asBool();
+      bool home = m_pDS->fv("home").get_asBool();
 
       if (name.empty() || uuid.empty())
       {
@@ -131,6 +132,7 @@ bool CPlexServerCacheDatabase::getCachedServers(std::vector<CPlexServerPtr>& ser
       CLog::Log(LOGDEBUG, "CPlexServerCacheDatabase::getCachedServers reading server %s", name.c_str());
 
       CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, owned, synced));
+      server->SetHome(home);
       server->SetOwner(m_pDS->fv("owner").get_asString());
       server->SetVersion(m_pDS->fv("version").get_asString());
       server->SetSupportsAudioTranscoding(m_pDS->fv("supportsAudioTranscoding").get_asBool());

@@ -348,6 +348,9 @@ void CPlexServer::Merge(CPlexServerPtr otherServer)
 
   if (!otherServer->GetOwner().empty())
     m_owner = otherServer->m_owner;
+  
+  if (otherServer->GetHome() || m_home)
+    m_home = true;
 
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
   {
