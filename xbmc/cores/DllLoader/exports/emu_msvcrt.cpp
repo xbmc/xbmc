@@ -1347,10 +1347,10 @@ extern "C"
       // it is a emulated file
       int d;
       if (dll_fseek(stream, -1, SEEK_CUR)!=0)
-        return -1;
+        return EOF;
       d = dll_fgetc(stream);
       if (d == EOF)
-        return -1;
+        return EOF;
 
       dll_fseek(stream, -1, SEEK_CUR);
       if (c != d)
