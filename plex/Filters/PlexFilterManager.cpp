@@ -19,7 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexFilterManager::getFilterXMLPath()
 {
-  std::string userName = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+  std::string userName = boost::lexical_cast<std::string>(g_plexApplication.myPlexManager->GetCurrentUserInfo().id);
   if (!userName.empty())
     return "special://profile/plexfiltermanager_" + userName + ".xml";
 
