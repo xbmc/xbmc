@@ -130,6 +130,7 @@ else(TARGET_COMMON_DARWIN)
 
   install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN python EXCLUDE
+        PATTERN keymaps EXCLUDE
         PATTERN playercorefactory.xml EXCLUDE
         PATTERN peripherals.xml EXCLUDE)
 
@@ -151,8 +152,8 @@ else(TARGET_COMMON_DARWIN)
   install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/SlideshowOverlay.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-  install(DIRECTORY ${plexdir}/Resources/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-#  install(FILES ${plexdir}/Resources/peripherals.xml ${plexdir}/Resources/playercorefactory.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
+  install(DIRECTORY ${plexdir}/Resources/system/keymaps DESTINATION ${RESOURCEPATH}/keymaps COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/system/peripherals.xml ${plexdir}/Resources/system/playercorefactory.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
   if(TARGET_WIN32)
     install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
