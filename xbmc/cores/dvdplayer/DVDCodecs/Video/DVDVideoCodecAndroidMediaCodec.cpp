@@ -1105,6 +1105,11 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     }
   }
 
+  if (width)
+    m_videobuffer.iWidth  = width;
+  if (height)
+    m_videobuffer.iHeight = height;
+
   // picture display width/height include the cropping.
   m_videobuffer.iDisplayWidth  = crop_right  + 1 - crop_left;
   m_videobuffer.iDisplayHeight = crop_bottom + 1 - crop_top;
