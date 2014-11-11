@@ -265,7 +265,9 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_format = format;
 
     int renderbuffers = m_pRenderer->GetOptimalBufferSize();
-    m_QueueSize = std::min(buffers, renderbuffers);
+    m_QueueSize = renderbuffers;
+    if (buffers > 0)
+      m_QueueSize = std::min(buffers, renderbuffers);
     m_QueueSize = std::min(m_QueueSize, (int)m_pRenderer->GetMaxBufferSize());
     m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
