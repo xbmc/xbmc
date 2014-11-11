@@ -61,7 +61,6 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_fineadjust = 0.0;
   m_RefreshRate = 0.0;
   m_MissedVblanks = 0;
-  m_RefreshChanged = 0;
   m_VblankTime = 0;
 
   m_pVideoSync = NULL;
@@ -127,7 +126,6 @@ void CVideoReferenceClock::Process()
     m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
     m_fineadjust = 1.0;
-    m_RefreshChanged = 0;
     m_MissedVblanks = 0;
 
     if (SetupSuccess)
@@ -391,6 +389,15 @@ void CVideoReferenceClock::SetFineAdjust(double fineadjust)
 {
   CSingleLock SingleLock(m_CritSection);
   m_fineadjust = fineadjust;
+}
+
+void CVideoReferenceClock::RefreshChanged()
+{
+  CSingleLock SingleLock(m_CritSection);
+  if (m_pVideoSync)
+  {
+    m_pVideoSync->RefreshChanged();
+  }
 }
 
 CVideoReferenceClock g_VideoReferenceClock;
