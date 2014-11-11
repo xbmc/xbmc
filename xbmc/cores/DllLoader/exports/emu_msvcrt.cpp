@@ -1257,7 +1257,7 @@ extern "C"
   {
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
-      char tmp[2] = { (char)character, 0 };
+      char tmp[2] = { (unsigned char)character, 0 };
       dllputs(tmp);
       return character;
     }
@@ -1268,7 +1268,8 @@ extern "C"
         int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
         if (fd >= 0)
         {
-          int iItemsWritten = dll_write(fd, (char* )&character, 1);
+          unsigned char c = (unsigned char)character;
+          int iItemsWritten = dll_write(fd, &c, 1);
           if (iItemsWritten == 1)
             return character;
         }
