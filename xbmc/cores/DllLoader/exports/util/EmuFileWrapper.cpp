@@ -77,6 +77,8 @@ EmuFileObject* CEmuFileWrapper::RegisterFileObject(XFILE::CFile* pFile)
       object->file_xbmc = pFile;
       object->file_emu._file = (i + FILE_WRAPPER_OFFSET);
       object->file_lock = new CCriticalSection();
+      object->m_feof    = false;
+      object->m_ferror  = false;
       break;
     }
   }
