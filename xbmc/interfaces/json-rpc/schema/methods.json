@@ -931,7 +931,7 @@
     "permission": "UpdateData",
     "params": [
       { "name": "directory", "type": "string", "default": "" },
-      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -964,7 +964,7 @@
     "transport": "Response",
     "permission": "RemoveData",
     "params": [
-      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -1500,7 +1500,7 @@
     "permission": "UpdateData",
     "params": [
       { "name": "directory", "type": "string", "default": "" },
-      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
@@ -1534,7 +1534,7 @@
     "transport": "Response",
     "permission": "RemoveData",
     "params": [
-      { "name": "showdialogs", "type": "boolean", "default": false, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" }
     ],
     "returns": "string"
   },
