@@ -267,9 +267,20 @@ void CFileCache::Process()
     size_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
     m_cacheFull = (maxWrite == 0);
 
+    /* Only read from source if there's enough write space in the cache
+     * else we may keep disposing data and seeking back on (slow) source
+     */
+    if (m_cacheFull && !cacheReachEOF)
+    {
+      average.Pause();
+      m_pCache->m_space.WaitMSec(5);
+      average.Resume();
+      continue;
+    }
+
     ssize_t iRead = 0;
     if (!cacheReachEOF)
-      iRead = m_source.Read(buffer.get(), m_chunkSize);
+      iRead = m_source.Read(buffer.get(), maxWrite);
     if (iRead == 0)
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
