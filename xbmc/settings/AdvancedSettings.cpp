@@ -274,7 +274,6 @@ void CAdvancedSettings::Initialize()
 
   m_bVideoLibraryAllItemsOnBottom = false;
   m_iVideoLibraryRecentlyAddedItems = 25;
-  m_bVideoLibraryHideEmptySeries = false;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
   m_bVideoLibraryExportAutoThumbs = false;
@@ -720,7 +719,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bVideoLibraryAllItemsOnBottom);
     XMLUtils::GetInt(pElement, "recentlyaddeditems", m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
-    XMLUtils::GetBoolean(pElement, "hideemptyseries", m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetBoolean(pElement, "usefasthash", m_bVideoLibraryUseFastHash);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);

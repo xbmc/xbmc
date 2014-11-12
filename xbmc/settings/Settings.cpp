@@ -143,6 +143,7 @@ const std::string CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE = "videolibra
 const std::string CSettings::SETTING_VIDEOLIBRARY_CLEANUP = "videolibrary.cleanup";
 const std::string CSettings::SETTING_VIDEOLIBRARY_EXPORT = "videolibrary.export";
 const std::string CSettings::SETTING_VIDEOLIBRARY_IMPORT = "videolibrary.import";
+const std::string CSettings::SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS = "videolibrary.showemptytvshows";
 const std::string CSettings::SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
 const std::string CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
 const std::string CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";
