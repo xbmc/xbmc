@@ -40,7 +40,7 @@ if __name__ == "__main__":
     h.package = package
   
   update = Update()
-  update.install = hashes
+  update.install = [fi for fi in hashes if fi.targetLink is None]
   update.manifest = hashes
   update.version = 4
   update.targetVersion = options.version

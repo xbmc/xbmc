@@ -14,13 +14,15 @@ def get_file(fpath):
 
   fe = FileElement()
   fe.name = fpath
-  fe.fileHash = sha_hash.hexdigest()
-
   info = os.lstat(fpath)
+  fe.fileHash = sha_hash.hexdigest()
   fe.size = info.st_size
   fe.permissions = oct(stat.S_IMODE(info.st_mode))
-  fe.included = "true"
 
+  if stat.S_ISLNK(info.st_mode):
+    fe.targetLink = os.readlink(fpath)
+
+  fe.included = "true"
   #print "%s = %s" % (fe.name, fe.fileHash)
 
   return fe
