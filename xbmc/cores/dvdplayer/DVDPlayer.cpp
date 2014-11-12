@@ -2819,10 +2819,10 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       if(m_StateInput.cache_bytes >= 0)
       {
         strBuf += StringUtils::Format(" cache:%s %2.0f%%"
-                                      , StringUtils::SizeToString(m_State.cache_bytes).c_str()
-                                      , m_State.cache_level * 100);
+                                      , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
+                                      , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
-          strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
+          strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_StateInput.cache_delay));
       }
 
       strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
@@ -2855,10 +2855,10 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       if(m_StateInput.cache_bytes >= 0)
       {
         strBuf += StringUtils::Format(" cache:%s %2.0f%%"
-                                      , StringUtils::SizeToString(m_State.cache_bytes).c_str()
-                                      , m_State.cache_level * 100);
+                                      , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
+                                      , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
-          strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
+          strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_StateInput.cache_delay));
       }
 
       strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
