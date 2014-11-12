@@ -363,7 +363,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   if (m_pOriginalRadioButton) m_pOriginalRadioButton->SetVisible(false);
   if (m_pOriginalButton) m_pOriginalButton->SetVisible(false);
   if (m_pOriginalCategoryButton) m_pOriginalCategoryButton->SetVisible(false);
-  m_pOriginalEdit->SetVisible(false);
+  if (m_pOriginalEdit) m_pOriginalEdit->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
 
   if (m_pOriginalCategoryButton != NULL)

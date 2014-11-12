@@ -881,6 +881,7 @@ unsigned int CXBMCRenderManager::GetOptimalBufferSize()
   if (!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s - renderer is NULL", __FUNCTION__);
+    return 0;
   }
   return m_pRenderer->GetMaxBufferSize();
 }

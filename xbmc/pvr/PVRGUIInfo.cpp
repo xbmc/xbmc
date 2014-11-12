@@ -86,6 +86,8 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bIsPlayingRadio             = false;
   m_bIsPlayingRecording         = false;
   m_bIsPlayingEncryptedStream   = false;
+  m_bHasTVChannels              = false;
+  m_bHasRadioChannels           = false;
 
   ResetPlayingTag();
   ClearQualityInfo(m_qualityInfo);

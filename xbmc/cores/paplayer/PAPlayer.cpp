@@ -328,8 +328,6 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
 bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, bool job /* = false */)
 {
-  StreamInfo *si = new StreamInfo();
-
   // check if we advance a track of a CUE sheet
   // if this is the case we don't need to open a new stream
   std::string newURL = file.GetMusicInfoTag() ? file.GetMusicInfoTag()->GetURL() : file.GetPath();
@@ -349,6 +347,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
     m_continueStream = false;
   }
 
+  StreamInfo *si = new StreamInfo();
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
