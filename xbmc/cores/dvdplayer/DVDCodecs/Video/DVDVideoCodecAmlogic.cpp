@@ -24,6 +24,7 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "AMLCodec.h"
+#include "utils/AMLUtils.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 
@@ -46,8 +47,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
   m_bitparser(NULL),
-  m_bitstream(NULL),
-  m_hevc(false)
+  m_bitstream(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -107,17 +107,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       //m_bitparser = new CBitstreamParser();
       //m_bitparser->Open();
       break;
-    case AV_CODEC_ID_HEVC:
-      m_pFormatName = "am-h265";
-        if (m_hints.extrasize < 22 || m_hints.extradata == NULL)
-        {
-          //CLog::Log(LOGNOTICE, "%s::%s - hvcC data too small or missing", CLASSNAME, __func__);
-          return false;
-        }
-        m_bitstream = new CBitstreamConverter();
-        m_convert_bitstream = m_bitstream->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
-        m_hevc = true;
-      break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
@@ -149,6 +138,26 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
       m_pFormatName = "am-avs";
+      break;
+    case AV_CODEC_ID_HEVC:
+      if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) || (aml_get_device_type() == AML_DEVICE_TYPE_M8M2)) {
+        if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
+        {
+          // 4K HEVC is supported only on Amlogic S812 chip
+          return false;
+        }
+      } else {
+        // HEVC supported only on S805 and S812.
+        return false;
+      }
+      m_pFormatName = "am-h265";
+      m_bitstream = new CBitstreamConverter();
+      m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
+      // make sure we do not leak the existing m_hints.extradata
+      free(m_hints.extradata);
+      m_hints.extrasize = m_bitstream->GetExtraSize();
+      m_hints.extradata = malloc(m_hints.extrasize);
+      memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
       break;
     default:
       CLog::Log(LOGDEBUG, "%s: Unknown hints.codec(%d", __MODULE_NAME__, m_hints.codec);
@@ -219,9 +228,7 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
   if (pData)
   {
-    int demuxer_bytes = iSize;
-    uint8_t *demuxer_content = pData;
-    if (m_bitstream && !m_hevc)
+    if (m_bitstream)
     {
       if (!m_bitstream->Convert(pData, iSize))
         return VC_ERROR;
@@ -230,18 +237,8 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       iSize = m_bitstream->GetConvertSize();
     }
 
-    if (m_bitparser && !m_hevc)
+    if (m_bitparser)
       m_bitparser->FindIdrSlice(pData, iSize);
-
-    if (m_convert_bitstream && demuxer_content && m_hevc)
-    {
-      // convert demuxer packet from bitstream to bytestream (AnnexB)
-      if (m_bitstream->Convert(demuxer_content, demuxer_bytes))
-      {
-        demuxer_content = m_bitstream->GetConvertBuffer();
-        demuxer_bytes = m_bitstream->GetConvertSize();
-      }
-    }
 
     FrameRateTracking( pData, iSize, dts, pts);
   }
