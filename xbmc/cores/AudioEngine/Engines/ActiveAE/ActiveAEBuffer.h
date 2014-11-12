@@ -51,7 +51,6 @@ public:
   ~CSoundPacket();
   uint8_t **data;                        // array with pointers to planes of data
   SampleConfig config;
-  AEDataFormat internal_format;          // used when carrying pass through
   int bytes_per_sample;                  // bytes per sample and per channel
   int linesize;                          // see ffmpeg, required for planar formats
   int planes;                            // 1 for non planar formats, #channels for planar

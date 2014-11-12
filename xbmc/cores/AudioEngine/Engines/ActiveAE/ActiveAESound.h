@@ -51,7 +51,7 @@ public:
   void Finish();
   int GetChunkSize();
   int GetFileSize() { return m_fileSize; }
-  bool IsSeekPosible() { return m_isSeekPosible; }
+  bool IsSeekPossible() { return m_isSeekPossible; }
 
   static int Read(void *h, uint8_t* buf, int size);
   static int64_t Seek(void *h, int64_t pos, int whence);
@@ -59,7 +59,7 @@ public:
 protected:
   std::string m_filename;
   XFILE::CFile *m_pFile;
-  bool m_isSeekPosible;
+  bool m_isSeekPossible;
   int m_fileSize;
   float m_volume;
 
