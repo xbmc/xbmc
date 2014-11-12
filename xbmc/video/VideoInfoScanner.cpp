@@ -76,9 +76,18 @@ namespace VIDEO
 
   void CVideoInfoScanner::Process()
   {
+    if (m_bClean)
+    {
+      //Only clean, no scanning.
+      CleanDatabase(NULL, NULL, m_showDialog);
+      return;
+    }
+
     try
     {
       unsigned int tick = XbmcThreads::SystemClockMillis();
+
+      m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
 
       m_database.Open();
 
@@ -186,9 +195,18 @@ namespace VIDEO
         m_pathsToScan.insert(it->second);
     }
     m_database.Close();
-    m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
-
     StopThread();
+    m_bClean = false;
+    Create();
+    m_bRunning = true;
+  }
+
+  void CVideoInfoScanner::StartLibraryClean()
+  {
+    m_pathsToScan.clear();
+    m_pathsToClean.clear();
+    StopThread();
+    m_bClean = true;
     Create();
     m_bRunning = true;
   }
