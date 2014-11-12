@@ -20,6 +20,7 @@
 #include "LocalizeStrings.h"
 #include "Client/PlexServerDataLoader.h"
 #include "PlexFilterManager.h"
+#include "PlexPlayQueueManager.h"
 
 #include "dialogs/GUIDialogKaiToast.h"
 
@@ -379,6 +380,9 @@ int CMyPlexManager::DoRemoveAllServers()
 
     // Clear out queue and recommendations
     g_plexApplication.dataLoader->RemoveServer(m_myplex);
+
+    // clear out playqueues
+    g_plexApplication.playQueueManager->clear();
 
     if (g_application.IsPlayingFullScreenVideo())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Lost connection to myPlex", "You need to relogin", 5000, false);
