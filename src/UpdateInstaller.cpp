@@ -302,6 +302,15 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
       std::string filePath = file.path;
       if (!file.pathPrefix.empty())
         filePath = file.pathPrefix + '/' + file.path;
+      
+      if (FileUtils::fileExists(destPath.c_str()) && FileUtils::fileIsLink(destPath.c_str()))
+      {
+        LOG(Info, "New file is not link, removing: " + destPath);
+        if (FileUtils::isDirectory(destPath.c_str()))
+          FileUtils::rmdirRecursive(destPath.c_str());
+        else
+          FileUtils::removeFile(destPath.c_str());
+      }
 
       // extract the file from the package and copy it to
       // the destination
@@ -325,7 +334,31 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
   else
   {
     // create the symlink
-    FileUtils::createSymLink(destPath.c_str(), target.c_str());
+    if (FileUtils::fileExists(destPath.c_str()))
+    {
+      bool recreate = false;
+      if (FileUtils::fileIsLink(destPath.c_str()))
+      {
+        std::string symTarget = FileUtils::getSymlinkTarget(destPath.c_str());
+        if (symTarget != target)
+        {
+          LOG(Info, "need new symlink " + target + " != " + symTarget);
+          recreate = true;
+        }
+      }
+      else
+        recreate = true;
+      
+      if (recreate)
+      {
+        LOG(Info, "Recreating symlink " + destPath + "->" + target);
+        if (FileUtils::isDirectory(destPath.c_str()))
+          FileUtils::rmdirRecursive(destPath.c_str());
+        else
+          FileUtils::removeFile(destPath.c_str());
+        FileUtils::createSymLink(destPath.c_str(), target.c_str());
+      }
+    }
   }
 }
 
@@ -494,13 +527,33 @@ void UpdateInstaller::verifyAgainstManifest()
     else
     {
       UpdateScriptFile scriptFile = fileMap[filePath];
-      std::string hash = FileUtils::sha1FromFile((m_installDir + '/' + filePath).c_str());
-      if (hash != scriptFile.hash)
+      
+      // verify links
+      if (!scriptFile.linkTarget.empty())
       {
-        LOG(Error, "File " + filePath + " had the wrong hash! Expected: " + scriptFile.hash +
-                   ", got: " + hash);
-        throw "Wrong hash on file: " + filePath;
+        if (!FileUtils::fileIsLink((m_installDir + '/' + filePath).c_str()))
+        {
+          LOG(Error, "Path: " + filePath + " is supposed to be a link!");
+          throw "Expected link but got regular file: " + filePath;
+        }
+        
+        if (scriptFile.linkTarget != FileUtils::getSymlinkTarget((m_installDir + '/' + filePath).c_str()))
+        {
+          LOG(Error, "Path " + filePath + " does not link to " + scriptFile.linkTarget);
+          throw filePath + " is not linked to " + scriptFile.linkTarget;
+        }
       }
+      else if (!scriptFile.hash.empty())
+      {
+        std::string hash = FileUtils::sha1FromFile((m_installDir + '/' + filePath).c_str());
+        if (hash != scriptFile.hash)
+        {
+          LOG(Error, "File " + filePath + " had the wrong hash! Expected: " + scriptFile.hash +
+                     ", got: " + hash);
+          throw "Wrong hash on file: " + filePath;
+        }
+      }
+      
     }
   }
 }
