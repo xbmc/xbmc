@@ -132,6 +132,11 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     }
   }
 
+  if (settingId == "input.appleremotealwayson")
+  {
+    HandleLaunchAgent();
+  }
+
   return true;
 }
 
@@ -166,14 +171,12 @@ void XBMCHelper::Configure()
 {
   int oldMode = m_mode;
   int oldDelay = m_sequenceDelay;
-  int oldAlwaysOn = m_alwaysOn;
   int oldPort = m_port;
 
   // Read the new configuration.
   m_errorStarting = false;
   m_mode = CSettings::Get().GetInt("input.appleremotemode");
   m_sequenceDelay = CSettings::Get().GetInt("input.appleremotesequencetime");
-  m_alwaysOn = CSettings::Get().GetBool("input.appleremotealwayson");
   m_port = CSettings::Get().GetInt("services.esport");
 
 
@@ -253,6 +256,14 @@ void XBMCHelper::Configure()
   // Turning on.
   if (oldMode == APPLE_REMOTE_DISABLED && m_mode != APPLE_REMOTE_DISABLED)
     Start();
+
+  HandleLaunchAgent();
+}
+
+void XBMCHelper::HandleLaunchAgent()
+{
+  int oldAlwaysOn = m_alwaysOn;
+  m_alwaysOn = CSettings::Get().GetBool("input.appleremotealwayson");
 
   // Installation/uninstallation.
   if (oldAlwaysOn == false && m_alwaysOn == true)
