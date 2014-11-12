@@ -69,13 +69,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MPEG1VIDEO:
     case AV_CODEC_ID_MPEG2VIDEO:
     case AV_CODEC_ID_MPEG2VIDEO_XVMC:
-      if (m_hints.width <= 1280)
-      {
-        // amcodec struggles with VOB playback
-        // which can be handled via software
-        return false;
-        break;
-      }
       m_mpeg2_sequence_pts = 0;
       m_mpeg2_sequence = new mpeg2_sequence;
       m_mpeg2_sequence->width  = m_hints.width;
