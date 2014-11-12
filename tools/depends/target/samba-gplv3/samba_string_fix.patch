@@ -1,0 +1,54 @@
+build: lib/util/string_wrappers.h: fix optimisation check for
+ clang
+
+Building with clang resulted in an error with undefined symbols
+___unsafe_string_function_usage_here_size_t__ etc. Turns out the
+existing check whether the compiler optimizes out functions doesn't
+match the use case, ie the check said yes, but the functions were not
+optimized out.
+
+Signed-off-by: Ralph Boehme <slow at samba.org>
+---
+ source3/wscript | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/source3/wscript b/source3/wscript
+index 4f182bf..2083f01 100644
+--- a/source3/wscript
++++ b/source3/wscript
+@@ -349,12 +349,28 @@ int main(int argc, char **argv)
+ 
+     # Check if the compiler will optimize out functions
+     conf.CHECK_CODE('''
+-if (0) {
+-    this_function_does_not_exist();
+-} else {
+-    return 1;
++#include <sys/types.h>
++size_t __unsafe_string_function_usage_here_size_t__(void);
++#define CHECK_STRING_SIZE(d, len) (sizeof(d) != (len) && sizeof(d) != sizeof(char *))
++static size_t push_string_check_fn(void *dest, const char *src, size_t dest_len) {
++	return 0;
++}
++
++#define push_string_check(dest, src, dest_len) \
++    (CHECK_STRING_SIZE(dest, dest_len) \
++    ? __unsafe_string_function_usage_here_size_t__()	\
++    : push_string_check_fn(dest, src, dest_len))
++
++int main(int argc, char **argv) {
++    char outbuf[1024];
++    char *p = outbuf;
++    const char *foo = "bar";
++    p += 31 + push_string_check(p + 31, foo, sizeof(outbuf) - (p + 31 - outbuf));
++    return 0;
+ }''', 'HAVE_COMPILER_WILL_OPTIMIZE_OUT_FNS',
+-        msg="Checking if the compiler will optimize out functions")
++            addmain=False,
++            add_headers=False,
++            msg="Checking if the compiler will optimize out functions")
+ 
+     # Check if the compiler supports the LL suffix on long long integers
+     # AIX needs this
+-- 
+1.9.3
