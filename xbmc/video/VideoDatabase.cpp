@@ -7855,30 +7855,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       m_pDS->exec(sql.c_str());
     }
 
-    // Keep empty series if the user wants to hide them
-    if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries)
-    {
-      tvshowsToDelete = "";
-      sql = "SELECT tvshow.idShow FROM tvshow "
-              "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
-              "JOIN path ON path.idPath = tvshowlinkpath.idPath "
-            "WHERE NOT EXISTS (SELECT 1 FROM episode WHERE episode.idShow = tvshow.idShow) "
-              "AND (path.strContent IS NULL OR path.strContent = '')";
-      m_pDS->query(sql.c_str());
-      while (!m_pDS->eof())
-      {
-        tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
-        tvshowsToDelete += m_pDS->fv(0).get_asString() + ",";
-        m_pDS->next();
-      }
-      m_pDS->close();
-      if (!tvshowsToDelete.empty())
-      {
-        sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
-        m_pDS->exec(sql.c_str());
-      }
-    }
-
     if (!musicVideoIDs.empty())
     {
       std::string musicVideosToDelete;
