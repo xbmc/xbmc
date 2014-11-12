@@ -71,6 +71,20 @@ public:
 };
 #endif
 
+struct SOmxPlayerState
+{
+  OMXClock av_clock;              // openmax clock component
+  EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
+  bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
+  bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
+  bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
+  float threshold;                // current fifo threshold required to come out of buffering
+  int video_fifo;                 // video fifo to gpu level
+  int audio_fifo;                 // audio fifo to gpu level
+  double last_check_time;         // we periodically check for gpu underrun
+  double stamp;                   // last media timestamp
+};
+
 class CDVDInputStream;
 
 class CDVDDemux;
@@ -297,8 +311,6 @@ protected:
 
   void CreatePlayers();
   void DestroyPlayers();
-  void OMXDoProcessing();
-  bool OMXStillPlaying();
 
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
   bool OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset);
@@ -537,18 +549,6 @@ protected:
   bool m_DemuxerPausePending;
 
   // omxplayer variables
-  struct SOmxPlayerState
-  {
-    OMXClock av_clock;              // openmax clock component
-    EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
-    bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
-    bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
-    bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
-    float threshold;                // current fifo threshold required to come out of buffering
-    int video_fifo;                 // video fifo to gpu level
-    int audio_fifo;                 // audio fifo to gpu level
-    double last_check_time;         // we periodically check for gpu underrun
-    double stamp;                   // last media timestamp
-  } m_OmxPlayerState;
+  struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
 };
