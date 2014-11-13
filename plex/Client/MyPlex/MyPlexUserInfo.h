@@ -27,7 +27,7 @@ class CMyPlexUserInfo
       ROLE_USER = 16
     };
 
-    CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false) {}
+    CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false), pinProtected(false) {}
 
     bool SetFromXmlElement(TiXmlElement* root);
 
@@ -41,6 +41,7 @@ class CMyPlexUserInfo
     std::string thumb;
 
     bool subscription;
+    bool pinProtected;  
     std::string subscriptionStatus;
     std::string subscriptionPlan;
     std::vector<std::string> features;
