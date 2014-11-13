@@ -104,8 +104,6 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
 {
   std::string strUseBase = TrimSlashes(strBase);
 
-  std::set<std::string> unwatchedFolders;
-
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
     CPVRRecordingPtr current = it->second;
@@ -132,8 +130,6 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       // Initialize folder overlay from play count (either directly from client or from video database)
       if (current->m_playCount > 0)
         pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
-      else
-        unwatchedFolders.insert(strFilePath);
 
       results->Add(pFileItem);
     }
@@ -143,16 +139,6 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       pFileItem=results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
-
-      // Unset folder overlay if recording is unwatched
-      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end())
-      {
-        if (current->m_playCount == 0)
-        {
-          pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
-          unwatchedFolders.insert(strFilePath);
-        }
-      }
     }
   }
 }
