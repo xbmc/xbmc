@@ -1360,7 +1360,7 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
   list.push_back(std::make_pair(g_localizeStrings.Get(671), LOGCMYTH));
   list.push_back(std::make_pair(g_localizeStrings.Get(672), LOGFFMPEG));
   list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
-  list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGVIDEO));
+  list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));
 #ifdef HAS_LIBRTMP
   list.push_back(std::make_pair(g_localizeStrings.Get(673), LOGRTMP));
 #endif
