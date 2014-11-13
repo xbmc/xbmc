@@ -901,9 +901,12 @@ void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap
     if (jit->first->GetPattern() == joyName->GetPattern())
       break;
   }
-  WindowMap* w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
-    // find or create ActionMap, and merge it
-  (*w)[windowID].insert(map.begin(), map.end());
+  WindowMap *w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
+  
+  // find or create ActionMap, and merge/overwrite new entries
+  ActionMap *a = &(*w)[windowID];
+  for (ActionMap::const_iterator it = map.begin(); it != map.end(); it++)
+    (*a)[it->first] = it->second;
 }
 
 CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
