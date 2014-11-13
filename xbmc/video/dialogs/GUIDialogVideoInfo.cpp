@@ -790,17 +790,16 @@ void CGUIDialogVideoInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  if (item.HasArt("fanart"))
+  // Ensure the fanart is unpacked
+  m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
+
+  if (m_movieItem->HasArt("fanart"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetArt("thumb", item.GetArt("fanart"));
+    itemCurrent->SetArt("thumb", m_movieItem->GetArt("fanart"));
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
-
-  // ensure the fanart is unpacked
-  m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
 
   // Grab the thumbnails from the web
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
@@ -817,6 +816,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     items.Add(item);
   }
 
+  CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString strLocal = item.GetLocalFanart();
   if (!strLocal.empty())
   {
