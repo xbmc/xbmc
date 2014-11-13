@@ -27,8 +27,11 @@
 #include "PlexApplication.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
+#include "Directory.h"
 
 #include "File.h"
+#include "PlexAES.h"
+#include "Third-Party/hash-library/sha256.h"
 
 
 #define FAILURE_TMOUT 3600
@@ -38,11 +41,14 @@ CMyPlexManager::CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRE
 {
   if (!g_guiSettings.GetString("myplex.uid").IsEmpty())
   {
-    CStdString cachePath = "special://profile/plexuserinfo_" + g_guiSettings.GetString("myplex.uid") + ".xml";
+    CStdString cachePath = "special://plexprofile/plexuserdata.exml";
     if (XFILE::CFile::Exists(cachePath))
     {
+      CPlexAES aes(g_guiSettings.GetString("system.uuid"));
+      std::string xmlData = aes.decryptFile(cachePath);
+      
       CXBMCTinyXML doc;
-      if (doc.LoadFile(cachePath))
+      if (xmlData.length() > 0 && doc.Parse(xmlData.c_str()) != NULL)
       {
         m_currentUserInfo.SetFromXmlElement(doc.RootElement());
         CLog::Log(LOGINFO, "MyPlexManager::init using cached userinfo for %s", m_currentUserInfo.username.c_str());
@@ -333,18 +339,41 @@ int CMyPlexManager::DoRefreshUserInfo()
     return FAILURE_TMOUT;
   }
   
-  /* update the token in our global store */
-  g_guiSettings.SetString("myplex.token", userInfo.authToken.c_str());
+  /* update the uid in our global store */
   g_guiSettings.SetString("myplex.uid", boost::lexical_cast<std::string>(userInfo.id).c_str());
+  
   /* reset pin information */
   m_currentPinInfo = CMyPlexPinInfo();
 
   /* update current user info */
   m_currentUserInfo = userInfo;
-  CacheUserInfo(root);
 
   /* hooray final state! */
   m_state = STATE_LOGGEDIN;
+  
+  // now cache the user data
+  XFILE::CDirectory::Create("special://plexprofile");
+  CacheUserInfo(root);
+  
+  // if we logged in with a PIN we need to cache it.
+  if (!m_homePin.empty() && m_currentUserInfo.pinProtected)
+  {
+    SHA256 hash;
+    hash.add(m_homePin.c_str(), m_homePin.length());
+    hash.add(m_currentUserInfo.authToken.c_str(), m_currentUserInfo.authToken.length());
+    
+    XFILE::CFile pinCache;
+    if (pinCache.OpenForWrite("special://plexprofile/pcache.txt"))
+    {
+      pinCache.Write(hash.getHash().c_str(), hash.getHash().length());
+      pinCache.Close();
+    }
+  }
+  // the PIN might have been removed by the server, let make sure we kill the PIN cache
+  else if (!m_currentUserInfo.pinProtected && XFILE::CFile::Exists("special://plexprofile/pcache.txt"))
+  {
+    XFILE::CFile::Delete("special://plexprofile/pcache.txt");
+  }
 
   // our restricted flag might have been updated
   // so let's refresh all our shares
@@ -366,7 +395,18 @@ void CMyPlexManager::CacheUserInfo(TiXmlElement *userXml)
   doc.InsertEndChild(decl);
   doc.InsertEndChild(*userXml);
   
-  doc.SaveFile("special://profile/plexuserinfo_" + boost::lexical_cast<std::string>(m_currentUserInfo.id) + ".xml");
+  TiXmlPrinter printer;
+  doc.Accept(&printer);
+  
+  CPlexAES aes(g_guiSettings.GetString("system.uuid"));
+  std::string outdata = aes.encrypt(printer.Str());
+  
+  XFILE::CFile file;
+  if (file.OpenForWrite("special://plexprofile/plexuserdata.exml"))
+  {
+    file.Write(outdata.c_str(), outdata.length());
+    file.Close();
+  }
 }
 
 int CMyPlexManager::DoRemoveAllServers()
@@ -437,7 +477,7 @@ void CMyPlexManager::Logout()
 {
   m_state = STATE_NOT_LOGGEDIN;
   m_currentUserInfo = CMyPlexUserInfo();
-  g_guiSettings.SetString("myplex.token", "");
+  g_guiSettings.SetString("myplex.uid", "");
 
   m_wakeEvent.Set();
 
@@ -453,9 +493,8 @@ CStdString CMyPlexManager::GetAuthToken() const
   /* Ok, let's check if we have a token in our userInfo */
   if (!m_currentUserInfo.authToken.empty())
     return m_currentUserInfo.authToken;
-
-  /* Failing all that, we need to check the settings ... */
-  return g_guiSettings.GetString("myplex.token");
+  
+  return "";
 }
 
 void CMyPlexManager::Stop()
