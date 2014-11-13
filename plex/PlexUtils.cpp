@@ -7,7 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/random.hpp>
 
-#include "Utility/sha1.hpp"
+#include "Third-Party/hash-library/sha1.h"
 
 #include "PlexUtils.h"
 #include "File.h"
@@ -579,11 +579,11 @@ CStdString PlexUtils::GetSHA1SumFromURL(const CURL &url)
 
     while (read != 0)
     {
-      sha.update(buffer, read);
+      sha.add(buffer, read);
       read = file.Read(buffer, 4096);
     }
 
-    return sha.end().hex();
+    return sha.getHash();
   }
 
   return "";
