@@ -1437,7 +1437,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "updatelibrary" && !params.empty())
   {
-    bool userInitiated = false;
+    bool userInitiated = true;
     if (params.size() > 2)
       userInitiated = StringUtils::EqualsNoCase(params[2], "true");
     if (StringUtils::EqualsNoCase(params[0], "music"))
@@ -1457,7 +1457,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "cleanlibrary")
   {
-    bool userInitiated = false;
+    bool userInitiated = true;
     if (params.size() > 1)
       userInitiated = StringUtils::EqualsNoCase(params[1], "true");
     if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
