@@ -1,0 +1,263 @@
+
+Private Const BlockLength = 16              ' maximum block length in bytes
+Private Const BlockLengthMax = 32           ' maximum block length in bytes
+Private Const KeyLengthMax = 32             ' maximum block length in bytes
+Private Const KeyScheduleLengthMax = 64     ' maximum key schedule length in bytes
+
+Private Type EncCtx                         ' type to hold the AES encryption context data
+  Ekey(0 To KeyScheduleLengthMax - 1) As Long
+End Type
+
+Private Type DecCtx                         ' type to hold the AES decryption context data
+  Ekey(0 To KeyScheduleLengthMax - 1) As Long
+End Type
+
+Private Type Key                            ' type to hold user key data
+ K(0 To KeyLengthMax - 1) As Byte
+End Type
+
+Private Type InOut                          ' type to hold cipher input and output blocks
+ IO(0 To BlockLength - 1) As Byte
+End Type
+
+Private Type BigInOut                       ' type to hold cipher input and output blocks
+ IO(0 To 128 * BlockLength - 1) As Byte
+End Type
+
+Rem Change "c:\temp\" in the following lines to the directory path where the AES DLL is located
+Private Declare Function AesEncryptKey128 Lib "c:\temp\aes.dll" _
+        Alias "_aes_encrypt_key128@8" (K As Key, C As EncCtx) As Integer
+Private Declare Function AesEncryptKey192 Lib "c:\temp\aes.dll" _
+        Alias "_aes_encrypt_key192@8" (K As Key, C As EncCtx) As Integer
+Private Declare Function AesEncryptKey256 Lib "c:\temp\aes.dll" _
+        Alias "_aes_encrypt_key256@8" (K As Key, C As EncCtx) As Integer
+Private Declare Function AesEncryptKey Lib "c:\temp\aes.dll" _
+        Alias "_aes_encrypt_key@12" (K As Key, ByVal N As Integer, C As EncCtx) As Integer
+Private Declare Function AesEncrypt Lib "c:\temp\aes.dll" _
+        Alias "_aes_encrypt@12" (Ib As InOut, Ob As InOut, C As EncCtx) As Integer
+Private Declare Function AesDecryptKey128 Lib "c:\temp\aes.dll" _
+        Alias "_aes_decrypt_key128@8" (K As Key, C As DecCtx) As Integer
+Private Declare Function AesDecryptKey192 Lib "c:\temp\aes.dll" _
+        Alias "_aes_decrypt_key192@8" (K As Key, C As DecCtx) As Integer
+Private Declare Function AesDecryptKey256 Lib "c:\temp\aes.dll" _
+        Alias "_aes_decrypt_key256@8" (K As Key, C As DecCtx) As Integer
+Private Declare Function AesDecryptKey Lib "c:\temp\aes.dll" _
+        Alias "_aes_decrypt_key@12" (K As Key, ByVal N As Long, C As DecCtx) As Integer
+Private Declare Function AesDecrypt Lib "c:\temp\aes.dll" _
+        Alias "_aes_decrypt@12" (Ib As InOut, Ob As InOut, C As DecCtx) As Integer
+
+Private Declare Function AesModeReset Lib "c:\temp\aes.dll" Alias "_aes_mode_reset@4" _
+        (C As EncCtx) As Integer
+Private Declare Function AesEcbEncrypt Lib "c:\temp\aes.dll" Alias "_aes_ecb_encrypt@16" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, C As EncCtx) As Integer
+Private Declare Function AesEcbDecrypt Lib "c:\temp\aes.dll" Alias "_aes_ecb_decrypt@16" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, C As DecCtx) As Integer
+Private Declare Function AesCbcEncrypt Lib "c:\temp\aes.dll" Alias "_aes_cbc_encrypt@20" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, C As EncCtx) As Integer
+Private Declare Function AesCbcDecrypt Lib "c:\temp\aes.dll" Alias "_aes_cbc_decrypt@20" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, C As DecCtx) As Integer
+Private Declare Function AesCfbEncrypt Lib "c:\temp\aes.dll" Alias "_aes_cfb_encrypt@20" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, C As EncCtx) As Integer
+Private Declare Function AesCfbDecrypt Lib "c:\temp\aes.dll" Alias "_aes_cfb_decrypt@20" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, C As EncCtx) As Integer
+Private Declare Function AesOfbCrypt Lib "c:\temp\aes.dll" Alias "_aes_ofb_crypt@20" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, C As EncCtx) As Integer
+Private Declare Function AesCtrCrypt Lib "c:\temp\aes.dll" Alias "_aes_ctr_crypt@24" _
+        (Ib As BigInOut, Ob As BigInOut, ByVal N As Long, Iv As InOut, ByVal CtrFn As Long, C As EncCtx) As Integer
+
+Private Sub Hex(X As Byte)                  ' output a byte in hexadecimal format
+Dim H As Byte
+H = Int(X / 16)
+If H < 10 Then Debug.Print Chr(48 + H); Else Debug.Print Chr(87 + H);
+H = Int(X Mod 16)
+If H < 10 Then Debug.Print Chr(48 + H); Else Debug.Print Chr(87 + H);
+End Sub
+
+Private Sub OutKey(S As String, B As Key, ByVal KeyL As Integer)   ' display a key value
+Debug.Print: Debug.Print S;
+For i = 0 To KeyL - 1
+   Hex B.K(i)
+Next i
+End Sub
+
+Private Sub OutBlock(S As String, B As InOut)   ' display an input/output block
+Debug.Print: Debug.Print S;
+For i = 0 To BlockLength - 1
+   Hex B.IO(i)
+Next i
+End Sub
+
+Private Sub OutBigBlock(S As String, B As BigInOut)   ' display an input/output block
+Debug.Print: Debug.Print S;
+For i = 0 To BlockLength - 1
+   Hex B.IO(i)
+Next i
+Debug.Print " ... ";
+For i = 127 * BlockLength To 128 * BlockLength - 1
+   Hex B.IO(i)
+Next i
+End Sub
+
+Private Sub CtrInc(Ctr As InOut)
+    Ctr.IO(0) = Ctr.IO(0) + 1
+    If (Ctr.IO(0) = 0) Then
+        Ctr.IO(1) = Ctr.IO(1) + 1
+        If (Ctr.IO(1) = 0) Then
+            Ctr.IO(2) = Ctr.IO(2) + 1
+            If (Ctr.IO(3) = 0) Then
+                Ctr.IO(3) = Ctr.IO(3) + 1
+            End If
+        End If
+    End If
+End Sub
+
+Rem The following Main routine should output the following in the immediate window:
+Rem Variable Key Length ( 16 )
+Rem Key =            00000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = 66e94bd4ef8a2c3b884cfa59ca342b2e
+Rem Decrypted Text = 00000000000000000000000000000000
+Rem Variable Key Length ( 24 )
+Rem Key =            000000000000000000000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = aae06992acbf52a3e8f4a96ec9300bd7
+Rem Decrypted Text = 00000000000000000000000000000000
+Rem Variable Key Length ( 32 )
+Rem Key =            0000000000000000000000000000000000000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = dc95c078a2408989ad48a21492842087
+Rem Decrypted Text = 00000000000000000000000000000000
+Rem Fixed Key Length ( 128 )
+Rem Key =            00000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = 66e94bd4ef8a2c3b884cfa59ca342b2e
+Rem Decrypted Text = 00000000000000000000000000000000
+Rem Fixed Key Length ( 192 )
+Rem Key =            000000000000000000000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = aae06992acbf52a3e8f4a96ec9300bd7
+Rem Decrypted Text = 00000000000000000000000000000000
+Rem Fixed Key Length ( 256 )
+Rem Key =            0000000000000000000000000000000000000000000000000000000000000000
+Rem Input =          00000000000000000000000000000000
+Rem Encrypted Text = dc95c078a2408989ad48a21492842087
+Rem Decrypted Text = 00000000000000000000000000000000
+
+Sub Main()
+Dim Key As Key                                  ' all these variables are initialised
+Dim Ib As InOut, Ob As InOut, Rb As InOut       ' to zero by VBA
+Dim Iv1 As InOut, Iv2 As InOut
+Dim Ecx As EncCtx
+Dim Dcx As DecCtx
+Dim RetVal As Integer
+
+For KeyL = 16 To 32 Step 8
+Debug.Print "Variable Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, KeyL
+OutBlock "Input =          ", Ib
+RetVal = AesEncryptKey(Key, KeyL, Ecx)          ' set an all zero encryption key
+RetVal = AesEncrypt(Ib, Ob, Ecx)                ' encrypt Ib to Ob
+OutBlock "Encrypted Text = ", Ob
+RetVal = AesDecryptKey(Key, KeyL, Dcx)          ' set an all zero decryption key
+RetVal = AesDecrypt(Ob, Rb, Dcx)                ' decrypt Ob to Rb
+OutBlock "Decrypted Text = ", Rb
+Debug.Print
+Next KeyL
+
+Debug.Print
+KeyL = 128: Debug.Print "Fixed Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, 16
+OutBlock "Input =          ", Ib
+RetVal = AesEncryptKey128(Key, Ecx)             ' set an all zero encryption key
+RetVal = AesEncrypt(Ib, Ob, Ecx)                ' encrypt Ib to Ob
+OutBlock "Encrypted Text = ", Ob
+RetVal = AesDecryptKey128(Key, Dcx)             ' set an all zero decryption key
+RetVal = AesDecrypt(Ob, Rb, Dcx)                ' decrypt Ob to Rb
+OutBlock "Decrypted Text = ", Rb
+Debug.Print
+
+Debug.Print
+KeyL = 192: Debug.Print "Fixed Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, 24
+OutBlock "Input =          ", Ib
+RetVal = AesEncryptKey192(Key, Ecx)             ' set an all zero encryption key
+RetVal = AesEncrypt(Ib, Ob, Ecx)                ' encrypt Ib to Ob
+OutBlock "Encrypted Text = ", Ob
+RetVal = AesDecryptKey192(Key, Dcx)             ' set an all zero decryption key
+RetVal = AesDecrypt(Ob, Rb, Dcx)                ' decrypt Ob to Rb
+OutBlock "Decrypted Text = ", Rb
+Debug.Print
+
+Debug.Print
+KeyL = 256: Debug.Print "Fixed Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, 32
+OutBlock "Input =          ", Ib
+RetVal = AesEncryptKey256(Key, Ecx)             ' set an all zero encryption key
+RetVal = AesEncrypt(Ib, Ob, Ecx)                ' encrypt Ib to Ob
+OutBlock "Encrypted Text = ", Ob
+RetVal = AesDecryptKey256(Key, Dcx)             ' set an all zero decryption key
+RetVal = AesDecrypt(Ob, Rb, Dcx)                ' decrypt Ob to Rb
+OutBlock "Decrypted Text = ", Rb
+Debug.Print
+
+Debug.Print
+KeyL = 128: Debug.Print "Fixed Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, 16
+OutBlock "Input =          ", Ib
+RetVal = AesEncryptKey128(Key, Ecx)             ' set an all zero encryption key
+OutBlock "Encrypted Text = ", Ob
+RetVal = AesDecryptKey128(Key, Dcx)             ' set an all zero decryption key
+OutBlock "Decrypted Text = ", Rb
+Debug.Print
+
+Debug.Print
+KeyL = 128: Debug.Print "Fixed Key Length ("; KeyL; ")";
+OutKey "Key =            ", Key, 16
+RetVal = AesEncryptKey128(Key, Ecx)             ' set an all zero encryption key
+RetVal = AesDecryptKey128(Key, Dcx)             ' set an all zero decryption key
+Dim Pt1 As BigInOut, Pt2 As BigInOut, Ct As BigInOut
+
+For i = 0 To 128 * BlockLength - 1
+    Pt1.IO(i) = i Mod 256
+Next i
+
+OutBigBlock "ECB Input =      ", Pt1
+RetVal = AesEcbEncrypt(Pt1, Ct, 128 * BlockLength, Ecx)
+OutBigBlock "Encrypted Text = ", Ct
+RetVal = AesEcbDecrypt(Ct, Pt2, 128 * BlockLength, Dcx)
+OutBigBlock "Decrypted Text = ", Pt2
+Debug.Print
+
+OutBigBlock "CBC Mode Input = ", Pt1
+RetVal = AesCbcEncrypt(Pt1, Ct, 128 * BlockLength, Iv1, Ecx)
+OutBigBlock "Encrypted Text = ", Ct
+RetVal = AesCbcDecrypt(Ct, Pt2, 128 * BlockLength, Iv2, Dcx)
+OutBigBlock "Decrypted Text = ", Pt2
+Debug.Print
+
+OutBigBlock "CFB Mode Input = ", Pt1
+RetVal = AesCfbEncrypt(Pt1, Ct, 128 * BlockLength, Iv1, Ecx)
+OutBigBlock "Encrypted Text = ", Ct
+RetVal = AesCfbDecrypt(Ct, Pt2, 128 * BlockLength, Iv2, Ecx)
+OutBigBlock "Decrypted Text = ", Pt2
+Debug.Print
+
+OutBigBlock "OFB Mode Input = ", Pt1
+RetVal = AesOfbCrypt(Pt1, Ct, 128 * BlockLength, Iv1, Ecx)
+OutBigBlock "Encrypted Text = ", Ct
+RetVal = AesOfbCrypt(Ct, Pt2, 128 * BlockLength, Iv2, Ecx)
+OutBigBlock "Decrypted Text = ", Pt2
+Debug.Print
+
+#If False Then
+Rem CTR Mode is not working because of a problem with the 'AddressOf' operator
+OutBigBlock "CTR Mode Input = ", Pt1
+RetVal = AesCtrCrypt(Pt1, Ct, 128 * BlockLength, Iv1, AddressOf CtrInc, Ecx)
+OutBigBlock "Encrypted Text = ", Ct
+RetVal = AesCtrCrypt(Ct, Pt2, 128 * BlockLength, Iv2, AddressOf CtrInc, Ecx)
+OutBigBlock "Decrypted Text = ", Pt2
+Debug.Print
+#End If
+
+Debug.Print
+End Sub

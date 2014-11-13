@@ -5,3 +5,4 @@ if(ENABLE_TESTING)
  endif(ENABLE_TESTING)
 
 add_subdirectory(hash-library)
+add_subdirectory(aes)

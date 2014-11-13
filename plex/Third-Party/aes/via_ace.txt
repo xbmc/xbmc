@@ -1,0 +1,158 @@
+
+Support for the VIA Nehemiah Advanced Cryptography Engine (ACE)
+---------------------------------------------------------------
+
+A. Introduction
+
+The AES code now supports the VIA ACE engine.  The engine is invoked by the
+multiple block AES modes calls in aes_modes.c and not by the basic AES code.
+
+The define USE_VIA_ACE_IF_PRESENT is defined if VIA ACE detection and use is
+required with fallback to the normal AES code if it is not present.
+
+The define ASSUME_VIA_ACE_PRESENT is used when it is known that the VIA ACE
+engine will always be present.  Note, however, that this code will not work
+correctly if the VIA ACE engine is either not present or turned off.
+
+To enable ACE support the appropriate defines in section 2 of the options in
+aesopt.h must be set.  If ACE support is required then key scheduling must
+use the C code so only the generic C code in Win32 mode, ASM_X86_V1C and
+ASM_X86_V2C assembler code can be used (i.e ASM_X86_V2 and ASM_AMD64_C do
+NOT support VIA ACE).
+
+B. Using ACE
+
+ACE is used in the code that implements the subroutines used for the multiple
+block AES modes defined in aes_modes.h:
+
+    // used to reset modes to their start point without entering a new key
+    AES_RETURN aes_mode_reset(aes_encrypt_ctx cx[1]);
+
+    AES_RETURN aes_ecb_encrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, const aes_encrypt_ctx cx[1]);
+
+    AES_RETURN aes_ecb_decrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, const aes_decrypt_ctx cx[1]);
+
+    AES_RETURN aes_cbc_encrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, unsigned char *iv, const aes_encrypt_ctx cx[1]);
+
+    AES_RETURN aes_cbc_decrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, unsigned char *iv, const aes_decrypt_ctx cx[1]);
+
+    AES_RETURN aes_cfb_encrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, unsigned char *iv, aes_encrypt_ctx cx[1]);
+
+    AES_RETURN aes_cfb_decrypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, unsigned char *iv, aes_encrypt_ctx cx[1]);
+
+    #define aes_ofb_encrypt aes_ofb_crypt
+    #define aes_ofb_decrypt aes_ofb_crypt
+
+    AES_RETURN aes_ofb_crypt(const unsigned char *ibuf, unsigned char *obuf,
+                    int len, unsigned char *iv, aes_encrypt_ctx cx[1]);
+
+    typedef void cbuf_inc(unsigned char *cbuf);
+
+    #define aes_ctr_encrypt aes_ctr_crypt
+    #define aes_ctr_decrypt aes_ctr_crypt
+
+    AES_RETURN aes_ctr_crypt(const unsigned char *ibuf, unsigned char *obuf,
+       int len, unsigned char *cbuf, cbuf_inc ctr_inc, aes_encrypt_ctx cx[1]);
+
+Note that the single block AES calls defined in aes.h:
+
+    AES_RETURN aes_encrypt(const unsigned char *in, unsigned char *out,
+                    const aes_encrypt_ctx cx[1]);
+
+    AES_RETURN aes_decrypt(const unsigned char *in, unsigned char *out,
+                    const aes_decrypt_ctx cx[1]);
+
+do NOT provide ACE support and should not be used if the ACE engine is
+available and ACE support is required.
+
+C. Constraints and Optimisation
+
+There are several constraints that have to be observed when ACE is used if
+the best performance is to be achieved:
+
+1. As usual the appropriate key set up subroutine must be called before any
+   of the above subroutines are used.
+
+2. The AES contexts - aes_encryption_ctx and aes_decryption_ctx - used with
+   these subroutines MUST be 16 byte aligned.  Failure to align AES contexts
+   will often cause memory alignment exceptions.
+
+3. The buffers used for inputs, outputs and IVs do not need to be 16 byte
+   aligned but the speed that is achieved will be much higher if this can be
+   arranged. In a flat address space (as now typical in 32-bit systems) this
+   means that: (a) that the lower nibble of all buffer addresses must be
+   zero, and (b) the compiler used must arrange to load the data and stack
+   segments on 16 byte address boundaries.  The Microsoft VC++ compiler can
+   align all variables in this way (see the example macros for doing this in
+   aes_via_ace.txt). However it seems that the GCC compiler will only do this
+   for static global variables but not for variables placed on the stack, that
+   is local variables.
+
+4. The data length in bytes (len) in calls to the ECB and CBC subroutines
+   must be a multiple of the 16 byte block length. An error return will
+   occur if this is not so.
+
+5. The data length in all calls to the CFB, OFB and CTR subroutines must also
+   be a multiple of 16 bytes if the VIA ACE engine is to be used. Otherwise
+   these lengths can be of any value but the subroutines will only proceed at
+   full speed for lengths that are multiples of 16 bytes. The CFB, OFB and
+   CTR subroutines are incremental, with subsequent calls continuing from
+   where previous calls finished.  The subroutine aes_mode_reset() can be used
+   to restart a mode without a key change but is not needed after a new key is
+   entered. Such a reset is not needed when the data lengths in all individual
+   calls to the AES mode subroutines are multiples of 16 bytes.
+
+6. Note that the AES context contains mode details so only one type of mode
+   can be run from a context at any one time.  A reset is necessary if a new
+   mode is used without a new context or a new key.
+
+D. Expected Speeds
+
+The speeds that have been obtained using a 1.2 GHz VIA C3 processor with
+this code are given below (note that since CTR mode is not available in
+the VIA hardware it is not present in the aligned timing figures):
+
+AES Timing (Cycles/Byte) with the VIA ACE Engine (aligned in C)
+Mode   Blocks:      1       10      100     1000    Peak Throughput
+ecb encrypt      8.25     1.36     0.69     0.63  1.9 Gbytes/second
+ecb decrypt      8.75     1.41     0.70     0.64  1.9 Gbytes/second
+cbc encrypt     11.56     2.41     1.47     1.38  870 Mbytes/second
+cbc decrypt     12.37     2.38     1.47     1.38  870 Mbytes/second
+cfb encrypt     11.93     2.46     1.48     1.38  870 Mbytes/second
+cfb decrypt     12.18     2.36     1.47     1.38  870 Mbytes/second
+ofb encrypt     13.31     3.88     2.92     2.82  425 Mbytes/second
+ofb decrypt     13.31     3.88     2.92     2.82  425 Mbytes/second
+
+AES Timing (Cycles/Byte) with the VIA ACE Engine (unaligned in C)
+Mode   Blocks:      1       10      100     1000    Peak Throughput
+ecb encrypt     17.68     4.31     3.15     3.05  390 Mbytes/second
+ecb decrypt     18.12     4.36     3.17     3.06  390 Mbytes/second
+cbc encrypt     20.68     5.70     4.39     4.27  280 Mbytes/second
+cbc decrypt     21.87     5.75     4.34     4.21  285 Mbytes/second
+cfb encrypt     21.06     5.81     4.43     4.31  280 Mbytes/second
+cfb decrypt     21.37     5.72     4.36     4.24  285 Mbytes/second
+ofb encrypt     22.43     7.23     5.85     5.72  210 Mbytes/second
+ofb decrypt     22.43     7.34     5.86     5.73  210 Mbytes/second
+ctr encrypt     16.43     6.90     6.00     5.89  205 Mbytes/second
+ctr decrypt     16.43     6.90     6.00     5.89  205 Mbytes/second
+
+AES Timing (Cycles/Byte) with the VIA ACE Engine (unaligned assembler)
+Mode   Blocks:      1       10      100     1000    Peak Throughput
+ecb encrypt     11.87     2.89     1.91     1.83  660 Mbytes/second
+ecb decrypt     12.18     2.83     1.97     1.87  640 Mbytes/second
+cbc encrypt     14.87     4.13     3.11     3.01  400 Mbytes/second
+cbc decrypt     14.43     3.87     2.89     2.80  430 Mbytes/second
+cfb encrypt     14.75     4.12     3.10     3.01  400 Mbytes/second
+cfb decrypt     14.12     4.10     2.88     2.79  430 Mbytes/second
+ofb encrypt     15.25     5.36     4.37     4.27  280 Mbytes/second
+ofb decrypt     15.25     5.36     4.36     4.27  280 Mbytes/second
+ctr encrypt     13.31     4.79     4.01     3.94  305 Mbytes/second
+ctr decrypt     13.31     4.79     4.01     3.94  305 Mbytes/second
+
+    Brian Gladman, Worcester, UK
