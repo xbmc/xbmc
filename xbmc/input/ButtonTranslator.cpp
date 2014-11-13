@@ -950,20 +950,20 @@ bool CButtonTranslator::TranslateJoystickString(int window, const std::string& j
       return false;
   }
 
-  WindowMap wmap = it->second;
+  const WindowMap *wmap = &it->second;
 
   // try to get the action from the current window
-  action = GetActionCode(window, id, wmap, strAction, fullrange);
+  action = GetActionCode(window, id, *wmap, strAction, fullrange);
 
   // if it's invalid, try to get it from a fallback window or the global map
   if (action == 0)
   {
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
-      action = GetActionCode(fallbackWindow, id, wmap, strAction, fullrange);
+      action = GetActionCode(fallbackWindow, id, *wmap, strAction, fullrange);
     // still no valid action? use global map
     if (action == 0)
-      action = GetActionCode(-1, id, wmap, strAction, fullrange);
+      action = GetActionCode(-1, id, *wmap, strAction, fullrange);
   }
 
   return (action > 0);
