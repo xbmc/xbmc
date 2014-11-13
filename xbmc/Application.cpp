@@ -795,6 +795,9 @@ bool CApplication::Create()
     g_curlInterface.Load();
   g_curlInterface.global_init(CURL_GLOBAL_ALL);
 #endif
+  
+  CDirectory::Create("special://masterprofile/plexprofiles");
+  CDirectory::Create("special://plexprofile");
   /* END PLEX */
 
   CLog::Log(LOGINFO, "creating subdirectories");

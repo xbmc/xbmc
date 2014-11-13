@@ -14,15 +14,11 @@
 
 #include "XBMCTinyXML.h"
 
-#define PLEX_FILTER_MANAGER_XML_PATH "special://profile/plexfiltermanager.xml"
+#define PLEX_FILTER_MANAGER_XML_PATH "special://plexprofile/plexfiltermanager.xml"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexFilterManager::getFilterXMLPath()
 {
-  std::string userName = boost::lexical_cast<std::string>(g_plexApplication.myPlexManager->GetCurrentUserInfo().id);
-  if (!userName.empty())
-    return "special://profile/plexfiltermanager_" + userName + ".xml";
-
   return PLEX_FILTER_MANAGER_XML_PATH;
 }
 
