@@ -577,9 +577,9 @@ void CWIN32Util::ExtendDllPath()
     strEnv.append(";" + CSpecialProtocol::TranslatePath(vecEnv[i]));
 
   if (CEnvironment::setenv("PATH", strEnv) == 0)
-    CLog::Log(LOGDEBUG,"Setting system env PATH to %S",strEnv.c_str());
+    CLog::Log(LOGDEBUG,"Setting system env PATH to %s",strEnv.c_str());
   else
-    CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnv.c_str());
+    CLog::Log(LOGDEBUG,"Can't set system env PATH to %s",strEnv.c_str());
 
 }
 

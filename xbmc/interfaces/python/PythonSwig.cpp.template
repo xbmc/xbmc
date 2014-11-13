@@ -250,7 +250,7 @@ void doMethod(Node method, MethodType methodType)
     }
 <%
     if (!destructor) { %>
-    PyObject* result;
+    PyObject* result = Py_None;
 
     // transform the result
 <%

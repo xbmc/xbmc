@@ -109,8 +109,16 @@ CDVDOverlaySpu* CDVDDemuxSPU::AddData(uint8_t* data, int iSize, double pts)
 
   // allocate data if not already done ( done in blocks off 16384 bytes )
   // or allocate some more if 16384 bytes is not enough
-  if((pSPUData->iSize + iSize) > pSPUData->iAllocatedSize)
-    pSPUData->data = (uint8_t*)realloc(pSPUData->data, ALIGN(pSPUData->iSize + iSize, 0x4000));
+  if ((pSPUData->iSize + iSize) > pSPUData->iAllocatedSize)
+  {
+    uint8_t* tmpptr = (uint8_t*)realloc(pSPUData->data, ALIGN(pSPUData->iSize + iSize, 0x4000));
+    if (!tmpptr)
+    {
+      free(pSPUData->data);
+      return NULL;
+    }
+    pSPUData->data = tmpptr;
+  }
 
   if(!pSPUData->data)
     return NULL; // crap realloc failed, this will have leaked some memory due to odd realloc

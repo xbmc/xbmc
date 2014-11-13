@@ -21,6 +21,7 @@
 #include "ZipFile.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
+#include "utils/auto_buffer.h"
 
 #include <sys/stat.h>
 
@@ -167,7 +168,8 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
   // here goes the stupid part..
   if (mZipItem.method == 8)
   {
-    char temp[131072];
+    static const int blockSize = 128 * 1024;
+    XUTILS::auto_buffer buf(blockSize);
     switch (iWhence)
     {
     case SEEK_SET:
@@ -190,8 +192,8 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
         m_ZStream.total_out = 0;
         while (m_iFilePos < iFilePosition)
         {
-          unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
-          if (Read(temp,iToRead) != iToRead)
+          unsigned int iToRead = (iFilePosition - m_iFilePos)>blockSize ? blockSize : (int)(iFilePosition - m_iFilePos);
+          if (Read(buf.get(),iToRead) != iToRead)
             return -1;
         }
         return m_iFilePos;
@@ -209,8 +211,8 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
       iFilePosition += m_iFilePos;
       while (m_iFilePos < iFilePosition)
       {
-        unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
-        if (Read(temp,iToRead) != iToRead)
+        unsigned int iToRead = (iFilePosition - m_iFilePos)>blockSize ? blockSize : (int)(iFilePosition - m_iFilePos);
+        if (Read(buf.get(), iToRead) != iToRead)
           return -1;
       }
       return m_iFilePos;
@@ -222,8 +224,8 @@ int64_t CZipFile::Seek(int64_t iFilePosition, int iWhence)
 
       while( (int)m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        unsigned int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
-        if (Read(temp,iToRead) != iToRead)
+        unsigned int iToRead = (mZipItem.usize + iFilePosition - m_ZStream.total_out > blockSize) ? blockSize : (int)(mZipItem.usize + iFilePosition - m_ZStream.total_out);
+        if (Read(buf.get(), iToRead) != iToRead)
           return -1;
       }
       return m_iFilePos;

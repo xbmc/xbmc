@@ -317,7 +317,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
   StringUtils::TrimLeft(numberTime);
   while (!numberTime.empty())
   {
-    if (!isdigit(numberTime[0]))
+    if (!StringUtils::isasciidigit(numberTime[0]))
       break;
     numberTime.erase(0, 1);
   }
@@ -342,7 +342,7 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 {
   CStdString number(info);
   StringUtils::TrimLeft(number);
-  if (number.empty() || !isdigit(number[0]))
+  if (number.empty() || !StringUtils::isasciidigit(number[0]))
     return -1;
   return atoi(number.c_str());
 }

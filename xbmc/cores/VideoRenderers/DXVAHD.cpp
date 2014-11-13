@@ -331,10 +331,9 @@ bool CProcessorHD::CreateSurfaces()
 
 bool CProcessorHD::ApplyFilter(DXVAHD_FILTER filter, int value, int min, int max, int def)
 {
-  if (filter > NUM_FILTERS)
-  {
+  if (filter >= NUM_FILTERS)
     return false;
-  }
+
   // Unsupported filter. Ignore.
   if (!m_Filters[filter].bSupported)
   {
