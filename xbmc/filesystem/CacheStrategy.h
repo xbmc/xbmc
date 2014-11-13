@@ -102,10 +102,10 @@ protected:
   volatile int64_t m_nReadPosition;
 };
 
-class CSimpleDoubleCache : public CCacheStrategy{
+class CDoubleCache : public CCacheStrategy{
 public:
-  CSimpleDoubleCache(CCacheStrategy *impl);
-  virtual ~CSimpleDoubleCache();
+  CDoubleCache(CCacheStrategy *impl);
+  virtual ~CDoubleCache();
 
   virtual int Open() ;
   virtual void Close() ;

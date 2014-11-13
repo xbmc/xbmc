@@ -272,25 +272,25 @@ CCacheStrategy *CSimpleFileCache::CreateNew()
 }
 
 
-CSimpleDoubleCache::CSimpleDoubleCache(CCacheStrategy *impl)
+CDoubleCache::CDoubleCache(CCacheStrategy *impl)
 {
   assert(NULL != impl);
   m_pCache = impl;
   m_pCacheOld = NULL;
 }
 
-CSimpleDoubleCache::~CSimpleDoubleCache()
+CDoubleCache::~CDoubleCache()
 {
   delete m_pCache;
   delete m_pCacheOld;
 }
 
-int CSimpleDoubleCache::Open()
+int CDoubleCache::Open()
 {
   return m_pCache->Open();
 }
 
-void CSimpleDoubleCache::Close()
+void CDoubleCache::Close()
 {
   m_pCache->Close();
   if (m_pCacheOld)
@@ -300,27 +300,27 @@ void CSimpleDoubleCache::Close()
   }
 }
 
-int CSimpleDoubleCache::WriteToCache(const char *pBuffer, size_t iSize)
+int CDoubleCache::WriteToCache(const char *pBuffer, size_t iSize)
 {
   return m_pCache->WriteToCache(pBuffer, iSize);
 }
 
-int CSimpleDoubleCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
+int CDoubleCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   return m_pCache->ReadFromCache(pBuffer, iMaxSize);
 }
 
-int64_t CSimpleDoubleCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
+int64_t CDoubleCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 {
   return m_pCache->WaitForData(iMinAvail, iMillis);
 }
 
-int64_t CSimpleDoubleCache::Seek(int64_t iFilePosition)
+int64_t CDoubleCache::Seek(int64_t iFilePosition)
 {
   return m_pCache->Seek(iFilePosition);
 }
 
-void CSimpleDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
+void CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
 {
   if (!clearAnyway && m_pCache->IsCachedPosition(iSourcePosition)
       && (!m_pCacheOld || !m_pCacheOld->IsCachedPosition(iSourcePosition)
@@ -349,27 +349,27 @@ void CSimpleDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
   m_pCache = tmp;
 }
 
-void CSimpleDoubleCache::EndOfInput()
+void CDoubleCache::EndOfInput()
 {
   m_pCache->EndOfInput();
 }
 
-bool CSimpleDoubleCache::IsEndOfInput()
+bool CDoubleCache::IsEndOfInput()
 {
   return m_pCache->IsEndOfInput();
 }
 
-void CSimpleDoubleCache::ClearEndOfInput()
+void CDoubleCache::ClearEndOfInput()
 {
   m_pCache->ClearEndOfInput();
 }
 
-int64_t CSimpleDoubleCache::CachedDataEndPos()
+int64_t CDoubleCache::CachedDataEndPos()
 {
   return m_pCache->CachedDataEndPos();
 }
 
-int64_t CSimpleDoubleCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
+int64_t CDoubleCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 {
   int64_t ret = m_pCache->CachedDataEndPosIfSeekTo(iFilePosition);
   if (m_pCacheOld)
@@ -377,13 +377,13 @@ int64_t CSimpleDoubleCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
   return ret;
 }
 
-bool CSimpleDoubleCache::IsCachedPosition(int64_t iFilePosition)
+bool CDoubleCache::IsCachedPosition(int64_t iFilePosition)
 {
   return m_pCache->IsCachedPosition(iFilePosition) || (m_pCacheOld && m_pCacheOld->IsCachedPosition(iFilePosition));
 }
 
-CCacheStrategy *CSimpleDoubleCache::CreateNew()
+CCacheStrategy *CDoubleCache::CreateNew()
 {
-  return new CSimpleDoubleCache(m_pCache->CreateNew());
+  return new CDoubleCache(m_pCache->CreateNew());
 }
 

@@ -100,7 +100,7 @@ CFileCache::CFileCache(bool useDoubleCache) : CThread("FileCache")
    }
    if (useDoubleCache)
    {
-     m_pCache = new CSimpleDoubleCache(m_pCache);
+     m_pCache = new CDoubleCache(m_pCache);
    }
    m_seekPossible = 0;
    m_cacheFull = false;
