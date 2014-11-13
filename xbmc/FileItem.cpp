@@ -64,6 +64,8 @@
 #include "filesystem/DirectoryCache.h"
 #include "FileSystem/PlexFile.h"
 #include <boost/foreach.hpp>
+#include "Client/PlexServerManager.h"
+#include "Client/PlexConnection.h"
 /* END PLEX */
 
 using namespace std;
@@ -3414,20 +3416,16 @@ bool CFileItem::IsPlexMediaServer() const
 
 bool CFileItem::IsRemoteSharedPlexMediaServerLibrary() const
 {
-  if (IsRemotePlexMediaServerLibrary() &&                                              // It's a remote PMS
-      g_guiSettings.GetString("myplex.token").empty() == false &&                      // We're logged into myPlex
-      m_strPath.find(g_guiSettings.GetString("myplex.token")) == string::npos)  // Our token isn't there
-  {
-    return true;
-  }
-
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(*this);
+  if (server && IsRemotePlexMediaServerLibrary())
+    return !server->GetOwned();
   return false;
 }
 
 bool CFileItem::IsRemotePlexMediaServerLibrary() const
 {
-  if (m_strPath.find("library/") != string::npos &&
-      m_strPath.find("X-Plex-Token") != string::npos)
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(*this);
+  if (server && !server->GetActiveConnection()->IsLocal() && IsPlexMediaServerLibrary())
       return true;
 
   return false;

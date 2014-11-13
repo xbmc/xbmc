@@ -287,7 +287,6 @@ void CGUISettings::Initialize()
 
   // System/myPlex
   CSettingsCategory* myPlex = AddCategory(SETTINGS_SYSTEM, "myPlex", 10);
-  AddString(0, "myplex.token", 99999, "", EDIT_CONTROL_INPUT);
   AddString(0, "myplex.uid", 99999, "", EDIT_CONTROL_INPUT);
   AddString(myPlex, "myplex.status", 15000, "", EDIT_CONTROL_INPUT, true);
   bool isSignedIn = false;
