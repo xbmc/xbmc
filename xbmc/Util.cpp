@@ -217,21 +217,21 @@ void CUtil::CleanString(const std::string& strFileName,
   const std::vector<std::string> dateTimeRegExps = g_advancedSettings.m_videoCleanDateTimeRegExps;
 
   CRegExp reTags(true, CRegExp::autoUtf8);
-  CRegExp reYear(false, CRegExp::autoUtf8);
+  CRegExp reTitleAndYear(false, CRegExp::autoUtf8);
 
   for (unsigned int i = 0; i < dateTimeRegExps.size(); i++)
   {
-    if (!reYear.RegComp(dateTimeRegExps[i].c_str()))
+    if (!reTitleAndYear.RegComp(dateTimeRegExps[i].c_str()))
     {
       CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, dateTimeRegExps[i].c_str());
       continue;
     }
 
-    if (reYear.RegFind(strTitleAndYear.c_str()) < 0)
+    if (reTitleAndYear.RegFind(strTitleAndYear.c_str()) < 0)
       continue;
 
-    strReTitle = reYear.GetMatch("title");
-    strReYear = reYear.GetMatch("year");
+    strReTitle = reTitleAndYear.GetMatch("title");
+    strReYear = reTitleAndYear.GetMatch("year");
     if (!strReTitle.empty() && !strReYear.empty())
     {
       // regex contains named groups, use them
@@ -241,8 +241,8 @@ void CUtil::CleanString(const std::string& strFileName,
     }
     else
     {
-      strTitleAndYear = reYear.GetMatch(1);
-      strYear = reYear.GetMatch(2);
+      strTitleAndYear = reTitleAndYear.GetMatch(1);
+      strYear = reTitleAndYear.GetMatch(2);
     }
     break;
   }
