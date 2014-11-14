@@ -264,7 +264,7 @@ bool CEpgInfoTag::Changed(void) const
   return m_bChanged;
 }
 
-CDateTime CEpgInfoTag::GetCurrentTime() const
+CDateTime CEpgInfoTag::GetCurrentPlayingTime() const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
 
@@ -284,21 +284,21 @@ CDateTime CEpgInfoTag::GetCurrentTime() const
 
 bool CEpgInfoTag::IsActive(void) const
 {
-  CDateTime now = GetCurrentTime();
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_startTime <= now && m_endTime > now);
 }
 
 bool CEpgInfoTag::WasActive(void) const
 {
-  CDateTime now = GetCurrentTime();
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_endTime < now);
 }
 
 bool CEpgInfoTag::InTheFuture(void) const
 {
-  CDateTime now = GetCurrentTime();
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_startTime > now);
 }
