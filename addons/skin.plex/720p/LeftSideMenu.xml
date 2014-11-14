@@ -355,6 +355,7 @@
 						<label>Switch User</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
+						<visible>System.IsSignedIn + System.UserIsInHome</visible>
 					</item>
 					<item id="12">
 						<description>Channel Directory</description>
