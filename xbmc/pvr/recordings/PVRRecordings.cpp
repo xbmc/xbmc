@@ -117,9 +117,10 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
     else
       strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
+    current->UpdateMetadata();
+    
     if (!results->Contains(strFilePath))
     {
-      current->UpdateMetadata();
       CFileItemPtr pFileItem;
       pFileItem.reset(new CFileItem(strCurrent, true));
       pFileItem->SetPath(strFilePath);
