@@ -72,7 +72,9 @@
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
 #include "CompileInfo.h"
-
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif // defined(HAS_LIBAMCODEC)
 #define GIGABYTES       1073741824
 
 using namespace std;
@@ -313,7 +315,16 @@ void CXBMCApp::XBMC_Pause(bool pause)
   android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
   // Only send the PAUSE action if we are pausing XBMC and video is currently playing
   if (pause && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+  {
+    #ifdef HAS_LIBAMCODEC
+    if (aml_present())
+    {
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_INVALID, true);
+      return;
+    }
+    #endif
     CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
+  }
 }
 
 void CXBMCApp::XBMC_Stop()
