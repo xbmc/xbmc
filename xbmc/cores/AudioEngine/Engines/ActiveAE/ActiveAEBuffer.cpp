@@ -47,6 +47,7 @@ CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
   refCount = 0;
   timestamp = 0;
   clockId = -1;
+  pkt_start_offset = 0;
 }
 
 CSampleBuffer::~CSampleBuffer()

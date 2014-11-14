@@ -52,7 +52,7 @@ CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
 }
 
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
-  : CAddon(ext), m_version("")
+  : CAddon(ext), m_version(""), m_effectsSlowDown(1.f)
 {
   ELEMENTS elements;
   if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))

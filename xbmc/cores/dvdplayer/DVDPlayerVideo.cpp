@@ -735,8 +735,6 @@ void CDVDPlayerVideo::Process()
             }
             else
               iDropped = 0;
-
-            bRequestDrop = (iResult & EOS_VERYLATE) == EOS_VERYLATE;
           }
           else
           {
@@ -744,19 +742,6 @@ void CDVDPlayerVideo::Process()
             m_pVideoCodec->Reset();
           }
         }
-
-        /*
-        if (iDecoderState & VC_USERDATA)
-        {
-          // found some userdata while decoding a frame
-          // could be closed captioning
-          DVDVideoUserData videoUserData;
-          if (m_pVideoCodec->GetUserData(&videoUserData))
-          {
-            ProcessVideoUserData(&videoUserData, pts);
-          }
-        }
-        */
 
         // if the decoder needs more data, we just break this loop
         // and try to get more data from the videoQueue

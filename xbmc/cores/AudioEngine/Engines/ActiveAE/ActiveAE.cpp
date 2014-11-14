@@ -2511,7 +2511,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   if(io_ctx->max_packet_size)
     io_ctx->max_packet_size *= SOUNDBUFFER_SIZE / io_ctx->max_packet_size;
 
-  if(!sound->IsSeekPosible())
+  if(!sound->IsSeekPossible())
     io_ctx->seekable = 0;
 
   fmt_ctx->pb = io_ctx;
