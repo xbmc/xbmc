@@ -202,6 +202,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 
 #if defined(TARGET_DARWIN)
   FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
+  Sleep(100);
   if (pipe)
   {
     std::string tmpStr;
