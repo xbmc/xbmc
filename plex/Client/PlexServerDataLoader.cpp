@@ -340,7 +340,7 @@ void CPlexServerDataLoader::OnTimeout()
     if (!p.second)
       continue;
 
-    if (p.second->GetUUID() != "myplex")
+    if ((p.second->GetUUID() != "myplex") || (m_forceRefresh))
     {
       if (m_forceRefresh ||
           (p.second->GetLastRefreshed() == 0 ||
