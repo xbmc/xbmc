@@ -27,7 +27,7 @@ class CMyPlexUserInfo
       ROLE_USER = 16
     };
 
-    CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false), pinProtected(false) {}
+    CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false), pinProtected(false), home(false) {}
 
     bool SetFromXmlElement(TiXmlElement* root);
 
@@ -41,7 +41,8 @@ class CMyPlexUserInfo
     std::string thumb;
 
     bool subscription;
-    bool pinProtected;  
+    bool pinProtected;
+    bool home;
     std::string subscriptionStatus;
     std::string subscriptionPlan;
     std::vector<std::string> features;
@@ -72,6 +73,8 @@ class CMyPlexUserInfo
       joinedAt = other.joinedAt;
       roles = other.roles;
       restricted = other.restricted;
+      home = other.home;
+      pinProtected = other.pinProtected;
     }
 };
 

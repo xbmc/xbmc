@@ -34,6 +34,7 @@ bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
   root->QueryStringAttribute("cloudsyncdevice", &cloudSyncDevice);
   root->QueryBoolAttribute("restricted", &restricted);
   root->QueryBoolAttribute("protected", &pinProtected);
+  root->QueryBoolAttribute("home", &home);
 
   for (TiXmlElement* element = root->FirstChildElement(); element; element = element->NextSiblingElement())
   {

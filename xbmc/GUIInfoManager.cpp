@@ -261,6 +261,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "selectedplexmediaserver", SYSTEM_SELECTED_PLEX_MEDIA_SERVER },
                                   { "updateisavailable", SYSTEM_UPDATE_IS_AVAILABLE },
                                   { "userisrestricted", SYSTEM_USER_ISRESTRICTED },
+                                  { "issignedin",       SYSTEM_IS_SIGNED_IN },
+                                  { "userisinhome",     SYSTEM_USER_IS_IN_HOME },
                                   { "noplexservers",    SYSTEM_NO_PLEX_SERVERS },
                                   { "currentuser",      SYSTEM_CURRENT_USER },
                                   { "currentuserthumb", SYSTEM_CURRENT_USER_THUMB },
@@ -2511,6 +2513,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = false;
     if (g_plexApplication.myPlexManager && g_plexApplication.myPlexManager->IsSignedIn())
       bReturn = g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted;
+  }
+  else if (condition == SYSTEM_IS_SIGNED_IN)
+  {
+    bReturn = false;
+    if (g_plexApplication.myPlexManager)
+      bReturn = g_plexApplication.myPlexManager->IsSignedIn();
+  }
+  else if (condition == SYSTEM_USER_IS_IN_HOME)
+  {
+    bReturn = false;
+    if (g_plexApplication.myPlexManager)
+      bReturn = g_plexApplication.myPlexManager->GetCurrentUserInfo().home;
   }
   /* END PLEX */
   else if (g_application.IsPlaying())
