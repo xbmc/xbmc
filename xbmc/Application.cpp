@@ -1563,12 +1563,45 @@ bool CApplication::Initialize()
     if (g_advancedSettings.m_splashImage)
       SAFE_DELETE(m_splash);
 
+#ifndef __PLEX__
     if (g_guiSettings.GetBool("masterlock.startuplock") &&
         g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
        !g_settings.GetMasterProfile().getLockCode().IsEmpty())
     {
        g_passwordManager.CheckStartUpLock();
     }
+#else
+    if (g_plexApplication.myPlexManager->IsPinProtected())
+    {
+      int retries = 5;
+      while (retries != 0 && g_plexApplication.myPlexManager->IsPinProtected())
+      {
+        CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+        if (diag)
+        {
+          diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, "");
+          diag->SetHeading("Enter PIN");
+          diag->DoModal();
+          
+          if (!diag->IsAutoClosed() || (diag->IsConfirmed() || !diag->IsCanceled()))
+          {
+            std::string pin;
+            diag->GetOutput(&pin);
+            if (!g_plexApplication.myPlexManager->IsPinProtected() || g_plexApplication.myPlexManager->VerifyPin(pin))
+              break;
+          }
+        }
+        
+        retries --;
+      }
+      
+      if (retries == 0)
+      {
+        CGUIDialogOK::ShowAndGetInput("Failed to enter PIN", "Plex Home Theater will now close", "Restart to retry", "");
+        Stop(1);
+      }
+    }
+#endif
 
     // check if we should use the login screen
     if (g_settings.UsingLoginScreen())
