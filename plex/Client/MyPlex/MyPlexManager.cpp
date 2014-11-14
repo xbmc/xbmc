@@ -37,6 +37,7 @@
 #define FAILURE_TMOUT 3600
 #define SUCCESS_TMOUT 30 * 60
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CMyPlexManager::CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1), m_havePlexServers(false)
 {
   if (!g_guiSettings.GetString("myplex.uid").IsEmpty())
@@ -57,8 +58,84 @@ CMyPlexManager::CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRE
   }
 }
 
-void
-CMyPlexManager::Process()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string CMyPlexManager::HashPin(const std::string& pin)
+{
+  SHA256 sha;
+  sha.add(pin.c_str(), pin.length());
+  std::string token = GetAuthToken();
+  sha.add(token.c_str(), token.length());
+  return sha.getHash();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CMyPlexManager::CachePin(const std::string& pin)
+{
+  std::string hash = HashPin(pin);
+  
+  XFILE::CFile pinCache;
+  if (pinCache.OpenForWrite("special://plexprofile/pcache.txt"))
+  {
+    pinCache.Write(hash.c_str(), hash.length());
+    pinCache.Close();
+  }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CMyPlexManager::VerifyPin(const std::string& pin)
+{
+  if (!m_currentUserInfo.pinProtected)
+    return true;
+  
+  if (IsSignedIn())
+  {
+    // this just checks if we have a connection to plex.tv
+    // we always want to try to make a connection there first
+    //
+    std::string id = boost::lexical_cast<std::string>(m_currentUserInfo.id);
+    CURL url = m_myplex->BuildPlexURL("api/home/users/" + id + "/switch");
+    url.SetOption("pin", pin);
+    
+    XFILE::CPlexFile plex;
+    CStdString data;
+    bool verify = plex.Post(url.Get(), "", data);
+    
+    // if we successfully auth we need to cache the PIN
+    // if we go offline later it will be useful.
+    //
+    if (verify && m_currentUserInfo.pinProtected)
+      CachePin(pin);
+    
+    return verify;
+  }
+  else if (XFILE::CFile::Exists("special://plexprofile/pcache.txt"))
+  {
+    // if we don't have a connection but we have a cached PIN number,
+    // let's try to use that as our verification instead
+    //
+    std::string hashedPin;
+    XFILE::CFile pcache;
+    if (pcache.Open("special://plexprofile/pcache.txt"))
+    {
+      char buffer[1024];
+      if (pcache.ReadString(buffer, 1024))
+        hashedPin = std::string(buffer);
+      
+      return hashedPin == HashPin(pin);
+    }
+  }
+  else
+  {
+    // if we don't have access to plex.tv,
+    // don't have a cached pin we can't really
+    // do a PIN check, so here we default to
+    // just allowing the user through.
+    //
+    return true;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CMyPlexManager::Process()
 {
   m_secToSleep = SUCCESS_TMOUT;
   m_myplex = g_plexApplication.serverManager->FindByUUID("myplex");
@@ -199,7 +276,6 @@ int CMyPlexManager::DoLogin()
   {
     std::string id = boost::lexical_cast<std::string>(m_homeId);
     url = m_myplex->BuildPlexURL("api/home/users/" + id + "/switch");
-    url.SetOption("id", id);
 
     if (!m_homePin.empty())
       url.SetOption("pin", m_homePin);
@@ -358,14 +434,12 @@ int CMyPlexManager::DoRefreshUserInfo()
   // if we logged in with a PIN we need to cache it.
   if (!m_homePin.empty() && m_currentUserInfo.pinProtected)
   {
-    SHA256 hash;
-    hash.add(m_homePin.c_str(), m_homePin.length());
-    hash.add(m_currentUserInfo.authToken.c_str(), m_currentUserInfo.authToken.length());
+    std::string hash = HashPin(m_homePin);
     
     XFILE::CFile pinCache;
     if (pinCache.OpenForWrite("special://plexprofile/pcache.txt"))
     {
-      pinCache.Write(hash.getHash().c_str(), hash.getHash().length());
+      pinCache.Write(hash.c_str(), hash.length());
       pinCache.Close();
     }
   }

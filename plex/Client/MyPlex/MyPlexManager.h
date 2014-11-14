@@ -37,6 +37,8 @@ class CMyPlexManager : public CThread
     CMyPlexManager();
 
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
+    bool IsPinProtected() const { return m_currentUserInfo.pinProtected; }
+    bool VerifyPin(const std::string& pin);
 
     void StartPinLogin();
     void StopPinLogin();
@@ -58,6 +60,8 @@ class CMyPlexManager : public CThread
     virtual void Process();
 
   private:
+    std::string HashPin(const std::string& pin);
+    void CachePin(const std::string& pin);
     int DoLogin();
     int DoFetchPin();
     int DoFetchWaitPin();
