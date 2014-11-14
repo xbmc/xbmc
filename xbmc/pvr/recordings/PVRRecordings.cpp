@@ -103,6 +103,7 @@ bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const st
 void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList *results)
 {
   std::string strUseBase = TrimSlashes(strBase);
+  std::set<CFileItemPtr> unwatchedFolders;
 
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
@@ -117,31 +118,35 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
     else
       strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
+    CFileItemPtr pFileItem;
     current->UpdateMetadata();
     
     if (!results->Contains(strFilePath))
     {
-      CFileItemPtr pFileItem;
       pFileItem.reset(new CFileItem(strCurrent, true));
       pFileItem->SetPath(strFilePath);
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
 
-      // Initialize folder overlay from play count (either directly from client or from video database)
-      if (current->m_playCount > 0)
-        pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
-
+      // Assume all folders are watched, we'll change the overlay later
+      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
       results->Add(pFileItem);
     }
     else
     {
-      CFileItemPtr pFileItem;
       pFileItem=results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
     }
+
+    if (current->m_playCount == 0)
+      unwatchedFolders.insert(pFileItem);
   }
+
+  // Remove the watched overlay from folders containing unwatched entries
+  for (std::set<CFileItemPtr>::iterator it = unwatchedFolders.begin(); it != unwatchedFolders.end(); ++it)
+    (*it)->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, true);
 }
 
 int CPVRRecordings::Load(void)
