@@ -499,6 +499,11 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       demuxer->GetStreamCodecName(stream->iId, codec);
       s.codec    = codec;
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
+      if(stream->type == STREAM_VIDEO)
+      {
+        s.width = ((CDemuxStreamVideo*)stream)->iWidth;
+        s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+      }
       if(stream->type == STREAM_AUDIO)
       {
         std::string type;
@@ -1502,6 +1507,13 @@ void CVideoPlayer::Process()
 
     // check if in a cut or commercial break that should be automatically skipped
     CheckAutoSceneSkip();
+
+    // update the player info for streams
+    if (m_player_status_timer.IsTimePast())
+    {
+      m_player_status_timer.Set(500);
+      UpdateStreamInfos();
+    }
   }
 }
 
@@ -3113,8 +3125,38 @@ int CVideoPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
+void CVideoPlayer::UpdateStreamInfos()
+{
+  CSingleLock lock(m_SelectionStreams.m_section);
+  int streamId;
+  std::string retVal;
+
+  // video
+  {
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
+    s.bitrate = m_VideoPlayerVideo->GetVideoBitrate();
+    s.aspect_ratio = m_renderManager.GetAspectRatio();
+    CRect viewRect;
+    m_renderManager.GetVideoRect(s.SrcRect, s.DestRect, viewRect);
+    s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
+    if (s.stereo_mode == "mono")
+      s.stereo_mode = "";
+  }
+
+  // audio
+  streamId = GetAudioStream();
+
+  if (streamId >= 0 && streamId < GetAudioStreamCount())
+  {
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, streamId);
+    s.bitrate = m_VideoPlayerAudio->GetAudioBitrate();
+    s.channels = m_VideoPlayerAudio->GetAudioChannels();
+  }
+}
+
 void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
+  CSingleLock lock(m_SelectionStreams.m_section);
   if (index < 0 || index > (int) GetSubtitleCount() - 1)
     return;
 
@@ -4301,26 +4343,23 @@ double CVideoPlayer::GetQueueTime()
 
 void CVideoPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
-  info.bitrate = m_VideoPlayerVideo->GetVideoBitrate();
+  CSingleLock lock(m_SelectionStreams.m_section);
 
-  std::string retVal;
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-  {
-    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
-    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
-    if (stream)
-    {
-      info.width  = stream->iWidth;
-      info.height = stream->iHeight;
-    }
-  }
-  info.videoCodecName = retVal;
-  info.videoAspectRatio = m_renderManager.GetAspectRatio();
-  CRect viewRect;
-  m_renderManager.GetVideoRect(info.SrcRect, info.DestRect, viewRect);
-  info.stereoMode = m_VideoPlayerVideo->GetStereoMode();
-  if (info.stereoMode == "mono")
-    info.stereoMode = "";
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
+  if (s.language.length() > 0)
+    info.language = s.language;
+
+  if (s.name.length() > 0)
+    info.name = s.name;
+
+  info.bitrate = s.bitrate;
+  info.width = s.width;
+  info.height = s.height;
+  info.SrcRect = s.SrcRect;
+  info.DestRect = s.DestRect;
+  info.videoCodecName = s.codec;
+  info.videoAspectRatio = s.aspect_ratio;
+  info.stereoMode = s.stereo_mode;
 }
 
 int CVideoPlayer::GetSourceBitrate()
@@ -4333,26 +4372,12 @@ int CVideoPlayer::GetSourceBitrate()
 
 void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
+  CSingleLock lock(m_SelectionStreams.m_section);
   if (index == CURRENT_STREAM)
     index = GetAudioStream();
 
   if (index < 0 || index > GetAudioStreamCount() - 1 )
     return;
-
-  if (index == GetAudioStream())
-  {
-    info.bitrate = m_VideoPlayerAudio->GetAudioBitrate();
-    info.channels = m_VideoPlayerAudio->GetAudioChannels();
-  }
-  else if (m_pDemuxer)
-  {
-    CDemuxStreamAudio* stream = m_pDemuxer->GetStreamFromAudioId(index);
-    if (stream)
-    {
-      info.bitrate = stream->iBitRate;
-      info.channels = stream->iChannels;
-    }
-  }
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
   if(s.language.length() > 0)
@@ -4364,16 +4389,9 @@ void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   if(s.type == STREAM_NONE)
     info.name += " (Invalid)";
 
-  if (m_pDemuxer)
-  {
-    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
-    if (stream)
-    {
-      std::string codecName;
-      m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
-      info.audioCodecName = codecName;
-    }
-  }
+  info.bitrate = s.bitrate;
+  info.channels = s.channels;
+  info.audioCodecName = s.codec;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
