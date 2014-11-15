@@ -75,6 +75,7 @@ struct SOmxPlayerState
 {
   OMXClock av_clock;              // openmax clock component
   EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
+  EINTERLACEMETHOD interlace_method; // current deinterlace method
   bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
   bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
   bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
