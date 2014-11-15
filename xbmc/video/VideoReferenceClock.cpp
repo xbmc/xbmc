@@ -98,7 +98,8 @@ void CVideoReferenceClock::Process()
 #if defined(HAVE_X11)
   std::string gpuvendor = g_Windowing.GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if (gpuvendor.compare(0, 5, "intel") == 0)
+  if ((gpuvendor.compare(0, 5, "intel") == 0 ||
+       gpuvendor.compare(0, 5, "x.org") == 0)) // AMD
     m_pVideoSync = new CVideoSyncDRM();
 #if defined(HAS_GLX)
   else
