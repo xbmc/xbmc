@@ -2364,7 +2364,24 @@ void CDVDPlayer::HandleMessages()
         }
 
         // do a seek after rewind, clock is not in sync with current pts
-        if (m_playSpeed < 0 && speed >= 0)
+        if (m_omxplayer_mode)
+        {
+          // when switching from trickplay to normal, we may not have a full set of reference frames
+          // in decoder and we may get corrupt frames out. Seeking to current time will avoid this.
+          if ( (speed != DVD_PLAYSPEED_PAUSE && speed != DVD_PLAYSPEED_NORMAL) ||
+               (m_playSpeed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_NORMAL) )
+          {
+            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), (speed < 0), true, true, false, true));
+          }
+          else
+          {
+            m_OmxPlayerState.av_clock.OMXPause();
+          }
+
+          m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
+          CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CDVDPlayer", __FUNCTION__, speed, m_playSpeed);
+        }
+        else if (m_playSpeed < 0 && speed >= 0)
         {
           int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, true, true, false, false, true));
@@ -2389,23 +2406,6 @@ void CDVDPlayer::HandleMessages()
           m_DemuxerPausePending = (speed == DVD_PLAYSPEED_PAUSE);
           if (!m_DemuxerPausePending)
             m_pDemuxer->SetSpeed(speed);
-        }
-
-        if (m_omxplayer_mode)
-        {
-          int old_speed = m_playSpeed;
-          // when switching from trickplay to normal, we may not have a full set of reference frames
-          // in decoder and we may get corrupt frames out. Seeking to current time will avoid this.
-          if ( (speed != DVD_PLAYSPEED_PAUSE && speed != DVD_PLAYSPEED_NORMAL) ||
-               (old_speed != DVD_PLAYSPEED_PAUSE && old_speed != DVD_PLAYSPEED_NORMAL) )
-          {
-            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), (speed < 0), true, true, false, true));
-          }
-          else
-            m_OmxPlayerState.av_clock.OMXPause();
-
-          m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
-          CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CDVDPlayer", __FUNCTION__, speed, old_speed);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
