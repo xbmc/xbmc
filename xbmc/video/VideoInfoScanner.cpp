@@ -47,6 +47,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoThumbLoader.h"
+#include "video/jobs/VideoLibraryCleaningJob.h"
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
 #include "URL.h"
@@ -248,9 +249,15 @@ namespace VIDEO
   void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /* = NULL */, const set<int>& paths /* = set<int> */, bool showProgress /* = true */)
   {
     m_bRunning = true;
-    m_database.Open();
-    m_database.CleanDatabase(handle, paths, showProgress);
-    m_database.Close();
+    CVideoLibraryCleaningJob* cleaningJob = NULL;
+    if (handle != NULL)
+      cleaningJob = new CVideoLibraryCleaningJob(paths, handle);
+    else
+      cleaningJob = new CVideoLibraryCleaningJob(paths, showProgress);
+
+    cleaningJob->DoWork();
+
+    delete cleaningJob;
     m_bRunning = false;
   }
 

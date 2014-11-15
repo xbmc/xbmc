@@ -1,5 +1,7 @@
-SRCS=VideoLibraryJob.cpp \
-     VideoLibraryMarkWatchedJob.cpp
+SRCS=VideoLibraryCleaningJob.cpp \
+     VideoLibraryJob.cpp \
+     VideoLibraryMarkWatchedJob.cpp \
+     VideoLibraryProgressJob.cpp \
      
 LIB=video-jobs.a
 
