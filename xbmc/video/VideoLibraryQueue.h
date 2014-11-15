@@ -22,6 +22,7 @@
 #include <map>
 #include <set>
 
+#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
 
@@ -33,6 +34,8 @@ public:
   ~CVideoLibraryQueue();
 
   static CVideoLibraryQueue& Get();
+
+  void MarkAsWatched(const CFileItemPtr &item, bool watched);
 
   void AddJob(CVideoLibraryJob *job);
   void CancelJob(CVideoLibraryJob *job);

@@ -50,7 +50,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
-#include "utils/MarkWatchedJob.h"
+#include "video/VideoLibraryQueue.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/Key.h"
@@ -1570,7 +1570,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
-      CMarkWatchedQueue::Get().AddJob(new CMarkWatchedJob(item, (button == CONTEXT_BUTTON_MARK_WATCHED)));
+      CVideoLibraryQueue::Get().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
       return true;
     }
   case CONTEXT_BUTTON_ADD_FAVOURITE:

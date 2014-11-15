@@ -19,26 +19,22 @@
  *
  */
 
-#include "Job.h"
-#include "utils/JobManager.h"
+#include "FileItem.h"
+#include "video/jobs/VideoLibraryJob.h"
 
-class CMarkWatchedJob : public CJob
+class CVideoLibraryMarkWatchedJob : public CVideoLibraryJob
 {
 public:
-  CMarkWatchedJob(const CFileItemPtr &item, bool bMark);
-private:
-  virtual ~CMarkWatchedJob();
-  virtual const char *GetType() const { return "markwatched"; }
+  CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark);
+  virtual ~CVideoLibraryMarkWatchedJob();
+
+  virtual const char *GetType() const { return "CVideoLibraryMarkWatchedJob"; }
   virtual bool operator==(const CJob* job) const;
-  virtual bool DoWork();
-  CFileItemPtr m_item;
-  bool m_bMark;
-};
 
-class CMarkWatchedQueue: public CJobQueue
-{
-public:
-  static CMarkWatchedQueue &Get();
+protected:
+  virtual bool Work(CVideoDatabase &db);
+
 private:
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  CFileItemPtr m_item;
+  bool m_mark;
 };

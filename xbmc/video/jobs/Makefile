@@ -1,4 +1,5 @@
-SRCS=VideoLibraryJob.cpp
+SRCS=VideoLibraryJob.cpp \
+     VideoLibraryMarkWatchedJob.cpp
      
 LIB=video-jobs.a
 

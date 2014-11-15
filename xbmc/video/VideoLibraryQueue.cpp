@@ -25,6 +25,7 @@
 #include "threads/SingleLock.h"
 #include "video/VideoDatabase.h"
 #include "video/jobs/VideoLibraryJob.h"
+#include "video/jobs/VideoLibraryMarkWatchedJob.h"
 
 using namespace std;
 
@@ -43,6 +44,14 @@ CVideoLibraryQueue& CVideoLibraryQueue::Get()
 {
   static CVideoLibraryQueue s_instance;
   return s_instance;
+}
+
+void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
+{
+  if (item == NULL)
+    return;
+
+  AddJob(new CVideoLibraryMarkWatchedJob(item, watched));
 }
 
 void CVideoLibraryQueue::AddJob(CVideoLibraryJob *job)
