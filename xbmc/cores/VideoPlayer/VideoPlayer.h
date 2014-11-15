@@ -173,13 +173,19 @@ typedef struct SelectionStream
   int          id = 0;
   std::string  codec;
   int          channels = 0;
+  int          bitrate = 0;
+  int          width = 0;
+  int          height = 0;
+  CRect        SrcRect;
+  CRect        DestRect;
+  std::string  stereo_mode;
+  float        aspect_ratio = 0.0f;
 } SelectionStream;
 
 typedef std::vector<SelectionStream> SelectionStreams;
 
 class CSelectionStreams
 {
-  CCriticalSection m_section;
   SelectionStream  m_invalid;
 public:
   CSelectionStreams()
@@ -189,6 +195,7 @@ public:
     m_invalid.type = STREAM_NONE;
   }
   std::vector<SelectionStream> m_Streams;
+  CCriticalSection m_section;
 
   int              IndexOf (StreamType type, int source, int id) const;
   int              IndexOf (StreamType type, CVideoPlayer& p) const;
@@ -284,6 +291,7 @@ public:
   virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
+  virtual void UpdateStreamInfos();
 
   virtual std::string GetPlayerState();
   virtual bool SetPlayerState(const std::string& state);
@@ -526,4 +534,6 @@ protected:
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
+
+  XbmcThreads::EndTime m_player_status_timer;
 };
