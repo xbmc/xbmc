@@ -51,6 +51,7 @@ public:
   double m_totalGain;
   double m_lastDecoderPts;
   double m_lastRenderPts;
+  double m_lastPts;
   unsigned int m_lateFrames;
   unsigned int m_dropRequests;
 };
