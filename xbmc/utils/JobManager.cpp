@@ -159,6 +159,10 @@ void CJobQueue::CancelJobs()
   m_processing.clear();
 }
 
+bool CJobQueue::IsProcessing() const
+{
+  return !m_processing.empty() || !m_jobQueue.empty();
+}
 
 bool CJobQueue::QueueEmpty() const
 {

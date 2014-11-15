@@ -121,6 +121,11 @@ public:
   void CancelJobs();
 
   /*!
+   \brief Check whether the queue is processing a job
+   */
+  bool IsProcessing() const;
+
+  /*!
    \brief The callback used when a job completes.
 
    OnJobComplete is called at the completion of the CJob::DoWork function, and is used
