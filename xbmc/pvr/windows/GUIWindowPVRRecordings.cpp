@@ -364,4 +364,6 @@ void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
     }
     m_thumbLoader.Load(files);
   }
+
+  CGUIWindowPVRBase::OnPrepareFileItems(items);
 }
