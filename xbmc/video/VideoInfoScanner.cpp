@@ -89,7 +89,8 @@ namespace VIDEO
       // check if we only need to perform a cleaning
       if (m_bClean && m_pathsToScan.empty())
       {
-        CleanDatabase(m_handle, NULL, false);
+        std::set<int> paths;
+        CleanDatabase(m_handle, paths, false);
 
         if (m_handle)
           m_handle->MarkFinished();
@@ -147,7 +148,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          CleanDatabase(m_handle,&m_pathsToClean, false);
+          CleanDatabase(m_handle, m_pathsToClean, false);
         else
         {
           if (m_handle)
@@ -244,7 +245,7 @@ namespace VIDEO
     StopThread(false);
   }
 
-  void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /*= NULL */, const set<int>* paths /*= NULL */, bool showProgress /*= true */)
+  void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /* = NULL */, const set<int>& paths /* = set<int> */, bool showProgress /* = true */)
   {
     m_bRunning = true;
     m_database.Open();

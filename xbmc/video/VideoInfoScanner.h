@@ -61,7 +61,7 @@ namespace VIDEO
     void Start(const std::string& strDirectory, bool scanAll = false);
     void StartCleanDatabase();
     bool IsScanning();
-    void CleanDatabase(CGUIDialogProgressBarHandle* handle=NULL, const std::set<int>* paths=NULL, bool showProgress=true);
+    void CleanDatabase(CGUIDialogProgressBarHandle* handle = NULL, const std::set<int>& paths = std::set<int>(), bool showProgress = true);
     void Stop();
 
     //! \brief Set whether or not to show a progress dialog

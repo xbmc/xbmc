@@ -4978,7 +4978,10 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
     return;
 
   if (userInitiated)
-    m_videoInfoScanner->CleanDatabase(NULL, NULL, true);
+  {
+    std::set<int> paths;
+    m_videoInfoScanner->CleanDatabase(NULL, paths, userInitiated);
+  }
   else
   {
     m_videoInfoScanner->ShowDialog(false);
