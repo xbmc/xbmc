@@ -63,7 +63,10 @@ extern "C"
   }
 }
 
-CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
+CDVDInputStreamRTMP::CDVDInputStreamRTMP()
+  : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
+  , m_canSeek(true)
+  , m_canPause(true)
 {
   if (m_libRTMP.Load())
   {
@@ -119,19 +122,6 @@ bool CDVDInputStreamRTMP::IsEOF()
 #undef AVC
 #define AVC(str)  {(char *)str,sizeof(str)-1}
 
-/* librtmp option names are slightly different */
-static const struct {
-  const char *name;
-  AVal key;
-} options[] = {
-  { "SWFPlayer", AVC("swfUrl") },
-  { "PageURL",   AVC("pageUrl") },
-  { "PlayPath",  AVC("playpath") },
-  { "TcUrl",     AVC("tcUrl") },
-  { "IsLive",    AVC("live") },
-  { NULL }
-};
-
 bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
   if (m_sStreamPlaying)
@@ -152,21 +142,23 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
   if (!m_libRTMP.SetupURL(m_rtmp, m_sStreamPlaying))
     return false;
 
-  // SetOpt and SetAVal copy pointers to the value. librtmp doesn't use the values until the Connect() call,
-  // so value objects must stay allocated until then. To be extra safe, keep the values around until Close(),
-  // in case librtmp needs them again.
-  m_optionvalues.clear();
-  for (int i=0; options[i].name; i++)
+  /* Look for protocol options in the URL.
+   * Options are added to the URL in space separated key=value pairs.
+   * We are only interested in the "live" option to disable seeking,
+   * the rest is handled by librtmp internally
+   *
+   * example URL suitable for use with RTMP_SetupURL():
+   * "rtmp://flashserver:1935/ondemand/thefile swfUrl=http://flashserver/player.swf swfVfy=1 live=1"
+   * details: https://rtmpdump.mplayerhq.hu/librtmp.3.html
+   */
+  std::string url = strFile;
+  size_t iPosBlank = url.find(' ');
+  if (iPosBlank != string::npos && (url.find("live=true") != string::npos || url.find("live=1") != string::npos))
   {
-    std::string tmp = m_item.GetProperty(options[i].name).asString();
-    if (!tmp.empty())
-    {
-      m_optionvalues.push_back(tmp);
-      AVal av_tmp;
-      SetAVal(av_tmp, m_optionvalues.back());
-      m_libRTMP.SetOpt(m_rtmp, &options[i].key, &av_tmp);
-    }
+    m_canSeek = false;
+    m_canPause = false;
   }
+  CLog::Log(LOGDEBUG, "RTMP canseek: %s", m_canSeek ? "true" : "false");
 
   if (!m_libRTMP.Connect(m_rtmp, NULL) || !m_libRTMP.ConnectStream(m_rtmp, 0))
     return false;
@@ -185,7 +177,6 @@ void CDVDInputStreamRTMP::Close()
   if (m_rtmp)
     m_libRTMP.Close(m_rtmp);
 
-  m_optionvalues.clear();
   m_eof = true;
   m_bPaused = false;
 }
