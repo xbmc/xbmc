@@ -603,8 +603,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_State.Clear();
     m_UpdateApplication = 0;
     m_offset_pts = 0;
-    m_CurrentAudio.originaldts = DVD_NOPTS_VALUE;
-    m_CurrentVideo.originaldts = DVD_NOPTS_VALUE;
+    m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
+    m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
     m_PlayerOptions = options;
     m_item     = file;
@@ -1927,8 +1927,9 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
     correction = pPacket->dts - maxdts;
   }
 
-  /* if it's large scale jump, correct for it */
-  if(pPacket->dts + DVD_MSEC_TO_TIME(100) < current.dts_end())
+  /* if it's large scale jump, correct for it after having confirmed the jump */
+  if(pPacket->dts + DVD_MSEC_TO_TIME(100) < current.dts_end() &&
+     current.lastdts + DVD_MSEC_TO_TIME(100) < current.dts_end())
   {
     CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - resync backward :%d, prev:%f, curr:%f, diff:%f"
                             , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
@@ -1940,19 +1941,20 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
                             , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
   }
 
+  double lastdts = pPacket->dts;
   if(correction != 0.0)
   {
     // we want the dts values of two streams to close, or for one to be invalid (e.g. from a missing audio stream)
     double this_dts = pPacket->dts;
-    double that_dts = current.type == STREAM_AUDIO ? m_CurrentVideo.originaldts : m_CurrentAudio.originaldts;
+    double that_dts = current.type == STREAM_AUDIO ? m_CurrentVideo.lastdts : m_CurrentAudio.lastdts;
 
     if (m_CurrentAudio.id == -1 || m_CurrentVideo.id == -1 ||
-       current.originaldts == DVD_NOPTS_VALUE ||
+       current.lastdts == DVD_NOPTS_VALUE ||
        fabs(this_dts - that_dts) < DVD_MSEC_TO_TIME(1000))
     {
       m_offset_pts += correction;
       UpdateCorrection(pPacket, correction);
-      current.originaldts = pPacket->dts;
+      lastdts = pPacket->dts;
     }
     else
     {
@@ -1961,8 +1963,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
       pPacket->pts = DVD_NOPTS_VALUE;
     }
   }
-  else
-     current.originaldts = pPacket->dts;
+  current.lastdts = lastdts;
 }
 
 bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
@@ -3124,7 +3125,7 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     current.hint    = hint;
     current.stream  = (void*)stream;
     current.started = false;
-    current.originaldts = DVD_NOPTS_VALUE;
+    current.lastdts = DVD_NOPTS_VALUE;
     if(stream)
       current.changes = stream->changes;
 
