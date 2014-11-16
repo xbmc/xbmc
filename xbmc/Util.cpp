@@ -809,6 +809,22 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
 #endif
 }
 
+void CUtil::StatToStat64(struct __stat64 *result, const struct stat *stat)
+{
+  memset(result, 0, sizeof(*result));
+  result->st_dev   = stat->st_dev;
+  result->st_ino   = stat->st_ino;
+  result->st_mode  = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid   = stat->st_uid;
+  result->st_gid   = stat->st_gid;
+  result->st_rdev  = stat->st_rdev;
+  result->st_size  = stat->st_size;
+  result->st_atime = stat->st_atime;
+  result->st_mtime = stat->st_mtime;
+  result->st_ctime = stat->st_ctime;
+}
+
 void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
