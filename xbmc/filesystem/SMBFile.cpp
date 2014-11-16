@@ -174,29 +174,6 @@ void CSMB::Init()
   m_IdleTimeout = 180;
 }
 
-void CSMB::Purge()
-{
-}
-
-/*
- * For each new connection samba creates a new session
- * But this is not what we want, we just want to have one session at the time
- * This means that we have to call smbc_purge() if samba created a new session
- * Samba will create a new session when:
- * - connecting to another server
- * - connecting to another share on the same server (share, not a different folder!)
- *
- * We try to avoid lot's of purge commands because it slow samba down.
- */
-void CSMB::PurgeEx(const CURL& url)
-{
-  CSingleLock lock(*this);
-  std::string strShare = url.GetFileName().substr(0, url.GetFileName().find('/'));
-
-  m_strLastShare = strShare;
-  m_strLastHost = url.GetHostName();
-}
-
 std::string CSMB::URLEncode(const CURL &url)
 {
   /* due to smb wanting encoded urls we have to build it manually */

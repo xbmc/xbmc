@@ -47,8 +47,6 @@ public:
   ~CSMB();
   void Init();
   void Deinit();
-  void Purge();
-  void PurgeEx(const CURL& url);
   void CheckIfIdle();
   void SetActivityTime();
   void AddActiveConnection();
@@ -59,8 +57,6 @@ public:
   DWORD ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
-  std::string m_strLastHost;
-  std::string m_strLastShare;
 #ifdef TARGET_POSIX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
