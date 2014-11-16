@@ -30,6 +30,7 @@
 #include "IFile.h"
 #include "URL.h"
 #include "threads/CriticalSection.h"
+#include <libsmbclient.h>
 
 #define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
 #define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)
@@ -39,6 +40,9 @@
 
 struct _SMBCCTX;
 typedef _SMBCCTX SMBCCTX;
+
+struct _SMBCFILE;
+typedef _SMBCFILE SMBCFILE;
 
 class CSMB : public CCriticalSection
 {
@@ -53,8 +57,27 @@ public:
   void AddIdleConnection();
   std::string URLEncode(const std::string &value);
   std::string URLEncode(const CURL &url);
+  SMBCCTX* GetContext() { return m_context; }
 
   DWORD ConvertUnixToNT(int error);
+
+  smbc_close_fn    close_fn;
+  smbc_closedir_fn closedir_fn;
+  smbc_creat_fn    creat_fn;
+  smbc_fstat_fn    fstat_fn;
+  smbc_getxattr_fn getxattr_fn;
+  smbc_lseek_fn    lseek_fn;
+  smbc_mkdir_fn    mkdir_fn;
+  smbc_open_fn     open_fn;
+  smbc_opendir_fn  opendir_fn;
+  smbc_read_fn     read_fn;
+  smbc_readdir_fn  readdir_fn;
+  smbc_rename_fn   rename_fn;
+  smbc_rmdir_fn    rmdir_fn;
+  smbc_stat_fn     stat_fn;
+  smbc_unlink_fn   unlink_fn;
+  smbc_write_fn    write_fn;
+
 private:
   SMBCCTX *m_context;
 #ifdef TARGET_POSIX
@@ -94,7 +117,7 @@ protected:
   CURL m_url;
   bool IsValidFile(const std::string& strFileName);
   int64_t m_fileSize;
-  int m_fd;
+  SMBCFILE* m_fd;
 };
 }
 
