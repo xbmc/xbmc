@@ -172,9 +172,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
 
       FILETIME fileTime, localTime;
-      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
-      fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
-      fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+      TimeTToFileTime(lTimeDate, &fileTime);
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
       if (bIsDir)
