@@ -685,6 +685,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Interfície web"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Codificadors d'àudio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Lema"
@@ -1080,6 +1084,10 @@ msgstr "Flux d'idioma original"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Idioma de la interfície d'usuari"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Disposicions de teclat"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1973,6 +1981,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Mescla l'àudio multicanal a estèreo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Número"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Ordena per: %s"
@@ -2769,6 +2781,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Voleu escanejar ara?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s de %s disponibles"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "El número de port introduït no és vàlid"
@@ -3185,9 +3201,25 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositiu passthrough personalitzat"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
 msgctxt "#1376"
 msgid "Pressure"
 msgstr "Pressió"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximitat"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensitat"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Molt"
 
 msgctxt "#1381"
 msgid "Extreme"
@@ -3200,6 +3232,22 @@ msgstr "Remolins"
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Trencat"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Huracà"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Fred"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -5365,6 +5413,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filtres GUI"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Utilitza la exploració en segon plà"
@@ -5480,6 +5532,10 @@ msgstr "Posa les cançons a la cua al seleccionar-les"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Reproducció"
+
+msgctxt "#14087"
+msgid "Discs"
+msgstr "Discs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7084,6 +7140,10 @@ msgstr "Trieu una icona"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Cerca una icona"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Tots el canals"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9357,6 +9417,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s a %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Extern)"
@@ -10488,6 +10552,14 @@ msgstr "Cap de setmana"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s dia"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Fluxos"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Dispositius"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -11777,6 +11849,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilita el maquinari de descodificació d'arxius de vídeo."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "pel·lícula"
+
 msgctxt "#36901"
 msgid "movies"
 msgstr "pel·lícules"
@@ -11789,6 +11865,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "Sèries de TV"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "temporada"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "temporades"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episodi"
@@ -11796,6 +11880,14 @@ msgstr "episodi"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodis"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "vídeo musical"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "vídeos musicals"
 
 msgctxt "#36910"
 msgid "set"
@@ -11813,9 +11905,29 @@ msgctxt "#36913"
 msgid "videos"
 msgstr "Vídeos"
 
+msgctxt "#36914"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artista"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artistes"
+
 msgctxt "#36918"
 msgid "album"
 msgstr "Àlbum"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "àlbums"
 
 msgctxt "#36920"
 msgid "song"
@@ -11884,6 +11996,18 @@ msgstr "Voleu parar la reproducció al dispositiu remot?"
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
 
 msgctxt "#37030"
 msgid "Unlimited"

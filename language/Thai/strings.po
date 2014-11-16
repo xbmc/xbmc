@@ -2417,9 +2417,17 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "ระดับการบีบอัด"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "เปิดใช้งาน การบันทึกในเฉพาะส่วนประกอบ"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "เปิดใช้ ส่งผ่านการเข้ารหัส Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "ระบุ ส่วนประกอบเฉพาะ ที่จะบันทึก"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
@@ -2452,6 +2460,14 @@ msgstr "ใช้ถ้อยคำมากเกินไปในการบ
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "ใช้ถ้อยคำมากเกินไปในการบันทึกล็อค AUDIO component"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "บันทึกข้อมูลอย่างละเอียด สำหรับคลังข้อมูล AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "บันทึกข้อมูลอย่างละเอียด สำหรับส่วนประกอบ UPnP"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2800,6 +2816,10 @@ msgstr "คลังข้อมูลเพลง ต้องสำรวจ t
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "คุณต้องการที่จะสแกนตอนนี้หรือไม่?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s of %s ทีมีอยู่"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3181,6 +3201,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "ประกาศการให้บริการผ่านทาง Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "โหมดความเข้ากันได้กับ iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "อนุญาตให้มีการควบคุมระดับเสียง"
@@ -3224,6 +3248,14 @@ msgstr "อุณหภูมิ"
 msgctxt "#1376"
 msgid "Pressure"
 msgstr "ความกดอากาศ"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "ความใกล้ชิด"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "ความหนาแน่น"
 
 msgctxt "#1381"
 msgid "Extreme"

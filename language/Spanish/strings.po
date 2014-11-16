@@ -3253,6 +3253,22 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "Presión atmosférica"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximidad"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensidad"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Irregular"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Muy"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Extremo"
@@ -3261,9 +3277,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Torbellino"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Cielo despejado"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Roto"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Huracán"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Frío"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3272,6 +3308,26 @@ msgstr "Viento"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Ajustes de caché"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brisa"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Agradable"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Viento fuerte, casi vendaval"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Severo"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violento"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -8453,6 +8509,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple File Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Explorador Zeroconf"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Directorio servidor web (HTTP)"
@@ -10556,6 +10616,10 @@ msgstr "Descargar primer subtítulo del listado de la búsqueda de forma automá
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Configuración movida"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgstr "La configuración de Kodi se ha movido a una nueva ubicación Kodi. Por favor, mire http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - ¡Este mensaje no se volverá a mostrar!"
 
 msgctxt "#25000"
 msgid "Notifications"
