@@ -1470,13 +1470,7 @@ int CBuiltins::Execute(const std::string& execString)
     else if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (!g_application.IsMusicScanning())
-      {
-        CMusicDatabase musicdatabase;
-
-        musicdatabase.Open();
-        musicdatabase.Cleanup(userInitiated);
-        musicdatabase.Close();
-      }
+        g_application.StartMusicCleanup(userInitiated);
       else
         CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
     }
