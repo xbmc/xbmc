@@ -389,7 +389,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
 #endif // HAS_WEB_SERVER
   if (settingId == "smb.winsserver" ||
       settingId == "smb.workgroup" ||
-      settingId == "smb.smbprotocol")
+      settingId == "smb.maxrotocol")
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
     // TODO - General way of handling setting changes that require restart
