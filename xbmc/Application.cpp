@@ -5624,7 +5624,13 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->CleanDatabase(NULL, NULL, userInitiated);
+  if (userInitiated)
+    m_videoInfoScanner->CleanDatabase(NULL, NULL, true);
+  else
+  {
+    m_videoInfoScanner->ShowDialog(false);
+    m_videoInfoScanner->StartCleanDatabase();
+  }
 }
 
 void CApplication::StartVideoScan(const CStdString &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
