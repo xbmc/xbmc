@@ -2227,6 +2227,11 @@
           <default>WORKGROUP</default>
           <control type="edit" format="string" />
         </setting>
+        <setting id="smb.maxprotocol" type="string" label="38012" help="38011">
+          <level>2</level>
+	  <default>NT1</default>
+          <control type="edit" format="string" />
+        </setting>
       </group>
     </category>
   </section>

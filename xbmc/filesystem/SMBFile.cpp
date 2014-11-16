@@ -157,6 +157,9 @@ void CSMB::Init()
         if (g_advancedSettings.m_sambadoscodepage.length() > 0)
           fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
+        // configure allowed client version
+        fprintf(f, "\tclient max protocol = %s\n", CSettings::Get().GetString("smb.maxprotocol").c_str());
+
         fclose(f);
       }
     }

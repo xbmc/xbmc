@@ -777,6 +777,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("services.escontinuousdelay");
   settingSet.insert("smb.winsserver");
   settingSet.insert("smb.workgroup");
+  settingSet.insert("smb.smbprotocol");
   m_settingsManager->RegisterCallback(&CNetworkServices::Get(), settingSet);
 
   settingSet.clear();
