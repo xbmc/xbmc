@@ -59,10 +59,10 @@ namespace PVR
     /*!
      * @brief Update a group or add it if it's not in here yet.
      * @param group The group to update.
-     * @param bSaveInDb True to save the changes in the db.
+     * @param bUpdateFromClient True to save the changes in the db.
      * @return True if the group was added or update successfully, false otherwise.
      */
-    bool Update(const CPVRChannelGroup &group, bool bSaveInDb = false);
+    bool Update(const CPVRChannelGroup &group, bool bUpdateFromClient = false);
 
     /*!
      * @brief Called by the add-on callback to add a new group
