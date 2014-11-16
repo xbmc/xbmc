@@ -339,6 +339,7 @@ CSMBFile::CSMBFile()
 {
   smb.Init();
   m_fd = NULL;
+  m_limit_len = 0;
   smb.AddActiveConnection();
 }
 
@@ -409,6 +410,20 @@ bool CSMBFile::Open(const CURL& url)
     return false;
   }
   // We've successfully opened the file!
+
+  if (CSettings::Get().GetString("smb.maxprotocol") == "NT1") {
+    /* work around stupid bug in samba */
+    /* some samba servers has a bug in it where the */
+    /* 17th bit will be ignored in a request of data */
+    /* this can lead to a very small return of data */
+    /* also worse, a request of exactly 64k will return */
+    /* as if eof, client has a workaround for windows */
+    /* thou it seems other servers are affected too */
+    m_limit_len = 64*1024-2;
+  } else {
+    m_limit_len = SSIZE_MAX;
+  }
+
   return true;
 }
 
@@ -476,8 +491,8 @@ int CSMBFile::Truncate(int64_t size)
 
 ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
+  if (uiBufSize > m_limit_len)
+    uiBufSize = m_limit_len;
 
   if (m_fd == NULL)
     return -1;
@@ -492,15 +507,6 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
-  /* work around stupid bug in samba */
-  /* some samba servers has a bug in it where the */
-  /* 17th bit will be ignored in a request of data */
-  /* this can lead to a very small return of data */
-  /* also worse, a request of exactly 64k will return */
-  /* as if eof, client has a workaround for windows */
-  /* thou it seems other servers are affected too */
-  if( uiBufSize >= 64*1024-2 )
-    uiBufSize = 64*1024-2;
 
   ssize_t bytesRead = smb.read_fn(smb.GetContext(), m_fd, lpBuf, (int)uiBufSize);
 

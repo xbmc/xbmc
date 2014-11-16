@@ -116,6 +116,7 @@ public:
 protected:
   bool IsValidFile(const std::string& strFileName);
   SMBCFILE* m_fd;
+  size_t    m_limit_len;
 };
 }
 
