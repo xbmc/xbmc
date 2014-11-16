@@ -114,7 +114,6 @@ public:
   virtual int  GetChunkSize() {return 1;}
 
 protected:
-  CURL m_url;
   bool IsValidFile(const std::string& strFileName);
   SMBCFILE* m_fd;
 };

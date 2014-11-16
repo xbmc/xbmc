@@ -369,7 +369,6 @@ bool CSMBFile::Open(const CURL& url)
       CLog::Log(LOGNOTICE,"SMBFile->Open: Bad URL : '%s'",url.GetFileName().c_str());
       return false;
   }
-  m_url = url;
 
   // opening a file to another computer share will create a new session
   // when opening smb://server xbms will try to find folder.jpg in all shares
