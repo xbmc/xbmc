@@ -349,7 +349,13 @@ int64_t CSMBFile::GetLength()
 {
   if (m_fd == NULL)
     return -1;
-  return m_fileSize;
+
+  CSingleLock lock(smb);
+  struct stat buf;
+  if (smb.fstat_fn(smb.GetContext(), m_fd, &buf) < 0)
+    return -1;
+
+  return buf.st_size;
 }
 
 bool CSMBFile::Open(const CURL& url)
@@ -384,17 +390,6 @@ bool CSMBFile::Open(const CURL& url)
     CLog::Log(LOGINFO, "SMBFile->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strFileName).c_str(), errno, strerror(errno));
     return false;
   }
-
-  CSingleLock lock(smb);
-  struct stat tmpBuffer;
-  if (smb.stat_fn(smb.GetContext(), strFileName.c_str(), &tmpBuffer) < 0)
-  {
-    smb.close_fn(smb.GetContext(), m_fd);
-    m_fd = NULL;
-    return false;
-  }
-
-  m_fileSize = tmpBuffer.st_size;
 
   int64_t ret = smb.lseek_fn(smb.GetContext(), m_fd, 0, SEEK_SET);
   if ( ret < 0 )
@@ -580,8 +575,6 @@ bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
 
 bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
 {
-  m_fileSize = 0;
-
   Close();
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.

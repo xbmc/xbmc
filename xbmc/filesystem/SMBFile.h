@@ -116,7 +116,6 @@ public:
 protected:
   CURL m_url;
   bool IsValidFile(const std::string& strFileName);
-  int64_t m_fileSize;
   SMBCFILE* m_fd;
 };
 }
