@@ -314,9 +314,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "musiclibrary.cleanup")
   {
-    CMusicDatabase musicdatabase;
-    musicdatabase.Clean();
-    CUtil::DeleteMusicDatabaseDirectoryCache();
+    if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+      g_application.StartMusicCleanup(true);
   }
   else if (settingId == "musiclibrary.export")
     CBuiltins::Execute("exportlibrary(music)");

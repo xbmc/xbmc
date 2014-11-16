@@ -82,6 +82,14 @@ void CMusicInfoScanner::Process()
   ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
+    if (m_bClean)
+    {
+      CleanDatabase(false);
+      m_bRunning = false;
+
+      return;
+    }
+
     unsigned int tick = XbmcThreads::SystemClockMillis();
 
     m_musicDatabase.Open();
@@ -93,6 +101,8 @@ void CMusicInfoScanner::Process()
       if (dialog)
         m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
     }
+
+    m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
     m_bCanInterrupt = true;
 
@@ -267,7 +277,21 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
   }
   else
     m_pathsToScan.insert(strDirectory);
-  m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
+  m_bClean = false;
+
+  m_scanType = 0;
+  Create();
+  m_bRunning = true;
+}
+
+void CMusicInfoScanner::StartCleanDatabase()
+{
+  m_fileCountReader.StopThread();
+  StopThread();
+  m_pathsToScan.clear();
+  m_seenPaths.clear();
+  m_flags = SCAN_BACKGROUND;
+  m_bClean = true;
 
   m_scanType = 0;
   Create();
@@ -373,6 +397,18 @@ void CMusicInfoScanner::Stop()
     m_musicDatabase.Interupt();
 
   StopThread(false);
+}
+
+void CMusicInfoScanner::CleanDatabase(bool showProgress /* = true */)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return;
+
+  musicdatabase.Cleanup(showProgress);
+  musicdatabase.Close();
+
+  CUtil::DeleteMusicDatabaseDirectoryCache();
 }
 
 static void OnDirectoryScanned(const CStdString& strDirectory)
