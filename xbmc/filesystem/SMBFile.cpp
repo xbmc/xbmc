@@ -32,8 +32,10 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "utils/Environment.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "filesystem/SpecialProtocol.h"
 #include "commons/Exception.h"
 
 using namespace XFILE;
@@ -116,12 +118,14 @@ void CSMB::Init()
     // Create ~/.smb/smb.conf. This file is used by libsmbclient.
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
+
+    CStdString home = CSpecialProtocol::TranslatePath("special://temp/");
     char smb_conf[MAX_PATH];
-    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", getenv("HOME"));
-    if (mkdir(smb_conf, 0755) == 0)
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
+    if (mkdir(smb_conf, 0755) == 0 || errno == EEXIST)
     {
-      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
-      FILE* f = fopen(smb_conf, "w");
+      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", home.c_str());
+      FILE* f = fopen(smb_conf, "w+");
       if (f != NULL)
       {
         fprintf(f, "[global]\n");
@@ -136,7 +140,7 @@ void CSMB::Init()
         fprintf(f, "\tlanman auth = yes\n");
 
         fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
-        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+        fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
@@ -159,7 +163,11 @@ void CSMB::Init()
 
     // reads smb.conf so this MUST be after we create smb.conf
     // setup our context
+
+    std::string old_home = CEnvironment::getenv("HOME");
+    CEnvironment::setenv("HOME", home.c_str());
     m_context = smbc_new_context();
+    CEnvironment::setenv("HOME", old_home.c_str(), 1);
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
