@@ -762,14 +762,16 @@ namespace VIDEO
     while (x < items.Size())
     {
       if (items[x]->m_bIsFolder)
+      {
+        x++;
         continue;
-
+      }
 
       CStdString strPathX, strFileX;
       URIUtils::Split(items[x]->GetPath(), strPathX, strFileX);
       //CLog::Log(LOGDEBUG,"%i:%s:%s", x, strPathX.c_str(), strFileX.c_str());
 
-      int y = x + 1;
+      const int y = x + 1;
       if (strFileX.Equals("VIDEO_TS.IFO"))
       {
         while (y < items.Size())
@@ -790,7 +792,7 @@ namespace VIDEO
             break;
         }
       }
-      x = y;
+      x++;
     }
 
     // enumerate
