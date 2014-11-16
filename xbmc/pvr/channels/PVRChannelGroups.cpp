@@ -59,7 +59,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
+bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb /* = false */)
 {
   if (group.GroupName().empty() && group.GroupID() <= 0)
     return true;

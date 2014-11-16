@@ -69,7 +69,7 @@ namespace PVR
      * @param group The group to add
      * @return True when updated, false otherwise
      */
-    bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, false); }
+    bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, true); }
 
     /*!
      * @brief Get a channel given it's path
