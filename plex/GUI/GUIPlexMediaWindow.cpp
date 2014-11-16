@@ -199,8 +199,15 @@ void CGUIPlexMediaWindow::SaveSelection()
   // Store the current selected item
   if (m_vecItems)
   {
+    int offset = m_vecItems->GetProperty("offset").asInteger();
     CURL u(m_vecItems->GetPath());
-    m_lastSelectedIndex[u.GetUrlWithoutOptions()] = m_viewControl.GetSelectedItem();
+    std::string key = u.GetUrlWithoutOptions();
+    int idx = m_viewControl.GetSelectedItem();
+    if (idx >= 0)
+    {
+      m_lastSelectedIndex[key] = m_vecItems->Get(idx)->GetProperty("index").asInteger();;
+      CLog::Log(LOGDEBUG, "SaveSelection index for %s is %d", key.c_str(), m_lastSelectedIndex[key]);
+    }
   }
 }
 
@@ -210,11 +217,21 @@ void CGUIPlexMediaWindow::RestoreSelection()
   // Restore selected item for the section
   int idx = 0;
   CURL u(m_vecItems->GetPath());
-  if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
-    idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
-  m_viewControl.SetSelectedItem(idx);
-  
-  printf("SaveSelection for %s is %d", u.GetUrlWithoutOptions().c_str(), idx);  
+  std::string key = u.GetUrlWithoutOptions();
+
+  if (m_lastSelectedIndex.find(key) != m_lastSelectedIndex.end())
+  {
+    idx = m_lastSelectedIndex[key];
+
+    for (int i=0; i < m_vecItems->Size(); i++)
+    {
+      if (m_vecItems->Get(i)->GetProperty("index").asInteger() == idx)
+      {
+        m_viewControl.SetSelectedItem(i);
+        CLog::Log(LOGDEBUG, "RestoreSelection index for %s is %d", key.c_str(), m_lastSelectedIndex[key]);
+      }
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -549,6 +566,15 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 #ifdef USE_PAGING
   // find the item range we need
   int Index = m_viewControl.GetSelectedItem();
+
+  // if we have no items loaded, just center the page on last selection
+  // as we will restor selection afterwards
+  if (Index < 0)
+  {
+    if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
+      Index = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
+  }
+
   int NeededRangeStart = Index - PLEX_DEFAULT_PAGE_SIZE / 2;
   int NeededRangeEnd = Index + PLEX_DEFAULT_PAGE_SIZE / 2;
 
