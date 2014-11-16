@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.glspectrum"
-  version="1.0.24"
+  version="1.0.25"
   name="OpenGL Spectrum"
   provider-name="Team-Kodi">
   <extension
@@ -33,7 +33,7 @@
     <summary lang="fr">Visualisation affichant un analyseur de spectre 3D en rotation</summary>
     <summary lang="fr_CA">Visualisation affichant un analyseur de spectre 3D en rotation</summary>
     <summary lang="gl">Visualización que amosa un analizador de espectro virando en 3D</summary>
-    <summary lang="he">DirectX Spectrum זהו חיזוי אשר מציג סיבובי 3D Spectrum Analyzer</summary>
+    <summary lang="he">חיזוי המציג סיבובי נתח תדרים תלת מימדי מסתובב</summary>
     <summary lang="hr">Vizualizacija koja prikazuje rotirajući 3D spektralni analizator</summary>
     <summary lang="hu">Vizualizáció 3D spektrum analizátorral</summary>
     <summary lang="id">Visualisasi memperlihatkan Spektrum Analyzer 3D yang berputar</summary>
@@ -86,7 +86,7 @@
     <description lang="fr">Opengl Spectrum est une visualisation affichant un analyseur de spectre 3D en rotation, sous Opengl. Il réagit au rythme de la musique, créant un effet d'onde sur la grille du spectre.&#10;Il propose divers paramètres pour ajuster la hauteur, la vitesse, et le rendu des barres du spectre (plein, points, fil de fer). Une visualisation légère, peu gourmande en CPU et agréable à regarder.</description>
     <description lang="fr_CA">Opengl Spectrum est une visualisation affichant un analyseur de spectre 3D en rotation, rendue en DirectX,  qui se déplace au gré du rythme de la musique tout en créant un effet d'onde sur toute la grille du spectre.&#10;Elle offre aussi des paramètres pour ajuster la hauteur des barres du spectre, sa vitesse et comment les barres sont rendues (plein, points, fil de fer). C'est une visualisation légère, frugale et visuellement attirante.</description>
     <description lang="gl">Opengl Spectrum é unha Visualización que amosa un analizador de espectro virando en 3D renderizado con OpenGL que se move ó ritmo da música creando un efecto de onde ó longo da grella do espectro.&#10;Tamén ten opcións para axustar a altura da barra, a velocidade e como se renderizan as barras (sólidas, puntos, malla) do espectro. É bonito, lixeiro, de baixo custo en CPU.</description>
-    <description lang="he">Opengl Spectrum זהו חיזוי אשר מציג סיבובי 3D Spectrum Analyzer אשר זז לצלילי המוזיקה שיוצר אפקט גלים לרוחב רשת הספקטרום.&#10;יש אפשרות גם להגדיר את גובה פס הספקטרום, את המהירות, ואת התנהגות הפסים (filled, points, wire frame) וזהו חיזוי נחמד קל משקל לא מעמיס על המעבד ונראה נהדר.</description>
+    <description lang="he">החיזוי Opengl Spectrum מציג נתח תדרים תלת מימדי מסתובב שזז בקצב המוזיקה ויוצר אפקט גל על פני ציר התדר.&#10;קיימת אפשרות גם להגדיר את הגובה האנכי, את המהירות, ואופן העיבוד הגרפי (מלא, נקודות, מסגרת קווית) וזהו חיזוי נחמד וקליל שלא מעמיס על המעבד ונראה נהדר.</description>
     <description lang="hr">Opengl Spectrum je vizualizacija koja prikazuje rotirajući 3D spektralni analizator prikazan u Opengl-u koji se pokreće u ritmu glazbe stvarajući efekt valova u spektralnoj mreži.&#10;Također sadrži i postavke za namještanje visine sprektralnih traka, njihove brzine, i načina na koji su prikazane (popunjeno, točke, žičani okvir). Vizualizacija izgleda sjajno te je malih memorijskih i CPU zahtjeva.</description>
     <description lang="hu">Az Opengl Spectrum egy olyan vizualizáció ami egy 3D hang spektrum analizátort mutat Opengl segítségével megjelenítve, ami a zene ritmusára mozog egy hullám-effektust képezve a teljes spektrumhálón.&#10;Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az oszlopok hogyan jelenjenek meg (teli, pontok, drótváz). Ez egy kis erőforrásigényű vizualizáció ami nagyon jól mutat.</description>
     <description lang="id">OpenGL Spectrum merupakan visualisasi yang memperlihatkan Spektrum Analyzer 3D yang berputar yang dirender pada OpenGL yang  bergerak mengikuti hentakan musik dan mencipkatan efek gelombang sepanjang kisi spektrum.&#10;Juga diatur untuk menyesuaikan tinggi bar, kecepatan, dan bagaimana bar dirender (solid, poin, wire frame) dan cukup ringan, rendah pemakaian cpu yang keren!!!</description>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.projectm"
-  version="1.0.25"
+  version="1.0.26"
   name="projectM"
   provider-name="Team-Kodi">
   <extension
@@ -38,7 +38,7 @@
     <summary lang="fr">projectM vous entraine à travers les ondes sonores que vous écoutez</summary>
     <summary lang="fr_CA">projectM vous fait voler au travers des ondes sonores que vous entendez</summary>
     <summary lang="gl">projectM lévao voando a través das ondas de son que está a ouvir</summary>
-    <summary lang="he">projectM לוקח אותך לתעופה דרך גלי הסאונד שאתה שומע</summary>
+    <summary lang="he">החיזוי projectM לוקח את המאזין לטיסה בין גלי הקול הנשמעים</summary>
     <summary lang="hr">projectM vam omogućuje let kroz zvuk koji čujete</summary>
     <summary lang="hu">A projectM végigrepít a zene hullámain</summary>
     <summary lang="id">ProjectM membawa anda terbang melalui gelombang suara yang anda dengar</summary>
@@ -90,7 +90,7 @@
     <description lang="fr">projectM est un fantastique visualiseur musical. Il n'y a rien de mieux dans l'univers Unix. L'ampleur de projectM vient du travail énorme de la communauté. Des utilisateurs comme vous peuvent créer des préréglages qui connecteront la musique avec des visuels incroyables. Essayez-le!&#10;La visualisation projectM est une réalisation sous LGPL de Milkdrop en OpenGL.&#10;Le seul pré-requis pour projectM est une carte graphique avec accélération 3D et votre musique favorite.</description>
     <description lang="fr_CA">projectM est un incroyable visualiseur musical. Il n'y a rien de mieux dans l'univers Unix. La force projectM vient du travail acharné de la communauté. Des utilisateurs comme vous peuvent créer des préréglages qui connecteront la musique avec des visuels incroyables. Essayez-le!&#10;La visualisation projectM est une réalisation sous LGPL de Milkdrop en OpenGL.&#10;Le seul pré-requis pour projectM est une carte graphique avec accélération 3D et votre musique favorite.</description>
     <description lang="gl">projectM é unha impresionante Visualización de música. Non hai nada mellor no mundo Unix.  A grandeza de projectM ven da dura xeira da comunidade. Usuarios coma vostede poden crear preconfiguracións que conectan a música con incribles visualizacións. Próbeo!&#10;A Visualización projectM é unha reimplementación de Milkdrop empregando OpenGL e con licencia LGPL.&#10;Todo o que precisa projectM é unha tarxeta gráfica con aceleración 3D e a súa música favorita.</description>
-    <description lang="he">projectM is an awesome music visualizer. There is nothing better in the world of Unix. projectM's greatness comes from the hard work of the community. Users like you can create presets that connect music with incredible visuals. Try it!&#10;projectM Visualization is an LGPL'ed reimplementation of Milkdrop under OpenGL&#10;All projectM requires is a video card with 3D acceleration and your favorite music.</description>
+    <description lang="he">החיזוי projectM הוא חיזוי מוזיקה מדהים. לא קיים חיזוי טוב יותר בעולם ה־Unix. הגדולה של projectM מגיעה מהעבודה הרבה של הקהילה. כל משתמש יכול ליצור קביעון שיחבר את המוזיקה עם פלט חזותי מדהים. חובה לנסותו!&#10;החיזוי projectM הוא ישום OpenGL של Milkdrop תחת רשיון LGPL.&#10;כל מה שדורש projectM מהמשתמש זה כרטיס גרפי עם האצה תלת מימדית ואת המוזיקה המועדפת.</description>
     <description lang="hr">projectM je fenomenalan glazbeni vizualizator. Ne postoji ništa bolje u svijetu Unixa. Veličina projectM-a dolazi zbog predanosti njegove zajednice. Korisnici kao što ste Vi, mogu stvoriti predloške koje povezuju glazbu i nevjerojatne vizualizacije. Isprobajte!&#10;projectM Vizualizacija je LGPL reimplementacija Milkdropa pod OpenGL-om&#10;Sve što projectM zahtijeva je video kartica sa 3d ubrzanjem i vašu omiljenu glazbu.</description>
     <description lang="hu">A projectM egy fantasztikus zenei vizualizáció. Nincs ennél jobb a Unix világban. A projectM különlegessége, hogy egy egész fejlesztői közösség nehéz munkájából jött létre. A felhasználók, mint te egyedi beállításokat hozhatnak létre ami összekapcsolja a zenét a hihetetlen látványelemekkel. Próbáld ki!&#10;A projectM Vizualizáció a Milkdrop újrakódolása LGPL licenc alatt, OpenGL videókártya támogatást használva.&#10;Minden projectM látványbeállításhoz 3D gyorsításra képes videókártya és a kedvenc zenéd szükséges.</description>
     <description lang="id">projectM merupakan visualiser musik yang keren. Tak ada yng lebih baik di dunia Unix. Kebesaran projectM berasa dari kerja keras dari komunitas. Pengguna seperti anda dapat membuat preset yang menghubungkan musik dengan visual yang luarbiasa. Cobalah!!!&#10;Visualisasi projectM merupakan produk berlisensi LGPL reimplementasi dari Milkdrop dibawah OpenGL&#10;Semua projectM membutuhkan kartu grafis dengan akselerasi 3D dan musik favorit anda.</description>

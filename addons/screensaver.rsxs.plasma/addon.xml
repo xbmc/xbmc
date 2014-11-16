@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.24"
+  version="1.0.25"
   name="Plasma"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -35,7 +35,7 @@
     <summary lang="fr">Probablement le deuxième économiseur d'écran le plus psychédélique jamais créé</summary>
     <summary lang="fr_CA">Probablement le deuxième économiseur d'écran le plus psychédélique</summary>
     <summary lang="gl">Probabelmente o segundo protector de pantalla máis psicodélico.</summary>
-    <summary lang="he">כפי הנראה שומר המסך השני בדירוג הפסיכדליות</summary>
+    <summary lang="he">כנראה שומר המסך השני בדירוג הפסיכדליות</summary>
     <summary lang="hr">Vjerojatno drugi najveći psihodelični čuvar zaslona ikad</summary>
     <summary lang="hu">A második legpszihedelikusabb képernyővédő</summary>
     <summary lang="id">Mungkin screensaver paling psikedelik nomor dua yang pernah ada</summary>
@@ -88,7 +88,7 @@
     <description lang="fr">Probablement le deuxième économiseur d'écran le plus psychédélique de l'histoire. Essayez seulement d'imaginer toutes ces couleurs en mouvement.</description>
     <description lang="fr_CA">Probablement le deuxième économiseur d'écran le plus psychédélique de l'histoire. Essayez seulement d'imaginer toutes ces couleurs en mouvement.</description>
     <description lang="gl">Probabelmente o segundo protector de pantalla máis psicodélico do mundo. Tan só probe a imaxinarse todas esas cores movéndose ó redor.</description>
-    <description lang="he">כפי הנראה שומר המסך השני בדירוג הפסיכדליות שקיים כיום. פשוט נסו לדמיין את כל הצבעים האלו נעים ממקום למקום.</description>
+    <description lang="he">כנראה שומר המסך השני בדירוג הפסיכדליות שקיים כיום. פשוט נסו לדמיין את כל הצבעים האלו נעים ממקום למקום.</description>
     <description lang="hr">Vjerojatno drugi najveći psihodelični čuvar zaslona koji postoji. Samo pokušajte zamisliti sve te boje koje se gibaju okolo.</description>
     <description lang="hu">Valószínüleg a második legpszihedelikusabb képernyővédő ami létezik. Csak képzeld el mindezt a színkavalkádot mozogni.</description>
     <description lang="id">Mungkin screensaver paling psikedelik nomor dua yang pernah ada. Coba bayangkan warna-warni itu bergerak ke sana kemari.</description>

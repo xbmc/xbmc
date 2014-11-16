@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.24"
+       version="1.0.25"
        provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -31,7 +31,7 @@
     <summary lang="fr">Un économiseur d'écran qui rend votre écran noir</summary>
     <summary lang="fr_CA">Un économiseur d'écran qui rend votre écran noir</summary>
     <summary lang="gl"> Protector de pantalla que volta a súa pantalla negra</summary>
-    <summary lang="he">שומר מסך המשחיר את המסך</summary>
+    <summary lang="he">שומר מסך ההופך את המסך לשחור</summary>
     <summary lang="hr">Čuvar zaslona koji pretvara zaslon u crno</summary>
     <summary lang="hu">Képernyővédő ami elfeketíti a képernyőt</summary>
     <summary lang="id">Screensaver yang mengubah layar menjadi hitam</summary>
@@ -88,7 +88,7 @@
     <description lang="fr">Black est un simple économiseur qui passe votre écran au noir.</description>
     <description lang="fr_CA">Black est un économiseur d'écran simple qui rend votre écran noir.</description>
     <description lang="gl">Black é un  protector de pantalla que voltará a súa pantalla a negro.</description>
-    <description lang="he">Black הנו שומר מסך פשוט אשר צובע את המסך בשחור.</description>
+    <description lang="he">Black הוא שומר מסך פשוט אשר צובע את המסך בשחור.</description>
     <description lang="hr">Black je jednostavni čuvar zaslona koji pretvara zaslon u crno.</description>
     <description lang="hu">A Black egy egyszerű képernyővédő ami feketévé változtatja a képernyőt.</description>
     <description lang="id">Hitam adalah sebuah screensaver sederhana yang mengubah layar menjadi hitam.</description>

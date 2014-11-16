@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr "Automatic Blend Time"
+msgstr "זמן מיזוג אוטומטי"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -26,27 +26,27 @@ msgstr "זמן בין קביעונים"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Additional Random Time"
+msgstr "זמן אקראי נוסף"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Enable Anisotropic Filtering"
+msgstr "אפשר סינון אניזוטרופי"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Enable Hard Cuts"
+msgstr "אפשר חיתוך מידי"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "Loudness Threshold For Hard Cuts"
+msgstr "סף עוצמה לחיתוך מידי"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
-msgstr "Average Time Between Hard Cuts"
+msgstr "זמן ממוצע בין חיתוכים מידיים"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
-msgstr "קצב רענון מקסימאלי"
+msgstr "קצב רענון מירבי"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
@@ -54,11 +54,11 @@ msgstr "הפעל סטריאו 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "חבילת קביעונים"
+msgstr "ערכת קביעונים"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "תיקית קביעוני משתמש"
+msgstr "נתיב תיקיית קביעונים"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
@@ -74,7 +74,7 @@ msgstr "קביעוני Winamp"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "תיקית קביעוני הגדרת משתמש"
+msgstr "תיקיה מותאמת אישית"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

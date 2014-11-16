@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.18"
+  version="2.2.19"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -35,7 +35,7 @@
     <summary lang="fa">نمایه وب تیم Kodi.(رابط پیش فرض Kodi)</summary>
     <summary lang="fi">Team-Kodi:n WWW-käyttöliittymä. (Kodi:n oletus WWW-käyttöliittymä)</summary>
     <summary lang="fr">Interface Web de l'équipe d'Kodi. (Interface Web par défaut d'Kodi)</summary>
-    <summary lang="fr_CA">Interface Web de l'équipe Kodi. (Interface Web par défaut d'Kodi)</summary>
+    <summary lang="fr_CA">Interface Web de l'équipe-Kodi. (Interface Web par défaut d'Kodi)</summary>
     <summary lang="gl">Interface web da equipa de Kodi. (Interface web predefinida de Kodi)</summary>
     <summary lang="he">ממשק הדפדפן הרשמי של Kodi. (ברירת המחדל)</summary>
     <summary lang="hr">Tim Kodi Web sučelje. (Kodi-ovo uobičajeno web sučelje)</summary>

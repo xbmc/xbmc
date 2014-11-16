@@ -46,11 +46,11 @@ msgstr "הצג FPS"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "הצג קונסולת debug"
+msgstr "הצג יומן רישום"
 
 msgctxt "#30008"
 msgid "Show audio analysis"
-msgstr "הצג ניתוח אודיו"
+msgstr "הצג ניתוח קול"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
