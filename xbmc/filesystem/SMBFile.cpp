@@ -308,7 +308,6 @@ int64_t CSMBFile::GetPosition()
 {
   if (m_fd == -1)
     return -1;
-  smb.Init();
   CSingleLock lock(smb);
   return smbc_lseek(m_fd, 0, SEEK_CUR);
 }
@@ -578,7 +577,6 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_fd == -1) return -1;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
-  smb.Init();
   CSingleLock lock(smb);
 
   return  smbc_write(m_fd, (void*)lpBuf, uiBufSize);
@@ -619,7 +617,6 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   m_fileSize = 0;
 
   Close();
-  smb.Init();
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName())) return false;
