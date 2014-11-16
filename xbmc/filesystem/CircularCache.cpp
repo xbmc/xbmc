@@ -178,6 +178,10 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
   return len;
 }
 
+/* Wait "millis" milliseconds for "minimum" amount of data to come in.
+ * Note that caller needs to make sure there's sufficient space in the forward
+ * buffer for "minimum" bytes else we may block the full timeout time
+ */
 int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
 {
   CSingleLock lock(m_sync);
@@ -209,6 +213,11 @@ int64_t CCircularCache::Seek(int64_t pos)
   // we try to avoid a (heavy) seek on the source
   if (pos >= m_end && pos < m_end + 100000)
   {
+    /* Make everything in the cache (back & forward) back-cache, to make sure
+     * there's sufficient forward space. Increasing it with only 100000 may not be
+     * sufficient due to variable filesystem chunksize
+     */
+    m_cur = m_end;
     lock.Leave();
     WaitForData((size_t)(pos - m_cur), 5000);
     lock.Enter();
