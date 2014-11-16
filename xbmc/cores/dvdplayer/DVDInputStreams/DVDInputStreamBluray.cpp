@@ -189,6 +189,7 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
 {
   m_title = NULL;
   m_clip  = (uint32_t)-1;
+  m_angle = 0;
   m_playlist = (uint32_t)-1;
   m_menu  = false;
   m_bd    = NULL;
