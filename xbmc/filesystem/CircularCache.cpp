@@ -182,7 +182,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
  * Note that caller needs to make sure there's sufficient space in the forward
  * buffer for "minimum" bytes else we may block the full timeout time
  */
-int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
+int64_t CCircularCache::WaitForData(unsigned int minimum, unsigned int millis)
 {
   CSingleLock lock(m_sync);
   int64_t avail = m_end - m_cur;
@@ -190,11 +190,11 @@ int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
   if(millis == 0 || IsEndOfInput())
     return avail;
 
-  if(minumum > m_size - m_size_back)
-    minumum = m_size - m_size_back;
+  if(minimum > m_size - m_size_back)
+    minimum = m_size - m_size_back;
 
   XbmcThreads::EndTime endtime(millis);
-  while (!IsEndOfInput() && avail < minumum && !endtime.IsTimePast() )
+  while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
     lock.Leave();
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
