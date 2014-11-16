@@ -512,6 +512,7 @@ void CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 {
   EPlexDirectoryType type = PLEX_DIR_TYPE_UNKNOWN;
 
+  int itemcount = 0;
 #ifdef USE_RAPIDXML
   for (XML_ELEMENT *element = root->first_node(); element; element = element->next_sibling())
 #else
@@ -555,10 +556,14 @@ void CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 
     if (container.HasProperty("playQueueVersion"))
       item->SetProperty("playQueueVersion", container.GetProperty("playQueueVersion"));
+
+    item->SetProperty("index", container.GetProperty("offset").asInteger() + itemcount);
     
     item->m_bIsFolder = IsFolder(item, element);
 
     container.Add(item);
+
+    itemcount++;
   }
 }
 
