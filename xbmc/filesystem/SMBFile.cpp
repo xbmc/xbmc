@@ -74,16 +74,8 @@ void CSMB::Deinit()
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
-    try
-    {
-      smbc_set_context(NULL);
-      smbc_free_context(m_context, 1);
-    }
-    XBMCCOMMONS_HANDLE_UNCHECKED
-    catch(...)
-    {
-      CLog::Log(LOGERROR,"exception on CSMB::Deinit. errno: %d", errno);
-    }
+    smbc_set_context(NULL);
+    smbc_free_context(m_context, 1);
     m_context = NULL;
   }
 }
