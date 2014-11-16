@@ -550,7 +550,7 @@ msgstr "Prognoza na weekend"
 
 msgctxt "#31904"
 msgid "Daily Forecast"
-msgstr "Prognoza codzienna"
+msgstr "Prognoza dzienna"
 
 msgctxt "#31905"
 msgid "Forecast"
