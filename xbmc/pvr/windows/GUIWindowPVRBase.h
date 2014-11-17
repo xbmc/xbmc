@@ -59,7 +59,6 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     virtual void UpdateButtons(void);
     virtual bool OnAction(const CAction &action);
     virtual bool OnBack(int actionID);
