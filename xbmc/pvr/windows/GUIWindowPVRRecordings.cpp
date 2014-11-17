@@ -263,6 +263,47 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
+bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
+{
+  bool bReturn = false;
+
+  if (!item->IsPVRRecording() && !item->m_bIsFolder)
+    return bReturn;
+
+  /* show a confirmation dialog */
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialog)
+    return bReturn;
+
+  pDialog->SetHeading(122); // Confirm delete
+  pDialog->SetLine(0, item->m_bIsFolder ? 19113 : 19112); // Are you sure?
+  pDialog->SetLine(1, "");
+  pDialog->SetLine(2, item->GetLabel());
+  pDialog->SetChoice(1, 117); // Delete
+
+  /* prompt for the user's confirmation */
+  pDialog->DoModal();
+  if (!pDialog->IsConfirmed())
+    return bReturn;
+
+  /* delete the recording */
+  if (g_PVRRecordings->Delete(*item))
+  {
+    g_PVRManager.TriggerRecordingsUpdate();
+    bReturn = true;
+
+    /* remove the item from the list immediately, otherwise the
+    item count further down may be wrong */
+    m_vecItems->Remove(item);
+
+    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
+    if (m_vecItems->GetPath() != "pvr://recordings/" && m_vecItems->GetObjectCount() == 0)
+      GoParentFolder();
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button)
 {
   return button == CONTEXT_BUTTON_DELETE ? ActionDeleteRecording(item) : false;

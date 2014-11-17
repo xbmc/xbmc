@@ -606,39 +606,6 @@ bool CGUIWindowPVRBase::ActionDeleteChannel(CFileItem *item)
   return true;
 }
 
-bool CGUIWindowPVRBase::ActionDeleteRecording(CFileItem *item)
-{
-  bool bReturn = false;
-
-  if (!item->IsPVRRecording() && !item->m_bIsFolder)
-    return bReturn;
-
-  /* show a confirmation dialog */
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return bReturn;
-
-  pDialog->SetHeading(122); // Confirm delete
-  pDialog->SetLine(0, item->m_bIsFolder ? 19113 : 19112); // Are you sure?
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, item->GetLabel());
-  pDialog->SetChoice(1, 117); // Delete
-
-  /* prompt for the user's confirmation */
-  pDialog->DoModal();
-  if (!pDialog->IsConfirmed())
-    return bReturn;
-
-  /* delete the recording */
-  if (g_PVRRecordings->Delete(*item))
-  {
-    g_PVRManager.TriggerRecordingsUpdate();
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRBase::ActionRecord(CFileItem *item)
 {
   bool bReturn = false;
