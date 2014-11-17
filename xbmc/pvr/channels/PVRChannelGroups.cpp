@@ -59,7 +59,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
+bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromClient /* = false */)
 {
   if (group.GroupName().empty() && group.GroupID() <= 0)
     return true;
@@ -78,22 +78,23 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
     if (!updateGroup)
     {
       // create a new group if none was found
-      updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName()));
-      updateGroup->SetGroupType(group.GroupType());
-      updateGroup->SetLastWatched(group.LastWatched());
+      updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup());
       m_groups.push_back(updateGroup);
     }
-    else
+
+    updateGroup->SetGroupID(group.GroupID());
+    updateGroup->SetGroupName(group.GroupName());
+    updateGroup->SetGroupType(group.GroupType());
+
+    // don't override properties we only store locally in our PVR database
+    if (!bUpdateFromClient)
     {
-      // update existing group
-      updateGroup->SetGroupID(group.GroupID());
-      updateGroup->SetGroupName(group.GroupName());
-      updateGroup->SetGroupType(group.GroupType());
+      updateGroup->SetLastWatched(group.LastWatched());
     }
   }
 
   // persist changes
-  if (bSaveInDb && updateGroup)
+  if (bUpdateFromClient)
     return updateGroup->Persist();
 
   return true;
