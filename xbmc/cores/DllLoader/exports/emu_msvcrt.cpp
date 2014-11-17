@@ -583,6 +583,8 @@ extern "C"
              err != ECONNRESET && err != ENOTCONN && err != ETIMEDOUT &&
              err != ENOBUFS && err != ENOMEM && err != ENXIO))
           errno = EIO; // exact errno is unknown or incorrect, use default error number
+        
+        return -1;
       }
       return ret;
     }
@@ -613,6 +615,8 @@ extern "C"
              err != ENOBUFS && err != ENXIO &&
              err != EACCES && err != ENETDOWN && err != ENETUNREACH))
           errno = EIO; // exact errno is unknown or incorrect, use default error number
+
+        return -1;
       }
       return ret;
     }
