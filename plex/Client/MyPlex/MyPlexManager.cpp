@@ -31,6 +31,7 @@
 
 #include "File.h"
 #include "PlexAES.h"
+#include "Base64.h"
 #include "Third-Party/hash-library/sha256.h"
 
 
@@ -473,7 +474,7 @@ void CMyPlexManager::CacheUserInfo(TiXmlElement *userXml)
   doc.Accept(&printer);
   
   CPlexAES aes(g_guiSettings.GetString("system.uuid"));
-  std::string outdata = aes.encrypt(printer.Str());
+  std::string outdata = Base64::Encode(aes.encrypt(printer.Str()));
   
   XFILE::CFile file;
   if (file.OpenForWrite("special://plexprofile/plexuserdata.exml"))

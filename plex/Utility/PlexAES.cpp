@@ -1,6 +1,7 @@
 #include "PlexAES.h"
 #include "log.h"
 #include "File.h"
+#include "Base64.h"
 
 #include <boost/foreach.hpp>
 
@@ -92,7 +93,7 @@ std::string CPlexAES::decryptFile(const std::string &url)
         break;
     }
     
-    return decrypt(outData);
+    return decrypt(Base64::Decode(outData));
   }
   
   return "";
