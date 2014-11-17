@@ -634,6 +634,14 @@ bool CGUIWindowPVRBase::ActionDeleteRecording(CFileItem *item)
   {
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
+
+    /* remove the item from the list immediately, otherwise the
+    item count further down may be wrong */
+    m_vecItems->Remove(item);
+
+    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
+    if (m_vecItems->GetPath() != "pvr://recordings/" && m_vecItems->GetObjectCount() == 0)
+      GoParentFolder();
   }
 
   return bReturn;
