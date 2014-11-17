@@ -152,7 +152,7 @@ else(TARGET_COMMON_DARWIN)
   install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/SlideshowOverlay.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-  install(DIRECTORY ${plexdir}/Resources/system/keymaps DESTINATION ${RESOURCEPATH}/keymaps COMPONENT RUNTIME)
+  install(DIRECTORY ${plexdir}/Resources/system/keymaps DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/system/peripherals.xml ${plexdir}/Resources/system/playercorefactory.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
   if(TARGET_WIN32)
