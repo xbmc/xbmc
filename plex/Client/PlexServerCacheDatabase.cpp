@@ -5,6 +5,9 @@
 #include "log.h"
 
 #include "StringUtils.h"
+#include "PlexAES.h"
+#include "Base64.h"
+#include "settings/GUISettings.h"
 #include <boost/foreach.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,13 +36,21 @@ bool CPlexServerCacheDatabase::CreateTables()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerCacheDatabase::UpdateOldVersion(int version)
 {
-  if (version == 1)
+  if (version < 3)
   {
     BeginTransaction();
+    try
+    {
+      m_pDS->exec("insert into server (home) values ('1');");
+    }
+    catch (...)
+    {
+      m_pDS->exec("alter table server add column home bool");
+    }
+    
     if (!clearTables())
       return false;
     
-    m_pDS->exec("alter table server add column home bool");
     CommitTransaction();
     return true;
   }
@@ -107,9 +118,15 @@ bool CPlexServerCacheDatabase::storeServer(const CPlexServerPtr &server)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerCacheDatabase::storeConnection(const CStdString &uuid, const CPlexConnectionPtr &connection)
 {
+  CStdString token;
+  
+  // scramble the token.
+  CPlexAES aes(g_guiSettings.GetString("system.uuid"));
+  token = Base64::Encode(aes.encrypt(connection->GetAccessToken()));
+  
   CStdString sql = PrepareSQL("insert into connections (serverUUID, host, port, token, type, scheme) values ('%s', '%s', %i, '%s', %i, '%s');\n",
                               uuid.c_str(), connection->GetAddress().GetHostName().c_str(), connection->GetAddress().GetPort(),
-                              connection->GetAccessToken().c_str(), connection->m_type, connection->GetAddress().GetProtocol().c_str());
+                              token.c_str(), connection->m_type, connection->GetAddress().GetProtocol().c_str());
   try
   {
     m_pDS->exec(sql);
@@ -197,6 +214,10 @@ bool CPlexServerCacheDatabase::getCachedServers(std::vector<CPlexServerPtr>& ser
         CStdString schema = m_pDS->fv("scheme").get_asString();
         int port = m_pDS->fv("port").get_asInt();
         CStdString token = m_pDS->fv("token").get_asString();
+        
+        // unscramble
+        CPlexAES aes(g_guiSettings.GetString("system.uuid"));
+        token = aes.decrypt(Base64::Decode(token));
 
         CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(type, address, port, schema, token));
         server->AddConnection(connection);
