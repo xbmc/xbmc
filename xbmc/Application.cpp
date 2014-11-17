@@ -3555,6 +3555,10 @@ void CApplication::Stop(int exitCode)
     CSFTPSessionManager::DisconnectAllSessions();
 #endif
 
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+    smb.Deinit();
+#endif
+
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
