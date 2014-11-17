@@ -616,7 +616,7 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 #ifdef USE_PAGING
   if (items.HasProperty("totalSize"))
   {
-    if (items.GetProperty("totalSize").asInteger() > PLEX_DEFAULT_PAGE_SIZE)
+    if (items.GetProperty("totalSize").asInteger() > items.Size())
     {
      
       std::map<int, std::string> charMap;
@@ -645,7 +645,16 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
         }
       }
       
-      for (int i=0; i < (items.GetProperty("totalSize").asInteger()) - PLEX_DEFAULT_PAGE_SIZE; i++)
+      for (int i = 0; i < NeededRangeStart; i++)
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem);
+        item->SetPath(boost::lexical_cast<std::string>(i));
+        if (charMap.find(PLEX_DEFAULT_PAGE_SIZE + i) != charMap.end())
+          item->SetSortLabel(CStdString(charMap[PLEX_DEFAULT_PAGE_SIZE + i]));
+        items.AddFront(item, 0);
+      }
+
+      for (int i = NeededRangeEnd; i < items.GetProperty("totalSize").asInteger(); i++)
       {
         CFileItemPtr item = CFileItemPtr(new CFileItem);
         item->SetPath(boost::lexical_cast<std::string>(i));
