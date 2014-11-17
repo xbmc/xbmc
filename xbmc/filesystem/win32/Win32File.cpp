@@ -187,7 +187,7 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
     if (!ReadFile(m_hFile, dummyBuf.get(), 0, &bytesRead, NULL))
       return -1;
 
-    assert(bytesRead != 0);
+    assert(bytesRead == 0);
     return 0;
   }
 
