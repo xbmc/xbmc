@@ -1257,8 +1257,8 @@ extern "C"
   {
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
-      char tmp[2] = { (unsigned char)character, 0 };
-      dllputs(tmp);
+      unsigned char tmp[2] = { (unsigned char)character, 0 };
+      dllputs((char *)tmp);
       return character;
     }
     else
