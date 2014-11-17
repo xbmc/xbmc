@@ -1471,8 +1471,8 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if (!g_application.IsMusicScanning())
       {
+        //FIXME: do this on a seaparate thread
         CMusicDatabase musicdatabase;
-
         musicdatabase.Open();
         musicdatabase.Cleanup(userInitiated);
         musicdatabase.Close();

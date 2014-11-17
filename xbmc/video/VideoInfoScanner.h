@@ -60,8 +60,8 @@ namespace VIDEO
      */
     void Start(const CStdString& strDirectory, bool scanAll = false);
     bool IsScanning();
-    void CleanDatabase(CGUIDialogProgressBarHandle* handle=NULL, const std::set<int>* paths=NULL, bool showProgress=true);
     void Stop();
+    void StartLibraryClean();
 
     //! \brief Set whether or not to show a progress dialog
     void ShowDialog(bool show) { m_showDialog = show; }
@@ -126,6 +126,7 @@ namespace VIDEO
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
     bool IsExcluded(const CStdString& strDirectory) const;
+    void CleanDatabase(CGUIDialogProgressBarHandle* handle=NULL, const std::set<int>* paths=NULL, bool showProgress=true);
 
     INFO_RET RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetrieveInfoForMovie(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
