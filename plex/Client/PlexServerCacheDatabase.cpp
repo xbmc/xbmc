@@ -31,6 +31,22 @@ bool CPlexServerCacheDatabase::CreateTables()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServerCacheDatabase::UpdateOldVersion(int version)
+{
+  if (version == 1)
+  {
+    BeginTransaction();
+    if (!clearTables())
+      return false;
+    
+    m_pDS->exec("alter table server add column home bool");
+    CommitTransaction();
+    return true;
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerCacheDatabase::clearTables()
 {
   CLog::Log(LOGINFO, "CPlexServerCacheDatabase::clearTables");
@@ -59,7 +75,9 @@ bool CPlexServerCacheDatabase::storeServer(const CPlexServerPtr &server)
   CStdString bitrates = StringUtils::Join(server->GetTranscoderBitrates(), ",");
   CStdString resolutions = StringUtils::Join(server->GetTranscoderResolutions(), ",");
 
-  CStdString sql = PrepareSQL("insert into server values ('%s', '%s', '%s', '%s', %i, %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s');",
+  CStdString sql = PrepareSQL("insert into server (uuid, name, version, owner, synced, owned, home, serverClass, supportsDeletion,"
+                              "supportsVideoTranscoding, supportsAudioTranscoding, transcoderQualities, transcoderBitrates, transcoderResolutions) "
+                              "values ('%s', '%s', '%s', '%s', %i, %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s');",
                               server->GetUUID().c_str(), server->GetName().c_str(), server->GetVersion().c_str(), server->GetOwner().c_str(),
                               server->GetSynced(), server->GetOwned(), server->GetHome(), server->GetServerClass().c_str(), server->SupportsDeletion(),
                               server->SupportsVideoTranscoding(), server->SupportsAudioTranscoding(), qualities.c_str(),
@@ -89,7 +107,7 @@ bool CPlexServerCacheDatabase::storeServer(const CPlexServerPtr &server)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerCacheDatabase::storeConnection(const CStdString &uuid, const CPlexConnectionPtr &connection)
 {
-  CStdString sql = PrepareSQL("insert into connections values ('%s', '%s', %i, '%s', %i, '%s');\n",
+  CStdString sql = PrepareSQL("insert into connections (serverUUID, host, port, token, type, scheme) values ('%s', '%s', %i, '%s', %i, '%s');\n",
                               uuid.c_str(), connection->GetAddress().GetHostName().c_str(), connection->GetAddress().GetPort(),
                               connection->GetAccessToken().c_str(), connection->m_type, connection->GetAddress().GetProtocol().c_str());
   try
