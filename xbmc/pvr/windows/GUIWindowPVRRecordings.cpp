@@ -319,24 +319,17 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_MARK_WATCHED)
+  if (button == CONTEXT_BUTTON_MARK_WATCHED || button == CONTEXT_BUTTON_MARK_UNWATCHED)
   {
-    bReturn = true;
+    int playCount = button == CONTEXT_BUTTON_MARK_WATCHED ? 1 : 0;
 
-    int newSelection = m_viewControl.GetSelectedItem();
-    g_PVRRecordings->SetRecordingsPlayCount(item, 1);
-    m_viewControl.SetSelectedItem(newSelection);
-
-    Refresh(true);
-  }
-
-  if (button == CONTEXT_BUTTON_MARK_UNWATCHED)
-  {
-    bReturn = true;
-
-    g_PVRRecordings->SetRecordingsPlayCount(item, 0);
-
-    Refresh(true);
+    if (g_PVRRecordings->SetRecordingsPlayCount(item, playCount))
+    {
+      // Advance the selected item one notch
+      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
+      Refresh(true);
+      bReturn = true;
+    }
   }
 
   return bReturn;
