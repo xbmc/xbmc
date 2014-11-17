@@ -1,0 +1,32 @@
+diff --git a/lib/libdvd/libdvdcss/src/device.c b/lib/libdvd/libdvdcss/src/device.c
+index 3de1879..53d1fdf 100644
+--- a/lib/libdvd/libdvdcss/src/device.c
++++ b/lib/libdvd/libdvdcss/src/device.c
+@@ -816,13 +816,21 @@ static int libc_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
+     off_t i_size, i_ret;
+ 
+     i_size = (off_t)i_blocks * (off_t)DVDCSS_BLOCK_SIZE;
+-    i_ret = read( dvdcss->i_read_fd, p_buffer, i_size );
+-
+-    if( i_ret < 0 )
++    i_ret = 0;
++    while( i_ret < i_size )
+     {
+-        print_error( dvdcss, "read error" );
+-        dvdcss->i_pos = -1;
+-        return i_ret;
++        off_t i_r;
++        i_r = read( dvdcss->i_read_fd, ((char*)p_buffer) + i_ret, i_size - i_ret );
++        if( i_r < 0 )
++        {
++            print_error(dvdcss, "read error");
++            dvdcss->i_pos = -1;
++            return i_r;
++        }
++        if( i_r == 0 )
++            break;
++
++        i_ret += i_r;
+     }
+ 
+     /* Handle partial reads */
