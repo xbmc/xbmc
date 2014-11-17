@@ -1255,6 +1255,9 @@
 		DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990181709BB2D00B35C21 /* MediaSourceSettings.cpp */; };
 		DF89901E1709BB2D00B35C21 /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */; };
 		DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */; };
+		DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
+		DF923E5E1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
+		DF923E5F1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF93D65D1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */; };
 		DF93D6991444A8B1007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6631444A8B0007C6459 /* AFPFile.cpp */; };
 		DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */; };
@@ -3657,9 +3660,6 @@
 		F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CC234818150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
 		F5CC234918150277006B5E91 /* AESinkNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC234518150277006B5E91 /* AESinkNULL.cpp */; };
-		F5CC238818150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
-		F5CC238918150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
-		F5CC238A18150768006B5E91 /* AESinkProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC238618150768006B5E91 /* AESinkProfiler.cpp */; };
 		F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
@@ -4955,6 +4955,8 @@
 		DF89901B1709BB2D00B35C21 /* SkinSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinSettings.h; sourceTree = "<group>"; };
 		DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewStateSettings.cpp; sourceTree = "<group>"; };
 		DF8990201709BB5400B35C21 /* ViewStateSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewStateSettings.h; sourceTree = "<group>"; };
+		DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataCacheCore.cpp; sourceTree = "<group>"; };
+		DF923E5C1A11536A008CDB0C /* DataCacheCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataCacheCore.h; sourceTree = "<group>"; };
 		DF93D65B1444A7A3007C6459 /* SlingboxDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlingboxDirectory.h; sourceTree = "<group>"; };
 		DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlingboxDirectory.cpp; sourceTree = "<group>"; };
 		DF93D6631444A8B0007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
@@ -6211,8 +6213,6 @@
 		F5CC230B18150118006B5E91 /* AESinkFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESinkFactory.h; sourceTree = "<group>"; };
 		F5CC234518150277006B5E91 /* AESinkNULL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkNULL.cpp; path = Sinks/AESinkNULL.cpp; sourceTree = "<group>"; };
 		F5CC234618150277006B5E91 /* AESinkNULL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkNULL.h; path = Sinks/AESinkNULL.h; sourceTree = "<group>"; };
-		F5CC238618150768006B5E91 /* AESinkProfiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkProfiler.cpp; path = Sinks/AESinkProfiler.cpp; sourceTree = "<group>"; };
-		F5CC238718150768006B5E91 /* AESinkProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkProfiler.h; path = Sinks/AESinkProfiler.h; sourceTree = "<group>"; };
 		F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE60813D3C89700225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
@@ -8724,6 +8724,8 @@
 				E38E15D20D25F9FA00618676 /* paplayer */,
 				F5E56B11108284E6006E788A /* playercorefactory */,
 				E38E16580D25F9FA00618676 /* VideoRenderers */,
+				DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */,
+				DF923E5C1A11536A008CDB0C /* DataCacheCore.h */,
 				E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */,
 				E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */,
 				7CF05049190A1D7200222135 /* FFmpeg.cpp */,
@@ -10184,8 +10186,6 @@
 				F5CC228A1814F7E9006B5E91 /* AESinkDARWINOSX.h */,
 				F5CC234518150277006B5E91 /* AESinkNULL.cpp */,
 				F5CC234618150277006B5E91 /* AESinkNULL.h */,
-				F5CC238618150768006B5E91 /* AESinkProfiler.cpp */,
-				F5CC238718150768006B5E91 /* AESinkProfiler.h */,
 			);
 			name = Sinks;
 			sourceTree = "<group>";
@@ -11614,7 +11614,6 @@
 				F5CC2305181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230E18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234918150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238A18150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				7C8AE84E189DE3CD00C33786 /* CoreAudioChannelLayout.cpp in Sources */,
 				7C8AE84F189DE3CD00C33786 /* CoreAudioDevice.cpp in Sources */,
 				7C8AE850189DE3CD00C33786 /* CoreAudioHardware.cpp in Sources */,
@@ -11626,6 +11625,7 @@
 				7CC7B6B61918699000DDB120 /* GUIDialogSettingsManagerBase.cpp in Sources */,
 				7CC7B6B91918699000DDB120 /* GUIDialogSettingsManualBase.cpp in Sources */,
 				7CC7B6C0191869EA00DDB120 /* SettingCreator.cpp in Sources */,
+				DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */,
 				7CC7B6C3191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C819186A8800DDB120 /* SettingConditions.cpp in Sources */,
 				7CCDA0DB192753E30074CF51 /* PltAction.cpp in Sources */,
@@ -12815,7 +12815,6 @@
 				F5CC2304181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230D18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234818150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238918150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2518AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
 				7CF0504D190A1D7200222135 /* FFmpeg.cpp in Sources */,
 				7CF05058191195DA00222135 /* MediaType.cpp in Sources */,
@@ -13064,6 +13063,7 @@
 				7CCDACA919275D1F0074CF51 /* NptStdcDebug.cpp in Sources */,
 				7CCDACB219275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
 				7CCDACC319275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
+				DF923E5F1A11536A008CDB0C /* DataCacheCore.cpp in Sources */,
 				7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469219427AED00008885 /* PosixDirectory.cpp in Sources */,
 				7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
@@ -14008,7 +14008,6 @@
 				F5CC2303181500B1006B5E91 /* EndianSwap.cpp in Sources */,
 				F5CC230C18150118006B5E91 /* AESinkFactory.cpp in Sources */,
 				F5CC234718150277006B5E91 /* AESinkNULL.cpp in Sources */,
-				F5CC238818150768006B5E91 /* AESinkProfiler.cpp in Sources */,
 				DF374B2418AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */,
 				7CF0504C190A1D7200222135 /* FFmpeg.cpp in Sources */,
 				7CF05057191195DA00222135 /* MediaType.cpp in Sources */,
@@ -14054,6 +14053,7 @@
 				7CCDA20A192753E30074CF51 /* ContentDirectorywSearchSCPD.cpp in Sources */,
 				7CCDA215192753E30074CF51 /* PltDidl.cpp in Sources */,
 				7CCDA21E192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
+				DF923E5E1A11536A008CDB0C /* DataCacheCore.cpp in Sources */,
 				7CCDA227192753E30074CF51 /* PltMediaBrowser.cpp in Sources */,
 				7CCDA230192753E30074CF51 /* PltMediaCache.cpp in Sources */,
 				7CCDA239192753E30074CF51 /* PltMediaItem.cpp in Sources */,

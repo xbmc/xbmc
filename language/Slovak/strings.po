@@ -1237,10 +1237,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Rok"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizovať úrovne hlasitosti pri downmixe"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "AV prijímač s možnosťou dekódovania DTS-HD"
@@ -3237,6 +3233,34 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Vlastné zariadenie pre passthrough zvuku"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Teplota"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Tlak"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extrémnz"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "vírenie"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Nefunkčný"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Veterno"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Nastavenia medzipamäte"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "ustupujúci"
@@ -5057,10 +5081,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Povoliť hardvérovú akceleráciu (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Povoliť viacvláknové softvérové dekódovanie"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Použiť MPEG-2 VDPAU"
@@ -5564,10 +5584,6 @@ msgstr "Pridávať skladby do fronty pri ich výbere"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Prehrávanie"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7162,8 +7178,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Doplnok pre backend, aby bolo možné použiť PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Pre viac informácií navštívte xbmc.org/pvr."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Pre viac informácií navštívte kodi.tv/pvr."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10497,10 +10513,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vybrať zo všetkých titulov"
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Zobraziť Blu-ray menu"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Prehrať hlavný titul: %d"
@@ -12156,10 +12168,6 @@ msgstr "Select alternate mode..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Same as movie"
-
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Vyberte. ako sa má zvuk downmixovať, napríklad z 5.1 na 2.0: [Zapnuté] po downmixe je zachovaný dynamický rozsah pôvodného zdroja zvuku, avšak hlasitosť bude nižšia [Vypnuté] je zachovaná úroveň hlasitosti pôvodného zdroja signálu, avšak dynamický rozsah je zmenšený. Poznámka - Dynamický rozsah je rozdiel medzi najtichším a najhlasnejším zvukom v zdroji zvuku."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

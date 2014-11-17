@@ -793,6 +793,10 @@ msgctxt "#553"
 msgid "Size"
 msgstr "Хэмжээ"
 
+msgctxt "#558"
+msgid "Album"
+msgstr "Альбом"
+
 msgctxt "#574"
 msgid "Country"
 msgstr "Улс"
@@ -837,6 +841,10 @@ msgctxt "#1213"
 msgid "Pictures"
 msgstr "Зураг"
 
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Тохиргоо"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "Ням"
@@ -865,6 +873,10 @@ msgctxt "#10511"
 msgid "System info"
 msgstr "Системийн мэдээлэл"
 
+msgctxt "#12321"
+msgid "Ok"
+msgstr "OK"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Цаг агаар"
@@ -876,6 +888,14 @@ msgstr "Санах байгууламж"
 msgctxt "#13280"
 msgid "Video"
 msgstr "Видео"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU:"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Фонт"
 
 msgctxt "#13398"
 msgid "Shortcuts"
@@ -1028,6 +1048,10 @@ msgstr "DD/MM/YYYY форматаар огноо оруулах"
 msgctxt "#14068"
 msgid "Enter the IP address"
 msgstr "IP хаяг оруулах"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Пүр"
 
 msgctxt "#14098"
 msgid "Play"
@@ -1449,9 +1473,17 @@ msgctxt "#20142"
 msgid "Username"
 msgstr "Хэрэглэгчийн нэр"
 
+msgctxt "#20177"
+msgid "Done"
+msgstr "OK"
+
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Эрэмбэлэх: ID"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Видео"
 
 msgctxt "#21417"
 msgid "Settings"
@@ -1468,6 +1500,14 @@ msgstr "Аудио кодек"
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Нягтаршил"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Нээж байна"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "Фонт"
 
 msgctxt "#21875"
 msgid "Country"
@@ -1508,3 +1548,19 @@ msgstr "ТВ"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Бичлэг"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Видео"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Видео"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Дуу"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Дуу"

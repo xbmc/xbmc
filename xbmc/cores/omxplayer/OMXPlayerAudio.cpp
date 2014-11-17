@@ -43,6 +43,7 @@
 #include "DVDPlayer.h"
 #include "linux/RBP.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/DataCacheCore.h"
 
 #include <iostream>
 #include <sstream>
@@ -145,6 +146,8 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_format.m_dataFormat    = GetDataFormat(m_hints);
   m_format.m_sampleRate    = 0;
   m_format.m_channelLayout = 0;
+
+  g_dataCacheCore.SignalAudioInfoChange();
 }
 
 void OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -206,6 +209,7 @@ bool OMXPlayerAudio::CodecChange()
      (!m_passthrough && minor_change) || !m_DecoderOpen)
   {
     m_hints_current = m_hints;
+    g_dataCacheCore.SignalAudioInfoChange();
     return true;
   }
 

@@ -26,6 +26,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -263,23 +264,41 @@ bool CEpgInfoTag::Changed(void) const
   return m_bChanged;
 }
 
-bool CEpgInfoTag::IsActive(void) const
+CDateTime CEpgInfoTag::GetCurrentPlayingTime() const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
+
+  CPVRChannelPtr channel;
+  if (g_PVRClients->GetPlayingChannel(channel))
+  {
+    if (channel == ChannelTag())
+    {
+      // Timeshifting active?
+      time_t time = g_PVRClients->GetPlayingTime();
+      if (time > 0) // returns 0 in case no client is currently playing
+        now = time;
+    }
+  }
+  return now;
+}
+
+bool CEpgInfoTag::IsActive(void) const
+{
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_startTime <= now && m_endTime > now);
 }
 
 bool CEpgInfoTag::WasActive(void) const
 {
-  CDateTime now = CDateTime::GetUTCDateTime();
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_endTime < now);
 }
 
 bool CEpgInfoTag::InTheFuture(void) const
 {
-  CDateTime now = CDateTime::GetUTCDateTime();
+  CDateTime now = GetCurrentPlayingTime();
   CSingleLock lock(m_critSection);
   return (m_startTime > now);
 }

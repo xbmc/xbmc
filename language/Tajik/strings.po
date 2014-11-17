@@ -1221,10 +1221,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Сол"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Дараҷаҳои ҳамворкунӣ барои омезиш"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Ресивер бо қобилияти DTS-HD"
@@ -3189,6 +3185,26 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Дастгоҳи барориши бевоситаи аудиоии дигар"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ниҳоят"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Тӯфон"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Вайроншуда"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Шамолдор"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Танзимот"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Яхчабандон"
@@ -4997,10 +5013,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Фаъол кардани шитоби сахтафзор (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Иҷозат додани рамзкушоии нармафзор бо якҷанд ҷараён"
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Истифодаи VC-1 VDPAU"
@@ -5468,10 +5480,6 @@ msgstr "Илова кардани роҳчаҳо ҳангоми интихоб"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Пахш"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "Дискҳои DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7026,8 +7034,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Барномаи иловагӣ барои сервер, то ки тавонад PVR-ро истифода барад."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Лутфан, барои маълумоти муфассал ба вебсайти \"xbmc.org/pvr\" гузаред."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Лутфан, барои маълумоти муфассал ба вебсайти \"kodi.tv/pvr\" гузаред."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10301,10 +10309,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Интихоб кардан аз ҳамаи унвонҳо..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Намоиш додани менюи Blu-ray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Пахш кардани унвони асосӣ: %d"
@@ -11853,10 +11857,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Монанди филм"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Интихоб кунед, ки чӣ тавр аудио омезиш меёбад, масалан аз 5.1 то 2.0: [Фаъолшуда] диапазони динамикии манбаи аудиои аслиро ҳангоми омезиш истифода мекунад, вале баландии садо паст мешавад [Ғайрифаъол] сатҳи баландии садои манбаи аудиоии аслиро истифода мекунад, вале диапазони динамиқӣ фишурдашуда аст. Тавзеҳ - Диапазони динамикӣ ин тафовут байни садои пасттарин ва баландтарин дар манбаи аудиоӣ мебошад."
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Иҷозати идоракунии баландии садо аз муштариёни AirPlay."
@@ -11892,6 +11892,34 @@ msgstr "эпизод"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "эпизод"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Насб кардан"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Мавсимҳои синамо"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Видео"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Видеоҳо"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Албом"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Суруд"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Сурудҳо"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

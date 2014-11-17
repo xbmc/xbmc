@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Konfirmasi pindah file"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Konfirmasi hapus"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Salin file ini?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Sutradara:"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Enkoder Audio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Tagline:"
@@ -844,6 +852,10 @@ msgstr "Video Mainkan Secara Otomatis"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Musik Mainkan Secara Otomatis"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1085,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Bahasa antar-muka pengguna"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Layout Keyboard"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=otomatis)"
@@ -1222,8 +1238,8 @@ msgid "Year"
 msgstr "Tahun"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalisasikan tingkat ketika melakukan downmix"
+msgid "Maintain original volume on downmix"
+msgstr "Pertahankan volume asli ketika melakukan downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1981,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Downmix multichannel audio ke stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Nomor"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Sortir : %s"
@@ -2397,9 +2417,17 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Tingkat Kompresi"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Aktifkan pencatatan log komponen spesifik"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Perbolehkan transkode Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Tentukan pencatatan log komponen spesifik"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
@@ -2432,6 +2460,18 @@ msgstr "Pencatatan terinci untuk permintaan JSON-RPC"
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "Pencatatan log terperinci untuk komponen AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Pencatatan log terinci untuk pustaka AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Pencatatan log terinci untuk komponen UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Pencatatan log terinci untuk pustaka CEC"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2780,6 +2820,10 @@ msgstr "Pustaka musik perlu memindai ulang tag dari berkas"
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Apakah anda ingin memindai sekarang?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s dari %s tersedia"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3161,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Umumkan service ini ke sistem lain melalui Zerconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Modus kompatibilitas IOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Perbolehkan kontrol volume"
@@ -3196,6 +3244,50 @@ msgstr "Perangkat audio Kustom"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Perangkat Keluaran Kustom"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Suhu"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Tekanan"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Kedekatan"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensitas"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Kasar"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstrim"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Whirl"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Rusak"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Berangin"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Setelan"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4048,6 +4140,18 @@ msgstr "Total Sistem Berjalan"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Tingkat batere"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Pemutakhiran otomatis: Aktif"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Pemutakhiran otomatis: Beri tahu"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Pemutakhiran otomatis: Tidak pernah"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5005,9 +5109,21 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Ijinkan akselerasi perangkat-keras (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Perbolehkan dekode perangkat-lunak multi threaded"
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Gunakan MPEG-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Aktifkan opsi ini untuk mengunakan akselerasi perangkat keras untuk kodek MPEG-(1/2). Apabila dinon-aktifkan, maka akan menggunakan CPU. Kartu Radeon tipe lama cenderung crash apabila diaktifkan."
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Gunakan MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Aktifkan opsi ini untuk mengunakan akselerasi perangkat keras untuk kodek MPEG-4. Apabila dinon-aktifkan, maka akan menggunakan CPU. Beberapa perangkat keras ION cenderung bermasalah apabila diaktifkan."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5016,6 +5132,22 @@ msgstr "Gunakan VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Aktifkan opsi ini untuk menggunakan akselerasi perangkat-keras untuk kodek berbasis VC-1. Apabila dinonaktifkan, akan menggunakan CPU. Perangkat keras merek AMD dengan VDPAU tidak dapat mendekode VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Gunakan MPEG-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Aktifkan opsi ini untuk mengunakan akselerasi perangkat keras untuk kodek MPEG-(1/2). Apabila dinon-aktifkan, maka akan menggunakan CPU. Di beberapa video MPEG-2 dapat muncul artefak hijau."
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Gunakan MPEG-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Aktifkan opsi ini untuk mengunakan akselerasi perangkat keras untuk kodek MPEG-4. Apabila dinon-aktifkan, maka akan menggunakan CPU."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5036,6 +5168,18 @@ msgstr "Perangkat Luna"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Diakselerasi oleh perangkat-keras"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Utamakan metode render VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Perbolehkan akselerasi perangkat keras (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Gunakan OMXPlayer untuk mendekode berkas video."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5361,6 +5505,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filter GUI"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Gunakan Scanning Latar"
@@ -5478,8 +5626,8 @@ msgid "Playback"
 msgstr "Playback"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
+msgid "Discs"
+msgstr "Disk"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5536,6 +5684,18 @@ msgstr "Berhenti menyalin CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Akselerasi"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Modus pemutaran Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Putar film utama"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Tampilkan menu yang sederhana"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -5600,6 +5760,10 @@ msgstr "Navigasi Suara"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Kulit Standar"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Ukuran font lebih besar"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5977,6 +6141,18 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Pos-pemrosesan"
@@ -6008,6 +6184,10 @@ msgstr "Pisahkan kata pencarian menggunakan AND, OR dan/atau NOT."
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "atau gunakan frase untuk mencari padanan sama, seperti \"Gue ganteng banget bray\"."
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Temukan yang serupa"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6401,9 +6581,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Silakan berpindah ke saluran lain."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Pindah ke kanal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Masukkan nama folder untuk rekaman"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Silahkan pilih kanal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6424,6 +6612,14 @@ msgstr "Galat tak terduga ditemui. Coba lagi atau periksa log untuk detail."
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Backend PVR galat. Periksa log untuk detail."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Hapus rekaman ini?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Hapus semua rekaman pada folder ini?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6528,6 +6724,10 @@ msgstr "SIlakan buat grup dulu"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nama dari grup yang baru"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Cari..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -7029,6 +7229,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Jangan tampilkan peringatan 'koneksi putus'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Item Grup"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Tidak ada pengaya PVR yang dapat ditemukan"
@@ -7042,8 +7246,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Pengaya untuk backend agar dapat menggunakan PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Silakan kunjungi xbmc.org/pvr untuk mempelajari lebih lanjut"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Silakan kunjungi kodi.tv/pvr untuk mempelajari lebih lanjut"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7088,6 +7292,18 @@ msgstr "Pilih ikon"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Ramban ikon"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Mencari ikon kanal"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Semua kanal"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Latar depan"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9369,6 +9585,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s ke %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Eksternal)"
@@ -10105,6 +10325,10 @@ msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Periksa untuk pembaruan"
 
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Dimutakhirkan terakhir %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Apakan anda ingin mengaktifkan tambahan ini?"
@@ -10180,6 +10404,22 @@ msgstr "Tambahan dibutuhkan"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Coba menyambungkan lagi?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Tambahan Pembantu"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Pustaka Tambahan"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Pustaka Informasi"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Pustaka Visualisasi"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10321,6 +10561,18 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Lokasi tersendiri"
 
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Otomatis mengunduh subtitle pertama"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Otomatis mengunduh subtitle pertama dari daftar hasil pencarian"
+
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Konfigurasi telah dipindahkan"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifikasi"
@@ -10334,8 +10586,8 @@ msgid "Select from all titles ..."
 msgstr "Pilih dari semua judul..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Tampilkan menu bluray"
+msgid "Show Blu-ray menu"
+msgstr "Tampilkan menu Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10524,6 +10776,14 @@ msgstr "Akhir Pekan"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s hari"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Streams"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Perangkat"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -11985,6 +12245,14 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Tentukan port server web."
 
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Tentukan nama pengguna webserver. Ini hanya berefek ketika nama pengguna dan password diset."
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Tentukan password webserver. Ini hanya berefek ketika nama pengguna dan password diset."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Pilih antara antarmuka web yang terpasang melalui Pengelola Pengaya."
@@ -12233,6 +12501,10 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Folder yang digunakan untuk menyimpan screenshot yang terambil di dalam Kodi"
 
+msgctxt "#36394"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Aktifkan pesan log dari pustaka tambahan disertakan ke dalam log."
+
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
 msgstr "Kategori yang berisi setelan untuk fungsi kunci master."
@@ -12341,10 +12613,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Aktifkan dekode video perang-keras menggunakan dekoder AMLogic."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Aktifkan pendekodean perangkat lunak frame-multi-threaded (kurang handal dibanding modus single-threaded)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Pilih apa yang akan terjadi ketika item EPG dipilih: [Tampilkan menu konteks] akan menampilkan menu konteks dimana anda dapat memilih aksi selanjutnya; [pindah kanal] akan memindahkan ke kanal yang dimaksud; [Informasi Acara] akan menampilkan informasi mendetil beserta plot dan opsi tambahan; [Record] akan membuat timer perekaman untuk item terpilih."
@@ -12377,6 +12645,30 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Tentukan apakah pendekodean video dilakukan secara perangkat lunak (Membutuhkan CPU lebih) atau dengan pengakselerasi perangkat-keras bila memungkinkan."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Pilih layout keyboard virtual."
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Ketika diaktifkan, akan mengutamakan metode render VAAPI. Ini mengurangi beban CPU tetapi driver dapat tidak merespon."
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Aktifkan akselerasi perangkat keras (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Gunakan DVDPlayer untuk pendekodean berkas video dengan akselerasi MMAL"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modus 3D Stereoskopis (saat ini)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Modus 3D Stereoskopis"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Non Aktif"
@@ -12405,6 +12697,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Berbasis Perangkat-keras"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoskopis (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Modus pemutaran video 3D stereoskopis"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Tanya saya"
@@ -12421,6 +12721,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Sama seperti film (deteksi-otomatis)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Matikan modus 3D stereoskopis ketika pemutaran selesai"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Pilih modus pemutaran"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Pilih Modus 3D Stereoskopis"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Pilih modus alternatif..."
@@ -12430,12 +12742,36 @@ msgid "Same as movie"
 msgstr "Sama seperti film"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Pilih bagaimana audio didownmix, contohnya dari 5.1 ke 2.0: [Aktifkan] Pertahankan rentang dinamis sumber audio aslinya ketika didownmix namun volume akan berkurang [Matikan] Pertahankan level volume sumber audio aslinya namun rentang dinamisnya akan terkompresi. Catatan - Rentang dinamis adalah perbedaan antar suara terkecil dan terkeras di sumber audio."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Pilih bagaimana audio didownmixed, seperti dari 5.1 ke 2.0: [Aktif] Pertahankan tingkat volume dari sumber audio aslinya namun rentang dinamisnya akan terkompres. [Non-aktif] Pertahankan rentang dinami dari sumber audio aslinya namun tingkat volumenya akan lebih rendah. Catatan - Rentang dinamis adalah perbedaan antar suara terhening dan terbising pada sumber audio. Aktifkan ini apabila dialog dalam flim nyaris terdengar."
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Tentukan pustaka tambahan yang pesan lognya turut disertakan pada log."
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modus 3D Stereoskopis dari video"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Balik Modus 3D Stereoskopis (flip eyes)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Pilih bagaimana modus 3D stereoskopis akan diputar. [Tanyakan] akan memunculkan dialog untuk memilih modus yang diinginkan untuk tiap pemutaran. [Modus pilihan] akan menggunakan modus pilihan yang terpilih pada menu 'Sistem -> Perangkat Keras'. [Monoskopik (2D)] akan memutar video dalam mono/2D. [Abaikan] menon-aktifkan penanganan dan pemrosesan 3D stereoskopis"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Aktif] Pindahkan GUI (dan beberapa TV) kembali ke modus 2D ketika pemutaran selesai. [Non-aktif] GUI dan TV akan tetap pada modus 3D stereoskopis. Untuk Daftar main video, Modus 3D stereoskopis tidak akan berubah antar video, bahkan untuk yang non stereoskopis."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Ubah modus stereoskpis 3D pada antarmuka pengguna."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Modus yang diutamakan ketika memutar media 3D stereoskopis seperti video."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12453,6 +12789,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Fungsikan pendekodean perangkat keras atas berkas video."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Kedalaman dari subtitle pada 3D Stereoskopis"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Atur kedalaman visual dari subtitle untuk video stereoskopis 3D. Semakin tinggi nilainya, subtitle akan terlihat semakin dekat dengan pemirsa."
@@ -12460,6 +12800,14 @@ msgstr "Atur kedalaman visual dari subtitle untuk video stereoskopis 3D. Semakin
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Gunakan tekstur dengan kualitas lebih tinggi untuk sampul dan fanart (membutuhkan lebih banyak memori)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Batasi resolusi GUI untuk menghemat memori. Tidak berefek pada pemutaran video."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Gunakan dukungan AirPlay yang kompatibel dengan IOS8. Ketika mengalami masalah dengan perangkat iOS model lama mendeteksi Kodi sebagai target yang valid, coba matikan opsi ini. Opsi ini akan berefek setelah restart Kodi berikutnya!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12477,6 +12825,14 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori berisi pengaturan bagaimana keluaran video ditangani."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "flim"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "film"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV show"
@@ -12485,6 +12841,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "TV show"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "musim"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "musim"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episode"
@@ -12492,6 +12856,62 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episode"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "video musik"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "video musik"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "set"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "set"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "video"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artis"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artis"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "albun"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "lagu"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Lagu"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12557,6 +12977,34 @@ msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Pilih ini apabila keluaran audio hanya mendukung audio kanal-jamak seperti Dolby Digital 5.1, ini akan memungkinkan audio kanal-jamak seperti AAC5.1 atau FLAC5.1 untuk didengarkan dalam 5.1 surround sound. Catatan: Tidak direkomendasikan pada perangkat Pi disebabkan membutuhkan CPU yang tinggi."
 
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Konfigurasikan enkoder audio seperti kualitas dan tingkat kompresi"
+
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Tidak terbatas"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Tentukan bagaimana Blu-rays harus dibuka/dimainkan. Menu disk belum didukung sepenuhnya dan mungkin dapat menyebabkan masalah."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Diakselerasi GPU"

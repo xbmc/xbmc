@@ -3069,6 +3069,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Prilagođen prolazni uređaj"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstremno"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Virovi"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vjetrovito"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Postavke"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "klizavo"
@@ -5160,10 +5176,6 @@ msgstr "Stavi pjesmu u red prilikom izbora"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Reprodukcija"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ovi"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7549,6 +7561,10 @@ msgctxt "#20450"
 msgid "Would you like to continue scanning?"
 msgstr "Želite li da nastavite analiziranje?"
 
+msgctxt "#20452"
+msgid "episode"
+msgstr "Epizoda"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Prikaži skrivene datoteke i fascikle"
@@ -8965,6 +8981,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Onemogućeno"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardver"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV serija"
@@ -8972,6 +8992,38 @@ msgstr "TV serija"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "TV serije"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "Epizoda"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Postavi"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Postavke scene"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Filmovi"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Pjesma"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Pjesme"
 
 msgctxt "#37026"
 msgid "Auto"

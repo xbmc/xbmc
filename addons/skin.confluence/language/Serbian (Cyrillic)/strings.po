@@ -329,9 +329,17 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ СИСТЕМА[/B][CR][CR]Подесите и калибришите екране · Конфигуришите звучни излаз[CR]Подесите даљинско управљање · Поставите опције штедње енергије[CR]Омогућите евиденцију грешака · Подесите главну лозинку"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]КОНФИГУРИСАЊЕ ДОДАТНИХ ПРОГРАМА[/B][CR][CR]Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне прог. са xbmc.org[CR]Прилагодите подешавање додатног програма"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]КОНФИГУРИСАЊЕ ДОДАТНИХ ПРОГРАМА[/B][CR][CR]Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне прог. са kodi.tv[CR]Прилагодите подешавање додатног програма"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Локални превод доступан"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Изаберите ваш Kodi кориснички[CR]профил за пријаву, а потом наставите даље"
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Карта"

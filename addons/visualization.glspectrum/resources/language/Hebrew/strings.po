@@ -22,19 +22,19 @@ msgstr "מצב"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "Filled"
+msgstr "מלא"
 
 msgctxt "#30002"
 msgid "Wireframe"
-msgstr "Wireframe"
+msgstr "מסגרת קווית"
 
 msgctxt "#30003"
 msgid "Points"
-msgstr "Points"
+msgstr "נקודות"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "גובה פס"
+msgstr "גובה אנכי"
 
 msgctxt "#30005"
 msgid "Small"

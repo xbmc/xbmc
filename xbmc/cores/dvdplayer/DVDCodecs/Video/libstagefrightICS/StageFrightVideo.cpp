@@ -62,11 +62,6 @@ static int64_t pts_dtoi(double pts)
   return (int64_t)(pts);
 }
 
-static double pts_itod(int64_t pts)
-{
-  return (double)pts;
-}
-
 /***********************************************************/
 
 class CStageFrightMediaSource : public MediaSource

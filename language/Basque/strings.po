@@ -3073,6 +3073,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Passthrough gailu pertsonalizatua"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extremoa"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Apurtuta"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Haizetsua"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Ezarpenak"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Noraezean"
@@ -3172,6 +3188,10 @@ msgstr "Haizetsua"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "Lanbroa"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Dim"
 
 msgctxt "#1438"
 msgid "Small"
@@ -5025,10 +5045,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Erreprodukzioa"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDak"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Erreproduzitu DVDak automatikoki"
@@ -5873,6 +5889,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Talde berriaren izena"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Bilatu..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Taldea"
@@ -6186,8 +6206,8 @@ msgid "Do not show 'connection lost' warnings"
 msgstr "Ez bistarazi 'konexioa galdua' oharrak"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Mesedez jo xbmc.org/pvr helbidera argibide gehiagorako"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Mesedez jo kodi.tv/pvr helbidera argibide gehiagorako"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9821,6 +9841,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Ezgaituta"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardwarea"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TB saioa"
@@ -9836,6 +9860,34 @@ msgstr "pasartea"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "pasarteak"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Ezarri"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Multzoa"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Bideoa"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Bideoak"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Albuma"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Abestia"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Abestiak"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"

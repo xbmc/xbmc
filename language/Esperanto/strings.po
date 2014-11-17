@@ -1213,10 +1213,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Jaro"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normaligi nivelojn je malplikanaligo"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD-kapabla ricevilo"
@@ -1885,6 +1881,10 @@ msgctxt "#556"
 msgid "Title"
 msgstr "Nomo"
 
+msgctxt "#558"
+msgid "Album"
+msgstr "Albumoj"
+
 msgctxt "#562"
 msgid "Year"
 msgstr "Jaro"
@@ -2289,6 +2289,10 @@ msgctxt "#792"
 msgid "Port"
 msgstr "Port"
 
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Interreto"
+
 msgctxt "#799"
 msgid "Library Update"
 msgstr "Biblioteka ĝisdatigo"
@@ -2577,6 +2581,14 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programoj kaj bildoj kaj video"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extreme"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Agordoj"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Drifting"
@@ -2640,6 +2652,10 @@ msgstr "Kvieto"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Fulmotondro"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Dim"
 
 msgctxt "#1439"
 msgid "and"
@@ -3337,6 +3353,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Fan Speed Override"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Tiparo"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Enable Flipping Bi-Directional Strings"
@@ -3933,6 +3953,10 @@ msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
 msgstr "Uzi tutekranan fenestron anstataŭ veran tutekraniĝon."
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Ĵaŭ"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Iniciati"
@@ -4193,6 +4217,26 @@ msgctxt "#19115"
 msgid "Address"
 msgstr "Adreso"
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Or"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Mar"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "N"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "S"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Dim"
+
 msgctxt "#19607"
 msgid "Fashion"
 msgstr "Mode"
@@ -4228,6 +4272,10 @@ msgstr "Ŝlosi ensalutekranon"
 msgctxt "#20142"
 msgid "Username"
 msgstr "Uzulonomo"
+
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "DVD-ROM"
 
 msgctxt "#20173"
 msgid "FTP server"
@@ -4301,6 +4349,10 @@ msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
 msgstr "Ebligi muson kaj tuŝekranan subtenon"
 
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Video"
+
 msgctxt "#21375"
 msgid "Normal"
 msgstr "Normal"
@@ -4333,6 +4385,14 @@ msgctxt "#21805"
 msgid "Resolution"
 msgstr "Distingivo"
 
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Malfermado"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "Tiparo"
+
 msgctxt "#22000"
 msgid "Update library on startup"
 msgstr "Ĝisdatigi bibliotekon je starto"
@@ -4348,6 +4408,10 @@ msgstr "Tiparo"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Grandeco"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "Extensions"
 
 msgctxt "#24007"
 msgid "Movie information"
@@ -4577,9 +4641,29 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Disabled"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardware"
+
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
 msgstr "Kategorio enhavanta la agordojn por kiel la muzikbiblioteko estu traktata."
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videoj"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Kanto"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Kantoj"
 
 msgctxt "#37026"
 msgid "Auto"

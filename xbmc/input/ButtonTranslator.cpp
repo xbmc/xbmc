@@ -901,9 +901,12 @@ void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap
     if (jit->first->GetPattern() == joyName->GetPattern())
       break;
   }
-  WindowMap* w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
-    // find or create ActionMap, and merge it
-  (*w)[windowID].insert(map.begin(), map.end());
+  WindowMap *w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
+  
+  // find or create ActionMap, and merge/overwrite new entries
+  ActionMap *a = &(*w)[windowID];
+  for (ActionMap::const_iterator it = map.begin(); it != map.end(); it++)
+    (*a)[it->first] = it->second;
 }
 
 CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
@@ -947,20 +950,20 @@ bool CButtonTranslator::TranslateJoystickString(int window, const std::string& j
       return false;
   }
 
-  WindowMap wmap = it->second;
+  const WindowMap *wmap = &it->second;
 
   // try to get the action from the current window
-  action = GetActionCode(window, id, wmap, strAction, fullrange);
+  action = GetActionCode(window, id, *wmap, strAction, fullrange);
 
   // if it's invalid, try to get it from a fallback window or the global map
   if (action == 0)
   {
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
-      action = GetActionCode(fallbackWindow, id, wmap, strAction, fullrange);
+      action = GetActionCode(fallbackWindow, id, *wmap, strAction, fullrange);
     // still no valid action? use global map
     if (action == 0)
-      action = GetActionCode(-1, id, wmap, strAction, fullrange);
+      action = GetActionCode(-1, id, *wmap, strAction, fullrange);
   }
 
   return (action > 0);

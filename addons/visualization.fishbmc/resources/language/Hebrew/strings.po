@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Detail [CPU intensive]"
-msgstr "פירוט [משאבי מעבד]"
+msgstr "פירוט [מעמיס על המעבד]"
 
 msgctxt "#30001"
 msgid "Low"
@@ -42,7 +42,7 @@ msgstr "מצב עצבני [יותר שינויי מצב]"
 
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
-msgstr "מהיר [מדלג על פריימים]"
+msgstr "מהירות [מדלג על פריימים]"
 
 msgctxt "#30007"
 msgid "Very Low"
@@ -62,4 +62,4 @@ msgstr "גבוה"
 
 msgctxt "#30011"
 msgid "Use a Persistence File [faster startup]"
-msgstr "השתמש בקובץ התמדה [הפעלה מהירה]"
+msgstr "השתמש בקובץ נתוני קול [הפעלה מהירה]"

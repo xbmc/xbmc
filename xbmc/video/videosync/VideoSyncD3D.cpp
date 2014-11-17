@@ -46,6 +46,11 @@ void CVideoSyncD3D::OnResetDevice()
   m_displayReset = true;
 }
 
+void CVideoSyncD3D::RefreshChanged()
+{
+  m_displayReset = true;
+}
+
 bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
   int ReturnV;

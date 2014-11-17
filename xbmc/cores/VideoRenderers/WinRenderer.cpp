@@ -1339,7 +1339,7 @@ unsigned int CWinRenderer::GetOptimalBufferSize()
   if (m_format == RENDER_FMT_DXVA && m_processor)
     return m_processor->Size();
   else
-    return 2;
+    return 3;
 }
 
 void CWinRenderer::ReleaseBuffer(int idx)

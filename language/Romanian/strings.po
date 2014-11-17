@@ -1229,10 +1229,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "An"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizarea nivelului la mixaj audio"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor capabil DTS-HD"
@@ -3152,6 +3148,26 @@ msgstr "Dispozitiv audio specific"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispozitiv de traversare specific"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "extremă"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Vârtejuri"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Defect"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "mult vânt"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Setări"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5261,10 +5277,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Redare"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-uri"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Redă DVD-urile automat"
@@ -5748,6 +5760,10 @@ msgstr "Separă termenii căutării folosind AND, OR şi/sau NOT."
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "sau folosiți fraze pentru o căutare exactă, cum ar fi „Vrăjitorul din Oz”"
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Găseşte similare"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6253,6 +6269,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nume a noului grup"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Caută..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Grup"
@@ -6730,8 +6750,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Aveți nevoie de un tuner, software backend, și un"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Vizitați xbmc.org/pvr pentru a învăța mai multe."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Vizitați kodi.tv/pvr pentru a învăța mai multe."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10457,6 +10477,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Dezactivat"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Componente"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Serial"
@@ -10472,6 +10496,34 @@ msgstr "episod"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episoade"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Setează"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Seturi"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Filme"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Cântec"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Piese"
 
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"

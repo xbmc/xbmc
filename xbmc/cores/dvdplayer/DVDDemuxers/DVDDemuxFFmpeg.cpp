@@ -383,8 +383,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     m_pFormatContext->pb = m_ioContext;
 
     AVDictionary *options = NULL;
-    if(strcmp(iformat->name, "mp3") == 0
-      || strcmp(iformat->name, "mp2") == 0 )
+    if (iformat->name && (strcmp(iformat->name, "mp3") == 0 || strcmp(iformat->name, "mp2") == 0))
     {
       CLog::Log(LOGDEBUG, "%s - setting usetoc to 0 for accurate VBR MP3 seek", __FUNCTION__);
       av_dict_set(&options, "usetoc", "0", 0);
@@ -856,6 +855,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 {
+  if (!m_pInput)
+    return false;
+
   if(time < 0)
     time = 0;
 

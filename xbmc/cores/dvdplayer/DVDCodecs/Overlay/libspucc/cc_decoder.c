@@ -39,7 +39,7 @@ extern "C" {
 
 #include "cc_decoder.h"
 
-#define LOG_DEBUG 3
+//#undef LOG_DEBUG
 
 /* number of text colors specified by EIA-608 standard */
 #define NUM_FG_COL 7
@@ -616,6 +616,8 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
 cc_decoder_t *cc_decoder_open()
 {
   cc_decoder_t *dec = (cc_decoder_t *) calloc(1, sizeof (cc_decoder_t));
+  if (!dec)
+    return NULL;
 
   ccmem_init(&dec->buffer[0]);
   ccmem_init(&dec->buffer[1]);

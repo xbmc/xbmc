@@ -272,6 +272,10 @@ msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "መጨረሻ የገባው"
 
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "ካሪዮኪ ዘፈን መራጭ"
+
 msgctxt "#31322"
 msgid "Aired"
 msgstr "የተላለፈ"
@@ -348,6 +352,10 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "እርዳታ መጀመሪያ ጊዜ ሲያስኬዱ...."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "የ አካባቢ ንዑስ አርእስት ዝግጁ ነው"
+
 msgctxt "#31420"
 msgid "Login"
 msgstr "መግቢያ"
@@ -404,10 +412,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "የሳምንቱ መጨረሻ ግምት "
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "የ 10 ቀን ግምት "
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "ግምት "
@@ -421,8 +425,8 @@ msgid "Fetching forecast info..."
 msgstr "ግምት በመፈለግ ላይ..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "ካርታ & ማስጠንቀቂያ"
+msgid "Maps"
+msgstr "ካርታ "
 
 msgctxt "#31950"
 msgid "WEATHER"

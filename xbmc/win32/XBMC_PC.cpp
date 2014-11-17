@@ -122,6 +122,8 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     std::vector<std::string> strargvA;
     strargvA.resize(argc);
     const char** argv = (const char**) LocalAlloc(LMEM_FIXED, argc*sizeof(char*));
+    if (!argv)
+      return 20;
     for (int i = 0; i < argc; i++)
     {
       g_charsetConverter.wToUTF8(argvW[i], strargvA[i]);

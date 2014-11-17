@@ -342,7 +342,7 @@ int CAEChannelInfo::BestMatch(const std::vector<CAEChannelInfo>& dsts, int* scor
     int missingChannels = src.Count() - okChannels;
     int extraChannels = dst.Count() - okChannels;
 
-    int curScore = 0 - (missingChannels + dropped) * 1000 - extraChannels * 10 - remapped;
+    int curScore = 0 - (missingChannels + dropped) * 1000 - extraChannels * 10 - (remapped ? 1 : 0);
 
     if (curScore > bestScore)
     {

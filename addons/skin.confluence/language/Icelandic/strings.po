@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]BREYTA KERFISSTILLINGUM[/B][CR][CR]Breyta og stilla skjái · Breyta hljóðúttaki · Skilgreina fjarstýringar[CR]Breyta orkukostum · Virkja aflúsun · Skilgreina aðallykilorð"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]BREYTA VIÐBÓTUM[/B][CR][CR]Breyttu uppsettum viðbótum · Leitaðu að og settu upp viðbætur frá xbmc.org[CR]Breyta stillingum viðbóta"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]BREYTA VIÐBÓTUM[/B][CR][CR]Breyttu uppsettum viðbótum · Leitaðu að og settu upp viðbætur frá kodi.tv[CR]Breyta stillingum viðbóta"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Veðurspá helgarinnar"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 daga veðurspá"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Veðurspá"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Næ í veðurspá..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Kort og viðvaranir"
+msgid "Maps"
+msgstr "Kort"
 
 msgctxt "#31950"
 msgid "WEATHER"

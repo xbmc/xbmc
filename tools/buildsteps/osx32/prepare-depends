@@ -3,8 +3,8 @@ XBMC_PLATFORM_DIR=osx32
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 #clean without depends for skipping depends build if possible
-#also skip pvraddons as long as they are deployed in tree
-cd $WORKSPACE;git clean -xfd -e "tools/depends" -e "addons/pvr.*"
+#also skip binary addons (pvr, audioencoder) as long as they are deployed in tree
+cd $WORKSPACE;git clean -xfd -e "tools/depends" -e "addons/pvr.*" -e "addons/audioencoder.*"
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then

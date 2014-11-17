@@ -413,8 +413,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGURO OPCIONET E SISTEMIT[/B][CR][CR]Konfiguro dhe Kalibro Ekranet ·  Konfiguro daljen e zërit · Konfiguro telekomandat [CR]Cakto opcionet për kursimin e rrymës · Aktivizo debugging · Konfiguro dryrin përdorues"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURO SHTESAT[/B][CR][CR]Menaxho shtesat e installuara · Shiko dhe installo shtesa nga xbmc.org[CR]Modifiko konfigurimet e shtesave."
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]KONFIGURO SHTESAT[/B][CR][CR]Menaxho shtesat e installuara · Shiko dhe installo shtesa nga kodi.tv[CR]Modifiko konfigurimet e shtesave."
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -423,6 +423,10 @@ msgstr "[B]KONFIGURO OPCIONET E SERVISEVE[/B][CR][CR]Konfiguro kontrollimin e Ko
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ndihma për përdorimin e parë..."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtitra lokal në dispozicion"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -476,10 +480,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Parashikimi Fundjavë"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Parashikimi 10 Ditësh"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Parashikimi"
@@ -493,8 +493,8 @@ msgid "Fetching forecast info..."
 msgstr "Duke tërhequr parashikimin..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Harta & Alarme"
+msgid "Maps"
+msgstr "Hartat"
 
 msgctxt "#31950"
 msgid "WEATHER"

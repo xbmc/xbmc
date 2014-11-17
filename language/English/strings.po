@@ -68,8 +68,8 @@ msgid "Kodi media center"
 msgstr ""
 
 #empty string with id 10
-
 #strings from 11 to 17 are reserved for weather translation
+
 #. Weather token
 msgctxt "#11"
 msgid "Monday"
@@ -2887,7 +2887,12 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr ""
 
-#empty strings from id 680 to 699
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr ""
+
+#empty strings from id 681 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -6215,7 +6220,7 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
-# empty string with id 13440
+#empty string with id 13440
 
 #: system/settings/settings.xml
 msgctxt "#13441"
@@ -7519,7 +7524,31 @@ msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr ""
 
-#empty strings from id 16330 to 16399
+#. Description of OSD video settings for deinterlace method with label #16330
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr ""
+
+#. Description of OSD video settings for deinterlace method with label #16331
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr ""
+
+#. Description of OSD video settings for deinterlace method with label #16332
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr ""
+
+#. Description of OSD video settings for deinterlace method with label #16333
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr ""
+
+#empty strings from id 16334 to 16399
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16400"
@@ -8713,7 +8742,7 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
+msgid "Please visit kodi.tv/pvr to learn more."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -16076,6 +16105,8 @@ msgstr ""
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
+
+#empty strings from id 37032 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

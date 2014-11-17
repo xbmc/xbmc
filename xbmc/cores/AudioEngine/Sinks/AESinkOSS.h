@@ -48,7 +48,7 @@ private:
   AEAudioFormat   m_initFormat;
   AEAudioFormat   m_format;
 
-  CAEChannelInfo  GetChannelLayout(AEAudioFormat format);
-  std::string      GetDeviceUse(const AEAudioFormat format, const std::string &device);
+  CAEChannelInfo  GetChannelLayout(const AEAudioFormat& format);
+  std::string      GetDeviceUse(const AEAudioFormat& format, const std::string &device);
 };
 

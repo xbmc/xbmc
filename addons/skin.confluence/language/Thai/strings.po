@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ปรับเปลี่ยนการตั้งค่าระบบ[/B][CR][CR]การติดตั้งและปรับเทียบการแสดงผล · กำหนดค่าการส่งออกสัญญาณเสียง · การติดตั้งรีโมทคอนโทรล[CR]ตั้งค่าตัวเลือกการประหยัดพลังงาน · เปิดใช้งานการแก้จุดบกพร่อง · ติดตั้ง กุญแจหลัก"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ปรับเปลี่ยน ส่วนเสริม[/B][CR][CR]จัดการส่วนเสริมที่ติดตั้งไว้ของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก xbmc.org[CR]ปรับเปลี่ยน การตั้งค่าส่วนเสริม"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]ปรับเปลี่ยน ส่วนเสริม[/B][CR][CR]จัดการส่วนเสริมที่ติดตั้งไว้ของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก kodi.tv[CR]ปรับเปลี่ยน การตั้งค่าส่วนเสริม"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "พยากรณ์สุดสัปดาห์"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "พยากรณ์ ใน 10 วัน"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "พยากรณ์"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "กำลังเรียกข้อมูลการพยากรณ์ ..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "แผนที่และการเตือน"
+msgid "Maps"
+msgstr "แผนที่"
 
 msgctxt "#31950"
 msgid "WEATHER"

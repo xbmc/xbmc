@@ -3073,6 +3073,34 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Дапасаваная простая прылада"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperature"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Pressure"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Найлепшая"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Віхуры"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "зламаны"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "ветрана"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Cache settings"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Drifting"
@@ -3421,6 +3449,10 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basic"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
@@ -3428,6 +3460,10 @@ msgstr "Standard"
 msgctxt "#10038"
 msgid "Advanced"
 msgstr "Advanced"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -5177,10 +5213,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Прайграваньне"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ы"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Прайграваць DVDы аўтаматычна"
@@ -5665,6 +5697,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "or use phrases to find an exact match, like \"The wizard of Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Find similar"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importing EPG from clients"
@@ -6029,6 +6065,10 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Увага"
 
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Provider"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Please switch to another channel."
@@ -6156,6 +6196,10 @@ msgstr "Please create a group first"
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Name of the new group"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Search..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6634,8 +6678,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Вам патрэбны прыймач, апраграмаваньне да яго,"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Падрабязнасьці вы знойдзеце на xbmc.org/pvr."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Падрабязнасьці вы знойдзеце на kodi.tv/pvr."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10953,9 +10997,17 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Забаронена"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Абсталяваньне"
+
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Enable hardware decoding of video files."
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "movies"
 
 msgctxt "#36902"
 msgid "TV show"
@@ -10972,6 +11024,34 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodes"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Set"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Sets"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videos"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Альбом"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Кампазыцыя"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Songs"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11008,3 +11088,11 @@ msgstr "Browse Into"
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Unlimited"

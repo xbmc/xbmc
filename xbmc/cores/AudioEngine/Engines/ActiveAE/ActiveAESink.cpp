@@ -28,6 +28,8 @@
 
 #include "settings/Settings.h"
 
+#include <new> // for std::bad_alloc
+
 using namespace ActiveAE;
 
 CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
@@ -875,6 +877,8 @@ void CActiveAESink::GenerateNoise()
   nb_floats *= m_sampleOfSilence.pkt->config.channels;
 
   float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
+  if (!noise)
+    throw std::bad_alloc();
 
   float R1, R2;
   for(int i=0; i<nb_floats;i++)

@@ -47,12 +47,12 @@ namespace ADDON
 {
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution), m_version("")
+  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false)
 {
 }
 
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
-  : CAddon(ext), m_version("")
+  : CAddon(ext), m_version(""), m_effectsSlowDown(1.f)
 {
   ELEMENTS elements;
   if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
@@ -89,11 +89,8 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   std::string str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.empty())
     m_effectsSlowDown = (float)atof(str.c_str());
-  else
-    m_effectsSlowDown = 1.f;
 
-  str = CAddonMgr::Get().GetExtValue(ext->configuration, "@debugging");
-  m_debugging = !strcmp(str.c_str(), "true");
+  m_debugging = CAddonMgr::Get().GetExtValue(ext->configuration, "@debugging") == "true";
 
   LoadStartupWindows(ext);
 

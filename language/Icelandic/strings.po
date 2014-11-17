@@ -1237,10 +1237,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Ár"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Jafna styrkmun við niðurblöndun"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Móttakari styður DTS-HD"
@@ -2801,6 +2797,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Viltu skanna núna?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s af %s tiltækt"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Sett inn ógilt númer á gátt"
@@ -3216,6 +3216,34 @@ msgstr "Sérsniðið hljóðtæki"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Sérsniðið gegnumstreymitæki"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Hitastig"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Þrýstingur"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Öfgakennt"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Hringiður"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Biluð"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vindasamt"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Stillingar"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5037,9 +5065,13 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Leyfa vélbúnaðarhröðun (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Leyfa margra þráða hugbúnaðar-afkóðun"
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Nota MPEG-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Nota MPEG-4 VDPAU"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5048,6 +5080,18 @@ msgstr "Nota VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir VC-1 kóðun. Ef ekki virkt þá mun örgjörvinn vera notaður í staðinn. AMD kort með VDPAU geta ekki afkóðað VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Nota Mpeg-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Nota Mpeg-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir MPEG-4 kóðun. Ef ekki virkt þá mun örgjörvinn vera notaður í staðinn."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5068,6 +5112,14 @@ msgstr "Hugbúnaður"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Vélbúnaðar-hraðlað"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Leyfa vélbúnaðarhröðun (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Nota OMXPlayer fyrir afkóðun á videoskrám."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5393,6 +5445,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Viðmóts síur"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Nota bakgrunns skönnun"
@@ -5508,10 +5564,6 @@ msgstr "Setja lög á biðröð þegar valið er"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Spila"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -6477,6 +6529,10 @@ msgctxt "#19112"
 msgid "Delete this recording?"
 msgstr "Eyða þessari upptöku?"
 
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Eyða öllum upptökum í þessari möppu?"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Útgáfa"
@@ -7098,8 +7154,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Viðbót fyrir bakenda til að hægt sé að nota upptökutæki."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Vinsamlega farðu á xbmc.org/pvr til að fræðast meira."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Vinsamlega farðu á kodi.tv/pvr til að fræðast meira."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7145,9 +7201,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Fletta eftir táknmynd"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Leita að táknmyndum rása"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Allar rásir"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Forgrunnur"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -10249,6 +10313,22 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Reyna að tengjast aftur?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Hjálpar-viðbætur"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Viðbótasöfn"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Upplýsingasöfn"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Sjóhrifa-söfn"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
 msgstr "Endurræsingar viðbóta"
@@ -10400,10 +10480,6 @@ msgstr "Fela útlend"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Velja úr öllum titlum ..."
-
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Sýna valblöð Blu-Ray disks"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -12053,6 +12129,14 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Skilgreina gátt vefmiðlara."
 
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Skilgreina notandanafn vefmiðlara. Þetta verður aðeins virkt ef bæði notandanafn og lykilorð eru tilgreind."
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Skilgreina lykilorð vefmiðlara. Þetta verður aðeins virkt ef bæði notandanafn og lykilorð eru tilgreind."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Veldu á milli vefviðmóta sem eru innsett með Viðbótastjóranum."
@@ -12409,10 +12493,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Virkja afkóðun með vélbúnaði með AMLogic afkóðun."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Virkja ramma-fjöl-þráða hugbúnaðar afkóðun (ekki eins áreiðanlegt og sjálfgefin eins þráða aðferð)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Velja hvað gerist þegar hlutur í rafrænum dagskrárvísi er valinn. [Sýna samhengisvalblað] mun opna valblað þar sem þú getur valið fleiri kosti; [Skipta yfir á rás] mun samstundis skipta yfir á rásina; [Sýna upplýsingar] mun sýna nánari upplýsingar með söguþræði og frekara vali; [Taka upp] mun setja upp tímasetta upptöku á völdum hlut."
@@ -12444,6 +12524,10 @@ msgstr "Skilgreina hvernig myndvinnsla verður hröðuð. Þar á meðal er afk�
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Skilgrinir hvort myndvinnsla verður gerð í hugbúnaði (þarfnast meira af örgjörvanum) eða gerð í vélbúnaðarhraðli ef hægt er."
+
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Veldu uppsetningu sýndar-lyklaborðs."
 
 msgctxt "#36502"
 msgid "Disabled"
@@ -12497,10 +12581,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Sama og kvikmynd"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Veldu hvernig hljóð er blandað niður, til dæmis 5.1 í 2.0: [Virkt] heldur hljóðsviði upprunalegs hljóðs en styrkur mun verða lægri. [Óvirkt] heldur hljóðstyrk upprunahljóðs en hljóðsvið er þjappað. Athugið - Hljóðsvið er mismunur á milli lægsta og hæðsta hljóðs í hljóðveitu."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Breytir stereoscopic 3D ham notendaviðmóts."
@@ -12529,6 +12609,10 @@ msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Nota hærri gæði í plötuumslög og aðdáendamyndverk (notar meira minni)"
 
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "Takmarkar upplausn notandaviðmóts til að spara minni. Hefur ekki áhrif á afspilun. Þarfnast endurræsingar."
+
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
 msgstr "Flokkur sem inniheldur stillingar fyrir hvernig tónlistarsafn er höndlað."
@@ -12544,6 +12628,14 @@ msgstr "Flokkur sem inniheldur stillingar fyrir hvernig AirPlay þjónusta er h�
 msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Flokkur sem inniheldur stillingar fyrir hvernig myndútgangur er höndlaður."
+
+msgctxt "#36900"
+msgid "movie"
+msgstr "kvikmynd"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "kvikmyndir"
 
 msgctxt "#36902"
 msgid "TV show"
@@ -12561,6 +12653,38 @@ msgctxt "#36907"
 msgid "episodes"
 msgstr "þættir"
 
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "tónlistarmyndband"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "tónlistarmyndbönd"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "sett"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "sett"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "myndband"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "myndbönd"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "tónlist"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "tónlist"
+
 msgctxt "#36916"
 msgid "artist"
 msgstr "flytjandi"
@@ -12568,6 +12692,14 @@ msgstr "flytjandi"
 msgctxt "#36917"
 msgid "artists"
 msgstr "flytjendur"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "hljómplata"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "hljómplötur"
 
 msgctxt "#36920"
 msgid "song"
@@ -12641,6 +12773,26 @@ msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Veldu þetta ef hljóðtengingarnar þínar styðja aðeins fjölrása hljóð eins og Dolby Digital 5.1, þetta gerir kleyft að fjölrása hljóð eins og AAC5.1 eða FLAC5.1 er hægt að hlusta í 5.1 umhverfishljóði. Athugið - Ekki mælt með að nota á Pi vegna þess að þetta krefst mikils af örgjörvanum."
 
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Stilla hljóð kóðara svo sem gæði og þjöppunarstuðul"
+
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Sjálfvirkt"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Ótakmarkað"

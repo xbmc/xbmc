@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Год"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Нормализовать уровни при микшировании"
+msgid "Maintain original volume on downmix"
+msgstr "Сохранять исходную громкость при микшировании"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1591,7 +1591,7 @@ msgstr "Оптический привод не обнаружен"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr "Для проигрывания этого видео нужен оптический привод"
+msgstr "Для воспроизведения этого видео нужен оптический привод"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2071,11 +2071,11 @@ msgstr "Исполнитель альбома"
 
 msgctxt "#567"
 msgid "Play count"
-msgstr "Кол-во проигрываний"
+msgstr "Кол-во воспроизведений"
 
 msgctxt "#568"
 msgid "Last played"
-msgstr "Последнее проигрывание"
+msgstr "Последнее воспроизведение"
 
 msgctxt "#569"
 msgid "Comment"
@@ -2107,7 +2107,7 @@ msgstr "Неоконченные"
 
 msgctxt "#576"
 msgid "Times played"
-msgstr "Кол-во проигрываний"
+msgstr "Кол-во воспроизведений"
 
 msgctxt "#577"
 msgid "Date Taken"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Сканировать сейчас?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "Доступно %s из %s"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Неправильный номер порта."
@@ -3151,7 +3155,7 @@ msgstr "Музыка, видео, фото и файлы"
 
 msgctxt "#1223"
 msgid "Disabled"
-msgstr "Отключено"
+msgstr "Откл."
 
 msgctxt "#1226"
 msgid "Files & music & video"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Объявлять эти сервисы другим системам по Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Режим совместимости с iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Включить регулировку громкости"
@@ -3236,6 +3244,90 @@ msgstr "Другое аудиоустройство"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Другое устройство прямого вывода звука"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Температура"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Давление"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Поблизости"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Интенсивность"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "грубый"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "очень"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "экстремальный"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "вихри"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "ясно"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Испорчен."
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "торнадо"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "тропический"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "ураган"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "холодный"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "ветреный"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Настройки"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "бриз"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "легкий"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "сильный ветер, почти шторм"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "сильный"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "очень сильний"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4295,7 +4387,7 @@ msgstr "Высококачественное масштабирование"
 
 msgctxt "#13113"
 msgid "Disabled"
-msgstr "Отключено"
+msgstr "Откл."
 
 msgctxt "#13114"
 msgid "Enabled for SD content"
@@ -4343,7 +4435,7 @@ msgstr "Гасить другие дисплеи"
 
 msgctxt "#13131"
 msgid "Disabled"
-msgstr "Отключено"
+msgstr "Откл."
 
 msgctxt "#13132"
 msgid "Blank displays"
@@ -5057,10 +5149,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Включить аппаратное ускорение (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Включить многопоточное программное декодирование"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Использовать MPEG-2 VDPAU"
@@ -5578,8 +5666,8 @@ msgid "Playback"
 msgstr "Воспроизведение"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
+msgid "Discs"
+msgstr "Диски"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5724,18 @@ msgstr "Остановить оцифровку CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Ускорение"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Режим воспроизведения Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Воспроизвести главный фильм"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Показывать упрощенное меню"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6007,7 +6107,7 @@ msgstr "Bicubic (программный)"
 
 msgctxt "#16308"
 msgid "Lanczos (software)"
-msgstr "Lanczos (программный)"
+msgstr "Lanczos (программн.)"
 
 msgctxt "#16309"
 msgid "Sinc (software)"
@@ -6035,7 +6135,7 @@ msgstr "Обратный пуллдаун (3:2)"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
-msgstr "Оптимизир. Lanczos3"
+msgstr "Lanczos3 (оптимизир.)"
 
 msgctxt "#16316"
 msgid "Auto"
@@ -7175,7 +7275,7 @@ msgstr "Группировать записи"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
-msgstr "Не найдено дополнений PVR"
+msgstr "Дополнения PVR не найдены"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -7186,8 +7286,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "серверное ПО и соответствующее дополнение."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Посетите xbmc.org/pvr для получения подробностей."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Посетите kodi.tv/pvr для получения дополнительной информации."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8409,6 +8509,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Протокол AFP"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Браузер Zeroconf"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Папка веб-сервера (HTTP)"
@@ -9135,7 +9239,7 @@ msgstr "Включить мышь и сенсорный экран"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
-msgstr "Звуки интерфейса во время проигрывания"
+msgstr "Звуки интерфейса во время воспроизведения"
 
 msgctxt "#21371"
 msgid "Thumbnail"
@@ -9471,7 +9575,7 @@ msgstr "Кэш заполнен"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr "Объем кэша недостаточен для непрерывного проигрывания"
+msgstr "Объема кэша недостаточно для непрерывного воспрозведения"
 
 msgctxt "#21456"
 msgid "External storage"
@@ -10055,7 +10159,7 @@ msgstr "Нажмите ОК для закрытия проигрывателя"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
-msgstr "Нажмите ОК по завершении проигрывания"
+msgstr "Нажмите ОК по завершении воспроизведения"
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -10279,7 +10383,7 @@ msgstr "Отключить это дополнение?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Доступны обновления для дополнений."
+msgstr "Доступны обновления дополнений."
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
@@ -10383,7 +10487,7 @@ msgstr "(заблокирован.)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Модуль несовместим или помечен в репозитории как нерабочий. "
+msgstr "Дополнение несовместимо или помечено в репозитории как испорченное."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10391,7 +10495,7 @@ msgstr "Отключить его в системе?"
 
 msgctxt "#24098"
 msgid "Broken"
-msgstr "Испорчено"
+msgstr "Испорчен."
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
@@ -10509,6 +10613,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Автоматически загружать первые найденные субтитры"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Конфигурация была перенесена"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Уведомления"
@@ -10522,8 +10630,8 @@ msgid "Select from all titles ..."
 msgstr "Выбрать тайтл…"
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Показывать меню диска Blu-ray"
+msgid "Show Blu-ray menu"
+msgstr "Показать меню Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10619,7 +10727,7 @@ msgstr "Использовать проигрыватель DVD вместо о�
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
-msgstr "Предлагать загрузку видео перед проигрыванием"
+msgstr "Предлагать загрузку видео перед воспроизведением"
 
 msgctxt "#33016"
 msgid "Clips"
@@ -10712,6 +10820,14 @@ msgstr "Выходные"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s дн."
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "Потоки %s"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "Устройства %s"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -10839,7 +10955,7 @@ msgstr "Не нравится"
 
 msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Составной файл; выберите часть для проигрывания."
+msgstr "Составной файл. Выберите часть для воспроизведения."
 
 msgctxt "#33082"
 msgid "Path to script"
@@ -10959,7 +11075,7 @@ msgstr "Звуки интерфейса"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
-msgstr "Только при остановленном проигрывании"
+msgstr "Только при остановленном воспроизведении"
 
 msgctxt "#34122"
 msgid "Always"
@@ -11247,7 +11363,7 @@ msgstr "Порт занят. Только одна программа может
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr "Приостанавливать проигрывание при переключении источников"
+msgstr "Приостанавливать воспроизведение при переключении источников"
 
 msgctxt "#36035"
 msgid "Always"
@@ -11915,7 +12031,7 @@ msgstr "Настройки воспроизведения музыки."
 
 msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
-msgstr "Автоматическое проигрывание следующего файла в текущей папке. Например, в режиме просмотра файлов после окончания текущей песни Kodi автоматически проиграет следующий файл в этой же папке."
+msgstr "Автоматическое воспроизведение следующего файла в текущей папке. Например, в режиме просмотра файлов после окончания текущей песни Kodi автоматически воспроизведет следующий файл в этой же папке."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
@@ -12541,10 +12657,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Включение аппаратного декодирования видеофайлов при помощи декодера AMLogic."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Использовать многопоточное программное декодирование (менее надежно, чем однопоточный режим, используемый по умолчанию)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Действие при выборе элемента EPG. [Показать контекстное меню] — вывод контекстного меню для выбора дальнейших действий; [Переключиться на канал] — мгновенное переключение на соответствующий канал; [Показать сведения] — подробные сведения о сюжете и другие параметры; [Запись] — создание таймера записи для выбранного элемента."
@@ -12585,9 +12697,25 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "При включении этой настройки VAAPI используется как предпочтительный метод обработки. Это снижает нагрузку на ЦП, но драйвер может зависнуть!"
 
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Включить аппаратное ускорение (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Использовать DVDPlayer для декодирования видеофайлов с ускорением MMAL."
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Стереоскопический режим (текущий)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Стереоскопический режим"
+
 msgctxt "#36502"
 msgid "Disabled"
-msgstr "Откл."
+msgstr "Выкл."
 
 msgctxt "#36503"
 msgid "Over/Under"
@@ -12613,6 +12741,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Аппаратный"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Без стереоскопии (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Режим просмотра стереоскопического видео"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Спрашивать"
@@ -12629,6 +12765,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Как в фильме (автораспознавание)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Отключать стереоскопический режим при остановке воспроизведения"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Выбрать режим воспроизведения"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Выбрать стереоскопический режим"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Выберите альтернативный режим…"
@@ -12638,16 +12786,36 @@ msgid "Same as movie"
 msgstr "Как в фильме"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Выбор способа микширования аудио, например с 5.1 до стерео. [Вкл.] — сохранение исходного динамического диапазона при микшировании, но при этом громкость будет ниже. [Выкл.] — сохранение уровня исходного уровня громкости, но со сжатием динамического диапазона. Примечание: динамический диапазон — это разница между самым тихим и самым громким звуками исходного аудио."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Выбор метода микширования звука, например с 5.1 до 2.0. [Вкл.] — сохранение исходного уровня громкости источника звука со сжатием динамического диапазона. [Откл.] — сохранение исходного динамического диапазона источника, но со снижением уровня громкости микшированного звука. Примечание: динамический диапазон — это разница между самым тихим и самым громким звуками источника. Включите эту настройку, если диалоги в фильме плохо слышны."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Укажите дополнительные библиотеки, сведения о которых нужно включать в журнал отладки."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Стереоскопический режим видео"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Инверсный стереоскопический режим (поменять ракурсы местами)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Выбор режима воспроизведения стереоскопического видео. [Спрашивать]: показывать диалог выбора режима для каждого видео. [Предпочтительный режим]: использовать предпочтительный режим, указанный в разделе \"Система\" > \"Вывод видео\". [Без стереоскопии (2D)]: проигрывать видео без стереоскопии. [Игнорировать]: отключить обработку и вывод стереоскопии."
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Вкл.] : переключать интерфейс (и некоторые телевизоры) назад в режим 2D по окончании воспроизведения. [Выкл.]: интерфейс и телевизор остаются в режиме стереоскопии. При воспроизведении плейлистов режим стереоскопии между видеофайлами не переключается, даже если видеофайлы без стереоскопии."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Изменение стереоскопического (3D) режима пользовательского интерфейса."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Предпочтительный режим воспроизведения стереоскопических (3D) видеофайлов."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12665,6 +12833,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Включение аппаратного декодирования видеофайлов."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Глубина стереоскопических (3D) субтитров"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Устанавливает визуальную глубину субтитров для стереоскопического (3D) видео. Чем выше значение, тем ближе к зрителю отображаются субтитры."
@@ -12676,6 +12848,10 @@ msgstr "Высококачественные текстуры для облож�
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Ограничение разрешения графического интерфейса с целью экономии памяти. Не влияет на воспроизведение видео. Требуется перезапуск."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Использование режима совместимости iOS8 для AirPlay. При наличии проблем определением Kodi на более старых iOS устройствах попробуйте отключить эту настройку. Настройка вступает в силу только после перезапуска Kodi."
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12839,7 +13015,7 @@ msgstr "Проигрыватель UPnP"
 
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
-msgstr "Остановить проигрывание на удаленном устройстве?"
+msgstr "Остановить воспроизведение на удаленном устройстве?"
 
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
@@ -12868,3 +13044,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Неограничен."
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Метод открытия/воспроизведения дисков Blu-ray. В данный момент дисков поддерживается не полностью, и его открытие может вызвать проблемы."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Ускорение при помощи видеокарты"

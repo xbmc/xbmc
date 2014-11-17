@@ -36,6 +36,10 @@ msgctxt "#31327"
 msgid "Resolution"
 msgstr "Нягтаршил"
 
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "ТВ"
+
 msgctxt "#31952"
 msgid "TV"
 msgstr "ТВ"

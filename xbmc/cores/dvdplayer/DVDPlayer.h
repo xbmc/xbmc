@@ -71,6 +71,21 @@ public:
 };
 #endif
 
+struct SOmxPlayerState
+{
+  OMXClock av_clock;              // openmax clock component
+  EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
+  EINTERLACEMETHOD interlace_method; // current deinterlace method
+  bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
+  bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
+  bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
+  float threshold;                // current fifo threshold required to come out of buffering
+  int video_fifo;                 // video fifo to gpu level
+  int audio_fifo;                 // audio fifo to gpu level
+  double last_check_time;         // we periodically check for gpu underrun
+  double stamp;                   // last media timestamp
+};
+
 class CDVDInputStream;
 
 class CDVDDemux;
@@ -105,7 +120,7 @@ public:
   const int        player;
   // stuff to handle starting after seek
   double   startpts;
-  double   originaldts;
+  double   lastdts;
 
   CCurrentStream(StreamType t, int i)
     : type(t)
@@ -127,7 +142,7 @@ public:
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
-    originaldts = DVD_NOPTS_VALUE;
+    lastdts = DVD_NOPTS_VALUE;
   }
 
   double dts_end()
@@ -297,8 +312,6 @@ protected:
 
   void CreatePlayers();
   void DestroyPlayers();
-  void OMXDoProcessing();
-  bool OMXStillPlaying();
 
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
   bool OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset);
@@ -339,7 +352,7 @@ protected:
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
 
-  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true);
+  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
 
   void HandleMessages();
   void HandlePlaySpeed();
@@ -393,8 +406,10 @@ protected:
   int m_playSpeed;
   struct SSpeedState
   {
-    double lastpts;  // holds last display pts during ff/rw operations
-    double lasttime;
+    double  lastpts;  // holds last display pts during ff/rw operations
+    int64_t lasttime;
+    int lastseekpts;
+    double  lastabstime;
   } m_SpeedState;
 
   int m_errorCount;
@@ -537,18 +552,6 @@ protected:
   bool m_DemuxerPausePending;
 
   // omxplayer variables
-  struct SOmxPlayerState
-  {
-    OMXClock av_clock;              // openmax clock component
-    EDEINTERLACEMODE current_deinterlace; // whether deinterlace is currently enabled
-    bool bOmxWaitVideo;             // whether we need to wait for video to play out on EOS
-    bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
-    bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
-    float threshold;                // current fifo threshold required to come out of buffering
-    int video_fifo;                 // video fifo to gpu level
-    int audio_fifo;                 // audio fifo to gpu level
-    double last_check_time;         // we periodically check for gpu underrun
-    double stamp;                   // last media timestamp
-  } m_OmxPlayerState;
+  struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
 };

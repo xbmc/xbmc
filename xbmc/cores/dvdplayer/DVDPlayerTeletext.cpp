@@ -121,6 +121,8 @@ bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
 
 bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
 {
+  CloseStream(true);
+
   m_messageQueue.Init();
 
   if (hints.codec == AV_CODEC_ID_DVB_TELETEXT)

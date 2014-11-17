@@ -52,7 +52,7 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
     swr_free(&m_SwrCtx);
 }
 
-bool CAEEncoderFFmpeg::IsCompatible(AEAudioFormat format)
+bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat& format)
 {
   if (!m_CodecCtx)
     return false;

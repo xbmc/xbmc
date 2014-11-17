@@ -146,6 +146,8 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   {
     extrasize = right.extrasize;
     extradata = malloc(extrasize);
+    if (!extradata)
+      return;
     memcpy(extradata, right.extradata, extrasize);
   }
   else
@@ -199,6 +201,8 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   {
     extrasize = right.ExtraSize;
     extradata = malloc(extrasize);
+    if (!extradata)
+      return;
     memcpy(extradata, right.ExtraData, extrasize);
   }
 

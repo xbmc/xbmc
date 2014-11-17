@@ -205,6 +205,10 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "дец"
 
+msgctxt "#83"
+msgid "W"
+msgstr "У реду"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Приказ: Аутом."
@@ -1004,6 +1008,10 @@ msgstr "Покрени"
 msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Конверзија брзине сличица"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Брзо"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -2733,6 +2741,14 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Прилагођен пролазни уређај"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Екстремно"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Поставке"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "клизаво"
@@ -2816,6 +2832,10 @@ msgstr "град"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "грмљавина"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Затамни"
 
 msgctxt "#1439"
 msgid "and"
@@ -2952,6 +2972,10 @@ msgstr "Екран за пријаву"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Поставке - Профили"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Основно"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -3696,6 +3720,10 @@ msgstr "Аутомат. контролисање температуре"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Наметни брзину вентилатора"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Слова"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4461,10 +4489,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Репродукција"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ови"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Аутоматски репродукуј DVD-ове"
@@ -4496,6 +4520,10 @@ msgstr "Улазни уређаји"
 msgctxt "#14095"
 msgid "Power saving"
 msgstr "Уштеда енергије"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "чет"
 
 msgctxt "#14098"
 msgid "Play"
@@ -4861,6 +4889,10 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Пребаци на канал"
 
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Брзо"
+
 msgctxt "#19017"
 msgid "Recordings"
 msgstr "Снимци"
@@ -4868,6 +4900,18 @@ msgstr "Снимци"
 msgctxt "#19031"
 msgid "Next"
 msgstr "Следеће"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "мар"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "суб"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Затамни"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -4880,6 +4924,10 @@ msgstr "Репродукција"
 msgctxt "#19190"
 msgid "Background"
 msgstr "Позадина"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Режим"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -6141,6 +6189,10 @@ msgctxt "#20450"
 msgid "Would you like to continue scanning?"
 msgstr "Желите ли да наставите анализирање?"
 
+msgctxt "#20452"
+msgid "episode"
+msgstr "Епизода"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Прикажи скривене датотеке и фасцикле"
@@ -6512,6 +6564,10 @@ msgstr "Даљински управљач шаље кôдове тастатур
 msgctxt "#21450"
 msgid "Edit"
 msgstr "Уреди"
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Брзо"
 
 msgctxt "#21800"
 msgid "File name"
@@ -7553,6 +7609,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Онемогућено"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Хардвер"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV серија"
@@ -7560,6 +7620,38 @@ msgstr "TV серија"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "TV серије"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "Епизода"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Постави"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Поставке сцене"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Видео"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Филмови"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Албум"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Песма"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Нумере"
 
 msgctxt "#37026"
 msgid "Auto"

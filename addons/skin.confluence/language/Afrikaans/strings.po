@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGUREER STELSEL VERSTELLINGS[/B][CR][CR]Stel op en kalibreer skerms · Konfigureer klank uitvoer · Stel afstandbeheerders op[CR]Stel krag bespaar opsies · Stel ontfouting in staat · Stel hoof slot op"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Beheer jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf xbmc.org[CR]Verander Byvoeging verstellings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Beheer jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf kodi.tv[CR]Verander Byvoeging verstellings"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Naweek Voorspelling"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 Dae Voorspelling"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Voorspelling"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Gaan haal voorspelling info..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Kaart & Waarskuwings"
+msgid "Maps"
+msgstr "Kaarte"
 
 msgctxt "#31950"
 msgid "WEATHER"

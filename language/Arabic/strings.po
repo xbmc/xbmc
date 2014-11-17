@@ -51,7 +51,7 @@ msgstr "الطقس"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "مركز وسائط إكس بى إم سى"
+msgstr "مركز وسائط Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -63,7 +63,7 @@ msgstr "الثلاثاء"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "الاربعاء"
+msgstr "الأربعاء"
 
 msgctxt "#14"
 msgid "Thursday"
@@ -79,7 +79,7 @@ msgstr "السبت"
 
 msgctxt "#17"
 msgid "Sunday"
-msgstr "الاحد"
+msgstr "الأحد"
 
 msgctxt "#21"
 msgid "January"
@@ -131,7 +131,7 @@ msgstr "ديسمبر"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "اثنين"
+msgstr "إثنين"
 
 msgctxt "#42"
 msgid "Tue"
@@ -139,7 +139,7 @@ msgstr "ثلاثاء"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "اربعاء"
+msgstr "أربعاء"
 
 msgctxt "#44"
 msgid "Thu"
@@ -275,19 +275,19 @@ msgstr "VAR"
 
 msgctxt "#88"
 msgid "South"
-msgstr "جنوب"
+msgstr "الجنوب"
 
 msgctxt "#89"
 msgid "North"
-msgstr "شمال"
+msgstr "الشمال"
 
 msgctxt "#90"
 msgid "West"
-msgstr "غرب"
+msgstr "الغرب"
 
 msgctxt "#91"
 msgid "East"
-msgstr "شرق"
+msgstr "الشرق"
 
 msgctxt "#92"
 msgid "Variable"
@@ -307,7 +307,7 @@ msgstr "العرض: ايقونات"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "العرض: قائمه"
+msgstr "العرض: قائمة"
 
 msgctxt "#102"
 msgid "Scan"
@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "تأكيد نقل الملف"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "تأكيد الحذف"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "نسخ هذه الملفات؟"
@@ -427,7 +431,7 @@ msgstr "عرض"
 
 msgctxt "#132"
 msgid "Albums"
-msgstr "البومات"
+msgstr "ألبومات"
 
 msgctxt "#133"
 msgid "Artists"
@@ -499,7 +503,7 @@ msgstr "عنوان التحكم بالوصول إلى الوسائط MAC"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "عنوان الآي بي IP"
+msgstr "عنوان IP"
 
 msgctxt "#151"
 msgid "Link:"
@@ -563,7 +567,7 @@ msgstr "القرص الحالي"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "الغلاف"
+msgstr "القالب"
 
 msgctxt "#167"
 msgid "Cancel file operations"
@@ -575,11 +579,15 @@ msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
-msgstr "دقة"
+msgstr "الدقة"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "ضبط معدل تحديث الشاشة لتتناسب مع الفيديو"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "عنوان الفرز"
 
 msgctxt "#172"
 msgid "Release date"
@@ -681,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "واجهة ويب"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "ترميز الصوت"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "إشعار"
@@ -695,7 +707,7 @@ msgstr "اصوات"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "طرح"
+msgstr "الشخصيات"
 
 msgctxt "#207"
 msgid "Plot"
@@ -3025,6 +3037,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "جهاز عبور مخصص"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "اﻷقصي"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "غير صالحة"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "عاصفة"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "الإعدادات"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "ينجرف"
@@ -3128,6 +3156,10 @@ msgstr "عاصفة"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "ضباب"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "خافت"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3272,6 +3304,10 @@ msgstr "شاشة الدخول"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "إعدادات ملف المستخدم -"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "أساسي"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -4885,10 +4921,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "توليف"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "تشغيل الدي في دي تلقائياً"
@@ -6302,8 +6334,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "تحتاج معدل, برنامج خلفية, و"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "الرجاء زيارة xbmc.org/pvr لمعرفة المزيد"
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "الرجاء زيارة kodi.tv/pvr لمعرفة المزيد"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9813,6 +9845,14 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "معطلة"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "الأجهزة"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "فلم"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "البرنامج التلفزيوني"
@@ -9828,6 +9868,34 @@ msgstr "الحلقة"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "الحلقات"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "تعيين"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "تعيينات"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "الفيديو"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "مقاطع مرئيه"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "الألبوم"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "الأغنية"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "الأغاني"
 
 msgctxt "#37026"
 msgid "Auto"

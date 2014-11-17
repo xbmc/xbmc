@@ -685,6 +685,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Interfície web"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Codificadors d'àudio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Lema"
@@ -907,7 +911,7 @@ msgstr "Sortida dels scripts"
 
 msgctxt "#263"
 msgid "Allow control of Kodi via HTTP"
-msgstr "Permet el control de l'Kodi a través d'HTTP"
+msgstr "Permet el control del Kodi a través d'HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -1081,6 +1085,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Idioma de la interfície d'usuari"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Disposicions de teclat"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1216,10 +1224,6 @@ msgstr "Actors"
 msgctxt "#345"
 msgid "Year"
 msgstr "Any"
-
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normailtzar els nivells al fer un downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1976,6 +1980,10 @@ msgstr "No hi ha biografia d'aquest artista"
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Mescla l'àudio multicanal a estèreo"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Número"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2773,6 +2781,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Voleu escanejar ara?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s de %s disponibles"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "El número de port introduït no és vàlid"
@@ -3188,6 +3200,62 @@ msgstr "Dispositiu d'àudio personalitzat"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositiu passthrough personalitzat"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Pressió"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximitat"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensitat"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Molt"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extrem"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Remolins"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Trencat"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Huracà"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Fred"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Ventós"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Configuració"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4997,10 +5065,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permet l'acceleració per maquinari (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Permeteu descodificació per programari multi fil"
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Utilitza VC-1 VDPAU"
@@ -5349,6 +5413,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filtres GUI"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Utilitza la exploració en segon plà"
@@ -5466,8 +5534,8 @@ msgid "Playback"
 msgstr "Reproducció"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
+msgid "Discs"
+msgstr "Discs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5997,6 +6065,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "o utilitzeu frases per trobar coincidències exactes com \"El mag d'Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Cerca semblants"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "S'està important l'EPG des dels clients"
@@ -6509,6 +6581,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Nom del grup"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Cerca..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Grup"
@@ -7018,8 +7094,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Complement per al servei que permet utilitzar el PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Visiteu xbmc.org/pvr per saber més."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Visiteu kodi.tv/pvr per saber més."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7064,6 +7140,10 @@ msgstr "Trieu una icona"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Cerca una icona"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Tots el canals"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9337,6 +9417,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s a %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Extern)"
@@ -10469,6 +10553,14 @@ msgctxt "#33038"
 msgid "%s day"
 msgstr "%s dia"
 
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Fluxos"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Dispositius"
+
 msgctxt "#33049"
 msgid "Alert"
 msgstr "Alerta"
@@ -11037,6 +11129,10 @@ msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
 msgstr "Canvia l'aspecte de la interfície d'usuari."
 
+msgctxt "#36103"
+msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgstr "Seleccioneu la pell per a la interfície d'usuari. Això definirà l'aparença del Kodi."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Canviar la configuració específica de la pell. Les opcions disponibles depenen de la pell utilitzada."
@@ -11051,7 +11147,7 @@ msgstr "Canvia els colors de la pell seleccionada."
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
-msgstr "Selecciona la finestra de mitjans que el Kodi mostra a l'iniciar."
+msgstr "Seleccioneu la finestra de mitjans que el Kodi mostra a l'iniciar."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11271,7 +11367,7 @@ msgstr "Importa grups de canals des del backend PVR (si és compatible). Esborra
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
-msgstr "Utilitza la numeració del backend en lloc de configurar-la manualment des de l'Kodi."
+msgstr "Utilitza la numeració del backend en lloc de configurar-la manualment des del Kodi."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11291,7 +11387,7 @@ msgstr "No importar dades de l'EPG durant la reproducció de TV per minimitzar l
 
 msgctxt "#36223"
 msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
-msgstr "Per defecte, les dades EPG s'emmagatzemen en una base de dades local per accelerar la importació al reiniciar l'Kodi."
+msgstr "Per defecte, les dades EPG s'emmagatzemen en una base de dades local per accelerar la importació al reiniciar el Kodi."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
@@ -11753,6 +11849,14 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilita el maquinari de descodificació d'arxius de vídeo."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "pel·lícula"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "pel·lícules"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Sèrie de TV"
@@ -11761,6 +11865,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "Sèries de TV"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "temporada"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "temporades"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episodi"
@@ -11768,6 +11880,62 @@ msgstr "episodi"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodis"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "vídeo musical"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "vídeos musicals"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Estableix"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Sets"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Vídeo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Vídeos"
+
+msgctxt "#36914"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artista"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artistes"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Àlbum"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "àlbums"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Cançó"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Cançons"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11828,3 +11996,19 @@ msgstr "Voleu parar la reproducció al dispositiu remot?"
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Il·limitat"

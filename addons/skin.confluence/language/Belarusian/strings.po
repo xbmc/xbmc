@@ -413,8 +413,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ СЫСТЭМЫ[/B][CR][CR]Наладзіць і калібраваць адлюстраваньне · Наставіць аўдыё вывад · Наладзіць адлеглае кіраваньне[CR]Наставіць захоўваньне энэргіі · Дазволіць дэбаг · Наставіць агульны замок"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ДАДАТКАЎ[/B][CR][CR]Кіраваць усталяванымі дадаткамі · Абраць і ўсталяваць дадаткі з xbmc.org[CR]Зьмяніць налады дадаткаў"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ДАДАТКАЎ[/B][CR][CR]Кіраваць усталяванымі дадаткамі · Абраць і ўсталяваць дадаткі з kodi.tv[CR]Зьмяніць налады дадаткаў"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -423,6 +423,14 @@ msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ СЭРВІСАЎ[/B][CR][CR]Наста�
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "First run help...."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Даступныя лакальныя субтытры"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Login"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -476,10 +484,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Прагноз на выходныя"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Прагноз на 10 дзён"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Прагноз"
@@ -493,8 +497,8 @@ msgid "Fetching forecast info..."
 msgstr "Атрымоўваем прагноз..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Мапа і перасьцярогі"
+msgid "Maps"
+msgstr "Maps"
 
 msgctxt "#31950"
 msgid "WEATHER"

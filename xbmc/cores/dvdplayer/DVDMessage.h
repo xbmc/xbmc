@@ -212,7 +212,7 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false)
+  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false, bool sync = true)
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)
@@ -220,6 +220,7 @@ public:
     , m_accurate(accurate)
     , m_restore(restore)
     , m_trickplay(trickplay)
+    , m_sync(sync)
   {}
   int  GetTime()              { return m_time; }
   bool GetBackward()          { return m_backward; }
@@ -227,6 +228,7 @@ public:
   bool GetAccurate()          { return m_accurate; }
   bool GetRestore()           { return m_restore; }
   bool GetTrickPlay()         { return m_trickplay; }
+  bool GetSync()              { return m_sync; }
 private:
   int  m_time;
   bool m_backward;
@@ -234,6 +236,7 @@ private:
   bool m_accurate;
   bool m_restore; // whether to restore any EDL cut time
   bool m_trickplay;
+  bool m_sync;
 };
 
 class CDVDMsgPlayerSeekChapter : public CDVDMsg

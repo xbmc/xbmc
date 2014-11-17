@@ -2313,9 +2313,6 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkNULL.cpp">
       <Filter>cores\AudioEngine\Sinks</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkProfiler.cpp">
-      <Filter>cores\AudioEngine\Sinks</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.cpp">
       <Filter>cores\AudioEngine\Sinks</Filter>
     </ClCompile>
@@ -3118,6 +3115,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\videosync\VideoSyncD3D.cpp">
       <Filter>video\videosync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DataCacheCore.cpp">
+      <Filter>cores</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp">
       <Filter>cores\DSPlayer</Filter>
@@ -5472,9 +5472,6 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkNULL.h">
       <Filter>cores\AudioEngine\Sinks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkProfiler.h">
-      <Filter>cores\AudioEngine\Sinks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.h">
       <Filter>cores\AudioEngine\Sinks</Filter>
     </ClInclude>
@@ -6184,6 +6181,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\videosync\VideoSync.h">
       <Filter>video\videosync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h">
+      <Filter>cores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h">
       <Filter>cores\DSPlayer</Filter>

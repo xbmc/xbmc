@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ СИСТЕМА[/B][CR][CR]Танзимот ва санҷиши дисплейҳо · Танзимоти барориши аудио · Танзимоти идоракунии дурдаст[CR]Танзимоти масрафи барқ ·  Танзимоти ислоҳи хатоҳо · Танзимоти қулфкунӣ"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ТАНЗИМОТИ БАРНОМАҲОИ ИЛОВАГӢ[/B][CR][CR]Идоракунии барномаҳои иловагии насбшуда • Тамошо кардан ва насб кардани барномаҳои иловагӣ аз xbmc.org[CR]Тағйир додани танзимоти барномаҳои иловагӣ"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]ТАНЗИМОТИ БАРНОМАҲОИ ИЛОВАГӢ[/B][CR][CR]Идоракунии барномаҳои иловагии насбшуда • Тамошо кардан ва насб кардани барномаҳои иловагӣ аз kodi.tv[CR]Тағйир додани танзимоти барномаҳои иловагӣ"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Пешгӯии обу ҳаво барои рӯзҳои истироҳат"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Пешгӯии обу ҳаво барои 10 рӯз"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Пешгӯии обу ҳаво"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Бозёбии иттилооти пешгӯӣ..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Харита ва ҳушдорҳо"
+msgid "Maps"
+msgstr "Харитаҳо"
 
 msgctxt "#31950"
 msgid "WEATHER"

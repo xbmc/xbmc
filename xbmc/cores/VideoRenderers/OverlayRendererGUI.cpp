@@ -87,7 +87,7 @@ COverlayText::COverlayText(CDVDOverlayText * src)
     if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
     {
       CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-      m_text += t->m_text;
+      m_text += t->GetText();
       m_text += "\n";
     }
     e = e->pNext;
