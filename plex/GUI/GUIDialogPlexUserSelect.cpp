@@ -79,7 +79,8 @@ void CGUIDialogPlexUserSelect::OnSelected()
       CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
       if (diag)
       {
-        diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, "");
+        CStdString initial = "";
+        diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
         diag->SetHeading("Enter PIN");
         diag->DoModal();
 
