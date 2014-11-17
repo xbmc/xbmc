@@ -26,6 +26,8 @@
 #include <sys/mount.h>
 #if defined(TARGET_DARWIN_OSX)
 #include <DiskArbitration/DiskArbitration.h>
+#include <IOKit/storage/IOCDMedia.h>
+#include <IOKit/storage/IODVDMedia.h>
 #endif
 #include "osx/CocoaInterface.h"
 
@@ -129,6 +131,17 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             share.strPath = mountpoint;
             Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
+            // detect if its a cd or dvd
+            // needs to be ejectable
+            if (kCFBooleanTrue == CFDictionaryGetValue(details, kDADiskDescriptionMediaEjectableKey))
+            {
+              CFStringRef mediaKind = (CFStringRef)CFDictionaryGetValue(details, kDADiskDescriptionMediaKindKey);
+              // and either cd or dvd kind of media in it
+              if (mediaKind != NULL &&
+                  (CFStringCompare(mediaKind, CFSTR(kIOCDMediaClass), 0) == kCFCompareEqualTo ||
+                  CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
+                share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+            }
             removableDrives.push_back(share);
           }
           CFRelease(details);
