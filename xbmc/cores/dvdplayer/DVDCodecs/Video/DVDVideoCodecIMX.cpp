@@ -29,6 +29,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "DVDClock.h"
+#include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
 
 #define FRAME_ALIGN 16
@@ -171,7 +172,8 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "VPU Lib version : major.minor.rel=%d.%d.%d.\n", vpuVersion.nLibMajor, vpuVersion.nLibMinor, vpuVersion.nLibRelease);
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "VPU Lib version : major.minor.rel=%d.%d.%d.\n", vpuVersion.nLibMajor, vpuVersion.nLibMinor, vpuVersion.nLibRelease);
   }
 
   ret = VPU_DecQueryMem(&memInfo);
@@ -363,19 +365,23 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   }
 
   m_hints = hints;
-  CLog::Log(LOGDEBUG, "Let's decode with iMX VPU\n");
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "Let's decode with iMX VPU\n");
 
 #ifdef MEDIAINFO
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: CodecID %d \n", m_hints.codec);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: StreamType %d \n", m_hints.type);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Level %d \n", m_hints.level);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Profile %d \n", m_hints.profile);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: PTS_invalid %d \n", m_hints.ptsinvalid);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Tag %d \n", m_hints.codec_tag);
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %dx%d \n", m_hints.width,  m_hints.height);
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  {
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: CodecID %d \n", m_hints.codec);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: StreamType %d \n", m_hints.type);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Level %d \n", m_hints.level);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Profile %d \n", m_hints.profile);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: PTS_invalid %d \n", m_hints.ptsinvalid);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Tag %d \n", m_hints.codec_tag);
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %dx%d \n", m_hints.width,  m_hints.height);
+  }
   { uint8_t *pb = (uint8_t*)&m_hints.codec_tag;
-    if (isalnum(pb[0]) && isalnum(pb[1]) && isalnum(pb[2]) && isalnum(pb[3]))
+    if ((isalnum(pb[0]) && isalnum(pb[1]) && isalnum(pb[2]) && isalnum(pb[3])) && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Tag fourcc %c%c%c%c\n", pb[0], pb[1], pb[2], pb[3]);
   }
   if (m_hints.extrasize)
@@ -384,10 +390,15 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
     for (unsigned int i=0; i < m_hints.extrasize; i++)
       sprintf(buf+i*2, "%02x", ((uint8_t*)m_hints.extradata)[i]);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: extradata %d %s\n", m_hints.extrasize, buf);
+
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: extradata %d %s\n", m_hints.extrasize, buf);
   }
-  CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %d / %d \n", m_hints.width,  m_hints.height);
-  CLog::Log(LOGDEBUG, "Decode: aspect %f - forced aspect %d\n", m_hints.aspect, m_hints.forced_aspect);
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  {
+    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %d / %d \n", m_hints.width,  m_hints.height);
+    CLog::Log(LOGDEBUG, "Decode: aspect %f - forced aspect %d\n", m_hints.aspect, m_hints.forced_aspect);
+  }
 #endif
 
   m_convert_bitstream = false;
@@ -647,11 +658,14 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         ret = VPU_DecGetInitialInfo(m_vpuHandle, &m_initInfo);
         if (ret == VPU_DEC_RET_SUCCESS)
         {
-          CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
-                    " - Align : %d bytes - crop : %d %d %d %d - Q16Ratio : %x\n", __FUNCTION__,
-            m_initInfo.nPicWidth, m_initInfo.nPicHeight, m_initInfo.nInterlace, m_initInfo.nMinFrameBufferCount,
-            m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
-            m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio);
+          if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          {
+            CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
+                      " - Align : %d bytes - crop : %d %d %d %d - Q16Ratio : %x\n", __FUNCTION__,
+              m_initInfo.nPicWidth, m_initInfo.nPicHeight, m_initInfo.nInterlace, m_initInfo.nMinFrameBufferCount,
+              m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
+              m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio);
+          }
           if (VpuAllocFrameBuffers())
           {
             ret = VPU_DecRegisterFrameBuffer(m_vpuHandle, m_vpuFrameBuffers, m_vpuFrameBufferNum);
@@ -744,11 +758,13 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
       if (decRet & VPU_DEC_OUTPUT_REPEAT)
       {
-        CLog::Log(LOGDEBUG, "%s - Frame repeat.\n", __FUNCTION__);
+        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          CLog::Log(LOGDEBUG, "%s - Frame repeat.\n", __FUNCTION__);
       }
       if (decRet & VPU_DEC_OUTPUT_DROPPED)
       {
-        CLog::Log(LOGDEBUG, "%s - Frame dropped.\n", __FUNCTION__);
+        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          CLog::Log(LOGDEBUG, "%s - Frame dropped.\n", __FUNCTION__);
       }
       if (decRet & VPU_DEC_NO_ENOUGH_BUF)
       {
@@ -756,7 +772,8 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       }
       if (decRet & VPU_DEC_SKIP)
       {
-        CLog::Log(LOGDEBUG, "%s - Frame skipped.\n", __FUNCTION__);
+        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          CLog::Log(LOGDEBUG, "%s - Frame skipped.\n", __FUNCTION__);
       }
       if (decRet & VPU_DEC_FLUSH)
       {
@@ -823,7 +840,8 @@ void CDVDVideoCodecIMX::Reset()
 {
   int ret;
 
-  CLog::Log(LOGDEBUG, "%s - called\n", __FUNCTION__);
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s - called\n", __FUNCTION__);
 
   // Release last buffer
   if(m_lastBuffer)
