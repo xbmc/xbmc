@@ -79,7 +79,6 @@ namespace PVR
     virtual void SetGroup(CPVRChannelGroupPtr group);
 
     virtual bool ActionRecord(CFileItem *item);
-    virtual bool ActionDeleteRecording(CFileItem *item);
     virtual bool ActionPlayChannel(CFileItem *item);
     virtual bool ActionPlayEpg(CFileItem *item);
     virtual bool ActionDeleteChannel(CFileItem *item);
