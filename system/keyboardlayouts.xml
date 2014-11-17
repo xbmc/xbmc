@@ -124,6 +124,26 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
+  <layout name="Polish QWERTY">
+    <keyboard>
+      <row>`1234567890-</row>
+      <row>qwertyuiopąć</row>
+      <row>asdfghjklęłń</row>
+      <row>zxcvbnmóśżź</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>~1234567890_</row>
+      <row>QWERTYUIOPĄĆ</row>
+      <row>ASDFGHJKLĘŁŃ</row>
+      <row>ZXCVBNMÓŚŻŹ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>!@#$%^&amp;*()=+</row>
+      <row>\|€£§[]{};',</row>
+      <row>./:"&lt;&gt;?</row>
+      <row></row>
+    </keyboard>
+  </layout>
   <layout name="Portuguese (Portugal) QWERTY">
     <keyboard>
       <row>\1234567890'</row>
