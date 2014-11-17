@@ -128,6 +128,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 
 #ifdef TARGET_DARWIN_OSX
+/*  REENABLE this after Helix Release and try to fix http://trac.xbmc.org/ticket/15432
     if (*cur == AV_PIX_FMT_VDA_VLD && CSettings::Get().GetBool("videoplayer.usevda"))
     {
       VDA::CDecoder* dec = new VDA::CDecoder();
@@ -138,7 +139,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
       else
         dec->Release();
-    }
+    }*/
 #endif
     cur++;
   }
