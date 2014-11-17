@@ -41,6 +41,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CMyPlexManager::CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH), m_homeId(-1), m_havePlexServers(false)
 {
+  g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
+  
   if (!g_guiSettings.GetString("myplex.uid").IsEmpty())
   {
     CStdString cachePath = "special://plexprofile/plexuserdata.exml";
@@ -432,6 +434,10 @@ int CMyPlexManager::DoRefreshUserInfo()
   XFILE::CDirectory::Create("special://plexprofile");
   CacheUserInfo(root);
   
+  // check if we have a legacy token in settings and remove it.
+  if (!g_guiSettings.GetString("myplex.token").IsEmpty())
+    g_guiSettings.SetString("myplex.token", "");
+  
   // if we logged in with a PIN we need to cache it.
   if (!m_homePin.empty() && m_currentUserInfo.pinProtected)
   {
@@ -568,6 +574,10 @@ CStdString CMyPlexManager::GetAuthToken() const
   /* Ok, let's check if we have a token in our userInfo */
   if (!m_currentUserInfo.authToken.empty())
     return m_currentUserInfo.authToken;
+  
+  /* look for old style token in settings */
+  if (!g_guiSettings.GetString("myplex.token").IsEmpty())
+    return g_guiSettings.GetString("myplex.token");
   
   return "";
 }
