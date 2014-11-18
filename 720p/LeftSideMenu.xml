@@ -398,14 +398,14 @@
 						<label>$LOCALIZE[31007]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Quit</onclick>
-						<visible>!System.isSystem(openelec) + !System.UserIsRestricted</visible>
+						<visible>!System.isSystem(openelec)</visible>
 					</item>
 					<item id="112">
 						<description>Sleep</description>
 						<label>$LOCALIZE[31960]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Suspend</onclick>
-						<visible>!System.isSystem(rasplex) + !System.UserIsRestricted</visible>
+						<visible>!System.isSystem(rasplex)</visible>
 					</item>
 					<item id="113">
 						<description>Shut Down</description>
@@ -426,7 +426,7 @@
 						<label>$LOCALIZE[31960]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>System.Exec(pm-suspend)</onclick>
-						<visible>System.isSystem(openelec) + !System.isSystem(rasplex) + !System.UserIsRestricted</visible>
+						<visible>System.isSystem(openelec) + !System.isSystem(rasplex)</visible>
 					</item>
 				</content>
 			</control>
