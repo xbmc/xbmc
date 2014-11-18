@@ -70,10 +70,15 @@ static void vda_decoder_callback (void *vda_hw_ctx,
 {
   struct vda_context *vda_ctx = (struct vda_context *)vda_hw_ctx;
 
+  vda_ctx->cv_buffer = NULL;
+
   if (!image_buffer)
     return;
 
   if (vda_ctx->cv_pix_fmt_type != CVPixelBufferGetPixelFormatType(image_buffer))
+    return;
+
+  if (infoFlags & kVDADecodeInfo_FrameDropped)
     return;
 
   vda_ctx->cv_buffer = CVPixelBufferRetain(image_buffer);
