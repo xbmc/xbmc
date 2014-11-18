@@ -122,7 +122,7 @@ namespace XBMCAddon
        * 
        * id        : string - id of the property that the module needs to access.
        * 
-       * *Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path
+       * *Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path,\n
        *                     profile, stars, summary, type, version)
        * 
        * example:
