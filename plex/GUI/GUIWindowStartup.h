@@ -22,7 +22,6 @@
 
 #include "guilib/GUIWindow.h"
 
-#ifndef __PLEX__
 class CGUIWindowStartup :
       public CGUIWindow
 {
@@ -30,7 +29,5 @@ public:
   CGUIWindowStartup(void);
   virtual ~CGUIWindowStartup(void);
   virtual bool OnAction(const CAction &action);
+  virtual void OnWindowLoaded();
 };
-#else
-#include "plex/GUI/GUIWindowStartup.h"
-#endif
