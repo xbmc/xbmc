@@ -80,7 +80,7 @@
 			<width>560</width>
 			<height>108</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-wide-big.png" background="true" blur="40">$INFO[ListItem.Art(thumb)]</texture>
+			<texture diffuse="mask-wide-big.png" background="true" blur="10">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 		<control type="image">
 			<posx>0</posx>
