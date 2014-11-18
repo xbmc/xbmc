@@ -71,8 +71,15 @@ void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, C
 void CGUIDialogPlexUserSelect::OnSelected()
 {
   bool close = true;
+  bool isAdmin = false;
+  
+  m_authed = false;
+  
+  if (GetSelectedItem())
+    isAdmin = GetSelectedItem()->GetProperty("admin").asBoolean();
+  
   CFileItemPtr item = m_vecList->Get(m_viewControl.GetSelectedItem());
-  if (item && item->GetProperty("protected").asInteger() == 1)
+  if (item && (item->GetProperty("protected").asInteger() == 1 && !isAdmin))
   {
     bool firstTry = true;
     while (true)
@@ -96,7 +103,9 @@ void CGUIDialogPlexUserSelect::OnSelected()
           diag->GetOutput(&pin);
           if (g_plexApplication.myPlexManager->VerifyPin(pin, item->GetProperty("id").asInteger()))
           {
-            g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), pin);
+            m_authed = true;
+            if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id != item->GetProperty("id").asInteger())
+              g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), pin);
             break;
           }
           firstTry = false;
@@ -107,6 +116,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
   else
   {
     // no PIN needed.
+    m_authed = true;
     g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1));
   }
 

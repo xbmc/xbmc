@@ -11,9 +11,11 @@ public:
   bool OnMessage(CGUIMessage &message);
   void OnSelected();
   bool OnAction(const CAction &action);
+  bool DidAuth() { return m_authed; }
 
 private:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  bool m_authed;
 };
 
 #endif // GUIDIALOGPLEXUSERSELECT_H

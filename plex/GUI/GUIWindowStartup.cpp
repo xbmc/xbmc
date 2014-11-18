@@ -26,6 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "Application.h"
+#include "GUI/GUIDialogPlexUserSelect.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
@@ -40,36 +41,17 @@ void CGUIWindowStartup::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   
-  
   if (g_plexApplication.myPlexManager->IsPinProtected())
   {
-    int retries = 5;
-    while (retries != 0 && g_plexApplication.myPlexManager->IsPinProtected())
+    CGUIDialogPlexUserSelect* dialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
+    if (dialog)
     {
-      CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
-      if (diag)
+      while(true)
       {
-        CStdString initial;
-        diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
-        diag->SetHeading("Enter PIN");
-        diag->DoModal();
-        
-        if (!diag->IsAutoClosed() || (diag->IsConfirmed() || !diag->IsCanceled()))
-        {
-          std::string pin;
-          diag->GetOutput(&pin);
-          if (!g_plexApplication.myPlexManager->IsPinProtected() || g_plexApplication.myPlexManager->VerifyPin(pin))
-            break;
-        }
+        dialog->DoModal();
+        if (dialog->DidAuth())
+          break;
       }
-      
-      retries --;
-    }
-    
-    if (retries == 0)
-    {
-      CGUIDialogOK::ShowAndGetInput("Failed to enter PIN", "Plex Home Theater will now close", "Restart to retry", "");
-      g_application.Stop(0);
     }
   }
 }
