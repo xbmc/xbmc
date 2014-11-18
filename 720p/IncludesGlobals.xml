@@ -485,12 +485,13 @@
 	<!-- clock -->
 	<include name="Clock">
 		<control type="group">
-			<animation effect="slide" start="0" end="391" time="400" tween="out" condition="Control.IsVisible(999)">Conditional</animation>
-			<posx>30</posx>
+			<!--><animation effect="slide" start="0" end="391" time="400" tween="out" condition="Control.IsVisible(999)">Conditional</animation>-->
+			<posx>1180</posx>
 			<control type="label">
 				<label>$INFO[System.Time(short_no_meridian)]</label>
 				<width>200</width>
-				<height>49</height>
+				<align>right</align>
+				<height>68</height>
 				<font>Regular-17</font>
 				<textcolor>FF999999</textcolor>
 			</control>

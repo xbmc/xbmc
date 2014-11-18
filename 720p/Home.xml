@@ -11,6 +11,7 @@
 		<include>Clock</include>
 		<include>NowPlayingOverlay</include>
 		<include>NowPlayingSideBar</include>
+		<include>CurrentUserAvatar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>CurrentlyPlaying</include>

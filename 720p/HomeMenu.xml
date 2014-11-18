@@ -1,5 +1,37 @@
 <?xml version="1.0"?>
 <includes>
+	<include name="CurrentUserAvatar">
+		<control type="group">
+			<posy>15</posy>
+			<control type="image">
+				<posx>1200</posx>
+				<width>60</width>
+				<height>60</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round.png" background="true">round.png</texture>
+				<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>1205</posx>
+				<width>50</width>
+				<height>50</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round.png" background="true" fallback="default-square-small.png">$INFO[System.CurrentUserThumb]</texture>
+			</control>
+			<control type="label">
+				<posx>1180</posx>
+				<width>600</width>
+				<height>87</height>
+				<label>$INFO[System.CurrentUser]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>Bold-22</font>
+				<textcolor>white</textcolor>
+				<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
+			</control>
+		</control>
+	</include>
 	<include name="MenuSeparatorVertical">
 		<control type="group">
 			<control type="image">
