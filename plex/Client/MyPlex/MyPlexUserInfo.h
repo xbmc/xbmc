@@ -27,7 +27,7 @@ public:
     ROLE_USER = 16
   };
   
-  CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false), pinProtected(false), home(false) {}
+  CMyPlexUserInfo() : roles(ROLE_USER), id(-1), restricted(false), home(false) {}
   
   bool SetFromXmlElement(TiXmlElement* root);
   
@@ -39,10 +39,9 @@ public:
   std::string cloudSyncDevice;
   std::string authToken;
   std::string thumb;
-  
+  std::string pin;
   
   bool subscription;
-  bool pinProtected;
   bool home;
   std::string subscriptionStatus;
   std::string subscriptionPlan;
@@ -75,7 +74,7 @@ public:
     roles = other.roles;
     restricted = other.restricted;
     home = other.home;
-    pinProtected = other.pinProtected;
+    pin = other.pin;
   }
 };
 

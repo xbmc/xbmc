@@ -37,7 +37,7 @@ public:
   CMyPlexManager();
   
   bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
-  bool IsPinProtected() const { return m_currentUserInfo.pinProtected; }
+  bool IsPinProtected() const { return m_currentUserInfo.pin.empty() == false; }
   bool VerifyPin(const std::string& pin, int userId = -1);
   
   void StartPinLogin();
@@ -61,7 +61,6 @@ protected:
   
 private:
   std::string HashPin(const std::string& pin);
-  void CachePin(const std::string& pin);
   int DoLogin();
   int DoFetchPin();
   int DoFetchWaitPin();

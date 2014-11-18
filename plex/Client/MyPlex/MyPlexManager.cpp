@@ -72,19 +72,6 @@ std::string CMyPlexManager::HashPin(const std::string& pin)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CMyPlexManager::CachePin(const std::string& pin)
-{
-  std::string hash = HashPin(pin);
-  
-  XFILE::CFile pinCache;
-  if (pinCache.OpenForWrite("special://plexprofile/pcache.txt"))
-  {
-    pinCache.Write(hash.c_str(), hash.length());
-    pinCache.Close();
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void CMyPlexManager::Process()
 {
   m_secToSleep = SUCCESS_TMOUT;
@@ -549,29 +536,14 @@ bool CMyPlexManager::VerifyPin(const std::string& pin, int userId)
     CStdString data;
     bool verify = plex.Post(url.Get(), "", data);
     
-    // if we successfully auth we need to cache the PIN
-    // if we go offline later it will be useful.
-    //
-    if (verify && uid == m_currentUserInfo.id && m_currentUserInfo.pinProtected)
-      CachePin(pin);
-    
     return verify;
   }
-  else if (XFILE::CFile::Exists("special://plexprofile/pcache.txt") && userId == m_currentUserInfo.id)
+  else if (uid == m_currentUserInfo.id && !m_currentUserInfo.pin.empty())
   {
     // if we don't have a connection but we have a cached PIN number,
     // let's try to use that as our verification instead
     //
-    std::string hashedPin;
-    XFILE::CFile pcache;
-    if (pcache.Open("special://plexprofile/pcache.txt"))
-    {
-      char buffer[1024];
-      if (pcache.ReadString(buffer, 1024))
-        hashedPin = std::string(buffer);
-      
-      return hashedPin == HashPin(pin);
-    }
+    return HashPin(pin) == m_currentUserInfo.pin;
   }
   else
   {
@@ -582,7 +554,7 @@ bool CMyPlexManager::VerifyPin(const std::string& pin, int userId)
     // are the current user. All other users
     // we need to to deny.
     //
-    return (userId == m_currentUserInfo.id);
+    return (uid == m_currentUserInfo.id);
   }
 }
 
