@@ -5628,7 +5628,13 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  m_videoInfoScanner->CleanDatabase(NULL, NULL, userInitiated);
+  if (userInitiated)
+    m_videoInfoScanner->CleanDatabase(NULL, NULL, true);
+  else
+  {
+    m_videoInfoScanner->ShowDialog(false);
+    m_videoInfoScanner->StartCleanDatabase();
+  }
 }
 
 void CApplication::StartVideoScan(const CStdString &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
@@ -5639,6 +5645,20 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool userIniti
   m_videoInfoScanner->ShowDialog(userInitiated);
 
   m_videoInfoScanner->Start(strDirectory,scanAll);
+}
+
+void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
+{
+  if (m_musicInfoScanner->IsScanning())
+    return;
+
+  if (userInitiated)
+    m_musicInfoScanner->CleanDatabase(true);
+  else
+  {
+    m_musicInfoScanner->ShowDialog(false);
+    m_musicInfoScanner->StartCleanDatabase();
+  }
 }
 
 void CApplication::StartMusicScan(const CStdString &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
