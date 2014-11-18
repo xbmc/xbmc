@@ -75,14 +75,14 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
   else if (stricmp(job->GetType(), "mediaServerClientTimelineJob") == 0)
   {
     CPlexMediaServerClientTimelineJob* tljob = static_cast<CPlexMediaServerClientTimelineJob*>(job);
-    if (tljob && success && (!g_application.IsPlaying()))
+    if (tljob && success)
     {
       CFileItemPtr item = tljob->m_item;
       if (item->HasProperty("playQueueID"))
       {
         ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(item);
-        if (g_plexApplication.playQueueManager->getID(type) ==
-            item->GetProperty("playQueueID").asInteger())
+        int time = boost::lexical_cast<int>(tljob->m_url.GetOption("time"));
+        if (g_plexApplication.playQueueManager->getID(type) == item->GetProperty("playQueueID").asInteger() && time < 10)
           g_plexApplication.playQueueManager->refresh(type);
       }
     }
