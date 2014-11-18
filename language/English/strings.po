@@ -12689,7 +12689,11 @@ msgctxt "#24129"
 msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
 msgstr ""
 
-#empty strings from id 24130 to 24999
+#empty strings from id 24130 to 24998
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr ""
 
 msgctxt "#25000"
 msgid "Notifications"
