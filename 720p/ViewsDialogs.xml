@@ -2749,7 +2749,7 @@
 			</control>
 			<!-- text field bg -->
 			<control type="grouplist">
-				<posy>197</posy>
+				<posy>224</posy>
 				<width>1280</width>
 				<height>105</height>
 				<align>center</align>
@@ -2799,7 +2799,7 @@
 						<description>'1' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>24</onup>
+						<onup>503</onup>
 						<ondown>16</ondown>
 						<label>$LOCALIZE[12311]</label>
 						<include>KeyboardButton</include>
@@ -2808,7 +2808,7 @@
 						<description>'2' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>24</onup>
+						<onup>503</onup>
 						<ondown>17</ondown>
 						<label>$LOCALIZE[12312]</label>
 						<include>KeyboardButton</include>
@@ -2817,7 +2817,7 @@
 						<description>'3' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>24</onup>
+						<onup>503</onup>
 						<ondown>18</ondown>
 						<label>$LOCALIZE[12313]</label>
 						<include>KeyboardButton</include>
@@ -2826,7 +2826,7 @@
 						<description>'4' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>24</onup>
+						<onup>503</onup>
 						<ondown>19</ondown>
 						<label>$LOCALIZE[12314]</label>
 						<include>KeyboardButton</include>
@@ -2835,7 +2835,7 @@
 						<description>'5' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>24</onup>
+						<onup>503</onup>
 						<ondown>10</ondown>
 						<label>$LOCALIZE[12315]</label>
 						<include>KeyboardButton</include>
@@ -2909,7 +2909,7 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<onup>502</onup>
-						<ondown>504</ondown>
+						<ondown>501</ondown>
 						<include>KeyboardButtonBig</include>
 						<label>&#x21A4;</label>
 					</control>
@@ -2919,29 +2919,9 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<onup>502</onup>
-						<ondown>504</ondown>
+						<ondown>501</ondown>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[20177]</label>
-					</control>
-				</control>
-				<!-- Row 4 -->
-				<control type="grouplist" id="504">
-					<itemgap>5</itemgap>
-					<width>1280</width>
-					<height>50</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<orientation>horizontal</orientation>
-					<control type="button" id="24">
-						<description>SWITCH USER button</description>
-						<width>320</width>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>503</onup>
-						<ondown>501</ondown>
-						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
-						<include>KeyboardButton</include>
-						<label>$LOCALIZE[41009]</label>
 					</control>
 				</control>
 			</control>
