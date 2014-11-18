@@ -23,7 +23,7 @@
 
 #include "DVDVideoCodecFFmpeg.h"
 
-struct vda_context;
+struct AVVDAContext;
 
 namespace VDA {
 
@@ -47,7 +47,7 @@ public:
 protected:
   bool                   Create(AVCodecContext* avctx);
   unsigned               m_renderbuffers_count;
-  vda_context*           m_ctx;
+  struct AVVDAContext*   m_ctx;
 };
 
 }

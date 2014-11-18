@@ -128,7 +128,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-    if (*cur == AV_PIX_FMT_VDA_VLD && CSettings::Get().GetBool("videoplayer.usevda"))
+    if (*cur == AV_PIX_FMT_VDA && CSettings::Get().GetBool("videoplayer.usevda"))
     {
       VDA::CDecoder* dec = new VDA::CDecoder();
       if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
