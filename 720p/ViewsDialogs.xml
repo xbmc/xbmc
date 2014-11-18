@@ -196,51 +196,30 @@
 		<control type="group">
 			<!-- bg's -->
 			<control type="group">
-				<posx>339</posx>
-				<posy>136</posy>
+				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
+				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
 				<control type="image">
-					<posx>-1</posx>
-					<posy>-1</posy>
-					<width>602</width>
-					<height>442</height>
-					<texture>transparent.png</texture>
-					<bordertexture border="10">border-black.png</bordertexture>
-					<bordersize>1</bordersize>
-					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+					<include>FullScreenScaled</include>
+					<texture>black.png</texture>
 				</control>
 				<control type="image">
-					<posy>80</posy>
-					<width>600</width>
-					<height>360</height>
-					<texture border="10">base-rounded-half.png</texture>
-					<colordiffuse>FF000000</colordiffuse>
-					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- title bg -->
-				<control type="image">
-					<width>600</width>
-					<height>80</height>
-					<texture border="10" flipy="true">base-rounded-half.png</texture>
-					<colordiffuse>FF111111</colordiffuse>
+					<include>FullScreenScaled</include>
+					<texture>bg-overlay-grainy.png</texture>
 				</control>
 				<control type="image">
-					<posy>30</posy>
-					<width>600</width>
-					<height>50</height>
-					<texture>border-bottom-grey.png</texture>
-				</control>
-				<control type="image">
-					<posx>285</posx>
-					<posy>440</posy>
-					<include>ArrowBlackDown</include>
-					<visible>!Window.IsVisible(2901) + !Window.IsVisible(10090)</visible>
+					<posy>50</posy>					
+					<width>1280</width>
+					<height>620</height>
+					<aspectratio aligny="top">keep</aspectratio>
+					<texture>plex-chevron-alone-big.png</texture>
+					<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
 				</control>
 			</control>
 			<control type="group">
 				<posx>340</posx>
-				<posy>155</posy>
+				<posy>147</posy>
 				<control type="label" id="1">
-					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<label>-</label>
 					<width>580</width>
 					<height>40</height>
 					<align>center</align>
@@ -407,6 +386,157 @@
 								<height>110</height>
 								<include>Border</include>
 							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<description>Scroll Bar</description>
+						<posy>-5</posy>
+						<posx>563</posx>
+						<width>20</width>
+						<height>300</height>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="PinUserSwitch">
+		<control type="group">
+			<!-- bg's -->
+			<!--><control type="group">
+				<posx>339</posx>
+				<posy>136</posy>
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>602</width>
+					<height>442</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<posy>80</posy>
+					<width>600</width>
+					<height>360</height>
+					<texture border="10">base-rounded-half.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>-->
+				<!-- title bg -->
+				<!--><control type="image">
+					<width>600</width>
+					<height>80</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>30</posy>
+					<width>600</width>
+					<height>50</height>
+					<texture>border-bottom-grey.png</texture>
+				</control>
+				<control type="image">
+					<posx>285</posx>
+					<posy>440</posy>
+					<include>ArrowBlackDown</include>
+					<visible>!Window.IsVisible(2901) + !Window.IsVisible(10090)</visible>
+				</control>
+			</control>-->
+			<control type="group">
+				<posx>340</posx>
+				<posy>155</posy>
+				<control type="label">
+					<!--><label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>-->
+					<label>Please enter your PIN for $INFO[Control(3).ListItem(0).Label]</label>
+					<width>580</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Regular-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				<control type="group">
+					<posy>80</posy>
+					<posx>200</posx>
+					<control type="list" id="3">
+						<width>560</width>
+						<height>330</height>
+						<onleft>-</onleft>
+						<onright>5</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<texturefocus>-</texturefocus>
+						<itemlayout height="110">
+							
+						</itemlayout>
+						<focusedlayout height="110">
+							<include>DialogUserAvatarBg</include>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<font>Bold-16</font>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>120</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(admin))</visible>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<font>Bold-16</font>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(admin))</visible>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>36</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$INFO[ListItem.Property(email)]</label>
+								<font>Regular-16</font>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>120</textoffsetx>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>120</textoffsetx>
+								<visible>!IsEmpty(ListItem.Property(managed))</visible>
+							</control>
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>Unfocused</textcolor>
+								<selectedcolor>Unfocused</selectedcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
+							</control>							
+							<control type="label">
+								<posx>0</posx>
+								<posy>62</posy>
+								<width>560</width>
+								<height>50</height>
+								<label>$VAR[UserTitle1]</label>
+								<font>Bold-16</font>
+								<textcolor>FF5CB85C</textcolor>
+								<textoffsetx>140</textoffsetx>
+								<visible>IsEmpty(ListItem.Property(managed)) + !IsEmpty(ListItem.Property(protected))</visible>
+							</control>
+							<include>DialogUserAvatar</include>
+							<include>DialogUserIcons</include>
 						</focusedlayout>
 					</control>
 					<control type="scrollbar" id="61">
@@ -2584,15 +2714,42 @@
 	</include>
 	<include name="KeyboardPIN">
 		<control type="group">
-			<include>KeyboardBG</include>
-			<visible>!Window.IsVisible(103)</visible>
+			<control type="group">
+				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
+				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
+				<control type="image">
+					<include>FullScreenScaled</include>
+					<texture>black.png</texture>
+				</control>
+				<control type="image">
+					<include>FullScreenScaled</include>
+					<texture>bg-overlay-grainy.png</texture>
+				</control>				
+				<control type="image">
+					<posy>50</posy>					
+					<width>1280</width>
+					<height>620</height>
+					<aspectratio aligny="top">keep</aspectratio>
+					<texture>plex-chevron-alone-big.png</texture>
+					<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
 		</control>
 		<control type="group">
 			<animation effect="fade" start="0" end="90" time="200">WindowOpen</animation>
 			<animation effect="fade" start="90" end="0" time="200">WindowClose</animation>
+			<control type="label" id="1">
+				<posy>147</posy>
+				<label>Please enter your PIN</label>
+				<width>1280</width>
+				<height>40</height>
+				<align>center</align>
+				<font>Regular-24</font>
+				<textcolor>Focused</textcolor>
+			</control>
 			<!-- text field bg -->
 			<control type="grouplist">
-				<posy>215</posy>
+				<posy>197</posy>
 				<width>1280</width>
 				<height>105</height>
 				<align>center</align>
@@ -2621,7 +2778,7 @@
 					<control type="label" id="4">
 						<description>Edit Text</description>
 						<width>320</width>
-						<height>105</height>
+						<height>130</height>
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>$LOCALIZE[12323]</label>
@@ -2762,9 +2919,30 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<onup>502</onup>
-						<ondown>501</ondown>
+						<ondown>504</ondown>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+				<!-- Row 4 -->
+				<control type="grouplist" id="504">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="24">
+						<description>SWITCH USER button</description>
+						<width>320</width>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>503</onup>
+						<ondown>501</ondown>
+						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
+						<onclick>XBMC.Dialog.Close(numericinput)</onclick>
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[41009]</label>
 					</control>
 				</control>
 			</control>
