@@ -256,11 +256,6 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.xbmc.gui \
 
-ifeq (@USE_TOUCH_SKIN@,1)
-TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
-SKIN_DIRS+=$(TOUCH_SKIN_MEDIA)
-endif
-
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
@@ -352,9 +347,6 @@ SKIN_DIRS := @SKIN_DIRS@
 
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
-ifeq (@USE_TOUCH_SKIN@,1)
-	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
-endif
 	@for skin in $(SKIN_DIRS); do \
 		$(MAKE) -C $$skin; \
 	done
