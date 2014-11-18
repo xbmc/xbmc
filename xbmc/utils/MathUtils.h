@@ -34,7 +34,8 @@
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
-    defined(__arm__)
+    defined(__arm__) || \
+    defined(_mips)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
