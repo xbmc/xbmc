@@ -2799,7 +2799,7 @@
 						<description>'1' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>23</onup>
+						<onup>24</onup>
 						<ondown>16</ondown>
 						<label>$LOCALIZE[12311]</label>
 						<include>KeyboardButton</include>
@@ -2808,7 +2808,7 @@
 						<description>'2' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>23</onup>
+						<onup>24</onup>
 						<ondown>17</ondown>
 						<label>$LOCALIZE[12312]</label>
 						<include>KeyboardButton</include>
@@ -2817,7 +2817,7 @@
 						<description>'3' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>21</onup>
+						<onup>24</onup>
 						<ondown>18</ondown>
 						<label>$LOCALIZE[12313]</label>
 						<include>KeyboardButton</include>
@@ -2826,7 +2826,7 @@
 						<description>'4' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>21</onup>
+						<onup>24</onup>
 						<ondown>19</ondown>
 						<label>$LOCALIZE[12314]</label>
 						<include>KeyboardButton</include>
@@ -2835,7 +2835,7 @@
 						<description>'5' button</description>
 						<onleft>501</onleft>
 						<onright>501</onright>
-						<onup>21</onup>
+						<onup>24</onup>
 						<ondown>10</ondown>
 						<label>$LOCALIZE[12315]</label>
 						<include>KeyboardButton</include>
@@ -2909,7 +2909,7 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<onup>502</onup>
-						<ondown>501</ondown>
+						<ondown>504</ondown>
 						<include>KeyboardButtonBig</include>
 						<label>&#x21A4;</label>
 					</control>
@@ -2940,7 +2940,6 @@
 						<onup>503</onup>
 						<ondown>501</ondown>
 						<onclick>XBMC.ActivateWindow(selectuser)</onclick>
-						<onclick>XBMC.Dialog.Close(numericinput)</onclick>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[41009]</label>
 					</control>
