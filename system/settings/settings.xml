@@ -2979,6 +2979,10 @@
           <level>4</level>
           <default>false</default>
         </setting>
+        <setting id="general.addonbrokenfilter" type="boolean" label="0" help="36415">
+          <level>4</level>
+          <default>true</default>
+        </setting>
       </group>
     </category>
   </section>
