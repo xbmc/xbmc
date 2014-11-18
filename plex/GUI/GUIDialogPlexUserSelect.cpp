@@ -12,7 +12,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIDialogPlexUserSelect::CGUIDialogPlexUserSelect()
-  : CGUIDialogSelect(WINDOW_DIALOG_PLEX_USER_SELECT, "DialogPlexUserSelect.xml")
+  : CGUIDialogSelect(WINDOW_DIALOG_PLEX_USER_SELECT, "DialogPlexUserSelect.xml"), m_authed(false)
 {
 }
 
