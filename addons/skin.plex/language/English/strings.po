@@ -1166,3 +1166,7 @@ msgstr ""
 msgctxt "#41008"
 msgid "Extras"
 msgstr ""
+
+msgctxt "#41009"
+msgid "Switch User"
+msgstr ""

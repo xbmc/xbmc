@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <window id="2000">
 	<defaultcontrol>3</defaultcontrol>
+	<onload>Dialog.Close(numericinput)</onload>
 	<!-- ViewsDialog.xml -->
-	<include>DialogFadeInOut</include>
 	<controls>
 		<!-- ViewsDialog.xml -->
-		<include >DialogUserSwitch</include>
+		<include>DialogUserSwitch</include>
+		<!--><include>PinUserSwitch</include>-->
 		<include>debugInfos</include>
+		<include>Grid</include>
 	</controls>
 </window>

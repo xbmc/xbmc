@@ -754,10 +754,10 @@
 				</control>
 			</control>
 			<!-- right side section title and origin -->
-			<control type="group">
+			<!--><control type="group">
 				<include>ShowHomeFullInfo</include>
-				<posx>20r</posx>
-				<posy>30</posy>
+				<posx>30r</posx>
+				<posy>160</posy>
 				<control type="label">
 					<width>600</width>
 					<height>0</height>
@@ -767,9 +767,9 @@
 					<font>Bold-28</font>
 					<textcolor>orange</textcolor>
 					<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
-				</control>
+				</control>-->
 				<!-- with Label2 -->
-				<control type="label">
+				<!--><control type="label">
 					<posy>20</posy>
 					<width>600</width>
 					<height>20</height>
@@ -781,7 +781,7 @@
 					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
 					<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
 				</control>
-			</control>
+			</control>-->
 		</control>
 	</include>
 	<!-- SearchItemFullInfo -->
