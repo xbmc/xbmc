@@ -3,11 +3,32 @@
 	<defaultcontrol always="true">10</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<control type="button" id="10">
+		<!--><control type="button" id="10">
 			<description>Trigger</description>
 			<onfocus>ReplaceWindow(Home)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
+		</control>-->
+		<!-- testing code below, delete and uncomment the above when done -->
+		<control type="group">
+			<posy>500</posy>
+			<posx>580</posx>
+			<control type="button" id="10">
+				<description>Button</description>
+				<width>120</width>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<onup>-</onup>
+				<onclick>ReplaceWindow(Home)</onclick>
+				<label>Next</label>
+				<height>50</height>
+				<align>center</align>
+				<font>Bold-18</font>
+				<focusedcolor>FFFFFFFF</focusedcolor>
+				<texturefocus border="12">orange-rounded.png</texturefocus>
+				<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
+			</control>
 		</control>
+		<!-- end testing code -->
 	</controls>
 </window>
