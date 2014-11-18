@@ -9,7 +9,8 @@
 #include "MyPlexUserInfo.h"
 #include "utils/log.h"
 
-bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement* root)
 {
   if (root->QueryStringAttribute("authenticationToken", &authToken) != TIXML_SUCCESS)
   {
