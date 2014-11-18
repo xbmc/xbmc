@@ -14,10 +14,6 @@ AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
 
-# Declare default skins to install
-# This is a comma separated list of skin addon IDs (eg skin.confluence)
-default_skins="skin.confluence"
-
 tolower(){
   echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
@@ -128,8 +124,9 @@ APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.tx
 APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
 APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
+default_skins=${default_skins-$(${AWK} '/SKINS/ {print $2}' version.txt)}
 if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
-&& test "$APP_VERSION_TAG" != "" && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
+&& test "$APP_VERSION_TAG" != "" && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != "" && test "$default_skins" != ""; then
   final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG}"
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)

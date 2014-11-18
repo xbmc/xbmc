@@ -7,5 +7,9 @@ VERSION_TAG BETA3
 VERSION_CODE 139803
 ADDON_API 13.9.803
 
+# Declare skins to be included in the build
+# This is a comma separated list of skin addon IDs (eg skin.confluence)
+SKINS skin.confluence
+
 # Notes:
 # Change AC_INIT in configure.in
