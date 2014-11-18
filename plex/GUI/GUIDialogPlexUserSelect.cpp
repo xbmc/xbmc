@@ -8,6 +8,7 @@
 #include "PlexJobs.h"
 #include "Client/MyPlex/MyPlexManager.h"
 #include "PlexApplication.h"
+#include "Third-Party/hash-library/sha256.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIDialogPlexUserSelect::CGUIDialogPlexUserSelect()
@@ -71,26 +72,42 @@ void CGUIDialogPlexUserSelect::OnSelected()
 {
   bool close = true;
   CFileItemPtr item = m_vecList->Get(m_viewControl.GetSelectedItem());
-  if (item)
+  if (item && item->GetProperty("protected").asInteger() == 1)
   {
-    CStdString pin;
-    if (item->GetProperty("protected").asInteger() == 1)
+    bool firstTry = true;
+    while (true)
     {
+      CStdString pin;
       CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
       if (diag)
       {
         CStdString initial = "";
         diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
-        diag->SetHeading("Enter PIN");
+        diag->SetHeading(firstTry ? "Enter PIN" : "Try again...");
         diag->DoModal();
-
-        if (diag->IsAutoClosed() && (!diag->IsConfirmed() || diag->IsCanceled()))
+          
+        if (!diag->IsConfirmed() || diag->IsCanceled())
+        {
           close = false;
+          break;
+        }
         else
+        {
           diag->GetOutput(&pin);
+          if (g_plexApplication.myPlexManager->VerifyPin(pin, item->GetProperty("id").asInteger()))
+          {
+            g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), pin);
+            break;
+          }
+          firstTry = false;
+        }
       }
     }
-    g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1), pin);
+  }
+  else
+  {
+    // no PIN needed.
+    g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1));
   }
 
   if (close)

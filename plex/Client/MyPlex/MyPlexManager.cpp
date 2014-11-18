@@ -84,17 +84,21 @@ void CMyPlexManager::CachePin(const std::string& pin)
   }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CMyPlexManager::VerifyPin(const std::string& pin)
+bool CMyPlexManager::VerifyPin(const std::string& pin, int userId)
 {
-  if (!m_currentUserInfo.pinProtected)
-    return true;
+  if (pin.length() != 4)
+    return false;
+  
+  int uid = userId;
+  if (uid == -1)
+    uid = m_currentUserInfo.id;
   
   if (IsSignedIn())
   {
     // this just checks if we have a connection to plex.tv
     // we always want to try to make a connection there first
     //
-    std::string id = boost::lexical_cast<std::string>(m_currentUserInfo.id);
+    std::string id = boost::lexical_cast<std::string>(uid);
     CURL url = m_myplex->BuildPlexURL("api/home/users/" + id + "/switch");
     url.SetOption("pin", pin);
     
@@ -105,12 +109,12 @@ bool CMyPlexManager::VerifyPin(const std::string& pin)
     // if we successfully auth we need to cache the PIN
     // if we go offline later it will be useful.
     //
-    if (verify && m_currentUserInfo.pinProtected)
+    if (verify && uid == m_currentUserInfo.id && m_currentUserInfo.pinProtected)
       CachePin(pin);
     
     return verify;
   }
-  else if (XFILE::CFile::Exists("special://plexprofile/pcache.txt"))
+  else if (XFILE::CFile::Exists("special://plexprofile/pcache.txt") && userId == m_currentUserInfo.id)
   {
     // if we don't have a connection but we have a cached PIN number,
     // let's try to use that as our verification instead
@@ -131,9 +135,11 @@ bool CMyPlexManager::VerifyPin(const std::string& pin)
     // if we don't have access to plex.tv,
     // don't have a cached pin we can't really
     // do a PIN check, so here we default to
-    // just allowing the user through.
+    // just allowing the user through if they
+    // are the current user. All other users
+    // we need to to deny.
     //
-    return true;
+    return (userId == m_currentUserInfo.id);
   }
 }
 
@@ -582,6 +588,7 @@ CStdString CMyPlexManager::GetAuthToken() const
   return "";
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CMyPlexManager::Stop()
 {
   m_state = STATE_EXIT;

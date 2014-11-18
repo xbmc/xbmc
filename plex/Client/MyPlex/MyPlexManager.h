@@ -38,7 +38,7 @@ class CMyPlexManager : public CThread
 
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
     bool IsPinProtected() const { return m_currentUserInfo.pinProtected; }
-    bool VerifyPin(const std::string& pin);
+    bool VerifyPin(const std::string& pin, int userId = -1);
 
     void StartPinLogin();
     void StopPinLogin();
