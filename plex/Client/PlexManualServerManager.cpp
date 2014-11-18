@@ -25,8 +25,14 @@ void CPlexManualServerManager::checkManualServersAsync()
   m_manualServers.clear();
 
 #ifndef TARGET_RASPBERRY_PI
-  CPlexServerPtr localServer = CPlexServerPtr(new CPlexServer(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400, "http"))));
-  CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(localServer->BuildURL("/"), localServer), this);
+  // Ignore localhost if the current user is restricted. That can only lead to
+  // ugly things.
+  //
+  if (!g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted)
+  {
+    CPlexServerPtr localServer = CPlexServerPtr(new CPlexServer(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400, "http"))));
+    CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(localServer->BuildURL("/"), localServer), this);
+  }
 #endif
 
   if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
