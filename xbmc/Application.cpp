@@ -1570,38 +1570,6 @@ bool CApplication::Initialize()
     {
        g_passwordManager.CheckStartUpLock();
     }
-#else
-    if (g_plexApplication.myPlexManager->IsPinProtected())
-    {
-      int retries = 5;
-      while (retries != 0 && g_plexApplication.myPlexManager->IsPinProtected())
-      {
-        CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
-        if (diag)
-        {
-          CStdString initial;
-          diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
-          diag->SetHeading("Enter PIN");
-          diag->DoModal();
-          
-          if (!diag->IsAutoClosed() || (diag->IsConfirmed() || !diag->IsCanceled()))
-          {
-            std::string pin;
-            diag->GetOutput(&pin);
-            if (!g_plexApplication.myPlexManager->IsPinProtected() || g_plexApplication.myPlexManager->VerifyPin(pin))
-              break;
-          }
-        }
-        
-        retries --;
-      }
-      
-      if (retries == 0)
-      {
-        CGUIDialogOK::ShowAndGetInput("Failed to enter PIN", "Plex Home Theater will now close", "Restart to retry", "");
-        Stop(1);
-      }
-    }
 #endif
 
     // check if we should use the login screen
@@ -1631,7 +1599,42 @@ bool CApplication::Initialize()
         g_guiSettings.SetBool("system.firstrunwizard", true);
       }
       else
-        g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+      {
+        g_windowManager.ActivateWindow(WINDOW_HOME);
+        
+        if (g_plexApplication.myPlexManager->IsPinProtected())
+        {
+          int retries = 5;
+          while (retries != 0 && g_plexApplication.myPlexManager->IsPinProtected())
+          {
+            CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+            if (diag)
+            {
+              CStdString initial;
+              diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
+              diag->SetHeading("Enter PIN");
+              diag->DoModal();
+              
+              if (!diag->IsAutoClosed() || (diag->IsConfirmed() || !diag->IsCanceled()))
+              {
+                std::string pin;
+                diag->GetOutput(&pin);
+                if (!g_plexApplication.myPlexManager->IsPinProtected() || g_plexApplication.myPlexManager->VerifyPin(pin))
+                  break;
+              }
+            }
+            
+            retries --;
+          }
+          
+          if (retries == 0)
+          {
+            CGUIDialogOK::ShowAndGetInput("Failed to enter PIN", "Plex Home Theater will now close", "Restart to retry", "");
+            Stop(1);
+          }
+        }
+
+      }
 #endif
     }
 
