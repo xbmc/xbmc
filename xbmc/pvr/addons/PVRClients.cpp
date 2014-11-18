@@ -1044,8 +1044,7 @@ bool CPVRClients::UpdateAddons(void)
   for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
   {
     const AddonPtr clientAddon = m_addons.at(iClientPtr);
-    bool newRegistration = false;
-    if (RegisterClient(clientAddon, &newRegistration) < 0 || newRegistration)
+    if (RegisterClient(clientAddon) < 0)
     {
       CAddonMgr::Get().DisableAddon(clientAddon->ID(), true);
       usableClients--;
