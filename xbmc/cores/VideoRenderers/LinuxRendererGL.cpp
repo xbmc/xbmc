@@ -1465,7 +1465,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
 void CLinuxRendererGL::RenderFromFBO()
 {
-  glEnable(m_textureTarget);
+  glEnable(GL_TEXTURE_2D);
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1479,7 +1479,7 @@ void CLinuxRendererGL::RenderFromFBO()
     if (!m_pVideoFilterShader->GetTextureFilter(filter))
       filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
 
-    m_fbo.fbo.SetFiltering(m_textureTarget, filter);
+    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_fbo.width);
     m_pVideoFilterShader->SetHeight(m_fbo.height);
@@ -1496,7 +1496,7 @@ void CLinuxRendererGL::RenderFromFBO()
   else
   {
     GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    m_fbo.fbo.SetFiltering(m_textureTarget, filter);
+    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   }
 
@@ -1528,8 +1528,8 @@ void CLinuxRendererGL::RenderFromFBO()
 
   VerifyGLState();
 
-  glBindTexture(m_textureTarget, 0);
-  glDisable(m_textureTarget);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
   VerifyGLState();
 }
 
