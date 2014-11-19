@@ -575,6 +575,11 @@ else
 	@echo "You can run @APP_NAME_LC@ with the command '@APP_NAME_LC@'"
 endif
 endif
+ifeq ($(findstring linux,@ARCH@), linux)
+	@sed "s|@BINDIR@|$(DESTDIR)$(libdir)/xbmc|g" tools/Linux/98-joystick.rules.in > tools/Linux/98-joystick.rules
+	@install tools/Linux/98-joystick.rules $(DESTDIR)$(datarootdir)/xbmc/98-joystick.rules-Sample
+	@install tools/Linux/joystick-fix.sh $(DESTDIR)$(libdir)/xbmc/joystick-fix.sh
+endif
 
 install-arch:
 	@# Arch dependent files
