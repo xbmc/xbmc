@@ -286,15 +286,7 @@ void CURL::Parse(const std::string& strURL1)
     }
     iPos = iSlash + 1;
     if (iEnd > iPos)
-    {
       m_strFileName = strURL.substr(iPos, iEnd - iPos);
-
-      iSlash = m_strFileName.find("/");
-      if(iSlash == std::string::npos)
-        m_strShareName = m_strFileName;
-      else
-        m_strShareName = m_strFileName.substr(0, iSlash);
-    }
   }
 
   // iso9960 doesnt have an hostname;-)
@@ -321,7 +313,7 @@ void CURL::Parse(const std::string& strURL1)
 
   StringUtils::Replace(m_strFileName, '\\', '/');
 
-  /* update extension */
+  /* update extension + sharename */
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
@@ -345,6 +337,12 @@ void CURL::SetFileName(const std::string& strFileName)
     m_strFileType = m_strFileName.substr(period+1);
   else
     m_strFileType = "";
+
+  slash = m_strFileName.find_first_of(GetDirectorySeparator());
+  if(slash == std::string::npos)
+    m_strShareName = m_strFileName;
+  else
+    m_strShareName = m_strFileName.substr(0, slash);
 
   StringUtils::Trim(m_strFileType);
   StringUtils::ToLower(m_strFileType);

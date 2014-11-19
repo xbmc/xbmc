@@ -3253,9 +3253,25 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "Basınç"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Yakınlık"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Yoğunluk"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Parçalı"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Çok"
+
 msgctxt "#1381"
 msgid "Extreme"
-msgstr "Extreme"
+msgstr "Aşırı"
 
 msgctxt "#1382"
 msgid "Whirls"
@@ -10600,6 +10616,10 @@ msgstr "Arama sonuçlarındaki ilk altyazıyı otomatık olarak indir"
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Yapılandırma taşındı"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgstr "XBMC yapılandırması Kodi için yeni bir konuma taşındı. Lütfen http://kodi.wiki/view/Migration_from_XBMC_to_Kodi adresine bakın - bu mesaj tekrar gösterilmeyecek!"
 
 msgctxt "#25000"
 msgid "Notifications"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.milkdrop"
-  version="1.0.24"
+  version="1.0.25"
   name="MilkDrop"
   provider-name="Team-Kodi">
   <extension
@@ -30,7 +30,7 @@
     <summary lang="fr">MilkDrop vous fait voyager dans les ondes sonores de votre musique</summary>
     <summary lang="fr_CA">MilkDrop vous fait voler au travers des ondes sonores que vous entendez</summary>
     <summary lang="gl">MilkDrop lévate voando a través da ondas de son que esta a ouvir</summary>
-    <summary lang="he">MilkDrop לוקח אותך לתעופה דרך גלי הסאונד שאתה שומע</summary>
+    <summary lang="he">החיזוי MilkDrop לוקח את המאזין לטיסה בין גלי הקול</summary>
     <summary lang="hr">MilkDrop vam omogućuje let kroz zvuk koji čujete</summary>
     <summary lang="hu">A Milkdrop végigrepít a zene hullámain</summary>
     <summary lang="id">MilkDrop membawa anda terbang melalui gelombang suara yang anda dengarkan</summary>
@@ -81,7 +81,7 @@
     <description lang="fr">MilkDrop était à l'origine une extension de visualisation musicale pour le lecteur audio Winamp. Pendant que vous écoutez votre musique, Milkdrop vous fait voyager à travers les ondes sonores que vous entendez, détectant le rythme pour déclencher une myriade d'effets psychédéliques, créant ainsi une riche expérience visuelle et sonore.</description>
     <description lang="fr_CA">MilkDrop était à l'origine un plugiciel de visualisation musicale pour le lecteur audio Winamp. Alors que vous écoutez votre musique, Milkdrop vous fait voler au travers des ondes sonores, et utilise la détection rythmique pour déclencher une myriade d'effets psychédéliques, créant un voyage visuel et sonore.</description>
     <description lang="gl">MilkDrop foi orixinalmente un plugin de Visualización para múica do reprodutor de música Winamp. Nametres vostede escoita a súa música, MilkDrop lévao voando a través das ondas de son que esta a ouvir, e emprega a detección de ritmo para activar milleiros de efectos psicodélicos, creando unha rica viaxe visual a través do son.</description>
-    <description lang="he">MilkDrop was originally a music visualizer "plug-in" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound.</description>
+    <description lang="he">החיזוי MilkDrop במקור הינו הרחבה לנגן המוזיקה Winamp. בעת האזנה למוזיקה, MilkDrop יקח את המאזין לטיסה בין גלי הקול שנשמעים, וישתמש ביכולת זיהוי קצב מוזיקה להפעלת מספר עצום של אפקטים פסיכדלים, בכך יוצר מסע חזותי עשיר לגלי הקול.</description>
     <description lang="hr">MilkDrop je orginalno bio zamišljen kao "dodatak" za Winamp glazbeni svirač. Dok slušate svoju glazbu, MilkDrop vam omogućuje let kroz zvuk koji čujete i koristi otkrivanje taktova da bi pokrenuo bezbroj psihodeličnih efekata, tako stvarajući bogato vizualno  zvučno putovanje.</description>
     <description lang="hu">A Milkdrop eredetileg egy beépülőmodul volt a Winamp zenelejátszóhoz. Ahogy hallgatod a zenét, a Milkdrop keresztülrepít a hallható hanghullámokon, felhasználva a dobritmust pszihedelikus effektusok létrehozására gazdag látványvilág megteremtésével.</description>
     <description lang="id">MilkDrop awalnya adalah pengaya visualisasi musik untuk Winamp. Sembari mendengarkan musik, MilkDrop akan membawa Anda terbang melalui gelombang suara yang Anda dengarkan, dan menggunakan deteksi ketukan untuk menampikan banyak sekali efek psikedelik, menciptakan suatu perjalanan visual yang kaya melalui suara.</description>

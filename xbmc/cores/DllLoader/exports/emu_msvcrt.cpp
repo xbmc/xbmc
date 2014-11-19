@@ -573,7 +573,20 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return pFile->Read(buffer, uiSize);
+      errno = NOERROR;
+      const ssize_t ret = pFile->Read(buffer, uiSize);
+      if (ret < 0)
+      {
+        const int err = errno; // help compiler to optimize, "errno" can be macro
+        if (err == NOERROR ||
+            (err != EAGAIN && err != EINTR && err != EIO && err != EOVERFLOW && err != EWOULDBLOCK &&
+             err != ECONNRESET && err != ENOTCONN && err != ETIMEDOUT &&
+             err != ENOBUFS && err != ENOMEM && err != ENXIO))
+          errno = EIO; // exact errno is unknown or incorrect, use default error number
+        
+        return -1;
+      }
+      return ret;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -582,6 +595,7 @@ extern "C"
       return read(fd, buffer, uiSize);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    errno = EBADF;
     return -1;
   }
 
@@ -590,7 +604,21 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return pFile->Write(buffer, uiSize);
+      errno = NOERROR;
+      const ssize_t ret = pFile->Write(buffer, uiSize);
+      if (ret < 0)
+      {
+        const int err = errno; // help compiler to optimize, "errno" can be macro
+        if (err == NOERROR ||
+            (err != EAGAIN && err != EFBIG && err != EINTR && err != EIO && err != ENOSPC && err != EPIPE && err != EWOULDBLOCK &&
+             err != ECONNRESET &&
+             err != ENOBUFS && err != ENXIO &&
+             err != EACCES && err != ENETDOWN && err != ENETUNREACH))
+          errno = EIO; // exact errno is unknown or incorrect, use default error number
+
+        return -1;
+      }
+      return ret;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -599,6 +627,7 @@ extern "C"
       return write(fd, buffer, uiSize);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    errno = EBADF;
     return -1;
   }
 
@@ -758,7 +787,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-      return dll_close(fd);
+      return dll_close(fd) == 0 ? 0 : EOF;
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1125,16 +1154,22 @@ extern "C"
 
   int dll_fread(void * buffer, size_t size, size_t count, FILE * stream)
   {
-    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-    if (fd >= 0)
+    if (size == 0 || count == 0)
+      return 0;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
+    if (pFile != NULL)
     {
-      int iItemsRead = dll_read(fd, buffer, count * size);
-      if (iItemsRead >= 0)
+      size_t read = 0;
+      const size_t bufSize = size * count;
+      do // fread() must read all data until buffer is filled or eof/error occurs
       {
-        if (size)
-          iItemsRead /= size;
-        return iItemsRead;
-      }
+        const ssize_t r = pFile->Read(((int8_t*)buffer) + read, bufSize - read);
+        if (r <= 0)
+          break;
+        read += r;
+      } while (bufSize > read);
+      return read / size;
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1142,7 +1177,7 @@ extern "C"
       return fread(buffer, size, count, stream);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
+    return 0;
   }
 
   int dll_fgetc(FILE* stream)
@@ -1226,8 +1261,8 @@ extern "C"
   {
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
-      char tmp[2] = { (char)character, 0 };
-      dllputs(tmp);
+      unsigned char tmp[2] = { (unsigned char)character, 0 };
+      dllputs((char *)tmp);
       return character;
     }
     else
@@ -1237,7 +1272,8 @@ extern "C"
         int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
         if (fd >= 0)
         {
-          int iItemsWritten = dll_write(fd, (char* )&character, 1);
+          unsigned char c = (unsigned char)character;
+          int iItemsWritten = dll_write(fd, &c, 1);
           if (iItemsWritten == 1)
             return character;
         }
@@ -1315,10 +1351,10 @@ extern "C"
       // it is a emulated file
       int d;
       if (dll_fseek(stream, -1, SEEK_CUR)!=0)
-        return -1;
+        return EOF;
       d = dll_fgetc(stream);
       if (d == EOF)
-        return -1;
+        return EOF;
 
       dll_fseek(stream, -1, SEEK_CUR);
       if (c != d)
@@ -1416,6 +1452,9 @@ extern "C"
 
   size_t dll_fwrite(const void * buffer, size_t size, size_t count, FILE* stream)
   {
+    if (size == 0 || count == 0)
+      return 0;
+
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
       char* buf = (char*)malloc(size * count + 1);
@@ -1432,15 +1471,19 @@ extern "C"
     }
     else
     {
-      int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-      if (fd >= 0)
+      CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
+      if (pFile != NULL)
       {
-        int iItemsWritten = dll_write(fd, buffer, count * size);
-        if (iItemsWritten >= 0)
+        size_t written = 0;
+        const size_t bufSize = size * count;
+        do // fwrite() must write all data until whole buffer is written or error occurs
         {
-          iItemsWritten /= size;
-          return iItemsWritten;
-        }
+          const ssize_t w = pFile->Write(((int8_t*)buffer) + written, bufSize - written);
+          if (w <= 0)
+            break;
+          written += w;
+        } while (bufSize > written);
+        return written / size;
       }
       else if (!IS_STD_STREAM(stream))
       {
@@ -1450,7 +1493,7 @@ extern "C"
       }
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
+    return 0;
   }
 
   int dll_fflush(FILE* stream)
@@ -2170,22 +2213,25 @@ extern "C"
   int dll_filbuf(FILE *fp)
   {
     if (fp == NULL)
-      return 0;
+      return EOF;
 
     if(IS_STD_STREAM(fp))
-      return 0;
+      return EOF;
 
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
     if (pFile)
     {
-      int data;
+      unsigned char data;
       if(pFile->Read(&data, 1) == 1)
-        return data;
+      {
+        pFile->Seek(-1, SEEK_CUR);
+        return (int)data;
+      }
       else
-        return 0;
+        return EOF;
     }
 #ifdef TARGET_POSIX
-    return 0;
+    return EOF;
 #else
     return _filbuf(fp);
 #endif
@@ -2194,27 +2240,29 @@ extern "C"
   int dll_flsbuf(int data, FILE *fp)
   {
     if (fp == NULL)
-      return 0;
+      return EOF;
 
     if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
     {
       CLog::Log(LOGDEBUG, "dll_flsbuf() - %c", data);
-      return 1;
+      return data;
     }
 
     if(IS_STD_STREAM(fp))
-      return 0;
+      return EOF;
 
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
     if (pFile)
     {
-      if(pFile->Write(&data, 1) == 1)
-        return 1;
+      pFile->Flush();
+      unsigned char c = (unsigned char)data;
+      if(pFile->Write(&c, 1) == 1)
+        return data;
       else
-        return 0;
+        return EOF;
     }
 #ifdef TARGET_POSIX
-    return 0;
+    return EOF;
 #else
     return _flsbuf(data, fp);
 #endif

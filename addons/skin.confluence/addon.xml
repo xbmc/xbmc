@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.5.5"
+  version="2.5.6"
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
@@ -150,6 +150,7 @@
     <disclaimer lang="es_MX">Confluence es el skin por defecto para Kodi, removerlo podría causar problemas</disclaimer>
     <disclaimer lang="es_VE">"Confluence" es el tema predeterminado para Kodi, eliminarlo puedes causar problemas</disclaimer>
     <disclaimer lang="et">Confluence on Kodi vaikerüü. Selle eemaldamine võib põhjustada ootamatusi.</disclaimer>
+    <disclaimer lang="fa_IR">Confluence پوسته پیش فرض برای نرم افزار kodi می باشد و حذف آن موجب مشکلاتی خواهد شد.</disclaimer>
     <disclaimer lang="fi">Confluence on Kodi:n oletusulkoasu, sen poistaminen saattaa aiheuttaa ongelmia</disclaimer>
     <disclaimer lang="fil">Ang Confluence ay ang default skin ng Kodi. Ang pagtanggal nito ay maaring magdulot ng problema</disclaimer>
     <disclaimer lang="fo">Confluence er vanliga útsjónding brúkt av Kodi. Strikan kann viðføra brek.</disclaimer>

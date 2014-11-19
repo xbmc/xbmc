@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.24"
+  version="1.0.25"
   name="Euphoria"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -36,7 +36,7 @@
     <summary lang="fr">Difficilement plus psychédélique comme économiseur d'écran</summary>
     <summary lang="fr_CA">Il y a pas d'économiseur d'écran plus psychédélique</summary>
     <summary lang="gl">Máis ou menos tan psicodélico como o pode ser un protector de pantalla</summary>
-    <summary lang="he">זהו פחות או יותר שומר המסך הכי פסיכדלי שיש</summary>
+    <summary lang="he">זהו שומר המסך הפסיכדלי ביותר שיכול להיות</summary>
     <summary lang="hr">Psihodeličan koliko čuvar zaslona može biti </summary>
     <summary lang="hu">A legpszihedelikusabb képernyővédő</summary>
     <summary lang="id">Sepsikedelik mungkin dari sebuah screensaver</summary>
@@ -89,7 +89,7 @@
     <description lang="fr">En terme d'économiseur, on fait difficilement plus psychédélique. Mogumbo pensait son économiseur Plasma tout en haut de l'échelle mais, celui-ci donne encore plus la nausée. Mieux vaut se munir d'un de ces sachets pour le mal de l'air avant de le regarder trop longtemps.</description>
     <description lang="fr_CA">On fait difficilement plus psychédélique comme économiseur d'écran. mogumbo pensait que son économiseur Plasma était tout en haut de l'échelle mais, celui-ci donne encore plus la nausée. Vous devriez trouver un de ces sacs pour le mal de l'air avant de le fixer trop longtemps.</description>
     <description lang="gl">Este é máis ou menos tan psicodélico como pode selo un protector de pantalla. mogumbo pensou que o seu protector de pantalla Plasma era do mello, pero este é aínda máis mareante. Será mellor que colla unha bolsa contra o mareo antes de quedar pampo mirando para el.</description>
-    <description lang="he">זוהי הרמה הגבוהה ביותר של פסיכדליות אליה יכולים להגיע שומרי מסך. mogumbo חשב ששומר מסך הפלזמה שלו הגיע לראש הטבלה אבל זה אפילו יותר מסחרר. מוטב להצטייד במספר שקיות הקאה בטרם בהייה ממושכת בשומר מסך זה.</description>
+    <description lang="he">זהו שומר מסך הכי פסיכדלי שניתן להיות. mogumbo חשב ששומר מסך הפלזמה שלו הגיע לראש הטבלה, אך שומר זה יגרום לתחושת סחרחורת גדולה יותר. מוטב להצטייד במספר שקיות הקאה בטרם בהיה ממושכת.</description>
     <description lang="hr">Psihodeličan koliko čuvar zaslona može biti. Mogumbo kroz svoj plazma čuvar zaslona je bio vrh, ali od ovog vam je još više loše. Bilo bi vam bolje da pronađete jednu od onih vrećica za mučninu što dijele u avionima prije nego počnete zuriti u ovaj.</description>
     <description lang="hu">Ez a legpszihedelikusabb képernyővédő. mogumbo úgy gondolta, hogy a Plasma képernyővédő van a lista tetején,de ez még inkább kábító. Jobb ha keresel egy légibetegség zacskót mielőtt túl sokáig néznéd a képernyőt.</description>
     <description lang="id">Ini adalah sepsikedelik mungkin dari sebuah screensaver. mogumbo mengira Plasma savernya berada di puncak, Tapi ini bahkan lebih memabukkan. Anda sebaiknya mencari kantung mabuk terlebih dahulu sebelum menatapnya terlalu lama.</description>

@@ -10617,6 +10617,10 @@ msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "La configuration a été déplacée"
 
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgstr "La configuration de XBMC a été déplacée vers le nouvel emplacement pour Kodi. Veuillez vous référer à http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - ce message ne sera pas montrer de nouveau!"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifications"

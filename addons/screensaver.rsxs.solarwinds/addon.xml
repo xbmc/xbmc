@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.24"
+  version="1.0.25"
   name="Solarwinds"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -88,7 +88,7 @@
     <description lang="fr">Voici un économiseur d'écran à effets de particules particulièrement envoûtant. Vous trouverez qu'il permet d'obtenir un nombre incroyable de modèles et d'effets différents.</description>
     <description lang="fr_CA">C'est un économiseur d'écran à effets de particules particulièrement hypnotisant. Il vous permettra d'obtenir un nombre incroyable de modèles différents.</description>
     <description lang="gl">Este é un protector de pantalla con efectos de partículas moi hipnotizante. Atopará que pode acadar un incrible número de patróns diferentes.</description>
-    <description lang="he">זהו שומר מסך עם אפקט חלקיקים מהפנט ביותר. אתה תמצא עצמך מקבל מס' מפתיע של צורות שונות ומרהיבות.</description>
+    <description lang="he">זהו שומר מסך עם אפקט חלקיקים מהפנט ביותר. מספר מפתיע של צורות שונות ומרהיבות יתקבלו.</description>
     <description lang="hr">Ovo je zaista očaravajuči čuvar zaslona. Moguće je ostvariti zapanjujući broj različitih uzoraka.</description>
     <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
     <description lang="id">Ini adalah penyelamat layar dengan efek partikel yang sangat mencuri perhatian. Anda akan lihat bahwa Anda bisa mendapat sejumlah yang mengagumkan dari pola yang berbeda.</description>

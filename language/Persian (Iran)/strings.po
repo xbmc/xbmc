@@ -5305,6 +5305,10 @@ msgctxt "#19017"
 msgid "Recordings"
 msgstr "ضبط شده ها"
 
+msgctxt "#19020"
+msgid "TV"
+msgstr "تلویزیون"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "بعدی"
@@ -5344,6 +5348,14 @@ msgstr "ضبط شده ها"
 msgctxt "#19177"
 msgid "Playback"
 msgstr "پخش"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "تلویزیون"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "پس زمینه"
 
 msgctxt "#19607"
 msgid "Fashion"
@@ -6573,6 +6585,10 @@ msgctxt "#24012"
 msgid "Subtitles"
 msgstr "زیر نویس ها"
 
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "اشعار"
+
 msgctxt "#24015"
 msgid "Music video information"
 msgstr "اطلاعات موزیک ویدئو"
@@ -6601,6 +6617,18 @@ msgctxt "#33031"
 msgid "Coverflow"
 msgstr "دیوار"
 
+msgctxt "#33035"
+msgid "Maps"
+msgstr "نقشه ها"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "گزینه ها"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "پس زمینه"
+
 msgctxt "#33069"
 msgid "Backgrounds"
 msgstr "پس زمیته ها"
@@ -6625,6 +6653,10 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "هرگز"
 
+msgctxt "#35500"
+msgid "Location"
+msgstr "مکان"
+
 msgctxt "#35502"
 msgid "Name"
 msgstr "نام"
@@ -6636,6 +6668,10 @@ msgstr "متصل شده"
 msgctxt "#36035"
 msgid "Always"
 msgstr "همیشه"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "تلویزیون"
 
 msgctxt "#36426"
 msgid "Switch to channel"

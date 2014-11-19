@@ -55,10 +55,13 @@ public:
   virtual ~CMusicInfoScanner();
 
   void Start(const CStdString& strDirectory, int flags);
+  void StartCleanDatabase();
   void FetchAlbumInfo(const CStdString& strDirectory, bool refresh=false);
   void FetchArtistInfo(const CStdString& strDirectory, bool refresh=false);
   bool IsScanning();
   void Stop();
+
+  void CleanDatabase(bool showProgress = true);
 
   //! \brief Set whether or not to show a progress dialog
   void ShowDialog(bool show) { m_showDialog = show; }

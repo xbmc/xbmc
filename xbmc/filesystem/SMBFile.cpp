@@ -74,16 +74,8 @@ void CSMB::Deinit()
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
-    try
-    {
-      smbc_set_context(NULL);
-      smbc_free_context(m_context, 1);
-    }
-    XBMCCOMMONS_HANDLE_UNCHECKED
-    catch(...)
-    {
-      CLog::Log(LOGERROR,"exception on CSMB::Deinit. errno: %d", errno);
-    }
+    smbc_set_context(NULL);
+    smbc_free_context(m_context, 1);
     m_context = NULL;
   }
 }
@@ -133,9 +125,6 @@ void CSMB::Init()
         if (g_advancedSettings.m_sambadoscodepage.length() > 0)
           fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
-        // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-        if ( CSettings::Get().GetString("smb.workgroup").length() > 0 )
-          fprintf(f, "\tworkgroup = %s\n", CSettings::Get().GetString("smb.workgroup").c_str());
         fclose(f);
       }
     }
@@ -154,6 +143,8 @@ void CSMB::Init()
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    if (CSettings::Get().GetString("smb.workgroup").length() > 0)
+      smbc_setWorkgroup(m_context, strdup(CSettings::Get().GetString("smb.workgroup").c_str()));
     smbc_setUser(m_context, strdup("guest"));
 #else
     m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
@@ -163,6 +154,8 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    if (CSettings::Get().GetString("smb.workgroup").length() > 0)
+      m_context->workgroup = strdup(CSettings::Get().GetString("smb.workgroup").c_str());
     m_context->user = strdup("guest");
 #endif
 
@@ -179,29 +172,6 @@ void CSMB::Init()
     }
   }
   m_IdleTimeout = 180;
-}
-
-void CSMB::Purge()
-{
-}
-
-/*
- * For each new connection samba creates a new session
- * But this is not what we want, we just want to have one session at the time
- * This means that we have to call smbc_purge() if samba created a new session
- * Samba will create a new session when:
- * - connecting to another server
- * - connecting to another share on the same server (share, not a different folder!)
- *
- * We try to avoid lot's of purge commands because it slow samba down.
- */
-void CSMB::PurgeEx(const CURL& url)
-{
-  CSingleLock lock(*this);
-  std::string strShare = url.GetFileName().substr(0, url.GetFileName().find('/'));
-
-  m_strLastShare = strShare;
-  m_strLastHost = url.GetHostName();
 }
 
 std::string CSMB::URLEncode(const CURL &url)
@@ -221,8 +191,11 @@ std::string CSMB::URLEncode(const CURL &url)
   if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
   {
     flat += URLEncode(url.GetUserName());
-    flat += ":";
-    flat += URLEncode(url.GetPassWord());
+    if(url.GetPassWord().length() > 0)
+    {
+      flat += ":";
+      flat += URLEncode(url.GetPassWord());
+    }
     flat += "@";
   }
   flat += URLEncode(url.GetHostName());
@@ -312,7 +285,6 @@ int64_t CSMBFile::GetPosition()
 {
   if (m_fd == -1)
     return -1;
-  smb.Init();
   CSingleLock lock(smb);
   return smbc_lseek(m_fd, 0, SEEK_CUR);
 }
@@ -446,20 +418,7 @@ int CSMBFile::Stat(struct __stat64* buffer)
 
   CSingleLock lock(smb);
   int iResult = smbc_fstat(m_fd, &tmpBuffer);
-
-  memset(buffer, 0, sizeof(struct __stat64));
-  buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;
-  buffer->st_mode = tmpBuffer.st_mode;
-  buffer->st_nlink = tmpBuffer.st_nlink;
-  buffer->st_uid = tmpBuffer.st_uid;
-  buffer->st_gid = tmpBuffer.st_gid;
-  buffer->st_rdev = tmpBuffer.st_rdev;
-  buffer->st_size = tmpBuffer.st_size;
-  buffer->st_atime = tmpBuffer.st_atime;
-  buffer->st_mtime = tmpBuffer.st_mtime;
-  buffer->st_ctime = tmpBuffer.st_ctime;
-
+  CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
 
@@ -471,20 +430,7 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 
   struct stat tmpBuffer = {0};
   int iResult = smbc_stat(strFileName.c_str(), &tmpBuffer);
-
-  memset(buffer, 0, sizeof(struct __stat64));
-  buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;
-  buffer->st_mode = tmpBuffer.st_mode;
-  buffer->st_nlink = tmpBuffer.st_nlink;
-  buffer->st_uid = tmpBuffer.st_uid;
-  buffer->st_gid = tmpBuffer.st_gid;
-  buffer->st_rdev = tmpBuffer.st_rdev;
-  buffer->st_size = tmpBuffer.st_size;
-  buffer->st_atime = tmpBuffer.st_atime;
-  buffer->st_mtime = tmpBuffer.st_mtime;
-  buffer->st_ctime = tmpBuffer.st_ctime;
-
+  CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
 
@@ -532,37 +478,21 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   /* also worse, a request of exactly 64k will return */
   /* as if eof, client has a workaround for windows */
   /* thou it seems other servers are affected too */
-  // FIXME: does this workaround still required?
-  ssize_t totalRead = 0;
-  uint8_t* buf = (uint8_t*)lpBuf;
-  do
+  if( uiBufSize >= 64*1024-2 )
+    uiBufSize = 64*1024-2;
+
+  ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+
+  if ( bytesRead < 0 && errno == EINVAL )
   {
-    const ssize_t readSize = (uiBufSize >= 64 * 1024 - 2) ? 64 * 1024 - 2 : uiBufSize;
-    ssize_t r = smbc_read(m_fd, buf + totalRead, readSize);
-    if (r < 0)
-    {
-      if (errno == EINVAL)
-      {
-        CLog::LogF(LOGWARNING, "Error %d: \"%s\" - Retrying", errno, strerror(errno));
-        r = smbc_read(m_fd, buf + totalRead, readSize);
-      }
-      if (r < 0)
-      {
-        CLog::LogF(LOGERROR, "Error %d: \"%s\"", errno, strerror(errno));
-        if (totalRead == 0)
-          return -1;
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
+    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  }
 
-        break;
-      }
-    }
+  if ( bytesRead < 0 )
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
 
-    totalRead += r;
-    uiBufSize -= r;
-    if (r != readSize)
-      break;
-  } while (uiBufSize > 0);
-
-  return totalRead;
+  return bytesRead;
 }
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
@@ -598,7 +528,6 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_fd == -1) return -1;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
-  smb.Init();
   CSingleLock lock(smb);
 
   return  smbc_write(m_fd, (void*)lpBuf, uiBufSize);
@@ -639,7 +568,6 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   m_fileSize = 0;
 
   Close();
-  smb.Init();
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName())) return false;

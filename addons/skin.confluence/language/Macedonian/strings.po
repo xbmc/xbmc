@@ -30,7 +30,7 @@ msgstr "Обработка..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Сокриј инфо."
+msgstr "Сокриј инфо"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Викенд Прогноза"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Дневна Прогноза"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Прогноза"
@@ -603,3 +607,7 @@ msgstr "Пушти диск"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "Систем"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Радио"

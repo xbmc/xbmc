@@ -7287,7 +7287,7 @@ msgstr "PVR 사용을 위한 백엔드 애드온"
 
 msgctxt "#19274"
 msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "좀 더 알아보려면 kodi.tv/pvr을(를) 방문해보세요."
+msgstr "kodi.tv/pvr 에서 자세한 정보를 확인하세요."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10616,6 +10616,10 @@ msgstr "검색결과에서 첫 번째 자막을 자동으로 받기"
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "환경설정 파일이 이동되었습니다"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgstr "XBMC 환경 설정 파일이 Kodi의 새 위치로 이동되었습니다. http://kodi.wiki/view/Migration_from_XBMC_to_Kodi 를 참고하세요. 이 안내문은 다시 표시되지 않습니다!"
 
 msgctxt "#25000"
 msgid "Notifications"

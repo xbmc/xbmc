@@ -747,7 +747,7 @@ msgstr "Pikselforhold"
 
 msgctxt "#218"
 msgid "DVD drive"
-msgstr "DVD-drev"
+msgstr "DVD-enhet"
 
 msgctxt "#219"
 msgid "Please insert disc"
@@ -1899,7 +1899,7 @@ msgstr "Velg spilleliste"
 
 msgctxt "#525"
 msgid "New playlist..."
-msgstr "Ny spilleliste"
+msgstr "Ny spilleliste..."
 
 msgctxt "#526"
 msgid "Add to playlist"
@@ -3239,7 +3239,7 @@ msgstr "Egendefinert passthrough-enhet"
 
 msgctxt "#1375"
 msgid "Temperature"
-msgstr "Tempratur"
+msgstr "Temperatur"
 
 msgctxt "#1376"
 msgid "Pressure"
@@ -4895,11 +4895,11 @@ msgstr "Spornavnsjablong - høyre"
 
 msgctxt "#13388"
 msgid "Preset"
-msgstr "%s forhåndsinnstillinger"
+msgstr "Forvalg"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualisation"
-msgstr "Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualiseringen"
+msgstr "Det er ingen forvalg tilgjengelig\nfor denne visualiseringen"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualisation"
@@ -4971,7 +4971,7 @@ msgstr "Bildeinformasjon"
 
 msgctxt "#13407"
 msgid "%s presets"
-msgstr "%s forhåndsinnstillinger"
+msgstr "%s forvalg"
 
 msgctxt "#13408"
 msgid "(IMDb user rating)"
@@ -5879,7 +5879,7 @@ msgstr "Bob (invertert)"
 
 msgctxt "#16024"
 msgid "Cancelling..."
-msgstr "Kansellerer ..."
+msgstr "Avbryter..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -8444,6 +8444,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filprotokoll (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf-utforsker"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"

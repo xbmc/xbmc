@@ -816,22 +816,31 @@ static int libc_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
     off_t i_size, i_ret;
 
     i_size = (off_t)i_blocks * (off_t)DVDCSS_BLOCK_SIZE;
-    i_ret = read( dvdcss->i_read_fd, p_buffer, i_size );
-
-    if( i_ret < 0 )
+    i_ret = 0;
+    while( i_ret < i_size )
     {
-        print_error( dvdcss, "read error" );
-        dvdcss->i_pos = -1;
-        return i_ret;
+        off_t i_r;
+        i_r = read( dvdcss->i_read_fd, ((char*)p_buffer) + i_ret, i_size - i_ret );
+        if( i_r < 0 )
+        {
+            print_error(dvdcss, "read error");
+            dvdcss->i_pos = -1;
+            return i_r;
+        }
+        if( i_r == 0 )
+            break;
+
+        i_ret += i_r;
     }
 
     /* Handle partial reads */
     if( i_ret != i_size )
     {
-        int i_seek;
+        int i_seek, i_set_pos;
 
+        i_set_pos = dvdcss->i_pos + i_ret / DVDCSS_BLOCK_SIZE;
         dvdcss->i_pos = -1;
-        i_seek = libc_seek( dvdcss, i_ret / DVDCSS_BLOCK_SIZE );
+        i_seek = libc_seek( dvdcss, i_set_pos );
         if( i_seek < 0 )
         {
             return i_seek;

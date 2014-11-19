@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Hétvégi előrejelzés"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Napi Előrejezés"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Előrejelzés"

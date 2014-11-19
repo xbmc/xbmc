@@ -172,9 +172,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
 
       FILETIME fileTime, localTime;
-      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
-      fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
-      fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+      TimeTToFileTime(lTimeDate, &fileTime);
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
       if (bIsDir)
@@ -255,7 +253,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     fd = smbc_opendir(s.c_str());
   }
 
-  while (fd < 0) /* only to avoid goto in following code */
+  if (fd < 0) /* only to avoid goto in following code */
   {
     std::string cError;
 
@@ -263,21 +261,15 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
         RequireAuthentication(urlIn);
-      break;
     }
-
-    if (errno == ENODEV || errno == ENOENT)
+    else if (errno == ENODEV || errno == ENOENT)
       cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
     else
       cError = strerror(errno);
 
     if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       SetErrorDialog(257, cError.c_str());
-    break;
-  }
 
-  if (fd < 0)
-  {
     // write error to logfile
     CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
   }

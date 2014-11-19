@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.13"
+  version="4.0.14"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -29,7 +29,7 @@
     <summary lang="fr">Visualisation montrant des vagues et des effets de flou</summary>
     <summary lang="fr_CA">Visualisation à effet de vague et flou</summary>
     <summary lang="gl">Unha visualización con Ondas e efectos de Desenfoque</summary>
-    <summary lang="he">חיזוי מציג אפקטי גלים וטשטוש</summary>
+    <summary lang="he">חיזוי המציג אפקטי גלים וטשטוש</summary>
     <summary lang="hr">Vizualizacija prikazuje valove i zamućene efekte</summary>
     <summary lang="hu">A vizualizáció Hullámokat és Elmosás Effekteket mutat.</summary>
     <summary lang="id">Visualisasi menunjukkan efek gelombang dan efek kabur.</summary>
@@ -71,7 +71,7 @@
     <description lang="fr">fishBMC est basé sur fische, un outil de visualisation sonore. Le principe de base est : dessiner des ondes et déplacer le tracé sur les vecteurs prédéfinis. Cependant fische incorpore aussi un système de détection du rythme, ce qui garantie une grande expérience visuelle.</description>
     <description lang="fr_CA">fishBMX est basé sur fische, un outil de visualisation audio autonome. Le principe de base est : dessiner la forme de l'onde et altère le dessin suivant des vecteurs prédéfinis. Cependant fische incorpore aussi une détection améliorée du tempo, ce qui garantie une expérience visuelle de qualité</description>
     <description lang="gl">fishBMC está baseado en fische, unha ferramenta autónoma de visualización de sons. O principio básico é: debuxar as formas de onda e pintalas ao longo dos vectores predefinidos. E posíbel que fische tamén incorpore detección avanzada de golpes, que realmente garante unha grande experiencia visual.</description>
-    <description lang="he">fishBMC מבוסס על fische, כלי לחיזוי סאונד. העקרון הבסיסי הוא: צייר צורת גל ומרח את הציור לאורך הוקטורים המוגדרים מראש. אבל fische הוא גם שילוב מקצועי של זיהוי מקצבים, אשר מעניק חווית חיזוי נהדרת.</description>
+    <description lang="he">החיזוי fishBMC מבוסס על fische, כלי לחיזוי קול. העיקרון הבסיסי אך: ציור צורת גל ומריחת הציור לאורך וקטורים המוגדרים מראש. עם זאת fische גם כולל יכולת מתקדמת לזיהוי קצב מוזיקה, דבר המעניק חוויה חזותית נהדרת.</description>
     <description lang="hr">fishBMC je temeljen na fische, samostalnom alatu zvučne vizualizacije. Osnovno načelo je: iscrtati valni oblik i razmazati crtež unaprijed određenim vektorima. Međutim fische isto uključuje napredno otkrivanje taktova, koje uistinu jamči sjajno vizualno iskustvo.</description>
     <description lang="hu">fishBMC a fische-n alapul, egy önálló hangvizualizációs eszköz. A fő célkitűzése: a hanghullám kirajzolása és előre megadott vektorok szerinti módosítása. Viszont a fische szintén alkalmaz egy haladó ütemérzékelőt, ami tényleg garantálja a nagyszerű vizuális élményt.</description>
     <description lang="id">fishBMC didasarkan fische, alat visualisasi suara yang berdiri sendiri. Prinsip dasarnya adalah mengambar gelombang dan mengaburkannya sepanjang vektor yang telah ditentukan. Namun fische juga mengikutsertakan deteksi ketukan yang canggih, yang akan menjamin pengalaman visual yang hebat.</description>
@@ -112,7 +112,7 @@
     <disclaimer lang="fr">Si cela casse quelque chose, les pièces restent les vôtres.</disclaimer>
     <disclaimer lang="fr_CA">Si ça brise, vous gardez les morceaux.</disclaimer>
     <disclaimer lang="gl">Se isto estraga algunha cousa, pode quedar cas pezas.</disclaimer>
-    <disclaimer lang="he">אם זה שובר משהו, החתיכות יישארו שלך.</disclaimer>
+    <disclaimer lang="he">אם זה שובר משהו, החתיכות ישארו שלך.</disclaimer>
     <disclaimer lang="hr">Ako ovo slomi nešto, komadići ostaju vama.</disclaimer>
     <disclaimer lang="hu">Ha ez összetör valamit attól a darabok még a tieid maradnak.</disclaimer>
     <disclaimer lang="id">Kalau ini merusakkan suatu, pecahannya tetap menjadi milik anda.</disclaimer>

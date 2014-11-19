@@ -1712,7 +1712,7 @@ void CDVDPlayer::HandlePlaySpeed()
           &&  m_SpeedState.lasttime != GetTime())
     {
       m_SpeedState.lastpts  = m_dvdPlayerVideo->GetCurrentPts();
-      m_SpeedState.lasttime = (double) GetTime();
+      m_SpeedState.lasttime = GetTime();
       m_SpeedState.lastabstime = CDVDClock::GetAbsoluteClock();
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
