@@ -298,6 +298,9 @@ int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CMMALRenderer::ReleaseBuffer(int idx)
 {
+  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+    return;
+
 #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, idx);
 #endif
@@ -351,12 +354,12 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CMMALRenderer::FlipPage(int source)
 {
+  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+    return;
+
 #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, source);
 #endif
-
-  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
-    return;
 
   YUVBUFFER *buffer = &m_buffers[source];
   // we only want to upload frames once
