@@ -153,4 +153,5 @@ public:
                        std::string root = "") throw(IOException);
   static std::string getSymlinkTarget(const char* path) throw(IOException);
   static bool patchFile(const char *oldFile, const char *newFile, const char *patchFile);
+  static bool isDirectory(const char* path) throw(IOException);
 };

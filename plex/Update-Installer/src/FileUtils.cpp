@@ -91,7 +91,7 @@ bool FileUtils::fileIsLink(const char* path) throw(IOException)
   {
     if (errno == ENOENT)
     {
-      throw IOException("Error, no such file" + std::string(path));
+      throw IOException("Error, no such file " + std::string(path));
     }
     return false;
   }
@@ -120,6 +120,30 @@ std::string FileUtils::getSymlinkTarget(const char* path) throw(IOException)
   return "";
 #else
   return "";
+#endif
+}
+
+bool FileUtils::isDirectory(const char* path) throw(IOException)
+{
+#ifdef PLATFORM_UNIX
+  struct stat fileInfo;
+  if (lstat(path, &fileInfo) != 0)
+  {
+    if (errno == ENOENT)
+    {
+      return false;
+    }
+    else
+    {
+      throw IOException("Error checking for file " + std::string(path));
+    }
+  }
+  return S_ISDIR(fileInfo.st_mode);
+#else
+  DWORD result = GetFileAttributes(path);
+  if (result == INVALID_FILE_ATTRIBUTES)
+    return false;
+  return (result & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTES_DIRECTORY;
 #endif
 }
 

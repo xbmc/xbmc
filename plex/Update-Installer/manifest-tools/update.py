@@ -30,6 +30,7 @@ class FileElement(dexml.Model):
   package = fields.String(tagname="package")
   included = fields.String(tagname="included")
   is_main_binary = fields.String(tagname="is-main-binary", required=False)
+  targetLink = fields.String(tagname="target", required=False)
 
   def __eq__(self, other):
     return ((self.name == other.name) and 
