@@ -41,7 +41,8 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
       }
     }
     
-    g_plexApplication.busy.blockWaitingForJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users")), this);
+    if (g_plexApplication.myPlexManager->IsSignedIn())
+      fetchUsers();
   }
 
   return CGUIDialogSelect::OnMessage(message);
@@ -60,30 +61,30 @@ bool CGUIDialogPlexUserSelect::OnAction(const CAction &action)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+//void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+//{
+void CGUIDialogPlexUserSelect::fetchUsers()
 {
-  std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
-
-  if (job && success)
+  XFILE::CPlexDirectory dir;
+  CFileItemList users;
+  if (dir.GetDirectory(CURL("plexserver://myplex/api/home/users"), users))
   {
-    CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
-    if (fjob)
-    {
-      Reset();
-      for (int i = 0; i < fjob->m_items.Size(); i ++)
-      {
-        CFileItemPtr item = fjob->m_items.Get(i);
-        if (item->GetProperty("restricted").asBoolean() == false)
-          item->ClearProperty("restricted");
-        if (item->GetProperty("protected").asBoolean() == false)
-          item->ClearProperty("protected");
-        if (item->GetProperty("admin").asBoolean() == false)
-          item->ClearProperty("admin");
-      }
+    std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
 
-      Add(fjob->m_items);
-      SetSelected(currentUsername);
+    Reset();
+    for (int i = 0; i < users.Size(); i ++)
+    {
+      CFileItemPtr item = users.Get(i);
+      if (item->GetProperty("restricted").asBoolean() == false)
+        item->ClearProperty("restricted");
+      if (item->GetProperty("protected").asBoolean() == false)
+        item->ClearProperty("protected");
+      if (item->GetProperty("admin").asBoolean() == false)
+        item->ClearProperty("admin");
     }
+    
+    Add(users);
+    SetSelected(currentUsername);
   }
 }
 

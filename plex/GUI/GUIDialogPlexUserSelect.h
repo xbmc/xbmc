@@ -4,7 +4,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "Job.h"
 
-class CGUIDialogPlexUserSelect : public CGUIDialogSelect, public IJobCallback
+class CGUIDialogPlexUserSelect : public CGUIDialogSelect// , public IJobCallback
 {
 public:
   CGUIDialogPlexUserSelect();
@@ -14,7 +14,8 @@ public:
   bool DidAuth() { return m_authed; }
 
 private:
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void fetchUsers();
+//  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   bool m_authed;
 };
 
