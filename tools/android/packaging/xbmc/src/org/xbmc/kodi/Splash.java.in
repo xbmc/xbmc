@@ -502,8 +502,7 @@ public class Splash extends Activity {
   }
 
   private boolean CheckCpuFeature(String feat) {
-    final Pattern FeaturePattern = Pattern.compile(":.*?\\s" + feat
-        + "(?:\\s|$)");
+    final Pattern FeaturePattern = Pattern.compile("(?i):.*?\\s" + feat + "(?:\\s|$)");
     Matcher m = FeaturePattern.matcher(mCpuinfo);
     return m.find();
   }
@@ -612,12 +611,13 @@ public class Splash extends Activity {
       if (curArch.equalsIgnoreCase("arm")) {
         // arm arch: check if the cpu supports neon
         boolean ret = ParseCpuFeature();
+        //Log.d(TAG, "/proc/cpuinfo = " + mCpuinfo);
         if (!ret) {
           mErrorMsg = "Error! Cannot parse CPU features.";
           Log.e(TAG, mErrorMsg);
           mState = InError;
         } else {
-          ret = CheckCpuFeature("neon");
+          ret = CheckCpuFeature("neon") || CheckCpuFeature("aarch64");  //aarch64 is always neon
           if (!ret) {
             mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
             Log.e(TAG, mErrorMsg);
