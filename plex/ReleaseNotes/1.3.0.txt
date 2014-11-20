@@ -1,0 +1,12 @@
+New:
+      - Plex/Home
+      - Playlists
+      - Paging
+      - Add option for manually setting subtitle charset
+      - Matroska transcoding
+
+Fixed:
+      - Android flinging of trailers
+      - Seeking in streaming trailers
+      - Fix so that subtitles are not downloaded when transcoding.
+      - Tokens are now not stored in clear text on disk.
