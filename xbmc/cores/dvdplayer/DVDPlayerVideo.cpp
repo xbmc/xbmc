@@ -512,7 +512,7 @@ void CDVDPlayerVideo::Process()
       }
 
       bRequestDrop = false;
-      iDropDirective = CalcDropRequirement(pts);
+      iDropDirective = CalcDropRequirement(pts, false);
       if (iDropDirective & EOS_VERYLATE)
       {
         if (m_bAllowDrop)
@@ -747,6 +747,9 @@ void CDVDPlayerVideo::Process()
         // and try to get more data from the videoQueue
         if (iDecoderState & VC_BUFFER)
           break;
+
+        // update dropping stats
+        CalcDropRequirement(pts, true);
 
         // the decoder didn't need more data, flush the remaning buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
@@ -1554,7 +1557,7 @@ void CDVDPlayerVideo::CalcFrameRate()
   }
 }
 
-int CDVDPlayerVideo::CalcDropRequirement(double pts)
+int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
 {
   int result = 0;
   double iSleepTime;
@@ -1621,6 +1624,9 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
     }
   }
   m_droppingStats.m_lastDecoderPts = iDecoderPts;
+
+  if (updateOnly)
+    return result;
 
   // subtract gains
   while (!m_droppingStats.m_gain.empty() &&
