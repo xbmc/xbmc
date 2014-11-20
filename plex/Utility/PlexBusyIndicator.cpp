@@ -15,10 +15,10 @@ CPlexBusyIndicator::CPlexBusyIndicator()
 bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback)
 {
   CSingleLock lk(m_section);
+  m_blockEvent.Reset();
   int id = CJobManager::GetInstance().AddJob(job, this);
 
   m_callbackMap[id] = callback;
-  m_blockEvent.Reset();
 
   lk.Leave();
   m_blockEvent.WaitMSec(300); // wait an initial 300ms if this is a fast operation.
