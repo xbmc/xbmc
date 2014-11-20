@@ -34,6 +34,9 @@
 #include "guilib/XBTF.h"
 #endif
 
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include "system_gl.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>

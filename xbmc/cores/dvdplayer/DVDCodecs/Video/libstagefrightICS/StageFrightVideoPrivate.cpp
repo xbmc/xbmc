@@ -23,6 +23,9 @@
 
 #include "StageFrightVideoPrivate.h"
 
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GLES2/gl2.h>

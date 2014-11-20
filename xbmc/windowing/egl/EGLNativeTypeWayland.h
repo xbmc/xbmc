@@ -22,6 +22,9 @@
 
 #include <boost/scoped_ptr.hpp>
 
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 #include "EGLNativeType.h"
 
