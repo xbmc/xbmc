@@ -58,6 +58,7 @@
 
 
 #include "DVDStreamInfo.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
@@ -214,7 +215,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda"))
+  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda") && !g_advancedSettings.m_useFfmpegVda)
   {
     if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
     {
