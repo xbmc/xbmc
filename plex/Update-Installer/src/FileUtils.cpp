@@ -143,7 +143,7 @@ bool FileUtils::isDirectory(const char* path) throw(IOException)
   DWORD result = GetFileAttributes(path);
   if (result == INVALID_FILE_ATTRIBUTES)
     return false;
-  return (result & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTES_DIRECTORY;
+  return (result & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 #endif
 }
 
