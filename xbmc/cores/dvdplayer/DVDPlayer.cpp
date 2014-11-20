@@ -728,6 +728,7 @@ bool CDVDPlayer::OpenInputStream()
           newUrl.SetOption("encoding", g_langInfo.GetSubtitleCharSet());
 
 
+          /* PLEX */
           if (CFile::Exists(path))
           {     
             s.filename = path;
@@ -748,6 +749,7 @@ bool CDVDPlayer::OpenInputStream()
               CLog::Log(LOGERROR,"Failed to download  %s", path.c_str());
             }
           }
+          /* END PLEX */
 
           // If it's an IDX, we need to cache the SUB file as well.
           if (stream->GetProperty("codec").asString() == "idx")
