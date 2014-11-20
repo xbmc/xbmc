@@ -747,6 +747,7 @@ bool CDVDPlayer::OpenInputStream()
             else
             {
               CLog::Log(LOGERROR,"Failed to download  %s", path.c_str());
+              return false;
             }
           }
           /* END PLEX */
