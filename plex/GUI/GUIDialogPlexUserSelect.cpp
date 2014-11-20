@@ -22,6 +22,25 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
     SetHeading("Switch to User");
+    
+    /* Add the old user, so it can work offline as well */
+    if (g_plexApplication.myPlexManager)
+    {
+      CMyPlexUserInfo info = g_plexApplication.myPlexManager->GetCurrentUserInfo();
+      if (info.id != -1)
+      {
+        CFileItemPtr oldUser = CFileItemPtr(new CFileItem);
+        oldUser->SetLabel(info.username);
+        oldUser->SetProperty("restricted", info.restricted);
+        oldUser->SetProperty("protected", !info.pin.empty());
+        oldUser->SetProperty("id", info.id);
+        oldUser->SetArt("thumb", info.thumb);
+        
+        Add(oldUser.get());
+        SetSelected(info.username);
+      }
+    }
+    
     g_plexApplication.busy.blockWaitingForJob(new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users")), this);
   }
 
@@ -50,14 +69,15 @@ void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, C
     CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
     if (fjob)
     {
+      Reset();
       for (int i = 0; i < fjob->m_items.Size(); i ++)
       {
         CFileItemPtr item = fjob->m_items.Get(i);
-        if (item->GetProperty("restricted").asInteger() == 0)
+        if (item->GetProperty("restricted").asBoolean() == false)
           item->ClearProperty("restricted");
-        if (item->GetProperty("protected").asInteger() == 0)
+        if (item->GetProperty("protected").asBoolean() == false)
           item->ClearProperty("protected");
-        if (item->GetProperty("admin").asInteger() == 0)
+        if (item->GetProperty("admin").asBoolean() == false)
           item->ClearProperty("admin");
       }
 
@@ -79,7 +99,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
     isAdmin = GetSelectedItem()->GetProperty("admin").asBoolean();
   
   CFileItemPtr item = m_vecList->Get(m_viewControl.GetSelectedItem());
-  if (item && (item->GetProperty("protected").asInteger() == 1 && !isAdmin))
+  if (item && (item->GetProperty("protected").asBoolean() && !isAdmin))
   {
     bool firstTry = true;
     while (true)
