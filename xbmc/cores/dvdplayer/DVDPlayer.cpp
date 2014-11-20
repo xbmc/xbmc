@@ -3207,6 +3207,14 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
 {
+  /* PLEX */
+  if (g_guiSettings.GetBool("plexmediaserver.transcodesubtitles"))
+  {
+    CLog::Log(LOGNOTICE, "Skipping Subtitle stream: %i source: %i, subtitles are transcoded", iStream, source);
+    return true;
+  }
+  /* END PLEX */
+
   CLog::Log(LOGNOTICE, "Opening Subtitle stream: %i source: %i", iStream, source);
 
   CDemuxStream* pStream = NULL;
