@@ -3,9 +3,9 @@ XBMC_PLATFORM_DIR=linux64
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 #clean without depends for skipping depends build if possible
-cd $WORKSPACE;git clean -xfd -e "tools/depends"
+cd $WORKSPACE;git clean -xfd -e "project/cmake/.last_success_revision" -e "tools/depends"
 
-if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+if [ "$(rebuildDepends)" == "1" ]
 then
   #clean up the rest too
   cd $WORKSPACE;git clean -xffd
