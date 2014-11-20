@@ -104,6 +104,7 @@
 #include "ApplicationMessenger.h"
 #include "Client/PlexTranscoderClient.h"
 #include "PlexApplication.h"
+#include "FileSystem/PlexFile.h"
 /* END PLEX */
 
 using namespace std;
@@ -726,10 +727,26 @@ bool CDVDPlayer::OpenInputStream()
           CURL newUrl(stream->GetProperty("key").asString());
           newUrl.SetOption("encoding", g_langInfo.GetSubtitleCharSet());
 
-          if (CFile::Exists(path) || CFile::Cache(newUrl.Get(), path))
-          {
+
+          if (CFile::Exists(path))
+          {     
             s.filename = path;
             m_SelectionStreams.Update(s);
+          }
+          else
+          {
+            CURL plexUrl(newUrl);
+            CPlexFile::BuildHTTPURL(plexUrl);
+            if (g_plexApplication.busy.blockWaitingForJob(new CPlexDownloadFileJob(plexUrl.Get(), path), NULL))
+            {
+              CLog::Log(LOGDEBUG,"file %s was donwloaded successfully", path.c_str());
+              s.filename = path;
+              m_SelectionStreams.Update(s);
+            }
+            else
+            {
+              CLog::Log(LOGERROR,"Failed to download  %s", path.c_str());
+            }
           }
 
           // If it's an IDX, we need to cache the SUB file as well.
