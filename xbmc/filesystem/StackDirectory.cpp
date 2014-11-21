@@ -65,7 +65,7 @@ namespace XFILE
     vector<std::string>::const_iterator itRegExp = strRegExps.begin();
     while (itRegExp != strRegExps.end())
     {
-      tempRE.RegComp(*itRegExp);
+      (void)tempRE.RegComp(*itRegExp);
       if (tempRE.GetCaptureTotal() == 4)
         RegExps.push_back(tempRE);
       else
