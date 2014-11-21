@@ -37,6 +37,7 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 
 CSAPFile::CSAPFile()
+  : m_len(0)
 {}
 
 CSAPFile::~CSAPFile()
