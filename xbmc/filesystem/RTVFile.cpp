@@ -46,6 +46,7 @@ CRTVFile::CRTVFile()
 {
   m_filePos = 0;
   m_fileSize = 0;
+  m_iport = 0;
   m_bOpened = false;
   m_rtvd = NULL;
 }
