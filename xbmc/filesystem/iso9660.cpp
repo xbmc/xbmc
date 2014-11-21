@@ -670,7 +670,8 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
-    strcpy(wfdFile->cFileName, m_searchpointer->name );
+    strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
+    wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
 
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
