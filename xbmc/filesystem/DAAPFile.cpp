@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include <sys/stat.h>
+#include <string.h>
 
 #include "lib/libXDAAP/private.h"
 
@@ -144,11 +145,13 @@ void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int 
 //////////////////////////////////////////////////////////////////////
 
 CDAAPFile::CDAAPFile()
+  : m_fileSize(0)
+  , m_filePos(0)
+  , m_thisClient(NULL)
+  , m_thisHost(NULL)
+  , m_bOpened(false)
 {
-  m_thisHost = NULL;
-  m_thisClient = NULL;
-
-  m_bOpened = false;
+  memset(&m_song, 0, sizeof(m_song));
 }
 
 CDAAPFile::~CDAAPFile()
