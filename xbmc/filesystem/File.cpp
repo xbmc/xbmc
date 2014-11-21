@@ -505,6 +505,15 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
 
+  if (uiBufSize == 0)
+  {
+    // "test" read with zero size
+    // some VFSs don't handle correctly null buffer pointer
+    // provide valid buffer pointer for them
+    char dummy;
+    return m_pFile->Read(&dummy, 0);
+  }
+
   if(m_pBuffer)
   {
     if(m_flags & READ_TRUNCATED)
@@ -527,17 +536,6 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
 
   try
   {
-    if (uiBufSize == 0)
-    { // "test" read with zero size
-      if (lpBuf != NULL)
-        return m_pFile->Read(lpBuf, 0);
-
-      // some VFSs don't handle correctly null buffer pointer
-      // provide valid buffer pointer for them
-      auto_buffer dummyBuf(255);
-      return m_pFile->Read(dummyBuf.get(), 0);
-    }
-
     if(m_flags & READ_TRUNCATED)
     {
       const ssize_t nBytes = m_pFile->Read(lpBuf, uiBufSize);
