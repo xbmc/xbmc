@@ -363,6 +363,7 @@ CMythSession::CMythSession(const CURL& url) : CThread("MythSession")
   m_control   = NULL;
   m_event     = NULL;
   m_database  = NULL;
+  m_listener  = NULL;
   m_hostname  = url.GetHostName();
   m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
   m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
