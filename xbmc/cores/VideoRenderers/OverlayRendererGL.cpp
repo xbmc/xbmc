@@ -417,10 +417,10 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.Translatef(state.x, state.y, 0.0f);
-  g_matrices.Scalef(state.width, state.height, 1.0f);
+  glMatrixModview.Push();
+  glMatrixModview->Translatef(state.x, state.y, 0.0f);
+  glMatrixModview->Scalef(state.width, state.height, 1.0f);
+  glMatrixModview.Load();
 
 #ifdef HAS_GL
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -435,9 +435,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
-
   VerifyGLState();
 
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
@@ -451,8 +448,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glDrawArrays(GL_QUADS, 0, m_count * 4);
   glPopClientAttrib();
 
-  g_matrices.PopMatrix();
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
 #else
   g_Windowing.EnableGUIShader(SM_FONTS);
 
@@ -493,8 +488,9 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   g_Windowing.DisableGUIShader();
 
-  g_matrices.PopMatrix();
 #endif
+
+  glMatrixModview.PopLoad();
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);

@@ -189,21 +189,18 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.LoadIdentity();
+  glMatrixProject.Clear();
+  glMatrixModview->LoadIdentity();
+  glMatrixProject->Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixProject.Load();
 
-  g_matrices.Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixModview.Clear();
+  glMatrixModview->LoadIdentity();
+  glMatrixModview.Load();
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.LoadIdentity();
-
-  g_matrices.MatrixMode(MM_TEXTURE);
-  g_matrices.LoadIdentity();
-
-  //ati doesn't init the texture matrix correctly
-  //so we have to do it ourselves
-  glMatrixMode(GL_TEXTURE);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_TEXTURE));
+  glMatrixTexture.Clear();
+  glMatrixTexture->LoadIdentity();
+  glMatrixTexture.Load();
 
   if (glewIsSupported("GL_ARB_multitexture"))
   {
@@ -230,15 +227,10 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
     for (GLint i = 0; i < maxtex; i++)
     {
       glActiveTextureARB(GL_TEXTURE0 + i);
-      glLoadMatrixf(g_matrices.GetMatrix(MM_TEXTURE));
+      glMatrixTexture.Load();
     }
     glActiveTextureARB(GL_TEXTURE0);
   }
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glEnable(GL_BLEND);          // Turn Blending On
@@ -403,18 +395,10 @@ void CRenderSystemGL::CaptureStateBlock()
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PushMatrix();
-  g_matrices.MatrixMode(MM_TEXTURE);
-  g_matrices.PushMatrix();
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_TEXTURE);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_TEXTURE));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixProject.Push();
+  glMatrixModview.Push();
+  glMatrixTexture.Push();
+
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   if (glActiveTextureARB)
     glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -430,19 +414,10 @@ void CRenderSystemGL::ApplyStateBlock()
 
   glViewport(m_viewPort[0], m_viewPort[1], m_viewPort[2], m_viewPort[3]);
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_TEXTURE);
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
+  glMatrixProject.PopLoad();
+  glMatrixModview.PopLoad();
+  glMatrixTexture.PopLoad();
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_TEXTURE);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_TEXTURE));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
   if (glActiveTextureARB)
     glActiveTextureARB(GL_TEXTURE0_ARB);
   glEnable(GL_TEXTURE_2D);
@@ -464,19 +439,14 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   float w = (float)m_viewPort[2]*0.5f;
   float h = (float)m_viewPort[3]*0.5f;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.LoadIdentity();
-  g_matrices.Translatef(-(w + offset.x), +(h + offset.y), 0);
-  g_matrices.LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.LoadIdentity();
-  g_matrices.Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  g_matrices.MatrixMode(MM_MODELVIEW);
+  glMatrixModview->LoadIdentity();
+  glMatrixModview->Translatef(-(w + offset.x), +(h + offset.y), 0);
+  glMatrixModview->LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  glMatrixModview.Load();
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixProject->LoadIdentity();
+  glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  glMatrixProject.Load();
 
   g_graphicsContext.EndPaint();
 }
@@ -484,7 +454,7 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
 void CRenderSystemGL::Project(float &x, float &y, float &z)
 {
   GLfloat coordX, coordY, coordZ;
-  if (g_matrices.Project(x, y, z, g_matrices.GetMatrix(MM_MODELVIEW), g_matrices.GetMatrix(MM_PROJECTION), m_viewPort, &coordX, &coordY, &coordZ))
+  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX, &coordY, &coordZ))
   {
     x = coordX;
     y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
@@ -515,8 +485,7 @@ void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
+  glMatrixModview.Push();
   GLfloat matrix[4][4];
 
   for(int i = 0; i < 3; i++)
@@ -528,10 +497,8 @@ void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
   matrix[2][3] = 0.0f;
   matrix[3][3] = 1.0f;
 
-  g_matrices.MultMatrixf(&matrix[0][0]);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixModview->MultMatrixf(&matrix[0][0]);
+  glMatrixModview.Load();
 }
 
 void CRenderSystemGL::RestoreHardwareTransform()
@@ -539,9 +506,7 @@ void CRenderSystemGL::RestoreHardwareTransform()
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixModview.PopLoad();
 }
 
 void CRenderSystemGL::CalculateMaxTexturesize()

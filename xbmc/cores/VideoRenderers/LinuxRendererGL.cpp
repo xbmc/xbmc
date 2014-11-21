@@ -1383,22 +1383,18 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   glPushAttrib(GL_VIEWPORT_BIT);
   glPushAttrib(GL_SCISSOR_BIT);
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
-  g_matrices.Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
+  glMatrixModview.Push();
+  glMatrixModview->LoadIdentity();
+  glMatrixModview.Load();
+
+  glMatrixProject.Push();
+  glMatrixProject->LoadIdentity();
+  glMatrixProject->Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
+  glMatrixProject.Load();
 
   glViewport(0, 0, m_sourceWidth, m_sourceHeight);
   glScissor (0, 0, m_sourceWidth, m_sourceHeight);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
 
   if (!m_pYUVShader->Enable())
   {
@@ -1445,15 +1441,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   m_pYUVShader->Disable();
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_PROJECTION));
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixModview.PopLoad();
+  glMatrixProject.PopLoad();
 
   glPopAttrib(); // pop scissor
   glPopAttrib(); // pop viewport
@@ -1690,12 +1679,11 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
   //invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.Translatef(0, capture->GetHeight(), 0);
-  g_matrices.Scalef(1.0, -1.0f, 1.0f);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+
+  glMatrixModview.Push();
+  glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
+  glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
+  glMatrixModview.Load();
 
   capture->BeginRender();
 
@@ -1707,10 +1695,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
   capture->EndRender();
 
   // revert model view matrix
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(g_matrices.GetMatrix(MM_MODELVIEW));
+  glMatrixModview.PopLoad();
 
   // restore original video rect
   m_destRect = saveSize;
