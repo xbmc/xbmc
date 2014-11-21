@@ -226,7 +226,7 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
 
     if (iOffset == -1 && j != m_ExFiles.end())  // grab from list
     {
-      for( ArchiveList_struct* pIterator = j->second.first; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+      for( ArchiveList_struct* pIterator = j->second.first; pIterator; pIterator = pIterator->next)
       {
         std::string strName;
 
