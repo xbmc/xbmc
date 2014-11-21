@@ -1,0 +1,6 @@
+New:
+
+Fixed:
+  - Fanart is now filtered based on your Plex Home user.
+  - Subtitles that are burned in are not downloaded.
+  
