@@ -1205,10 +1205,10 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 //  glPushAttrib(GL_VIEWPORT_BIT);
 //  glPushAttrib(GL_SCISSOR_BIT);
   glMatrixModview.Push();
-  glMatrixModview.LoadIdentity();
+  glMatrixModview->LoadIdentity();
 
   glMatrixProject.Push();
-  glMatrixProject.LoadIdentity();
+  glMatrixProject->LoadIdentity();
   glMatrixProject->Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
 
   CRect viewport(0, 0, m_sourceWidth, m_sourceHeight);
