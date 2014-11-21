@@ -134,6 +134,9 @@ CRarFile::CRarFile()
   m_bUseFile = false;
   m_bOpen = false;
   m_bSeekable = true;
+  m_iFilePosition = 0;
+  m_iFileSize = 0;
+  m_iBufferStart = 0;
 }
 
 CRarFile::~CRarFile()
