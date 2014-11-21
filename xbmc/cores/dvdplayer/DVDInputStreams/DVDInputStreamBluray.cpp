@@ -200,7 +200,11 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   m_player  = player;
   m_navmode = false;
   m_hold = HOLD_NONE;
+  m_angle = 0;
   memset(&m_event, 0, sizeof(m_event));
+#ifdef HAVE_LIBBLURAY_BDJ
+  memset(&m_argb,  0, sizeof(m_argb));
+#endif
 }
 
 CDVDInputStreamBluray::~CDVDInputStreamBluray()
