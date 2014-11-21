@@ -375,6 +375,9 @@ CCurlFile::~CCurlFile()
 }
 
 CCurlFile::CCurlFile()
+ : m_writeOffset(0)
+ , m_overflowBuffer(NULL)
+ , m_overflowSize(0)
 {
   g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
   m_opened = false;
