@@ -3080,8 +3080,8 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     if(pts == DVD_NOPTS_VALUE)
       pts = 0;
     pts += m_offset_pts;
-    m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
-
+    if (!m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE)))
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, pts);
     stream = m_pSubtitleDemuxer->GetStream(iStream);
     if(!stream || stream->disabled)
       return false;
