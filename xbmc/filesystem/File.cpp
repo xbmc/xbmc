@@ -516,22 +516,19 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
 
   if(m_pBuffer)
   {
+    ssize_t nBytes;
+
     if(m_flags & READ_TRUNCATED)
-    {
-      const ssize_t nBytes = m_pBuffer->sgetn(
-        (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
-                                                  m_pBuffer->in_avail()));
-      if (m_bitStreamStats && nBytes>0)
-        m_bitStreamStats->AddSampleBytes(nBytes);
-      return nBytes;
-    }
+      nBytes = m_pBuffer->sgetn( (char *)lpBuf
+                               , min<streamsize>((streamsize)uiBufSize
+                                                , m_pBuffer->in_avail()));
     else
-    {
-      const ssize_t nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
-      if (m_bitStreamStats && nBytes>0)
-        m_bitStreamStats->AddSampleBytes(nBytes);
-      return nBytes;
-    }
+      nBytes = m_pBuffer->sgetn( (char*)lpBuf
+                               , uiBufSize);
+
+    if (m_bitStreamStats && nBytes>0)
+      m_bitStreamStats->AddSampleBytes(nBytes);
+    return nBytes;
   }
 
   try
