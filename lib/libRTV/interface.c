@@ -150,6 +150,7 @@ int rtv_get_guide_xml(unsigned char ** result, const char * address)
 int rtv_list_files(unsigned char ** result, const char * address, const char * path)
 {
     unsigned long status;
+    *result = NULL;
 
     status = hfs_do_simple((char **)result, address,
                            "ls",
@@ -157,8 +158,9 @@ int rtv_list_files(unsigned char ** result, const char * address, const char * p
                            NULL);
     if (status != 0) {
         //fprintf(stderr, "Error %ld\n", status);
-		if (result)
-			free(result);
+		if (*result)
+			free(*result);
+		*result = NULL;
         return 0;
     }
 
