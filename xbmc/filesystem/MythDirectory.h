@@ -66,7 +66,6 @@ private:
   DllLibCMyth*          m_dll;
   cmyth_database_t      m_database;
   cmyth_recorder_t      m_recorder;
-  cmyth_proginfo_t      m_program;
 };
 
 }
