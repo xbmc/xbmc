@@ -103,6 +103,32 @@ class CVAAPIContext;
 
 struct CVaapiConfig
 {
+  CVaapiConfig()
+   : surfaceWidth(0)
+   , surfaceHeight(0)
+   , vidWidth(0)
+   , vidHeight(0)
+   , outWidth(0)
+   , outHeight(0)
+   //, aspect
+   , configId(VA_INVALID_ID)
+   , contextId(VA_INVALID_ID)
+   , stats(NULL)
+   , vaapi(NULL)
+   , upscale(0)
+   , videoSurfaces(0)
+   , maxReferences(0)
+   , useInteropYuv(false)
+   , context(NULL)
+   , dpy(0)
+   , profile(0)
+   //, attrib
+   , x11dsp(NULL)
+  {
+    memset(&aspect, 0, sizeof(aspect));
+    memset(&attrib, 0, sizeof(attrib));
+  }
+
   int surfaceWidth;
   int surfaceHeight;
   int vidWidth;

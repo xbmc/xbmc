@@ -456,16 +456,17 @@ DVDCodecAvailableType g_vaapi_available[] = {
 };
 const size_t settings_count = sizeof(g_vaapi_available) / sizeof(DVDCodecAvailableType);
 
-CDecoder::CDecoder() : m_vaapiOutput(&m_inMsgEvent)
+CDecoder::CDecoder()
+  : m_vaapiOutput(&m_inMsgEvent)
+  , m_codecControl(0)
+  , m_presentPicture(NULL)
 {
   m_vaapiConfig.videoSurfaces = &m_videoSurfaces;
 
   m_vaapiConfigured = false;
   m_DisplayState = VAAPI_OPEN;
-  m_vaapiConfig.context = 0;
-  m_vaapiConfig.contextId = VA_INVALID_ID;
-  m_vaapiConfig.configId = VA_INVALID_ID;
   m_avctx = NULL;
+  memset(&m_hwContext, 0, sizeof(vaapi_context));
 }
 
 CDecoder::~CDecoder()
