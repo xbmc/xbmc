@@ -1270,7 +1270,23 @@ VaapiBufferPool::~VaapiBufferPool()
 COutput::COutput(CEvent *inMsgEvent) :
   CThread("Vaapi-Output"),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent)
+  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+  glXBindTexImageEXT(NULL),
+  glXReleaseTexImageEXT(NULL),
+  m_state(0),
+  m_bStateMachineSelfTrigger(false),
+  m_extTimeout(0),
+  m_vaError(false),
+  m_Display(NULL),
+  m_Window(None),
+  m_glContext(None),
+  m_glWindow(None),
+  m_pixmap(None),
+  m_glPixmap(None),
+  m_textureTarget(0),
+  m_pp(NULL),
+  m_diMethods(0),
+  m_currentDiMethod(0)
 {
   m_inMsgEvent = inMsgEvent;
 
