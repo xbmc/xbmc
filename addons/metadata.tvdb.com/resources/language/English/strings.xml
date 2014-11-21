@@ -9,4 +9,6 @@
     <string id="30002">Enable Fanart</string>
     <string id="30003">Prefer Posters</string>
     <string id="30004">Language</string>
+    <string id="30005">Get Rating from</string>
+    <string id="30006">Use TheTVDB Ratings in case IMDb is missing</string>
 </strings>
