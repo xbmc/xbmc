@@ -495,6 +495,9 @@ protected:
 class CPostproc
 {
 public:
+  CPostproc()
+   : m_step(0)
+  {}
   virtual ~CPostproc() {};
   virtual bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) = 0;
   virtual bool Init(EINTERLACEMETHOD method) = 0;

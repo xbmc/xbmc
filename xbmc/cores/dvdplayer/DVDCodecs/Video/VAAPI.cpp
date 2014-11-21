@@ -2918,12 +2918,17 @@ bool CVppPostproc::CheckSuccess(VAStatus status)
 #define CACHED_BUFFER_SIZE 4096
 
 CFFmpegPostproc::CFFmpegPostproc()
+ : m_pFilterIn(NULL)
+ , m_pFilterOut(NULL)
+ , m_diMethod(0)
 {
   m_cache = NULL;
   m_pFilterFrameIn = NULL;
   m_pFilterFrameOut = NULL;
   m_pFilterGraph = NULL;
+  memset(&m_DVDPic, 0, sizeof(m_DVDPic));
   m_DVDPic.pts = DVD_NOPTS_VALUE;
+  m_DVDPic.dts = DVD_NOPTS_VALUE;
   m_frametime = 0;
   m_lastOutPts = DVD_NOPTS_VALUE;
 }
