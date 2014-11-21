@@ -502,10 +502,10 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
       if (progressBar)
       {
         progressBar->SetHeading(scriptName);
-        progressBar->SetLine(0, retrievingDir ? 1040 : 10214);
+        progressBar->SetLine(0, 10214);
         progressBar->SetLine(1, "");
         progressBar->SetLine(2, "");
-        progressBar->ShowProgressBar(retrievingDir);
+        progressBar->ShowProgressBar(false);
         progressBar->StartModal();
       }
     }
