@@ -326,7 +326,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const std::string& str
   std::string strCompare = strPathInRar;
   if (!URIUtils::HasSlashAtEnd(strCompare) && !strCompare.empty())
     strCompare += '/';
-  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+  for( pIterator = pFileList; pIterator  ; pIterator = pIterator->next )
   {
     std::string strName;
 
