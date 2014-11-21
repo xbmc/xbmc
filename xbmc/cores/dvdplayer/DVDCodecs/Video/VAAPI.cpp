@@ -65,7 +65,9 @@ CVAAPIContext::CVAAPIContext()
   m_context = 0;
   m_refCount = 0;
   m_attributes = NULL;
+  m_attributeCount = 0;
   m_profiles = NULL;
+  m_profileCount = 0;
   m_display = NULL;
 }
 
