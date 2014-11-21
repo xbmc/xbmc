@@ -37,6 +37,7 @@
 #include <map>
 #include <va/va.h>
 #include "linux/sse4/DllLibSSE4.h"
+#include <string.h>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -157,6 +158,13 @@ struct CVaapiConfig
  */
 struct CVaapiDecodedPicture
 {
+  CVaapiDecodedPicture()
+    : videoSurface(VA_INVALID_ID)
+    , index(0)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
+
   DVDVideoPicture DVDPic;
   VASurfaceID videoSurface;
   int index;
@@ -167,6 +175,16 @@ struct CVaapiDecodedPicture
  */
 struct CVaapiProcessedPicture
 {
+  CVaapiProcessedPicture()
+    : videoSurface(VA_INVALID_ID)
+    , frame(NULL)
+    , id(0)
+    , source(VPP_SRC)
+    , crop(false)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
+
   DVDVideoPicture DVDPic;
   VASurfaceID videoSurface;
   AVFrame *frame;
@@ -182,6 +200,17 @@ struct CVaapiProcessedPicture
 
 struct VaapiGlx
 {
+  VaapiGlx()
+    : x11dsp(NULL)
+    , vadsp(0)
+    , pixmap(0)
+    , glPixmap(0)
+    , textureTarget(0)
+    , glXBindTexImageEXT(NULL)
+    , glXReleaseTexImageEXT(NULL)
+    , bound(0)
+  {}
+
   Display *x11dsp;
   VADisplay vadsp;
   Pixmap pixmap;
@@ -206,7 +235,10 @@ class CVaapiRenderPicture
 public:
   CVaapiRenderPicture(CCriticalSection &section)
     : texWidth(0), texHeight(0), texture(None), valid(false), vaapi(NULL), avFrame(NULL),
-      usefence(false), refCount(0), renderPicSection(section) { fence = None; }
+      fence(None), usefence(false), refCount(0), renderPicSection(section)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
   void Sync();
   bool CopyGlx();
   DVDVideoPicture DVDPic;
