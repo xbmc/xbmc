@@ -78,7 +78,13 @@ private:
 };
 
 
-CFileCache::CFileCache(bool useDoubleCache) : CThread("FileCache")
+CFileCache::CFileCache(bool useDoubleCache)
+  : CThread("FileCache")
+  , m_seekPossible(0)
+  , m_chunkSize(0)
+  , m_writeRate(0)
+  , m_writeRateActual(0)
+  , m_cacheFull(false)
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -102,11 +108,15 @@ CFileCache::CFileCache(bool useDoubleCache) : CThread("FileCache")
    {
      m_pCache = new CSimpleDoubleCache(m_pCache);
    }
-   m_seekPossible = 0;
-   m_cacheFull = false;
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("FileCacheStrategy")
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
+  : CThread("FileCacheStrategy")
+  , m_seekPossible(0)
+  , m_chunkSize(0)
+  , m_writeRate(0)
+  , m_writeRateActual(0)
+  , m_cacheFull(false)
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -114,7 +124,6 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("Fil
   m_readPos = 0;
   m_writePos = 0;
   m_nSeekResult = 0;
-  m_chunkSize = 0;
 }
 
 CFileCache::~CFileCache()
