@@ -43,7 +43,11 @@ using namespace std;
 #define SEEKTIMOUT 30000
 
 #ifdef HAS_FILESYSTEM_RAR
-CRarFileExtractThread::CRarFileExtractThread() : CThread("RarFileExtract"), hRunning(true), hQuit(true)
+CRarFileExtractThread::CRarFileExtractThread()
+  : CThread("RarFileExtract")
+  , hRunning(true)
+  , hQuit(true)
+  , m_iSize(0)
 {
   m_pArc = NULL;
   m_pCmd = NULL;
