@@ -645,11 +645,10 @@ bool CRarFile::OpenInArchive()
     AddEndSlash(m_pCmd->ExtrPath);
 
     // Set password for encrypted archives
-    if ((m_strPassword.size() > 0) &&
-        (m_strPassword.size() < sizeof (m_pCmd->Password)))
-    {
-      strcpy(m_pCmd->Password, m_strPassword.c_str());
-    }
+    if (m_strPassword.length() > MAXPASSWORD - 1)
+      CLog::Log(LOGWARNING,"OpenInArchive: Supplied password is too long %d", (int) m_strPassword.length());
+    strncpy(m_pCmd->Password, m_strPassword.c_str(), sizeof (m_pCmd->Password) - 1);
+    m_pCmd->Password[sizeof (m_pCmd->Password) - 1] = 0;
 
     m_pCmd->ParseDone();
 
