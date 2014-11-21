@@ -347,10 +347,10 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
   {
     if (uiBufSize+m_iFilePos > mZipItem.csize)
       uiBufSize = mZipItem.csize-m_iFilePos;
-    if (uiBufSize < 0)
-    {
+
+    if (uiBufSize == 0)
       return 0; // we are past eof, this shouldn't happen but test anyway
-    }
+
     ssize_t iResult = mFile.Read(lpBuf,uiBufSize);
     if (iResult < 0)
       return -1;
