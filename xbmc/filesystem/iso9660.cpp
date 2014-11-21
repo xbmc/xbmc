@@ -71,45 +71,60 @@ extern "C"
 //******************************************************************************************************************
 const string iso9660::ParseName(struct iso9660_Directory& isodir)
 {
-  string temp_text = (char*)isodir.FileName;
-  temp_text.resize(isodir.Len_Fi);
-  int iPos = isodir.Len_Fi;
+#define CHECK_LEN(x) if(33 + iPos + (x) >= isodir.ucRecordLength) return temp_text;
+
+  string temp_text;
+  int iPos = 0;
+
+  CHECK_LEN(isodir.Len_Fi);
+
+  temp_text.assign((const char*)isodir.FileName, isodir.Len_Fi);
+  iPos += isodir.Len_Fi;
+
+  CHECK_LEN(1);
 
   if (isodir.FileName[iPos] == 0)
   {
     iPos++;
   }
 
+  CHECK_LEN(2);
+
   if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos + 1] == 'R')
   {
+    CHECK_LEN(5);
+
     // rockridge
     iPos += 5;
     do
     {
+      // ??
+      // "?" "?"  LEN
+      // BP1 BP2  BP3
+      CHECK_LEN(3);
+
+      int iLen = isodir.FileName[iPos + 2];
+      if (iLen == 0)
+        break; //this is the fix for rockridge support
+
+      CHECK_LEN(iLen);
+
       if (isodir.FileName[iPos] == 'N' && isodir.FileName[iPos + 1] == 'M')
       {
         // altername name
         // "N" "M"  LEN_NM  1  FLAGS  NAMECONTENT
         // BP1 BP2    BP3      BP4  BP5     BP6-LEN_NM
-        int iNameLen = isodir.FileName[iPos + 2] - 5;
-        temp_text = (char*) & isodir.FileName[iPos + 5];
-        temp_text.resize(iNameLen);
-        iPos += (iNameLen + 5);
+        if(iLen >= 5)
+          temp_text.assign((const char*) & isodir.FileName[iPos + 5], iLen - 5);
       }
-      if ( isascii(isodir.FileName[iPos]) && isascii(isodir.FileName[iPos + 1]))
-      {
-        // ??
-        // "?" "?"  LEN
-        // BP1 BP2  BP3
-        iPos += isodir.FileName[iPos + 2];
-      }
+
+      iPos += iLen;
     }
-    while (33 + iPos < isodir.ucRecordLength && isodir.FileName[iPos + 2] != 0);
-    // when this isodir.FileName[iPos+2] is equal to 0 it should break out
-    // as it has finished the loop
-    // this is the fix for rockridge support
+    while (true);
   }
   return temp_text;
+
+#undef CHECK_LEN
 }
 
 bool iso9660::IsRockRidge(struct iso9660_Directory& isodir)
