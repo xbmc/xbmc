@@ -1240,6 +1240,7 @@ void CVaapiRenderPicture::Sync()
 //-----------------------------------------------------------------------------
 
 VaapiBufferPool::VaapiBufferPool()
+  : procPicId(0)
 {
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
