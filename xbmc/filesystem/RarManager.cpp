@@ -50,6 +50,7 @@ CFileInfo::CFileInfo()
   m_bAutoDel = true;
   m_iUsed = 0;
   m_iIsSeekable = -1;
+  m_iOffset = 0;
 }
 
 CFileInfo::~CFileInfo()
