@@ -1,10 +1,10 @@
 New:
-	- Plex/Home. Fast user switching, PIN protection and more. See blog for more information.
+	- Plex Home. Fast user switching, PIN protection and more. See blog for more information.
 	- Playlists. You can now browse and play Playlists from PHT.
 	- Browsing large sections is now faster due to new paging code.
 	- Add option for manually setting subtitle charset.
 	- Matroska transcoding is now the default. It will improve caching and format support when transcoding.
-	- Support for Xbox1 controller without hacks.
+	- Support for Xbox One controller without hacks.
 	- Sign in/Switch user directly from menu on the home screen (press left)
 
 Fixed:
