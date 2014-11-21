@@ -375,7 +375,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   else
     fFrameRate /= 100; // Reduce by factor of 100 to get fps.
 
-  comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
+  (void)comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
 
   bool bValid = true;
   int iLine = 2;
