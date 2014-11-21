@@ -1584,8 +1584,9 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       // Force thread count to 1 since the h264 decoder will not extract
       // SPS and PPS to extradata during multi-threaded decoding
       av_dict_set(&thread_opt, "threads", "1", 0);
-      avcodec_open2(st->codec, codec, &thread_opt);
-
+      int res = avcodec_open2(st->codec, codec, &thread_opt);
+      if(res < 0)
+        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::ParsePacket() unable to open codec %d", res);
       av_dict_free(&thread_opt);
     }
 
