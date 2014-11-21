@@ -622,8 +622,8 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double starttime = 0.0f;
 
   // for dvd's we need the original time
-  if(dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
-    starttime = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput)->GetTimeStampCorrection() / DVD_TIME_BASE;
+  if(CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
+    starttime = menu->GetTimeStampCorrection() / DVD_TIME_BASE;
   else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
