@@ -1444,13 +1444,20 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else
   {
     format.m_dataFormat = AE_IS_PLANAR(format.m_dataFormat) ? AE_FMT_FLOATP : AE_FMT_FLOAT;
+
     // consider user channel layout for those cases
     // 1. input stream is multichannel
     // 2. stereo upmix is selected
     // 3. fixed mode
-    if ((format.m_channelLayout.Count() > 2) ||
-         settings.stereoupmix ||
-         (settings.config == AE_CONFIG_FIXED))
+
+    // g_advancedSettings.m_audioFixedMultichannelLayout is for e.g.
+    // Anthem Statement D2 audio processor which only supports 2.0 and 5.1 properly
+
+    bool useFixedLayout = (m_settings.config == AE_CONFIG_FIXED)
+                       || (settings.stereoupmix && format.m_channelLayout.Count() <= 2)
+                       || (g_advancedSettings.m_audioFixedMultichannelLayout && format.m_channelLayout.Count() > 2);
+
+    if (format.m_channelLayout.Count() > 2 || useFixedLayout)
     {
       CAEChannelInfo stdLayout;
       switch (settings.channels)
@@ -1469,7 +1476,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
         case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
 
-      if (m_settings.config == AE_CONFIG_FIXED || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
+      if (useFixedLayout)
         format.m_channelLayout = stdLayout;
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
