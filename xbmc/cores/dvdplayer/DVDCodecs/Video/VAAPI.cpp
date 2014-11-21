@@ -2448,10 +2448,15 @@ bool CSkipPostproc::DoesSync()
 //-----------------------------------------------------------------------------
 
 CVppPostproc::CVppPostproc()
+  : m_configId(VA_INVALID_ID)
+  , m_contextId(VA_INVALID_ID)
+  , m_filter(VA_INVALID_ID)
+  , m_forwardRefs(0)
+  , m_backwardRefs(0)
+  , m_currentIdx(0)
+  , m_frameCount(0)
+  , m_vppMethod(0)
 {
-  m_contextId = VA_INVALID_ID;
-  m_configId = VA_INVALID_ID;
-  m_filter = VA_INVALID_ID;
 }
 
 CVppPostproc::~CVppPostproc()
