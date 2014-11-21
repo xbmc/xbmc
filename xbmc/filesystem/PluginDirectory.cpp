@@ -50,6 +50,9 @@ int CPluginDirectory::handleCounter = 0;
 CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory()
+  : m_cancelled(false)
+  , m_success(false)
+  , m_totalItems(0)
 {
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
