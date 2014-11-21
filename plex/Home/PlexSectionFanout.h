@@ -45,7 +45,7 @@ public:
 
   void GetContentTypes(std::vector<int>& types);
   void GetContentList(int type, CFileItemList& list);
-  void Refresh();
+  void Refresh(bool force = false);
   void Show();
   static SectionTypes GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType);
 
@@ -55,7 +55,7 @@ public:
   SectionTypes m_sectionType;
   bool m_needsRefresh;
   void ShowPlayQueue();
-  void LoadArts();
+  void LoadArts(bool force);
 
   private:
   int LoadSection(const CURL& url, int contentType);

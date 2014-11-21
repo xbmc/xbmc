@@ -446,7 +446,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (m_sections.find(m_currentFanArt) != m_sections.end())
       {
         CPlexSectionFanout *fan = m_sections[m_currentFanArt];
-        fan->LoadArts();
+        fan->LoadArts(true);
       }
 
       break;
@@ -1057,7 +1057,7 @@ void CGUIWindowHome::RefreshAllSections(bool force)
   BOOST_FOREACH(nameSectionPair p, m_sections)
   {
     if (force || p.second->NeedsRefresh())
-      p.second->Refresh();
+      p.second->Refresh(force);
   }
 
 }
@@ -1079,7 +1079,6 @@ void CGUIWindowHome::RefreshSectionsForServer(const CStdString &uuid)
 void CGUIWindowHome::RemoveSectionsForServer(const CStdString &uuid)
 {
   std::list<CStdString> sectionsToRemove;
-  bool clearArts = false;
   
   BOOST_FOREACH(nameSectionPair p, m_sections)
   {
@@ -1089,22 +1088,7 @@ void CGUIWindowHome::RemoveSectionsForServer(const CStdString &uuid)
   }
   
   for (std::list<CStdString>::iterator it = sectionsToRemove.begin(); it != sectionsToRemove.end(); ++it )
-  {
-
-    if (m_currentFanArt == *it)
-      clearArts = true;
-
     m_sections.erase(*it);
-  }
-
-  // eventually clear associated ongoing arts
-  if ((m_currentFanArt == "global://art/") || clearArts)
-  {
-    RemoveSection(m_currentFanArt);
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, CFileItemListPtr(new CFileItemList()));
-    OnMessage(msg);
-  }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

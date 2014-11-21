@@ -59,7 +59,7 @@ CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-void CPlexSectionFanout::Refresh()
+void CPlexSectionFanout::Refresh(bool force)
 {
   CPlexDirectory dir;
 
@@ -140,15 +140,15 @@ void CPlexSectionFanout::Refresh()
     }
   }
 
-  LoadArts();
+  LoadArts(force);
 }
 //////////////////////////////////////////////////////////////////////////////
-void CPlexSectionFanout::LoadArts()
+void CPlexSectionFanout::LoadArts(bool force)
 {
   CURL artsUrl;
   CURL sectionURL(m_url);
 
-  if ((m_artsAge.elapsed() < (ARTS_DISPLAY_TIME_SEC * ARTS_PAGE_SIZE)) && (m_fileLists.find(CONTENT_LIST_FANART) != m_fileLists.end()))
+  if ((m_artsAge.elapsed() < (ARTS_DISPLAY_TIME_SEC * ARTS_PAGE_SIZE)) && (m_fileLists.find(CONTENT_LIST_FANART) != m_fileLists.end()) && !force)
   {
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
     msg.SetStringParam(m_url.Get());
