@@ -808,7 +808,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     }
 
     const BD_PG_RLE_ELEM *rlep = ov->img;
-    uint8_t *img = (uint8_t*) malloc(ov->w * ov->h);
+    uint8_t *img = (uint8_t*) malloc((size_t)ov->w * (size_t)ov->h);
     if (!img)
       return;
     unsigned pixels = ov->w * ov->h;
