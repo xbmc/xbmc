@@ -4250,6 +4250,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   else
     state.cache_bytes = 0;
 
+  UpdateClockMaster();
+
   state.timestamp = CDVDClock::GetAbsoluteClock();
 
   CSingleLock lock(m_StateSection);
