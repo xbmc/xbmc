@@ -67,8 +67,9 @@ mkdir -p "$TARGET_CONTENTS/Libraries"
 echo "Package $TARGET_BUILD_DIR/$APP_NAME"
 cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 
-echo "Creating icon"
+echo "Creating icons"
 iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
+iconutil -c icns --output "$TARGET_CONTENTS/Resources/VolumeIcon.icns" "$SRCROOT/tools/darwin/packaging/media/osx/volumeIcon.iconset"
 
 cp -f "$SRCROOT/xbmc/osx/Info.plist" "$TARGET_CONTENTS/"
 
