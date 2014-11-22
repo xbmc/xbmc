@@ -80,7 +80,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
       }
 
       /* only add localConnections for non-shared servers */
-      if (owned && !localAddresses.empty())
+      if ((owned || home) && !localAddresses.empty())
       {
         CStdStringArray addressList = StringUtils::SplitString(localAddresses, ",", 0);
         BOOST_FOREACH(CStdString laddress, addressList)
