@@ -240,6 +240,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("mjpg",      "video/x-motion-jpeg"));
   mimeTypes.insert(pair<string, string>("mka",       "audio/x-matroska"));
   mimeTypes.insert(pair<string, string>("mkv",       "video/x-matroska"));
+  mimeTypes.insert(pair<string, string>("mk3d",      "video/x-matroska-3d"));
   mimeTypes.insert(pair<string, string>("mm",        "application/x-meme"));
   mimeTypes.insert(pair<string, string>("mme",       "application/base64"));
   mimeTypes.insert(pair<string, string>("mod",       "audio/mod"));
