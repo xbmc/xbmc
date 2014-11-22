@@ -28,8 +28,6 @@
 #include <iostream>
 #include <memory>
 
-#define UPDATER_VERSION "0.16"
-
 UpdateDialog* createUpdateDialog();
 
 void runUpdaterThread(void* arg)
@@ -129,7 +127,7 @@ int main(int argc, char** argv)
   if (options.showVersion)
   {
     setupConsole();
-    std::cout << "Update installer version " << UPDATER_VERSION << std::endl;
+    std::cout << "Update installer version: " << VERSION_STRING << " date: " << BUILD_DATE << std::endl;
     return 0;
   }
 
@@ -141,6 +139,7 @@ int main(int argc, char** argv)
     script.parse(FileUtils::makeAbsolute(options.scriptPath.c_str(), options.packageDir.c_str()));
   }
 
+  LOG(Info, "updater version: " + std::string(VERSION_STRING) + " date: " + std::string(BUILD_DATE));
   LOG(Info, "started updater. install-dir: " + options.installDir + ", package-dir: " +
             options.packageDir + ", wait-pid: " + intToStr(options.waitPid) + ", script-path: " +
             options.scriptPath + ", mode: " + intToStr(options.mode));
