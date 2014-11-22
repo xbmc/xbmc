@@ -5,6 +5,7 @@
 #include "boost/foreach.hpp"
 #include "log.h"
 #include "Application.h"
+#include "PlexJobs.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexBusyIndicator::CPlexBusyIndicator()
@@ -12,13 +13,14 @@ CPlexBusyIndicator::CPlexBusyIndicator()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback)
+bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback, CFileItemListPtr *result)
 {
   CSingleLock lk(m_section);
   m_blockEvent.Reset();
   int id = CJobManager::GetInstance().AddJob(job, this);
 
   m_callbackMap[id] = callback;
+  m_resultMap[id] = result;
 
   lk.Leave();
   m_blockEvent.WaitMSec(300); // wait an initial 300ms if this is a fast operation.
@@ -49,6 +51,7 @@ bool CPlexBusyIndicator::blockWaitingForJob(CJob* job, IJobCallback* callback)
 
         // Let's get out of here.
         m_callbackMap.clear();
+        m_resultMap.clear();
         m_blockEvent.Set();
         success = false;
       }
@@ -76,8 +79,18 @@ void CPlexBusyIndicator::OnJobComplete(unsigned int jobID, bool success, CJob* j
     if (cb)
       cb->OnJobComplete(jobID, success, job);
 
+    if (m_resultMap[jobID])
+    {
+      CPlexJob *plexjob = dynamic_cast<CPlexJob*>(job);
+      if (plexjob)
+      {
+        *m_resultMap[jobID] = plexjob->getResult();
+      }
+    }
+
     lk.Enter();
     m_callbackMap.erase(jobID);
+    m_resultMap.erase(jobID);
 
     if (m_callbackMap.size() == 0)
     {
