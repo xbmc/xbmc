@@ -752,8 +752,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   if (canfilter && url.HasOption("filter"))
     directory = RemoveParameterFromPath(directory, "filter");
 
-  CFileItemList items;
-  if (!GetDirectory(directory, items))
+  ClearFileItems();
+  if (!GetDirectory(directory, *m_vecItems))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", url.GetRedacted().c_str());
     // Try to return to the previous directory, if not the same
@@ -766,14 +766,11 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     return false;
   }
 
-  if (items.GetLabel().empty())
-    items.SetLabel(CUtil::GetTitleFromPath(items.GetPath(), true));
-  
-  ClearFileItems();
-  m_vecItems->Copy(items);
+  if (m_vecItems->GetLabel().empty())
+    m_vecItems->SetLabel(CUtil::GetTitleFromPath(m_vecItems->GetPath(), true));
 
   // check the given path for filter data
-  UpdateFilterPath(strDirectory, items, updateFilterPath);
+  UpdateFilterPath(strDirectory, *m_vecItems, updateFilterPath);
     
   // if we're getting the root source listing
   // make sure the path history is clean
