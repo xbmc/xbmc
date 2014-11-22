@@ -75,9 +75,9 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
   m_url = otherConnection->m_url;
   m_type |= otherConnection->m_type;
 
-  if (m_token.empty())
-    m_token = otherConnection->m_token;
-  else if (!otherConnection->m_token.empty())
+  // If we don't have a token or if the otherConnection have a new token, then we
+  // need to use that token instead of our own
+  if (m_token.empty() || (!otherConnection->m_token.empty() && m_token != otherConnection->m_token))
     m_token = otherConnection->m_token;
 
   m_refreshed = true;
