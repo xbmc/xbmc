@@ -355,3 +355,17 @@ bool CPlexMediaServerClient::createPlayList(CPlexServerPtr server, CStdString na
     return true;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexMediaServerClient::getPlayLists()
+{
+  CPlexDirectoryFetchJob *job = new CPlexDirectoryFetchJob(CURL("plexserver://playlists/"));
+
+  CFileItemListPtr playlists;
+  if (g_plexApplication.busy.blockWaitingForJob(job, NULL, &playlists))
+  {
+    return playlists;
+  }
+
+  return CFileItemListPtr();
+}

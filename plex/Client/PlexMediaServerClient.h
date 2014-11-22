@@ -48,6 +48,7 @@ public:
   void movePlayListItem(CFileItemPtr item, CFileItemPtr after);
   bool addItemToPlayList(CPlexServerPtr server, CFileItemPtr item, CStdString playlistID, bool block = false);
   bool createPlayList(CPlexServerPtr server, CStdString name, CFileItemPtr item, bool smart, bool block);
+  CFileItemListPtr getPlayLists();
 
   CURL GetItemURL(CFileItemPtr item);
   void SendTranscoderPing(CPlexServerPtr server);
