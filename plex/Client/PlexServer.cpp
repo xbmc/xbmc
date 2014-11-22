@@ -170,7 +170,7 @@ bool CPlexServer::MarkUpdateFinished(int connType)
     if (conn->GetRefreshed() == false)
     {
       conn->m_type &= ~connType;
-      if (connType == CPlexConnection::CONNECTION_MYPLEX && !conn->GetAccessToken().empty())
+      if ((connType & CPlexConnection::CONNECTION_MYPLEX) == CPlexConnection::CONNECTION_MYPLEX && !conn->GetAccessToken().empty())
       {
         // When we remove a MyPlex connection type and still have a token we need to clear
         // out the token to make sure it won't linger on the local connection
@@ -235,7 +235,7 @@ bool CPlexServer::UpdateReachability()
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
-    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted && conn->m_type != CPlexConnection::CONNECTION_MYPLEX)
+    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted && conn->GetAccessToken().IsEmpty())
     {
       CLog::Log(LOGINFO, "CPlexServer::UpdateReachability skipping connection %s since we are restricted", conn->toString().c_str());
       m_connectionsLeft --;
