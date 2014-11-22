@@ -745,7 +745,7 @@ CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
   return "";
 }
 
-void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
+void CUtil::StatToStatI64(struct _stati64 *result, const struct stat *stat)
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -767,7 +767,7 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
 #endif
 }
 
-void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
+void CUtil::Stat64ToStatI64(struct _stati64 *result, const struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -788,7 +788,7 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
 #endif
 }
 
-void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
+void CUtil::StatI64ToStat64(struct __stat64 *result, const struct _stati64 *stat)
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -825,7 +825,7 @@ void CUtil::StatToStat64(struct __stat64 *result, const struct stat *stat)
   result->st_ctime = stat->st_ctime;
 }
 
-void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
+void CUtil::Stat64ToStat(struct stat *result, const struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -852,7 +852,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
 }
 
 #ifdef TARGET_WINDOWS
-void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
+void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, const struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;

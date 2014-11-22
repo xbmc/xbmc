@@ -65,6 +65,7 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
 bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
   CSingleLock lock(m_critSection);
+  AuthenticateURL(url);
 
   std::string passcode;
   std::string username = url.GetUserName();
@@ -83,10 +84,6 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 
 void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
 {
-  // don't store/save authenticated url if it doesn't contain username
-  if (url.GetUserName().empty())
-    return;
-
   CSingleLock lock(m_critSection);
 
   CStdString path = GetLookupPath(url);
@@ -95,15 +92,27 @@ void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
   if (!m_loaded)
     Load();
 
+
   if (saveToProfile)
   { // write to some random XML file...
-    m_permanentCache[path] = authenticatedPath;
+    if (url.GetUserName().empty())
+      m_permanentCache.erase(path);
+    else
+      m_permanentCache[path] = authenticatedPath;
     Save();
   }
 
   // save for both this path and more generally the server as a whole.
-  m_temporaryCache[path] = authenticatedPath;
-  m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
+  if (url.GetUserName().empty())
+  {
+    m_temporaryCache.erase(path);
+    m_temporaryCache.erase(GetServerLookup(path));
+  }
+  else
+  {
+    m_temporaryCache[path] = authenticatedPath;
+    m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
+  }
 }
 
 void CPasswordManager::Clear()

@@ -80,15 +80,13 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   //Separate roots for the authentication and the containing items to allow browsing to work correctly
   std::string strRoot = url.Get();
-  std::string strAuth;
 
   lock.Leave(); // OpenDir is locked
-  int fd = OpenDir(url, strAuth);
-  if (fd < 0)
+  SMBCFILE* fd = Open(url);
+  if (fd == NULL)
     return false;
 
   URIUtils::AddSlashAtEnd(strRoot);
-  URIUtils::AddSlashAtEnd(strAuth);
 
   std::string strFile;
 
@@ -99,14 +97,14 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   struct smbc_dirent* dirEnt;
 
   lock.Enter();
-  while ((dirEnt = smbc_readdir(fd)))
+  while ((dirEnt = smb.readdir_fn(smb.GetContext(), fd)))
   {
     CachedDirEntry aDir;
     aDir.type = dirEnt->smbc_type;
     aDir.name = dirEnt->name;
     vecEntries.push_back(aDir);
   }
-  smbc_closedir(fd);
+  smb.closedir_fn(smb.GetContext(), fd);
   lock.Leave();
 
   for (size_t i=0; i<vecEntries.size(); i++)
@@ -139,17 +137,17 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
-          const std::string strFullName = strAuth + smb.URLEncode(strFile);
+          const std::string strFullName = strRoot + smb.URLEncode(strFile);
 
           lock.Enter();
 
-          if( smbc_stat(strFullName.c_str(), &info) == 0 )
+          if( smb.stat_fn(smb.GetContext(), strFullName.c_str(), &info) == 0 )
           {
 
             char value[20];
             // We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
             // According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4
-            if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
+            if (smb.getxattr_fn(smb.GetContext(), strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
               long longvalue = strtol(value, NULL, 16);
               if (longvalue & SMBC_DOS_MODE_HIDDEN)
@@ -216,51 +214,31 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return true;
 }
 
-int CSMBDirectory::Open(const CURL &url)
-{
-  smb.Init();
-  std::string strAuth;
-  return OpenDir(url, strAuth);
-}
-
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
-int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
+SMBCFILE* CSMBDirectory::Open(const CURL& url)
 {
-  int fd = -1;
+  SMBCFILE* fd = NULL;
 
-  /* make a writeable copy */
-  CURL urlIn(url);
-
-  CPasswordManager::GetInstance().AuthenticateURL(urlIn);
-  strAuth = smb.URLEncode(urlIn);
-
-  // remove the / or \ at the end. the samba library does not strip them off
-  // don't do this for smb:// !!
-  std::string s = strAuth;
-  int len = s.length();
-  if (len > 1 && s.at(len - 2) != '/' &&
-      (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
-  {
-    s.erase(len - 1, 1);
-  }
+  smb.Init();
+  std::string s = smb.URLEncode(url);
 
   if (g_advancedSettings.CanLogComponent(LOGSAMBA))
     CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Using authentication url %s", CURL::GetRedacted(s).c_str());
 
   { CSingleLock lock(smb);
-    fd = smbc_opendir(s.c_str());
+    fd = smb.opendir_fn(smb.GetContext(), s.c_str());
   }
 
-  if (fd < 0) /* only to avoid goto in following code */
+  if (fd == NULL) /* only to avoid goto in following code */
   {
     std::string cError;
 
     if (errno == EACCES)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
-        RequireAuthentication(urlIn);
+        RequireAuthentication(url);
     }
     else if (errno == ENODEV || errno == ENOENT)
       cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
@@ -271,7 +249,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
       SetErrorDialog(257, cError.c_str());
 
     // write error to logfile
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", url.GetRedacted().c_str(), errno, strerror(errno));
   }
 
   return fd;
@@ -283,11 +261,8 @@ bool CSMBDirectory::Create(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
-  CPasswordManager::GetInstance().AuthenticateURL(url);
-  std::string strFileName = smb.URLEncode(url);
-
-  int result = smbc_mkdir(strFileName.c_str(), 0);
+  std::string strFileName = smb.URLEncode(url2);
+  int result = smb.mkdir_fn(smb.GetContext(), strFileName.c_str(), 0);
   success = (result == 0 || EEXIST == errno);
   if(!success)
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -300,11 +275,9 @@ bool CSMBDirectory::Remove(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
-  CPasswordManager::GetInstance().AuthenticateURL(url);
-  std::string strFileName = smb.URLEncode(url);
+  std::string strFileName = smb.URLEncode(url2);
 
-  int result = smbc_rmdir(strFileName.c_str());
+  int result = smb.rmdir_fn(smb.GetContext(), strFileName.c_str());
 
   if(result != 0 && errno != ENOENT)
   {
@@ -320,12 +293,10 @@ bool CSMBDirectory::Exists(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
-  CPasswordManager::GetInstance().AuthenticateURL(url);
-  std::string strFileName = smb.URLEncode(url);
+  std::string strFileName = smb.URLEncode(url2);
 
   struct stat info;
-  if (smbc_stat(strFileName.c_str(), &info) != 0)
+  if (smb.stat_fn(smb.GetContext(), strFileName.c_str(), &info) != 0)
     return false;
 
   return S_ISDIR(info.st_mode);

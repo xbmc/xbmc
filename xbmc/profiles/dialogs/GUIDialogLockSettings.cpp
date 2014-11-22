@@ -248,8 +248,8 @@ void CGUIDialogLockSettings::InitializeSettings()
 
   if (m_getUser)
   {
-    AddEdit(group, SETTING_USERNAME, 20142, 0, m_user);
-    AddEdit(group, SETTING_PASSWORD, 12326, 0, m_locks.code, false, true);
+    AddEdit(group, SETTING_USERNAME, 20142, 0, m_user, true);
+    AddEdit(group, SETTING_PASSWORD, 12326, 0, m_locks.code, true, true);
     if (m_saveUserDetails != NULL)
       AddToggle(group, SETTING_PASSWORD_REMEMBER, 13423, 0, *m_saveUserDetails);
 

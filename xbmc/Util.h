@@ -105,13 +105,13 @@ public:
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
-  static void StatToStatI64(struct _stati64 *result, struct stat *stat);
+  static void StatToStatI64(struct _stati64 *result, const struct stat *stat);
   static void StatToStat64(struct __stat64 *result, const struct stat *stat);
-  static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
-  static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
-  static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
+  static void Stat64ToStatI64(struct _stati64 *result, const struct __stat64 *stat);
+  static void StatI64ToStat64(struct __stat64 *result, const struct _stati64 *stat);
+  static void Stat64ToStat(struct stat *result, const struct __stat64 *stat);
 #ifdef TARGET_WINDOWS
-  static void Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat);
+  static void Stat64ToStat64i32(struct _stat64i32 *result, const struct __stat64 *stat);
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
 
