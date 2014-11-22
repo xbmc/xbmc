@@ -863,8 +863,11 @@ void CGUIWindowHome::UpdateSections()
     listUpdated = true;
   }
 
-  if (g_plexApplication.serverManager->GetBestServer() && !havePlaylists)
+  CFileItemListPtr playlists = g_plexApplication.mediaServerClient->getPlayLists();
+  if (g_plexApplication.serverManager->GetBestServer() && !havePlaylists && playlists && playlists->Size())
+  {
     AddPlaylists(newList, listUpdated);
+  }
   
   if ((!havePlayqueues) && g_plexApplication.playQueueManager->getPlayQueuesCount())
     AddPlayQueues(newList, listUpdated);
