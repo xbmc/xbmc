@@ -101,6 +101,9 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
       else
         m_sharedSectionsMap[j->m_server->GetUUID()] = sectionList;
     }
+    
+    if (j->m_playlistList)
+      m_serverHasPlaylist[j->m_server->GetUUID()] = (j->m_playlistList->Size() > 0);
 
     if (j->m_channelList)
     {
@@ -213,6 +216,8 @@ bool CPlexServerDataLoaderJob::DoWork()
     m_sectionList = FetchList("/library/sections");
     if (!m_sectionList)
       return false;
+    
+    m_playlistList = FetchList("/playlists");
 
     if (m_server->GetOwned() && m_server->GetServerClass().empty())
     {
@@ -223,7 +228,7 @@ bool CPlexServerDataLoaderJob::DoWork()
       m_channelList = FetchList("/channels/all");
     }
   }
-  else
+  else if (!g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted)
   {
     m_sectionList = CFileItemListPtr(new CFileItemList);
     CFileItemPtr myPlexSection = CFileItemPtr(new CFileItem("plexserver://myplex/pms/playlists"));

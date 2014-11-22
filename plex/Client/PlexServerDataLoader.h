@@ -43,6 +43,34 @@ public:
   CFileItemListPtr GetAllSections() const;
   CFileItemListPtr GetAllSharedSections() const;
   CFileItemListPtr GetAllChannels() const;
+  
+  bool AnyOwendServerHasPlaylists()
+  {
+    CSingleLock lk(m_dataLock);
+    
+    PlexServerList list = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_OWNED);
+    BOOST_FOREACH(const CPlexServerPtr& server, list)
+    {
+      if (ServerHasPlaylist(server))
+        return true;
+    }
+    return false;
+  }
+  bool ServerUUIDHasPlaylist(const CStdString& uuid)
+  {
+    if (m_serverHasPlaylist.find(uuid) == m_serverHasPlaylist.end())
+      return false;
+    
+    return m_serverHasPlaylist[uuid];
+  }
+  
+  bool ServerHasPlaylist(const CPlexServerPtr& server)
+  {
+    if (!server)
+      return false;
+    
+    return ServerUUIDHasPlaylist(server->GetUUID());
+  }
 
   bool SectionHasFilters(const CURL& section);
 
@@ -85,8 +113,8 @@ private:
 
   ServerDataMap m_sectionMap;
   ServerDataMap m_channelMap;
-
   ServerDataMap m_sharedSectionsMap;
+  std::map<CStdString, bool> m_serverHasPlaylist;
 
   bool m_forceRefresh;
 };
@@ -107,6 +135,7 @@ public:
   CPlexServerPtr m_server;
   CFileItemListPtr m_sectionList;
   CFileItemListPtr m_channelList;
+  CFileItemListPtr m_playlistList;
 
   /* we retain this so it won't go away from under us */
   CPlexServerDataLoaderPtr m_loader;
