@@ -797,6 +797,22 @@ msgctxt "#233"
 msgid "Linear"
 msgstr "Rārangi"
 
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Quincunx"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Gaussian pūtoru"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Minification"
+
 msgctxt "#238"
 msgid "Magnification"
 msgstr "Whakakaitātanga"
@@ -860,6 +876,10 @@ msgstr "Tokomaha o hongere"
 msgctxt "#254"
 msgid "DTS capable receiver"
 msgstr "Kaitatau o e taea DTS"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
@@ -1196,10 +1216,6 @@ msgstr "Kaiwhakaari"
 msgctxt "#345"
 msgid "Year"
 msgstr "Tau"
-
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Ngā haerenga, ngā taumata i runga i downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -3140,6 +3156,26 @@ msgstr "Pūrere ororongo ritenga"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Pūrere passthrough ritenga"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extreme"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Whirls"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Pakaru"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Hauhau"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Whakatūringi"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5385,10 +5421,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Pūrei anō"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Te tākaro aunoa DVD"
@@ -5964,6 +5996,10 @@ msgstr "Whakamuna"
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
 msgstr "PVR Backend% i -% s"
+
+msgctxt "#19017"
+msgid "Recordings"
+msgstr "Ngā pūhopu"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
@@ -6581,6 +6617,10 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Ra ki te whakaatu i roto i te EPG"
 
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
+
 msgctxt "#19185"
 msgid "Reset the PVR database"
 msgstr "Tautuhi anō i te pātengi raraunga PVR"
@@ -6600,6 +6640,10 @@ msgstr "EPG ko te tautuhi anō"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Tonu hongere o mua i runga i te whakaohonga"
+
+msgctxt "#19190"
+msgid "Background"
+msgstr "He Whakamārama"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6926,8 +6970,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Tāpiri-ki hoki te backend ki te e taea ki te whakamahi i PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Toro koa xbmc.org / pvr ki te ako atu."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Toro koa kodi.tv / pvr ki te ako atu."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9965,6 +10009,10 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr "Changelog"
 
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr "Tirohia hoki ngā whakahōunga"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "E hiahia ana koe ki te taea Tāpiri-i runga i tenei?"
@@ -11593,10 +11641,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Rite kiriata"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Tīpakohia pēhea te downmixed audio te, hei tauira i te 5.1 ki te 2.0: [Whakahohe] pupuritia e te ngā hihiri o te puna audio original ka downmixed Heoi ka raro [Kua Monokia] e whakaū ana te taumata rōrahi o te puna audio taketake Heoi kōpeke te ngā hihiri te rōrahi. Kia mōhio - ngā Dynamic ko te rerekētanga i waenganui i te quietest me whakahau nui oro i roto i te puna audio."
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Taea mana rōrahi i kiritaki AirPlay."
@@ -11616,6 +11660,22 @@ msgstr "Whakahohe i wetemuna ngā pūmārō o ngā kōnae ataata."
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Whakamahia teitei kakano kounga mō ngā pukupuku, me te fanart (whakamahi i mahara ake)"
+
+msgctxt "#36902"
+msgid "TV show"
+msgstr "TV whakaatu"
+
+msgctxt "#36903"
+msgid "TV shows"
+msgstr "Whakaaturanga TV"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "kōrero"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "whakaaturanga"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -11680,3 +11740,7 @@ msgstr "Kei te hiahia koe ki te aukati i te purei anō i runga i te pūrere mama
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "Tīpakohia tenei ki te audio i roto i hononga tautoko ana audio multichannel rite Dolby Digital 5.1 anake, ka taea tenei audio multichannel pērā i AAC5.1 FLAC5.1 ranei ki te whakarongo ki te reo i roto i te 5.1 karapoti. Kia mōhio - Ehara i tūtohu ki Pi rite me tenei he rota o te PTM."
+
+msgctxt "#37026"
+msgid "Auto"
+msgstr "Aunoa"

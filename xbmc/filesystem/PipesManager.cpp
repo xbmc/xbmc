@@ -318,9 +318,9 @@ void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
     return ;
   
   pipe->DecRef();
-  pipe->Close();
   if (pipe->RefCount() == 0)
   {
+    pipe->Close();
     m_pipes.erase(pipe->GetName());
     delete pipe;
   }

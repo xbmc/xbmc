@@ -241,6 +241,10 @@ msgctxt "#79"
 msgid "S"
 msgstr "ద"
 
+msgctxt "#83"
+msgid "W"
+msgstr "సరే"
+
 msgctxt "#88"
 msgid "South"
 msgstr "దక్షిణం"
@@ -320,6 +324,14 @@ msgstr "వ్యవస్థ సమాచారం"
 msgctxt "#134"
 msgid "Songs"
 msgstr "పాటలు"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "శుక్ర"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "శుక్ర"
 
 msgctxt "#172"
 msgid "Release date"
@@ -437,6 +449,10 @@ msgctxt "#1213"
 msgid "Pictures"
 msgstr "చిత్రాలు"
 
+msgctxt "#1390"
+msgid "Settings"
+msgstr "అమరికలు"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "ఆది"
@@ -533,6 +549,10 @@ msgctxt "#14078"
 msgid "Colours"
 msgstr "రంగులు"
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "గురు"
+
 msgctxt "#15052"
 msgid "Password"
 msgstr "సంకేతపదం"
@@ -584,6 +604,26 @@ msgstr "కనీస నిడివి"
 msgctxt "#19131"
 msgid "Maximum duration"
 msgstr "గరిష్ఠ నిడివి"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "తూ"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "మార్చి"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "ఉ"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "ద"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "ఆది"
 
 msgctxt "#19596"
 msgid "Arts/Culture"
@@ -681,10 +721,6 @@ msgctxt "#24109"
 msgid "No subtitles found"
 msgstr "Subtitles దొరకలేదు"
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Blu-ray మెనూలు చూపించు"
-
 msgctxt "#25008"
 msgid "Playback of Blu-ray failed"
 msgstr "Blu-ray ప్లేబ్యాక్ విఫలమైంది"
@@ -692,3 +728,15 @@ msgstr "Blu-ray ప్లేబ్యాక్ విఫలమైంది"
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
 msgstr "ఈ Blu-ray మెను మద్దతు లేదు"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "దృశ్యకాలు"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "పాట"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "పాటలు"

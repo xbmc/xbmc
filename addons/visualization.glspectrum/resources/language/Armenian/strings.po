@@ -20,6 +20,14 @@ msgctxt "#30000"
 msgid "Mode"
 msgstr "Կարգավիճակ"
 
+msgctxt "#30006"
+msgid "Default"
+msgstr "Նախնական"
+
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Արագություն"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Նախնական"

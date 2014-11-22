@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "utils/auto_buffer.h"
 #include "karaokelyricscdg.h"
 
 
@@ -145,9 +146,8 @@ void CKaraokeLyricsCDG::Render()
 
   if ( UpdateBuffer( packets_due ) )
   {
-	  // If you see a crash in this function, change this object to new/delete.
-	  // However having temporary 260k on stack shouldn't be too much.
-	  DWORD pixelbuf[ CDG_FULL_HEIGHT * CDG_FULL_WIDTH ];
+    XUTILS::auto_buffer buf(CDG_FULL_HEIGHT * CDG_FULL_WIDTH);
+    DWORD* const pixelbuf = (DWORD*)buf.get();
 
 	  // Update our texture content
 	  for ( UINT y = 0; y < CDG_FULL_HEIGHT; y++ )

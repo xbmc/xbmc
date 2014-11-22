@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Ano"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizar níveis de som em remisturas diminuídas"
+msgid "Maintain original volume on downmix"
+msgstr "Manter volume original em remistura"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Quer analisar agora?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s de %s disponível"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "O número de porta introduzido é inválido"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Anunciar estes serviços a outros sistemas via Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Compatível com o iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Permitir controlo de volume"
@@ -3236,6 +3244,70 @@ msgstr "Dispositivo áudio personalizado"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositivo de passagem personalizado"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Pressão"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximidade"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensidade"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Máxima"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Redemoinhos"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Céu Limpo"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Danificado"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Furacão"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Frio"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Ventoso"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Configurações de cache"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brisa"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Suave"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5129,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleração por hardware (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Permitir descodificação de frames multi-tarefa"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Usar MPEG-2 VDPAU"
@@ -5578,8 +5646,8 @@ msgid "Playback"
 msgstr "Reprodução"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
+msgid "Discs"
+msgstr "Discos"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5704,18 @@ msgstr "Interromper a conversão do CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Aceleração"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Modo de reprodução Blu-Ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Reproduza filme principal"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Mostrar menu simplificado"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7186,8 +7266,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on para a backend aceder ao PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Por favor, consulte xbmc.org/pvr para saber mais."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Por favor, consulte kodi.tv/pvr para saber mais."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8408,6 +8488,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Navegador Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10509,6 +10593,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Transferir automaticamente a primeira legenda da lista de resultados"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Configurações foram movidas "
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificações"
@@ -10522,8 +10610,8 @@ msgid "Select from all titles ..."
 msgstr "Escolher de todos os titulos ..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Exibir menus BluRay"
+msgid "Show Blu-ray menu"
+msgstr "Mostrar o menu Blu.Ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10712,6 +10800,14 @@ msgstr "Fim de semana"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s dia"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Emissões"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Dispositivos"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12541,10 +12637,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Activa a descodificação por hardware com o descodificador AMLogic"
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Usar descodificação de frames multi-tarefa em vez de descodificação por hardware (menos fiável do que o modo padrão de tarefa única)"
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Escolher o que acontece ao seleccionar um item do EPG: [Exibir Menu de Contexto] exibirá o menu de contexto, onde poderá escolher outras acções.; [Mudar Para Canal] sintonizará o canal relacionado; [Exibir Informação] exibirá informação detalhada, com argumento e mais opções; [Gravar] criará um temporizador de gravação para o item seleccionado."
@@ -12585,6 +12677,22 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "Quando activo, o método de renderização VAAPI será preferido. O CPU será sujeito a uma menor carga, mas o controlador poderá encravar."
 
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Permitir aceleração por hardware (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Usar DVDPlayer para a descodificação de ficheiros vídeo com aceleração MMAL."
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modo Estereoscópico 3D (actual)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Modo Estereoscópico 3D "
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Desligado"
@@ -12613,6 +12721,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Baseado no Harware"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscópico (2D)"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Perguntar"
@@ -12629,6 +12741,14 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "O mesmo do filme (auto detectar)"
 
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Escolha o modo de reprodução"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Escolher modo stereoscopic 3D"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Selecionar modo alternativo..."
@@ -12636,10 +12756,6 @@ msgstr "Selecionar modo alternativo..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "O mesmo do filme"
-
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Como serão feitas as remisturas diminuídas em áudio, por exemplo de 5.1 para 2.0: [Activado] mantém a amplitude dinâmica da fonte original remisturada, mas com menor volume [Desactivado] mantém o nível de volume da fonte original, mas comprimindo a amplitude dinâmica. Nota - a amplitude dinâmica é a diferença entre os sons mais baixos e os mais altos numa fonte de áudio."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
@@ -12676,6 +12792,10 @@ msgstr "Usar texturas de maior qualidade para capas e fanart (utiliza mais memó
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Limitar a resolução da interface, para poupar memória. Não tem efeito na reprodução de vídeo. É necessário reiniciar."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Use um suporte AirPlay compativel com o iOS8. Se tiver problemas com dispositivos com versões antigas do iOS a detectar Kodi como um elemento válido tente desligar esta opção. Esta opção torna-se válida no próximo reiniciar do Kodi!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12868,3 +12988,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Ilimitado"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Especifica como o Blu-Ray deve ser aberto/corrido. Os menus de discos ainda não estão totalmente suportados e podem causar problemas."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Acelerador GPU"

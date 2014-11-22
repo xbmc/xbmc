@@ -1359,6 +1359,8 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
   list.push_back(std::make_pair(g_localizeStrings.Get(670), LOGCURL));
   list.push_back(std::make_pair(g_localizeStrings.Get(671), LOGCMYTH));
   list.push_back(std::make_pair(g_localizeStrings.Get(672), LOGFFMPEG));
+  list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
+  list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));
 #ifdef HAS_LIBRTMP
   list.push_back(std::make_pair(g_localizeStrings.Get(673), LOGRTMP));
 #endif
@@ -1367,9 +1369,6 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
 #endif
 #ifdef HAS_JSONRPC
   list.push_back(std::make_pair(g_localizeStrings.Get(675), LOGJSONRPC));
-#endif
-#ifdef HAS_ALSA
-  list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
 #endif
 #ifdef HAS_AIRTUNES
   list.push_back(std::make_pair(g_localizeStrings.Get(677), LOGAIRTUNES));

@@ -565,6 +565,10 @@ msgctxt "#444"
 msgid "Video"
 msgstr "Видео"
 
+msgctxt "#558"
+msgid "Album"
+msgstr "Альбомтӕ"
+
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP адрис"
@@ -584,6 +588,10 @@ msgstr "Видео"
 msgctxt "#1213"
 msgid "Pictures"
 msgstr "Нывтӕ"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Уаг"
 
 msgctxt "#1403"
 msgid "Sun"
@@ -633,13 +641,45 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "Видео"
 
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU:"
+
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "Цыбыргӕнӕнтӕ"
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Цпр"
+
 msgctxt "#16000"
 msgid "General"
 msgstr "Сӕйраг"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "С"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Мар"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Ц"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Х"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Хцб"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Видео"
 
 msgctxt "#21417"
 msgid "Settings"
@@ -648,3 +688,15 @@ msgstr "Уаг"
 msgctxt "#24027"
 msgid "Weather"
 msgstr "Боныгъӕд"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Видео"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Видео"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Зарджытӕ"

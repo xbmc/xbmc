@@ -183,7 +183,7 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
     return;
 
   if(i && i->has_volume)
-    p->UpdateInternalVolume(i->volume);
+    p->UpdateInternalVolume(&(i->volume));
 }
 
 static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
@@ -249,6 +249,9 @@ struct SinkInfoStruct
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  if (!sinkStruct)
+    return;
+
   if(i)
   {
     if (i->flags && (i->flags & PA_SINK_HARDWARE))
@@ -333,7 +336,7 @@ static pa_channel_map AEChannelMapToPAChannel(CAEChannelInfo info)
   return map;
 }
 
-static CAEChannelInfo PAChannelToAEChannelMap(pa_channel_map channels)
+static CAEChannelInfo PAChannelToAEChannelMap(const pa_channel_map& channels)
 {
   CAEChannelInfo info;
   AEChannel ch;
@@ -351,8 +354,10 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
 {
 
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  if (!sinkStruct)
+    return;
 
-  if(sinkStruct && sinkStruct->list->empty())
+  if(sinkStruct->list->empty())
   {
     //add a default device first
     CAEDeviceInfo defaultDevice;
@@ -441,6 +446,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_Context = NULL;
   m_IsStreamPaused = false;
   m_volume_needs_update = false;
+  pa_cvolume_init(&m_Volume);
 }
 
 CAESinkPULSE::~CAESinkPULSE()
@@ -567,7 +573,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_BytesPerSecond = pa_bytes_per_second(&spec);
   unsigned int frameSize = pa_frame_size(&spec);
 
-  m_Stream = pa_stream_new_extended(m_Context, "xbmc audio stream", info, 1, NULL);
+  m_Stream = pa_stream_new_extended(m_Context, "kodi audio stream", info, 1, NULL);
   pa_format_info_free(info[0]);
 
   if (m_Stream == NULL)
@@ -794,10 +800,13 @@ pa_stream* CAESinkPULSE::GetInternalStream()
   return m_Stream;
 }
 
-void CAESinkPULSE::UpdateInternalVolume(pa_cvolume nVol)
+void CAESinkPULSE::UpdateInternalVolume(const pa_cvolume* nVol)
 {
+  if (!nVol)
+    return;
+
   pa_volume_t o_vol = pa_cvolume_avg(&m_Volume);
-  pa_volume_t n_vol = pa_cvolume_avg(&nVol);
+  pa_volume_t n_vol = pa_cvolume_avg(nVol);
 
   if (o_vol != n_vol)
   {
@@ -926,7 +935,7 @@ bool CAESinkPULSE::SetupContext(const char *host, pa_context **context, pa_threa
     return false;
   }
 
-  if (((*context) = pa_context_new(pa_threaded_mainloop_get_api(*mainloop), "XBMC")) == NULL)
+  if (((*context) = pa_context_new(pa_threaded_mainloop_get_api(*mainloop), "Kodi")) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
     return false;

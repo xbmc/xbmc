@@ -2,8 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=atv2
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+if [ "$(rebuildDepends)" == "1" ]
 then
-  cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS && tagSuccessFulBuild .
+  cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS && tagSuccessFulDependsBuild
 fi
 

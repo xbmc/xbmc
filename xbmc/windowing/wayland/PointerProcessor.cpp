@@ -27,6 +27,7 @@
 #include "EventListener.h"
 #include "Pointer.h"
 #include "PointerProcessor.h"
+#include "Util.h"
 
 xbmc::PointerProcessor::PointerProcessor(IEventListener &listener,
                                          ICursorManager &manager) :

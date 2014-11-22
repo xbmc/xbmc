@@ -818,6 +818,7 @@ void CSettings::InitializeISettingCallbacks()
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
   settingSet.insert("input.appleremotemode");
+  settingSet.insert("input.appleremotealwayson");
   m_settingsManager->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
 #endif
 }

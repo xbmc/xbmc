@@ -57,6 +57,7 @@ private:
   XBMCHelper(XBMCHelper const& );
   XBMCHelper& operator=(XBMCHelper const&);
 
+  void HandleLaunchAgent();
   void Install();
   void Uninstall();
 

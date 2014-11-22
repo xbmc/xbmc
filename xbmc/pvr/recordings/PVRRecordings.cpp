@@ -103,8 +103,7 @@ bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const st
 void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList *results)
 {
   std::string strUseBase = TrimSlashes(strBase);
-
-  std::set<std::string> unwatchedFolders;
+  std::set<CFileItemPtr> unwatchedFolders;
 
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
@@ -119,42 +118,35 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
     else
       strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
+    CFileItemPtr pFileItem;
+    current->UpdateMetadata();
+    
     if (!results->Contains(strFilePath))
     {
-      current->UpdateMetadata();
-      CFileItemPtr pFileItem;
       pFileItem.reset(new CFileItem(strCurrent, true));
       pFileItem->SetPath(strFilePath);
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
 
-      // Initialize folder overlay from play count (either directly from client or from video database)
-      if (current->m_playCount > 0)
-        pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
-      else
-        unwatchedFolders.insert(strFilePath);
-
+      // Assume all folders are watched, we'll change the overlay later
+      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
       results->Add(pFileItem);
     }
     else
     {
-      CFileItemPtr pFileItem;
       pFileItem=results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
-
-      // Unset folder overlay if recording is unwatched
-      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end())
-      {
-        if (current->m_playCount == 0)
-        {
-          pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
-          unwatchedFolders.insert(strFilePath);
-        }
-      }
     }
+
+    if (current->m_playCount == 0)
+      unwatchedFolders.insert(pFileItem);
   }
+
+  // Remove the watched overlay from folders containing unwatched entries
+  for (std::set<CFileItemPtr>::iterator it = unwatchedFolders.begin(); it != unwatchedFolders.end(); ++it)
+    (*it)->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, true);
 }
 
 int CPVRRecordings::Load(void)
@@ -288,16 +280,23 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
         continue;
       }
 
-      pItem->GetPVRRecordingInfoTag()->SetPlayCount(count);
+      if (!pItem->HasPVRRecordingInfoTag())
+        continue;
 
-      // Clear resume bookmark
-      if (count > 0)
+      CPVRRecordingPtr recording = GetByFileItem(*pItem);
+      if (recording)
       {
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-        pItem->GetPVRRecordingInfoTag()->SetLastPlayedPosition(0);
-      }
+        recording->SetPlayCount(count);
 
-      database.SetPlayCount(*pItem, count);
+        // Clear resume bookmark
+        if (count > 0)
+        {
+          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+          recording->SetLastPlayedPosition(0);
+        }
+
+        database.SetPlayCount(*pItem, count);
+      }
     }
 
     database.Close();
@@ -362,20 +361,6 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
   }
 
   return false;
-}
-
-void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
-{
-  if (!item.HasPVRRecordingInfoTag())
-    return;
-
-  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
-  CPVRRecordingPtr foundRecording = GetById(recording->m_iClientId, recording->m_strRecordingId);
-  if (foundRecording)
-  {
-    CSingleLock lock(m_critSection);
-    foundRecording->SetPlayCount(iPlayCount);
-  }
 }
 
 void CPVRRecordings::GetAll(CFileItemList &items)
@@ -443,6 +428,12 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
     retVal = it->second;
 
   return retVal;
+}
+
+CPVRRecordingPtr CPVRRecordings::GetByFileItem(const CFileItem &item) const
+{
+  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
+  return GetById(recording->m_iClientId, recording->m_strRecordingId);
 }
 
 void CPVRRecordings::Clear()

@@ -44,6 +44,10 @@ msgctxt "#31042"
 msgid "PLAYING"
 msgstr "PLAYING"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "Pause"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "FAST FORWARD"

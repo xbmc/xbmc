@@ -456,10 +456,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Predicción semanal"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Predicción de 10 días"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Predicción del clima"
@@ -471,10 +467,6 @@ msgstr "Chance de precipitación"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Obteniendo información del clima"
-
-msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Mapas y Alertas"
 
 msgctxt "#31950"
 msgid "WEATHER"

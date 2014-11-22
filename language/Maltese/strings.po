@@ -125,17 +125,109 @@ msgctxt "#32"
 msgid "December"
 msgstr "Diċembru"
 
+msgctxt "#41"
+msgid "Mon"
+msgstr "Tne"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Tli"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Erb"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Ħam"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Ġim"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Sib"
+
 msgctxt "#47"
 msgid "Sun"
-msgstr "Xemx"
+msgstr "Ħad"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Jan"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Fra"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Mar"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Apr"
 
 msgctxt "#55"
 msgid "May"
-msgstr "Mejju"
+msgstr "Mej"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Ġun"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Lul"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Aww"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "Issettja"
+msgstr "Set"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Ott"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Diċ"
+
+msgctxt "#83"
+msgid "W"
+msgstr "ok"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Nofsinhar"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Tramuntana"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Punent"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Lvant"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Varjabbli"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -973,6 +1065,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate Conversion"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Mgħaġġel"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artisti Varji"
@@ -1685,6 +1781,10 @@ msgctxt "#544"
 msgid "Media info"
 msgstr "Info tal-Media"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Numru"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Ordni: %s"
@@ -2113,6 +2213,14 @@ msgctxt "#734"
 msgid "No pass"
 msgstr "Bla Sigriet"
 
+msgctxt "#736"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Kulur"
+
 msgctxt "#738"
 msgid "Normal"
 msgstr "Normali"
@@ -2252,6 +2360,10 @@ msgstr "Port Range tar-Remote Events"
 msgctxt "#794"
 msgid "Allow programs on other systems to control Kodi"
 msgstr "Irċievi events minn kompjuters oħra"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Internet"
 
 msgctxt "#998"
 msgid "Add Music..."
@@ -2553,6 +2665,14 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programmi, Stampi u Films"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Estrem"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Settings"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Drifting"
@@ -2628,6 +2748,10 @@ msgstr "T-Storm"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Tempesti"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Baxx"
 
 msgctxt "#1439"
 msgid "and"
@@ -2753,9 +2877,25 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Settings->Profili"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Bażiku"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avvanzat"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Espert"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "għajnuna"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -3341,6 +3481,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Kontroll veloċita’ tal-Fan"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Font"
+
 msgctxt "#13305"
 msgid "Show RSS news feeds"
 msgstr "Attiva RSS Feeds"
@@ -3681,6 +3825,30 @@ msgctxt "#13415"
 msgid "Render method"
 msgstr "Metodu ta' Render"
 
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Uża MPEG-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Uża MPEG-4 VDPAU"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Uża VC-1 VDPAU"
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Uża MPEG-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Uża MPEG-4 VAAPI"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Uża VC-1 VAAPI"
+
 msgctxt "#13507"
 msgid "Medium"
 msgstr "Medju"
@@ -3953,9 +4121,29 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Neħħi mill-Favoriti"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Kuluri"
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "Żona tal-ħin"
+
+msgctxt "#14090"
+msgid "International"
+msgstr "Internazzjonali"
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "Sigurtà"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Ara"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Żomm"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -4008,6 +4196,10 @@ msgstr "Navigation Sounds"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Qoxra Default"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -4233,17 +4425,73 @@ msgctxt "#16316"
 msgid "Auto"
 msgstr "Awto"
 
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Mgħaġġel"
+
 msgctxt "#19017"
 msgid "Recordings"
 msgstr "Recordings"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Stazzjonijiet"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radju"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Stazzjonijiet tat-TV"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Stazzjonijiet tar-Radju"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Stazzjon"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Issa"
 
 msgctxt "#19031"
 msgid "Next"
 msgstr "Li jmiss"
 
+msgctxt "#19033"
+msgid "Information"
+msgstr "Informazzjoni"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Stazzjon ġdid"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Stazzjon"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Baxx"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Recordings"
+
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radju"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Stazzjon ġdid"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Mode:"
 
 msgctxt "#19647"
 msgid "Motoring"
@@ -5337,6 +5585,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Issettja"
 
+msgctxt "#20452"
+msgid "episode"
+msgstr "Episodju"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Uri kannestri u fajls moħbija"
@@ -5629,6 +5881,10 @@ msgctxt "#21450"
 msgid "Edit"
 msgstr "Biddel"
 
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Mgħaġġel"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Isem tal-Fajl"
@@ -5901,6 +6157,14 @@ msgctxt "#22031"
 msgid "Size"
 msgstr "Kobor"
 
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Kuluri"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "Estensjonijiet"
+
 msgctxt "#24005"
 msgid "Media sources"
 msgstr "Sorsi tal-Media"
@@ -5969,6 +6233,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Mhux attiv"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardware"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Programm Televiziv"
@@ -5976,6 +6244,38 @@ msgstr "Programm Televiziv"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "Xow Televiżiv"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "Episodju"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Issettja"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Issettja"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Vidjo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Filmati"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Diska"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Diski"
 
 msgctxt "#37026"
 msgid "Auto"

@@ -94,7 +94,7 @@ msgstr "동작"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "지금 재생중"
+msgstr "지금 재생 중"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -214,7 +214,7 @@ msgstr "최근 추가한 비디오 보기"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "홈 페이지 프로그램 하위메뉴"
+msgstr "홈 페이지 프로그램 하위 메뉴"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -222,11 +222,11 @@ msgstr "배경 팬아트 숨기기"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "배경에 \"지금 재생중\" 비디오 보기"
+msgstr "배경에 \"지금 재생 중\" 비디오 보기"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "배경에 \"지금 재생중\" 시각화 보기"
+msgstr "배경에 \"지금 재생 중\" 시각화 보기"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -250,15 +250,15 @@ msgstr "가사 애드온"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "홈 페이지 비디오 하위메뉴"
+msgstr "홈 페이지 비디오 하위 메뉴"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "홈 페이지 음악 하위메뉴"
+msgstr "홈 페이지 음악 하위 메뉴"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "홈 페이지 사진 하위메뉴"
+msgstr "홈 페이지 사진 하위 메뉴"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B] 애드온 설정[/B][CR][CR]설치한 애드온 관리 · xbmc.org에서 애드온 찾기 및 설치[CR] 애드온 설정 변경"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]애드온 설정[/B][CR][CR]설치된 애드온 관리 · kodi.tv에서 애드온 탐색 및 설치[CR]애드온 설정"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "주말 예보"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 일 예보"
+msgid "Daily Forecast"
+msgstr "일일 예보"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "날씨 정보를 가져오는 중..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "지도와 경보"
+msgid "Maps"
+msgstr "지도"
 
 msgctxt "#31950"
 msgid "WEATHER"

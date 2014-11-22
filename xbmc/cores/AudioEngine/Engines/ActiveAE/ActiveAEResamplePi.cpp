@@ -115,10 +115,6 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
 
   CLog::Log(LOGINFO, "%s::%s remap:%p chan:%d->%d rate:%d->%d format:%d->%d bits:%d->%d dither:%d->%d norm:%d upmix:%d", CLASSNAME, __func__, remapLayout, src_channels, dst_channels, src_rate, dst_rate, src_fmt, dst_fmt, src_bits, dst_bits, src_dither, dst_dither, normalize, upmix);
 
-  if (!src_bits)
-    src_bits = format_to_bits(src_fmt);
-  if (!dst_bits)
-    dst_bits = format_to_bits(dst_fmt);
   m_dst_chan_layout = dst_chan_layout;
   m_dst_channels = dst_channels;
   m_dst_rate = dst_rate;
@@ -132,6 +128,12 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
   m_src_bits = src_bits;
   m_src_dither_bits = src_dither;
   m_offset = 0;
+  m_src_pitch = format_to_bits(m_src_fmt) >> 3;
+  m_dst_pitch = format_to_bits(m_dst_fmt) >> 3;
+
+  // special handling for S24 formats which are carried in S32 (S24NE3)
+  if ((m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P) && m_dst_bits == 24 && m_dst_dither_bits == -8)
+    m_dst_pitch = 24;
 
   if (m_dst_chan_layout == 0)
     m_dst_chan_layout = av_get_default_channel_layout(m_dst_channels);
@@ -298,7 +300,7 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
   m_pcm_input.eNumData              = OMX_NumericalDataSigned;
   m_pcm_input.eEndian               = OMX_EndianLittle;
   m_pcm_input.bInterleaved          = OMX_TRUE;
-  m_pcm_input.nBitPerSample         = m_src_bits;
+  m_pcm_input.nBitPerSample         = m_src_pitch << 3;
   // 0x8000 = float, 0x10000 = planar
   uint32_t flags = 0;
   if (m_src_fmt == AV_SAMPLE_FMT_FLT || m_src_fmt == AV_SAMPLE_FMT_FLTP)
@@ -318,12 +320,16 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
   m_pcm_output.eNumData              = OMX_NumericalDataSigned;
   m_pcm_output.eEndian               = OMX_EndianLittle;
   m_pcm_output.bInterleaved          = OMX_TRUE;
-  m_pcm_output.nBitPerSample         = m_dst_bits;
+  m_pcm_output.nBitPerSample         = m_dst_pitch << 3;
   flags = 0;
   if (m_dst_fmt == AV_SAMPLE_FMT_FLT || m_dst_fmt == AV_SAMPLE_FMT_FLTP)
    flags |= 0x8000;
   if (m_dst_fmt >= AV_SAMPLE_FMT_U8P)
    flags |= 0x10000;
+  // shift bits if destination format requires it, swr_resamples aligns to the left
+  if (m_dst_bits != 32 && (m_dst_dither_bits + m_dst_bits) != 32)
+    flags |= (32 - m_dst_bits - m_dst_dither_bits) << 8;
+
   m_pcm_output.ePCMMode              = flags == 0 ? OMX_AUDIO_PCMModeLinear : (OMX_AUDIO_PCMMODETYPE)flags;
   m_pcm_output.nChannels             = dst_channels;
   m_pcm_output.nSamplingRate         = dst_rate;
@@ -434,11 +440,11 @@ int CActiveAEResamplePi::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t
   const int d_planes = m_dst_fmt >= AV_SAMPLE_FMT_U8P ? m_dst_channels : 1;
   const int s_chans  = m_src_fmt >= AV_SAMPLE_FMT_U8P ? 1 : m_src_channels;
   const int d_chans  = m_dst_fmt >= AV_SAMPLE_FMT_U8P ? 1 : m_dst_channels;
-  const int s_pitch = s_chans * m_src_bits >> 3;
-  const int d_pitch = d_chans * m_dst_bits >> 3;
+  const int s_pitch = s_chans * m_src_pitch;
+  const int d_pitch = d_chans * m_dst_pitch;
 
-  const int s_samplesize = m_src_channels * m_src_bits >> 3;
-  const int d_samplesize = m_dst_channels * m_dst_bits >> 3;
+  const int s_samplesize = m_src_channels * m_src_pitch;
+  const int d_samplesize = m_dst_channels * m_dst_pitch;
   const int max_src_samples = BUFFERSIZE / s_samplesize;
   const int max_dst_samples = (long long)(BUFFERSIZE / d_samplesize) * m_src_rate / (m_dst_rate + m_src_rate-1);
 
@@ -544,7 +550,7 @@ int CActiveAEResamplePi::GetBufferedSamples()
   int samples = 0;
   if (m_encoded_buffer)
   {
-    const int d_samplesize = m_dst_channels * m_dst_bits >> 3;
+    const int d_samplesize = m_dst_channels * m_src_pitch;
     samples = m_encoded_buffer->nFilledLen / d_samplesize - m_offset;
   }
   #ifdef DEBUG_VERBOSE

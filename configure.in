@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [13.9.802], [http://issues.kodi.tv])
+AC_INIT([kodi], [13.9.803], [http://issues.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -771,13 +771,8 @@ CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS"
 
 if test "$use_optimizations" = "yes"; then
   final_message="$final_message\n  Optimization:\tYes"
-  if test "$target_platform" = "target_raspberry_pi"; then
-    CXXFLAGS="$CXXFLAGS"
-    CFLAGS="$CFLAGS"
-  else
-    CXXFLAGS="-O2 $CXXFLAGS"
-    CFLAGS="-O2 $CFLAGS"
-  fi
+  CXXFLAGS="-O2 $CXXFLAGS"
+  CFLAGS="-O2 $CFLAGS"
 else
   final_message="$final_message\n  Optimization:\tNo"
 fi

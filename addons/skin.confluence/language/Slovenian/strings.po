@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]PRILAGODITE NASTAVITVE SISTEMA[/B][CR][CR]Nastavite in prilagodite zaslon · Nastavite zvočni izhod · Nastavite oddaljeno upravljanje[CR]Nastavite varčevanje z energijo · Vključite razhroščevanje · Določite glavno geslo"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke · Brskajte in namestite nove dodatke iz xbmc.org[CR]Nastavite dodatke"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke · Brskajte in namestite nove dodatke iz kodi.tv[CR]Nastavite dodatke"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Vikend napoved"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10-dnevna napoved"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Napoved"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Prenašam vremenske informacije ..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Karte & Opozorila"
+msgid "Maps"
+msgstr "Karte"
 
 msgctxt "#31950"
 msgid "WEATHER"

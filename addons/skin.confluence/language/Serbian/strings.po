@@ -333,9 +333,33 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGURISANjE POSTAVKI SISTEMA[/B][CR][CR]Podesite i kalibrišite ekrane · Konfigurišite zvučni izlaz[CR]Podesite daljinsko upravljanje · Postavite opcije štednje energije[CR]Omogućite evidenciju grešaka · Podesite glavnu lozinku"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURISANjE DODATNIH PROGRAMA[/B][CR][CR]Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne prog. sa xbmc.org[CR]Prilagodite podešavanje dodatnog programa"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]KONFIGURISANjE DODATNIH PROGRAMA[/B][CR][CR]Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne prog. sa kodi.tv[CR]Prilagodite podešavanje dodatnog programa"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokalni prevod dostupan"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Izaberite vaš Kodi korisnički[CR]profil za prijavu, a potom nastavite dalje"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Телевизија уживо"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Преименуј групу"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Обриши групу"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Доступне[CR]групе"
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Karta"

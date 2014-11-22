@@ -677,7 +677,11 @@ bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector< pair<int,st
 
     CStdString path(basepath);
     URIUtils::AddSlashAtEnd(path);
-    sql = PrepareSQL("SELECT idPath,strPath FROM path WHERE SUBSTR(strPath,1,%i)='%s'", StringUtils::utf8_strlen(path.c_str()), path.c_str());
+    sql = PrepareSQL("SELECT idPath,strPath FROM path WHERE SUBSTR(strPath,1,%i)='%s'"
+                     " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'video_ts.ifo')"
+                     " AND idPath NOT IN (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv')"
+                     , StringUtils::utf8_strlen(path.c_str()), path.c_str());
+
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {

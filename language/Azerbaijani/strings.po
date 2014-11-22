@@ -441,6 +441,10 @@ msgctxt "#153"
 msgid "Full duplex"
 msgstr "Tam dupleks"
 
+msgctxt "#156"
+msgid "Free"
+msgstr "C"
+
 msgctxt "#157"
 msgid "Video"
 msgstr "Video"
@@ -448,6 +452,10 @@ msgstr "Video"
 msgctxt "#158"
 msgid "Free memory"
 msgstr "Boş yaddaş"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "C"
 
 msgctxt "#164"
 msgid "No disc"
@@ -496,6 +504,10 @@ msgstr "Filmi seç:"
 msgctxt "#199"
 msgid "Web interface"
 msgstr "Web interfeys"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Başla"
 
 msgctxt "#209"
 msgid "Next"
@@ -745,6 +757,10 @@ msgctxt "#446"
 msgid "DVD"
 msgstr "DVD"
 
+msgctxt "#455"
+msgid "Rows"
+msgstr "Fayllər"
+
 msgctxt "#462"
 msgid "Subtitle"
 msgstr "Subtitr"
@@ -817,9 +833,17 @@ msgctxt "#504"
 msgid "Empty"
 msgstr "Boş"
 
+msgctxt "#513"
+msgid "Home window"
+msgstr "Başla"
+
 msgctxt "#515"
 msgid "Genre"
 msgstr "Janr"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Başla"
 
 msgctxt "#522"
 msgid "Remove source"
@@ -969,6 +993,10 @@ msgctxt "#587"
 msgid "Filter"
 msgstr "Filtr"
 
+msgctxt "#592"
+msgid "One"
+msgstr "1"
+
 msgctxt "#596"
 msgid "Repeat: One"
 msgstr "Təkrarlama: Birini"
@@ -976,6 +1004,10 @@ msgstr "Təkrarlama: Birini"
 msgctxt "#597"
 msgid "Repeat: All"
 msgstr "Təkrarlama: Hamısı"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "Normal"
 
 msgctxt "#622"
 msgid "Quality"
@@ -1113,6 +1145,10 @@ msgctxt "#767"
 msgid "Grey"
 msgstr "Boz"
 
+msgctxt "#772"
+msgid "Audio output"
+msgstr "Audio"
+
 msgctxt "#774"
 msgid "Slideshow folder"
 msgstr "Slayd göstərişin qovluqu"
@@ -1151,6 +1187,10 @@ msgstr "Serverin adı"
 
 msgctxt "#1013"
 msgid "Port"
+msgstr "Port"
+
+msgctxt "#1018"
+msgid "Enter the port number"
 msgstr "Port"
 
 msgctxt "#1020"
@@ -1273,6 +1313,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Parametrlər"
+
 msgctxt "#1397"
 msgid "and"
 msgstr "və"
@@ -1364,6 +1408,10 @@ msgstr "Videolar/İfa siyahı"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Parametrlər - Profillər"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Normal"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -1585,6 +1633,10 @@ msgctxt "#13300"
 msgid "Fan speed"
 msgstr "Ventilyatorun sürəti"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Şrift"
+
 msgctxt "#13313"
 msgid "Restart"
 msgstr "Yenidən başlat"
@@ -1625,9 +1677,21 @@ msgctxt "#13421"
 msgid "VDPAU"
 msgstr "VDPAU"
 
+msgctxt "#13611"
+msgid "Standard"
+msgstr "Normal"
+
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
 msgstr "Subtitrlər üçün şrift"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Ca"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Başla"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -1701,6 +1765,10 @@ msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
 msgstr "__-__-__-__-__-Ş-B"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Axtarış..."
+
 msgctxt "#19149"
 msgid "Mo"
 msgstr "Be"
@@ -1769,9 +1837,17 @@ msgctxt "#20094"
 msgid "Media sources"
 msgstr "Mediya qaynaqları"
 
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "DVD disk qurğusu"
+
 msgctxt "#20173"
 msgid "FTP server"
 msgstr "FTP serveri"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "OK"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
@@ -1784,6 +1860,18 @@ msgstr "Fayl"
 msgctxt "#20342"
 msgid "Movies"
 msgstr "Filmlər"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Studiya"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "Albom"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Video"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -1804,6 +1892,10 @@ msgstr "Subtitrlərin dili"
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Əksetmə qabiliyyəti"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Açılış"
 
 msgctxt "#21870"
 msgid "Source"
@@ -1837,6 +1929,10 @@ msgctxt "#24027"
 msgid "Weather"
 msgstr "Hava durumu"
 
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA"
+
 msgctxt "#34100"
 msgid "Number of channels"
 msgstr "Kanalların sayısı"
@@ -1848,3 +1944,19 @@ msgstr "Ad"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videolar"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Albom"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Mahnılar"

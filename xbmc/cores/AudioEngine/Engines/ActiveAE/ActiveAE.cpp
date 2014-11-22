@@ -1508,6 +1508,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     if (m_settings.config == AE_CONFIG_FIXED)
     {
       format.m_sampleRate = m_settings.samplerate;
+      format.m_dataFormat = AE_FMT_FLOAT;
       CLog::Log(LOGINFO, "CActiveAE::ApplySettings - Forcing samplerate to %d", format.m_sampleRate);
     }
 
@@ -2511,7 +2512,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   if(io_ctx->max_packet_size)
     io_ctx->max_packet_size *= SOUNDBUFFER_SIZE / io_ctx->max_packet_size;
 
-  if(!sound->IsSeekPosible())
+  if(!sound->IsSeekPossible())
     io_ctx->seekable = 0;
 
   fmt_ctx->pb = io_ctx;

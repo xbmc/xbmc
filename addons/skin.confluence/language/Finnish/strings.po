@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]Muokkaa järjestelmän asetuksia[/B][CR][CR]Aseta ja kalibroi näyttö · Määritä äänilähtö · Aseta kauko-ohjaus[CR]Aseta sähkönsäästöasetukset · Ota debuggaus käyttöön · Muokkaa pääkäyttäjän lukituksia"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia kodi.tv:sta[CR]Muokkaa lisäosien asetuksia"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Viikonlopun ennuste"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10 paivän ennuste"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Ennuste"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Noudetaan ennusteen tietoja..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Kartta ja hälytykset"
+msgid "Maps"
+msgstr "Kartat"
 
 msgctxt "#31950"
 msgid "WEATHER"

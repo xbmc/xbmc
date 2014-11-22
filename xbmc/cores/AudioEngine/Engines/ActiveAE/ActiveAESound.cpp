@@ -44,6 +44,9 @@ CActiveAESound::CActiveAESound(const std::string &filename) :
   m_orig_sound = NULL;
   m_dst_sound = NULL;
   m_pFile = NULL;
+  m_isSeekPossible = false;
+  m_fileSize = 0;
+  m_isConverted = false;
 }
 
 CActiveAESound::~CActiveAESound()
@@ -132,7 +135,7 @@ bool CActiveAESound::Prepare()
     m_pFile = NULL;
     return false;
   }
-  m_isSeekPosible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 0;
+  m_isSeekPossible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 0;
   m_fileSize = m_pFile->GetLength();
   return true;
 }

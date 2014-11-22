@@ -30,11 +30,11 @@ msgstr "Arbeitet..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Verstecke Info"
+msgstr "Details ausblenden"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Anzeige-Optionen"
+msgstr "Anzeigeoptionen"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -118,7 +118,7 @@ msgstr "SUCHLAUF"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
-msgstr "Visualisierungs-Voreinstellung"
+msgstr "Visualisierungspresets"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -134,7 +134,7 @@ msgstr "Sortieren: Absteigend"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Öffne Wiedergabeliste"
+msgstr "Wiedergabeliste öffnen"
 
 msgctxt "#31056"
 msgid "Save playlist"
@@ -186,7 +186,7 @@ msgstr "Flags von Dateinamen ausblenden [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Verstecke Hauptmenü-Buttons"
+msgstr "Hauptmenü-Buttons ausblenden"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -218,11 +218,11 @@ msgstr "Hauptmenü Programme-Untermenü"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Verstecke Hintergrund-Fanart"
+msgstr "Hintergrund-Fanart ausblenden"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Zeige im Hintergrund \"Aktuell abgespielt\"-Video"
+msgstr "Zeige im Hintergrund \"Aktuell abgespieltes\"-Video"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
@@ -242,7 +242,7 @@ msgstr "Songtexte"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Fanart in Vollbild-Visualisierung ausblenden."
+msgstr "Fanart in Vollbild-Visualisierung ausblenden"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -274,7 +274,7 @@ msgstr "Einstellungsebene"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Tastenkürzel"
+msgstr "Verknüpfungen"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
@@ -310,7 +310,7 @@ msgstr "Quelle"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Verberge Fanart"
+msgstr "Fanart ausblenden"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -342,7 +342,7 @@ msgstr "Inhalt-Scanning-Optionen"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Setze Fanart-Pfad"
+msgstr "Fanart-Pfad setzen"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -358,7 +358,7 @@ msgstr "Karaoke-Songauswahl"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Erschienen"
+msgstr "Ausgestrahlt"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -394,7 +394,7 @@ msgstr "Pause"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Stopp"
 
 msgctxt "#31353"
 msgid "Fast Forward"
@@ -418,11 +418,11 @@ msgstr "In 2D anschauen"
 
 msgctxt "#31361"
 msgid "Change mode"
-msgstr "Ändere Modus"
+msgstr "Modus ändern"
 
 msgctxt "#31362"
 msgid "Enabled"
-msgstr "Aktivieren"
+msgstr "Aktiviert"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -438,7 +438,7 @@ msgstr "Arial-basiert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGURIERE DARSTELLUNGSEINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilisten Optionen[CR]Setze Bildschirmschoner"
+msgstr "[B]KONFIGURIERE DARSTELLUNGSEINSTELLUNGEN[/B][CR][CR]Ändere den Skin · Wähle Sprache und Region · Ändere Dateilistenoptionen[CR]Setze Bildschirmschoner"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -461,12 +461,12 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]KONFIGURIERE SYSTEM-EINSTELLUNGEN[/B][CR][CR]Konfiguriere und kalibriere Bildschirme · Konfiguriere Audioausgabe · Setze Fernbedienungseinstellungen[CR]Setze Energiespar-Optionen · Aktiviere Debugging · Richte die Master-Sperre ein"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons · Installiere Addons[CR]Passe Addon-Einstellungen an"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]KONFIGURIERE TV-EINSTELLUNGEN[/B][CR][CR]Ändere die Vollbild Information - Verwalte EPG-Daten-Einstellungen"
+msgstr "[B]KONFIGURIERE TV-EINSTELLUNGEN[/B][CR][CR]Ändere die Vollbildinformationen - Verwalte EPG-Daten-Einstellungen"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -494,7 +494,7 @@ msgstr "Wähle Dein Kodi-Benutzerprofil[CR]zum Anmelden und Fortfahren"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Den Anmeldebildschirm beim Start anzeigen oder verstecken"
+msgstr "Den Anmeldebildschirm beim Start anzeigen oder ausblenden"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Wochenend-Prognose"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "10-Tage-Prognose"
+msgid "Daily Forecast"
+msgstr "Tägliche Prognose"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -562,11 +562,11 @@ msgstr "Niederschlagswahrscheinlichkeit"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Lade Wetterbericht..."
+msgstr "Prognoseinformationen werden abgerufen..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Karte & Alarme"
+msgid "Maps"
+msgstr "Karten"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -590,7 +590,7 @@ msgstr "FILME"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV-SERIEN"
+msgstr "SERIEN"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -606,7 +606,7 @@ msgstr "DISC ABSPIELEN"
 
 msgctxt "#31959"
 msgid "SYSTEM"
-msgstr "SYSTEM"
+msgstr "OPTIONEN"
 
 msgctxt "#31960"
 msgid "RADIO"

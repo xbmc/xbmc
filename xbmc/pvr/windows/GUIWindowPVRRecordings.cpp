@@ -263,6 +263,47 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
+bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
+{
+  bool bReturn = false;
+
+  if (!item->IsPVRRecording() && !item->m_bIsFolder)
+    return bReturn;
+
+  /* show a confirmation dialog */
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialog)
+    return bReturn;
+
+  pDialog->SetHeading(122); // Confirm delete
+  pDialog->SetLine(0, item->m_bIsFolder ? 19113 : 19112); // Are you sure?
+  pDialog->SetLine(1, "");
+  pDialog->SetLine(2, item->GetLabel());
+  pDialog->SetChoice(1, 117); // Delete
+
+  /* prompt for the user's confirmation */
+  pDialog->DoModal();
+  if (!pDialog->IsConfirmed())
+    return bReturn;
+
+  /* delete the recording */
+  if (g_PVRRecordings->Delete(*item))
+  {
+    g_PVRManager.TriggerRecordingsUpdate();
+    bReturn = true;
+
+    /* remove the item from the list immediately, otherwise the
+    item count further down may be wrong */
+    m_vecItems->Remove(item);
+
+    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
+    if (m_vecItems->GetPath() != "pvr://recordings/" && m_vecItems->GetObjectCount() == 0)
+      GoParentFolder();
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button)
 {
   return button == CONTEXT_BUTTON_DELETE ? ActionDeleteRecording(item) : false;
@@ -319,24 +360,17 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_MARK_WATCHED)
+  if (button == CONTEXT_BUTTON_MARK_WATCHED || button == CONTEXT_BUTTON_MARK_UNWATCHED)
   {
-    bReturn = true;
+    int playCount = button == CONTEXT_BUTTON_MARK_WATCHED ? 1 : 0;
 
-    int newSelection = m_viewControl.GetSelectedItem();
-    g_PVRRecordings->SetRecordingsPlayCount(item, 1);
-    m_viewControl.SetSelectedItem(newSelection);
-
-    Refresh(true);
-  }
-
-  if (button == CONTEXT_BUTTON_MARK_UNWATCHED)
-  {
-    bReturn = true;
-
-    g_PVRRecordings->SetRecordingsPlayCount(item, 0);
-
-    Refresh(true);
+    if (g_PVRRecordings->SetRecordingsPlayCount(item, playCount))
+    {
+      // Advance the selected item one notch
+      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
+      Refresh(true);
+      bReturn = true;
+    }
   }
 
   return bReturn;
@@ -364,4 +398,6 @@ void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
     }
     m_thumbLoader.Load(files);
   }
+
+  CGUIWindowPVRBase::OnPrepareFileItems(items);
 }

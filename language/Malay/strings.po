@@ -877,9 +877,17 @@ msgctxt "#271"
 msgid "Top 100"
 msgstr "100 Teratas"
 
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "Sarikata"
+
 msgctxt "#291"
 msgid "Video"
 msgstr "Video"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "Tanda Buku"
 
 msgctxt "#304"
 msgid "Language"
@@ -889,9 +897,33 @@ msgctxt "#305"
 msgid "Enabled"
 msgstr "Dibenarkan"
 
+msgctxt "#335"
+msgid "Start"
+msgstr "Mula"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Ditetap"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "Cereka"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "Pelakon"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "Tahun"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Program"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "Dimatikan"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -909,13 +941,53 @@ msgctxt "#367"
 msgid "Sort by: Rating"
 msgstr "Isihan: Rating"
 
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "Tajuk"
+
 msgctxt "#370"
 msgid "Thunderstorms"
 msgstr "Ribut Petir"
 
+msgctxt "#377"
+msgid "Light"
+msgstr "Ringan"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "AM"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "PM"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "Rendah"
+
+msgctxt "#393"
+msgid "High"
+msgstr "Tinggi"
+
 msgctxt "#400"
 msgid "Weather"
 msgstr "Cuaca"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "Rendah"
+
+msgctxt "#419"
+msgid "High"
+msgstr "Tinggi"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "Pilih"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -933,6 +1005,30 @@ msgctxt "#449"
 msgid "Enabled"
 msgstr "Dibenarkan"
 
+msgctxt "#455"
+msgid "Rows"
+msgstr "Fail"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "Jenis"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "Penghargaan"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "Dimatikan"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "Penampilan"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "Ulang"
+
 msgctxt "#498"
 msgid "Sort by: Type"
 msgstr "Isihan: Jenis"
@@ -941,13 +1037,81 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Isihan: Penggunaan"
 
+msgctxt "#513"
+msgid "Home window"
+msgstr "Mula"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "Genre"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Mula"
+
+msgctxt "#535"
+msgid "List"
+msgstr "Senarai"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "Ikon"
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "Senarai besar"
+
+msgctxt "#549"
+msgid "Number"
+msgstr "Nombor"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Isihan: %s"
 
+msgctxt "#551"
+msgid "Name"
+msgstr "Nama"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "Tajuk"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "Artis"
+
+msgctxt "#558"
+msgid "Album"
+msgstr "Album"
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "Senarai Main"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "Tahun"
+
+msgctxt "#563"
+msgid "Rating"
+msgstr "Penarafan"
+
+msgctxt "#564"
+msgid "Type"
+msgstr "Jenis"
+
 msgctxt "#571"
 msgid "Default"
 msgstr "Lalai"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "Studio"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "Laluan"
 
 msgctxt "#574"
 msgid "Country"
@@ -961,6 +1125,22 @@ msgctxt "#581"
 msgid "Sort method"
 msgstr "Kaedah isihan"
 
+msgctxt "#590"
+msgid "Random"
+msgstr "Rawak"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "Dimatikan"
+
+msgctxt "#593"
+msgid "All"
+msgstr "Semua"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "Dimatikan"
+
 msgctxt "#612"
 msgid "Bits/sample"
 msgstr "Bits/sampel"
@@ -968,6 +1148,10 @@ msgstr "Bits/sampel"
 msgctxt "#613"
 msgid "Sample rate"
 msgstr "Kadar sampel"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Kadar bit"
 
 msgctxt "#631"
 msgid "Zoom"
@@ -977,6 +1161,14 @@ msgctxt "#633"
 msgid "Wide Zoom"
 msgstr "Zum Lebar"
 
+msgctxt "#636"
+msgid "Custom"
+msgstr "Suai"
+
+msgctxt "#705"
+msgid "Network"
+msgstr "Rangkaian"
+
 msgctxt "#719"
 msgid "IP address"
 msgstr "Alamat IP"
@@ -985,6 +1177,26 @@ msgctxt "#733"
 msgid "Password"
 msgstr "Kata Laluan"
 
+msgctxt "#736"
+msgid "Style"
+msgstr "Gaya"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "Tebal"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "Fail"
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "Biru"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "Jangkau"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "Alamat IP"
@@ -992,6 +1204,18 @@ msgstr "Alamat IP"
 msgctxt "#1014"
 msgid "Username"
 msgstr "Nama Pengguna"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "Submenu"
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "Kegemaran"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Tetapan tambahan"
 
 msgctxt "#1048"
 msgid "Username"
@@ -1013,9 +1237,29 @@ msgctxt "#1213"
 msgid "Pictures"
 msgstr "Gambar"
 
+msgctxt "#1214"
+msgid "Files"
+msgstr "Fail"
+
 msgctxt "#1223"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Suhu"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Tekanan"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Berpusing"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Seting"
 
 msgctxt "#1397"
 msgid "and"
@@ -1036,6 +1280,10 @@ msgstr "Ribut Petir"
 msgctxt "#1419"
 msgid "Shallow"
 msgstr "Cetek"
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "Sederhana"
 
 msgctxt "#1424"
 msgid "Overcast"
@@ -1109,6 +1357,10 @@ msgctxt "#1442"
 msgid "Chance"
 msgstr "Peluang"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "dari"
+
 msgctxt "#1444"
 msgid "Funnel"
 msgstr "Corong"
@@ -1129,9 +1381,17 @@ msgctxt "#1449"
 msgid "Partial"
 msgstr "Separa"
 
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "Masa Jalan"
+
 msgctxt "#2080"
 msgid "Empty list"
 msgstr "Senarai kosong"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "Mula"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -1165,9 +1425,29 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Tetap semula"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Asas"
+
 msgctxt "#10038"
 msgid "Advanced"
 msgstr "Lanjutan"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Bantuan"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Kegemaran"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Tetapan tambahan"
 
 msgctxt "#10506"
 msgid "Programs"
@@ -1176,6 +1456,14 @@ msgstr "Program"
 msgctxt "#10511"
 msgid "System info"
 msgstr "Info sistem"
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "Video skrin penuh"
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "OK"
 
 msgctxt "#12349"
 msgid "Updating video library art"
@@ -1197,9 +1485,33 @@ msgctxt "#12376"
 msgid "Set as default for all videos"
 msgstr "Tetapkan nilai lalai untuk semua video"
 
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "Masa hidup sistem"
+
+msgctxt "#12391"
+msgid "Minutes"
+msgstr "Minit"
+
+msgctxt "#12392"
+msgid "Hours"
+msgstr "Pemasa"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Cuaca"
+
+msgctxt "#13000"
+msgid "System"
+msgstr "Sistem"
+
+msgctxt "#13005"
+msgid "Shutdown"
+msgstr "Matikan"
+
+msgctxt "#13009"
+msgid "Quit"
+msgstr "Keluar"
 
 msgctxt "#13106"
 msgid "Disabled"
@@ -1213,6 +1525,14 @@ msgctxt "#13131"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
 
+msgctxt "#13170"
+msgid "Never"
+msgstr "Tidak sesekali"
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "Profil"
+
 msgctxt "#13205"
 msgid "Unknown"
 msgstr "Tidak Diketahui"
@@ -1225,17 +1545,37 @@ msgctxt "#13278"
 msgid "Default"
 msgstr "Lalai"
 
+msgctxt "#13279"
+msgid "Network"
+msgstr "Rangkaian"
+
 msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU:"
 
 msgctxt "#13310"
 msgid "Zoom effect"
 msgstr "Kesan zum"
 
+msgctxt "#13341"
+msgid "Green"
+msgstr "Hijau"
+
+msgctxt "#13343"
+msgid "Red"
+msgstr "Merah"
+
 msgctxt "#13350"
 msgid "Current playlist"
 msgstr "Senarai audio video semasa"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "Praset"
 
 msgctxt "#13398"
 msgid "Shortcuts"
@@ -1245,6 +1585,18 @@ msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
 msgstr "Abaikan artikel apabila mengisih (cth: \"the\")"
 
+msgctxt "#13405"
+msgid "Get thumb"
+msgstr "Dapatkan lakaran kenit"
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "Main dari sini"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "Memuat turun"
+
 msgctxt "#13433"
 msgid "Play the next video automatically"
 msgstr "Mainkan video seterusnya secara automatik"
@@ -1252,6 +1604,10 @@ msgstr "Mainkan video seterusnya secara automatik"
 msgctxt "#13434"
 msgid "Play only this"
 msgstr "Mainkan ini sahaja"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "Tinggi"
 
 msgctxt "#13511"
 msgid "Choose art"
@@ -1273,9 +1629,17 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "Tiada karya seni"
 
+msgctxt "#13551"
+msgid "Off"
+msgstr "Dimatikan"
+
 msgctxt "#13610"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
+
+msgctxt "#14018"
+msgid "View options"
+msgstr "Pilihan paparan"
 
 msgctxt "#14036"
 msgid "Services"
@@ -1285,6 +1649,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Main Balik"
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Thu"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Main"
@@ -1293,9 +1661,25 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr "Kekal"
 
+msgctxt "#15016"
+msgid "Games"
+msgstr "Permainan"
+
 msgctxt "#15052"
 msgid "Password"
 msgstr "Kata Laluan"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "Lalai Kulit"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
+
+msgctxt "#15200"
+msgid "Last.fm"
+msgstr "Last.fm"
 
 msgctxt "#16000"
 msgid "General"
@@ -1304,6 +1688,34 @@ msgstr "Am"
 msgctxt "#16018"
 msgid "None"
 msgstr "Tiada"
+
+msgctxt "#16026"
+msgid "Playback failed"
+msgstr "Main balik gagal"
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "Dimatikan"
+
+msgctxt "#16041"
+msgid "On"
+msgstr "Hidup"
+
+msgctxt "#16101"
+msgid "Unwatched"
+msgstr "Belum Ditonton"
+
+msgctxt "#16102"
+msgid "Watched"
+msgstr "Set"
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Cari serupa"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Ditetap"
 
 msgctxt "#19017"
 msgid "Recordings"
@@ -1317,6 +1729,14 @@ msgctxt "#19020"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Tersembunyi"
+
 msgctxt "#19023"
 msgid "TV channels"
 msgstr "Saluran TV"
@@ -1325,21 +1745,105 @@ msgctxt "#19024"
 msgid "Radio channels"
 msgstr "Saluran radio"
 
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Saluran"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Sekarang"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Seterusnya"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Maklumat"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Pemasa"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Rakaman"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
 msgstr "Isihan: Saluran"
 
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Folder:"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Amaran"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Penyedia"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "pada"
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versi"
+
 msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr "Saluran tidak tersedia"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Gelintar..."
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Kumpulan"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Saluran"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "E"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Mar"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Hidup"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "N"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "S"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Sun"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Rakaman"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Maklumat PVR"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -1349,9 +1853,17 @@ msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19183"
+msgid "Radio"
+msgstr "Radio"
+
 msgctxt "#19190"
 msgid "Background"
 msgstr "Latar Belakang"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
@@ -1501,6 +2013,14 @@ msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Sukan Seni Mempertahankan Diri"
 
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Agama"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drama"
+
 msgctxt "#19677"
 msgid "Detective/Thriller"
 msgstr "Detektif/Ngeri"
@@ -1525,17 +2045,57 @@ msgctxt "#19682"
 msgid "Romance"
 msgstr "Percintaan"
 
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Dewasa"
+
 msgctxt "#20007"
 msgid "Recordings"
 msgstr "Rakaman"
+
+msgctxt "#20026"
+msgid "Region"
+msgstr "Kawasan"
 
 msgctxt "#20109"
 msgid "Zoom"
 msgstr "Zum"
 
+msgctxt "#20141"
+msgid "Set"
+msgstr "Set"
+
 msgctxt "#20142"
 msgid "Username"
 msgstr "Nama Pengguna"
+
+msgctxt "#20144"
+msgid "Shutdown timer"
+msgstr "Pemasa matikan"
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "Maklumat video"
+
+msgctxt "#20163"
+msgid "of"
+msgstr "dari"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "OK"
+
+msgctxt "#20178"
+msgid "Shift"
+msgstr "Anjak"
+
+msgctxt "#20183"
+msgid "Reload skin"
+msgstr "Muat semula kulit"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "Suai"
 
 msgctxt "#20242"
 msgid "Android pictures"
@@ -1573,13 +2133,81 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Mengimbas album menggunakan %s"
 
+msgctxt "#20334"
+msgid "Folder"
+msgstr "Folder"
+
+msgctxt "#20339"
+msgid "Director"
+msgstr "Pengarah"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "Cereka"
+
+msgctxt "#20359"
+msgid "Episode"
+msgstr "Episod"
+
+msgctxt "#20360"
+msgid "Episodes"
+msgstr "Episod"
+
+msgctxt "#20373"
+msgid "Season"
+msgstr "Musim"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Studio"
+
+msgctxt "#20395"
+msgid "Mixed"
+msgstr "Bercampur"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "Album"
+
+msgctxt "#20410"
+msgid "Trailer"
+msgstr "Treler"
+
+msgctxt "#20413"
+msgid "Get fanart"
+msgstr "Seni Peminat"
+
+msgctxt "#20417"
+msgid "Writer"
+msgstr "Penulis"
+
+msgctxt "#20420"
+msgid "Never"
+msgstr "Tidak sesekali"
+
 msgctxt "#20422"
 msgid "Always"
 msgstr "Sentiasa"
 
+msgctxt "#20423"
+msgid "Has trailer"
+msgstr "Treler"
+
+msgctxt "#20434"
+msgid "Sets"
+msgstr "Set"
+
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Hasil Seni Peminat"
+
+msgctxt "#20452"
+msgid "episode"
+msgstr "Episod"
+
+msgctxt "#20453"
+msgid "episodes"
+msgstr "episod"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -1605,6 +2233,14 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Pilih %s"
 
+msgctxt "#21371"
+msgid "Thumbnail"
+msgstr "Lakaran Kenit"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Video"
+
 msgctxt "#21417"
 msgid "Settings"
 msgstr "Seting"
@@ -1625,6 +2261,10 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Kiraan episod yang telah dilihat"
 
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Ditetap"
+
 msgctxt "#21467"
 msgid "%.1f to %.1f"
 msgstr "%.1f ke %.1f"
@@ -1641,13 +2281,49 @@ msgctxt "#21805"
 msgid "Resolution"
 msgstr "Resolusi"
 
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Membuka"
+
 msgctxt "#21838"
 msgid "Digital zoom"
 msgstr "Zum Digital"
 
+msgctxt "#21863"
+msgid "Author"
+msgstr "Pengarang"
+
+msgctxt "#21866"
+msgid "Category"
+msgstr "Kategori"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "Kawasan"
+
 msgctxt "#21875"
 msgid "Country"
 msgstr "Negara"
+
+msgctxt "#21887"
+msgid "Biography"
+msgstr "Biografi"
+
+msgctxt "#21888"
+msgid "Discography"
+msgstr "Discografi"
+
+msgctxt "#21899"
+msgid "Label"
+msgstr "Label"
+
+msgctxt "#22020"
+msgid "Guide"
+msgstr "Panduan"
+
+msgctxt "#22082"
+msgid "More..."
+msgstr "Lagi..."
 
 msgctxt "#23054"
 msgid "Running"
@@ -1656,6 +2332,14 @@ msgstr "Berjalan"
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
 msgstr "Pengskalaan Teleteks ke 4:3"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "Tambahan"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "Sarikata"
 
 msgctxt "#24013"
 msgid "Lyrics"
@@ -1669,6 +2353,10 @@ msgctxt "#24019"
 msgid "PVR clients"
 msgstr "klien PVR"
 
+msgctxt "#24022"
+msgid "Enable"
+msgstr "Dibenarkan"
+
 msgctxt "#24023"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
@@ -1681,9 +2369,49 @@ msgctxt "#24029"
 msgid "Service for weather information"
 msgstr "Servis untuk informasi cuaca"
 
+msgctxt "#33002"
+msgid "Stream"
+msgstr "Strim"
+
+msgctxt "#33006"
+msgid "Today"
+msgstr "Hari ini"
+
+msgctxt "#33012"
+msgid "Short"
+msgstr "Pendek"
+
+msgctxt "#33016"
+msgid "Clips"
+msgstr "Klip"
+
 msgctxt "#33021"
 msgid "Precipitation"
 msgstr "Presipitasi"
+
+msgctxt "#33029"
+msgid "Details"
+msgstr "Perincian"
+
+msgctxt "#33030"
+msgid "Outlook"
+msgstr "Pandangan"
+
+msgctxt "#33031"
+msgid "Coverflow"
+msgstr "Aliran Kulit Hadapan"
+
+msgctxt "#33037"
+msgid "Weekend"
+msgstr "Hujung minggu"
+
+msgctxt "#33060"
+msgid "Power"
+msgstr "Kuasa"
+
+msgctxt "#33061"
+msgid "Menu"
+msgstr "Menu"
 
 msgctxt "#33063"
 msgid "Options"
@@ -1693,9 +2421,25 @@ msgctxt "#33068"
 msgid "Background"
 msgstr "Latar Belakang"
 
+msgctxt "#33069"
+msgid "Backgrounds"
+msgstr "Latar belakang"
+
+msgctxt "#33079"
+msgid "Love"
+msgstr "Suka"
+
+msgctxt "#33080"
+msgid "Hate"
+msgstr "Tidak Suka"
+
 msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Fail ini disusun tindan. Pilih bahagian yang anda ingin mainkan."
+
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Auto daftar masuk"
 
 msgctxt "#34100"
 msgid "Number of channels"
@@ -1705,9 +2449,21 @@ msgctxt "#34122"
 msgid "Always"
 msgstr "Sentiasa"
 
+msgctxt "#34123"
+msgid "Never"
+msgstr "Tidak sesekali"
+
+msgctxt "#35000"
+msgid "Peripherals"
+msgstr "Persisian"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Kedudukan"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "Nama"
 
 msgctxt "#36028"
 msgid "Ignore"
@@ -1736,3 +2492,39 @@ msgstr "Rakam"
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "cereka"
+
+msgctxt "#36906"
+msgid "episode"
+msgstr "Episod"
+
+msgctxt "#36907"
+msgid "episodes"
+msgstr "episod"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Set"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Video"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Lagu"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Lagu"

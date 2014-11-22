@@ -371,16 +371,17 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
         return false;
     }
     // prompt user if they want to really delete the source
-    if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
-    { // check default before we delete, as deletion will kill the share object
-      std::string defaultSource(GetDefaultShareNameByType(type));
-      if (!defaultSource.empty())
-      {
-        if (share->strName == defaultSource)
-          ClearDefault(type);
-      }
-      CMediaSourceSettings::Get().DeleteSource(type, share->strName, share->strPath);
+    if (!CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
+      return false;
+
+    // check default before we delete, as deletion will kill the share object
+    std::string defaultSource(GetDefaultShareNameByType(type));
+    if (!defaultSource.empty())
+    {
+      if (share->strName == defaultSource)
+        ClearDefault(type);
     }
+    CMediaSourceSettings::Get().DeleteSource(type, share->strName, share->strPath);
     return true;
   }
   case CONTEXT_BUTTON_SET_DEFAULT:

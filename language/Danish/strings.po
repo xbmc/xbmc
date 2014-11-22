@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Bekræft flytning af filen"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Bekræft sletning"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Kopier disse filer?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Webbrugerflade"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Audio encodere"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Undertitel"
@@ -844,6 +852,10 @@ msgstr "Fuld skærm"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Kalibrering: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1085,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Brugerinterface sprog"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Tastatur layout"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=automatisk)"
@@ -1222,8 +1238,8 @@ msgid "Year"
 msgstr "Årstal"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normaliser niveauer ved downmix"
+msgid "Maintain original volume on downmix"
+msgstr "Bevar oprindelige volumen på downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1981,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Downmix flerkanalslyd til stereo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Nummer"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Sorter efter: %s"
@@ -2397,6 +2417,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Komprimeringsniveau"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Aktiver komponent-spefikt logning"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Aktiver Dolby Digital transkodning"
@@ -2780,6 +2804,10 @@ msgstr "Musikbiblioteket er nødt til at genskanne tags fra filer."
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Vil du skanne nu?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s af %s tilgængelig"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3196,6 +3224,46 @@ msgstr "Brugerdefineret lydenhed"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Brugerdefineret lydgennemgangsenhed"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatur"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Tryk"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Nærhed"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensitet"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Meget"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstrem"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Vindhvirvler"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Ødelagt"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Blæsende"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Indstillinger til cache"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4048,6 +4116,18 @@ msgstr "Samlet oppetid"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Batteriniveau"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Automatisk opdatering: Til"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Automatisk opdatering: Underret"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Automatisk opdatering: Aldrig"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5005,9 +5085,13 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Tillad hardwareacceleration (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Tillad multi-trådet software dekodning"
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Brug MPEG-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Brug MPEG-4 VDPAU"
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5016,6 +5100,14 @@ msgstr "Brug VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Aktiver denne indstilling for at bruge hardware acceleration til VC-1 baserede codecs. Hvis deaktiveret vil CPU blive brugt i stedet. AMD Hardware med VDPAU kan ikke afkode VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Brug MPEG-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Brug MPEG-4 VAAPI"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5476,10 +5568,6 @@ msgstr "Sæt sange i kø ved valg"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Afspilning"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD'er"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -6009,6 +6097,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "eller brug sætninger til at finde et præcist resultat, f.eks. \"Troldmanden fra Oz\""
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Find lignende"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importerer EPG fra klienter"
@@ -6529,6 +6621,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Navn på den nye gruppe"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Søg..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Gruppe"
@@ -7042,8 +7138,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on for at backend kan benytte PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Besøg venligst xbmc.org/pvr for at lære mere."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Besøg venligst kodi.tv/pvr for at lære mere."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10333,10 +10429,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vælg fra alle titler..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Vis Blu-ray menuer"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Afspil hovedtitel: %d"
@@ -12341,10 +12433,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Aktiver hardware video dekodning ved hjælp af AMLogic dekoder."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Aktiverer frame-multi-trådet software dekodning (mindre pålidelig end standard single trådet mode)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Vælg, hvad der vil ske, når en EPG emne er valgt: [Vis kontekstmenu] vil udløse genvejsmenu, hvorfra du kan vælge yderligere handlinger, [Skift til kanal] vil straks stille ind på den tilhørende kanal [Vis information] vil vise en detaljeret oplysninger med plot og yderligere muligheder. [Record] vil skabe en planlagt optagelse for det valgte emne."
@@ -12429,10 +12517,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Samme som film"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Vælg hvordan lyden er konverteret, for eksempel fra 5,1 til 2,0: [Enabled] fastholder det dynamiske område af den oprindelige lydkilde når det downmixes, dog vil volumen være lavere [Disabled] fastholder lydstyrken af den oprindelige lydkilde, dog er dynamikområdet komprimeret. Bemærk - Dynamisk område er forskellen mellem de lavest og højeste lyde i en lydkilde."
-
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Skifter brugergrænsefladens stereoskopiske 3D mode."
@@ -12477,6 +12561,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori indeholdende indstillinger for håndtering af video output."
 
+msgctxt "#36901"
+msgid "movies"
+msgstr "film"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV-serie"
@@ -12492,6 +12580,34 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episoder"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Vælg"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Sæt"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videoer"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Nummer"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Numre"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12560,3 +12676,11 @@ msgstr "Vælg dette, hvis lyden ud forbindelsen understøtter kun multikanals ly
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Automatisk"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Ubegrænset"

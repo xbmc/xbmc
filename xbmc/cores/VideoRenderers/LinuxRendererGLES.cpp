@@ -2960,7 +2960,13 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 
 unsigned int CLinuxRendererGLES::GetOptimalBufferSize()
 {
-  return 2;
+  if(m_format == RENDER_FMT_OMXEGL ||
+     m_format == RENDER_FMT_CVBREF ||
+     m_format == RENDER_FMT_EGLIMG ||
+     m_format == RENDER_FMT_MEDIACODEC)
+    return 2;
+  else
+    return 3;
 }
 
 #ifdef HAVE_LIBOPENMAX

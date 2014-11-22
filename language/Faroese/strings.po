@@ -1385,6 +1385,10 @@ msgctxt "#450"
 msgid "Columns"
 msgstr "Rað"
 
+msgctxt "#455"
+msgid "Rows"
+msgstr "Fílir"
+
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Broyt vísing"
@@ -2637,6 +2641,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Brúkaraásett passthrough eind"
 
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Hvirlur"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Brotin"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vindur"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Stillingar"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Skiftandi"
@@ -3116,6 +3136,10 @@ msgstr "Byrja av nýggjum"
 msgctxt "#12022"
 msgid "Resume from %s"
 msgstr "Halt áfram frá %s"
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "OK"
 
 msgctxt "#12325"
 msgid "Locked! Enter code..."
@@ -3624,6 +3648,10 @@ msgstr "Íbundi"
 msgctxt "#13297"
 msgid "Not connected. Check network settings."
 msgstr "Onki samband. Endurskoða net uppseting."
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Skrivtslag"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
@@ -5398,8 +5426,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Tær tørvar tól til móttøku, forrit, og eina"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Vinarliga hygg á xbmc.org/pvr fyri nærri upplýsing."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Vinarliga hygg á kodi.tv/pvr fyri nærri upplýsing."
 
 msgctxt "#19278"
 msgid "Recording error"
@@ -6609,6 +6637,10 @@ msgctxt "#20387"
 msgid "Recently added episodes"
 msgstr "Nýggj brot til sjónvarpsrøð"
 
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Studio"
+
 msgctxt "#20389"
 msgid "Music videos"
 msgstr "Sjónbandaløg"
@@ -7260,6 +7292,10 @@ msgstr "Myndatól slag"
 msgctxt "#21824"
 msgid "EXIF comment"
 msgstr "EXIF viðmerking"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Opni"
 
 msgctxt "#21835"
 msgid "Light source"
@@ -8409,6 +8445,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Sløkt"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Tólbúnaður"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Sjónvarpsrøð"
@@ -8424,3 +8464,27 @@ msgstr "brot"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "brot"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Sett"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Video"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Útgáva"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Lag"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Løg"

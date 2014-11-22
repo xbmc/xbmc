@@ -78,10 +78,6 @@ namespace VIDEO
   {
     try
     {
-      unsigned int tick = XbmcThreads::SystemClockMillis();
-
-      m_database.Open();
-
       if (m_showDialog && !CSettings::Get().GetBool("videolibrary.backgroundupdate"))
       {
         CGUIDialogExtendedProgressBar* dialog =
@@ -89,6 +85,24 @@ namespace VIDEO
         if (dialog)
            m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
       }
+
+      // check if we only need to perform a cleaning
+      if (m_bClean && m_pathsToScan.empty())
+      {
+        CleanDatabase(m_handle, NULL, false);
+
+        if (m_handle)
+          m_handle->MarkFinished();
+        m_handle = NULL;
+
+        m_bRunning = false;
+
+        return;
+      }
+
+      unsigned int tick = XbmcThreads::SystemClockMillis();
+
+      m_database.Open();
 
       m_bCanInterrupt = true;
 
@@ -187,6 +201,20 @@ namespace VIDEO
     }
     m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
+
+    StopThread();
+    Create();
+    m_bRunning = true;
+  }
+
+  void CVideoInfoScanner::StartCleanDatabase()
+  {
+    m_strStartDir.clear();
+    m_scanAll = false;
+    m_pathsToScan.clear();
+    m_pathsToClean.clear();
+
+    m_bClean = true;
 
     StopThread();
     Create();
@@ -762,14 +790,16 @@ namespace VIDEO
     while (x < items.Size())
     {
       if (items[x]->m_bIsFolder)
+      {
+        x++;
         continue;
-
+      }
 
       CStdString strPathX, strFileX;
       URIUtils::Split(items[x]->GetPath(), strPathX, strFileX);
       //CLog::Log(LOGDEBUG,"%i:%s:%s", x, strPathX.c_str(), strFileX.c_str());
 
-      int y = x + 1;
+      const int y = x + 1;
       if (strFileX.Equals("VIDEO_TS.IFO"))
       {
         while (y < items.Size())
@@ -790,7 +820,7 @@ namespace VIDEO
             break;
         }
       }
-      x = y;
+      x++;
     }
 
     // enumerate

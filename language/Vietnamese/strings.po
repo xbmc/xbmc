@@ -51,7 +51,7 @@ msgstr "Thời tiết"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "Kodi trung tâm truyền thông đa phương tiện"
+msgstr " Trung tâm truyền thông đa phương tiện Kodi"
 
 msgctxt "#11"
 msgid "Monday"
@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Xác nhận di chuyển tập tin"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Xác nhận xóa tập tin?"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Sao chép những tập tin này?"
@@ -581,6 +585,10 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Điều chỉnh tốc độ làm tươi màn hình khớp với video"
 
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Sắp xếp theo Tiêu đề"
+
 msgctxt "#172"
 msgid "Release date"
 msgstr "Ngày phát hành"
@@ -680,6 +688,10 @@ msgstr "Đang tải thông tin phim"
 msgctxt "#199"
 msgid "Web interface"
 msgstr "Giao diện web"
+
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Bộ mã hóa Audio"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -841,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Cỡ: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Điểm ảnh: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Màn Hình"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Kịch bản"
@@ -853,9 +869,17 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Nhạc"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Visualisation"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Chọn thư mục đích"
+
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Stereo upmix"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1073,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Ngôn ngữ giao diện"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Sơ đồ bàn phím"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=tự động)"
@@ -1173,9 +1201,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Chuyển đổi tốc độ khung hình"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Cấu hình đầu ra"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Sửa chữa"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Tối ưu hóa"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1581,6 +1617,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "Tự động chạy đĩa"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Đầu thu hỗ trợ Dolby Digital Plus (E-AC3)"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Đã bật"
@@ -1777,6 +1817,10 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Sắp xếp theo: Sử dụng"
 
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Bật visualisations"
+
 msgctxt "#511"
 msgid "Enable video mode switching"
 msgstr "Bật chức năng chuyển chế độ video"
@@ -1808,6 +1852,10 @@ msgstr "Chạy"
 msgctxt "#519"
 msgid "Launch in..."
 msgstr "Chạy trong..."
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "Biên Soạn"
 
 msgctxt "#522"
 msgid "Remove source"
@@ -2145,9 +2193,17 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Điền số"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/mẫu"
+
 msgctxt "#613"
 msgid "Sample rate"
 msgstr "Tần số lấy mẫu"
+
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Thư mục ảo"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3033,6 +3089,22 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Tùy chọn thiết bị passthrough"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Tối đa"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Hư hỏng"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Có gió"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Cài Đặt"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Làm trôi"
@@ -3332,6 +3404,10 @@ msgstr "Cài đặt - Tài khoản"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Thiết lập lại cài đặt"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Cơ bản"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -4989,10 +5065,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Xem lại"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Tự động chơi DVD"
@@ -5096,6 +5168,10 @@ msgstr "Âm thanh điều khiển menu"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skin mặc định"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Chủ Đề"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5281,6 +5357,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Sửa tựa đề"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Quản Lý..."
+
 msgctxt "#16201"
 msgid "Copy failed"
 msgstr "Sao chép thất bại"
@@ -5317,13 +5397,41 @@ msgctxt "#16316"
 msgid "Auto"
 msgstr "Tự động"
 
+msgctxt "#16319"
+msgid "DXVA"
+msgstr "DXVA"
+
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Hậu xử lý"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i giờ"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i ngày"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Chuyển tới kênh"
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Tìm tương tự"
 
 msgctxt "#19008"
 msgid "Signal quality"
@@ -5381,6 +5489,10 @@ msgctxt "#19026"
 msgid "Add timer..."
 msgstr "Thêm hẹn giờ..."
 
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Kênh"
+
 msgctxt "#19030"
 msgid "Now"
 msgstr "Ngay bây giờ"
@@ -5389,6 +5501,10 @@ msgctxt "#19031"
 msgid "Next"
 msgstr "Kế"
 
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Dòng Thời Gian"
+
 msgctxt "#19033"
 msgid "Information"
 msgstr "Thông tin"
@@ -5396,6 +5512,26 @@ msgstr "Thông tin"
 msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Hiển thị chất lượng sóng"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Kênh mới"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Thông tin chương trình"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Quản Lý Nhóm"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Hiển thị kênh"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Ẩn kênh"
 
 msgctxt "#19063"
 msgid "Go to begin"
@@ -5408,6 +5544,14 @@ msgstr "Tới cuối"
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Tên:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Thư Mục:"
 
 msgctxt "#19078"
 msgid "Channel:"
@@ -5433,6 +5577,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Cảnh báo"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Dịch Vụ"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Nhà Cung Cấp"
+
 msgctxt "#19126"
 msgid "Start time"
 msgstr "Thời gian bắt đầu"
@@ -5457,9 +5609,65 @@ msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr "Không có tín hiệu"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Tìm Kiếm..."
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Nhóm"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Quản Lý Nhóm"
+
 msgctxt "#19146"
 msgid "Groups"
 msgstr "Nhóm"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Kênh"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "T2"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "T3"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "T4"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "T5"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "T6"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "T7"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "CN"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "từ"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "từ"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "đến"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -5489,9 +5697,25 @@ msgctxt "#19194"
 msgid "Continue?"
 msgstr "Tiếp tục?"
 
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Chỉnh sửa kênh"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Kênh mới"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Quản Lý Nhóm"
+
 msgctxt "#19207"
 msgid "Group:"
 msgstr "Nhóm:"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Xóa kênh"
 
 msgctxt "#19217"
 msgid "All TV channels"
@@ -5528,6 +5752,14 @@ msgstr "Thu hình/âm đã bắt đầu"
 msgctxt "#19227"
 msgid "Recording completed"
 msgstr "Thu hình/âm hoàn tất"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Khóa kênh"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Mở khóa kênh"
 
 msgctxt "#19259"
 msgid "Parental control"
@@ -6189,6 +6421,14 @@ msgctxt "#20385"
 msgid "Remove link to TV show"
 msgstr "Xóa liên kết với TV show"
 
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Studio"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "Album"
+
 msgctxt "#20410"
 msgid "Trailer"
 msgstr "Giới thiệu"
@@ -6209,9 +6449,17 @@ msgctxt "#20422"
 msgid "Always"
 msgstr "Luôn luôn"
 
+msgctxt "#20423"
+msgid "Has trailer"
+msgstr "Giới thiệu"
+
 msgctxt "#20425"
 msgid "Fanart slideshow"
 msgstr "Trình chiếu Fanart"
+
+msgctxt "#20434"
+msgid "Sets"
+msgstr "Đặt"
 
 msgctxt "#20445"
 msgid "Fanart"
@@ -6240,6 +6488,10 @@ msgstr "Trùng thẻ với tên '%s' đã tồn tại"
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "Chọn %s"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Video"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -6493,6 +6745,10 @@ msgctxt "#21837"
 msgid "ISO"
 msgstr "ISO"
 
+msgctxt "#21870"
+msgid "Source"
+msgstr "Phông Chữ"
+
 msgctxt "#21873"
 msgid "City"
 msgstr "Thành phố"
@@ -6565,6 +6821,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Đang chạy"
 
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "Các mở rộng"
+
 msgctxt "#24007"
 msgid "Movie information"
 msgstr "Thông tin phim"
@@ -6572,6 +6832,10 @@ msgstr "Thông tin phim"
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "Trình bảo vệ màn hình"
+
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Visualisation"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -6684,10 +6948,6 @@ msgstr "Nhập chuỗi tìm kiếm"
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Các thông báo"
-
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Hiện menu của Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -6989,6 +7249,10 @@ msgctxt "#33200"
 msgid "Detected New Connection"
 msgstr "Phát hiện kết nối mới"
 
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA"
+
 msgctxt "#34100"
 msgid "Number of channels"
 msgstr "Số lượng kênh"
@@ -7197,6 +7461,10 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Đã tắt"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Phần cứng"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Chương trình TV"
@@ -7204,6 +7472,30 @@ msgstr "Chương trình TV"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "Chương trình TV"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Đặt"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Video"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Bài hát"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Bài hát"
 
 msgctxt "#37026"
 msgid "Auto"

@@ -500,7 +500,13 @@ bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if (method == VS_INTERLACEMETHOD_DEINTERLACE)
+  if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+    return true;
+  if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+    return true;
+  if (method == VS_INTERLACEMETHOD_MMAL_BOB)
+    return true;
+  if (method == VS_INTERLACEMETHOD_MMAL_BOB_HALF)
     return true;
 
   return false;
@@ -525,7 +531,7 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_DEINTERLACE;
+  return VS_INTERLACEMETHOD_MMAL_ADVANCED;
 }
 
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)

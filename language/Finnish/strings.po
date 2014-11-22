@@ -3097,6 +3097,34 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Mukautettu pakatun äänen laite"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Lämpötila"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Ilmanpaine"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Erittäin korkea"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Pyörteitä"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Viallinen"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "tuulinen"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Asetukset"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "kasaantuvaa"
@@ -5249,10 +5277,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Toisto"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-levyt"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Toista DVD-levyt automaattisesti"
@@ -5740,6 +5764,10 @@ msgstr "Erottele hakusanat käyttämällä \"AND\", \"OR\" ja/tai \"NOT\" -opera
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "Tai käytä lainausmerkkejä löytääksesi kokonaisia virkkeitä esim. \"The wizard of Oz\"."
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Etsi samankaltaisia"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6241,6 +6269,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Uuden ryhmän nimi"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Etsi..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Ryhmä"
@@ -6718,8 +6750,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Tarvitset virittimen, ohjelmiston, ja"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Lisätietoja on osoitteessa xbmc.org/pvr."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Lisätietoja on osoitteessa kodi.tv/pvr."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9849,10 +9881,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Valitse kaikista otsakkeista"
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Näytä Blu-ray-valikot"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Toista pääotsikko: %d"
@@ -10801,6 +10829,10 @@ msgctxt "#36504"
 msgid "Side by side"
 msgstr "Vierekkäin"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Laitteisto"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Kysy minulta"
@@ -10824,6 +10856,34 @@ msgstr "jakso"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "jaksoa"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Aseta"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Setit"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Näyttö"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videot"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Albumi"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Kappale"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Kappaleet"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"

@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "settings/Settings.h"
 
 using namespace XFILE;
 using namespace std;
@@ -142,6 +143,13 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "plugin://"))
     return true;
+  else
+  {
+    std::string strPlaylistsPath = CSettings::Get().GetString("system.playlistspath");
+    URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
+    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath)) 
+      return true;
+  }
   bool isSource;
   for (unsigned int index = 0; index < SourcesSize; index++)
   {

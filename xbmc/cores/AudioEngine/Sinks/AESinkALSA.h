@@ -66,7 +66,7 @@ private:
   snd_pcm_chmap_t* SelectALSAChannelMap(const CAEChannelInfo& info);
 #endif
 
-  void           GetAESParams(const AEAudioFormat format, std::string& params);
+  void           GetAESParams(const AEAudioFormat& format, std::string& params);
   void           HandleError(const char* name, int err);
 
   std::string       m_initDevice;
@@ -78,7 +78,9 @@ private:
   std::string       m_device;
   snd_pcm_t        *m_pcm;
   int               m_timeout;
-
+  // support fragmentation, e.g. looping in the sink to get a certain amount of data onto the device
+  bool              m_fragmented;
+  unsigned int      m_originalPeriodSize;
   struct ALSAConfig
   {
     unsigned int sampleRate;

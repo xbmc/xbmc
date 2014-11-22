@@ -470,6 +470,11 @@ namespace EPG
      */
     void UpdatePath(void);
 
+    /*!
+     * @brief Get current time, taking timeshifting into account.
+     */
+    CDateTime GetCurrentPlayingTime(void) const;
+
     bool                     m_bNotify;            /*!< notify on start */
     bool                     m_bChanged;           /*!< keep track of changes to this entry */
 

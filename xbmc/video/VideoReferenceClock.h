@@ -38,7 +38,7 @@ class CVideoReferenceClock : public CThread
     int64_t Wait(int64_t Target);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate);
     void    SetFineAdjust(double fineadjust);
-    void    RefreshChanged() { m_RefreshChanged = 1; }
+    void    RefreshChanged();
     void    Stop();
 
   private:
@@ -61,7 +61,6 @@ class CVideoReferenceClock : public CThread
     bool    m_UseVblank;         //set to true when vblank is used as clock source
     double  m_RefreshRate;       //current refreshrate
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
-    int     m_RefreshChanged;    //1 = we changed the refreshrate, 2 = we should check the refreshrate forced
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 

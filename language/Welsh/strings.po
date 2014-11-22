@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Blwyddyn"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normaleiddio lefelau'r isgymysgu"
+msgid "Maintain original volume on downmix"
+msgstr "Cynnal y sain gwreiddiol wrth gymysgu i lawr"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Hoffech chi sganio nawr?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s o'r %s sydd ar gael"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Rhoddwyd rhif porth annilys"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Cyhoeddi'r gwasanaethau hyn i systemau eraill drwy Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Modd cydnawsedd iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Caniatáu rheoli sain"
@@ -3236,6 +3244,26 @@ msgstr "Dyfais sain cyfaddas"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dyfais hebrwng cyfaddas"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Eithafol"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Chwyrliau"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Wedi Torri"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Gwyntog"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Gosodiadau"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5085,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Caniatau cyflymu caledwedd (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Caniatau dadcodio meddalwedd trywydd lluosog"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Defnyddio MPEG-2 VDPAU"
@@ -5121,9 +5145,17 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Caledwedd wedi ei gyflymu"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Ffafrio dull rendro VAAPI"
+
 msgctxt "#13458"
 msgid "Allow hardware acceleration (OMXPlayer)"
 msgstr "Caniatáu cyflymu caledwedd (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Defnyddio OMXPlayer ar gyfer dadgodio ffeiliau fideo."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5570,8 +5602,8 @@ msgid "Playback"
 msgstr "Chwarae"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
+msgid "Discs"
+msgstr "Disgiau"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5628,6 +5660,10 @@ msgstr "Atal rhwygo CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Cyflymu"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Modd chwarae Blu-ray"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7166,8 +7202,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Ychwanegyn ar gyfer y offer cefn er mwyn defnyddio'r Recordydd."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Ewch i xbmc.org/pvr i ddysgu ragor."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Ewch i kodi.tv/pvr i ddysgu ragor."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10501,10 +10537,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Dewis o'r holl deitlau ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Dangos dewislenni Blu-ray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Chwarae'r prif deitl: %d"
@@ -12172,6 +12204,10 @@ msgstr "Trosodd/Tanodd"
 msgctxt "#36507"
 msgid "Interlaced"
 msgstr "Rhyngweol"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Caledwedd"
 
 msgctxt "#36900"
 msgid "movie"

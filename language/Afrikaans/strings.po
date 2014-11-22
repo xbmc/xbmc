@@ -1221,10 +1221,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Jaar"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normaliseer vlakke met afmenging"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD bekwame ontvanger"
@@ -3197,6 +3193,26 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Verpersoonlikte deurvoer toestel"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Uiterste"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Warrels"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Gebreek"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Winderig"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Verstellings"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "Dryf"
@@ -5005,10 +5021,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Laat hardeware versnelling toe (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Laat multi draad sagteware dekodering toe"
-
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Gebruik VC-1 VDPAU"
@@ -5468,10 +5480,6 @@ msgstr "Voeg seleksie by liedjie tou"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Terugspeel"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -6001,6 +6009,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "of gebruik frases om 'n presiese pasmaat te vind, soos \"The wizard of Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Vind soortgelyke"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Voer EPG in vanaf kliënte"
@@ -6521,6 +6533,10 @@ msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Naam van die nuwe groep"
 
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Soek..."
+
 msgctxt "#19141"
 msgid "Group"
 msgstr "Groep"
@@ -7034,8 +7050,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Byvoegsel vir die agterkant om PVR te kan gebruik."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Besoek asb xbmc.org/pvr om meer te leer."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Besoek asb kodi.tv/pvr om meer te leer."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10321,10 +10337,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Kies van alle titels ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Vertoon Blu-ray kieslyste"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Speel hoof titel: %d"
@@ -12337,6 +12349,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategorie bevat die verstellings vir hoe video uittree hanteer word."
 
+msgctxt "#36901"
+msgid "movies"
+msgstr "flieks"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "TV vertoning"
@@ -12352,6 +12368,34 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodes"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Stel"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Stelle"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Video"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Video’s"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Album"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Liedjie"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Liedjies"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

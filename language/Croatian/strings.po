@@ -1233,10 +1233,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Godina"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizacija razina pri spajanju kanala"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD kompatibilan prijamnik"
@@ -2817,6 +2813,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Želite li odmah pretražiti?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s od %s dostupno"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Nevaljan broj ulaza je unesen"
@@ -3232,6 +3232,26 @@ msgstr "Prilagođeni zvučni uređaj"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Prilagođeni izlazni uređaj"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstremno"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Rasprostranjeni"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Pokvaren"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vjetrovito"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Postavke"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5053,10 +5073,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Dopusti hardversko ubrzanje (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Omogući više-nizno dekôdiranje"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Koristi MPEG-2 VDPAU"
@@ -5573,10 +5589,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Reprodukcija"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Automatski reproduciraj DVD"
@@ -6081,6 +6093,14 @@ msgctxt "#16327"
 msgid "VAAPI Bob"
 msgstr "VAAPI Bob"
 
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI gibanje prilagođemo"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI gibanje prilagođeno"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Dodatna obrada"
@@ -6112,6 +6132,10 @@ msgstr "Odvojite riječi za pretraživanje pomoću AND, OR i/ili NOT."
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "Ili koristite fraze za  točno podudaranje, poput \"Čarobnjak iz Oza\"."
+
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Potraži slično"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6835,7 +6859,7 @@ msgstr "Nastavi s posljednjim programom pri pokretanju"
 
 msgctxt "#19190"
 msgid "Background"
-msgstr "Pozadina"
+msgstr "U pozadini"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7153,6 +7177,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Ne prikazuj upozorenje 'Povezivanje prekinuto'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Razvrstaj stavke"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "PVR dodaci se ne mogu pronaći"
@@ -7166,8 +7194,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Dodatak za pozadinski softver da bi mogli koristiti PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Molimo Vas, posjetite xbmc.org/pvr za više informacija."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Molimo Vas, posjetite kodi.tv/pvr za više informacija."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7220,6 +7248,10 @@ msgstr "Pretraživanje ikona programa"
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Svi programi"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "U prvom planu"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9501,6 +9533,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s u %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Vanjski)"
@@ -10317,6 +10353,14 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Pokušaj ponovno povezivanje?"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Dodaci pomoći"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Dodaci zbirke"
+
 msgctxt "#24083"
 msgid "Information libraries"
 msgstr "Zbirka informacija"
@@ -10484,10 +10528,6 @@ msgstr "Sakrij strane"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Odaberi iz svih naslova..."
-
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Prikaži Blu-ray izbornike"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -12505,10 +12545,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Omogući hardversko dekôdiranje video datoteka koristeći AMLogic dekôder."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Omogućuje više-nizno softversko dekôdiranje (manje pouzdano od jedno-niznog dekôdiranja)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Odaberite što će se dogoditi kada je EPG stavka odabrana: [Prikaži kontekstualni izbornik] će uključiti kontekstualni izbornik iz kojega možete odabrati dodatne radnje; [Prebaci na program] odmah će prebaciti na pripadajući program; [Prikaži informacije] će pokazati opširne informacije sa sadržajem emisija i dodatnim mogućnostima; [Snimaj] će zakazati snimanje za odabranu stavku."
@@ -12629,10 +12665,6 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Isti kao film"
 
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Odaberite kako je zvuk spojen, npr. iz 5.1 u 2.0: [Omogućeno] održava dinamički raspon izvornog zvučnog izvora kada je spojen, ipak glasnoća zvuka će biti tiša; [Onemogućeno] održava razinu glasnoće zvuka izvornog zvučnog izvora, ipak dinamički raspon je kompresiran. Napomena - Dinamički raspon je razlika između najtišeg i najglasnijeg zvuka u zvučnom izvoru."
-
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Odredite dodatne knjižnice čiji će zapisi poruka biti uključeni u zapis."
@@ -12641,9 +12673,25 @@ msgctxt "#36535"
 msgid "Stereoscopic 3D mode of video"
 msgstr "Stereoskopski 3D način videa"
 
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Obrni Stereoskopski 3D način (obrnute oči)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Odaberite u kojemu načinu stereoskopske 3D video snimke će biti reproducirane. [Pitaj me] će prikazati dijalog za odabir željenog načina za svaku reprodukciju. [Željeni način] će koristiti željeni način određen u 'Sustav -> Video hardver' odjeljku postavki. [Monoskopski (2D)] će reproducirati video snimke u mono/2D. [Zanemari] onemogućava bilo kakavu stereoskopsku 3D obradu i rukovanje"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Omogućeno] Prebacuje GUI (i neke Televizore) natrag u 2D način kada reprodukcija završi. [Onemogućeno] GUI i Televizori će ostati u stereoskopskom 3D načinu. U video popisima izvođenja stereoskopski 3D način se neće promijeniti između video snimaka, čak i za nestereoskopske video snimke."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Promjena stereoskopskog 3D načina korisničkog sučelja."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Željeni način u kojemu bi stereoskopski 3D mediji poput video snimka trebali biti reproducirani."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12660,6 +12708,10 @@ msgstr "Omogućite ovo da bi dijalog bio glasniji u odnosu na pozadinske zvukove
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Omogući hardversko dekôdiranje video datoteka."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoskopska 3D dubina podnaslova"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -12728,6 +12780,14 @@ msgstr "glazbeni spot"
 msgctxt "#36909"
 msgid "musicvideos"
 msgstr "glazbeni spotovi"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Postavi"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Kolekcije"
 
 msgctxt "#36912"
 msgid "video"

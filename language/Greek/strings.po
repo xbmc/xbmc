@@ -1238,8 +1238,8 @@ msgid "Year"
 msgstr "Έτος"
 
 msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Εξισορρόπηση των επιπέδων κατά το downmix"
+msgid "Maintain original volume on downmix"
+msgstr "Διατήρηση της αρχικής έντασης κατά το downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2821,6 +2821,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Να γίνει σάρωση τώρα;"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s από %s διαθέσιμα"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Εισαγωγή μη έγκυρης τιμής θύρας"
@@ -3201,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα μέσω του Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Λειτουργία συμβατότητας iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Να επιτρέπεται έλεγχος της έντασης ήχου"
@@ -3236,6 +3244,90 @@ msgstr "Ειδική συσκευή ήχου"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Ειδική συσκευή διέλευσης"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Θερμοκρασία"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Πίεση"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Εγγύτητα"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Ένταση"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Ακανόνιστος"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Πολύ"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ακραία"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Δίνες"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Καθαρός Ουρανός"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Κατεστραμμένο"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Ανεμοστρόβιλος"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Τροπικός"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Τυφώνας"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Κρύο"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Θυελλώδης"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Ρυθμίσεις λανθάνουσας μνήμης"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Ασθενής άνεμος"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Ασθενής"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Ισχυρός άνεμος, σχεδόν θυελλώδης"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Έντονο"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Σφοδρός"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5149,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Να επιτρέπεται επιτάχυνση υλικού (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Να επιτρέπεται η πολυνηματική αποκωδικοποίηση λογισμικού"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Χρήση MPEG-2 VDPAU"
@@ -5578,8 +5666,8 @@ msgid "Playback"
 msgstr "Αναπαραγωγή"
 
 msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD"
+msgid "Discs"
+msgstr "Δίσκοι"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -5636,6 +5724,18 @@ msgstr "Διακοπή αντιγραφής CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Επιτάχυνση"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Μέθοδος αναπαραγωγής Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Αναπαραγωγή κύριας ταινίας"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Απλοποιημένο μενού"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -7186,8 +7286,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Πρόσθετο για το backend προκειμένου να μπορεί να κάνει χρήση του PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Επισκεφθείτε το xbmc.org/pvr για να μάθετε περισσότερα."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Επισκεφθείτε το kodi.tv/pvr για να μάθετε περισσότερα."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8408,6 +8508,10 @@ msgstr "Ασφαλές Κέλυφος (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Πρωτόκολλο Αρχειοθέτησης Apple (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Περιήγηση Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10509,6 +10613,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Να γίνεται αυτόματη λήψη του πρώτου υπότιτλου που βρέθηκε"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Η διαμόρφωση έχει μεταφερθεί"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
@@ -10522,8 +10630,8 @@ msgid "Select from all titles ..."
 msgstr "Επιλογή από όλους τους τίτλους ..."
 
 msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Εμφάνιση μενού Blu-ray"
+msgid "Show Blu-ray menu"
+msgstr "Μενού Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10712,6 +10820,14 @@ msgstr "Σαββατοκύριακο"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%sη ημέρα"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Ροές"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Συσκευές"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12541,10 +12657,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "AMLogic αποκωδικοποίηση υλικού των αρχείων βίντεο."
 
-msgctxt "#36423"
-msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
-msgstr "Ενεργοποίηση πολυνηματικής αποκωδικοποίησης καρέ (λιγότερο αξιόπιστη από την προεπιλεγμένη λειτουργία)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Ορισμός της ενέργειας όταν έχει επιλεγεί ένα αντικείμενο EPG: Η [Εμφάνιση μενού επιλογών] θα ενεργοποιήσει το αντίστοιχο μενού από όπου μπορείτε να επιλέξετε περαιτέρω ενέργειες. Η [Μετάβαση σε κανάλι] θα αλλάξει άμεσα το κανάλι σε αυτό που θέλετε. Η [Προβολή πληροφοριών] θα εμφανίσει αναλυτικές πληροφορίες, συμπεριλαμβανομένης της πλοκής και επιπλέον επιλογών. Η [Εγγραφή] θα ενεργοποιήσει ένα χρονοδιακόπτη εγγραφής για το επιλεγμένο αντικείμενο."
@@ -12585,6 +12697,22 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "Αν ενεργοποιηθεί, θα προτιμάται η μέθοδος απόδοσης VAAPI. Ρίχνει λιγότερο βάρος στον επεξεργαστή, αλλά μπορεί να προκαλέσει κολλήματα!"
 
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Χρήση επιτάχυνσης υλικού (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Χρήση του DVDPlayer για αποκωδικοποίηση αρχείων βίντεο με επιτάχυνση MMAL."
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Μέθοδος Στερεοσκοπικού 3D (τρέχουσα)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Μέθοδος Στερεοσκοπικού 3D"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Ανενεργή"
@@ -12613,9 +12741,17 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Βασισμένο στο Υλικό"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Μονοσκοπικό (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Μέθοδος αναπαραγωγής βίντεο Στερεοσκοπικού 3D"
+
 msgctxt "#36521"
 msgid "Ask me"
-msgstr "Ρωτήστε με"
+msgstr "Ερώτηση"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
@@ -12623,11 +12759,23 @@ msgstr "Μέγιστος ρυθμός δειγματοληψίας για SPDIF 
 
 msgctxt "#36524"
 msgid "Preferred mode"
-msgstr "Προτιμώμενη λειτουργία"
+msgstr "Προτιμώμενη μέθοδος"
 
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Όπως η ταινία (αυτόματος εντοπισμός)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Απενεργοποίηση του Στερεοσκοπικού 3D με τη λήξη του βίντεο"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Επιλογή μεθόδου αναπαραγωγής"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Επιλογή μεθόδου Στερεοσκοπικού 3D"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12638,16 +12786,36 @@ msgid "Same as movie"
 msgstr "Όπως η ταινία"
 
 msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Επιλογή του τρόπου με τον οποίο θα γίνεται ο υποβιβασμός καναλιών του ήχου (downmix), π.χ. από 5.1 σε 2.0: Το [Ενεργό] διατηρεί το δυναμικό εύρος της αρχικής ηχητικής πηγής κατά το downmix, εντούτοις η ένταση θα είναι πιο χαμηλή. Το [Ανενεργό] διατηρεί την ένταση του ήχου της αρχικής ηχητικής πηγής, εντούτοις το δυναμικό εύρος συμπιέζεται. Σημείωση: Το δυναμικό εύρος είναι η διαφορά ανάμεσα στον πιο έντονο και τον πιο αχνό ήχο σε μια ηχητική πηγή."
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Επιλογή του τρόπου με τον οποίο θα γίνεται downmix του ήχου, π.χ. από 5.1 σε 2.0: Το [Ενεργό] διατηρεί την ένταση του ήχου της αρχικής πηγής, εντούτοις το δυναμικό εύρος συμπιέζεται. Το [Ανενεργό] διατηρεί το δυναμικό εύρος της αρχικής πηγής κατά το downmix, εντούτοις η ένταση θα είναι πιο χαμηλή. Σημείωση: Το δυναμικό εύρος είναι η διαφορά ανάμεσα στον πιο έντονο και τον πιο αχνό ήχο σε μια ηχητική πηγή. Ενεργοποιήστε αυτήν την επιλογή αν οι διάλογοι στις ταινίες μόλις που ακούγονται."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Ορίστε τις επιπλέον συλλογές τα μηνύματα των οποίων θα περιληφθούν στο αρχείο καταγραφής."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Μέθοδος Στερεοσκοπικού 3D του βίντεο"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Ανεστραμμένο Στερεοσκοπικό 3D (αντίθετα μάτια)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Επιλογή της μεθόδου αναπαραγωγής των βίντεο Στερεοσκοπικού 3D. Επιλέγοντας την [Ερώτηση] θα εμφανίζεται ένα παράθυρο επιλογής της επιθυμητής μεθόδου πριν την αναπαραγωγή. Η [Προτιμώμενη μέθοδος] θα χρησιμοποιήσει την προτιμώμενη μέθοδο που έχει οριστεί στη ρύθμιση 'Σύστημα -> Έξοδος Βίντεο'. Το [Μονοσκοπικό (2D)] θα παίξει το βίντεο σε Μονοσκοπικό/2D. Η [Αγνόηση] απενεργοποιεί κάθε χειρισμό και επεξεργασία Στερεοσκοπικού 3D."
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Ενεργό] Επαναφέρει το Περιβάλλον Εργασίας (και ορισμένες τηλεοράσεις) σε προβολή 2D με τη λήξη της αναπαραγωγής. [Ανενεργό] Το Περιβάλλον Εργασίας και η τηλεόραση θα παραμείνουν σε προβολή στερεοσκοπικού 3D. Για λίστες αναπ/γής βίντεο η μέθοδος στερεοσκοπικού 3D δε θα αλλάζει μεταξύ των βίντεο, ούτε για μη στερεοσκοπικά."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
-msgstr "Αλλάζει τη στερεοσκοπική 3D προβολή του περιβάλλοντος εργασίας."
+msgstr "Αλλάζει τη μέθοδο Στερεοσκοπικού 3D του περιβάλλοντος εργασίας."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Η προτιμώμενη μέθοδος με την οποία θα αναπαράγονται βίντεο Στερεοσκοπικού 3D."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12665,9 +12833,13 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Αποκωδικοποίηση υλικού των αρχείων βίντεο."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Βάθος υποτίτλων Στερεοσκοπικού 3D"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
-msgstr "Ορισμός του οπτικού βάθους υποτίτλων σε στερεοσκοπικά 3D βίντεο. Όσο υψηλότερη είναι η τιμή, τόσο πιο κοντά στο θεατή θα φαίνονται οι υπότιτλοι."
+msgstr "Ορισμός του οπτικού βάθους υποτίτλων σε Στερεοσκοπικά 3D βίντεο. Όσο υψηλότερη είναι η τιμή, τόσο πιο κοντά στο θεατή θα φαίνονται οι υπότιτλοι."
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
@@ -12676,6 +12848,10 @@ msgstr "Χρήση εικόνων υψηλότερης ανάλυσης για �
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Περιορισμός της ανάλυσης του Περιβάλλοντος Εργασίας για χρήση λιγότερης μνήμης. Δεν επηρεάζεται η αναπαραγωγή βίντεο. Απαιτεί επανεκκίνηση."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Χρήση υποστήριξης AirPlay συμβατού με iOS8. Απενεργοποιήστε το αν διαπιστώσετε προβλήματα με παλαιότερες συσκευές iOS που αναγνωρίζουν το Kodi σαν έγκυρο δέκτη. Αυτή η επιλογή απαιτεί επανεκκίνηση του Kodi!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12868,3 +13044,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Απεριόριστο"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Καθορίζεται ο τρόπος με τον οποίο θα ανοίγουν/αναπαράγονται τα Blu-ray. Τα μενού των δίσκων δεν υποστηρίζονται πλήρως, και μπορεί να δημιουργήσουν προβλήματα."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Επιτάχυνση GPU"

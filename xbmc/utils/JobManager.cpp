@@ -177,6 +177,7 @@ CJobManager::CJobManager()
   m_jobCounter = 0;
   m_running = true;
   m_pauseJobs = false;
+  m_tangle = 0;
 }
 
 void CJobManager::Restart()
@@ -256,6 +257,13 @@ void CJobManager::CancelJob(unsigned int jobID)
   Processing::iterator it = find(m_processing.begin(), m_processing.end(), jobID);
   if (it != m_processing.end())
     it->m_callback = NULL; // job is in progress, so only thing to do is to remove callback
+
+  // wait for tangled callbacks to finish
+  while(m_tangle)
+  {
+    CLog::Log(LOGDEBUG, "CJobManager::CancelJob - waiting for tangled callbacks");
+    m_tangle_cond.wait(m_section);
+  }
 }
 
 void CJobManager::StartWorkers(CJob::PRIORITY priority)
@@ -370,18 +378,24 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
   return NULL;
 }
 
-bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const
+bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob *job)
 {
   CSingleLock lock(m_section);
+
   // find the job in the processing queue, and check whether it's cancelled (no callback)
   Processing::const_iterator i = find(m_processing.begin(), m_processing.end(), job);
   if (i != m_processing.end())
   {
     CWorkItem item(*i);
-    lock.Leave(); // leave section prior to call
+
     if (item.m_callback)
     {
+      m_tangle++;
+      lock.Leave(); // leave section prior to call
       item.m_callback->OnJobProgress(item.m_id, progress, total, job);
+      lock.Enter();
+      m_tangle--;
+      m_tangle_cond.notifyAll();
       return false;
     }
   }
@@ -397,6 +411,8 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
   {
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
+
+    m_tangle++;
     lock.Leave();
     try
     {
@@ -408,6 +424,9 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
       CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, item.m_job->GetType());
     }
     lock.Enter();
+    m_tangle--;
+    m_tangle_cond.notifyAll();
+
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())
       m_processing.erase(j);

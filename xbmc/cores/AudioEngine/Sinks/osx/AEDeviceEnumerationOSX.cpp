@@ -97,7 +97,7 @@ bool AEDeviceEnumerationOSX::isDigitalDevice() const
   // ca devices ...
   if (!isDigital)
   {
-    std::string devNameLower = m_deviceName;
+    std::string devNameLower = m_caDevice.GetName();
     StringUtils::ToLower(devNameLower);                       
     isDigital = devNameLower.find("digital") != std::string::npos;
   }

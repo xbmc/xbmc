@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΣΥΣΤΗΜΑΤΟΣ[/B][CR][CR]Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Τηλεχειριστήρια · Εξοικονόμηση ενέργειας · Εντοπισμός σφαλμάτων (debug) · Κεντρικό κλείδωμα"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΠΡΟΣΘΕΤΩΝ[/B][CR][CR]Διαχείριση εγκατεστημένων πρόσθετων · Αναζήτηση και εγκατάσταση πρόσθετων από το xbmc.org[CR]Τροποποίηση ρυθμίσεων των πρόσθετων"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΠΡΟΣΘΕΤΩΝ[/B][CR][CR]Διαχείριση εγκατεστημένων πρόσθετων · Αναζήτηση και εγκατάσταση πρόσθετων από το kodi.tv[CR]Τροποποίηση ρυθμίσεων των πρόσθετων"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -549,8 +549,8 @@ msgid "Weekend Forecast"
 msgstr "Πρόγνωση Σαββατοκύριακου"
 
 msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Πρόγνωση 10 ημερών"
+msgid "Daily Forecast"
+msgstr "Ημερήσια Πρόγνωση"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -565,8 +565,8 @@ msgid "Fetching forecast info..."
 msgstr "Ανάκτηση πρόγνωσης καιρού..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Χάρτης & Προειδοποιήσεις"
+msgid "Maps"
+msgstr "Χάρτες"
 
 msgctxt "#31950"
 msgid "WEATHER"

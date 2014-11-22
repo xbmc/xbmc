@@ -2985,6 +2985,26 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Прилагоден пролазен уред"
 
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "екстремно"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Вртлози"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Неисправен"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "ветровито"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Поставки"
+
 msgctxt "#1396"
 msgid "Drifting"
 msgstr "клизаво"
@@ -4989,10 +5009,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Репродукција"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ња"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Автоматски репродуцирај DVD-ња"
@@ -5465,6 +5481,10 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Префрли на канал"
 
+msgctxt "#19003"
+msgid "Find similar"
+msgstr "Најди слични"
+
 msgctxt "#19007"
 msgid "Device status"
 msgstr "Статус на уредот"
@@ -5752,6 +5772,10 @@ msgstr "Почетен датум"
 msgctxt "#19129"
 msgid "End date"
 msgstr "Краен датум"
+
+msgctxt "#19140"
+msgid "Search..."
+msgstr "Барај..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6150,8 +6174,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Потребен ти е тјунер, backend софтвер и"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Погледни на xbmc.org/pvr за да научиш повеќе."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Погледни на kodi.tv/pvr за да научиш повеќе."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -6204,6 +6228,10 @@ msgstr "Романса"
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
 msgstr "Филм за возрасни/Драма"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Режим"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -8393,6 +8421,10 @@ msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Надворешен Плеер Активен"
 
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "Проширувања"
+
 msgctxt "#24005"
 msgid "Media sources"
 msgstr "Медија извори"
@@ -8997,6 +9029,14 @@ msgctxt "#36502"
 msgid "Disabled"
 msgstr "Оневозможено"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Хардвер"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "филмови"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "ТВ Серија"
@@ -9012,6 +9052,34 @@ msgstr "епизода"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "епизоди"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Постави"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Постави"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Филмови"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Видеа"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Албум"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Песна"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Нумери"
 
 msgctxt "#37026"
 msgid "Auto"

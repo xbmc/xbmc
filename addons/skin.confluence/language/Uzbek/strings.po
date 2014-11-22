@@ -44,6 +44,10 @@ msgctxt "#31362"
 msgid "Enabled"
 msgstr "Yoqilgan"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Kirish"
+
 msgctxt "#31502"
 msgid "Live TV"
 msgstr "TV"

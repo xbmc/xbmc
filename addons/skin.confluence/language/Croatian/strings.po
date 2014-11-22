@@ -461,8 +461,8 @@ msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · C
 msgstr "[B]PRILAGODITE POSTAVKE SUSTAVA[/B][CR][CR]Prilagodite i kalibrirajte zaslon · Prilagodite izlaz zvuka · Postavite daljinsko upravljanje[CR]Postavite mogućnosti uštede energije  · Omogućite zapise otklanjanja grešaka · Postavite glavno zaključavanje"
 
 msgctxt "#31408"
-msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima · Pregledavajte i instalirajte dodatake iz xbmc.org[CR]Mijenjajte postavke dodataka"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
+msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima · Pregledavajte i instalirajte dodatake iz kodi.tv[CR]Mijenjajte postavke dodataka"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -470,7 +470,7 @@ msgstr "[B]PRILAGODITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zas
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje Kodi-om putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
+msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje Kodijem putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -548,10 +548,6 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Prognoza za vikend"
 
-msgctxt "#31904"
-msgid "10 Day Forecast"
-msgstr "Prognoza za 10 dana"
-
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Prognoza"
@@ -565,8 +561,8 @@ msgid "Fetching forecast info..."
 msgstr "Nabavljanje informacija prognoze..."
 
 msgctxt "#31910"
-msgid "Map & Alerts"
-msgstr "Karta i Upozorenja"
+msgid "Maps"
+msgstr "Karte"
 
 msgctxt "#31950"
 msgid "WEATHER"
@@ -578,7 +574,7 @@ msgstr "SLIKE"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "Televizija"
+msgstr "TELEVIZIJA"
 
 msgctxt "#31953"
 msgid "VIDEOS"

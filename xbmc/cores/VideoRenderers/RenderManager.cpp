@@ -38,6 +38,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIFontManager.h"
+#include "cores/DataCacheCore.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -264,7 +265,9 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_format = format;
 
     int renderbuffers = m_pRenderer->GetOptimalBufferSize();
-    m_QueueSize = std::min(buffers, renderbuffers);
+    m_QueueSize = renderbuffers;
+    if (buffers > 0)
+      m_QueueSize = std::min(buffers, renderbuffers);
     m_QueueSize = std::min(m_QueueSize, (int)m_pRenderer->GetMaxBufferSize());
     m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
@@ -286,6 +289,8 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_bIsStarted = true;
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
+    m_presentpts = DVD_NOPTS_VALUE;
+    m_sleeptime = 1.0;
     m_presentevent.notifyAll();
 
     m_firstFlipPage = false;  // tempfix
@@ -644,9 +649,10 @@ void CXBMCRenderManager::SetViewMode(int iViewMode)
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
+  g_dataCacheCore.SignalVideoInfoChange();
 }
 
-void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSharedLock lock(m_sharedSection);
 
@@ -714,6 +720,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m.timestamp     = timestamp;
     m.presentfield  = sync;
     m.presentmethod = presentmethod;
+    m.pts           = pts;
     requeue(m_queued, m_free);
 
     /* signal to any waiters to check state */
@@ -863,6 +870,7 @@ void CXBMCRenderManager::UpdateResolution()
       g_graphicsContext.SetVideoResolution(res);
     }
     m_bReconfigured = false;
+    g_dataCacheCore.SignalVideoInfoChange();
   }
 }
 
@@ -873,6 +881,7 @@ unsigned int CXBMCRenderManager::GetOptimalBufferSize()
   if (!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s - renderer is NULL", __FUNCTION__);
+    return 0;
   }
   return m_pRenderer->GetMaxBufferSize();
 }
@@ -1105,6 +1114,8 @@ void CXBMCRenderManager::PrepareNextRender()
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
+    m_sleeptime = m_Queue[idx].timestamp - clocktime;
+    m_presentpts = m_Queue[idx].pts;
     m_presentevent.notifyAll();
   }
 }
@@ -1120,4 +1131,13 @@ void CXBMCRenderManager::DiscardBuffer()
   if(m_presentstep == PRESENT_READY)
     m_presentstep   = PRESENT_IDLE;
   m_presentevent.notifyAll();
+}
+
+bool CXBMCRenderManager::GetStats(double &sleeptime, double &pts, int &bufferLevel)
+{
+  CSingleLock lock(m_presentlock);
+  sleeptime = m_sleeptime;
+  pts = m_presentpts;
+  bufferLevel = m_queued.size() + m_discard.size();
+  return true;
 }

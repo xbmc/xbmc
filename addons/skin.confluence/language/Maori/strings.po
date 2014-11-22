@@ -72,6 +72,10 @@ msgctxt "#31502"
 msgid "Live TV"
 msgstr "TV"
 
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Mahere"
+
 msgctxt "#31952"
 msgid "TV"
 msgstr "TV"

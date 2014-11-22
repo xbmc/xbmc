@@ -1229,10 +1229,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Año"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normalizar niveles al hacer downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor DTS-HD compatible"
@@ -3200,6 +3196,34 @@ msgstr "Dispositivo de audio especial"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositivo passthrough especial"
+
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Presión"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Extrema"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Remolinos"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "ROTO"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Ventoso"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Configuración"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5485,10 +5509,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Reproducir"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVDs"
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Reproducir DVDs automaticamente"
@@ -7070,8 +7090,8 @@ msgid "You need a tuner, backend software, and an"
 msgstr "Usted necesita un sintonizador, software, y un"
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Por favor visite xbmc.org/pvr para saber mas."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Por favor visite kodi.tv/pvr para saber mas."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10353,10 +10373,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar de todos los títulos ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Mostrar menus del Blu-ray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reproducir título principal: %d"
@@ -11872,6 +11888,34 @@ msgstr "episodio"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodios"
+
+msgctxt "#36910"
+msgid "set"
+msgstr "Configurar"
+
+msgctxt "#36911"
+msgid "sets"
+msgstr "Sets"
+
+msgctxt "#36912"
+msgid "video"
+msgstr "Vídeo"
+
+msgctxt "#36913"
+msgid "videos"
+msgstr "Videos"
+
+msgctxt "#36918"
+msgid "album"
+msgstr "Álbum"
+
+msgctxt "#36920"
+msgid "song"
+msgstr "Canción"
+
+msgctxt "#36921"
+msgid "songs"
+msgstr "Canciones"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

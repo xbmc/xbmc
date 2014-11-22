@@ -1237,10 +1237,6 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Leto"
 
-msgctxt "#346"
-msgid "Normalize levels on downmix"
-msgstr "Normiraj glasnost pri združevanju kanalov"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Sprejemnik podpira DTS-HD"
@@ -2821,6 +2817,10 @@ msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Ali želite pregledati sedaj?"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "na voljo %s od %s"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Vnešena je neveljavna številka vrat"
@@ -3236,6 +3236,26 @@ msgstr "Poljubna zvočna naprava"
 msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Poljubna naprava za preusmerjen zvok"
+
+msgctxt "#1381"
+msgid "Extreme"
+msgstr "Ekstremno"
+
+msgctxt "#1382"
+msgid "Whirls"
+msgstr "Vrtinci"
+
+msgctxt "#1384"
+msgid "Broken"
+msgstr "Nedelujoč"
+
+msgctxt "#1389"
+msgid "Windy"
+msgstr "Vetrovno"
+
+msgctxt "#1390"
+msgid "Settings"
+msgstr "Nastavitve"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5057,10 +5077,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Dovoli strojno pospeševanje (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow multi threaded software decoding"
-msgstr "Omogoči večnivojsko programsko dekodiranje"
-
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Uporabi MPEG-2 VDPAU"
@@ -5568,10 +5584,6 @@ msgstr "Ob izbiri postavi pesmi v vrsto"
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Predvajanje"
-
-msgctxt "#14087"
-msgid "DVDs"
-msgstr "DVD-ji"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -7166,8 +7178,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Dodatek za hrbtenico, ki bo omogočal uporabo PVR."
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Obiščite xbmc.org/pvr za več informacij."
+msgid "Please visit kodi.tv/pvr to learn more."
+msgstr "Obiščite kodi.tv/pvr za več informacij."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10497,10 +10509,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Izberi med vsemi naslovi ..."
 
-msgctxt "#25003"
-msgid "Show Blu-ray menus"
-msgstr "Prikaži menije Blu-ray-ja"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Predvajaj glavni naslov: %d"
@@ -12388,10 +12396,6 @@ msgstr "Izberi nadomestni način ..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Isto kot film"
-
-msgctxt "#36533"
-msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
-msgstr "Izberite, kako se združujejo zvočni kanali, na primer s 5.1 na 2.0: [Omogočeno] ohrani dinamični razpon izvirnega zvočnega vira po združevanju, vendar bo glasnost nižja; [Onemogočeno] ohrani glasnost izvirnega zvočnega vira, a zmanjša dinamični razpon. Opomba - Dinamični razpon je razlika med najtišjim in najglasnejšim zvokom iz vira."
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."

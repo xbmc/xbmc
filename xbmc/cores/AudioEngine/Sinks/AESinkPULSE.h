@@ -50,7 +50,7 @@ public:
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   bool IsInitialized();
-  void UpdateInternalVolume(pa_cvolume nVol);
+  void UpdateInternalVolume(const pa_cvolume* nVol);
   pa_stream* GetInternalStream();
   CCriticalSection m_sec;
 private:

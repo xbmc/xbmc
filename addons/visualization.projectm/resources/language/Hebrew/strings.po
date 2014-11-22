@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Render Quality"
-msgstr "איכות Render"
+msgstr "איכות עיבוד"
 
 msgctxt "#30001"
 msgid "Low"
@@ -34,7 +34,7 @@ msgstr "גבוה"
 
 msgctxt "#30004"
 msgid "Maximum"
-msgstr "מקסימום"
+msgstr "מירבי"
 
 msgctxt "#30005"
 msgid "Shuffle Mode"
@@ -42,7 +42,7 @@ msgstr "מצב מעורבב"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "משך קביעון Smooth"
+msgstr "משך החלקת מעבר קביעון"
 
 msgctxt "#30007"
 msgid "Preset Duration"
@@ -54,19 +54,19 @@ msgstr "רגישות קצב"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "חבילת קביעונים"
+msgstr "ערכת קביעונים"
 
 msgctxt "#30010"
 msgid "Default Pack"
-msgstr "ערכת ברירת מחדל"
+msgstr "ברירת מחדל"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "תיקית קביעוני הגדרת משתמש"
+msgstr "תיקיה מותאמת אישית"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "תיקית קביעוני משתמש"
+msgstr "נתיב תיקיית קביעונים"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

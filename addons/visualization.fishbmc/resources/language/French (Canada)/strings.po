@@ -34,7 +34,7 @@ msgstr "Élevés"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "Extrêmes"
+msgstr "Extrême"
 
 msgctxt "#30005"
 msgid "Nervous Mode [more mode changes]"

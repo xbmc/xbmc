@@ -540,6 +540,8 @@ int DllLoader::ResolveName(const char *sName, char* sFunction, void **fixup)
 void DllLoader::AddExport(unsigned long ordinal, void* function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
+  if (!entry)
+    return;
   entry->exp.function = function;
   entry->exp.ordinal = ordinal;
   entry->exp.track_function = track_function;
@@ -554,6 +556,8 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, void* func
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
+  if (!entry)
+    return;
   entry->exp.function = function;
   entry->exp.ordinal = ordinal;
   entry->exp.track_function = track_function;
@@ -569,6 +573,8 @@ void DllLoader::AddExport(char* sFunctionName, void* function, void* track_funct
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
+  if (!entry)
+    return;
   entry->exp.function = (void*)function;
   entry->exp.ordinal = -1;
   entry->exp.track_function = track_function;

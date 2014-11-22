@@ -39,6 +39,8 @@
 #include "utils/AMLUtils.h"
 #endif
 
+
+#define AE_MIN_PERIODSIZE 256
 #define ALSA_CHMAP_KERNEL_BLACKLIST
 
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
@@ -86,7 +88,9 @@ CAESinkALSA::CAESinkALSA() :
   m_formatSampleRateMul(0.0),
   m_passthrough(false),
   m_pcm(NULL),
-  m_timeout(0)
+  m_timeout(0),
+  m_fragmented(false),
+  m_originalPeriodSize(AE_MIN_PERIODSIZE)
 {
   /* ensure that ALSA has been initialized */
   if (!snd_config)
@@ -470,7 +474,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
 
 #endif // SND_CHMAP_API_VERSION
 
-void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
+void CAESinkALSA::GetAESParams(const AEAudioFormat& format, std::string& params)
 {
   if (m_passthrough)
     params = "AES0=0x06";
@@ -479,7 +483,8 @@ void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
 
   params += ",AES1=0x82,AES2=0x00";
 
-       if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
+  if (m_passthrough && format.m_channelLayout.Count() == 8) params += ",AES3=0x09";
+  else if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
   else if (format.m_sampleRate == 176400) params += ",AES3=0x0c";
   else if (format.m_sampleRate ==  96000) params += ",AES3=0x0a";
   else if (format.m_sampleRate ==  88200) params += ",AES3=0x08";
@@ -806,7 +811,19 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
   /* set the format parameters */
   outconfig.sampleRate   = sampleRate;
-  outconfig.periodSize   = periodSize;
+
+  /* if periodSize is too small Audio Engine might starve */
+  m_fragmented = false;
+  unsigned int fragments = 1;
+  if (periodSize < AE_MIN_PERIODSIZE)
+  {
+    fragments = std::ceil((double) AE_MIN_PERIODSIZE / periodSize);
+    CLog::Log(LOGDEBUG, "Audio Driver reports too low periodSize %d - will use %d fragments", (int) periodSize, (int) fragments);
+    m_fragmented = true;
+  }
+
+  m_originalPeriodSize   = periodSize;
+  outconfig.periodSize   = fragments * periodSize;
   outconfig.frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
 
   m_bufferSize = (unsigned int)bufferSize;
@@ -893,27 +910,45 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
   }
 
   void *buffer = data[0]+offset*m_format.m_frameSize;
-  int ret = snd_pcm_writei(m_pcm, buffer, frames);
-  if (ret < 0)
+  unsigned int amount = 0;
+  int64_t data_left = (int64_t) frames;
+  int frames_written = 0;
+
+  while (data_left > 0)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA - snd_pcm_writei(%d) %s - trying to recover", ret, snd_strerror(ret));
-    ret = snd_pcm_recover(m_pcm, ret, 1);
-    if(ret < 0)
+    if (m_fragmented)
+      amount = std::min((unsigned int) data_left, m_originalPeriodSize);
+    else // take care as we can come here a second time if the sink does not eat all data
+      amount = (unsigned int) data_left;
+
+    int ret = snd_pcm_writei(m_pcm, buffer, amount);
+    if (ret < 0)
     {
-      HandleError("snd_pcm_writei(1)", ret);
-      ret = snd_pcm_writei(m_pcm, buffer, frames);
-      if (ret < 0)
+      CLog::Log(LOGERROR, "CAESinkALSA - snd_pcm_writei(%d) %s - trying to recover", ret, snd_strerror(ret));
+      ret = snd_pcm_recover(m_pcm, ret, 1);
+      if(ret < 0)
       {
-        HandleError("snd_pcm_writei(2)", ret);
-        ret = 0;
+        HandleError("snd_pcm_writei(1)", ret);
+        ret = snd_pcm_writei(m_pcm, buffer, amount);
+        if (ret < 0)
+        {
+          HandleError("snd_pcm_writei(2)", ret);
+          ret = 0;
+        }
       }
     }
+
+    if ( ret > 0 && snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
+      snd_pcm_start(m_pcm);
+
+    if (ret <= 0)
+      break;
+
+    frames_written += ret;
+    data_left -= ret;
+    buffer = data[0]+offset*m_format.m_frameSize + frames_written*m_format.m_frameSize;
   }
-
-  if ( ret > 0 && snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
-    snd_pcm_start(m_pcm);
-
-  return ret;
+  return frames_written;
 }
 
 void CAESinkALSA::HandleError(const char* name, int err)

@@ -48,6 +48,7 @@ namespace PVR
     void OnPrepareFileItems(CFileItemList &items);
 
   private:
+    bool ActionDeleteRecording(CFileItem *item);
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);

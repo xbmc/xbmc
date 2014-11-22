@@ -467,6 +467,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       AddonPtr addon;
       std::string scriptpath;
+      // Test to see if the param is an addon ID
       if (CAddonMgr::Get().GetAddon(params[0], addon))
       {
         //Get the correct extension point to run
@@ -474,9 +475,16 @@ int CBuiltins::Execute(const std::string& execString)
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
             CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+        {
           scriptpath = addon->LibPath();
+        }
         else
-          CLog::Log(LOGERROR, "RunScript called for invalid add-on id '%s'. Not a script.", params[0].c_str());
+        {
+          //Run a random extension point (old behaviour).
+          CAddonMgr::Get().GetAddon(params[0], addon);
+          scriptpath = addon->LibPath();
+          CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
+        }
       }
       else
         scriptpath = params[0];
@@ -580,8 +588,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size())
     {
       AddonPtr addon;
-      std::string cmd;
-      if (CAddonMgr::Get().GetAddon(params[0],addon,ADDON_PLUGIN))
+      if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_PLUGIN))
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
         std::string addonid = params[0];
@@ -602,6 +609,7 @@ int CBuiltins::Execute(const std::string& execString)
           urlParameters = "/";
         }
 
+        std::string cmd;
         if (plugin->Provides(CPluginSource::VIDEO))
           cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
         else if (plugin->Provides(CPluginSource::AUDIO))
@@ -614,16 +622,19 @@ int CBuiltins::Execute(const std::string& execString)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunPlugin
           cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
+        Execute(cmd);
       }
       else if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
                CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+      {
         // Pass the script name (params[0]) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunScript
-        cmd = StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str());
-
-      return Execute(cmd);
+        Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
+      }
+      else
+        CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", params[0].c_str());
     }
     else
     {
@@ -1426,7 +1437,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "updatelibrary" && !params.empty())
   {
-    bool userInitiated = false;
+    bool userInitiated = true;
     if (params.size() > 2)
       userInitiated = StringUtils::EqualsNoCase(params[2], "true");
     if (StringUtils::EqualsNoCase(params[0], "music"))
@@ -1446,7 +1457,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "cleanlibrary")
   {
-    bool userInitiated = false;
+    bool userInitiated = true;
     if (params.size() > 1)
       userInitiated = StringUtils::EqualsNoCase(params[1], "true");
     if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
@@ -1459,13 +1470,7 @@ int CBuiltins::Execute(const std::string& execString)
     else if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (!g_application.IsMusicScanning())
-      {
-        CMusicDatabase musicdatabase;
-
-        musicdatabase.Open();
-        musicdatabase.Cleanup(userInitiated);
-        musicdatabase.Close();
-      }
+        g_application.StartMusicCleanup(userInitiated);
       else
         CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
     }

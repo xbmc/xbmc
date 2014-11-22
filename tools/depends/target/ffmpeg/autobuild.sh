@@ -100,7 +100,8 @@ do
   esac
 done
 
-BUILDTHREADS=${BUILDTHREADS:-$(grep -c processor /proc/cpuinfo)}
+BUILDTHREADS=${BUILDTHREADS:-$(grep -c "^processor" /proc/cpuinfo)}
+[ ${BUILDTHREADS} -eq 0 ] && BUILDTHREADS=1
 
 [ -z ${VERSION} ] && exit 3
 if [ -f ${FFMPEG_PREFIX}/lib/pkgconfig/libavcodec.pc ] && [ -f .ffmpeg-installed ]
