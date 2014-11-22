@@ -40,6 +40,14 @@ bool CPlexDirectoryFetchJob::DoWork()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexDirectoryFetchJob::getResult()
+{
+  CFileItemListPtr list = CFileItemListPtr(new CFileItemList());
+  list->Copy(m_items);
+  return list;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaServerClientJob::DoWork()
 {
   bool success = false;

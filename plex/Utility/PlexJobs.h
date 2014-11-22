@@ -24,6 +24,15 @@ class CPlexPlayQueue;
 typedef boost::shared_ptr<CPlexPlayQueue> CPlexPlayQueuePtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
+class CPlexJob : public CJob
+{
+public:
+  CPlexJob() : CJob() {};
+
+  virtual CFileItemListPtr getResult() { return CFileItemListPtr(); }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob
 {
   public:
@@ -40,10 +49,10 @@ class CPlexHTTPFetchJob : public CJob
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-class CPlexDirectoryFetchJob : public CJob
+class CPlexDirectoryFetchJob : public CPlexJob
 {
 public:
-  CPlexDirectoryFetchJob(const CURL &url, CPlexDirectoryCache::CacheStrategies Startegy = CPlexDirectoryCache::CACHE_STRATEGY_ITEM_COUNT) : CJob(), m_url(url) { m_dir.SetCacheStrategy(Startegy);}
+  CPlexDirectoryFetchJob(const CURL &url, CPlexDirectoryCache::CacheStrategies Startegy = CPlexDirectoryCache::CACHE_STRATEGY_ITEM_COUNT) : CPlexJob(), m_url(url) { m_dir.SetCacheStrategy(Startegy);}
   
   virtual bool operator==(const CJob* job) const
   {
@@ -62,6 +71,8 @@ public:
     m_dir.CancelDirectory();
   }
   
+  virtual CFileItemListPtr getResult();
+
   XFILE::CPlexDirectory m_dir;
   CFileItemList m_items;
   CURL m_url;
