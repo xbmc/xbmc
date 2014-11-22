@@ -922,11 +922,6 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
     m_renderMethod = RENDER_VAAPI;
   }
-  else if (m_format == RENDER_FMT_CVBREF)
-  {
-    CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
-    m_renderMethod = RENDER_CVREF;
-  }
   else
   {
     int requestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
@@ -1009,6 +1004,13 @@ void CLinuxRendererGL::LoadShaders(int field)
         break;
       }
     }
+  }
+
+  /* cvbref format piggy back on normal glsl */
+  if (m_format == RENDER_FMT_CVBREF)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+    m_renderMethod |= RENDER_CVREF;
   }
 
   // determine whether GPU supports NPOT textures
@@ -1191,7 +1193,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 #endif
   else
   {
-    // RENDER_CVREF uses the same render as the default case
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
@@ -1464,7 +1465,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
 void CLinuxRendererGL::RenderFromFBO()
 {
-  glEnable(m_textureTarget);
+  glEnable(GL_TEXTURE_2D);
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1478,10 +1479,10 @@ void CLinuxRendererGL::RenderFromFBO()
     if (!m_pVideoFilterShader->GetTextureFilter(filter))
       filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
 
-    m_fbo.fbo.SetFiltering(m_textureTarget, filter);
+    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_sourceWidth);
-    m_pVideoFilterShader->SetHeight(m_sourceHeight);
+    m_pVideoFilterShader->SetWidth(m_fbo.width);
+    m_pVideoFilterShader->SetHeight(m_fbo.height);
 
     //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
     //having non-linear stretch on breaks the alignment
@@ -1495,14 +1496,14 @@ void CLinuxRendererGL::RenderFromFBO()
   else
   {
     GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    m_fbo.fbo.SetFiltering(m_textureTarget, filter);
+    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   }
 
   VerifyGLState();
 
-  float imgwidth = m_fbo.width / m_sourceWidth;
-  float imgheight = m_fbo.height / m_sourceHeight;
+  float imgwidth  = m_sourceWidth  / m_fbo.width;
+  float imgheight = m_sourceHeight / m_fbo.height;
 
   glBegin(GL_QUADS);
 
@@ -1527,8 +1528,8 @@ void CLinuxRendererGL::RenderFromFBO()
 
   VerifyGLState();
 
-  glBindTexture(m_textureTarget, 0);
-  glDisable(m_textureTarget);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
   VerifyGLState();
 }
 
@@ -2581,58 +2582,36 @@ bool CLinuxRendererGL::UploadVAAPITexture(int index)
 bool CLinuxRendererGL::UploadCVRefTexture(int index)
 {
 #ifdef TARGET_DARWIN
+  YUVBUFFER &buf    = m_buffers[index];
+  YUVFIELDS &fields = buf.fields;
+
   CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
 
   glEnable(m_textureTarget);
 
-  if (cvBufferRef)
+  if (cvBufferRef && fields[m_currentField][0].flipindex != buf.flipindex)
   {
-    YUVFIELDS &fields = m_buffers[index].fields;
-    YUVPLANE  &plane  = fields[0][0];
 
-    if (Cocoa_GetOSVersion() >= 0x1074)
-    {
-      // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-      // upload the old way.
-      CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
+    // It is the fastest way to render a CVPixelBuffer backed
+    // with an IOSurface as there is no CPU -> GPU upload.
+    CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+    IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
+    GLsizei       texWidth = IOSurfaceGetWidth(surface);
+    GLsizei       texHeight= IOSurfaceGetHeight(surface);
+    OSType        format_type = IOSurfaceGetPixelFormat(surface);
 
-      GLsizei       texHeight   = CVPixelBufferGetHeight(cvBufferRef);
-      size_t        rowbytes    = CVPixelBufferGetBytesPerRow(cvBufferRef);
-      unsigned char *bufferBase = (unsigned char*)CVPixelBufferGetBaseAddress(cvBufferRef);
+    glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
 
-      glBindTexture(m_textureTarget, plane.id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, rowbytes/2, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
-      glBindTexture(m_textureTarget, 0);
+    if (format_type == kCVPixelFormatType_422YpCbCr8)
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+        texWidth / 2, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+    else if (format_type == kCVPixelFormatType_32BGRA)
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+        texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
 
-      CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    }
-    else
-    {
-      // It is the fastest way to render a CVPixelBuffer backed
-      // with an IOSurface as there is no CPU -> GPU upload.
-      CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
-      IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
-      GLsizei       texWidth = IOSurfaceGetWidth(surface);
-      GLsizei       texHeight= IOSurfaceGetHeight(surface);
-      OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+    glBindTexture(m_textureTarget, 0);
+    fields[FIELD_FULL][0].flipindex = buf.flipindex;
 
-      glBindTexture(m_textureTarget, plane.id);
-
-      if (format_type == kCVPixelFormatType_422YpCbCr8)
-        CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
-          texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
-      else if (format_type == kCVPixelFormatType_32BGRA)
-        CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
-          texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
-
-      glBindTexture(m_textureTarget, 0);
-    }
-
-    CVBufferRelease(cvBufferRef);
-    m_buffers[index].cvBufferRef = NULL;
-
-    plane.flipindex = m_buffers[index].flipindex;
   }
 
 
@@ -2675,27 +2654,19 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   im.cshift_x = 0;
   im.cshift_y = 0;
 
-  plane.texwidth  = NP2(im.width);
-  plane.texheight = NP2(im.height);
-  plane.pixpertex_x = 1;
+  plane.pixpertex_x = 2;
   plane.pixpertex_y = 1;
+  plane.texwidth    = im.width  / plane.pixpertex_x;
+  plane.texheight   = im.height / plane.pixpertex_y;
+
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
 
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
-  if (Cocoa_GetOSVersion() >= 0x1074)
-  {
-    // 10.7.4 for Retina Macbooks on Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
-    // upload the old way.
-    glBindTexture(m_textureTarget, plane.id);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // This is necessary for non-power-of-two textures
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
-    glBindTexture(m_textureTarget, 0);
-  }
   glDisable(m_textureTarget);
 
 #endif

@@ -213,7 +213,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_NV12\n";
   else if (m_format == RENDER_FMT_YUYV422)
     m_defines += "#define XBMC_YUY2\n";
-  else if (m_format == RENDER_FMT_UYVY422)
+  else if (m_format == RENDER_FMT_UYVY422 || m_format == RENDER_FMT_CVBREF)
     m_defines += "#define XBMC_UYVY\n";
   else if (m_format == RENDER_FMT_VDPAU_420)
     m_defines += "#define XBMC_VDPAU_NV12\n";
@@ -376,7 +376,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
     else
       shaderfile = "yuv2rgb_basic_2d_YUY2.arb";
   }
-  else if (m_format == RENDER_FMT_UYVY422)
+  else if (m_format == RENDER_FMT_UYVY422 || m_format == RENDER_FMT_CVBREF)
   {
     if(rect)
       shaderfile = "yuv2rgb_basic_rect_UYVY.arb";
