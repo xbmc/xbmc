@@ -792,7 +792,7 @@ bool FileUtils::patchFile(const char* oldFile, const char* newFile, const char* 
     return false;
   }
 
-  FILE* patchFd = fopen(patchFile, "r");
+  FILE* patchFd = fopen(patchFile, "rb");
   if (!patchFd)
   {
     LOG(Error, "Failed to open patch file!");
