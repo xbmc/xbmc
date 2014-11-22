@@ -24,11 +24,11 @@ class FileElement(dexml.Model):
     order_sensitive = False
 
   name = fields.String(tagname="name")
-  fileHash = fields.String(tagname="hash")
-  size = fields.String(tagname="size")
-  permissions = fields.String(tagname="permissions")
   package = fields.String(tagname="package")
   included = fields.String(tagname="included")
+  fileHash = fields.String(tagname="hash", required=False)
+  size = fields.String(tagname="size", required=False)
+  permissions = fields.String(tagname="permissions", required=False)
   is_main_binary = fields.String(tagname="is-main-binary", required=False)
   targetLink = fields.String(tagname="target", required=False)
 

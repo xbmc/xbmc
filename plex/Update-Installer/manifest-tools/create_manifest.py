@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, platform
+import os, sys, platform, re
 from update import Update, FileElement, PackageElement
 from hashutils import get_files, get_file
 import optparse
@@ -15,6 +15,7 @@ if __name__ == "__main__":
   o.add_option("-p", dest="platform", default=platform.system().lower(), type="string")
   o.add_option("-f", dest="fromversion", default="", type="string")
   o.add_option("-m", dest="mainbinary", default="Contents/MacOS/Plex Home Theater", type="string")
+  o.add_option("-e", dest="exclude", default="", type="string")
 
   (options, args) = o.parse_args()
   package = "%s-%s-%s-full" % (options.product, options.version, options.platform)
@@ -31,17 +32,26 @@ if __name__ == "__main__":
   if not directory[len(directory)-1] == "/":
     directory = directory + "/"
 
+  excludere = None
+  if len(options.exclude) > 0:
+    excludere = re.compile(options.exclude)
+
   hashes = get_files(directory)
+  ihashes = []
   for h in hashes:
     h.name = h.name.replace(directory, "")
     if h.name == options.mainbinary:
       h.is_main_binary = "true"
 
     h.package = package
+    if excludere is None or excludere.match(h.name) is None:
+      ihashes.append(h)
+    else:
+      print "Excluding %s" % h.name
   
   update = Update()
-  update.install = [fi for fi in hashes if fi.targetLink is None]
-  update.manifest = hashes
+  update.install = ihashes
+  update.manifest = ihashes
   update.version = 4
   update.targetVersion = options.version
   update.platform = options.platform
@@ -54,7 +64,7 @@ if __name__ == "__main__":
   packagepath = os.path.join(options.output, package + ".zip")
 
   zfile = zipfile.ZipFile(packagepath, "w", zipfile.ZIP_DEFLATED)
-  for h in hashes:
+  for h in ihashes:
     zfile.write(os.path.join(directory, h.name), h.name)
 
   zfile.close()
