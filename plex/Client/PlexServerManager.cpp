@@ -123,9 +123,9 @@ PlexServerList CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifi
     if (onlyActive && !p.second->GetActiveConnection())
       continue;
 
-    if (modifier == SERVER_OWNED && p.second->GetOwned())
+    if (modifier == SERVER_OWNED && (p.second->GetOwned() || p.second->GetHome()))
       ret.push_back(p.second);
-    else if (modifier == SERVER_SHARED && !p.second->GetOwned())
+    else if (modifier == SERVER_SHARED && !(p.second->GetOwned() || p.second->GetHome()))
       ret.push_back(p.second);
     else if (modifier == SERVER_ALL)
       ret.push_back(p.second);
