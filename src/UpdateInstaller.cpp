@@ -418,6 +418,7 @@ void UpdateInstaller::patchFile(const UpdateScriptPatch& patch)
       throw "After patching the hash was all wrong!";
     }
 
+    FileUtils::removeFile(oldFile.c_str());
     FileUtils::moveFile(newFilePath.c_str(), oldFile.c_str());
     FileUtils::chmod(oldFile.c_str(), patch.targetPerm);
   }
