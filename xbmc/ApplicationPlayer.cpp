@@ -510,6 +510,7 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   {
     player->SetSubtitleVisible(bVisible);
     CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = player->GetSubtitle();
   }
 }
 
