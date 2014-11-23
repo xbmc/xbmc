@@ -36,6 +36,13 @@ then
   umount /Volumes/$ARCHIVE
 fi
 
+#generate volume iconset
+if [ `which iconutil` ]
+then
+  echo "Generating volumeIcon.icns"
+  iconutil -c icns --output "VolumeIcon.icns" "../media/osx/volumeIcon.iconset"
+fi
+
 $DIRNAME/dmgmaker.pl $APP $ARCHIVE
 
 echo "done"
