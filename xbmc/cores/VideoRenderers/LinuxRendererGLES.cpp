@@ -1031,6 +1031,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (m_renderMethod & RENDER_IMXMAP)
   {
     RenderIMXMAPTexture(index, m_currentField);
+    VerifyGLState();
   }
   else
   {
