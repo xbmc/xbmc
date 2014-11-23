@@ -1135,8 +1135,7 @@ void CEdl::AddSceneMarkersForCommBreaks()
     // Add a scene marker to the beginning of the video.
     if (!AddSceneMarker(0))
     {
-      CLog::Log(LOGWARNING, "%s - Error adding scene marker at start of video.",
-        __FUNCTION__);
+      CLog::LogF(LOGWARNING, "Error adding scene marker at start of video.");
     }
 
     std::vector<CEdl::Cut>::iterator it = m_vecCuts.begin();
@@ -1147,14 +1146,14 @@ void CEdl::AddSceneMarkersForCommBreaks()
         // Add a scene marker at the start and end of the commercial break.
         if (!AddSceneMarker(it->start))
         {
-          CLog::Log(LOGWARNING, "%s - Error adding scene marker at start of commercial break %i.",
-            __FUNCTION__, it->start);
+          CLog::LogF(LOGWARNING, "Error adding scene marker at start of commercial break %i.",
+            it->start);
         }
 
         if (!AddSceneMarker(it->end))
         {
-          CLog::Log(LOGWARNING, "%s - Error adding scene marker at end of commercial break %i.",
-            __FUNCTION__, it->end);
+          CLog::LogF(LOGWARNING, "Error adding scene marker at end of commercial break %i.",
+            it->end);
         }
       }
     }
