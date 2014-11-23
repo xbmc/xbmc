@@ -2074,7 +2074,16 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
+  {
+    if (item == NULL)
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
+      if (window)
+        item = window->GetCurrentListItem().get();
+    }
+
     return GetItemInt(value, item, info);
+  }
 
   value = 0;
   switch( info )
