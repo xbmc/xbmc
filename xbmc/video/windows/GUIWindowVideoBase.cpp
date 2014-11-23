@@ -1885,13 +1885,6 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Open();
   int idMovie = m_database.AddMovie(pItem->GetPath());
   movie.m_strIMDBNumber = StringUtils::Format("xx%08i", idMovie);
-
-  if (movie.m_basePath.empty())
-    movie.m_basePath = pItem->GetBaseMoviePath(false);
-  movie.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movie.m_basePath));
-
-  movie.m_strFileNameAndPath = pItem->GetPath();
-
   m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
   m_database.Close();
 
