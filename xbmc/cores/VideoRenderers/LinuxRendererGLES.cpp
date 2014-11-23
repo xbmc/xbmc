@@ -1031,6 +1031,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (m_renderMethod & RENDER_IMXMAP)
   {
     RenderIMXMAPTexture(index, m_currentField);
+    VerifyGLState();
   }
   else
   {
@@ -2770,7 +2771,7 @@ bool CLinuxRendererGLES::CreateIMXMAPTexture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE  &plane  = fields[0][0];
 
-  DeleteEGLIMGTexture(index);
+  DeleteIMXMAPTexture(index);
 
   memset(&im    , 0, sizeof(im));
   memset(&fields, 0, sizeof(fields));
