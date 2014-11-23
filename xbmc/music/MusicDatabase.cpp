@@ -3003,7 +3003,7 @@ bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList
     return false;
 
   musicUrl.AddOption("year", year);
-  musicUrl.AddOption("singles", true); // allow singles to be listed
+  musicUrl.AddOption("show_singles", true); // allow singles to be listed
   
   Filter filter;
   return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
@@ -5603,7 +5603,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       // no artist given, so exclude any single albums (aka empty tagged albums)
       else
       {
-        option = options.find("singles");
+        option = options.find("show_singles");
         if (option == options.end() || !option->second.asBoolean())
           filter.AppendWhere("albumview.strAlbum <> ''");
       }
