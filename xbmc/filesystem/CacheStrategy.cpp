@@ -235,17 +235,18 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   return iFilePosition;
 }
 
-void CSimpleFileCache::Reset(int64_t iSourcePosition, bool clearAnyway)
+bool CSimpleFileCache::Reset(int64_t iSourcePosition, bool clearAnyway)
 {
   if (!clearAnyway && IsCachedPosition(iSourcePosition))
   {
     m_nReadPosition = m_cacheFileRead->Seek(iSourcePosition - m_nStartPosition, SEEK_SET);
-    return;
+    return false;
   }
 
   m_nStartPosition = iSourcePosition;
   m_nWritePosition = m_cacheFileWrite->Seek(0, SEEK_SET);
   m_nReadPosition = m_cacheFileRead->Seek(0, SEEK_SET);
+  return true;
 }
 
 void CSimpleFileCache::EndOfInput()
@@ -330,14 +331,13 @@ int64_t CDoubleCache::Seek(int64_t iFilePosition)
   return m_pCache->Seek(iFilePosition);
 }
 
-void CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
+bool CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
 {
   if (!clearAnyway && m_pCache->IsCachedPosition(iSourcePosition)
       && (!m_pCacheOld || !m_pCacheOld->IsCachedPosition(iSourcePosition)
           || m_pCache->CachedDataEndPos() >= m_pCacheOld->CachedDataEndPos()))
   {
-    m_pCache->Reset(iSourcePosition, clearAnyway);
-    return;
+    return m_pCache->Reset(iSourcePosition, clearAnyway);
   }
   if (!m_pCacheOld)
   {
@@ -345,18 +345,18 @@ void CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
     if (pCacheNew->Open() != CACHE_RC_OK)
     {
       delete pCacheNew;
-      m_pCache->Reset(iSourcePosition, clearAnyway);
-      return;
+      return m_pCache->Reset(iSourcePosition, clearAnyway);
     }
-    pCacheNew->Reset(iSourcePosition, clearAnyway);
+    bool bRes = pCacheNew->Reset(iSourcePosition, clearAnyway);
     m_pCacheOld = m_pCache;
     m_pCache = pCacheNew;
-    return;
+    return bRes;
   }
-  m_pCacheOld->Reset(iSourcePosition, clearAnyway);
+  bool bRes = m_pCacheOld->Reset(iSourcePosition, clearAnyway);
   CCacheStrategy *tmp = m_pCacheOld;
   m_pCacheOld = m_pCache;
   m_pCache = tmp;
+  return bRes;
 }
 
 void CDoubleCache::EndOfInput()
