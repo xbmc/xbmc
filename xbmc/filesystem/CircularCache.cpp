@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -74,6 +74,18 @@ void CCircularCache::Close()
   delete[] m_buf;
 #endif
   m_buf = NULL;
+}
+
+size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
+{
+  CSingleLock lock(m_sync);
+
+  size_t back  = (size_t)(m_cur - m_beg); // Backbuffer size
+  size_t front = (size_t)(m_end - m_cur); // Frontbuffer size
+  size_t limit = m_size - std::min(back, m_size_back) - front;
+
+  // Never return more than limit and size requested by caller
+  return std::min(iRequestSize, limit);
 }
 
 /**
@@ -166,7 +178,11 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
   return len;
 }
 
-int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
+/* Wait "millis" milliseconds for "minimum" amount of data to come in.
+ * Note that caller needs to make sure there's sufficient space in the forward
+ * buffer for "minimum" bytes else we may block the full timeout time
+ */
+int64_t CCircularCache::WaitForData(unsigned int minimum, unsigned int millis)
 {
   CSingleLock lock(m_sync);
   int64_t avail = m_end - m_cur;
@@ -174,11 +190,11 @@ int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
   if(millis == 0 || IsEndOfInput())
     return avail;
 
-  if(minumum > m_size - m_size_back)
-    minumum = m_size - m_size_back;
+  if(minimum > m_size - m_size_back)
+    minimum = m_size - m_size_back;
 
   XbmcThreads::EndTime endtime(millis);
-  while (!IsEndOfInput() && avail < minumum && !endtime.IsTimePast() )
+  while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
     lock.Leave();
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
@@ -197,6 +213,11 @@ int64_t CCircularCache::Seek(int64_t pos)
   // we try to avoid a (heavy) seek on the source
   if (pos >= m_end && pos < m_end + 100000)
   {
+    /* Make everything in the cache (back & forward) back-cache, to make sure
+     * there's sufficient forward space. Increasing it with only 100000 may not be
+     * sufficient due to variable filesystem chunksize
+     */
+    m_cur = m_end;
     lock.Leave();
     WaitForData((size_t)(pos - m_cur), 5000);
     lock.Enter();

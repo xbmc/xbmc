@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -65,6 +65,15 @@ void MemBufferCache::Close()
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
+}
+
+size_t MemBufferCache::GetMaxWriteSize(const size_t& iRequestSize)
+{
+  CSingleLock lock(m_sync);
+
+  // must also check the forward buffer.
+  // if we have leftovers from the previous seek - we need not read anymore until they are utilized
+  return (m_forwardBuffer.getMaxReadSize() == 0 && iRequestSize <= m_buffer.getMaxWriteSize()) ? iRequestSize : 0; 
 }
 
 int MemBufferCache::WriteToCache(const char *pBuffer, size_t iSize)
