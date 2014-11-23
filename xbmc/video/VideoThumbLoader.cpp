@@ -151,6 +151,15 @@ bool CThumbExtractor::DoWork()
       else
         db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
 
+      // overwrite the runtime value if the one from streamdetails is available
+      if (info->m_iDbId > 0 && info->m_duration != info->GetDuration())
+      {
+        info->m_duration = info->GetDuration();
+
+        // store the updated information in the database
+        db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());
+      }
+
       db.Close();
     }
     return true;
