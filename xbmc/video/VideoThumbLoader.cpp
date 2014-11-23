@@ -140,7 +140,7 @@ bool CThumbExtractor::DoWork()
       if (URIUtils::IsStack(m_listpath))
       {
         // Don't know the total time of the stack, so set duration to zero to avoid confusion
-        m_item.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, 0);
+        info->m_streamDetails.SetVideoDuration(0, 0);
 
         // Restore original stack path
         m_item.SetPath(m_listpath);
