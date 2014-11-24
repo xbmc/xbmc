@@ -32,7 +32,7 @@ ifeq ($(OS), android)
   else
     ffmpg_config += --cpu=i686 --disable-mmx
   endif
-  ffmpg_config += --target-os=linux
+  ffmpg_config += --target-os=linux --enable-gnutls
 endif
 ifeq ($(OS), ios)
   ffmpg_config += --cpu=cortex-a8 --yasmexe=$(NATIVEPREFIX)/bin/yasm
