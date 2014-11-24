@@ -483,6 +483,7 @@ lib/cpluff/stamp-h1
 /tools/darwin/packaging/ios/mkdeb-ios.sh
 /tools/darwin/packaging/atv2/mkdeb-atv2.sh
 /tools/darwin/packaging/osx/mkdmg-osx.sh
+/tools/darwin/packaging/osx/VolumeIcon.icns
 /tools/darwin/packaging/migrate_to_kodi_ios.sh
 /tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh
 
