@@ -206,7 +206,7 @@ bool CCoreAudioDevice::RemoveIOProc()
   return true;
 }
 
-std::string CCoreAudioDevice::GetName()
+std::string CCoreAudioDevice::GetName() const
 {
   if (!m_DeviceId)
     return "";

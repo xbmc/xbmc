@@ -128,7 +128,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-    if (*cur == AV_PIX_FMT_VDA_VLD && CSettings::Get().GetBool("videoplayer.usevda"))
+    if (*cur == AV_PIX_FMT_VDA && CSettings::Get().GetBool("videoplayer.usevda") && g_advancedSettings.m_useFfmpegVda)
     {
       VDA::CDecoder* dec = new VDA::CDecoder();
       if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
@@ -142,6 +142,16 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
     cur++;
   }
+
+  // hardware decoder de-selected, restore standard ffmpeg
+  if (ctx->GetHardware())
+  {
+    ctx->SetHardware(NULL);
+    avctx->get_buffer2     = avcodec_default_get_buffer2;
+    avctx->slice_flags     = 0;
+    avctx->hwaccel_context = 0;
+  }
+
   return avcodec_default_get_format(avctx, fmt);
 }
 

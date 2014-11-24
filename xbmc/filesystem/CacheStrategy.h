@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@ public:
   virtual int Open() = 0;
   virtual void Close() = 0;
 
+  virtual size_t GetMaxWriteSize(const size_t& iRequestSize) = 0;
   virtual int WriteToCache(const char *pBuffer, size_t iSize) = 0;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
@@ -76,6 +77,7 @@ public:
   virtual int Open() ;
   virtual void Close() ;
 
+  virtual size_t GetMaxWriteSize(const size_t& iRequestSize) ;
   virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
@@ -102,14 +104,15 @@ protected:
   volatile int64_t m_nReadPosition;
 };
 
-class CSimpleDoubleCache : public CCacheStrategy{
+class CDoubleCache : public CCacheStrategy{
 public:
-  CSimpleDoubleCache(CCacheStrategy *impl);
-  virtual ~CSimpleDoubleCache();
+  CDoubleCache(CCacheStrategy *impl);
+  virtual ~CDoubleCache();
 
   virtual int Open() ;
   virtual void Close() ;
 
+  virtual size_t GetMaxWriteSize(const size_t& iRequestSize) ;
   virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;

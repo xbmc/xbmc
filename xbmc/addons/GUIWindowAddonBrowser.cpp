@@ -51,6 +51,7 @@
 #define CONTROL_AUTOUPDATE    5
 #define CONTROL_SHUTUP        6
 #define CONTROL_FOREIGNFILTER 7
+#define CONTROL_BROKENFILTER  8
 
 using namespace ADDON;
 using namespace XFILE;
@@ -106,6 +107,13 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_FOREIGNFILTER)
       {
         CSettings::Get().ToggleBool("general.addonforeignfilter");
+        CSettings::Get().Save();
+        Refresh();
+        return true;
+      }
+      else if (iControl == CONTROL_BROKENFILTER)
+      {
+        CSettings::Get().ToggleBool("general.addonbrokenfilter");
         CSettings::Get().Save();
         Refresh();
         return true;
@@ -317,6 +325,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   }
   SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP, CSettings::Get().GetBool("general.addonnotifications"));
   SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool("general.addonforeignfilter"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::Get().GetBool("general.addonbrokenfilter"));
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -376,6 +385,18 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
         }
         else
           items.Remove(i);
+      }
+    }
+    if (CSettings::Get().GetBool("general.addonbrokenfilter"))
+    {
+      for (int i = items.Size() - 1; i >= 0; i--)
+      {
+        if (!items[i]->GetProperty("Addon.Broken").empty())
+        { //check if it's installed
+          AddonPtr addon;
+          if (!CAddonMgr::Get().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
+            items.Remove(i);
+        }
       }
     }
   }

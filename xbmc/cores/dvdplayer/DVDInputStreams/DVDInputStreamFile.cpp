@@ -77,7 +77,11 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   if (!(flags & READ_CACHED))
     flags |= READ_NO_CACHE; // Make sure CFile honors our no-cache hint
 
-  if (content == "video/mp4" || content == "video/x-msvideo" || content == "video/avi" || content == "video/x-matroska")
+  if (content == "video/mp4" ||
+      content == "video/x-msvideo" ||
+      content == "video/avi" ||
+      content == "video/x-matroska" ||
+      content == "video/x-matroska-3d")
     flags |= READ_MULTI_STREAM;
 
   // open file in binary mode

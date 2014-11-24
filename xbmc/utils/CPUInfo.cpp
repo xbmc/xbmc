@@ -520,7 +520,7 @@ float CCPUInfo::getCPUFrequency()
     if (PdhGetRawCounterValue(m_cpuFreqCounter, &cntType, &cnt) == ERROR_SUCCESS &&
         (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
     {
-      return float(cnt.FirstValue/1000.0);
+      return float(cnt.FirstValue);
     }
   }
   

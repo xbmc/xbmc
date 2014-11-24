@@ -59,6 +59,7 @@ namespace VIDEO
      \param scanAll whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned.) Defaults to false.
      */
     void Start(const CStdString& strDirectory, bool scanAll = false);
+    void StartCleanDatabase();
     bool IsScanning();
     void CleanDatabase(CGUIDialogProgressBarHandle* handle=NULL, const std::set<int>* paths=NULL, bool showProgress=true);
     void Stop();

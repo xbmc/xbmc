@@ -22,7 +22,7 @@
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
 
-namespace EGP
+namespace EPG
 {
   class CEpgInfoTag;
 }

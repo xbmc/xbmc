@@ -101,6 +101,8 @@ print_crash_report()
   if command_exists gdb; then
     if command_exists systemd-coredumpctl; then
       systemd-coredumpctl dump -o core ${bin_name}.bin > /dev/null 2>&1
+    elif command_exists coredumpctl; then
+      coredumpctl dump -o core ${bin_name}.bin > /dev/null 2>&1
     fi
     single_stacktrace "$PWD" 1
     # Find in plugins directories

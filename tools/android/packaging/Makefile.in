@@ -105,6 +105,8 @@ res:
 	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
+	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
+	cp -fp media/drawable-xhdpi/ouya_icon.png xbmc/res/drawable-xhdpi/ouya_icon.png
 	cp xbmc/strings.xml xbmc/res/values/
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
 	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src
