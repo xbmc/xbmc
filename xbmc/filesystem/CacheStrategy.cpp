@@ -328,7 +328,17 @@ int64_t CDoubleCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 
 int64_t CDoubleCache::Seek(int64_t iFilePosition)
 {
-  return m_pCache->Seek(iFilePosition);
+  /* Check whether position is NOT in our current cache but IS in our old cache.
+   * This is faster/more efficient than having to possibly wait for data in the
+   * Seek() call below
+   */
+  if (!m_pCache->IsCachedPosition(iFilePosition) &&
+       m_pCacheOld && m_pCacheOld->IsCachedPosition(iFilePosition))
+  {
+    return CACHE_RC_ERROR; // Request seek event, so caches are swapped
+  }
+
+  return m_pCache->Seek(iFilePosition); // Normal seek
 }
 
 bool CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
