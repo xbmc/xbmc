@@ -5,10 +5,10 @@
 
 <strings>
     <string id="30000">Įjungti Fanart</string>
-    <string id="30001">Pageidaujamas filmo anonsas iš HD-Trailers.net</string>
+    <string id="30001">Pirmenybė filmo anonsui iš HD-Trailers.net</string>
     <string id="30002">Pageidaujama kalba</string>
     <string id="30003">Gauti įvertinimą iš</string>
-    <string id="30004">Atidaryti filmo anonsą (YouTube)</string>
+    <string id="30004">Įjungti filmų anonsus (YouTube)</string>
     <string id="30005">Išlaikyti originalų pavadinimą</string>
     <string id="30006">Pageidaujama sertifikavimo šalis</string>
 </strings>

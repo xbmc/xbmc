@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Polish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pl/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Polish language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/pl/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
-    <string id="30000">Pobierz ikony albumu z fanart.tv</string>
-    <string id="30001">Pobierz miniatury albumu z theaudiodb.com</string>
+    <string id="30000">Pobieraj miniatur albumu z fanart.tv</string>
+    <string id="30001">Pobieraj miniatur albumu theaudiodb.com</string>
 </strings>

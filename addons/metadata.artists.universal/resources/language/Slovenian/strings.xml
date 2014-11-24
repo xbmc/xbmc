@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Slovenian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sl/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Slovenian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/sl/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Vključi grafike izvajalcev s HTBackdrops.com</string>
@@ -18,7 +18,7 @@
     <string id="30011">Prenesi izvajalčev rojstni dan z</string>
     <string id="30012">Prenesi izvajalčeva razpoloženja z</string>
     <string id="30014">Prenesi izvajalčevo obdobje delovanja z</string>
-    <string id="30015">Privzet jezik</string>
+    <string id="30015">Privzeti jezik</string>
     <string id="30016">Rezervni vir izvajalčevega življenjepisa</string>
     <string id="30017">Rezervni vir izvajalčeve diskografije</string>
     <string id="30018">Rezervni vir izvajalčevih žanrov</string>

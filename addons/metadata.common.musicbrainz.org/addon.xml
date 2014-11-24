@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.musicbrainz.org"
        name="MusicBrainz Scraper Library"
-        version="2.0.2"
-       provider-name="Team-Kodi">
+        version="2.0.3"
+       provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Korean language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ko/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Korean language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/ko/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">HTBackdrops.com 에서 아티스트 팬아트 가져오기</string>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Indonesian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/id/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
+
+<strings>
+    <string id="30000">Aktifkan Fanart</string>
+    <string id="30001">Utamakan Trailer dari HD-Trailers.net</string>
+    <string id="30002">Bahasa terutama</string>
+    <string id="30003">Ambil Rating dari</string>
+    <string id="30004">Aktifkan Trailer (YouTube)</string>
+    <string id="30005">Pertahankan Judul Aslinya</string>
+    <string id="30006">Negara pemberi sertifikasi yang diutamakan</string>
+</strings>

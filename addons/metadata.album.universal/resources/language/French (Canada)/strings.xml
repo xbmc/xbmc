@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- French (Canada) language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/fr_CA/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
+
+<strings>
+    <string id="30000">Récupérer les imagettes d'albums sur fanart.tv</string>
+    <string id="30001">Récupérer les imagettes d'albums sur Last.fm</string>
+    <string id="30002">Obtenir les critiques sur</string>
+    <string id="30003">Langue préférée</string>
+    <string id="30004">Obtenir les évaluations sur</string>
+    <string id="30005">Obtenir les styles d'albums sur</string>
+    <string id="30006">Obtenir les ambiances d'albums sur</string>
+    <string id="30007">Obtenir les thème d'albums sur</string>
+    <string id="30008">Récupérer les imagettes d'albums sur allmusic.com</string>
+    <string id="30009">Illustrations</string>
+    <string id="30010">Récupérer les imagettes d'albums sur theaudiodb.com</string>
+</strings>

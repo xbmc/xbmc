@@ -1,3 +1,6 @@
+[B]1.5.9[/B]
+- Updated: language files from Transifex
+
 v1.5.8
 - Added: retrieve number of votes in GetDetails/GetEpisodeDetails
 

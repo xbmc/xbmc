@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Norwegian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Norwegian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/no/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Aktiv artist-fanart fra HTBackdrops.com</string>
@@ -11,7 +11,7 @@
     <string id="30004">Aktiver Artist Fanarts fra fanart.tv</string>
     <string id="30005">Aktiv artist-forhåndsvisninger fra fanart.tv</string>
     <string id="30006">Hent artistbiografi fra</string>
-    <string id="30007">Artwork</string>
+    <string id="30007">Illustrasjoner</string>
     <string id="30008">Hent artist-diskografi fra</string>
     <string id="30009">Hent artistsjangere fra</string>
     <string id="30010">Hent artiststiler fra</string>

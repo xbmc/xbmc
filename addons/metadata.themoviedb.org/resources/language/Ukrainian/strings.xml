@@ -5,6 +5,9 @@
 
 <strings>
     <string id="30000">Завантажувати фанарт</string>
+    <string id="30001">Віддавати перевагу трейлерам з HD-Trailers.net</string>
     <string id="30002">Вибір мови</string>
     <string id="30003">Отримати рейтинг з</string>
+    <string id="30004">Включити трейлери (YouTube)</string>
+    <string id="30005">Зберігати оригінальну назву</string>
 </strings>

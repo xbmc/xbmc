@@ -1,3 +1,6 @@
+[B]3.4.2[/B]
+Updated language files from Transifex
+
 [B]3.4.1[/B]
 Updated language files from Transifex
 

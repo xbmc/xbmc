@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- German language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/de/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- German language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/de/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Aktiviere Interpreten-Fanarts von HTBackdrops.com</string>
@@ -11,7 +11,7 @@
     <string id="30004">Aktiviere Interpreten-Fanarts von fanart.tv</string>
     <string id="30005">Aktiviere Interpreten-Vorschaubilder von fanart.tv</string>
     <string id="30006">Lade Biografien der Interpreten von</string>
-    <string id="30007">Grafiken</string>
+    <string id="30007">Artwork</string>
     <string id="30008">Lade Interpreten-Diskografie von</string>
     <string id="30009">Lade Interpreten-Genre von</string>
     <string id="30010">Lade Interpreten-Stil von</string>

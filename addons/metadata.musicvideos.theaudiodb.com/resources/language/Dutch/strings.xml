@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Dutch language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Dutch language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/nl/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Pak albumminiaturen van fanart.tv</string>
