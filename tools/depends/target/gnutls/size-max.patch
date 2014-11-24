@@ -1,0 +1,10 @@
+--- gl/read-file.c.orig	2014-11-24 10:06:35.473877332 +0100
++++ gl/read-file.c	2014-11-24 10:03:34.005876607 +0100
+@@ -27,6 +27,7 @@
+ 
+ /* Get SIZE_MAX.  */
+ #include <stdint.h>
++#include <limits.h>
+ 
+ /* Get malloc, realloc, free. */
+ #include <stdlib.h>
