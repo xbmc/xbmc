@@ -347,4 +347,10 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
       }
     }
   }
+
+  if ((stricmp(message, "OnScreensaverDeactivated") == 0) && (stricmp(sender, "xbmc") == 0))
+  {
+    CLog::Log(LOGDEBUG, "PlexApplication::Announce resuming from screensaver");
+    g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
+  }
 }
