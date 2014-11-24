@@ -38,6 +38,10 @@ sub make_dmg {
     $dev_handle = $1 if $dev_handle =~ /^\/dev\/(disk.)/;
     die("Could not obtain device handle\n") if !$dev_handle;
     print "Got device handle \"$dev_handle\"\n";
+    #clear the volume - we will copy stuff on it with ditto later
+    #this removes crap which might have come in via the srcfolder 
+    #parameter of hdiutil above
+    `rm -r /Volumes/$volname/*`;
     print "Ignore \"No space left on device\" warnings from ditto, they are an autosize artifact\n";
     `ditto "$mpkg" "/Volumes/$volname/$pkgname.$ext"`;
 
@@ -48,17 +52,10 @@ sub make_dmg {
     # make symlink to /Applications
     `ln -s /Applications "/Volumes/$volname/Applications"`;
 
-    if ( -d "background" ) {
-	`mkdir "/Volumes/$volname/background"`;
-	`ditto background "/Volumes/$volname/background/"`;
-    }
-    if ( -f "VolumeDSStore" ) {
-	`ditto VolumeDSStore "/Volumes/$volname/.DS_Store"` if $ext ne "app";
-	`ditto VolumeDSStoreApp "/Volumes/$volname/.DS_Store"` if $ext eq "app";
-    }
-    if ( -d "background" ) {
-	`xcrun SetFile -a V "/Volumes/$volname/background"`;
-    }
+    `mkdir "/Volumes/$volname/background"`;
+    `ditto ../media/osx/background "/Volumes/$volname/background/"`;
+    `ditto VolumeDSStoreApp "/Volumes/$volname/.DS_Store"`;
+    `xcrun SetFile -a V "/Volumes/$volname/background"`;
     `xcrun SetFile -a C "/Volumes/$volname/"`;
     `hdiutil detach $dev_handle`;
     `hdiutil convert "$volname.dmg" -format UDZO -imagekey zlib-level=9 -o "$volname.udzo.dmg"`;
