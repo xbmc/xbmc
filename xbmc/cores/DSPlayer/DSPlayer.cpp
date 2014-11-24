@@ -275,19 +275,8 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
 		Create();
 
-		/* Show busy dialog while SetFile() not returned */
-		if(!m_hReadyEvent.WaitMSec(100))
-		{
-			CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-			if(dialog)
-			{
-				dialog->Show();
-				while(!m_hReadyEvent.WaitMSec(1))
-					if (!g_application.IsPlayingFullScreenVideo())
-						g_windowManager.ProcessRenderLoop(false);
-				dialog->Close();
-			}
-		}
+		// wait for the ready event
+		CGUIDialogBusy::WaitOnEvent(m_hReadyEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
 
 		if (PlayerState != DSPLAYER_ERROR)
 		{
