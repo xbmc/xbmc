@@ -148,6 +148,8 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_state              = orig.m_state;
   m_iChannelNumber     = orig.m_iChannelNumber;
   m_iTimerId           = orig.m_iTimerId;
+  m_iGenreType         = orig.m_iGenreType;
+  m_iGenreSubType      = orig.m_iGenreSubType;
 
   return *this;
 }
