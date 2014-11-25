@@ -189,7 +189,11 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
   VpuAllocBuffers(&memInfo);
 
   m_decOpenParam.nReorderEnable = 1;
+#ifdef IMX_INPUT_FORMAT_I420
+  m_decOpenParam.nChromaInterleave = 0;
+#else
   m_decOpenParam.nChromaInterleave = 1;
+#endif
   m_decOpenParam.nMapType = 0;
   m_decOpenParam.nTiled2LinearEnable = 0;
   m_decOpenParam.nEnableFileMode = 0;
@@ -207,6 +211,24 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
   if (ret != VPU_DEC_RET_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s - iMX VPU set skip mode failed  (%d).\n", __FUNCTION__, ret);
+    goto VpuOpenError;
+  }
+
+  config = VPU_DEC_CONF_BUFDELAY;
+  param = 0;
+  ret = VPU_DecConfig(m_vpuHandle, config, &param);
+  if (ret != VPU_DEC_RET_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "%s - iMX VPU set buffer delay failed  (%d).\n", __FUNCTION__, ret);
+    goto VpuOpenError;
+  }
+
+  config = VPU_DEC_CONF_INPUTTYPE;
+  param = VPU_DEC_IN_NORMAL;
+  ret = VPU_DecConfig(m_vpuHandle, config, &param);
+  if (ret != VPU_DEC_RET_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "%s - iMX VPU configure input type failed  (%d).\n", __FUNCTION__, ret);
     goto VpuOpenError;
   }
 
