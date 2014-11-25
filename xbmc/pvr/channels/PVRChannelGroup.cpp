@@ -1168,7 +1168,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
   CDateTime date;
   CSingleLock lock(m_critSection);
   
-  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); it++)
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     if (it->channel && !it->channel->IsHidden())
     {
