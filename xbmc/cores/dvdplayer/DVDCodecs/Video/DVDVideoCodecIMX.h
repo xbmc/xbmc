@@ -48,7 +48,8 @@ public:
   VpuMemDesc* phyMem;
 };
 
-// Base class of IMXVPU buffer
+
+// Base class of IMXVPU and IMXIPU buffer
 class CDVDVideoCodecIMXBuffer {
 public:
 #ifdef TRACE_FRAMES
@@ -85,6 +86,7 @@ private:
   double        m_dts;
 };
 
+
 class CDVDVideoCodecIMXVPUBuffer : public CDVDVideoCodecIMXBuffer
 {
 public:
@@ -115,6 +117,46 @@ private:
   CDVDVideoCodecIMXVPUBuffer *m_previousBuffer; // Holds a the reference counted
                                                 // previous buffer
 };
+
+
+// Shared buffer that holds an IPU allocated memory block and serves as target
+// for IPU operations such as deinterlacing, rotation or color conversion.
+class CDVDVideoCodecIMXIPUBuffer : public CDVDVideoCodecIMXBuffer
+{
+public:
+#ifdef TRACE_FRAMES
+  CDVDVideoCodecIMXIPUBuffer(int idx);
+#else
+  CDVDVideoCodecIMXIPUBuffer();
+#endif
+
+  // reference counting
+  virtual void             Lock();
+  virtual long             Release();
+  virtual bool             IsValid();
+
+  // Returns whether the buffer is ready to be used
+  bool                     Rendered() const { return m_bFree; }
+  bool                     Process(int fd, CDVDVideoCodecIMXVPUBuffer *buffer,
+                                   VpuFieldType fieldType, int fieldFmt,
+                                   bool lowMotion);
+  void                     ReleaseFrameBuffer();
+
+  bool                     Allocate(int fd, int width, int height, int nAlign);
+  bool                     Free(int fd);
+
+private:
+  virtual                  ~CDVDVideoCodecIMXIPUBuffer();
+
+private:
+  bool                     m_bFree;
+  int                      m_pPhyAddr;
+  uint8_t                 *m_pVirtAddr;
+  uint32_t                 m_iWidth;
+  uint32_t                 m_iHeight;
+  int                      m_nSize;
+};
+
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
