@@ -131,6 +131,8 @@ int _dvdcss_use_ioctls( dvdcss_t dvdcss )
         return 1;
 
     return 0;
+#elif defined(__APPLE__) && defined(__arm__)
+    return 0;
 #else
     struct stat fileinfo;
     int ret;
