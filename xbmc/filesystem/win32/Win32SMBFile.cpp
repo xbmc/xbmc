@@ -151,7 +151,7 @@ int CWin32SMBFile::Stat(const CURL& url, struct __stat64* statData)
   if (CWin32File::Stat(url, statData) == 0)
     return 0;
 
-  if (!worthTryToConnect(GetLastError()) || !ConnectAndAuthenticate(url))
+  if (!worthTryToConnect(m_lastSMBFileErr) || !ConnectAndAuthenticate(url))
     return -1;
 
   return CWin32File::Stat(url, statData);
