@@ -150,6 +150,8 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iTimerId           = orig.m_iTimerId;
   m_iGenreType         = orig.m_iGenreType;
   m_iGenreSubType      = orig.m_iGenreSubType;
+  m_epgTag             = orig.m_epgTag;
+  m_genre              = orig.m_genre;
 
   return *this;
 }
