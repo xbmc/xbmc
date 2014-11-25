@@ -320,7 +320,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
 struct sortByClientChannelNumber
 {
-  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
       return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
@@ -330,7 +330,7 @@ struct sortByClientChannelNumber
 
 struct sortByChannelNumber
 {
-  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.iChannelNumber == channel2.iChannelNumber)
       return channel1.iSubChannelNumber < channel2.iSubChannelNumber;
