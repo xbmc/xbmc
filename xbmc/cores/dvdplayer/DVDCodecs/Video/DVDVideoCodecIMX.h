@@ -287,9 +287,6 @@ private:
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
-  friend class CDVDVideoCodecIMXVPUBuffer;
-  friend class CDVDVideoCodecIPUBuffer;
-
 public:
   CDVDVideoCodecIMX();
   virtual ~CDVDVideoCodecIMX();
