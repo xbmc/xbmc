@@ -62,7 +62,7 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 {
 }
 
-void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string path)
+void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
 {
   m_selectedItemPaths.at(bRadio) = path;
 }
