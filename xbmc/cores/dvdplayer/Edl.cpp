@@ -279,6 +279,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
 
     switch (iAction)
     {
+      */
     case 1:
       cut.action = MUTE;
       if (!AddCut(cut))
