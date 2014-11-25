@@ -221,5 +221,9 @@ namespace PVR
     bool               m_bUpdateChannelsOnly;
     bool               m_bIsUpdating;
     CPVRChannelGroupPtr m_lastPlayedGroups[2]; /*!< used to store the last played groups */
+
+  private :
+    CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&);
+    CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&);
   };
 }
