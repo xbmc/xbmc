@@ -75,7 +75,8 @@ protected:
    */
   void AddAddonsSource(const std::string &content, const std::string &label, const std::string& thumb);
 #if defined(TARGET_ANDROID)
-  void AddAndroidSource(const std::string &content, const std::string &label, const std::string& thumb);
+  void AddAndroidAppSource(const std::string &content, const std::string &label, const std::string& thumb);
+  void AddAndroidSettingSource(const std::string &content, const std::string &label, const std::string &thumb);
 #endif
   void AddLiveTVSources();
 

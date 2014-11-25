@@ -45,6 +45,7 @@
 #include "Window.h"
 #include "View.h"
 #include "Build.h"
+#include "Settings.h"
 
 #include <android/native_activity.h>
 
@@ -84,6 +85,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIMediaFormat::PopulateStaticFields();
   CJNIView::PopulateStaticFields();
   CJNIBuild::PopulateStaticFields();
+  CJNISettings::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()

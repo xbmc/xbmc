@@ -10313,7 +10313,11 @@ msgctxt "#20244"
 msgid "Android Apps"
 msgstr ""
 
-#empty strings from id 20245 to 20249
+msgctxt "#20245"
+msgid "Android Settings"
+msgstr ""
+
+#empty strings from id 20246 to 20249
 
 msgctxt "#20250"
 msgid "Party on! (videos)"

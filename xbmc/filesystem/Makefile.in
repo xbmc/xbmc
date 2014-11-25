@@ -82,6 +82,8 @@ SRCS += APKDirectory.cpp
 SRCS += APKFile.cpp
 SRCS += AndroidAppFile.cpp
 SRCS += AndroidAppDirectory.cpp
+SRCS += AndroidSettingFile.cpp
+SRCS += AndroidSettingDirectory.cpp
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
