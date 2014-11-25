@@ -330,8 +330,11 @@ protected:
   bool                         m_dropState;         // Current drop state
   int                          m_vpuFrameBufferNum; // Total number of allocated frame buffers
   VpuFrameBuffer              *m_vpuFrameBuffers;   // Table of VPU frame buffers description
+  CDVDVideoCodecIMXIPUBuffers  m_deinterlacer;      // Pool of buffers used for deinterlacing
+  CDVDVideoMixerIMX            m_mixer;
   CDVDVideoCodecIMXVPUBuffer **m_outputBuffers;     // Table of VPU output buffers
   CDVDVideoCodecIMXVPUBuffer  *m_lastBuffer;        // Keep track of previous VPU output buffer (needed by deinterlacing motion engin)
+  CDVDVideoCodecIMXBuffer     *m_currentBuffer;
   VpuMemDesc                  *m_extraMem;          // Table of allocated extra Memory
   int                          m_frameCounter;      // Decoded frames counter
   bool                         m_usePTS;            // State whether pts out of decoding process should be used

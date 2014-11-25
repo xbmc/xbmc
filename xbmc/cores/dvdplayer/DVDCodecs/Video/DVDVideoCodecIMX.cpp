@@ -385,16 +385,25 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
 #endif
   }
 
+  CLog::Log(LOGNOTICE, "IMX: Initialize hardware deinterlacing\n");
+  if (!m_deinterlacer.Init(m_initInfo.nPicWidth, m_initInfo.nPicHeight, GetAllowedReferences()+5, nAlign))
+  {
+    CLog::Log(LOGWARNING, "IMX: Failed to initialize IPU buffers: deinterlacing disabled\n");
+  }
+
+  m_deinterlacer.SetAutoMode(m_initInfo.nInterlace);
+
   return true;
 }
 
-CDVDVideoCodecIMX::CDVDVideoCodecIMX()
+CDVDVideoCodecIMX::CDVDVideoCodecIMX() : m_mixer(&m_deinterlacer)
 {
   m_pFormatName = "iMX-xxx";
   m_vpuHandle = 0;
   m_vpuFrameBuffers = NULL;
   m_outputBuffers = NULL;
   m_lastBuffer = NULL;
+  m_currentBuffer = NULL;
   m_extraMem = NULL;
   m_vpuFrameBufferNum = 0;
   m_dropState = false;
@@ -409,6 +418,7 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   m_convert_bitstream = false;
   m_bytesToBeConsumed = 0;
   m_previousPts = DVD_NOPTS_VALUE;
+  m_mixer.SetCapacity(3,3);
 }
 
 CDVDVideoCodecIMX::~CDVDVideoCodecIMX()
