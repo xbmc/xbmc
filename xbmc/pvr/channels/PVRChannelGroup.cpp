@@ -52,6 +52,7 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
     m_iLastWatched(0)
@@ -66,6 +67,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
     m_iLastWatched(0)
@@ -80,6 +82,7 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
     m_iLastWatched(0)
