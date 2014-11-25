@@ -48,13 +48,13 @@ public:
   VpuMemDesc* phyMem;
 };
 
-class CDVDVideoCodecIMXBuffer
+class CDVDVideoCodecIMXVPUBuffer
 {
 public:
 #ifdef TRACE_FRAMES
-  CDVDVideoCodecIMXBuffer(int idx);
+  CDVDVideoCodecIMXVPUBuffer(int idx);
 #else
-  CDVDVideoCodecIMXBuffer();
+  CDVDVideoCodecIMXVPUBuffer();
 #endif
 
   // reference counting
@@ -64,11 +64,11 @@ public:
 
   bool                     Rendered() const;
   void                     Queue(VpuDecOutFrameInfo *frameInfo,
-                                 CDVDVideoCodecIMXBuffer *previous);
+                                 CDVDVideoCodecIMXVPUBuffer *previous);
   VpuDecRetCode            ReleaseFramebuffer(VpuDecHandle *handle);
   void                     SetPts(double pts);
   double                   GetPts(void) const;
-  CDVDVideoCodecIMXBuffer *GetPreviousBuffer() const;
+  CDVDVideoCodecIMXVPUBuffer *GetPreviousBuffer() const;
 
   uint32_t       m_iWidth;
   uint32_t       m_iHeight;
@@ -77,7 +77,7 @@ public:
 
 private:
   // private because we are reference counted
-  virtual                  ~CDVDVideoCodecIMXBuffer();
+  virtual                  ~CDVDVideoCodecIMXVPUBuffer();
 
 private:
 #ifdef TRACE_FRAMES
@@ -87,13 +87,15 @@ private:
   VpuFrameBuffer          *m_frameBuffer;
   bool                     m_rendered;
   double                   m_pts;
-  CDVDVideoCodecIMXBuffer *m_previousBuffer; // Holds a the reference counted
+  CDVDVideoCodecIMXVPUBuffer *m_previousBuffer; // Holds a the reference counted
                                              // previous buffer
 };
 
+typedef CDVDVideoCodecIMXVPUBuffer CDVDVideoCodecIMXBuffer;
+
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
-  friend class CDVDVideoCodecIMXBuffer;
+  friend class CDVDVideoCodecIMXVPUBuffer;
   friend class CDVDVideoCodecIPUBuffer;
 
 public:
@@ -122,30 +124,30 @@ protected:
   bool VpuAllocFrameBuffers();
   int  VpuFindBuffer(void *frameAddr);
 
-  static const int          m_extraVpuBuffers;   // Number of additional buffers for VPU
-  static const int          m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
-  static CCriticalSection   m_codecBufferLock;   // Lock to protect buffers handled
-                                                 // by both decoding and rendering threads
+  static const int             m_extraVpuBuffers;   // Number of additional buffers for VPU
+  static const int             m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
+  static CCriticalSection      m_codecBufferLock;   // Lock to protect buffers handled
+                                                    // by both decoding and rendering threads
 
-  CDVDStreamInfo            m_hints;             // Hints from demuxer at stream opening
-  const char               *m_pFormatName;       // Current decoder format name
-  VpuDecOpenParam           m_decOpenParam;      // Parameters required to call VPU_DecOpen
-  CDecMemInfo               m_decMemInfo;        // VPU dedicated memory description
-  VpuDecHandle              m_vpuHandle;         // Handle for VPU library calls
-  VpuDecInitInfo            m_initInfo;          // Initial info returned from VPU at decoding start
-  bool                      m_dropState;         // Current drop state
-  int                       m_vpuFrameBufferNum; // Total number of allocated frame buffers
-  VpuFrameBuffer           *m_vpuFrameBuffers;   // Table of VPU frame buffers description
-  CDVDVideoCodecIMXBuffer **m_outputBuffers;     // Table of VPU output buffers
-  CDVDVideoCodecIMXBuffer  *m_lastBuffer;        // Keep track of previous VPU output buffer (needed by deinterlacing motion engin)
-  VpuMemDesc               *m_extraMem;          // Table of allocated extra Memory
-  int                       m_frameCounter;      // Decoded frames counter
-  bool                      m_usePTS;            // State whether pts out of decoding process should be used
-  VpuDecOutFrameInfo        m_frameInfo;         // Store last VPU output frame info
-  CBitstreamConverter      *m_converter;         // H264 annex B converter
-  bool                      m_convert_bitstream; // State whether bitstream conversion is required
-  int                       m_bytesToBeConsumed; // Remaining bytes in VPU
-  double                    m_previousPts;       // Enable to keep pts when needed
-  bool                      m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
-  double                    m_dts;               // Current dts
+  CDVDStreamInfo               m_hints;             // Hints from demuxer at stream opening
+  const char                  *m_pFormatName;       // Current decoder format name
+  VpuDecOpenParam              m_decOpenParam;      // Parameters required to call VPU_DecOpen
+  CDecMemInfo                  m_decMemInfo;        // VPU dedicated memory description
+  VpuDecHandle                 m_vpuHandle;         // Handle for VPU library calls
+  VpuDecInitInfo               m_initInfo;          // Initial info returned from VPU at decoding start
+  bool                         m_dropState;         // Current drop state
+  int                          m_vpuFrameBufferNum; // Total number of allocated frame buffers
+  VpuFrameBuffer              *m_vpuFrameBuffers;   // Table of VPU frame buffers description
+  CDVDVideoCodecIMXVPUBuffer **m_outputBuffers;     // Table of VPU output buffers
+  CDVDVideoCodecIMXVPUBuffer  *m_lastBuffer;        // Keep track of previous VPU output buffer (needed by deinterlacing motion engin)
+  VpuMemDesc                  *m_extraMem;          // Table of allocated extra Memory
+  int                          m_frameCounter;      // Decoded frames counter
+  bool                         m_usePTS;            // State whether pts out of decoding process should be used
+  VpuDecOutFrameInfo           m_frameInfo;         // Store last VPU output frame info
+  CBitstreamConverter         *m_converter;         // H264 annex B converter
+  bool                         m_convert_bitstream; // State whether bitstream conversion is required
+  int                          m_bytesToBeConsumed; // Remaining bytes in VPU
+  double                       m_previousPts;       // Enable to keep pts when needed
+  bool                         m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
+  double                       m_dts;               // Current dts
 };

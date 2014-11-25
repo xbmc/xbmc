@@ -264,7 +264,7 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     uvSize=Align(uvSize,nAlign);
   }
 
-  m_outputBuffers = new CDVDVideoCodecIMXBuffer*[m_vpuFrameBufferNum];
+  m_outputBuffers = new CDVDVideoCodecIMXVPUBuffer*[m_vpuFrameBufferNum];
 
   for (int i=0 ; i < m_vpuFrameBufferNum; i++)
   {
@@ -319,9 +319,9 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     m_vpuFrameBuffers[i].pbufVirtCb_tilebot=0;
 
 #ifdef TRACE_FRAMES
-    m_outputBuffers[i] = new CDVDVideoCodecIMXBuffer(i);
+    m_outputBuffers[i] = new CDVDVideoCodecIMXVPUBuffer(i);
 #else
-    m_outputBuffers[i] = new CDVDVideoCodecIMXBuffer();
+    m_outputBuffers[i] = new CDVDVideoCodecIMXVPUBuffer();
 #endif
   }
 
@@ -916,7 +916,7 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   int idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
   if (idx != -1)
   {
-    CDVDVideoCodecIMXBuffer *buffer = m_outputBuffers[idx];
+    CDVDVideoCodecIMXVPUBuffer *buffer = m_outputBuffers[idx];
 
     pDvdVideoPicture->pts = buffer->GetPts();
     pDvdVideoPicture->dts = m_dts;
@@ -978,11 +978,11 @@ void CDVDVideoCodecIMX::Leave()
 /*******************************************/
 
 #ifdef TRACE_FRAMES
-CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer(int idx)
+CDVDVideoCodecIMXVPUBuffer::CDVDVideoCodecIMXVPUBuffer(int idx)
   : m_refs(1)
   , m_idx(idx)
 #else
-CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
+CDVDVideoCodecIMXVPUBuffer::CDVDVideoCodecIMXVPUBuffer()
   : m_refs(1)
 #endif
   , m_frameBuffer(NULL)
@@ -992,7 +992,7 @@ CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
 {
 }
 
-void CDVDVideoCodecIMXBuffer::Lock()
+void CDVDVideoCodecIMXVPUBuffer::Lock()
 {
 #ifdef TRACE_FRAMES
   long count = AtomicIncrement(&m_refs);
@@ -1002,7 +1002,7 @@ void CDVDVideoCodecIMXBuffer::Lock()
 #endif
 }
 
-long CDVDVideoCodecIMXBuffer::Release()
+long CDVDVideoCodecIMXVPUBuffer::Release()
 {
   long count = AtomicDecrement(&m_refs);
 #ifdef TRACE_FRAMES
@@ -1034,18 +1034,18 @@ long CDVDVideoCodecIMXBuffer::Release()
   return count;
 }
 
-bool CDVDVideoCodecIMXBuffer::IsValid()
+bool CDVDVideoCodecIMXVPUBuffer::IsValid()
 {
   return m_frameBuffer != NULL;
 }
 
-bool CDVDVideoCodecIMXBuffer::Rendered() const
+bool CDVDVideoCodecIMXVPUBuffer::Rendered() const
 {
   return m_rendered;
 }
 
-void CDVDVideoCodecIMXBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
-                                    CDVDVideoCodecIMXBuffer *previous)
+void CDVDVideoCodecIMXVPUBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
+                                       CDVDVideoCodecIMXVPUBuffer *previous)
 {
   // No lock necessary because at this time there is definitely no
   // thread still holding a reference
@@ -1061,7 +1061,7 @@ void CDVDVideoCodecIMXBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
   m_phyAddr = m_frameBuffer->pbufY;
 }
 
-VpuDecRetCode CDVDVideoCodecIMXBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
+VpuDecRetCode CDVDVideoCodecIMXVPUBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
 {
   // Again no lock required because this is only issued after the last
   // external reference was released
@@ -1084,22 +1084,22 @@ VpuDecRetCode CDVDVideoCodecIMXBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
   return ret;
 }
 
-void CDVDVideoCodecIMXBuffer::SetPts(double pts)
+void CDVDVideoCodecIMXVPUBuffer::SetPts(double pts)
 {
   m_pts = pts;
 }
 
-double CDVDVideoCodecIMXBuffer::GetPts(void) const
+double CDVDVideoCodecIMXVPUBuffer::GetPts(void) const
 {
   return m_pts;
 }
 
-CDVDVideoCodecIMXBuffer *CDVDVideoCodecIMXBuffer::GetPreviousBuffer() const
+CDVDVideoCodecIMXVPUBuffer *CDVDVideoCodecIMXVPUBuffer::GetPreviousBuffer() const
 {
   return m_previousBuffer;
 }
 
-CDVDVideoCodecIMXBuffer::~CDVDVideoCodecIMXBuffer()
+CDVDVideoCodecIMXVPUBuffer::~CDVDVideoCodecIMXVPUBuffer()
 {
   assert(m_refs == 0);
 #ifdef TRACE_FRAMES
