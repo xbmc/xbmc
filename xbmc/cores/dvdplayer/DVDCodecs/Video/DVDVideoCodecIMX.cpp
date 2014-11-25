@@ -976,18 +976,38 @@ void CDVDVideoCodecIMX::Leave()
 }
 
 /*******************************************/
+#ifdef TRACE_FRAMES
+CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer(int idx)
+  : m_idx(idx)
+  , m_refs(1)
+#else
+CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
+  : m_refs(1)
+#endif
+  , m_pts(DVD_NOPTS_VALUE)
+  , m_dts(DVD_NOPTS_VALUE)
+{
+}
+
+void CDVDVideoCodecIMXBuffer::SetPts(double pts)
+{
+  m_pts = pts;
+}
+
+void CDVDVideoCodecIMXBuffer::SetDts(double dts)
+{
+  m_dts = dts;
+}
 
 #ifdef TRACE_FRAMES
 CDVDVideoCodecIMXVPUBuffer::CDVDVideoCodecIMXVPUBuffer(int idx)
-  : m_refs(1)
-  , m_idx(idx)
+  : CDVDVideoCodecIMXBuffer(idx)
 #else
 CDVDVideoCodecIMXVPUBuffer::CDVDVideoCodecIMXVPUBuffer()
-  : m_refs(1)
+  : CDVDVideoCodecIMXBuffer()
 #endif
   , m_frameBuffer(NULL)
   , m_rendered(false)
-  , m_pts(DVD_NOPTS_VALUE)
   , m_previousBuffer(NULL)
 {
 }
@@ -1078,20 +1098,10 @@ VpuDecRetCode CDVDVideoCodecIMXVPUBuffer::ReleaseFramebuffer(VpuDecHandle *handl
 #endif
   m_rendered = false;
   m_frameBuffer = NULL;
-  m_pts = DVD_NOPTS_VALUE;
+  SetPts(DVD_NOPTS_VALUE);
   SAFE_RELEASE(m_previousBuffer);
 
   return ret;
-}
-
-void CDVDVideoCodecIMXVPUBuffer::SetPts(double pts)
-{
-  m_pts = pts;
-}
-
-double CDVDVideoCodecIMXVPUBuffer::GetPts(void) const
-{
-  return m_pts;
 }
 
 CDVDVideoCodecIMXVPUBuffer *CDVDVideoCodecIMXVPUBuffer::GetPreviousBuffer() const

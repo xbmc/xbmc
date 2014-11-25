@@ -48,7 +48,44 @@ public:
   VpuMemDesc* phyMem;
 };
 
-class CDVDVideoCodecIMXVPUBuffer
+// Base class of IMXVPU buffer
+class CDVDVideoCodecIMXBuffer {
+public:
+#ifdef TRACE_FRAMES
+  CDVDVideoCodecIMXBuffer(int idx);
+#else
+  CDVDVideoCodecIMXBuffer();
+#endif
+
+  // reference counting
+  virtual void  Lock() = 0;
+  virtual long  Release() = 0;
+  virtual bool  IsValid() = 0;
+
+  void          SetPts(double pts);
+  double        GetPts(void) const { return m_pts; }
+
+  void          SetDts(double dts);
+  double        GetDts(void) const { return m_dts; }
+
+  uint32_t      iWidth;
+  uint32_t      iHeight;
+  uint8_t      *pPhysAddr;
+  uint8_t      *pVirtAddr;
+  uint8_t       iFormat;
+
+protected:
+#ifdef TRACE_FRAMES
+  int           m_idx;
+#endif
+  long          m_refs;
+
+private:
+  double        m_pts;
+  double        m_dts;
+};
+
+class CDVDVideoCodecIMXVPUBuffer : public CDVDVideoCodecIMXBuffer
 {
 public:
 #ifdef TRACE_FRAMES
@@ -66,32 +103,18 @@ public:
   void                        Queue(VpuDecOutFrameInfo *frameInfo,
                                     CDVDVideoCodecIMXVPUBuffer *previous);
   VpuDecRetCode               ReleaseFramebuffer(VpuDecHandle *handle);
-  void                        SetPts(double pts);
-  double                      GetPts(void) const;
   CDVDVideoCodecIMXVPUBuffer *GetPreviousBuffer() const;
-
-  uint32_t       m_iWidth;
-  uint32_t       m_iHeight;
-  uint8_t       *m_phyAddr;
-  uint8_t       *m_VirtAddr;
 
 private:
   // private because we are reference counted
   virtual                     ~CDVDVideoCodecIMXVPUBuffer();
 
 private:
-#ifdef TRACE_FRAMES
-  int                         m_idx;
-#endif
-  long                        m_refs;
   VpuFrameBuffer             *m_frameBuffer;
   bool                        m_rendered;
-  double                      m_pts;
   CDVDVideoCodecIMXVPUBuffer *m_previousBuffer; // Holds a the reference counted
                                                 // previous buffer
 };
-
-typedef CDVDVideoCodecIMXVPUBuffer CDVDVideoCodecIMXBuffer;
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {

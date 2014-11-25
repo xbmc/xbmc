@@ -2733,16 +2733,16 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
     glBindTexture(m_textureTarget, plane.id);
 
     GLuint physical = ~0U;
-    GLvoid *virt = (GLvoid*)IMXBuffer->m_VirtAddr;
-    glTexDirectVIVMap(m_textureTarget, IMXBuffer->m_iWidth, IMXBuffer->m_iHeight, GL_VIV_NV12,
+    GLvoid *virt = (GLvoid*)IMXBuffer->pVirtAddr;
+    glTexDirectVIVMap(m_textureTarget, IMXBuffer->iWidth, IMXBuffer->iHeight, GL_VIV_NV12,
                       (GLvoid **)&virt, &physical);
     glTexDirectInvalidateVIV(m_textureTarget);
 
     glBindTexture(m_textureTarget, 0);
 
     plane.flipindex = m_buffers[index].flipindex;
-    plane.texwidth  = IMXBuffer->m_iWidth;
-    plane.texheight = IMXBuffer->m_iHeight;
+    plane.texwidth  = IMXBuffer->iWidth;
+    plane.texheight = IMXBuffer->iHeight;
 
     CalculateTextureSourceRects(index, 1);
 
