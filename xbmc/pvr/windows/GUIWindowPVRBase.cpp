@@ -330,10 +330,9 @@ bool CGUIWindowPVRBase::StartRecordFile(const CFileItem &item)
   if (!item.HasEPGInfoTag())
     return false;
 
+  // tag has been checked for NULL in HasEPGInfoTag()
   const CEpgInfoTag *tag = item.GetEPGInfoTag();
-  CPVRChannelPtr channel;
-  if (tag)
-    channel = tag->ChannelTag();
+  CPVRChannelPtr channel = tag->ChannelTag();
 
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
