@@ -277,9 +277,6 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   virtual unsigned GetAllowedReferences();
 
-  static void Enter();
-  static void Leave();
-
 protected:
   bool VpuOpen();
   bool VpuAllocBuffers(VpuMemInfo *);
@@ -289,8 +286,6 @@ protected:
 
   static const int             m_extraVpuBuffers;   // Number of additional buffers for VPU
   static const int             m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
-  static CCriticalSection      m_codecBufferLock;   // Lock to protect buffers handled
-                                                    // by both decoding and rendering threads
 
   CDVDStreamInfo               m_hints;             // Hints from demuxer at stream opening
   const char                  *m_pFormatName;       // Current decoder format name
@@ -315,5 +310,4 @@ protected:
   int                          m_bytesToBeConsumed; // Remaining bytes in VPU
   double                       m_previousPts;       // Enable to keep pts when needed
   bool                         m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
-  double                       m_dts;               // Current dts
 };
