@@ -298,7 +298,7 @@ protected:
    \return true if the job has been cancelled, else returns false.
    \sa IJobCallback, CJob
    */
-  bool  OnJobProgress(unsigned int progress, unsigned int total, const CJob *job);
+  bool  OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const;
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -330,7 +330,4 @@ private:
   CCriticalSection m_section;
   CEvent           m_jobEvent;
   bool             m_running;
-
-  XbmcThreads::ConditionVariable m_tangle_cond;
-  unsigned int     m_tangle;  /*!< Active callbacks currently running */
 };
