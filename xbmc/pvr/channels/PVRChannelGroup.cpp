@@ -743,11 +743,10 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)
 {
-  bool bDelete(false);
   CSingleLock lock(m_critSection);
   for (unsigned int ptr = 0; ptr < m_members.size(); ptr--)
   {
-    bDelete = false;
+    bool bDelete = false;
     CPVRChannelPtr channel = m_members.at(ptr).channel;
     if (channel->IsVirtual())
       continue;

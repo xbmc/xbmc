@@ -676,8 +676,6 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOK
 
 void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CFileItem *item)
 {
-  PVR_MENUHOOKS *hooks = NULL;
-
   // get client id
   if (iClientID < 0 && cat == PVR_MENUHOOK_SETTING)
   {
@@ -719,7 +717,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
   PVR_CLIENT client;
   if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks(cat))
   {
-    hooks = client->GetMenuHooks();
+    PVR_MENUHOOKS *hooks = client->GetMenuHooks();
     std::vector<int> hookIDs;
     int selection = 0;
 

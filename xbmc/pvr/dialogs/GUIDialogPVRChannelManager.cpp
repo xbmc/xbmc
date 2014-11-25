@@ -242,10 +242,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
   if (OnMessage(msg))
   {
-    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
+      bool selected(msg.GetParam1() == 1);
       pItem->SetProperty("Changed", true);
       pItem->SetProperty("ActiveChannel", selected);
       m_bContainsChanges = true;
@@ -368,10 +368,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
   if (OnMessage(msg))
   {
-    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
+      bool selected(msg.GetParam1() == 1);
       pItem->SetProperty("Changed", true);
       pItem->SetProperty("UseEPG", selected);
       m_bContainsChanges = true;

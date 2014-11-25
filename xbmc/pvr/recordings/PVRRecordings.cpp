@@ -234,12 +234,10 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 
 bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 {
-  bool bReturn = false;
-
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot rename file: no valid recording tag", __FUNCTION__);
-    return bReturn;
+    return false;
   }
 
   CPVRRecording* tag = item.GetPVRRecordingInfoTag();
