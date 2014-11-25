@@ -1248,7 +1248,7 @@ int DVDCheckSector(unsigned char *data, int offset)
 {
   int i = 0;
   int32_t *p = (int32_t*)data + (DVD_VIDEO_LB_LEN>>2)*offset;
-  for(;i<(DVD_VIDEO_LB_LEN<<2);i++) {
+  for(;i<(DVD_VIDEO_LB_LEN>>2);i++) {
     if(*(p+i) != 0)
       break;
   }
