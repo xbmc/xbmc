@@ -58,16 +58,16 @@ public:
 #endif
 
   // reference counting
-  virtual void             Lock();
-  virtual long             Release();
-  virtual bool             IsValid();
+  virtual void                Lock();
+  virtual long                Release();
+  virtual bool                IsValid();
 
-  bool                     Rendered() const;
-  void                     Queue(VpuDecOutFrameInfo *frameInfo,
-                                 CDVDVideoCodecIMXVPUBuffer *previous);
-  VpuDecRetCode            ReleaseFramebuffer(VpuDecHandle *handle);
-  void                     SetPts(double pts);
-  double                   GetPts(void) const;
+  bool                        Rendered() const;
+  void                        Queue(VpuDecOutFrameInfo *frameInfo,
+                                    CDVDVideoCodecIMXVPUBuffer *previous);
+  VpuDecRetCode               ReleaseFramebuffer(VpuDecHandle *handle);
+  void                        SetPts(double pts);
+  double                      GetPts(void) const;
   CDVDVideoCodecIMXVPUBuffer *GetPreviousBuffer() const;
 
   uint32_t       m_iWidth;
@@ -77,18 +77,18 @@ public:
 
 private:
   // private because we are reference counted
-  virtual                  ~CDVDVideoCodecIMXVPUBuffer();
+  virtual                     ~CDVDVideoCodecIMXVPUBuffer();
 
 private:
 #ifdef TRACE_FRAMES
-  int                      m_idx;
+  int                         m_idx;
 #endif
-  long                     m_refs;
-  VpuFrameBuffer          *m_frameBuffer;
-  bool                     m_rendered;
-  double                   m_pts;
+  long                        m_refs;
+  VpuFrameBuffer             *m_frameBuffer;
+  bool                        m_rendered;
+  double                      m_pts;
   CDVDVideoCodecIMXVPUBuffer *m_previousBuffer; // Holds a the reference counted
-                                             // previous buffer
+                                                // previous buffer
 };
 
 typedef CDVDVideoCodecIMXVPUBuffer CDVDVideoCodecIMXBuffer;
