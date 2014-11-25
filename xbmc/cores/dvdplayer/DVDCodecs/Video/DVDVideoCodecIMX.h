@@ -19,10 +19,14 @@
  *
  */
 #include <queue>
+#include <vector>
 #include <imx-mm/vpu/vpu_wrapper.h>
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "threads/CriticalSection.h"
+#include "threads/Condition.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
 #include "utils/BitstreamConverter.h"
 
 
@@ -33,6 +37,15 @@
 // The deinterlacer output and render format. Uncomment to use I420.
 // The IPU works faster when outputting to NV12.
 //#define IMX_OUTPUT_FORMAT_I420
+
+// This enables logging of times for Decode->Decode, Render->Render,
+// Deinterlace->Deinterlace. It helps to profile several stages of
+// processing with respect to changed kernels or other configurations.
+// Since we utilize VPU, IPU and GPU at the same time different kernel
+// priorities to those subsystems can result in a very different user
+// experience. With that setting enabled we can build some statistics,
+// as numbers are always better than "feelings"
+//#define IMX_PROFILE_BUFFERS
 
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
@@ -192,6 +205,83 @@ class CDVDVideoCodecIMXIPUBuffers
     int                          m_bufferNum;
     CDVDVideoCodecIMXIPUBuffer **m_buffers;
     int                          m_currentFieldFmt;
+};
+
+
+// Collection class that manages a pool of IPU buffers that are used for
+// deinterlacing. In future they can also serve rotation or color conversion
+// buffers.
+class CDVDVideoCodecIMXIPUBuffers
+{
+  public:
+    CDVDVideoCodecIMXIPUBuffers();
+    ~CDVDVideoCodecIMXIPUBuffers();
+
+    bool Init(int width, int height, int numBuffers, int nAlign);
+    // Sets the mode to be used if deinterlacing is set to AUTO
+    void SetAutoMode(bool mode) { m_autoMode = mode; }
+	bool AutoMode() const { return m_autoMode; }
+    bool Reset();
+    bool Close();
+
+    CDVDVideoCodecIMXIPUBuffer *
+    Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
+            VpuFieldType fieldType, bool lowMotion);
+
+  private:
+    int                          m_ipuHandle;
+	bool                         m_autoMode;
+    int                          m_bufferNum;
+    CDVDVideoCodecIMXIPUBuffer **m_buffers;
+    int                          m_currentFieldFmt;
+};
+
+
+class CDVDVideoMixerIMX : private CThread {
+public:
+  CDVDVideoMixerIMX(CDVDVideoCodecIMXIPUBuffers *proc);
+  virtual ~CDVDVideoMixerIMX();
+
+  void SetCapacity(int intput, int output);
+
+  void Start();
+  void Reset();
+  void Dispose();
+  bool IsActive();
+
+  // This function blocks until an input slot is available.
+  // It returns if an output is available.
+  CDVDVideoCodecIMXBuffer *Process(CDVDVideoCodecIMXVPUBuffer *input);
+
+private:
+  CDVDVideoCodecIMXVPUBuffer *GetNextInput();
+  void WaitForFreeOutput();
+  bool PushOutput(CDVDVideoCodecIMXBuffer *v);
+  CDVDVideoCodecIMXBuffer *ProcessFrame(CDVDVideoCodecIMXVPUBuffer *input);
+
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void StopThread(bool bWait = true);
+  virtual void Process();
+
+private:
+  typedef std::vector<CDVDVideoCodecIMXVPUBuffer*> InputBuffers;
+  typedef std::vector<CDVDVideoCodecIMXBuffer*> OutputBuffers;
+
+  CDVDVideoCodecIMXIPUBuffers    *m_proc;
+  InputBuffers                    m_input;
+  volatile int                    m_beginInput, m_endInput;
+  volatile size_t                 m_bufferedInput;
+  XbmcThreads::ConditionVariable  m_inputNotEmpty;
+  XbmcThreads::ConditionVariable  m_inputNotFull;
+
+  OutputBuffers                   m_output;
+  volatile int                    m_beginOutput, m_endOutput;
+  volatile size_t                 m_bufferedOutput;
+  XbmcThreads::ConditionVariable  m_outputNotFull;
+
+  mutable CCriticalSection        m_monitor;
+  CDVDVideoCodecIMXBuffer        *m_lastFrame;    // Last input frame
 };
 
 

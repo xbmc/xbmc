@@ -26,11 +26,15 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <linux/mxcfb.h>
+#include <linux/ipu.h>
+#include "settings/MediaSettings.h"
+#include "settings/VideoSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
+#include "threads/Atomics.h"
 #include "utils/log.h"
 #include "DVDClock.h"
-#include "settings/AdvancedSettings.h"
-#include "threads/Atomics.h"
 
 #define FRAME_ALIGN 16
 #define MEDIAINFO 1
@@ -1485,4 +1489,244 @@ CDVDVideoCodecIMXIPUBuffers::Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
   }
 
   return target;
+}
+
+
+CDVDVideoMixerIMX::CDVDVideoMixerIMX(CDVDVideoCodecIMXIPUBuffers *proc)
+  : CThread("IMX6 Mixer")
+  , m_beginInput(0), m_endInput(0), m_bufferedInput(0)
+  , m_beginOutput(0), m_endOutput(0), m_bufferedOutput(0)
+  , m_proc(proc)
+{
+}
+
+CDVDVideoMixerIMX::~CDVDVideoMixerIMX()
+{
+  Dispose();
+}
+
+void CDVDVideoMixerIMX::SetCapacity(int nInput, int nOutput)
+{
+	Reset();
+	m_input.resize(nInput);
+	m_output.resize(nOutput);
+}
+
+void CDVDVideoMixerIMX::Start()
+{
+  Create();
+}
+
+void CDVDVideoMixerIMX::Reset()
+{
+  CSingleLock lk(m_monitor);
+
+  // Release all still referenced buffers
+  for (size_t i = 0; i < m_input.size(); ++i)
+  {
+    SAFE_RELEASE(m_input[i]);
+    m_input[i] = NULL;
+  }
+
+  for (size_t i = 0; i < m_output.size(); ++i)
+  {
+    SAFE_RELEASE(m_output[i]);
+    m_output[i] = NULL;
+  }
+
+  // Reset ring buffer
+  m_beginInput = m_endInput = m_bufferedInput = 0;
+  m_beginOutput = m_endOutput = m_bufferedOutput = 0;
+
+  m_inputNotFull.notifyAll();
+  m_outputNotFull.notifyAll();
+}
+
+void CDVDVideoMixerIMX::Dispose()
+{
+  StopThread();
+  Reset();
+}
+
+bool CDVDVideoMixerIMX::IsActive() {
+  return IsRunning();
+}
+
+CDVDVideoCodecIMXBuffer *CDVDVideoMixerIMX::Process(CDVDVideoCodecIMXVPUBuffer *buffer)
+{
+  CSingleLock lk(m_monitor);
+  CDVDVideoCodecIMXBuffer *r;
+
+  if (m_bStop)
+  {
+    m_inputNotEmpty.notifyAll();
+    m_outputNotFull.notifyAll();
+    SAFE_RELEASE(buffer);
+    return NULL;
+  }
+
+  if (m_bufferedOutput)
+  {
+    // Pop the output
+    r = m_output[m_beginOutput];
+    m_output[m_beginOutput] = NULL;
+    m_beginOutput = (m_beginOutput+1) % m_output.size();
+    --m_bufferedOutput;
+    m_outputNotFull.notifyAll();
+  }
+  else
+    r = NULL;
+
+  // Flush call?
+  if (!buffer)
+    return r;
+
+  // If the input queue is full, wait for a free slot
+  while ((m_bufferedInput == m_input.size()) && !m_bStop)
+    m_inputNotFull.wait(lk);
+
+  if (m_bStop)
+  {
+    m_inputNotEmpty.notifyAll();
+    m_outputNotFull.notifyAll();
+    buffer->Release();
+    return r;
+  }
+
+  // Store the value
+  m_input[m_endInput] = buffer;
+  m_endInput = (m_endInput+1) % m_input.size();
+  ++m_bufferedInput;
+  m_inputNotEmpty.notifyAll();
+
+  //CLog::Log(LOGNOTICE, "Pushed input frame %x\n", (int)buffer);
+
+  return r;
+}
+
+void CDVDVideoMixerIMX::OnStartup()
+{
+  CLog::Log(LOGNOTICE, "CDVDVideoMixerIMX::OnStartup: Mixer Thread created");
+}
+
+void CDVDVideoMixerIMX::OnExit()
+{
+  CLog::Log(LOGNOTICE, "CDVDVideoMixerIMX::OnExit: Mixer Thread terminated");
+}
+
+void CDVDVideoMixerIMX::StopThread(bool bWait /*= true*/)
+{
+  CThread::StopThread(false);
+  m_inputNotFull.notifyAll();
+  m_inputNotEmpty.notifyAll();
+  m_outputNotFull.notifyAll();
+  if (bWait)
+    CThread::StopThread(true);
+}
+
+void CDVDVideoMixerIMX::Process()
+{
+  while (!m_bStop)
+  {
+    // Blocking until an input is available
+    CDVDVideoCodecIMXVPUBuffer *inputBuffer = GetNextInput();
+    if (inputBuffer)
+    {
+      // Wait for free slot
+      WaitForFreeOutput();
+
+      CDVDVideoCodecIMXBuffer *outputBuffer = ProcessFrame(inputBuffer);
+
+      // Queue the output if any
+      if (outputBuffer)
+      {
+        // Blocking until a free output slot is available. The buffer is
+        // reference counted in PushOutput
+        PushOutput(outputBuffer);
+      }
+
+      SAFE_RELEASE(inputBuffer);
+    }
+  }
+}
+
+CDVDVideoCodecIMXVPUBuffer *CDVDVideoMixerIMX::GetNextInput() {
+  CSingleLock lk(m_monitor);
+  while (!m_bufferedInput && !m_bStop)
+    m_inputNotEmpty.wait(lk);
+
+  if (m_bStop)
+    return NULL;
+
+  CDVDVideoCodecIMXVPUBuffer *v = m_input[m_beginInput];
+  m_input[m_beginInput] = NULL;
+  m_beginInput = (m_beginInput+1) % m_input.size();
+  --m_bufferedInput;
+  m_inputNotFull.notifyAll();
+
+  //CLog::Log(LOGNOTICE, "Popped input frame %x\n", (int)v);
+
+  return v;
+}
+
+void CDVDVideoMixerIMX::WaitForFreeOutput() {
+  CSingleLock lk(m_monitor);
+
+  // Output queue is full, wait for a free slot
+  while (m_bufferedOutput == m_output.size() && !m_bStop)
+    m_outputNotFull.wait(lk);
+}
+
+bool CDVDVideoMixerIMX::PushOutput(CDVDVideoCodecIMXBuffer *v) {
+  CSingleLock lk(m_monitor);
+
+  v->Lock();
+
+  // If closed return false
+  if (m_bStop)
+  {
+    v->Release();
+    return false;
+  }
+
+  // Store the value
+  m_output[m_endOutput] = v;
+  m_endOutput = (m_endOutput+1) % m_output.size();
+  ++m_bufferedOutput;
+
+  return true;
+}
+
+CDVDVideoCodecIMXBuffer *CDVDVideoMixerIMX::ProcessFrame(CDVDVideoCodecIMXVPUBuffer *inputBuffer)
+{
+  CDVDVideoCodecIMXBuffer *outputBuffer;
+  EDEINTERLACEMODE mDeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  //EINTERLACEMETHOD mInt       = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
+
+  if ((mDeintMode == VS_DEINTERLACEMODE_OFF)
+   || ((mDeintMode == VS_DEINTERLACEMODE_AUTO) && !m_proc->AutoMode()))
+  {
+    outputBuffer = inputBuffer;
+  }
+  else
+  {
+#ifdef IMX_PROFILE_BUFFERS
+    unsigned long long current = XbmcThreads::SystemClockMillis();
+#endif
+//#define DUMMY_DEINTERLACER
+#ifdef DUMMY_DEINTERLACER
+    Sleep(35);
+    outputBuffer = inputBuffer;
+#else
+    outputBuffer = m_proc->Process(inputBuffer,
+                                   inputBuffer->GetFieldType(),
+                                   false);
+#endif
+#ifdef IMX_PROFILE_BUFFERS
+    CLog::Log(LOGNOTICE, "+P  %x  %lld\n", (int)outputBuffer,
+              XbmcThreads::SystemClockMillis()-current);
+#endif
+  }
+
+  return outputBuffer;
 }
