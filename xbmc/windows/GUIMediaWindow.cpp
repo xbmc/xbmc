@@ -678,8 +678,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
       m_history.RemoveParentPath();
   }
 
-  // update the view state to the currently fetched items
-  // TODO we should remove the second call m_guiState.reset() in Update() and pass the right file item ref here
+  // update the view state's reference to the current items
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), items));
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
@@ -822,8 +821,6 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   OnPrepareFileItems(*m_vecItems);
 
   m_vecItems->FillInDefaultIcons();
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 
   // remember the original (untouched) list of items (for filtering etc)
   m_unfilteredItems->SetPath(m_vecItems->GetPath()); // use the original path - it'll likely be relied on for other things later.
