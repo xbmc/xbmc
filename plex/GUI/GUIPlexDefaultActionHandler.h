@@ -44,11 +44,10 @@ public:
   static bool IsPlayQueueContainer(CFileItemListPtr container);
   static bool IsPlayListContainer(CFileItemListPtr container);
   static bool IsItemPlaylistCompatible(CFileItemPtr item);
-  bool PlayMedia(CFileItemPtr item, CFileItemListPtr container);
-
 private:
   void GetContextButtonsForAction(int actionID, CFileItemPtr item, CFileItemListPtr container, CContextButtons& buttons);
   std::string GetFilteredURI(const CFileItem& item) const;
+  bool PlayMedia(CFileItemPtr item, CFileItemListPtr container);
   void PlayAll(CFileItemListPtr container, bool shuffle, const CFileItemPtr& fromHere = CFileItemPtr());
   
   

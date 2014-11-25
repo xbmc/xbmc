@@ -19,7 +19,10 @@ bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
   }
   else
   {
-    g_plexApplication.defaultActionHandler->PlayMedia(m_vecItems->Get(iItem), m_vecItems);
+    CPlexPlayQueueOptions options;
+    options.startPlaying = true;
+    options.startItemKey = item->GetProperty("key").asString();
+    g_plexApplication.playQueueManager->create(*m_vecItems, "", options);
   }
 
   return true;
