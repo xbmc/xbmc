@@ -187,60 +187,32 @@ private:
 // buffers.
 class CDVDVideoCodecIMXIPUBuffers
 {
-  public:
-    CDVDVideoCodecIMXIPUBuffers();
-    ~CDVDVideoCodecIMXIPUBuffers();
+public:
+  CDVDVideoCodecIMXIPUBuffers();
+  ~CDVDVideoCodecIMXIPUBuffers();
 
-    bool Init(int width, int height, int numBuffers, int nAlign);
-    // Sets the mode to be used if deinterlacing is set to AUTO
-    void SetAutoMode(bool mode) { m_autoMode = mode; }
-	bool AutoMode() const { return m_autoMode; }
-    bool Reset();
-    bool Close();
+  bool Init(int width, int height, int numBuffers, int nAlign);
+  // Sets the mode to be used if deinterlacing is set to AUTO
+  void SetAutoMode(bool mode) { m_autoMode = mode; }
+  bool AutoMode() const { return m_autoMode; }
+  bool Reset();
+  bool Close();
 
-    CDVDVideoCodecIMXIPUBuffer *
-    Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
-            VpuFieldType fieldType, bool lowMotion);
+  CDVDVideoCodecIMXIPUBuffer *
+  Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
+          VpuFieldType fieldType, bool lowMotion);
 
-  private:
-    int                          m_ipuHandle;
-	bool                         m_autoMode;
-    int                          m_bufferNum;
-    CDVDVideoCodecIMXIPUBuffer **m_buffers;
-    int                          m_currentFieldFmt;
+private:
+  int                          m_ipuHandle;
+  bool                         m_autoMode;
+  int                          m_bufferNum;
+  CDVDVideoCodecIMXIPUBuffer **m_buffers;
+  int                          m_currentFieldFmt;
 };
 
 
-// Collection class that manages a pool of IPU buffers that are used for
-// deinterlacing. In future they can also serve rotation or color conversion
-// buffers.
-class CDVDVideoCodecIMXIPUBuffers
+class CDVDVideoMixerIMX : private CThread
 {
-  public:
-    CDVDVideoCodecIMXIPUBuffers();
-    ~CDVDVideoCodecIMXIPUBuffers();
-
-    bool Init(int width, int height, int numBuffers, int nAlign);
-    // Sets the mode to be used if deinterlacing is set to AUTO
-    void SetAutoMode(bool mode) { m_autoMode = mode; }
-	bool AutoMode() const { return m_autoMode; }
-    bool Reset();
-    bool Close();
-
-    CDVDVideoCodecIMXIPUBuffer *
-    Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
-            VpuFieldType fieldType, bool lowMotion);
-
-  private:
-    int                          m_ipuHandle;
-	bool                         m_autoMode;
-    int                          m_bufferNum;
-    CDVDVideoCodecIMXIPUBuffer **m_buffers;
-    int                          m_currentFieldFmt;
-};
-
-
-class CDVDVideoMixerIMX : private CThread {
 public:
   CDVDVideoMixerIMX(CDVDVideoCodecIMXIPUBuffers *proc);
   virtual ~CDVDVideoMixerIMX();
@@ -309,7 +281,6 @@ public:
   static void Leave();
 
 protected:
-
   bool VpuOpen();
   bool VpuAllocBuffers(VpuMemInfo *);
   bool VpuFreeBuffers();
