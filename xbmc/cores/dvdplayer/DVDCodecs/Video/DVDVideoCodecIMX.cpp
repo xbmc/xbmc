@@ -1352,3 +1352,137 @@ bool CDVDVideoCodecIMXIPUBuffer::Free(int fd)
 
   return ret;
 }
+
+CDVDVideoCodecIMXIPUBuffers::CDVDVideoCodecIMXIPUBuffers()
+  : m_ipuHandle(0)
+  , m_bufferNum(0)
+  , m_buffers(NULL)
+  , m_currentFieldFmt(0)
+{
+}
+
+CDVDVideoCodecIMXIPUBuffers::~CDVDVideoCodecIMXIPUBuffers()
+{
+  Close();
+}
+
+bool CDVDVideoCodecIMXIPUBuffers::Init(int width, int height, int numBuffers, int nAlign)
+{
+  if (numBuffers<=0)
+  {
+    CLog::Log(LOGERROR, "IPU Init: invalid number of buffers: %d\n", numBuffers);
+    return false;
+  }
+
+  m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
+  if (m_ipuHandle<=0)
+  {
+    CLog::Log(LOGWARNING, "Failed to initialize IPU: deinterlacing disabled: %s\n",
+              strerror(errno));
+    m_ipuHandle = 0;
+    return false;
+  }
+
+  m_bufferNum = numBuffers;
+  m_buffers = new CDVDVideoCodecIMXIPUBuffer*[m_bufferNum];
+  m_currentFieldFmt = 0;
+
+  for (int i=0; i < m_bufferNum; i++)
+  {
+#ifdef TRACE_FRAMES
+    m_buffers[i] = new CDVDVideoCodecIMXIPUBuffer(i);
+#else
+    m_buffers[i] = new CDVDVideoCodecIMXIPUBuffer;
+#endif
+    if (!m_buffers[i]->Allocate(m_ipuHandle, width, height, nAlign))
+    {
+      Close();
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool CDVDVideoCodecIMXIPUBuffers::Reset()
+{
+  for (int i=0; i < m_bufferNum; i++)
+    m_buffers[i]->ReleaseFrameBuffer();
+  m_currentFieldFmt = 0;
+}
+
+bool CDVDVideoCodecIMXIPUBuffers::Close()
+{
+  bool ret = true;
+
+  if (m_ipuHandle)
+  {
+    for (int i=0; i < m_bufferNum; i++)
+    {
+      if (m_buffers[i] == NULL ) continue;
+      if (!m_buffers[i]->Free(m_ipuHandle))
+        ret = false;
+    }
+
+    // Close IPU device
+    if (close(m_ipuHandle))
+    {
+      CLog::Log(LOGERROR, "IPU failed to close interface: %s\n", strerror(errno));
+      ret = false;
+    }
+
+    m_ipuHandle = 0;
+  }
+
+  if (m_buffers)
+  {
+    for (int i=0; i < m_bufferNum; i++)
+      SAFE_RELEASE(m_buffers[i]);
+
+    delete m_buffers;
+    m_buffers = NULL;
+  }
+
+  m_bufferNum = 0;
+  return true;
+}
+
+CDVDVideoCodecIMXIPUBuffer *
+CDVDVideoCodecIMXIPUBuffers::Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
+                                     VpuFieldType fieldType, bool lowMotion)
+{
+  CDVDVideoCodecIMXIPUBuffer *target = NULL;
+  bool ret = true;
+
+  if (!m_bufferNum)
+    return NULL;
+
+  for (int i=0; i < m_bufferNum; i++ )
+  {
+    if (!m_buffers[i]->Rendered()) continue;
+
+    // IPU process:
+    // SRC: Current VPU physical buffer address + last VPU buffer address
+    // DST: IPU buffer[i]
+    ret = m_buffers[i]->Process(m_ipuHandle, (CDVDVideoCodecIMXVPUBuffer*)sourceBuffer,
+                                fieldType, m_currentFieldFmt,
+                                lowMotion);
+    if (ret)
+    {
+#ifdef TRACE_FRAMES
+      CLog::Log(LOGDEBUG, "+  %02d  (IPU)\n", i);
+#endif
+      target = m_buffers[i];
+    }
+    break;
+  }
+
+  // Buffers are there but there is no free one, this is an error!
+  // Rendering will continue with unprocessed frames ...
+  if (ret && target==NULL)
+  {
+    CLog::Log(LOGERROR, "Deinterlacing: did not find free buffer, forward unprocessed frame\n");
+  }
+
+  return target;
+}

@@ -26,6 +26,14 @@
 #include "utils/BitstreamConverter.h"
 
 
+// The decoding format of the VPU buffer. Comment this to decode
+// as NV12. The VPU works faster with I420.
+#define IMX_INPUT_FORMAT_I420
+
+// The deinterlacer output and render format. Uncomment to use I420.
+// The IPU works faster when outputting to NV12.
+//#define IMX_OUTPUT_FORMAT_I420
+
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
 
@@ -155,6 +163,35 @@ private:
   uint32_t                 m_iWidth;
   uint32_t                 m_iHeight;
   int                      m_nSize;
+};
+
+
+// Collection class that manages a pool of IPU buffers that are used for
+// deinterlacing. In future they can also serve rotation or color conversion
+// buffers.
+class CDVDVideoCodecIMXIPUBuffers
+{
+  public:
+    CDVDVideoCodecIMXIPUBuffers();
+    ~CDVDVideoCodecIMXIPUBuffers();
+
+    bool Init(int width, int height, int numBuffers, int nAlign);
+    // Sets the mode to be used if deinterlacing is set to AUTO
+    void SetAutoMode(bool mode) { m_autoMode = mode; }
+	bool AutoMode() const { return m_autoMode; }
+    bool Reset();
+    bool Close();
+
+    CDVDVideoCodecIMXIPUBuffer *
+    Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
+            VpuFieldType fieldType, bool lowMotion);
+
+  private:
+    int                          m_ipuHandle;
+	bool                         m_autoMode;
+    int                          m_bufferNum;
+    CDVDVideoCodecIMXIPUBuffer **m_buffers;
+    int                          m_currentFieldFmt;
 };
 
 
