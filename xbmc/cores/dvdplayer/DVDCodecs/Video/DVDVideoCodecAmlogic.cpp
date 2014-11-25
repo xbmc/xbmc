@@ -111,14 +111,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MSMPEG4V3:
       m_pFormatName = "am-mpeg4";
       break;
-    case AV_CODEC_ID_H263:
-    case AV_CODEC_ID_H263P:
-    case AV_CODEC_ID_H263I:
-      m_pFormatName = "am-h263";
-      break;
-    case AV_CODEC_ID_FLV1:
-      m_pFormatName = "am-flv1";
-      break;
     case AV_CODEC_ID_RV10:
     case AV_CODEC_ID_RV20:
     case AV_CODEC_ID_RV30:
