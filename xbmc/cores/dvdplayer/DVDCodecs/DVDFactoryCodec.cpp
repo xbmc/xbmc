@@ -264,6 +264,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   {
     switch(hint.codec)
     {
+      case AV_CODEC_ID_HEVC:
       case CODEC_ID_H264:
       case CODEC_ID_MPEG4:
       case CODEC_ID_MPEG2VIDEO:
