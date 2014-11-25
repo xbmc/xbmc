@@ -94,8 +94,8 @@ bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
   return true;
 
 AllocFailure:
-        VpuFreeBuffers();
-        return false;
+  VpuFreeBuffers();
+  return false;
 }
 
 int CDVDVideoCodecIMX::VpuFindBuffer(void *frameAddr)
@@ -231,50 +231,76 @@ VpuOpenError:
 
 bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
 {
+  int totalSize = 0;
+  int ySize     = 0;
+  int uSize     = 0;
+  int vSize     = 0;
+  int mvSize    = 0;
+  int yStride   = 0;
+  int uvStride  = 0;
+
   VpuDecRetCode ret;
   VpuMemDesc vpuMem;
-  int totalSize=0;
-  int mvSize=0;
-  int ySize=0;
-  int uvSize=0;
-  int yStride=0;
-  int uvStride=0;
   unsigned char* ptr;
   unsigned char* ptrVirt;
   int nAlign;
 
-  m_vpuFrameBufferNum =  m_initInfo.nMinFrameBufferCount + m_extraVpuBuffers;
+  m_vpuFrameBufferNum = m_initInfo.nMinFrameBufferCount + m_extraVpuBuffers;
   m_vpuFrameBuffers = new VpuFrameBuffer[m_vpuFrameBufferNum];
 
-  yStride=Align(m_initInfo.nPicWidth,FRAME_ALIGN);
+  yStride = Align(m_initInfo.nPicWidth,FRAME_ALIGN);
   if(m_initInfo.nInterlace)
   {
-    ySize=Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,(2*FRAME_ALIGN));
+    ySize = Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,(2*FRAME_ALIGN));
   }
   else
   {
-    ySize=Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,FRAME_ALIGN);
+    ySize = Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,FRAME_ALIGN);
   }
 
-  //NV12 for all video
-  uvStride=yStride;
-  uvSize=ySize/2;
-  mvSize=uvSize/2;
+#ifdef IMX_INPUT_FORMAT_I420
+  switch (m_initInfo.nMjpgSourceFormat)
+  {
+  case 0: // I420 (4:2:0)
+    uvStride = yStride / 2;
+    uSize = vSize = mvSize = ySize / 4;
+    break;
+  case 1: // Y42B (4:2:2 horizontal)
+    uvStride = yStride / 2;
+    uSize = vSize = mvSize = ySize / 2;
+    break;
+  case 3: // Y444 (4:4:4)
+    uvStride = yStride;
+    uSize = vSize = mvSize = ySize;
+    break;
+  default:
+    CLog::Log(LOGERROR, "%s: invalid source format in init info\n",__FUNCTION__,ret);
+    return false;
+  }
 
-  nAlign=m_initInfo.nAddressAlignment;
+#else
+  // NV12
+  uvStride = yStride;
+  uSize    = ySize/2;
+  mvSize   = uSize/2;
+#endif
+
+  nAlign = m_initInfo.nAddressAlignment;
   if(nAlign>1)
   {
-    ySize=Align(ySize,nAlign);
-    uvSize=Align(uvSize,nAlign);
+    ySize = Align(ySize, nAlign);
+    uSize = Align(uSize, nAlign);
+    vSize = Align(vSize, nAlign);
+    mvSize = Align(mvSize, nAlign);
   }
 
   m_outputBuffers = new CDVDVideoCodecIMXVPUBuffer*[m_vpuFrameBufferNum];
 
   for (int i=0 ; i < m_vpuFrameBufferNum; i++)
   {
-    totalSize=(ySize+uvSize+mvSize+nAlign)*1;
+    totalSize = ySize + uSize + vSize + mvSize + nAlign;
 
-    vpuMem.nSize=totalSize;
+    vpuMem.nSize = totalSize;
     ret = VPU_DecGetMem(&vpuMem);
     if(ret != VPU_DEC_RET_SUCCESS)
     {
@@ -291,36 +317,44 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nSize = vpuMem.nSize;
 
     //fill frameBuf
-    ptr=(unsigned char*)vpuMem.nPhyAddr;
-    ptrVirt=(unsigned char*)vpuMem.nVirtAddr;
+    ptr = (unsigned char*)vpuMem.nPhyAddr;
+    ptrVirt = (unsigned char*)vpuMem.nVirtAddr;
 
     //align the base address
     if(nAlign>1)
     {
-      ptr=(unsigned char*)Align(ptr,nAlign);
-      ptrVirt=(unsigned char*)Align(ptrVirt,nAlign);
+      ptr = (unsigned char*)Align(ptr,nAlign);
+      ptrVirt = (unsigned char*)Align(ptrVirt,nAlign);
     }
 
     // fill stride info
-    m_vpuFrameBuffers[i].nStrideY=yStride;
-    m_vpuFrameBuffers[i].nStrideC=uvStride;
+    m_vpuFrameBuffers[i].nStrideY           = yStride;
+    m_vpuFrameBuffers[i].nStrideC           = uvStride;
 
     // fill phy addr
-    m_vpuFrameBuffers[i].pbufY=ptr;
-    m_vpuFrameBuffers[i].pbufCb=ptr+ySize;
-    m_vpuFrameBuffers[i].pbufCr=0;
-    m_vpuFrameBuffers[i].pbufMvCol=ptr+ySize+uvSize;
+    m_vpuFrameBuffers[i].pbufY              = ptr;
+    m_vpuFrameBuffers[i].pbufCb             = ptr + ySize;
+#ifdef IMX_INPUT_FORMAT_I420
+    m_vpuFrameBuffers[i].pbufCr             = ptr + ySize + uSize;
+#else
+    m_vpuFrameBuffers[i].pbufCr             = 0;
+#endif
+    m_vpuFrameBuffers[i].pbufMvCol          = ptr + ySize + uSize + vSize;
 
     // fill virt addr
-    m_vpuFrameBuffers[i].pbufVirtY=ptrVirt;
-    m_vpuFrameBuffers[i].pbufVirtCb=ptrVirt+ySize;
-    m_vpuFrameBuffers[i].pbufVirtCr=0;
-    m_vpuFrameBuffers[i].pbufVirtMvCol=ptrVirt+ySize+uvSize;
+    m_vpuFrameBuffers[i].pbufVirtY          = ptrVirt;
+    m_vpuFrameBuffers[i].pbufVirtCb         = ptrVirt + ySize;
+#ifdef IMX_INPUT_FORMAT_I420
+    m_vpuFrameBuffers[i].pbufVirtCr         = ptrVirt + ySize + uSize;
+#else
+    m_vpuFrameBuffers[i].pbufVirtCr         = 0;
+#endif
+    m_vpuFrameBuffers[i].pbufVirtMvCol      = ptrVirt + ySize + uSize + vSize;
 
-    m_vpuFrameBuffers[i].pbufY_tilebot=0;
-    m_vpuFrameBuffers[i].pbufCb_tilebot=0;
-    m_vpuFrameBuffers[i].pbufVirtY_tilebot=0;
-    m_vpuFrameBuffers[i].pbufVirtCb_tilebot=0;
+    m_vpuFrameBuffers[i].pbufY_tilebot      = 0;
+    m_vpuFrameBuffers[i].pbufCb_tilebot     = 0;
+    m_vpuFrameBuffers[i].pbufVirtY_tilebot  = 0;
+    m_vpuFrameBuffers[i].pbufVirtCb_tilebot = 0;
 
 #ifdef TRACE_FRAMES
     m_outputBuffers[i] = new CDVDVideoCodecIMXVPUBuffer(i);
@@ -647,7 +681,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         m_bytesToBeConsumed += inData.nSize;
       ret = VPU_DecDecodeBuf(m_vpuHandle, &inData, &decRet);
 #ifdef IMX_PROFILE
-        CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
+      CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
 #endif
 
       if (ret != VPU_DEC_RET_SUCCESS)
@@ -1079,10 +1113,18 @@ void CDVDVideoCodecIMXVPUBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
   if (m_previousBuffer)
     m_previousBuffer->Lock();
 
-  m_iWidth  = frameInfo->pExtInfo->nFrmWidth;
-  m_iHeight = frameInfo->pExtInfo->nFrmHeight;
-  m_VirtAddr = m_frameBuffer->pbufVirtY;
-  m_phyAddr = m_frameBuffer->pbufY;
+  iWidth    = frameInfo->pExtInfo->nFrmWidth;
+  iHeight   = frameInfo->pExtInfo->nFrmHeight;
+  pVirtAddr = m_frameBuffer->pbufVirtY;
+  pPhysAddr = m_frameBuffer->pbufY;
+
+  m_fieldType = frameInfo->eFieldType;
+  // We decode to I420
+#ifdef IMX_INPUT_FORMAT_I420
+  iFormat = 0;
+#else
+  iFormat = 1;
+#endif
 }
 
 VpuDecRetCode CDVDVideoCodecIMXVPUBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
