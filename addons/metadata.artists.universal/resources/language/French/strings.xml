@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- French language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fr/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- French language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/fr/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Activer les fanarts d'artiste de HTBackdrops.com</string>
@@ -11,7 +11,7 @@
     <string id="30004">Activer les fanarts d'artiste de fanart.tv</string>
     <string id="30005">Activer les vignettes d'artiste de fanart.tv</string>
     <string id="30006">Récupérer la biographie de l'artiste depuis</string>
-    <string id="30007">Illustrations</string>
+    <string id="30007">Artwork</string>
     <string id="30008">Récupérer la discographie de l'artiste depuis</string>
     <string id="30009">Récupérer les genres de l'artiste depuis</string>
     <string id="30010">Récupérer les styles de l'artiste depuis</string>

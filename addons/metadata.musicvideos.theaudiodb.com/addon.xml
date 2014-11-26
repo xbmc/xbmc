@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.musicvideos.theaudiodb.com"
        name="TheAudioDb.com for Music Videos"
-       version="1.2.4"
-       provider-name="Team-Kodi">
+       version="1.2.5"
+       provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
     <import addon="metadata.common.fanart.tv" version="3.1.0"/>
@@ -22,19 +22,24 @@
     <summary lang="de">theaudiodb.com Musikvideo Scraper</summary>
     <summary lang="el">Scraper Μουσικών Βίντεο του theaudiodb.com</summary>
     <summary lang="en">theaudiodb.com Music Video Scraper</summary>
+    <summary lang="en_NZ">theaudiodb.com Music Video Scraper</summary>
+    <summary lang="en_US">theaudiodb.com Music Video Scraper</summary>
     <summary lang="es">Buscador de videoclips de theaudiodb.com</summary>
     <summary lang="es_AR">Scraper de Videos de Música de theaudiodb.com</summary>
     <summary lang="et">theaudiodb.com muusikavideo kraabits</summary>
     <summary lang="fi">theaudiodb.com musiikkivideotietojen lataaja</summary>
     <summary lang="fr">theaudiodb.com Scraper Clip Vidéo</summary>
+    <summary lang="fr_CA">Extracteur de vidéos musicales pour theaudiodb.com</summary>
     <summary lang="gl">Scraper de vídeo e música de theaudiodb.com</summary>
     <summary lang="he">theaudiodb.com סקרייפר וידאו קליפ</summary>
     <summary lang="hr">theaudiodb.com sakupljač za glazbene spotove</summary>
     <summary lang="hu">theaudiodb.com videóklip leolvasó</summary>
+    <summary lang="id">Pengais Video Musik theaudiodb.com</summary>
+    <summary lang="is">theaudiodb.com Skafa fyrir Tónlistarmyndbönd</summary>
     <summary lang="it">Lo scraper di video musicali theaudiodb.com</summary>
     <summary lang="ja">theaudiodb.com 音楽ビデオスクレーパー</summary>
-    <summary lang="ko">theaudiodb.com 뮤직 비디오 자료수집기</summary>
-    <summary lang="lt">theaudiodb.com vaizdo klipų Scraper</summary>
+    <summary lang="ko">theaudiodb.com 뮤직 비디오 정보수집기</summary>
+    <summary lang="lt">theaudiodb.com muzikinių vaizdo klipų skreperis</summary>
     <summary lang="mk">theaudiodb.com Music Video Scraper</summary>
     <summary lang="ms">Pengikis Video Muzik theaudiodb.com</summary>
     <summary lang="my">theaudiodb.com Music Video Scraper</summary>
@@ -54,7 +59,7 @@
     <summary lang="uk">Здирач музичного відео з theaudiodb.com</summary>
     <summary lang="vi">Trình lấy dữ liệu video nhạc từ theaudiodb.com</summary>
     <summary lang="vi_VN">Chương trình lấy dữ liệu video âm nhạc từ theaudiodb.com</summary>
-    <summary lang="zh">theaudiodb.com音乐电视刮削器</summary>
+    <summary lang="zh">theaudiodb.com 音乐电视刮削器</summary>
     <summary lang="zh_TW">theaudiodb.com音樂影片搜括器</summary>
     <description lang="af">Laai Musiek Video informasie af</description>
     <description lang="am">የሙዚቃ ቪዲዮ መረጃ ማውረጃ</description>
@@ -67,23 +72,28 @@
     <description lang="de">Dieser Scraper lädt Musikvideoinformationen von TheAudioDB.com herunter. Aufgrund diverser Suchschwierigkeiten erwartet der Scraper derzeit, dass Ordner/Dateinamen als 'Künstler - Songname' formatiert werden, andernfalls wird er keine Ergebnisse zurückliefern.</description>
     <description lang="el">Λήψη πληροφοριών Μουσικών Βίντεο</description>
     <description lang="en">This scraper is downloading Music Video information from TheAudioDB.com. Due to various search difficulties the scraper currently expects the folder/filename to be formatted as 'artist - trackname' otherwise it will not return results.</description>
+    <description lang="en_NZ">This scraper is downloading Music Video information from TheAudioDB.com. Due to various search difficulties the scraper currently expects the folder/filename to be formatted as 'artist - trackname' otherwise it will not return results.</description>
+    <description lang="en_US">This scraper is downloading Music Video information from TheAudioDB.com. Due to various search difficulties the scraper currently expects the folder/filename to be formatted as 'artist - trackname' otherwise it will not return results.</description>
     <description lang="es">Descarga información del videoclip</description>
     <description lang="es_AR">Descarga información del Video Clip</description>
     <description lang="es_MX">Descarga Información de Vídeos de Músca</description>
     <description lang="et">Hankija laeb alla muusikavideo infot portaalist TheAudioDB.com. Mitmete otsinguohtude tõttu tuvastab hankija kausta/faili nime vormingus 'esitaja - loo nimi', muidu hankija ei suuda otsimist läbi viia.</description>
     <description lang="fi">Lataa musiikkivideoiden tiedot</description>
     <description lang="fr">Télécharger les informations des clips vidéos</description>
-    <description lang="gl">Descargar a información do vídeo e música</description>
+    <description lang="fr_CA">Cet extracteur télécharge les informations sur les vidéos musicales depuis TheAudioDB.com. À cause de difficultés de recherche diverses, l'extracteur s'attend présentement à ce que le dossier/nom du fichier soit formaté comme « artiste - nom de la piste ». Aucun résultat ne sera retourné si ce n'est pas le cas.</description>
+    <description lang="gl">Este scraper descarga a información dende TheAudioDB.com. Debido a algúns problemas o scraper agarda que o cartafol/nome do ficheiro teña o formato 'artista - nome da pista' ou non retornará resultados.</description>
     <description lang="he">הורד מידע וידאו קליפ</description>
     <description lang="hr">Ovaj sakupljač preuzima informacije o glazbenim spotovima s TheAudioDB.com. Uslijed mnogih problema s pretragom sakupljač očekuje da mape i datoteke budu u formatu 'izvođač - naziv pjesme' ili neće dati rezultata.</description>
     <description lang="hu">Videóklip információk letöltése a theaudiodb.com webhelyről</description>
+    <description lang="id">Pengais sedang mengunduh informasi musik video dari TheAudioDB.com. Dikarenakan berbagai kesulitan pencarian, Pengais mengharapkan folder/nama-berkas dalam format 'artis-judullagu' Apabila tidak, hasil tidak dapat muncul.</description>
+    <description lang="is">Þessi skafa halar niður upplýsingum Tónlistarmyndbanda frá TheAudioDB.com. Vegna ýmissa vandamála með leit þá gerir þessi skafa ráð fyrir að möppu/skráarnafn sé á forminu 'Listamaður - laganafn' annars skilar hún engum niðurstöðum.</description>
     <description lang="it">Scarica informazioni Video Musicale</description>
     <description lang="ja">このスクレイパーはTheAudioDB.comから音楽ビデオ情報をダウンロードしています。様々な検索の困難のため、スクレイパーは現在「アーティスト - 曲名」とフォーマットされているフォルダ/ファイルネームを期待しています。そうでなければ、結果を返しません。</description>
-    <description lang="ko">뮤직 비디오 정보 다운로드</description>
-    <description lang="lt">Atsisiusti vaizdo klipų informaciją</description>
+    <description lang="ko">이 정보수집기믄 TheAudioDB.com에서 뮤직 비디오 정보를 가져옵니다. 여러가지 검색상의 어려움 때문에 폴더/파일이름이 '아티스트-트랙이름'으로 지정되어야 합니다. 그렇지 않으면 결과를 가져올 수 없습니다.</description>
+    <description lang="lt">Šis skreperis atsiunčia muzikinių vaizdo klipų informaciją iš TheAudioDB.com. Dėl įvairių paieškos sunkumų, aplanko/failo pavadinimo formatas turi būti 'atlikėjas - takelio pavadinimas'. Priešingu atvejus nebus rasta jokių rezultatų.</description>
     <description lang="mk">Превземи информации за музичко видео</description>
     <description lang="ms">Pengikis ini memuat turun maklumat Video Muzik dari TheAudioDB.com. Oleh kerana kesukaran menggelintar, pengikis biasanya jangkakan folder/namafail diformat sebagai 'artis - namatrek' jika tidak ia tidak akan kembalikan keputusan.</description>
-    <description lang="nl">Muziek Video informatie downloaden</description>
+    <description lang="nl">Deze scraper download muziekvideo-informatie van TheAudioDB.com. Vanwege diverse zoek moeilijkheden verwacht de scraper nu dat de map/bestandsnaam is genaamd als 'artiest - Titel' anders zal het geen resultaten tonen.</description>
     <description lang="no">Last ned musikkvideoinformasjon</description>
     <description lang="pl">Scraper teledysków pobiera informacje z bazy TheAudioDB.com. Ze względu na różne trudności wyszukiwania, scraper obecnie wymaga aby folder/plik był sformatowany: "artysta - nazwa ścieżki" inaczej nie zadziała poprawnie.</description>
     <description lang="pt">Descarregar informação de filmes de theaudiodb.com</description>
@@ -98,12 +108,12 @@
     <description lang="th">ดาวน์โหลดข้อมูลวิดีโอเพลง</description>
     <description lang="vi">Trình lấy dữ liệu đang tải thông tin video nhạc từ nguồn TheAudioDB.com. Do nhiều khó khăn tìm kiếm khác nhau, trình lấy dữ liệu này hiện chỉ hỗ trợ định dạng thư mục/tên tệp tin theo mẫu 'nghệ sỹ - tên track' nếu không sẽ không trả lại kết quả.</description>
     <description lang="vi_VN">Chương trình lấy dữ liệu đang tải thông tin video âm nhạc từ TheAudioDB.com xuống. Vì tìm kiếm thuộc nhiều loại gây ra cản trở nên chương trình hiện chỉ hỗ trợ định dạng thư mục/tên tệp tin theo mẫu 'nghệ sỹ - tên track' nếu không sẽ không hoàn lại kết quả.</description>
-    <description lang="zh">从theaudiodb.com下载音乐电视资料</description>
+    <description lang="zh">从 theaudiodb.com 下载音乐电视资料。为简化搜索，刮削器限定文件夹/文件名格式为“歌手 - 歌名”，否则将不会返回结果。</description>
     <description lang="zh_TW">此搜括器是從 TheAudioDB.com下載取得音樂影片資訊。因為各種不同搜尋變數，此搜括器目前須將資料夾／檔案名稱 重新命名為 "演出者－歌曲資訊"否則將無法正常取得專輯資料。帶有'-"符號的演出者或歌曲資訊也有極高可能無法找到。</description>
-    <website></website>
-    <source></source>
-    <email></email>
-    <forum>http://forum.xbmc.org/showthread.php?tid=136105</forum>
     <license>GPL v2.0</license>
+    <forum>http://forum.xbmc.org/showthread.php?tid=136105</forum>
+    <website></website>
+    <email></email>
+    <source></source>
   </extension>
 </addon>

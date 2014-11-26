@@ -32,7 +32,7 @@ sub make_dmg {
     $ext = "mpkg" if !$ext;
 
     # thanks to http://dev.simon-cozens.org/songbee/browser/release-manager-tools/build-dmg.sh
-    `hdiutil create -fs HFS+ -volname "$volname" -format UDRW -srcfolder "$mpkg" "$volname.dmg"`;
+    `hdiutil create -fs HFS+ -volname "$pkgname" -format UDRW -srcfolder "$mpkg" "$volname.dmg"`;
     $dev_handle = `hdiutil attach -readwrite -noverify -noautoopen "$volname.dmg" | grep Apple_HFS`;
     chomp $dev_handle;
     $dev_handle = $1 if $dev_handle =~ /^\/dev\/(disk.)/;
@@ -41,22 +41,22 @@ sub make_dmg {
     #clear the volume - we will copy stuff on it with ditto later
     #this removes crap which might have come in via the srcfolder 
     #parameter of hdiutil above
-    `rm -r /Volumes/$volname/*`;
+    `rm -r /Volumes/$pkgname/*`;
     print "Ignore \"No space left on device\" warnings from ditto, they are an autosize artifact\n";
-    `ditto "$mpkg" "/Volumes/$volname/$pkgname.$ext"`;
+    `ditto "$mpkg" "/Volumes/$pkgname/$pkgname.$ext"`;
 
     # set a volume icon if we have one
     if ( -f "VolumeIcon.icns" ) {
-	`ditto VolumeIcon.icns "/Volumes/$volname/.VolumeIcon.icns"`;
+	`ditto VolumeIcon.icns "/Volumes/$pkgname/.VolumeIcon.icns"`;
     }
     # make symlink to /Applications
-    `ln -s /Applications "/Volumes/$volname/Applications"`;
+    `ln -s /Applications "/Volumes/$pkgname/Applications"`;
 
-    `mkdir "/Volumes/$volname/background"`;
-    `ditto ../media/osx/background "/Volumes/$volname/background/"`;
-    `ditto VolumeDSStoreApp "/Volumes/$volname/.DS_Store"`;
-    `xcrun SetFile -a V "/Volumes/$volname/background"`;
-    `xcrun SetFile -a C "/Volumes/$volname/"`;
+    `mkdir "/Volumes/$pkgname/background"`;
+    `ditto ../media/osx/background "/Volumes/$pkgname/background/"`;
+    `xcrun SetFile -a V "/Volumes/$pkgname/background"`;
+    `xcrun SetFile -a C "/Volumes/$pkgname/"`;
+    `cp VolumeDSStoreApp "/Volumes/$pkgname/.DS_Store"`;
     `hdiutil detach $dev_handle`;
     `hdiutil convert "$volname.dmg" -format UDZO -imagekey zlib-level=9 -o "$volname.udzo.dmg"`;
     `rm -f "$volname.dmg"`;

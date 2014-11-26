@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Catalan language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Catalan language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/ca/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Habilita els fanarts d'artistes de HTBackdrops.com</string>
@@ -11,7 +11,7 @@
     <string id="30004">Habilita els fanarts d'artistes de fanart.tv</string>
     <string id="30005">Habilita les miniatures d'artistes de fanart.tv</string>
     <string id="30006">Obté la biografia de l'artista de</string>
-    <string id="30007">Art</string>
+    <string id="30007">Il·lustracions</string>
     <string id="30008">Obté la discografia de l'artista de</string>
     <string id="30009">Obté els géneres de l'artista de</string>
     <string id="30010">Obté els estils de l'artista de</string>

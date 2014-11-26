@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Ukrainian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Ukrainian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/uk/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
+    <string id="30000">Отримати обкладинки виконавця з HTBackdrops.com</string>
+    <string id="30001">Включити малюнки виконавця з allmusic.com</string>
+    <string id="30002">Включити малюнки виконавця з last.fm</string>
+    <string id="30003">Включити малюнки виконавця з HTBackdrops.com</string>
     <string id="30004">Отримати обкладинки виконавця з fanart.tv</string>
     <string id="30005">Включити малюнки виконавця з fanart.tv</string>
     <string id="30006">Отримати біографію виконавця з</string>
@@ -14,4 +18,6 @@
     <string id="30012">Отримати настрої виконавця з</string>
     <string id="30014">Отримати роки активності виконавця з</string>
     <string id="30015">Улюблена мова</string>
+    <string id="30022">Включити малюнки виконавця з theaudiodb.com</string>
+    <string id="30023">Отримати обкладинки виконавця з theaudiodb.com</string>
 </strings>

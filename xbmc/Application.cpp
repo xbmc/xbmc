@@ -3516,7 +3516,8 @@ void CApplication::Stop(int exitCode)
 {
   try
   {
-    CVariant vExitCode(exitCode);
+    CVariant vExitCode(CVariant::VariantTypeObject);
+    vExitCode["exitcode"] = exitCode;
     CAnnouncementManager::Get().Announce(System, "xbmc", "OnQuit", vExitCode);
 
     SaveFileState(true);

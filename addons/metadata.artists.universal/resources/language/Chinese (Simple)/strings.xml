@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Chinese (Simple) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Chinese (Simple) language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/zh/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
-    <string id="30000">启用HTBackdrops.com艺人同人画</string>
-    <string id="30001">启用allmusic.com艺人图片</string>
-    <string id="30002">启用last.fm艺人图片</string>
-    <string id="30003">启用HTBackdrops.com艺人图片</string>
-    <string id="30004">启用fanart.tv艺人同人画</string>
-    <string id="30005">启用fanart.tv艺人图片</string>
+    <string id="30000">启用 HTBackdrops.com 艺人同人画</string>
+    <string id="30001">启用 allmusic.com 艺人图片</string>
+    <string id="30002">启用 last.fm 艺人图片</string>
+    <string id="30003">启用 HTBackdrops.com 艺人图片</string>
+    <string id="30004">启用 fanart.tv 艺人同人画</string>
+    <string id="30005">启用 fanart.tv 艺人图片</string>
     <string id="30006">艺人传记获取于</string>
     <string id="30007">艺术图片</string>
     <string id="30008">艺人唱片目录获取于</string>
@@ -25,6 +25,6 @@
     <string id="30019">备选艺人风格获取于</string>
     <string id="30020">备选艺人生卒年月获取于</string>
     <string id="30021">备选</string>
-    <string id="30022">启用theaudiaodb.com艺人图片</string>
-    <string id="30023">启用theaudiodb.com艺人同人画</string>
+    <string id="30022">启用 theaudiaodb.com 艺人图片</string>
+    <string id="30023">启用 theaudiodb.com 艺人同人画</string>
 </strings>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- Spanish (Mexico) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_MX/ -->
-<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+<!-- Spanish (Mexico) language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/es_MX/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
     <string id="30000">Obtener Miniaturas de Álbumes de fanart.tv</string>

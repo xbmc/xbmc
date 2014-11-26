@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Indonesian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/id/ -->
+<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
+
+<strings>
+    <string id="30000">Ambil Thumb Album dari fanart.tv</string>
+    <string id="30001">Ambil Thumb Album dari Last.fm</string>
+    <string id="30002">Ambil Review Album dari</string>
+    <string id="30003">Bahasa terutama</string>
+    <string id="30004">Ambil Rating Album dari</string>
+    <string id="30005">Ambil Gaya Album dari</string>
+    <string id="30006">Ambil Nuansa Album dari</string>
+    <string id="30007">Ambil Tema Album dari</string>
+    <string id="30008">Ambil Thumb Album dari allmusic.com</string>
+    <string id="30009">Artwork</string>
+    <string id="30010">Ambil Thumb Album dari theaudiodb.com</string>
+</strings>
