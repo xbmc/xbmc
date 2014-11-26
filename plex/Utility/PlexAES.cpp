@@ -28,8 +28,6 @@ std::string CPlexAES::encrypt(const std::string &data)
 {
   std::vector<std::string> chunks = chunkData(data);
   
-  CLog::Log(LOGDEBUG, "CPlexAES::encrypt have %ld chunks", chunks.size());
-  
   std::string outData;
   BOOST_FOREACH(const std::string& chunk, chunks)
   {
@@ -44,9 +42,7 @@ std::string CPlexAES::encrypt(const std::string &data)
     
     outData.append((char*)buffer, 16);
   }
-  
-  CLog::Log(LOGDEBUG, "CPlexAES::encrypt success to encrypt %ld bytes of data", data.length());
-  
+
   return outData;
 }
 
@@ -54,8 +50,6 @@ std::string CPlexAES::encrypt(const std::string &data)
 std::string CPlexAES::decrypt(const std::string &data)
 {
   std::vector<std::string> chunks = chunkData(data);
-  
-  CLog::Log(LOGDEBUG, "CPlexAES::decrypt have %ld chunks", chunks.size());
   
   std::string outData;
   BOOST_FOREACH(const std::string& chunk, chunks)
@@ -71,8 +65,6 @@ std::string CPlexAES::decrypt(const std::string &data)
     
     outData.append((const char*)buffer, chunk.length());
   }
-  
-  CLog::Log(LOGDEBUG, "CPlexAES::decrypt success to decrypt %ld bytes of data", data.length());
   
   return outData;
 }
