@@ -111,7 +111,13 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
    return;
 
   if (strcmp(message, "OnWake") == 0)
-    ContinueLastChannel();
+  {
+    {
+      CSingleLock lock(m_critSection);
+      m_bFirstStart = true;
+    }
+    Start(true);
+  }
 }
 
 CPVRManager &CPVRManager::Get(void)
