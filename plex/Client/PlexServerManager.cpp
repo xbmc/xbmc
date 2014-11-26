@@ -123,9 +123,9 @@ PlexServerList CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifi
     if (onlyActive && !p.second->GetActiveConnection())
       continue;
 
-    if (modifier == SERVER_OWNED && (p.second->GetOwned() || p.second->GetHome()))
+    if (modifier == SERVER_OWNED && !p.second->IsShared())
       ret.push_back(p.second);
-    else if (modifier == SERVER_SHARED && !(p.second->GetOwned() || p.second->GetHome()))
+    else if (modifier == SERVER_SHARED && p.second->IsShared())
       ret.push_back(p.second);
     else if (modifier == SERVER_ALL)
       ret.push_back(p.second);
@@ -318,7 +318,7 @@ void CPlexServerManager::ServerReachabilityDone(const CPlexServerPtr& server, bo
   
   if (success)
   {
-    if ((server->GetOwned() || server->GetHome()) &&
+    if (!server->IsShared() &&
         (server->GetServerClass().empty() || !server->GetServerClass().Equals(PLEX_SERVER_CLASS_SECONDARY)))
       SetBestServer(server, false);
     NotifyAboutServer(server);

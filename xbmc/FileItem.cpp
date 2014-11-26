@@ -3418,7 +3418,7 @@ bool CFileItem::IsRemoteSharedPlexMediaServerLibrary() const
 {
   CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(*this);
   if (server && IsRemotePlexMediaServerLibrary())
-    return !server->GetOwned();
+    return server->IsShared();
   return false;
 }
 

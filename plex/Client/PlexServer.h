@@ -68,6 +68,7 @@ public:
   bool IsComplete() const { return m_complete; }
   bool GetSynced() const { return m_synced; }
   bool GetHome() const { return m_home; }
+  bool IsShared() const { return !m_owned && !m_home; }
 
   CPlexServerPtr GetShared() { return shared_from_this(); }
   CPlexConnectionPtr GetActiveConnection() const;

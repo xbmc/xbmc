@@ -742,7 +742,7 @@ DIR_CACHE_TYPE CPlexDirectory::GetCacheType(const CStdString &strPath) const
 
   if (server && server->GetActiveConnection())
   {
-    if (server->GetActiveConnection()->IsLocal() || server->GetOwned())
+    if (server->GetActiveConnection()->IsLocal() || !server->IsShared())
       return DIR_CACHE_NEVER;
     else
     {
