@@ -31,5 +31,23 @@ class CGUIWindowSharedContent : public CGUIPlexMediaWindow
   CGUIWindowSharedContent()
     : CGUIPlexMediaWindow(WINDOW_SHARED_CONTENT, "MySharedContent.xml")
   {
-  }  
+  }
+  
+  bool OnMessage(CGUIMessage& message)
+  {
+    bool ret = CGUIPlexMediaWindow::OnMessage(message);
+    
+    if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
+    {
+      CStdString uuid = message.GetStringParam();
+      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(uuid);
+      if (server && !server->IsShared())
+      {
+        CLog::Log(LOGDEBUG, "CGUIWindowSharedContent::OnMessage got loaded signal for non owned server. reloading.");
+        Update(m_vecItems->GetPath(), false, false);
+      }
+    }
+    
+    return ret;
+  }
 };
