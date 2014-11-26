@@ -24,8 +24,8 @@ if(ENABLE_AUTOUPDATE)
   if (NOT TARGET_RPI)
     include(ExternalProject)
     ExternalProject_Add(Update-Installer
-      CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}"
-      SOURCE_DIR ${plexdir}/Update-Installer
+      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR} -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCH}
+      SOURCE_DIR "${plexdir}/Update-Installer"
       INSTALL_DIR "${CMAKE_BINARY_DIR}"
     )
   endif(NOT TARGET_RPI)
