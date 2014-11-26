@@ -2986,7 +2986,7 @@ unsigned int CLinuxRendererGLES::GetOptimalBufferSize()
      m_format == RENDER_FMT_MEDIACODEC)
     return 2;
   else if(m_format == RENDER_FMT_IMXMAP)
-    return 1;
+    return 3;
   else
     return 3;
 }
