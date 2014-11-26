@@ -100,7 +100,7 @@ void CPlexSectionFanout::Refresh(bool force)
                                               CONTENT_LIST_RECENTLY_ACCESSED));
   }
 
-  else
+  else if (m_url.Get() != "global://art/")
   {
     if (!g_advancedSettings.m_bHideFanouts)
     {
