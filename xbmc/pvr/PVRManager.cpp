@@ -503,8 +503,9 @@ void CPVRManager::Process(void)
       /* start job to search for missing channel icons */
       TriggerSearchMissingChannelIcons();
       
-      /* continue last watched channel */
-      ContinueLastChannel();
+      /* try to continue last watched channel otherwise set group to last played group */
+      if (!ContinueLastChannel())
+        SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
     }
     /* execute the next pending jobs if there are any */
     try
