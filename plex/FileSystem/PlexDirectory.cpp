@@ -573,7 +573,6 @@ bool CPlexDirectory::ReadMediaContainer(XML_ELEMENT* root, CFileItemList& mediaC
 #ifndef USE_RAPIDXML
   if (root->ValueStr() != "MediaContainer" && root->ValueStr() != "ASContainer")
 #else
-  CLog::Log(LOGWARNING, "CPlexDirectory::ReadMediaContainer root name %s", root->name());
   if (CStdString(root->name()) != "MediaContainer" && CStdString(root->name()) != "ASContainer")
 #endif
   {
