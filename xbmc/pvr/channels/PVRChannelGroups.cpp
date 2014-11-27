@@ -368,7 +368,7 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   std::string strPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    strPath = StringUtils::Format("channels/%s/%i", m_bRadio ? "radio" : "tv", (*it)->GroupID());
+    strPath = StringUtils::Format("pvr://channels/%s/%s/", m_bRadio ? "radio" : "tv", (*it)->GroupName().c_str());
     CFileItemPtr group(new CFileItem(strPath, true));
     group->m_strTitle = (*it)->GroupName();
     group->SetLabel((*it)->GroupName());
