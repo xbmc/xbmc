@@ -212,12 +212,13 @@ void CGUIPlexMediaWindow::SaveSelection()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::RestoreSelection()
+bool CGUIPlexMediaWindow::RestoreSelection()
 {
   // Restore selected item for the section
   int idx = 0;
   CURL u(m_vecItems->GetPath());
   std::string key = u.GetUrlWithoutOptions();
+  int currentSelection = m_viewControl.GetSelectedItem();
 
   if (m_lastSelectedIndex.find(key) != m_lastSelectedIndex.end())
   {
@@ -229,9 +230,11 @@ void CGUIPlexMediaWindow::RestoreSelection()
       {
         m_viewControl.SetSelectedItem(i);
         CLog::Log(LOGDEBUG, "RestoreSelection index for %s is %d", key.c_str(), m_lastSelectedIndex[key]);
+        return (currentSelection != i);
       }
     }
   }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -897,7 +900,11 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
   UpdateSectionTitle();
 
-  RestoreSelection();
+  if (RestoreSelection())
+  {
+    FetchItemPage(m_viewControl.GetSelectedItem());
+  }
+
   return ret;
 }
 
