@@ -1818,9 +1818,11 @@ CDVDVideoCodecIMXBuffer *CDVDVideoMixerIMX::ProcessFrame(CDVDVideoCodecIMXVPUBuf
     Sleep(35);
     outputBuffer = inputBuffer;
 #else
+    // Enable low motion for buffers that are not split up by the VDIC
+    bool lowMotion = (inputBuffer->iWidth < 1024) && (inputBuffer->iHeight < 1024);
     outputBuffer = m_proc->Process(inputBuffer,
                                    inputBuffer->GetFieldType(),
-                                   false);
+                                   lowMotion);
 #endif
 #ifdef IMX_PROFILE_BUFFERS
     CLog::Log(LOGNOTICE, "+P  %x  %lld\n", (int)outputBuffer,
