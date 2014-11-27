@@ -261,6 +261,10 @@ bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileIt
   else
     transcodeSetting = remoteBitrate();
   
+  // temporary force HEVC to transcode
+  if (item.GetProperty("mediatag-videocodec").asString() == "hevc")
+    return true;
+
   if (transcodeForced())
     return transcodeSetting != 0;
   else
