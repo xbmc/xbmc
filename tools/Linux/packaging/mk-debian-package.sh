@@ -99,6 +99,7 @@ function archiveRepo {
     cd $REPO_DIR || exit 1
     git clean -xfd
     echo $REV > VERSION
+    tools/depends/target/ffmpeg/autobuild.sh -d
     DEST="kodi-${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
