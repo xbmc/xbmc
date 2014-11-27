@@ -830,8 +830,16 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 #ifndef __PLEX__
   if (!GetDirectory(directory, items))
 #endif
-  ClearFileItems();
-  m_vecItems->ClearProperties();
+  /* PLEX */
+  CURL newUrl(strDirectory);
+  CURL currentURL(m_vecItems->GetPath());
+
+  if (newUrl.GetUrlWithoutOptions() != currentURL.GetUrlWithoutOptions())
+  {
+    ClearFileItems();
+    m_vecItems->ClearProperties();
+  }
+  /* END PLEX */
 
   if (!GetDirectory(strDirectory, items) || (items.m_displayMessage && items.Size() == 0))
   {
