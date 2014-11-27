@@ -807,13 +807,12 @@
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h" />
-    <CustomBuild Include="..\..\xbmc\GitRevision.h">
+    <CustomBuild Include="..\..\git_revision.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
     </CustomBuild>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h" />
@@ -1650,8 +1649,6 @@
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\DllAvFilter.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h" />
@@ -2207,13 +2204,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h" />
-    <ClInclude Include="..\..\lib\DllAvCodec.h" />
-    <ClInclude Include="..\..\lib\DllAvFormat.h" />
-    <ClInclude Include="..\..\lib\DllPostProc.h" />
-    <ClInclude Include="..\..\lib\DllSwScale.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h" />
@@ -2240,7 +2230,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
-    <ClInclude Include="..\..\lib\DllAdpcm.h" />
     <ClInclude Include="..\..\lib\DllASAP.h" />
     <ClInclude Include="..\..\lib\DllNosefart.h" />
     <ClInclude Include="..\..\lib\DllSidplay2.h" />
