@@ -12686,7 +12686,7 @@ msgstr ""
 #. Info dialog after migrating userdata from xbmc to kodi
 #: xbmc/Application.cpp
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
 msgstr ""
 
 #empty strings from id 24130 to 24998
