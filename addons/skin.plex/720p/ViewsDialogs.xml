@@ -2715,8 +2715,6 @@
 	<include name="KeyboardPIN">
 		<control type="group">
 			<control type="group">
-				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
-				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
 				<control type="image">
 					<include>FullScreenScaled</include>
 					<texture>black.png</texture>
@@ -2736,8 +2734,6 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="fade" start="0" end="90" time="200">WindowOpen</animation>
-			<animation effect="fade" start="90" end="0" time="200">WindowClose</animation>
 			<control type="label" id="1">
 				<posy>147</posy>
 				<label>Please enter your PIN</label>
