@@ -163,10 +163,13 @@ set WORKSPACE=%CD%\..\..
   Echo exclude.txt>>exclude.txt
   Echo xbmc.log>>exclude.txt
   Echo xbmc.old.log>>exclude.txt
+  Echo kodi.log>>exclude.txt
+  Echo kodi.old.log>>exclude.txt
   rem Exclude userdata files
   Echo userdata\advancedsettings.xml>>exclude.txt
   Echo userdata\guisettings.xml>>exclude.txt
   Echo userdata\mediasources.xml>>exclude.txt
+  Echo userdata\ModeLines_template.xml>>exclude.txt
   Echo userdata\passwords.xml>>exclude.txt
   Echo userdata\profiles.xml>>exclude.txt
   Echo userdata\sources.xml>>exclude.txt
