@@ -20,7 +20,6 @@ public class Main extends NativeActivity
   public void onCreate(Bundle savedInstanceState) 
   {
     super.onCreate(savedInstanceState);
-    getWindow().setFormat(PixelFormat.TRANSPARENT);
   }
 
   @Override
@@ -32,6 +31,13 @@ public class Main extends NativeActivity
     } catch (UnsatisfiedLinkError e) {
       Log.e("Main", "Native not registered");
     }
+  }
+
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    getWindow().setFormat(PixelFormat.TRANSPARENT);
   }
 
   @Override
