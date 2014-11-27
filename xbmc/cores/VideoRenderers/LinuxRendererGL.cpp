@@ -1481,8 +1481,8 @@ void CLinuxRendererGL::RenderFromFBO()
 
     m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_fbo.width);
-    m_pVideoFilterShader->SetHeight(m_fbo.height);
+    m_pVideoFilterShader->SetWidth(m_sourceWidth);
+    m_pVideoFilterShader->SetHeight(m_sourceHeight);
 
     //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
     //having non-linear stretch on breaks the alignment
@@ -1502,8 +1502,8 @@ void CLinuxRendererGL::RenderFromFBO()
 
   VerifyGLState();
 
-  float imgwidth  = m_sourceWidth  / m_fbo.width;
-  float imgheight = m_sourceHeight / m_fbo.height;
+  float imgwidth = m_fbo.width / m_sourceWidth;
+  float imgheight = m_fbo.height / m_sourceHeight;
 
   glBegin(GL_QUADS);
 
