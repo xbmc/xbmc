@@ -518,6 +518,13 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // Another verb?
   if (m_verb.empty() == false)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_verb.c_str());
+  
+  if (boost::starts_with(m_url, "https://plex.tv"))
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 1);
+    g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 1);
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, CSpecialProtocol::TranslatePath("special://xbmc/system/cacert.pem").c_str());
+  }
   /* END PLEX */
 
   // setup Referer header if needed
