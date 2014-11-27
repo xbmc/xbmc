@@ -1769,7 +1769,9 @@
     "params": [
       { "name": "channelid", "$ref": "Library.Id", "required": true },
       { "name": "properties", "$ref": "PVR.Fields.Broadcast" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "startdate", "type": "string" },
+      { "name": "enddate", "type": "string" }
     ],
     "returns": { "type": "object",
       "properties": {
