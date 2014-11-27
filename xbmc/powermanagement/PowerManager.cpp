@@ -75,12 +75,12 @@ void CPowerManager::Initialize()
   m_instance = new CAndroidPowerSyscall();
 #elif defined(TARGET_POSIX)
 #if defined(HAS_DBUS)
-  if (CLogindUPowerSyscall::HasLogind())
-    m_instance = new CLogindUPowerSyscall();
-  else if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
+  if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
     m_instance = new CConsoleUPowerSyscall();
   else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
+  else if (CLogindUPowerSyscall::HasLogind())
+    m_instance = new CLogindUPowerSyscall();
   else if (CUPowerSyscall::HasUPower())
     m_instance = new CUPowerSyscall();
   else
