@@ -342,6 +342,12 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
     tURL.SetOption("partIndex", mediaItem->m_selectedMediaPart->GetProperty("partIndex").asString());
   
   std::string bitrate = GetInstance()->GetCurrentBitrate(isLocal);
+
+  // if we have no bitrate setting and still want to transcode
+  // default to 20 mbps
+  if (bitrate == "0")
+    bitrate = "20000";
+
   tURL.SetOption("maxVideoBitrate", bitrate);
   tURL.SetOption("videoQuality", _qualities[bitrate]);
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
