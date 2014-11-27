@@ -1,6 +1,14 @@
 New:
+  - PHT will now prompt you to select user when returning from a
+    screensaver if the user is PIN protected.
 
 Fixed:
-  - Fanart is now filtered based on your Plex Home user.
-  - Subtitles that are burned in are not downloaded.
+  - Fixed a bug where non-connected servers didn't show up for managed users
+  - Fanart is now filtered based on your Plex Home user
+  - Hide Playlist home item when no playlists are available
+  - Fixed flickering / flashing on the PIN input
+  - Don't restart the PlayQueue from the start when pressing enter on any item.
+  - Paging poster loading fixes.
+  - Update the shared content window if the shared server arrive late.
+  - Subtitles that are burned in are not downloaded
   
