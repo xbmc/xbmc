@@ -229,15 +229,8 @@ Section "${APP_NAME}" SecAPP
   File /r "${app_root}\application\sounds\*.*"
   SetOutPath "$INSTDIR\system"
   File /r "${app_root}\application\system\*.*"
-  
-  ;Turn off overwrite to prevent files in APPDATA\Kodi\userdata\ from being overwritten
-  SetOverwrite off
-  IfFileExists $INSTDIR\userdata\*.* 0 +2
-    SetOutPath "$APPDATA\${APP_NAME}\userdata"
-    File /r "${app_root}\application\userdata\*.*"
-  
-  ;Turn on overwrite for rest of install
-  SetOverwrite on
+  SetOutPath "$INSTDIR\userdata"
+  File /r "${app_root}\application\userdata\*.*"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${APP_NAME}" "" $INSTDIR
@@ -346,6 +339,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\media"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
+  RMDir /r "$INSTDIR\userdata"
   Delete "$INSTDIR\*.*"
   
   ;Un-install User Data if option is checked, otherwise skip
