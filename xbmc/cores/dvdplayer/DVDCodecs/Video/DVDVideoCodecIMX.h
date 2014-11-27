@@ -38,8 +38,8 @@
 // The IPU works faster when outputting to NV12.
 //#define IMX_OUTPUT_FORMAT_I420
 
-// This enables logging of times for Decode->Decode, Render->Render,
-// Deinterlace->Deinterlace. It helps to profile several stages of
+// This enables logging of times for Decode, Render->Render,
+// Deinterlace. It helps to profile several stages of
 // processing with respect to changed kernels or other configurations.
 // Since we utilize VPU, IPU and GPU at the same time different kernel
 // priorities to those subsystems can result in a very different user

@@ -644,6 +644,8 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
 #ifdef IMX_PROFILE
   static unsigned long long previous, current;
+#endif
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
   unsigned long long before_dec;
 #endif
 
@@ -711,12 +713,11 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
     while (true) // Decode as long as the VPU consumes data
     {
-#ifdef IMX_PROFILE
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
       before_dec = XbmcThreads::SystemClockMillis();
 #endif
       if (m_frameReported)
         m_bytesToBeConsumed += inData.nSize;
-      unsigned long long before_dec = XbmcThreads::SystemClockMillis();
       ret = VPU_DecDecodeBuf(m_vpuHandle, &inData, &decRet);
 #ifdef IMX_PROFILE_BUFFERS
       dec_time += XbmcThreads::SystemClockMillis()-before_dec;
@@ -1125,7 +1126,7 @@ long CDVDVideoCodecIMXVPUBuffer::Release()
 #endif
   if (count == 2)
   {
-    // Only referenced by the coded and its next frame, release the previous
+    // Only referenced by the codec and its next frame, release the previous
     SAFE_RELEASE(m_previousBuffer);
   }
   if (count == 1)
@@ -1308,7 +1309,7 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   task.output.height = iHeight;
 #ifdef IMX_OUTPUT_FORMAT_I420
   task.output.format = IPU_PIX_FMT_YUV420P;
-  format             = 0;
+  iFormat            = 0;
 #else
   task.output.format = IPU_PIX_FMT_NV12;
   iFormat            = 1;
