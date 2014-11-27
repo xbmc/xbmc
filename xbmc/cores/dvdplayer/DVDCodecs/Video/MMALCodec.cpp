@@ -704,11 +704,11 @@ void CMMALVideo::Dispose()
 {
   // we are happy to exit, but let last shared pointer being deleted trigger the destructor
   bool done = false;
+  m_finished = true;
   Reset();
   pthread_mutex_lock(&m_output_mutex);
   if (!m_output_busy)
     done = true;
-  m_finished = true;
   pthread_mutex_unlock(&m_output_mutex);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s dts_queue(%d) ready_queue(%d) busy_queue(%d) done:%d", CLASSNAME, __func__, m_dts_queue.size(), m_output_ready.size(), m_output_busy, done);
@@ -931,19 +931,21 @@ void CMMALVideo::Reset(void)
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
-  if (m_dec_input)
+  if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
-  if (m_deint_connection)
+  if (m_deint_connection && m_deint_connection->is_enabled)
     mmal_connection_disable(m_deint_connection);
-  if (m_dec_output)
+  if (m_dec_output && m_dec_output->is_enabled)
     mmal_port_disable(m_dec_output);
-  if (m_dec_input)
-    mmal_port_enable(m_dec_input, dec_input_port_cb);
-  if (m_deint_connection)
-    mmal_connection_enable(m_deint_connection);
-  if (m_dec_output)
-    mmal_port_enable(m_dec_output, dec_output_port_cb_static);
-
+  if (!m_finished)
+  {
+    if (m_dec_input)
+      mmal_port_enable(m_dec_input, dec_input_port_cb);
+    if (m_deint_connection)
+      mmal_connection_enable(m_deint_connection);
+    if (m_dec_output)
+      mmal_port_enable(m_dec_output, dec_output_port_cb_static);
+  }
   // blow all ready video frames
   bool old_drop_state = m_drop_state;
   SetDropState(true);
@@ -957,7 +959,8 @@ void CMMALVideo::Reset(void)
   if (!old_drop_state)
     SetDropState(false);
 
-  SendCodecConfigData();
+  if (!m_finished)
+    SendCodecConfigData();
 
   m_startframe = false;
   m_decoderPts = DVD_NOPTS_VALUE;
