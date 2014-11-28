@@ -76,16 +76,6 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item.reset(new CFileItem(base + "timers/", true));
-    item->SetLabel(g_localizeStrings.Get(19040));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "guide/", true));
-    item->SetLabel(g_localizeStrings.Get(19029));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
     // Sort by name only. Labels are preformated.
     items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
 
