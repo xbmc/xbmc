@@ -42,8 +42,11 @@
 
   !define MUI_HEADERIMAGE
   !define MUI_ICON "..\..\tools\windows\packaging\media\application.ico"
+  !define MUI_UNICON "..\..\tools\windows\packaging\media\application.ico"
   !define MUI_HEADERIMAGE_BITMAP "..\..\tools\windows\packaging\media\installer\header.bmp"
+  !define MUI_HEADERIMAGE_UNBITMAP "..\..\tools\windows\packaging\media\installer\header.bmp"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "..\..\tools\windows\packaging\media\installer\welcome-left.bmp"
+  !define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\tools\windows\packaging\media\installer\welcome-left.bmp"
   !define MUI_COMPONENTSPAGE_SMALLDESC
   !define MUI_FINISHPAGE_LINK "Please visit ${WEBSITE} for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "${WEBSITE}"
@@ -108,7 +111,7 @@ Function HandleUserdataMigration
       ${If} ${FileExists} "$APPDATA\XBMC\*.*"
       ${AndIfNot} ${FileExists} "$APPDATA\${APP_NAME}\*.*"
           Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
-          MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC userdata folder was moved to the new ${APP_NAME} userdata location.$\nThis to make the transition as smooth as possible without any user interactions needed."
+          MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC settings and library data were moved to the new ${APP_NAME} userdata location.$\nThis is to make the transition without any user interaction needed."
           ;mark that it was migrated in the filesystem - kodi will show another info message during first Kodi startup
           ;for really making sure that the user has read that message.
           FileOpen $0 "$APPDATA\${APP_NAME}\.kodi_data_was_migrated" w
@@ -118,7 +121,7 @@ Function HandleUserdataMigration
     ; old installation was found but not uninstalled - inform the user
     ; that his userdata is not automatically migrted
     ${If} $OldXBMCInstallationFound == "1"
-      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "There was a former XBMC Installation detected but you didn't uninstall it. The older profile data will not be moved to the ${APP_NAME} userdata location. ${APP_NAME} will use default profile settings."
+      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "There was a former XBMC Installation detected but you didn't uninstall it. The older settings and library data will not be moved to the ${APP_NAME} userdata location. ${APP_NAME} will use the default settings."
     ${EndIf}
   ${EndIf}
 FunctionEnd
@@ -130,7 +133,7 @@ Function HandleOldXBMCInstallation
   ;ask if a former XBMC installation should be uninstalled if detected
   ${IfNot} $INSTDIR_XBMC_OLD == ""
     StrCpy $OldXBMCInstallationFound "1"
-    MessageBox MB_YESNO|MB_ICONQUESTION "A previous XBMC installation was detected. Would you like to uninstall it?" IDYES true IDNO false
+    MessageBox MB_YESNO|MB_ICONQUESTION "You are upgrading from XBMC to ${APP_NAME}. Would you like to copy your settings and library data from XBMC to ${APP_NAME}?$\nWARNING: If you do so, XBMC will be completely un-installed and removed. It is recommended that you back up your library before continuing.$\nFor more information visit http://kodi.wiki/view/Userdata " IDYES true IDNO false
     true:
       DetailPrint "Uninstalling $INSTDIR_XBMC"
       SetDetailsPrint none
@@ -156,7 +159,7 @@ Function HandleOldKodiInstallation
   ${IfNot}    $CleanDestDir == "0"
   ${AndIfNot} $INSTDIR_KODI == ""
   ${AndIfNot} $INSTDIR_KODI == $INSTDIR
-    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous ${APP_NAME} installation in a different folder was detected. Would you like to uninstall it?" IDYES true IDNO false
+    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous ${APP_NAME} installation in a different folder was detected. Would you like to uninstall it?$\nYour current settings and library data will be kept intact." IDYES true IDNO false
     true:
       DetailPrint "Uninstalling $INSTDIR_KODI"
       SetDetailsPrint none
@@ -174,7 +177,7 @@ Function HandleKodiInDestDir
   ;if former Kodi installation was detected in the destination directory - uninstall it first
   ${IfNot} $INSTDIR == ""
   ${AndIf} ${FileExists} "$INSTDIR\uninstall.exe"
-    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous installation was detected in the selected destination folder. Do you really want to overwrite it?" IDYES true IDNO false
+    MessageBox MB_YESNO|MB_ICONQUESTION  "A previous installation was detected in the selected destination folder. Do you really want to overwrite it?$\nYour settings and library data will be kept intact." IDYES true IDNO false
     true:
       StrCpy $CleanDestDir "1"
       Goto done
@@ -229,15 +232,8 @@ Section "${APP_NAME}" SecAPP
   File /r "${app_root}\application\sounds\*.*"
   SetOutPath "$INSTDIR\system"
   File /r "${app_root}\application\system\*.*"
-  
-  ;Turn off overwrite to prevent files in APPDATA\Kodi\userdata\ from being overwritten
-  SetOverwrite off
-  IfFileExists $INSTDIR\userdata\*.* 0 +2
-    SetOutPath "$APPDATA\${APP_NAME}\userdata"
-    File /r "${app_root}\application\userdata\*.*"
-  
-  ;Turn on overwrite for rest of install
-  SetOverwrite on
+  SetOutPath "$INSTDIR\userdata"
+  File /r "${app_root}\application\userdata\*.*"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${APP_NAME}" "" $INSTDIR
@@ -315,19 +311,18 @@ Function un.UnPageProfile
     Abort
   ${EndIf}
 
-  ${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
+  ${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder which contains your ${APP_NAME} settings and library data?"
   Pop $0
 
   ${NSD_CreateText} 0 13u 100% 12u "$APPDATA\${APP_NAME}\"
   Pop $UnPageProfileEditBox
     SendMessage $UnPageProfileEditBox ${EM_SETREADONLY} 1 0
 
-  ${NSD_CreateLabel} 0 46u 100% 24u "Leave unchecked to keep the profile folder for later use or check to delete the profile folder."
+  ${NSD_CreateLabel} 0 30u 100% 24u "Leave the option box below unchecked to keep the profile folder which contains ${APP_NAME}'s settings and library data for later use. If you are sure you want to delete the profile folder you may check the option box.$\nWARNING: Deletion of the profile folder cannot be undone and you will lose all settings and library data."
   Pop $0
 
-  ${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, also delete the profile folder."
+  ${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, I am sure and grant permission to also delete the profile folder."
   Pop $UnPageProfileCheckbox
-  
 
   nsDialogs::Show
 FunctionEnd
@@ -346,6 +341,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\media"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
+  RMDir /r "$INSTDIR\userdata"
   Delete "$INSTDIR\*.*"
   
   ;Un-install User Data if option is checked, otherwise skip
