@@ -864,11 +864,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
             m_currentBuffer = m_mixer.Process(buffer);
 
           if (m_currentBuffer)
-          {
             retStatus |= VC_PICTURE;
-            //m_currentBuffer->Release();
-            //m_currentBuffer = NULL;
-          }
         }
       } //VPU_DEC_OUTPUT_DIS
 
@@ -1400,7 +1396,7 @@ bool CDVDVideoCodecIMXIPUBuffer::Allocate(int fd, int width, int height, int nAl
   CLog::Log(LOGNOTICE, "IPU: alloc %d bytes for frame of %dx%d at 0x%x\n",
             m_nSize, m_iWidth, m_iHeight, m_pPhyAddr);
 
-  m_pVirtAddr = (uint8_t*)mmap(0, m_nSize, PROT_READ | PROT_WRITE, MAP_SHARED,
+  m_pVirtAddr = (uint8_t*)mmap(0, m_nSize, PROT_READ, MAP_SHARED,
                                fd, m_pPhyAddr);
   if (!m_pVirtAddr)
   {
