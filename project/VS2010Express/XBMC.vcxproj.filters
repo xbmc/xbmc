@@ -6025,7 +6025,6 @@
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmc.i">
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
-	<CustomBuild Include="..\..\git_revision.h" />
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\types.json">
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
@@ -6042,6 +6041,9 @@
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\version.txt" />
+    <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
+      <Filter>win32</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">

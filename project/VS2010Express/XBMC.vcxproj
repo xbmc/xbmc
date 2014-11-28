@@ -807,12 +807,6 @@
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h" />
-    <CustomBuild Include="..\..\git_revision.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
-    </CustomBuild>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h" />
@@ -2520,6 +2514,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i" />
+    <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../git_revision.h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD</AdditionalInputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\version.txt">
