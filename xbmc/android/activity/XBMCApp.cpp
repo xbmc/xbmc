@@ -343,7 +343,7 @@ int CXBMCApp::android_printf(const char *format, ...)
   // For use before CLog is setup by XBMC_Run()
   va_list args;
   va_start(args, format);
-  int result = __android_log_vprint(ANDROID_LOG_VERBOSE, "XBMC", format, args);
+  int result = __android_log_vprint(ANDROID_LOG_VERBOSE, "Kodi", format, args);
   va_end(args);
   return result;
 }
