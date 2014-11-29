@@ -1728,6 +1728,13 @@ void CDVDPlayer::HandlePlaySpeed()
       error  = m_clock.GetClock() - m_SpeedState.lastpts;
       error *= m_playSpeed / abs(m_playSpeed);
 
+      // allow a bigger error when going ff, the faster we go
+      // the the bigger is the error we allow
+      if (m_playSpeed > DVD_PLAYSPEED_NORMAL)
+      {
+        error /= m_playSpeed / DVD_PLAYSPEED_NORMAL;
+      }
+
       if(error > DVD_MSEC_TO_TIME(1000))
       {
         error  = (int)DVD_TIME_TO_MSEC(m_clock.GetClock()) - m_SpeedState.lastseekpts;
