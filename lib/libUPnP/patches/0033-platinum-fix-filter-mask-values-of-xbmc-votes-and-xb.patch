@@ -1,0 +1,28 @@
+From 210409361c07945de187be139519ff98d81919ee Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 29 Nov 2014 19:47:45 +0100
+Subject: [PATCH] platinum: fix filter mask values of xbmc:votes and
+ xbmc:artwork
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index 0f7c892..9e87599 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -97,8 +97,8 @@
+ 
+ #define PLT_FILTER_MASK_XBMC_DATEADDED              NPT_UINT64_C(0x0000100000000000)
+ #define PLT_FILTER_MASK_XBMC_RATING                 NPT_UINT64_C(0x0000200000000000)
+-#define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000300000000000)
+-#define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000400000000000)
++#define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000400000000000)
++#define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000800000000000)
+ 
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+-- 
+1.9.4.msysgit.2
+
