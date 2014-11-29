@@ -308,6 +308,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsW3CDate().c_str();
     object.m_XbmcInfo.rating = tag.m_fRating;
     object.m_XbmcInfo.votes = tag.m_strVotes;
+    object.m_XbmcInfo.unique_identifier = tag.m_strIMDBNumber;
 
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
@@ -716,6 +717,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
     tag.m_fRating = object.m_XbmcInfo.rating;
     tag.m_strVotes = object.m_XbmcInfo.votes;
+    tag.m_strIMDBNumber = object.m_XbmcInfo.unique_identifier;
 
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
     {
