@@ -30,6 +30,8 @@ rem  CONFIG START
 SET buildmode=ask
 SET promptlevel=prompt
 SET buildmingwlibs=true
+SET buildpvraddons=true
+SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
 SET BRANCH=na
@@ -38,6 +40,8 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
   IF %%b==nomingwlibs SET buildmingwlibs=false
+  IF %%b==nopvraddons SET buildpvraddons=false
+  IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
 )
 
@@ -210,27 +214,34 @@ set WORKSPACE=%CD%\..\..
   xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\application\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
-  ECHO ------------------------------------------------------------
-  call buildpvraddons.bat
-  IF %errorlevel%==1 (
-    set DIETEXT="failed to build pvr addons"
-    goto DIE
-  )
-    
-  IF EXIST error.log del error.log > NUL
   SET build_path=%CD%
-  ECHO ------------------------------------------------------------
-  ECHO Building addons...
-  cd ..\..\tools\buildsteps\win32
-  call make-addons.bat
-  IF %errorlevel%==1 (
-    set DIETEXT="failed to build addons"
-    cd %build_path%
-    goto DIE
+  IF %buildpvraddons%==true (
+    ECHO ------------------------------------------------------------
+    ECHO Building pvr addons...
+    call buildpvraddons.bat
+    IF %errorlevel%==1 (
+      set DIETEXT="failed to build pvr addons"
+      goto DIE
+    )
+      
+    IF EXIST error.log del error.log > NUL
   )
 
-  cd %build_path%
-  IF EXIST error.log del error.log > NUL
+  IF %buildbinaryaddons%==true (
+    ECHO ------------------------------------------------------------
+    ECHO Building addons...
+    cd ..\..\tools\buildsteps\win32
+    call make-addons.bat
+    IF %errorlevel%==1 (
+      set DIETEXT="failed to build addons"
+      cd %build_path%
+      goto DIE
+    )
+
+    cd %build_path%
+    IF EXIST error.log del error.log > NUL
+  )
+
   ECHO ------------------------------------------------------------
   ECHO Building Confluence Skin...
   cd ..\..\addons\skin.confluence
