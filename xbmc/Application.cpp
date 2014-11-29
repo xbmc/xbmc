@@ -4364,8 +4364,9 @@ void CApplication::UpdateFileState()
   // Did the file change?
   if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
   {
-    // Ignore for PVR channels, PerformChannelSwitch takes care of this
-    if (!m_progressTrackingItem->IsPVRChannel())
+    // Ignore for PVR channels, PerformChannelSwitch takes care of this.
+    // Also ignore playlists as correct video settings have already been saved in PlayFile() - we're causing off-by-1 errors here.
+    if (!m_progressTrackingItem->IsPVRChannel() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE)
       SaveFileState();
 
     // Reset tracking item
