@@ -651,6 +651,20 @@ void CAudioLibrary::FillAlbumItem(const CAlbum &album, const std::string &path, 
   item = CFileItemPtr(new CFileItem(path, album));
 }
 
+JSONRPC_STATUS CAudioLibrary::GetAdditionalDetails(const CVariant &parameterObject, CFileItemList &items)
+{
+  if (items.IsEmpty())
+    return OK;
+
+  CMusicDatabase musicdb;
+  if (MediaTypes::IsMediaType(items.GetContent(), MediaTypeAlbum))
+    return GetAdditionalAlbumDetails(parameterObject, items, musicdb);
+  else if (MediaTypes::IsMediaType(items.GetContent(), MediaTypeSong))
+    return GetAdditionalSongDetails(parameterObject, items, musicdb);
+
+  return OK;
+}
+
 JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase)
 {
   if (!musicdatabase.Open())

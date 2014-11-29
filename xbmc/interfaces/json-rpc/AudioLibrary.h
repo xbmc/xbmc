@@ -55,6 +55,7 @@ namespace JSONRPC
     static bool FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
 
+    static JSONRPC_STATUS GetAdditionalDetails(const CVariant &parameterObject, CFileItemList &items);
     static JSONRPC_STATUS GetAdditionalAlbumDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase);
     static JSONRPC_STATUS GetAdditionalSongDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase);
 
