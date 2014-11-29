@@ -77,6 +77,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       m_scrapers.clear();
       m_vecItems->Clear();
+      m_content = CONTENT_NONE;
 
       break;
     }
