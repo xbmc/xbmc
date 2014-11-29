@@ -732,6 +732,13 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         m_frameInfo.pExtInfo->nFrmWidth  = (((m_frameInfo.pExtInfo->nFrmWidth) + 15) & ~15);
         m_frameInfo.pExtInfo->nFrmHeight = (((m_frameInfo.pExtInfo->nFrmHeight) + 15) & ~15);
 
+        /* quick & dirty fix to get proper timestamping for VP8 codec */
+        if (m_decOpenParam.CodecFormat == VPU_V_VP8)
+        {
+          idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
+          m_outputBuffers[idx]->SetPts(pts);
+        }
+
         retStatus |= VC_PICTURE;
       } //VPU_DEC_OUTPUT_DIS
 
