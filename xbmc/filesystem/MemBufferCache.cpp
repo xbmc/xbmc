@@ -215,13 +215,14 @@ int64_t MemBufferCache::Seek(int64_t iFilePosition)
   return CACHE_RC_ERROR;
 }
 
-void MemBufferCache::Reset(int64_t iSourcePosition)
+bool MemBufferCache::Reset(int64_t iSourcePosition, bool clearAnyway)
 {
   CSingleLock lock(m_sync);
   m_nStartPosition = iSourcePosition;
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
+  return true;
 }
 
 
