@@ -764,8 +764,18 @@ bool CDVDPlayer::OpenInputStream()
               CURL subUrl(stream->GetProperty("key").asString());
               subUrl.SetFileName(subUrl.GetFileName() + ".sub");
               
-              CFile::Cache(subUrl.Get(), path);
-              CLog::Log(LOGINFO, "Done caching %s", subUrl.Get().c_str());
+              CURL plexUrl(subUrl);
+              CPlexFile::BuildHTTPURL(plexUrl);
+
+              if (g_plexApplication.busy.blockWaitingForJob(new CPlexDownloadFileJob(plexUrl.Get(), path), NULL))
+              {
+                CLog::Log(LOGDEBUG,"file %s was donwloaded successfully", path.c_str());
+              }
+              else
+              {
+                CLog::Log(LOGERROR,"Failed to download  %s", path.c_str());
+                return false;
+              }
             }
 
             // Remember the last IDX stream.
