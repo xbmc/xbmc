@@ -21,6 +21,8 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
+    m_authed = false;
+
     SetHeading("Switch to User");
     
     /* Add the old user, so it can work offline as well */
