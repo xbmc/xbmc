@@ -112,11 +112,18 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 
   if (strcmp(message, "OnWake") == 0)
   {
-    {
-      CSingleLock lock(m_critSection);
-      m_bFirstStart = true;
-    }
-    Start(true);
+    /* start job to search for missing channel icons */
+    TriggerSearchMissingChannelIcons();
+
+    /* continue last watched channel */
+    ContinueLastChannel();
+    
+    /* trigger PVR data updates */
+    TriggerChannelGroupsUpdate();
+    TriggerChannelsUpdate();
+    TriggerRecordingsUpdate();
+    TriggerEpgsCreate();
+    TriggerTimersUpdate();
   }
 }
 
