@@ -897,6 +897,12 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     CSingleLock lock(m_critSection);
     ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
 
+    // demuxer will return failure, if you seek behind eof
+    if (ret < 0 && m_pFormatContext->duration && seek_pts >= (m_pFormatContext->duration + m_pFormatContext->start_time))
+      ret = 0;
+    else if (ret < 0 && m_pInput->IsEOF())
+      ret = 0;
+
     if(ret >= 0)
       UpdateCurrentPTS();
   }
@@ -909,10 +915,6 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   // in this case the start time is requested time
   if(startpts)
     *startpts = DVD_MSEC_TO_TIME(time);
-
-  // demuxer will return failure, if you seek to eof
-  if (m_pInput->IsEOF() && ret <= 0)
-    return true;
 
   return (ret >= 0);
 }

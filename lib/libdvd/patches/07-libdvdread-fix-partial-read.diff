@@ -1,0 +1,30 @@
+see upstream patch here  https://mailman.videolan.org/pipermail/libdvdnav-devel/2014-November/000346.html
+
+diff --git a/lib/libdvd/libdvdread/src/dvd_input.c b/lib/libdvd/libdvdread/src/dvd_input.c
+index 4a02524..7efff01 100644
+--- a/lib/libdvd/libdvdread/src/dvd_input.c
++++ b/lib/libdvd/libdvdread/src/dvd_input.c
+@@ -217,12 +217,14 @@ static int file_read(dvd_input_t dev, void *buffer, int blocks, int flags)
+ {
+   size_t len;
+   ssize_t ret;
++  char *buf;
+ 
++  buf = (char*) buffer;
+   len = (size_t)blocks * DVD_VIDEO_LB_LEN;
+ 
+   while(len > 0) {
+ 
+-    ret = read(dev->fd, buffer, len);
++    ret = read(dev->fd, buf, len);
+ 
+     if(ret < 0) {
+       /* One of the reads failed, too bad.  We won't even bother
+@@ -241,6 +243,7 @@ static int file_read(dvd_input_t dev, void *buffer, int blocks, int flags)
+       return (int) (bytes / DVD_VIDEO_LB_LEN);
+     }
+ 
++    buf += ret;
+     len -= ret;
+   }
+ 

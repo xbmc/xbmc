@@ -232,17 +232,19 @@ int64_t CCircularCache::Seek(int64_t pos)
   return CACHE_RC_ERROR;
 }
 
-void CCircularCache::Reset(int64_t pos, bool clearAnyway)
+bool CCircularCache::Reset(int64_t pos, bool clearAnyway)
 {
   CSingleLock lock(m_sync);
   if (!clearAnyway && IsCachedPosition(pos))
   {
     m_cur = pos;
-    return;
+    return false;
   }
   m_end = pos;
   m_beg = pos;
   m_cur = pos;
+
+  return true;
 }
 
 int64_t CCircularCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)

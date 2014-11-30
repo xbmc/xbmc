@@ -146,6 +146,8 @@ bool CVAAPIContext::CreateContext()
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
 
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
 
   QueryCaps();
   if (!m_profileCount || !m_attributeCount)

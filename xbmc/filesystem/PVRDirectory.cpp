@@ -66,23 +66,13 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     CFileItemPtr item;
 
-    item.reset(new CFileItem(base + "/channels/", true));
+    item.reset(new CFileItem(base + "channels/", true));
     item->SetLabel(g_localizeStrings.Get(19019));
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item.reset(new CFileItem(base + "/recordings/", true));
+    item.reset(new CFileItem(base + "recordings/", true));
     item->SetLabel(g_localizeStrings.Get(19017));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "/timers/", true));
-    item->SetLabel(g_localizeStrings.Get(19040));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "/guide/", true));
-    item->SetLabel(g_localizeStrings.Get(19029));
     item->SetLabelPreformated(true);
     items.Add(item);
 

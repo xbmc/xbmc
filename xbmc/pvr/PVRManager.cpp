@@ -111,7 +111,13 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
    return;
 
   if (strcmp(message, "OnWake") == 0)
-    ContinueLastChannel();
+  {
+    {
+      CSingleLock lock(m_critSection);
+      m_bFirstStart = true;
+    }
+    Start(true);
+  }
 }
 
 CPVRManager &CPVRManager::Get(void)
@@ -497,8 +503,9 @@ void CPVRManager::Process(void)
       /* start job to search for missing channel icons */
       TriggerSearchMissingChannelIcons();
       
-      /* continue last watched channel */
-      ContinueLastChannel();
+      /* try to continue last watched channel otherwise set group to last played group */
+      if (!ContinueLastChannel())
+        SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
     }
     /* execute the next pending jobs if there are any */
     try

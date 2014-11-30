@@ -50,7 +50,15 @@ public:
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
 
   virtual int64_t Seek(int64_t iFilePosition) = 0;
-  virtual void Reset(int64_t iSourcePosition, bool clearAnyway=true) = 0;
+
+  /*!
+   \brief Reset cache position
+   \param iSourcePosition position to reset to
+   \param clearAnyway whether to perform a full reset regardless of in cached range already
+   \return Whether a full reset was performed, or not (e.g. only cache swap)
+   \sa CCacheStrategy
+   */
+  virtual bool Reset(int64_t iSourcePosition, bool clearAnyway=true) = 0;
 
   virtual void EndOfInput(); // mark the end of the input stream so that Read will know when to return EOF
   virtual bool IsEndOfInput();
@@ -83,7 +91,7 @@ public:
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
   virtual int64_t Seek(int64_t iFilePosition);
-  virtual void Reset(int64_t iSourcePosition, bool clearAnyway=true);
+  virtual bool Reset(int64_t iSourcePosition, bool clearAnyway=true);
   virtual void EndOfInput();
 
   virtual int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition);
@@ -118,7 +126,7 @@ public:
   virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
   virtual int64_t Seek(int64_t iFilePosition);
-  virtual void Reset(int64_t iSourcePosition, bool clearAnyway=true);
+  virtual bool Reset(int64_t iSourcePosition, bool clearAnyway=true);
   virtual void EndOfInput();
   virtual bool IsEndOfInput();
   virtual void ClearEndOfInput();

@@ -253,7 +253,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     fd = smbc_opendir(s.c_str());
   }
 
-  if (fd < 0) /* only to avoid goto in following code */
+  while (fd < 0) /* only to avoid goto in following code */
   {
     std::string cError;
 
@@ -261,15 +261,21 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
         RequireAuthentication(urlIn);
+      break;
     }
-    else if (errno == ENODEV || errno == ENOENT)
+
+    if (errno == ENODEV || errno == ENOENT)
       cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
     else
       cError = strerror(errno);
 
     if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       SetErrorDialog(257, cError.c_str());
+    break;
+  }
 
+  if (fd < 0)
+  {
     // write error to logfile
     CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
   }

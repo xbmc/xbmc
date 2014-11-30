@@ -1761,10 +1761,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath());
         if (url.IsProtocol("plugin"))
-        {
-          strLabel = url.GetFileName();
-          URIUtils::RemoveSlashAtEnd(strLabel);
-        }
+          strLabel = URIUtils::GetFileName(url.GetHostName());
       }
       break;
     }

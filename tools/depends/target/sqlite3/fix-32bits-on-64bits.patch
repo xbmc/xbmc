@@ -1,0 +1,11 @@
+--- sqlite3.c.orig	2014-11-19 13:14:16.633721369 +0100
++++ sqlite3.c	2014-11-19 13:23:23.733711563 +0100
+@@ -25301,7 +25301,7 @@
+ #if OS_VXWORKS
+   struct vxworksFileId *pId;  /* Unique file ID for vxworks. */
+ #else
+-  ino_t ino;                  /* Inode number */
++  unsigned long long ino;                  /* Inode number */
+ #endif
+ };
+ 

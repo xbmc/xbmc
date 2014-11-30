@@ -46,7 +46,7 @@ public:
     virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
     virtual int64_t Seek(int64_t iFilePosition) ;
-    virtual void Reset(int64_t iSourcePosition) ;
+    virtual bool Reset(int64_t iSourcePosition, bool clearAnyway) ;
 
 protected:
     int64_t m_nStartPosition;

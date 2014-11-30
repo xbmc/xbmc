@@ -1,0 +1,11 @@
+--- src/util/miscorig.cpp	2014-11-27 18:31:54.778680630 +0000
++++ src/util/misc.cpp	2014-11-27 18:32:21.986680437 +0000
+@@ -64,7 +64,7 @@
+ //convert . or , to the current locale for correct conversion of ascii float
+ void ConvertFloatLocale(std::string& strfloat)
+ {
+-  static struct lconv* locale = localeconv();
++  static const struct lconv* locale = localeconv();
+   
+   size_t pos = strfloat.find_first_of(",.");
+ 
