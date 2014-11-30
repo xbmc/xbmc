@@ -1558,7 +1558,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   if (am_private->stream_type == AM_STREAM_ES && am_private->video_codec_tag != 0)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_tag);
-  else
+  if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   am_private->flv_flag = 0;
