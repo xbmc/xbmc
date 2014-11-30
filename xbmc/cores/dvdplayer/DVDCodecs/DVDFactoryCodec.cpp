@@ -60,6 +60,7 @@
 #include "DVDStreamInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/VideoSettings.h"
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 
@@ -199,102 +200,105 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
      if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 
-#if defined(HAS_LIBAMCODEC)
-  // amcodec can handle dvd playback.
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.useamcodec"))
+  if ((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_HARDWARE)
   {
-     if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
-  }
+#if defined(HAS_LIBAMCODEC)
+    // amcodec can handle dvd playback.
+    if (!hint.software && CSettings::Get().GetBool("videoplayer.useamcodec"))
+    {
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
+    }
 #endif
 
 #if defined(HAS_IMXVPU)
-  if (!hint.software)
-  {
-    if ( (pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options)) ) return pCodec;
-  }
+    if (!hint.software)
+    {
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options)) ) return pCodec;
+    }
 #endif
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda") && !g_advancedSettings.m_useFfmpegVda)
-  {
-    if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
+    if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda") && !g_advancedSettings.m_useFfmpegVda)
     {
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
+      {
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      }
     }
-  }
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevideotoolbox"))
-  {
-    if (g_sysinfo.HasVideoToolBoxDecoder())
+    if (!hint.software && CSettings::Get().GetBool("videoplayer.usevideotoolbox"))
     {
-      switch(hint.codec)
+      if (g_sysinfo.HasVideoToolBoxDecoder())
       {
-        case AV_CODEC_ID_H264:
-          if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
+        switch(hint.codec)
+        {
+          case AV_CODEC_ID_H264:
+            if (hint.codec == AV_CODEC_ID_H264 && hint.ptsinvalid)
+              break;
+            if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
             break;
-          if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
-        break;
-        default:
-        break;
+          default:
+            break;
+        }
       }
     }
-  }
 #endif
 
 #if defined(TARGET_ANDROID)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usemediacodec"))
-  {
-    CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
-    if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(), hint, options)) ) return pCodec;
-  }
+    if (!hint.software && CSettings::Get().GetBool("videoplayer.usemediacodec"))
+    {
+      CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(), hint, options)) ) return pCodec;
+    }
 #endif
 
 #if defined(HAVE_LIBOPENMAX)
-  if (CSettings::Get().GetBool("videoplayer.useomx") && !hint.software )
-  {
-      if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
+    if (CSettings::Get().GetBool("videoplayer.useomx") && !hint.software )
     {
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
+      if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
+      {
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
+      }
     }
-  }
 #endif
 
 #if defined(HAS_MMAL)
-  if (CSettings::Get().GetBool("videoplayer.usemmal") && !hint.software )
-  {
-    if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
-        hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
-        hint.codec == AV_CODEC_ID_VP6 || hint.codec == AV_CODEC_ID_VP6F || hint.codec == AV_CODEC_ID_VP6A || hint.codec == AV_CODEC_ID_VP8 ||
-        hint.codec == AV_CODEC_ID_THEORA || hint.codec == AV_CODEC_ID_MJPEG || hint.codec == AV_CODEC_ID_MJPEGB || hint.codec == AV_CODEC_ID_VC1 || hint.codec == AV_CODEC_ID_WMV3)
+    if (CSettings::Get().GetBool("videoplayer.usemmal") && !hint.software )
     {
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecMMAL(), hint, options)) ) return pCodec;
+      if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
+          hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
+          hint.codec == AV_CODEC_ID_VP6 || hint.codec == AV_CODEC_ID_VP6F || hint.codec == AV_CODEC_ID_VP6A || hint.codec == AV_CODEC_ID_VP8 ||
+          hint.codec == AV_CODEC_ID_THEORA || hint.codec == AV_CODEC_ID_MJPEG || hint.codec == AV_CODEC_ID_MJPEGB || hint.codec == AV_CODEC_ID_VC1 || hint.codec == AV_CODEC_ID_WMV3)
+      {
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecMMAL(), hint, options)) ) return pCodec;
+      }
     }
-  }
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright"))
-  {
-    switch(hint.codec)
+    if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright"))
     {
-      case CODEC_ID_H264:
-      case CODEC_ID_MPEG4:
-      case CODEC_ID_MPEG2VIDEO:
-      case CODEC_ID_VC1:
-      case CODEC_ID_WMV3:
-      case CODEC_ID_VP3:
-      case CODEC_ID_VP6:
-      case CODEC_ID_VP6F:
-      case CODEC_ID_VP8:
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecStageFright(), hint, options)) ) return pCodec;
-        break;
-      default:
-        break;
+      switch(hint.codec)
+      {
+        case CODEC_ID_H264:
+        case CODEC_ID_MPEG4:
+        case CODEC_ID_MPEG2VIDEO:
+        case CODEC_ID_VC1:
+        case CODEC_ID_WMV3:
+        case CODEC_ID_VP3:
+        case CODEC_ID_VP6:
+        case CODEC_ID_VP6F:
+        case CODEC_ID_VP8:
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecStageFright(), hint, options)) ) return pCodec;
+          break;
+        default:
+          break;
+      }
     }
-  }
 #endif
+  }
 
   // try to decide if we want to try halfres decoding
 #if !defined(TARGET_POSIX) && !defined(TARGET_WINDOWS)
