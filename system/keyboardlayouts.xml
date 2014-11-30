@@ -124,6 +124,26 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
+  <layout name="Hungarian QWERTZ">
+    <keyboard>
+      <row>0123456789öüó</row>
+      <row>qwertzuiopőú</row>
+      <row>asdfghjkléáű</row>
+      <row>íyxcvbnm,.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789ÖÜÓ</row>
+      <row>QWERTZUIOPŐÚ</row>
+      <row>ASDFGHJKLÉÁŰ</row>
+      <row>ÍYXCVBNM,.-</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>§'"+!/=()~</row>
+      <row>^;\|Ä€Í÷×ä</row>
+      <row>đĐ[]íłŁ$ß¤</row>
+      <row>#@{}&lt;&gt;*?:_</row>
+    </keyboard>
+  </layout>
   <layout name="Polish QWERTY">
     <keyboard>
       <row>`1234567890-</row>
