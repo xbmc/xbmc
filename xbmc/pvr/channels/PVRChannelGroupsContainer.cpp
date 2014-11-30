@@ -143,6 +143,7 @@ CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) c
 bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileItemList &results)
 {
   std::string strBase(strPath);
+  URIUtils::RemoveSlashAtEnd(strBase);
 
   /* get the filename from curl */
   CURL url(strPath);
