@@ -100,7 +100,7 @@ bool CMMALRenderer::init_vout(MMAL_ES_FORMAT_T *format)
     return false;
   }
 
-  m_vout_input->buffer_num = m_vout_input->buffer_num_recommended;
+  m_vout_input->buffer_num = std::max(m_vout_input->buffer_num_recommended, (uint32_t)m_NumYV12Buffers);
   m_vout_input->buffer_size = m_vout_input->buffer_size_recommended;
 
   status = mmal_port_enable(m_vout_input, vout_input_port_cb_static);
