@@ -13,7 +13,6 @@
 #include "XBDateTime.h"
 #include <string>
 
-
 class CMyPlexUserInfo
 {
 public:

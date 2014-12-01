@@ -519,12 +519,14 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_verb.empty() == false)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_verb.c_str());
   
+  /* With PLEX we actually ship a good CA store */
+  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 1);
+  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 1);
+  g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, CSpecialProtocol::TranslatePath("special://xbmc/system/cacert.pem").c_str());
+
+  // If we are talking to plex.tv we use our own CA's certificate instead of the generic one.
   if (boost::starts_with(m_url, "https://plex.tv"))
-  {
-    g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 1);
-    g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 1);
-    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, CSpecialProtocol::TranslatePath("special://xbmc/system/cacert.pem").c_str());
-  }
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, CSpecialProtocol::TranslatePath("special://xbmc/system/plexca.pem").c_str());
   /* END PLEX */
 
   // setup Referer header if needed

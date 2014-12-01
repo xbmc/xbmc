@@ -153,7 +153,7 @@ else(TARGET_COMMON_DARWIN)
   install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/SlideshowOverlay.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
   install(DIRECTORY ${plexdir}/Resources/system/keymaps DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/system/peripherals.xml ${plexdir}/Resources/system/playercorefactory.xml ${plexdir}/Resources/system/cacert.pem DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/system/peripherals.xml ${plexdir}/Resources/system/playercorefactory.xml ${plexdir}/Resources/system/plexca.pem ${plexdir}/Resources/system/cacert.pem DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
   if(TARGET_WIN32)
     install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
