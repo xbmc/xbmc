@@ -52,6 +52,9 @@ namespace XCURL
     virtual void multi_cleanup(CURL_HANDLE * handle )=0;
     virtual struct curl_slist* slist_append(struct curl_slist *, const char *)=0;
     virtual void  slist_free_all(struct curl_slist *)=0;
+    /* PLEX */
+    virtual const char* easy_strerror(CURLcode)=0;
+    /* END PLEX */
   };
 
   class DllLibCurl : public DllDynamic, DllLibCurlInterface
@@ -76,6 +79,9 @@ namespace XCURL
     DEFINE_METHOD1(void, multi_cleanup, (CURLM *p1))
     DEFINE_METHOD2(struct curl_slist*, slist_append, (struct curl_slist * p1, const char * p2))
     DEFINE_METHOD1(void, slist_free_all, (struct curl_slist * p1))
+    /* PLEX */
+    DEFINE_METHOD1(const char*, easy_strerror, (CURLcode p1))
+    /* END PLEX */
     BEGIN_METHOD_RESOLVE()
       RESOLVE_METHOD_RENAME(curl_global_init, global_init)
       RESOLVE_METHOD_RENAME(curl_global_cleanup, global_cleanup)
@@ -96,6 +102,9 @@ namespace XCURL
       RESOLVE_METHOD_RENAME(curl_multi_cleanup, multi_cleanup)
       RESOLVE_METHOD_RENAME(curl_slist_append, slist_append)
       RESOLVE_METHOD_RENAME(curl_slist_free_all, slist_free_all)
+      /* PLEX */
+      RESOLVE_METHOD_RENAME(curl_easy_strerror, easy_strerror)
+      /* END PLEX */
     END_METHOD_RESOLVE()
 
   };
