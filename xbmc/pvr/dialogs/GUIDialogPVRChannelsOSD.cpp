@@ -214,7 +214,11 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   CPVRChannelGroupPtr group = GetPlayingGroup();
   if (group)
   {
-    m_viewControl.SetSelectedItem(GetLastSelectedItemPath(group->GroupID()));
+    std::string path = GetLastSelectedItemPath(group->GroupID());
+    if (!path.empty())
+      m_viewControl.SetSelectedItem(path);
+    else
+      m_viewControl.SetSelectedItem(0);
   }
 }
 
