@@ -1083,3 +1083,15 @@ void PlexUtils::PrintItemProperties(CGUIListItemPtr item)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL PlexUtils::MakeUrlSecret(CURL url)
+{
+  CURL secretURL(url);
+  if (!secretURL.GetUserName().empty())
+    secretURL.SetUserName("SECRETUSER");
+  if (!secretURL.GetPassWord().empty())
+    secretURL.SetPassword("SECRETPASSWORD");
+
+  return secretURL;
+}
+

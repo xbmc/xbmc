@@ -74,6 +74,8 @@ namespace PlexUtils
   
   std::string GetPlayListIDfromPath(CStdString plpath);
   void PrintItemProperties(CGUIListItemPtr item);
+
+  CURL MakeUrlSecret(CURL url);
 }
 
 #if defined(HAVE_EXECINFO_H)

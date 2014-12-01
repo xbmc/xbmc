@@ -90,7 +90,7 @@ CPlexFile::BuildHTTPURL(CURL& url)
   if (!server)
   {
     /* Ouch, this should not happen! */
-    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", url.GetHostName().c_str());
+    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", PlexUtils::MakeUrlSecret(url).GetHostName().c_str());
     return false;
   }
 
@@ -110,7 +110,7 @@ CPlexFile::BuildHTTPURL(CURL& url)
   if (!url.GetPassWord().empty())
     newUrl.SetPassword(url.GetPassWord());
 
-  CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTPURL translated '%s' to '%s'", url.Get().c_str(), newUrl.Get().c_str());
+  CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTPURL translated '%s' to '%s'", PlexUtils::MakeUrlSecret(url).Get().c_str(), PlexUtils::MakeUrlSecret(newUrl).Get().c_str());
   url = newUrl;
 
   return true;
