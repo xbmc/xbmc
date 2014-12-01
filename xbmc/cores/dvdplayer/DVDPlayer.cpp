@@ -718,14 +718,14 @@ bool CDVDPlayer::OpenInputStream()
           if (lastIdxStream)
             idxStream = lastIdxStream;
 
-          CStdString path = "special://temp/subtitle.plex." + idxStream->GetProperty("id").asString() + "." + stream->GetProperty("codec").asString();
+          CStdString path = "special://temp/subtitle.plex." + idxStream->GetProperty("id").asString() + "." + idxStream->GetProperty("codec").asString();
           CLog::Log(LOGINFO, "Considering caching Plex subtitle locally for stream %s (codec: %s) to %s (exists: %d)",
-                    stream->GetProperty("id").asString().c_str(),
-                    stream->GetProperty("codec").asString().c_str(),
+                    idxStream->GetProperty("id").asString().c_str(),
+                    idxStream->GetProperty("codec").asString().c_str(),
                     path.c_str(),
                     CFile::Exists(path));
           
-          CURL newUrl(stream->GetProperty("key").asString());
+          CURL newUrl(idxStream->GetProperty("key").asString());
           newUrl.SetOption("encoding", g_langInfo.GetSubtitleCharSet());
 
 
@@ -741,7 +741,7 @@ bool CDVDPlayer::OpenInputStream()
             CPlexFile::BuildHTTPURL(plexUrl);
             if (g_plexApplication.busy.blockWaitingForJob(new CPlexDownloadFileJob(plexUrl.Get(), path), NULL))
             {
-              CLog::Log(LOGDEBUG,"file %s was donwloaded successfully", path.c_str());
+              CLog::Log(LOGDEBUG,"file %s was downloaded successfully", path.c_str());
               s.filename = path;
               m_SelectionStreams.Update(s);
             }
@@ -754,14 +754,14 @@ bool CDVDPlayer::OpenInputStream()
           /* END PLEX */
 
           // If it's an IDX, we need to cache the SUB file as well.
-          if (stream->GetProperty("codec").asString() == "idx")
+          if (idxStream->GetProperty("codec").asString() == "idx")
           {
             CStdString path = "special://temp/subtitle.plex." + idxStream->GetProperty("id").asString() + ".sub";
             if (CFile::Exists(path) == false)
             {
-              CLog::Log(LOGINFO, "Caching Plex subtitle locally for stream %lld to %s", stream->GetProperty("id").asInteger(), path.c_str());
+              CLog::Log(LOGINFO, "Caching Plex subtitle locally for stream %lld to %s", idxStream->GetProperty("id").asInteger(), path.c_str());
               
-              CURL subUrl(stream->GetProperty("key").asString());
+              CURL subUrl(idxStream->GetProperty("key").asString());
               subUrl.SetFileName(subUrl.GetFileName() + ".sub");
               
               CURL plexUrl(subUrl);
@@ -769,7 +769,7 @@ bool CDVDPlayer::OpenInputStream()
 
               if (g_plexApplication.busy.blockWaitingForJob(new CPlexDownloadFileJob(plexUrl.Get(), path), NULL))
               {
-                CLog::Log(LOGDEBUG,"file %s was donwloaded successfully", path.c_str());
+                CLog::Log(LOGDEBUG,"file %s was downloaded successfully", path.c_str());
               }
               else
               {
@@ -779,7 +779,7 @@ bool CDVDPlayer::OpenInputStream()
             }
 
             // Remember the last IDX stream.
-            lastIdxStream = stream;
+            lastIdxStream = idxStream;
             lastIdxSource = s.source;
           }
         }
