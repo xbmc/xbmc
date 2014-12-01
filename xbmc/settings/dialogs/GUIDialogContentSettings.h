@@ -47,6 +47,7 @@ public:
 
   CONTENT_TYPE GetContent() const { return m_content; }
   void SetContent(CONTENT_TYPE content);
+  void ResetContent();
 
   const ADDON::ScraperPtr& GetScraper() const { return m_scraper; }
   void SetScraper(ADDON::ScraperPtr scraper) { m_scraper = scraper; }

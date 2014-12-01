@@ -77,7 +77,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       m_scrapers.clear();
       m_vecItems->Clear();
-      m_content = CONTENT_NONE;
 
       break;
     }
@@ -171,6 +170,11 @@ void CGUIDialogContentSettings::SetContent(CONTENT_TYPE content)
   m_content = m_originalContent = content;
 }
 
+void CGUIDialogContentSettings::ResetContent()
+{
+  SetContent(CONTENT_NONE);
+}
+
 void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scanSettings)
 {
   m_scanRecursive       = (scanSettings.recurse > 0 && !scanSettings.parent_name) ||
@@ -247,6 +251,9 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       }
     }
   }
+
+  // now that we have evaluated all settings we need to reset the content
+  dialog->ResetContent();
 
   return confirmed;
 }
