@@ -80,7 +80,9 @@ foreach(l ${INSTALL_LIB})
   plex_find_package(${l} 1 0)
 endforeach()
 
-plex_find_package(CEC 0 0)
+if(NOT DISABLE_CEC)
+  plex_find_package(CEC 0 0)
+endif(DISABLE_CEC)
 
 plex_find_package(Threads 1 0)
 if(CMAKE_USE_PTHREADS_INIT)
