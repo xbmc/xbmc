@@ -16,6 +16,10 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Випадкові набори ефектів"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Тривалість показу одного ефекту"
@@ -23,6 +27,30 @@ msgstr "Тривалість показу одного ефекту"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Додатковий час випадкової тривалості"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Заблокувати набір ефектів"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Увімкнути переклади"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Зупинити перший набір ефектів"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Показувати кількість кадрів в секунду"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Показати панель налагодження"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Показати аудіо аналіз"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

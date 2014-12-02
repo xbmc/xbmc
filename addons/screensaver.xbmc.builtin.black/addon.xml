@@ -24,7 +24,6 @@
     <summary lang="es">Un salvapantallas que pone la pantalla en negro</summary>
     <summary lang="es_AR">Un protector de pantalla que pone la pantalla en negro</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece la pantalla</summary>
-    <summary lang="es_VE">Protector de pantalla de fondo negro</summary>
     <summary lang="et">Ekraanisäästja, mis muudab ekraani mustaks</summary>
     <summary lang="eu">Zure pantaila belzten duen pantaila-babeslea</summary>
     <summary lang="fi">Tyhjä ruutu</summary>
@@ -54,7 +53,6 @@
     <summary lang="sk">Šetrič obrazovky, ktorú ju zmení na čiernu</summary>
     <summary lang="sl">Ohranjevalnik zaslona, ki počrni zaslon</summary>
     <summary lang="sv">En skärmsläckare som gör din skärm svart</summary>
-    <summary lang="ta_IN">திரையை கறுப்பாக்கும் திரைகாப்பான்</summary>
     <summary lang="tg">Пардаи экран бо таъсири «Пардаи экрани сиёҳ»</summary>
     <summary lang="th">สกรีนเซฟเวอร์ที่จะพักหน้าจอของคุณให้เป็นสีดำ</summary>
     <summary lang="tr">Ekranınızı siyah renge çeviren bir ekran koruyucu</summary>
@@ -81,7 +79,6 @@
     <description lang="es">Black es un sencillo salvapantallas que pone la pantalla en negro.</description>
     <description lang="es_AR">Black es un sencillo protector de pantalla que pone la pantalla en negro.</description>
     <description lang="es_MX">Black es un simple protector de pantalla que la obscurece.</description>
-    <description lang="es_VE">"Black" es un simple protector de pantalla de fondo negro </description>
     <description lang="et">Must on lihtne ekraanisäästja, mis muudab sinu ekraani mustaks.</description>
     <description lang="eu">Black zure pantaila belzten duen pantaila-babesle soil bat da.</description>
     <description lang="fi">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
@@ -111,7 +108,6 @@
     <description lang="sk">Black je jednoduchý šetrič, ktorý zmení vašu obrazovku na čiernu.</description>
     <description lang="sl">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sv">Detta är en enkel skärmsläckare som gör din skärm svart.</description>
-    <description lang="ta_IN">கருப்பு மிகவும் எளிமையான திரைகாப்பான் இது திரையை கறுப்பாக்கிவிடும்</description>
     <description lang="tg">Ин пардаи экрани осон мебошад, ки таъсири «Пардаи экрани сиёҳ»-ро истифода мебарад.</description>
     <description lang="th">หน้าจอสีดำเป็นสกรีนเซฟเวอร์แบบง่ายๆที่จะเปิดหน้าจอของคุณให้เป็นสีดำ</description>
     <description lang="tr">Siyah, ekranınızı siyaha çeviren basit bir ekran koruyucusudur.</description>

@@ -16,13 +16,17 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Детальний [Інтенсивне використання процесору]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "Мін."
+msgstr "Низька"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "Нормальне"
+msgstr "Нормальна"
 
 msgctxt "#30003"
 msgid "High"
@@ -32,9 +36,21 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Максимальна"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Нервова режим [більше змін в налаштуваннях]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Швидкий [пропускати деякі кадри]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Дуже Низька"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "Мін."
+msgstr "Низька"
 
 msgctxt "#30009"
 msgid "Normal"
@@ -43,3 +59,7 @@ msgstr "Нормальне"
 msgctxt "#30010"
 msgid "High"
 msgstr "Висока"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Використовувати Файл Стабілізації [швидше завантаження]"

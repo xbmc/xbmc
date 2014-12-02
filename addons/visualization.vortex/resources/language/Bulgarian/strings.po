@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "Случаен ред на шаблоните"
+msgstr "Произволен ред на шаблоните"
 
 msgctxt "#30001"
 msgid "Time Between Presets"

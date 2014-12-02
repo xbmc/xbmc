@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.vortex"
-  version="1.0.13"
+  version="1.0.14"
   name="Vortex"
   provider-name="Team-Kodi">
   <extension
@@ -48,10 +48,10 @@
     <summary lang="sk">Vortex vizualizácia z XBOX balíčku</summary>
     <summary lang="sl">Vizualizacija Vortex iz paketa XBOX</summary>
     <summary lang="sv">Vortex Visualization från XBOX-paketet</summary>
-    <summary lang="ta_IN">XBOX தொகுப்பில் இருந்து Vortex காட்சிஅமைப்பு</summary>
     <summary lang="tg">Таҷассуми Vortex аз бастаи XBOX</summary>
     <summary lang="th">การแสดง Vortex จาก XBOX package</summary>
     <summary lang="tr">XBOX paketinden Vortex Görsel Öğe</summary>
+    <summary lang="uk">Візуалізація Вихору з XBOX пакету</summary>
     <summary lang="zh">来自 XBOX 组件包的旋涡可视化效果</summary>
     <platform>windx</platform>
   </extension>
