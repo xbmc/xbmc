@@ -12465,6 +12465,22 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Definerer om video dekodning skal ske i software (kræver mere CPU) eller med hardware acceleration hvis muligt."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Vælg virtuelle tastaturlayout."
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Tillad hardwareacceleration (MMAL)"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoskopisk 3D-tilstand (nuværende)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoskopisk 3D-tilstand"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Deaktiveret"
@@ -12493,6 +12509,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Hardware Baseret"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopic (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Afspilningstilstand af stereoskopiske 3D-videoer"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Spørg mig"
@@ -12509,6 +12533,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Samme som filmen (automatisk registrering)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Deaktiver stereoskopisk 3D-tilstand , når afspilningen slutter"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Vælg afspilningstilstand"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Vælg stereoskopisk 3D-tilstand"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Vælg alternativ tilstand..."
@@ -12516,6 +12552,14 @@ msgstr "Vælg alternativ tilstand..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Samme som film"
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoskopisk 3D-tilstand af video"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Inverter stereoskopisk 3D-tilstand (flip øjne)"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12536,6 +12580,10 @@ msgstr "Aktiver denne for at gøre dialog højere ift. baggrundslyde multi-kanal
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktiver hardware dekodning af video-filer."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoskopisk 3D dybde af undertekster"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -12561,6 +12609,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategori indeholdende indstillinger for håndtering af video output."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "film"
+
 msgctxt "#36901"
 msgid "movies"
 msgstr "film"
@@ -12573,6 +12625,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "TV-serier"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "sæson"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "sæsoner"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episode"
@@ -12580,6 +12640,14 @@ msgstr "episode"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episoder"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "musikvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "musikvideoer"
 
 msgctxt "#36910"
 msgid "set"
@@ -12597,9 +12665,29 @@ msgctxt "#36913"
 msgid "videos"
 msgstr "Videoer"
 
+msgctxt "#36914"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "musik"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "kunstner"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "kunstner"
+
 msgctxt "#36918"
 msgid "album"
 msgstr "Album"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albums"
 
 msgctxt "#36920"
 msgid "song"
@@ -12684,3 +12772,7 @@ msgstr "720"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Ubegrænset"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU accelereret"

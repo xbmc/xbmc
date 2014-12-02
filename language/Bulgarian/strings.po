@@ -2155,7 +2155,7 @@ msgstr "Режим \"Парти\""
 
 msgctxt "#590"
 msgid "Random"
-msgstr "Случаен"
+msgstr "Произволно"
 
 msgctxt "#591"
 msgid "Off"
@@ -2472,6 +2472,10 @@ msgstr "Подробно описване в дневника на UPnP комп
 msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Подробно описване в дневника на CEC библиотеката"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Подробно описване в дневника на VIDEO компонента"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4687,7 +4691,7 @@ msgstr "Рекурсивно слайдшоу"
 
 msgctxt "#13319"
 msgid "Randomise"
-msgstr "В случаен ред"
+msgstr "В произволен ред"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -10562,8 +10566,12 @@ msgid "Configuration has been moved"
 msgstr "Конфигурационните файлове са преместени"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "Конфигурационните файлове от XBMC са преместени на ново място за версия Kodi. Моля, прочетете http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - съобщението няма да бъде показано втори път!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Конфигурационните файлове от XBMC са преместени на ново място за версия Kodi. Моля, прочетете http://kodi.wiki/view/Migration - съобщението няма да бъде показано втори път!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Без несъвместимите"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -12175,7 +12183,7 @@ msgstr "Към изображенията в слайдшоуто ще се пр
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Преглед на изображенията от слайдшоуто в случаен ред."
+msgstr "Преглед на изображенията от слайдшоуто в произволен ред."
 
 msgctxt "#36315"
 msgid "Section that contains weather related settings."

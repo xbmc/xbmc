@@ -689,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Web 介面"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "音效編碼器"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "標語"
@@ -848,6 +852,10 @@ msgstr "全螢幕"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "縮放中：(%i,%i)->(%i,%i) (縮放 x%2.2f) AR:%2.2f:1 (像素: %2.2f:1)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "螢幕"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1089,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "使用者介面語言"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "鍵盤佈局"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=自動)"
@@ -1224,6 +1236,10 @@ msgstr "演員"
 msgctxt "#345"
 msgid "Year"
 msgstr "年份"
+
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "保留混音前原有的音量"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1981,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "混合多聲道輸出為雙聲道"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "編號"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "排序：%s"
@@ -2397,9 +2417,17 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "壓縮等級"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "啟用各別元件的紀錄"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "啟用杜比數位轉碼"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "選擇所紀錄元件"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
@@ -2432,6 +2460,22 @@ msgstr "JSON-RPC 請求的詳細記錄"
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "AUDIO 組件的詳細記錄"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "詳細紀錄AirTunes函式庫"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "詳細紀錄UPnP元件"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "詳細紀錄CEC函式庫"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "詳細紀錄影像元件"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2780,6 +2824,10 @@ msgstr "音樂庫需要重新掃描檔案標籤"
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "你要現在就開始掃描嗎？"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s 可用空間，共有 %s。"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3161,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "透過 Zeroconf 自動發佈這些服務到其他系統"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8相容模式"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "允許音量控制"
@@ -3197,9 +3249,17 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "自訂直通輸出裝置"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "氣溫"
+
 msgctxt "#1376"
 msgid "Pressure"
 msgstr "氣壓"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "非常"
 
 msgctxt "#1381"
 msgid "Extreme"
@@ -3212,6 +3272,14 @@ msgstr "旋"
 msgctxt "#1384"
 msgid "Broken"
 msgstr "已損壞"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "龍捲風"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "冷"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -4068,6 +4136,18 @@ msgstr "累計運作時間"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "電池狀態"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "自動更新：開啟"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "自動更新：提示"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "自動更新：永不"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5517,6 +5597,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "播放"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "光碟"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "自動播放 DVD"
@@ -5573,9 +5657,25 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr "加速"
 
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "藍光光碟播放模式"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "播放主電影"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "顯示簡單選項"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "無法取得的來源"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "你想要對 %s 媒體執行什麼操作？"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -5872,6 +5972,10 @@ msgstr "編輯標題"
 msgctxt "#16106"
 msgid "Manage..."
 msgstr "管理..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "編輯標題"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -6305,6 +6409,10 @@ msgctxt "#19069"
 msgid "EPG"
 msgstr "電子節目表"
 
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "回到播放點"
+
 msgctxt "#19071"
 msgid "EPG update interval"
 msgstr "電子節目表更新間隔"
@@ -6424,6 +6532,10 @@ msgstr "服務"
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "請切換到另一個頻道"
+
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "返回頻道"
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
@@ -7053,6 +7165,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "不要顯示\"連線遺失\"的警告"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "將項目分組"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "找不到任何 PVR 附加元件"
@@ -7113,9 +7229,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "瀏覽圖示"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "搜尋頻道圖示"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "所有頻道"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "前景"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8281,6 +8405,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "蘋果檔案協定 (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf瀏覽器"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Web 伺服器目錄(HTTP)"
@@ -8360,6 +8488,10 @@ msgstr "重設螢幕校正"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "重設螢幕校正值為 %s"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "還原為預設值"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -10213,6 +10345,22 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "要重新連線嗎？"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "附加元件幫手"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "附加元件類"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "資訊類"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "視覺效果類"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
 msgstr "重新啟動附加元件"
@@ -10361,6 +10509,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "自動下載搜尋結果裡的第一個字幕"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "設定已遷移"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "通知"
@@ -10372,6 +10524,10 @@ msgstr "隱藏外語"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "從所有標題中選擇..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "顯示藍光光碟選單"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10560,6 +10716,14 @@ msgstr "週末"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s 天"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s 媒體流"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s 設備"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12281,6 +12445,22 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "設定影片解碼要使用軟體(需要更多 CPU 資源)或者可能的話使用硬體加速。"
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "選擇虛擬鍵盤的佈局"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "允許硬體加速 (MMAL)"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "3D 立體模式 (目前的)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "3D 立體模式"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "關閉"
@@ -12289,6 +12469,14 @@ msgctxt "#36504"
 msgid "Side by side"
 msgstr "並排"
 
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "紅色和青色浮雕"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "綠色和洋紅色浮˙雕"
+
 msgctxt "#36507"
 msgid "Interlaced"
 msgstr "交錯掃描"
@@ -12296,6 +12484,14 @@ msgstr "交錯掃描"
 msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "基於硬體"
+
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "單視場 (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "3D 立體影片的播放模式"
 
 msgctxt "#36521"
 msgid "Ask me"
@@ -12313,9 +12509,25 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "和電影相同 (自動偵測)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "播放結束時停用 3D 立體模式"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "選擇播放模式"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "選擇 3D 立體模式"
+
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "和電影相同"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "選擇聲音要如何下降混合，例如從 5.1 到 2.0：[啟用] 維持原本聲音的大小，但動態範圍會被壓縮。[停用] 維持原本聲音來源的動態範圍，但會稍微變小聲。注意 - 動態範圍指的是原本聲音最小聲和最大聲的差距。如果電影對話不容易聽清楚的話請啟用這個設定。"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12345,6 +12557,10 @@ msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "使用較高品質的封面與桌布(使用較多記憶體)"
 
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "使用 iOS 8 相容支援。如果對於較舊的iOS裝置上有使用上的困難，例如無法正確偵測 Kodi，請取消勾選此選項。此選項在下次啟動 Kodi 時生效。"
+
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
 msgstr "此分類包含如何處理音樂資料庫的設定。"
@@ -12361,6 +12577,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "此分類包含如何處理影像輸出的設定。"
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "電影"
+
 msgctxt "#36901"
 msgid "movies"
 msgstr "電影"
@@ -12372,6 +12592,14 @@ msgstr "電視劇"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "電視劇"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "季"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "季"
 
 msgctxt "#36906"
 msgid "episode"
@@ -12397,8 +12625,28 @@ msgctxt "#36913"
 msgid "videos"
 msgstr "視訊"
 
+msgctxt "#36914"
+msgid "music"
+msgstr "音樂"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "音樂"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "演出者"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "演出者"
+
 msgctxt "#36918"
 msgid "album"
+msgstr "專輯"
+
+msgctxt "#36919"
+msgid "albums"
 msgstr "專輯"
 
 msgctxt "#36920"
@@ -12429,6 +12677,10 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr "上次使用的設定"
 
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "瀏覽簡介"
+
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
 msgstr "如果你的接收器有能力解碼 E-AC3 串流則選擇這個選項。"
@@ -12440,6 +12692,10 @@ msgstr "雙聲音輸出"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "下降混合時加強中間聲道"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "啟用更高顏色深度圖像"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
@@ -12457,6 +12713,22 @@ msgctxt "#37026"
 msgid "Auto"
 msgstr "自動"
 
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "無限制的"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "顯示卡加速"

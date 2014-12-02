@@ -467,7 +467,7 @@ msgstr "UCT :"
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "UTG :"
+msgstr "Processeur graphique :"
 
 msgctxt "#142"
 msgid "Time:"
@@ -535,7 +535,7 @@ msgstr "Vidéo"
 
 msgctxt "#158"
 msgid "Free memory"
-msgstr "Mémoire libre"
+msgstr "Mémoire libre "
 
 msgctxt "#159"
 msgid "No link"
@@ -595,7 +595,7 @@ msgstr "Date de parution"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "Afficher les vidéos 4:3..."
+msgstr "Affichage des vidéos 4:3..."
 
 msgctxt "#175"
 msgid "Moods"
@@ -855,7 +855,7 @@ msgstr "Dimensionnement : (%i,%i)->(%i,%i) (Zoom x%2.2f) AR : %2.2f : 1 (Pixels 
 
 msgctxt "#246"
 msgid "Monitor"
-msgstr "Moniteur"
+msgstr "Écran"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1187,7 +1187,7 @@ msgstr "Erreur de compression de la base de données"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Voulez-vous nettoyer la médiathèque ?"
+msgstr "Voulez-vous nettoyer la médiathèque?"
 
 msgctxt "#334"
 msgid "Clean library..."
@@ -2472,6 +2472,10 @@ msgstr "Journalisation en clair pour les composants UPnP"
 msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Journalisation en clair pour la bibliothèque CEC"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Journalisation en clair pour le composant VIDÉO"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -4159,15 +4163,15 @@ msgstr "Mois/Jour"
 
 msgctxt "#12390"
 msgid "System uptime"
-msgstr "Durée de fonctionnement du système"
+msgstr "Durée de fonctionnement du système "
 
 msgctxt "#12391"
 msgid "Minutes"
-msgstr "Minutes"
+msgstr "minutes"
 
 msgctxt "#12392"
 msgid "Hours"
-msgstr "Heures"
+msgstr "heures"
 
 msgctxt "#12393"
 msgid "Days"
@@ -4175,11 +4179,11 @@ msgstr "Jours"
 
 msgctxt "#12394"
 msgid "Total uptime"
-msgstr "Durée de fonctionnement totale "
+msgstr "Durée totale de fonctionnement "
 
 msgctxt "#12395"
 msgid "Battery level"
-msgstr "Niveau de batterie"
+msgstr "Niveau de batterie "
 
 msgctxt "#12396"
 msgid "Auto updates: On"
@@ -4475,11 +4479,11 @@ msgstr "Masque de sous-réseau "
 
 msgctxt "#13160"
 msgid "Gateway"
-msgstr "Passerelle"
+msgstr "Passerelle "
 
 msgctxt "#13161"
 msgid "Primary DNS"
-msgstr "DNS primaire"
+msgstr "DNS primaire "
 
 msgctxt "#13162"
 msgid "Initialise failed"
@@ -5171,7 +5175,7 @@ msgstr "Utiliser VC-1 VDPAU"
 
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs basés sur VC-1. Si elle est désactivée, l'UCT sera utilisée à la place. Le matériel AMD avec VDPAU ne peut pas décoder VC-1 Simple."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs basés sur VC-1. Si elle est désactivée, l'UCT sera plutôt utilisée. Le matériel AMD avec VDPAU ne peut pas décoder VC-1 Simple."
 
 msgctxt "#13447"
 msgid "Use MPEG-2 VAAPI"
@@ -5195,7 +5199,7 @@ msgstr "Utiliser VC-1 VAAPI"
 
 msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
-msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs basés sur VC-1. Si elle est désactivée, l'UCT sera utilisée à la place. L'entrelacement VC-1 échoue particulièrement sur le matériel Intel."
+msgstr "Activer cette option pour utiliser l'accélération matérielle pour les codecs basés sur VC-1. Si elle est désactivée, l'UCT sera plutôt utilisée. L'entrelacement VC-1 échoue particulièrement sur le matériel Intel."
 
 msgctxt "#13454"
 msgid "Decoding method"
@@ -6192,6 +6196,22 @@ msgstr "VAAPI adaptation aux mouvements"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI compensation des mouvements "
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Avancé"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Avancé (moitié)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (moitié)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7791,7 +7811,7 @@ msgstr "Région"
 
 msgctxt "#20037"
 msgid "Summary"
-msgstr "Sommaire"
+msgstr "Récapitulatif"
 
 msgctxt "#20038"
 msgid "Lock music window"
@@ -8251,7 +8271,7 @@ msgstr "Parcourir..."
 
 msgctxt "#20154"
 msgid "Summary information"
-msgstr "informations sommaires"
+msgstr "Informations récapitulatives"
 
 msgctxt "#20155"
 msgid "Storage information"
@@ -8535,7 +8555,7 @@ msgstr "Flux RSS"
 
 msgctxt "#20307"
 msgid "Secondary DNS"
-msgstr "DNS secondaire"
+msgstr "DNS secondaire "
 
 msgctxt "#20308"
 msgid "DHCP server:"
@@ -8927,11 +8947,11 @@ msgstr "Bande-annonce"
 
 msgctxt "#20411"
 msgid "Flatten"
-msgstr "Assembler"
+msgstr "Aplatir"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Saisons de séries télé de Flatten"
+msgstr "Aplatir les saisons des séries télé"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -9107,7 +9127,7 @@ msgstr "Auditeurs"
 
 msgctxt "#20456"
 msgid "Flatten library hierarchy"
-msgstr "Hiérarchie de la vidéothèque Flatten"
+msgstr "Aplatir la hiérarchie de la vidéothèque"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9987,7 +10007,7 @@ msgstr "Version OpenGL :"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "Température du GPU :"
+msgstr "Température du processeur graphique :"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "La configuration a été déplacée"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "La configuration de XBMC a été déplacée vers le nouvel emplacement pour Kodi. Veuillez vous référer à http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - ce message ne sera pas montrer de nouveau!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "La configuration de XBMC a été déplacée vers le nouvel emplacement pour Kodi. Veuillez vous référer à http://kodi.wiki/view/Migration - ce message ne sera pas montrer de nouveau!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Cacher les incompatibles"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11647,7 +11671,7 @@ msgstr "Utiliser le décodage des fichiers vidéos en utilisant les objets de ta
 
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
-msgstr "Permettre le changement de la fréquence de rafraîchissement de l'affichage afin qu'elle  corresponde au mieux avec la fréquence d'image vidéo.  Ceci pourrait donner une lecture plus fluide."
+msgstr "Permettre le changement de la fréquence de rafraîchissement de l'affichage afin qu'elle corresponde au mieux avec la fréquence d'image de la vidéo.  Ceci pourrait donner une lecture plus fluide."
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."
@@ -11655,7 +11679,7 @@ msgstr "Mettre en pause quelques instants pendant le changement de fréquence de
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
-msgstr "Synchroniser la vidéo à la fréquence de rafraîchissement du moniteur."
+msgstr "Synchroniser la vidéo à la fréquence de rafraîchissement de l'écran."
 
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
@@ -12691,7 +12715,7 @@ msgstr "Configurer comment le traitement vidéo sera accéléré. Ceci inclus en
 
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
-msgstr "Définit si le décodage vidéo devrait être effectué par le logiciel (UCT plus en demande) ou par accélération matérielle lorsque possible."
+msgstr "Définit si le décodage vidéo devrait être effectué par le logiciel (UCT plus en demande) ou, si possible, par accélération matérielle."
 
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
@@ -12807,7 +12831,7 @@ msgstr "Inverser le mode stéréoscopique 3D (intervertir les yeux)"
 
 msgctxt "#36537"
 msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
-msgstr "Choisir en quel mode les vidéos stéréoscopiques 3D seront lues. [Demandez-moi] affichera une fenêtre de dialogue pour choisir le mode désiré pour chaque lecture. [Mode préféré] utilisera le mode préféré spécifié dans la section Système-> Matériel vidéo des paramètres. [Monoscopique (2D)] lira la vidéo en mono/2D. [Ignorer] désactive tout traitement et gestion stéréoscopique 3D"
+msgstr "Choisir le mode de lecture des vidéos stéréoscopiques 3D. [Demandez-moi] affichera une fenêtre de dialogue pour choisir le mode désiré pour chaque lecture. [Mode préféré] utilisera le mode préféré spécifié dans la section « Système-> Matériel vidéo » des paramètres. [Monoscopique (2D)] lira la vidéo en mono/2D. [Ignorer] désactive tout traitement et gestion stéréoscopique 3D"
 
 msgctxt "#36538"
 msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."

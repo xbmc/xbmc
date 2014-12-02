@@ -2469,6 +2469,14 @@ msgctxt "#678"
 msgid "Verbose logging for UPnP components"
 msgstr "บันทึกข้อมูลอย่างละเอียด สำหรับส่วนประกอบ UPnP"
 
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "บันทึกข้อมูลอย่างละเอียด สำหรับคลังข้อมูล CEC"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "บันทึกข้อมูลอย่างละเอียด สำหรับส่วนประกอบวิดีโอ"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "ทำความสะอาดคลังข้อมูล"
@@ -3257,6 +3265,10 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "ความหนาแน่น"
 
+msgctxt "#1380"
+msgid "Very"
+msgstr "มาก"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "สูงสุด"
@@ -3265,9 +3277,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "พายุ"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "ท้องฟ้าโปร่ง"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "เสียหาย"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "พายุทอร์นาโด"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "พายุโซนร้อน"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "พายุเฮอริเคน"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "หนาวเย็น"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3276,6 +3308,26 @@ msgstr "ลมแรง"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "การตั้งค่า"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "มีลม"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "เบาๆ"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "ลมแรง, ใกล้พายุ"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "สภาพเลวร้าย"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "รุนแรง"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5097,9 +5149,21 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (MediaCodec)"
 
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "ใช้ MPEG-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "เปิดใช้ตัวเลือกนี้ เพื่อใข้การเร่งความเร็วด้วยฮาร์ดแวร์ สำหรับการเข้ารหัส Mpeg-(1/2). ถ้าปิดใช้งาน จะใช้ซีพียูแทน. การ์ด Radeon รุ่นเก่า อาจมีการแสดงบางส่วนผิดพลาด ถ้าเปิดใช้ส่วนนี้."
+
 msgctxt "#13443"
 msgid "Use MPEG-4 VDPAU"
 msgstr "ใช้งาน MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "เปิดใช้ตัวเลือกนี้ เพื่อใข้การเร่งความเร็วด้วยฮาร์ดแวร์ สำหรับการเข้ารหัส Mpeg-4. ถ้าปิดใช้งาน จะใช้ซีพียูแทน. ฮาร์ดแวร์ ION บางรุ่น อาจมีปัญหากับการเปิดใช้ส่วนนี้โดยค่าเริ่มต้น."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5112,6 +5176,18 @@ msgstr "เปิดใช้ตัวเลือกนี้ เพื่อ�
 msgctxt "#13447"
 msgid "Use MPEG-2 VAAPI"
 msgstr "ใช้งาน MPEG-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "เปิดใช้ตัวเลือกนี้ เพื่อใข้การเร่งความเร็วด้วยฮาร์ดแวร์ สำหรับการเข้ารหัส Mpeg-(1/2). ถ้าปิดใช้งาน จะใช้ซีพียูแทน. วิดีโอ Mpeg-2 บางส่วน อาจมีการแตกสีเขียว."
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "ใช้งาน MPEG-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "เปิดใช้ตัวเลือกนี้ เพื่อใข้การเร่งความเร็วด้วยฮาร์ดแวร์ สำหรับการเข้ารหัส Mpeg-4. ถ้าปิดใช้งาน จะใช้ซีพียูแทน."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5132,6 +5208,18 @@ msgstr "ซอฟแวร์"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "เร่งความเร็วฮาร์ดแวร์แล้ว"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "กำหนดไห้ใช้ กระบวนการแสดงผลด้วย VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "ใช้ OMXPlayer ในการถอดรหัสสำหรับไฟล์วิดีโอ."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5457,6 +5545,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "GUI filters"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "ใช้การสำรวจแบบเบื้องหลัง"
@@ -5573,6 +5665,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "เล่นเพลง"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "แผ่นดิสก์"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "เล่นดีวีดีอัตโนมัติ"
@@ -5628,6 +5724,18 @@ msgstr "หยุดการริป แผ่นซีดี"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "การเร่งความเร็ว"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "โหมดการเล่น บลูเรย์"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "เล่นภาพยนตร์หลัก"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "แสดงเมนูแบบง่าย"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6072,6 +6180,34 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI ปรับการเคลื่อนไหว"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI ชดเชยการเคลื่อนไหว"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - ขั้นสูง"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - ขั้นสูง (ครึ่ง)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (ครึ่ง)"
 
 msgctxt "#16400"
 msgid "Post-processing"

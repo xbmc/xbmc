@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Ausführliche Protokollierung der CEC-Bibliothek"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Ausführliche Protokollierung für VIDEO-Komponente"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Bibliothek wird bereinigt"
@@ -3263,7 +3267,7 @@ msgstr "Intensität"
 
 msgctxt "#1379"
 msgid "Ragged"
-msgstr "Flattern"
+msgstr "vereinzelt"
 
 msgctxt "#1380"
 msgid "Very"
@@ -5991,7 +5995,7 @@ msgstr "Party-Modus Wiedergabeliste"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "Deinterlace (Half)"
+msgstr "Deinterlace (halb)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
@@ -6143,11 +6147,11 @@ msgstr "Automatisch"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
-msgstr "Zeitlich (Hälfte)"
+msgstr "Zeitlich (halb)"
 
 msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
-msgstr "Zeitlich/Räumlich (Hälfte)"
+msgstr "Zeitlich/Räumlich (halb)"
 
 msgctxt "#16319"
 msgid "DXVA"
@@ -6192,6 +6196,22 @@ msgstr "VAAPI Bewegungsadaptiv"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Bewegungskompensiert"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Erweitert"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Erweitert (halb)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (halb)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7267,7 +7287,7 @@ msgstr "Die Labels 'Keine Informationen verfügbar' ausblenden"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Die 'Verbindung verloren'-Warnungen ausblenden"
+msgstr "'Verbindung verloren'-Warnungen ausblenden"
 
 msgctxt "#19270"
 msgid "Group Items"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "Konfiguration wurde verschoben"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "Die alte XBMC Konfiguration wurde zur Nutzung mit Kodi verschoben. Weitere Informationen gibt es hier: http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - diese Meldung wird nicht wiederholt!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Die alte XBMC Konfiguration wurde zur Nutzung mit Kodi verschoben. Bitte sehen Sie auf http://kodi.wiki/view/Migration nach - diese Nachricht wird nicht erneut angezeigt werden!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Inkompatible ausblenden"
 
 msgctxt "#25000"
 msgid "Notifications"

@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Journalisation détaillée pour la librairie CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Journalisation détaillée pour le composant VIDÉO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Nettoyage de la médiathèque"
@@ -6192,6 +6196,22 @@ msgstr "Mouvement adaptatif VAAPI"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "Compensation de mouvement VAAPI"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Avancé"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Avancé (demi)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Plomb"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Plomb (demi)"
 
 msgctxt "#16400"
 msgid "Post-processing"

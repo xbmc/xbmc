@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Registo textual para biblioteca CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "O registro detalhado para o componente VIDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Limpando a Biblioteca"
@@ -3261,6 +3265,14 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "Intensidade"
 
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Irregular"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Muito"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Máxima"
@@ -3308,6 +3320,18 @@ msgstr "Brisa"
 msgctxt "#1392"
 msgid "Gentle"
 msgstr "Suave"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Vento forte, perto de vendaval"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Severo"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violento"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -6172,6 +6196,22 @@ msgstr "VAAPI Adaptação ao Movimento"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Compensação ao Movimento"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Avançado"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Avançado (50%)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Pendulo"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Pendulo(50%)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -12725,6 +12765,10 @@ msgctxt "#36509"
 msgid "Monoscopic (2D)"
 msgstr "Monoscópico (2D)"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Reprodução de videos em 3D estereoscopico"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Perguntar"
@@ -12740,6 +12784,10 @@ msgstr "Modo preferido"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "O mesmo do filme (auto detectar)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "desativar o modo 3D estereoscopico quando a reprodução acabar"
 
 msgctxt "#36527"
 msgid "Select playback mode"
@@ -12757,13 +12805,37 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "O mesmo do filme"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Escolha como o áudio é misturado, por exemplo 5,1-2,0: [Ativado] mantém o nível de volume da fonte de áudio original no entanto, a gama dinâmica é comprimida. [desativado] mantém a faixa dinâmica da fonte de áudio original quando misturados no entanto o volume será menor. Nota - A gama dinâmica é a diferença entre os sons mais baixos e os mais altos numa fonte de áudio. Ative essa configuração se os diálogos do filme são quase inaudíveis."
+
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Especificar quais as bibliotecas adicionais cujas mensagens de registo serão incluídas no registo."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modo video 3D estereoscopico"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Inverter o modo de 3D estereoscopico (olhos invertidos)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Selecione em qual modo  vídeo 3D estereoscópico será reproduzido. [Peça] irá mostrar uma caixa de diálogo para selecionar o modo desejado para cada reprodução. [Modo Preferencial] vai usar do modo preferido especificado no \"Sistema -> Hardware Vídeo 'seção das configurações. [Monoscópica (2D)] vai reproduzir o vídeo em mono / 2D. [Ignorar] desativa qualquer transformação 3D estereoscópico e manipulação"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Ativado] Mudar GUI (em algumas TVs) de volta para o modo 2D quando a reprodução terminou. [desativado] GUI e TV vai ficar em modo 3D estereoscópico. Para playlists de vídeo no modo 3D estereoscópico não vai mudar entre vídeos, nem mesmo para os não estereoscópicos."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Altera o modo de estereoscópico 3D da interface do utilizador."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "O modo preferido em que a mídia em 3D estereoscópico, como vídeos deve ser reproduzido"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12780,6 +12852,10 @@ msgstr "Activar isto para tornar o som dos diálogos mais alto quando comparado 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activa a descodificação por hardware de ficheiros vídeo."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "profundidade de 3D estereoscópico das legendas"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

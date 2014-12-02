@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Uitgebreide logging voor CEC library"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Uitgebreide logging voor VIDEO Component"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Bibliotheek opschonen"
@@ -5799,7 +5803,7 @@ msgstr "Navigatiegeluiden"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Standaarduiterijk"
+msgstr "Skin standaardwaarden"
 
 msgctxt "#15110"
 msgid "Larger font size"
@@ -5871,7 +5875,7 @@ msgstr "Algemeen"
 
 msgctxt "#16002"
 msgid "Internet lookup"
-msgstr "Zoeken op CDDB"
+msgstr "Opzoeken op internet"
 
 msgctxt "#16003"
 msgid "Player"
@@ -5883,31 +5887,31 @@ msgstr "Media van disk afspelen"
 
 msgctxt "#16008"
 msgid "Enter new title"
-msgstr "Geef een nieuwe titel"
+msgstr "Voer nieuwe titel in"
 
 msgctxt "#16009"
 msgid "Enter the movie name"
-msgstr "Geef naam van de film"
+msgstr "Voer naam van de film in"
 
 msgctxt "#16010"
 msgid "Enter the profile name"
-msgstr "Geef profielnaam"
+msgstr "Voer profielnaam in"
 
 msgctxt "#16011"
 msgid "Enter the album name"
-msgstr "Geef titel album"
+msgstr "Voer titel van album in"
 
 msgctxt "#16012"
 msgid "Enter the playlist name"
-msgstr "Geef naam afspeellijst"
+msgstr "Voer naam afspeellijst in"
 
 msgctxt "#16013"
 msgid "Enter new filename"
-msgstr "Geef nieuwe bestandsnaam"
+msgstr "Voer nieuwe bestandsnaam in"
 
 msgctxt "#16014"
 msgid "Enter folder name"
-msgstr "Geef mapnaam"
+msgstr "Voer mapnaam in"
 
 msgctxt "#16015"
 msgid "Enter directory"
@@ -5935,11 +5939,11 @@ msgstr "Deinterlace"
 
 msgctxt "#16021"
 msgid "Bob"
-msgstr "Synchroniseer oneven"
+msgstr "Bob"
 
 msgctxt "#16022"
 msgid "Bob (inverted)"
-msgstr "Synchroniseer even"
+msgstr "Bob (geinverteerd)"
 
 msgctxt "#16024"
 msgid "Cancelling..."
@@ -5951,11 +5955,11 @@ msgstr "Geef de artiest op"
 
 msgctxt "#16026"
 msgid "Playback failed"
-msgstr "Afspeellijst afspelen afgebroken"
+msgstr "Afspelen mislukt"
 
 msgctxt "#16027"
 msgid "One or more items failed to play."
-msgstr "Eén of meer item kan niet worden afgespeeld."
+msgstr "Eén of meer items konden niet worden afgespeeld."
 
 msgctxt "#16028"
 msgid "Enter value"
@@ -6115,11 +6119,11 @@ msgstr "Sinc (software)"
 
 msgctxt "#16310"
 msgid "Temporal"
-msgstr "(VDPAU)Temporal"
+msgstr "Temporal"
 
 msgctxt "#16311"
 msgid "Temporal/Spatial"
-msgstr "(VDPAU)Temporal/Spatial"
+msgstr "Temporal/Spatial"
 
 msgctxt "#16312"
 msgid "(VDPAU)Noise Reduction"
@@ -6193,9 +6197,25 @@ msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI beweging gecompenseerd"
 
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Geavanceerd"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Geavanceerd (half)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (half)"
+
 msgctxt "#16400"
 msgid "Post-processing"
-msgstr "Kwaliteitsverbetering video"
+msgstr "Nabewerking"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
@@ -6331,7 +6351,7 @@ msgstr "Geen TV gids aanwezig"
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr "TV gids"
+msgstr "Kanaal"
 
 msgctxt "#19030"
 msgid "Now"
@@ -6351,15 +6371,15 @@ msgstr "Informatie"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr "Opname is al gestart"
+msgstr "Opname is al gestart voor dit kanaal"
 
 msgctxt "#19035"
 msgid "%s could not be played. Check the log for details."
-msgstr "%s kon niet worden afgespeeld, Controleer het log voor details."
+msgstr "%s kon niet worden afgespeeld. Controleer het log voor details."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr "Opname kan niet worden weergegeven"
+msgstr "Opname kan niet worden weergegeven. Controleer het log voor details."
 
 msgctxt "#19037"
 msgid "Show signal quality"
@@ -6371,7 +6391,7 @@ msgstr "Niet ondersteund door de PVR server."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr "Bevestig verbergen van het kanaal"
+msgstr "Weet u zeker dat u dit kanaal wilt verbergen?"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -6391,11 +6411,11 @@ msgstr "Opname"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Controleer de instellingen van de server"
+msgstr "Controleer de instellingen van de server of controleer het log voor details."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Geen PVR add-ons beschikbaar"
+msgstr "Geen PVR clienten zijn gestart. Wacht totdat de PVR clienten zijn opgestart op controleer het log voor details."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6483,7 +6503,7 @@ msgstr "Dit programma wordt al opgenomen"
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr "Kon de opname niet verwijderen"
+msgstr "Kon de opname niet verwijderen. Controleer het log voor details."
 
 msgctxt "#19069"
 msgid "EPG"
@@ -6503,7 +6523,7 @@ msgstr "TV gids niet opslaan in de database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr "Stel wisselen kanaal uit"
+msgstr "Kanaal wisselen vertragen"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -6599,7 +6619,7 @@ msgstr "__-__-__-__-__-Za-Zo"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr "Naam van de opname"
+msgstr "Voer de naam van de opname in"
 
 msgctxt "#19098"
 msgid "Warning"
@@ -6695,7 +6715,7 @@ msgstr "Vermijd herhalingen"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr "Opname loopt nog. Wilt u deze verwijderen?"
+msgstr "Opname loopt nog. Wilt u deze opname wilt verwijderen?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
@@ -6803,23 +6823,23 @@ msgstr "Kanaal"
 
 msgctxt "#19149"
 msgid "Mo"
-msgstr "Ma"
+msgstr "ma"
 
 msgctxt "#19150"
 msgid "Tu"
-msgstr "Di"
+msgstr "di"
 
 msgctxt "#19151"
 msgid "We"
-msgstr "Wo"
+msgstr "wo"
 
 msgctxt "#19152"
 msgid "Th"
-msgstr "Do"
+msgstr "do"
 
 msgctxt "#19153"
 msgid "Fr"
-msgstr "Vr"
+msgstr "vr"
 
 msgctxt "#19154"
 msgid "Sa"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "Configuratie is verplaatst"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "De configuratie van XBMC is verplaatst naar de nieuwe locatie voor Kodi.  wij verwijzen u naar http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - dit bericht  wordt niet opnieuw getoond!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "De configuratie van XBMC is verplaatst naar de nieuwe locatie voor Kodi.  wij verwijzen u naar http://kodi.wiki/view/Migration - dit bericht  wordt niet opnieuw getoond!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "verberg incompatibele"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -12351,7 +12375,7 @@ msgstr "staat Kodi toe om inhoud van andere AirPlay-toestellen of -applicaties t
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
-msgstr "AirPlay wachtwoordbescherming inschakelen."
+msgstr "Activeer AirPlay wachtwoordbescherming."
 
 msgctxt "#36345"
 msgid "Sets the AirPlay password."
@@ -12999,7 +13023,7 @@ msgstr "Kies deze optie als uw receiver (versterker) in staat is om E-AC3 digita
 
 msgctxt "#37017"
 msgid "Dual audio output"
-msgstr "Dubbele Geluidsuitvoer"
+msgstr "Dubbele geluidsuitvoer"
 
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
