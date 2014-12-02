@@ -87,6 +87,7 @@
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<mytv>LiveTV</mytv>
+		<guide>KEY_EPG</guide>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
 		<three>KEY_3</three>
