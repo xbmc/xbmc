@@ -1,0 +1,14 @@
+* New
+  - HEVC (H265) files are now forced transcoded
+
+* Fixed
+  - Don't display the user selection dialog when returning
+    from screensaver at the same time as a video is playing.
+  - When returning from the screensaver the login selection
+    dialog can't be skipped with escape.
+  - Improve external IDX/SUB file handling
+  - Obscure usernames and passwords in log files.
+  - Navigation paging fixes.
+  - Verify plex.tv SSL certificate
+  - Better HTTP error handling
+  - Workaround for OSX systems with optical connection and transcoding.
