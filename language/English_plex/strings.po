@@ -1124,3 +1124,6 @@ msgctxt "#52622"
 msgid "Queueing and recommending video, Sharing your media"
 msgstr "Queueing and recommending video, Sharing your media"
 
+msgctxt "#52623"
+msgid "Subtitle offset"
+msgstr "Subtitle offset"

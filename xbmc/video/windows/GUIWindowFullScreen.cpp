@@ -297,29 +297,47 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_SUBTITLE_DELAY_MIN:
-    g_settings.m_currentVideoSettings.m_SubtitleDelay -= 0.1f;
-    if (g_settings.m_currentVideoSettings.m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
-      g_settings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
-    if (g_application.m_pPlayer)
-      g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleDelay -= 0.1f;
+      if (g_settings.m_currentVideoSettings.m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
+        g_settings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
+      if (g_application.m_pPlayer)
+        g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
-    ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
-                                      -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                       g_advancedSettings.m_videoSubsDelayRange);
-    return true;
-    break;
+      ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
+                 -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
+                 g_advancedSettings.m_videoSubsDelayRange);
+
+      /* PLEX */
+      CStdString delay;
+      delay.Format("%.0f ms", g_settings.m_currentVideoSettings.m_SubtitleDelay * 1000);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52623), delay , DisplTime, false, MsgTime);
+      /* END PLEX */
+
+      return true;
+      break;
+    }
   case ACTION_SUBTITLE_DELAY_PLUS:
-    g_settings.m_currentVideoSettings.m_SubtitleDelay += 0.1f;
-    if (g_settings.m_currentVideoSettings.m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
-      g_settings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
-    if (g_application.m_pPlayer)
-      g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleDelay += 0.1f;
+      if (g_settings.m_currentVideoSettings.m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
+        g_settings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
+      if (g_application.m_pPlayer)
+        g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
-    ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
-                                      -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                       g_advancedSettings.m_videoSubsDelayRange);
-    return true;
-    break;
+      ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
+                 -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
+                 g_advancedSettings.m_videoSubsDelayRange);
+
+      /* PLEX */
+      CStdString delay;
+      delay.Format("%.0f ms", g_settings.m_currentVideoSettings.m_SubtitleDelay * 1000);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52623), delay , DisplTime, false, MsgTime);
+      /* END PLEX */
+
+      return true;
+      break;
+    }
   case ACTION_SUBTITLE_DELAY:
     ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
                                       -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
