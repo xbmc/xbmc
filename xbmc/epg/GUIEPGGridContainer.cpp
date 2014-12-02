@@ -1289,8 +1289,13 @@ void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)
 {
   if (channelIndex < 0)
     return;
-
-  if (channelIndex - m_channelOffset < m_channelsPerPage && channelIndex - m_channelOffset >= 0)
+  
+  if (channelIndex - m_channelOffset <= 0)
+  {
+    ScrollToChannelOffset(0);
+    SetChannel(channelIndex);
+  }
+  else if (channelIndex - m_channelOffset < m_channelsPerPage && channelIndex - m_channelOffset >= 0)
   {
     SetChannel(channelIndex - m_channelOffset);
   }
