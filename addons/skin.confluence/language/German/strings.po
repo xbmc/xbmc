@@ -50,7 +50,7 @@ msgstr "Musik-Dateien"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Abspielen"
+msgstr "Es läuft"
 
 msgctxt "#31024"
 msgid "Page"
@@ -94,11 +94,11 @@ msgstr "Aktionen"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Jetzt gespielt"
+msgstr "Jetzt läuft"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "ABSPIELEN"
+msgstr "ES LÄUFT"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -222,11 +222,11 @@ msgstr "Hintergrund-Fanart ausblenden"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Zeige im Hintergrund \"Aktuell abgespieltes\"-Video"
+msgstr "Zeige aktuell abgespieltes Video im Hintergrund"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Zeige im Hintergrund \"Aktuell abgespielt\"-Visualisierung"
+msgstr "Zeige aktuelle Visualisierung im Hintergrund"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -322,7 +322,7 @@ msgstr "Speicher-Auslastung:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Song-Nummer"
+msgstr "Titelnummer"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
@@ -402,7 +402,7 @@ msgstr "Vorspulen"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "Rückspulen"
+msgstr "Zurückspulen"
 
 msgctxt "#31355"
 msgid "Movie menu"
@@ -414,7 +414,7 @@ msgstr "Untertitel herunterladen"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "In 2D anschauen"
+msgstr "In 2D ansehen"
 
 msgctxt "#31361"
 msgid "Change mode"

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Changer votre"
+msgstr "Changer vos"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -442,15 +442,15 @@ msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options de listage des vidéos[CR]Définir la police des sous-titres"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer la vidéothèque · Définir les options de lecture · Changer les options de listage des vidéos[CR]Définir la police des sous-titres"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer la musithèque · Définir les options de lecture · Changer les options de listage de la musique · Paramétrer les envois de chansons · Définir les options de karaoké"
+msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer la musithèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons · Définir les options de karaoké"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de lilstage des images · Configurer les diaporamas"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de listage des images · Configurer les diaporamas"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
@@ -466,7 +466,7 @@ msgstr "[B]CONFIGURER LES ADDICIELS[/B][CR][CR]Gérer les addiciels installés -
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURER LES RÉGLAGES DE TÉLÉ[/B][CR][CR]Changer les informations de plein écran · Gérer les données du GÉP"
+msgstr "[B]CONFIGURER LES RÉGLAGES DE LA TÉLÉ[/B][CR][CR]Changer les informations de plein écran · Gérer les données du GÉP"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"

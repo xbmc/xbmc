@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Pronóstico semanal"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Pronóstico diario"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Pronóstico"
@@ -603,3 +607,7 @@ msgstr "REPRODUCCIÓN DE DISCOS"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

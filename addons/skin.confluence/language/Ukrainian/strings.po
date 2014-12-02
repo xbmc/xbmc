@@ -602,7 +602,7 @@ msgstr "ПРОГРАМИ"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "ПРОГРАВАННЯ ДИСКУ"
+msgstr "ГРАТИ ДИСК"
 
 msgctxt "#31959"
 msgid "SYSTEM"
