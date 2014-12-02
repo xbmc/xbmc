@@ -383,6 +383,15 @@ CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getServerTransco
 {
   if (!server)
     return PLEX_TRANSCODE_MODE_NONE;
+  
+  // This is a ugly work-around, since OSX doesn't support transcoding in PHT
+  // we need to force the HLS mode, otherwise there can be certain codec
+  // combinations that will not work correctly. This should be removed
+  // when we merge with the next version of XBMC
+#ifdef TARGET_DARWIN_OSX
+  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+    return PLEX_TRANSCODE_MODE_HLS;
+#endif
 
   if (g_advancedSettings.m_bUseMatroskaTranscodes)
   {
