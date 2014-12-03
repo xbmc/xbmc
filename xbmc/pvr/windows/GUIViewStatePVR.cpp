@@ -53,12 +53,12 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
     // Default sorting
     SetSortMethod(SortByDate);
 
-    LoadViewState("pvr://recordings/", m_windowId);
+    LoadViewState(items.GetPath(), m_windowId);
 }
 
 void CGUIViewStateWindowPVRRecordings::SaveViewState(void)
 {
-  SaveViewToDb("pvr://recordings/", m_windowId, CViewStateSettings::Get().Get("pvrrecordings"));
+  SaveViewToDb(m_items.GetPath(), m_windowId, CViewStateSettings::Get().Get("pvrrecordings"));
 }
 
 bool CGUIViewStateWindowPVRRecordings::HideParentDirItems(void)
