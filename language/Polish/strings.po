@@ -2827,7 +2827,7 @@ msgstr "Chciałbyś przeskanować teraz?"
 
 msgctxt "#802"
 msgid "%s of %s available"
-msgstr "%s z &s dostępne"
+msgstr "%s z %s dostępne"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
