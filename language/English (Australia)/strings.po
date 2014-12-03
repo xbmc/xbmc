@@ -1237,6 +1237,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Year"
 
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "Maintain original volume on downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD capable receiver"
@@ -2469,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Verbose logging for CEC library"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Verbose logging for VIDEO component"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Cleaning up library"
@@ -3201,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Announce these services to other systems via Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 compatibility mode"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Allow volume control"
@@ -3245,6 +3257,22 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "Pressure"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximity"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensity"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Ragged"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Very"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Extreme"
@@ -3253,9 +3281,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Whirls"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Sky Is Clear"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Broken"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Hurricane"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Cold"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3264,6 +3312,26 @@ msgstr "Windy"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Settings"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Breeze"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Gentle"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "High wind, near gale"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Severe"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violent"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5601,6 +5669,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Playback"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "Discs"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Play DVDs automatically"
@@ -5656,6 +5728,18 @@ msgstr "Stop ripping CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Acceleration"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Blu-ray playback mode"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Play main movie"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Show simplified menu"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6112,6 +6196,22 @@ msgstr "VAAPI Motion Adaptive"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Motion Compensated"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Advanced"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Advanced (Half)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Half)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -8429,6 +8529,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf Browser"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Web server directory (HTTP)"
@@ -10529,6 +10633,10 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Automatically download first subtitle from the search result list"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Configuration has been moved"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifications"
@@ -10540,6 +10648,10 @@ msgstr "Hide foreign"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Select from all titles ..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "Show Blu-ray menu"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10728,6 +10840,14 @@ msgstr "Weekend"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s day"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Streams"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Devices"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12597,6 +12717,14 @@ msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
 msgstr "If enabled VAAPI render method is preferred. This puts less load on the CPU but driver may hang!"
 
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Allow hardware acceleration (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Use DVDPlayer for decoding of video files with MMAL acceleration."
+
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
 msgstr "Stereoscopic 3D mode (current)"
@@ -12677,6 +12805,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Same as movie"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Specify additional libraries whose log messages are to be included in the log."
@@ -12736,6 +12868,10 @@ msgstr "Use higher quality textures for covers and fanart (uses more memory)"
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12928,3 +13064,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Unlimited"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU accelerated"

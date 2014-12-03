@@ -1975,7 +1975,7 @@ msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "Mediainformasjon"
+msgstr "Mediainfo"
 
 msgctxt "#545"
 msgid "Audio output device"
@@ -5591,7 +5591,7 @@ msgstr "Farger"
 
 msgctxt "#14079"
 msgid "Timezone country"
-msgstr "Tidssone, land"
+msgstr "Tidssone (land)"
 
 msgctxt "#14080"
 msgid "Timezone"
@@ -6887,7 +6887,7 @@ msgstr "Fortsett siste kanal ved oppstart"
 
 msgctxt "#19190"
 msgid "Background"
-msgstr "Bakgrunn"
+msgstr "Bakgrunnen"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -7279,7 +7279,7 @@ msgstr "Alle kanaler"
 
 msgctxt "#19288"
 msgid "Foreground"
-msgstr "Forsiden"
+msgstr "Forgrunnen"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7315,7 +7315,7 @@ msgstr "Romantikk"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Seriøst/Klassisk/Religiøst/Historisk film/Drama"
+msgstr "Seriøst/Klassisk/Religiøst/Historisk/Drama"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
@@ -7815,7 +7815,7 @@ msgstr "Spør etter informasjon for alle album"
 
 msgctxt "#20060"
 msgid "Media info"
-msgstr "Mediainformasjon"
+msgstr "Mediainfo"
 
 msgctxt "#20061"
 msgid "Separate"
@@ -8763,11 +8763,11 @@ msgstr "Fjern kobling til TV-serie"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Filmer lagt til nylig"
+msgstr "Filmer nylig lagt til"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "Episoder lagt til nylig"
+msgstr "Episoder nylig lagt til"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8779,7 +8779,7 @@ msgstr "Musikkvideoer"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Musikkvideoer lagt til nylig"
+msgstr "Musikkvideoer nylig lagt til"
 
 msgctxt "#20391"
 msgid "Music video"

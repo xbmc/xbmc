@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Registro detallado para librería CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Registro detallado para el módulo de VÍDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Limpiar la colección"
@@ -6192,6 +6196,22 @@ msgstr "Movimiento Adaptativo VAAPI"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "Movimiento Compensado VAAPI"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Avanzado"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Avanzado (Medio)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Medio)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "Configuración movida"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "La configuración de Kodi se ha movido a una nueva ubicación Kodi. Por favor, mire http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - ¡Este mensaje no se volverá a mostrar!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "La configuración de XBMC se ha movido a una nueva ubicación para Kodi. Por favor, revisa http://kodi.wiki/view/Migration - ¡Este mensaje no se volverá a mostrar!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Ocultar incompatibles"
 
 msgctxt "#25000"
 msgid "Notifications"

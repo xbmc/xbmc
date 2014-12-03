@@ -23,7 +23,6 @@
     <summary lang="es">Un salvapantallas que atenúa tu pantalla</summary>
     <summary lang="es_AR">Un protector de pantalla que oscurece su pantalla</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece su pantalla</summary>
-    <summary lang="es_VE">Protector de pantalla que disminuirá el brillo de tu pantalla</summary>
     <summary lang="et">Ekraanisäästja, mis hämardab ekraani</summary>
     <summary lang="eu">Pantaila iluntzen duen pantaila-babeslea</summary>
     <summary lang="fi">Ruudun himmennys</summary>
@@ -53,7 +52,6 @@
     <summary lang="sl">Ohranjevalnik zaslona, ki zatemni zaslon</summary>
     <summary lang="sq">Ruajtës ekrani, që errëson ekranin</summary>
     <summary lang="sv">En skärmsläckare som tonar ned din skärm</summary>
-    <summary lang="ta_IN">திரையை மங்க செய்யும் திரைகாப்பான்</summary>
     <summary lang="tg">Пардаи экран бо таъсири «Пардаи экрани камнур»</summary>
     <summary lang="th">สกรีนเซฟเวอร์ที่หรี่หน้าจอของคุณ</summary>
     <summary lang="tr">Ekranınızı karanlıklaştıran ekran koruyucu</summary>
@@ -79,7 +77,6 @@
     <description lang="es">Dim es un sencillo salvapantallas que atenúa tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_AR">Dim es un sencillo protector de pantalla que oscurece la misma. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_MX">El protector de pantalla de obscurecimiento, es un protector simple que obscurece (fade out) su pantalla en un valor entre 20 y 100%</description>
-    <description lang="es_VE">El protector de pantalla "Dim" es un simple protector de pantalla que disminuirá la intensidad (atenuará) tu pantalla en un valor que puedes colocar entre 20 y 100%</description>
     <description lang="et">Lihtne ekraanisäästja, mis hämardab (tumestab) ekraani vastavalt valitud väärtusele vahemikus 20 kuni 100%.</description>
     <description lang="eu">Dim  %20 eta %100 artean zure pantaila iluntzeko (belztu) konfiguratu daitekeen pantaila babesle soil bat da.</description>
     <description lang="fi">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
@@ -109,7 +106,6 @@
     <description lang="sl">Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
     <description lang="sq">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
     <description lang="sv">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
-    <description lang="ta_IN">இது எளிமையான திரைகாப்பான் - திரையை மங்க (மங்கு விளைவு) செய்துவிடும் - மங்கு அளவு 20% முதல் 100% வரை.</description>
     <description lang="tg">Ин пардаи экран бо таъсири «Пардаи экрани камнур» хеле осон мебошад, ки сатҳи камнури экранро то дараҷае байни 20% ва 100% тағйир меёбад.</description>
     <description lang="th">สกรีนเซฟเวอร์หรี่หน้าจอเป็นสกรีนเซฟเวอร์แบบพื้นฐานที่ช่วยหรี่หน้าจอของคุณซึ่งสามารถตั้งค่าการหรี่หน้าจอได้ตั้งแต่ 20% ถึง 100%</description>
     <description lang="tr">Dim ekran koruyucusu, değeri %20 ila %100 arasında ayarlanabilen ve ekranınızı karanlıklaştıran (silikleştiren) basit bir ekran koruyucudur.</description>

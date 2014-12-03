@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-android.xbmc.org"
 		name="Kodi PVR Add-on repository"
-		version="1.1.13"
+		version="1.1.14"
 		provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -31,7 +31,6 @@
 		<summary lang="es">Instalar Complementos de PVR de Kodi.tv</summary>
 		<summary lang="es_AR">Instalar complemento PVR desde Kodi.tv</summary>
 		<summary lang="es_MX">Instalar Complementos PVR de Kodi.tv</summary>
-		<summary lang="es_VE">Instalar Add-ons para PVR de Kodi.tv</summary>
 		<summary lang="et">Paigalda videosalvesti lisasid lehelt Kodi.tv</summary>
 		<summary lang="eu">Instalatu PVR gehigarriak Kodi.tv-etik</summary>
 		<summary lang="fi">Asenna PVR-lisäosia Kodi.tvista</summary>
@@ -59,10 +58,10 @@
 		<summary lang="sk">Inštalovať PVR doplnky z Kodi.tv</summary>
 		<summary lang="sl">Namestite dodatke PVR z Kodi.tv</summary>
 		<summary lang="sv">Installera PVR-tillägg från Kodi.tv</summary>
-		<summary lang="ta_IN">Kodi.tv இணையத்தில் இருந்து PVR துணை நிரல்களை நிறுவவும்</summary>
 		<summary lang="tg">Насб кардани барномаи иловагии PVR аз Kodi.tv</summary>
 		<summary lang="th">ติดตั้งส่วนเสริม PVR จาก Kodi.tv</summary>
-		<summary lang="tr">Kodi.tv'dan PVR Eklentilerini Yükle</summary>
+		<summary lang="tr">Kodi.tv sitesinden PVR Eklentilerini Yükle</summary>
+		<summary lang="uk">Встановити додатки PVR з Kodi.tv</summary>
 		<summary lang="zh">从 Kodi.tv 安装 PVR 插件</summary>
 		<summary lang="zh_TW">從Kodi.tv安裝PVR附加元件</summary>
 		<description lang="ar">نزل ونصب اضاقة البي في ار من موقع اكس بي ام سي الرسمي مستودع الاضافات "repository". باستخدامك للمستودع الرسمي ستستفيد من تعدد سيرفراتنا التي ستعطيك سرعة اكبر في تنزيل بجعلك تنزل من منطقة قريبة منك. كل الاضافات في هذا المستودع مرت على اختبارات مبدئية ولكن اذا وجدت اي خلل او خطأ في في الاضافات فالرجاء الابلاغ عنها الى فريق اكس بي ام سي لنستطيع اخذ اي اجراء لازم.</description>
@@ -79,7 +78,6 @@
 		<description lang="es">Descarga e instala Complementos de PVR desde el repositorio oficial de Kodi.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a ti.[CR] Todos los Complementos en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún Complemento que no funciona, por favor informa de ello al equipo de Kodi para solucionar el problema.</description>
 		<description lang="es_AR">Descarga e instala el complemento desde el repositorio oficial de Kodi.tv.[CR] Usando el repositorio oficial tendrá las ventajas de nuestro servicio de réplicas para ayudarle a conseguir unas descargas más rápidas de un sitio cercano a su región.[CR] Todos los complementos en este repositorio han pasado por un periodo de pruebas básico, pero si encuentra algún complemento que no funciona, por favor infórmelo al equipo de Kodi para que podamos tomar las acciones necesarias.</description>
 		<description lang="es_MX">Descarga e instala complementos del repositorio oficial Kodi.tv.[CR] Al usar el repositorio oficial, tendrá la ventaja de nuestro servicio extenso de espejos para ayudarle a tener descargas mas rapidas desde una region mas cerca de usted.[CR] Todos los complementos en este repositorio se han probado de manera básica, si encuentra alguno que no funciona o roto, favor de reportarlo al Equipo de Kodi para poder tomar las medidas necesarias.</description>
-		<description lang="es_VE">Descarga e instala add-ons de PVR del repositorio oficial de Kodi.tv.[CR] Al hacer uso del repositorio oficial podrás tomar ventaja de nuestro extenso servicio para descarga de archivos a gran velocidad desde una región cercana a la tuya. [CR] Todos los add-ons en este repositorio han sido probados de forma básica, si algún add-on no puede ser descargado o no funciona por favor repórtalo al Equipo de Kodi para de esta manera tomar cualquier acción que sea necesaria.</description>
 		<description lang="et">Lae alla ja installi videosalvesti lisasid ametlikust Kodi.tv hoidlast.[CR]  Ametliku hoidla kasutamise eeliseks on võimalus kasutada meie ulatuslikku failide peegelteenust laadides faile sulle kõige lähemast serverist.[CR]  Kõik lisad selles hoidlas on läbinud elementaarse testimise. Siiski, kui sa leiad vigase või mittetöötava lisa, siis palun teavita sellest Kodi meeskonda, et me saaksime vajaliku abi osutada.</description>
 		<description lang="fr">Télécharger et installer des extensions à partir du dépôt officiel Kodi.tv.[CR]  En utilisant le dépôt officiel, vous bénéficierez de notre service de serveurs miroirs vous permettant de télécharger rapidement depuis une région proche de vous.[CR]  Toutes les extensions de ce dépôt ont été testées de manière basique, si vous trouvez une extension corrompue ou inutilisable, merci d'en informer la Team-Kodi afin que nous puissions prendre les mesures nécessaires.</description>
 		<description lang="fr_CA">Télécharger et installer des addiciels de numériscopes depuis le dépôt officiel de Kodi.tv.[CR] En utilisant le dépôt officiel vous pourrez bénéficier de notre service étendu de miroirs de fichiers favorisant des téléchargements plus rapides depuis une région proche de vous.[CR] Tous les addiciels de ce dépôt ont subi des tests de base. Si vous trouvez un addiciel non fonctionnel ou brisé, veuillez le rapporter à l'équipe-Kodi afin que nous puissions agir.</description>
@@ -102,7 +100,6 @@
 		<description lang="sk">Stiahnuť a nainštalovať PVR rozšírenia z oficiálneho zdroja rozšírení Kodi.tv.[CR] Použitím oficiálneho zdroja získavate možnosť využiť rozsiahly systém zrkadiel, ktorý Vám umožní rýchlejšie sťahovanie z Vám blízkeho regiónu.[CR] Všetky rozšírenia v tomto zdroji boli podrobené základnému testovaniu. Ak nájdete poškodené alebo nefunkčné rozšírenie, oznámte to prosím týmu Kodi aby mohol podľa potreby zakročiť.</description>
 		<description lang="sl">Prenos in namestitev dodatkov PVR iz uradnega skladišča Kodi.tv.[CR] Z uporabo uradnega skladišča, boste lahko izkoristili hitrejšo povezavo, ki bo izbrana glede na vašo lokacijo.[CR] Vsi dodatki tega skladišča so bili osnovno stestirani, če pa boste našli pokvarjen ali nedelujoč dodatek, to sporočite ekipi Kodi, da bomo lahko odpravili napake.</description>
 		<description lang="sv">Ladda ner och installera PVR-tillägg från det officiella tilläggsförrådet på Kodi.tv.[CR] Genom att använda det officiella förrådet kommer du att få fördelen att kunna använda vår omfattande speglingstjänst som hjälper dig till snabbare nedladdningar från en plats nära dig.[CR] Alla tillägg i detta förråd har genomgått grundläggande tester. Hittar du ett trasigt eller icke fungerande tillägg, vänligen meddela detta till Team-Kodi så att vi kan vidta nödvändiga åtgärder.</description>
-		<description lang="ta_IN">அதிகாரப்பூர்வ Kodi.tv துணை பயன் களஞ்சியத்திலிருந்து துணை பயன்களை பதிவிறக்கம் மற்றும் நிறுவல் செய்யலாம். [CR] அதிகாரப்பூர்வ களஞ்சியத்தை பயன்படுத்துவதால் நீங்கள் உங்கள் இருப்பிடத்திருக்கு அருகாமையில் உள்ள களஞ்சியத்தில் இருந்து சீக்கிரமாக சேவைகளை பெறமுடியும்.[CR] இங்குள்ள அணைத்து துணை பயன்களும் நன்கு பரிசொதிக்கபட்டவை, சரியாக இயங்கவில்லை என்றால் Kodi குழுவிடம் சொல்லவும்.</description>
 		<description lang="tg">Барномаҳои иловагии PVR-ро аз анбори нармафзори расмии Kodi.tv боргирӣ кунед ва насб кунед.[CR]  Агар анбори нармафзори расмиро истифода баред, метавонед нармафзори иловагиро аз серверҳои наздиктарин ба шумо боргирӣ намоед.[CR]  Ҳамаи нармафзори анбори зикршуда аз санҷиши асосӣ мегузаранд, ва агар шумо ягон барномаи иловагии вайроншуда ё ғайрифаъолро пайдо кунед, метавонед дар бораи он гузоришро ба Гурӯҳи кории Kodi фиристонед, то ки барномасозон тавонанд камбудиҳои пайдошударо ҳал кунанд.</description>
 		<description lang="tr">PVR Eklentilerini Resmi Kodi.tv eklenti deposundan indir ve yükle.[CR]Resmi yazılım depomuzu kullanarak size en yakın bölgeden en hızlı biçimde indirme yapmanızı sağlayacak gelişkin dosya aynalama servisini kullanma avantajını elde edeceksiniz.[CR]Bu yazılım deposundaki tüm eklentiler temel testlerden geçerler, şayet hatalı ya da çalışmayan bir eklenti bulur iseniz lütfen düzeltilmesi için bu durumu Kodi Takımına bildiriniz.</description>
 		<description lang="zh">从官方 Kodi.tv 插件库下载和安装 PVR 插件。[CR]　通过官方程序库你将能利用我们广泛的镜像服务优势，使你能够就近下载资源。[CR]　官方库中的所有插件都经过了基本的测试，如果你发现有失效或不能正常工作的插件，请向 Kodi 开发团队报告，以便及时处理。</description>
@@ -125,7 +122,6 @@
 		<disclaimer lang="es">El equipo de Kodi no ha hecho todos los Complementos en este repositorio y no son responsables de su contenido</disclaimer>
 		<disclaimer lang="es_AR">No todos los add-ons en este repositorio han sido creados por el equipo de Kodi y este no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de Kodi no hizo todos los complementos en este repositorio y no es responsable de su contenido</disclaimer>
-		<disclaimer lang="es_VE">El equipo de Kodi no creó todos los add-ons en este repositorio y no son responsables por su contenido</disclaimer>
 		<disclaimer lang="et">Kodi meeskond ei teinud kõiki lisasid selles hoidlas ja ei vastuta ka nende sisu eest.</disclaimer>
 		<disclaimer lang="eu">Kodi taldeak ez ditu biltegi honetako gehigarri guztiak sortu eta ez da beren edukien erantzule.</disclaimer>
 		<disclaimer lang="fi">Team-Kodi ei ole tehnyt kaikkia tässä säilössä olevia lisäosia, eikä siten ole vastuullinen kyseisten lisäosien sisällöstä</disclaimer>
@@ -155,7 +151,6 @@
 		<disclaimer lang="sk">Team-Kodi nevytvoril všetky rozšírenia v tomto zdroji nie je zodpovedný za ich obsah</disclaimer>
 		<disclaimer lang="sl">Ekipa Kodi ni naredila vseh dodatkov v tem skladišču in ne odgovarja za njihovo vsebino</disclaimer>
 		<disclaimer lang="sv">Team-Kodi har inte gjort alla tillägg och är inte ansvariga för innehållet i dessa.</disclaimer>
-		<disclaimer lang="ta_IN">இந்த களஞ்சியத்தில் உள்ள துனை பயன்கள் அனைத்தையும் Kodi அணியால் உருவாக்கப்படவில்லை மற்றும் அவற்றின் உள்ளடக்கத்திற்கு அணி பொறுப்பு ஏற்காது.</disclaimer>
 		<disclaimer lang="tg">Гурӯҳи кории Kodi дар ин анбори нармафзор соҳиби ҳамаи барномаҳои иловагӣ намебошад ва барои мӯҳтавояшон ҷавобгар намебшад</disclaimer>
 		<disclaimer lang="th">ทีม Kodi ไม่ได้จัดทำ ส่วนเสริม ทั้งหมดในแหล่งข้อมูลโปรแกรมนี้ และจะไม่รับผิดชอบต่อเนื้อหาเหล่านั้น</disclaimer>
 		<disclaimer lang="tr">Kodi takımı bu depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>

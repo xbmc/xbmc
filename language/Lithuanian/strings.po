@@ -27,7 +27,7 @@ msgstr "Muzika"
 
 msgctxt "#3"
 msgid "Videos"
-msgstr "Vaizdo įrašai"
+msgstr "Video"
 
 msgctxt "#4"
 msgid "TV-Guide"
@@ -531,7 +531,7 @@ msgstr "Laisva"
 
 msgctxt "#157"
 msgid "Video"
-msgstr "Vaizdo įrašai"
+msgstr "Video"
 
 msgctxt "#158"
 msgid "Free memory"
@@ -2473,13 +2473,17 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Išsamus CEC bibliotekos žurnalo rašymas"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Išsamus VAIZDO komponento žurnalo rašymas"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Valoma biblioteka"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Pašalinamos senos dainos iš bibliotekos"
+msgstr "Šalinamos senos dainos iš bibliotekos"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -3595,7 +3599,7 @@ msgstr "Muzika"
 
 msgctxt "#10006"
 msgid "Videos"
-msgstr "Vaizdo įrašai"
+msgstr "Video"
 
 msgctxt "#10007"
 msgid "System information"
@@ -3615,7 +3619,7 @@ msgstr "Nustatymai - Išvaizda - GUI kalibravimas"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Nustatymai - Vaizdo įrašai - Ekrano kalibravimas"
+msgstr "Nustatymai - Video - Ekrano kalibravimas"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
@@ -3639,7 +3643,7 @@ msgstr "Nustatymai - Sistema"
 
 msgctxt "#10017"
 msgid "Settings - Videos"
-msgstr "Nustatymai - Vaizdo įrašai"
+msgstr "Nustatymai - Video"
 
 msgctxt "#10018"
 msgid "Settings - Network"
@@ -3659,11 +3663,11 @@ msgstr "Interneto naršyklė"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr "Vaizdo įrašai"
+msgstr "Video"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
-msgstr "Vaizdo įrašai/Grojaraštis"
+msgstr "Video/Grojaraštis"
 
 msgctxt "#10029"
 msgid "Login screen"
@@ -3863,7 +3867,7 @@ msgstr "Dabar atkūriama - Muzika"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "Dabar atkūriama - Vaizdo įrašai"
+msgstr "Dabar atkūriama - Video"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -3887,7 +3891,7 @@ msgstr "Dialogas OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
-msgstr "Vaizdo įrašai/Informacija"
+msgstr "Video/Informacija"
 
 msgctxt "#12004"
 msgid "Scripts/Info"
@@ -6192,6 +6196,22 @@ msgstr "VAAPI judesio adaptavimas"
 msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI judesio kompensavimas"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Išplėstinis"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Išplėstinis (Pusė)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Pusė)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -8551,7 +8571,7 @@ msgstr "Nežinomas arba integruotas (apsaugotas)"
 
 msgctxt "#20314"
 msgid "Videos - Library"
-msgstr "Vaizdo įrašai - Biblioteka"
+msgstr "Video - Biblioteka"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "Konfigūracija buvo perkelta"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "XBMC konfigūracija buvo perkelta į naują vietą, kad Kodi galėtų ją naudoti. Daugiau informacijos http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - šis pranešimas daugiau rodomas nebus!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "XBMC buvo pervadintas į Kodi, taip pat pasikeitė konfigūracijos vieta. Prašome kreiptis  http://kodi.wiki/view/Migration - pranešimas daugiau nebus rodomas!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Slėpti nesuderinamus"
 
 msgctxt "#25000"
 msgid "Notifications"

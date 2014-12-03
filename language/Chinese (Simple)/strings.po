@@ -1237,6 +1237,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "年份"
 
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "混缩时保持原始音量"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 兼容功放"
@@ -2469,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "CEC 库详细日志"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "VIDEO 组件详细日志"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "清理资料库"
@@ -2816,6 +2824,10 @@ msgstr "音乐资料库需要重新扫描文件标签。"
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "现在扫描吗？"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s个可用（共%s个）"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3197,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "通过 Zeroconf 协议发布这些服务"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 兼容模式"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "允许音量控制"
@@ -3241,6 +3257,22 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "气压"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "临近"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "强"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "夹杂"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "非常"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "极好"
@@ -3249,9 +3281,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "旋风"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "天空晴朗"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "已失效"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "龙卷风"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "热带"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "飓风"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "云"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3260,6 +3312,26 @@ msgstr "有风"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "设置"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "微风"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "温和"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "强风，七级风"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "严重"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "暴"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5141,6 +5213,18 @@ msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "硬件加速"
 
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "首选 VAAPI 渲染模式"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "允许硬件加速（OMXPlayer）"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "使用 OMXPlayer 解码视频文件。"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "影音同步方式"
@@ -5585,6 +5669,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "播放"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "光盘"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "自动播放 DVD"
@@ -5640,6 +5728,18 @@ msgstr "停止抓取 CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "加速"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "蓝光播放模式"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "播放主电影"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "显示简单菜单"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6084,6 +6184,34 @@ msgstr "VDPAU - 场内插值"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI 运动自适应"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI 运动补偿"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - 高级"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - 高级（半）"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob（半）"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -8401,6 +8529,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple 文件协议（AFP）"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf 浏览器"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "WEB 服务器目录（HTTP）"
@@ -10501,6 +10633,18 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "自动下载搜索结果列表中的第一个字幕"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "设置已被移动"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "XBMC 的设置已移动到 Kodi 的新位置。参见 http://kodi.wiki/view/Migration - 本信息不会再次显示！"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "隐藏不兼容"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "提示信息"
@@ -10512,6 +10656,10 @@ msgstr "隐藏外语"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "在所有标题中选择..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "显示蓝光菜单"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10700,6 +10848,14 @@ msgstr "周末"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s 天"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s 媒体流"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s 设备"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12565,6 +12721,26 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "选择虚拟键盘布局。"
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "如果启用将首选 VAAPI 渲染模式。这能降低 CPU 占用，但可能会驱动挂起！"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "允许硬件加速（MMAL）"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "使用 DVDPlayer 用 MMAL 加速解码视频文件。"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "立体模式（当前）"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "立体模式"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "禁用"
@@ -12593,6 +12769,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "基于硬件"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "平面（2D）"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "立体视频播放模式"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "询问"
@@ -12609,6 +12793,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "同影片格式（自动检测）"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "播放停止时禁用立体模式"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "选择播放模式"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "选择立体模式"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "选择替代模式..."
@@ -12617,13 +12813,37 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "同影片格式"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "选择音频混缩方式，如从5.1到2.0：[启用] 保持原始音频源的音量级别，动态范围将被压缩。[禁用] 混缩时保持原始音频源的动态范围，音量将减小。注意 － 动态范围是音频源中最安静和最大声之间的差异。当电影中的对话几乎听不见时启用此设置。"
+
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "指定要包含到日志中的附加库调试信息。"
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "视频立体模式"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "反转立体模式"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "选择立体视频播放模式。[询问] 每次播放时弹出菜单选择模式。[首选模式] 使用在“系统 -> 视频输出”中设置的首选模式。[平面（2D）] 以2D模式播放视频。[忽略] 禁用立体处理。"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[启用] 播放结束时切换图形用户界面（和某些电视）为 2D 模式。[禁用] 图形用户界面和电视保持在立体模式。对于视频播放列表，视频间不会变换立体模式，对于非立体视频也同样。"
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "改变用户界面的立体 3D 模式。"
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "播放立体视频的首选模式。"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12641,6 +12861,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "启用视频文件的硬解码。"
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "字幕立体深度"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "设置字幕在立体 3D 视频中的远近距离。数值越大则会感觉字幕离你越近。"
@@ -12652,6 +12876,10 @@ msgstr "封面和同人画使用高质量贴图（占用更多内存）"
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "限制图形用户界面分辨率以节省内存。不影响视频播放。需要重新启动。"
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "使用 iOS8 兼容的 AirPlay 支持。如果你的旧 iOS 设备无法检测到 Kodi，请关闭此选项。此选项仅在 Kodi 重启后生效！"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12844,3 +13072,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "无限制"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "指定蓝光打开/播放方式。光盘菜单尚未完全支持，可能会出问题。"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU 加速"

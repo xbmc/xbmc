@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Prévisions pour le weekend"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Prévisions Quotidiennes"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Prévisions"

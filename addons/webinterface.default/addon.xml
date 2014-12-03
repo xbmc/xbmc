@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.19"
+  version="2.2.20"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -38,7 +38,7 @@
     <summary lang="fr_CA">Interface Web de l'équipe-Kodi. (Interface Web par défaut d'Kodi)</summary>
     <summary lang="gl">Interface web da equipa de Kodi. (Interface web predefinida de Kodi)</summary>
     <summary lang="he">ממשק הדפדפן הרשמי של Kodi. (ברירת המחדל)</summary>
-    <summary lang="hr">Tim Kodi Web sučelje. (Kodi-ovo uobičajeno web sučelje)</summary>
+    <summary lang="hr">Tim Kodi Web sučelje. (Kodijevo uobičajeno web sučelje)</summary>
     <summary lang="hu">Az Kodi csapat Webes kezelőfelülete (Kodi alapértelmezett webes kezelőfelülete)</summary>
     <summary lang="id">Antar Muka Web Tim Kodi. (Antar muka web bawaan Kodi)</summary>
     <summary lang="it">Interfaccia Web del Team-Kodi. (Interfaccia web di default per Kodi)</summary>
@@ -61,7 +61,6 @@
     <summary lang="sl">Spletni vmesnik ekipe Kodi. (Privzet spletni vmesnik za Kodi)</summary>
     <summary lang="sr">Веб интерфејс од програмера Kodi-а (подразумевани веб интерфејс Kodi-а)</summary>
     <summary lang="sv">Team-Kodi webbgränsnitt. (Kodi's standardwebbgränssnitt)</summary>
-    <summary lang="ta_IN">Kodi அணியின் வலை இடைமுகம். (Kodi இயல்புநிலை இணைய இடைமுகம்)     </summary>
     <summary lang="tg">Интерфейси веби гурӯҳи кории Kodi Web. (Интерфейси веби пешфарз барои Kodi)</summary>
     <summary lang="th">ทีมส่วนประสานหน้าเว็บ Kodi (ส่วนประสานหน้าเว็บพื้นฐานของ Kodi)</summary>
     <summary lang="tr">Kodi Takımı Web Arayüzü. (Kodi'nin varsayılan web arayüzü)</summary>
@@ -123,7 +122,6 @@
     <description lang="sl">Privzet spletni vmesnik za Kodi, ustvarjen za naprave vseh ločljivosti</description>
     <description lang="sr">Подразумевани веб интерфејс Kodi-а, намењен уређајима свих резолуција</description>
     <description lang="sv">Standardwebbgränssnitt för Kodi; Utformat för alla enheter oavsett skärmupplösning</description>
-    <description lang="ta_IN">Kodi முன்னிருப்பு இணைய இடைமுகம்; அனைத்து சாதனங்களின் தெளிவிற்காக வடிவமைக்கப்பட்டுள்ளது</description>
     <description lang="tg">Интерфейси веби пешфарз барои Kodi; Барои ҳар гуна дастгоҳ бо возеҳии экранаш гуногун эҷод карда шудааст</description>
     <description lang="th">ส่วนประสานหน้าเว็บพื้นฐานสำหรับ Kodi ได้ออกแบบรองรับความละเอียดหน้าจอของอุปกรณ์ทั้งหมด</description>
     <description lang="tr">Kodi için varsayılan web arayüzü; Bütün çözünürlüklerde tüm cihazlar için dizayn edilmiştir.</description>

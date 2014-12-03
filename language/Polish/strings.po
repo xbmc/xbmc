@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Rejestruj komunikaty biblioteki CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Rejestruj komunikaty komponentu VIDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Czyszczenie biblioteki"
@@ -2823,7 +2827,7 @@ msgstr "Chciałbyś przeskanować teraz?"
 
 msgctxt "#802"
 msgid "%s of %s available"
-msgstr "%s z &s dostępne"
+msgstr "%s z %s dostępne"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3727,11 +3731,11 @@ msgstr "Spróbuj zmienić poziom ustawień, aby zobaczyć dodatkowe kategorie i 
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
-msgstr "Okno dialogowe Tak/Nie"
+msgstr "Okno Tak/Nie"
 
 msgctxt "#10101"
 msgid "Progress dialogue"
-msgstr "Okno postępu"
+msgstr "Pasek postępu"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3875,7 +3879,7 @@ msgstr "Informacje o filmie"
 
 msgctxt "#12000"
 msgid "Select dialogue"
-msgstr "Okno dialogowe Wybierz"
+msgstr "Okno Wybierz"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -3883,7 +3887,7 @@ msgstr "Muzyka/Informacje"
 
 msgctxt "#12002"
 msgid "Dialogue OK"
-msgstr "Okno dialogowe OK"
+msgstr "Okno OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3903,7 +3907,7 @@ msgstr "Wizualizacja dźwięku"
 
 msgctxt "#12008"
 msgid "File stacking dialogue"
-msgstr "Okno dialogowe scalania plików"
+msgstr "Okno scalania plików"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4091,7 +4095,7 @@ msgstr "Reaktywuj blokadę"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr "Czy chcesz zaktualizować teraz?"
+msgstr "Czy chcesz teraz zaktualizować?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -5495,7 +5499,7 @@ msgstr "Wprowadzone zmiany w konfiguracji wymagają"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
-msgstr " ponownego uruchomienia. Chcesz teraz ponownie uruchomić Kodi?"
+msgstr " ponownego uruchomienia. Czy chcesz teraz ponownie uruchomić Kodi?"
 
 msgctxt "#14041"
 msgid "Internet connection bandwidth limitation"
@@ -5939,7 +5943,7 @@ msgstr "Liniowo"
 
 msgctxt "#16022"
 msgid "Bob (inverted)"
-msgstr "Liniowo (odwrócony)"
+msgstr "Liniowo (odwrócone)"
 
 msgctxt "#16024"
 msgid "Cancelling..."
@@ -6193,6 +6197,22 @@ msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "Kompensacja ruchu VAAPI"
 
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Zaawansowane"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Zaawansowane (połówkowe)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Liniowo"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Liniowo (połówkowe)"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Przetwarzanie wideo"
@@ -6251,11 +6271,11 @@ msgstr "Jakość sygnału"
 
 msgctxt "#19009"
 msgid "SNR"
-msgstr "Stosunek sygnału do szumu"
+msgstr "SNR"
 
 msgctxt "#19010"
 msgid "BER"
-msgstr "Stopa błędu (BER)"
+msgstr "BER"
 
 msgctxt "#19011"
 msgid "UNC"
@@ -6711,11 +6731,11 @@ msgstr "Ignoruj istniejące nagrania"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr "Czas rozpoczęcia"
+msgstr "Początek"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr "Czas zakończenia"
+msgstr "Koniec"
 
 msgctxt "#19128"
 msgid "Start date"
@@ -7091,7 +7111,7 @@ msgstr "Nagrywanie anulowane"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
-msgstr "Nagrywanie zaplanowane"
+msgstr "Zaplanowano nagrywanie"
 
 msgctxt "#19226"
 msgid "Recording started"
@@ -9323,11 +9343,11 @@ msgstr "Zarządzanie poziomem użycia energii"
 
 msgctxt "#21391"
 msgid "High power"
-msgstr "Wysokie zużycie"
+msgstr "Wysoka wydajność"
 
 msgctxt "#21392"
 msgid "Low power"
-msgstr "Niskie zużycie"
+msgstr "Niska wydajność"
 
 msgctxt "#21393"
 msgid "High standby"
@@ -9351,7 +9371,7 @@ msgstr "Pixel shader v2 wysokiej jakości"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
-msgstr "Aktywuj listę odtwarzania po uruchomieniu"
+msgstr "Odtwarzaj wybraną listę mediów po uruchomieniu"
 
 msgctxt "#21399"
 msgid "Use tween animations"
@@ -10618,8 +10638,12 @@ msgid "Configuration has been moved"
 msgstr "Konfiguracja została przeniesiona"
 
 msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - this message will not be shown again!"
-msgstr "Pliki konfiguracyjne XBMC zostały przeniesione dla Kodi do nowej lokalizacji. Dowiedz się więcej na stronie http://kodi.wiki/view/Migration_from_XBMC_to_Kodi - Ten komunikat nie zostanie więcej wyświetlony!"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Konfiguracja XBMC została przeniesiona do nowej lokalizacji dla Kodi. \nOdwiedź strony wiki po więcej informacji: http://kodi.wiki/view/Migration - ten komunikat nie zostanie więcej wyświetlony!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Ukrywaj niekompatybilne"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11827,7 +11851,7 @@ msgstr "Wymusza na serwerze TV wyszukiwanie kanałów (jeśli wspierane)."
 
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
-msgstr "Usuwa kanały i bazę przewodnika telewizyjnego, a następnie importuje je ponownie z serwera."
+msgstr "Usuwa kanały i bazę przewodnika programów, a następnie importuje je ponownie z serwera."
 
 msgctxt "#36210"
 msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
@@ -11855,31 +11879,31 @@ msgstr "Umożliwia wyszukiwanie brakujących ikony kanałów."
 
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
-msgstr "Kategoria z ustawieniami przewodnika telewizyjnego"
+msgstr "Kategoria z ustawieniami przewodnika programów."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
-msgstr "Określa liczbę dni, dla których importowane będą dane do przewodnika telewizyjnego z serwerów."
+msgstr "Określa liczbę dni, dla których importowane będą dane do przewodnika programów z serwerów."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends."
-msgstr "Określa interwał pomiędzy importami danych do przewodnika telewizyjnego z serwerów."
+msgstr "Określa interwał pomiędzy importami danych do przewodnika programów z serwerów."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
-msgstr "Zapobiega importowaniu danych przewodnika telewizyjnego podczas odtwarzania multimediów, aby zminimalizować obciążenie procesora."
+msgstr "Zapobiega importowaniu danych przewodnika programów podczas odtwarzania multimediów, aby zminimalizować obciążenie procesora."
 
 msgctxt "#36223"
 msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
-msgstr "Domyślnie dane przewodnika telewizyjnego są przechowywane w lokalnej bazie danych, aby przyśpieszyć importowanie podczas ponownego uruchomienia Kodi."
+msgstr "Domyślnie dane przewodnika programów są przechowywane w lokalnej bazie danych, aby przyśpieszyć importowanie podczas ponownego uruchomienia Kodi."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "Ukrywa komunikat \"brak dostępnych informacji\", gdy brak informacji o kanale w przewodniku telewizyjnym."
+msgstr "Ukrywa komunikat \"brak dostępnych informacji\", gdy brak informacji o kanale w przewodniku programów."
 
 msgctxt "#36225"
 msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
-msgstr "Usuwa lokalną bazę przewodnika, a następnie importuje ją ponownie z serwera."
+msgstr "Usuwa lokalną bazę przewodnika programów, a następnie importuje ją ponownie z serwera."
 
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
@@ -11971,7 +11995,7 @@ msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
-msgstr "Prosi o kod PIN przed uzyskaniem dostępu do zablokowanych kanałów rodzicielskich. Kanały mogą być oznaczone jako zamknięte w edytorze kanałów w karcie Ogólne. Zablokowane kanały rodzicielskie nie mogą być odtwarzane lub nagrane bez wprowadzania kodu PIN, dodatkowo informacje przewodnika dla tych kanałów są ukryte."
+msgstr "Prosi o kod PIN przed uzyskaniem dostępu do zablokowanych kanałów rodzicielskich. Kanały mogą być oznaczone jako zamknięte w edytorze kanałów w karcie Ogólne. Zablokowane kanały rodzicielskie nie mogą być odtwarzane lub nagrane bez wprowadzania kodu PIN, dodatkowo informacje przewodnika programów dla tych kanałów są ukryte."
 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
@@ -13027,7 +13051,7 @@ msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe wspiera wielokanałowy dźw
 
 msgctxt "#37025"
 msgid "Configure audio encoder settings such as quality and compression level"
-msgstr "Określa ustawienia kodeków dźwięku takie, jak jakość i poziom kompresji."
+msgstr "Określa ustawienia kodeków dźwięku takie jak jakość i poziom kompresji."
 
 msgctxt "#37026"
 msgid "Auto"
@@ -13051,7 +13075,7 @@ msgstr "Nieograniczony"
 
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
-msgstr "Określa sposób otwierania/odtwarzania dysków Blu-ray. Menu dysków nie są w pełni wspierane i mogą powodować problemy."
+msgstr "Określa sposób otwierania/odtwarzania dysków Blu-ray. Menu dysku nie jest w pełni wspierane i może powodować problemy."
 
 msgctxt "#38010"
 msgid "GPU accelerated"

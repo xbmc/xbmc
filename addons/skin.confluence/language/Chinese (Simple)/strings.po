@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "一周预报"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "每日预报"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "天气预报"

@@ -78,7 +78,7 @@ msgstr "팬아트"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "사진 미리보기"
+msgstr "사진 썸네일"
 
 msgctxt "#31032"
 msgid "Image Wrap"

@@ -43,7 +43,7 @@ msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Упр. со датот."
+msgstr "Управување со датот."
 
 msgctxt "#8"
 msgid "Weather"
@@ -87,7 +87,7 @@ msgstr "јануари"
 
 msgctxt "#22"
 msgid "February"
-msgstr "вефруари"
+msgstr "февруари"
 
 msgctxt "#23"
 msgid "March"
@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Потврди преместување"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Потврдувате бришење"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Копирање на овие датотеки?"
@@ -569,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Откажи ги операциите со датотеки"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Резолуција"
@@ -576,6 +584,10 @@ msgstr "Резолуција"
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Прилагоди брзина на освежување кон мониторот"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Подреди по: Наслов"
 
 msgctxt "#172"
 msgid "Release date"
@@ -836,6 +848,10 @@ msgstr "Полн екран"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Димензии: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Монитор"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1520,6 +1536,10 @@ msgstr "Отворање датотека"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Кеш"
+
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Хард диск"
 
 msgctxt "#441"
 msgid "UDF"
@@ -2609,6 +2629,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Ажурирање Библиотека"
 
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s од %s слободно"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Внесовте погрешен број на приклучоци"
@@ -2985,6 +3009,30 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Прилагоден пролазен уред"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Температура"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Притисок"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Оддалеченост"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Интензитет"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Нерамномерно"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Многу"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "екстремно"
@@ -2993,9 +3041,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Вртлози"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Чисто небо"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Неисправен"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Торнадо"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Тропски"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Ураган"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Ладно"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3004,6 +3072,22 @@ msgstr "ветровито"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Поставки"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Слаб ветар"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Ветерливо"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Силни ветрови"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Многу лошо"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4899,11 +4983,11 @@ msgstr "Користи анализирање во позадина"
 
 msgctxt "#14056"
 msgid "Stop scan"
-msgstr "Сопри анализирање"
+msgstr "Запри анализирање"
 
 msgctxt "#14057"
 msgid "Not possible while scanning for media info"
-msgstr "Не е можно додека е во тек анализирање на податоци за медиум"
+msgstr "Не е можно додека е во тек анализирање на мултимедиа"
 
 msgctxt "#14058"
 msgid "Film grain effect"
@@ -4919,7 +5003,7 @@ msgstr "Непознат вид на кеш - Интернет"
 
 msgctxt "#14061"
 msgid "Auto"
-msgstr "Автом."
+msgstr "Автоматски"
 
 msgctxt "#14062"
 msgid "Enter username for"
@@ -8853,6 +8937,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Никогаш"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Следната содржина не може да се најде за пуштање"
@@ -9081,6 +9185,38 @@ msgctxt "#36921"
 msgid "songs"
 msgstr "Нумери"
 
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr "Одберете ја оваа опција ако аудио излезот поддржува само повеќеканално аудио како Dolby Digital 5.1 Ова ќе овозможи аудио како AAC5.1 или FLAC5.1 да се слуша во 5.1 surround sound. Забелешка - Не се препорачува на Raspberry Pi бидејќи многу го оптоварува процесорот."
+
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "Конфигурирање на поставките за аудио енкодерот како квалитет и ниво на компресија"
+
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Автоматски"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Неограничено"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Определува како дисковите со Blu-ray ќе се отвараат и репродуцираат. Дисковните менија не се целосно поддржани и можат да бидат проблематични."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Се користи графичкиот процесор за забрзување"

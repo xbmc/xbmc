@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Confirmar mover"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Confirmar eliminación"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "¿Copiar estos archivos?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Interfaz Web"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Encoders de audio"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Eslogan"
@@ -844,6 +852,10 @@ msgstr "Pantalla completa"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Ajustando tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Píxeles: %2.2f:1)  (VShift: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1085,6 +1097,10 @@ msgctxt "#309"
 msgid "User interface language"
 msgstr "Idioma de la interfaz de usuario"
 
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Layouts de teclado"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1220,6 +1236,10 @@ msgstr "Actores"
 msgctxt "#345"
 msgid "Year"
 msgstr "Año"
+
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "Preservar volumen original al realizar downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1977,6 +1997,10 @@ msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
 msgstr "Mezclar audio multicanal a estéreo"
 
+msgctxt "#549"
+msgid "Number"
+msgstr "Número"
+
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Ordenar por: %s"
@@ -2393,6 +2417,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Nivel de compresión"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Activar registro específico por componente"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Activar transcodificación digital Dolby "
@@ -2776,6 +2804,10 @@ msgstr "La Colección de música necesita volver a analizar las etiquetas de los
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "¿Desea que se escaneen ahora?"
+
+msgctxt "#802"
+msgid "%s of %s available"
+msgstr "%s de %s disponibles"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3193,6 +3225,26 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dispositivo passthrough personalizado"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Presión"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Proximidad"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intensidad"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Muy"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Extrema"
@@ -3201,9 +3253,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Torbellino"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Cielo despejado"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Roto"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Huracán"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Frio"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3212,6 +3284,22 @@ msgstr "Ventoso"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Configuración"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brisa"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Suave"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Severo"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violento"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4064,6 +4152,14 @@ msgstr "Tiempo total encendido"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Nivel de batería"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Auto actualizar: Notificar"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Auto actualizar: Nunca"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5021,6 +5117,14 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleración de hardware (MediaCodec)"
 
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Usar VDPAU MPEG-2"
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Usar VDPAU MPEG-4 "
+
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Usar VC-1 VDPAU"
@@ -5028,6 +5132,14 @@ msgstr "Usar VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Active esta opción para usar aceleración por hardware con códecs basados en VC-1. Si no, se usará la CPU en su lugar. Los sistemas AMD con VDPAU activado no funcionan para el perfil VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Usar VAAPI MPEG-2"
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Usar VAAPI MPEG-4"
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5048,6 +5160,10 @@ msgstr "Software"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Aceleración por hardware"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Preferir método de renderizado VAAPI"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5373,6 +5489,10 @@ msgctxt "#14053"
 msgid "GUI filters"
 msgstr "Filtros GUI"
 
+msgctxt "#14054"
+msgid "%2.1f dB"
+msgstr "%2.1f dB"
+
 msgctxt "#14055"
 msgid "Use background scanning"
 msgstr "Realizar la exploración en segundo plano"
@@ -5489,6 +5609,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Reproducción"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "Discos"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Reproducir DVDs de forma automática"
@@ -5544,6 +5668,18 @@ msgstr "Detener el ripeo del CD"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Aceleración"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Modo reproduccción Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Reproducir pelicula principal"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Mostrar menú simplificado"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -5608,6 +5744,10 @@ msgstr "Sonidos de Navegación"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skin Por defecto"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Tipografía mas grande"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6413,6 +6553,10 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Por favor, cambie a otro canal."
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Ir a canal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Introduzca el nombre del directorio para la grabación"
@@ -6436,6 +6580,10 @@ msgstr "Ha ocurrido un error inesperado. Inténtelo de nuevo o consulte el log p
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Error del backend PVR. Consulte el log para más detalles."
+
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "¿Eliminar esta grabación?"
 
 msgctxt "#19114"
 msgid "Version"
@@ -7045,6 +7193,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "No mostrar avisos de 'conexión perdida'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Agrupar items"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "No se encontraron Add-ons de PVR"
@@ -7104,6 +7256,14 @@ msgstr "Elegir icono"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Buscar un icono"
+
+msgctxt "#19287"
+msgid "All channels"
+msgstr "Todos los canales"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Primer plano"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8269,6 +8429,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple File Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Navegador Zeroconf"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Directorio servidor web (HTTP)"
@@ -9385,6 +9549,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s a %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(Externo)"
@@ -10121,6 +10289,10 @@ msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Comprobar actualizaciones"
 
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Última actualización %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "¿Desea activar este Add-on?"
@@ -10135,7 +10307,7 @@ msgstr "¡Hay una actualización de Add-on!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Add-ons activados"
+msgstr "Add-ons activos"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -10196,6 +10368,10 @@ msgstr "Necesario Add-on"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "¿Reintentar conexión?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Add-ons helper"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10337,6 +10513,10 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Ubicación personalizada"
 
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Ocultar no compatibles"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -10348,6 +10528,10 @@ msgstr "Ocultar extranjeros"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar entre todos los títulos ..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "Mostrar menú Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10536,6 +10720,14 @@ msgstr "Fin de semana"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s día"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "Streams %s"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "Dispositivos %s"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12245,6 +12437,10 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Carpeta utilizada para guardar capturas de pantalla tomadas por Kodi."
 
+msgctxt "#36394"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Activa inclusión en el log de mensajes de bibliotecas adicionales."
+
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
 msgstr "Categoría que contiene los ajustes para la función de bloqueo maestro."
@@ -12385,6 +12581,18 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "Define si la decodificación de video debe ser realizada por software (requiere más CPU) o con aceleración por hardware cuando sea posible."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "Seleccione layouts virtuales de teclado."
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Modo estereoscópico 3D (actual)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Modo 3D Estereoscópico"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Deshabilitado"
@@ -12413,6 +12621,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Por hardware"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscópico (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Modo de reproducción de videos estereoscópicos 3D."
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Preguntarme"
@@ -12429,6 +12645,14 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Igual que en película (auto detectar)"
 
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Seleccionar modo de reproducción"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Seleccione modo estereoscópico 3D"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Seleccionar modo alternativo..."
@@ -12436,6 +12660,10 @@ msgstr "Seleccionar modo alternativo..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Igual que la película"
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Modo estereoscópico 3D de video"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12456,6 +12684,10 @@ msgstr "Activar para potenciar los diálogos frente al sonido ambiente cuando se
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilitar decodificación por hardware de archivos de video."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Profundidad 3D estereoscópica de subtítulos"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -12481,6 +12713,14 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Categoría que contiene la configuración de cómo se maneja la salida de video."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "película"
+
+msgctxt "#36901"
+msgid "movies"
+msgstr "películas"
+
 msgctxt "#36902"
 msgid "TV show"
 msgstr "Serie de TV"
@@ -12489,6 +12729,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "Series de TV"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "temporada"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "temporadas"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "episodio"
@@ -12496,6 +12744,14 @@ msgstr "episodio"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "episodios"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "musicvideo"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "musicvideos"
 
 msgctxt "#36910"
 msgid "set"
@@ -12513,9 +12769,29 @@ msgctxt "#36913"
 msgid "videos"
 msgstr "Videos"
 
+msgctxt "#36914"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "música"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "artista"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "artistas"
+
 msgctxt "#36918"
 msgid "album"
 msgstr "Álbum"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "álbums"
 
 msgctxt "#36920"
 msgid "song"
@@ -12592,3 +12868,23 @@ msgstr "Seleccione esta opción si la salida de audio sólo soporta sonido multi
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "Ilimitado"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Acelerado por GPU"

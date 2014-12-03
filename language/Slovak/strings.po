@@ -3197,6 +3197,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Oznamovať tieto služby ďalším počítačom cez Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Režim kompatibility iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Povoliť ovládanie hlasitosti"
@@ -3240,6 +3244,14 @@ msgstr "Teplota"
 msgctxt "#1376"
 msgid "Pressure"
 msgstr "Tlak"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Priblíženie"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Intenzita"
 
 msgctxt "#1381"
 msgid "Extreme"

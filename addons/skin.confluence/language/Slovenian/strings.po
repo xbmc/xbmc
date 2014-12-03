@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Vikend napoved"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Dnevna napoved"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Napoved"

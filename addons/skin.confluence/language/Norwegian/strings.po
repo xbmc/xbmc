@@ -126,11 +126,11 @@ msgstr "Ferdig klokken"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sorter: Stigende"
+msgstr "Rekkefølge: Stigende"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sorter: Synkende"
+msgstr "Rekkefølge: Synkende"
 
 msgctxt "#31055"
 msgid "Open playlist"
