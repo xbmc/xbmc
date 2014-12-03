@@ -65,7 +65,15 @@ if __name__ == "__main__":
 
   zfile = zipfile.ZipFile(packagepath, "w", zipfile.ZIP_DEFLATED)
   for h in ihashes:
-    zfile.write(os.path.join(directory, h.name), h.name)
+    if not h.targetLink is None:
+      attr = zipfile.ZipInfo()
+      attr.filename = h.name
+      attr.create_system = 3
+      # symlink magic
+      attr.external_attr = 2716663808L
+      zfile.writestr(attr, h.targetLink)
+    else:
+      zfile.write(os.path.join(directory, h.name), h.name)
 
   zfile.close()
   print "%s created" % packagepath

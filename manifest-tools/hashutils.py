@@ -7,7 +7,9 @@ def get_file(fpath):
   fe = FileElement()
   fe.name = fpath
   
-  if os.path.isfile(fpath):
+  if os.path.islink(fpath):
+    fe.targetLink = os.readlink(fpath)
+  elif os.path.isfile(fpath):
     sha_hash = hashlib.sha1()
     fp = open(fpath, "rb")
     try:
@@ -20,9 +22,6 @@ def get_file(fpath):
     fe.fileHash = sha_hash.hexdigest()
     fe.size = info.st_size
     fe.permissions = oct(stat.S_IMODE(info.st_mode))
-
-  if os.path.islink(fpath):
-    fe.targetLink = os.readlink(fpath)
 
   fe.included = "true"
   #print "%s = %s" % (fe.name, fe.fileHash)
