@@ -759,6 +759,30 @@ unsigned int COMXVideo::GetSize()
   return m_omx_decoder.GetInputBufferSize();
 }
 
+bool COMXVideo::GetPlayerInfo(double &match, double &phase, double &pll)
+{
+  CSingleLock lock (m_critSection);
+  OMX_ERRORTYPE omx_err;
+  OMX_CONFIG_BRCMRENDERSTATSTYPE renderstats;
+
+  if (!m_hdmi_clock_sync || !m_omx_render.IsInitialized())
+    return false;
+  OMX_INIT_STRUCTURE(renderstats);
+  renderstats.nPortIndex = m_omx_render.GetInputPort();
+
+  omx_err = m_omx_render.GetParameter(OMX_IndexConfigBrcmRenderStats, &renderstats);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXVideo::GetPlayerInfo error GetParameter OMX_IndexParamPortDefinition omx_err(0x%08x)\n", omx_err);
+    return false;
+  }
+  match = renderstats.nMatch * 1e-6;
+  phase = (double)renderstats.nPhase / (double)renderstats.nPeriod;
+  pll   = (double)renderstats.nPixelClock / (double)renderstats.nPixelClockNominal;
+  return true;
+}
+
+
 int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
 {
   CSingleLock lock (m_critSection);
