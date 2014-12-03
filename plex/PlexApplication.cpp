@@ -350,7 +350,7 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
 
   if ((stricmp(message, "OnScreensaverDeactivated") == 0) && (stricmp(sender, "xbmc") == 0))
   {
-    if (!g_application.IsPlaying())
+    if (!g_application.IsPlaying() && g_plexApplication.myPlexManager->IsPinProtected())
     {
       CLog::Log(LOGDEBUG, "PlexApplication::Announce resuming from screensaver");
       g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
