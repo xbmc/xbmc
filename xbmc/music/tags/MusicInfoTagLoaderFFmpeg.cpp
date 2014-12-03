@@ -87,7 +87,8 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
   AVDictionaryEntry* avtag=NULL;
   while ((avtag = av_dict_get(fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".mka"))
+    if (StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".mka") ||
+        StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".dsf"))
     {
       if (strcasecmp(avtag->key, "title") == 0)
         tag.SetTitle(avtag->value);
