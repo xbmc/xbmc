@@ -188,7 +188,12 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
       pts_offset = m_Subtitle.pts - pPacket->pts ;
     }
   }
-
+  // Workaround m_Subtitle.end_display_time being UINT32_MAX.
+  // That would keep last spoken line on sub always on screen.
+  // cause: m_Subtitle.end_display_time is not always UINT32_MAX only in error case.
+  if (m_Subtitle.end_display_time == 0xffffffffU)
+    m_Subtitle.end_display_time = m_Subtitle.start_display_time + 5000;
+  
   m_StartTime   = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
   m_StopTime    = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
 
