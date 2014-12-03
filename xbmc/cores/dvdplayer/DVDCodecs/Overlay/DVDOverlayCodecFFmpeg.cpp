@@ -190,7 +190,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   }
 
   m_StartTime   = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
-  m_StopTime    = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
+  m_StopTime    = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time + 5000);
 
   //adapt start and stop time to our packet pts
   bool dummy = false;
