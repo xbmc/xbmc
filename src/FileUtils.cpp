@@ -206,15 +206,31 @@ void FileUtils::moveFile(const char* src, const char* dest) throw(IOException)
 {
 #ifdef PLATFORM_UNIX
   if (rename(src, dest) != 0)
-  {
-    throw IOException("Unable to rename " + std::string(src) + " to " + std::string(dest));
-  }
 #else
   if (!MoveFile(src, dest))
-  {
-    throw IOException("Unable to rename " + std::string(src) + " to " + std::string(dest));
-  }
 #endif
+  {
+    LOG(Info, "Could not rename file " + std::string(src) + " to " + std::string(dest) + ", will copy instead.");
+    // since we can't move it, let's try to copy it and remove the old one. We need to see
+    // if we are renaming a file or directory first.
+    try
+    {
+      if (isDirectory(src))
+      {
+        copyTree(src, dest);
+        rmdirRecursive(src);
+      }
+      else
+      {
+        copyFile(src, dest);
+        removeFile(src);
+      }
+    }
+    catch (IOException)
+    {
+      throw IOException("Unable to rename or copy " + std::string(src) + " to " + std::string(dest));
+    }
+  }
 }
 
 void FileUtils::addToZip(const char* archivePath, const char* path, const char* content,
