@@ -455,6 +455,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   {
     m_program = 0;
     m_checkvideo = true;
+    skipCreateStreams = true;
   }
 
   // reset any timeout
