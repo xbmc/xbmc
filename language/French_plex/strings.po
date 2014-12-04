@@ -30,8 +30,8 @@ msgstr "Plex for Home Theater"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr ""
 
 
 #empty strings from id 11 to 262
@@ -115,7 +115,7 @@ msgstr "Si vous continuez, vous pourriez ne pas être en mesure de contrôler Pl
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr "Recherchez des bibliothèques éloignées"
+msgstr "Recherchez des bibliothèques distantes"
 
 
 #empty strings from id 13144 to 13145
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -399,8 +404,8 @@ msgstr "Méthode de rendu vidéo"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "Canaux de sortie HDMI"
+msgid "Audio output channels"
+msgstr ""
 
 
 msgctxt "#18111"
@@ -425,12 +430,12 @@ msgstr "Visualisez les régions"
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr "Algorithme des régions"
+msgstr "Algorithme des \"dirty régions\""
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr "Les régions modifiées sans réponse (ms)"
+msgstr "Les \"dirty régions\" modifiées sans réponse (ms)"
 
 
 #empty strings from id 18117 to 18999
@@ -568,6 +573,11 @@ msgstr "Version actuelle"
 msgctxt "#40028"
 msgid "Update Available!"
 msgstr "Mise à jour disponible!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr ""
 
 
 #empty strings from id 40029 to 40099
@@ -785,7 +795,7 @@ msgstr "Régler le minuteur de mise en veille à la place ?"
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr "Régler le minuteur d'extinction de l'ordinateur à la place ?"
+msgstr "Voulez-vous configurer une minuterie d'arrêt de l'ordinateur à la place ?"
 
 
 msgctxt "#40323"
@@ -956,8 +966,8 @@ msgstr "Contenu partagé"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "File d'attente"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Supprimer les filtres"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Se connecter à myPlex"
+msgid "Sign in to Plex"
+msgstr "Se connecter à Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "À partir de votre ordinateur, allez sur http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr ""
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "Félicitation! Vous êtes maintenant connecté."
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Se connecter à myPlex"
+msgid "Signed in to Plex"
+msgstr ""
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "Abonnement PlexPass Nécessaire"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "Pour accéder à un aperçu de la version en développement , vous devez être connecté à myPlex et posséder un abonnement PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr ""
 
 
 msgctxt "#44202"
@@ -1037,7 +1047,91 @@ msgstr "Appuyez sur OK pour quitter"
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
-msgstr "Autoriser le contrôle de Plex / HT à partir d'un clients Plex"
+msgstr "Autoriser le contrôle de Plex/HT à partir de clients Plex"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Utiliser FFMPEG AVIO pour le transport en réseau"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr ""
 
 
 #### These are error strings shown from channels
@@ -1080,17 +1174,17 @@ msgstr "Veuillez vérifier que ce fichier existe et que le disque est monté"
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr "Plex Home Cinéma n'est pas en mesure de jouer ce contenu audio"
+msgstr "Plex Home Theater n'est pas en mesure de jouer ce contenu audio"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr "Plex Home Cinéma n'est pas en mesure de jouer ce contenu audio"
+msgstr "Plex Home Theater n'est pas en mesure de jouer ce contenu audio"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr "Séléctionnez la piste audio"
+msgstr "Sélectionner la piste audio"
 
 
 msgctxt "#52101"
@@ -1100,7 +1194,7 @@ msgstr "Sélectionner le sous-titre"
 
 msgctxt "#52102"
 msgid "Channels"
-msgstr "Plug-ins"
+msgstr "Extensions"
 
 
 msgctxt "#52201"
@@ -1119,18 +1213,18 @@ msgstr "Qualité de la vidéo en ligne"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Afficher la file d'attente et les recommandations myPlex"
+msgid "Show queue and recommendations"
+msgstr ""
 
 
 msgctxt "#52300"
 msgid "Media Server went away"
-msgstr "Perte du Serveur Multimédia"
+msgstr "Le Serveur Multimédia ne répond plus"
 
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr "Le serveur que vous utilisiez est perdu..."
+msgstr "Le Serveur Multimédia que vous parcouriez ne répond plus	"
 
 
 msgctxt "#52400"
@@ -1139,8 +1233,8 @@ msgstr "Pas de comptes sociaux liés"
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "Aller sur http://my.plexapp.com pour lier votre compte"
+msgid "Go to http://plex.tv to link your account"
+msgstr ""
 
 
 msgctxt "#52402"
@@ -1156,4 +1250,130 @@ msgstr "Partagez %s sur %s avec le message:"
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "Activer la journalisation du réseau"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr ""
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr ""
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr ""
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr ""
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr ""
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr ""
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr ""
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr ""
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr ""
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr ""
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr ""
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr ""
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr ""
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "File d'attente"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

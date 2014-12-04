@@ -30,8 +30,8 @@ msgstr "xbmc media center"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
@@ -115,7 +115,7 @@ msgstr "Уколико наставите, можда нећете моћи да
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr ""
+msgstr "Претражи удаљене библиотеке"
 
 
 #empty strings from id 13144 to 13145
@@ -129,19 +129,19 @@ msgstr "XBMC, промена ове поставке може да утиче н
 
 msgctxt "#13148"
 msgid "Allow Picking Alternate Library Media"
-msgstr ""
+msgstr "Дозволи избор друге библиотеке"
 
 
 msgctxt "#13149"
 msgid "Quality From Remote Media Servers"
-msgstr ""
+msgstr "Квалитет са удаљених сервера"
 
 
 #empty strings from id 13150 to 13179
 
 msgctxt "#13180"
 msgid "Preferred Online Video Quality"
-msgstr ""
+msgstr "Жељени квалитет Интернет снимка"
 
 
 msgctxt "#13181"
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -263,7 +268,7 @@ msgstr "Plex/HT захтева поновно покретање ради про
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr ""
+msgstr "Користи слике у позадинама библиотека"
 
 
 #empty strings from id 15151 to 15204
@@ -355,12 +360,12 @@ msgstr "Омогући упозорење о испражњеној батери
 
 msgctxt "#18101"
 msgid "Theme music volume"
-msgstr ""
+msgstr "Гласноћа музичке теме"
 
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr ""
+msgstr "Омогући TV музичку тему"
 
 
 msgctxt "#18103"
@@ -395,17 +400,17 @@ msgstr "Фотографије"
 
 msgctxt "#18109"
 msgid "Video render method"
-msgstr ""
+msgstr "Начин приказа слике"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr ""
+msgid "Audio output channels"
+msgstr "Канали излаза звука"
 
 
 msgctxt "#18111"
 msgid "Advanced video"
-msgstr ""
+msgstr "Напредни видео"
 
 
 msgctxt "#18112"
@@ -415,22 +420,22 @@ msgstr "Евиденција"
 
 msgctxt "#18113"
 msgid "Theme music"
-msgstr ""
+msgstr "Музичка тема"
 
 
 msgctxt "#18114"
 msgid "Visualize dirty regions"
-msgstr ""
+msgstr "Визуелизација „прљаве области“"
 
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr ""
+msgstr "Музичка тема"
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr ""
+msgstr "Истек времена за „прљаву област“ (ms)"
 
 
 #empty strings from id 18117 to 18999
@@ -447,41 +452,41 @@ msgstr "Користи Plex/HT"
 
 msgctxt "#20250"
 msgid "Recent Music Count"
-msgstr ""
+msgstr "Број недавно додате музике"
 
 
 #empty strings from id 20251 to 20340
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr ""
+msgstr "ову путању из Plex/HT библиотеке?"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
-msgstr ""
+msgstr "Дозволи XBMC контролу путем UPnP"
 
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3f сек."
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr ""
+msgstr "Кашњење: %2.3f сек."
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr ""
+msgstr "Убрзано: %2.3f сек."
 
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr ""
+msgstr "Plex/HT верзија %s или новија за покретање."
 
 
 msgctxt "#33076"
@@ -505,39 +510,39 @@ msgstr "Искључите уређаје приликом заустављањ�
 
 msgctxt "#36013"
 msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
-msgstr ""
+msgstr "Није подржана libcec верзија интерфејса. %d је новија од верзије од оне коју Plex/HT подржава (%d)"
 
 
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
 msgid "Software update"
-msgstr ""
+msgstr "Ажурирање софтвера"
 
 
 msgctxt "#40001"
 msgid "Checking for available updates..."
-msgstr ""
+msgstr "Провера доступности ажурирања..."
 
 
 msgctxt "#40002"
 msgid "Update channel"
-msgstr ""
+msgstr "Ажурирај канал"
 
 
 msgctxt "#40003"
 msgid "Stable"
-msgstr ""
+msgstr "Стабилно"
 
 
 msgctxt "#40004"
 msgid "PlexPass"
-msgstr ""
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
 msgid "Ninja"
-msgstr ""
+msgstr "Нинџа"
 
 
 msgctxt "#40006"
@@ -567,7 +572,12 @@ msgstr "Тренутна верзија"
 
 msgctxt "#40028"
 msgid "Update Available!"
-msgstr ""
+msgstr "Доступно је ажурирање!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Преузимање ажурирања %d%%..."
 
 
 #empty strings from id 40029 to 40099
@@ -604,7 +614,7 @@ msgstr "Уштеда струје"
 
 msgctxt "#40106"
 msgid "Remove Workflow"
-msgstr ""
+msgstr "Уклони ток посла"
 
 
 #empty strings from id 40107 to 40149
@@ -775,22 +785,22 @@ msgstr "Већ сте поставили тајмер за искључење е
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr ""
+msgstr "Желите ли уместо тога да поставите тајмер за излазак?"
 
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr ""
+msgstr "Желите ли уместо тога да поставите тајмер за стање спавања?"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr ""
+msgstr "Желите ли уместо тога да поставите тајмер за искључење?"
 
 
 msgctxt "#40323"
 msgid "Set Sleep Display Timer"
-msgstr ""
+msgstr "Поставите тајмер за искључење екрана"
 
 
 #empty string with id 40324
@@ -804,12 +814,12 @@ msgstr "Тајмер је већ постављен"
 
 msgctxt "#42000"
 msgid "Could not read from input stream"
-msgstr ""
+msgstr "Није могуће прочитати улазни запис"
 
 
 msgctxt "#42001"
 msgid "Could not determine input format"
-msgstr ""
+msgstr "Није могуће прочитати улазни формат"
 
 
 msgctxt "#42002"
@@ -917,7 +927,7 @@ msgstr "Лозинка"
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr ""
+msgstr "Користите PIN"
 
 
 msgctxt "#44003"
@@ -956,8 +966,8 @@ msgstr "Дељени садржај"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Редослед"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Обриши филтере"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Пријавите се на myPlex"
+msgid "Sign in to Plex"
+msgstr "Пријава на Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Са рачунара пођите до http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "Са вашег рачунара пођите до http://plex.tv/pin"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "Ојха, пријавили смо се!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Пријављени сте у myPlex"
+msgid "Signed in to Plex"
+msgstr "Пријављени сте у Plex"
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "Неопходан је PlexPass"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "За овај преглед издања потребно је да се пријавите на myPlex и да имате PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "За овај приказ издања, морате да будете пријављени на Plex и да имате PlexPass"
 
 
 msgctxt "#44202"
@@ -1037,6 +1047,90 @@ msgstr "Притисните „У реду“ ради изласка"
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Дозволи контролу Plex/HT из Plex клијената"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Користи FFMPEG AVIO за мрежно транскôдовање"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
 msgstr ""
 
 
@@ -1059,7 +1153,7 @@ msgstr "Овај садржај је истекао"
 
 msgctxt "#52003"
 msgid "This live media has not yet started"
-msgstr ""
+msgstr "Овај уживо пренос још увек није покренут"
 
 
 msgctxt "#52004"
@@ -1069,28 +1163,28 @@ msgstr "Нисте овлашћени да приступите овом сад�
 
 msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
-msgstr ""
+msgstr "Овај садржај је блокиран за одређене територије и не може му се приступити са ваше тренутне локације."
 
 #### end error strings
 
 msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
-msgstr ""
+msgstr "Молимо вас да проверите да ли та датотека постоји и да ли је потребан уређај постављен"
 
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater не може да репродукује садржај из овог канала"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater не може да репродукује садржај из овог канала"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr ""
+msgstr "Изаберите музичку нумеру"
 
 
 msgctxt "#52101"
@@ -1119,8 +1213,8 @@ msgstr "Квалитет Интернет снимка"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Прикажи myPlex ред чекања и препоруке"
+msgid "Show queue and recommendations"
+msgstr "Прикажи редослед и препоруке"
 
 
 msgctxt "#52300"
@@ -1130,17 +1224,17 @@ msgstr "Media Server је нестао"
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr ""
+msgstr "Сервер који сте претраживали је нестао..."
 
 
 msgctxt "#52400"
 msgid "No linked social accounts"
-msgstr ""
+msgstr "Нема повезаних налога друштвених мрежа"
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr ""
+msgid "Go to http://plex.tv to link your account"
+msgstr "Идите на http://plex.tv да повежете свој налог"
 
 
 msgctxt "#52402"
@@ -1150,10 +1244,136 @@ msgstr "Унесите поруку"
 
 msgctxt "#52403"
 msgid "Share %s on %s with message:"
-msgstr ""
+msgstr "Поделите %s на %s са поруком:"
 
 
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "Омогући мрежну евиденцију"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Повезан је даљински"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Уклоњен је даљински"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Увек транскôдуј преводе"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Напредно"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Омогући да Plex анонимно прикупља податке ради побољшања вашег искуства"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Сакриј CloudSync избор"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Промешај све"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Репродукуј све"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "Репродукуј следеће"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Додај у „Следеће“"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Одмах репродуковати?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "Ово ће поништити садржај из  „Следеће“"
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "и уместо тога репродуковаће се избор песама"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Редослед"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

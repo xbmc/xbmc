@@ -30,15 +30,15 @@ msgstr "Plex/HT медиацентр"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
-msgstr "Разрешить управление Plex/HT через HTTP"
+msgstr "Разрешить управление Plex/HT по средством HTTP"
 
 
 msgctxt "#482"
@@ -64,14 +64,14 @@ msgstr "Разрешить программам на других система
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
-msgstr "Plex/HT не смог подключиться "
+msgstr "Plex/HT не смог подключиться."
 
 
 #empty strings from id 1003 to 1269
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr "Позволять Plex/HT принимать данные через AirPlay"
+msgstr "Разрешить Plex/HT принимать AirPlay данные."
 
 
 msgctxt "#13134"
@@ -169,6 +169,11 @@ msgid "SD"
 msgstr "SD"
 
 
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
+
+
 #empty strings from id 13186 to 13308
 
 msgctxt "#13309"
@@ -180,7 +185,7 @@ msgstr "вместо просто Plex/HT?"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr "Позволить запуск Plex/HT с помощью пульта ДУ"
+msgstr "Разрешить запуск Plex/HT с помощью пульта ДУ"
 
 
 #empty strings from id 13603 to 13621
@@ -263,7 +268,7 @@ msgstr "Plex/HT необходимо перезапустить, чтобы из
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr ""
+msgstr "Использовать иллюстрации в качестве фона"
 
 
 #empty strings from id 15151 to 15204
@@ -360,7 +365,7 @@ msgstr "Уровень громкости темы"
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr ""
+msgstr "Включить музыкальную тему ТВ"
 
 
 msgctxt "#18103"
@@ -375,7 +380,7 @@ msgstr "Включить фоновую музыку"
 
 msgctxt "#18105"
 msgid "Advanced"
-msgstr "Дополнительные настройки"
+msgstr "Доп. настройки"
 
 
 msgctxt "#18106"
@@ -399,18 +404,18 @@ msgstr "Метод видео рендеринга"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "Каналы выхода HDMI"
+msgid "Audio output channels"
+msgstr "Каналы аудио выхода"
 
 
 msgctxt "#18111"
 msgid "Advanced video"
-msgstr ""
+msgstr "Доп. настройки видео "
 
 
 msgctxt "#18112"
 msgid "Logging"
-msgstr ""
+msgstr "Журналирование"
 
 
 msgctxt "#18113"
@@ -420,17 +425,17 @@ msgstr "Музыка темы"
 
 msgctxt "#18114"
 msgid "Visualize dirty regions"
-msgstr ""
+msgstr "Визуализировать dirty regions"
 
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr ""
+msgstr "Алгоритм dirty regions"
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr ""
+msgstr "Dirty regions таймаут без флипа (мс)"
 
 
 #empty strings from id 18117 to 18999
@@ -447,7 +452,7 @@ msgstr "Использовать Plex/HT"
 
 msgctxt "#20250"
 msgid "Recent Music Count"
-msgstr ""
+msgstr "Последние Количество Музыки"
 
 
 #empty strings from id 20251 to 20340
@@ -466,22 +471,22 @@ msgstr "Разрешить управлять Plex/HT через UPnP"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr ""
+msgstr "Задержка на: %2.3fs"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr ""
+msgstr "Опережение на: %2.3fs"
 
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr ""
+msgstr "Версия %s Plex/HT или выше для запуска."
 
 
 msgctxt "#33076"
@@ -493,19 +498,19 @@ msgstr "Пожалуйста, обновите Plex/HT."
 
 msgctxt "#36007"
 msgid "Power on the TV when starting Plex/HT"
-msgstr "Включить телевизор, при запуске Plex/HT"
+msgstr "Включить телевизор при запуске Plex/HT"
 
 
 msgctxt "#36008"
 msgid "Power off devices when stopping Plex/HT"
-msgstr ""
+msgstr "Выключать устройства при остановке Plex/HT"
 
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
 msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
-msgstr ""
+msgstr "Неподдерживаемая версия интерфейса libcec. %d выше, чем версия, поддерживаемая Plex/HT (%d)"
 
 
 #empty strings from id 36014 to 39999
@@ -517,7 +522,7 @@ msgstr "Обновление ПО"
 
 msgctxt "#40001"
 msgid "Checking for available updates..."
-msgstr ""
+msgstr "Проверка доступных обновлений..."
 
 
 msgctxt "#40002"
@@ -542,7 +547,7 @@ msgstr "Ниндзя"
 
 msgctxt "#40006"
 msgid "I am Special!"
-msgstr ""
+msgstr "Я особенный!"
 
 
 msgctxt "#40016"
@@ -570,6 +575,11 @@ msgid "Update Available!"
 msgstr "Доступно обновление!"
 
 
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Скачивание обновлений %d%%..."
+
+
 #empty strings from id 40029 to 40099
 
 msgctxt "#40100"
@@ -589,7 +599,7 @@ msgstr "Удалить приложение"
 
 msgctxt "#40103"
 msgid "Browse for Application"
-msgstr "Просмотр Приложений"
+msgstr "Просмотр приложений"
 
 
 msgctxt "#40104"
@@ -604,26 +614,26 @@ msgstr "Экономия энергии"
 
 msgctxt "#40106"
 msgid "Remove Workflow"
-msgstr ""
+msgstr "Удалить операции"
 
 
 #empty strings from id 40107 to 40149
 
 msgctxt "#40150"
 msgid "Now Playing"
-msgstr "Сейчас Проигрывается"
+msgstr "Сейчас воспроизводится"
 
 
 #empty strings from id 40151 to 40199
 
 msgctxt "#40200"
 msgid "Unsupported path"
-msgstr ""
+msgstr "Неподдерживаемый путь"
 
 
 msgctxt "#40201"
 msgid "Plex Media Server paths can't be added to multipath"
-msgstr ""
+msgstr "Пути Plex Media Server не могут быть добавлены к множественным путям"
 
 
 msgctxt "#40202"
@@ -648,17 +658,17 @@ msgstr "Оценить..."
 
 msgctxt "#40206"
 msgid "Change Rating..."
-msgstr "Изменить Оценку..."
+msgstr "Изменить оценку..."
 
 
 msgctxt "#40207"
 msgid "Set Rating"
-msgstr "Поставить Оценку..."
+msgstr "Поставить оценку"
 
 
 msgctxt "#40208"
 msgid "Change Rating"
-msgstr "Изменить Оценку..."
+msgstr "Изменить оценку"
 
 
 #empty string with id 40209
@@ -680,7 +690,7 @@ msgstr "Адрес "
 
 msgctxt "#40213"
 msgid "Force transcoding on local network"
-msgstr ""
+msgstr "Форсировать транскодирование в локальной сети"
 
 
 msgctxt "#40214"
@@ -724,7 +734,7 @@ msgstr "Изменить таймер выключения"
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr ""
+msgstr "Изменить таймер сна монитора"
 
 
 #empty string with id 40309
@@ -763,7 +773,7 @@ msgstr "Вы уже установили таймер сна."
 
 msgctxt "#40317"
 msgid "You have already set a shut down timer."
-msgstr "Вы уже установили таймер выключение."
+msgstr "Вы уже установили таймер выключения."
 
 
 msgctxt "#40318"
@@ -775,17 +785,17 @@ msgstr "Вы уже установили таймер сна экрана."
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr ""
+msgstr "Вы хотите установить таймер выхода?"
 
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr ""
+msgstr "Вы хотите установить таймер сна?"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr ""
+msgstr "Вы хотите установить таймер выключения?"
 
 
 msgctxt "#40323"
@@ -804,7 +814,7 @@ msgstr "Таймер уже установлен"
 
 msgctxt "#42000"
 msgid "Could not read from input stream"
-msgstr ""
+msgstr "Не удалось прочитать входящий поток"
 
 
 msgctxt "#42001"
@@ -862,47 +872,47 @@ msgstr "320 kbps"
 
 msgctxt "#43001"
 msgid "720 kbps"
-msgstr "720 kbps"
+msgstr "720 Кбит/с"
 
 
 msgctxt "#43002"
 msgid "1.5 Mbps"
-msgstr "1.5 Mbps"
+msgstr "1.5 Мбит/с"
 
 
 msgctxt "#43003"
 msgid "2 Mbps"
-msgstr "2 Mbps"
+msgstr "2 Мбит/с"
 
 
 msgctxt "#43004"
 msgid "3 Mbps"
-msgstr "3 Mbps"
+msgstr "3 Мбит/с"
 
 
 msgctxt "#43005"
 msgid "4 Mbps"
-msgstr "4 Mbps"
+msgstr "4 Мбит/с"
 
 
 msgctxt "#43006"
 msgid "8 Mbps"
-msgstr "8 Mbps"
+msgstr "8 Мбит/с"
 
 
 msgctxt "#43007"
 msgid "10 Mbps"
-msgstr "10 Mbps"
+msgstr "10 Мбит/с"
 
 
 msgctxt "#43008"
 msgid "12 Mbps"
-msgstr "12 Mbps"
+msgstr "12 Мбит/с"
 
 
 msgctxt "#43009"
 msgid "20 Mbps"
-msgstr "20 Mbps"
+msgstr "20 Мбит/с"
 
 
 msgctxt "#44000"
@@ -917,7 +927,7 @@ msgstr "Пароль"
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr "Использовать PIN"
+msgstr "Использовать ПИН"
 
 
 msgctxt "#44003"
@@ -952,12 +962,12 @@ msgstr "Ввести имя пользователя и пароль вручн�
 
 msgctxt "#44020"
 msgid "Shared Content"
-msgstr ""
+msgstr "Общие медиа-данные"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Очередь"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Очистить фильтры"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Войти в myPlex"
+msgid "Sign in to Plex"
+msgstr "Войти в Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Зайдите на сайт http://my.plexapp.com/pin c вашего компьютера"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "Зайдите на сайт http://plex.tv/pin c вашего компьютера"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "Ура! Мы вошли!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr ""
+msgid "Signed in to Plex"
+msgstr "Вход в Plex выполнен"
 
 
 msgctxt "#44200"
@@ -1016,13 +1026,13 @@ msgstr "Требуется PlexPass"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr ""
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "Вы должны войти в myPlex и иметь подписку PlexPass для того, чтобы использовать этот выпуск"
 
 
 msgctxt "#44202"
 msgid "Press OK to be taken to the Settings screen"
-msgstr "Нажмите ОК для перехода к экрану Настройки"
+msgstr "Нажмите ОК для перехода к экрану \"Настройки\""
 
 
 msgctxt "#44203"
@@ -1032,11 +1042,95 @@ msgstr "Требуется PlexPass"
 
 msgctxt "#44204"
 msgid "Press OK Quit"
-msgstr ""
+msgstr "Нажмите OK для выхода"
 
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Разрешить управление Plex/HT с помощью клиентов Plex"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Использовать FFMPEG AVIO для сетевой передачи"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
 msgstr ""
 
 
@@ -1044,7 +1138,7 @@ msgstr ""
 #### errorcode + 50000
 msgctxt "#52000"
 msgid "Unable to play media"
-msgstr ""
+msgstr "Невозможно воспроизвести медиафайл"
 
 
 msgctxt "#52001"
@@ -1059,7 +1153,7 @@ msgstr "Срок этих медиаданных истек"
 
 msgctxt "#52003"
 msgid "This live media has not yet started"
-msgstr ""
+msgstr "Этот интерактивный медиа-ресурс еще не запущен"
 
 
 msgctxt "#52004"
@@ -1069,33 +1163,33 @@ msgstr "Вы не авторизованы, чтобы получить дост
 
 msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
-msgstr "Доступ к этим данным не может быть осуществлен из текущего местоположения "
+msgstr "Доступ к этим медиа-данным не может быть осуществлен из текущего местоположения "
 
 #### end error strings
 
 msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
-msgstr ""
+msgstr "Пожалуйста, проверьте, что данный файл существует и необходимый диск подключен"
 
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater не может воспроизвести данные с этого канала"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater не может воспроизвести данные с этого канала"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr ""
+msgstr "Выбор звуковой дорожки"
 
 
 msgctxt "#52101"
 msgid "Select Subtitle"
-msgstr ""
+msgstr "Выбор субтитров"
 
 
 msgctxt "#52102"
@@ -1105,7 +1199,7 @@ msgstr "Каналы"
 
 msgctxt "#52201"
 msgid "Local video quality"
-msgstr "Качество локального видео"
+msgstr "Качество видео в локальной сети"
 
 
 msgctxt "#52202"
@@ -1115,45 +1209,171 @@ msgstr "Качество видео при удаленном доступе"
 
 msgctxt "#52203"
 msgid "Online video quality"
-msgstr "Качество видео через интернет"
+msgstr "Качество интернет видео"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Показывать очередь myPlex, а также рекомендации"
+msgid "Show queue and recommendations"
+msgstr "Показывать очередь и рекомендации"
 
 
 msgctxt "#52300"
 msgid "Media Server went away"
-msgstr ""
+msgstr "Медиа-сервер отключился"
 
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr ""
+msgstr "Просматриваемый сервер отключился..."
 
 
 msgctxt "#52400"
 msgid "No linked social accounts"
-msgstr ""
+msgstr "Нет привязанных социальных записей "
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr ""
+msgid "Go to http://plex.tv to link your account"
+msgstr "Зайдите на сайт http://plex.tv, чтобы привязать вашу учетную запись"
 
 
 msgctxt "#52402"
 msgid "Enter message"
-msgstr ""
+msgstr "Введите сообщение"
 
 
 msgctxt "#52403"
 msgid "Share %s on %s with message:"
-msgstr ""
+msgstr "Делиться %s на %s с сообщением:"
 
 
 msgctxt "#52404"
 msgid "Enable network logging"
+msgstr "Включить журналирование сети "
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Пульт подсоединен"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Пульт отсоединен"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Всегда транскодировать субтитры"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Принудительно"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Разрешить Plex собирать анонимные данные, чтобы улучшить программу"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Спрятать CloudSync"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Перемешать всё"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Воспроизвести всё"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "Воспроизвести след."
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Добавить в очередь воспроизведения"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Воспроизвести сейчас?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "Произойдёт очистка \"Очереди воспроизведения\""
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "и воспроизвести в любом случае "
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Очередь"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
 msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

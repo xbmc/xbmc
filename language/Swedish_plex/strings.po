@@ -30,8 +30,8 @@ msgstr "Plex for Home Theater"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -399,8 +404,8 @@ msgstr "Metod för videorendering"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "Kanaler för HDMI-ut"
+msgid "Audio output channels"
+msgstr "Kanaler för ljud ut"
 
 
 msgctxt "#18111"
@@ -568,6 +573,11 @@ msgstr "Nuvarande version"
 msgctxt "#40028"
 msgid "Update Available!"
 msgstr "Uppdatering tillgänglig!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Laddar ner uppdatering %d%%..."
 
 
 #empty strings from id 40029 to 40099
@@ -956,8 +966,8 @@ msgstr "Delat material"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Kö"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Rensa Filter"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Logga in på myPlex"
+msgid "Sign in to Plex"
+msgstr "Logga in i Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Gå till adressen http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "Gå till http://plex.tv/pin från din dator"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "Hurra, vi är inloggade!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Inloggad på myPlex"
+msgid "Signed in to Plex"
+msgstr "Inloggad i Plex"
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "PlexPass krävs"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "För denna förhandsversion måste du vara inloggad på myPlex och ha ett PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "För denna förhandsrelease, måste du vara inloggad i Plex och ha ett PlexPass"
 
 
 msgctxt "#44202"
@@ -1038,6 +1048,90 @@ msgstr "Tryck OK för att avsluta"
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "Tillåt andra klienter att styra Plex/HT"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Använd FFMPEG AVIO för nätverkstransport"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr ""
 
 
 #### These are error strings shown from channels
@@ -1119,8 +1213,8 @@ msgstr "Önskad online-videokvalitet "
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Visa myPlex-kön och rekommendationer"
+msgid "Show queue and recommendations"
+msgstr "Visa kö och rekommendationer"
 
 
 msgctxt "#52300"
@@ -1139,8 +1233,8 @@ msgstr "Inte länkade konton"
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "Gå till http://my.plexapp.com för att länka ditt konto"
+msgid "Go to http://plex.tv to link your account"
+msgstr "Gå till http://plex.tv för att länka ditt konto"
 
 
 msgctxt "#52402"
@@ -1156,4 +1250,130 @@ msgstr "Dela %s på %s med meddelandet:"
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "Aktivera loggning av nätverket"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Fjärrkontroll inkopplad"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Fjärrkontroll frånkopplad"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Omkoda alltid undertexter"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Tvingad"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Tillåt Plex att samla in anonymt data för att förbättra din användarupplevelse"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Dölj CloudSync-sektioner"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Blanda allt"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Spela allt"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "Spela nästa"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Lägg till i nästkommande"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Spela nu?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "Detta rensar innehållet i nästkommande"
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "och spela upp detta val istället"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Kö"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

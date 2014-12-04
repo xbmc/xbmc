@@ -30,8 +30,8 @@ msgstr "xbmc 미디어센터"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "플렉스"
 
 
 #empty strings from id 11 to 262
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -399,8 +404,8 @@ msgstr "비디오 렌더링 방식"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "HDMI 출력 채널"
+msgid "Audio output channels"
+msgstr "오디오 출력 채널"
 
 
 msgctxt "#18111"
@@ -568,6 +573,11 @@ msgstr "현재 버전"
 msgctxt "#40028"
 msgid "Update Available!"
 msgstr "업데이트 사용가능!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "%d%% 업데이트 다운로드중..."
 
 
 #empty strings from id 40029 to 40099
@@ -956,8 +966,8 @@ msgstr "공유 컨텐츠"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "대기열"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "필터 초기화"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "myPlex 로그인"
+msgid "Sign in to Plex"
+msgstr "플렉스 로그인"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "컴퓨터에서 http://my.plexapp.com/pin 을 열고"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "PC에서  http://plex.tv/pin 를 방문하세요"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "오예, 로그인 했습니다!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "myPlex 로그인 됨"
+msgid "Signed in to Plex"
+msgstr "플렉스 로그인됨"
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "PlexPass 필요"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "선행 공개버전을 사용하려면 PlexPass계정으로 myPlex에 로그인해야합니다."
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "선행 공개버전 사용을 위해선 PlexPass 계정으로 플렉스에 로그인해야합니다"
 
 
 msgctxt "#44202"
@@ -1038,6 +1048,90 @@ msgstr "종료하려면 확인"
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "플렉스 클라이언트에서 플렉스/HT 제어 허용"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "네트워크 전송을 위해 FFMPEG AVIO 사용"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr ""
 
 
 #### These are error strings shown from channels
@@ -1119,8 +1213,8 @@ msgstr "온라인 비디오 화질"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "myPlex 대기열 및 추천 항목 표시"
+msgid "Show queue and recommendations"
+msgstr "대기열 및 추천항목 표시"
 
 
 msgctxt "#52300"
@@ -1139,8 +1233,8 @@ msgstr "연결된 소셜 계정 없음"
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "http://my.plexapp.com 에서 계정을 연결하십시오"
+msgid "Go to http://plex.tv to link your account"
+msgstr "계정을 연결하려면 http://plex.tv 에 방문하세요"
 
 
 msgctxt "#52402"
@@ -1156,4 +1250,130 @@ msgstr "메시지에 %s 공유 (%s) :"
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "네트워크 로그 사용"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "리모컨 연결됨"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "리모컨 연결해제됨"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "자막을 항상 트랜스코드"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "강제"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "사용자 환경 개선을 위해 플렉스가 익명의 데이터를 수집 하도록 허용"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "클라우드싱크 항목 숨김"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "모두 셔플"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "모두 재생"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "다음 재생"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "다음에 추가"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "지금 재생합니까?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "이 작업은 다음 재생 목록을 비우고"
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "현재 선택항목을 재생하게 됩니다"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "대기열"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

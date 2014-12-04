@@ -30,7 +30,7 @@ msgstr ""
 
 
 msgctxt "#10"
-msgid "myPlex"
+msgid "Plex"
 msgstr ""
 
 
@@ -166,6 +166,11 @@ msgstr ""
 
 msgctxt "#13185"
 msgid "SD"
+msgstr ""
+
+
+msgctxt "#13190"
+msgid "Auto"
 msgstr ""
 
 
@@ -399,7 +404,7 @@ msgstr ""
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
+msgid "Audio output channels"
 msgstr ""
 
 
@@ -567,6 +572,11 @@ msgstr ""
 
 msgctxt "#40028"
 msgid "Update Available!"
+msgstr ""
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
 msgstr ""
 
 
@@ -956,7 +966,7 @@ msgstr ""
 
 
 msgctxt "#44021"
-msgid "Queue"
+msgid "Watch Later"
 msgstr ""
 
 
@@ -981,12 +991,12 @@ msgstr ""
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
+msgid "Sign in to Plex"
 msgstr ""
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
 msgstr ""
 
 
@@ -1006,7 +1016,7 @@ msgstr ""
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
+msgid "Signed in to Plex"
 msgstr ""
 
 
@@ -1016,7 +1026,7 @@ msgstr ""
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
 msgstr ""
 
 
@@ -1037,6 +1047,90 @@ msgstr ""
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
+msgstr ""
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr ""
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
 msgstr ""
 
 
@@ -1119,7 +1213,7 @@ msgstr ""
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
+msgid "Show queue and recommendations"
 msgstr ""
 
 
@@ -1139,7 +1233,7 @@ msgstr ""
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
+msgid "Go to http://plex.tv to link your account"
 msgstr ""
 
 
@@ -1156,4 +1250,130 @@ msgstr ""
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr ""
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr ""
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr ""
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr ""
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr ""
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr ""
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr ""
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr ""
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr ""
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr ""
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr ""
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr ""
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr ""
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr ""
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr ""
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

@@ -19,69 +19,69 @@ msgstr ""
 
 msgctxt "#6"
 msgid "XBMC SVN"
-msgstr "Plex/HT Git"
+msgstr "XBMC SVN"
 
 
 #empty strings from id 7 to 8
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "Plex Home Theater"
+msgstr "XBMC 媒体中心"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
-msgstr "允许通过HTTP控制Plex/HT"
+msgstr "允许通过 HTTP 控制 XBMC"
 
 
 msgctxt "#482"
 msgid "About XBMC"
-msgstr "关于Plex/HT"
+msgstr "关于 XBMC"
 
 
 #empty strings from id 747 to 790
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "允许本地应用程序控制Plex/HT"
+msgstr "允许该系统的程序控制 XBMC"
 
 
 #empty strings from id 792 to 793
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "允许远程应用程序控制Plex/HT"
+msgstr "允许其他系统程序控制 XBMC"
 
 
 #empty strings from id 795 to 1001
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
-msgstr "Plex/HT无法连接到该网络地址。"
+msgstr "XBMC 无法连接到该网络地址。"
 
 
 #empty strings from id 1003 to 1269
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr "允许Plex/HT接收AirPlay内容"
+msgstr "允许 XBMC 接收 AirPlay 内容"
 
 
 msgctxt "#13134"
 msgid "H.264 Speed Boost"
-msgstr "H.264加速"
+msgstr "H.264 加速"
 
 
 msgctxt "#13135"
 msgid "Disabled"
-msgstr "禁用"
+msgstr "已禁用"
 
 
 msgctxt "#13136"
@@ -108,40 +108,40 @@ msgstr "自动选择字幕流"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control XBMC"
-msgstr "若继续，您将可能无法控制Plex/HT"
+msgstr "若继续，您将可能无法控制 XBMC"
 
 
 #empty string with id 13142
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr ""
+msgstr "搜索远程资料库"
 
 
 #empty strings from id 13144 to 13145
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
-msgstr "Plex/HT，改变这项设置可能会影响您"
+msgstr "XBMC，更改这项设置可能会影响您的功能"
 
 
 #empty string with id 13147
 
 msgctxt "#13148"
 msgid "Allow Picking Alternate Library Media"
-msgstr "允许选择备用媒体"
+msgstr "允许选择备用资料库媒体"
 
 
 msgctxt "#13149"
 msgid "Quality From Remote Media Servers"
-msgstr "远程媒体流质量"
+msgstr "远程媒体服务器质量"
 
 
 #empty strings from id 13150 to 13179
 
 msgctxt "#13180"
 msgid "Preferred Online Video Quality"
-msgstr "首选网络视频质量"
+msgstr "首选在线视频质量"
 
 
 msgctxt "#13181"
@@ -169,35 +169,40 @@ msgid "SD"
 msgstr "SD"
 
 
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
+
+
 #empty strings from id 13186 to 13308
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
-msgstr "而不是仅使用Plex/HT吗？"
+msgstr "而不是仅使用 XBMC 吗？"
 
 
 #empty strings from id 13310 to 13601
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr "允许通过遥控器启动Plex/HT"
+msgstr "允许通过遥控器启动 XBMC"
 
 
 #empty strings from id 13603 to 13621
 
 msgctxt "#13622"
 msgid "Please see Remote Buddy FAQ to uninstall."
-msgstr "请参阅Remote Buddy FAQ来卸载。"
+msgstr "请参阅 Remote Buddy FAQ 来卸载。"
 
 
 msgctxt "#13623"
 msgid "Sofa Control is running."
-msgstr "Sofa Control正在运行。"
+msgstr "Sofa Control 正在运行。"
 
 
 msgctxt "#13624"
 msgid "Please see Sofa Control documentation to uninstall."
-msgstr "请参阅Sofa Control文档来卸载。"
+msgstr "请参阅 Sofa Control 文档来卸载。"
 
 
 #empty strings from id 13625 to 13629
@@ -220,12 +225,12 @@ msgstr "- 总是运行"
 
 msgctxt "#13633"
 msgid "Disabled"
-msgstr "禁用"
+msgstr "已禁用"
 
 
 msgctxt "#13634"
 msgid "Enabled"
-msgstr "启用"
+msgstr "已启用"
 
 
 msgctxt "#13635"
@@ -249,54 +254,54 @@ msgstr "服务器"
 
 msgctxt "#14037"
 msgid "Look and Feel"
-msgstr "外观和体验"
+msgstr "外观和感受"
 
 
 #empty string with id 14038
 
 msgctxt "#14039"
 msgid "Plex/HT requires a restart to change your"
-msgstr "Plex/HT需要重新启动以更改您的"
+msgstr "Plex/HT 需要重新启动以更改您的"
 
 
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr ""
+msgstr "使用资料库中的艺术背景"
 
 
 #empty strings from id 15151 to 15204
 
 msgctxt "#15205"
 msgid "Please update Plex/HT"
-msgstr "请更新Plex/HT"
+msgstr "请更新 Plex/HT"
 
 
 #empty strings from id 15206 to 16000
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr "配置音频硬件..."
+msgstr "配置音频硬件......"
 
 
 #empty strings from id 16002 to 17500
 
 msgctxt "#17501"
 msgid "Display Brightness"
-msgstr "亮度"
+msgstr "显示亮度"
 
 
 #empty strings from id 17502 to 17700
 
 msgctxt "#17701"
 msgid "Low Battery"
-msgstr "低电池电量"
+msgstr "电池电量低"
 
 
 msgctxt "#17702"
 msgid "Connect to AC Power"
-msgstr "连接电源适配器"
+msgstr "连接至交流电源"
 
 
 #empty strings from id 17703 to 17999
@@ -323,17 +328,17 @@ msgstr "交流电源（正在充电）"
 
 msgctxt "#18004"
 msgid "Battery power"
-msgstr "电池"
+msgstr "电池电源"
 
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr "电量"
+msgstr "功率级别"
 
 
 msgctxt "#18006"
 msgid "until full"
-msgstr ""
+msgstr "满为止"
 
 
 msgctxt "#18007"
@@ -355,12 +360,12 @@ msgstr "启用低电量警报"
 
 msgctxt "#18101"
 msgid "Theme music volume"
-msgstr ""
+msgstr "主题音乐音量"
 
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr ""
+msgstr "启用电视剧主题音乐"
 
 
 msgctxt "#18103"
@@ -375,62 +380,62 @@ msgstr "启用背景音乐"
 
 msgctxt "#18105"
 msgid "Advanced"
-msgstr ""
+msgstr "高级"
 
 
 msgctxt "#18106"
 msgid "Video"
-msgstr ""
+msgstr "视频"
 
 
 msgctxt "#18107"
 msgid "Music"
-msgstr ""
+msgstr "音乐"
 
 
 msgctxt "#18108"
 msgid "Photos"
-msgstr ""
+msgstr "照片"
 
 
 msgctxt "#18109"
 msgid "Video render method"
-msgstr ""
+msgstr "视频呈现方法"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr ""
+msgid "Audio output channels"
+msgstr "音频输出频道"
 
 
 msgctxt "#18111"
 msgid "Advanced video"
-msgstr ""
+msgstr "高级视频"
 
 
 msgctxt "#18112"
 msgid "Logging"
-msgstr ""
+msgstr "记录"
 
 
 msgctxt "#18113"
 msgid "Theme music"
-msgstr ""
+msgstr "主题音乐"
 
 
 msgctxt "#18114"
 msgid "Visualize dirty regions"
-msgstr ""
+msgstr "脏区可视化"
 
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr ""
+msgstr "脏区算法"
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr ""
+msgstr "脏区不会切换超时 (ms)"
 
 
 #empty strings from id 18117 to 18999
@@ -440,124 +445,124 @@ msgstr ""
 
 msgctxt "#20009"
 msgid "Use Plex/HT"
-msgstr "使用Plex/HT"
+msgstr "使用 Plex/HT"
 
 
 #empty strings from id 20010 to 20249
 
 msgctxt "#20250"
 msgid "Recent Music Count"
-msgstr ""
+msgstr "最近音乐计数"
 
 
 #empty strings from id 20251 to 20340
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr ""
+msgstr "这个路径来自 Plex/HT 资料库？"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
-msgstr "允许通过UPnP控制Plex/HT"
+msgstr "允许通过 UPnP 控制 XBMC"
 
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr ""
+msgstr "推迟：%2.3fs"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr ""
+msgstr "提前： %2.3fs"
 
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr "Plex/HT %s 或以上才能运行。"
+msgstr "Plex/HT 修订版 %s 或以上才能运行。"
 
 
 msgctxt "#33076"
 msgid "Please update Plex/HT."
-msgstr "请更新Plex/HT。"
+msgstr "请更新 Plex/HT。"
 
 
 #empty strings from id 33077 to 36006
 
 msgctxt "#36007"
 msgid "Power on the TV when starting Plex/HT"
-msgstr "启动Plex/HT时同时打开电视"
+msgstr "启动 Plex/HT 时同时打开电视"
 
 
 msgctxt "#36008"
 msgid "Power off devices when stopping Plex/HT"
-msgstr "退出Plex/HT时关闭设备"
+msgstr "退出 Plex/HT 时关闭设备"
 
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
 msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
-msgstr ""
+msgstr "Libcec 界面版本不受支持。相比 Plex/HT 版本，%d 支持更多 (%d)"
 
 
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
 msgid "Software update"
-msgstr ""
+msgstr "软件更新"
 
 
 msgctxt "#40001"
 msgid "Checking for available updates..."
-msgstr ""
+msgstr "正在检查可用更新......"
 
 
 msgctxt "#40002"
 msgid "Update channel"
-msgstr ""
+msgstr "更新频道"
 
 
 msgctxt "#40003"
 msgid "Stable"
-msgstr ""
+msgstr "稳定"
 
 
 msgctxt "#40004"
 msgid "PlexPass"
-msgstr ""
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
 msgid "Ninja"
-msgstr ""
+msgstr "忍者 (Ninja)"
 
 
 msgctxt "#40006"
 msgid "I am Special!"
-msgstr ""
+msgstr "我很特别！"
 
 
 msgctxt "#40016"
 msgid "Check for update now..."
-msgstr ""
+msgstr "立即检查更新......"
 
 
 msgctxt "#40017"
 msgid "Automatically check for updates"
-msgstr ""
+msgstr "自动检查更新"
 
 
 msgctxt "#40018"
 msgid "Update and restart"
-msgstr ""
+msgstr "更新并重启"
 
 
 msgctxt "#40029"
@@ -567,7 +572,12 @@ msgstr "当前版本"
 
 msgctxt "#40028"
 msgid "Update Available!"
-msgstr ""
+msgstr "有更新啦！"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "正在下载更新 %d%%......"
 
 
 #empty strings from id 40029 to 40099
@@ -604,7 +614,7 @@ msgstr "节能器"
 
 msgctxt "#40106"
 msgid "Remove Workflow"
-msgstr ""
+msgstr "移除工作流"
 
 
 #empty strings from id 40107 to 40149
@@ -623,12 +633,12 @@ msgstr "不支持的路径"
 
 msgctxt "#40201"
 msgid "Plex Media Server paths can't be added to multipath"
-msgstr ""
+msgstr "Plex Media Sever 路径不能添加至多路径"
 
 
 msgctxt "#40202"
 msgid "sources."
-msgstr ""
+msgstr "源。"
 
 
 msgctxt "#40203"
@@ -643,17 +653,17 @@ msgstr "等待响应……"
 
 msgctxt "#40205"
 msgid "Rate..."
-msgstr "评分..."
+msgstr "评分......"
 
 
 msgctxt "#40206"
 msgid "Change Rating..."
-msgstr "更改评分..."
+msgstr "更改评分......"
 
 
 msgctxt "#40207"
 msgid "Set Rating"
-msgstr "评分"
+msgstr "设置评分"
 
 
 msgctxt "#40208"
@@ -697,346 +707,430 @@ msgstr "设置退出计时器"
 
 msgctxt "#40301"
 msgid "Set Sleep Timer"
-msgstr ""
+msgstr "设置睡眠计时器"
 
 
 msgctxt "#40302"
 msgid "Set Shut Down Timer"
-msgstr ""
+msgstr "设置关机计时器"
 
 
 #empty strings from id 40303 to 40304
 
 msgctxt "#40305"
 msgid "Change Quit Timer"
-msgstr ""
+msgstr "修改退出计时器"
 
 
 msgctxt "#40306"
 msgid "Change Sleep Timer"
-msgstr ""
+msgstr "修改睡眠计时器"
 
 
 msgctxt "#40307"
 msgid "Change Shut Down Timer"
-msgstr ""
+msgstr "修改关机计时器"
 
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr ""
+msgstr "设置睡眠显示计时器"
 
 
 #empty string with id 40309
 
 msgctxt "#40310"
 msgid "Plex/HT will quit at"
-msgstr ""
+msgstr "Plex/HT 将于...退出"
 
 
 msgctxt "#40311"
 msgid "The system will sleep at"
-msgstr ""
+msgstr "系统将于...睡眠"
 
 
 msgctxt "#40312"
 msgid "The system will shut down at"
-msgstr ""
+msgstr "系统将于...关机"
 
 
 msgctxt "#40313"
 msgid "The system will sleep the display at"
-msgstr ""
+msgstr "系统及显示器将于...睡眠"
 
 
 #empty string with id 40314
 
 msgctxt "#40315"
 msgid "You have already set a quit timer."
-msgstr ""
+msgstr "您已设置了退出计时器。"
 
 
 msgctxt "#40316"
 msgid "You have already set a sleep timer."
-msgstr ""
+msgstr "您已设置了睡眠计时器。"
 
 
 msgctxt "#40317"
 msgid "You have already set a shut down timer."
-msgstr ""
+msgstr "您已设置了关机计时器。"
 
 
 msgctxt "#40318"
 msgid "You have already set a sleep display timer."
-msgstr ""
+msgstr "您已设置了显示器睡眠计时器。"
 
 
 #empty string with id 40319
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr ""
+msgstr "您想改为设置退出计时器吗？"
 
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr ""
+msgstr "您想改为设置睡眠计时器吗？"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr ""
+msgstr "您想改为设置关机计时器吗？"
 
 
 msgctxt "#40323"
 msgid "Set Sleep Display Timer"
-msgstr ""
+msgstr "设置睡眠显示计时器"
 
 
 #empty string with id 40324
 
 msgctxt "#40325"
 msgid "Timer already set"
-msgstr ""
+msgstr "计时器已设置"
 
 
 #empty strings from id 40326 to 41999
 
 msgctxt "#42000"
 msgid "Could not read from input stream"
-msgstr ""
+msgstr "无法从输入流中读取"
 
 
 msgctxt "#42001"
 msgid "Could not determine input format"
-msgstr ""
+msgstr "无法确定输入格式"
 
 
 msgctxt "#42002"
 msgid "Could not read file header"
-msgstr ""
+msgstr "无法读取文件标题"
 
 
 msgctxt "#42003"
 msgid "Unknown format"
-msgstr ""
+msgstr "未知格式"
 
 
 msgctxt "#42004"
 msgid "Could not read data from file"
-msgstr ""
+msgstr "无法从文件中读取数据"
 
 
 msgctxt "#42005"
 msgid "Not enough memory to open file"
-msgstr ""
+msgstr "内存不足，无法打开文件"
 
 
 msgctxt "#42006"
 msgid "File was not found"
-msgstr ""
+msgstr "文件未找到"
 
 
 msgctxt "#42007"
 msgid "Unsupported network protocol"
-msgstr ""
+msgstr "不支持该网络协议"
 
 
 msgctxt "#42008"
 msgid "Error while opening file"
-msgstr ""
+msgstr "打开文件时出错"
 
 
 #empty strings from id 42009 to 42998
 
 msgctxt "#42999"
 msgid "Direct Play"
-msgstr ""
+msgstr "直接播放"
 
 
 #. 3
 msgctxt "#43000"
 msgid "320 kbps"
-msgstr ""
+msgstr "320 千位节/秒"
 
 
 msgctxt "#43001"
 msgid "720 kbps"
-msgstr ""
+msgstr "720 千位节/秒"
 
 
 msgctxt "#43002"
 msgid "1.5 Mbps"
-msgstr ""
+msgstr "1.5 兆比特每秒"
 
 
 msgctxt "#43003"
 msgid "2 Mbps"
-msgstr ""
+msgstr "2 兆比特每秒"
 
 
 msgctxt "#43004"
 msgid "3 Mbps"
-msgstr ""
+msgstr "3 兆比特每秒"
 
 
 msgctxt "#43005"
 msgid "4 Mbps"
-msgstr ""
+msgstr "4 兆比特每秒"
 
 
 msgctxt "#43006"
 msgid "8 Mbps"
-msgstr ""
+msgstr "8 兆比特每秒"
 
 
 msgctxt "#43007"
 msgid "10 Mbps"
-msgstr ""
+msgstr "10 兆比特每秒"
 
 
 msgctxt "#43008"
 msgid "12 Mbps"
-msgstr ""
+msgstr "12 兆比特每秒"
 
 
 msgctxt "#43009"
 msgid "20 Mbps"
-msgstr ""
+msgstr "20 兆比特每秒"
 
 
 msgctxt "#44000"
 msgid "Email"
-msgstr ""
+msgstr "电子邮件"
 
 
 msgctxt "#44001"
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr ""
+msgstr "使用 PIN"
 
 
 msgctxt "#44003"
 msgid "Sign out"
-msgstr ""
+msgstr "注销"
 
 
 msgctxt "#44004"
 msgid "Sign in"
-msgstr ""
+msgstr "登录"
 
 
 msgctxt "#44010"
 msgid "Not signed in"
-msgstr ""
+msgstr "未登录"
 
 
 msgctxt "#44011"
 msgid "Signed in"
-msgstr ""
+msgstr "已登录"
 
 
 msgctxt "#44012"
 msgid "Error signing in"
-msgstr ""
+msgstr "登录出错"
 
 
 msgctxt "#44013"
 msgid "Manually enter username and password to sign in"
-msgstr ""
+msgstr "手动输入用户名和密码以登录"
 
 
 msgctxt "#44020"
 msgid "Shared Content"
-msgstr ""
+msgstr "共享的内容"
 
 
 msgctxt "#44021"
-msgid "Queue"
+msgid "Watch Later"
 msgstr ""
 
 
 msgctxt "#44022"
 msgid "Recommended"
-msgstr ""
+msgstr "推荐的"
 
 
 msgctxt "#44030"
 msgid "FILTERS"
-msgstr ""
+msgstr "过滤器"
 
 
 msgctxt "#44031"
 msgid "SORTING"
-msgstr ""
+msgstr "正在排序"
 
 
 msgctxt "#44032"
 msgid "Clear Filters"
-msgstr ""
+msgstr "清空过滤器"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr ""
+msgid "Sign in to Plex"
+msgstr "登录 Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr ""
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "通过电脑访问 http://plex.tv/pin"
 
 
 msgctxt "#44102"
 msgid "retrieving code..."
-msgstr ""
+msgstr "正在检索编码......"
 
 
 msgctxt "#44103"
 msgid "and enter this code:"
-msgstr ""
+msgstr "并输入这个编码："
 
 
 msgctxt "#44104"
 msgid "Hooray we are signed in!"
-msgstr ""
+msgstr "好耶~~我们已经登录了！"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr ""
+msgid "Signed in to Plex"
+msgstr "已登录 Plex"
 
 
 msgctxt "#44200"
 msgid "PlexPass Required"
-msgstr ""
+msgstr "需要 PlexPass"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr ""
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "要使用此预览版本，您必须拥有 PlexPass 并登录 Plex"
 
 
 msgctxt "#44202"
 msgid "Press OK to be taken to the Settings screen"
-msgstr ""
+msgstr "按 OK 转到设置界面"
 
 
 msgctxt "#44203"
 msgid "PlexPass Required"
-msgstr ""
+msgstr "需要 PlexPass"
 
 
 msgctxt "#44204"
 msgid "Press OK Quit"
-msgstr ""
+msgstr "按 OK 退出"
 
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "允许从其他 Plex 客户端控制 Plex/HT"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "使用 FFMPEG AVIO 进行网络传输"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
 msgstr ""
 
 
@@ -1044,116 +1138,242 @@ msgstr ""
 #### errorcode + 50000
 msgctxt "#52000"
 msgid "Unable to play media"
-msgstr ""
+msgstr "无法播放媒体文件"
 
 
 msgctxt "#52001"
 msgid "This media is not currently available"
-msgstr ""
+msgstr "该媒体文件当前不可用"
 
 
 msgctxt "#52002"
 msgid "This media has expired"
-msgstr ""
+msgstr "该媒体文件已过期"
 
 
 msgctxt "#52003"
 msgid "This live media has not yet started"
-msgstr ""
+msgstr "这个在线媒体还没有启用"
 
 
 msgctxt "#52004"
 msgid "You are not authorized to access this media"
-msgstr ""
+msgstr "您没有访问该媒体文件的权限"
 
 
 msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
-msgstr ""
+msgstr "这个媒体文件有地理上的限制，您不能在当前的位置访问。"
 
 #### end error strings
 
 msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
-msgstr ""
+msgstr "请确认文件存在且必要的驱动器已正确装载"
 
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater 无法播放该该频道的内容"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater 无法播放该该频道的内容"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr ""
+msgstr "选择音轨"
 
 
 msgctxt "#52101"
 msgid "Select Subtitle"
-msgstr ""
+msgstr "选择字幕"
 
 
 msgctxt "#52102"
 msgid "Channels"
-msgstr ""
+msgstr "频道"
 
 
 msgctxt "#52201"
 msgid "Local video quality"
-msgstr ""
+msgstr "本地视频质量"
 
 
 msgctxt "#52202"
 msgid "Remote video quality"
-msgstr ""
+msgstr "远程视频质量"
 
 
 msgctxt "#52203"
 msgid "Online video quality"
-msgstr ""
+msgstr "在线视频质量"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr ""
+msgid "Show queue and recommendations"
+msgstr "显示队列和推荐"
 
 
 msgctxt "#52300"
 msgid "Media Server went away"
-msgstr ""
+msgstr "媒体服务器已停止运行"
 
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr ""
+msgstr "您正在浏览的服务器已停止运行......"
 
 
 msgctxt "#52400"
 msgid "No linked social accounts"
-msgstr ""
+msgstr "没有已链接的社交账户"
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr ""
+msgid "Go to http://plex.tv to link your account"
+msgstr "访问 http://plex.tv 以链接您的账户"
 
 
 msgctxt "#52402"
 msgid "Enter message"
-msgstr ""
+msgstr "输入信息："
 
 
 msgctxt "#52403"
 msgid "Share %s on %s with message:"
-msgstr ""
+msgstr "在 %s 共享 %s 消息："
 
 
 msgctxt "#52404"
 msgid "Enable network logging"
+msgstr "启用网络日志"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "已远程连接"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "已断开远程连接"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "总是转码字幕"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "强制的"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "允许 Plex 搜集不记名的数据以改善用户体验"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "隐藏 CloudSync 部分"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "随机播放所有内容"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "播放全部"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "播放下一个"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "添加至下一个"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "现在播放？"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "这个操作将会清空即将播放的内容。"
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "且改为播放选中的内容。"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "队列"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
 msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

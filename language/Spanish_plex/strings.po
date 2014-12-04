@@ -30,8 +30,8 @@ msgstr "Plex Home Theater"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -399,8 +404,8 @@ msgstr "Método de renderizado de video"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "canales de salida HDMI"
+msgid "Audio output channels"
+msgstr "Canales de salida de audio"
 
 
 msgctxt "#18111"
@@ -568,6 +573,11 @@ msgstr "Versión actual"
 msgctxt "#40028"
 msgid "Update Available!"
 msgstr "¡Actualización disponible!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Descargando actualización %d%%..."
 
 
 #empty strings from id 40029 to 40099
@@ -956,8 +966,8 @@ msgstr "Contenido compartido"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Lista Online"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Limpiar filtros"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Iniciar sesión en myPlex"
+msgid "Sign in to Plex"
+msgstr "Iniciar sesión en Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Desde su ordenador navegue a http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "Desde tu ordenador, accede a http://plex.tv/pin"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "¡Hurra, ha iniciado sesión!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Sesión iniciada en myPlex"
+msgid "Signed in to Plex"
+msgstr "Sesión iniciada en Plex"
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "Requiere PlexPass"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "Para esta versión de prueba, debe de tener sesión iniciada en myPlex y tener PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "Para esta versión preliminar, debes iniciar sesión en Plex y tener una cuenta PlexPass"
 
 
 msgctxt "#44202"
@@ -1038,6 +1048,90 @@ msgstr "Presiona OK para salir"
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "Permitir el control de Plex/HT desde clientes Plex"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Utilizar FFMPEG AVIO para transferencias por red"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr ""
 
 
 #### These are error strings shown from channels
@@ -1119,8 +1213,8 @@ msgstr "Calidad de video online"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Mostrar cola myPlex y recomendaciones"
+msgid "Show queue and recommendations"
+msgstr "Mostrar la cola y recomendaciones"
 
 
 msgctxt "#52300"
@@ -1139,8 +1233,8 @@ msgstr "No se han asociado cuentas sociales."
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "Vaya a http://my.plexapp.com para asociar su cuenta"
+msgid "Go to http://plex.tv to link your account"
+msgstr "Accede a http://plex.tv para enlazar tu cuenta"
 
 
 msgctxt "#52402"
@@ -1156,4 +1250,130 @@ msgstr "Compartir %s con %s con el mensaje:"
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "Activar registro de red"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Control remoto conectado"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Control remoto desconectado"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Siempre transcodificar subtitulos"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Forzados"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Permitir a Plex recolectar datos anónimos para mejorar la experiencia"
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Ocultar secciones CloudSync"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Mezclar todo"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Reproducir todo"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "Reproducir Siguiente"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Agregar a A Continuación"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Reproducir ahora ?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "Esto limpiará el contenido de A Continuación"
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "y reproducirá en su lugar  la selección"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Lista Online"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 

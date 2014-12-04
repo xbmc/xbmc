@@ -30,8 +30,8 @@ msgstr "Plex for Home Theater"
 
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 
 #empty strings from id 11 to 262
@@ -86,7 +86,7 @@ msgstr "Deaktiveret"
 
 msgctxt "#13136"
 msgid "Medium"
-msgstr "Medie"
+msgstr "Medium"
 
 
 msgctxt "#13137"
@@ -115,7 +115,7 @@ msgstr "Hvis du fortsætter, kan du muligvis ikke kontrollere Plex/HT"
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr "Søg i fjern biblioteker"
+msgstr "Søg i fjernbiblioteker"
 
 
 #empty strings from id 13144 to 13145
@@ -167,6 +167,11 @@ msgstr "480p"
 msgctxt "#13185"
 msgid "SD"
 msgstr "SD"
+
+
+msgctxt "#13190"
+msgid "Auto"
+msgstr ""
 
 
 #empty strings from id 13186 to 13308
@@ -263,7 +268,7 @@ msgstr "En genstart af Plex/HT kræves for at ændre dine"
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr "Brug biblioteks billeder som baggrund"
+msgstr "Brug biblioteksbilleder som baggrund"
 
 
 #empty strings from id 15151 to 15204
@@ -360,7 +365,7 @@ msgstr "Lydstyrke på tema musik"
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr "Slå tema musik til"
+msgstr "Slå temamusik til"
 
 
 msgctxt "#18103"
@@ -395,12 +400,12 @@ msgstr "Billeder"
 
 msgctxt "#18109"
 msgid "Video render method"
-msgstr "Billed gengivelses metode"
+msgstr "Billedgengivelsesmetode"
 
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "HDMI udgangs kanaler"
+msgid "Audio output channels"
+msgstr "Audio udgangs kanaler"
 
 
 msgctxt "#18111"
@@ -415,7 +420,7 @@ msgstr "Logning"
 
 msgctxt "#18113"
 msgid "Theme music"
-msgstr "Tema musik"
+msgstr "Temamusik"
 
 
 msgctxt "#18114"
@@ -466,17 +471,17 @@ msgstr "Tillad kontrol af Plex/HT via UPnP"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr "%d"
+msgstr "%2.3fs"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Forsinket med: %d"
+msgstr "Forsinket med: %2.3fs"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Foran med: %d"
+msgstr "Foran med: %2.3fs"
 
 
 msgctxt "#33075"
@@ -527,7 +532,7 @@ msgstr "Opdater kanal"
 
 msgctxt "#40003"
 msgid "Stable"
-msgstr "Stabile"
+msgstr "Stabil"
 
 
 msgctxt "#40004"
@@ -568,6 +573,11 @@ msgstr "Nuværende version"
 msgctxt "#40028"
 msgid "Update Available!"
 msgstr "Opdatering tilgængelig!"
+
+
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Henter opdatering %d%%..."
 
 
 #empty strings from id 40029 to 40099
@@ -917,7 +927,7 @@ msgstr "Adgangskode"
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr "Brug PIN kode"
+msgstr "Brug PIN-kode"
 
 
 msgctxt "#44003"
@@ -956,8 +966,8 @@ msgstr "Delt indhold"
 
 
 msgctxt "#44021"
-msgid "Queue"
-msgstr "Kø"
+msgid "Watch Later"
+msgstr ""
 
 
 msgctxt "#44022"
@@ -981,13 +991,13 @@ msgstr "Nulstil filtre"
 
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Log ind på myPlex"
+msgid "Sign in to Plex"
+msgstr "Log ind til Plex"
 
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Gå til http://my.plexapp.com/pin på din computer"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "Fra din arbejdsplads, browse til http://plex.tv/pin"
 
 
 msgctxt "#44102"
@@ -1006,8 +1016,8 @@ msgstr "Hurra. Vi er logget ind!"
 
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Logget ind til myPlex"
+msgid "Signed in to Plex"
+msgstr "Logget ind til Plex"
 
 
 msgctxt "#44200"
@@ -1016,8 +1026,8 @@ msgstr "PlexPass påkrævet"
 
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "For at bruge denne preview-udgivelse skal du være logget på myPlex og have PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "For denne beta udgave, skal du være logget på Plex, samt have et PlexPass"
 
 
 msgctxt "#44202"
@@ -1038,6 +1048,90 @@ msgstr "Tryk OK for at afslutte"
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
 msgstr "Tillad styring af Plex/HT fra Plex klienter"
+
+
+msgctxt "#44400"
+msgid "Pre-Caching - Select Servers"
+msgstr ""
+
+
+msgctxt "#44401"
+msgid "Processing"
+msgstr ""
+
+
+msgctxt "#44402"
+msgid "Retrieving Section"
+msgstr ""
+
+
+msgctxt "#44403"
+msgid "Precaching Section"
+msgstr ""
+
+
+msgctxt "#44404"
+msgid "Precaching item"
+msgstr ""
+
+
+msgctxt "#44405"
+msgid "Progress"
+msgstr ""
+
+
+msgctxt "#44406"
+msgid "Use FFMPEG AVIO for Network transport"
+msgstr "Brug FFMPEG AVIO som netværkstransport"
+
+
+msgctxt "#44407"
+msgid "Number of cinema trailers before movies"
+msgstr ""
+
+
+msgctxt "#44408"
+msgid "Extras"
+msgstr ""
+
+
+#### Extra / trailers related strings
+
+### Extra Types
+msgctxt "#44501"
+msgid "Trailer"
+msgstr ""
+
+
+msgctxt "#44502"
+msgid "Deleted Scene"
+msgstr ""
+
+
+msgctxt "#44503"
+msgid "Interview"
+msgstr ""
+
+
+msgctxt "#44504"
+msgid "Music Video"
+msgstr ""
+
+
+msgctxt "#44505"
+msgid "Behind the Scenes"
+msgstr ""
+
+
+msgctxt "#44506"
+msgid "Scene"
+msgstr ""
+
+
+### other Extras related strings
+msgctxt "#44550"
+msgid "Play Trailer"
+msgstr ""
 
 
 #### These are error strings shown from channels
@@ -1105,12 +1199,12 @@ msgstr "Kanaler"
 
 msgctxt "#52201"
 msgid "Local video quality"
-msgstr "Lokal billede kvalitet"
+msgstr "Lokal billedkvalitet"
 
 
 msgctxt "#52202"
 msgid "Remote video quality"
-msgstr "Fjern billede kvalitet"
+msgstr "Fjern billedkvalitet"
 
 
 msgctxt "#52203"
@@ -1119,8 +1213,8 @@ msgstr "Online billede kvalitet"
 
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Vis myPlex kø og anbefalinger"
+msgid "Show queue and recommendations"
+msgstr "Vis kø og anbefalet"
 
 
 msgctxt "#52300"
@@ -1139,8 +1233,8 @@ msgstr "Ingen tilknyttede sociale konti "
 
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "Gå til http://my.plexapp.com for at forbinde din konto"
+msgid "Go to http://plex.tv to link your account"
+msgstr "Gå til http://plex.tv for at forbinde din konto"
 
 
 msgctxt "#52402"
@@ -1155,5 +1249,131 @@ msgstr "Del %s på %s med denne besked:"
 
 msgctxt "#52404"
 msgid "Enable network logging"
-msgstr "Slå netværks logning til"
+msgstr "Slå netværkslogning til"
+
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Fjernbetjening tilkoblet"
+
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Fjernbetjening frakoblet"
+
+
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Altid transcode undertekster"
+
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Tvunget"
+
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Tillad at Plex indhenter anonyme data for at forbedre din oplevelse "
+
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Skjul CloudSync sektioner"
+
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Bland alle"
+
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Afspil alle"
+
+
+msgctxt "#52602"
+msgid "Play Next"
+msgstr "Afspil næste"
+
+
+msgctxt "#52603"
+msgid "Add to Up Next"
+msgstr "Tilføj, afspil som næste"
+
+
+msgctxt "#52604"
+msgid "Play Now?"
+msgstr "Afspil nu?"
+
+
+msgctxt "#52605"
+msgid "This will clear the contents of Up Next"
+msgstr "Dette vil nulstille \"afspil næste\""
+
+
+msgctxt "#52606"
+msgid "and play the selection instead"
+msgstr "og afspille det valgte i stedet"
+
+
+msgctxt "#52607"
+msgid "Queue"
+msgstr "Kø"
+
+
+msgctxt "#52608"
+msgid "Toggle Edit Mode"
+msgstr ""
+
+
+msgctxt "#52609"
+msgid "Force Transcode"
+msgstr ""
+
+
+msgctxt "#52610"
+msgid "Cannot open Playlist"
+msgstr ""
+
+
+msgctxt "#52611"
+msgid "Playlist is empty"
+msgstr ""
+
+
+msgctxt "#52612"
+msgid "Add to Playlist"
+msgstr ""
+
+
+msgctxt "#52613"
+msgid "Create Playlist"
+msgstr ""
+
+
+msgctxt "#52614"
+msgid "Enter playlist name"
+msgstr ""
+
+
+msgctxt "#52615"
+msgid "Playlist could not be created."
+msgstr ""
+
+
+msgctxt "#52620"
+msgid "MyPlex provides a number of features which requires a login"
+msgstr ""
+
+
+msgctxt "#52621"
+msgid "Improved server discovery, config-free remote access,"
+msgstr ""
+
+
+msgctxt "#52622"
+msgid "Queueing and recommending video, Sharing your media"
+msgstr ""
+
 
