@@ -97,7 +97,7 @@ bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
   else if (!m_token.empty() && other->m_token.empty())
     tokenMatches = true;
   else
-    tokenMatches = (m_token == other->m_token);
+    tokenMatches = m_token.Equals(other->m_token);
 
   return (uriMatches && tokenMatches);
 }
