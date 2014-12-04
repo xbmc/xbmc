@@ -284,6 +284,7 @@
 		<control type="group">
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<animation effect="fade" start="100" end="0" time="200" condition="Control.IsVisible(999) + Window.IsActive(home)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="0" condition="Skin.String(SectionType,playqueue) + [Player.HasAudio | Player.HasVideo]">Conditional</animation>
 			<!-- music -->
 			<control type="group">
 				<posy>528</posy>

@@ -57,9 +57,10 @@
 						<posx>791</posx>
 						<posy>55</posy>
 						<width>542</width>
-						<height>650</height>
+						<height>638</height>
 						<scrolltime>200</scrolltime>
-						<onleft>300</onleft>
+						<onleft condition="!Player.HasAudio">998</onleft>
+						<onleft condition="Player.HasAudio">300</onleft>
 						<onright>Container.NextViewMode</onright>
 						<onup>54</onup>
 						<ondown>54</ondown>
@@ -746,6 +747,7 @@
 					</control>
 					<!-- current art & osd & progress -->
 					<control type="group">
+						<animation effect="slide" start="0" end="74" time="400" condition="Skin.String(SectionType,playqueue) + ![Player.HasAudio | Player.HasVideo]">Conditional</animation>
 						<!-- cover -->
 						<control type="group">
 							<posx>80</posx>
@@ -766,88 +768,14 @@
 								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover0]</texture>
 								<include>PlayQueueCoverFormat</include>
 							</control>
-						</control>
-						<!-- progress bar & osd -->
-						<control type="group" id="300">
-							<posx>0</posx>
-							<posy>0</posy>
-							<defaultcontrol always="true">711</defaultcontrol>
-							<!-- same artist and/or album -->
-							<animation effect="slide" start="0,0" end="0,294" time="0" condition="[Container.UniformProperty(Artist) | Container.UniformProperty(Album)] | [!MusicPlayer.Offset(1).Exists] | [MusicPlayer.Offset(1).Exists + !MusicPlayer.Offset(2).Exists]">Conditional</animation>
-							<!-- 3 or 6 or 9 covers -->
-							<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
-							<!-- 5 or 8 covers -->
-							<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
-							<!-- progress bar -->
-							<control type="group">
-								<visible>Player.HasAudio</visible>
-								<include>PlayQueueOSDProgress</include>
-							</control>
-							<!-- osd -->
-							<control type="group">
-								<visible>Player.HasAudio</visible>
-								<posy>400</posy>
-								<posx>200</posx>
-								<control type="group">
-									<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
-									<control type="image">
-										<posy>-15</posy>
-										<posx>-146</posx>
-										<width>735</width>
-										<height>75</height>
-										<include>Black</include>
-									</control>
-								</control>
-								<control type="group" id="300">
-									<posy>0</posy>
-									<posx>-50</posx>
-									<!-- repeat -->
-									<control type="group">
-										<posy>11</posy>
-										<posx>45</posx>
-										<include>OSDRepeatButton</include>
-									</control>
-									<!-- previous -->
-									<control type="group">
-										<posy>13</posy>
-										<posx>220</posx>
-										<include>OSDPreviousButton</include>
-									</control>
-									<!-- play/pause -->
-									<control type="group">
-										<posy>13</posy>
-										<posx>262</posx>
-										<include>OSDPlayButton</include>
-									</control>
-									<!-- next -->
-									<control type="group">
-										<posy>13</posy>
-										<posx>302</posx>
-										<include>OSDNextButton</include>
-									</control>
-									<!-- stop -->
-									<control type="group">
-										<posy>13</posy>
-										<posx>421</posx>
-										<include>OSDStopButton</include>
-									</control>
-									<!-- fullscreen player -->
-									<control type="group">
-										<posy>13</posy>
-										<posx>461</posx>
-										<include>OSDPlayerButton</include>
-										<onright>54</onright>
-									</control>
-								</control>
-							</control>
-						</control>
+						</control>						
 						<!-- infos Left -->
 						<control type="group">
 							<posy>70</posy>
 							<posx>360</posx>
 							<!-- Titles -->
 							<control type="label">
-								<width>400</width>
+								<width>326</width>
 								<height>40</height>
 								<label>$VAR[PlayQueueArtist]</label>
 								<font>Bold-30</font>
@@ -855,7 +783,7 @@
 							</control>
 							<control type="label">
 								<posy>40</posy>
-								<width>400</width>
+								<width>326</width>
 								<height>40</height>
 								<label>$VAR[PlayQueueSong]</label>
 								<font>Bold-30</font>
@@ -863,7 +791,7 @@
 							</control>
 							<control type="label">
 								<posy>80</posy>
-								<width>400</width>
+								<width>326</width>
 								<height>40</height>
 								<label>$VAR[PlayQueueAlbum]</label>
 								<font>Regular-30</font>
@@ -881,6 +809,80 @@
 									<font>Regular-18</font>
 									<include>WhiteShadow</include>
 									<visible>true</visible>
+								</control>
+							</control>
+						</control>
+					</control>
+					<!-- progress bar & osd -->
+					<control type="group" id="300">
+						<posx>0</posx>
+						<posy>0</posy>
+						<defaultcontrol always="true">711</defaultcontrol>
+						<!-- same artist and/or album -->
+						<animation effect="slide" start="0,0" end="0,294" time="0" condition="[Container.UniformProperty(Artist) | Container.UniformProperty(Album)] | [!MusicPlayer.Offset(1).Exists] | [MusicPlayer.Offset(1).Exists + !MusicPlayer.Offset(2).Exists]">Conditional</animation>
+						<!-- 3 or 6 or 9 covers -->
+						<animation effect="slide" start="0,0" end="0,49" time="0" condition="[[MusicPlayer.Offset(3).Exists + !MusicPlayer.Offset(4).Exists] | [MusicPlayer.Offset(6).Exists + !MusicPlayer.Offset(7).Exists] | [MusicPlayer.Offset(9).Exists + !MusicPlayer.Offset(10).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
+						<!-- 5 or 8 covers -->
+						<animation effect="slide" start="0,0" end="0,84" time="0" condition="[[MusicPlayer.Offset(5).Exists + !MusicPlayer.Offset(6).Exists] | [MusicPlayer.Offset(8).Exists + !MusicPlayer.Offset(9).Exists]] + !Container.UniformProperty(Album) + !Container.UniformProperty(Artist)">Conditional</animation>
+						<!-- progress bar -->
+						<control type="group">
+							<visible>Player.HasAudio</visible>
+							<include>PlayQueueOSDProgress</include>
+						</control>
+						<!-- osd -->
+						<control type="group">
+							<visible>Player.HasAudio</visible>
+							<posy>400</posy>
+							<posx>200</posx>
+							<control type="group">
+								<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+								<control type="image">
+									<posy>-15</posy>
+									<posx>-146</posx>
+									<width>735</width>
+									<height>75</height>
+									<include>Black</include>
+								</control>
+							</control>
+							<control type="group" id="300">
+								<posy>0</posy>
+								<posx>-50</posx>
+								<!-- repeat -->
+								<control type="group">
+									<posy>11</posy>
+									<posx>45</posx>
+									<include>OSDRepeatButton</include>
+								</control>
+								<!-- previous -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>220</posx>
+									<include>OSDPreviousButton</include>
+								</control>
+								<!-- play/pause -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>262</posx>
+									<include>OSDPlayButton</include>
+								</control>
+								<!-- next -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>302</posx>
+									<include>OSDNextButton</include>
+								</control>
+								<!-- stop -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>421</posx>
+									<include>OSDStopButton</include>
+								</control>
+								<!-- fullscreen player -->
+								<control type="group">
+									<posy>13</posy>
+									<posx>461</posx>
+									<include>OSDPlayerButton</include>
+									<onright>54</onright>
 								</control>
 							</control>
 						</control>
@@ -903,7 +905,9 @@
 					<texture>orange.png</texture>
 				</control>-->
 				</control>
-			</control>
+			</control>		
+			<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+			<include>LeftSideMenu</include>
 		</control>
 		<!-- video play queue -->
 		<control type="group">
@@ -1532,6 +1536,7 @@
 				</control>
 			</control>
 		</control>
+		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>
