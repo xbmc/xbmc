@@ -712,6 +712,12 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
       else
         osNameVer.append("Server 2012 R2");
       break;
+    case WindowsVersionWin10:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("10");
+      else
+        osNameVer.append("Server vNext"); /* FIXME: Correct name if required */
+      break;
     case WindowsVersionFuture:
       osNameVer.append("Unknown Future Version");
       break;
@@ -899,8 +905,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin8;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
         m_WinVer = WindowsVersionWin8_1;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 4)
+        m_WinVer = WindowsVersionWin10;
       /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
+      else if (osvi.dwMajorVersion >= 6)
         m_WinVer = WindowsVersionFuture;
     }
   }
