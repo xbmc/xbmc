@@ -450,6 +450,9 @@ static vformat_t codecid_to_vformat(enum AVCodecID id)
     case AV_CODEC_ID_H264:
       format = VFORMAT_H264;
       break;
+    case AV_CODEC_ID_HEVC:
+      format = VFORMAT_HEVC;
+      break;
     /*
     case AV_CODEC_ID_H264MVC:
       // H264 Multiview Video Coding (3d blurays)
@@ -540,6 +543,10 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case AV_CODEC_ID_H264:
       // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
+      break;
+    case AV_CODEC_ID_HEVC:
+      // h265
+      dec_type = VIDEO_DEC_FORMAT_HEVC;
       break;
     /*
     case AV_CODEC_ID_H264MVC:
@@ -950,6 +957,80 @@ static int h264_write_header(am_private_t *para, am_packet_t *pkt)
     return ret;
 }
 
+static int hevc_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
+{
+    char nal_start_code[] = {0x0, 0x0, 0x0, 0x1};
+    int nalsize;
+    int header_len = 0;
+
+    if ((buf[0] == 0 && buf[1] == 0 && buf[2] == 0 && buf[3] == 1)||(buf[0] == 0 && buf[1] == 0 && buf[2] == 1 ) && size < HDR_BUF_SIZE) {
+        //log_print("add hevc header in stream before header len=%d", size);
+        memcpy(pkt->hdr->data, buf, size);
+        pkt->hdr->size = size;
+        //pkt->type = CODEC_VIDEO;
+        return PLAYER_SUCCESS;
+    }
+
+    if (size < 4) {
+        return PLAYER_FAILED;
+    }
+
+    // TODO: maybe need to modify here.
+    if (buf[0] || buf[1] || buf[2] > 1) {
+        /* It seems the extradata is encoded as hvcC format.
+         * Temporarily, we support configurationVersion==0 until 14496-15 3rd
+         * is finalized. When finalized, configurationVersion will be 1 and we
+         * can recognize hvcC by checking if extradata[0]==1 or not. */
+        int i, j, num_arrays;
+        buf += 21;  // skip 21 bytes
+        num_arrays   = *(buf++);
+        for (i = 0; i < num_arrays; i++) {
+            int cnt  = (*buf << 8) | (*(buf + 1));
+            buf += 2;
+            //log_print("hvcC, nal type=%d, count=%d \n", type, cnt);
+
+            for (j = 0; j < cnt; j++) {
+                /** nal units in the hvcC always have length coded with 2 bytes */
+                nalsize = (*buf << 8) | (*(buf + 1));
+                memcpy(&(pkt->hdr->data[header_len]), nal_start_code, 4);
+                header_len += 4;
+                memcpy(&(pkt->hdr->data[header_len]), buf + 2, nalsize);
+                header_len += nalsize;
+                buf += (nalsize + 2);
+            }
+        }
+        if (header_len >= HDR_BUF_SIZE) {
+            //log_print("hvcC header_len %d is larger than max length\n", header_len);
+            return PLAYER_FAILED;
+        }
+        pkt->hdr->size = header_len;
+        //pkt->type = CODEC_VIDEO;
+        //log_print("hvcC, nal header_len=%d \n", header_len);
+        return PLAYER_SUCCESS;
+    }
+    return PLAYER_FAILED;
+}
+
+static int hevc_write_header(am_private_t *para, am_packet_t *pkt)
+{
+    int ret = -1;
+
+    ret = hevc_add_header(para->extradata, para->extrasize, pkt);
+    if (ret == PLAYER_SUCCESS) {
+        //if (ctx->vcodec) {
+        if (1) {
+            pkt->codec = &para->vcodec;
+        } else {
+            //CLog::Log(LOGDEBUG, "[pre_header_feeding]invalid video codec!");
+            return PLAYER_EMPTY_P;
+        }
+
+        pkt->newflag = 1;
+        ret = write_av_packet(para, pkt);
+    }
+    return ret;
+}
+
 static int wmv3_write_header(am_private_t *para, am_packet_t *pkt)
 {
     CLog::Log(LOGDEBUG, "wmv3_write_header");
@@ -1071,6 +1152,11 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
 
         if (VFORMAT_H264 == para->video_format || VFORMAT_H264_4K2K == para->video_format) {
             ret = h264_write_header(para, pkt);
+            if (ret != PLAYER_SUCCESS) {
+                return ret;
+            }
+        } else if (VFORMAT_HEVC == para->video_format) {
+            ret = hevc_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
@@ -1517,6 +1603,12 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
         am_private->video_format = VFORMAT_H264_4K2K;
       }
   }
+  if (am_private->video_format == VFORMAT_HEVC) {
+      /* Meson8Baby supports only x265 up to 1080p */
+      if ((hints.width > 1920 || hints.height > 1088) && (aml_get_device_type() == AML_DEVICE_TYPE_M8B)) {
+        am_private->video_format = VFORMAT_UNKNOWN;
+      }
+  }
   switch (am_private->video_format)
   {
     default:
@@ -1591,6 +1683,18 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
         return false;
       }
       break; 
+    case VFORMAT_HEVC:
+      if (aml_get_device_type() == AML_DEVICE_TYPE_M8B) {
+        am_private->gcodec.format = VIDEO_DEC_FORMAT_HEVC;
+        am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+        // h265 in an avi file
+        if (m_hints.ptsinvalid)
+          am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      } else {
+        CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, HEVC supported only on Meson8Baby.");
+        return false;
+      }
+      break; 
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
       am_private->vcodec.noblock = 1;
@@ -1653,7 +1757,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
   m_display_rect = g_graphicsContext.GetViewWindow();
-  if (aml_get_device_type() == AML_DEVICE_TYPE_M8)
+  if ((aml_get_device_type() == AML_DEVICE_TYPE_M8) || (aml_get_device_type() == AML_DEVICE_TYPE_M8B))
   {
     char mode[256] = {0};
     aml_get_sysfs_str("/sys/class/display/mode", mode, 255);

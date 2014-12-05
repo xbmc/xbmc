@@ -99,6 +99,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       //m_bitparser = new CBitstreamParser();
       //m_bitparser->Open();
       break;
+    case AV_CODEC_ID_HEVC:
+      m_pFormatName = "am-h265";
+      break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
