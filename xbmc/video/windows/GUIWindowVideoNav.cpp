@@ -336,7 +336,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         map<string, string> art;
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
-          items.AppendArt(art, MediaTypeTvShow);
+          items.AppendArt(art, details.m_type);
           items.SetArtFallback("fanart", "tvshow.fanart");
           if (node == NODE_TYPE_SEASONS)
           { // set an art fallback for "thumb"
@@ -364,7 +364,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           CGUIListItem::ArtMap seasonArt;
           if (m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
           {
-            items.AppendArt(art, MediaTypeSeason);
+            items.AppendArt(seasonArt, MediaTypeSeason);
             // set an art fallback for "thumb"
             if (items.HasArt("season.poster"))
               items.SetArtFallback("thumb", "season.poster");
