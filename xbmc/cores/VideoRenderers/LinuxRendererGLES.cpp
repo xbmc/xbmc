@@ -2746,8 +2746,14 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
     if (IMXBuffer->iFormat == 0)
       glTexDirectVIVMap(m_textureTarget, IMXBuffer->iWidth, IMXBuffer->iHeight, GL_VIV_I420,
                         (GLvoid **)&virt, &physical);
-    else
+    else if (IMXBuffer->iFormat == 1)
       glTexDirectVIVMap(m_textureTarget, IMXBuffer->iWidth, IMXBuffer->iHeight, GL_VIV_NV12,
+                        (GLvoid **)&virt, &physical);
+    else if (IMXBuffer->iFormat == 2)
+      glTexDirectVIVMap(m_textureTarget, IMXBuffer->iWidth, IMXBuffer->iHeight, GL_RGB565,
+                        (GLvoid **)&virt, &physical);
+    else if (IMXBuffer->iFormat == 3)
+      glTexDirectVIVMap(m_textureTarget, IMXBuffer->iWidth, IMXBuffer->iHeight, GL_RGBA,
                         (GLvoid **)&virt, &physical);
 
     glTexDirectInvalidateVIV(m_textureTarget);

@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "DVDClock.h"
 
+#define IMX_MDI_MAX_WIDTH 968
 #define FRAME_ALIGN 16
 #define MEDIAINFO 1
 #define _4CC(c1,c2,c3,c4) (((uint32_t)(c4)<<24)|((uint32_t)(c3)<<16)|((uint32_t)(c2)<<8)|(uint32_t)(c1))
@@ -1294,6 +1295,8 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   // Input is the VPU decoded frame
   task.input.width   = iWidth;
   task.input.height  = iHeight;
+  task.input.crop.h  = iHeight;
+
 #ifdef IMX_INPUT_FORMAT_I420
   task.input.format  = IPU_PIX_FMT_YUV420P;
 #else
@@ -1303,12 +1306,21 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   // Output is our IPU buffer
   task.output.width  = iWidth;
   task.output.height = iHeight;
+  task.output.crop.h = iHeight;
 #ifdef IMX_OUTPUT_FORMAT_I420
   task.output.format = IPU_PIX_FMT_YUV420P;
   iFormat            = 0;
 #else
   task.output.format = IPU_PIX_FMT_NV12;
   iFormat            = 1;
+#endif
+#ifdef IMX_OUTPUT_FORMAT_RGB565
+  task.output.format = IPU_PIX_FMT_RGB565;
+  iFormat            = 2;
+#endif
+#ifdef IMX_OUTPUT_FORMAT_RGB32
+  task.output.format = IPU_PIX_FMT_RGB32;
+  iFormat            = 3;
 #endif
   task.output.paddr  = (int)pPhysAddr;
 
@@ -1345,15 +1357,42 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
 #ifdef IMX_PROFILE
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
-  int ret = ioctl(fd, IPU_QUEUE_TASK, &task);
+
+  /* We do the VDI buffer splitting ourselves since the kernel
+   * driver (IPU) is either buggy or it is a feature that it does
+   * not split widths to multiple of 16 to get maximum burst on
+   * on DMA. Since we know that the input and output dimensions are the
+   * same we can implement an easier algorithm that takes care of
+   * that.
+   */
+  unsigned int nRequiredStripes = (iWidth+IMX_MDI_MAX_WIDTH-1) / IMX_MDI_MAX_WIDTH;
+  unsigned int iProcWidth = iWidth;
+  unsigned int iStripeOffset = 0;
+
+  while (iStripeOffset < iWidth)
+  {
+    unsigned int iStripeWidth = Align(iWidth/nRequiredStripes, FRAME_ALIGN);
+    if (iStripeWidth > iProcWidth)
+      iStripeWidth = iProcWidth;
+
+    task.input.crop.pos.x  = iStripeOffset;
+    task.input.crop.w      = iStripeWidth;
+    task.output.crop.pos.x = task.input.crop.pos.x;
+    task.output.crop.w     = task.input.crop.w;
+
+    if (ioctl(fd, IPU_QUEUE_TASK, &task) < 0)
+    {
+      CLog::Log(LOGERROR, "IPU task failed: %s\n", strerror(errno));
+      return false;
+    }
+
+    iStripeOffset += iStripeWidth;
+    iProcWidth -= iStripeWidth;
+  }
+
 #ifdef IMX_PROFILE
   CLog::Log(LOGDEBUG, "DEINT: tm:%d\n", XbmcThreads::SystemClockMillis() - time);
 #endif
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "IPU task failed: %s\n", strerror(errno));
-    return false;
-  }
 
   m_bFree = false;
   buffer->Lock();
@@ -1379,8 +1418,19 @@ bool CDVDVideoCodecIMXIPUBuffer::Allocate(int fd, int width, int height, int nAl
 {
   m_iWidth = Align(width,FRAME_ALIGN);
   m_iHeight = Align(height,(2*FRAME_ALIGN));
+#if defined(IMX_OUTPUT_FORMAT_NV12) || defined(IMX_OUTPUT_FORMAT_I420)
   // I420 == 12 bpp
   m_nSize = m_iWidth*m_iHeight*12/8;
+#endif
+#ifdef IMX_OUTPUT_FORMAT_RGB565
+  // RGB565 = 16 bpp
+  m_nSize = m_iWidth*m_iHeight*16/8;
+#endif
+#ifdef IMX_OUTPUT_FORMAT_RGB32
+  // RGB32 = 32 bpp
+  m_nSize = m_iWidth*m_iHeight*32/8;
+#endif
+
   m_pPhyAddr = m_nSize;
 
   pPhysAddr = pVirtAddr = NULL;

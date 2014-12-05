@@ -31,12 +31,16 @@
 
 
 // The decoding format of the VPU buffer. Comment this to decode
-// as NV12. The VPU works faster with I420.
-#define IMX_INPUT_FORMAT_I420
+// as NV12. The VPU works faster with NV12 in combination with
+// deinterlacing.
+//#define IMX_INPUT_FORMAT_I420
 
-// The deinterlacer output and render format. Uncomment to use I420.
-// The IPU works faster when outputting to NV12.
+// The deinterlacer output and render format. Only one format must be active
+// at a time
+#define IMX_OUTPUT_FORMAT_NV12
 //#define IMX_OUTPUT_FORMAT_I420
+//#define IMX_OUTPUT_FORMAT_RGB565
+//#define IMX_OUTPUT_FORMAT_RGB32
 
 // This enables logging of times for Decode, Render->Render,
 // Deinterlace. It helps to profile several stages of
@@ -49,6 +53,11 @@
 
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
+
+// If uncommented a file "stream.dump" will be created in the current
+// directory whenever a new stream is started. This is only for debugging
+// and performance tests. This define must never be active in distributions.
+//#define DUMP_STREAM
 
 class CDecMemInfo
 {
