@@ -277,6 +277,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;
 
+    std::string content = m_pInput->GetContent();
+    StringUtils::ToLower(content);
+    if (StringUtils::StartsWith(content, "audio/l16"))
+      iformat = av_find_input_format("s16be");
+
     if( iformat == NULL )
     {
       // let ffmpeg decide which demuxer we have to open
@@ -387,6 +392,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     {
       CLog::Log(LOGDEBUG, "%s - setting usetoc to 0 for accurate VBR MP3 seek", __FUNCTION__);
       av_dict_set(&options, "usetoc", "0", 0);
+    }
+
+    if (StringUtils::StartsWith(content, "audio/l16"))
+    {
+      int channels = 2;
+      int samplerate = 44100;
+      GetL16Parameters(channels, samplerate);
+      av_dict_set_int(&options, "channels", channels, 0);
+      av_dict_set_int(&options, "sample_rate", samplerate, 0);
     }
 
     if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
@@ -1665,6 +1679,63 @@ void CDVDDemuxFFmpeg::ResetVideoStreams()
         av_free(st->codec->extradata);
       st->codec->extradata = NULL;
       st->codec->width = 0;
+    }
+  }
+}
+
+void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
+{
+  std::string content;
+  if (XFILE::CCurlFile::GetContentType(m_pInput->GetURL(), content))
+  {
+    StringUtils::ToLower(content);
+    const size_t len = content.length();
+    size_t pos = content.find(';');
+    while (pos < len)
+    {
+      // move to the next non-whitespace character
+      pos = content.find_first_not_of(" \t", pos + 1);
+
+      if (pos != std::string::npos)
+      {
+        if (content.compare(pos, 9, "channels=", 9) == 0)
+        {
+          pos += 9; // move position to char after 'channels='
+          int len = content.find(';', pos);
+          if (len != std::string::npos)
+            len -= pos;
+          std::string no_channels(content, pos, len);
+          // as we don't support any charset with ';' in name
+          StringUtils::Trim(no_channels, " \t");
+          if (!no_channels.empty())
+          {
+            int val = strtol(no_channels.c_str(), NULL, 0);
+            if (val > 0)
+              channels = val;
+            else
+              CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - no parameter for channels", __FUNCTION__);
+          }
+        }
+        else if (content.compare(pos, 5, "rate=", 5) == 0)
+        {
+          pos += 5; // move position to char after 'rate='
+          int len = content.find(';', pos);
+          if (len != std::string::npos)
+            len -= pos;
+          std::string rate(content, pos, len);
+          // as we don't support any charset with ';' in name
+          StringUtils::Trim(rate, " \t");
+          if (!rate.empty())
+          {
+            int val = strtol(rate.c_str(), NULL, 0);
+            if (val > 0)
+              samplerate = val;
+            else
+              CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - no parameter for samplerate", __FUNCTION__);
+          }
+        }
+        pos = content.find(';', pos); // find next parameter
+      }
     }
   }
 }
