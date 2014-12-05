@@ -453,7 +453,8 @@ const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "hasfocus",         CONTAINER_HAS_FOCUS }};
 
 const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
-                                  { "content",          CONTAINER_CONTENT }};
+                                  { "content",          CONTAINER_CONTENT },
+                                  { "art",              CONTAINER_ART }};
 
 const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "icon",             LISTITEM_ICON },
@@ -3290,6 +3291,12 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]).asString();
+  }
+  else if (info.m_info == CONTAINER_ART)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
   }
   else if (info.m_info == CONTROL_GET_LABEL)
   {

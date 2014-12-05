@@ -309,7 +309,7 @@ namespace INFO
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
 #define CONTAINER_CURRENT_ITEM      365
-
+#define CONTAINER_ART               366
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
