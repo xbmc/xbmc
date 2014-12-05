@@ -1281,7 +1281,6 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   CDVDVideoCodecIMXVPUBuffer *previousBuffer;
   struct ipu_task task;
   memset(&task, 0, sizeof(task));
-  task.priority = IPU_TASK_PRIORITY_HIGH;
 
   if (lowMotion)
     previousBuffer = buffer->GetPreviousBuffer();
