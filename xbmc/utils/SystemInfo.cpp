@@ -1353,6 +1353,53 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 
   return StringUtils::Format("version %d.%d-CURRENT", major, minor);
 #elif defined(TARGET_ANDROID)
+  switch(__ANDROID_API__)
+  {
+  case 1:
+    return "version 1.0";
+  case 2:
+    return "version 1.1";
+  case 3:
+    return "version 1.5";
+  case 4:
+    return "version 1.6";
+  case 5:
+    return "version 2.0";
+  case 6:
+    return "version 2.0.1";
+  case 7:
+    return "version 2.1";
+  case 8:
+    return "version 2.2";
+  case 9:
+    return "version 2.3";
+  case 10:
+    return "version 2.3.3";
+  case 11:
+    return "version 3.0";
+  case 12:
+    return "version 3.1";
+  case 13:
+    return "version 3.2";
+  case 14:
+    return "version 4.0";
+  case 15:
+    return "version 4.0.3";
+  case 16:
+    return "version 4.1";
+  case 17:
+    return "version 4.2";
+  case 18:
+    return "version 4.3";
+  case 19:
+    return "version 4.4";
+  case 20:
+    return "version 4.4W";
+  case 21:
+    return "version 5.0";
+    // Insert new Android versions here, when they published at
+    // http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels
+  }
   return "API level " XSTR_MACRO(__ANDROID_API__);
 #elif defined(TARGET_LINUX)
   return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
