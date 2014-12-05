@@ -719,10 +719,16 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append("Server vNext"); /* FIXME: Correct name if required */
       break;
     case WindowsVersionFuture:
-      osNameVer.append("Unknown Future Version");
+      if (osvi.dwMajorVersion > 0)
+        osNameVer.append(StringUtils::Format("Unknown (%lu.%lu) Future Version", osvi.dwMajorVersion, osvi.dwMinorVersion));
+      else
+        osNameVer.append("Unknown Future Version");
       break;
     default:
-      osNameVer.append("Unknown version");
+      if (osvi.dwMajorVersion > 0)
+        osNameVer.append(StringUtils::Format("Unknown (%lu.%lu) version", osvi.dwMajorVersion, osvi.dwMinorVersion));
+      else
+        osNameVer.append("Unknown version");
       break;
     }
 
