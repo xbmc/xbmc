@@ -1924,9 +1924,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\AddonsDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5199,9 +5196,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
-      <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\XbmcContext.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">

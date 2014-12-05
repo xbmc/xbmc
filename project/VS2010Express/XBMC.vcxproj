@@ -225,7 +225,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\FFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
@@ -846,7 +845,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.h" />
     <ClInclude Include="..\..\xbmc\cores\FFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />

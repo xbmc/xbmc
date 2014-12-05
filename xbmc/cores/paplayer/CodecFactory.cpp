@@ -35,7 +35,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "PCMCodec.h"
 #include "utils/StringUtils.h"
 
 ICodec* CodecFactory::CreateCodec(const std::string& strFileType)
@@ -45,7 +44,7 @@ ICodec* CodecFactory::CreateCodec(const std::string& strFileType)
   if (fileType == "mp3" || fileType == "mp2")
     return new DVDPlayerCodec();
   else if (fileType == "pcm" || fileType == "l16")
-    return new PCMCodec();
+    return new DVDPlayerCodec();
   else if (fileType == "ape" || fileType == "mac")
     return new DVDPlayerCodec();
   else if (fileType == "cdda")
@@ -132,9 +131,9 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
   }
   else if (StringUtils::StartsWith(content, "audio/l16"))
   {
-    PCMCodec * pcm_codec = new PCMCodec();
-    pcm_codec->SetMimeParams(strContent);
-    return pcm_codec;
+    DVDPlayerCodec *pCodec = new DVDPlayerCodec;
+    pCodec->SetContentType(content);
+    return pCodec;
   }
   else if(content == "audio/aac" ||
           content == "audio/aacp" ||

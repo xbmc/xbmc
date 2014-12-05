@@ -1072,7 +1072,6 @@
 		7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
-		7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
@@ -1557,7 +1556,6 @@
 		DFF0F1A917528350002DA3A4 /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
 		DFF0F1AA17528350002DA3A4 /* OGGcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16230D25F9FA00618676 /* OGGcodec.cpp */; };
 		DFF0F1AB17528350002DA3A4 /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
-		DFF0F1AC17528350002DA3A4 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
 		DFF0F1AD17528350002DA3A4 /* SIDCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16310D25F9FA00618676 /* SIDCodec.cpp */; };
 		DFF0F1AE17528350002DA3A4 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16350D25F9FA00618676 /* SPCCodec.cpp */; };
 		DFF0F1AF17528350002DA3A4 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
@@ -2816,7 +2814,6 @@
 		E4991211174E5D5A00741B6D /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
 		E4991212174E5D5A00741B6D /* OGGcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16230D25F9FA00618676 /* OGGcodec.cpp */; };
 		E4991213174E5D5A00741B6D /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
-		E4991214174E5D5A00741B6D /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
 		E4991215174E5D5A00741B6D /* SIDCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16310D25F9FA00618676 /* SIDCodec.cpp */; };
 		E4991216174E5D5A00741B6D /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16350D25F9FA00618676 /* SPCCodec.cpp */; };
 		E4991217174E5D5A00741B6D /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
@@ -4591,8 +4588,6 @@
 		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
-		7CCFD98A151494E100211D82 /* PCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMCodec.cpp; sourceTree = "<group>"; };
-		7CCFD98B151494E100211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -9064,8 +9059,6 @@
 				E38E16240D25F9FA00618676 /* OGGcodec.h */,
 				F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */,
 				F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */,
-				7CCFD98A151494E100211D82 /* PCMCodec.cpp */,
-				7CCFD98B151494E100211D82 /* PCMCodec.h */,
 				E38E16310D25F9FA00618676 /* SIDCodec.cpp */,
 				E38E16320D25F9FA00618676 /* SIDCodec.h */,
 				E38E16350D25F9FA00618676 /* SPCCodec.cpp */,
@@ -11339,7 +11332,6 @@
 				F54BCC5F1439345300F86B0F /* HotKeyController.m in Sources */,
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
-				7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */,
 				DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */,
 				DF5276E2151BAEDA00B5B63B /* HttpResponse.cpp in Sources */,
 				DF527734151BAF4C00B5B63B /* WebSocket.cpp in Sources */,
@@ -12052,7 +12044,6 @@
 				DFF0F1A917528350002DA3A4 /* OggCallback.cpp in Sources */,
 				DFF0F1AA17528350002DA3A4 /* OGGcodec.cpp in Sources */,
 				DFF0F1AB17528350002DA3A4 /* PAPlayer.cpp in Sources */,
-				DFF0F1AC17528350002DA3A4 /* PCMCodec.cpp in Sources */,
 				DFF0F1AD17528350002DA3A4 /* SIDCodec.cpp in Sources */,
 				DFF0F1AE17528350002DA3A4 /* SPCCodec.cpp in Sources */,
 				DFF0F1AF17528350002DA3A4 /* TimidityCodec.cpp in Sources */,
@@ -13251,7 +13242,6 @@
 				E4991211174E5D5A00741B6D /* OggCallback.cpp in Sources */,
 				E4991212174E5D5A00741B6D /* OGGcodec.cpp in Sources */,
 				E4991213174E5D5A00741B6D /* PAPlayer.cpp in Sources */,
-				E4991214174E5D5A00741B6D /* PCMCodec.cpp in Sources */,
 				E4991215174E5D5A00741B6D /* SIDCodec.cpp in Sources */,
 				E4991216174E5D5A00741B6D /* SPCCodec.cpp in Sources */,
 				E4991217174E5D5A00741B6D /* TimidityCodec.cpp in Sources */,
