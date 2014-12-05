@@ -686,7 +686,8 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
   osNameVer = "Windows ";
   if (sysGetVersionExWByRef(osvi))
   {
-    switch (GetWindowsVersion())
+    const WindowsVersion winVer = GetWindowsVersion();
+    switch (winVer)
     {
     case WindowsVersionVista:
       if (osvi.wProductType == VER_NT_WORKSTATION)
@@ -732,6 +733,20 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
       break;
     }
 
+    std::string regOsName = CWIN32Util::GetRegistrySZValue(L"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"ProductName");
+    if (!regOsName.empty())
+    {
+      if (winVer != WindowsVersionUnknown && winVer != WindowsVersionFuture)
+      {
+        if (regOsName.compare(0, osNameVer.length(), osNameVer) == 0)
+          osNameVer = regOsName;
+        else
+          CLog::LogF(LOGWARNING, "Registry value for OS name \"%s\" doesn't match OS name \"%s\"", regOsName.c_str(), osNameVer.c_str());
+      }
+      else
+        osNameVer.append(" (").append(regOsName).append(")");
+    }
+
     // Append Service Pack version if any
     if (osvi.wServicePackMajor > 0 || osvi.wServicePackMinor > 0)
     {
@@ -741,6 +756,15 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
       }
     }
+
+    osNameVer.append(" Build ");
+    std::string buildStr(StringUtils::Format("%lu", osvi.dwBuildNumber));
+    std::string fullBuildStr(CWIN32Util::GetRegistrySZValue(L"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"BuildLabEx"));
+    const size_t buildStrLenPlOne = buildStr.length() + 1; // length of build string plus dot
+    if (fullBuildStr.length() > buildStrLenPlOne && fullBuildStr.compare(0, buildStrLenPlOne, buildStr + '.') == 0)
+      osNameVer.append(fullBuildStr.substr(0, fullBuildStr.find('.', buildStrLenPlOne + 1)));
+    else
+      osNameVer.append(buildStr);
   }
   else
     osNameVer.append(" unknown");
