@@ -1056,10 +1056,10 @@ bool CApplication::InitDirectoriesLinux()
    special://xbmc/          => [read-only] system directory (/usr/share/kodi)
    special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
                                installations like skins, screensavers, etc.
-                               ($HOME/.kodi)
+                               ($XDG_DATA_HOME/kodi)
                                NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.kodi/userdata)
+                               mapped to special://home/userdata ($XDG_DATA_HOME/kodi/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -1081,10 +1081,10 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  std::string appBinPath, appPath;
+  std::string appBinPath, appPath, xdgPath;
   std::string appName = CCompileInfo::GetAppName();
-  std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
+  std::string lowerAppName = appName;
+  StringUtils::ToLower(lowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
@@ -1110,6 +1110,14 @@ bool CApplication::InitDirectoriesLinux()
     }
   }
 
+  const char* xdgDataHome = "XDG_DATA_HOME";
+  if (getenv(xdgDataHome))
+    xdgPath = getenv(xdgDataHome);
+  else
+  {
+    xdgPath = userHome + "/.local/share/";
+  }
+
   /* Set some environment variables */
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
@@ -1119,11 +1127,11 @@ bool CApplication::InitDirectoriesLinux()
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
+    CSpecialProtocol::SetHomePath(xdgPath + lowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(xdgPath + lowerAppName + "/userdata");
 
-    CStdString strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
+    CStdString strTempPath = xdgPath;
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, lowerAppName + "/temp");
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
