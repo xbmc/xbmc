@@ -112,7 +112,6 @@ namespace PERIPHERALS
     void ActivateSource(void);
     void StandbyDevices(void);
     bool ToggleDeviceState(CecStateChange mode = STATE_SWITCH_TOGGLE, bool forceType = false);
-    void PowerOnDevices(void);
 
   private:
     bool InitialiseFeature(const PeripheralFeature feature);
@@ -134,7 +133,6 @@ namespace PERIPHERALS
     void ProcessActivateSource(void);
     void ProcessStandbyDevices(void);
     void ProcessVolumeChange(void);
-    void ProcessPowerOnDevices(void);
 
     void PushCecKeypress(const CEC::cec_keypress &key);
     void PushCecKeypress(const CecButtonPress &key);
@@ -175,7 +173,6 @@ namespace PERIPHERALS
     CEC::libcec_configuration         m_configuration;
     bool                              m_bActiveSourcePending;
     bool                              m_bStandbyPending;
-    bool                              m_bPowerOnDevicesPending;
     CDateTime                         m_preventActivateSourceOnPlay;
     bool                              m_bActiveSourceBeforeStandby;
     bool                              m_bOnPlayReceived;
