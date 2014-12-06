@@ -315,6 +315,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (CAndroidFeatures::GetVersion() < 16)
     return false;
 
+  // mediacodec crashes with null size. Trap this...
+  if (!hints.width || !hints.height)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
+    return false;
+  }
+
   m_drop = false;
   m_hints = hints;
 
