@@ -929,7 +929,13 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ePlexMediaFilterTypes PlexUtils::GetFilterType(const CFileItem& item)
 {
-  switch (item.GetPlexDirectoryType())
+  return GetFilterType(item.GetPlexDirectoryType());
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaFilterTypes PlexUtils::GetFilterType(EPlexDirectoryType type)
+{
+  switch (type)
   {
     case PLEX_DIR_TYPE_MOVIE:
       return PLEX_MEDIA_FILTER_TYPE_MOVIE;

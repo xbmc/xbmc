@@ -115,7 +115,11 @@ bool CPlexSectionFilter::loadFilters()
          * XML file at this point, so we need to load it values to
          * have something nice to show in the UI */
         if (secondaryFilter->isSelected())
-          secondaryFilter->loadValues();
+        {
+          CUrlOptions options;
+          options.AddOption("type", PlexUtils::GetFilterType(m_sectionType));
+          secondaryFilter->loadValues(options);
+        }
       }
     }
   }
