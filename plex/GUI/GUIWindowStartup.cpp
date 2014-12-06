@@ -27,6 +27,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "Application.h"
 #include "GUI/GUIDialogPlexUserSelect.h"
+#include "GUISettings.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
@@ -41,7 +42,7 @@ void CGUIWindowStartup::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   
-  if (g_plexApplication.myPlexManager->IsPinProtected())
+  if (g_plexApplication.myPlexManager->IsPinProtected() && !g_guiSettings.GetBool("myplex.automaticlogin"))
   {
     CGUIDialogPlexUserSelect* dialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
     if (dialog)

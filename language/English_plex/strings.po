@@ -996,6 +996,10 @@ msgctxt "#52210"
 msgid "Show queue and recommendations"
 msgstr "Show queue and recommendations"
 
+msgctxt "#52211"
+msgid "Automatic login"
+msgstr "Automatic login"
+
 msgctxt "#52300"
 msgid "Media Server went away"
 msgstr "Media Server went away"
