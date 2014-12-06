@@ -42,6 +42,14 @@ CJNIIntent CJNIPackageManager::getLaunchIntentForPackage(const std::string &pack
     jcast<jhstring>(package));
 }
 
+CJNIIntent CJNIPackageManager::getLeanbackLaunchIntentForPackage(const std::string &package)
+{
+  // API 21
+  return call_method<jhobject>(m_object,
+    "getLeanbackLaunchIntentForPackage", "(Ljava/lang/String;)Landroid/content/Intent;",
+    jcast<jhstring>(package));
+}
+
 CJNIDrawable CJNIPackageManager::getApplicationIcon(const std::string &package)
 {
   return call_method<jhobject>(m_object,
