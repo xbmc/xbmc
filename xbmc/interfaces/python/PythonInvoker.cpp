@@ -573,24 +573,14 @@ void CPythonInvoker::onError()
   CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
   if (pDlgToast != NULL)
   {
-    std::string desc;
-    std::string script;
-    if (m_addon.get() != NULL)
-      script = m_addon->Name();
+    std::string message;
+    if (m_addon && !m_addon->Name().empty())
+      message = StringUtils::Format(g_localizeStrings.Get(2102).c_str(), m_addon->Name().c_str());
+    else if (m_sourceFile == CSpecialProtocol::TranslatePath("special://profile/autoexec.py"))
+      message = StringUtils::Format(g_localizeStrings.Get(2102).c_str(), "autoexec.py");
     else
-    {
-      std::string path;
-      URIUtils::Split(m_sourceFile.c_str(), path, script);
-      if (script == "default.py")
-      {
-        std::string path2;
-        URIUtils::RemoveSlashAtEnd(path);
-        URIUtils::Split(path, path2, script);
-      }
-    }
-
-    desc = StringUtils::Format(g_localizeStrings.Get(2100).c_str(), script.c_str());
-    pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
+       message = g_localizeStrings.Get(2103);
+    pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, message, g_localizeStrings.Get(2104));
   }
 }
 

@@ -4221,17 +4221,31 @@ msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
 msgstr ""
 
-#empty strings from id 2082 to 2099
-
-msgctxt "#2100"
-msgid "Script failed! : %s"
-msgstr ""
+#empty strings from id 2082 to 2100
 
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr ""
 
-#empty strings from id 2102 to 9999
+#. Notification message indicating an add-on error. "<Add-on name> error".
+#: xbmc/interfaces/python/PythonInvoker.cpp
+msgctxt "#2102"
+msgid "%s error"
+msgstr ""
+
+#. Fallback message indicating an add-on error.
+#: xbmc/interfaces/python/PythonInvoker.cpp
+msgctxt "#2103"
+msgid "Add-on error"
+msgstr ""
+
+#. Used for add-on error kaitoast.
+#: xbmc/interfaces/python/PythonInvoker.cpp
+msgctxt "#2104"
+msgid "See log for more info."
+msgstr ""
+
+#empty strings from id 2105 to 9999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"
