@@ -418,9 +418,6 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
                                   { "isstacked",        CONTAINER_STACKED },
-                                  { "folderthumb",      CONTAINER_FOLDERTHUMB },
-                                  { "tvshowthumb",      CONTAINER_TVSHOWTHUMB },
-                                  { "seasonthumb",      CONTAINER_SEASONTHUMB },
                                   { "folderpath",       CONTAINER_FOLDERPATH },
                                   { "foldername",       CONTAINER_FOLDERNAME },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
@@ -3400,24 +3397,6 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, std::string *f
     if(m_currentMovieThumb.empty())
       return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
-  }
-  else if (info == CONTAINER_FOLDERTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB, fallback);
-  }
-  else if (info == CONTAINER_TVSHOWTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("tvshow.thumb");
-  }
-  else if (info == CONTAINER_SEASONTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("season.thumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
