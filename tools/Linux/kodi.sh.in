@@ -57,7 +57,7 @@ migrate_home()
 
 command_exists()
 {
-  command -v $1 >/dev/null 2>&1
+  command -pv $1 >/dev/null 2>&1
 }
 
 single_stacktrace()
