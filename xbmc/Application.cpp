@@ -647,7 +647,7 @@ bool CApplication::Create()
   {
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
+    fprintf(stderr,"Could not init logging classes. Permission errors on $XDG_CACHE_HOME/%s (%s)\n", lcAppName.c_str(),
       CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
