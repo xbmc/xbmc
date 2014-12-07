@@ -245,7 +245,7 @@
   },
   "System.OnQuit": {
     "type": "notification",
-    "description": "XBMC will be closed.",
+    "description": "Kodi will be closed.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
