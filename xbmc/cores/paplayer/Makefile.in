@@ -15,7 +15,6 @@ SRCS += NSFCodec.cpp
 SRCS += OggCallback.cpp
 SRCS += OGGcodec.cpp
 SRCS += PAPlayer.cpp
-SRCS += PCMCodec.cpp
 SRCS += SIDCodec.cpp
 SRCS += TimidityCodec.cpp
 SRCS += VGMCodec.cpp

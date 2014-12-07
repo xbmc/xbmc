@@ -141,6 +141,8 @@ protected:
   std::string GetStereoModeFromMetadata(AVDictionary *pMetadata);
   std::string ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap);
 
+  void GetL16Parameters(int &channels, int &samplerate);
+
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
   std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
