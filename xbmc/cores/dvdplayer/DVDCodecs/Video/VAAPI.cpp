@@ -150,8 +150,11 @@ bool CVAAPIContext::CreateContext()
     CLog::Log(LOGDEBUG, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
 
   QueryCaps();
-  if (!m_profileCount || !m_attributeCount)
+  if (!m_profileCount)
     return false;
+
+  if (!m_attributeCount)
+    CLog::Log(LOGWARNING, "VAAPI - driver did not return anything from vlVaQueryDisplayAttributes");
 
   return true;
 }
