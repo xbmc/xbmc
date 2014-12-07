@@ -215,8 +215,11 @@ std::string CHttpHeader::GetCharset(void) const
       if (strValue.compare(pos, 8, "CHARSET=", 8) == 0)
       {
         pos += 8; // move position to char after 'CHARSET='
-        std::string charset(strValue, pos, strValue.find(';', pos));  // intentionally ignoring possible ';' inside quoted string
-                                                                      // as we don't support any charset with ';' in name
+        int len = strValue.find(';', pos);
+        if (len != std::string::npos)
+          len -= pos;
+        std::string charset(strValue, pos, len);  // intentionally ignoring possible ';' inside quoted string
+                                                  // as we don't support any charset with ';' in name
         StringUtils::Trim(charset, m_whitespaceChars);
         if (!charset.empty())
         {
