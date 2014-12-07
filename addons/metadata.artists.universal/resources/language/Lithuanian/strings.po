@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-addons/language/lt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Įgalinti atlikėjo Fanarts iš HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Įgalinti atlikėjo miniatiūrą iš allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Įgalinti atlikėjo miniatiūrą iš last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Įgalinti atlikėjo miniatiūrą iš HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Įgalinti atlikėjo Fanarts iš fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Įgalinti atlikėjo miniatiūrą iš fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Gauti atlikėjo biografiją iš"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Meno kūrinys"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Gauti atlikėjo diskografiją iš"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Gauti atlikėjo žanrą iš"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Gauti atlikėjo stilių iš"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Gauti atlikėjo Life-Span iš"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Gauti atlikėjo žanrą iš"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Gauti atlikėjo (aktyvus metai) iš"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Pageidaujama kalba"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Sugrįžti prie atlikėjo biografijos"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Sugrįžti prie atlikėjo diskografijos"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Sugrįžti prie atlikėjo žanro"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Sugrįžti prie atlikėjo Stilius"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Sugrįžti prie atlikėjo Life-Span"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Sugrįžti"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Įjungti artisto(-ų) miniatiųrą atsiustą iš theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Įjungti artisto(-ų) FanArt atsiustą iš theaudiodb.com"

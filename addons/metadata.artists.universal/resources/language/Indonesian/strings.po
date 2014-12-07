@@ -1,0 +1,85 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Indonesian (http://www.transifex.com/projects/p/xbmc-addons/language/id/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Aktifkan Fanart Artis dari HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Aktifkan Thumb Artis dari allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Aktifkan Thumb Artis dari last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Aktifkan Thumb Artis dari HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Aktifkan Fanart Artis dari fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Aktifkan Thumb Artis dari fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Ambil Biografi Artis dari"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Ambil Diskografi Artis dari"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Ambil Genre Artis dari"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Ambil Gaya Artis dari"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Ambil rentang-hidup Artis dari"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Ambil nuansa Artis dari"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Ambil tahun aktif Artis dari"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Bahasa terutama"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Aktifkan Thumb Artis dari theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Aktifkan Fanart Artis dari theaudiodb.com"

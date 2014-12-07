@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (http://www.transifex.com/projects/p/xbmc-addons/language/my/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "HTBackdrops.com မှ Artist Fanarts ကိုဖွင့်ထားမည်"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "allmusic.com မှ အနုပညာရှင် Thumbs ကိုဖွင့်မည်"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "last.fm မှ အနုပညာရှင် Thumbs ကိုဖွင့်မည်"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "HTBackdrops.com မှ အနုပညာရှင် Thumbs ကိုဖွင့်မည်"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "fanart.tv မှArtist Fanarts ကိုဖွင့်ထားမည်"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "fanart.tv မှ အနုပညာရှင် Thumbs ကိုဖွင့်မည်"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "အနုပညာရှင် အတ္ထုပတ္တိကိုရယူရန်"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "အနုပညာလက်ရာ"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "အနုပညာရှင်စတိုင်များရယူရန်"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "သင့်လျှော်သော ဘာသာစကား"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "theaudiodb.com မှ အနုပညာရှင် Thumb များဖွင့်ထားမည်"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "theaudiodb.com မှ Artist Fanarts ကိုဖွင့်ထားမည်"

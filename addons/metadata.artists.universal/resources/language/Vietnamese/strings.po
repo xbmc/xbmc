@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Vietnamese (http://www.transifex.com/projects/p/xbmc-addons/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Lấy Fanart từ nguồn HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Lấy hình đại diện từ nguồn allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Lấy hình đại diện từ nguồn last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Lấy hình đại diện cho nghệ sĩ từ nguồn HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Sử dụng Fanart từ fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Lấy hình đại diện từ nguồn fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Lấy tiểu sử nghệ sĩ từ"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Ảnh bìa"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Lấy quá trình nghệ thuật cho nghệ sĩ từ"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Lấy thể loại nhạc cho nghệ sĩ từ"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Lấy phong cách nhạc cho nghệ sĩ từ"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Lấy tuổi đời nghệ sĩ từ"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Lấy tính miêu tả âm nhạc từ"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Lấy năm hoạt động nhạc cho nghệ sĩ từ"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Ưu tiên ngôn ngữ"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Dự trữ tiểu sử từ"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Dự trữ quá trình nghệ thuật nhạc từ"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Dự trữ thể loại nhạc từ"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Dự trữ phong cách nhạc từ"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Dự trữ tuổi đời từ"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Dự trữ"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Lấy hình đại diện từ nguồn theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Lấy hình Fanart từ nguồn theaudiodb.com"

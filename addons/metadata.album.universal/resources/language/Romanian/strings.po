@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Romanian (http://www.transifex.com/projects/p/xbmc-addons/language/ro/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Colectează pictogramele albumelor din fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Colectează pictogramele albumelor de la Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Descarcă review-urile albumelor de la "
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "Limba preferata"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Descarcă evaluarea albumelor de la "
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Descarcă stilul albumelor de la "
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Descarcă Album Moods de la "
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Descarcă tema albumelor de la "
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Colectează pictogramele albumelor de la allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Colectează pictogramele albumelor de la theaudiodb.com"

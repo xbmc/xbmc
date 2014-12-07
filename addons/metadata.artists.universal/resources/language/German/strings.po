@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: German (http://www.transifex.com/projects/p/xbmc-addons/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Aktiviere Interpreten-Fanarts von HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Aktiviere Interpreten-Vorschaubilder von allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Aktiviere Interpreten-Vorschaubilder von last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Aktiviere Interpreten-Vorschaubilder von HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Aktiviere Interpreten-Fanarts von fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Aktiviere Interpreten-Vorschaubilder von fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Lade Biografien der Interpreten von"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Lade Interpreten-Diskografie von"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Lade Interpreten-Genre von"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Lade Interpreten-Stil von"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Lade Interpreten-Lebenslauf von"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Lade Interpreten-Stimmungen von"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Lade Interpreten-Zeitraum von"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Bevorzugte Sprache"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Lade die Interpreten-Biografie alternativ von"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Lade die Interpreten-Diskografie alternativ von"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Lade die Interpreten-Genres alternativ von"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Lade die Interpreten-Stile alternativ von"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Lade den Interpreten-Lebenslauf alternativ von"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Alternativen"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Interpreten-Vorschaubilder von theaudiodb.com aktivieren"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Interpreten-Fanart von theaudiodb.com aktivieren"
