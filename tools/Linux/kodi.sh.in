@@ -50,11 +50,13 @@ migrate_home()
   #check if data migration is needed
   if [ -d "${HOME}/.xbmc" ] && [ ! -d "${USERDATA_DIR}" ]; then
       echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $USERDATA_DIR"
-      mv ${HOME}/.xbmc $USERDATA_DIR
+      mv ${HOME}/.xbmc ${USERDATA_DIR}
+      ln -s $USERDATA_DIR ${HOME}/.xbmc
       touch ${USERDATA_DIR}/.kodi_data_was_migrated
   elif [ -d "${HOME}/.kodi" ] && [ ! -d "${USERDATA_DIR}" ]; then
       echo "INFO: migrating userdata folder. Renaming ${HOME}/.kodi to $USERDATA_DIR"
-      mv ${HOME}/.kodi $USERDATA_DIR
+      mv ${HOME}/.kodi ${USERDATA_DIR}
+      ln -s $USERDATA_DIR ${HOME}/.kodi
       touch ${USERDATA_DIR}/.kodi_data_was_migrated
   fi
 }
