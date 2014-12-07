@@ -1081,14 +1081,15 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  std::string appBinPath, appPath, xdgPath;
+  std::string appBinPath, appPath, xdgDataPath, xdgCachePath;
   std::string appName = CCompileInfo::GetAppName();
   std::string lowerAppName = appName;
   StringUtils::ToLower(lowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
-
+  const char* xdgDataHome = "XDG_DATA_HOME";
+  const char* xdgCacheHome = "XDG_CACHE_HOME";
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
   if (getenv(envAppHome))
@@ -1110,13 +1111,15 @@ bool CApplication::InitDirectoriesLinux()
     }
   }
 
-  const char* xdgDataHome = "XDG_DATA_HOME";
   if (getenv(xdgDataHome))
-    xdgPath = getenv(xdgDataHome);
+    xdgDataPath = getenv(xdgDataHome);
   else
-  {
-    xdgPath = userHome + "/.local/share/";
-  }
+    xdgDataPath = userHome + "/.local/share/";
+
+  if (getenv(xdgCacheHome))
+    xdgCachePath = getenv(xdgCacheHome);
+  else
+    xdgCachePath = userHome + "/.cache/";
 
   /* Set some environment variables */
   setenv(envAppBinHome, appBinPath.c_str(), 0);
@@ -1124,14 +1127,15 @@ bool CApplication::InitDirectoriesLinux()
 
   if (m_bPlatformDirectories)
   {
-    // map our special drives
+    /* map our special drives */
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(xdgPath + lowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(xdgPath + lowerAppName + "/userdata");
+    CSpecialProtocol::SetHomePath(xdgDataPath + lowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(xdgDataPath + lowerAppName + "/userdata");
 
-    CStdString strTempPath = xdgPath;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, lowerAppName + "/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/");
+    CDirectory::Create(strTempPath);
+    strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/temp");
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
@@ -1140,7 +1144,6 @@ bool CApplication::InitDirectoriesLinux()
     g_advancedSettings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-
   }
   else
   {
