@@ -73,12 +73,7 @@ public:
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
-  void               SetHardware(IHardwareDecoder* hardware) 
-  {
-    SAFE_RELEASE(m_pHardware);
-    m_pHardware = hardware;
-    UpdateName();
-  }
+  void               SetHardware(IHardwareDecoder* hardware);
 
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
@@ -86,6 +81,7 @@ protected:
   int  FilterOpen(const std::string& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
+  void DisposeHWDecoders();
 
   void UpdateName()
   {
@@ -121,6 +117,7 @@ protected:
   bool              m_bSoftware;
   bool  m_isSWCodec;
   IHardwareDecoder *m_pHardware;
+  std::vector<IHardwareDecoder*> m_disposeDecoders;
   int m_iLastKeyframe;
   double m_dts;
   bool   m_started;
