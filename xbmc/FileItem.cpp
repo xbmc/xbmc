@@ -3250,11 +3250,11 @@ std::string CFileItem::FindTrailer() const
 int CFileItem::GetVideoContentType() const
 {
   VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
-  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strShowTitle.empty()) // tvshow
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeTvShow)
     type = VIDEODB_CONTENT_TVSHOWS;
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_iSeason > -1 && !m_bIsFolder) // episode
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeEpisode)
     return VIDEODB_CONTENT_EPISODES;
-  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_artist.empty()) // music video
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
     return VIDEODB_CONTENT_MUSICVIDEOS;
 
   CVideoDatabaseDirectory dir;
