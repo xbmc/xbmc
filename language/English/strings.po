@@ -6438,7 +6438,27 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr ""
 
-#empty strings from id 13556 to 13599
+msgctxt "#13556"
+msgid "Enable native resolution"
+msgstr ""
+
+msgctxt "#13557"
+msgid "Passthrough resolution"
+msgstr ""
+
+msgctxt "#13558"
+msgid "Search for Fps"
+msgstr ""
+
+msgctxt "#13559"
+msgid "Stretched"
+msgstr ""
+
+msgctxt "#13560"
+msgid "Search for Fps and Stretched"
+msgstr ""
+
+#empty strings from id 13561 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"

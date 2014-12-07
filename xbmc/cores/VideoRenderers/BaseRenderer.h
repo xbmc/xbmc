@@ -72,6 +72,19 @@ typedef void (*RenderFeaturesCallBackFn)(const void *ctx, Features &renderFeatur
 
 struct DVDVideoPicture;
 
+
+typedef struct NativeUpscale
+{
+    bool OverrideFPS;
+    bool CorrectPixelRatio;
+    int  DestWidth;
+    int  DestHeight;
+    int  MinWidth;
+    int  MinHeight;
+    int  MaxWidth;
+    int  MaxHeight;
+} NativeUpscale;
+
 class CBaseRenderer
 {
 public:
@@ -122,10 +135,13 @@ protected:
   void       MarkDirty();
 
   RESOLUTION m_resolution;    // the resolution we're running in
+  RESOLUTION m_bestResolution;  // the preferred resolution
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
   float m_fps;
+
+  NativeUpscale m_nativeUpscaleSettings;
 
   unsigned int m_renderOrientation; // orientation of the video in degress counter clockwise
   unsigned int m_oldRenderOrientation; // orientation of the previous frame
