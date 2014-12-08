@@ -4316,7 +4316,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   param["player"]["speed"] = m_pPlayer->GetPlaySpeed();
   CAnnouncementManager::Get().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
-  g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
+  g_infoManager.SetDisplayAfterSeek(2500, seekOffset);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)

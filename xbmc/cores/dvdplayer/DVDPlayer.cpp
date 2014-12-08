@@ -2239,15 +2239,18 @@ void CDVDPlayer::HandleMessages()
 
         CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
         double start = DVD_NOPTS_VALUE;
+        double offset = 0;
+        int64_t beforeSeek = GetTime();
 
         // This should always be the case.
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
           FlushBuffers(false, start, true);
+          offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
 
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.SetDisplayAfterSeek(2500, offset);
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {
