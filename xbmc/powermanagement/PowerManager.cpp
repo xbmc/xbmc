@@ -141,6 +141,7 @@ bool CPowerManager::Powerdown()
 {
   if (CanPowerdown())
   {
+    CLog::LogF(LOGINFO, "Requesting system powerdown");
     if (m_instance->Powerdown())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -162,6 +163,7 @@ bool CPowerManager::Suspend()
 {
   if (CanSuspend())
   {
+    CLog::LogF(LOGINFO, "Requesting system suspend");
     if (m_instance->Suspend())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -183,6 +185,7 @@ bool CPowerManager::Hibernate()
 {
   if (CanHibernate())
   {
+    CLog::LogF(LOGINFO, "Requesting system hibernate");
     if (m_instance->Hibernate())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -203,6 +206,7 @@ bool CPowerManager::Reboot()
 {
   if (CanReboot())
   {
+    CLog::LogF(LOGINFO, "Requesting system reboot");
     if (m_instance->Reboot())
     {
       CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
