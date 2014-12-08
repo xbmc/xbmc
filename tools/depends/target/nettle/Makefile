@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl
 
-LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
