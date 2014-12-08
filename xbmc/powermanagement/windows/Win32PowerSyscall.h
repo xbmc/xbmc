@@ -51,6 +51,7 @@ private:
 
   static bool m_OnResume;
   static bool m_OnSuspend;
+  static bool m_sleeping;
 
 };
 #endif

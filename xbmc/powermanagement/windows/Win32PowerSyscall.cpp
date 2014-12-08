@@ -28,6 +28,7 @@
 
 bool CWin32PowerSyscall::m_OnResume = false;
 bool CWin32PowerSyscall::m_OnSuspend = false;
+bool CWin32PowerSyscall::m_sleeping = false;
 
 
 CWin32PowerSyscall::CWin32PowerSyscall()
@@ -150,15 +151,37 @@ bool CWin32PowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
   if (m_OnSuspend)
   {
-    callback->OnSleep();
-    m_OnSuspend = false;
-    return true;
+    if (!m_sleeping)
+    {
+      CLog::LogF(LOGDEBUG, "Processing OnSuspend event");
+      callback->OnSleep();
+      m_OnSuspend = false;
+      m_sleeping = true;
+      return true;
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG, "Sleeping (already) - ignoring OnSuspend events");
+      m_OnSuspend = false;
+      return true;
+    }
   }
   else if (m_OnResume)
   {
-    callback->OnWake();
-    m_OnResume = false;
-    return true;
+    if (m_sleeping)
+    {
+      CLog::LogF(LOGDEBUG, "Processing OnResume event");
+      callback->OnWake();
+      m_OnResume = false;
+      m_sleeping = false;
+      return true;
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG, "Not sleeping (already) - ignoring OnResume events");
+      m_OnResume = false;
+      return true;
+    }
   }
   else
     return false;
