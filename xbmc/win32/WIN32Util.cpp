@@ -240,7 +240,7 @@ bool CWIN32Util::PowerManagement(PowerState State)
   case POWERSTATE_REBOOT:
     CLog::Log(LOGINFO, "Rebooting Windows...");
     if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
-      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_HYBRID | SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
+      return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
                                SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
     return InitiateShutdownW(NULL, NULL, 0, SHUTDOWN_INSTALL_UPDATES | SHUTDOWN_RESTART,
                              SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED) == ERROR_SUCCESS;
