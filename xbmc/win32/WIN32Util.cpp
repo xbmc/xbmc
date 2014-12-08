@@ -42,6 +42,7 @@
 #include "utils/Environment.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "powermanagement/windows/Win32PowerSyscall.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
@@ -257,14 +258,14 @@ bool CWIN32Util::PowerManagement(PowerState State)
   else
     CLog::LogF(LOGDEBUG, "Already have shutdown privileges");
 
-  // process OnSleep() events. This is called in main thread.
-  g_powerManager.ProcessEvents();
-
   switch (State)
   {
   case POWERSTATE_HIBERNATE:
   case POWERSTATE_SUSPEND:
     {
+      CWin32PowerSyscall::SetOnSuspend();
+      // process OnSleep() events. This is called in main thread.
+      g_powerManager.ProcessEvents();
       HANDLE threadHandle = CreateThread(NULL, 0, threadForSetPowerState, PVOID(intptr_t(State)), 0, NULL); // use separate thread, so main thread stay unblocked
       if (threadHandle == NULL)
       {
