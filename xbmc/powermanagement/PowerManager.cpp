@@ -142,7 +142,7 @@ bool CPowerManager::Powerdown()
   if (CanPowerdown())
   {
     CLog::LogF(LOGINFO, "Requesting system powerdown");
-    if (m_instance->Powerdown())
+    if (m_instance && m_instance->Powerdown())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       if (dialog)
@@ -164,7 +164,7 @@ bool CPowerManager::Suspend()
   if (CanSuspend())
   {
     CLog::LogF(LOGINFO, "Requesting system suspend");
-    if (m_instance->Suspend())
+    if (m_instance && m_instance->Suspend())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       if (dialog)
@@ -186,7 +186,7 @@ bool CPowerManager::Hibernate()
   if (CanHibernate())
   {
     CLog::LogF(LOGINFO, "Requesting system hibernate");
-    if (m_instance->Hibernate())
+    if (m_instance && m_instance->Hibernate())
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       if (dialog)
@@ -207,7 +207,7 @@ bool CPowerManager::Reboot()
   if (CanReboot())
   {
     CLog::LogF(LOGINFO, "Requesting system reboot");
-    if (m_instance->Reboot())
+    if (m_instance && m_instance->Reboot())
     {
       CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
 
@@ -228,32 +228,35 @@ bool CPowerManager::Reboot()
 
 bool CPowerManager::CanPowerdown()
 {
-  return m_instance->CanPowerdown();
+  return m_instance && m_instance->CanPowerdown();
 }
 bool CPowerManager::CanSuspend()
 {
-  return m_instance->CanSuspend();
+  return m_instance && m_instance->CanSuspend();
 }
 bool CPowerManager::CanHibernate()
 {
-  return m_instance->CanHibernate();
+  return m_instance && m_instance->CanHibernate();
 }
 bool CPowerManager::CanReboot()
 {
-  return m_instance->CanReboot();
+  return m_instance && m_instance->CanReboot();
 }
 int CPowerManager::BatteryLevel()
 {
-  return m_instance->BatteryLevel();
+  return m_instance && m_instance->BatteryLevel();
 }
 void CPowerManager::ProcessEvents()
 {
   static int nesting = 0;
 
-  if (++nesting == 1)
-    m_instance->PumpPowerEvents(this);
+  if (m_instance)
+  {
+    if (++nesting == 1)
+      m_instance->PumpPowerEvents(this);
 
-  nesting--;
+    nesting--;
+  }
 }
 
 void CPowerManager::OnSleep()
