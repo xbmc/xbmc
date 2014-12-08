@@ -213,8 +213,14 @@ bool CWIN32Util::PowerManagement(PowerState State)
     }
 
     if (!gotShutdownPrivileges)
+    {
+      CLog::LogF(LOGERROR, "Can't get shutdown privileges");
       return false;
+    }
+    CLog::LogF(LOGDEBUG, "Got shutdown privileges");
   }
+  else
+    CLog::LogF(LOGDEBUG, "Already have shutdown privileges");
 
   // process OnSleep() events. This is called in main thread.
   g_powerManager.ProcessEvents();
