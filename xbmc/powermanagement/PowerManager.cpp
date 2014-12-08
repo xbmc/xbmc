@@ -139,59 +139,87 @@ void CPowerManager::SetDefaults()
 
 bool CPowerManager::Powerdown()
 {
-  if (CanPowerdown() && m_instance->Powerdown())
+  if (CanPowerdown())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    if (m_instance->Powerdown())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System powerdown failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support powerdown");
 
   return false;
 }
 
 bool CPowerManager::Suspend()
 {
-  if (CanSuspend() && m_instance->Suspend())
+  if (CanSuspend())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    if (m_instance->Suspend())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System suspend failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support suspend");
 
   return false;
 }
 
 bool CPowerManager::Hibernate()
 {
-  if (CanHibernate() && m_instance->Hibernate())
+  if (CanHibernate())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    if (m_instance->Hibernate())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System hibernate failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support hibernate");
 
   return false;
 }
 bool CPowerManager::Reboot()
 {
-  bool success = CanReboot() ? m_instance->Reboot() : false;
-
-  if (success)
+  if (CanReboot())
   {
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
+    if (m_instance->Reboot())
+    {
+      CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
 
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
+
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System reboot failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support reboot");
 
-  return success;
+  return false;
 }
 
 bool CPowerManager::CanPowerdown()
