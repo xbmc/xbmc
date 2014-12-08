@@ -57,9 +57,8 @@ using namespace ANNOUNCEMENT;
 
 CPowerManager g_powerManager;
 
-CPowerManager::CPowerManager()
+CPowerManager::CPowerManager() : m_instance(NULL), m_appIsSleeping(false)
 {
-  m_instance = NULL;
 }
 
 CPowerManager::~CPowerManager()
@@ -227,6 +226,12 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
+  if (m_appIsSleeping)
+  {
+    CLog::LogF(LOGDEBUG, "Application is in sleeping state, ignoring \"OnSleep()\"");
+    return;
+  }
+  m_appIsSleeping = true;
   CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
@@ -246,6 +251,12 @@ void CPowerManager::OnSleep()
 
 void CPowerManager::OnWake()
 {
+  if (!m_appIsSleeping)
+  {
+    CLog::LogF(LOGDEBUG, "Application isn't in sleeping state, ignoring \"OnWake()\"");
+    return;
+  }
+  m_appIsSleeping = false;
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   // reset out timers

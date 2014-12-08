@@ -94,6 +94,7 @@ private:
   void OnLowBattery();
 
   IPowerSyscall *m_instance;
+  bool m_appIsSleeping;
 };
 
 extern CPowerManager g_powerManager;
