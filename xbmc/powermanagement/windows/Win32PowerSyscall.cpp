@@ -22,6 +22,9 @@
 #include "powermanagement/PowerManager.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
+#include "utils/log.h"
+#include <powrprof.h>
+#pragma comment(lib, "PowrProf")
 
 bool CWin32PowerSyscall::m_OnResume = false;
 bool CWin32PowerSyscall::m_OnSuspend = false;
@@ -60,14 +63,66 @@ bool CWin32PowerSyscall::CanPowerdown()
 {
   return true;
 }
+
 bool CWin32PowerSyscall::CanSuspend()
 {
-  return true;
+  static int suspendSupported = -1;
+  if (suspendSupported == -1)
+  {
+    SYSTEM_POWER_CAPABILITIES pwcp = {};
+    if (GetPwrCapabilities(&pwcp))
+    {
+      if (pwcp.SystemS3 || pwcp.SystemS2 || pwcp.SystemS1)
+      {
+        CLog::LogF(LOGDEBUG, "System supports suspend. S1 state: %s; S2 state: %s; S3 state: %s",
+                   pwcp.SystemS1 ? "supported" : "not supported", pwcp.SystemS2 ? "supported" : "not supported",
+                   pwcp.SystemS3 ? "supported" : "not supported");
+        suspendSupported = 1;
+      }
+      else
+      {
+        CLog::LogF(LOGDEBUG, "System doesn't supports suspend");
+        suspendSupported = 0;
+      }
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Can't determine support of \"suspend\" system state");
+      suspendSupported = 0;
+    }
+  }
+  return suspendSupported == 1;
 }
+
 bool CWin32PowerSyscall::CanHibernate()
 {
-  return true;
+  static int hibernateSupported = -1;
+  if (hibernateSupported == -1)
+  {
+    SYSTEM_POWER_CAPABILITIES pwcp = {};
+    if (GetPwrCapabilities(&pwcp))
+    {
+      if (pwcp.SystemS4 && pwcp.HiberFilePresent)
+      {
+        CLog::LogF(LOGDEBUG, "System supports hibernate");
+        hibernateSupported = 1;
+      }
+      else
+      {
+        CLog::LogF(LOGDEBUG, "System doesn't supports hibernate. S4 state: %s; Hibernate file: %s",
+                   pwcp.SystemS4 ? "supported" : "not supported", pwcp.HiberFilePresent ? "present" : "absent");
+        hibernateSupported = 0;
+      }
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Can't determine support of \"hibernate\" system state");
+      hibernateSupported = 0;
+    }
+  }
+  return hibernateSupported == 1;
 }
+
 bool CWin32PowerSyscall::CanReboot()
 {
   return true;
