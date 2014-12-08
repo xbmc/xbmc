@@ -315,6 +315,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (CAndroidFeatures::GetVersion() < 16)
     return false;
 
+  // mediacodec crashes with null size. Trap this...
+  if (!hints.width || !hints.height)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
+    return false;
+  }
+
   m_drop = false;
   m_hints = hints;
 
@@ -383,6 +390,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (IsBlacklisted(m_codecname))
       continue;
 
+    CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
+    if (xbmc_jnienv()->ExceptionOccurred())
+    {
+      // Unsupported type?
+      xbmc_jnienv()->ExceptionClear();
+      continue;
+    }
+
+    std::vector<int> color_formats = codec_caps.colorFormats();
+
     std::vector<std::string> types = codec_info.getSupportedTypes();
     // return the 1st one we find, that one is typically 'the best'
     for (size_t j = 0; j < types.size(); ++j)
@@ -390,9 +407,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       if (types[j] == m_mime)
       {
         m_codec = boost::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
-
-        CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
-        std::vector<int> color_formats = codec_caps.colorFormats();
 
         // clear any jni exceptions, jni gets upset if we do not.
         if (xbmc_jnienv()->ExceptionOccurred())
@@ -546,6 +560,13 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
     int index = m_codec->dequeueInputBuffer(timeout_us);
+    if (xbmc_jnienv()->ExceptionOccurred())
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionOccurred");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+      return VC_ERROR;
+    }
     if (index >= 0)
     {
       // docs lie, getInputBuffers should be good after
@@ -758,6 +779,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionOccurred())
   {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionOccurred: configure");
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -767,6 +789,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionOccurred())
   {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionOccurred: start");
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -782,9 +805,16 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 {
   int rtn = 0;
 
-  int64_t timeout_us = 5000;
+  int64_t timeout_us = 50000;
   CJNIMediaCodecBufferInfo bufferInfo;
   int index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
+  if (xbmc_jnienv()->ExceptionOccurred())
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionOccurred");
+    xbmc_jnienv()->ExceptionDescribe();
+    xbmc_jnienv()->ExceptionClear();
+    return 0;
+  }
   if (index >= 0)
   {
     if (m_drop)
@@ -1082,9 +1112,23 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     }
   }
 
+  if (width)
+    m_videobuffer.iWidth  = width;
+  if (height)
+    m_videobuffer.iHeight = height;
+
   // picture display width/height include the cropping.
   m_videobuffer.iDisplayWidth  = crop_right  + 1 - crop_left;
   m_videobuffer.iDisplayHeight = crop_bottom + 1 - crop_top;
+  if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
+  {
+    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * m_hints.aspect)) & -3;
+    if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
+    {
+      m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
+      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & -3;
+    }
+  }
 
   // clear any jni exceptions
   if (xbmc_jnienv()->ExceptionOccurred())

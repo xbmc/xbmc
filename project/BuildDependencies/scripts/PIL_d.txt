@@ -1,2 +1,0 @@
-; filename                        mirror                                      source of the file
-PIL-1.1.7.win32-py2.7.exe         http://mirrors.xbmc.org/build-deps/win32/   http://www.pythonware.com/products/pil/

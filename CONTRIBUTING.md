@@ -1,23 +1,23 @@
-## Questions about XBMC?
+## Questions about Kodi?
 
-To get your questions answered, please ask in the XBMC [Forum] or on IRC: #xbmc on freenode.net
+To get your questions answered, please ask in the [Kodi community forums] (http://forum.kodi.tv/) or on IRC: #xbmc on freenode.net
 
 Do not open an issue.
 
 ## Issue Reports
 
-XBMC uses github for development only, i.e. for pull requests and the discussion of code.
+Kodi uses github for development only, i.e. for pull requests and the discussion of code.
 
 So we use a hook script to automatically close new issue created by you.
 
 If you can, we encourage you to investigate the issue yourself and create a Pull Request for us to review.
 
-For bug reports, feature requests and all other support, please go to http://forum.xbmc.org.
+For bug reports, feature requests and all other support, please go to [Kodi community forums] (http://forum.kodi.tv/).
 
 ## Pull Requests
 
-- Before creating a pull request please read our general code guidelines that can be found here
-  http://wiki.xbmc.org/index.php?title=XBMC_development
+- Before creating a pull request please read our general code guidelines that can be found at
+  [Kodi development] (http://kodi.wiki/view/Development).
 
 - **Create topic branches**. Don't ask us to pull from your master branch.
 
@@ -26,7 +26,7 @@ For bug reports, feature requests and all other support, please go to http://for
 
 - **Send coherent history**. Make sure each individual commit in your pull
   request is meaningful. If you had to make multiple intermediate commits while
-  developing, please squash them before sending them to us. IN the end before merging you may be asked to squash your commit even some more.
+  developing, please squash them before sending them to us. In the end before merging you may be asked to squash your commit even some more.
 
 Please follow this process; it's the best way to get your work included in the project:
 
@@ -72,5 +72,3 @@ Please follow this process; it's the best way to get your work included in the p
 
 - [Open a Pull Request](https://help.github.com/articles/using-pull-requests) with a
     clear title and description.
-
-[Forum]: http://forum.xbmc.org/

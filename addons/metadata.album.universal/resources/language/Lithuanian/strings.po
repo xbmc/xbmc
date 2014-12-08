@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-addons/language/lt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Paimti albumų miniatiūras iš fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Paimti albumų miniatiūras iš Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Gauti albumo apžvalgą iš"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     Pageidaujama kalba"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Gauti albumo reitingą iš"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Gauti albumų stilius iš"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Gauti albumų nuotaikas iš"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Gauti albumų temas iš"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Paimti albumų miniatiūras iš allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Iliustracijos"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Paimti albumų miniatiūras iš  theaudiodb.com"

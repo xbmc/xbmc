@@ -59,8 +59,8 @@ namespace XFILE
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual ssize_t Read(void* lpBuf, size_t uiBufSize)        { return m_state->Read(lpBuf, uiBufSize); }
       virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
-      virtual std::string GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
-      virtual std::string GetContent()                           { return GetMimeType(); }
+      virtual std::string GetMimeType()                          { return m_state->m_httpheader.GetMimeType(); }
+      virtual std::string GetContent()                           { return m_state->m_httpheader.GetValue("content-type"); }
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
 
@@ -98,6 +98,7 @@ namespace XFILE
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
       static bool GetMimeType(const CURL &url, std::string &content, const std::string &useragent="");
+      static bool GetContentType(const CURL &url, std::string &content, const std::string &useragent = "");
 
       /* static function that will get cookies stored by CURL in RFC 2109 format */
       static bool GetCookies(const CURL &url, std::string &cookies);

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language locale="mn">
+  <charsets>
+    <gui unicodefont="true">utf-8</gui>
+    <subtitle>utf-8</subtitle>
+  </charsets>
+  <dvd>
+    <menu>mn</menu>
+    <audio>mn</audio>
+    <subtitle>mn</subtitle>
+  </dvd>
+  <regions>
+    <region name="Mongolia" locale="Mn">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>EET</timezone>
+    </region>
+  </regions>
+</language>

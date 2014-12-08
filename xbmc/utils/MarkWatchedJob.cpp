@@ -94,7 +94,6 @@ bool CMarkWatchedJob::DoWork()
 #else
 	if (!database.Open()) return false;
 #endif
-      return false;
 
     database.BeginTransaction();
 

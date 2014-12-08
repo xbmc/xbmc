@@ -35,14 +35,14 @@ See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specif
 
 ##### Quick Kodi development links
 
-* [Submitting a patch] (http://wiki.xbmc.org/index.php?title=HOW-TO_submit_a_patch) 
-* [Coding guidelines] (http://forum.xbmc.org/showthread.php?tid=5238)
-* [Kodi development] (http://wiki.xbmc.org/index.php?title=XBMC_development)
+* [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch) 
+* [Coding guidelines] (http://forum.kodi.tv/showthread.php?tid=5238)
+* [Kodi development] (http://kodi.wiki/view/Development)
 
 ##### Useful links
 
-* [Kodi wiki] (http://wiki.xbmc.org/)
-* [Kodi community forums] (http://forum.xbmc.org/)
+* [Kodi wiki] (http://kodi.wiki/)
+* [Kodi community forums] (http://forum.kodi.tv/)
 * [Kodi website] (http://kodi.tv)
 
 #### Enjoy Kodi and help us improve it today. :)

@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/xbmc-addons/language/fi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Hae albumien pikkukuvat lähteestä fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Hae albumien pikkukuvat lähteestä Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Hae albumien arvostelu lähteestä"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "Ensisijainen kieli"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Hae albumien lähteestä"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Hae albumien musiikkityylilajit lähteestä"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Hae albumien mielentilat lähteestä"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Hae albumien teemat lähteestä"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Hae albumien pikkukuvat lähteestä allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Kuvataide"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Hae albumien pikkukuvat lähteestä theaudiodb.com"

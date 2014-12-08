@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Traditional) (http://www.transifex.com/projects/p/xbmc-addons/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "從fanart.tv取得專輯縮圖"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "啟用 Last.fm專輯縮圖"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "專輯評論取得於"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "偏好的語言"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "專輯評分取得於"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "專輯風格取得於"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "專輯意境取得於"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "專輯主題取得於"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "從allmusic.com取得專輯縮圖"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "圖片"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "從 theaudiodb.com取得專輯縮圖"

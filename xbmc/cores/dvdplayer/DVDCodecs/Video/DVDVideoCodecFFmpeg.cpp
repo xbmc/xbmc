@@ -345,6 +345,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_pCodecContext = NULL;
   }
   SAFE_RELEASE(m_pHardware);
+  DisposeHWDecoders();
 
   FilterClose();
 }
@@ -556,6 +557,8 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if(result & VC_FLUSHED)
     Reset();
+
+  DisposeHWDecoders();
 
   return result;
 }
@@ -887,4 +890,21 @@ bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedPics)
 void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 {
   m_codecControlFlags = flags;
+}
+
+void CDVDVideoCodecFFmpeg::SetHardware(IHardwareDecoder* hardware)
+{
+  if (m_pHardware)
+    m_disposeDecoders.push_back(m_pHardware);
+  m_pHardware = hardware;
+  UpdateName();
+}
+
+void CDVDVideoCodecFFmpeg::DisposeHWDecoders()
+{
+  while (!m_disposeDecoders.empty())
+  {
+    m_disposeDecoders.back()->Release();
+    m_disposeDecoders.pop_back();
+  }
 }

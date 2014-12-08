@@ -34,6 +34,7 @@ public:
   ~CJNIPackageManager() {};
 
   CJNIIntent        getLaunchIntentForPackage(const std::string &package);
+  CJNIIntent        getLeanbackLaunchIntentForPackage(const std::string &package);
   CJNIDrawable      getApplicationIcon(const std::string &package);
   CJNIList<CJNIApplicationInfo> getInstalledApplications(int flags);
   CJNICharSequence  getApplicationLabel(const CJNIApplicationInfo &info);
