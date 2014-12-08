@@ -38,22 +38,35 @@ bool CWin32PowerSyscall::Powerdown()
 {
   return CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN);
 }
+
 bool CWin32PowerSyscall::Suspend()
 {
+  if (!CanSuspend())
+  {
+    CLog::LogF(LOGERROR, "Can't suspend: suspend is not supported by system");
+    return false;
+  }
   // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
   // Set the flag manually
   CWin32PowerSyscall::SetOnSuspend();
 
   return CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
 }
+
 bool CWin32PowerSyscall::Hibernate()
 {
+  if (!CanHibernate())
+  {
+    CLog::LogF(LOGERROR, "Can't hibernate: hibernate is not supported by system");
+    return false;
+  }
   // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
   // Set the flag manually
   CWin32PowerSyscall::SetOnSuspend();
 
   return CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
 }
+
 bool CWin32PowerSyscall::Reboot()
 {
   return CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
