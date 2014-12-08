@@ -443,6 +443,12 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   newWidth *= zoomAmount;
   newHeight *= zoomAmount;
 
+  // if we are less than one pixel off use the complete screen instead
+  if (std::abs(newWidth - screenWidth) < 1.0f)
+    newWidth = screenWidth;
+  if (std::abs(newHeight - screenHeight) < 1.0f)
+    newHeight = screenHeight;
+
   // Centre the movie
   float posY = (screenHeight - newHeight) / 2;
   float posX = (screenWidth - newWidth) / 2;
