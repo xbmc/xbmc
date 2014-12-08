@@ -190,6 +190,41 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
     return (i + 'A');
 }
 
+static DWORD WINAPI threadForSetPowerState(_In_ LPVOID powerState)
+{
+  switch (PowerState(intptr_t(powerState)))
+  {
+  case POWERSTATE_HIBERNATE:
+    CLog::LogF(LOGNOTICE, "Requesting OS to hibernate");
+    if (SetSuspendState(true, true, false) != FALSE) // may be blocked until resume
+    {
+      CLog::LogF(LOGDEBUG, "OS was hibernated successfully");
+      return TRUE;
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Can't hibernate system, error code: %lu", GetLastError());
+      return FALSE;
+    }
+    break;
+  case POWERSTATE_SUSPEND:
+    CLog::LogF(LOGNOTICE, "Requesting OS to suspend");
+    if (SetSuspendState(false, true, false) != FALSE) // may be blocked until resume
+    {
+      CLog::LogF(LOGDEBUG, "OS was suspended successfully");
+      return TRUE;
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Can't suspend system, error code: %lu", GetLastError());
+      return FALSE;
+    }
+    break;
+  }
+  CLog::LogF(LOGERROR, "Unknown powerstate requested");
+  return FALSE;
+}
+
 bool CWIN32Util::PowerManagement(PowerState State)
 {
   static bool gotShutdownPrivileges = false;
@@ -228,13 +263,17 @@ bool CWIN32Util::PowerManagement(PowerState State)
   switch (State)
   {
   case POWERSTATE_HIBERNATE:
-    CLog::Log(LOGINFO, "Asking Windows to hibernate...");
-    return SetSuspendState(true,true,false) == TRUE;
-    break;
   case POWERSTATE_SUSPEND:
-    CLog::Log(LOGINFO, "Asking Windows to suspend...");
-    return SetSuspendState(false,true,false) == TRUE;
-    break;
+    {
+      HANDLE threadHandle = CreateThread(NULL, 0, threadForSetPowerState, PVOID(intptr_t(State)), 0, NULL); // use separate thread, so main thread stay unblocked
+      if (threadHandle == NULL)
+      {
+        CLog::LogF(LOGERROR, "Can't create thread for switching power mode");
+        return false;
+      }
+      CloseHandle(threadHandle); // thread is one-shot, no need to track it
+    }
+    return true;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
     if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
