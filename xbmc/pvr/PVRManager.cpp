@@ -1094,6 +1094,10 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
   
   if (!pvrItem.HasPVRChannelInfoTag() && !pvrItem.HasPVRRecordingInfoTag())
     return false;
+    
+  // check parental lock if we want to play a channel
+  if (pvrItem.IsPVRChannel() && !g_PVRManager.CheckParentalLock(*pvrItem.GetPVRChannelInfoTag()))
+    return false;
   
   if (!g_application.IsCurrentThread())  
   {
