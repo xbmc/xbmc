@@ -44,12 +44,13 @@ struct androidIcon
   unsigned int width;
   unsigned int height;
   void *pixels;
-};  
+};
 
 struct androidPackage
 {
   std::string packageName;
   std::string packageLabel;
+  int icon;
 };
 
 class CXBMCApp : public IActivityHandler, public CJNIApplicationMainActivity, public CJNIBroadcastReceiver
@@ -89,8 +90,6 @@ public:
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
-  static bool GetIconSize(const std::string &packageName, int *width, int *height);
-  static bool GetIcon(const std::string &packageName, void* buffer, unsigned int bufSize); 
 
   /*!
    * \brief If external storage is available, it returns the path for the external storage (for the specified type)

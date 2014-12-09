@@ -29,7 +29,14 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include <jni.h>
-#include "android/activity/XBMCApp.h"
+#include <android/bitmap.h>
+#include "android/jni/Context.h"
+#include "android/jni/Build.h"
+#include "android/jni/DisplayMetrics.h"
+#include "android/jni/Resources.h"
+#include "android/jni/Bitmap.h"
+#include "android/jni/BitmapDrawable.h"
+#include "android/jni/PackageManager.h"
 using namespace XFILE;
 
 CFileAndroidApp::CFileAndroidApp(void)
@@ -53,7 +60,10 @@ bool CFileAndroidApp::Open(const CURL& url)
   for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
   {
     if ((*i).packageName == m_appname)
+    {
+      m_droidPackage = *i;
       return true;
+    }
   }
 
   return false;
@@ -74,31 +84,50 @@ bool CFileAndroidApp::Exists(const CURL& url)
   return false;
 }
 
-ssize_t CFileAndroidApp::Read(void* lpBuf, size_t uiBufSize)
+unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* width, unsigned int* height)
 {
-  if(CXBMCApp::GetIcon(m_appname, lpBuf, uiBufSize))
-    return uiBufSize; // FIXME: not full buffer may be used
-  return -1;
+  JNIEnv* env = xbmc_jnienv();
+  void *bitmapBuf = NULL;
+
+  CJNIBitmapDrawable bmp;
+  if (CJNIBuild::SDK_INT >= 15 && m_droidPackage.icon)
+  {
+    int density = CJNIDisplayMetrics::DENSITY_XHIGH;
+    if (CJNIBuild::SDK_INT >= 18)
+      density = CJNIDisplayMetrics::DENSITY_XXXHIGH;
+    else if (CJNIBuild::SDK_INT >= 16)
+      density = CJNIDisplayMetrics::DENSITY_XXHIGH;
+    CJNIResources res = CJNIContext::GetPackageManager().getResourcesForApplication(m_droidPackage.packageName);
+    if (res)
+      bmp = res.getDrawableForDensity(m_droidPackage.icon, density);
+  }
+  else
+    bmp = (CJNIBitmapDrawable)CJNIContext::GetPackageManager().getApplicationIcon(m_droidPackage.packageName);
+
+  CJNIBitmap bitmap(bmp.getBitmap());
+  AndroidBitmapInfo info;
+  AndroidBitmap_getInfo(env, bitmap.get_raw(), &info);
+  if (!info.width || !info.height)
+    return 0;
+
+  *width = info.width;
+  *height = info.height;
+
+  int imgsize = *width * *height * 4;
+  *lpBuf = new unsigned char[imgsize];
+
+  AndroidBitmap_lockPixels(env, bitmap.get_raw(), &bitmapBuf);
+  if (bitmapBuf)
+  {
+    memcpy(*lpBuf, bitmapBuf, imgsize);
+    AndroidBitmap_unlockPixels(env, bitmap.get_raw());
+    return imgsize;
+  }
+  return 0;
 }
 
 void CFileAndroidApp::Close()
 {
-}
-
-int64_t CFileAndroidApp::GetLength()
-{
-  CXBMCApp::GetIconSize(m_appname, &m_iconWidth, &m_iconHeight);
-  return m_iconWidth * m_iconHeight * 4;
-}
-
-unsigned int CFileAndroidApp::GetIconWidth()
-{
-  return m_iconWidth;
-}
-
-unsigned int CFileAndroidApp::GetIconHeight()
-{
-  return m_iconHeight;
 }
 
 int CFileAndroidApp::GetChunkSize()
