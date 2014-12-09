@@ -65,8 +65,6 @@
 #include "android/jni/System.h"
 #include "android/jni/ApplicationInfo.h"
 #include "android/jni/StatFs.h"
-#include "android/jni/BitmapDrawable.h"
-#include "android/jni/Bitmap.h"
 #include "android/jni/CharSequence.h"
 #include "android/jni/URI.h"
 #include "android/jni/Cursor.h"
@@ -531,49 +529,22 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
     CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
-    {
-      androidPackage newPackage;
-      newPackage.packageName = packageList.get(i).packageName;
-      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
-      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
+    {            
+      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent && CJNIBuild::SDK_INT >= 21)
-        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(newPackage.packageName);
+        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent)
         continue;
 
+      androidPackage newPackage;
+      newPackage.packageName = packageList.get(i).packageName;
+      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+      newPackage.icon = packageList.get(i).icon;
       m_applications.push_back(newPackage);
     }
   }
 
   return m_applications;
-}
-
-bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
-{
-  JNIEnv* env = xbmc_jnienv();
-  AndroidBitmapInfo info;
-  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
-  CJNIBitmap icon(drawable.getBitmap());
-  AndroidBitmap_getInfo(env, icon.get_raw(), &info);
-  *width = info.width;
-  *height = info.height;
-  return true;
-}
-
-bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int bufSize)
-{
-  void *bitmapBuf = NULL;
-  JNIEnv* env = xbmc_jnienv();
-  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
-  CJNIBitmap bitmap(drawable.getBitmap());
-  AndroidBitmap_lockPixels(env, bitmap.get_raw(), &bitmapBuf);
-  if (bitmapBuf)
-  {
-    memcpy(buffer, bitmapBuf, bufSize);
-    AndroidBitmap_unlockPixels(env, bitmap.get_raw());
-    return true;
-  }
-  return false;
 }
 
 bool CXBMCApp::HasLaunchIntent(const string &package)

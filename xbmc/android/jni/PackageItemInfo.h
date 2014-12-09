@@ -20,25 +20,17 @@
  */
 
 #include "JNIBase.h"
-#include "PackageItemInfo.h"
 
-class CJNIApplicationInfo : public CJNIPackageItemInfo
+class CJNIPackageItemInfo : public CJNIBase
 {
 public:
-  CJNIApplicationInfo(const jni::jhobject &object);
-  ~CJNIApplicationInfo(){};
+  CJNIPackageItemInfo(const jni::jhobject &object);
 
-  std::string sourceDir;
-  std::string publicSourceDir;
-  std::string dataDir;
-  std::string nativeLibraryDir;
-  std::string packageName;
-  int         uid; 
-  int         targetSdkVersion;
-  bool        enabled;
+  int         icon;
 
-private:
-  CJNIApplicationInfo();
+protected:
+  CJNIPackageItemInfo();
+  ~CJNIPackageItemInfo() {};
+  static const char *m_classname;
+
 };
-
-typedef std::vector<CJNIApplicationInfo> CJNIApplicationInfos;

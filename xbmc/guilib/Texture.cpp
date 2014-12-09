@@ -184,18 +184,15 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
     XFILE::CFileAndroidApp file;
     if (file.Open(url))
     {
-      unsigned int imgsize = (unsigned int)file.GetLength();
-      unsigned char* inputBuff = new unsigned char[imgsize];
-      unsigned int inputBuffSize = file.Read(inputBuff, imgsize);
+      unsigned char* inputBuff;
+      unsigned int width;
+      unsigned int height;
+      unsigned int inputBuffSize = file.ReadIcon(&inputBuff, &width, &height);
       file.Close();
-      if (inputBuffSize != imgsize)
-      {
-        delete [] inputBuff;
+      if (!inputBuffSize)
         return NULL;
-      }
+
       CTexture *texture = new CTexture();
-      unsigned int width = file.GetIconWidth();
-      unsigned int height = file.GetIconHeight();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
       delete [] inputBuff;
       return texture;

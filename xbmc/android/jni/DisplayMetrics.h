@@ -20,25 +20,23 @@
  */
 
 #include "JNIBase.h"
-#include "PackageItemInfo.h"
 
-class CJNIApplicationInfo : public CJNIPackageItemInfo
+class CJNIDisplayMetrics
 {
 public:
-  CJNIApplicationInfo(const jni::jhobject &object);
-  ~CJNIApplicationInfo(){};
+  static int 	DENSITY_DEFAULT;
+  static int 	DENSITY_HIGH;
+  static int 	DENSITY_LOW;
+  static int 	DENSITY_MEDIUM;
+  static int 	DENSITY_TV;
+  static int 	DENSITY_XHIGH;
+  static int 	DENSITY_XXHIGH;
+  static int 	DENSITY_XXXHIGH;
 
-  std::string sourceDir;
-  std::string publicSourceDir;
-  std::string dataDir;
-  std::string nativeLibraryDir;
-  std::string packageName;
-  int         uid; 
-  int         targetSdkVersion;
-  bool        enabled;
+  static void PopulateStaticFields();
 
 private:
-  CJNIApplicationInfo();
+  CJNIDisplayMetrics();
+  ~CJNIDisplayMetrics() {};
+  static const char *m_classname;
 };
-
-typedef std::vector<CJNIApplicationInfo> CJNIApplicationInfos;
