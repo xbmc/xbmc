@@ -396,7 +396,7 @@ void CGUIPlexDefaultActionHandler::GetContextButtonsForAction(int actionID, CFil
       {
         CStdString viewOffset = item->GetProperty("viewOffset").asString();
         
-        if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+        if (item->GetVideoInfoTag()->m_playCount == 0)
           buttons.Add(actionID, 16103);
       }
       break;
