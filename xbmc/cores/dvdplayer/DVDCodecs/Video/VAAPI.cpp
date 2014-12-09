@@ -2480,6 +2480,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create config
   if (!CheckSuccess(vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId)))
   {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+
     return false;
   }
 
@@ -2494,6 +2497,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                      nb_surfaces,
                                      NULL, 0)))
   {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+
     return false;
   }
   for (int i=0; i<nb_surfaces; i++)
@@ -2512,6 +2518,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                     &m_contextId)))
   {
     m_contextId = VA_INVALID_ID;
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+
     return false;
   }
 
@@ -2522,6 +2531,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters)))
   {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+
     return false;
   }
 
@@ -2531,6 +2543,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                                deinterlacingCaps,
                                                &numDeinterlacingCaps)))
   {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+
     return false;
   }
 
