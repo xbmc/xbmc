@@ -238,7 +238,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
   case 'I': // size
-    if( !item->m_bIsFolder || item->m_dwSize != 0 )
+    if( (item->m_bIsFolder && item->m_dwSize != 0) || item->m_dwSize >= 0 )
       value = StringUtils::SizeToString(item->m_dwSize);
     break;
   case 'J': // date
