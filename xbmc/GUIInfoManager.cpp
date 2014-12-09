@@ -3224,7 +3224,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   }
   else if (info.m_info == PLAYER_SEEKOFFSET)
   {
-    CStdString seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset), (TIME_FORMAT)info.GetData1());
+    CStdString seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset / 1000), (TIME_FORMAT)info.GetData1());
     if (m_seekOffset < 0)
       return "-" + seekOffset;
     if (m_seekOffset > 0)
