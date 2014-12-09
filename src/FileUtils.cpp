@@ -558,7 +558,11 @@ std::string FileUtils::canonicalPath(const char* path)
     throw IOException("Error reading canonical path for " + std::string(path));
   }
 #else
-  throw IOException("canonicalPath() not implemented");
+  char canonicalPathBuffer[MAX_PATH];
+  if (_fullpath(path, canonicalPathBuffer, MAX_PATH) != NULL)
+    return std::string(canonicalPathBuffer);
+  else
+    throw IOException("Error reading canonical path for " + std::string(path));
 #endif
 }
 
