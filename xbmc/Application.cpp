@@ -3661,6 +3661,10 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
       }
     }
   }
+  else if (item.IsPVR())
+  {
+    return g_PVRManager.PlayMedia(item);
+  }
 
   //nothing special just play
   return PlayFile(item, false) == PLAYBACK_OK;
