@@ -417,6 +417,9 @@ bool CPlexMediaDecisionJob::DoWork()
     m_choosenMedia.m_selectedMediaPart = mediaItem->m_mediaParts[0];
   }
 
+  // forward resume state to chosen media item
+  m_choosenMedia.m_lStartOffset = m_item.m_lStartOffset;
+
   // Get details on the item we're playing.
   if (m_choosenMedia.IsPlexMediaServerLibrary())
   {
