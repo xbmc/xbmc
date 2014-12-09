@@ -24,6 +24,7 @@
 #include "List.h"
 #include "CharSequence.h"
 #include "ApplicationInfo.h"
+#include "Resources.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
@@ -71,3 +72,16 @@ CJNIList<CJNIApplicationInfo> CJNIPackageManager::getInstalledApplications(int f
     flags);
 }
 
+CJNIResources CJNIPackageManager::getResourcesForApplication(const std::string &package)
+{
+  return call_method<jhobject>(m_object,
+    "getResourcesForApplication", "(Ljava/lang/String;)Landroid/content/res/Resources;",
+    jcast<jhstring>(package));
+}
+
+CJNIResources CJNIPackageManager::getResourcesForApplication(const CJNIApplicationInfo &info)
+{
+  return call_method<jhobject>(m_object,
+    "getResourcesForApplication", "(Landroid/content/pm/ApplicationInfo;)Landroid/content/res/Resources;",
+    info.get_raw());
+}
