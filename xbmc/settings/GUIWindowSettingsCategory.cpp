@@ -1019,7 +1019,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(!g_guiSettings.GetString("screensaver.mode").IsEmpty());
-      if (strSetting.Equals("screensaver.usedimonpause") && !g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
     else if (strSetting.Equals("musicfiles.trackformat"))
