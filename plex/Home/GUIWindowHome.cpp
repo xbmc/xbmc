@@ -425,6 +425,18 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       RefreshAllSections(false);
       RefreshSection("plexserver://playlists/", CPlexSectionFanout::SECTION_TYPE_PLAYLISTS);
 
+      // refresh the current fanout
+      CFileItem* item = GetCurrentFileItem();
+      if (item)
+      {
+        std::string url = item->GetProperty("sectionPath").asString();
+        if (m_sections.find(url) != m_sections.end())
+        {
+          CPlexSectionFanout* section = m_sections[url];
+          section->Refresh();
+        }
+      }
+
       break;
     }
 
