@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "серверное ПО и соответствующее дополнение."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Посетите kodi.tv/pvr для получения дополнительной информации."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Посетите http://kodi.wiki/view/PVR для получения дополнительной информации."
 
 msgctxt "#19275"
 msgid "Conflict warning"

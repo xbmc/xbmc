@@ -7201,10 +7201,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Ychwanegyn ar gyfer y offer cefn er mwyn defnyddio'r Recordydd."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Ewch i kodi.tv/pvr i ddysgu ragor."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Rhybudd gwrthdaro"

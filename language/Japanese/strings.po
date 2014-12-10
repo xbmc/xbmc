@@ -7221,10 +7221,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "PVRを有効にする、バックエンド対応アドオン"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "kodi.tv/pvr に詳しい情報があります"
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "コンフリクト警告"

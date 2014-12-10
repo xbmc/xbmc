@@ -4057,10 +4057,6 @@ msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "ရိုက်ထည့်သော PIN နံပါတ်မှားယွင်းနေသည်"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "နောက်ထပ်သင်ယူရန်အတွက်  kodi.tv/pvr သို့ကျေးဇူးပြု၍သွားပါ။"
-
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "တခြား၊မသိရှိသော"

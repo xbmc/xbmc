@@ -6677,10 +6677,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Вам патрэбны прыймач, апраграмаваньне да яго,"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Падрабязнасьці вы знойдзеце на kodi.tv/pvr."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Conflict warning"

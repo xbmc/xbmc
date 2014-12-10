@@ -7229,10 +7229,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Dodatek za hrbtenico, ki bo omogočal uporabo PVR."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Obiščite kodi.tv/pvr za več informacij."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Opozorilo o prekrivanju"

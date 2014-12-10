@@ -7089,10 +7089,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Usted necesita un sintonizador, software, y un"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Por favor visite kodi.tv/pvr para saber mas."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Alerta de conflicto"

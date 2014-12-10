@@ -1211,7 +1211,7 @@ msgstr "Fixe"
 
 msgctxt "#339"
 msgid "Optimized"
-msgstr "Optimisé"
+msgstr "Optimisée"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -5547,7 +5547,7 @@ msgstr "Format de la date"
 
 msgctxt "#14053"
 msgid "GUI filters"
-msgstr "Filtres d'interface utilisateur"
+msgstr "Filtres de l'IUG"
 
 msgctxt "#14054"
 msgid "%2.1f dB"
@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "addiciel permettant au dorsal d'utiliser un numériscope."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Veuillez visiter kodi.tv/pvr pour en apprendre plus."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Veuillez visiter http://kodi.wiki/view/PVR pour en apprendre plus."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9255,7 +9255,7 @@ msgstr "Remplacer les polices de sous-titres ASS/SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
-msgstr "Activer la prise en charge de la souris et de l'écran tactile"
+msgstr "Activer la prise en charge des souris et des écrans tactiles"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -10015,7 +10015,7 @@ msgstr "Température de l'UCT :"
 
 msgctxt "#22012"
 msgid "Total memory"
-msgstr "Mémoire totale"
+msgstr "Mémoire totale "
 
 msgctxt "#22013"
 msgid "Profile data"
@@ -11099,7 +11099,7 @@ msgstr "Choisir le comportement quand aucun son n'est requis ni pour la lecture 
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr "Jouer les sons de l'interface utilisateur"
+msgstr "Jouer les sons de l'IUG"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
@@ -12223,7 +12223,7 @@ msgstr "Catégorie contenant des paramètres sur la gestion des listes de fichie
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
-msgstr "Si les information EXIF existent (date, heure, appareil-photo utilisé, etc.), elles seront affichées."
+msgstr "Si les informations EXIF existent (date, heure, appareil-photo utilisé, etc.), elles seront affichées."
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
@@ -12231,7 +12231,7 @@ msgstr "Générer automatiquement des imagettes lors de l'accès à un dossier d
 
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr "Les images seront automatiquement retournées en fonction des balises EXIF, si trouvées."
+msgstr "Les images seront automatiquement pivotées en fonction des balises EXIF, si il y en a."
 
 msgctxt "#36309"
 msgid "Show videos in picture file lists."
@@ -12435,7 +12435,7 @@ msgstr "Motifs de test pour la calibration du matériel d'affichage."
 
 msgctxt "#36359"
 msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
-msgstr "Utiliser une gamme des couleurs limitée (16-235) au lieu d'une gamme des couleurs complète (0-255). Une gamme limitée devrait être utilisée si votre écran est une télé HDMI normale et n'a pas de mode PC ou autre pour afficher une plage entière de couleurs. Cependant, si votre écran est un moniteur de PC, laissez alors ceci désactivé pour obtenir des niveaux de noir de qualité."
+msgstr "Utiliser une gamme des couleurs restreinte (16-235) au lieu d'une gamme des couleurs complète (0-255). Une gamme restreinte devrait être utilisée si votre écran est une télé HDMI normale et n'a pas de mode PC ou autre pour afficher une plage entière de couleurs. Cependant, si votre écran est un moniteur de PC, laissez alors ceci désactivé pour obtenir des niveaux de noir de qualité."
 
 msgctxt "#36360"
 msgid "Category containing settings for how audio output is handled."
@@ -12443,7 +12443,7 @@ msgstr "Catégorie contenant des paramètres sur la gestion des sorties audio."
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
-msgstr "Choisir comment les propriétés de la sortie audio seront définies : [Fixe] - les propriétés de sortie sont définies à la fréquence d'échantillonnage spécifiée et à la configuration des haut-parleurs en tout temps; [Meilleure correspondance] - les propriétés de sortie sont définies pour être toujours correspondre le plus possible aux propriétés de la source; [Optimisé] - les propriétés de sortie sont définies au début de la lecture et ne changeront pas si les propriétés de la source changent."
+msgstr "Choisir comment les propriétés de la sortie audio seront définies : [Fixe] - les propriétés de sortie sont définies à la fréquence d'échantillonnage spécifiée et à la configuration des haut-parleurs en tout temps; [Meilleure correspondance] - les propriétés de sortie sont définies pour être toujours correspondre le plus possible aux propriétés de la source; [Optimisée] - les propriétés de sortie sont définies au début de la lecture et ne changeront pas si les propriétés de la source changent."
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
@@ -12491,7 +12491,7 @@ msgstr "Choisir le dispositif à utiliser pour la lecture des format encodés. C
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
-msgstr "Configurer comment les sons de l'interface sont gérés, comme la navigation du menu ou les notifications importantes."
+msgstr "Configurer comment les sons de l'interface sont gérés, tels que la navigation du menu et les notifications importantes."
 
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
@@ -12543,7 +12543,7 @@ msgstr "Configurer le mot de passe du serveur mandataire."
 
 msgctxt "#36386"
 msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
-msgstr "Si vous avez une bande passante disponible limitée, Kodi va essayer de rester dans ces limites."
+msgstr "Si vous avez une bande passante disponible limitée, Kodi va essayer de respecter ces limites."
 
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
@@ -13035,7 +13035,7 @@ msgstr "Activer les illustrations à plus grande profondeur de couleurs"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
-msgstr "Définir une limite de résolution de l'interface utilisateur"
+msgstr "Définir la limite de résolution de l'IUG"
 
 msgctxt "#37022"
 msgid "UPnP Player"
