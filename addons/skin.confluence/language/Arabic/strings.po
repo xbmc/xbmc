@@ -542,7 +542,7 @@ msgstr "الصور"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "TV"
+msgstr "تلفزيون"
 
 msgctxt "#31953"
 msgid "VIDEOS"
@@ -571,3 +571,7 @@ msgstr "القرص"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "النظام"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "راديو"

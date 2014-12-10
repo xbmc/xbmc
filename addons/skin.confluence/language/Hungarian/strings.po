@@ -462,7 +462,7 @@ msgstr "[B]RENDSZERBEÁLLÍTÁSOK[/B][CR][CR]Kijelzők beállítása, kalibrál�
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
-msgstr "[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az kodi.tv[CR]webhelyről · Kiegészítők beállításainak módosítása"
+msgstr "[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése a kodi.tv[CR]webhelyről · Kiegészítők beállításainak módosítása"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -490,7 +490,7 @@ msgstr "Bejelentkezés"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Válaszd ki az Kodi felhasználói profilod[CR]a belépéshez"
+msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
