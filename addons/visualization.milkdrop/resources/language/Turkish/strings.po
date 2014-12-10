@@ -82,7 +82,7 @@ msgstr "%2.0f saniye"
 
 msgctxt "#30051"
 msgid "%2.0f %%"
-msgstr "%2.0f %%"
+msgstr "%% %2.0f"
 
 msgctxt "#30052"
 msgid "%2.0f fps"

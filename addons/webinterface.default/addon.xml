@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.20"
+  version="2.2.21"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -41,6 +41,7 @@
     <summary lang="hr">Tim Kodi Web sučelje. (Kodijevo uobičajeno web sučelje)</summary>
     <summary lang="hu">Az Kodi csapat Webes kezelőfelülete (Kodi alapértelmezett webes kezelőfelülete)</summary>
     <summary lang="id">Antar Muka Web Tim Kodi. (Antar muka web bawaan Kodi)</summary>
+    <summary lang="is">Team-Kodi Vefviðmót. (Sjálfgefið vefviðmót á Kodi)</summary>
     <summary lang="it">Interfaccia Web del Team-Kodi. (Interfaccia web di default per Kodi)</summary>
     <summary lang="ja">Team-Kodi Web Interface. (Kodi's default web interface)</summary>
     <summary lang="ko">Team-Kodi 웹 인터페이스. (Kodi 기본 웹 인터페이스)</summary>
