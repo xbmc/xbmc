@@ -651,19 +651,17 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path)
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  FSRef fileRef;
-  Boolean targetIsFolder, wasAliased;
+  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  NSNumber* wasAliased = nil;
 
-  // It is better to call FSPathMakeRefWithOptions and pass kFSPathMakeRefDefaultOptions
-  //   since it will succeed for paths such as "/Volumes" unlike FSPathMakeRef.
-  if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
+  if (nsUrl != nil)
   {
-    if (noErr == FSIsAliasFile(&fileRef, &wasAliased, &targetIsFolder))
+    NSError *error = nil;
+
+    if ([nsUrl getResourceValue:&wasAliased forKey:NSURLIsAliasFileKey error:&error])
     {
-      if (wasAliased)
-      {
-        rtn = true;
-      }
+      ret = [wasAliased boolValue];
     }
   }
 #endif
@@ -673,20 +671,28 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path)
 void CDarwinUtils::TranslateAliasShortcut(std::string& path)
 {
 #if defined(TARGET_DARWIN_OSX)
-  FSRef fileRef;
-  Boolean targetIsFolder, wasAliased;
-
-  if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
+  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  
+  if (nsUrl != nil)
   {
-    if (noErr == FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI))
+    NSError *error = nil;
+    NSData * bookmarkData = [NSURL bookmarkDataWithContentsOfURL:nsUrl error:&error];
+    if (bookmarkData)
     {
-      if (wasAliased)
+      BOOL isStale = NO;
+      NSURLBookmarkResolutionOptions options = NSURLBookmarkResolutionWithoutUI |
+                                               NSURLBookmarkResolutionWithoutMounting;
+
+      NSURL* resolvedURL = [NSURL URLByResolvingBookmarkData:bookmarkData
+                                                     options:options
+                                               relativeToURL:nil
+                                         bookmarkDataIsStale:&isStale
+                                                       error:&error];
+      if (resolvedURL)
       {
-        char real_path[PATH_MAX];
-        if (noErr == FSRefMakePath(&fileRef, (UInt8*)real_path, PATH_MAX))
-        {
-          path = real_path;
-        }
+        // [resolvedURL path] returns a path as /dir/dir/file ...
+        path = (const char*)[[resolvedURL path] UTF8String];
       }
     }
   }
