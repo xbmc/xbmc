@@ -699,4 +699,26 @@ void CDarwinUtils::TranslateAliasShortcut(std::string& path)
 #endif
 }
 
+bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::string& toPath)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_OSX)
+  NSString *nsToPath = [NSString stringWithUTF8String:toPath.c_str()];
+  NSURL *toUrl = [NSURL fileURLWithPath:nsToPath];
+  NSString *nsFromPath = [NSString stringWithUTF8String:fromPath.c_str()];
+  NSURL *fromUrl = [NSURL fileURLWithPath:nsFromPath];
+  NSError *error = nil;
+  NSData *bookmarkData = [toUrl bookmarkDataWithOptions: NSURLBookmarkCreationSuitableForBookmarkFile includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
+
+  if(bookmarkData != nil && fromUrl != nil && toUrl != nil) 
+  {
+    if([NSURL writeBookmarkData:bookmarkData toURL:fromUrl options:NSURLBookmarkCreationSuitableForBookmarkFile error:&error])
+    {
+      ret = true;
+    }
+  }
+#endif
+  return ret;
+}
+
 #endif
