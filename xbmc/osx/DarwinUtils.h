@@ -51,6 +51,8 @@ public:
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);
   static bool        CFStringRefToUTF8String(CFStringRef source, std::string& destination);
   static const std::string&  GetManufacturer(void);
+  static bool        IsAliasShortcut(const std::string& path);
+  static void        TranslateAliasShortcut(std::string& path);
 };
 
 #endif

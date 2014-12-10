@@ -647,4 +647,50 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   return manufName;
 }
 
+bool CDarwinUtils::IsAliasShortcut(const std::string& path)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_OSX)
+  FSRef fileRef;
+  Boolean targetIsFolder, wasAliased;
+
+  // It is better to call FSPathMakeRefWithOptions and pass kFSPathMakeRefDefaultOptions
+  //   since it will succeed for paths such as "/Volumes" unlike FSPathMakeRef.
+  if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
+  {
+    if (noErr == FSIsAliasFile(&fileRef, &wasAliased, &targetIsFolder))
+    {
+      if (wasAliased)
+      {
+        rtn = true;
+      }
+    }
+  }
+#endif
+  return ret;
+}
+
+void CDarwinUtils::TranslateAliasShortcut(std::string& path)
+{
+#if defined(TARGET_DARWIN_OSX)
+  FSRef fileRef;
+  Boolean targetIsFolder, wasAliased;
+
+  if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
+  {
+    if (noErr == FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI))
+    {
+      if (wasAliased)
+      {
+        char real_path[PATH_MAX];
+        if (noErr == FSRefMakePath(&fileRef, (UInt8*)real_path, PATH_MAX))
+        {
+          path = real_path;
+        }
+      }
+    }
+  }
+#endif
+}
+
 #endif
