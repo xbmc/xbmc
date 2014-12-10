@@ -146,7 +146,7 @@ void CKaraokeLyricsCDG::Render()
 
   if ( UpdateBuffer( packets_due ) )
   {
-    XUTILS::auto_buffer buf(CDG_FULL_HEIGHT * CDG_FULL_WIDTH);
+    XUTILS::auto_buffer buf(CDG_FULL_HEIGHT * CDG_FULL_WIDTH*sizeof(DWORD));
     DWORD* const pixelbuf = (DWORD*)buf.get();
 
 	  // Update our texture content
