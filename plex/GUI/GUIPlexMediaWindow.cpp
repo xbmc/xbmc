@@ -652,8 +652,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
       {
         CFileItemPtr item = CFileItemPtr(new CFileItem);
         item->SetPath(boost::lexical_cast<std::string>(i));
-        if (charMap.find(PLEX_DEFAULT_PAGE_SIZE + i) != charMap.end())
-          item->SetSortLabel(CStdString(charMap[PLEX_DEFAULT_PAGE_SIZE + i]));
+        if (charMap.find(i) != charMap.end())
+          item->SetSortLabel(CStdString(charMap[i]));
         items.AddFront(item, 0);
       }
 
@@ -661,8 +661,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
       {
         CFileItemPtr item = CFileItemPtr(new CFileItem);
         item->SetPath(boost::lexical_cast<std::string>(i));
-        if (charMap.find(PLEX_DEFAULT_PAGE_SIZE + i) != charMap.end())
-          item->SetSortLabel(CStdString(charMap[PLEX_DEFAULT_PAGE_SIZE + i]));
+        if (charMap.find(i) != charMap.end())
+          item->SetSortLabel(CStdString(charMap[i]));
         items.Add(item);
       }
     }
