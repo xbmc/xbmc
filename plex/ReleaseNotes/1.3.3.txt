@@ -22,3 +22,4 @@ Fixes:
     - Updates of applications on other volumes is now fixed.
     - The updater will not ask you to input your password at all times now.
     - Update should now work on 32bit systems.
+  - Fix flung playQueues when you have trailers enabled in PHT.
