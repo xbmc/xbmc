@@ -118,6 +118,7 @@ CPlexRemoteResponse CPlexRemotePlayHandler::playPlayQueue(const CPlexServerPtr& 
   options.startPlaying = true;
   options.showPrompts = false;
   options.resumeOffset = getStartPosition(arguments);
+  options.isFlung = true;
 
   g_plexApplication.playQueueManager->loadPlayQueue(server, playQueueId, options);
   return CPlexRemoteResponse();

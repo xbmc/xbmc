@@ -14,7 +14,8 @@ class CPlexPlayQueueOptions
 public:
   CPlexPlayQueueOptions(bool playing = true, bool prompts = true, bool doshuffle = false,
                         const std::string& startItem = "")
-    : startPlaying(playing), showPrompts(prompts), shuffle(doshuffle), startItemKey(startItem), forceTrailers(false)
+    : startPlaying(playing), showPrompts(prompts), shuffle(doshuffle), startItemKey(startItem),
+      forceTrailers(false), isFlung(false)
   {}
 
   // if the PQ should start playing when it's loaded or created
@@ -37,6 +38,9 @@ public:
 
   // creation Url Options
   CUrlOptions urlOptions;
+
+  // set to true if this PlayQueue is flung.
+  bool isFlung;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +86,8 @@ public:
   
   inline void setVersion(int version) { m_Version = version; };
   inline void setType(ePlexMediaType type) { m_Type = type; };
+
+  CPlexPlayQueueOptions m_options;
 };
 
 typedef boost::shared_ptr<CPlexPlayQueue> CPlexPlayQueuePtr;

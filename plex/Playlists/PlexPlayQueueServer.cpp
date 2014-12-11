@@ -115,6 +115,8 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
       u.SetOption("extrasPrefixCount", boost::lexical_cast<std::string>(trailerCount));
   }
 
+  m_options = options;
+
   return sendRequest(u, "POST", options);
 }
 
@@ -276,6 +278,8 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
       m_list->Get(i)->SetProperty("playQueueVersion", m_list->GetProperty("playQueueVersion").asString());
     }
 
+    // save our options.
+    m_options = fj->m_options;
     CApplicationMessenger::Get().PlexUpdatePlayQueue(type, fj->m_options.startPlaying);
   }
   else
