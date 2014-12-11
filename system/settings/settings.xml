@@ -969,8 +969,8 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="myvideos.extractthumb" type="boolean" label="20433" help="36180">
-          <level>4</level>
+        <setting id="myvideos.extractthumb" type="boolean" label="38190" help="36180">
+          <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
