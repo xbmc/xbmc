@@ -12,11 +12,13 @@ public:
   void OnSelected();
   bool OnAction(const CAction &action);
   bool DidAuth() { return m_authed; }
+  bool DidSwitchUser() { return m_userSwitched; }
 
 private:
   void fetchUsers();
 //  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   bool m_authed;
+  bool m_userSwitched;
 };
 
 #endif // GUIDIALOGPLEXUSERSELECT_H

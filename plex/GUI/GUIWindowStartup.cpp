@@ -51,9 +51,19 @@ void CGUIWindowStartup::OnWindowLoaded()
       {
         dialog->DoModal();
         if (dialog->DidAuth())
+        {
+          if (dialog->DidSwitchUser())
+            g_windowManager.ActivateWindow(WINDOW_HOME);
+          else
+            g_windowManager.PreviousWindow();
           break;
+        }
       }
     }
+  }
+  else
+  {
+    g_windowManager.PreviousWindow();
   }
 }
 

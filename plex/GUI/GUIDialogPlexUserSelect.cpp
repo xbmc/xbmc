@@ -12,7 +12,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIDialogPlexUserSelect::CGUIDialogPlexUserSelect()
-  : CGUIDialogSelect(WINDOW_DIALOG_PLEX_USER_SELECT, "DialogPlexUserSelect.xml"), m_authed(false)
+  : CGUIDialogSelect(WINDOW_DIALOG_PLEX_USER_SELECT, "DialogPlexUserSelect.xml"), m_authed(false), m_userSwitched(false)
 {
 }
 
@@ -22,6 +22,7 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
     m_authed = false;
+    m_userSwitched = false;
 
     SetHeading("Switch to User");
     
@@ -63,8 +64,6 @@ bool CGUIDialogPlexUserSelect::OnAction(const CAction &action)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//void CGUIDialogPlexUserSelect::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-//{
 void CGUIDialogPlexUserSelect::fetchUsers()
 {
   XFILE::CPlexDirectory dir;
@@ -128,7 +127,10 @@ void CGUIDialogPlexUserSelect::OnSelected()
           {
             m_authed = true;
             if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id != item->GetProperty("id").asInteger())
+            {
+              m_userSwitched = true;
               g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), pin);
+            }
             break;
           }
           firstTry = false;
@@ -140,7 +142,11 @@ void CGUIDialogPlexUserSelect::OnSelected()
   {
     // no PIN needed.
     m_authed = true;
-    g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1));
+    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id != item->GetProperty("id").asInteger())
+    {
+      m_userSwitched = true;
+      g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1));
+    }
   }
 
   if (close)
