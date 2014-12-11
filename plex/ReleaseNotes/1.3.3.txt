@@ -1,0 +1,24 @@
+New:
+  - Notification when changing subtitle delay with keybindings
+  - New option 'Automatic Login' to disable user selection on startup
+    and when returning to the screensaver.
+  - Add "Play All / Shuffle" to Playlists.
+  - Translations updated.
+
+Fixes:
+  - Fix so that user selection dialog could not be dismissed without
+    proper login when returning from the screensaver.
+  - Fix so that dim on pause can be enabled/disabled correctly in settings
+  - Fix resume videos when transcoding
+  - Fix 'Mark as Watched' on videos in 'Watch Later'
+  - Refresh 'Watch Later' fanout when something is marked as watched
+  - Remove flickering on the PIN input dialog
+  - Fix server connections randomly disapearing
+  - Screensaver lock now takes you back to the same window you where
+    before if you select the same user.
+  - Auto-update fixes:
+    - Download will fail for most people going from 1.3.2 to 1.3.3, manually
+      install and it will work in the future.
+    - Updates of applications on other volumes is now fixed.
+    - The updater will not ask you to input your password at all times now.
+    - Update should now work on 32bit systems.
