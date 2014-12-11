@@ -368,7 +368,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1280</width>
-				<height>155</height>
+				<height>160</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label" id="10">
@@ -421,7 +421,7 @@
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
-			<top>180</top>
+			<top>185</top>
 			<control type="image">
 				<description>media info background image</description>
 				<left>0</left>
