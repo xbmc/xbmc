@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="CurrentUserAvatar">
-		<control type="group">
+		<control type="group">			
+			<visible>System.UserIsInHome</visible>
 			<posy>15</posy>
 			<control type="image">
 				<posx>1200</posx>
