@@ -64,17 +64,12 @@ else()
 endif()
 
 if (APPLE)
-	# Build the updater as a dual 32/64bit binary.  If only one architecture
-	# is required, removing the other architecture will reduce the size
-	# of the updater binary
-	set(CMAKE_OSX_ARCHITECTURES x86_64;i386)
-
 	# Build the updater so that it works on OS X 10.5 and above.
-	set(MIN_OSX_VERSION 10.5)
+	set(MIN_OSX_VERSION 10.6)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
 endif()
 
 add_subdirectory(src)

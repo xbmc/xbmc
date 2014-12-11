@@ -105,7 +105,7 @@ def create_delta(data):
   # and the ones that just needs to be documented
   for tpath in targetmap.keys():
     tfile = targetmap[tpath]
-    if tpath in oldmap:
+    if tpath in oldmap and tfile.targetLink is None:
       ofile = oldmap[tpath]
       if not ofile == tfile:
         filestodiff.append((tfile, ofile, diffdir, oBundle, tBundle))

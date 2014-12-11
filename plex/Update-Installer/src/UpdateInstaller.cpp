@@ -583,32 +583,52 @@ void UpdateInstaller::uninstallFiles()
 
 bool UpdateInstaller::checkAccess()
 {
-  std::string testFile = m_targetDir + "/update-installer-test-file";
-
+  std::string parentDir = FileUtils::canonicalPath((m_targetDir + "/..").c_str());
+  std::string testDir = parentDir + "/_plexUpdaterTestAccess";
+  std::string testFile = m_targetDir + "/_plexUpdaterTestFile";
+  
+  if (FileUtils::fileExists(testDir.c_str()))
+  {
+    try
+    {
+      FileUtils::rmdir(testDir.c_str());
+    }
+    catch (const FileUtils::IOException& error)
+    {
+      LOG(Info, "checkAccess() failed to remove existing test dir: " + testDir + ", " + error.what());
+      return false;
+    }
+  }
+  
+  if (FileUtils::fileExists(testFile.c_str()))
+  {
+    try
+    {
+      FileUtils::removeFile(testFile.c_str());
+    }
+    catch (const FileUtils::IOException& error)
+    {
+      LOG(Info, "checkAccess() failed to remove existing test dir: " + testDir + ", " + error.what());
+      return false;
+    }
+  }
+  
+  bool dirWorked = false;
   try
   {
-    FileUtils::removeFile(testFile.c_str());
-  }
-  catch (const FileUtils::IOException& error)
-  {
-    LOG(Info, "Removing existing access check file failed " + std::string(error.what()));
-  }
-
-  try
-  {
+    FileUtils::mkdir(testDir.c_str());
+    FileUtils::rmdir(testDir.c_str());
+    
+    dirWorked = true;
+    
     FileUtils::touch(testFile.c_str());
     FileUtils::removeFile(testFile.c_str());
-
-    // we need to make sure that we can rename the current binary dir as well
-    // since that directory might not have the same rights.
-    //
-    FileUtils::moveFile(m_targetDir.c_str(), (m_targetDir + std::string(".bak")).c_str());
-    FileUtils::moveFile((m_targetDir + std::string(".bak")).c_str(), m_targetDir.c_str());
+    
     return true;
   }
   catch (const FileUtils::IOException& error)
   {
-    LOG(Info, "checkAccess() failed " + std::string(error.what()));
+    LOG(Info, "checkAccess() on " + (dirWorked ? testFile : testDir) + " failed " + std::string(error.what()));
     return false;
   }
 }
