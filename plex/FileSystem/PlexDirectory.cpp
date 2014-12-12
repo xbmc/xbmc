@@ -330,7 +330,6 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("playQueueSelectedItemOffset", g_parserInt)
                                      ("playQueueTotalCount", g_parserInt)
                                      ("playQueueVersion", g_parserInt)
-                                     ("ratingKey", g_parserKey)
 
                                      ("filters", g_parserBool)
                                      ("refreshing", g_parserBool)
