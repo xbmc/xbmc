@@ -1275,8 +1275,7 @@ bool CDVDVideoCodecIMXIPUBuffer::IsValid()
 }
 
 bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buffer,
-                                         VpuFieldType fieldType, int fieldFmt,
-                                         bool lowMotion)
+                                         int fieldFmt, bool lowMotion)
 {
   CDVDVideoCodecIMXVPUBuffer *previousBuffer;
   struct ipu_task task;
@@ -1339,7 +1338,7 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   task.input.deinterlace.enable = 1;
   task.input.deinterlace.field_fmt = fieldFmt;
 
-  switch (fieldType)
+  switch (buffer->GetFieldType())
   {
   case VPU_FIELD_TOP:
   case VPU_FIELD_TB:
@@ -1597,8 +1596,8 @@ bool CDVDVideoCodecIMXIPUBuffers::Close()
 }
 
 CDVDVideoCodecIMXIPUBuffer *
-CDVDVideoCodecIMXIPUBuffers::Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
-                                     VpuFieldType fieldType, bool lowMotion)
+CDVDVideoCodecIMXIPUBuffers::Process(CDVDVideoCodecIMXVPUBuffer *sourceBuffer,
+                                     bool lowMotion)
 {
   CDVDVideoCodecIMXIPUBuffer *target = NULL;
   bool ret = true;
@@ -1613,8 +1612,7 @@ CDVDVideoCodecIMXIPUBuffers::Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
     // IPU process:
     // SRC: Current VPU physical buffer address + last VPU buffer address
     // DST: IPU buffer[i]
-    ret = m_buffers[i]->Process(m_ipuHandle, (CDVDVideoCodecIMXVPUBuffer*)sourceBuffer,
-                                fieldType, m_currentFieldFmt,
+    ret = m_buffers[i]->Process(m_ipuHandle, sourceBuffer, m_currentFieldFmt,
                                 lowMotion);
     if (ret)
     {
@@ -1865,9 +1863,7 @@ CDVDVideoCodecIMXBuffer *CDVDVideoMixerIMX::ProcessFrame(CDVDVideoCodecIMXVPUBuf
 #else
     // Enable low motion for buffers that are not split up by the VDIC
     bool lowMotion = (inputBuffer->iWidth < 1024) && (inputBuffer->iHeight < 1024);
-    outputBuffer = m_proc->Process(inputBuffer,
-                                   inputBuffer->GetFieldType(),
-                                   lowMotion);
+    outputBuffer = m_proc->Process(inputBuffer, lowMotion);
 #endif
 #ifdef IMX_PROFILE_BUFFERS
     CLog::Log(LOGNOTICE, "+P  %x  %lld\n", (int)outputBuffer,

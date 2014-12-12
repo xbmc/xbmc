@@ -171,8 +171,7 @@ public:
   // Returns whether the buffer is ready to be used
   bool                     Rendered() const { return m_bFree; }
   bool                     Process(int fd, CDVDVideoCodecIMXVPUBuffer *buffer,
-                                   VpuFieldType fieldType, int fieldFmt,
-                                   bool lowMotion);
+                                   int fieldFmt, bool lowMotion);
   void                     ReleaseFrameBuffer();
 
   bool                     Allocate(int fd, int width, int height, int nAlign);
@@ -208,8 +207,7 @@ public:
   bool Close();
 
   CDVDVideoCodecIMXIPUBuffer *
-  Process(CDVDVideoCodecIMXBuffer *sourceBuffer,
-          VpuFieldType fieldType, bool lowMotion);
+  Process(CDVDVideoCodecIMXVPUBuffer *sourceBuffer, bool lowMotion);
 
 private:
   int                          m_ipuHandle;
