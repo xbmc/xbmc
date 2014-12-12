@@ -203,6 +203,9 @@ public:
   // Sets the mode to be used if deinterlacing is set to AUTO
   void SetAutoMode(bool mode) { m_autoMode = mode; }
   bool AutoMode() const { return m_autoMode; }
+  void SetDoubleRate(bool flag);
+  bool DoubleRate() const;
+  void SetInterpolatedFrame(bool flag);
   bool Reset();
   bool Close();
 
@@ -225,6 +228,7 @@ public:
   virtual ~CDVDVideoMixerIMX();
 
   void SetCapacity(int intput, int output);
+  bool DoubleRate() const { return m_proc->DoubleRate(); }
 
   void Start();
   void Reset();
@@ -239,7 +243,8 @@ private:
   CDVDVideoCodecIMXVPUBuffer *GetNextInput();
   void WaitForFreeOutput();
   bool PushOutput(CDVDVideoCodecIMXBuffer *v);
-  CDVDVideoCodecIMXBuffer *ProcessFrame(CDVDVideoCodecIMXVPUBuffer *input);
+  CDVDVideoCodecIMXBuffer *ProcessFrame(CDVDVideoCodecIMXVPUBuffer *input,
+                                        bool lowMotion);
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -317,4 +322,7 @@ protected:
   int                          m_bytesToBeConsumed; // Remaining bytes in VPU
   double                       m_previousPts;       // Enable to keep pts when needed
   bool                         m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
+#ifdef DUMP_STREAM
+  FILE                        *m_dump;
+#endif
 };
