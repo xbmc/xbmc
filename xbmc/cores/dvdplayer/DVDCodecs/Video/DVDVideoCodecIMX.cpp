@@ -36,7 +36,7 @@
 #include "utils/log.h"
 #include "DVDClock.h"
 
-#define IMX_MDI_MAX_WIDTH 968
+#define IMX_VDI_MAX_WIDTH 968
 #define FRAME_ALIGN 16
 #define MEDIAINFO 1
 #define _4CC(c1,c2,c3,c4) (((uint32_t)(c4)<<24)|((uint32_t)(c3)<<16)|((uint32_t)(c2)<<8)|(uint32_t)(c1))
@@ -1358,12 +1358,12 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
 
   /* We do the VDI buffer splitting ourselves since the kernel
    * driver (IPU) is either buggy or it is a feature that it does
-   * not split widths to multiple of 16 to get maximum burst on
-   * on DMA. Since we know that the input and output dimensions are the
+   * not split widths aligned to 16 pixels to get maximum burst on
+   * DMA. Since we know that the input and output dimensions are the
    * same we can implement an easier algorithm that takes care of
    * that.
    */
-  unsigned int nRequiredStripes = (iWidth+IMX_MDI_MAX_WIDTH-1) / IMX_MDI_MAX_WIDTH;
+  unsigned int nRequiredStripes = (iWidth+IMX_VDI_MAX_WIDTH-1) / IMX_VDI_MAX_WIDTH;
   unsigned int iProcWidth = iWidth;
   unsigned int iStripeOffset = 0;
 
