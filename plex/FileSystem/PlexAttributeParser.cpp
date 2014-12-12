@@ -124,6 +124,17 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
   {
     imageURL = CURL(source);
   }
+  else if (boost::starts_with(source, "/sync/exchange"))
+  {
+    CURL sourceURL("http://localhost" + source);
+    imageURL = server->BuildURL(sourceURL.GetFileName());
+
+    std::map<CStdString, CStdString> options;
+    sourceURL.GetOptions(options);
+
+    BOOST_FOREACH(const PlexStringPair& values, options)
+      imageURL.SetOption(values.first, values.second);
+  }
   else
   {
     imageURL.SetProtocol("http");
@@ -138,6 +149,7 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
       if (localConn)
         imageURL.SetPort(localConn->GetAddress().GetPort());
     }
+
 
     if (boost::starts_with(source, "/"))
       imageURL.SetFileName(source.substr(1, std::string::npos));
