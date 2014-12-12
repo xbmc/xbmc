@@ -27,6 +27,7 @@
 #ifdef HAS_WEB_SERVER
 #include <memory>
 #include <algorithm>
+#include <stdexcept>
 
 #include "URL.h"
 #include "Util.h"
@@ -1036,6 +1037,14 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
 }
 
 // local helper
+static void panicHandlerForMHD(void* unused, const char* file, unsigned int line, const char *reason)
+{
+  CLog::Log(LOGSEVERE, "CWebServer: MHD serious error: reason \"%s\" in file \"%s\" at line %ui", reason ? reason : "",
+            file ? file : "", line);
+  throw std::runtime_error("MHD serious error"); // FIXME: better solution?
+}
+
+// local helper
 static void logFromMHD(void* unused, const char* fmt, va_list ap)
 {
   if (fmt == NULL || fmt[0] == 0)
@@ -1059,6 +1068,10 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 {
   unsigned int timeout = 60 * 60 * 24;
+
+#if MHD_VERSION >= 0x00040500
+  MHD_set_panic_func(&panicHandlerForMHD, NULL);
+#endif
 
   return MHD_start_daemon(flags |
 #if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
