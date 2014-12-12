@@ -1106,7 +1106,7 @@
 				<control type="image" id="999">
 					<description>Background</description>
 					<width>340</width>
-					<height>500</height>
+					<height>550</height>
 					<include>DialogBGContextMenu</include>
 				</control>
 				<control type="image">
@@ -1136,7 +1136,7 @@
 					<posx>10</posx>
 					<posy>30</posy>
 					<width>320</width>
-					<height max="400">auto</height>
+					<height max="450">auto</height>
 					<itemgap>0</itemgap>
 				</control>
 				<control type="button" id="1000">
