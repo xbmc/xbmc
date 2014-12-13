@@ -23,6 +23,8 @@
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
 
+struct AVPacket;
+
  typedef struct DemuxPacket
 {
   unsigned char* pData;   // data
@@ -33,4 +35,5 @@
   double pts; // pts in DVD_TIME_BASE
   double dts; // dts in DVD_TIME_BASE
   double duration; // duration in DVD_TIME_BASE if available
+  AVPacket *pkt; // to allow packet to be freed
 } DemuxPacket;

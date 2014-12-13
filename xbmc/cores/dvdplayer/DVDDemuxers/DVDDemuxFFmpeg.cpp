@@ -733,7 +733,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           {
             if(m_pkt.pkt.stream_index == (int)m_pFormatContext->programs[m_program]->stream_index[i])
             {
-              pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
+              pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
               break;
             }
           }
@@ -742,7 +742,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             bReturnEmpty = true;
         }
         else
-          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
+          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
       }
       else
         bReturnEmpty = true;
@@ -784,9 +784,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         // copy contents into our own packet
         pPacket->iSize = m_pkt.pkt.size;
 
-        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
         if (m_pkt.pkt.data)
-          memcpy(pPacket->pData, m_pkt.pkt.data, pPacket->iSize);
+        {
+          pPacket->pData = m_pkt.pkt.data;
+          // so we can free AVPacket when DemuxPacket is freed
+          pPacket->pkt = new AVPacket(m_pkt.pkt);
+        }
+
 
         pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
         pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
@@ -821,7 +825,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->iStreamId = m_pkt.pkt.stream_index;
       }
       m_pkt.result = -1;
-      av_free_packet(&m_pkt.pkt);
+      memset(&m_pkt.pkt, 0, sizeof(AVPacket));
     }
   }
   } // end of lock scope
