@@ -275,9 +275,6 @@ void CSettingConditions::Initialize()
 #if HAS_GLES == 2
   m_simpleConditions.insert("has_glesv2");
 #endif
-#ifdef HAS_SDL_JOYSTICK
-  m_simpleConditions.insert("has_sdl_joystick");
-#endif
 #ifdef HAS_TIME_SERVER
   m_simpleConditions.insert("has_time_server");
 #endif

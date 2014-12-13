@@ -113,7 +113,6 @@
 		18B7C8D712942546009E7A26 /* ButtonTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */; };
 		18B7C8D912942546009E7A26 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */; };
 		18B7C8DA12942546009E7A26 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D112942546009E7A26 /* MouseStat.cpp */; };
-		18B7C8DB12942546009E7A26 /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D312942546009E7A26 /* SDLJoystick.cpp */; };
 		18B7C8E912942603009E7A26 /* Crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8E712942603009E7A26 /* Crc32.cpp */; };
 		18B7C8EE12942613009E7A26 /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		18B7C8F31294261F009E7A26 /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8F11294261F009E7A26 /* StringUtils.cpp */; };
@@ -2074,7 +2073,6 @@
 		E499156A174E65AB00741B6D /* ButtonTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */; };
 		E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */; };
-		E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D312942546009E7A26 /* SDLJoystick.cpp */; };
 		E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991571174E661300741B6D /* WinEventsIOS.mm */; };
 		E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991573174E661300741B6D /* WinSystemIOS.mm */; };
@@ -2457,8 +2455,6 @@
 		18B7C8D012942546009E7A26 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
 		18B7C8D112942546009E7A26 /* MouseStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseStat.cpp; sourceTree = "<group>"; };
 		18B7C8D212942546009E7A26 /* MouseStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseStat.h; sourceTree = "<group>"; };
-		18B7C8D312942546009E7A26 /* SDLJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLJoystick.cpp; sourceTree = "<group>"; };
-		18B7C8D412942546009E7A26 /* SDLJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLJoystick.h; sourceTree = "<group>"; };
 		18B7C8D512942546009E7A26 /* XBMC_keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keyboard.h; sourceTree = "<group>"; };
 		18B7C8D612942546009E7A26 /* XBMC_mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mouse.h; sourceTree = "<group>"; };
 		18B7C8E712942603009E7A26 /* Crc32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Crc32.cpp; sourceTree = "<group>"; };
@@ -5283,8 +5279,6 @@
 				18B7C8D012942546009E7A26 /* KeyboardStat.h */,
 				18B7C8D112942546009E7A26 /* MouseStat.cpp */,
 				18B7C8D212942546009E7A26 /* MouseStat.h */,
-				18B7C8D312942546009E7A26 /* SDLJoystick.cpp */,
-				18B7C8D412942546009E7A26 /* SDLJoystick.h */,
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				18B7C8D512942546009E7A26 /* XBMC_keyboard.h */,
 				7C779E31104A57E500F444C4 /* XBMC_keysym.h */,
@@ -9870,7 +9864,6 @@
 				18B7C8D712942546009E7A26 /* ButtonTranslator.cpp in Sources */,
 				18B7C8D912942546009E7A26 /* KeyboardStat.cpp in Sources */,
 				18B7C8DA12942546009E7A26 /* MouseStat.cpp in Sources */,
-				18B7C8DB12942546009E7A26 /* SDLJoystick.cpp in Sources */,
 				18B7C8E912942603009E7A26 /* Crc32.cpp in Sources */,
 				18B7C8EE12942613009E7A26 /* URIUtils.cpp in Sources */,
 				18B7C8F31294261F009E7A26 /* StringUtils.cpp in Sources */,
@@ -11263,7 +11256,6 @@
 				E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */,
 				E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */,
 				4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
-				E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */,
 				E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */,
 				E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */,
 				E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */,

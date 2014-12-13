@@ -41,14 +41,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "SDLJoystick.h"
-#endif
-
-#define JOYSTICK_DEFAULT_MAP "_xbmc_"
-
 using namespace XFILE;
 
 typedef struct
@@ -676,9 +668,7 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
       const char *szWindow = pWindow->Value();
       if (szWindow)
       {
-        if (strcmpi(szWindow, "joystickFamily") == 0)
-          MapJoystickFamily(pWindow);
-        else if (strcmpi(szWindow, "global") == 0)
+        if (strcmpi(szWindow, "global") == 0)
           windowID = -1;
         else
           windowID = TranslateWindow(szWindow);
@@ -785,297 +775,6 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return TranslateRemoteString((*it2).second.c_str());
 }
 
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-void CButtonTranslator::MapJoystickFamily(TiXmlNode *pNode)
-{
-  TiXmlElement *pFamily = pNode->ToElement();
-  if (pFamily && pFamily->Attribute("name"))
-  {
-    std::string joyFamilyName = pFamily->Attribute("name");
-    JoystickFamily* joyFamily = &m_joystickFamilies[joyFamilyName];
-
-    TiXmlElement *pMember = pFamily->FirstChildElement();
-    while (pMember)
-    {
-      TiXmlNode* pName = pMember->FirstChild();
-      if (pName && pName->ValueStr() != "") {
-        std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
-        std::string joyRe = JoynameToRegex(pName->ValueStr());
-        if (!re->RegComp(joyRe, CRegExp::StudyRegExp))
-        {
-          CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", pName->Value());
-          continue;
-        }
-        AddFamilyRegex(joyFamily, re);
-      }
-      pMember = pMember->NextSiblingElement();
-    }
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "Ignoring nameless joystick family");
-  }
-}
-
-void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
-{
-  std::string joyFamilyName;
-  std::map<int, std::string> buttonMap;
-  std::map<int, std::string> axisMap;
-  AxesConfig axesConfig;
-  ActionMap hatMap;
-
-  TiXmlElement *pJoy = pJoystick->ToElement();
-  if (pJoy && pJoy->Attribute("family"))
-    joyFamilyName = pJoy->Attribute("family");
-  else if (pJoy) {
-    // transform loose name to new family, including altnames
-    std::string joyName = JOYSTICK_DEFAULT_MAP; // default global map name
-    if (pJoy->Attribute("name"))
-      joyName = pJoy->Attribute("name");
-    joyFamilyName = joyName;    
-    JoystickFamily* joyFamily = &m_joystickFamilies[joyFamilyName];
-
-    std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
-    std::string joyRe = JoynameToRegex(joyName);
-    if (!re->RegComp(joyRe, CRegExp::StudyRegExp))
-    {
-      CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyName.c_str());
-      return;
-    }
-    AddFamilyRegex(joyFamily, re);
-
-    // add altnames to family
-    TiXmlElement *pNode = pJoystick->FirstChildElement();
-    while (pNode) {
-      const std::string &type = pNode->ValueStr();
-      if (type == "altname") {
-        std::string altName = pNode->FirstChild()->ValueStr();
-        std::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
-        std::string altReStr = JoynameToRegex(altName);
-        if (!altRe->RegComp(altReStr, CRegExp::StudyRegExp))
-          CLog::Log(LOGNOTICE, "Ignoring invalid joystick altname regex: '%s'", altReStr.c_str());
-        else
-          AddFamilyRegex(joyFamily, altRe);
-      }
-      pNode = pNode->NextSiblingElement();
-    }
-
-  }
-
-  // parse map
-  TiXmlElement *pButton = pJoystick->FirstChildElement();
-  int id = 0;
-  while (pButton)
-  {
-    const std::string &type = pButton->ValueStr();
-    std::string action;
-    if (!pButton->NoChildren())
-      action = pButton->FirstChild()->ValueStr();
-
-    // skip altname tags here because those contain no mappings ...
-    if (type == "altname")
-    {
-      pButton = pButton->NextSiblingElement();
-      continue;
-    }
-
-    if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
-    {
-      if (type == "button")
-      {
-        buttonMap[id] = action;
-      }
-      else if (type == "axis")
-      {
-        int limit = 0;
-        if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
-        {
-          if (limit==-1)
-            axisMap[-id] = action;
-          else if (limit==1)
-            axisMap[id] = action;
-          else if (limit==0)
-            axisMap[id|0xFFFF0000] = action;
-          else
-          {
-            axisMap[id] = action;
-            axisMap[-id] = action;
-            CLog::Log(LOGERROR, "Error in joystick map, invalid limit specified %d for axis %d", limit, id);
-          }
-        }
-        else
-        {
-          axisMap[id] = action;
-          axisMap[-id] = action;
-        }
-
-        if (windowID == -1) {
-          // in <global> we can override the rest state value of axes and whether they are triggers
-          bool trigger = false;
-          int restStateValue = 0;
-          pButton->QueryBoolAttribute("trigger", &trigger);
-          pButton->QueryIntAttribute("rest", &restStateValue);
-          // if it deviates from the defaults
-          if (trigger || restStateValue != 0)
-            axesConfig.push_back(AxisConfig(id, trigger, restStateValue));
-        }
-      }
-      else if (type == "hat")
-      {
-        std::string position;
-        if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
-        {
-          uint32_t hatID = id|0xFFF00000;
-          if (position.compare("up") == 0)
-            hatMap[(JACTIVE_HAT_UP<<16)|hatID] = action;
-          else if (position.compare("down") == 0)
-            hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = action;
-          else if (position.compare("right") == 0)
-            hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = action;
-          else if (position.compare("left") == 0)
-            hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = action;
-          else
-            CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
-        }
-      }
-      else
-        CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
-    }
-    else
-      CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
-
-    pButton = pButton->NextSiblingElement();
-  }
-
-  // add/overwrite keys with mapped actions
-  for (auto button : buttonMap)
-    m_joystickButtonMap[joyFamilyName][windowID][button.first] = button.second;
-
-  for (auto axis : axisMap)
-    m_joystickAxisMap[joyFamilyName][windowID][axis.first] = axis.second;
-
-  for (auto hat : hatMap)
-    m_joystickHatMap[joyFamilyName][windowID][hat.first] = hat.second;
-
-  if (windowID == -1) 
-    m_joystickAxesConfigs[joyFamilyName] = axesConfig;
-}
-
-std::string CButtonTranslator::JoynameToRegex(const std::string& joyName) const
-{
-  if (joyName.empty()) 
-    return joyName;
-
-  // names already presented as regex are identified by a leading /
-  else if (joyName[0] == '/') 
-    return joyName.substr(1);
-
-  // the others we'll have to escape
-  return "\\Q" + joyName + "\\E";
-}
-
-bool CButtonTranslator::AddFamilyRegex(JoystickFamily* family, std::shared_ptr<CRegExp> regex)
-{
-  // even though family is a set, this does not prevent the same regex 
-  // from being added twice, so we manually match on pattern equality
-  JoystickFamily::iterator it;
-  for (it = family->begin(); it != family->end(); it++)
-  {
-    if ((*it)->GetPattern() == regex->GetPattern())
-      return false;
-  }
-  family->insert(regex);
-  return true;
-}
-
-const AxesConfig* CButtonTranslator::GetAxesConfigFor(const std::string& joyName) const
-{
-  JoystickFamilyMap::const_iterator familyIt = FindJoystickFamily(joyName);
-  if (familyIt == m_joystickFamilies.end())
-    return NULL;
-  else {
-    std::map<std::string, AxesConfig>::const_iterator it = m_joystickAxesConfigs.find(familyIt->first);
-    if (it == m_joystickAxesConfigs.end())
-      return NULL;
-    else
-      return &it->second;
-  }
-}
-
-CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
-{
-  JoystickFamilyMap::const_iterator familyIt = FindJoystickFamily(joyName);
-  if (familyIt == m_joystickFamilies.end())
-    return maps.end();
-  else
-    return maps.find(familyIt->first);
-}
-
-CButtonTranslator::JoystickFamilyMap::const_iterator CButtonTranslator::FindJoystickFamily(const std::string& joyName) const
-{
-  // find the family corresponding to a joystick name
-  JoystickFamilyMap::const_iterator it;
-  for (it = m_joystickFamilies.begin(); it != m_joystickFamilies.end(); it++)
-  {
-    JoystickFamily::const_iterator regexIt;
-    for (regexIt = it->second.begin(); regexIt != it->second.end(); regexIt++)
-    {
-      if ((*regexIt)->RegFind(joyName) >= 0)
-      {
-        // CLog::Log(LOGDEBUG, "Regex %s matches joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
-        return it;
-      }
-    }
-  }
-  return it;
-}
-
-bool CButtonTranslator::TranslateJoystickString(int window, const std::string& joyName, int id, short inputType, int& action, std::string& strAction, bool &fullrange)
-{
-  fullrange = false;
-
-  // resolve the correct JoystickMap
-  JoystickMap *jmap;
-  if (inputType == JACTIVE_AXIS)
-    jmap = &m_joystickAxisMap;
-  else if (inputType == JACTIVE_BUTTON)
-    jmap = &m_joystickButtonMap;
-  else if (inputType == JACTIVE_HAT)
-    jmap = &m_joystickHatMap;
-  else
-  {
-    CLog::Log(LOGERROR, "Error reading joystick input type '%i'", (int) inputType);
-    return false;
-  }
-
-  JoystickMap::const_iterator it = FindWindowMap(joyName, *jmap);
-  if (it==jmap->end())
-  {
-    it = FindWindowMap(JOYSTICK_DEFAULT_MAP, *jmap); // default global map name
-    if (it==jmap->end())
-      return false;
-  }
-
-  const WindowMap *wmap = &it->second;
-
-  // try to get the action from the current window
-  action = GetActionCode(window, id, *wmap, strAction, fullrange);
-
-  // if it's invalid, try to get it from a fallback window or the global map
-  if (action == 0)
-  {
-    int fallbackWindow = GetFallbackWindow(window);
-    if (fallbackWindow > -1)
-      action = GetActionCode(fallbackWindow, id, *wmap, strAction, fullrange);
-    // still no valid action? use global map
-    if (action == 0)
-      action = GetActionCode(-1, id, *wmap, strAction, fullrange);
-  }
-
-  return (action > 0);
-}
-
 bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString)
 {
   action = 0;
@@ -1110,48 +809,6 @@ int CButtonTranslator::GetActionCode(int window, int action)
 
   return it2->second.id;
 }
-
-/*
- * Translates a joystick input to an action code
- */
-int CButtonTranslator::GetActionCode(int window, int id, const WindowMap &wmap, std::string &strAction, bool &fullrange) const
-{
-  int action = 0;
-  bool found = false;
-
-  WindowMap::const_iterator it = wmap.find(window);
-  if (it != wmap.end())
-  {
-    const std::map<int, std::string> &windowbmap = it->second;
-    std::map<int, std::string>::const_iterator it2 = windowbmap.find(id);
-    if (it2 != windowbmap.end())
-    {
-      strAction = (it2->second).c_str();
-      found = true;
-    }
-
-    it2 = windowbmap.find(abs(id)|0xFFFF0000);
-    if (it2 != windowbmap.end())
-    {
-      strAction = (it2->second).c_str();
-      found = true;
-      fullrange = true;
-    }
-
-    // Hats joystick
-    it2 = windowbmap.find(id|0xFFF00000);
-    if (it2 != windowbmap.end())
-    {
-      strAction = (it2->second).c_str();
-      found = true;
-    }
-  }
-
-  if (found)
-    TranslateActionString(strAction.c_str(), action);
-  return action;
-}
-#endif
 
 void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
 {
@@ -1375,18 +1032,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         m_translatorMap.insert(std::pair<int, buttonMap>( windowID, map));
     }
   }
-
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
-  {
-    // map joystick actions
-    while (pDevice)
-    {
-      MapJoystickActions(windowID, pDevice);
-      pDevice = pDevice->NextSibling("joystick");
-    }
-  }
-#endif
 
   if ((pDevice = pWindow->FirstChild("touch")) != NULL)
   {
@@ -1737,12 +1382,6 @@ void CButtonTranslator::Clear()
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   ClearLircButtonMapEntries();
   lircRemotesMap.clear();
-#endif
-
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  m_joystickButtonMap.clear();
-  m_joystickAxisMap.clear();
-  m_joystickHatMap.clear();
 #endif
 
   m_Loaded = false;

@@ -574,7 +574,6 @@
     <ClCompile Include="..\..\xbmc\input\touch\ITouchInputHandling.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp" />
-    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\builtins\AddonBuiltins.cpp" />
@@ -1093,7 +1092,6 @@
     <ClInclude Include="..\..\xbmc\input\touch\ITouchInputHandler.h" />
     <ClInclude Include="..\..\xbmc\input\touch\ITouchInputHandling.h" />
     <ClInclude Include="..\..\xbmc\input\touch\TouchTypes.h" />
-    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\builtins\AddonBuiltins.h" />
     <ClInclude Include="..\..\xbmc\interfaces\builtins\AndroidBuiltins.h" />
     <ClInclude Include="..\..\xbmc\interfaces\builtins\ApplicationBuiltins.h" />

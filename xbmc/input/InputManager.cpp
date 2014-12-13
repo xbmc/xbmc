@@ -43,17 +43,6 @@
 #include "input/windows/IRServerSuite.h"
 #endif
 
-#if HAVE_SDL_VERSION == 1
-#include <SDL/SDL.h>
-#elif HAVE_SDL_VERSION == 2
-#include <SDL2/SDL.h>
-#endif
-
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "input/SDLJoystick.h"
-#endif
 #include "ButtonTranslator.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralImon.h"
@@ -88,138 +77,15 @@ void CInputManager::InitializeInputs()
   m_RemoteControl.Initialize();
 #endif
 
-#ifdef HAS_SDL_JOYSTICK
-  // Pass the mapping of axis to triggers to m_Joystick
-  m_Joystick.Initialize();
-#endif
-
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
   m_Mouse.SetEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
-void CInputManager::ReInitializeJoystick()
-{
-#ifdef HAS_SDL_JOYSTICK
-  m_Joystick.Reinitialize();
-#endif
-}
-
 void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
 {
-#ifdef HAS_SDL_JOYSTICK
-  m_Joystick.SetEnabled(enabled);
-#endif
-}
-
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
-void CInputManager::UpdateJoystick(SDL_Event& joyEvent)
-{
-  m_Joystick.Update(joyEvent);
-}
-#endif
-
-bool CInputManager::ProcessGamepad(int windowId)
-{
-#ifdef HAS_SDL_JOYSTICK
-  if (!g_application.IsAppFocused())
-    return false;
-
-  int keymapId, joyId;
-  m_Joystick.Update();
-  std::string joyName;
-  if (m_Joystick.GetButton(joyName, joyId))
-  {
-    g_application.ResetSystemIdleTimer();
-
-    g_application.ResetScreenSaver();
-    if (g_application.WakeUpScreenSaverAndDPMS())
-    {
-      m_Joystick.Reset();
-      return true;
-    }
-
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-    keymapId = joyId + 1;
-
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
-    {
-      CAction action(actionID, 1.0f, 0.0f, actionName);
-      m_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
-    }
-  }
-  std::list<std::pair<std::string, int> > usedAxes;
-  if (m_Joystick.GetAxes(usedAxes))
-  {
-    bool compoundReturn = false;
-    for (std::list<std::pair<std::string, int> >::iterator it = usedAxes.begin();
-         it != usedAxes.end();
-         ++it)
-    {
-      joyName = it->first;
-      joyId = it->second;
-
-      keymapId = joyId + 1;
-      if (m_Joystick.GetAmount(joyName, joyId) < 0)
-      {
-        keymapId = -keymapId;
-      }
-
-      int actionID;
-      std::string actionName;
-      bool fullrange;
-      if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
-      {
-        g_application.ResetScreenSaver();
-        if (g_application.WakeUpScreenSaverAndDPMS())
-        {
-          return true;
-        }
-
-        float amount = m_Joystick.GetAmount(joyName, joyId);
-        amount = fullrange ? (amount + 1.0f) / 2.0f : amount;
-
-        CAction action(actionID, amount, 0.0f, actionName);
-
-        m_Mouse.SetActive(false);
-        compoundReturn |= ExecuteInputAction(action);
-      }
-    }
-    return compoundReturn;
-  }
-  int position = 0;
-  if (m_Joystick.GetHat(joyName, joyId, position))
-  {
-    keymapId = joyId + 1;
-    // reset Idle Timer
-    g_application.ResetSystemIdleTimer();
-
-    g_application.ResetScreenSaver();
-    if (g_application.WakeUpScreenSaverAndDPMS())
-    {
-      m_Joystick.Reset();
-      return true;
-    }
-
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-
-    keymapId = position << 16 | keymapId;
-
-    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
-    {
-      CAction action(actionID, 1.0f, 0.0f, actionName);
-      m_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
-    }
-  }
-#endif
-  return false;
+  // TODO
 }
 
 bool CInputManager::ProcessRemote(int windowId)
@@ -336,15 +202,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
   {
     if (joystickName.length() > 0)
     {
-      if (isAxis == true)
-      {
-        if (fabs(fAmount) >= 0.08)
-          m_lastAxisMap[joystickName][wKeyID] = fAmount;
-        else
-          m_lastAxisMap[joystickName].erase(wKeyID);
-      }
-
-      return ProcessJoystickEvent(windowId, joystickName, wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, fAmount);
+      return false;
     }
     else
     {
@@ -382,16 +240,6 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
     }
   }
 
-  if (!m_lastAxisMap.empty())
-  {
-    // Process all the stored axis.
-    for (std::map<std::string, std::map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
-    {
-      for (std::map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
-        ProcessJoystickEvent(windowId, (*iter).first, (*iterAxis).first, JACTIVE_AXIS, (*iterAxis).second);
-    }
-  }
-
   {
     CPoint pos;
     if (es->GetMousePos(pos.x, pos.y) && m_Mouse.IsEnabled())
@@ -421,36 +269,10 @@ bool CInputManager::Process(int windowId, float frameTime)
 
   // process input actions
   ProcessRemote(windowId);
-  ProcessGamepad(windowId);
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
   
   return true;
-}
-
-bool CInputManager::ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime /*=0*/)
-{
-#if defined(HAS_EVENT_SERVER)
-  g_application.ResetSystemIdleTimer();
-  g_application.ResetScreenSaver();
-
-  if (g_application.WakeUpScreenSaverAndDPMS())
-    return true;
-
-  m_Mouse.SetActive(false);
-
-  int actionID;
-  std::string actionName;
-  bool fullRange = false;
-
-  // Translate using regular joystick translator.
-  if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joystickName, wKeyID, inputType, actionID, actionName, fullRange))
-    return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName, holdTime));
-  else
-    CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i", joystickName.c_str(), wKeyID);
-#endif
-
-  return false;
 }
 
 bool CInputManager::OnEvent(XBMC_Event& newEvent)
@@ -867,10 +689,4 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
-
-#if defined(HAS_SDL_JOYSTICK)
-  if (settingId == CSettings::SETTING_INPUT_ENABLEJOYSTICK)
-    m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
-    PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
-#endif
 }

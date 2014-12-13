@@ -96,14 +96,5 @@ void CPeripheralImon::OnSettingChanged(const std::string &strChangedSetting)
 
 void CPeripheralImon::ActionOnImonConflict(bool deviceInserted /*= true*/)
 {
-  if (deviceInserted || m_lCountOfImonsConflictWithDInput == 0)
-  {
-#if defined(TARGET_WINDOWS) && defined (HAS_SDL_JOYSTICK)
-    bool enableJoystickNow = !deviceInserted && CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
-    CLog::Log(LOGNOTICE, "Problematic iMON hardware %s. Joystick usage: %s", (deviceInserted ? "detected" : "was removed"),
-        (enableJoystickNow) ? "enabled." : "disabled." );
-    CInputManager::GetInstance().SetEnabledJoystick(enableJoystickNow);
-#endif
-  }
 }
 

@@ -23,11 +23,6 @@
 #include <string>
 #include <vector>
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "input/SDLJoystick.h"
-#endif
 #if defined(HAS_LIRC)
 #include "input/linux/LIRC.h"
 #endif
@@ -69,13 +64,6 @@ public:
   */
   bool ProcessMouse(int windowId);
 
-  /*! \brief decode a gamepad or joystick event, reset idle timers.
-
-  \param windowId Currently active window
-  \return true if event is handled, false otherwise
-  */
-  bool ProcessGamepad(int windowId);
-
   /*! \brief decode an event from the event service, this can be mouse, key, joystick, reset idle timers.
 
   \param windowId Currently active window
@@ -110,18 +98,6 @@ public:
    * \return void
    */
   void SetEnabledJoystick(bool enabled = true);
-
-  /*! \brief Run joystick initialization again, e.g. a new device is connected
-  *
-  * \return void
-  */
-  void ReInitializeJoystick();
-
-  bool ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime = 0);
-
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
-  void UpdateJoystick(SDL_Event& joyEvent);
-#endif
 
   /*! \brief Handle an input event
    * 
@@ -263,9 +239,5 @@ private:
 
 #if defined(HAS_EVENT_SERVER)
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
-#endif
-
-#if defined(HAS_SDL_JOYSTICK) 
-  CJoystick m_Joystick;
 #endif
 };
