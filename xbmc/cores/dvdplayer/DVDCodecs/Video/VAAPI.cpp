@@ -2472,6 +2472,10 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   return false;
 #else
 
+  // When Setting of Prefered VAAPI Render is off don't enumerate VPP methods
+  if (!CSettings::Get().GetBool("videoplayer.prefervaapirender"))
+    return false;
+
   m_config = config;
 
   // create config

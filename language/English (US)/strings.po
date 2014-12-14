@@ -5214,8 +5214,8 @@ msgid "Hardware accelerated"
 msgstr "Hardware accelerated"
 
 msgctxt "#13457"
-msgid "Prefer VAAPI render method"
-msgstr "Prefer VAAPI render method"
+msgid "Enable VAAPI render method"
+msgstr "Enable VAAPI render method"
 
 msgctxt "#13458"
 msgid "Allow hardware acceleration (OMXPlayer)"
@@ -12722,8 +12722,8 @@ msgid "Select virtual keyboard layouts."
 msgstr "Select virtual keyboard layouts."
 
 msgctxt "#36433"
-msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
-msgstr "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgid "If enabled VAAPI render method is used and VPP (VAAPI Post Processing) is available. This puts less load on the CPU but driver may hang!"
+msgstr "If enabled VAAPI render method is used and VPP (VAAPI Post Processing) is available. This puts less load on the CPU but driver may hang!"
 
 msgctxt "#36434"
 msgid "Allow hardware acceleration (MMAL)"
