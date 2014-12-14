@@ -279,6 +279,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM director_link WHERE media_id=old.idShow AND media_type='tvshow'; "
+              "DELETE FROM studio_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM tvshowlinkpath WHERE idShow=old.idShow; "
               "DELETE FROM genre_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM movielinktvshow WHERE idShow=old.idShow; "
@@ -2887,25 +2888,6 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 
     BeginTransaction();
 
-    CStdString strSQL;
-    strSQL=PrepareSQL("DELETE FROM genre_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM studio_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM country_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM writer_link WHERE media_id=%i AND media_type='movie'", idMovie);
-    m_pDS->exec(strSQL.c_str());
-
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
     // the ancilliary tables are still purged
@@ -2916,11 +2898,11 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
       if (!path.empty())
         InvalidatePathHash(path);
 
-      strSQL=PrepareSQL("delete from movie where idMovie=%i", idMovie);
+      std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
     }
 
-    //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
+    // TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove(MediaTypeMovie, idMovie);
 
@@ -2970,12 +2952,6 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
     if (!bKeepId)
     {
       strSQL=PrepareSQL("delete from tvshow where idShow=%i", idTvShow);
-      m_pDS->exec(strSQL.c_str());
-
-      strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
-      m_pDS->exec(strSQL.c_str());
-
-      strSQL=PrepareSQL("delete from movielinktvshow where idShow=%i", idTvShow);
       m_pDS->exec(strSQL.c_str());
 
       // TODO: why do we invalidate the path hash here??
@@ -3059,21 +3035,11 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     if (!bKeepId)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
-    CStdString strSQL;
-    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='episode'", idEpisode);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='episode'", idEpisode);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM writer_link WHERE media_id=%i AND media_type='episode'", idEpisode);
-    m_pDS->exec(strSQL.c_str());
-
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
-      strSQL=PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
+      std::string strSQL = PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL.c_str());
     }
 
@@ -3103,19 +3069,6 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
 
     BeginTransaction();
 
-    CStdString strSQL;
-    strSQL=PrepareSQL("DELETE FROM genre_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM actor_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM director_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("DELETE FROM studio_link WHERE media_id=%i AND media_type='musicvideo'", idMVideo);
-    m_pDS->exec(strSQL.c_str());
-
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancilliary tables are still purged
     if (!bKeepId)
@@ -3125,7 +3078,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
       if (!path.empty())
         InvalidatePathHash(path);
 
-      strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
+      std::string strSQL = PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
     }
 
