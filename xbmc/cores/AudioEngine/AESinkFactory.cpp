@@ -260,7 +260,9 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   if(!info.m_deviceInfoList.empty())
   {
     list.push_back(info);
-    return;
+    // Not returning here will allow to also add
+    // ALSA devices into the enumeration
+    //return;
   }
   #endif
 
