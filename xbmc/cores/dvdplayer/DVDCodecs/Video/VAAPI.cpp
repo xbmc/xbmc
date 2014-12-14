@@ -2961,6 +2961,7 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     return false;
 
   VAImage image;
+  image.image_id = VA_INVALID_ID;
   VASurfaceID surface = config.videoSurfaces->GetAtIndex(0);
   VAStatus status = vaDeriveImage(config.dpy, surface, &image);
   if (status != VA_STATUS_SUCCESS)
@@ -2968,17 +2969,18 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     CLog::Log(LOGWARNING,"VAAPI::SupportsFilter vaDeriveImage not supported");
     use_filter = false;
   }
-  if (image.format.fourcc != VA_FOURCC_NV12)
+  if (use_filter && (image.format.fourcc != VA_FOURCC_NV12))
   {
     CLog::Log(LOGWARNING,"VAAPI::SupportsFilter image format not NV12");
     use_filter = false;
   }
-  if ((image.pitches[0] % 64) || (image.pitches[1] % 64))
+  if (use_filter && ((image.pitches[0] % 64) || (image.pitches[1] % 64)))
   {
     CLog::Log(LOGWARNING,"VAAPI::SupportsFilter patches no multiple of 64");
     use_filter = false;
   }
-  CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
+  if (image.image_id != VA_INVALID_ID)
+    CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
 
   if (use_filter)
   {
