@@ -1691,7 +1691,7 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 #ifdef IMX_PROFILE_BUFFERS
   static unsigned long long last = 0;
   unsigned long long current = XbmcThreads::SystemClockMillis();
-  CLog::Log(LOGNOTICE, "+R  %x  %lld\n", (int)buffer, current-last);
+  CLog::Log(LOGNOTICE, "+R  %f  %lld\n", buffer->GetPts(), current-last);
   last = current;
 #endif
 
