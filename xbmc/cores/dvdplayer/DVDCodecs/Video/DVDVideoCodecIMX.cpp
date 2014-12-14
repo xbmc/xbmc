@@ -1373,11 +1373,12 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
 
   task.input.paddr   = (int)buffer->pPhysAddr;
 
-  bool setupPrevBuffer = lowMotion || (fieldFmt & IPU_DEINTERLACE_RATE_MASK);
-
   // Fill current and next buffer address
-  if (setupPrevBuffer && previousBuffer && previousBuffer->IsValid())
-    task.input.paddr_n = (int)previousBuffer->pPhysAddr;
+  if (lowMotion && previousBuffer && previousBuffer->IsValid())
+  {
+    task.input.paddr_n = task.input.paddr;
+    task.input.paddr   = (int)previousBuffer->pPhysAddr;
+  }
 
   task.input.deinterlace.enable = 1;
   task.input.deinterlace.motion = lowMotion?LOW_MOTION:HIGH_MOTION;
