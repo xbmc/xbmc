@@ -56,6 +56,7 @@
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include "android/jni/Build.h"
+#include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
 #endif
 
@@ -872,6 +873,8 @@ bool CSysInfo::HWSupportsStereo(const int mode)
 #if defined(TARGET_ANDROID)
   if (aml_present())
     return aml_supports_stereo(mode);
+  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+    return true;
 #endif
   return false;
 }
@@ -881,6 +884,21 @@ void CSysInfo::HWSetStereoMode(const int mode, const int view)
 #if defined(TARGET_ANDROID)
   if (aml_present())
     aml_set_stereo_mode(mode, view);
+  else if (SysfsUtils::Has("/sys/class/graphics/fb0/3d_present"))  // AFTV
+  {
+    switch(mode)
+    {
+      default:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 0);
+        break;
+      case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 1);
+        break;
+      case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+        SysfsUtils::SetInt("/sys/class/graphics/fb0/format_3d", 2);
+        break;
+    }
+  }
 #endif
 }
 
