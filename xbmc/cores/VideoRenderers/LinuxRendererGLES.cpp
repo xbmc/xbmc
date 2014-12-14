@@ -964,13 +964,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #endif
 #ifdef HAS_IMXVPU
   if (m_renderMethod & RENDER_IMXMAP)
-  {
-    if (buf.IMXBuffer)
-    {
-      SAFE_RELEASE(buf.IMXBuffer);
-      buf.IMXBuffer = NULL;
-    }
-  }
+    SAFE_RELEASE(buf.IMXBuffer);
 #endif
 }
 
