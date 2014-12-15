@@ -51,7 +51,7 @@ msgstr "Clima"
 
 msgctxt "#9"
 msgid "Kodi media center"
-msgstr "Kodi media center"
+msgstr "Kodi Media Center"
 
 msgctxt "#11"
 msgid "Monday"
@@ -243,31 +243,31 @@ msgstr "S"
 
 msgctxt "#80"
 msgid "SSW"
-msgstr "SSW"
+msgstr "SSO"
 
 msgctxt "#81"
 msgid "SW"
-msgstr "SW"
+msgstr "SO"
 
 msgctxt "#82"
 msgid "WSW"
-msgstr "WSW"
+msgstr "OSO"
 
 msgctxt "#83"
 msgid "W"
-msgstr "W"
+msgstr "O"
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "WNW"
+msgstr "ONO"
 
 msgctxt "#85"
 msgid "NW"
-msgstr "NW"
+msgstr "NO"
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "NNW"
+msgstr "NNO"
 
 msgctxt "#87"
 msgid "VAR"
@@ -647,7 +647,7 @@ msgstr "Selecionar todos"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Procurando informações da mídia"
+msgstr "Examinando por informações da mídia"
 
 msgctxt "#190"
 msgid "Save"
@@ -1299,7 +1299,7 @@ msgstr "Proteção de tela"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "Apresentação recursiva"
+msgstr "Apresentação de slides recursiva"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -2715,7 +2715,7 @@ msgstr "Procurando"
 
 msgctxt "#774"
 msgid "Slideshow folder"
-msgstr "Pasta de apresentação (slideshow)"
+msgstr "Pasta de apresentação de slides"
 
 msgctxt "#775"
 msgid "Network interface"
@@ -2819,11 +2819,11 @@ msgstr "Atualizar Coleção"
 
 msgctxt "#800"
 msgid "Music library needs to rescan tags from files."
-msgstr "É necessário reanalisar as etiquetas dos ficheiros da Biblioteca de música"
+msgstr "É necessário reexaminar as etiquetas dos arquivos da biblioteca de música"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr "Você deseja escanear agora?"
+msgstr "Você deseja examinar agora?"
 
 msgctxt "#802"
 msgid "%s of %s available"
@@ -3031,7 +3031,7 @@ msgstr "Selecionar ícone de plug-in"
 
 msgctxt "#1045"
 msgid "Add-on settings"
-msgstr "Ajustes de addon"
+msgstr "Configurações do add-on"
 
 msgctxt "#1046"
 msgid "Access points"
@@ -3047,7 +3047,7 @@ msgstr "Usuário"
 
 msgctxt "#1049"
 msgid "Script settings"
-msgstr "Ajustes do Script"
+msgstr "Configurações do script"
 
 msgctxt "#1050"
 msgid "Singles"
@@ -3219,7 +3219,7 @@ msgstr "Permitir controle volume"
 
 msgctxt "#1270"
 msgid "Allow Kodi to receive AirPlay content"
-msgstr "Permitir ao Kodi receber conteúdo AirPlay"
+msgstr "Permitir ao Kodi receber conteúdo via AirPlay"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -3311,7 +3311,7 @@ msgstr "Ventoso"
 
 msgctxt "#1390"
 msgid "Settings"
-msgstr "Configurações de cache"
+msgstr "Configurações"
 
 msgctxt "#1391"
 msgid "Breeze"
@@ -3619,7 +3619,7 @@ msgstr "Configurações - Aparência - Ajustar Interface"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Configurações-  Vídeos - Ajustar Tela"
+msgstr "Configurações -  Vídeos - Ajustar Tela"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
@@ -3703,11 +3703,11 @@ msgstr "Navegador de complementos"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
-msgstr "Redefinir ajustes acima para o padrão"
+msgstr "Redefinir configurações acima para o padrão"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
-msgstr "Você tem certeza que quer redefinir os ajustes desta categoria?"
+msgstr "Você tem certeza que quer redefinir as configurações desta categoria?"
 
 msgctxt "#10043"
 msgid "Help"
@@ -3719,7 +3719,7 @@ msgstr "Nenhuma ajuda disponível"
 
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
-msgstr "Redefine todos os ajustes visíveis para os seus valores originais."
+msgstr "Redefine todas as configurações visíveis para os seus valores originais."
 
 msgctxt "#10046"
 msgid "No categories available"
@@ -3759,7 +3759,7 @@ msgstr "Bloquear Ajustes"
 
 msgctxt "#10132"
 msgid "Content settings"
-msgstr "Ajustes de Conteúdos"
+msgstr "Configurações de conteúdo"
 
 msgctxt "#10134"
 msgid "Favourites"
@@ -4163,7 +4163,7 @@ msgstr "Mês/Dia"
 
 msgctxt "#12390"
 msgid "System uptime"
-msgstr "Uptime do sistema"
+msgstr "Tempo de atividade do sistema"
 
 msgctxt "#12391"
 msgid "Minutes"
@@ -4179,11 +4179,11 @@ msgstr "Dias"
 
 msgctxt "#12394"
 msgid "Total uptime"
-msgstr "Uptime total"
+msgstr "Tempo de atividade total"
 
 msgctxt "#12395"
 msgid "Battery level"
-msgstr "Nível Bateria"
+msgstr "Nível da bateria"
 
 msgctxt "#12396"
 msgid "Auto updates: On"
@@ -4347,7 +4347,7 @@ msgstr "Falhou para %s"
 
 msgctxt "#13050"
 msgid "Running low on battery"
-msgstr "Bateria fraca"
+msgstr "Bateria com pouca carga"
 
 msgctxt "#13100"
 msgid "Flicker filter"
@@ -4727,11 +4727,11 @@ msgstr "Ícones recursivos"
 
 msgctxt "#13317"
 msgid "View slideshow"
-msgstr "Ver apresentação"
+msgstr "Ver apresentação de slides"
 
 msgctxt "#13318"
 msgid "Recursive slideshow"
-msgstr "Apresentação recursiva"
+msgstr "Apresentação de slides recursiva"
 
 msgctxt "#13319"
 msgid "Randomise"
@@ -4843,7 +4843,7 @@ msgstr "Buscar no IMDb..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "Buscar por novas informações"
+msgstr "Examinar por novos conteúdos"
 
 msgctxt "#13350"
 msgid "Current playlist"
@@ -4859,7 +4859,7 @@ msgstr "Examinar item para a coleção"
 
 msgctxt "#13353"
 msgid "Stop scanning"
-msgstr "Parar procura"
+msgstr "Parar de examinar"
 
 msgctxt "#13354"
 msgid "Render method"
@@ -5083,7 +5083,7 @@ msgstr "VDPAU"
 
 msgctxt "#13422"
 msgid "Start slideshow here"
-msgstr "Iniciar apresentação aqui"
+msgstr "Iniciar apresentação de slides aqui"
 
 msgctxt "#13423"
 msgid "Remember for this path"
@@ -5555,15 +5555,15 @@ msgstr "%2.1f dB"
 
 msgctxt "#14055"
 msgid "Use background scanning"
-msgstr "Usar busca em segundo plano"
+msgstr "Examinar por novos conteúdos em segundo plano"
 
 msgctxt "#14056"
 msgid "Stop scan"
-msgstr "Parar busca"
+msgstr "Parar de examinar"
 
 msgctxt "#14057"
 msgid "Not possible while scanning for media info"
-msgstr "Impossível enquanto estiver buscando informações da mídia"
+msgstr "Impossível enquanto estiver examinando por informações da mídia"
 
 msgctxt "#14058"
 msgid "Film grain effect"
@@ -6891,7 +6891,7 @@ msgstr "Informações do PVR"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr "Escanear por ícones faltantes"
+msgstr "Examinar por ícones faltantes"
 
 msgctxt "#19169"
 msgid "Hide video information box"
@@ -9003,7 +9003,7 @@ msgstr "Falso"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Apresentação de Fanart"
+msgstr "Apresentação de fanarts"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -9995,7 +9995,7 @@ msgstr "Posição da legenda"
 
 msgctxt "#22007"
 msgid "OpenGL vendor:"
-msgstr "Fabricante OpenGL:"
+msgstr "Provedor do OpenGL:"
 
 msgctxt "#22008"
 msgid "OpenGL renderer:"
@@ -10007,11 +10007,11 @@ msgstr "Versão OpenGL:"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "Temperatura GPU:"
+msgstr "Temperatura da GPU:"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
-msgstr "Temperatura CPU:"
+msgstr "Temperatura da CPU:"
 
 msgctxt "#22012"
 msgid "Total memory"
@@ -10059,11 +10059,11 @@ msgstr "Incluir arquivos de vídeo nas listagens"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
-msgstr "Fabricante DirectX:"
+msgstr "Provedor do DirectX:"
 
 msgctxt "#22024"
 msgid "Direct3D version:"
-msgstr "Versão Direct3D:"
+msgstr "Versão do Direct3D:"
 
 msgctxt "#22030"
 msgid "Font"
@@ -11259,7 +11259,7 @@ msgstr "Nome"
 
 msgctxt "#35503"
 msgid "Vendor"
-msgstr "Fabricante"
+msgstr "Provedor"
 
 msgctxt "#35504"
 msgid "Product ID"
@@ -12243,19 +12243,19 @@ msgstr "Nenhuma informação disponível ainda."
 
 msgctxt "#36311"
 msgid "Category containing settings for how picture slideshows are handled."
-msgstr "Categoria contém os ajustes de como imagens nos slideshows são manuseadas."
+msgstr "Categoria contém os ajustes de como imagens nas apresentações de slides são manuseadas."
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
-msgstr "Selecionar a quantidade de tempo a exibir cada imagem numa apresentação de slides."
+msgstr "Selecionar a quantidade de tempo que cada imagem é exibida numa apresentação de slides."
 
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
-msgstr "Imagens na apresentação de imagens irão apresentar efeito pan e zoom enquanto mostradas."
+msgstr "Imagens na apresentação de slides serão exibidas em panorama com zoom."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Exibir imagens de slides numa ordem aleatória."
+msgstr "Exibir imagens de apresentações de slides numa ordem aleatória."
 
 msgctxt "#36315"
 msgid "Section that contains weather related settings."

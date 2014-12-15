@@ -3189,6 +3189,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Annoncer disse tjenester til andre systemer ved hjælp af Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 kompatibilitets tilstand"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Tillad lydstyrkekontrol"

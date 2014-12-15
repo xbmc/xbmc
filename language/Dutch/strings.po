@@ -9007,7 +9007,7 @@ msgstr "Fanart diavoorstelling"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
-msgstr "Exporteer naar 1 bestand of meerdere"
+msgstr "Exporteer naar één enkel bestand of meerdere bestanden"
 
 msgctxt "#20427"
 msgid "files per entry?"
@@ -9015,11 +9015,11 @@ msgstr "bestanden per invoer?"
 
 msgctxt "#20428"
 msgid "Single file"
-msgstr "Enkel bestand"
+msgstr "Eén bestand"
 
 msgctxt "#20429"
 msgid "Separate"
-msgstr "Aparte"
+msgstr "Meerdere"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"

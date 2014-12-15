@@ -4443,7 +4443,7 @@ msgstr "Deshabilitado"
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr "Refresco de pantallas"
+msgstr "Apagar pantallas"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -4991,7 +4991,7 @@ msgstr "Accesos directos"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr "Ignorar los artículos al ordenar (p.e. \"el, los\")"
+msgstr "Ignorar los artículos al ordenar (por ej. \"el, los\")"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
@@ -7305,6 +7305,10 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on para el backend para usar el PVR."
 
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Por favor visite http://kodi.wiki/view/PVR para conocer mas detalles."
+
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Peligro de conflicto"
@@ -8907,7 +8911,7 @@ msgstr "Reproducir videoclip"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Obtener automáticamente las miniaturas de actor"
+msgstr "Obtener automáticamente miniaturas de actores"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -9131,7 +9135,7 @@ msgstr "Colección de películas"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Agrupar películas en sagas"
+msgstr "Agrupar películas en 'sets'"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -9247,7 +9251,7 @@ msgstr "Directorio de los subtítulos de películas y otros"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Sobrescribir tipografía de subtítulos ASS/SSA"
+msgstr "ignorar tipografía de subtítulos ASS/SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
@@ -10591,7 +10595,7 @@ msgstr "Seleccionar el servicio que se usará por defecto para subtítulos de se
 
 msgctxt "#24118"
 msgid "Default Movie Service"
-msgstr "Servicio de películas por defecto"
+msgstr "Servicio de subtítulos por defecto para películas"
 
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles."
@@ -11595,7 +11599,7 @@ msgstr "Elimina el nodo de Temporada de serie, conmuta entre 'Sólo si hay una t
 
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
-msgstr "Agrupa películas en 'Colecciones' cuando se explora la Colección de películas."
+msgstr "Agrupa películas en 'Movie sets' cuando se explora la Colección de películas."
 
 msgctxt "#36146"
 msgid "Check for new media files on Kodi startup."
@@ -11771,7 +11775,7 @@ msgstr "Establecer la codificación de caracteres usada para los subtítulos."
 
 msgctxt "#36190"
 msgid "Override ASS/SSA subtitles fonts."
-msgstr "Sobrescribir tipografías de subtítulos ASS/SSA"
+msgstr "Aplicar configuración de tipografías también para subtítulos ASS/SSA ignorando la tipografía especificada por estos."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -12771,7 +12775,7 @@ msgstr "Monoscópico (2D)"
 
 msgctxt "#36520"
 msgid "Playback mode of stereoscopic 3D videos"
-msgstr "Modo de reproducción de videos estereoscópicos 3D."
+msgstr "Modo de reproducción de videos estereoscópicos 3D"
 
 msgctxt "#36521"
 msgid "Ask me"
@@ -12809,6 +12813,14 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Igual que la película"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Selecciona como se hace downmix de audio, por ejemplo de 5.1 a 2.0: [Activo] mantiene el nivel de volumen de la fuente de audio original pero se comprime el rango dinámico. [Inactivo] mantiene el rango dinámico de la fuente de audio original pero el volumen será menor. Nota - Rango dinámico es la diferencia entre el sonido mas débil y el sonido mas potente en una fuente de sonido. Active esta opción si es difícil escuchar los diálogos de una película.  "
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Especifica bibliotecas adicionales cuyos mensajes se incluirán en el registro."
+
 msgctxt "#36535"
 msgid "Stereoscopic 3D mode of video"
 msgstr "Modo estereoscópico 3D de video"
@@ -12816,6 +12828,14 @@ msgstr "Modo estereoscópico 3D de video"
 msgctxt "#36536"
 msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "Invertir modo 3D estereoscópico (intercambiar ojos)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Selecciona en que modo se reproduciran videos 3D estereoscópicos. [Preguntar] mostrará un diálogo para seleccionar el modo deseado para cada reproducción. [Modo preferido] usará el modo especificado en la sección 'Sistema -> hardware de video'. [Monoscópico (2D)] reproducirá el video en mono/2D. [Ignorar] desactiva todo procesamiento 3D esetreoscópico."
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Activo] COnmuta la GUI (y algunos TVs) de vuelta a modo 2D cuando finaliza la reproducción. [Inactivo] GUI y TV permanecen en modo estereoscópico 3D. Para listas de reprodución el modo estereoscópico 3D no cambiará entre video y video."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12856,6 +12876,10 @@ msgstr "Usar texturas de mayor calidad para cubiertas y fanart (usa más memoria
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "limita la resolución de la GUI para ahorrar memoria. No afecta la reproducción de video. Requiere reinicio."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Usa soporte de AirPlay compatible con iOS8. Si encuentra problemas con la detección de Kodi como un destino válido desde dispositivos iOS mas antiguos intente desactivar esta opción. ¡Esta opción surte efecto en el próximo reinicio de Kodi!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."

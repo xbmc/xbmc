@@ -10761,6 +10761,10 @@ msgctxt "#33038"
 msgid "%s day"
 msgstr "%s dan"
 
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "% pretoki"
+
 msgctxt "#33040"
 msgid "%s Devices"
 msgstr "%s Naprave"
@@ -12465,6 +12469,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Temelji na strojni opremi"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Način predvajanja stereoskopskih 3D videov"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Vprašaj me"
@@ -12497,6 +12505,14 @@ msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Določite dodatne knjižnice ki bodo vključene v zapisnik."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoskopski 3D način videa"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Obraten stereoskopski 3D način videa (zamenjani očesi)"
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Spremeni stereoskopski 3D način uporabniškega vmesnika."
@@ -12516,6 +12532,10 @@ msgstr "Omogočite to možnost, da bodo dialogi glasnejši glede na ozadje pri z
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Omogočite strojno dekodiranje video datotek."
+
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoskopska 3D globina podnapisov"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

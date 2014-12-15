@@ -6637,9 +6637,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "โปรดเปลี่ยนไปยังช่องอื่น"
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "ไปยังช่องรายการ"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "ป้อนชื่อโฟลเดอร์สำหรับการบันทึก"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "กรุณาเลือกช่องรายการ"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -7277,6 +7285,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "ไม่แสดงคำเตือน 'การเชื่อมต่อที่ขาดหาย'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "จัดกลุ่มรายการ"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "ไม่มี ส่วนเสริม PVR ที่สามารถค้นพบ"
@@ -7288,6 +7300,10 @@ msgstr "คุณต้องมีตัวรับสัญญาณ, ซอ�
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "ส่วนเสริม เพื่อให้ backend สามารถใช้งาน PVR ได้."
+
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "กรุณาเยี่ยมชม http://kodi.wiki/view/PVR เพื่อเรียนรู้เพิ่มเติม"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7333,9 +7349,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "เรียกดูไอคอน"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "ค้นหา ไอคอนช่องรายการ"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "ช่องรายการทั้งหมด"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "เบื้องหน้า"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8501,6 +8525,10 @@ msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
 
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "ตัวเรียกดู Zeroconf"
+
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
 msgstr "Web server directory (HTTP)"
@@ -9617,6 +9645,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s to %s"
 
+msgctxt "#21470"
+msgid "%s [%d]"
+msgstr "%s [%d]"
+
 msgctxt "#21602"
 msgid "(External)"
 msgstr "(ภายนอก)"
@@ -10433,6 +10465,22 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "ลองเชื่อมต่ออีกครั้ง"
 
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "ส่วนเสริม ตัวช่วยเหลือ"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "คลังข้อมูล ส่วนเสริม"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "คลังข้อมูล รายละเอียด"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "คลังข้อมูล การแสดงแสงสี"
+
 msgctxt "#24089"
 msgid "Add-on restarts"
 msgstr "เริ่ม ส่วนเสริม ใหม่"
@@ -10581,6 +10629,18 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "ดาวน์โหลดบทบรรยายแรกจากผลการค้นหาอัตโนมัติ"
 
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "การกำหนดค่าได้ถูกย้าย"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "การกำหนดค่าของ XBMC ได้ถูกย้ายไปยังตำแห่งใหม่สำหรับ Kodi โปรดดูอ้างอิง http://kodi.wiki/view/Migration - ข้อความนี้จะไม่ปรากฏอีก!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "ซ่อน ที่ไม่รองรับ"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "การแจ้งเตือน"
@@ -10592,6 +10652,10 @@ msgstr "ซ่อน ประเทศอื่น"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "เลือกจากชื่อเรื่องทั้งหมด ..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "แสดง เมนูบลูเรย์"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10780,6 +10844,14 @@ msgstr "สุดสัปดาห์"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s วัน"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s กระแสข้อมูล"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s อุปกรณ์"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12240,6 +12312,14 @@ msgstr "เปิดใช้งาน ผู้ใช้จากระยะ�
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "กำหนด พอร์ต เว็บเซิร์ฟเวอร์."
+
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "กำหนดชื่อผู้ใช้ของเว็บเซิร์ฟเวอร์ ซึ่งจะมีผลก็ต่อเมื่อ ทั้งชื่อผู้ใช้และรหัสผ่าน ได้ถูกกำหนดค่า"
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "กำหนดรหัสผ่านของเว็บเซิร์ฟเวอร์ ซึ่งจะมีผลก็ต่อเมื่อ ทั้งชื่อผู้ใช้และรหัสผ่าน ได้ถูกกำหนดค่า"
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."

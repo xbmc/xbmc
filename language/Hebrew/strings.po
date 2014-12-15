@@ -1267,7 +1267,7 @@ msgstr "עמעם"
 
 msgctxt "#353"
 msgid "Black"
-msgstr "Black"
+msgstr "שחור"
 
 msgctxt "#354"
 msgid "Matrix trails"
@@ -4259,7 +4259,7 @@ msgstr "הפעלה מחדש"
 
 msgctxt "#13014"
 msgid "Minimise"
-msgstr "מזער"
+msgstr "מזעור"
 
 msgctxt "#13015"
 msgid "Power button action"
@@ -8287,15 +8287,15 @@ msgstr "פרטי DVD-ROM"
 
 msgctxt "#20158"
 msgid "Network information"
-msgstr "פרטי הרשת"
+msgstr "פרטי רשת"
 
 msgctxt "#20159"
 msgid "Video information"
-msgstr "פרטי הווידאו"
+msgstr "פרטי וידאו"
 
 msgctxt "#20160"
 msgid "Hardware information"
-msgstr "פרטי החומרה"
+msgstr "פרטי חומרה"
 
 msgctxt "#20161"
 msgid "Total"
@@ -9075,7 +9075,7 @@ msgstr "שינוי תוכן"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
-msgstr "האם לרענן כל פרטי הפריטים"
+msgstr "האם לרענן פרטים עבור כל הפריטים"
 
 msgctxt "#20444"
 msgid "items within this path?"
@@ -9943,7 +9943,7 @@ msgstr "הוקם"
 
 msgctxt "#21895"
 msgid "Themes"
-msgstr "נושאים"
+msgstr "ערכות נושא"
 
 msgctxt "#21896"
 msgid "Disbanded"
@@ -11443,7 +11443,7 @@ msgstr "שינוי הגדרות מעטפת ספציפיות. האפשריות ה
 
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
-msgstr "שינוי ערכת נושא המשויכת למעטפת שנחברה."
+msgstr "שינוי ערכת נושא המשויכת למעטפת שנבחרה."
 
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."

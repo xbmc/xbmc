@@ -1275,7 +1275,7 @@ msgstr "Matrix"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Aktywuj wygaszacz po upływie"
+msgstr "Uruchom wygaszacz po upływie"
 
 msgctxt "#356"
 msgid "Screensaver mode"
@@ -11303,11 +11303,11 @@ msgstr "Urządzenia wyłączane podczas zatrzymywania Kodi"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Usypiaj urządzenia aktywując wygaszacz ekranu"
+msgstr "Usypiaj urządzenia uruchamiając wygaszacz ekranu"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "Wybudzaj urządzenia dezaktywując wygaszacz ekranu"
+msgstr "Wybudzaj urządzenia zatrzymując wygaszacz ekranu"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."

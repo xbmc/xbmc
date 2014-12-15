@@ -3393,6 +3393,14 @@ msgctxt "#33068"
 msgid "Background"
 msgstr "पृष्ठभूमि"
 
+msgctxt "#33079"
+msgid "Love"
+msgstr "प्यार"
+
+msgctxt "#33080"
+msgid "Hate"
+msgstr "नफरत"
+
 msgctxt "#34100"
 msgid "Number of channels"
 msgstr "मर्गें की संख्या"
