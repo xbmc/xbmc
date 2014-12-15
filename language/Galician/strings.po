@@ -3185,6 +3185,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Anunciar estes servizos a outros sistemas vía Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "modo de compatibilidade iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Permitir o control do volume"
@@ -3249,9 +3253,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Remuíños"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Ceo Descuberto"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Roto"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Ciclón"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropical"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Furacán"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Frío"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3260,6 +3284,10 @@ msgstr "Ventoso"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Configuración da caché"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brisa"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -6093,6 +6121,14 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Avanzado"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesamento"
@@ -7186,8 +7222,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "complemento para o motor que lle permita usar o PVR."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Por favor visita kodi.tv/pvr para saber máis."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Por favor visite http://kodi.wiki/view/PVR para saber máis."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -11267,7 +11303,7 @@ msgstr "Usar un rango limitado de cores (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
-msgstr "Mudar a aprencia da Interfade de usuario."
+msgstr "Mudar a aparencia da Interfade de usuario."
 
 msgctxt "#36102"
 msgid "Category containing all Skin related settings."
@@ -11295,7 +11331,7 @@ msgstr "Elixir as fontes mostradas na interface de usuario. O conxunto de fontes
 
 msgctxt "#36108"
 msgid "Resize the view of the user interface."
-msgstr "Redimensionar a vista do interfaz do usuario."
+msgstr "Redimensionar a vista da interface do usuario."
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
@@ -11319,7 +11355,7 @@ msgstr "Esta categoría contén os axustes locais/rexionais."
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
-msgstr "Elixe a linguaxe para o interfaz de usuario."
+msgstr "Elixe a linguaxe para a interface de usuario."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
@@ -11901,6 +11937,10 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Ler a información etiquetada dos ficheiros de cancións. Para directorios con moitos ficheiros isto pode ralentizar o timpo de lectura, especialmente a través dunha rede."
 
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "Controlar a forma na que se amosan os nomes das cancións na interface de usuario. Precísase activar a lectura de etiquetas para un correcto funcionamento."
+
 msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
 msgstr "Empregado para formatar a segunda columna nas listas de ficheiros."
@@ -12111,7 +12151,7 @@ msgstr "Esta categoría contén a configuración da xestión do servizo do contr
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Permitir ás aplicacións deste computador controlar o Kodi mediante o Interface Web ou o protocolo da interface JSON-RPC."
+msgstr "Permitir ás aplicacións deste computador controlar o Kodi mediante a Interface Web ou o protocolo da interface JSON-RPC."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -12181,6 +12221,14 @@ msgctxt "#36351"
 msgid "Display Kodi in a window, or fullscreen on the selected screen."
 msgstr "Amosar o Kodi nunha xanela ou a pantalla completa na pantalla seleccionada."
 
+msgctxt "#36352"
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "Trocar a resolución da interface de usuario."
+
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "Trocar a taxa de refresco da interface de usuario."
+
 msgctxt "#36354"
 msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
 msgstr "Amosar o Kodi nunha xanela a pantalla completa. O principial beneficio é nas configuracións con multiples monitores, polo que se pode usar sen minimizar outras aplicacións. Esta opción fai uso de máis recursos e pode penalizar a reprodución."
@@ -12195,7 +12243,7 @@ msgstr "Nivelar a xerarquía da biblioteca."
 
 msgctxt "#36357"
 msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
-msgstr "Calibrar o Interface de Usuario axustando a compensación de imaxe. Use esta ferramenta se a imaxe a mostrar e máis grande ou pequena que a pantalla."
+msgstr "Calibrar a Interface de Usuario axustando a compensación de imaxe. Use esta ferramenta se a imaxe a mostrar e máis grande ou pequena que a pantalla."
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
@@ -12525,6 +12573,14 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "O mesmo do filme (autodetectar)"
 
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Seleccionar o modo de reprodución"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Seleccionar o modo estereoscópico 3D"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Seleccionar modo alternativo..."
@@ -12539,7 +12595,7 @@ msgstr "Modo de vídeo 3D estereoscópico"
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
-msgstr "Cambia o modo 3D estereoscópico do interfaz de usuario."
+msgstr "Cambia o modo 3D estereoscópico da interface de usuario."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."

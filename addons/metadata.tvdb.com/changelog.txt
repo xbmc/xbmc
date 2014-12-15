@@ -1,3 +1,12 @@
+[B]1.7.1[/B]
+- Updated: language files from Transifex
+
+[B]1.7.0[/B]
+- Added: Option to get IMDb episode and series rating when available
+
+[B]1.6.0[/B]
+- Changed: Force selected language even if title on another language is being used for the search query
+
 [B]1.5.9[/B]
 - Updated: language files from Transifex
 

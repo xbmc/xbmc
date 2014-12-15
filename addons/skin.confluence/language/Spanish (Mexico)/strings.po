@@ -472,9 +472,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Subtítulo local disponible"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Iniciar sesión"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selecciona tu Perfil Kodi[CR]para iniciar sesión y continuar"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Mostrar u ocultar pantalla de inicio al inciar."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Seleccionar el perfil que será usado al iniciar cuando la pantalla de inicio esta deshabilitada"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -579,3 +591,7 @@ msgstr "REPRODUCIR DISCO"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

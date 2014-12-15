@@ -8742,7 +8742,7 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp

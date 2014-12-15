@@ -110,8 +110,14 @@
 			<RegExp input="$INFO[albumstylessource]" output="&lt;url function=&quot;GetAMGAlbumStyles&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>
 			</RegExp>
+			<RegExp input="$INFO[albumstylessource]" output="&lt;chain function=&quot;GetTADBAlbumStylesByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
 			<RegExp input="$INFO[albummoodssource]" output="&lt;url function=&quot;GetAMGAlbumMoods&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[albummoodssource]" output="&lt;chain function=&quot;GetTADBAlbumMoodsByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
 			</RegExp>
 			<RegExp input="$INFO[albumthemessource]" output="&lt;url function=&quot;GetAMGAlbumThemes&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>

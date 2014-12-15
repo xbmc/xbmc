@@ -6333,10 +6333,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "تحتاج معدل, برنامج خلفية, و"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "الرجاء زيارة kodi.tv/pvr لمعرفة المزيد"
-
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "اخر/غير معلوم"

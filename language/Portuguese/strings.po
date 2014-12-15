@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on para a backend aceder ao PVR."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Por favor, consulte kodi.tv/pvr para saber mais."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Por favor, visite http://kodi.wiki/view/PVR para saber mais."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -10636,6 +10636,14 @@ msgstr "Transferir automaticamente a primeira legenda da lista de resultados"
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Configurações foram movidas "
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "A configuração do XBMC foi movida para um novo local. Por favor consulte o site http://kodi.wiki/view/Migration. Esta mensagem não será exibida novamente."
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Ocultar incompatíveis"
 
 msgctxt "#25000"
 msgid "Notifications"

@@ -6,4 +6,6 @@
     <setting label="30002" type="bool" id="fanart" default="true" />
     <setting type="sep" />
     <setting label="30004" type="labelenum" id="language" values="da|fi|nl|de|it|es|fr|pl|hu|el|tr|ru|he|ja|pt|zh|cs|sl|hr|ko|en|sv|no" sort="yes" default="en" />
+    <setting label="30005" type="labelenum" values="TheTVDB|IMDb" id="RatingS" default="TheTVDB"/>
+	<setting label="30006" type="bool" id="fallback" subsetting="true" visible="eq(-1,1)" default="true"/>
 </settings>

@@ -7181,10 +7181,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "為後端設計的附加元件才能使用 PVR 功能。"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "請拜訪 kodi.tv/pvr 以取得更多資訊。"
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "衝突驚告"

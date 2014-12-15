@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Confirma moure el fitxer"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Confirma eliminar"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Voleu copiar els fitxers?"
@@ -849,6 +853,10 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Dimensionant: (%i,%i)->(%i,%i) (Escala x%2.2f) AR:%2.2f:1 (Píxels: %2.2f:1) (VShift: %2.2f)"
 
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Monitor"
+
 msgctxt "#247"
 msgid "Scripts"
 msgstr "Scripts"
@@ -868,6 +876,10 @@ msgstr "Visualització"
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccioneu el directori de destí"
+
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Upmix estèreo"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1224,6 +1236,10 @@ msgstr "Actors"
 msgctxt "#345"
 msgid "Year"
 msgstr "Any"
+
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "Mantenir el volum original durant el downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -2401,6 +2417,18 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Nivell de compressió"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Habilita el registre de components específics"
+
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Habilita la transcodificació Dolby Digital"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Especifica el registre de components específics..."
+
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
 msgstr "Registre detallat per la llibreria SMB"
@@ -2432,6 +2460,22 @@ msgstr "Registre detallat per a les peticions JSON-RPC"
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "Registre detallat del component AUDIO"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Registre detallat per a la llibreria d'AirTunes"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Registre detallat per als components UPnP"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Registre detallat per a la llibreria CEC"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Registre detallat per al component de VÍDEO"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3165,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Anuncia aquests serveis a altres sistemes a través de Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Mode de compatibilitat per a iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Permet el control de volum"
@@ -3217,6 +3265,10 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "Intensitat"
 
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Irregular"
+
 msgctxt "#1380"
 msgid "Very"
 msgstr "Molt"
@@ -3228,6 +3280,10 @@ msgstr "Extrem"
 msgctxt "#1382"
 msgid "Whirls"
 msgstr "Remolins"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Cel clar"
 
 msgctxt "#1384"
 msgid "Broken"
@@ -3256,6 +3312,26 @@ msgstr "Ventós"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Configuració"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Brisa"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Suau"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Vent fort, gairebé vendaval"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Sever"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violent"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -4108,6 +4184,18 @@ msgstr "Temps total d'activitat"
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "Nivell de la bateria"
+
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr "Actualitzacions automàtiques: Actiu"
+
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr "Actualitzacions automàtiques: Notifica"
+
+msgctxt "#12398"
+msgid "Auto updates: Never"
+msgstr "Actualitzacions automàtiques: Mai"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -5065,6 +5153,22 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permet l'acceleració per maquinari (MediaCodec)"
 
+msgctxt "#13441"
+msgid "Use MPEG-2 VDPAU"
+msgstr "Utilitza l'VDPAU de l'MPEG-2"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Habilita aquesta opció per a utilitzar l'acceleració per maquinari per als còdecs MPEG-(1/2). Si s'inhabilita es farà servir la CPU. Les antigues targetes Radeon tenen tendència a fallar amb aquesta opció habilitada."
+
+msgctxt "#13443"
+msgid "Use MPEG-4 VDPAU"
+msgstr "Utilitza l'VDPAU de l'MPEG-4"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Habilita aquesta opció per a utilitzar l'acceleració per maquinari per al còdec Mpeg-4. Si s'inhabilita es farà servir la CPU. Algun maquinari basat en ION té problemes si s'habilita aquesta opció per defecte."
+
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Utilitza VC-1 VDPAU"
@@ -5072,6 +5176,22 @@ msgstr "Utilitza VC-1 VDPAU"
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr "Activeu aquesta opció per a utilitzar acceleració per maquinari per a codecs basats en VC-1. Si es deshabilita es farà servir la CPU. Maquinari AMD amb VDPAU no pot descodificar VC-1 simple."
+
+msgctxt "#13447"
+msgid "Use MPEG-2 VAAPI"
+msgstr "Utilitza l'VAAPI de l'MPEG-2"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Habilita aquesta opció per a utilitzar l'acceleració per maquinari per a còdecs MPEG-(1/2). Si s'inhabilita es farà servir la CPU. Alguns vídeos MPEG-2 poden presentar artefactes verds."
+
+msgctxt "#13449"
+msgid "Use MPEG-4 VAAPI"
+msgstr "Utilitza l'VAAPI de l'MPEG-4"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
+msgstr "Habilita aquesta opció per a utilitzar l'acceleració per maquinari per al còdec MPEG-4. Si s'inhabilita es farà servir la CPU."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5092,6 +5212,18 @@ msgstr "Programari"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Accelerat per maquinari"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Prioritza el mètode de renderitzat de l'VAAPI"
+
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Permet l'acceleració per maquinari (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Utilitza l'OMXPlayer per descodificar els fitxers de vídeo."
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5216,6 +5348,10 @@ msgstr "Multi Remote (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Error del'Apple Remote"
+
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "No es pot habilitar el suport per a l'Apple Remote."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5593,6 +5729,18 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Acceleració"
 
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Mode de reproducció del Blu-Ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Reprodueix la pel·lícula principal"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Mostra el menú simplificat"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Font no disponible"
@@ -5656,6 +5804,10 @@ msgstr "Sons de navegació"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Aparença per defecte"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Amplia la mida de la font"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -6032,6 +6184,34 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI adaptable al moviment"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI amb compensació de moviment"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL- Avançat"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Avançat (Mig)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Mig)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6457,9 +6637,17 @@ msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "canvieu a un altre canal"
 
+msgctxt "#19103"
+msgid "Go to channel"
+msgstr "Ves al canal"
+
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Introduïu el nom del directori pels enregistraments"
+
+msgctxt "#19105"
+msgid "Please select a channel"
+msgstr "Seleccioneu un canal"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -6481,6 +6669,14 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Error del rerefons PVR. Comprovau els registres per detalls."
 
+msgctxt "#19112"
+msgid "Delete this recording?"
+msgstr "Voleu eliminar aquest enregistrament?"
+
+msgctxt "#19113"
+msgid "Delete all recordings in this folder?"
+msgstr "Voleu eliminar tots els enregistraments d'aquesta carpeta?"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Versió"
@@ -6500,6 +6696,10 @@ msgstr "Cerca canals"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "No es poden utilitzar les funcions PVR durant una cerca."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "A quin servidor voleu cercar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6889,6 +7089,10 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Canals en"
 
+msgctxt "#19221"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Sincronitza els grups de canals amb els rerefons"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7081,6 +7285,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "No mostris els avisos de 'connexió perduda'"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Grup d'elements"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "No s'ha trobat cap complement PVR"
@@ -7092,10 +7300,6 @@ msgstr "Necessitau un sintonitzador, programari de rerefons, i un"
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Complement per al servei que permet utilitzar el PVR."
-
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Visiteu kodi.tv/pvr per saber més."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7141,9 +7345,17 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Cerca una icona"
 
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "S'estan cercant icones per al canal"
+
 msgctxt "#19287"
 msgid "All channels"
 msgstr "Tots el canals"
+
+msgctxt "#19288"
+msgid "Foreground"
+msgstr "Primer pla"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7428,6 +7640,10 @@ msgstr "Artesania"
 msgctxt "#19647"
 msgid "Motoring"
 msgstr "Automobilisme"
+
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Fitness i Salut"
 
 msgctxt "#19649"
 msgid "Cooking"
@@ -8300,6 +8516,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Cercador Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10157,6 +10377,10 @@ msgctxt "#24055"
 msgid "Check for updates"
 msgstr "Comprova si hi ha actualitzacions"
 
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr "Última actualització %s"
+
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
 msgstr "Voleu habilitar aquest complement?"
@@ -10232,6 +10456,22 @@ msgstr "Complement necessari"
 msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr "Voleu tornar a provar de connectar?"
+
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr "Complements de l'assistent"
+
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr "Biblioteques de complements"
+
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr "Biblioteques d'informació"
+
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr "Biblioteques de visualització"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10337,9 +10577,17 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Servei de TV per defecte"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Seleccioneu el servei per defecte on es cercaran els subtítols de les sèries de TV."
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Servei de pel·lícules per defecte"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Seleccioneu el servei per defecte on es cercaran els subtítols de les pel·lícules."
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10357,6 +10605,22 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Localització personalitzada"
 
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Descarrega automàticament el primer subtítol"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Descarrega automàticament el primer subtítol de la llista de resultats de la cerca"
+
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "La configuració s'ha mogut"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Amaga els incompatibles"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificacions"
@@ -10368,6 +10632,10 @@ msgstr "Amaga "
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccioneu entre tots els títols ..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "Mostra el menú del Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10384,6 +10652,10 @@ msgstr "Seleccioneu l'element de la reproducció"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Capítols: %u - durada: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "La reproducció del Blu-ray ha fallat"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
@@ -11157,6 +11429,10 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Edita els canals RSS."
 
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Trieu l'idioma de la interfície d'usuari."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Seleccioneu els formats de temperatura, hora i data. Les opcions disponibles depenen de l'idioma seleccionat."
@@ -11629,6 +11905,14 @@ msgctxt "#36338"
 msgid "Allow programs on the network to control Kodi."
 msgstr "Permetre a programes de la xarxa que controlin l'Kodi."
 
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Retard de repetició inicial (ms)."
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Retard de repetició contínua (ms)."
+
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr "Habilita la protecció amb contrasenya de l'AirPlay."
@@ -11676,6 +11960,10 @@ msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodifi
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Configura com es manegen els sons d'interfície, com ara la navegació pels menús i les notificacions importants."
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "Configureu els dispositius perifèrics connectats."
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -11785,6 +12073,14 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Grava"
 
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Mode estereoscòpic 3D (actual)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Mode estereoscòpic 3D"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Inhabilitat"
@@ -11812,6 +12108,14 @@ msgstr "Entrellaçat"
 msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Maquinari Basat"
+
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscòpic (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Mode de reproducció de vídeos estereoscòpics 3D"
 
 msgctxt "#36521"
 msgid "Ask me"

@@ -4003,7 +4003,7 @@ msgstr "veya çıkmak için C'ye basın"
 
 msgctxt "#12330"
 msgid "Enter gamepad button combo and"
-msgstr "Gamepad tuş kombinasyonunu girin ve"
+msgstr "Oyun kumandası tuş kombinasyonunu girin ve"
 
 msgctxt "#12331"
 msgid "press OK, or Back to cancel"
@@ -4031,7 +4031,7 @@ msgstr "Sayısal parola"
 
 msgctxt "#12338"
 msgid "Gamepad button combo"
-msgstr "Gamepad tuş kombinasyonu"
+msgstr "Oyun kumandası tuş kombinasyonu"
 
 msgctxt "#12339"
 msgid "Full-text password"
@@ -5523,7 +5523,7 @@ msgstr "%i ms"
 
 msgctxt "#14047"
 msgid "%i %%"
-msgstr "%i %%"
+msgstr "%% %i"
 
 msgctxt "#14048"
 msgid "%i kbps"
@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "ve arka uç için eklentiye ihtiyacınınız var."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Daha fazla bilgi için kodi.tv/pvr sitesini ziyaret ediniz."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Daha fazla bilgi için http://kodi.wiki/view/PVR sitesini ziyaret ediniz."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7335,7 +7335,7 @@ msgstr "İstemciye özel ayarlar"
 
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
-msgstr "Kanal değiştirmeyi OK'e basarak onaylayın"
+msgstr "Kanal değiştirmeyi Tamam'a basarak onaylayın"
 
 msgctxt "#19282"
 msgid "Current icon"
@@ -9571,7 +9571,7 @@ msgstr "Altyazı dili"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
-msgstr "Remote control sends keyboard presses"
+msgstr "Uzaktan kontrol, klavye tuşları gönderir"
 
 msgctxt "#21450"
 msgid "Edit"
@@ -10335,7 +10335,7 @@ msgstr "Zip dosyasından yükle"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
-msgstr "Karşıdan yükleniyor %i%%"
+msgstr "Karşıdan yükleniyor %%%i"
 
 msgctxt "#24043"
 msgid "Available Updates"
@@ -11239,7 +11239,7 @@ msgstr "Bu aygıt için özel keymap kullanma"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
-msgstr "Joystick ve gamepad desteğini etkinleştir"
+msgstr "Oyun çubuğu ve oyun kumandası desteğini etkinleştir"
 
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
@@ -12507,7 +12507,7 @@ msgstr "Etkinleştirildiğinde, klavye okları sanal klavye üzerindeki seçimi 
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
-msgstr "Kodi'yi kontrol etmek için bir fare veya dokunmatik ekran aygıtı kullanın. Not: devre dışı bırakmak klavye veya uzaktan kumanda mevcut değilse Kodi üzerindeki kontrolü kaybetmenize neden olacaktır."
+msgstr "Kodi'yi kontrol etmek için bir fare veya dokunmatik ekran aygıtı kullanın. Not: devre dışı bırakmak, klavye veya uzaktan kumanda mevcut değilse Kodi üzerindeki kontrolü kaybetmenize neden olacaktır."
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."

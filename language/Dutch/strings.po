@@ -6375,11 +6375,11 @@ msgstr "Opname is al gestart voor dit kanaal"
 
 msgctxt "#19035"
 msgid "%s could not be played. Check the log for details."
-msgstr "%s kon niet worden afgespeeld. Controleer het log voor details."
+msgstr "%s kon niet worden afgespeeld. Controleer het logbestand voor details."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr "Opname kan niet worden weergegeven. Controleer het log voor details."
+msgstr "Opname kan niet worden weergegeven. Controleer het logbestand voor details."
 
 msgctxt "#19037"
 msgid "Show signal quality"
@@ -6411,11 +6411,11 @@ msgstr "Opname"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Controleer de instellingen van de server of controleer het log voor details."
+msgstr "Controleer de instellingen van de server of controleer het logbestand voor details."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Geen PVR clienten zijn gestart. Wacht totdat de PVR clienten zijn opgestart op controleer het log voor details."
+msgstr "Geen PVR clienten zijn gestart. Wacht totdat de PVR clienten zijn opgestart op controleer het logbestand voor details."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6503,7 +6503,7 @@ msgstr "Dit programma wordt al opgenomen"
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr "Kon de opname niet verwijderen. Controleer het log voor details."
+msgstr "Kon de opname niet verwijderen. Controleer het logbestand voor details."
 
 msgctxt "#19069"
 msgid "EPG"
@@ -6663,15 +6663,15 @@ msgstr "om"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr "Kon de opname niet opslaan. Controleer het logboek voor meer info."
+msgstr "Kon de opname niet opslaan. Controleer het logbestand voor meer info."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr "Er is een onverwachte fout opgetreden. Probeer later opnieuw of controleer het logboek voor meer info."
+msgstr "Er is een onverwachte fout opgetreden. Probeer later opnieuw of controleer het logbestand voor meer info."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "PVR server fout. Controleer het logboek voor meer info."
+msgstr "PVR server fout. Controleer het logbestand voor meer info."
 
 msgctxt "#19112"
 msgid "Delete this recording?"
@@ -6779,7 +6779,7 @@ msgstr "Geen groepen gedifinieerd"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr "Maak er eerst een aan"
+msgstr "Maak eerst een groep aan"
 
 msgctxt "#19139"
 msgid "Name of the new group"
@@ -6803,7 +6803,7 @@ msgstr "Beheer groepen"
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr "Geen groepen"
+msgstr "Geen groepen gedefineerd"
 
 msgctxt "#19145"
 msgid "Grouped"
@@ -6815,7 +6815,7 @@ msgstr "Groepen"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "De PVR server ondersteunt deze actie niet. Controleer het logboek voor meer info."
+msgstr "De PVR server ondersteunt deze actie niet. Controleer het logbestand voor meer info."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6879,7 +6879,7 @@ msgstr "Opnames"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr "Kan de opname niet starten"
+msgstr "Kan de opname niet starten. Controleer het logbestand voor meer info."
 
 msgctxt "#19165"
 msgid "Switch"
@@ -6891,7 +6891,7 @@ msgstr "PVR informatie"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr "Zoek missende iconen"
+msgstr "Zoek naar missende iconen"
 
 msgctxt "#19169"
 msgid "Hide video information box"
@@ -6899,7 +6899,7 @@ msgstr "Verberg videoinformatie"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr "Timeout bij het openen van een nieuw kanaal"
+msgstr "Timeout bij starten van afspelen"
 
 msgctxt "#19171"
 msgid "Start playback minimised"
@@ -6907,23 +6907,23 @@ msgstr "Start afspelen geminimaliseerd"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr "Lengte directe opname"
+msgstr "Duur van directe opname"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr "Standaard prioriteit"
+msgstr "Standaard opname prioriteit"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr "Standaard levensduur"
+msgstr "Standaard opname levensduur"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
-msgstr "Marge opname begin"
+msgstr "Marge aan het begin van een opname"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr "Marge opname einde"
+msgstr "Marge aan het eind van een opname"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -6951,19 +6951,19 @@ msgstr "Radio"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Wis TV database"
+msgstr "Wis PVR database"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Alle gegevens in de TV database worden gewist"
+msgstr "Alle gegevens in de PVR database worden gewist"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Wis TV gids informatie en lees nieuwe in"
+msgstr "Reset TV gids database"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "TV gids wordt gewist"
+msgstr "TV gids wordt gereset"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
@@ -6979,11 +6979,11 @@ msgstr "PVR dienst"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Geen server ondersteunt het scannen naar kanalen"
+msgstr "Geen van de ingestelde servers ondersteunt het scannen naar kanalen"
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr "Kon het scannen naar kanalen niet starten"
+msgstr "Kon het scannen naar kanalen niet starten. Kontroleer het logbestand voor meer informatie."
 
 msgctxt "#19194"
 msgid "Continue?"
@@ -7035,7 +7035,7 @@ msgstr "Beheer groepen"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr "Activeer TV gids:"
+msgstr "Activeer TV-gids:"
 
 msgctxt "#19207"
 msgid "Group:"
@@ -7127,15 +7127,15 @@ msgstr "Opname verwijderd"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr "Sluit kanalen OSD na wijzigen kanaal"
+msgstr "Sluit OSD van kanaal na wijzigen kanaal"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates during playback"
-msgstr "Voorkom EPG updates gedurende het afspelen"
+msgstr "Voorkom TV-Gids updates gedurende het afspelen"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr "Gebruik altijd de volgorde van kanalen van backend(s)"
+msgstr "Gebruik altijd de volgorde van kanalen van de server(s)"
 
 msgctxt "#19232"
 msgid "Clear search results"
@@ -7147,11 +7147,11 @@ msgstr "Toon een melding bij timer updates"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
-msgstr "Gebruik kanaalnummers van de backend (alleen als 1 PVR add-on actief is)"
+msgstr "Gebruik kanaalnummers van de backend (werkt alleen als 1 PVR add-on actief is)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "PVR manager is starting up"
+msgstr "PVR manager wordt gestart"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
@@ -7167,7 +7167,7 @@ msgstr "Opnames worden geladen van add-ons"
 
 msgctxt "#19239"
 msgid "Starting background threads"
-msgstr "Achtergrond threads worden gestart"
+msgstr "Achtergrond processen worden gestart"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
@@ -7179,7 +7179,7 @@ msgstr "De PVR manager is ingeschakeld zonder ingeschakelde"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "Geactiveerde PVR add-on. Schakel tenminste een add-on in"
+msgstr "geactiveerde PVR add-on. Schakel tenminste één add-on in"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -7187,7 +7187,7 @@ msgstr "om de PVR functie te gebruiken."
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr "Negeer ontwaak commando binnen"
+msgstr "Server inactief tijd"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
@@ -7207,35 +7207,35 @@ msgstr "Tijdstip dagelijks ontwaken (UU:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
-msgstr "Filter channels"
+msgstr "Filter kanalen"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"
-msgstr "Loading EPG from database"
+msgstr "Laden TV-gids van database"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr "Update EPG information"
+msgstr "Update TV-gids informatie"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"
-msgstr "Schedule EPG update for this channel?"
+msgstr "TV-gids update plannen voor dit kanaal?"
 
 msgctxt "#19253"
 msgid "EPG update scheduled for channel"
-msgstr "EPG update scheduled for channel"
+msgstr "TV-gids update gepland voor dit kanaal"
 
 msgctxt "#19254"
 msgid "EPG update failed for channel"
-msgstr "EPG update failed for channel"
+msgstr "TV-gids update mislukt voor dit kanaal"
 
 msgctxt "#19255"
 msgid "Start recording"
-msgstr "Start recording"
+msgstr "Start opname"
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr "Stop recording"
+msgstr "Stop opname"
 
 msgctxt "#19257"
 msgid "Lock channel"
@@ -7251,7 +7251,7 @@ msgstr "Ouderlijk toezicht"
 
 msgctxt "#19260"
 msgid "Unlock duration"
-msgstr "Duur ontgrendeling"
+msgstr "Duur  van ontgrendeling"
 
 msgctxt "#19261"
 msgid "Change PIN"
@@ -7271,7 +7271,7 @@ msgstr "Onjuiste PIN-code"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
-msgstr "De ingevoerde PIN code was niet correct."
+msgstr "De ingevoerde PIN-code was niet correct."
 
 msgctxt "#19266"
 msgid "Parental locked"
@@ -7299,15 +7299,15 @@ msgstr "Er konden geen PVR add-ons gevonden worden"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
-msgstr "U heeft een tuner, backend software, en een"
+msgstr "U heeft een tuner, server software, en een"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "Add-on voor de backend om PVR te kunnen gebruiken."
+msgstr "Add-on voor de server om PVR te kunnen gebruiken."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Bezoek Kodi.tv/pvr om meer te leren."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Zie http://kodi.wiki/view/PVR voor meer informatie."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7319,11 +7319,11 @@ msgstr "Conflict fout"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr "Het conflict word geregistreerd"
+msgstr "Opname conlfict"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr "Registratie fout"
+msgstr "Opname fout"
 
 msgctxt "#19279"
 msgid "Client specific"
@@ -7335,7 +7335,7 @@ msgstr "Cliënt-eigen instellingen"
 
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
-msgstr "Bevestig kanaalwisselingen met de OK-toets"
+msgstr "Bevestig kanaalwisselingen d.m.v. OK"
 
 msgctxt "#19282"
 msgid "Current icon"
@@ -7771,7 +7771,7 @@ msgstr "Wilt u het spel starten?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Sorteer: afspeellijst"
+msgstr "Sorteer op: afspeellijst"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -7907,15 +7907,15 @@ msgstr "Afzonderlijk"
 
 msgctxt "#20062"
 msgid "Shares with default"
-msgstr "Gebruik standaard"
+msgstr "Deelt met standaard"
 
 msgctxt "#20063"
 msgid "Shares with default (read only)"
-msgstr "Gebruik standaard (alleen-lezen)"
+msgstr "Deelt met standaard (alleen-lezen)"
 
 msgctxt "#20064"
 msgid "Copy default"
-msgstr "Kopiëren"
+msgstr "Standaard kopiëren"
 
 msgctxt "#20065"
 msgid "Profile picture"
@@ -7935,7 +7935,7 @@ msgstr "Profielvergrendeling"
 
 msgctxt "#20069"
 msgid "Could not create folder"
-msgstr "Kan map niet creëren"
+msgstr "Kan map niet aanmaken"
 
 msgctxt "#20070"
 msgid "Profile directory"
@@ -7955,7 +7955,7 @@ msgstr "en of de nieuwe mapnaam geldig is"
 
 msgctxt "#20074"
 msgid "MPAA rating"
-msgstr "MPAA-waardering:"
+msgstr "MPAA-waardering"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
@@ -7975,11 +7975,11 @@ msgstr "- Geen link ingesteld -"
 
 msgctxt "#20079"
 msgid "Enable animations"
-msgstr "Soepel overvloeien bij schermovergang"
+msgstr "Overgangen inschakelen"
 
 msgctxt "#20080"
 msgid "Disable RSS during music"
-msgstr "RSS-feeds niet weergeven tijdens afspelen van muziek"
+msgstr "Uitschakelen RSS-feeds tijdens afspelen van muziek"
 
 msgctxt "#20081"
 msgid "Enable shortcut buttons"
@@ -8019,7 +8019,7 @@ msgstr "Beschikbare hardeschijfruimte"
 
 msgctxt "#20090"
 msgid "Enter the name of an existing share"
-msgstr "Voer de naam van een bestaande gedeelde map in"
+msgstr "Voer de naam van een bestaande gedeelde locatie in"
 
 msgctxt "#20091"
 msgid "Lock code"
@@ -8059,7 +8059,7 @@ msgstr "CD-rippen is tijdens het afspelen niet mogelijk"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
-msgstr "Vergrendelingsinstellingen"
+msgstr "Vergrendelingcode en instellingen"
 
 msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
@@ -8067,7 +8067,7 @@ msgstr "Invoeren vergrendelcode activeert altijd de ontgrendelde modus"
 
 msgctxt "#20102"
 msgid "or copy from default?"
-msgstr "of maak een kopie van de huidige instellingen?"
+msgstr "of maak een kopie van de standaard instellingen?"
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
@@ -8131,7 +8131,7 @@ msgstr "Ongeldige vergrendelcode."
 
 msgctxt "#20118"
 msgid "This requires the master lock to be set."
-msgstr "Dit vereist een actieve hoofdvergrendeling."
+msgstr "Dit vereist dat hoofdvergrendeling is ingesteld."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
@@ -8179,7 +8179,7 @@ msgstr "Weven (omgekeerd)"
 
 msgctxt "#20131"
 msgid "Blend"
-msgstr "Overgaan"
+msgstr "Mengen"
 
 msgctxt "#20132"
 msgid "Restart video"
@@ -8363,7 +8363,7 @@ msgstr "Videoinformatie weergeven"
 
 msgctxt "#20177"
 msgid "Done"
-msgstr "OK"
+msgstr "Klaar"
 
 msgctxt "#20178"
 msgid "Shift"
@@ -8395,7 +8395,7 @@ msgstr "Afbeeldingen draaien op basis van EXIF-informatie"
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
-msgstr "Posterstijl voor tv-series gebruiken"
+msgstr "Posterstijl voor series gebruiken"
 
 msgctxt "#20186"
 msgid "Please wait"
@@ -8423,7 +8423,7 @@ msgstr "Foutregistratie inschakelen"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
-msgstr "Extra informatie downloaden tijdens het scannen"
+msgstr "Extra informatie downloaden tijdens updates"
 
 msgctxt "#20193"
 msgid "Default service for album information"
@@ -8575,7 +8575,7 @@ msgstr "Video - Bibliotheek"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
-msgstr "Sorteer: ID"
+msgstr "Sorteer op: ID"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
@@ -8587,7 +8587,7 @@ msgstr "Scannen van muziekvideo's met %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
-msgstr "Scannen van TV-shows met %s"
+msgstr "Scannen van series met %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
@@ -8679,7 +8679,7 @@ msgstr "Speelfilms"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "TV-Series"
+msgstr "Series"
 
 msgctxt "#20344"
 msgid "This directory contains"
@@ -8719,7 +8719,7 @@ msgstr "Afleveringsinfo"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Details serie laden"
+msgstr "Details van serie laden"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
@@ -8783,7 +8783,7 @@ msgstr "Prod. code"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Plot van niet bekeken video's weergeven"
+msgstr "Plot van niet-bekeken video's weergeven"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -8791,11 +8791,11 @@ msgstr "* Verborgen om plot niet te verklappen *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Afbeelding seizoen selecteren"
+msgstr "Seizoenafbeelding selecteren"
 
 msgctxt "#20372"
 msgid "Season image"
-msgstr "Afbeelding van seizoen"
+msgstr "Seizoenafbeelding"
 
 msgctxt "#20373"
 msgid "Season"
@@ -8835,7 +8835,7 @@ msgstr "Specials"
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
-msgstr "Geselecteerde map bevat 1 video"
+msgstr "Geselecteerde map bevat enkel één video"
 
 msgctxt "#20384"
 msgid "Link to TV show"
@@ -8939,7 +8939,7 @@ msgstr "Muziekvideo-informatie downloaden"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "TV-Serie informatie downloaden"
+msgstr "Serie informatie downloaden"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -8951,7 +8951,7 @@ msgstr "Eenvoudige weergave"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Verberg seizoenen TV-shows"
+msgstr "Verberg seizoenen series"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -9435,7 +9435,7 @@ msgstr "Standaard speelfilm scanner"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
-msgstr "Standaard tv-serie scanner"
+msgstr "Standaard serie scanner"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
@@ -10591,7 +10591,7 @@ msgstr "Standaard TV dienst"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles."
-msgstr "Selecteer de standaarddienst die zal worden gebruik om te zoeken naar TV-serie ondertiteling."
+msgstr "Selecteer de standaarddienst die zal worden gebruik om te zoeken naar serie ondertiteling."
 
 msgctxt "#24118"
 msgid "Default Movie Service"
@@ -11595,7 +11595,7 @@ msgstr "Haal miniaturen voor acteurs op tijdens het scannen van media."
 
 msgctxt "#36144"
 msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
-msgstr "Laat bij TV-Series het seizoen niet zien. Kies tussen 'Enkel bij één seizoen' (standaard), 'Altijd' of 'Nooit'."
+msgstr "Laat bij series het seizoen niet zien. Kies tussen 'Enkel bij één seizoen' (standaard), 'Altijd' of 'Nooit'."
 
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
@@ -11811,7 +11811,7 @@ msgstr "Kies de standaardbron voor filminformatie. Ga naar de Add-ons Beheerder 
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Kies de standaardbron voor TV showinformatie. Zie de Add-ons Beheerder voor opties."
+msgstr "Kies de standaardbron voor serie informatie. Zie de Add-ons Beheer voor opties."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11995,7 +11995,7 @@ msgstr "Categorie voor ouderlijk toezicht instellingen als de PVR backend server
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
-msgstr "Vraag een PIN code om kanalen die door de ouders vergrendeld zijn te bekijken. Kanalen kunnen vergrendeld zijn in de kanalen editor via de algemene tab. Zulke kanalen kunnen niet bekeken of opgenomen worden zonder een PIN code in te voeren, en de EPG informatie is tevens verborgen voor deze kanalen."
+msgstr "Vraag een PIN code om kanalen die door de ouders vergrendeld zijn te bekijken. Kanalen kunnen vergrendeld zijn in de kanalen editor via de algemene tab. Zulke kanalen kunnen niet-bekeken of opgenomen worden zonder een PIN code in te voeren, en de EPG informatie is tevens verborgen voor deze kanalen."
 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
@@ -12911,7 +12911,7 @@ msgstr "Serie"
 
 msgctxt "#36903"
 msgid "TV shows"
-msgstr "TV-Series"
+msgstr "Series"
 
 msgctxt "#36904"
 msgid "season"
@@ -12923,11 +12923,11 @@ msgstr "seizoenen"
 
 msgctxt "#36906"
 msgid "episode"
-msgstr "Aflevering"
+msgstr "aflevering"
 
 msgctxt "#36907"
 msgid "episodes"
-msgstr "Afleveringen"
+msgstr "afleveringen"
 
 msgctxt "#36908"
 msgid "musicvideo"

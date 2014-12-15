@@ -6749,10 +6749,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Aveți nevoie de un tuner, software backend, și un"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Vizitați kodi.tv/pvr pentru a învăța mai multe."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Avertizare conflict"

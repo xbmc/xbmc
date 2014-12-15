@@ -178,7 +178,7 @@
 	<ParseTMDBSet dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="9">
-				<expression noclean="1">&quot;belongs_to_collection&quot;:\{&quot;id&quot;:[0-9]+,&quot;name&quot;:&quot;([^&quot;]*)</expression>
+				<expression clear="yes" noclean="1">&quot;belongs_to_collection&quot;:\{&quot;id&quot;:[0-9]+,&quot;name&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBSet&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;http://api.tmdb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>

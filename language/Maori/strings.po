@@ -6969,10 +6969,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Tāpiri-ki hoki te backend ki te e taea ki te whakamahi i PVR."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Toro koa kodi.tv / pvr ki te ako atu."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Whakatūpato Papā"

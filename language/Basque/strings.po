@@ -6205,10 +6205,6 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Ez bistarazi 'konexioa galdua' oharrak"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Mesedez jo kodi.tv/pvr helbidera argibide gehiagorako"
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Elkar-jotze oharra"

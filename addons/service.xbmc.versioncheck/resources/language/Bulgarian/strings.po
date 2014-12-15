@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-addons/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,35 +21,15 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Препоръчваме Ви да актуализирате."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Посетете www.xbmc.org за повече информация."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Ползвате стара RC версия на XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Ползвате стара бета версия на XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Ползвате стара алфа версия на XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Ползвате стара версия, от месечно компилираните, на XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Ползвате стара нестабилна версия на XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "За повече информация посетете www.kodi.tv"
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Желаете ли напомнянето да бъде изключено?"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
+msgid "You can enable/disable it through add-on settings."
 msgstr "Можете да включите/изключите напомнянето от настройките на добавката."
 
 msgctxt "#32011"
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "Актуализирането е успешно"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Желаете ли да рестартирате XBMC, за да приключи актуализирането?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Желаете ли да рестартирате Kodi, за да приключи актуализирането?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Желаете ли хранилището да бъде проверено за нова версия?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Налична е по-нова, стабилна, версия на Kodi."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Основни"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Да се включи ли XBMC проверката за версия?"
+msgid "Enable Kodi version check?"
+msgstr "Да се включи ли Kodi проверката за версия?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +75,27 @@ msgstr "Линукс: Актуализиране на цялата систем�
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Линукс: Актуализиране чрез apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Налична е нова стабилна версия на Kodi."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "За повече информация посетете www.kodi.tv"
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Налична е нова стабилна версия на Kodi."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "За повече информация посетете www.kodi.tv"
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "В момента ползвате версия %s, при налична %s."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Препоръчително е да актуализирате до по-нова версия."

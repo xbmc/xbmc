@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvdb.com"
        name="The TVDB"
-       version="1.5.9"
+       version="1.7.1"
        provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
+    <import addon="metadata.common.imdb.com" version="2.7.8"/>
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows"
              language="multi"
@@ -62,7 +63,6 @@
     <summary lang="tr">TV programı meta verilerini TheTVDB.com'dan al</summary>
     <summary lang="uk">Отримання відомостей про серіали із TheTVDB.com</summary>
     <summary lang="vi">Trình lấy TV show từ TheTVDB.com</summary>
-    <summary lang="vi_VN">Lấy dữ liệu chương trình TV từ TheTVDB.com</summary>
     <summary lang="zh">从 TheTVDB.com 获取电视剧集信息</summary>
     <summary lang="zh_TW">從 TheTVDB.com 取得電視節目資訊</summary>
     <description lang="af">TheTVDB.com is 'n TV Skraper. Die werf is 'n massiewe oop databasis wat deur enige iemand verander kan word en bevat vol meta data vir baie vertonings in verskillende tale. Alle inhoud en prente op die werf is bygedra deur sy gebruikers vir sy gebruikers en het 'n hoë standaard van kwaliteit. Die databasis skema en webruimte is oopbron onder die GPL.</description>
@@ -113,9 +113,8 @@
     <description lang="ta_IN">TheTVDB.com ஒரு தொலைக்காட்சி சுரண்டி. இந்த இணையத்தளத்தில் ஒரு பெரிய தரவுத்தளம் உள்ளது. இதில் எல்லா மொழிகளின் மேட்டாடேட்டா உள்ளது. அனைத்து தகவல்களும் படங்களும் அதன் பயனர்களின் சேகரிப்புஆகும். GPL லைசன்சில் உள்ளது.</description>
     <description lang="th">TheTVDB.com เป็นตัวดึงข้อมูลทีวี เว็บไซต์เป็นฐานข้อมูลเปิดขนาดใหญ่ที่สามารถแก้ไขได้โดยทุกคนและมีข้อมูลขั้นสูงเต็มรูปแบบ สำหรับหลาย ๆ รายการ ในแต่ละภาษาที่แตกต่างกัน เนื้อหาและรูปภาพทั้งหมดในเว็บไซต์ ได้รับการสนับสนุนโดยผู้ใช้เพื่อผู้ใช้ มีคุณภาพและมาตรฐานที่สูง schemaของฐานข้อมูลและเว็บไซต์ได้เปิดภายใต้ GPL</description>
     <description lang="tr">TheTVDB.com bir TV Scraper'dır. Bu site herkesin düzenleyebileceği büyük bir açık veritabanıdır ve farklı dillerdeki bir çok şov için bilgiler içerir. Sitedeki her resim ve içerik kullanıcılar tarafından kullanıcılar için karşılanır ve bunlar yüksek standart ve kaliteye sahiptir. Veritabanı şeması ve internet sitesi GPL lisansı altında açık kaynaklıdır.</description>
-    <description lang="uk">TheTVDB.com є збирачем TV. На порталі є масивні відкриті бази даних, які можуть мінятися ким завгодно, і містить повні мета-дані для багатьох шоу різними мовами. Весь вміст та зображення на сайті були надані користувачами для користувачів і мають високий стандарт і якість. Бази даних і веб-сайт мають відкритий вихідний код під ліцензією GPL.</description>
+    <description lang="uk">TheTVDB.com — джерело інформації про серіали. Це величезна база даних, що містить повні метадані про різні серіали багатьма мовами, яку може редагувати будь-хто. Увесь вміст і зображення на сайті, що відповідають найвищим стандартам якості, надали користувачі для користувачів. Схема бази даних і веб-сайт мають відкриті коди на умовах ліцензії GPL.</description>
     <description lang="vi">TheTVDB.com là trình lấy dữ liệu TV show. Site chứa một số lượng khổng lồ cơ sở dữ liệu mở, có thể được thay đổi bởi mọi người và đầy đủ dữ liệu lớn các show trên nhiều ngôn ngữ. Tất cả nội dung và hình ảnh trên site này đều được đóng góp bởi toàn bộ người dùng của nó và có chất lượng cao. Mô hình cơ sở dữ liệu và website đều là mã nguồn mở được hỗ trợ bởi GPL.</description>
-    <description lang="vi_VN">TheTVDB.com là 1 nơi tìm kiếm các kênh TV. Trang này có một cơ sở dữ liệu mở và rất lớn, có thể chỉnh sửa bởi bất kì ai và chứa nhiều dữ liệu về các chương trình với nhiều ngôn ngữ khác nhau. Tất cả nội dung và hình ảnh trên trang đều được phân phối bởi người dùng của họ cho người dùng và có tiêu chuẩn hoặc chất lượng cao. Giản đồ cơ sở dữ liệu và trang web là nguồn mở theo giấy phép của GPL.</description>
     <description lang="zh">TheTVDB.com 是一个电视刮削器。该网站是一个巨大的开放式数据库，任何人都可以修改，包含多语言的许多电视剧集资料。网站设定了高品质标准，所有图片和内容都由用户提供。数据库结构和网站均在 GPL 许可下开源。</description>
     <description lang="zh_TW">TheTVDB.com是一個電視節目。該網站是一個龐大並可以由任何人修改的開放性資料庫，並包含可以以多國語言顯示的完整的數據資料。所有內容和圖片都是經由用戶提供使用，有一定的標準或質量。數據庫架構和網站是在GPL下的開放性源碼。</description>
     <platform>all</platform>

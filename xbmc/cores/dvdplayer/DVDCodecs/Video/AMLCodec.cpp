@@ -2182,9 +2182,26 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   // dest_rect
-  if (m_dst_rect != DestRect)
+  CRect dst_rect = DestRect;
+  // handle orientation
+  switch (am_private->video_rotation_degree)
   {
-    m_dst_rect  = DestRect;
+    case 0:
+    case 2:
+      break;
+
+    case 1:
+    case 3:
+      {
+        int diff = (int) ((dst_rect.Height() - dst_rect.Width()) / 2);
+        dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
+      }
+
+  }
+
+  if (m_dst_rect != dst_rect)
+  {
+    m_dst_rect  = dst_rect;
     update = true;
   }
 
@@ -2195,7 +2212,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     return;
   }
 
-  CRect gui, display, dst_rect;
+  CRect gui, display;
   gui = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
 
 #ifdef TARGET_ANDROID
@@ -2203,7 +2220,6 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 #else
   display = gui;
 #endif
-  dst_rect = m_dst_rect;
   if (gui != display)
   {
     float xscale = display.Width() / gui.Width();

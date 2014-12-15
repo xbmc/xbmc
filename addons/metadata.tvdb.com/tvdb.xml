@@ -43,7 +43,7 @@
 	<!-- returns:	results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-\2.xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/all/\2.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -70,12 +70,33 @@
 			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
 				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
 			</RegExp>
-			<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
-				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
+			<RegExp input="$INFO[RatingS]" output="$$12" dest="4+">
+				<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="12+">
+					<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+				</RegExp>
+				<RegExp input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="12+">
+					<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
+				</RegExp>
+				<expression>TheTVDB</expression>
 			</RegExp>
-			<RegExp input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
-				<expression>&lt;RatingCount&gt;([^&lt;]*)&lt;/RatingCount&gt;</expression>
-			</RegExp>
+			<RegExp input="$INFO[RatingS]" output="$$13" dest="4+">
+				<RegExp input="$$5" output="\1" dest="11">
+					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
+				</RegExp>
+				<RegExp input="$$11">
+					<RegExp conditional="fallback" input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
+						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+					</RegExp>
+					<RegExp conditional="fallback" input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="13+">
+						<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
+					</RegExp>
+					<expression>^$</expression>
+				</RegExp>
+				<RegExp input="$$11" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$11&lt;/chain&gt;" dest="13">
+					<expression>(.+)</expression>
+				</RegExp>
+				<expression>IMDb</expression>
+			</RegExp>			
 			<RegExp input="$$5" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
 				<expression>&lt;Network&gt;([^&lt;]*)&lt;/Network&gt;</expression>
 			</RegExp>
@@ -278,11 +299,32 @@
 			<RegExp input="$$8" output="&lt;displayafterseason&gt;\1&lt;/displayafterseason&gt;" dest="4+">
 				<expression>&lt;airsafter_season&gt;([^&lt;]+)&lt;/airsafter_season&gt;</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
-				<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+			<RegExp input="$INFO[RatingS]" output="$$12" dest="4+">
+				<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="12+">
+					<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+				</RegExp>
+				<RegExp input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="12+">
+					<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
+				</RegExp>
+				<expression>TheTVDB</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
-				<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
+			<RegExp input="$INFO[RatingS]" output="$$13" dest="4+">
+				<RegExp input="$$8" output="\1" dest="11">
+					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
+				</RegExp>
+				<RegExp input="$$11">
+					<RegExp conditional="fallback" input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
+						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+					</RegExp>
+					<RegExp conditional="fallback" input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="13+">
+						<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
+					</RegExp>
+					<expression>^$</expression>
+				</RegExp>
+				<RegExp input="$$11" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$11&lt;/chain&gt;" dest="13">
+					<expression>(.+)</expression>
+				</RegExp>
+				<expression>IMDb</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
 				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression>

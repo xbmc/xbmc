@@ -1,0 +1,21 @@
+# Kodi Media Center language file
+# Addon Name: TheAudioDb.com for Music Videos
+# Addon id: metadata.musicvideos.theaudiodb.com
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/xbmc-addons/language/fi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Grab album thumbs from fanart.tv"
+msgstr "Hae albumin pienoiskuvat fanart.tv:stä"

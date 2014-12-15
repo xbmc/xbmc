@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/xbmc-addons/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,35 +21,15 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Θα σας προτείναμε να κάνετε αναβάθμιση."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Επισκεφθείτε το XBMC.org για περισσότερες πληροφορίες."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά RC έκδοση του XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά beta έκδοση του XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά alpha έκδοση του XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά μηνιαία έκδοση του XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Χρησιμοποιείτε ακόμη μια παλιά μη σταθερή έκδοση του XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Επισκεφθείτε το Kodi.tv για περισσότερες πληροφορίες."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Να αφαιρεθεί αυτή η υπενθύμιση;"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
+msgid "You can enable/disable it through add-on settings."
 msgstr "Μπορείτε να την (απ)ενεργοποιήσετε από τις ρυθμίσεις του πρόσθετου."
 
 msgctxt "#32011"
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "Επιτυχής Αναβάθμιση"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Να γίνει επανεκκίνηση του XBMC για να ολοκληρωθεί η αναβάθμιση;"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Να γίνει επανεκκίνηση του Kodi για να ολοκληρωθεί η αναβάθμιση;"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Να γίνει έλεγχος του αποθετηρίου για νέα έκδοση;"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Είναι διαθέσιμη νεώτερη σταθερή έκδοση του Kodi."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Γενικά"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Ενεργοποίηση ελέγχου έκδοσης XBMC;"
+msgid "Enable Kodi version check?"
+msgstr "Ενεργοποίηση ελέγχου έκδοσης Kodi;"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +75,27 @@ msgstr "Linux: Αναβάθμιση όλου του συστήματος"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Αναβάθμιση με χρήση apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Είναι διαθέσιμη νεώτερη σταθερή έκδοση του Kodi."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Επισκεφθείτε το http://kodi.tv για περισσότερες πληροφορίες."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Είναι διαθέσιμη νεώτερη σταθερή έκδοση του Kodi."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Επισκεφθείτε το http://kodi.tv για περισσότερες πληροφορίες."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Χρησιμοποιείτε την έκδοση %s ενώ είναι διαθέσιμη η %s."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Προτείνεται η αναβάθμιση σε νεώτερη έκδοση."

@@ -5425,10 +5425,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Tær tørvar tól til móttøku, forrit, og eina"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Vinarliga hygg á kodi.tv/pvr fyri nærri upplýsing."
-
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Brek við upptøku"

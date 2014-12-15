@@ -414,7 +414,7 @@ msgstr "Pobierz napisy"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "Oglądaj jako 2D"
+msgstr "Odtwarzaj w trybie 2D"
 
 msgctxt "#31361"
 msgid "Change mode"

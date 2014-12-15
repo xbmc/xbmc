@@ -1,3 +1,45 @@
+v0.2.6
+- Update with 14.0 Helix rc 3
+
+v0.2.5
+- Update with 14.0 Helix rc 2
+
+v0.2.4
+- Fix error or unicode
+
+v0.2.3
+- Updated language files from Transifex
+- Update with 14.0 Helix rc 1
+
+v0.2.2
+- New Kodi logo as icon
+- Update with 14.0 Helix beta 4
+- Update with 14.0 Helix beta 5
+
+v0.2.1
+- Updated language files from Transifex
+- Don't exclude OpenELEC any more for version check
+- Update with 14.0 Helix beta 3
+
+v0.2.0
+- Only notify when the available version of Kodi changes, not when add-on is updated
+- Update with 14.0 Helix alpha3
+- Update with 14.0 Helix alpha4
+- Update with 14.0 Helix beta 1
+- Update with 14.0 Helix beta 2
+
+v0.1.24
+- Reworked notification logic
+- Updated with recent builds
+
+v0.1.23
+- Update with 13.2 Gotham
+- Update with 13.2 Gotham rc1
+- Update with 13.2 Gotham beta3
+- Update with 13.2 Gotham beta2
+- Update with 13.2 Gotham beta1
+- Update with 14.0 Helix alpha2
+
 v0.1.22
 - Updated language files from Transifex
 - Update with 13.1 Gotham rc1

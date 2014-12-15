@@ -224,8 +224,8 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
         memset(&picture, 0, sizeof(picture));
 
-        // num streams * 80 frames, should get a valid frame, if not abort.
-        int abort_index = pDemuxer->GetNrOfStreams() * 80;
+        // num streams * 160 frames, should get a valid frame, if not abort.
+        int abort_index = pDemuxer->GetNrOfStreams() * 160;
         do
         {
           DemuxPacket* pPacket = pDemuxer->Read();
