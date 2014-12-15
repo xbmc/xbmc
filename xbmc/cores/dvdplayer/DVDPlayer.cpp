@@ -726,7 +726,9 @@ bool CDVDPlayer::OpenInputStream()
                     CFile::Exists(path));
           
           CURL newUrl(idxStream->GetProperty("key").asString());
-          newUrl.SetOption("encoding", g_langInfo.GetSubtitleCharSet());
+          CStdString encoding = g_langInfo.GetSubtitleCharSet();
+          if (encoding == "UTF-8")
+            newUrl.SetOption("encoding", "utf-8");
 
 
           /* PLEX */

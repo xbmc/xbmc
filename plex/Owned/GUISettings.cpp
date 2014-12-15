@@ -658,7 +658,7 @@ void CGUISettings::Initialize()
 
   AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, fontStyles, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
-  AddString(NULL, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
+  AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(sub,"subtitles.overrideassfonts", 21368, false);
   AddSeparator(NULL, "subtitles.sep1");
   AddPath(NULL, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
@@ -1017,8 +1017,8 @@ void CGUISettings::Initialize()
   AddString(adva, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
 #ifndef __PLEX__
   AddBool(adva, "lookandfeel.enableglobalslideshow", 15150, true);
-#endif
   AddString(adva, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+#endif
 
 //  AddCategory(SETTINGS_APPEARANCE, "window", 0);
   AddInt(NULL, "window.width",  0, 1280, 10, 1, INT_MAX, SPIN_CONTROL_INT);
