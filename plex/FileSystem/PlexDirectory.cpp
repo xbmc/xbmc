@@ -124,11 +124,15 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   }
   else if (url.GetHostName() == "playqueue")
   {
+    bool unplayed = false;
+    if (url.HasOption("unplayed"))
+      unplayed = true;
+
     if (url.GetFileName() == "video")
-      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_VIDEO, fileItems);
+      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_VIDEO, fileItems, unplayed);
     
     if (url.GetFileName() == "audio")
-      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_MUSIC, fileItems);
+      return GetPlayQueueDirectory(PLEX_MEDIA_TYPE_MUSIC, fileItems, unplayed);
     
     if (url.GetFileName().IsEmpty())
     {
@@ -955,9 +959,9 @@ bool CPlexDirectory::GetPlaylistsDirectory(CFileItemList &items, CStdString opti
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items)
+bool CPlexDirectory::GetPlayQueueDirectory(ePlexMediaType type, CFileItemList& items, bool unplayed)
 {
-  g_plexApplication.playQueueManager->getPlayQueue(type, items);
+  g_plexApplication.playQueueManager->getPlayQueue(type, items, unplayed);
 
   // we always want to return true here, in *worst* case we will just
   // return a empty list.

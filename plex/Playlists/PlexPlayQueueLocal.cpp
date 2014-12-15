@@ -109,7 +109,7 @@ bool CPlexPlayQueueLocal::refresh()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueLocal::get(CFileItemList& list)
+bool CPlexPlayQueueLocal::get(CFileItemList& list, bool unplayed)
 {
   if (m_list)
   {

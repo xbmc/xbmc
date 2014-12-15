@@ -1,4 +1,4 @@
-  #include "PlexPlayQueueServer.h"
+#include "PlexPlayQueueServer.h"
 #include "PlexUtils.h"
 #include "PlexJobs.h"
 #include "playlists/PlayList.h"
@@ -8,6 +8,7 @@
 #include "PlexApplication.h"
 #include "ApplicationMessenger.h"
 #include "GUISettings.h"
+#include "Application.h"
 
 using namespace PLAYLIST;
 
@@ -135,13 +136,38 @@ bool CPlexPlayQueueServer::refresh()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexPlayQueueServer::get(CFileItemList& list)
+bool CPlexPlayQueueServer::get(CFileItemList& list, bool unplayed)
 {
   CSingleLock lk(m_mapLock);
   if (m_list)
   {
-    list.Copy(*m_list);
-    return true;
+    int selected = g_application.CurrentFileItemPtr() ? g_application.CurrentFileItemPtr()->GetProperty("playQueueItemID").asInteger(-1) : -1;
+    if (selected == -1 || !unplayed)
+    {
+      list.Copy(*m_list);
+      return true;
+    }
+    else
+    {
+      list.Assign(*m_list, false);
+      list.Clear();
+
+      bool found = false;
+      for (int i = 0; i < m_list->Size(); i ++)
+      {
+        CFileItemPtr item = m_list->Get(i);
+        if (item && item->GetProperty("playQueueItemID").asInteger() == selected)
+          found = true;
+
+        if (found)
+        {
+          CFileItemPtr newItem(new CFileItem(*item));
+          list.Add(newItem);
+        }
+      }
+      return true;
+    }
+
   }
 
   return false;

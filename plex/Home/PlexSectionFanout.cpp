@@ -78,8 +78,8 @@ void CPlexSectionFanout::Refresh(bool force)
   {
     if (!g_advancedSettings.m_bHideFanouts)
     {
-      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/video"), CONTENT_LIST_PLAYQUEUE_VIDEO));
-      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/audio"), CONTENT_LIST_PLAYQUEUE_AUDIO));
+      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/video?unplayed=1"), CONTENT_LIST_PLAYQUEUE_VIDEO));
+      m_outstandingJobs.push_back(LoadSection(CURL("plexserver://playqueue/audio?unplayed=1"), CONTENT_LIST_PLAYQUEUE_AUDIO));
     }
   }
   else if (m_sectionType == SECTION_TYPE_QUEUE)
