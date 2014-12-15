@@ -986,7 +986,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
   } //(pData && iSize)
 
   // Reply to flush call only if double rate is active
-  if (m_mixer.DoubleRate() && !retStatus)
+  if ((m_dropState || m_mixer.DoubleRate()) && !retStatus)
   {
     m_currentBuffer = m_mixer.Process(NULL);
     if (m_currentBuffer)
