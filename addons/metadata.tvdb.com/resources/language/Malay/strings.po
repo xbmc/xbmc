@@ -1,0 +1,37 @@
+# Kodi Media Center language file
+# Addon Name: The TVDB
+# Addon id: metadata.tvdb.com
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/xbmc-addons/language/ms/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Use DVD Order"
+msgstr "Guna Tertib DVD"
+
+msgctxt "#30001"
+msgid "Use Absolute Ordering (Single Season)"
+msgstr "Gunakan Penertiban Mutlak (Satu Musim)"
+
+msgctxt "#30002"
+msgid "Enable Fanart"
+msgstr "Benarkan Seni Peminat"
+
+msgctxt "#30003"
+msgid "Prefer Posters"
+msgstr "Utamakan Poster"
+
+msgctxt "#30004"
+msgid "Language"
+msgstr "Bahasa"

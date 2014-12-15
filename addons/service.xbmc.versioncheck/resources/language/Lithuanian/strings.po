@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-addons/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,36 +21,16 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Norėtume pasiūlyti jums atsinaujinti."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Apsilankykite XBMC.org, norėdami gauti daugiau informacijos."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Jūs vis dar naudojate senesnę XBMC RC versiją."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Jūs vis dar naudojate senesnę XBMC beta versiją."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Jūs vis dar naudojate senesnę XBMC alpha versiją."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Jūs vis dar naudojate senesnę mėnesinę XBMC versiją."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Jūs vis dar naudojate senesnę nestabilią XBMC versiją."
+msgid "Visit Kodi.tv for more information."
+msgstr "Apsilankykite Kodi.tv, norėdami gauti daugiau informacijos."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Ar norite paašalinti šį priminimą?"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
-msgstr "Jūs galite jį įjungti/išjungti priedo nustatymuose."
+msgid "You can enable/disable it through add-on settings."
+msgstr "Tai galima išjungti/įjungti priedo nustatymuose."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "Atnaujinimas sėkmingas"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Ar norite iš naujo paleisti XBMC, kad užbaigti atnaujinimą?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Ar norite iš naujo paleisti Kodi, kad užbaigti atnaujinimą?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Ar norite patikrinti saugykloje, ar yra nauja versija?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Galima naujesnė stabili Kodi versija."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Pagrindinis"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Įjungti XBMC versijos tikrinimą?"
+msgid "Enable Kodi version check?"
+msgstr "Įjungti Kodi versijos tikrinimą?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -90,4 +74,28 @@ msgstr "Linux: atnaujinti visą sistemą"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr "Linux: Atnaujinti naudojant apt"
+msgstr "Linux: atnaujinti naudojant apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Galima nauja Kodi versija."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Apsilankykite http://kodi.tv, norėdami gauti daugiau informacijos."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Galima nauja stabili Kodi versija."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Apsilankykite http://kodi.tv, norėdami gauti daugiau informacijos."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Naudojama %s, kai yra prieinama %s."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Rekomenduojama atnaujinti į naujesnę versiją."

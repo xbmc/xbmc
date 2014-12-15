@@ -1,3 +1,6 @@
+[B]3.5.0[/B]
+Added: Scraping Styles and Moods from TheAudioDb.com
+
 [B]3.4.2[/B]
 Updated language files from Transifex
 

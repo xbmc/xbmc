@@ -1,3 +1,6 @@
+[B]1.7.1[/B]
+- Updated: language files from Transifex
+
 [B]1.7.0[/B]
 - Added: Option to get IMDb episode and series rating when available
 

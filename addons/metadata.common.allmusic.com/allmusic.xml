@@ -228,6 +228,9 @@
 				<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
 					<expression>last.fm</expression>
 				</RegExp>
+				<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetTADBFallbackArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
 				<expression>&lt;style&gt;&lt;/style&gt;</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$11" dest="2">
@@ -270,6 +273,41 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
+			<RegExp input="" output="" dest="10">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression noclean="1">&gt;Artists\sMoods&lt;/h\d*&gt;(.*?)&lt;/ul&gt;</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;mood&gt;\1&lt;/mood&gt;" dest="11">
+				<expression repeat="yes" noclean="1">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;\s*&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="2">
+				<RegExp input="$INFO[moodsfbsource]" output="&lt;chain function=&quot;GetTADBFallbackArtistMoodsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
+				<expression>&lt;mood&gt;&lt;/mood&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$11" dest="2">
+				<expression>&lt;mood&gt;(.+)&lt;/mood&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseAMGArtistMoods>
+
+	<GetAMGFallbackArtistMoodsByAMGID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistMoods&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAMGFallbackArtistMoodsByAMGID>
+	<ParseAMGFallbackArtistMoods dest="5" clearbuffers="no">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="2">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="10">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="10">
 				<expression noclean="1">&gt;Artists\sMoods&lt;/h\d*&gt;(.*?)&lt;/ul&gt;</expression>
 			</RegExp>
@@ -278,7 +316,7 @@
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
-	</ParseAMGArtistMoods>
+	</ParseAMGFallbackArtistMoods>
 
 	<GetAMGArtistThumbsByAMGID dest="5" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistThumbs&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">

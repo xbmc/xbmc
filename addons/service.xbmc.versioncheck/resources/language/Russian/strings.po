@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/xbmc-addons/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,36 +21,12 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Мы рекомендуем Вам обновиться."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Для более полной информации посетите XBMC.org."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Вы по-прежнему используете старую  версию (RC) XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Вы по-прежнему используете старую бета-версию XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Вы по-прежнему используете старую альфа-версию XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Вы по-прежнему используете старую ежемесячную версию XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Вы по-прежнему используете старую нестабильную версию XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Для более полной информации посетите Kodi.tv."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Вы хотите убрать это напоминание?"
-
-msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
-msgstr "Вы можете включить/выключить это через настройки дополнения."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -65,20 +41,24 @@ msgid "Upgrade successful"
 msgstr "Обновление завершено"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Перезагрузить XBMC, чтобы завершить обновление ?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Перезагрузить Kodi, чтобы завершить обновление ?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Вы хотите проверить репозиторий на наличие новой версии?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Доступна новая стабильная версия Kodi ."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Основные"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Включить проверку выхода новых версий XBMC?"
+msgid "Enable Kodi version check?"
+msgstr "Включить проверку выхода новых версий Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"

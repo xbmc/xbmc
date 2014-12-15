@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/xbmc-addons/language/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,36 +21,12 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Gustaríanos recomendarlle actualizar."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Visitar XBMC.org para máis información."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Aínda está a usar unha versión RC antiga de XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Aínda está a usar unha versión beta antiga de XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Aínda está a usar unha versión alpha antiga de XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Aínda está a usar unha versión mensual antiga de XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Aínda está a usar unha versión antiga non estábel de XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Visitar Kodi.tv para máis información."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Quere eliminar este aviso?"
-
-msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
-msgstr "Pode des/activarlo mediante a configuración do complemento."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -65,20 +41,24 @@ msgid "Upgrade successful"
 msgstr "Actualización correcta"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Quere reiniciar agora o XBMC para rematar a actualización?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Quere reiniciar agora o Kodi para rematar a actualización?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Quere buscar no repositorio unha nova versión?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Hai dispoñíbel unha nova versión estábel do Kodi."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Xeral"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Activar a verificación de versión do XBMC?"
+msgid "Enable Kodi version check?"
+msgstr "Activar a verificación de versión do Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +71,23 @@ msgstr "Linux: Actualizar o sistema completo"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Actualizar empregando apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Está dispoñible unha versión estable nova de Kodi. "
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Ir a http://kodi.tv para máis información."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Está dispoñible unha versión estable nova de Kodi. "
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Ir a http://kodi.tv para máis información."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "É recomendable actualizar á nova versión."

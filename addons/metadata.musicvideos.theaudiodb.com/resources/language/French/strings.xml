@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
-<!-- French language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/fr/ -->
-<!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
-
-<strings>
-    <string id="30000">Récupérer les vignettes d'albums depuis fanart.tv</string>
-    <string id="30001">Récupère les vignettes des albums depuis theaudiodb.com</string>
-</strings>

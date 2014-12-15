@@ -1,0 +1,37 @@
+# Kodi Media Center language file
+# Addon Name: The TVDB
+# Addon id: metadata.tvdb.com
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Traditional) (http://www.transifex.com/projects/p/xbmc-addons/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Use DVD Order"
+msgstr "使用 DVD 順序"
+
+msgctxt "#30001"
+msgid "Use Absolute Ordering (Single Season)"
+msgstr "使用原本的順序 (單季)"
+
+msgctxt "#30002"
+msgid "Enable Fanart"
+msgstr "啟用專輯資訊"
+
+msgctxt "#30003"
+msgid "Prefer Posters"
+msgstr "下載海報"
+
+msgctxt "#30004"
+msgid "Language"
+msgstr "語言"

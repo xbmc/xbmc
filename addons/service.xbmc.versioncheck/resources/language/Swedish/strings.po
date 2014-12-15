@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/xbmc-addons/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,35 +21,15 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Vi rekommenderar dig att uppgradera."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Besök XBMC.org för mer information."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Du använder fortfarande en äldre RC version av XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Du använder fortfarande en äldre betaversion av XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Du använder fortfarande en äldre alfaversion av XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Du använder fortfarande en äldre månatlig version av XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Du använder fortfarande en äldre ostabil version av XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Besök Kodi.tv för mer information."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Vill du radera denna påminnelse?"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
+msgid "You can enable/disable it through add-on settings."
 msgstr "Du kan aktivera/inaktivera detta i tilläggsinställningarna."
 
 msgctxt "#32011"
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "Uppgradering lyckades"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Vill du starta om XBMC för att slutföra uppgraderingen?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Vill du starta om Kodi för att slutföra uppgraderingen?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Vill du kontrollera förrådet efter en ny version?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Det finns en nyare stabil Kodi-version tillgänglig."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Allmänna"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Aktivera XBMC versionskontroll?"
+msgid "Enable Kodi version check?"
+msgstr "Aktivera Kodi versionskontroll?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +75,27 @@ msgstr "Linux: Uppdatera hela systemet"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Uppgradera med apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "En ny stabil Kodi-version finns tillgänglig."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Besök Kodi.tv för mer information."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "En ny stabil Kodi-version finns tillgänglig."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Besök Kodi.tv för mer information."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Använder %s medan %s är tillgänglig."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Vi rekommenderar att du uppgraderar till en nyare version."

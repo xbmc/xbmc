@@ -94,6 +94,12 @@
 			<RegExp input="$INFO[genressource]" output="&lt;chain function=&quot;GetTADBArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression>TheAudioDb.com</expression>
 			</RegExp>
+			<RegExp input="$INFO[stylessource]" output="&lt;chain function=&quot;GetTADBArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[moodssource]" output="&lt;chain function=&quot;GetTADBArtistMoodsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
 			<RegExp input="$INFO[discogsource]" output="&lt;chain function=&quot;GetTADBDiscographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression>TheAudioDb.com</expression>
 			</RegExp>
@@ -147,6 +153,12 @@
 			</RegExp>
 			<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetMBLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="11+">
 				<expression>MusicBrainz</expression>
+			</RegExp>
+			<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetTADBArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[moodsfbsource]" output="&lt;chain function=&quot;GetTADBArtistMoodsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

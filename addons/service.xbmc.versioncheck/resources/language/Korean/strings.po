@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-addons/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,35 +21,15 @@ msgid "We would like to recommend you to upgrade."
 msgstr "업그레이드를 권장합니다."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "자세한 정보는 XBMC.org를 방문하세요."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "오래된 XBMC RC 버전을 사용중입니다."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "오래된 XBMC 베타 버전을 사용 중입니다."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "오래된 XBMC 알파 버전을 사용 중입니다."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "오래된 XBMC monthly 버전을 사용 중입니다."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "오래된 XBMC 불안정 버전을 사용 중입니다."
+msgid "Visit Kodi.tv for more information."
+msgstr "자세한 정보는 Kodi.tv를 방문하세요."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "이 미리 알림을 삭제하겠습니까?"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
+msgid "You can enable/disable it through add-on settings."
 msgstr "애드온 설정에서 사용/사용하지 않음을 선택할 수 있습니다."
 
 msgctxt "#32011"
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "업그레이드 성공"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "업그레이드를 완료하기 위해 XBMC를 다시 시작 하겠습니까?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "업그레이드를 완료하기 위해 Kodi를 다시 시작 하겠습니까?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "저장소에서 새 버전을 확인하겠습니까?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "안정적인 Kodi 최신 버전이 있습니다."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "일반"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "XBMC 버전을 검사하겠습니까?"
+msgid "Enable Kodi version check?"
+msgstr "Kodi 버전을 검사하겠습니까?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +75,27 @@ msgstr "리눅스: 전체 시스템 업그레이드"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "리눅스: apt를 사용하여 업그레이드"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "안정적인 Kodi 새 버전을 사용할 수 있습니다."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "자세한 정보는 http://kodi.tv를 방문하세요."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "안정적인 Kodi 새 버전을 사용할 수 있습니다."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "자세한 정보는 http://kodi.tv를 방문하세요."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "현재 사용 중인 버전은 %s 이며 최신 버전 % 을(를) 사용할 수 있습니다"
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "새 버전으로 업그레이드 하기를 권장합니다."

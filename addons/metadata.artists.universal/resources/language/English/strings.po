@@ -109,3 +109,7 @@ msgstr ""
 msgctxt "#30023"
 msgid "Enable Artist Fanarts from theaudiodb.com"
 msgstr ""
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""

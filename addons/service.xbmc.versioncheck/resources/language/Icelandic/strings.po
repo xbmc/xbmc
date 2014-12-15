@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Icelandic (http://www.transifex.com/projects/p/xbmc-addons/language/is/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,20 +21,8 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Við mælum með að þú uppfærir."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Farðu inn á XBMC.org til að fá fleiri upplýsingar."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Þú ert enn að nota eldri beta útgáfu af XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Þú ert enn að nota eldri mánaðarlega útgáfu af XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Þú ert enn að nota eldri óörugga útgáfu af XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Farðu inn á Kodi.tv til að fá fleiri upplýsingar."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
@@ -53,9 +41,33 @@ msgid "Upgrade successful"
 msgstr "Uppfærsla heppnaðist"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Viltu endurræsa  Xbmc til að ljúka uppfærslu ?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Viltu endurræsa  Kodi til að ljúka uppfærslu ?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Viltu athuga hvort að skráaveitan er með nýrri útgáfu?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Það er nýrri stöðug útgáfa af Kodi tiltæk."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Almennt"
+
+msgctxt "#32021"
+msgid "Enable Kodi version check?"
+msgstr "Virkja athugun á Útgáfu Kodi?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Vinsamlegast settu inn lykilorð"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Uppfærðu allt kerfið"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: Uppfærðu með apt"
