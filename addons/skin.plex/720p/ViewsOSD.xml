@@ -204,7 +204,7 @@
 			<ondown condition="Window.IsActive(plexplayqueue) | Window.IsActive(playercontrols)">555</ondown>
 			<enable>System.PlexPlayQueue(music)</enable>
 			<onclick>Dialog.Close(PlayerControls)</onclick>
-			<onclick>ReplaceWindow(10094)</onclick>
+			<onclick>ReplaceWindow(10094, plexserver://playqueue/audio)</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(715)</visible>
 			<colordiffuse>orange</colordiffuse>
 		</control>
@@ -788,7 +788,7 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<enable>System.PlexPlayQueue(video)</enable>
-					<onclick>ReplaceWindow(10094)</onclick>
+					<onclick>ReplaceWindow(10094, plexserver://playqueue/video)</onclick>
 					<visible allowhiddenfocus="true">Control.HasFocus(717)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
