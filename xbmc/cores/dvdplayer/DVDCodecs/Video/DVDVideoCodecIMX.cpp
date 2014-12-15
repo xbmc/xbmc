@@ -1865,18 +1865,21 @@ void CDVDVideoMixerIMX::Process()
       {
         CDVDVideoCodecIMXBuffer *outputBuffer;
 
+        /*
         bool isSD = (inputBuffer->iWidth < 1024) && (inputBuffer->iHeight < 1024);
         bool hasPreviousBuffer = (inputBuffer->GetPreviousBuffer() != NULL) &&
                                  inputBuffer->GetPreviousBuffer()->IsValid();
+        */
 
         // Disable lowMotion for now due to worse deinterlacing quality
-        bool lowMotion = false && hasPreviousBuffer;
+        bool lowMotion = false;
+        //bool lowMotion = isSD && hasPreviousBuffer;
 
         // Currently double rate introduces oscillating scanlines (either wrong
         // buffer setup or some other kernel issue) so we disable it completely
         // for the time being
-        //bool doubleRate = false;
-        bool doubleRate = isSD && hasPreviousBuffer;
+        bool doubleRate = false;
+        //bool doubleRate = isSD && hasPreviousBuffer;
 
         m_proc->SetDoubleRate(doubleRate);
 
