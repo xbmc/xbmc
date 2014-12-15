@@ -552,15 +552,22 @@ void CGUIWindowHome::OnSectionLoaded(const CGUIMessage& message)
 bool CGUIWindowHome::OnClick(const CGUIMessage& message)
 {
   m_lastSelectedItem = GetCurrentItemName();
-
   int iAction = message.GetParam1();
-  int currentContainer = GetFocusedControlID();
-
   CFileItemPtr fileItem = GetCurrentFanoutItem();
+  int currentContainer = GetFocusedControlID();
 
   if (fileItem)
   {
-    if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
+    int playQueueItemId = fileItem->GetProperty("playQueueItemID").asInteger(-1);
+    if (currentContainer == CONTENT_LIST_PLAYQUEUE_AUDIO && playQueueItemId != -1)
+    {
+      g_plexApplication.playQueueManager->playId(PLEX_MEDIA_TYPE_MUSIC, playQueueItemId);
+    }
+    else if (currentContainer == CONTENT_LIST_PLAYQUEUE_VIDEO && playQueueItemId != -1)
+    {
+      g_plexApplication.playQueueManager->playId(PLEX_MEDIA_TYPE_VIDEO, playQueueItemId);
+    }
+    else if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
         fileItem->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
     {
       OpenItem(fileItem);
