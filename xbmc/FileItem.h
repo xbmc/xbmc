@@ -638,8 +638,8 @@ public:
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
   void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
-  bool HasSortDetails() const { return m_sortDetails.size() != 0; };
-  const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+  bool HasSortDetails() const { return m_sortDetails.size() != 0; }
+  const std::vector<GUIViewSortDetails> &GetSortDetails() const { return m_sortDetails; }
 
   /*! \brief Specify whether this list should be sorted with folders separate from files
    By default we sort with folders listed (and sorted separately) except for those sort modes
@@ -680,7 +680,7 @@ private:
   bool m_replaceListing;
   std::string m_content;
 
-  std::vector<SORT_METHOD_DETAILS> m_sortDetails;
+  std::vector<GUIViewSortDetails> m_sortDetails;
 
   CCriticalSection m_lock;
 };

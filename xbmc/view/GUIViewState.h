@@ -99,7 +99,7 @@ protected:
   int m_currentViewAsControl;
   int m_playlist;
 
-  std::vector<SORT_METHOD_DETAILS> m_sortMethods;
+  std::vector<GUIViewSortDetails> m_sortMethods;
   int m_currentSortMethod;
   SortOrder m_sortOrder;
 

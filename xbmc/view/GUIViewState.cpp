@@ -285,7 +285,7 @@ void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
     if (m_sortMethods[i].m_sortDescription.sortBy == sortBy)
       return;
 
-  SORT_METHOD_DETAILS sort;
+  GUIViewSortDetails sort;
   sort.m_sortDescription.sortBy = sortBy;
   sort.m_sortDescription.sortAttributes = sortAttributes;
   sort.m_buttonLabel = buttonLabel;
@@ -543,10 +543,10 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
 {
-  const vector<SORT_METHOD_DETAILS> &details = items.GetSortDetails();
+  const vector<GUIViewSortDetails> &details = items.GetSortDetails();
   for (unsigned int i = 0; i < details.size(); i++)
   {
-    const SORT_METHOD_DETAILS sort = details[i];
+    const GUIViewSortDetails sort = details[i];
     AddSortMethod(sort.m_sortDescription, sort.m_buttonLabel, sort.m_labelMasks);
   }
   // TODO: Should default sort/view mode be specified?
