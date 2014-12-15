@@ -543,8 +543,7 @@ void CGUIPlexDefaultActionHandler::PlayAll(CFileItemListPtr container, bool shuf
 
   CPlexServerPtr server;
   if (container->HasProperty("plexServer"))
-    server =
-    g_plexApplication.serverManager->FindByUUID(container->GetProperty("plexServer").asString());
+    server = g_plexApplication.serverManager->FindByUUID(container->GetProperty("plexServer").asString());
 
   CStdString fromHereKey;
   if (fromHere)
