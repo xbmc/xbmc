@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.5.8"
+  version="2.5.9"
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
@@ -98,7 +98,7 @@
     <description lang="gl">Confluence é a pel predeterminada para Kodi 9.11 e posteriores. É unha combinación de conceptos de algunhas peles populares, e tenta abranguer e integrar  as súas mellores ideas nunha pel que sexa fácil de entender e utilizar para as usuarias que utilizan por primeira vez Kodi.</description>
     <description lang="he">Confluence היא מעטפת ברירת המחדל של Kodi. המעטפת הינה תוצר של אימוץ מאפיינים ממעטפות פופולריות רבות תוך רצון לשלב מאפיינים אלה למעטפת פשוטה לשימוש ולהכרה ראשונית ע"י משתמשי Kodi חדשים.</description>
     <description lang="hr">Confluence je uobičajena presvlaka za Kodi 14.0 naviše. To je mješavina koncepta iz mnogih drugih popularnih presvlaka, pokušaj da se objedine njihove dobre osobine u presvlaku i da budu lagane za upotrebu i razumljive novim Kodi korisnicima.</description>
-    <description lang="hu">A Confluence az alapértelmezett felszín az Kodi-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű felszín elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen a Kodi-val először találkozóknak is.</description>
+    <description lang="hu">A Confluence az alapértelmezett felszín a Kodi-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű felszín elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen a Kodi-val először találkozóknak is.</description>
     <description lang="id">Confluence merupakan skin bawaan untuk Kodi 9.11 dan selanjutnya. Merupakan kombinasi konsep dari beberapa skin populer, dan berusaha untuk merangkul dan menyatukan ide bagus mereka ke sebuah skin yang mudah dipakai dan dipahami oleh pengguna Kodi pertama kali.</description>
     <description lang="is">Confluence er sjálfgefið útlit Kodi 9.11 og nýrra. Það er samsetning hugmynda frá mörgum vinsælum útlitum og er tilraun til að fanga og innlima þær góðu hugmyndir í útlit þar sem hugmyndin er að skuli vera einfalt fyrir fyrir nýja Kodi notendur að skilja og nota</description>
     <description lang="it">Confluence è la skin predefinita di Kodi dalla versione 14.0 in poi. È una combinazione di elementi provenienti da altre skin popolari e cerca di integrare e coinvolgere tutte le loro grandi idee in una skin facile da usare e comprendere per l'utente inesperto di Kodi.</description>

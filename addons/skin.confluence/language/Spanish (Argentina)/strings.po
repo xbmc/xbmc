@@ -586,7 +586,7 @@ msgstr "VIDEOS"
 
 msgctxt "#31954"
 msgid "MOVIES"
-msgstr "PELICULAS"
+msgstr "PELÍCULAS"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
@@ -594,7 +594,7 @@ msgstr "SERIES DE TV"
 
 msgctxt "#31956"
 msgid "MUSIC"
-msgstr "MUSICA"
+msgstr "MÚSICA"
 
 msgctxt "#31957"
 msgid "PROGRAMS"
