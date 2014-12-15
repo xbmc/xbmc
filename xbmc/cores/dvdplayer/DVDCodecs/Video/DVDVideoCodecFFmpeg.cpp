@@ -184,6 +184,8 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_dts = DVD_NOPTS_VALUE;
   m_started = false;
   m_decoderPts = DVD_NOPTS_VALUE;
+  m_codecControlFlags = 0;
+  m_requestSkipDeint = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
