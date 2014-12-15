@@ -23,3 +23,9 @@ Fixes:
     - The updater will not ask you to input your password at all times now.
     - Update should now work on 32bit systems.
   - Fix flung playQueues when you have trailers enabled in PHT.
+  - Fix viewing of Cloud synced photos
+  - Fix subtitle charset setting
+  - Fixed jumping to correct item in now playing fanout
+  - Now playing fanout now only shows unplayed items in the Queue
+  - Sometimes the UI could confuse Playlists and Playqueues when navigating
+    to it, giving you the wrong order of items.
