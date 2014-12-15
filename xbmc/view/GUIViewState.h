@@ -45,8 +45,7 @@ public:
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
 
   SortOrder SetNextSortOrder();
-  SortOrder GetSortOrder() const { return m_sortOrder; };
-  SortOrder GetDisplaySortOrder() const;
+  SortOrder GetSortOrder() const;
 
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
@@ -87,10 +86,10 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
 
-  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
-  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
+  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone, SortOrder sortOrder = SortOrderNone);
+  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks, SortOrder sortOrder = SortOrderNone);
   void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
-  void SetSortMethod(SortBy sortBy);
+  void SetSortMethod(SortBy sortBy, SortOrder sortOrder = SortOrderNone);
   void SetSortMethod(SortDescription sortDescription);
   void SetSortOrder(SortOrder sortOrder);
 
@@ -101,7 +100,6 @@ protected:
 
   std::vector<GUIViewSortDetails> m_sortMethods;
   int m_currentSortMethod;
-  SortOrder m_sortOrder;
 
   static VECSOURCES m_sources;
   static std::string m_strPlaylistDirectory;
