@@ -30,19 +30,12 @@
 #include "dbwrappers/dataset.h"
 #include "SortFileItem.h"
 
-
-//********************************************************************************************************************************
 CViewDatabase::CViewDatabase(void)
-{
-}
+{ }
 
-//********************************************************************************************************************************
 CViewDatabase::~CViewDatabase(void)
-{
+{ }
 
-}
-
-//********************************************************************************************************************************
 bool CViewDatabase::Open()
 {
   return CDatabase::Open();
@@ -52,14 +45,14 @@ void CViewDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create view table");
   m_pDS->exec("CREATE TABLE view ("
-                "idView integer primary key,"
-                "window integer,"
-                "path text,"
-                "viewMode integer,"
-                "sortMethod integer,"
-                "sortOrder integer,"
-                "sortAttributes integer,"
-                "skin text)\n");
+              "idView integer primary key,"
+              "window integer,"
+              "path text,"
+              "viewMode integer,"
+              "sortMethod integer,"
+              "sortOrder integer,"
+              "sortAttributes integer,"
+              "skin text)");
 }
 
 void CViewDatabase::CreateAnalytics()
