@@ -1371,20 +1371,27 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
 #endif
   task.output.paddr  = (int)pPhysAddr;
 
-  task.input.paddr   = (int)buffer->pPhysAddr;
+  VpuFieldType fieldType;
+  task.input.deinterlace.enable = 1;
 
   // Fill current and next buffer address
   if (lowMotion && previousBuffer && previousBuffer->IsValid())
   {
-    task.input.paddr_n = task.input.paddr;
-    task.input.paddr   = (int)previousBuffer->pPhysAddr;
+    task.input.paddr_n            = (int)buffer->pPhysAddr;
+    task.input.paddr              = (int)previousBuffer->pPhysAddr;
+    task.input.deinterlace.motion = LOW_MOTION;
+    fieldType                     = previousBuffer->GetFieldType();
+  }
+  else
+  {
+    task.input.paddr              = (int)buffer->pPhysAddr;
+    task.input.deinterlace.motion = HIGH_MOTION;
+    fieldType                     = buffer->GetFieldType();
   }
 
-  task.input.deinterlace.enable = 1;
-  task.input.deinterlace.motion = lowMotion?LOW_MOTION:HIGH_MOTION;
   task.input.deinterlace.field_fmt = fieldFmt;
 
-  switch (buffer->GetFieldType())
+  switch (fieldType)
   {
   case VPU_FIELD_TOP:
   case VPU_FIELD_TB:
@@ -1859,18 +1866,17 @@ void CDVDVideoMixerIMX::Process()
         CDVDVideoCodecIMXBuffer *outputBuffer;
 
         bool isSD = (inputBuffer->iWidth < 1024) && (inputBuffer->iHeight < 1024);
+        bool hasPreviousBuffer = (inputBuffer->GetPreviousBuffer() != NULL) &&
+                                 inputBuffer->GetPreviousBuffer()->IsValid();
 
         // Disable lowMotion for now due to worse deinterlacing quality
-        bool lowMotion = false;
+        bool lowMotion = false && hasPreviousBuffer;
 
         // Currently double rate introduces oscillating scanlines (either wrong
         // buffer setup or some other kernel issue) so we disable it completely
         // for the time being
         //bool doubleRate = false;
-        bool doubleRate = isSD
-                       && (inputBuffer->GetPreviousBuffer() != NULL)
-                       && (inputBuffer->GetPreviousBuffer()->GetPts() != DVD_NOPTS_VALUE)
-                       && (inputBuffer->GetPts() != DVD_NOPTS_VALUE);
+        bool doubleRate = isSD && hasPreviousBuffer;
 
         m_proc->SetDoubleRate(doubleRate);
 
@@ -1878,7 +1884,12 @@ void CDVDVideoMixerIMX::Process()
         // an interpolated frame out of previous and current
         if (m_proc->DoubleRate())
         {
-          double pts = (inputBuffer->GetPts()+inputBuffer->GetPreviousBuffer()->GetPts())*0.5;
+          double pts;
+          if ((inputBuffer->GetPreviousBuffer()->GetPts() != DVD_NOPTS_VALUE)
+           && (inputBuffer->GetPts() != DVD_NOPTS_VALUE))
+            pts = (inputBuffer->GetPts()+inputBuffer->GetPreviousBuffer()->GetPts())*0.5;
+          else
+            pts = DVD_NOPTS_VALUE;
 
           // Wait for free slot
           WaitForFreeOutput();
