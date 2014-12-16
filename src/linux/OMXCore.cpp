@@ -32,7 +32,7 @@
 #include "utils/log.h"
 
 #include "OMXClock.h"
-#include "src/linux/RBP.h"
+#include "xbmc/linux/RBP.h"
 
 #ifdef TARGET_LINUX
 #include "XMemUtils.h"

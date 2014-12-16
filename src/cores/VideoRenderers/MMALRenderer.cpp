@@ -31,7 +31,7 @@
 #include "utils/MathUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/dvdplayer/DVDCodecs/Video/MMALCodec.h"
-#include "src/Application.h"
+#include "xbmc/Application.h"
 
 #define CLASSNAME "CMMALRenderer"
 

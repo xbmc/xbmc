@@ -51,7 +51,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\src;..\..\..\lib;..\..\..\src\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\..\xbmc;..\..\..\lib;..\..\..\xbmc\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -73,7 +73,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;..\..\..\src;..\..\..\lib;..\..\..\src\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\..\xbmc;..\..\..\lib;..\..\..\xbmc\win32%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_LZO_PACKING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -97,7 +97,7 @@
     <ClCompile Include="..\SDL_anigif.cpp" />
     <ClCompile Include="dirent.c" />
     <ClCompile Include="..\XBMCTex.cpp" />
-    <ClCompile Include="..\..\..\src\guilib\XBTF.cpp" />
+    <ClCompile Include="..\..\..\xbmc\guilib\XBTF.cpp" />
     <ClCompile Include="..\XBTFWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +105,7 @@
     <ClInclude Include="dirent.h" />
     <ClInclude Include="..\md5.h" />
     <ClInclude Include="..\SDL_anigif.h" />
-    <ClInclude Include="..\..\..\src\guilib\XBTF.h" />
+    <ClInclude Include="..\..\..\xbmc\guilib\XBTF.h" />
     <ClInclude Include="..\XBTFWriter.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../src/addons/include -I../../../src -I../../../src/cores/dvdplayer/DVDDemuxers
+INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc -I../../../xbmc/cores/dvdplayer/DVDDemuxers
 DEFINES+=
 CXXFLAGS=-fPIC
 LIBNAME=libXBMC_gui
@@ -11,9 +11,9 @@ all: $(LIB_SHARED)
 
 $(LIB_SHARED): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper_mach_alias \
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
 	-bundle -undefined dynamic_lookup -o $@ \
-	@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper.o $(OBJS)
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif

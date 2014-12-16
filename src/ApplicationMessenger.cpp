@@ -70,7 +70,7 @@
 
 #include "utils/GlobalsHandling.h"
 #if defined(TARGET_ANDROID)
-  #include "src/android/activity/XBMCApp.h"
+  #include "xbmc/android/activity/XBMCApp.h"
 #endif
 
 using namespace PVR;

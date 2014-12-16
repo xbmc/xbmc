@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\guilib\DDSImage.cpp">
+    <ClCompile Include="..\..\..\xbmc\guilib\DDSImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\MakeDDS.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\guilib\DDSImage.h">
+    <ClInclude Include="..\..\..\xbmc\guilib\DDSImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

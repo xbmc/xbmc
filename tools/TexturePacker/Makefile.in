@@ -8,7 +8,7 @@ SRCS           = \
   SDL_anigif.cpp \
   XBTFWriter.cpp \
   XBMCTex.cpp \
-  @abs_top_srcdir@/src/guilib/XBTF.cpp
+  @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
 
 TARGET         = TexturePacker
 CLEAN_FILES    = $(TARGET)
@@ -16,8 +16,8 @@ CLEAN_FILES    = $(TARGET)
 CXXFLAGS_FOR_BUILD += \
   -I. \
   -I@abs_top_srcdir@/lib \
-  -I@abs_top_srcdir@/src \
-  -I@abs_top_srcdir@/src/linux
+  -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/linux
 
 LDFLAGS_FOR_BUILD += -lSDL_image -lSDL -llzo2
 LDFLAGS_FOR_BUILD += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
@@ -29,7 +29,7 @@ endif
 
 all: $(TARGET)
 
-$(TARGET): $(SRCS) @abs_top_srcdir@/src/guilib/XBTF.h
+$(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 # TexturePacker run native on build system, build it with native tools
 	make -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
 	$(CXX_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) $(DEFINES) $(NATIVE_ARCH) $(SRCS) $(LDFLAGS_FOR_BUILD) -o $(TARGET)

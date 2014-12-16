@@ -26,7 +26,7 @@
 #include "system.h"
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
-#include "src/guilib/GUIShader.h"
+#include "xbmc/guilib/GUIShader.h"
 
 enum ESHADERMETHOD
 {

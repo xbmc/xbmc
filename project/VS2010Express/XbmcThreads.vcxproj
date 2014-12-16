@@ -11,41 +11,41 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\threads\Atomics.cpp" />
-    <ClCompile Include="..\..\src\threads\Event.cpp" />
-    <ClCompile Include="..\..\src\threads\LockFree.cpp" />
-    <ClCompile Include="..\..\src\threads\Timer.cpp" />
-    <ClInclude Include="..\..\src\threads\platform\ThreadImpl.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\ThreadImpl.cpp" />
-    <ClInclude Include="..\..\src\threads\platform\ThreadImpl.cpp" />
-    <ClCompile Include="..\..\src\threads\platform\Implementation.cpp" />
-    <ClCompile Include="..\..\src\threads\platform\win\Win32Exception.cpp" />
-    <ClCompile Include="..\..\src\threads\SystemClock.cpp" />
-    <ClCompile Include="..\..\src\threads\Thread.cpp" />
-    <ClInclude Include="..\..\src\threads\Timer.h" />
+    <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\Timer.cpp" />
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.cpp" />
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\win\Win32Exception.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClInclude Include="..\..\xbmc\threads\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\threads\Atomics.h" />
-    <ClInclude Include="..\..\src\threads\Condition.h" />
-    <ClInclude Include="..\..\src\threads\CriticalSection.h" />
-    <ClInclude Include="..\..\src\threads\Event.h" />
-    <ClInclude Include="..\..\src\threads\Helpers.h" />
-    <ClInclude Include="..\..\src\threads\Lockables.h" />
-    <ClInclude Include="..\..\src\threads\LockFree.h" />
-    <ClInclude Include="..\..\src\threads\platform\Condition.h" />
-    <ClInclude Include="..\..\src\threads\platform\CriticalSection.h" />
-    <ClInclude Include="..\..\src\threads\platform\ThreadLocal.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\Condition.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\CriticalSection.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\ThreadImpl.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\ThreadLocal.h" />
-    <ClInclude Include="..\..\src\threads\platform\win\Win32Exception.h" />
-    <ClInclude Include="..\..\src\threads\SharedSection.h" />
-    <ClInclude Include="..\..\src\threads\SingleLock.h" />
-    <ClInclude Include="..\..\src\threads\SystemClock.h" />
-    <ClInclude Include="..\..\src\threads\Thread.h" />
-    <ClInclude Include="..\..\src\threads\ThreadImpl.h" />
-    <ClInclude Include="..\..\src\threads\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
+    <ClInclude Include="..\..\xbmc\threads\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\Event.h" />
+    <ClInclude Include="..\..\xbmc\threads\Helpers.h" />
+    <ClInclude Include="..\..\xbmc\threads\Lockables.h" />
+    <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Win32Exception.h" />
+    <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
+    <ClInclude Include="..\..\xbmc\threads\SystemClock.h" />
+    <ClInclude Include="..\..\xbmc\threads\Thread.h" />
+    <ClInclude Include="..\..\xbmc\threads\ThreadImpl.h" />
+    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="XbmcCommons.vcxproj">
@@ -98,7 +98,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src;..\..\src\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_LIB;_XBMC;_USE_32BIT_TIME_T;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -110,7 +110,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\src;..\..\src\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_LIB;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>commons.hpp</PrecompiledHeaderFile>
       <DebugInformationFormat>

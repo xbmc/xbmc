@@ -33,7 +33,7 @@ mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/media"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/tools/darwin/runtime"
 
 ${SYNC} "$SRCROOT/LICENSE.GPL" 	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/"
-${SYNC} "$SRCROOT/src/osx/Credits.html" 	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/"
+${SYNC} "$SRCROOT/xbmc/osx/Credits.html" 	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/"
 ${ADDONSYNC} "$SRCROOT/addons"		"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${SYNC} "$SRCROOT/addons/visualization.glspectrum"   	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 ${SYNC} "$SRCROOT/addons/visualization.waveform"    	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"

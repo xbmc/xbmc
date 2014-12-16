@@ -34,7 +34,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
-#include "src/linux/DllBCM.h"
+#include "xbmc/linux/DllBCM.h"
 
 class OMXPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
