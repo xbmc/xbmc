@@ -446,8 +446,8 @@ void CGUIDialogPVRTimerSettings::getChannelNames(bool bRadio, std::vector< std::
 
   for (int i = 0; i < channelsList.Size(); i++)
   {
-    const CPVRChannel *channel = channelsList[i]->GetPVRChannelInfoTag();
-
+    const CPVRChannelPtr channel(channelsList[i]->GetPVRChannelInfoTag());
+    
     list.push_back(std::make_pair(StringUtils::Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str()), entry));
     if (updateChannelEntries)
       m_channelEntries.insert(std::make_pair(std::make_pair(bRadio, entry), channel->ChannelID()));

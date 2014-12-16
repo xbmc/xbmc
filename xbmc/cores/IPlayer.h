@@ -21,6 +21,7 @@
  */
 
 #include "system.h" // until we get sane int types used here
+#include <memory>
 #include "IAudioCallback.h"
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
@@ -36,6 +37,7 @@ class CAction;
 namespace PVR
 {
   class CPVRChannel;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 }
 
 class CPlayerOptions
@@ -219,7 +221,7 @@ public:
   
   virtual std::string GetPlayingTitle() { return ""; };
 
-  virtual bool SwitchChannel(PVR::CPVRChannel &channel) { return false; }
+  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) { return false; }
 
   // Note: the following "OMX" methods are deprecated and will be removed in the future
   // They should be handled by the video renderer, not the player

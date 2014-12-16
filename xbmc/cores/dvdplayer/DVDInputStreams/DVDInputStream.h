@@ -70,8 +70,8 @@ public:
     virtual bool NextChannel(bool preview = false) = 0;
     virtual bool PrevChannel(bool preview = false) = 0;
     virtual bool SelectChannelByNumber(unsigned int channel) = 0;
-    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
-    virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
+    virtual bool SelectChannel(const PVR::CPVRChannelPtr &channel) { return false; };
+    virtual PVR::CPVRChannelPtr GetSelectedChannel() { return PVR::CPVRChannelPtr(); };
     virtual bool UpdateItem(CFileItem& item) = 0;
     virtual bool CanRecord() = 0;
     virtual bool IsRecording() = 0;

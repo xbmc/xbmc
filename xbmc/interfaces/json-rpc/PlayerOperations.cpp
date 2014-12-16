@@ -168,9 +168,9 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
       if (IsPVRChannel())
       {
-        CPVRChannelPtr currentChannel;
-        if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.get() != NULL)
-          fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
+        CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+        if (currentChannel)
+          fileItem = CFileItemPtr(new CFileItem(currentChannel));
       }
       else if (player == Video)
       {
@@ -594,11 +594,11 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (channel == NULL)
       return InvalidParams;
 
-    if ((g_PVRManager.IsPlayingRadio() && channel.get()->IsRadio()) ||
-        (g_PVRManager.IsPlayingTV() && !channel.get()->IsRadio()))
-      g_application.m_pPlayer->SwitchChannel(*channel.get());
+    if ((g_PVRManager.IsPlayingRadio() && channel->IsRadio()) ||
+        (g_PVRManager.IsPlayingTV() && !channel->IsRadio()))
+      g_application.m_pPlayer->SwitchChannel(channel);
     else
-      CApplicationMessenger::Get().MediaPlay(CFileItem(*channel.get()));
+      CApplicationMessenger::Get().MediaPlay(CFileItem(channel));
 
     return ACK;
   }
@@ -1666,8 +1666,8 @@ EPG::CEpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
   if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
     return EPG::CEpgInfoTagPtr();
 
-  CPVRChannelPtr currentChannel;
-  if (!g_PVRManager.GetCurrentChannel(currentChannel))
+  CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+  if (!currentChannel)
     return EPG::CEpgInfoTagPtr();
 
   return currentChannel->GetEPGNow();

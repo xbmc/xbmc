@@ -273,40 +273,44 @@ const std::string CPVRClients::GetPlayingClientName(void) const
   return m_strPlayingClientName;
 }
 
-std::string CPVRClients::GetStreamURL(const CPVRChannel &tag)
+std::string CPVRClients::GetStreamURL(const CPVRChannelPtr &channel)
 {
+  assert(channel.get());
+
   std::string strReturn;
   PVR_CLIENT client;
-  if (GetConnectedClient(tag.ClientID(), client))
-    strReturn = client->GetLiveStreamURL(tag);
+  if (GetConnectedClient(channel->ClientID(), client))
+    strReturn = client->GetLiveStreamURL(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, tag.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
   return strReturn;
 }
 
-bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
+bool CPVRClients::SwitchChannel(const CPVRChannelPtr &channel)
 {
+  assert(channel.get());
+
   {
     CSingleLock lock(m_critSection);
     if (m_bIsSwitchingChannels)
     {
-      CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete", __FUNCTION__, channel.ChannelName().c_str());
+      CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete", __FUNCTION__, channel->ChannelName().c_str());
       return false;
     }
     m_bIsSwitchingChannels = true;
   }
 
   bool bSwitchSuccessful(false);
-  CPVRChannelPtr currentChannel;
+  CPVRChannelPtr currentChannel(GetPlayingChannel());
   if (// no channel is currently playing
-      !GetPlayingChannel(currentChannel) ||
+      !currentChannel ||
       // different backend
-      currentChannel->ClientID() != channel.ClientID() ||
+      currentChannel->ClientID() != channel->ClientID() ||
       // stream URL should always be opened as a new file
-      !channel.StreamURL().empty() || !currentChannel->StreamURL().empty())
+      !channel->StreamURL().empty() || !currentChannel->StreamURL().empty())
   {
-    if (channel.StreamURL().empty())
+    if (channel->StreamURL().empty())
     {
       CloseStream();
       bSwitchSuccessful = OpenStream(channel, true);
@@ -319,14 +323,14 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     }
   }
   // same channel
-  else if (currentChannel.get() && *currentChannel == channel)
+  else if (currentChannel && currentChannel == channel)
   {
     bSwitchSuccessful = true;
   }
   else
   {
     PVR_CLIENT client;
-    if (GetConnectedClient(channel.ClientID(), client))
+    if (GetConnectedClient(channel->ClientID(), client))
       bSwitchSuccessful = client->SwitchChannel(channel);
   }
 
@@ -336,17 +340,18 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   }
 
   if (!bSwitchSuccessful)
-    CLog::Log(LOGERROR, "PVR - %s - cannot switch to channel '%s' on client '%d'",__FUNCTION__, channel.ChannelName().c_str(), channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot switch to channel '%s' on client '%d'",__FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
 
   return bSwitchSuccessful;
 }
 
-bool CPVRClients::GetPlayingChannel(CPVRChannelPtr &channel) const
+CPVRChannelPtr CPVRClients::GetPlayingChannel() const
 {
   PVR_CLIENT client;
   if (GetPlayingClient(client))
-    return client->GetPlayingChannel(channel);
-  return false;
+    return client->GetPlayingChannel();
+
+  return CPVRChannelPtr();
 }
 
 CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
@@ -611,16 +616,14 @@ std::vector<PVR_EDL_ENTRY> CPVRClients::GetRecordingEdl(const CPVRRecording &rec
 
 bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
-  CPVRChannelPtr currentChannel;
-  return GetPlayingChannel(currentChannel) &&
-      currentChannel->IsRecording();
+  CPVRChannelPtr currentChannel(GetPlayingChannel());
+  return currentChannel && currentChannel->IsRecording();
 }
 
 bool CPVRClients::CanRecordInstantly(void)
 {
-  CPVRChannelPtr currentChannel;
-  return GetPlayingChannel(currentChannel) &&
-      currentChannel->CanRecord();
+  CPVRChannelPtr currentChannel(GetPlayingChannel());
+  return currentChannel && currentChannel->CanRecord();
 }
 
 bool CPVRClients::CanPauseStream(void) const
@@ -647,16 +650,17 @@ bool CPVRClients::CanSeekStream(void) const
   return false;
 }
 
-PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
 {
+  assert(channel.get());
+
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
-  if (GetConnectedClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel->ClientID(), client))
     error = client->GetEPGForChannel(channel, epg, start, end);
 
   if (error != PVR_ERROR_NO_ERROR)
-    CLog::Log(LOGERROR, "PVR - %s - cannot get EPG for channel '%s' from client '%d': %s",__FUNCTION__, channel.ChannelName().c_str(), channel.ClientID(), CPVRClient::ToString(error));
-
+    CLog::Log(LOGERROR, "PVR - %s - cannot get EPG for channel '%s' from client '%d': %s",__FUNCTION__, channel->ChannelName().c_str(), channel->ClientID(), CPVRClient::ToString(error));
   return error;
 }
 
@@ -910,15 +914,15 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bR
 }
 
 
-bool CPVRClients::OpenDialogChannelAdd(const CPVRChannel &channel)
+bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
   PVR_CLIENT client;
-  if (GetConnectedClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel->ClientID(), client))
     error = client->OpenDialogChannelAdd(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
@@ -929,15 +933,15 @@ bool CPVRClients::OpenDialogChannelAdd(const CPVRChannel &channel)
   return error == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRClients::OpenDialogChannelSettings(const CPVRChannel &channel)
+bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
   PVR_CLIENT client;
-  if (GetConnectedClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel->ClientID(), client))
     error = client->OpenDialogChannelSettings(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
@@ -948,15 +952,15 @@ bool CPVRClients::OpenDialogChannelSettings(const CPVRChannel &channel)
   return error == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRClients::DeleteChannel(const CPVRChannel &channel)
+bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
   PVR_CLIENT client;
-  if (GetConnectedClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel->ClientID(), client))
     error = client->DeleteChannel(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
@@ -967,15 +971,15 @@ bool CPVRClients::DeleteChannel(const CPVRChannel &channel)
   return error == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRClients::RenameChannel(const CPVRChannel &channel)
+bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
   PVR_CLIENT client;
-  if (GetConnectedClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel->ClientID(), client))
     error = client->RenameChannel(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
   return (error == PVR_ERROR_NO_ERROR || error == PVR_ERROR_NOT_IMPLEMENTED);
 }
@@ -1341,18 +1345,20 @@ bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
   return GetConnectedClient(GetPlayingClientID(), client);
 }
 
-bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
+bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
 {
+  assert(channel.get());
+
   bool bReturn(false);
   CloseStream();
 
   /* try to open the stream on the client */
   PVR_CLIENT client;
-  if (GetConnectedClient(tag.ClientID(), client) &&
-      client->OpenStream(tag, bIsSwitchingChannel))
+  if (GetConnectedClient(channel->ClientID(), client) &&
+      client->OpenStream(channel, bIsSwitchingChannel))
   {
     CSingleLock lock(m_critSection);
-    m_playingClientId = tag.ClientID();
+    m_playingClientId = channel->ClientID();
     m_bIsPlayingLiveTV = true;
 
     if (client.get())
@@ -1366,20 +1372,20 @@ bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
   return bReturn;
 }
 
-bool CPVRClients::OpenStream(const CPVRRecordingPtr &tag)
+bool CPVRClients::OpenStream(const CPVRRecordingPtr &channel)
 {
-  assert(tag.get());
+  assert(channel.get());
 
   bool bReturn(false);
   CloseStream();
 
   /* try to open the recording stream on the client */
   PVR_CLIENT client;
-  if (GetConnectedClient(tag->m_iClientId, client) &&
-      client->OpenStream(tag))
+  if (GetConnectedClient(channel->m_iClientId, client) &&
+      client->OpenStream(channel))
   {
     CSingleLock lock(m_critSection);
-    m_playingClientId = tag->m_iClientId;
+    m_playingClientId = channel->m_iClientId;
     m_bIsPlayingRecording = true;
     m_strPlayingClientName = client->GetFriendlyName();
     bReturn = true;
@@ -1443,8 +1449,8 @@ void CPVRClients::PauseStream(bool bPaused)
 std::string CPVRClients::GetCurrentInputFormat(void) const
 {
   std::string strReturn;
-  CPVRChannelPtr currentChannel;
-  if (GetPlayingChannel(currentChannel))
+  CPVRChannelPtr currentChannel(GetPlayingChannel());
+  if (currentChannel)
     strReturn = currentChannel->InputFormat();
 
   return strReturn;

@@ -58,29 +58,29 @@ namespace PVR
      * @brief Add a channel to this internal group.
      * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
      */
-    bool InsertInGroup(CPVRChannel &channel, int iChannelNumber = 0);
+    bool InsertInGroup(CPVRChannelPtr &channel, int iChannelNumber = 0);
 
     /*!
      * @brief Callback for add-ons to update a channel.
      * @param channel The updated channel.
-     * @return True if the channel has been updated succesfully, false otherwise.
+     * @return The new/updated channel.
      */
-    void UpdateFromClient(const CPVRChannel &channel, unsigned int iChannelNumber = 0);
+    CPVRChannelPtr UpdateFromClient(const CPVRChannelPtr &channel, unsigned int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
      */
-    bool IsGroupMember(const CPVRChannel &channel) const;
+    bool IsGroupMember(const CPVRChannelPtr &channel) const;
 
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0);
+    bool AddToGroup(CPVRChannelPtr &channel, int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
-    bool RemoveFromGroup(const CPVRChannel &channel);
+    bool RemoveFromGroup(const CPVRChannelPtr &channel);
 
     /*!
      * @see CPVRChannelGroup::MoveChannel
@@ -103,8 +103,6 @@ namespace PVR
      * @return True if all tables were created successfully, false otherwise.
      */
     bool CreateChannelEpgs(bool bForce = false);
-
-    bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { UpdateFromClient(channel, iChannelNumber); return true; }
 
   protected:
     /*!

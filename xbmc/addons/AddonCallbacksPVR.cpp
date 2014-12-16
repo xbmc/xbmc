@@ -130,7 +130,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
   else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(*channel, member->iChannelNumber);
+    group->AddToGroup(channel, member->iChannelNumber);
   }
 }
 
@@ -170,7 +170,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
   }
 
   /* transfer this entry to the internal channels group */
-  CPVRChannel transferChannel(*channel, client->GetID());
+  CPVRChannelPtr transferChannel(new CPVRChannel(*channel, client->GetID()));
   xbmcChannels->UpdateFromClient(transferChannel);
 }
 

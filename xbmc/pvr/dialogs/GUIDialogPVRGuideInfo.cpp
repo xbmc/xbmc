@@ -59,7 +59,7 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
     return false;
 
   CPVRChannelPtr channel = tag->ChannelTag();
-  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
+  if (!channel || !g_PVRManager.CheckParentalLock(channel))
     return false;
 
   // prompt user for confirmation of channel record
@@ -178,7 +178,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
       if (epgTag->HasRecording())
         ret = g_application.PlayFile(CFileItem(epgTag->Recording()));
       else if (epgTag->HasPVRChannel())
-        ret = g_application.PlayFile(CFileItem(*epgTag->ChannelTag()));
+        ret = g_application.PlayFile(CFileItem(epgTag->ChannelTag()));
     }
     else
       ret = PLAYBACK_FAIL;

@@ -461,10 +461,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   {
     int iClientID = m_clientsWithSettingsList[iSelection]->GetID();
 
-    CPVRChannel channel(m_bIsRadio);
-    channel.SetChannelName(g_localizeStrings.Get(19204)); // New channel
-    channel.SetEPGEnabled(g_PVRClients->SupportsEPG(iClientID));
-    channel.SetClientID(iClientID);
+    CPVRChannelPtr channel(new CPVRChannel(m_bIsRadio));
+    channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
+    channel->SetEPGEnabled(g_PVRClients->SupportsEPG(iClientID));
+    channel->SetClientID(iClientID);
 
     if (g_PVRClients->OpenDialogChannelAdd(channel))
       Update();
@@ -595,7 +595,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
-    if (!g_PVRClients->OpenDialogChannelSettings(*pItem->GetPVRChannelInfoTag()))
+    if (!g_PVRClients->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag()))
       CGUIDialogOK::ShowAndGetInput(2103, 0, 16029, 0);  // Add-on error;Check the log file for details.
   }
   else if (button == CONTEXT_BUTTON_DELETE)
@@ -610,10 +610,10 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 
     if (pDialog->IsConfirmed())
     {
-      CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
-      if (g_PVRClients->DeleteChannel(*channel))
+      CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
+      if (g_PVRClients->DeleteChannel(channel))
       {
-        g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(*channel);
+        g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
         m_channelItems->Remove(m_iSelected);
         m_viewControl.SetItems(*m_channelItems);
         Renumber();
@@ -669,7 +669,7 @@ void CGUIDialogPVRChannelManager::Update()
     CFileItemPtr channelFile = channels->GetByIndex(iChannelPtr);
     if (!channelFile || !channelFile->HasPVRChannelInfoTag())
       continue;
-    const CPVRChannel *channel = channelFile->GetPVRChannelInfoTag();
+    const CPVRChannelPtr channel(channelFile->GetPVRChannelInfoTag());
 
     channelFile->SetProperty("ActiveChannel", !channel->IsHidden());
     channelFile->SetProperty("Name", channel->ChannelName());
@@ -721,8 +721,8 @@ void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
   std::string strChannelName = pItem->GetProperty("Name").asString();
   if (strChannelName != pItem->GetPVRChannelInfoTag()->ChannelName())
   {
-    CPVRChannel channel = pItem->GetPVRChannelInfoTag();
-    channel.SetChannelName(strChannelName);
+    CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
+    channel->SetChannelName(strChannelName);
 
     if (!g_PVRClients->RenameChannel(channel))
       CGUIDialogOK::ShowAndGetInput(2103, 0, 16029, 0);  // Add-on error;Check the log file for details.

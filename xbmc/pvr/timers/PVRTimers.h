@@ -120,14 +120,14 @@ namespace PVR
      * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
      * @return True if timers any were deleted, false otherwise.
      */
-    bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
+    bool DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
 
     /*!
      * @brief Create a new instant timer on a channel.
      * @param channel The channel to create the timer on.
      * @return True if the timer was created, false otherwise.
      */
-    bool InstantTimer(const CPVRChannel &channel);
+    bool InstantTimer(const CPVRChannelPtr &channel);
 
     /*!
      * @return Next event time (timer or daily wake up)

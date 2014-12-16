@@ -196,16 +196,13 @@ CDateTime CEpgInfoTag::GetCurrentPlayingTime() const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
 
-  CPVRChannelPtr channel;
-  if (g_PVRClients->GetPlayingChannel(channel))
+  CPVRChannelPtr channel(g_PVRClients->GetPlayingChannel());
+  if (channel == ChannelTag())
   {
-    if (channel == ChannelTag())
-    {
-      // Timeshifting active?
-      time_t time = g_PVRClients->GetPlayingTime();
-      if (time > 0) // returns 0 in case no client is currently playing
-        now = time;
-    }
+    // Timeshifting active?
+    time_t time = g_PVRClients->GetPlayingTime();
+    if (time > 0) // returns 0 in case no client is currently playing
+      now = time;
   }
   return now;
 }
@@ -428,7 +425,7 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
     CSingleLock lock(m_critSection);
     strTitle = m_strTitle;
     if (m_pvrChannel)
-      bParentalLocked = g_PVRManager.IsParentalLocked(*m_pvrChannel);
+      bParentalLocked = g_PVRManager.IsParentalLocked(m_pvrChannel);
   }
 
   if (!bOverrideParental && bParentalLocked)
@@ -459,7 +456,7 @@ std::string CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
     retVal = m_strPlotOutline;
 
   return retVal;
@@ -482,7 +479,7 @@ std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
     retVal = m_strPlot;
 
   return retVal;

@@ -544,7 +544,7 @@ void CApplicationPlayer::SetDynamicRangeCompression(long drc)
     player->SetDynamicRangeCompression(drc);
 }
 
-bool CApplicationPlayer::SwitchChannel(PVR::CPVRChannel &channel)
+bool CApplicationPlayer::SwitchChannel(const PVR::CPVRChannelPtr &channel)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->SwitchChannel(channel));

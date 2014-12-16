@@ -1488,10 +1488,13 @@ bool CDVDPlayer::CheckDelayedChannelEntry(void)
   if (m_ChannelEntryTimeOut.IsTimePast())
   {
     CFileItem currentFile(g_application.CurrentFileItem());
-    CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
-    SwitchChannel(*currentChannel);
+    CPVRChannelPtr currentChannel(currentFile.GetPVRChannelInfoTag());
+    if (currentChannel)
+    {
+      SwitchChannel(currentChannel);
 
-    bReturn = true;
+      bReturn = true;
+    }
     m_ChannelEntryTimeOut.SetInfinite();
   }
 
@@ -2525,7 +2528,7 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
+        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannelPtr> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
         }else
@@ -4485,7 +4488,7 @@ std::string CDVDPlayer::GetPlayingTitle()
   return "";
 }
 
-bool CDVDPlayer::SwitchChannel(CPVRChannel &channel)
+bool CDVDPlayer::SwitchChannel(CPVRChannelPtr &channel)
 {
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
@@ -4498,7 +4501,7 @@ bool CDVDPlayer::SwitchChannel(CPVRChannel &channel)
   UpdatePlayState(0);
 
   /* select the new channel */
-  m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+  m_messenger.Put(new CDVDMsgType<CPVRChannelPtr>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
 
   return true;
 }
