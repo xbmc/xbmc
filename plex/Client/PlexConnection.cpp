@@ -100,6 +100,13 @@ bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
   else
     tokenMatches = m_token.Equals(other->m_token);
 
+
+  if (!uriMatches)
+    CLog::Log(LOGDEBUG, "CPlexConnection::Equals '%s' != '%s'", url1.c_str(), url2.c_str());
+
+  if (!tokenMatches)
+    CLog::Log(LOGDEBUG, "CPlexConnection::Equals '%s' != '%s'", m_token.c_str(), other->m_token.c_str());
+
   return (uriMatches && tokenMatches);
 }
 
