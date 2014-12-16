@@ -15,6 +15,7 @@ CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, con
 
   m_refreshed = true;
   m_http.SetTimeout(3);
+  m_http.SetRequestHeader("Accept", "application/xml");
 }
 
 CURL
@@ -40,7 +41,7 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   CURL url = BuildURL("/");
   CStdString rootXml;
 
-  m_http.SetRequestHeader("Accept", "application/xml");
+  m_http.Reset();
 
   if (GetAccessToken().empty() && server->HasAuthToken())
     url.SetOption(GetAccessTokenParameter(), server->GetAnyToken());
