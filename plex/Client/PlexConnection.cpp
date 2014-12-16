@@ -78,7 +78,7 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 
   // If we don't have a token or if the otherConnection have a new token, then we
   // need to use that token instead of our own
-  if (m_token.empty() || (!otherConnection->m_token.empty() && m_token != otherConnection->m_token))
+  if (m_token.IsEmpty() || (!otherConnection->m_token.IsEmpty() && m_token != otherConnection->m_token))
     m_token = otherConnection->m_token;
 
   m_refreshed = true;
@@ -93,9 +93,9 @@ bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
 
   bool uriMatches = url1.Equals(url2);
   bool tokenMatches;
-  if (m_token.empty() && !other->m_token.empty())
+  if (m_token.IsEmpty() && !other->m_token.IsEmpty())
     tokenMatches = true;
-  else if (!m_token.empty() && other->m_token.empty())
+  else if (!m_token.IsEmpty() && other->m_token.IsEmpty())
     tokenMatches = true;
   else
     tokenMatches = m_token.Equals(other->m_token);
