@@ -4178,14 +4178,14 @@
 		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
 		7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mysqldataset.cpp; sourceTree = "<group>"; };
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
-		7C7BCDBF17727951004842FB /* IListProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IListProvider.cpp; path = xbmc/listproviders/IListProvider.cpp; sourceTree = SOURCE_ROOT; };
-		7C7BCDC217727951004842FB /* StaticProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StaticProvider.h; path = xbmc/listproviders/StaticProvider.h; sourceTree = SOURCE_ROOT; };
-		7C7BCDC317727951004842FB /* StaticProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StaticProvider.cpp; path = xbmc/listproviders/StaticProvider.cpp; sourceTree = SOURCE_ROOT; };
-		7C7BCDC417727951004842FB /* IListProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IListProvider.h; path = xbmc/listproviders/IListProvider.h; sourceTree = SOURCE_ROOT; };
+		7C7BCDBF17727951004842FB /* IListProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IListProvider.cpp; path = src/listproviders/IListProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7C7BCDC217727951004842FB /* StaticProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StaticProvider.h; path = src/listproviders/StaticProvider.h; sourceTree = SOURCE_ROOT; };
+		7C7BCDC317727951004842FB /* StaticProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StaticProvider.cpp; path = src/listproviders/StaticProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7C7BCDC417727951004842FB /* IListProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IListProvider.h; path = src/listproviders/IListProvider.h; sourceTree = SOURCE_ROOT; };
 		7C7CEAEF165629530059C9EB /* AELimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AELimiter.cpp; sourceTree = "<group>"; };
 		7C7CEAF0165629530059C9EB /* AELimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELimiter.h; sourceTree = "<group>"; };
-		7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourcesDirectory.cpp; path = xbmc/filesystem/SourcesDirectory.cpp; sourceTree = SOURCE_ROOT; };
-		7C84A59D12FA3C1600CD1714 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SourcesDirectory.h; path = xbmc/filesystem/SourcesDirectory.h; sourceTree = SOURCE_ROOT; };
+		7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourcesDirectory.cpp; path = src/filesystem/SourcesDirectory.cpp; sourceTree = SOURCE_ROOT; };
+		7C84A59D12FA3C1600CD1714 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SourcesDirectory.h; path = src/filesystem/SourcesDirectory.h; sourceTree = SOURCE_ROOT; };
 		7C87B2CC162CE39600EF897D /* PlayerController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerController.cpp; sourceTree = "<group>"; };
 		7C87B2CD162CE39600EF897D /* PlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerController.h; sourceTree = "<group>"; };
 		7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
@@ -4205,8 +4205,8 @@
 		7C8AE84C189DE3CD00C33786 /* CoreAudioStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioStream.cpp; path = Sinks/osx/CoreAudioStream.cpp; sourceTree = "<group>"; };
 		7C8AE852189DE47400C33786 /* CoreAudioHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioHelpers.cpp; path = Sinks/osx/CoreAudioHelpers.cpp; sourceTree = "<group>"; };
 		7C8AE853189DE47700C33786 /* CoreAudioHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioHelpers.h; path = Sinks/osx/CoreAudioHelpers.h; sourceTree = "<group>"; };
-		7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = xbmc/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
-		7C8FC6ED1829A4580045153D /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = xbmc/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
+		7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = src/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7C8FC6ED1829A4580045153D /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = src/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
 		7C908892196358A8003D0619 /* auto_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = auto_buffer.cpp; sourceTree = "<group>"; };
 		7C908893196358A8003D0619 /* auto_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = auto_buffer.h; sourceTree = "<group>"; };
 		7C920CF7181669FF00DA1477 /* TextureOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureOperations.cpp; sourceTree = "<group>"; };
@@ -6026,15 +6026,15 @@
 		F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDInputStreamHTSP.cpp; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.cpp; sourceTree = SOURCE_ROOT; };
-		F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDInputStreamHTSP.h; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h; sourceTree = SOURCE_ROOT; };
+		F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDInputStreamHTSP.cpp; path = src/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.cpp; sourceTree = SOURCE_ROOT; };
+		F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDInputStreamHTSP.h; path = src/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h; sourceTree = SOURCE_ROOT; };
 		F51CF2CE0F6055A4004F4602 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		F51CF2CF0F6055A4004F4602 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skin.cpp; sourceTree = "<group>"; };
-		F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDVideoCodecVDA.cpp; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.cpp; sourceTree = SOURCE_ROOT; };
-		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
+		F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDVideoCodecVDA.cpp; path = src/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.cpp; sourceTree = SOURCE_ROOT; };
+		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = src/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonStatusHandler.cpp; sourceTree = "<group>"; };
 		F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
@@ -6066,8 +6066,8 @@
 		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricsfactory.cpp; sourceTree = "<group>"; };
 		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextlrc.cpp; sourceTree = "<group>"; };
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstext.cpp; sourceTree = "<group>"; };
-		F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDDemuxHTSP.h; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.h; sourceTree = SOURCE_ROOT; };
-		F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDDemuxHTSP.cpp; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp; sourceTree = SOURCE_ROOT; };
+		F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDDemuxHTSP.h; path = src/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.h; sourceTree = SOURCE_ROOT; };
+		F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDDemuxHTSP.cpp; path = src/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp; sourceTree = SOURCE_ROOT; };
 		F551106C0F5C424700955236 /* hts_strtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hts_strtab.h; sourceTree = "<group>"; };
 		F551106D0F5C424700955236 /* htsatomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsatomic.c; sourceTree = "<group>"; };
 		F551106E0F5C424700955236 /* htsatomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsatomic.h; sourceTree = "<group>"; };
@@ -6265,8 +6265,8 @@
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerManager.h; sourceTree = "<group>"; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoaPowerSyscall.cpp; sourceTree = "<group>"; };
 		F5EA02210F6DA85C005C2EC5 /* CocoaPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaPowerSyscall.h; sourceTree = "<group>"; };
-		F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInterface.mm; path = xbmc/osx/CocoaInterface.mm; sourceTree = SOURCE_ROOT; };
-		F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInterface.h; path = xbmc/osx/CocoaInterface.h; sourceTree = SOURCE_ROOT; };
+		F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInterface.mm; path = src/osx/CocoaInterface.mm; sourceTree = SOURCE_ROOT; };
+		F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInterface.h; path = src/osx/CocoaInterface.h; sourceTree = SOURCE_ROOT; };
 		F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayDirectory.cpp; sourceTree = "<group>"; };
 		F5ED8D6B1551F91400842059 /* BlurayDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayDirectory.h; sourceTree = "<group>"; };
 		F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCTinyXML.cpp; sourceTree = "<group>"; };
@@ -6399,7 +6399,7 @@
 				DFFA43CE19104BFA00C3923B /* media */,
 				C6859E96029091FE04C91782 /* docs */,
 				E38E185C0D25F9FA00618676 /* lib */,
-				E38E14610D25F9F900618676 /* xbmc */,
+				E38E14610D25F9F900618676 /* src */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -8575,7 +8575,7 @@
 			path = osx;
 			sourceTree = "<group>";
 		};
-		E38E14610D25F9F900618676 /* xbmc */ = {
+		E38E14610D25F9F900618676 /* src */ = {
 			isa = PBXGroup;
 			children = (
 				18B49FF01152BEEB001AF8A6 /* addons */,
@@ -8691,7 +8691,7 @@
 				EC720A9B1550927000FFD782 /* XbmcContext.cpp */,
 				EC720A9C1550927000FFD782 /* XbmcContext.h */,
 			);
-			path = xbmc;
+			path = src;
 			sourceTree = "<group>";
 		};
 		E38E147F0D25F9F900618676 /* cdrip */ = {
@@ -14312,10 +14312,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
+					src,
+					src/linux,
+					src/osx,
+					src/cores/dvdplayer,
 					lib,
 					lib/ffmpeg,
 					addons/library.xbmc.addon,
@@ -14326,7 +14326,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				INFOPLIST_FILE = $SRCROOT/src/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -14337,9 +14337,9 @@
 					"$(SRCROOT)/lib/cmyth/librefmem",
 					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
-					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
+					"$(SRCROOT)/src/interfaces/json-rpc",
+					"\"$(SRCROOT)/src/interfaces/python\"",
+					"\"$(SRCROOT)/src/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -14378,10 +14378,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
+					src,
+					src/linux,
+					src/osx,
+					src/cores/dvdplayer,
 					lib,
 					lib/ffmpeg,
 					addons/library.xbmc.addon,
@@ -14392,7 +14392,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				INFOPLIST_FILE = $SRCROOT/src/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -14403,9 +14403,9 @@
 					"$(SRCROOT)/lib/cmyth/librefmem",
 					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
-					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
+					"$(SRCROOT)/src/interfaces/json-rpc",
+					"\"$(SRCROOT)/src/interfaces/python\"",
+					"\"$(SRCROOT)/src/interfaces/legacy\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -14490,12 +14490,12 @@
 				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					$SRCROOT,
-					xbmc,
-					xbmc/osx,
-					xbmc/linux,
-					xbmc/cores/dvdplayer,
-					xbmc/cores/AudioEngine,
-					xbmc/cores/AudioEngine/Utils,
+					src,
+					src/osx,
+					src/linux,
+					src/cores/dvdplayer,
+					src/cores/AudioEngine,
+					src/cores/AudioEngine/Utils,
 					lib,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
@@ -14504,7 +14504,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
+				INFOPLIST_FILE = "$SRCROOT/src/osx/atv2/XBMCATV2-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
@@ -14515,9 +14515,9 @@
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
-					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
+					"\"$(SRCROOT)/src/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/src/interfaces/legacy\"",
+					"\"$(SRCROOT)/src/interfaces/python\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
@@ -14551,12 +14551,12 @@
 				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					$SRCROOT,
-					xbmc,
-					xbmc/osx,
-					xbmc/linux,
-					xbmc/cores/dvdplayer,
-					xbmc/cores/AudioEngine,
-					xbmc/cores/AudioEngine/Utils,
+					src,
+					src/osx,
+					src/linux,
+					src/cores/dvdplayer,
+					src/cores/AudioEngine,
+					src/cores/AudioEngine/Utils,
 					lib,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
@@ -14565,7 +14565,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
+				INFOPLIST_FILE = "$SRCROOT/src/osx/atv2/XBMCATV2-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
@@ -14576,9 +14576,9 @@
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
-					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
-					"\"$(SRCROOT)/xbmc/interfaces/python\"",
+					"\"$(SRCROOT)/src/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/src/interfaces/legacy\"",
+					"\"$(SRCROOT)/src/interfaces/python\"",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
@@ -14613,10 +14613,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
+					src,
+					src/linux,
+					src/osx,
+					src/cores/dvdplayer,
 					lib,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
@@ -14626,7 +14626,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "$SRCROOT/src/osx/ios/XBMCIOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -14653,10 +14653,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/dvdplayer,
+					src,
+					src/linux,
+					src/osx,
+					src/cores/dvdplayer,
 					lib,
 					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
@@ -14666,7 +14666,7 @@
 					$XBMC_DEPENDS/include/python2.6,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "src/osx/ios/XBMCIOS-Info.plist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

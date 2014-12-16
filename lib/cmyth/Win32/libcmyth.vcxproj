@@ -53,7 +53,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../include;../librefmem;../libcmyth;%(AdditionalIncludeDirectories);$(SolutionDir)../../xbmc/win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;../librefmem;../libcmyth;%(AdditionalIncludeDirectories);$(SolutionDir)../../src/win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_LIB;inline=__inline;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -85,7 +85,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../include;../librefmem;../libcmyth;%(AdditionalIncludeDirectories);$(SolutionDir)../../xbmc/win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;../librefmem;../libcmyth;%(AdditionalIncludeDirectories);$(SolutionDir)../../src/win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_LIB;inline=__inline;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>

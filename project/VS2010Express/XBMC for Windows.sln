@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcxp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhts", "..\..\lib\libhts\Win32\libhts_2010.vcxproj", "{00700E12-A63B-4E54-B962-4011A90584BD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\visualizations\Milkdrop\Plugin.vcxproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\src\visualizations\Milkdrop\Plugin.vcxproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcmyth_dll", "..\..\lib\cmyth\Win32\libcmyth.vcxproj", "{F9E6874D-60A8-49BA-9393-A2105E63ABCF}"
 EndProject
@@ -41,13 +41,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_zlib", "..\..\lib\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libexif_dll", "..\..\lib\libexif\libexif.vcxproj", "{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\xbmc\visualizations\DirectXSpectrum\directx_spectrum.vcxproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\src\visualizations\DirectXSpectrum\directx_spectrum.vcxproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodplug_2010", "..\..\lib\libmodplug\libmodplug_2010.vcxproj", "{C15B374E-7126-48FF-B618-A375D7B17FCF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libRTV", "..\..\lib\libRTV\libRTV.vcxproj", "{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\visualizations\WaveForm\Waveform.vcxproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\src\visualizations\WaveForm\Waveform.vcxproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\lib\libsquish\vs7\squish\squish_2010.vcxproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
 EndProject
@@ -80,7 +80,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gtest", "..\..\lib\gtest\ms
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_codec", "..\..\lib\addons\library.xbmc.codec\project\VS2010Express\libXBMC_codec.vcxproj", "{F8F1290B-1188-4810-86C9-88178A31D2AF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\xbmc\visualizations\Vortex\Vortex\Vortex.vcxproj", "{AFF288D5-8A77-4817-8DD9-364E183CDBF8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\src\visualizations\Vortex\Vortex\Vortex.vcxproj", "{AFF288D5-8A77-4817-8DD9-364E183CDBF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{034B1D02-CA92-455D-8866-DB95BEE49C10} = {034B1D02-CA92-455D-8866-DB95BEE49C10}
 	EndProjectSection

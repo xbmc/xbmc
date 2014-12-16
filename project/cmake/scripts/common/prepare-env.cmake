@@ -54,7 +54,7 @@ configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xb
 
 ### copy all the addon binding header files to include/kodi
 # parse addon-bindings.mk to get the list of header files to copy
-file(STRINGS ${APP_ROOT}/xbmc/addons/addon-bindings.mk bindings)
+file(STRINGS ${APP_ROOT}/src/addons/addon-bindings.mk bindings)
 string(REPLACE "\n" ";" bindings "${bindings}")
 foreach(binding ${bindings})
   string(REPLACE " =" ";" binding "${binding}")
