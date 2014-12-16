@@ -788,6 +788,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_VOLUME_SET:
+      {
+        CAction action(pMsg->param1, *(float*)pMsg->lpVoid);
+        g_application.OnAction(action);
+        delete (float*)pMsg->lpVoid;
+      }
+      break;
+
     case TMSG_VOLUME_SHOW:
       {
         CAction action(pMsg->param1);
@@ -1307,6 +1315,14 @@ vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<string> &proper
   tMsg.lpVoid = (void*)&infoLabels;
   SendMessage(tMsg, true);
   return infoLabels;
+}
+
+void CApplicationMessenger::SetVolume(int action, float amount)
+{
+  ThreadMessage tMsg = {TMSG_VOLUME_SET};
+  tMsg.param1 = action;
+  tMsg.lpVoid = new float(amount);
+  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::ShowVolumeBar(bool up)
