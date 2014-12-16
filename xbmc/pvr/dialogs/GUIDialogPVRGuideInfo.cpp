@@ -176,7 +176,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
     if (epgTag)
     {
       if (epgTag->HasRecording())
-        ret = g_application.PlayFile(CFileItem(*epgTag->Recording()));
+        ret = g_application.PlayFile(CFileItem(epgTag->Recording()));
       else if (epgTag->HasPVRChannel())
         ret = g_application.PlayFile(CFileItem(*epgTag->ChannelTag()));
     }

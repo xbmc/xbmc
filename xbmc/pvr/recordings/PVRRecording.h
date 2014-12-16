@@ -84,6 +84,12 @@ namespace PVR
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
+
+  private:
+    CPVRRecording(const CPVRRecording &tag); // intentionally not implemented.
+    CPVRRecording &operator =(const CPVRRecording &other); // intentionally not implemented.
+
+  public:
     virtual ~CPVRRecording() {};
 
     bool operator ==(const CPVRRecording& right) const;

@@ -232,10 +232,7 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
   if (!supportsPlayCount || !supportsLastPlayed)
   {
     if (!supportsPlayCount)
-    {
-       CFileItem pFileItem(*this);
-       m_playCount = db.GetPlayCount(pFileItem);
-    }
+      m_playCount = db.GetPlayCount(m_strFileNameAndPath);
 
     if (!supportsLastPlayed)
       db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);

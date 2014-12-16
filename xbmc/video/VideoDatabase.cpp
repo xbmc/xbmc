@@ -4727,10 +4727,9 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
   return false;
 }
 
-int CVideoDatabase::GetPlayCount(const CFileItem &item)
+int CVideoDatabase::GetPlayCount(int iFileId)
 {
-  int id = GetFileId(item);
-  if (id < 0)
+  if (iFileId < 0)
     return 0;  // not in db, so not watched
 
   try
@@ -4739,7 +4738,7 @@ int CVideoDatabase::GetPlayCount(const CFileItem &item)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    std::string strSQL = PrepareSQL("select playCount from files WHERE idFile=%i", id);
+    std::string strSQL = PrepareSQL("select playCount from files WHERE idFile=%i", iFileId);
     int count = 0;
     if (m_pDS->query(strSQL.c_str()))
     {
@@ -4755,6 +4754,16 @@ int CVideoDatabase::GetPlayCount(const CFileItem &item)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return -1;
+}
+
+int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
+{
+  return GetPlayCount(GetFileId(strFilenameAndPath));
+}
+
+int CVideoDatabase::GetPlayCount(const CFileItem &item)
+{
+  return GetPlayCount(GetFileId(item));
 }
 
 void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type)

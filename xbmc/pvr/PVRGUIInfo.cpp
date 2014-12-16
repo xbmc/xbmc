@@ -872,7 +872,6 @@ CEpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
 void CPVRGUIInfo::UpdatePlayingTag(void)
 {
   CPVRChannelPtr currentChannel;
-  CPVRRecording recording;
   if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
     CEpgInfoTagPtr epgTag(GetPlayingTag());
@@ -896,10 +895,14 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
       g_PVRManager.UpdateCurrentFile();
     }
   }
-  else if (g_PVRClients->GetPlayingRecording(recording))
+  else
   {
-    ResetPlayingTag();
-    m_iDuration = recording.GetDuration() * 1000;
+    CPVRRecordingPtr recording(g_PVRClients->GetPlayingRecording());
+    if (recording)
+    {
+      ResetPlayingTag();
+      m_iDuration = recording->GetDuration() * 1000;
+    }
   }
 }
 

@@ -444,7 +444,7 @@ namespace PVR
      * @param recording The recording to open.
      * @return True if the stream has been opened succesfully, false otherwise.
      */
-    bool OpenStream(const CPVRRecording &recording);
+    bool OpenStream(const CPVRRecordingPtr &recording);
 
     //@}
     /** @name PVR demultiplexer methods */
@@ -494,7 +494,7 @@ namespace PVR
     bool IsPlayingRecording(void) const;
     bool IsPlaying(void) const;
     bool GetPlayingChannel(CPVRChannelPtr &channel) const;
-    bool GetPlayingRecording(CPVRRecording &recording) const;
+    CPVRRecordingPtr GetPlayingRecording(void) const;
 
     static const char *ToString(const PVR_ERROR error);
 
@@ -605,10 +605,10 @@ namespace PVR
 
     CCriticalSection m_critSection;
 
-    bool           m_bIsPlayingTV;
-    CPVRChannelPtr m_playingChannel;
-    bool           m_bIsPlayingRecording;
-    CPVRRecording  m_playingRecording;
+    bool                m_bIsPlayingTV;
+    CPVRChannelPtr      m_playingChannel;
+    bool                m_bIsPlayingRecording;
+    CPVRRecordingPtr    m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
   };
 }

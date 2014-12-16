@@ -205,9 +205,10 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
   g_PVRRecordings->GetAll(recordings);
 
   // TODO inefficient!
+  CPVRRecordingPtr recording;
   for (int iRecordingPtr = 0; iRecordingPtr < recordings.Size(); iRecordingPtr++)
   {
-    CPVRRecording *recording = recordings.Get(iRecordingPtr)->GetPVRRecordingInfoTag();
+    recording = recordings.Get(iRecordingPtr)->GetPVRRecordingInfoTag();
     if (!recording)
       continue;
 
