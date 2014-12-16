@@ -235,7 +235,9 @@ bool CPlexServer::UpdateReachability()
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
-    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted && conn->GetAccessToken().IsEmpty())
+    if (g_plexApplication.myPlexManager &&
+        g_plexApplication.myPlexManager->GetCurrentUserInfo().restricted &&
+        conn->GetAccessToken().IsEmpty())
     {
       CLog::Log(LOGINFO, "CPlexServer::UpdateReachability skipping connection %s since we are restricted", conn->toString().c_str());
       m_connectionsLeft --;
