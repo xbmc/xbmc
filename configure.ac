@@ -1310,6 +1310,9 @@ fi
 # Optical
 if test "$use_optical_drive" = "yes"; then
   AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
+  USE_OPTICAL_DRIVE=1
+else
+  USE_OPTICAL_DRIVE=0
 fi
 
 # Alsa
@@ -2661,6 +2664,7 @@ AC_SUBST(UPNP_DEFINES)
 AC_SUBST(USE_SSE4)
 AC_SUBST(USE_MMAL)
 AC_SUBST(USE_X11)
+AC_SUBST(USE_OPTICAL_DRIVE)
 AC_SUBST(USE_BREAKPAD)
 
 # pushd and popd are not available in other shells besides bash, so implement

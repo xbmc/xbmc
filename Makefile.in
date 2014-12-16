@@ -29,7 +29,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
                    xbmc/addons/addons.a \
-                   xbmc/cdrip/cdrip.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \
@@ -101,6 +100,9 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
 NWAOBJSXBMC=	xbmc/threads/threads.a \
 		xbmc/commons/commons.a
 
+ifeq (@USE_OPTICAL_DRIVE@,1)
+DIRECTORY_ARCHIVES += xbmc/cdrip/cdrip.a 
+endif
 
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
