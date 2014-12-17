@@ -1,0 +1,3 @@
+* Fixes
+  - Fixed a case where connection could be marked as aborted
+    and removed from the server even if they where still active.
