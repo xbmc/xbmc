@@ -6,7 +6,7 @@ SET base_dir=%cur_dir%\..\..
 SET builddeps_dir=%cur_dir%\..\BuildDependencies
 SET bin_dir=%builddeps_dir%\bin
 SET msys_bin_dir=%builddeps_dir%\msys\bin
-SET jsonrpc_path=%base_dir%\src\interfaces\json-rpc
+SET jsonrpc_path=%base_dir%\xbmc\interfaces\json-rpc
 SET jsonrpc_schema_path=%jsonrpc_path%\schema
 SET jsonrpc_output=ServiceDescription.h
 

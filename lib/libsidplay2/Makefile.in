@@ -3,7 +3,7 @@ ARCH=@ARCH@
 SIDFLAGS =-D_LINUX -DHAVE_UNIX -DHAVE_STRCASECMP -DHAVE_STRNCASECMP \
          -DHAVE_IOS_OPENMODE -fPIC -Ilibsidplay/win/VC \
          -Ibuilders/resid-builder/include/sidplay/builders \
-         -Ilibsidplay/include/sidplay -Iresid -Ilibsidplay/include -I. -fPIC
+         -Ilibsidplay/include/sidplay -Iresid -Ilibsidplay/include -fPIC
 CFLAGS += $(SIDFLAGS)
 CXXFLAGS += $(SIDFLAGS)
 ifeq ($(ARCH), powerpc-osx)
@@ -54,18 +54,13 @@ SLIB=@abs_top_srcdir@/system/players/paplayer/libsidplay2-@ARCH@.so
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(SILENT_CPP) $(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper_mach_alias \
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
 		-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
-		@abs_top_srcdir@/src/cores/DllLoader/exports/wrapper.o $(OBJS) $(BUNDLE1_O)
+		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) $(BUNDLE1_O)
 else
-	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) -Wl,--unresolved-symbols=ignore-all \
-		`cat @abs_top_srcdir@/src/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/src/cores/DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) -Wl,--unresolved-symbols=ignore-all \
+		`cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif
 
 include @abs_top_srcdir@/Makefile.include
-
-%.o: %.cpp
-	@rm -f $@
-	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $< -o $@ \
-	&& $(GEN_DEPS)
 

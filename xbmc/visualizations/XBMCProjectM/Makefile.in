@@ -1,0 +1,46 @@
+ARCH=@ARCH@
+OBJS=Main.o
+SLIB=@abs_top_srcdir@/addons/visualization.projectm/projectM.vis
+PRESETS=@abs_top_srcdir@/addons/visualization.projectm/resources/presets.zip
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
+CXXFLAGS=-fPIC
+DIRS=libprojectM
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+CXXFLAGS+=-fno-common 
+
+$(SLIB): $(OBJS) libprojectM/libprojectM.dylib
+	$(CXX)  $(CFLAGS) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+		-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $(SLIB) \
+		 @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o ./libprojectM/CMakeFiles/projectM.dir/*.o $(OBJS)
+	$(MAKE) $(PRESETS)
+
+libprojectM/libprojectM.dylib:
+	$(MAKE) -C libprojectM
+else
+$(SLIB): $(OBJS) libprojectM/libprojectM.so
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
+	$(MAKE) $(PRESETS)
+
+libprojectM/libprojectM.so: 
+	$(MAKE) -C libprojectM
+endif
+
+$(PRESETS): libprojectM/presets/*
+	zip -j $@ libprojectM/presets/*
+
+CLEAN_FILES = \
+	libprojectM/libprojectM.so \
+	libprojectM/libprojectM.so.2 \
+	libprojectM/libprojectM.so.2.00
+
+DISTCLEAN_FILES=	\
+	libprojectM/CMakeFiles/ \
+	libprojectM/CMakeCache.txt \
+	libprojectM/Makefile \
+	libprojectM/cmake_install.cmake \
+	libprojectM/config.inp \
+	libprojectM/libprojectM.pc \
+	$(PRESETS)
+
+include @abs_top_srcdir@/Makefile.include

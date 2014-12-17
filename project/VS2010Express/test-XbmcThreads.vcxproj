@@ -64,7 +64,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\src\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -113,7 +113,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\src\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -135,7 +135,7 @@
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\src\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\xbmc\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -155,14 +155,14 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\threads\test\TestAtomics.cpp" />
-    <ClCompile Include="..\..\src\threads\test\TestEvent.cpp" />
-    <ClCompile Include="..\..\src\threads\test\TestMain.cpp" />
-    <ClCompile Include="..\..\src\threads\test\TestSharedSection.cpp" />
-    <ClCompile Include="..\..\src\threads\test\TestThreadLocal.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestAtomics.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestEvent.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestMain.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestSharedSection.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestThreadLocal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\threads\test\TestHelpers.h" />
+    <ClInclude Include="..\..\xbmc\threads\test\TestHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="XbmcCommons.vcxproj">

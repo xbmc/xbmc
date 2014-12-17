@@ -1,0 +1,36 @@
+ARCH=@ARCH@
+CXXFLAGS=-fPIC
+ifeq (@USE_ANDROID@,1)
+SLIB = @abs_top_srcdir@/system/libvisopengl_spectrum.so
+else
+SLIB = @abs_top_srcdir@/addons/visualization.glspectrum/opengl_spectrum.vis
+endif
+OBJS = opengl_spectrum.o
+
+ifeq (@USE_OPENGLES@,1)
+  DEFINES += -DHAS_GLES=2
+  INCLUDES+= -I@abs_top_srcdir@/xbmc/visualizations/EGLHelpers
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/eglhelpers.a
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS += -framework OpenGLES
+  else
+    LDFLAGS += -lGLESv2
+  endif
+else
+  DEFINES += -DHAS_SDL
+  DEFINES += -DHAS_SDL_OPENGL
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS += -framework OpenGL
+  else
+    LDFLAGS += -lGL
+  endif
+endif
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -o $(SLIB) $(OBJS)
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(SLIB) $(OBJS)
+endif
+
+include @abs_top_srcdir@/Makefile.include

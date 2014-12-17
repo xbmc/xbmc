@@ -1,0 +1,12 @@
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
+
+CXXFLAGS+=-DHAVE_MMX
+
+SRCS  = DVDAudioCodecFFmpeg.cpp
+SRCS += DVDAudioCodecPassthrough.cpp
+
+LIB=Audio.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

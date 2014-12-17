@@ -1,0 +1,38 @@
+ARCH=@ARCH@
+CXXFLAGS=-fPIC
+
+ifeq (@USE_ANDROID@,1)
+SLIB = @abs_top_srcdir@/system/libvisWaveform.so
+else
+SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
+endif
+
+ifeq (@USE_OPENGLES@,1)
+  DEFINES += -DHAS_GLES=2
+  INCLUDES+= -I@abs_top_srcdir@/xbmc/visualizations/EGLHelpers
+  OBJS  = Main_gles.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/eglhelpers.a
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS += -framework OpenGLES
+  else
+    LDFLAGS += -lGLESv2
+  endif
+else
+  OBJS  = Main.o
+  DEFINES += -DHAS_SDL
+  DEFINES += -DHAS_SDL_OPENGL
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS += -framework OpenGL
+  else
+    LDFLAGS += -lGL -lGLU
+  endif
+endif
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -o $@ $(OBJS)
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS)
+endif
+
+include @abs_top_srcdir@/Makefile.include
