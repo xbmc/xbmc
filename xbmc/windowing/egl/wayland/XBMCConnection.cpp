@@ -686,9 +686,9 @@ void ResolutionInfoForMode(const xw::Output::ModeGeometry &mode,
   res.iWidth = mode.width;
   res.iHeight = mode.height;
   
-  /* The refresh rate is given as an integer in the second exponent
-   * so we need to divide by 100.0f to get a floating point value */
-  res.fRefreshRate = mode.refresh / 100.0f;
+  /* The refresh rate is given as in mHz as integer so we need
+   * to divide by 1000.0f to get a floating point value in Hz */
+  res.fRefreshRate = mode.refresh / 1000.0f;
   res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   res.iScreen = 0;
   res.bFullScreen = true;
