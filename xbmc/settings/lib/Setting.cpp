@@ -112,6 +112,8 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       return false;
     }
 
+    if (m_control != NULL)
+      delete m_control;
     m_control = m_settingsManager->CreateControl(controlType);
     if (m_control == NULL || !m_control->Deserialize(control, update))
     {
