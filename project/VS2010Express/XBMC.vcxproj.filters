@@ -3277,27 +3277,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\DllAvCodec.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllAvFormat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllPostProc.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllSwScale.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
@@ -3368,9 +3347,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllAdpcm.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllASAP.h">
@@ -4692,7 +4668,6 @@
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.h">
       <Filter>pvr\windows</Filter>
     </ClInclude>
@@ -4836,9 +4811,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
       <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllAvFilter.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
       <Filter>guilib</Filter>
@@ -5275,9 +5247,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h">
       <Filter>cores\AudioEngine\Encoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h">
-      <Filter>cores\AudioEngine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h">
       <Filter>cores\AudioEngine</Filter>
@@ -6050,7 +6019,6 @@
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmc.i">
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\xbmc\GitRevision.h" />
     <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\types.json">
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
@@ -6067,6 +6035,9 @@
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\version.txt" />
+    <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
+      <Filter>win32</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">
