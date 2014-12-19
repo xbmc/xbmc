@@ -37,17 +37,18 @@
         "import " MODULE "\n" \
         "xbmc.abortRequested = False\n" \
         "class xbmcout:\n" \
-        "\tdef __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
-        "\t\tself.ll=loglevel\n" \
-        "\tdef write(self, data):\n" \
-        "\t\t" MODULE ".log(data,self.ll)\n" \
-        "\tdef close(self):\n" \
-        "\t\t" MODULE ".log('.')\n" \
-        "\tdef flush(self):\n" \
-        "\t\t" MODULE ".log('.')\n" \
+        "  def __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
+        "    self.ll=loglevel\n" \
+        "  def write(self, data):\n" \
+        "    " MODULE ".log(data,self.ll)\n" \
+        "  def close(self):\n" \
+        "    " MODULE ".log('.')\n" \
+        "  def flush(self):\n" \
+        "    " MODULE ".log('.')\n" \
         "import sys\n" \
         "sys.stdout = xbmcout()\n" \
-        "sys.stderr = xbmcout(" MODULE ".LOGERROR)\n"
+        "sys.stderr = xbmcout(" MODULE ".LOGERROR)\n" \
+        ""
 
 #define RUNSCRIPT_OVERRIDE_HACK \
         "" \
@@ -70,15 +71,40 @@
         "os.chdir           = chdir_xbmc\n" \
         ""
 
+#define RUNSCRIPT_SETUPTOOLS_HACK \
+  "" \
+  "import imp,sys\n" \
+  "pkg_resources_code = \\\n" \
+  "\"\"\"\n" \
+  "def resource_filename(__name__,__path__):\n" \
+  "  return __path__\n" \
+  "\"\"\"\n" \
+  "pkg_resources = imp.new_module('pkg_resources')\n" \
+  "exec pkg_resources_code in pkg_resources.__dict__\n" \
+  "sys.modules['pkg_resources'] = pkg_resources\n" \
+  ""
+
 #define RUNSCRIPT_POSTSCRIPT \
         "print '-->Python Interpreter Initialized<--'\n" \
         ""
+
+#if defined(TARGET_ANDROID)
+
+#define RUNSCRIPT_BWCOMPATIBLE \
+  RUNSCRIPT_PRAMBLE RUNSCRIPT_OVERRIDE_HACK RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
+
+#define RUNSCRIPT_COMPLIANT \
+  RUNSCRIPT_PRAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
+
+#else
 
 #define RUNSCRIPT_BWCOMPATIBLE \
   RUNSCRIPT_PRAMBLE RUNSCRIPT_OVERRIDE_HACK RUNSCRIPT_POSTSCRIPT
 
 #define RUNSCRIPT_COMPLIANT \
   RUNSCRIPT_PRAMBLE RUNSCRIPT_POSTSCRIPT
+
+#endif
 
 namespace PythonBindings {
   void initModule_xbmcgui(void);
