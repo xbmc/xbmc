@@ -647,4 +647,78 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   return manufName;
 }
 
+bool CDarwinUtils::IsAliasShortcut(const std::string& path)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_OSX)
+  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  NSNumber* wasAliased = nil;
+
+  if (nsUrl != nil)
+  {
+    NSError *error = nil;
+
+    if ([nsUrl getResourceValue:&wasAliased forKey:NSURLIsAliasFileKey error:&error])
+    {
+      ret = [wasAliased boolValue];
+    }
+  }
+#endif
+  return ret;
+}
+
+void CDarwinUtils::TranslateAliasShortcut(std::string& path)
+{
+#if defined(TARGET_DARWIN_OSX)
+  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  
+  if (nsUrl != nil)
+  {
+    NSError *error = nil;
+    NSData * bookmarkData = [NSURL bookmarkDataWithContentsOfURL:nsUrl error:&error];
+    if (bookmarkData)
+    {
+      BOOL isStale = NO;
+      NSURLBookmarkResolutionOptions options = NSURLBookmarkResolutionWithoutUI |
+                                               NSURLBookmarkResolutionWithoutMounting;
+
+      NSURL* resolvedURL = [NSURL URLByResolvingBookmarkData:bookmarkData
+                                                     options:options
+                                               relativeToURL:nil
+                                         bookmarkDataIsStale:&isStale
+                                                       error:&error];
+      if (resolvedURL)
+      {
+        // [resolvedURL path] returns a path as /dir/dir/file ...
+        path = (const char*)[[resolvedURL path] UTF8String];
+      }
+    }
+  }
+#endif
+}
+
+bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::string& toPath)
+{
+  bool ret = false;
+#if defined(TARGET_DARWIN_OSX)
+  NSString *nsToPath = [NSString stringWithUTF8String:toPath.c_str()];
+  NSURL *toUrl = [NSURL fileURLWithPath:nsToPath];
+  NSString *nsFromPath = [NSString stringWithUTF8String:fromPath.c_str()];
+  NSURL *fromUrl = [NSURL fileURLWithPath:nsFromPath];
+  NSError *error = nil;
+  NSData *bookmarkData = [toUrl bookmarkDataWithOptions: NSURLBookmarkCreationSuitableForBookmarkFile includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
+
+  if(bookmarkData != nil && fromUrl != nil && toUrl != nil) 
+  {
+    if([NSURL writeBookmarkData:bookmarkData toURL:fromUrl options:NSURLBookmarkCreationSuitableForBookmarkFile error:&error])
+    {
+      ret = true;
+    }
+  }
+#endif
+  return ret;
+}
+
 #endif
