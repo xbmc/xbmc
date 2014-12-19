@@ -104,11 +104,12 @@ def compare_version(version_installed, versionlist):
         # check if you are using a RC build lower than current available RC
         # then check if you are using a beta/alpha lower than current available RC
         # 14.0a3 is newer than: 14.0a1 or pre-alpha
-        if version_installed.get('tagversion','') < versionlist_alpha[0]['tagversion']:
-            version_available = versionlist_alpha[0]
-            oldversion = True
-            log('Version available  %s' %versionlist_alpha[0])
-            log('You are running an older alpha version')
+        if version_installed['major'] <= int(versionlist_alpha[0]['major']):
+            if version_installed.get('tagversion','') < versionlist_alpha[0]['tagversion']:
+                version_available = versionlist_alpha[0]
+                oldversion = True
+                log('Version available  %s' %versionlist_alpha[0])
+                log('You are running an older alpha version')
     # now check if installed !=alpha
     elif not oldversion and version_installed['tag'] in ['prealpha']:
         if version_installed['major'] <= int(versionlist_alpha[0]['major']):
