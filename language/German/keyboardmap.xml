@@ -22,7 +22,7 @@
     The least specific mappings, e.g. "regardless modifiers" are done at last/least prioritized.
     
     I assume that once a configuration is "complete", it is useful for everybody with that language, platform or model.    
-    So let's start configuring keyboards for xbmc, collect and exchange them :o).
+    So let's start configuring keyboards for Kodi, collect and exchange them :o).
     
     We should collect them all in a structure like:
     * Kodidefault 
@@ -38,7 +38,7 @@
     
     For details of keyboard layouts see: http://en.wikipedia.org/wiki/Keyboard_layout (thx Gamester17 for this link)
     
-    For details of further development see: http://forum.xbmc.org/showthread.php?t=26796
+    For details of further development see: http://forum.kodi.tv/showthread.php?tid=26796
 -->
 <keyboard_layout> 
     <!-- following topics are independent of all plattforms and the "last" chance in the processing chain -->

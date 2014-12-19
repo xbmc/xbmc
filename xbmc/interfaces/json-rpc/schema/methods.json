@@ -1975,7 +1975,7 @@
   },
   "System.Shutdown": {
     "type": "method",
-    "description": "Shuts the system running XBMC down",
+    "description": "Shuts the system running Kodi down",
     "transport": "Response",
     "permission": "ControlPower",
     "params": [],
@@ -1983,7 +1983,7 @@
   },
   "System.Suspend": {
     "type": "method",
-    "description": "Suspends the system running XBMC",
+    "description": "Suspends the system running Kodi",
     "transport": "Response",
     "permission": "ControlPower",
     "params": [],
@@ -1991,7 +1991,7 @@
   },
   "System.Hibernate": {
     "type": "method",
-    "description": "Puts the system running XBMC into hibernate mode",
+    "description": "Puts the system running Kodi into hibernate mode",
     "transport": "Response",
     "permission": "ControlPower",
     "params": [],
@@ -1999,7 +1999,7 @@
   },
   "System.Reboot": {
     "type": "method",
-    "description": "Reboots the system running XBMC",
+    "description": "Reboots the system running Kodi",
     "transport": "Response",
     "permission": "ControlPower",
     "params": [],
@@ -2159,11 +2159,11 @@
   },
   "XBMC.GetInfoLabels": {
     "type": "method",
-    "description": "Retrieve info labels about XBMC and the system",
+    "description": "Retrieve info labels about Kodi and the system",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://wiki.xbmc.org/index.php?title=InfoLabels for a list of possible info labels" }
+      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://kodi.wiki/view/InfoLabels for a list of possible info labels" }
     ],
     "returns": {
       "type": "object",
@@ -2173,7 +2173,7 @@
   },
   "XBMC.GetInfoBooleans": {
     "type": "method",
-    "description": "Retrieve info booleans about XBMC and the system",
+    "description": "Retrieve info booleans about Kodi and the system",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
