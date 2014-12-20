@@ -124,8 +124,9 @@ APP_VERSION_TAG=${APP_VERSION_TAG-$(${AWK} '/VERSION_TAG/ {print $2}' version.tx
 APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
 APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
+default_skins=${default_skins-$(${AWK} '/SKINS/ {print $2}' version.txt)}
 if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
-&& test "$APP_VERSION_TAG" != "" && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
+&& test "$APP_VERSION_TAG" != "" && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != "" && test "$default_skins" != ""; then
   final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG}"
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)
@@ -554,6 +555,12 @@ AC_ARG_ENABLE([codec],
   [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, libstagefright and imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
+
+AC_ARG_WITH([skins],
+  [AS_HELP_STRING([--with-skins],
+  [Comma separated list of skin addon IDs to include in the build. The first ID listed will be forced default.])],
+  [WITH_SKINS=$with_skins],
+  [WITH_SKINS=$default_skins])
 
 AC_ARG_ENABLE([libav-compat],
   [AS_HELP_STRING([--enable-libav-compat],
@@ -1426,14 +1433,21 @@ else
   DISABLE_PROJECTM=0
 fi
 
-# touch skin
-use_touch_skin=no
-if [[ -f "addons/skin.re-touched/addon.xml" ]]; then 
-  use_touch_skin=yes
-  USE_TOUCH_SKIN=1
-  AC_DEFINE([HAS_TOUCH_SKIN], [1], [Whether to build the touch skin.])
-else
-  USE_TOUCH_SKIN=0
+# Skins
+ENABLED_SKINS=$(echo "${WITH_SKINS}" | sed -e 's/,/ /g')
+for SKIN in ${ENABLED_SKINS}; do
+  SKIN_MEDIA="addons/${SKIN}/media"
+  if test -d "${SKIN_MEDIA}"; then
+    SKIN_DIRS="${SKIN_DIRS} ${SKIN_MEDIA}"
+    SKIN_MAKEFILES="${SKIN_MAKEFILES} ${SKIN_MEDIA}/Makefile"
+  else
+    AC_MSG_ERROR([Could not find specified skin "$SKIN"])
+  fi
+done
+if ! test "${WITH_SKINS}" = "${default_skins}"; then
+  # First skin taken to override default
+  DEFAULT_SKIN_OVERRIDE=$(echo "$ENABLED_SKINS" | cut -d' ' -f1)
+  AC_DEFINE_UNQUOTED([DEFAULT_SKIN_OVERRIDE], ["${DEFAULT_SKIN_OVERRIDE}"], [Whether to override default skin])
 fi
 
 # libssh
@@ -2137,11 +2151,7 @@ else
   final_message="$final_message\n  ProjectM:\tNo"
 fi
 
-if test "$use_touch_skin" = "yes"; then
-  final_message="$final_message\n  Touch skin:\tYes"
-else
-  final_message="$final_message\n  Touch skin:\tNo"
-fi
+final_message="$final_message\n  Skins:\t${WITH_SKINS}"
 
 if test "$use_x11" = "yes"; then
   USE_X11=1
@@ -2420,7 +2430,7 @@ fi
 
 OUTPUT_FILES="Makefile \
     Makefile.include \
-    addons/skin.confluence/media/Makefile \
+    ${SKIN_MAKEFILES} \
     xbmc/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
@@ -2519,10 +2529,6 @@ if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
 fi
 
-if test "$use_touch_skin" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
-fi
-
 if test "$use_codec_libstagefright" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
@@ -2563,7 +2569,7 @@ AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
-AC_SUBST(USE_TOUCH_SKIN)
+AC_SUBST(SKIN_DIRS)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)

@@ -7,5 +7,9 @@ VERSION_TAG ALPHA1
 VERSION_CODE 149701
 ADDON_API 14.9.701
 
+# Declare skins to be included in the build
+# This is a comma separated list of skin addon IDs (eg skin.confluence)
+SKINS skin.confluence
+
 # Notes:
 # Change AC_INIT in configure.in
