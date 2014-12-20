@@ -309,17 +309,15 @@ void CGUIViewState::SetCurrentSortMethod(int method)
   if (sortBy < SortByNone || sortBy > SortByRandom)
     return; // invalid
 
-  SetSortMethod(sortBy, sortAttributes);
+  SetSortMethod(sortBy);
   SaveViewState();
 }
 
-void CGUIViewState::SetSortMethod(SortBy sortBy, SortAttribute sortAttributes /* = SortAttributeNone */)
+void CGUIViewState::SetSortMethod(SortBy sortBy)
 {
   for (int i = 0; i < (int)m_sortMethods.size(); ++i)
   {
-    if (m_sortMethods[i].m_sortDescription.sortBy == sortBy &&
-       // don't care about SortAttributeIgnoreFolders as it wasn't part of the old sorting comparison
-       (m_sortMethods[i].m_sortDescription.sortAttributes & ~SortAttributeIgnoreFolders) == (sortAttributes & ~SortAttributeIgnoreFolders))
+    if (m_sortMethods[i].m_sortDescription.sortBy == sortBy)
     {
       m_currentSortMethod = i;
       break;
@@ -330,7 +328,7 @@ void CGUIViewState::SetSortMethod(SortBy sortBy, SortAttribute sortAttributes /*
 
 void CGUIViewState::SetSortMethod(SortDescription sortDescription)
 {
-  return SetSortMethod(sortDescription.sortBy, sortDescription.sortAttributes);
+  return SetSortMethod(sortDescription.sortBy);
 }
 
 SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)

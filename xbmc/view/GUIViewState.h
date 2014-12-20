@@ -86,7 +86,7 @@ protected:
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
   void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
-  void SetSortMethod(SortBy sortBy, SortAttribute sortAttributes = SortAttributeNone);
+  void SetSortMethod(SortBy sortBy);
   void SetSortMethod(SortDescription sortDescription);
   void SetSortOrder(SortOrder sortOrder);
   const CFileItemList& m_items;

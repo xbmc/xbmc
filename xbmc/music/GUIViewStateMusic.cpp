@@ -87,7 +87,7 @@ CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) :
     sortAttribute = SortAttributeIgnoreArticle;
 
   AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D", "%L", "%A"));  // Title, Artist, Duration| empty, empty
-  SetSortMethod(SortByTitle, sortAttribute);
+  SetSortMethod(SortByTitle);
 
   const CViewState *viewState = CViewStateSettings::Get().Get("musicnavsongs");
   SetViewAsControl(viewState->m_viewMode);
@@ -172,7 +172,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ARTIST:
     {
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
-      SetSortMethod(SortByArtist, sortAttribute);
+      SetSortMethod(SortByArtist);
 
       const CViewState *viewState = CViewStateSettings::Get().Get("musicnavartists");
       SetViewAsControl(viewState->m_viewMode);
@@ -277,7 +277,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       // the "All Albums" entries always default to SortByAlbum as this is most logical - user can always
       // change it and the change will be saved for this particular path
       if (dir.IsAllItem(items.GetPath()))
-        SetSortMethod(SortByAlbum, sortAttribute);
+        SetSortMethod(SortByAlbum);
       else
         SetSortMethod(viewState->m_sortDescription);
 
@@ -560,7 +560,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
   else if (items.GetPath() == "special://musicplaylists/")
   { // playlists list sorts by label only, ignoring folders
     AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
-    SetSortMethod(SortByLabel, SortAttributeIgnoreFolders);
+    SetSortMethod(SortByLabel);
   }
   else
   {
