@@ -1221,8 +1221,8 @@ void CDVDVideoCodecIMXVPUBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
   iHeight   = frameInfo->pExtInfo->nFrmHeight;
   pVirtAddr = m_frameBuffer->pbufVirtY;
   pPhysAddr = m_frameBuffer->pbufY;
+  fieldType = frameInfo->eFieldType;
 
-  m_fieldType = frameInfo->eFieldType;
   // We decode to I420
 #ifdef IMX_INPUT_FORMAT_I420
   iFormat = 0;
@@ -1338,6 +1338,7 @@ bool CDVDVideoCodecIMXIPUBuffer::Process(int fd, CDVDVideoCodecIMXVPUBuffer *buf
   m_bFree            = true;
   iWidth             = buffer->iWidth;
   iHeight            = buffer->iHeight;
+  fieldType          = VPU_FIELD_NONE;
 
   // Input is the VPU decoded frame
   task.input.width   = iWidth;

@@ -99,11 +99,15 @@ public:
   void          SetDts(double dts);
   double        GetDts(void) const { return m_dts; }
 
+  VpuFieldType  GetFieldType() const { return fieldType; }
+
   uint32_t      iWidth;
   uint32_t      iHeight;
   uint8_t      *pPhysAddr;
   uint8_t      *pVirtAddr;
   uint8_t       iFormat;
+  VpuFieldType  fieldType;
+
 
 protected:
 #ifdef TRACE_FRAMES
@@ -136,7 +140,6 @@ public:
                                     CDVDVideoCodecIMXVPUBuffer *previous);
   VpuDecRetCode               ReleaseFramebuffer(VpuDecHandle *handle);
   CDVDVideoCodecIMXVPUBuffer *GetPreviousBuffer() const;
-  VpuFieldType                GetFieldType() const { return m_fieldType; }
 
 private:
   // private because we are reference counted
@@ -144,8 +147,6 @@ private:
 
 private:
   VpuFrameBuffer             *m_frameBuffer;
-  VpuFieldType                m_fieldType;
-
   bool                        m_rendered;
   CDVDVideoCodecIMXVPUBuffer *m_previousBuffer; // Holds a the reference counted
                                              // previous buffer
