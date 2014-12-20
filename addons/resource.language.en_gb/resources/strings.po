@@ -13447,7 +13447,6 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonInfo.h
 msgctxt "#24088"
 msgid "The DSP add-on is currently in use and can't be modified."
-msgstr ""
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -13710,7 +13709,19 @@ msgctxt "#24138"
 msgid "DSP add-on is currently in use and can't be removed."
 msgstr ""
 
-#empty strings from id 24139 to 24991
+#. Label for the action provided by addon management events to jump to a specific Add-on
+#: xbmc/events/AddonManagementEvent.cpp
+msgctxt "#24139"
+msgid "View Add-on"
+msgstr ""
+
+#. Label for the action provided by media library events to jump to a specific path/file
+#: xbmc/events/MediaLibraryEvent.cpp
+msgctxt "#24140"
+msgid "View"
+msgstr ""
+
+#empty strings from id 24141 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
