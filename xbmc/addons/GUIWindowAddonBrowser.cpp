@@ -346,7 +346,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
   {
     result = CGUIMediaWindow::GetDirectory(strDirectory, items);
 
-    if (CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
+    if (result && CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
     {
       if (CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
       {
