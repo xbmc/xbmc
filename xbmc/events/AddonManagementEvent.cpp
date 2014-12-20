@@ -19,9 +19,9 @@
  */
 
 #include "AddonManagementEvent.h"
-#include "guilib/GUIWindowManager.h"
+#include "addons/GUIDialogAddonInfo.h"
+#include "filesystem/AddonsDirectory.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/WindowIDs.h"
 #include "utils/URIUtils.h"
 
 CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description)
@@ -62,9 +62,9 @@ bool CAddonManagementEvent::Execute() const
   if (!CanExecute())
     return false;
 
-  std::vector<std::string> params;
-  params.push_back(URIUtils::AddFileToFolder("addons://", m_addon->ID()));
-  params.push_back("return");
-  g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
-  return true;
+  CFileItemPtr addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(m_addon, URIUtils::AddFileToFolder("addons://", m_addon->ID()));
+  if (addonItem == nullptr)
+    return false;
+
+  return CGUIDialogAddonInfo::ShowForItem(addonItem);
 }
