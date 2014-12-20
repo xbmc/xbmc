@@ -79,7 +79,6 @@ msgid "Kodi media center"
 msgstr ""
 
 #empty string with id 10
-#strings from 11 to 17 are reserved for weather translation
 
 #. Weather token
 msgctxt "#11"
@@ -247,7 +246,6 @@ msgid "Dec"
 msgstr ""
 
 #empty strings from id 63 to 70
-#strings from 71 to 97 are reserved for weather translation
 
 #. Weather token
 msgctxt "#71"
@@ -744,7 +742,17 @@ msgctxt "#176"
 msgid "Styles"
 msgstr ""
 
-#empty strings from id 177 to 178
+#. <application name> successfully started
+#: xbmc/Application.cpp
+msgctxt "#177"
+msgid "%s successfully started"
+msgstr ""
+
+#. <application name> has been successfully started.
+#: xbmc/Application.cpp
+msgctxt "#178"
+msgid "%s has been successfully started."
+msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp

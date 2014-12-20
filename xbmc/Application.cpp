@@ -22,6 +22,8 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "interfaces/Builtins.h"
 #include "utils/Variant.h"
 #include "utils/Splash.h"
@@ -1130,6 +1132,11 @@ bool CApplication::Initialize()
   // load the language and its translated strings
   if (!LoadLanguage(false))
     return false;
+
+  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
+    StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
+    StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
+    "special://xbmc/media/icon256x256.png", EventLevelBasic)));
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
