@@ -282,17 +282,24 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
 {
+  std::pair<std::string, std::string> failedDep;
+  return CheckDependencies(addon, failedDep, database);
+}
+
+bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
+{
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
   CAddonDatabase localDB;
   if (!database)
     database = &localDB;
 
-  return CheckDependencies(addon, preDeps, *database);
+  return CheckDependencies(addon, preDeps, *database, failedDep);
 }
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
-                                        std::vector<std::string>& preDeps, CAddonDatabase &database)
+                                        std::vector<std::string>& preDeps, CAddonDatabase &database,
+                                        std::pair<std::string, std::string> &failedDep)
 {
   if (addon == NULL)
     return true; // a NULL addon has no dependencies
@@ -308,23 +315,25 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     bool optional = i->second.second;
     AddonPtr dep;
     bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dep);
+    // we have it but our version isn't good enough, or we don't have it and we need it
     if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
     {
-      // we have it but our version isn't good enough, or we don't have it and we need it
-      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
-      {
-        // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
-        CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
-        database.Close();
-        return false;
-      }
+      // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
+      CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
+      database.Close();
+
+      // fill in the details of the failed dependency
+      failedDep.first = addon->ID();
+      failedDep.second = version.asString();
+
+      return false;
     }
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
     if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
     {
-      if (!CheckDependencies(dep, preDeps, database))
+      if (!CheckDependencies(dep, preDeps, database, failedDep))
       {
         database.Close();
         preDeps.push_back(dep->ID());
