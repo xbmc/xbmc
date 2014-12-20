@@ -13230,9 +13230,10 @@ msgctxt "#24044"
 msgid "Dependencies not met. Please contact add-on author."
 msgstr ""
 
+#. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24045"
-msgid "Add-on does not have the correct structure"
+msgid "Failed to install Add-on from zip file"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
@@ -13329,7 +13330,9 @@ msgctxt "#24063"
 msgid "Auto update"
 msgstr ""
 
+#. Used as an event log description for add-ons that have been installed/enabled
 #: xbmc/addons/AddonInstaller.cpp
+#: xbmc/addons/AddonManager.cpp
 msgctxt "#24064"
 msgid "Add-on enabled"
 msgstr ""
@@ -13455,6 +13458,7 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonInfo.h
 msgctxt "#24088"
 msgid "The DSP add-on is currently in use and can't be modified."
+msgstr ""
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -13729,7 +13733,31 @@ msgctxt "#24140"
 msgid "View"
 msgstr ""
 
-#empty strings from id 24141 to 24991
+#. Used as an event log description for add-ons that have been disabled
+#: xbmc/addons/AddonManager.cpp
+msgctxt "#24141"
+msgid "Add-on disabled"
+msgstr ""
+
+#. The dependency on <addon id> version <addon version> coult not be satisfied.
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24142"
+msgid "The dependency on %s version %s could not be satisfied."
+msgstr ""
+
+#. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24143"
+msgid "Installing the Add-on from zip file located at %s failed due to an invalid structure."
+msgstr ""
+
+#. Used as an event log description for add-ons that have been uninstalled
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24144"
+msgid "Add-on uninstalled"
+msgstr ""
+
+#empty strings from id 24145 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

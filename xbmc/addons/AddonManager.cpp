@@ -24,9 +24,11 @@
 #include "AudioDecoder.h"
 #include "ContextMenuManager.h"
 #include "DllLibCPluff.h"
-#include "ImageResource.h"
-#include "LanguageResource.h"
-#include "UISoundsResource.h"
+#include "addons/ImageResource.h"
+#include "addons/LanguageResource.h"
+#include "addons/UISoundsResource.h"
+#include "events/EventLog.h"
+#include "events/AddonManagementEvent.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
@@ -671,6 +673,10 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   if (!m_disabled.insert(id).second)
     return false;
 
+  AddonPtr addon;
+  if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
+
   //success
   ADDON::OnDisabled(id);
   return true;
@@ -686,6 +692,10 @@ bool CAddonMgr::EnableAddon(const std::string& id)
     return false;
   if (m_disabled.erase(id) == 0)
     return false;
+
+  AddonPtr addon;
+  if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   //success
   ADDON::OnEnabled(id);
