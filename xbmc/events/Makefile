@@ -1,4 +1,8 @@
-SRCS=EventLog.cpp \
+SRCS=AddonEvent.cpp \
+     AddonManagementEvent.cpp \
+     BaseEvent.cpp \
+     EventLog.cpp \
+     MediaLibraryEvent.cpp \
 
 LIB=events.a
 
