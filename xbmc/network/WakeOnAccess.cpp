@@ -637,7 +637,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
 std::string CWakeOnAccess::GetSettingFile()
 {
-  return CSpecialProtocol::TranslatePath("special://masterprofile/wakeonlan.xml");
+  return CSpecialProtocol::TranslatePath("special://profile/wakeonlan.xml");
 }
 
 void CWakeOnAccess::OnSettingsLoaded()
