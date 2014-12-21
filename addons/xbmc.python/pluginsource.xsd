@@ -12,11 +12,6 @@
       <xs:attribute name="library" type="xs:string" use="required"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="content">
-    <xs:complexType>
-      <xs:attribute name="type" type="xs:string" use="required"/>
-    </xs:complexType>
-  </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
       <xs:pattern value="[^.]+"/>
