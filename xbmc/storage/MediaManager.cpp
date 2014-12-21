@@ -161,7 +161,7 @@ bool CMediaManager::SaveSources()
   TiXmlNode *pNetworkNode = pRoot->InsertEndChild(networkNode);
   if (pNetworkNode)
   {
-    for (vector<CNetworkLocation>::iterator it = m_locations.begin(); it != m_locations.end(); it++)
+    for (vector<CNetworkLocation>::iterator it = m_locations.begin(); it != m_locations.end(); ++it)
     {
       TiXmlElement locationNode("location");
       locationNode.SetAttribute("id", (*it).id);
