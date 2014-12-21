@@ -37,7 +37,6 @@ CCriticalSection CGUIDialogKaiToast::m_critical;
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
-  m_defaultIcon = "";
   m_loadType = LOAD_ON_GUI_INIT;
   m_timer = 0;
   m_toastDisplayTime = 0;
@@ -110,7 +109,7 @@ bool CGUIDialogKaiToast::DoWork()
 {
   CSingleLock lock(m_critical);
 
-  if (m_notifications.size() > 0 &&
+  if (!m_notifications.empty() &&
       CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
   {
     Notification toast = m_notifications.front();
