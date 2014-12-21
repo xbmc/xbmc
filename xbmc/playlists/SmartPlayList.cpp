@@ -866,7 +866,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
   {
     if (it != m_combinations.begin())
       rule += m_type == CombinationAnd ? " AND " : " OR ";
-    boost::shared_ptr<CSmartPlaylistRuleCombination> combo = boost::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
+    std::shared_ptr<CSmartPlaylistRuleCombination> combo = std::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
     if (combo)
       rule += "(" + combo->GetWhereClause(db, strType, referencedPlaylists) + ")";
   }
@@ -925,7 +925,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
 {
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
-    boost::shared_ptr<CSmartPlaylistRuleCombination> combo = boost::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
+    std::shared_ptr<CSmartPlaylistRuleCombination> combo = std::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
     if (combo)
       combo->GetVirtualFolders(strType, virtualFolders);
   }
@@ -956,7 +956,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
 
 void CSmartPlaylistRuleCombination::AddRule(const CSmartPlaylistRule &rule)
 {
-  boost::shared_ptr<CSmartPlaylistRule> ptr(new CSmartPlaylistRule(rule));
+  std::shared_ptr<CSmartPlaylistRule> ptr(new CSmartPlaylistRule(rule));
   m_rules.push_back(ptr);
 }
 

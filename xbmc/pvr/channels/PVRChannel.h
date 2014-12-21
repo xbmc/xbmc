@@ -27,7 +27,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace EPG
 {
@@ -40,7 +40,7 @@ namespace PVR
   class CPVRChannelGroupInternal;
 
   class CPVRChannel;
-  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   typedef struct
   {

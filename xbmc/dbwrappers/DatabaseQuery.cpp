@@ -483,13 +483,13 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant &obj, const IDatabaseQue
 
     if (it->isMember("and") || it->isMember("or"))
     {
-      boost::shared_ptr<CDatabaseQueryRuleCombination> combo(factory->CreateCombination());
+      std::shared_ptr<CDatabaseQueryRuleCombination> combo(factory->CreateCombination());
       if (combo && combo->Load(*it, factory))
         m_combinations.push_back(combo);
     }
     else
     {
-      boost::shared_ptr<CDatabaseQueryRule> rule(factory->CreateRule());
+      std::shared_ptr<CDatabaseQueryRule> rule(factory->CreateRule());
       if (rule && rule->Load(*it))
         m_rules.push_back(rule);
     }

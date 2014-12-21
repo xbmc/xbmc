@@ -318,7 +318,7 @@ public:
    \param id Setting identifier
    \return List of values of the setting with the given identifier
    */
-  std::vector< boost::shared_ptr<CSetting> > GetList(const std::string &id) const;
+  std::vector< std::shared_ptr<CSetting> > GetList(const std::string &id) const;
 
   /*!
    \brief Sets the boolean value of the setting with the given identifier.
@@ -366,7 +366,7 @@ public:
    \param value Values to set
    \return True if setting the values was successful, false otherwise
    */
-  bool SetList(const std::string &id, const std::vector< boost::shared_ptr<CSetting> > &value);
+  bool SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value);
 
   /*!
    \brief Gets the setting conditions manager used by the settings manager.

@@ -745,10 +745,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
   ADDON::ScraperPtr albumScraper;
   ADDON::ScraperPtr artistScraper;
   if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ALBUMS, addon))
-    albumScraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+    albumScraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
 
   if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ARTISTS, addon))
-    artistScraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+    artistScraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
 
   // Add each album
   for (VECALBUMS::iterator album = albums.begin(); album != albums.end(); ++album)

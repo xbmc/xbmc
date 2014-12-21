@@ -36,7 +36,7 @@
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "threads/Atomics.h"
 
 #ifndef TARGET_POSIX
@@ -70,7 +70,7 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
-using namespace boost;
+using namespace std;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )

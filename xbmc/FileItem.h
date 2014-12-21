@@ -34,7 +34,7 @@
 #include "threads/CriticalSection.h"
 
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 namespace MUSIC_INFO
 {
@@ -490,7 +490,7 @@ private:
   \brief A shared pointer to CFileItem
   \sa CFileItem
   */
-typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 /*!
   \brief A vector of pointer to CFileItem

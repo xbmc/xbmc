@@ -876,7 +876,7 @@ bool CAddonMgr::StartServices(const bool beforelogin)
   bool ret = true;
   for (IVECADDONS it = services.begin(); it != services.end(); ++it)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
     if (service)
     {
       if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
@@ -898,7 +898,7 @@ void CAddonMgr::StopServices(const bool onlylogin)
 
   for (IVECADDONS it = services.begin(); it != services.end(); ++it)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
     if (service)
     {
       if ( (onlylogin && service->GetStartOption() == CService::LOGIN)

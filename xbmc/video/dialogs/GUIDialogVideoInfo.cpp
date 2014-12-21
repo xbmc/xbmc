@@ -191,7 +191,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
     {
       if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
-        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+        CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (item && m_movieItem->IsPath(item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
           if (!m_movieItem->HasArt("thumb"))

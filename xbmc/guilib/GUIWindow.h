@@ -29,10 +29,10 @@
  */
 
 #include "GUIControlGroup.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "threads/CriticalSection.h"
 
-class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 #include "GUICallback.h"  // for GUIEvent
 

@@ -231,7 +231,7 @@ bool CAddonInstaller::Install(const std::string &addonID, bool force, const std:
     database.GetRepoForAddon(addonID,repo);
     AddonPtr ptr;
     CAddonMgr::Get().GetAddon(repo,ptr);
-    RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(ptr);
+    RepositoryPtr therepo = std::dynamic_pointer_cast<CRepository>(ptr);
     std::string hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
@@ -767,7 +767,7 @@ bool CAddonUnInstallJob::DoWork()
   m_addon->OnPreUnInstall();
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
-  RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
+  RepositoryPtr therepo = std::dynamic_pointer_cast<CRepository>(repoPtr);
   if (therepo && !therepo->Props().libname.empty())
   {
     CFileItemList dummy;

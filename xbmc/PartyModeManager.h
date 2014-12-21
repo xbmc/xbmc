@@ -21,9 +21,9 @@
 
 #include "utils/StdString.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
-class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 namespace PLAYLIST
 {

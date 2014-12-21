@@ -35,14 +35,14 @@
 
 #include <queue>
 #include <semaphore.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "utils/StdString.h"
 #include "guilib/Geometry.h"
 #include "rendering/RenderSystem.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 
 class CMMALVideo;
-typedef boost::shared_ptr<CMMALVideo> MMALVideoPtr;
+typedef std::shared_ptr<CMMALVideo> MMALVideoPtr;
 
 // a mmal video frame
 class CMMALVideoBuffer

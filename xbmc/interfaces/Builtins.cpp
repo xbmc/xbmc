@@ -590,7 +590,7 @@ int CBuiltins::Execute(const std::string& execString)
       AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_PLUGIN))
       {
-        PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
+        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         std::string addonid = params[0];
         std::string urlParameters;
         vector<string> parameters;

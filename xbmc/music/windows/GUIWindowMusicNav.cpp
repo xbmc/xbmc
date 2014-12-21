@@ -713,7 +713,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(content), defaultScraper))
         {
-          scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
         }
       }
 

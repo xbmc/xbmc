@@ -27,7 +27,7 @@
 #include "utils/RegExp.h"
 
 #include <math.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <dinput.h>
 #include <dinputd.h>
@@ -139,7 +139,7 @@ BOOL CALLBACK CJoystick::EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInst
           p_this->m_devCaps.push_back(diDevCaps);
 
           // load axes configuration from keymap
-          std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
+          std::map<std::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
           for (axesCfg = p_this->m_AxesConfigs.begin(); axesCfg != p_this->m_AxesConfigs.end(); axesCfg++)
           {
             if (axesCfg->first->RegFind(joyName) >= 0)
@@ -521,7 +521,7 @@ void CJoystick::Acquire()
   }
 }
 
-void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
+void CJoystick::LoadAxesConfigs(const std::map<std::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
 {
   m_AxesConfigs.clear();
   m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());

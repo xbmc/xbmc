@@ -78,7 +78,7 @@ private:
     virtual node_type_t Type() const=0;
   };
 
-  typedef boost::shared_ptr<InfoSubexpression> InfoSubexpressionPtr;
+  typedef std::shared_ptr<InfoSubexpression> InfoSubexpressionPtr;
 
   // A leaf node in the expression tree
   class InfoLeaf : public InfoSubexpression
@@ -98,7 +98,7 @@ private:
   public:
     InfoAssociativeGroup(node_type_t type, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
     void AddChild(const InfoSubexpressionPtr &child);
-    void Merge(boost::shared_ptr<InfoAssociativeGroup> other);
+    void Merge(std::shared_ptr<InfoAssociativeGroup> other);
     virtual bool Evaluate(const CGUIListItem *item);
     virtual node_type_t Type() const { return m_type; };
   private:

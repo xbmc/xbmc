@@ -36,7 +36,6 @@
 #include "utils/RegExp.h"
 #include "XBIRRemote.h"
 #include "Util.h"
-#include <boost/shared_ptr.hpp>
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -760,7 +759,7 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
   string joyname = JOYSTICK_DEFAULT_MAP; // default global map name
-  vector<boost::shared_ptr<CRegExp> > joynames;
+  vector<std::shared_ptr<CRegExp> > joynames;
   map<int, string> buttonMap;
   map<int, string> axisMap;
   AxesConfig axesConfig;
@@ -772,7 +771,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   else
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
 
-  boost::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
+  std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
   if (!re->RegComp(JoynameToRegex(joyname), CRegExp::StudyRegExp))
   {
     CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyname.c_str());
@@ -855,7 +854,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     }
     else if (type == "altname")
     {
-      boost::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
+      std::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
       if (!altRe->RegComp(JoynameToRegex(action), CRegExp::StudyRegExp))
         CLog::Log(LOGNOTICE, "Ignoring invalid joystick altname regex: '%s'", action.c_str());
       else
@@ -866,7 +865,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 
     pButton = pButton->NextSiblingElement();
   }
-  vector<boost::shared_ptr<CRegExp> >::iterator it = joynames.begin();
+  vector<std::shared_ptr<CRegExp> >::iterator it = joynames.begin();
   while (it!=joynames.end())
   {
     MergeMap(*it, &m_joystickButtonMap, windowID, buttonMap);
@@ -892,7 +891,7 @@ std::string CButtonTranslator::JoynameToRegex(const std::string& joyName) const
   return "\\Q" + joyName + "\\E";
 }
 
-void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap *joystick, int windowID, const ActionMap &map)
+void CButtonTranslator::MergeMap(std::shared_ptr<CRegExp> joyName, JoystickMap *joystick, int windowID, const ActionMap &map)
 {
   // find or create WindowMap entry, match on pattern equality
   JoystickMap::iterator jit;

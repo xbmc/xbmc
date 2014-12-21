@@ -35,6 +35,7 @@
 #include "utils/ActorProtocol.h"
 #include <list>
 #include <map>
+#include <memory>
 #include <va/va.h>
 #include "linux/sse4/DllLibSSE4.h"
 

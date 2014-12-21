@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 /**
  * This file contains the pattern for moving "globals" from the BSS Segment to the heap.
@@ -46,7 +46,7 @@
  *
  * The (at least) two ways to do this:
  *
- * 1) You can use the reference object boost::shared_ptr to access the global variable.
+ * 1) You can use the reference object std::shared_ptr to access the global variable.
  *
  * This would be the preferred means since it is (very slightly) more efficent than
  * the alternative. To use this pattern you replace standard static references to
@@ -54,11 +54,11 @@
  * do this for you can put the following code in the header file where the global's
  * class is declared:
  *
- * static boost::shared_ptr<GlobalVariableClass> g_globalVariableRef(xbmcutil::GlobalsSingleton<GlobalVariableClass>::getInstance());
+ * static std::shared_ptr<GlobalVariableClass> g_globalVariableRef(xbmcutil::GlobalsSingleton<GlobalVariableClass>::getInstance());
  * #define g_globalVariable (*(g_globalVariableRef.get()))
  *
  * Note what this does. In every file that includes this header there will be a *static*
- * instance of the boost::shared_ptr<GlobalVariableClass> smart pointer. This effectively
+ * instance of the std::shared_ptr<GlobalVariableClass> smart pointer. This effectively
  * reference counts the singleton from every compilation unit (ie, object code file that
  * results from a compilation of a .c/.cpp file) that references this global directly.
  *
@@ -139,7 +139,7 @@ namespace xbmcutil
      *  Deleter class above so that when the bss segment that this static is
      *  sitting in is deinitialized, the shared_ptr pointer will be cleaned up.
      */
-    static Deleter<boost::shared_ptr<T> > instance; 
+    static Deleter<std::shared_ptr<T> > instance; 
 
     /**
      * See 'getQuick' below.
@@ -151,13 +151,13 @@ namespace xbmcutil
      * Retrieve an instance of the singleton using a shared pointer for 
      *  referenece counting.
      */
-    inline static boost::shared_ptr<T> getInstance()
+    inline static std::shared_ptr<T> getInstance()
     {
       if (!instance.guarded)
       {
         if (!quick)
           quick = new T;
-        instance.guarded = new boost::shared_ptr<T>(quick);
+        instance.guarded = new std::shared_ptr<T>(quick);
       }
       return *(instance.guarded);
     }
@@ -179,7 +179,7 @@ namespace xbmcutil
 
   };
 
-  template <class T> typename GlobalsSingleton<T>::template Deleter<boost::shared_ptr<T> > GlobalsSingleton<T>::instance;
+  template <class T> typename GlobalsSingleton<T>::template Deleter<std::shared_ptr<T> > GlobalsSingleton<T>::instance;
   template <class T> T* GlobalsSingleton<T>::quick;
 
   /**
@@ -203,7 +203,7 @@ namespace xbmcutil
  *
  */
 #define XBMC_GLOBAL_REF(classname,g_variable) \
-  static boost::shared_ptr<classname> g_variable##Ref(xbmcutil::GlobalsSingleton<classname>::getInstance())
+  static std::shared_ptr<classname> g_variable##Ref(xbmcutil::GlobalsSingleton<classname>::getInstance())
 
 /**
  * This declares the actual use of the variable. It needs to be used in another #define

@@ -43,7 +43,7 @@ namespace PVR
 {
   class CPVRClients;
   class CPVRChannel;
-  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecording;
@@ -83,7 +83,7 @@ namespace PVR
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
 
-  typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
+  typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {

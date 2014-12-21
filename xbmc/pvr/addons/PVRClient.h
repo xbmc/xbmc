@@ -42,7 +42,7 @@ namespace PVR
   class CPVRClient;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
-  typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
+  typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
   #define PVR_VIRTUAL_CLIENT_ID (-1)
 

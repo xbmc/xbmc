@@ -870,7 +870,7 @@ int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
     else
     {
       // create a new client instance
-      addon = boost::dynamic_pointer_cast<CPVRClient>(client);
+      addon = std::dynamic_pointer_cast<CPVRClient>(client);
       m_clientMap.insert(std::make_pair(iClientId, addon));
     }
   }

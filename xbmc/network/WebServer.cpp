@@ -24,6 +24,8 @@
 
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
+#include <memory>
+
 #include "URL.h"
 #include "Util.h"
 #include "XBDateTime.h"
@@ -36,7 +38,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include <boost/make_shared.hpp>
 
 //#define WEBSERVER_DEBUG
 
@@ -56,7 +57,7 @@ using namespace std;
 using namespace JSONRPC;
 
 typedef struct {
-  boost::shared_ptr<CFile> file;
+  std::shared_ptr<CFile> file;
   HttpRanges ranges;
   size_t rangeCount;
   int64_t rangesLength;
@@ -388,7 +389,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
 
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode)
 {
-  boost::shared_ptr<CFile> file = boost::make_shared<CFile>();
+  std::shared_ptr<CFile> file = std::make_shared<CFile>();
 
 #ifdef WEBSERVER_DEBUG
   CLog::Log(LOGDEBUG, "webserver  [IN] %s", strURL.c_str());

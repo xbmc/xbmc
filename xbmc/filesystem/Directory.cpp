@@ -57,8 +57,8 @@ private:
   struct CGetJob
     : CJob
   {
-    CGetJob(boost::shared_ptr<IDirectory>& imp
-          , boost::shared_ptr<CResult>& result)
+    CGetJob(std::shared_ptr<IDirectory>& imp
+          , std::shared_ptr<CResult>& result)
       : m_result(result)
       , m_imp(imp)
     {}
@@ -71,13 +71,13 @@ private:
       return m_result->m_result;
     }
 
-    boost::shared_ptr<CResult>    m_result;
-    boost::shared_ptr<IDirectory> m_imp;
+    std::shared_ptr<CResult>    m_result;
+    std::shared_ptr<IDirectory> m_imp;
   };
 
 public:
 
-  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CURL& dir, const CURL& listDir)
+  CGetDirectory(std::shared_ptr<IDirectory>& imp, const CURL& dir, const CURL& listDir)
     : m_result(new CResult(dir, listDir))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
@@ -106,7 +106,7 @@ public:
     list.Copy(m_result->m_list);
     return true;
   }
-  boost::shared_ptr<CResult> m_result;
+  std::shared_ptr<CResult> m_result;
   unsigned int               m_id;
 };
 
@@ -144,7 +144,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    boost::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (!pDirectory.get())
       return false;
 

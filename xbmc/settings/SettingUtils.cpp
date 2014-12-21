@@ -36,7 +36,7 @@ bool CSettingUtils::SetList(CSettingList *settingList, const std::vector<CVarian
   return settingList->SetValue(newValues);
 }
 
-std::vector<CVariant> CSettingUtils::ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values)
+std::vector<CVariant> CSettingUtils::ListToValues(const CSettingList *setting, const std::vector< std::shared_ptr<CSetting> > &values)
 {
   std::vector<CVariant> realValues;
 
@@ -72,7 +72,7 @@ std::vector<CVariant> CSettingUtils::ListToValues(const CSettingList *setting, c
 }
 
 bool CSettingUtils::ValuesToList(const CSettingList *setting, const std::vector<CVariant> &values,
-                                 std::vector< boost::shared_ptr<CSetting> > &newValues)
+                                 std::vector< std::shared_ptr<CSetting> > &newValues)
 {
   if (setting == NULL)
     return false;

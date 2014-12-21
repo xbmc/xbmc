@@ -28,7 +28,6 @@
 #include "utils/RegExp.h"
 
 #include <math.h>
-#include <boost/shared_ptr.hpp>
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL2/SDL.h>
@@ -406,7 +405,7 @@ bool CJoystick::Reinitialize()
   return true;
 }
 
-void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
+void CJoystick::LoadAxesConfigs(const std::map<std::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
 {
   m_AxesConfigs.clear();
   m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());
@@ -419,7 +418,7 @@ void CJoystick::ApplyAxesConfigs()
   for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); it++)
   {
     std::string joyName(SDL_JoystickName(it->second));
-    std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
+    std::map<std::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
     for (axesCfg = m_AxesConfigs.begin(); axesCfg != m_AxesConfigs.end(); axesCfg++)
     {
       if (axesCfg->first->RegFind(joyName) >= 0)
