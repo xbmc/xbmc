@@ -140,7 +140,7 @@ BOOL CALLBACK CJoystick::EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInst
 
           // load axes configuration from keymap
           std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
-          for (axesCfg = p_this->m_AxesConfigs.begin(); axesCfg != p_this->m_AxesConfigs.end(); axesCfg++)
+          for (axesCfg = p_this->m_AxesConfigs.begin(); axesCfg != p_this->m_AxesConfigs.end(); ++axesCfg)
           {
             if (axesCfg->first->RegFind(joyName) >= 0)
               break;
