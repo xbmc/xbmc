@@ -422,9 +422,7 @@ void COMXCoreComponent::FlushInput()
   if(!m_handle)
     return;
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  omx_err = OMX_SendCommand(m_handle, OMX_CommandFlush, m_input_port, NULL);
+  OMX_ERRORTYPE omx_err = OMX_SendCommand(m_handle, OMX_CommandFlush, m_input_port, NULL);
 
   if(omx_err != OMX_ErrorNone)
   {
@@ -439,9 +437,7 @@ void COMXCoreComponent::FlushOutput()
   if(!m_handle)
     return;
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  omx_err = OMX_SendCommand(m_handle, OMX_CommandFlush, m_output_port, NULL);
+  OMX_ERRORTYPE omx_err = OMX_SendCommand(m_handle, OMX_CommandFlush, m_output_port, NULL);
 
   if(omx_err != OMX_ErrorNone)
   {
@@ -952,7 +948,7 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForEvent(OMX_EVENTTYPE eventType, long time
   add_timespecs(endtime, timeout);
   while(true) 
   {
-    for (std::vector<omx_event>::iterator it = m_omx_events.begin(); it != m_omx_events.end(); it++) 
+    for (std::vector<omx_event>::iterator it = m_omx_events.begin(); it != m_omx_events.end(); ++it)
     {
       omx_event event = *it;
 
@@ -1021,7 +1017,7 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForCommand(OMX_U32 command, OMX_U32 nData2,
   add_timespecs(endtime, timeout);
   while(true) 
   {
-    for (std::vector<omx_event>::iterator it = m_omx_events.begin(); it != m_omx_events.end(); it++) 
+    for (std::vector<omx_event>::iterator it = m_omx_events.begin(); it != m_omx_events.end(); ++it)
     {
       omx_event event = *it;
 
@@ -1209,13 +1205,11 @@ OMX_ERRORTYPE COMXCoreComponent::EnablePort(unsigned int port,  bool wait)
   if(!m_handle)
     return OMX_ErrorUndefined;
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
   OMX_PARAM_PORTDEFINITIONTYPE portFormat;
   OMX_INIT_STRUCTURE(portFormat);
   portFormat.nPortIndex = port;
 
-  omx_err = OMX_GetParameter(m_handle, OMX_IndexParamPortDefinition, &portFormat);
+  OMX_ERRORTYPE omx_err = OMX_GetParameter(m_handle, OMX_IndexParamPortDefinition, &portFormat);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "COMXCoreComponent::EnablePort - Error get port %d status on component %s omx_err(0x%08x)", 
@@ -1245,13 +1239,11 @@ OMX_ERRORTYPE COMXCoreComponent::DisablePort(unsigned int port, bool wait)
   if(!m_handle)
     return OMX_ErrorUndefined;
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
   OMX_PARAM_PORTDEFINITIONTYPE portFormat;
   OMX_INIT_STRUCTURE(portFormat);
   portFormat.nPortIndex = port;
 
-  omx_err = OMX_GetParameter(m_handle, OMX_IndexParamPortDefinition, &portFormat);
+  OMX_ERRORTYPE omx_err = OMX_GetParameter(m_handle, OMX_IndexParamPortDefinition, &portFormat);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "COMXCoreComponent::DisablePort - Error get port %d status on component %s omx_err(0x%08x)", 

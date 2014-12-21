@@ -181,12 +181,12 @@ vector<std::string> CLinuxTimezone::GetCounties()
    return m_counties;
 }
 
-vector<std::string> CLinuxTimezone::GetTimezonesByCountry(const std::string country)
+vector<std::string> CLinuxTimezone::GetTimezonesByCountry(const std::string& country)
 {
    return m_timezonesByCountryCode[m_countryByName[country]];
 }
 
-std::string CLinuxTimezone::GetCountryByTimezone(const std::string timezone)
+std::string CLinuxTimezone::GetCountryByTimezone(const std::string& timezone)
 {
 #if defined(TARGET_DARWIN)
    return "?";
@@ -197,13 +197,12 @@ std::string CLinuxTimezone::GetCountryByTimezone(const std::string timezone)
 
 void CLinuxTimezone::SetTimezone(std::string timezoneName)
 {
-  bool use_timezone = false;
-  
 #if !defined(TARGET_DARWIN)
-  use_timezone = true;
+  bool use_timezone = true;
 #else
+  bool use_timezone = false;
   if (g_sysinfo.IsAppleTV2())
-    use_timezone = true;  
+    use_timezone = true;
 #endif
   
   if (use_timezone)

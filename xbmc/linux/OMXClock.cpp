@@ -122,13 +122,12 @@ bool OMXClock::OMXSetReferenceClock(bool has_audio, bool lock /* = true */)
 
 bool OMXClock::OMXInitialize(CDVDClock *clock)
 {
-  std::string componentName = "";
+  std::string componentName = "OMX.broadcom.clock";
 
   m_pause       = false;
 
   m_clock = clock;
 
-  componentName = "OMX.broadcom.clock";
   if(!m_omx_clock.Initialize((const std::string)componentName, OMX_IndexParamOtherInit))
     return false;
 
@@ -209,14 +208,13 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
 
   CLog::Log(LOGDEBUG, "OMXClock::OMXStop\n");
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_TIME_CONFIG_CLOCKSTATETYPE clock;
   OMX_INIT_STRUCTURE(clock);
 
   clock.eState      = OMX_TIME_ClockStateStopped;
   clock.nOffset     = ToOMXTime(-1000LL * OMX_PRE_ROLL);
 
-  omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
+  OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "OMXClock::Stop error setting OMX_IndexConfigTimeClockState\n");
@@ -241,14 +239,13 @@ bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
   if(lock)
     Lock();
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_PARAM_U32TYPE param;
   OMX_INIT_STRUCTURE(param);
 
   param.nPortIndex = OMX_ALL;
   param.nU32 = steps;
 
-  omx_err = m_omx_clock.SetConfig(OMX_IndexConfigSingleStep, &param);
+  OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigSingleStep, &param);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "OMXClock::Error setting OMX_IndexConfigSingleStep\n");
@@ -327,13 +324,11 @@ double OMXClock::OMXMediaTime(bool lock /* = true */)
     if(lock)
       Lock();
 
-    OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
     OMX_TIME_CONFIG_TIMESTAMPTYPE timeStamp;
     OMX_INIT_STRUCTURE(timeStamp);
     timeStamp.nPortIndex = m_omx_clock.GetInputPort();
 
-    omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeCurrentMediaTime, &timeStamp);
+    OMX_ERRORTYPE omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeCurrentMediaTime, &timeStamp);
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigTimeCurrentMediaTime\n");
@@ -367,14 +362,13 @@ double OMXClock::OMXClockAdjustment(bool lock /* = true */)
   if(lock)
     Lock();
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   double pts = 0;
 
   OMX_TIME_CONFIG_TIMESTAMPTYPE timeStamp;
   OMX_INIT_STRUCTURE(timeStamp);
   timeStamp.nPortIndex = m_omx_clock.GetInputPort();
 
-  omx_err = m_omx_clock.GetConfig(OMX_IndexConfigClockAdjustment, &timeStamp);
+  OMX_ERRORTYPE omx_err = m_omx_clock.GetConfig(OMX_IndexConfigClockAdjustment, &timeStamp);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigClockAdjustment\n");
@@ -487,12 +481,11 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
 
   if (pause_resume)
   {
-    OMX_ERRORTYPE omx_err = OMX_ErrorNone;
     OMX_TIME_CONFIG_SCALETYPE scaleType;
     OMX_INIT_STRUCTURE(scaleType);
 
     scaleType.xScale = (speed << 16) / DVD_PLAYSPEED_NORMAL;
-    omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeScale, &scaleType);
+    OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeScale, &scaleType);
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "OMXClock::OMXSetSpeed error setting OMX_IndexConfigTimeClockState\n");
@@ -537,7 +530,6 @@ bool OMXClock::HDMIClockSync(bool lock /* = true */)
   if(lock)
     Lock();
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_CONFIG_LATENCYTARGETTYPE latencyTarget;
   OMX_INIT_STRUCTURE(latencyTarget);
 
@@ -550,7 +542,7 @@ bool OMXClock::HDMIClockSync(bool lock /* = true */)
   latencyTarget.nInterFactor = 100;
   latencyTarget.nAdjCap = 100;
 
-  omx_err = m_omx_clock.SetConfig(OMX_IndexConfigLatencyTarget, &latencyTarget);
+  OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigLatencyTarget, &latencyTarget);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "OMXClock::Speed error setting OMX_IndexConfigLatencyTarget\n");
