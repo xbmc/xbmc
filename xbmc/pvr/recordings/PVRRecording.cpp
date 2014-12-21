@@ -38,16 +38,16 @@ CPVRRecordingUid::CPVRRecordingUid() :
 {
 }
 
-CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId)
+CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId):
+  m_strRecordingId(recordingId.m_strRecordingId)
 {
   m_iClientId = recordingId.m_iClientId;
-  m_strRecordingId = recordingId.m_strRecordingId;
 }
 
-CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
+CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId):
+  m_strRecordingId(strRecordingId)
 {
   m_iClientId = iClientId;
-  m_strRecordingId = strRecordingId;
 }
 
 bool CPVRRecordingUid::operator >(const CPVRRecordingUid& right) const

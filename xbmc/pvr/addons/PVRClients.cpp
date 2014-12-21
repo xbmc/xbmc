@@ -971,7 +971,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   if (disableAddons.size() > 0)
   {
     CSingleLock lock(m_critSection);
-    for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); it++)
+    for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); ++it)
     {
       // disable in the add-on db
       CAddonMgr::Get().DisableAddon((*it)->ID(), true);
