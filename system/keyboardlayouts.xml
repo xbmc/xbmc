@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Arabic عربي">
+  <layout name="Arabic QWERTY">
     <keyboard>
       <row>١٢٣٤٥٦٧٨٩٠</row>
       <row>ضصثقفغعهخحج</row>
