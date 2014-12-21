@@ -573,7 +573,16 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
       // m_codec->start() but the internal refs are not
       // setup until much later on some devices.
       if (m_input.empty())
+      {
         m_input = m_codec->getInputBuffers();
+        if (xbmc_jnienv()->ExceptionCheck())
+        {
+          CLog::Log(LOGERROR, "CDVDMediaCodecInfo::getInputBuffers "
+            "ExceptionCheck");
+          xbmc_jnienv()->ExceptionDescribe();
+          xbmc_jnienv()->ExceptionClear();
+        }
+      }
 
       // we have an input buffer, fill it.
       int size = m_input[index].capacity();
@@ -836,6 +845,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     if (m_output.empty())
     {
       m_output = m_codec->getOutputBuffers();
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionCheck: getOutputBuffers");
+        xbmc_jnienv()->ExceptionDescribe();
+        xbmc_jnienv()->ExceptionClear();
+        return 0;
+      }
       FlushInternal();
     }
 
@@ -850,8 +866,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     {
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
       m_codec->releaseOutputBuffer(index, false);
-      if (xbmc_jnienv()->ExceptionOccurred())
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionCheck: releaseOutputBuffer");
+        xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
+        return 0;
+      }
       return 0;
     }
 
@@ -898,6 +919,12 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         }
       }
       m_codec->releaseOutputBuffer(index, false);
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture ExceptionCheck: releaseOutputBuffer");
+        xbmc_jnienv()->ExceptionDescribe();
+        xbmc_jnienv()->ExceptionClear();
+      }
     }
 
     int64_t pts= bufferInfo.presentationTimeUs();
@@ -919,11 +946,23 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   else if (index == CJNIMediaCodec::INFO_OUTPUT_BUFFERS_CHANGED)
   {
     m_output = m_codec->getOutputBuffers();
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(INFO_OUTPUT_BUFFERS_CHANGED) ExceptionCheck: getOutputBuffers");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+    }
     FlushInternal();
   }
   else if (index == CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED)
   {
     CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(INFO_OUTPUT_FORMAT_CHANGED) ExceptionCheck: getOutputBuffers");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+    }
     ConfigureOutputFormat(&mediaformat);
   }
   else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER)
