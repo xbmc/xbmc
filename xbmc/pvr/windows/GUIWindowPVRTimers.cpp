@@ -170,7 +170,7 @@ bool CGUIWindowPVRTimers::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTO
     if (!item->HasPVRTimerInfoTag())
       return bReturn;
 
-    CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
+    CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
     int iLabelId;
     if (timer->IsActive())
     {
@@ -254,7 +254,7 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
     bReturn = true;
     if (!item->HasPVRTimerInfoTag())
       return bReturn;
-    CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
+    CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
 
     std::string strNewName(timer->m_strTitle);
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19042), false))
@@ -267,7 +267,7 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
 bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 {
   /* check if the timer tag is valid */
-  CPVRTimerInfoTag *timerTag = item->GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr timerTag = item->GetPVRTimerInfoTag();
   if (!timerTag || timerTag->m_iClientIndex < 0)
     return false;
 
@@ -317,18 +317,16 @@ bool CGUIWindowPVRTimers::ShowNewTimerDialog(void)
 {
   bool bReturn(false);
 
-  CPVRTimerInfoTag *newTimer = new CPVRTimerInfoTag;
-  CFileItem *newItem = new CFileItem(*newTimer);
-  newItem->GetPVRTimerInfoTag()->m_bIsRadio = m_bRadio;
+  CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag(m_bRadio));
+  CFileItem *newItem = new CFileItem(newTimer);
 
   if (ShowTimerSettings(newItem))
   {
     /* Add timer to backend */
-    bReturn = g_PVRTimers->AddTimer(*newItem->GetPVRTimerInfoTag());
+    bReturn = g_PVRTimers->AddTimer(newItem->GetPVRTimerInfoTag());
   }
 
   delete newItem;
-  delete newTimer;
 
   return bReturn;
 }

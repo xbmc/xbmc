@@ -357,12 +357,11 @@ bool CGUIWindowPVRBase::StartRecordFile(const CFileItem &item)
   if (!pDialog->IsConfirmed())
     return false;
 
-  CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+  CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
   bool bReturn(false);
   if (newTimer)
   {
-    bReturn = g_PVRTimers->AddTimer(*newTimer);
-    delete newTimer;
+    bReturn = g_PVRTimers->AddTimer(newTimer);
   }
   return bReturn;
 }
@@ -623,11 +622,10 @@ bool CGUIWindowPVRBase::ActionRecord(CFileItem *item)
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+    CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag);
     if (newTimer)
     {
-      bReturn = g_PVRTimers->AddTimer(*newTimer);
-      delete newTimer;
+      bReturn = g_PVRTimers->AddTimer(newTimer);
     }
     else
     {

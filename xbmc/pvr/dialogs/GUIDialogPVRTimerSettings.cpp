@@ -78,7 +78,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag == NULL)
     return;
 
@@ -176,7 +176,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const CSetting *setting)
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
 
-  CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag == NULL)
     return;
 
@@ -228,7 +228,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const CSetting *setting)
 
 void CGUIDialogPVRTimerSettings::Save()
 {
-  CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = m_timerItem->GetPVRTimerInfoTag();
 
   // Set the timer's title to the channel name if it's 'New Timer' or empty
   if (tag->m_strTitle == g_localizeStrings.Get(19056) || tag->m_strTitle.empty())
@@ -272,7 +272,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // add a condition
   m_settingsManager->AddCondition("IsTimerDayRepeating", IsTimerDayRepeating);
 
-  CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = m_timerItem->GetPVRTimerInfoTag();
 
   m_selectedChannelEntry = 0;
   m_channelEntries.clear();
@@ -498,7 +498,7 @@ void CGUIDialogPVRTimerSettings::DaysOptionsFiller(const CSetting *setting, std:
   if (dialog == NULL)
     return;
 
-  const CPVRTimerInfoTag *tag = dialog->m_timerItem->GetPVRTimerInfoTag();
+  const CPVRTimerInfoTagPtr tag = dialog->m_timerItem->GetPVRTimerInfoTag();
   if (tag == NULL)
     return;
 

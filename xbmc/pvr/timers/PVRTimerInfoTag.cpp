@@ -38,7 +38,7 @@
 using namespace PVR;
 using namespace EPG;
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
+CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
   m_strDirectory("/")
 {
@@ -50,7 +50,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
   m_bIsRepeating       = false;
   m_iWeekdays          = 0;
   m_iChannelNumber     = 0;
-  m_bIsRadio           = false;
+  m_bIsRadio           = bRadio;
   CEpgInfoTagPtr emptyTag;
   m_epgTag             = emptyTag;
   m_iMarginStart       = CSettings::Get().GetInt("pvrrecord.marginstart");
@@ -64,10 +64,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
   m_iTimerId           = 0;
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId) :
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId) :
   m_strTitle(timer.strTitle),
   m_strDirectory(timer.strDirectory)
-{  
+{
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
@@ -123,37 +123,6 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iMarginEnd         == right.m_iMarginEnd &&
           m_state              == right.m_state &&
           m_iTimerId           == right.m_iTimerId);
-}
-
-CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
-{
-  m_channel            = orig.m_channel;
-  m_iClientIndex       = orig.m_iClientIndex;
-  m_strSummary         = orig.m_strSummary;
-  m_iClientChannelUid  = orig.m_iClientChannelUid;
-  m_bIsRadio           = orig.m_bIsRadio;
-  m_bIsRepeating       = orig.m_bIsRepeating;
-  m_StartTime          = orig.m_StartTime;
-  m_StopTime           = orig.m_StopTime;
-  m_FirstDay           = orig.m_FirstDay;
-  m_iWeekdays          = orig.m_iWeekdays;
-  m_iPriority          = orig.m_iPriority;
-  m_iLifetime          = orig.m_iLifetime;
-  m_strFileNameAndPath = orig.m_strFileNameAndPath;
-  m_strTitle           = orig.m_strTitle;
-  m_strDirectory       = orig.m_strDirectory;
-  m_iClientId          = orig.m_iClientId;
-  m_iMarginStart       = orig.m_iMarginStart;
-  m_iMarginEnd         = orig.m_iMarginEnd;
-  m_state              = orig.m_state;
-  m_iChannelNumber     = orig.m_iChannelNumber;
-  m_iTimerId           = orig.m_iTimerId;
-  m_iGenreType         = orig.m_iGenreType;
-  m_iGenreSubType      = orig.m_iGenreSubType;
-  m_epgTag             = orig.m_epgTag;
-  m_genre              = orig.m_genre;
-
-  return *this;
 }
 
 CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
@@ -382,32 +351,32 @@ bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
   return true;
 }
 
-bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
+bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
 {
   CSingleLock lock(m_critSection);
 
-  m_iClientId         = tag.m_iClientId;
-  m_iClientIndex      = tag.m_iClientIndex;
-  m_strTitle          = tag.m_strTitle;
-  m_strDirectory      = tag.m_strDirectory;
-  m_iClientChannelUid = tag.m_iClientChannelUid;
-  m_StartTime         = tag.m_StartTime;
-  m_StopTime          = tag.m_StopTime;
-  m_FirstDay          = tag.m_FirstDay;
-  m_iPriority         = tag.m_iPriority;
-  m_iLifetime         = tag.m_iLifetime;
-  m_state             = tag.m_state;
-  m_bIsRepeating      = tag.m_bIsRepeating;
-  m_iWeekdays         = tag.m_iWeekdays;
-  m_iChannelNumber    = tag.m_iChannelNumber;
-  m_bIsRadio          = tag.m_bIsRadio;
-  m_iMarginStart      = tag.m_iMarginStart;
-  m_iMarginEnd        = tag.m_iMarginEnd;
-  m_epgTag            = tag.m_epgTag;
-  m_genre             = tag.m_genre;
-  m_iGenreType        = tag.m_iGenreType;
-  m_iGenreSubType     = tag.m_iGenreSubType;
-  m_strSummary        = tag.m_strSummary;
+  m_iClientId         = tag->m_iClientId;
+  m_iClientIndex      = tag->m_iClientIndex;
+  m_strTitle          = tag->m_strTitle;
+  m_strDirectory      = tag->m_strDirectory;
+  m_iClientChannelUid = tag->m_iClientChannelUid;
+  m_StartTime         = tag->m_StartTime;
+  m_StopTime          = tag->m_StopTime;
+  m_FirstDay          = tag->m_FirstDay;
+  m_iPriority         = tag->m_iPriority;
+  m_iLifetime         = tag->m_iLifetime;
+  m_state             = tag->m_state;
+  m_bIsRepeating      = tag->m_bIsRepeating;
+  m_iWeekdays         = tag->m_iWeekdays;
+  m_iChannelNumber    = tag->m_iChannelNumber;
+  m_bIsRadio          = tag->m_bIsRadio;
+  m_iMarginStart      = tag->m_iMarginStart;
+  m_iMarginEnd        = tag->m_iMarginEnd;
+  m_epgTag            = tag->m_epgTag;
+  m_genre             = tag->m_genre;
+  m_iGenreType        = tag->m_iGenreType;
+  m_iGenreSubType     = tag->m_iGenreSubType;
+  m_strSummary        = tag->m_strSummary;
 
   if (m_strSummary.empty())
     UpdateSummary();
@@ -485,49 +454,47 @@ bool CPVRTimerInfoTag::SetDuration(int iDuration)
   return false;
 }
 
-CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag)
 {
   /* create a new timer */
-  CPVRTimerInfoTag *newTag = new CPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
   if (!newTag)
   {
     CLog::Log(LOGERROR, "%s - couldn't create new timer", __FUNCTION__);
-    return NULL;
+    return CPVRTimerInfoTagPtr();
   }
 
   /* check if a valid channel is set */
-  CPVRChannelPtr channel = tag.ChannelTag();
+  CPVRChannelPtr channel = tag->ChannelTag();
   if (!channel)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
-    delete newTag;
-    return NULL;
+    return CPVRTimerInfoTagPtr();
   }
 
   /* check if the epg end date is in the future */
-  if (tag.EndAsLocalTime() < CDateTime::GetCurrentDateTime())
+  if (tag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
   {
     CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
-    delete newTag;
-    return NULL;
+    return CPVRTimerInfoTagPtr();
   }
 
   /* set the timer data */
-  CDateTime newStart = tag.StartAsUTC();
-  CDateTime newEnd = tag.EndAsUTC();
+  CDateTime newStart = tag->StartAsUTC();
+  CDateTime newEnd = tag->EndAsUTC();
   newTag->m_iClientIndex      = -1;
-  newTag->m_strTitle          = tag.Title().empty() ? channel->ChannelName() : tag.Title();
+  newTag->m_strTitle          = tag->Title().empty() ? channel->ChannelName() : tag->Title();
   newTag->m_iChannelNumber    = channel->ChannelNumber();
   newTag->m_iClientChannelUid = channel->UniqueID();
   newTag->m_iClientId         = channel->ClientID();
   newTag->m_bIsRadio          = channel->IsRadio();
-  newTag->m_iGenreType        = tag.GenreType();
-  newTag->m_iGenreSubType     = tag.GenreSubType();
+  newTag->m_iGenreType        = tag->GenreType();
+  newTag->m_iGenreSubType     = tag->GenreSubType();
   newTag->m_channel           = channel;
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
 
-  if (tag.Plot().empty())
+  if (tag->Plot().empty())
   {
     newTag->m_strSummary= StringUtils::Format("%s %s %s %s %s",
                                               newTag->StartAsLocalTime().GetAsLocalizedDate().c_str(),
@@ -538,10 +505,10 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   }
   else
   {
-    newTag->m_strSummary = tag.Plot();
+    newTag->m_strSummary = tag->Plot();
   }
 
-  newTag->m_epgTag = g_EpgContainer.GetById(tag.EpgID())->GetTag(tag.StartAsUTC());
+  newTag->m_epgTag = g_EpgContainer.GetById(tag->EpgID())->GetTag(tag->StartAsUTC());
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = "pvr://timers/new";
