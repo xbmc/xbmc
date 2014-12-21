@@ -202,7 +202,7 @@ int CSkinInfo::GetStartWindow() const
 {
   int windowID = CSettings::Get().GetInt("lookandfeel.startupwindow");
   assert(m_startupWindows.size());
-  for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
+  for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
   {
     if (windowID == (*it).m_id)
       return windowID;
@@ -470,7 +470,7 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
 
   const vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
 
-  for (vector<CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); it++)
+  for (vector<CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); ++it)
   {
     string windowName = it->m_name;
     if (StringUtils::IsNaturalNumber(windowName))

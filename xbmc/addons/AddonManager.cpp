@@ -391,7 +391,7 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*=
       {
         // Ignore duplicates due to add-ons with multiple extension points
         bool found = false;
-        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); addonIt++)
+        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
         {
           if ((*addonIt)->ID() == temp[j]->ID())
             found = true;
