@@ -933,9 +933,7 @@ static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
 static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 {
     // CLog::Log(LOGDEBUG, "h264_write_header");
-    int ret = -1;
-
-    ret = h264_add_header(para->extradata, para->extrasize, pkt);
+    int ret = h264_add_header(para->extradata, para->extrasize, pkt);
     if (ret == PLAYER_SUCCESS) {
         //if (ctx->vcodec) {
         if (1) {

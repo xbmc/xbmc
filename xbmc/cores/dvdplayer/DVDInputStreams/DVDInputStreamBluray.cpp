@@ -239,7 +239,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
 BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filename)
 {
   unsigned int playlist;
-  if(sscanf(filename.c_str(), "%05d.mpls", &playlist) != 1)
+  if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
     CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());
     return NULL;
