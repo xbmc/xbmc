@@ -470,7 +470,7 @@ msgstr "[B]CONFIGUREU ELS PARÀMETRES DE TV[/B][CR][CR]Canvia la informació de 
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGUREU ELS PARÀMETRES DE SERVEI[/B][CR][CR]Configureu el control de l'Kodi a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Habiliteu el Zeroconf · Configureu l'AirPlay"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DE SERVEI[/B][CR][CR]Configureu el control del Kodi a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Habiliteu el Zeroconf · Configureu l'AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -490,7 +490,7 @@ msgstr "Inicia sessió"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari de l'Kodi[CR]per iniciar la sessió i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari del Kodi[CR]per iniciar la sessió i continuar"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."

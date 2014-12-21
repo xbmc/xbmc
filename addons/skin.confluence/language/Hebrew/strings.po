@@ -30,7 +30,7 @@ msgstr "עסוק..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "הסתרת פרטים"
+msgstr "הסתר פרטים"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -254,7 +254,7 @@ msgstr "תת תפריט וידאו במסך הבית"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "תת תפריט מוסיקה במסך הבית"
+msgstr "תת תפריט מוזיקה במסך הבית"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
@@ -310,7 +310,7 @@ msgstr "ספק מידע"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "הסתרת פאנארט"
+msgstr "הסתר פאנארט"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -446,7 +446,7 @@ msgstr "[B]שינוי הגדרות וידאו[/B][CR][CR]ניהול ספריית
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]שינוי הגדרות מוסיקה[/B][CR][CR]ניהול ספריית המוסיקה · קביעת העדפות ניגון מוזיקה · שינוי אפשרויות תצוגת קבצי מוסיקה[CR]הגדרת אפשרויות קריוקי"
+msgstr "[B]שינוי הגדרות מוזיקה[/B][CR][CR]ניהול ספריית המוזיקה · קביעת העדפות ניגון מוזיקה · שינוי אפשרויות תצוגת קבצי מוזיקה[CR]הגדרת אפשרויות קריוקי"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
