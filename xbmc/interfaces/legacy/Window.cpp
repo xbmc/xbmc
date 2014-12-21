@@ -604,7 +604,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dg(languageHook);
       int count = 1; int size = pControls.size();
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, iter++)
+      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
         doRemoveControl(*iter,NULL, count == size);
     }
 
@@ -782,7 +782,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       int count = 1; int size = pControls.size();
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, iter++)
+      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
         doAddControl(*iter,NULL, count == size);
     }
 

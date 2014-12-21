@@ -218,7 +218,7 @@ namespace XBMCAddon
       else
         value = item->GetProperty(lowerKey).asString();
 
-      return value.c_str();
+      return value;
     }
 
     void ListItem::setPath(const String& path)

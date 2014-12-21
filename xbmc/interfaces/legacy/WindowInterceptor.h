@@ -124,9 +124,9 @@ namespace XBMCAddon
 
     public:
       Interceptor(const char* specializedName,
-                  Window* _window, int windowid) : P(windowid, "")
-      { 
-        ((classname = "Interceptor<") += specializedName) += ">";
+                  Window* _window, int windowid) : P(windowid, ""),
+        classname("Interceptor<" + std::string(specializedName) + ">")
+      {
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
@@ -137,9 +137,9 @@ namespace XBMCAddon
                     
       Interceptor(const char* specializedName,
                   Window* _window, int windowid,
-                  const char* xmlfile) : P(windowid, xmlfile)
-      { 
-        ((classname = "Interceptor<") += specializedName) += ">";
+                  const char* xmlfile) : P(windowid, xmlfile),
+        classname("Interceptor<" + std::string(specializedName) + ">")
+      {
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
