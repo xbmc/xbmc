@@ -41,12 +41,11 @@
 
 using namespace std;
 
-CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, IP_ADAPTER_INFO adapter)
-
+CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, IP_ADAPTER_INFO adapter):
+   m_adaptername(adapter.Description)
 {
    m_network = network;
    m_adapter = adapter;
-   m_adaptername = adapter.Description;
 }
 
 CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)

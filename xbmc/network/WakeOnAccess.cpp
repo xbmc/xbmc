@@ -515,7 +515,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
 
 static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std::string>& hosts)
 {
-  for (vector<string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); it++)
+  for (vector<string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); ++it)
   {
     CURL url(*it);
 
@@ -525,7 +525,7 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
 
 static void AddHostsFromVecSource(const VECSOURCES& sources, vector<string>& hosts)
 {
-  for (VECSOURCES::const_iterator it = sources.begin(); it != sources.end(); it++)
+  for (VECSOURCES::const_iterator it = sources.begin(); it != sources.end(); ++it)
     AddHostsFromMediaSource(*it, hosts);
 }
 
@@ -562,7 +562,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
     AddHost (url.GetHostName(), hosts);
   }
 
-  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); it++)
+  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
     QueueMACDiscoveryForHost(*it);
 }
 

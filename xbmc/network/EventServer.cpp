@@ -307,7 +307,7 @@ void CEventServer::RefreshClients()
       {
         iter->second->RefreshSettings();
       }
-      iter++;
+      ++iter;
     }
   }
   m_bRefreshSettings = false;
@@ -321,7 +321,7 @@ void CEventServer::ProcessEvents()
   while (iter != m_clients.end())
   {
     iter->second->ProcessEvents();
-    iter++;
+    ++iter;
   }
 }
 
@@ -356,7 +356,7 @@ bool CEventServer::ExecuteNextAction()
       }
       return true;
     }
-    iter++;
+    ++iter;
   }
 
   return false;
@@ -373,7 +373,7 @@ unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, 
     bcode = iter->second->GetButtonCode(strMapName, isAxis, fAmount);
     if (bcode)
       return bcode;
-    iter++;
+    ++iter;
   }
   return bcode;
 }
@@ -387,7 +387,7 @@ bool CEventServer::GetMousePos(float &x, float &y)
   {
     if (iter->second->GetMousePos(x, y))
       return true;
-    iter++;
+    ++iter;
   }
   return false;
 }
