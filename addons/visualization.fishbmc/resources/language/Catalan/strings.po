@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extrem"
 
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Velocitat [omet alguns marcs]"
+
 msgctxt "#30007"
 msgid "Very Low"
 msgstr "Molt baix"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.16"
+  version="4.0.17"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -12,6 +12,7 @@
     <summary lang="af">Visualisasie wat Golwe en Wasigheid effek wys</summary>
     <summary lang="ar">إسلوب تخيلي يُظهِر مؤثراتاً بصرية تتضمن موجات ومؤثرات عين السمكة (مؤثرات ضبابية)</summary>
     <summary lang="bg">Визуализацията представя вълни и размиващи ефекти</summary>
+    <summary lang="ca">Visualització que mostra efectes d'ona i taques</summary>
     <summary lang="cs">Vizualizace zobrazující vlny a rozmazané efekty</summary>
     <summary lang="cy">Delweddu'n dangos Tonau ac Effeithiau Pylu</summary>
     <summary lang="da">Visualisering som viser Waves og Blur effekter</summary>

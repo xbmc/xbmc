@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-android.xbmc.org"
 		name="Kodi PVR Add-on repository"
-		version="1.1.15"
+		version="1.1.16"
 		provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -112,7 +112,7 @@
 		<disclaimer lang="ar">بعض اﻹضافات فى هذا المستوع غير مصنوعة من قِبل فريق إكس بي إم سي ولذا يُرجى العلم أن فريق إكس بي إم سي غير مسؤول عن ماقد تسببه لك تلك اﻹضافات</disclaimer>
 		<disclaimer lang="be">Team-Kodi did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="bg">Team-Kodi (Екипът зад Kodi) не е автор на всички добавки в хранилището и не носи отговорност за съдържанието им</disclaimer>
-		<disclaimer lang="ca">L'equip de l'Kodi no ha fet tots els complements d'aquest repositori i per tant no són responsables del seu contingut.</disclaimer>
+		<disclaimer lang="ca">L'equip del Kodi no ha fet tots els complements d'aquest dipòsit i per tant no són responsables del seu contingut.</disclaimer>
 		<disclaimer lang="cs">Tým Kodi nevytvořil všechna rozšíření v tomto repozitáři a není zodpovědný za jejich obsah</disclaimer>
 		<disclaimer lang="cy">Nid Team-Kodi wnaeth yr holl ychwanegion yn y storfa hon ac nid ydynt yn gyfrifol am eu cynnwys.</disclaimer>
 		<disclaimer lang="da">Team-Kodi har ikke lavet alle add-ons i dette repository og er ikke ansvarlig for deres indhold</disclaimer>

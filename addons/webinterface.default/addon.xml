@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.21"
+  version="2.2.22"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
@@ -17,7 +17,7 @@
     <summary lang="ast">Interfaz web de Kodi. (Interfaz web por defeutu de Kodi)</summary>
     <summary lang="be">Team-Kodi Web Interface. (Kodi's default web interface)</summary>
     <summary lang="bg">Уеб интерфейс на Team-Kodi. (стандартният уеб интерфейс на Kodi)</summary>
-    <summary lang="ca">Interfície web de l'equip Kodi. (Interficie web per defecte de l'Kodi)</summary>
+    <summary lang="ca">Interfície web de l'equip Kodi. (Interficie web per defecte del Kodi)</summary>
     <summary lang="cs">Webové rozhraní týmu Kodi (Výchozí webové rozhraní Kodi).</summary>
     <summary lang="cy">Rhyngwyneb Gwe Team-Kodi (Rhyngwyneb gwe rhagosodedig Kodi)</summary>
     <summary lang="da">Team-Kodi Web-grænseflade. (Kodi's standard webgrænseflade)</summary>
@@ -76,7 +76,7 @@
     <description lang="ast">Interfaz web por defeutu de Kodi. Diseñada pa preseos de cualquier resolución</description>
     <description lang="be">Стандартны вэб-інтэрфэйс да Kodi; распрацаваны для прыладаў зь любымі разрознасьцямі</description>
     <description lang="bg">Стандартния уеб интерфейс на Kodi; Направен е за устройства с най-различни резолюции</description>
-    <description lang="ca">Interfície web per defecte de l'Kodi; Dissenyada per dispositius de totes les resol·lucions</description>
+    <description lang="ca">Interfície web per defecte del Kodi; Dissenyada per dispositius de totes les resol·lucions</description>
     <description lang="cs">Výchozí webové rozhraní Kodi navržené pro zařízení s libovolným rozlišením</description>
     <description lang="cy">Rhyngwyneb gwe rhagosodedig Kodi. Wedi ei gynllunio ar gyfer cydraniad pob dyfais</description>
     <description lang="da">Standard webgrænseflade til Kodi; designet til enheder i alle opløsninger</description>

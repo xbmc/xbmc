@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "קביעונים אקראים"
+msgstr "קביעונים אקראיים"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -30,11 +30,11 @@ msgstr "זמן אקראי נוסף"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "נעל קביעון"
+msgstr "נעיל קביעון"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
-msgstr "הפעל מעברים"
+msgstr "אפשר מעברים"
 
 msgctxt "#30005"
 msgid "Stop first preset"
