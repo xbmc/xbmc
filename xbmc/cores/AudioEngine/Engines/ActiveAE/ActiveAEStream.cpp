@@ -181,8 +181,7 @@ void CActiveAEStream::RemapBuffer()
     }
 
     // swap sound packets
-    CSoundPacket *tmp = m_remapBuffer;
-    tmp = m_currentBuffer->pkt;
+    CSoundPacket *tmp = m_currentBuffer->pkt;
     m_currentBuffer->pkt = m_remapBuffer;
     m_remapBuffer = tmp;
   }

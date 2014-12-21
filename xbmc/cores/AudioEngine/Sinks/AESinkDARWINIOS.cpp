@@ -290,12 +290,11 @@ void CAAudioUnitSink::drain()
 void CAAudioUnitSink::setCoreAudioBuffersize()
 {
 #if !TARGET_IPHONE_SIMULATOR
-  OSStatus status = noErr;
   // set the buffer size, this affects the number of samples
   // that get rendered every time the audio callback is fired.
   Float32 preferredBufferSize = 512 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
   CLog::Log(LOGNOTICE, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, preferredBufferSize);
-  status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration,
+  OSStatus status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration,
                                    sizeof(preferredBufferSize), &preferredBufferSize);
   if (status != noErr)
     CLog::Log(LOGWARNING, "%s preferredBufferSize couldn't be set (error: %d)", __PRETTY_FUNCTION__, (int)status);
