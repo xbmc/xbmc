@@ -887,7 +887,7 @@ msgstr "Liczba kanałów"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "Wspiera format DTS"
+msgstr "Obsługuje format DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1063,15 +1063,15 @@ msgstr "Zakładki"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "Wspiera format MP1"
+msgstr "Obsługuje format MP1"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "Wspiera format MP2"
+msgstr "Obsługuje format MP2"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "Wspiera format MP3"
+msgstr "Obsługuje format MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1243,7 +1243,7 @@ msgstr "Zachowuj oryginalną głośność miksując w dół"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "Wspiera format DTS-HD"
+msgstr "Obsługuje format DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
@@ -1251,7 +1251,7 @@ msgstr "Dekoduj na zewnętrznym urządzeniu"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "Wspiera format TrueHD"
+msgstr "Obsługuje format TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1311,7 +1311,7 @@ msgstr "Sortuj: Plik"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "Wspiera format Dolby Digital (AC3)"
+msgstr "Obsługuje format Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1639,7 +1639,7 @@ msgstr "Odtwarzaj automatycznie"
 
 msgctxt "#448"
 msgid "Dolby Digital Plus (E-AC3) capable receiver"
-msgstr "Wspiera format Dolby Digital Plus (E-AC3)"
+msgstr "Obsługuje format Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -6815,7 +6815,7 @@ msgstr "Grupy"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "Serwer TV nie wspiera tej operacji. Sprawdź szczegóły w pliku dziennika."
+msgstr "Serwer TV nie obsługuje tej operacji. Sprawdź szczegóły w pliku dziennika."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6979,7 +6979,7 @@ msgstr "Usługa TV"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Żaden z podłączonych serwerów TV nie wspiera skanowania kanałów."
+msgstr "Żaden z podłączonych serwerów TV nie obsługuje skanowania kanałów."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -7071,7 +7071,7 @@ msgstr "Wprowadź poprawny adres URL dla nowego kanału"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Serwer TV nie wspiera nagrywania wg harmonogramu."
+msgstr "Serwer TV nie obsługuje nagrywania wg harmonogramu."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -8311,7 +8311,7 @@ msgstr "z"
 
 msgctxt "#20164"
 msgid "Locking not supported"
-msgstr "Blokowanie niedostępne"
+msgstr "Blokowanie nieobsługiwane"
 
 msgctxt "#20165"
 msgid "Not locked"
@@ -10683,7 +10683,7 @@ msgstr "Nieudane odtwarzanie dysku Blu-ray"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
-msgstr "Menu tego dysku Blu-ray nie jest wspierane"
+msgstr "Menu tego dysku Blu-ray nie jest obsługiwane"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11239,7 +11239,7 @@ msgstr "Nie używaj niestandardowej mapy klawiszy dla tego urządzenia"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
-msgstr "Aktywuj wsparcie dla dżojstika oraz gamepada"
+msgstr "Aktywuj obsługę dżojstika i pada"
 
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
@@ -11831,7 +11831,7 @@ msgstr "Umożliwia odtwarzanie i nagrywanie telewizji (PVR) w Kodi. Do działani
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr "Importuje grupy kanałów z serwera TV (jeśli wspierane). Wszystkie grupy stworzone przez użytkownika zostaną usunięte, jeśli nie znajdują się na serwerze."
+msgstr "Importuje grupy kanałów z serwera TV (jeśli obsługiwane). Wszystkie grupy stworzone przez użytkownika zostaną usunięte, jeśli nie znajdują się na serwerze."
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
@@ -11847,7 +11847,7 @@ msgstr "Otwiera menedżera kanałów, który umożliwia zmianę kolejności kana
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
-msgstr "Wymusza na serwerze TV wyszukiwanie kanałów (jeśli wspierane)."
+msgstr "Wymusza na serwerze TV wyszukiwanie kanałów (jeśli obsługiwane)."
 
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
@@ -11919,7 +11919,7 @@ msgstr "Umożliwia odtwarzanie ostatnio oglądanego kanału telewizyjnego po uru
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
-msgstr "Wyświetla informację o jakości sygnału w oknie informacyjnym kodeka (jeśli wspierane przez klienta i serwer)."
+msgstr "Wyświetla informację o jakości sygnału w oknie informacyjnym kodeka (jeśli obsługiwane przez klienta i serwer)."
 
 msgctxt "#36230"
 msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
@@ -11943,19 +11943,19 @@ msgstr "Określa czas trwania nagrania po naciśnięciu przycisku nagrywania."
 
 msgctxt "#36235"
 msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
-msgstr "Priorytet nagrywania. Większa liczba oznacza wyższy priorytet. Nie wszystkie klienty i serwery wspierają tę funkcję."
+msgstr "Priorytet nagrywania. Większa liczba oznacza wyższy priorytet. Nie wszystkie klienty i serwery obsługują tę funkcję."
 
 msgctxt "#36236"
 msgid "Delete recording after this time. Not supported by all Add-ons and backends."
-msgstr "Usuwa nagrania po upłynięciu określonego tutaj czasu. Nie wszystkie klienty i serwery wspierają tę funkcję."
+msgstr "Usuwa nagrania po upłynięciu określonego tutaj czasu. Nie wszystkie klienty i serwery obsługują tę funkcję."
 
 msgctxt "#36237"
 msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
-msgstr "Rozpoczyna nagrywanie przed planowanym rozpoczęciem nagrania. Nie wszystkie klienty i serwery wspierają tę funkcję."
+msgstr "Rozpoczyna nagrywanie przed planowanym rozpoczęciem nagrania. Nie wszystkie klienty i serwery obsługują tę funkcję."
 
 msgctxt "#36238"
 msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
-msgstr "Kończy nagrywanie po planowanym zakończeniu nagrania. Nie wszystkie klienty i serwery wspierają tę funkcję."
+msgstr "Kończy nagrywanie po planowanym zakończeniu nagrania. Nie wszystkie klienty i serwery obsługują tę funkcję."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11991,7 +11991,7 @@ msgstr "Określa godzinę uruchamiania polecenia wybudzenia."
 
 msgctxt "#36247"
 msgid "Category for parental control settings if the PVR backend server supports parental controls."
-msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer TV wspiera kontrolę rodzicielską."
+msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer TV obsługuje kontrolę rodzicielską."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -12007,11 +12007,11 @@ msgstr "Prosi ponownie o podanie kodu PIN podczas próby uzyskania dostępu do k
 
 msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Kategoria ze specyficznymi ustawieniami serwera TV, jeśli używany serwer TV wspiera zmianę tych ustawień z poziomu Kodi."
+msgstr "Kategoria ze specyficznymi ustawieniami serwera TV, jeśli używany serwer TV obsługuje zmianę tych ustawień z poziomu Kodi."
 
 msgctxt "#36252"
 msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
-msgstr "Umożliwia ustawienie specyficznych ustawień serwera TV, jeśli serwer wspiera zmianę tych ustawień z poziomu Kodi."
+msgstr "Umożliwia ustawienie specyficznych ustawień serwera TV, jeśli serwer obsługuje zmianę tych ustawień z poziomu Kodi."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -12447,7 +12447,7 @@ msgstr "Określa konfigurację odtwarzania: [Stała] - właściwości odtwarzani
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
-msgstr "Określa liczbę kanałów wspieranych przez złącze dźwiękowe lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF wspiera tylko kanały 2.0, ale umożliwia przepuszczanie wspieranych formatów wielokanałowych."
+msgstr "Określa liczbę kanałów obsługiwanych przez złącze dźwiękowe lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF obsługuje tylko kanały 2.0, ale umożliwia przepuszczanie obsługiwanych formatów wielokanałowych."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
@@ -12459,11 +12459,11 @@ msgstr "Zaznacz, aby aktywować miksowanie dźwięku 2 kanałowego do liczby kan
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
-msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania wspiera dekodowanie strumienia AC3."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje dekodowanie strumienia AC3."
 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
-msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania wspiera dekodowanie strumienia DTS."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje dekodowanie strumienia DTS."
 
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
@@ -12475,11 +12475,11 @@ msgstr "Umożliwia przesyłanie zakodowanego dźwięku w formatach takich jak Do
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
-msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania wspiera dekodowanie strumienia TrueHD."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje dekodowanie strumienia TrueHD."
 
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
-msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania wspiera dekodowanie strumienia DTS-HD."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje dekodowanie strumienia DTS-HD."
 
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
@@ -12487,7 +12487,7 @@ msgstr "Określa urządzenie używane do odtwarzania dźwięku zdekodowanego w f
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
-msgstr "Określa zewnętrzne urządzenie używane do odtwarzania zakodowanych formatów, zaznacz wspierane formaty w opcjach poniżej."
+msgstr "Określa zewnętrzne urządzenie używane do odtwarzania zakodowanych formatów, zaznacz obsługiwane formaty w opcjach poniżej."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12707,7 +12707,7 @@ msgstr "Nagraj"
 
 msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
-msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe wspiera wielokanałowy dźwięk tylko w formacie Dolby Digital 5.1,  np. złącze SPDIF. Jeśli Twój system wspiera wielokanałowy dźwięk w formacie LPCM przez HDMI, pozostaw tę opcję nieaktywną."
+msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe obsługuje wielokanałowy dźwięk tylko w formacie Dolby Digital 5.1,  np. złącze SPDIF. Jeśli Twój system obsługuje wielokanałowy dźwięk w formacie LPCM przez HDMI, pozostaw tę opcję nieaktywną."
 
 msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
@@ -13019,7 +13019,7 @@ msgstr "Znajdź w"
 
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
-msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania wspiera dekodowanie strumienia E-AC3."
+msgstr "Zaznacz tę opcję, jeśli urządzenie dekodowania obsługuje dekodowanie strumienia E-AC3."
 
 msgctxt "#37017"
 msgid "Dual audio output"
@@ -13047,7 +13047,7 @@ msgstr "Chcesz zatrzymać odtwarzanie na zdalnym urządzeniu?"
 
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
-msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe wspiera wielokanałowy dźwięk tylko w formacie Dolby Digital 5.1, a chcesz odtwarzać wielokanałowy dźwięk w formatach AACS5.1 lub FLAC5.1 na systemie dźwięku przestrzennego 5.1. Uwaga - nierekomendowane dla platformy Pi z powodu silnego użycia procesora."
+msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe obsługuje wielokanałowy dźwięk tylko w formacie Dolby Digital 5.1, a chcesz odtwarzać wielokanałowy dźwięk w formatach AACS5.1 lub FLAC5.1 na systemie dźwięku przestrzennego 5.1. Uwaga - nierekomendowane dla platformy Pi z powodu intesywnego użycia procesora."
 
 msgctxt "#37025"
 msgid "Configure audio encoder settings such as quality and compression level"
@@ -13075,7 +13075,7 @@ msgstr "Nieograniczony"
 
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
-msgstr "Określa sposób otwierania/odtwarzania dysków Blu-ray. Menu dysku nie jest w pełni wspierane i może powodować problemy."
+msgstr "Określa sposób otwierania/odtwarzania dysków Blu-ray. Menu dysku nie jest w pełni obsługiwane i może powodować problemy."
 
 msgctxt "#38010"
 msgid "GPU accelerated"

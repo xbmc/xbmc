@@ -12569,6 +12569,10 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "โฟลเดอร์ที่ใช้ในการบันทึกภาพหน้าจอ ที่จับได้ใน Kodi."
 
+msgctxt "#36394"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "เปิดใช้ข้อความบันทึกจุดบกพร่องจากคลังข้อมูลเพิ่มเติม ที่จะรวมเข้าในบันทึกการแก้ไขจุดบกพร่อง."
+
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
 msgstr "หมวดหมู่ที่ประกอบด้วยการตั้งค่า สำหรับการทำงานของมาสเตอร์ล็อค."
@@ -12709,6 +12713,30 @@ msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
 msgstr "ปรับแต่ง ว่าการถอดรหัสวิดีโอจะถูกดำเนินการด้วยซอฟท์แวร์ (ใช้ ซีพียู มากขึ้น) หรือด้วยการเร่งความเร็วด้วยฮาร์ดแวร์ เมื่อเป็นไปได้."
 
+msgctxt "#36432"
+msgid "Select virtual keyboard layouts."
+msgstr "เลือกการจัดวางของคีย์บอร์ดเสมือน"
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "ถ้าเปิดการเลือกใช้กระบวนการแปลงภาพด้วย VAAPI ที่จะทำให้ใช้ซีพียูลดลง แต่ไดรเวอร์อาจค้างได้!"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "ใช้ DVDPlayer ในการถอดรหัสของแฟ้มวิดีโอ ด้วยการเร่งความเร็ว MMAL"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "โหมดการแยกภาพ 3 มิติ (ปัจจุบัน)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "โหมดการแยกภาพ 3 มิติ"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "ปิดการใช้งาน"
@@ -12737,6 +12765,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "ใช้ฮาร์ดแวร์"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "มุมมองเดียว (2 มิติ)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "โหมดการเล่น ของการแยกภาพวิดีโอ 3 มิติ"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "ถามฉัน"
@@ -12752,6 +12788,14 @@ msgstr "โหมดที่กำหนดไว้"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "แบบเดียวกับภาพยนตร์ (ตรวจสอบอัตโนมัติ)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "เลิกใช้ โหมดการแยกภาพ 3 มิติ เมื่อจบการเล่น"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "เลือกโหมดการเล่น"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."

@@ -4667,7 +4667,7 @@ msgstr "Automatische temperatuurbeheersing"
 
 msgctxt "#13302"
 msgid "Fan speed override"
-msgstr "Snelheidsregeling ventilator override"
+msgstr "Snelheidsregeling ventilator"
 
 msgctxt "#13303"
 msgid "Fonts"
@@ -8903,7 +8903,7 @@ msgstr "Muziekvideo's van dit album"
 
 msgctxt "#20400"
 msgid "Go to music videos by artist"
-msgstr "Muziekvideo's van deze artiest"
+msgstr "Ga naar muziekvideo's van deze artiest"
 
 msgctxt "#20401"
 msgid "Play music video"
@@ -8995,7 +8995,7 @@ msgstr "Altijd"
 
 msgctxt "#20423"
 msgid "Has trailer"
-msgstr "Trailer"
+msgstr "Trailer beschikbaar"
 
 msgctxt "#20424"
 msgid "False"
@@ -9127,7 +9127,7 @@ msgstr "Luisteraars"
 
 msgctxt "#20456"
 msgid "Flatten library hierarchy"
-msgstr "Maak de hierarchie van de bibliotheek plat"
+msgstr "Vereenvoudig hierarchie van de bibliotheek"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9215,7 +9215,7 @@ msgstr "TuxBox-apparaat"
 
 msgctxt "#21359"
 msgid "Add media share..."
-msgstr "Gedeelde media toevoegen..."
+msgstr "Media locatie toevoegen..."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
@@ -9235,11 +9235,11 @@ msgstr "Aflevering Bladwijzer aangemaakt"
 
 msgctxt "#21364"
 msgid "Edit media share"
-msgstr "Gedeelde media wijzigen"
+msgstr "Media locatie wijzigen"
 
 msgctxt "#21365"
 msgid "Remove media share"
-msgstr "Gedeelde media verwijderen"
+msgstr "Media locatie verwijderen"
 
 msgctxt "#21366"
 msgid "Custom subtitle folder"
@@ -10151,7 +10151,7 @@ msgstr "Teletekst activeren"
 
 msgctxt "#23051"
 msgid "Part %i"
-msgstr "Stuk %i"
+msgstr "Deel %i"
 
 msgctxt "#23052"
 msgid "Buffering %i bytes"
@@ -10159,11 +10159,11 @@ msgstr "%i bytes bufferen"
 
 msgctxt "#23053"
 msgid "Stopping"
-msgstr "Instellingen ontbreken"
+msgstr "Aan het stoppen"
 
 msgctxt "#23054"
 msgid "Running"
-msgstr "Instellingen verkeerd"
+msgstr "Bezig"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
@@ -10219,7 +10219,7 @@ msgstr "Visualisatie"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr "Add-on opslagplaats"
+msgstr "Add-on depot"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -10227,7 +10227,7 @@ msgstr "Ondertiteling"
 
 msgctxt "#24013"
 msgid "Lyrics"
-msgstr "Songtekstscraper"
+msgstr "Songtekst"
 
 msgctxt "#24014"
 msgid "TV information"
@@ -10251,7 +10251,7 @@ msgstr "Diensten"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "PVR add-ons"
+msgstr "PVR cliënten"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -10343,7 +10343,7 @@ msgstr "Beschikbare updates"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
-msgstr "Afhankelijkheden komen niet overeen. Neem contact op met de Add-on auteur."
+msgstr "Afhankelijkheden ontbreken. Neem contact op met de Add-on auteur."
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -10423,11 +10423,11 @@ msgstr "Add-on is bijgewerkt"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Downloaden add-on stoppen ?"
+msgstr "Downloaden add-on stoppen?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Huidige add-ons downloads"
+msgstr "Huidige add-on downloads"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -10491,7 +10491,7 @@ msgstr "Add-on aan het herstarten"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Add-onmanager vastzetten"
+msgstr "Add-onmanager beveiligen"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
@@ -10503,7 +10503,7 @@ msgstr "(huidige)"
 
 msgctxt "#24095"
 msgid "(blacklisted)"
-msgstr "(geblacklist)"
+msgstr "(geblokkeerd)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
@@ -10519,7 +10519,7 @@ msgstr "Defect"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "Wilt u deze skin gebruiken?"
+msgstr "Wilt u deze skin nu gebruiken?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -10527,11 +10527,11 @@ msgstr "Om deze eigenschap te gebruiken, moet een add-on gedownload worden:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Wil U deze add-on downloaden?"
+msgstr "Wilt U deze add-on downloaden?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr "Niet in staat om de skip te laden"
+msgstr "Niet in staat om de skin te laden"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
@@ -10619,7 +10619,7 @@ msgstr "Pauzeer de huidige video tijdens het zoeken naar ondertitels en hervat w
 
 msgctxt "#24124"
 msgid "Next to the video"
-msgstr "Naast de video"
+msgstr "Bij de video"
 
 msgctxt "#24125"
 msgid "Custom location"
@@ -10643,7 +10643,7 @@ msgstr "De configuratie van XBMC is verplaatst naar de nieuwe locatie voor Kodi.
 
 msgctxt "#24999"
 msgid "Hide incompatible"
-msgstr "verberg incompatibele"
+msgstr "Verberg incompatibele"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10651,7 +10651,7 @@ msgstr "Mededelingen"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr "Verberg onbekende"
+msgstr "Verberg buitenlandse"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
@@ -10827,7 +10827,7 @@ msgstr "Vertaal tekst"
 
 msgctxt "#33033"
 msgid "Map list %s category"
-msgstr "Map list %s categorie"
+msgstr "Map lijst %s categorie"
 
 msgctxt "#33034"
 msgid "36 Hour"
@@ -11143,7 +11143,7 @@ msgstr "Kan vorige item niet vinden om af te spelen"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
-msgstr "Gefaald om Zeroconf te starten"
+msgstr "Zeroconf starten mislukt"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."

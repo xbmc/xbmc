@@ -1247,7 +1247,7 @@ msgstr "רסיבר תומך DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
-msgstr "הפעל passthrough"
+msgstr "אפשר passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -2755,7 +2755,7 @@ msgstr "WPA2"
 
 msgctxt "#784"
 msgid "Applying network interface settings. Please wait."
-msgstr "מחיל הגדרות ממשק רשת. יש להמתין."
+msgstr "מחיל הגדרות ממשק רשת. נא להמתין."
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
@@ -5043,7 +5043,7 @@ msgstr "מהירות מאוורר מינימלית"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr "נגן מכאן"
+msgstr "ניגון מכאן"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -7527,11 +7527,11 @@ msgstr "מוזיקה  קלאסית"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
-msgstr "שירי עם / מוסיקה מסורתית"
+msgstr "שירי עם / מוזיקה מסורתית"
 
 msgctxt "#19584"
 msgid "Musical/Opera"
-msgstr "מוסיקה / אופרה"
+msgstr "מוזיקה / אופרה"
 
 msgctxt "#19585"
 msgid "Ballet"
@@ -8399,7 +8399,7 @@ msgstr "השתמש סגנון תצוגת פוסטר לסדרות"
 
 msgctxt "#20186"
 msgid "Please wait"
-msgstr "יש להמתין"
+msgstr "נא להמתין"
 
 msgctxt "#20187"
 msgid "UPnP"
@@ -8479,7 +8479,7 @@ msgstr "צילומים מ־Android"
 
 msgctxt "#20244"
 msgid "Android Apps"
-msgstr "ישומי Android"
+msgstr "יישומי Android"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -8775,7 +8775,7 @@ msgstr "* כל העונות"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "הסתרת פריטים שנצפו"
+msgstr "הסתר פריטים שנצפו"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -11975,7 +11975,7 @@ msgstr "הפקודה לא תורץ כאשר הקלטה מתוזמנת להתחי
 
 msgctxt "#36243"
 msgid "The command to execute."
-msgstr "הפקודה כדי להריץ."
+msgstr "הפקודה להרצה."
 
 msgctxt "#36244"
 msgid "Time to subtract from the start time of the next scheduled recording."
@@ -12699,7 +12699,7 @@ msgstr "עבור לערוץ"
 
 msgctxt "#36427"
 msgid "Show information"
-msgstr "הצג מידע"
+msgstr "הצג פרטים"
 
 msgctxt "#36428"
 msgid "Record"

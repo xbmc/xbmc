@@ -5211,7 +5211,7 @@ msgstr "Programari"
 
 msgctxt "#13456"
 msgid "Hardware accelerated"
-msgstr "Accelerat per maquinari"
+msgstr "Acceleració per maquinari"
 
 msgctxt "#13457"
 msgid "Prefer VAAPI render method"
@@ -6495,7 +6495,7 @@ msgstr "Anar al final"
 
 msgctxt "#19066"
 msgid "Channel icons"
-msgstr "Icones del cananl"
+msgstr "Icones del canal"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -10539,7 +10539,7 @@ msgstr "Especifiqueu on s'han de desar els subtítols descarregats: la mateixa u
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
-msgstr "Cercant subtítols ..."
+msgstr "S'estan cercant els subtítols ..."
 
 msgctxt "#24108"
 msgid "%d subtitles found"
@@ -11459,7 +11459,7 @@ msgstr "Mostra l'element (..) en les llistes per visitar la carpeta principal."
 
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
-msgstr "Mostrar les extensions dels arxius multimèdia. Per exemple, 'You Enjoy Myself.mp3' simplement apareixerà com a \"You Enjoy Miself'."
+msgstr "Mostrar les extensions dels fitxers multimèdia. Per exemple, 'You Enjoy Myself.mp3' simplement apareixerà com a \"You Enjoy Miself'."
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
@@ -11567,7 +11567,7 @@ msgstr "Selecciona el nivell de zoom que tindran els vídeos 4:3 mostrats en pan
 
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
-msgstr "La conversió de nivell d'estudi VDPAU proporciona un mètode perquè aplicacions avançades com l'Kodi puguin influir en la conversió d'espai de color."
+msgstr "La conversió de nivell d'estudi VDPAU proporciona un mètode perquè aplicacions avançades com el Kodi puguin influir en la conversió d'espai de color."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
@@ -11583,7 +11583,7 @@ msgstr "Alterna entre Triar, Jugar (per defecte), Resumir i Mostrar Informació.
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
-msgstr "Quan un arxiu es guarda a la biblioteca, es mostrarà el títol de la metadata en lloc del nom de fitxer."
+msgstr "Quan un fitxer es guarda a la biblioteca, es mostrarà el títol de la metadata en lloc del nom de fitxer."
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
@@ -11687,7 +11687,7 @@ msgstr "Mostra una notificació quan s'agreguen, acaben, o eliminen temporitzado
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Executa la comanda \"wakeup\" de sota quan es tanca l'Kodi o està entrant en el mode d'hibernació. La data i hora de la següent gravació programada es passa com a paràmetre."
+msgstr "Executa la comanda \"wakeup\" de sota quan es tanca el Kodi o està entrant en el mode d'hibernació. La data i hora de la següent gravació programada es passa com a paràmetre."
 
 msgctxt "#36243"
 msgid "The command to execute."
@@ -11727,7 +11727,7 @@ msgstr "Selecciona la font d'informació de l'artista per defecte. Veure l'Admin
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on Kodi startup."
-msgstr "Buscar fitxers multimèdia nous i eliminats durant l'arrencada de l'Kodi."
+msgstr "Buscar fitxers multimèdia nous i eliminats durant l'arrencada del Kodi."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11743,11 +11743,11 @@ msgstr "Importa un fitxer XML a la base de dades de la Biblioteca de Música."
 
 msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
-msgstr "L'Kodi reproduirà automàticament el següent element de la carpeta actual. Per exemple, en la vista de Fitxers: Després d'una pista reproduïda, l'Kodi reproduirà automàticament la pista següent, de dins la mateixa carpeta."
+msgstr "El Kodi reproduirà automàticament el següent element de la carpeta actual. Per exemple, en la vista de Fitxers: Després d'una pista reproduïda, el Kodi reproduirà automàticament la pista següent, de dins la mateixa carpeta."
 
 msgctxt "#36267"
 msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "L'Kodi llegirà la informació de ReplayGain codificada en els teus fitxers d'àudio a través d'un programa com l'MP3Gain i normalitzarà els nivells de so en concordança.\n\n\nKodi leerá la información de repetición de ganancia codificada en tus archivos de audio por un programa como MP3Gain y normalizará el sonido en función de los valores obtenidos."
+msgstr "El Kodi llegirà la informació de ReplayGain codificada en els teus fitxers d'àudio a través d'un programa com l'MP3Gain i normalitzarà els nivells de so en concordança."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11767,11 +11767,11 @@ msgstr "Seleccioneu la visualització a mostrar durant l'escolta de música."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
-msgstr "Llegeix la informació d'etiquetes d'arxius de música. Per a grans directoris, això pot retardar el temps de lectura, especialment en xarxa."
+msgstr "Llegeix la informació d'etiquetes dels fitxers de música. Per a grans directoris, això pot retardar el temps de lectura, especialment en xarxa."
 
 msgctxt "#36281"
 msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "L'Kodi buscarà miniatures en recursos remots i mitjans òptics. Sovint, això pot alentir el llistat de carpetes de xarxa."
+msgstr "El Kodi buscarà miniatures en recursos remots i mitjans òptics. Sovint, això pot alentir el llistat de carpetes de xarxa."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11803,7 +11803,7 @@ msgstr "Auto-expulsar el disc al completar el volcat."
 
 msgctxt "#36293"
 msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
-msgstr "L'Kodi buscarà un arxiu .cdg coincident i mostrarà els seus gràfics durant la reproducció de qualsevol arxiu de música."
+msgstr "El Kodi buscarà un fitxer .cdg coincident i mostrarà els seus gràfics durant la reproducció de qualsevol fitxer de música."
 
 msgctxt "#36296"
 msgid "Select the size of the font used during karaoke."
@@ -11875,7 +11875,7 @@ msgstr "Notifica als clients UPnP quan es produeix una actualització manual o a
 
 msgctxt "#36328"
 msgid "Enable remote users to control Kodi through the built-in webserver."
-msgstr "Permet als usuaris remots controlar l'Kodi a través del servidor web incrustat."
+msgstr "Permet als usuaris remots controlar el Kodi a través del servidor web incrustat."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11887,7 +11887,7 @@ msgstr "Selecciona una de les interfícies web instal·lades a través de l'Admi
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
-msgstr "Permet que altres programes d'aquest ordinador puguin controlar l'Kodi a través de la interfície web o el protocol d'interfície JSON-RPC."
+msgstr "Permet que altres programes d'aquest ordinador puguin controlar el Kodi a través de la interfície web o el protocol d'interfície JSON-RPC."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
@@ -11903,7 +11903,7 @@ msgstr "Definiu el nombre màxim de clients que poden connectar-se."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control Kodi."
-msgstr "Permetre a programes de la xarxa que controlin l'Kodi."
+msgstr "Permetre a programes de la xarxa que controlin el Kodi."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -11919,11 +11919,11 @@ msgstr "Habilita la protecció amb contrasenya de l'AirPlay."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
-msgstr "Envia automàticament l'ordre 'Wake-On-Lan' al(s) servidor(s) just abans d'intentar accedir als arxius compartits o serveis."
+msgstr "Envia automàticament l'ordre 'Wake-On-Lan' al(s) servidor(s) just abans d'intentar accedir als fitxers compartits o serveis."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
-msgstr "En una configuració multi-pantalla, es desactiven les pantalles on no es mostra l'Kodi."
+msgstr "En una configuració multi-pantalla, es desactiven les pantalles on no es mostra el Kodi."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -11971,11 +11971,11 @@ msgstr "Quan s'activa, les fletxes del teclat mouran la selecció en el teclat v
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
-msgstr "Utilitza un ratolí o dispositiu de pantalla tàctil per controlar l'Kodi. Nota: La desactivació provocarà la pèrdua de control sobre l'Kodi quan no es detecti cap teclat ni comandament a distància."
+msgstr "Utilitza un ratolí o dispositiu de pantalla tàctil per controlar el Kodi. Nota: La desactivació provocarà la pèrdua de control sobre el Kodi quan no es detecti cap teclat ni comandament a distància."
 
 msgctxt "#36378"
 msgid "Use a joystick to control Kodi."
-msgstr "Utilitza un joystcik per controlar l'Kodi."
+msgstr "Utilitza un joystcik per controlar el Kodi."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -12003,15 +12003,15 @@ msgstr "Configura la contrasenya del servidor proxy."
 
 msgctxt "#36386"
 msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
-msgstr "Si tens un ample de banda limitat, l'Kodi intentarà mantenir-se dins d'aquests límits."
+msgstr "Si teniu un ample de banda limitat, el Kodi intentarà mantenir-se dins d'aquests límits."
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
-msgstr "Defineix quant de temps l'Kodi ha de funcionar a relentí abans d'apagar."
+msgstr "Defineix quant de temps el Kodi ha de funcionar a ralentí abans d'apagar."
 
 msgctxt "#36390"
 msgid "Define what action Kodi should do when it has been idle for a long period of time."
-msgstr "Definiu quina acció ha de fer l'Kodi quan ha estat inactiu durant un llarg període de temps."
+msgstr "Definiu quina acció ha de fer el Kodi quan ha estat inactiu durant un llarg període de temps."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -12019,7 +12019,7 @@ msgstr "Activa o desactiva el registre de depuració. Útil per a la solució de
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
-msgstr "Directori utilitzat per guardar les imatges capturades des de l'Kodi."
+msgstr "Directori utilitzat per guardar les imatges capturades des del Kodi."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -12027,7 +12027,7 @@ msgstr "Defineix el codi PIN utilitzat per al bloqueig mestre."
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before Kodi is closed down."
-msgstr "Defineix el nombre màxim de re-intents abans de que l'Kodi es tanqui."
+msgstr "Defineix el nombre màxim de re-intents abans de que el Kodi es tanqui."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -12151,7 +12151,7 @@ msgstr "Habilita-ho per potenciar els diàlegs en comparació amb els so de fons
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
-msgstr "Habilita el maquinari de descodificació d'arxius de vídeo."
+msgstr "Habilita el maquinari de descodificació de fitxers de vídeo."
 
 msgctxt "#36900"
 msgid "movie"
@@ -12316,3 +12316,7 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Il·limitat"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Acceleració per GPU"
