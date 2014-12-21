@@ -17,7 +17,7 @@
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
-      <xs:attribute name="defaultresolution" type="xs:string" use="required"/>
+      <xs:attribute name="defaultresolution" type="xs:string"/>
       <xs:attribute name="defaultwideresolution" type="xs:string"/>
       <xs:attribute name="effectslowdown" type="xs:float"/>
       <xs:attribute name="debugging" type="xs:boolean"/>
