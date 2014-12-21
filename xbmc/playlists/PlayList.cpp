@@ -362,7 +362,7 @@ int CPlayList::RemoveDVDItems()
     {
       vecFilenames.push_back( item->GetPath() );
     }
-    it++;
+    ++it;
   }
 
   // Delete them from playlist
@@ -375,7 +375,7 @@ int CPlayList::RemoveDVDItems()
     {
       std::string& strFilename = *it;
       Remove( strFilename );
-      it++;
+      ++it;
     }
     vecFilenames.erase( vecFilenames.begin(), vecFilenames.end() );
   }
