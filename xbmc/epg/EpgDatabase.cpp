@@ -272,7 +272,7 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
 
 bool CEpgDatabase::Persist(const map<unsigned int, CEpg *> &epgs)
 {
-  for (map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); it++)
+  for (map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
   {
     CEpg *epg = it->second;
     if (epg)
