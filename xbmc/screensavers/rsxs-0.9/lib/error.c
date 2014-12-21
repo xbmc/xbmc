@@ -223,6 +223,8 @@ error (int status, int errnum, const char *message, ...)
   __libc_ptf_call (pthread_setcancelstate, (state, NULL), 0);
 # endif
 #endif
+
+  va_end(args);
 }
 
 /* Sometimes we want to have at most one error per line.  This
