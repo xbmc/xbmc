@@ -18,6 +18,7 @@
  *
  */
 
+#include <cstdlib>
 #include <sstream>
 
 #include "ListItem.h"

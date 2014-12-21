@@ -27,7 +27,7 @@
 #include "utils/RegExp.h"
 
 #include <math.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <dinput.h>
 #include <dinputd.h>

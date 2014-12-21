@@ -55,7 +55,7 @@ class CSettingAction;
 class CSettingCategory;
 class CSettingSection;
 
-typedef boost::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
+typedef std::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 
 class CGUIDialogSettingsBase
   : public CGUIDialog,

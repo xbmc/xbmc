@@ -32,6 +32,7 @@
 #include "URL.h"
 #include "StringUtils.h"
 
+#include <cassert>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 

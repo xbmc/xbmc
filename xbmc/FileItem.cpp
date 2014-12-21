@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -63,6 +65,7 @@
 #endif
 
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 using namespace XFILE;
@@ -1888,7 +1891,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
-    sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
+    sortItems[index] = std::shared_ptr<SortItem>(new SortItem);
     m_items[index]->ToSortable(*sortItems[index], fields);
     (*sortItems[index])[FieldId] = index;
   }

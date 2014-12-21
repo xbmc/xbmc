@@ -20,6 +20,7 @@
 
 #include "ZeroconfDirectory.h"
 #include <stdexcept>
+#include <cassert>
 
 #include "URL.h"
 #include "utils/URIUtils.h"

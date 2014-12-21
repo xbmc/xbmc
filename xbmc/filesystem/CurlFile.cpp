@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <climits>
+#include <cassert>
 
 #ifdef TARGET_POSIX
 #include <errno.h>

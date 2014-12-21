@@ -33,6 +33,10 @@
 #include <media/stagefright/MediaDefs.h>
 #include <media/stagefright/MediaSource.h>
 
+#if __cplusplus >= 201103L
+#define char16_t LIBRARY_char16_t
+#define char32_t LIBRARY_char32_t
+#endif
 #include <binder/ProcessState.h>
 #include <media/stagefright/OMXClient.h>
 #include <media/stagefright/OMXCodec.h>
@@ -42,6 +46,10 @@
 #include <ui/GraphicBuffer.h>
 #include <ui/PixelFormat.h>
 #include <gui/SurfaceTexture.h>
+#if __cplusplus >= 201103L
+#undef char16_t
+#undef char32_t
+#endif
 
 #include "system_gl.h"
 

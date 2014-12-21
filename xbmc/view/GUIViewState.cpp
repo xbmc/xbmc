@@ -557,7 +557,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon) && addon)
     {
-      PluginPtr plugin = boost::static_pointer_cast<CPluginSource>(addon);
+      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
         m_playlist = PLAYLIST_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))

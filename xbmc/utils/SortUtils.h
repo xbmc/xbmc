@@ -21,7 +21,7 @@
 
 #include <map>
 #include <string>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 #include "DatabaseUtils.h"
 #include "SortFileItem.h"
@@ -116,7 +116,7 @@ typedef struct GUIViewSortDetails
 } GUIViewSortDetails;
 
 typedef DatabaseResult SortItem;
-typedef boost::shared_ptr<SortItem> SortItemPtr;
+typedef std::shared_ptr<SortItem> SortItemPtr;
 typedef std::vector<SortItemPtr> SortItems;
 
 class SortUtils

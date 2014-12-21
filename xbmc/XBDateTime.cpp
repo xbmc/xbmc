@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"

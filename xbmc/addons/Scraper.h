@@ -54,7 +54,7 @@ class CScraperUrl;
 namespace ADDON
 {
 class CScraper;
-typedef boost::shared_ptr<CScraper> ScraperPtr;
+typedef std::shared_ptr<CScraper> ScraperPtr;
 
 std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 CONTENT_TYPE TranslateContent(const std::string &string);

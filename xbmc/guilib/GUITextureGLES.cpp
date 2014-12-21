@@ -29,6 +29,8 @@
 #include "windowing/WindowingFactory.h"
 #include "guilib/GraphicContext.h"
 
+#include <cstddef>
+
 #if defined(HAS_GLES)
 
 

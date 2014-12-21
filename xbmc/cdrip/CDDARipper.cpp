@@ -297,7 +297,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon);
   if (addon)
   {
-    boost::shared_ptr<CAudioEncoder> enc = boost::static_pointer_cast<CAudioEncoder>(addon);
+    std::shared_ptr<CAudioEncoder> enc = std::static_pointer_cast<CAudioEncoder>(addon);
     track += enc->extension;
   }
 

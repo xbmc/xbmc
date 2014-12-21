@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+#include <cassert>
+
 int CXHandle::m_objectTracker[10] = {0};
 
 HANDLE WINAPI GetCurrentProcess(void) {

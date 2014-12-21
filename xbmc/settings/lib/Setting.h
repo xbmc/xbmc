@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "ISetting.h"
 #include "ISettingCallback.h"
@@ -136,7 +136,7 @@ protected:
   CSharedSection m_critical;
 };
 
-typedef boost::shared_ptr<CSetting> SettingPtr;
+typedef std::shared_ptr<CSetting> SettingPtr;
 
 typedef std::vector<CSetting *> SettingList;
 typedef std::vector<SettingPtr> SettingPtrList;

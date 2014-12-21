@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include <cassert>
 
 #if defined(TARGET_RASPBERRY_PI)
 

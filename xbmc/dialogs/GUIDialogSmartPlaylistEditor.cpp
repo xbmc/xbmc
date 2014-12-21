@@ -150,7 +150,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 {
   if (item < 0 || item >= (int)m_playlist.m_ruleCombination.m_rules.size()) return;
 
-  CSmartPlaylistRule rule = *boost::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[item]);
+  CSmartPlaylistRule rule = *std::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[item]);
 
   if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
     *m_playlist.m_ruleCombination.m_rules[item] = rule;
@@ -298,7 +298,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     if (m_playlist.m_ruleCombination.m_rules[i]->m_field == FieldNone)
       item->SetLabel(g_localizeStrings.Get(21423));
     else
-      item->SetLabel(boost::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[i])->GetLocalizedRule());
+      item->SetLabel(std::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[i])->GetLocalizedRule());
     m_ruleLabels->Add(item);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RULE_LIST, 0, 0, m_ruleLabels);
