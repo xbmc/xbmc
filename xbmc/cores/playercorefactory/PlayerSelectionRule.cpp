@@ -34,7 +34,13 @@ CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 }
 
 CPlayerSelectionRule::~CPlayerSelectionRule()
-{}
+{
+  for (unsigned int i = 0; i < vecSubRules.size(); i++)
+  {
+    delete vecSubRules[i];
+  }
+  vecSubRules.clear();
+}
 
 void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 {
