@@ -276,7 +276,7 @@ void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
   if (selectedIndexes.empty())
     return;
 
-  for (std::vector<int>::const_iterator it = selectedIndexes.begin(); it != selectedIndexes.end(); it++)
+  for (std::vector<int>::const_iterator it = selectedIndexes.begin(); it != selectedIndexes.end(); ++it)
     SetSelected(*it);
 }
 
@@ -285,7 +285,7 @@ void CGUIDialogSelect::SetSelected(const std::vector<std::string> &selectedLabel
   if (selectedLabels.empty())
     return;
 
-  for (std::vector<std::string>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
+  for (std::vector<std::string>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); ++it)
     SetSelected(*it);
 }
 
