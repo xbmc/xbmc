@@ -6081,7 +6081,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     // get data from returned rows
     items.Reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -6186,7 +6186,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
     // get data from returned rows
     items.Reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -6315,7 +6315,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
     CLabelFormatter formatter("%H. %T", "");
 
     const query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -7142,7 +7142,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
     items.Reserve(results.size());
     // get songs from returned subtable
     const query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -8549,7 +8549,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
             seasonThumb = "season-specials";
           else
             seasonThumb = StringUtils::Format("season%02i", i->first);
-          for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); j++)
+          for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
           {
             std::string savedThumb(item.GetLocalArt(seasonThumb + "-" + j->first, true));
             if (!i->second.empty())

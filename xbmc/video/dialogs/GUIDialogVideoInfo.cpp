@@ -335,7 +335,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           CGUIListItem::ArtMap thumbs;
           if (db.GetArtForItem(seasonID, MediaTypeSeason, thumbs))
           {
-            for (CGUIListItem::ArtMap::iterator i = thumbs.begin(); i != thumbs.end(); i++)
+            for (CGUIListItem::ArtMap::iterator i = thumbs.begin(); i != thumbs.end(); ++i)
               m_movieItem->SetArt("season." + i->first, i->second);
           }
         }
@@ -640,7 +640,7 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
   // add any art types that exist for other media items of the same type
   vector<string> dbArtTypes;
   db.GetArtTypes(videoItem.GetVideoInfoTag()->m_type, dbArtTypes);
-  for (vector<string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); it++)
+  for (vector<string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); ++it)
   {
     if (find(artTypes.begin(), artTypes.end(), *it) == artTypes.end())
       artTypes.push_back(*it);
