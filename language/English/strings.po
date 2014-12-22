@@ -11383,7 +11383,7 @@ msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21443"
-msgid "Video resolution"
+msgid "Video Width (px)"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp

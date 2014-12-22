@@ -623,27 +623,21 @@ std::string CSmartPlaylistRule::GetLocalizedRule() const
 std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
 {
   std::string retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
-  int iRes = (int)strtol(parameter.c_str(), NULL, 10);
-
-  int min, max;
-  if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
-  else if (iRes >= 720) { min =  961; max = 1280; }
-  else if (iRes >= 540) { min =  721; max =  960; }
-  else                  { min =    0; max =  720; }
+  int iWidth = (int)strtol(parameter.c_str(), NULL, 10);
 
   switch (m_operator)
   {
     case OPERATOR_EQUALS:
-      retVal += StringUtils::Format(">= %i AND iVideoWidth <= %i", min, max);
+      retVal += StringUtils::Format("= %i", iWidth);
       break;
     case OPERATOR_DOES_NOT_EQUAL:
-      retVal += StringUtils::Format("< %i OR iVideoWidth > %i", min, max);
+      retVal += StringUtils::Format("!= %i", iWidth);
       break;
     case OPERATOR_LESS_THAN:
-      retVal += StringUtils::Format("< %i", min);
+      retVal += StringUtils::Format("< %i", iWidth);
       break;
     case OPERATOR_GREATER_THAN:
-      retVal += StringUtils::Format("> %i", max);
+      retVal += StringUtils::Format("> %i", iWidth);
       break;
     default:
       break;
