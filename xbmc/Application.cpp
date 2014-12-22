@@ -3582,6 +3582,7 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
 
+    g_audioManager.DeInitialize();
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
     CAEFactory::UnLoadEngine();
