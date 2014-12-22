@@ -150,8 +150,7 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
   RESOLUTION_INFO res;
-  bool ret = false;
-  ret = GetNativeResolution(&res);
+  bool ret = GetNativeResolution(&res);
   if (ret && res.iWidth > 1 && res.iHeight > 1)
   {
     resolutions.push_back(res);
