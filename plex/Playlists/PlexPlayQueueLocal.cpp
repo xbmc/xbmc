@@ -131,7 +131,7 @@ void CPlexPlayQueueLocal::OnJobComplete(unsigned int jobID, bool success, CJob* 
 
     m_list->Clear();
     m_list->Copy(fj->m_items);
-    m_list->SetPath("plexserver://playqueue/");
+    m_list->SetPath("plexserver://playqueue/" + std::string(type == PLEX_MEDIA_TYPE_MUSIC ? "audio" : "video"));
 
     /* If we need to shuffle the list do it here */
     if (fj->m_options.shuffle)

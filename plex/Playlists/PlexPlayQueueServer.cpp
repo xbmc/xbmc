@@ -94,10 +94,10 @@ bool CPlexPlayQueueServer::create(const CFileItem& container, const CStdString& 
   }
   
   // calculate URI from the container item
-  if (container.GetPlexDirectoryType() == PLEX_DIR_TYPE_PLAYLIST)
+  if (container.HasProperty("playlistID"))
   {
     realUri = "";
-    playlistID = container.GetProperty("ratingkey").asString();
+    playlistID = container.GetProperty("playlistID").asString();
   }
 
   CURL u = getPlayQueueURL(type, realUri, playlistID, options.startItemKey, options.shuffle, false, 0, false);
@@ -279,7 +279,7 @@ void CPlexPlayQueueServer::OnJobComplete(unsigned int jobID, bool success, CJob*
 
     CFileItemListPtr pqCopy = CFileItemListPtr(new CFileItemList);
     pqCopy->Assign(fj->m_items);
-    pqCopy->SetPath("plexserver://playqueue/");
+    pqCopy->SetPath("plexserver://playqueue/" + std::string(type == PLEX_MEDIA_TYPE_MUSIC ? "audio" : "video"));
 
     {
       CSingleLock lk(m_mapLock);

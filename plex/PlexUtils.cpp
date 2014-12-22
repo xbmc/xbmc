@@ -860,7 +860,7 @@ string PlexUtils::GetPlexContent(const CFileItem &item)
   bool singleItem = item.GetProperty("size").asInteger() < 2 && !item.HasProperty("viewGroup");
 
   if (boost::starts_with(itemUrl.GetFileName(), "playQueues") ||
-      itemUrl.Get() == "plexserver://playqueue/")
+      boost::starts_with(itemUrl.Get(), "plexserver://playqueue"))
   {
     singleItem = false;
     if (item.GetProperty("hasMixedMembers").asBoolean())

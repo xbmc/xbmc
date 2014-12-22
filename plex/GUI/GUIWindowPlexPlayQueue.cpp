@@ -31,21 +31,13 @@ bool CGUIWindowPlexPlayQueue::OnSelect(int iItem)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::isPQ() const
 {
-  if (m_vecItems->GetPath() == "plexserver://playqueue" ||
-      m_vecItems->GetPath() == "plexserver://playqueue/")
-    return true;
-  return false;
+  return boost::starts_with(m_vecItems->GetPath(), "plexserver://playqueue");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::isPlayList() const
 {
-  CURL url(m_vecItems->GetPath());
-
-  if (boost::starts_with(url.GetFileName(), "playlists"))
-    return true;
-  else
-    return false;
+  return boost::starts_with(m_vecItems->GetPath(), "plexserver://playlists");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +76,7 @@ bool CGUIWindowPlexPlayQueue::Update(const CStdString& strDirectory, bool update
 {
   CStdString dirPath = strDirectory;
   if (strDirectory.empty())
-    dirPath = "plexserver://playqueue/";
+    dirPath = "plexserver://playqueue/audio";
 
   CStdString plexEditMode = m_vecItems->GetProperty("PlexEditMode").asString();
 
