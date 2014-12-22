@@ -13757,7 +13757,27 @@ msgctxt "#24144"
 msgid "Add-on uninstalled"
 msgstr ""
 
-#empty strings from id 24145 to 24991
+#. Used as an event log title for the video library scanner
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24145"
+msgid "Video library scanner"
+msgstr ""
+
+#. Used as an event log title for the music library scanner
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+msgctxt "#24146"
+msgid "Music library scanner"
+msgstr ""
+
+#. Used as an event log description for files that failed to be processed by the library scanner
+#. Failed to scan <media type>: <filename>
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24147"
+msgid "Failed to scan %s: %s"
+msgstr ""
+
+#empty strings from id 24148 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
