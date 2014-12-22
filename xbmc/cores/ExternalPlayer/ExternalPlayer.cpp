@@ -331,6 +331,8 @@ void CExternalPlayer::Process()
   BOOL ret = ExecuteAppAndroid(m_filename.c_str(), mainFile.c_str());
 #elif defined(TARGET_POSIX) || defined(TARGET_DARWIN_OSX)
   BOOL ret = ExecuteAppLinux(strFArgs.c_str());
+#else
+  BOOL ret = TRUE;
 #endif
   int64_t elapsedMillis = XbmcThreads::SystemClockMillis() - m_playbackStartTime;
 
