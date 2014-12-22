@@ -44,12 +44,6 @@
 
 #include <libsmbclient.h>
 
-#if defined(TARGET_DARWIN)
-#define XBMC_SMB_MOUNT_PATH "Library/Application Support/Kodi/Mounts/"
-#else
-#define XBMC_SMB_MOUNT_PATH "/media/kodi/smb/"
-#endif
-
 struct CachedDirEntry
 {
   unsigned int type;
@@ -337,87 +331,3 @@ bool CSMBDirectory::Exists(const CURL& url2)
   return S_ISDIR(info.st_mode);
 }
 
-std::string CSMBDirectory::MountShare(const std::string &smbPath, const std::string &strType, const std::string &strName,
-    const std::string &strUser, const std::string &strPass)
-{
-  UnMountShare(strType, strName);
-
-  std::string strMountPoint = GetMountPoint(strType, strName);
-
-#if defined(TARGET_DARWIN)
-  // Create the directory.
-  strMountPoint = CURL::Decode(strMountPoint);
-  CreateDirectory(strMountPoint.c_str(), NULL);
-
-  // Massage the path.
-  std::string smbFullPath = "//";
-  if (smbFullPath.length() > 0)
-  {
-    smbFullPath += strUser;
-    if (strPass.length() > 0)
-      smbFullPath += ":" + strPass;
-
-    smbFullPath += "@";
-  }
-
-  std::string newPath = smbPath;
-  StringUtils::TrimLeft(newPath, "/");
-  smbFullPath += newPath;
-
-  // Make the mount command.
-  vector<string> args;
-  args.push_back("/sbin/mount_smbfs");
-  args.push_back("-o");
-  args.push_back("nobrowse");
-  args.push_back(smbFullPath);
-  args.push_back(strMountPoint);
-
-  // Execute it.
-  if (CUtil::Command(args))
-    return strMountPoint;
-#else
-  CUtil::SudoCommand("mkdir -p " + strMountPoint);
-
-  std::string strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
-    " -o rw,nobrl,directio";
-  if (!strUser.empty())
-    strCmd += ",user=" + strUser + ",password=" + strPass;
-  else
-    strCmd += ",guest";
-
-  if (CUtil::SudoCommand(strCmd))
-    return strMountPoint;
-#endif
-  return "";
-}
-
-void CSMBDirectory::UnMountShare(const std::string &strType, const std::string &strName)
-{
-#if defined(TARGET_DARWIN)
-  // Decode the path.
-  std::string strMountPoint(CURL::Decode(GetMountPoint(strType, strName)));
-
-  // Make the unmount command.
-  vector<string> args;
-  args.push_back("/sbin/umount");
-  args.push_back(strMountPoint);
-
-  // Execute command.
-  CUtil::Command(args);
-#else
-  std::string strCmd = "umount " + GetMountPoint(strType, strName);
-  CUtil::SudoCommand(strCmd);
-#endif
-}
-
-std::string CSMBDirectory::GetMountPoint(const std::string &strType, const std::string &strName)
-{
-  std::string strPath(CURL::Encode(strType + strName));
-
-#if defined(TARGET_DARWIN)
-  std::string str = getenv("HOME");
-  return str + "/" + XBMC_SMB_MOUNT_PATH + strPath;
-#else
-  return XBMC_SMB_MOUNT_PATH + strPath;
-#endif
-}

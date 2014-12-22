@@ -1614,9 +1614,6 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
   return Command(args, waitExit);
 }
 
-//
-// FIXME, this should be merged with the function below.
-//
 bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
@@ -1657,36 +1654,6 @@ bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
   }
 
   return (waitExit) ? (WEXITSTATUS(n) == 0) : true;
-}
-
-bool CUtil::SudoCommand(const CStdString &strCommand)
-{
-  CLog::Log(LOGDEBUG, "Executing sudo command: <%s>", strCommand.c_str());
-  pid_t child = fork();
-  int n = 0;
-  if (child == 0)
-  {
-    close(0); // close stdin to avoid sudo request password
-    close(1);
-    close(2);
-    vector<string> arrArgs = StringUtils::Split(strCommand, " ");
-    if (arrArgs.size() > 0)
-    {
-      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
-      memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
-      args[0] = (char *)"/usr/bin/sudo";
-      args[1] = (char *)"-S";
-      for (size_t i=0; i<arrArgs.size(); i++)
-      {
-        args[i+2] = (char *)arrArgs[i].c_str();
-      }
-      execvp("/usr/bin/sudo", args);
-    }
-  }
-  else
-    waitpid(child, &n, 0);
-
-  return WEXITSTATUS(n) == 0;
 }
 #endif
 
