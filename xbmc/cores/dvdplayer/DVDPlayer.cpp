@@ -3989,6 +3989,15 @@ int CDVDPlayer::SeekChapter(int iChapter)
   return 0;
 }
 
+int64_t CDVDPlayer::GetChapterPos(int chapterIdx)
+{
+  CSingleLock lock(m_StateSection);
+  if (m_pDemuxer)
+    return m_pDemuxer->GetChapterPos(chapterIdx);
+
+  return -1;
+}
+
 int CDVDPlayer::AddSubtitle(const std::string& strSubPath)
 {
   return AddSubtitleFile(strSubPath);

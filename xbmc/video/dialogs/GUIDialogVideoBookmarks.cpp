@@ -45,6 +45,9 @@
 #include "utils/Variant.h"
 #include "Util.h"
 #include "cores/IPlayer.h"
+#include "video/VideoThumbLoader.h"
+#include "filesystem/File.h"
+#include "TextureCache.h"
 
 using namespace std;
 
@@ -156,7 +159,7 @@ bool CGUIDialogVideoBookmarks::OnAction(const CAction &action)
 
 void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
 {
-  if (item < 0 || item >= m_vecItems->Size())
+  if (item < 0 || item >= m_bookmarks.size())
     return;
   
     // highlight the item
@@ -232,6 +235,16 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     m_vecItems->Add(item);
   }
+  // add chapters if around
+  for (int i = 1; i <= g_application.m_pPlayer->GetChapterCount(); ++i)
+  {
+    std::string chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
+    int64_t pos = g_application.m_pPlayer->GetChapterPos(i);
+    std::string time = StringUtils::SecondsToTimeString(pos, TIME_FORMAT_HH_MM_SS);
+    std::string name = StringUtils::Format("%s (%s)", chapterName.c_str(), time.c_str());
+    CFileItemPtr item(new CFileItem(name));
+    m_vecItems->Add(item);
+  }
   m_viewControl.SetItems(*m_vecItems);
 }
 
@@ -281,11 +294,17 @@ void CGUIDialogVideoBookmarks::Clear()
 
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 {
-  if (item < 0 || item >= (int)m_bookmarks.size()) return;
+  if (item < 0 || item >= (int)m_bookmarks.size()+g_application.m_pPlayer->GetChapterCount())
+    return;
   if (g_application.m_pPlayer->HasPlayer())
   {
-    g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
-    g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
+    if (item < m_bookmarks.size())
+    {
+      g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
+      g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
+    }
+    else
+      g_application.m_pPlayer->SeekChapter(item-m_bookmarks.size()+1);
   }
 }
 
@@ -463,5 +482,3 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
   }
   return bReturn;
 }
-
-
