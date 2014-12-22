@@ -63,7 +63,7 @@ foreach(binding ${bindings})
   # copy the header file to include/kodi
   file(COPY ${APP_ROOT}/${header} DESTINATION ${KODI_INCLUDE_DIR})
 
-  # auto-generate header files for backwards comaptibility to xbmc with deprecation warning
+  # auto-generate header files for backwards compatibility to xbmc with deprecation warning
   get_filename_component(headerfile ${header} NAME)
   file(WRITE ${XBMC_INCLUDE_DIR}/${headerfile}
 "#pragma once
