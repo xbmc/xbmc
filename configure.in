@@ -2519,8 +2519,6 @@ OUTPUT_FILES="Makefile \
     tools/Linux/${APP_NAME_LC}.sh \
     tools/Linux/${APP_NAME_LC}-standalone.sh \
     tools/Linux/${APP_NAME_LC}-xsession.desktop \
-    tools/Linux/FEH.py \
-    tools/Linux/FEH-ARM.py \
     tools/EventClients/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
