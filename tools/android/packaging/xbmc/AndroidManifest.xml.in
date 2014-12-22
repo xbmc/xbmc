@@ -3,7 +3,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.xbmc.@APP_NAME_LC@"
     android:versionCode="@APP_VERSION_CODE@"
-    android:versionName="@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@-@APP_VERSION_TAG@" >
+    android:versionName="@APP_VERSION@" >
 
     <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="14" />
