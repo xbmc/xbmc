@@ -20,7 +20,7 @@
  */
 #include <string.h>
 #include <string>
-#include <boost/shared_array.hpp>
+#include <memory>
 
 namespace XbmcCommons
 {
@@ -88,7 +88,7 @@ namespace XbmcCommons
    */
   class Buffer
   {
-    boost::shared_array<unsigned char> bufferRef;
+    std::shared_ptr<unsigned char> bufferRef;
     unsigned char* buffer;
     size_t mposition;
     size_t mcapacity;
@@ -132,7 +132,7 @@ namespace XbmcCommons
     inline Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : NULL), mcapacity(bufferSize)
     { 
       clear(); 
-      bufferRef.reset(buffer);
+      bufferRef.reset(buffer, std::default_delete<unsigned char[]>());
     }
 
     /**
@@ -166,7 +166,7 @@ namespace XbmcCommons
     inline Buffer& allocate(size_t bufferSize)
     {
       buffer = bufferSize ? new unsigned char[bufferSize] : NULL;
-      bufferRef.reset(buffer);
+      bufferRef.reset(buffer, std::default_delete<unsigned char[]>());
       mcapacity = bufferSize;
       clear();
       return *this;
