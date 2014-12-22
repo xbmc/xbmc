@@ -243,7 +243,7 @@ bool CVAAPIContext::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI error: %s", vaErrorStr(status));
+    CLog::Log(LOGERROR, "VAAPI::%s error: %s", __FUNCTION__, vaErrorStr(status));
     return false;
   }
   return true;
@@ -943,7 +943,7 @@ bool CDecoder::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI - error: %s", vaErrorStr(status));
+    CLog::Log(LOGERROR, "VAAPI::%s - error: %s", __FUNCTION__, vaErrorStr(status));
     m_ErrorCount++;
 
     if(m_DisplayState == VAAPI_OPEN)
@@ -2309,7 +2309,7 @@ bool COutput::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI - Error: %s(%d)", vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
     m_vaError = true;
     return false;
   }
@@ -2930,7 +2930,7 @@ bool CVppPostproc::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI - Error: %s(%d)", vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
     return false;
   }
   return true;
