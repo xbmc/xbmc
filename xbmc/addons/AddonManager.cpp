@@ -814,9 +814,9 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   return true; // assume no <platform> is equivalent to <platform>all</platform>
 }
 
-const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
+cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
 {
-  const cp_cfg_element_t *element = NULL;
+  cp_cfg_element_t *element = NULL;
   if (base)
     element = m_cpluff->lookup_cfg_element(base, path);
   return element;
