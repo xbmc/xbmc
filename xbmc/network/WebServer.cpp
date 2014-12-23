@@ -754,7 +754,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   if (request.method != HEAD)
   {
     uint64_t totalLength = 0;
-    std::auto_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
+    std::unique_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
     context->file = file;
     context->contentType = mimeType;
     context->boundaryWritten = false;

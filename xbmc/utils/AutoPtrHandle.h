@@ -66,7 +66,7 @@ protected:
 };
 
 /*
- * This template class is very similar to the standard "auto_ptr", but it is
+ * This template class is very similar to the standard "unique_ptr", but it is
  * used for *array* pointers rather than *object* pointers, i.e. the pointer
  * passed to it must have been allocated with "new[]", and "auto_aptr" will
  * delete it with "delete[]".
