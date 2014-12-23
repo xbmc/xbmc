@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +18,37 @@
  *
  */
 
-#include "SpecialProtocolFile.h"
+#include "OverrideDirectory.h"
 #include "URL.h"
-#include "filesystem/SpecialProtocol.h"
+#include "filesystem/Directory.h"
 
 using namespace XFILE;
 
-CSpecialProtocolFile::CSpecialProtocolFile(void)
-  : COverrideFile(true)
+
+COverrideDirectory::COverrideDirectory()
 { }
 
-CSpecialProtocolFile::~CSpecialProtocolFile(void)
+
+COverrideDirectory::~COverrideDirectory()
 { }
 
-std::string CSpecialProtocolFile::TranslatePath(const CURL& url)
+bool COverrideDirectory::Create(const CURL& url)
 {
-  return CSpecialProtocol::TranslatePath(url);
+  std::string translatedPath = TranslatePath(url);
+
+  return CDirectory::Create(translatedPath.c_str());
+}
+
+bool COverrideDirectory::Remove(const CURL& url)
+{
+  std::string translatedPath = TranslatePath(url);
+
+  return CDirectory::Remove(translatedPath.c_str());
+}
+
+bool COverrideDirectory::Exists(const CURL& url)
+{
+  std::string translatedPath = TranslatePath(url);
+
+  return CDirectory::Exists(translatedPath.c_str());
 }

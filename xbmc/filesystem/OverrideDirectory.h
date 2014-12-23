@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +19,21 @@
  *
  */
 
-#include "SpecialProtocolFile.h"
-#include "URL.h"
-#include "filesystem/SpecialProtocol.h"
+#include "filesystem/IDirectory.h"
 
-using namespace XFILE;
-
-CSpecialProtocolFile::CSpecialProtocolFile(void)
-  : COverrideFile(true)
-{ }
-
-CSpecialProtocolFile::~CSpecialProtocolFile(void)
-{ }
-
-std::string CSpecialProtocolFile::TranslatePath(const CURL& url)
+namespace XFILE
 {
-  return CSpecialProtocol::TranslatePath(url);
+class COverrideDirectory : public IDirectory
+{
+public:
+  COverrideDirectory();
+  virtual ~COverrideDirectory();
+
+  virtual bool Create(const CURL& url);
+  virtual bool Exists(const CURL& url);
+  virtual bool Remove(const CURL& url);
+
+protected:
+  virtual std::string TranslatePath(const CURL &url) = 0;
+};
 }

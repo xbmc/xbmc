@@ -54,20 +54,7 @@ bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &ite
   return false;
 }
 
-bool CSpecialProtocolDirectory::Create(const CURL& url)
+std::string CSpecialProtocolDirectory::TranslatePath(const CURL &url)
 {
-  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
-  return CDirectory::Create(translatedPath.c_str());
-}
-
-bool CSpecialProtocolDirectory::Remove(const CURL& url)
-{
-  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
-  return CDirectory::Remove(translatedPath.c_str());
-}
-
-bool CSpecialProtocolDirectory::Exists(const CURL& url)
-{
-  std::string translatedPath = CSpecialProtocol::TranslatePath(url);
-  return CDirectory::Exists(translatedPath.c_str());
+  return CSpecialProtocol::TranslatePath(url);
 }

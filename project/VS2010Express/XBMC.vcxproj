@@ -330,6 +330,8 @@
     <ClCompile Include="..\..\xbmc\filesystem\NptXbmcFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\NSFFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\OGGFileDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\OverrideDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\OverrideFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PipeFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp" />
@@ -848,6 +850,8 @@
     <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />

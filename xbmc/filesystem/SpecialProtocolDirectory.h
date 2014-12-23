@@ -19,18 +19,18 @@
  *
  */
 
-#include "IDirectory.h"
+#include "filesystem/OverrideDirectory.h"
 
 namespace XFILE
 {
-  class CSpecialProtocolDirectory : public IDirectory
+  class CSpecialProtocolDirectory : public COverrideDirectory
   {
   public:
     CSpecialProtocolDirectory(void);
     virtual ~CSpecialProtocolDirectory(void);
     virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool Create(const CURL& url);
-    virtual bool Exists(const CURL& url);
-    virtual bool Remove(const CURL& url);
+
+  protected:
+    virtual std::string TranslatePath(const CURL &url);
   };
 }

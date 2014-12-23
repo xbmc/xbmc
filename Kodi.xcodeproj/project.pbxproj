@@ -1246,6 +1246,12 @@
 		DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3716C07AAA00D028FB /* GUIViewState.cpp */; };
 		DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */; };
 		DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
+		DF6A0D811A4584E80075BBFC /* OverrideDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7D1A4584E80075BBFC /* OverrideDirectory.cpp */; };
+		DF6A0D821A4584E80075BBFC /* OverrideDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7D1A4584E80075BBFC /* OverrideDirectory.cpp */; };
+		DF6A0D831A4584E80075BBFC /* OverrideDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7D1A4584E80075BBFC /* OverrideDirectory.cpp */; };
+		DF6A0D841A4584E80075BBFC /* OverrideFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */; };
+		DF6A0D851A4584E80075BBFC /* OverrideFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */; };
+		DF6A0D861A4584E80075BBFC /* OverrideFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */; };
 		DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
 		DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
 		DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
@@ -4937,6 +4943,10 @@
 		DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewDatabase.cpp; sourceTree = "<group>"; };
 		DF64FE3B16C07AAA00D028FB /* ViewDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewDatabase.h; sourceTree = "<group>"; };
 		DF64FE3C16C07AAA00D028FB /* ViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewState.h; sourceTree = "<group>"; };
+		DF6A0D7D1A4584E80075BBFC /* OverrideDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverrideDirectory.cpp; sourceTree = "<group>"; };
+		DF6A0D7E1A4584E80075BBFC /* OverrideDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverrideDirectory.h; sourceTree = "<group>"; };
+		DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverrideFile.cpp; sourceTree = "<group>"; };
+		DF6A0D801A4584E80075BBFC /* OverrideFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverrideFile.h; sourceTree = "<group>"; };
 		DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboardGeneric.cpp; sourceTree = "<group>"; };
 		DF830D0B15BB260C00602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
 		DF830D0E15BB262700602BE6 /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
@@ -9234,6 +9244,10 @@
 				E38E173D0D25F9FA00618676 /* NSFFileDirectory.h */,
 				E38E173E0D25F9FA00618676 /* OGGFileDirectory.cpp */,
 				E38E173F0D25F9FA00618676 /* OGGFileDirectory.h */,
+				DF6A0D7D1A4584E80075BBFC /* OverrideDirectory.cpp */,
+				DF6A0D7E1A4584E80075BBFC /* OverrideDirectory.h */,
+				DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */,
+				DF6A0D801A4584E80075BBFC /* OverrideFile.h */,
 				DF93D67F1444A8B0007C6459 /* PipeFile.cpp */,
 				DF93D6801444A8B0007C6459 /* PipeFile.h */,
 				DF44845B140048C80069344B /* PipesManager.cpp */,
@@ -10715,6 +10729,7 @@
 				E38E1F970D25F9FD00618676 /* DVDDemuxSPU.cpp in Sources */,
 				E38E1F980D25F9FD00618676 /* DVDFactoryInputStream.cpp in Sources */,
 				E38E1F990D25F9FD00618676 /* DVDInputStream.cpp in Sources */,
+				DF6A0D841A4584E80075BBFC /* OverrideFile.cpp in Sources */,
 				E38E1F9A0D25F9FD00618676 /* DVDInputStreamFFmpeg.cpp in Sources */,
 				E38E1F9B0D25F9FD00618676 /* DVDInputStreamFile.cpp in Sources */,
 				E38E1F9C0D25F9FD00618676 /* DVDInputStreamHttp.cpp in Sources */,
@@ -11366,6 +11381,7 @@
 				DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
 				DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */,
 				DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
+				DF6A0D811A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
 				DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */,
 				DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */,
 				DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */,
@@ -12080,6 +12096,7 @@
 				DFF0F1CF17528350002DA3A4 /* GUIDialogExtendedProgressBar.cpp in Sources */,
 				DFF0F1D017528350002DA3A4 /* GUIDialogFavourites.cpp in Sources */,
 				DFF0F1D117528350002DA3A4 /* GUIDialogFileBrowser.cpp in Sources */,
+				DF6A0D861A4584E80075BBFC /* OverrideFile.cpp in Sources */,
 				DFF0F1D217528350002DA3A4 /* GUIDialogGamepad.cpp in Sources */,
 				DFF0F1D317528350002DA3A4 /* GUIDialogKaiToast.cpp in Sources */,
 				DFF0F1D417528350002DA3A4 /* GUIDialogKeyboardGeneric.cpp in Sources */,
@@ -12872,6 +12889,7 @@
 				7CCDA7DB192756250074CF51 /* NptJson.cpp in Sources */,
 				7CCDA7DE192756250074CF51 /* NptList.cpp in Sources */,
 				7CCDA7E7192756250074CF51 /* NptLogging.cpp in Sources */,
+				DF6A0D831A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
 				7CCDA7EA192756250074CF51 /* NptMessaging.cpp in Sources */,
 				7CCDA7F3192756250074CF51 /* NptNetwork.cpp in Sources */,
 				7CCDA7FC192756250074CF51 /* NptQueue.cpp in Sources */,
@@ -13401,6 +13419,7 @@
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
 				E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */,
 				E49912B5174E5D9900741B6D /* SourcesDirectory.cpp in Sources */,
+				DF6A0D821A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
 				E49912B6174E5D9900741B6D /* SpecialProtocol.cpp in Sources */,
 				E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */,
 				E49912B8174E5D9900741B6D /* SpecialProtocolFile.cpp in Sources */,
@@ -13562,6 +13581,7 @@
 				E499136E174E5EF700741B6D /* PosixMountProvider.cpp in Sources */,
 				E499136F174E5EF700741B6D /* XFileUtils.cpp in Sources */,
 				E4991370174E5EF700741B6D /* XHandle.cpp in Sources */,
+				DF6A0D851A4584E80075BBFC /* OverrideFile.cpp in Sources */,
 				E4991371174E5EF700741B6D /* XMemUtils.cpp in Sources */,
 				E4991372174E5EF700741B6D /* XTimeUtils.cpp in Sources */,
 				E4991373174E5F0E00741B6D /* GUIDialogMusicInfo.cpp in Sources */,
