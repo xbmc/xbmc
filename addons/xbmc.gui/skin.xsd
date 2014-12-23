@@ -3,12 +3,22 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element name="res" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="width" type="xs:unsignedInt" use="required"/>
+            <xs:attribute name="height" type="xs:unsignedInt" use="required"/>
+            <xs:attribute name="default" type="xs:boolean"/>
+            <xs:attribute name="folder" type="xs:string"/>
+            <xs:attribute name="aspect" type="xs:string"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
-      <xs:attribute name="defaultresolution" type="xs:string" use="required"/>
-      <xs:attribute name="defaultresolutionwide" type="xs:string" use="required"/>
-      <xs:attribute name="defaultthemename" type="xs:string" use="required"/>
+      <xs:attribute name="defaultresolution" type="xs:string"/>
+      <xs:attribute name="defaultwideresolution" type="xs:string"/>
       <xs:attribute name="effectslowdown" type="xs:float"/>
       <xs:attribute name="debugging" type="xs:boolean"/>
     </xs:complexType>
