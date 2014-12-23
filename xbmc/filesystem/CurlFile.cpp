@@ -1090,7 +1090,7 @@ bool CCurlFile::Exists(const CURL& url)
 #ifndef __PLEX__
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
 #else
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 15);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 30);
 #endif
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
