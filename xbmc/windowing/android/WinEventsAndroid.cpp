@@ -57,7 +57,7 @@ static bool different_event(XBMC_Event &curEvent, XBMC_Event &newEvent)
     return true;
 
   // different axis direction (handles -1 vs 1)
-  if (signbit(curEvent.jaxis.fvalue) != signbit(newEvent.jaxis.fvalue))
+  if (std::signbit(curEvent.jaxis.fvalue) != std::signbit(newEvent.jaxis.fvalue))
     return true;
 
   // different axis value (handles 0 vs 1 or -1)
