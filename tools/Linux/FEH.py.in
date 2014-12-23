@@ -169,7 +169,7 @@ if __name__=="__main__":
         exit(0)
 
     if (@USE_X11@ == 1 and @USE_OPENGL@ == 1 and badDirectRendering()):
-        error("@APP_NAME@ needs hardware accelerated OpenGL rendering.\nInstall an appropriate graphics driver.\n\nPlease consult @APP_NAME@ Wiki for supported hardware\nhttp://wiki.xbmc.org/?title=Supported_hardware")
+        error("@APP_NAME@ needs hardware accelerated OpenGL rendering.\nInstall an appropriate graphics driver.\n\nPlease consult @APP_NAME@ Wiki for supported hardware\nhttp://kodi.wiki/view/Supported_hardware")
 
     if (@USE_X11@ == 1 and badColorDepth()):
         error("@APP_NAME@ cannot run unless the\nscreen color depth is atleast 24 bit.\n\nPlease reconfigure your screen.")

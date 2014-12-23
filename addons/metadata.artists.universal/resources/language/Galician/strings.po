@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Galician (http://www.transifex.com/projects/p/xbmc-addons/language/gl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Activar Fanarts dos Artistas dende HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Activar Miniaturas dos Artistas dende allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Activar Miniaturas dos Artistas dende last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Activar Miniaturas dos Artistas dende HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Activar os Fanarts dos artistas dende fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Activar as miniaturas dos artistas dende fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Obter a Biografía dende"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Ilustración"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Obter a Discografía dende"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Obter os Xéneros dende"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Obter os Estilos dende"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Obter a data do debut dende"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Obter os ambientes dende"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Obter os anos en activo dende"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Idioma Preferido"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Biografía alternativa dende"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Discografía alternativa dende"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Xéneros alternativos dende"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Estilos alternativos dende"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Data de debut alternativa dende"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Alternativas"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Activar Miniaturas dos Artistas dende theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Activar Fanarts dos Artistas dende theaudiodb.com"

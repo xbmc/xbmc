@@ -27,7 +27,7 @@
 
 #include <sstream>
 
-#define CA_MAX_CHANNELS 16
+#define CA_MAX_CHANNELS 24
 // default channel map - in case it can't be fetched from the device
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
@@ -39,6 +39,14 @@ static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_UNKNOWN6 ,
   AE_CH_UNKNOWN7 ,
   AE_CH_UNKNOWN8 ,
+  AE_CH_UNKNOWN9 ,
+  AE_CH_UNKNOWN10 ,
+  AE_CH_UNKNOWN11 ,
+  AE_CH_UNKNOWN12 ,
+  AE_CH_UNKNOWN13 ,
+  AE_CH_UNKNOWN14 ,
+  AE_CH_UNKNOWN15 ,
+  AE_CH_UNKNOWN16 ,
   AE_CH_NULL
 };
 
@@ -666,7 +674,7 @@ enum AEChannel AEDeviceEnumerationOSX::caChannelToAEChannel(const AudioChannelLa
     default:
       ret = (enum AEChannel)unknownChannel++;
   }
-  if (unknownChannel > AE_CH_UNKNOWN8)
+  if (unknownChannel > AE_CH_UNKNOWN16)
     unknownChannel = AE_CH_UNKNOWN1;
   
   return ret;
@@ -684,7 +692,7 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
   CCoreAudioChannelLayout calayout;
   bool logMapping = channelMap.Count() > 0; // only log if the engine requests a layout during init
   bool mapAvailable = false;
-  unsigned int numberChannelsInDeviceLayout = CA_MAX_CHANNELS; // default 8 channels from CAChannelMap
+  unsigned int numberChannelsInDeviceLayout = CA_MAX_CHANNELS; // default number of channels from CAChannelMap
   AudioChannelLayout *layout = NULL;
   
   // try to fetch either the multichannel or the stereo channel layout from the device

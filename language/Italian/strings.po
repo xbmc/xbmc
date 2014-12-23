@@ -43,7 +43,7 @@ msgstr "Kodi SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "File"
+msgstr "Gestione File"
 
 msgctxt "#8"
 msgid "Weather"
@@ -7257,10 +7257,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "add-on per il backend per poter usare PVR."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Visitare kodi.tv/pvr per saperne di più."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Avviso di conflitto"
@@ -10588,6 +10584,10 @@ msgstr "Scarica automaticamente il primo sottotitolo della lista risultati ricer
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "La configurazione è stata spostata"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "La configurazione di XBMC è stata spostata alla nuova destinazione per Kodi. Per favore fai riferimento a http://kodi.wiki/view/Migration - questo messaggio non verrà mostrato di nuovo!"
 
 msgctxt "#25000"
 msgid "Notifications"

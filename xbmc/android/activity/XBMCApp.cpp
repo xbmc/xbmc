@@ -71,6 +71,7 @@
 #include "android/jni/Cursor.h"
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
+#include "android/jni/Build.h"
 #include "CompileInfo.h"
 
 #define GIGABYTES       1073741824
@@ -115,6 +116,12 @@ CXBMCApp::~CXBMCApp()
 void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+
+  // non-aml boxes will ignore this intent broadcast.
+  // setup aml scalers to play video as is, unscaled.
+  CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
+  sendBroadcast(intent_aml_video_on);
+
   if (!m_firstrun)
   {
     android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
@@ -149,6 +156,10 @@ void CXBMCApp::onPause()
   SetSystemVolume(m_initialVolume);
 
   unregisterReceiver(*this);
+
+  // non-aml boxes will ignore this intent broadcast.
+  CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
+  sendBroadcast(intent_aml_video_off);
 }
 
 void CXBMCApp::onStop()
@@ -376,7 +387,9 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
       newPackage.packageName = packageList.get(i).packageName;
       newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
       CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
-      if (!intent || !intent.hasCategory("android.intent.category.LAUNCHER"))
+      if (!intent && CJNIBuild::SDK_INT >= 21)
+        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(newPackage.packageName);
+      if (!intent)
         continue;
 
       m_applications.push_back(newPackage);
@@ -426,6 +439,8 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
     GetPackageManager().getLaunchIntentForPackage(package) :
     CJNIIntent(intent);
 
+  if (!newIntent && CJNIBuild::SDK_INT >= 21)
+    newIntent = GetPackageManager().getLeanbackLaunchIntentForPackage(package);
   if (!newIntent)
     return false;
 

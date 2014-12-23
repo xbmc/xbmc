@@ -4071,7 +4071,7 @@ msgstr "Das System schaltet sich nun ab."
 
 msgctxt "#12348"
 msgid "Item locked"
-msgstr "Freigabe gesperrt"
+msgstr "Eintrag gesperrt"
 
 msgctxt "#12349"
 msgid "Updating video library art"
@@ -4403,7 +4403,7 @@ msgstr "Immer aktiviert"
 
 msgctxt "#13116"
 msgid "Upscaling method"
-msgstr "Hochskalierungs-Methode"
+msgstr "Hochskalierungsmethode"
 
 msgctxt "#13117"
 msgid "Bicubic"
@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Client-Addon um PVR nutzen zu können."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Bitte besuchen Sie kodi.tv/pvr um mehr zu erfahren."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Bitte besuchen Sie http://kodi.wiki/view/PVR um mehr zu erfahren."
 
 msgctxt "#19275"
 msgid "Conflict warning"

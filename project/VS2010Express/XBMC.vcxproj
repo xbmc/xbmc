@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.xbmc.gui;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -806,13 +805,6 @@
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h" />
-    <CustomBuild Include="..\..\xbmc\GitRevision.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\xbmc\win32\git_rev.h</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
-    </CustomBuild>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h" />
@@ -1648,8 +1640,6 @@
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\DllAvFilter.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h" />
@@ -2205,13 +2195,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h" />
-    <ClInclude Include="..\..\lib\DllAvCodec.h" />
-    <ClInclude Include="..\..\lib\DllAvFormat.h" />
-    <ClInclude Include="..\..\lib\DllPostProc.h" />
-    <ClInclude Include="..\..\lib\DllSwScale.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h" />
@@ -2238,7 +2221,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
-    <ClInclude Include="..\..\lib\DllAdpcm.h" />
     <ClInclude Include="..\..\lib\DllASAP.h" />
     <ClInclude Include="..\..\lib\DllNosefart.h" />
     <ClInclude Include="..\..\lib\DllSidplay2.h" />
@@ -2529,6 +2511,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\ServiceDescription.h</Outputs>
     </CustomBuild>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i" />
+    <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL update_git_rev.bat</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Retrieving the git revision</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../git_revision.h</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\.git\HEAD</AdditionalInputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\version.txt">

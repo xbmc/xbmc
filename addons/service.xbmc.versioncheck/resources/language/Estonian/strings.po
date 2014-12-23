@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Estonian (http://www.transifex.com/projects/p/xbmc-addons/language/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

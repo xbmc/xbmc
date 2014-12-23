@@ -6493,10 +6493,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Ju duhet një tuner, program televizioni backend, dhe një"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "VIzito kodi.tv/pvr për më shumë informacione."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Paralejmrim i një konflikti"

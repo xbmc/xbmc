@@ -911,7 +911,7 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
 {
   std::string retVal;
   vector<string> addons = StringUtils::Split(addonIDslist, ',');
-  for (vector<string>::const_iterator it = addons.begin(); it != addons.end() ; it ++)
+  for (vector<string>::const_iterator it = addons.begin(); it != addons.end() ; ++it)
   {
     if (!retVal.empty())
       retVal += ", ";

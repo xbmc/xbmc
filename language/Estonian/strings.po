@@ -6885,10 +6885,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Lisamoodul põhja jaoks, et kasutada PVR'i."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Lisainfo saamiseks külasta kodi.tv/pvr"
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Konflikti hoiatus"

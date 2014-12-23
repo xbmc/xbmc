@@ -1,14 +1,14 @@
-# XBMC Media Center language file
-# Addon Name: XBMC Version Check
+# Kodi Media Center language file
+# Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: Team XBMC
+# Addon Provider: XBMC Foundation
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
+"Last-Translator: Kodi Translation Team\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/xbmc-addons/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,36 +21,16 @@ msgid "We would like to recommend you to upgrade."
 msgstr "Gostaríamos de recomendar-lhe que atualize."
 
 msgctxt "#32002"
-msgid "Visit XBMC.org for more information."
-msgstr "Visite XBMC.org para mais informações."
-
-msgctxt "#32004"
-msgid "You are still using an older RC version of XBMC."
-msgstr "Você ainda está usando uma versão RC antiga do XBMC."
-
-msgctxt "#32005"
-msgid "You are still using an older beta version of XBMC."
-msgstr "Você ainda está usando uma versão beta antiga do XBMC."
-
-msgctxt "#32006"
-msgid "You are still using an older alpha version of XBMC."
-msgstr "Você ainda está usando uma versão alpha antiga do XBMC."
-
-msgctxt "#32007"
-msgid "You are still using an older monthly version of XBMC."
-msgstr "Você ainda está usando uma versão mensal antiga do XBMC."
-
-msgctxt "#32008"
-msgid "You are still using an older non stable version of XBMC."
-msgstr "Você ainda está usando uma versão não estável antiga do XBMC."
+msgid "Visit Kodi.tv for more information."
+msgstr "Visite Kodi.tv para maiores informações."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Gostaria de remover este lembrete?"
 
 msgctxt "#32010"
-msgid "You can enable/disable it through addon settings."
-msgstr "Você pode ativar/desativá-lo através das configurações do add-on."
+msgid "You can enable/disable it through add-on settings."
+msgstr "Podes ativar/desativar através dos ajustes do add-on."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -65,20 +45,24 @@ msgid "Upgrade successful"
 msgstr "Atualização efetuada com sucesso"
 
 msgctxt "#32014"
-msgid "Do you want to restart Xbmc to finish the upgrade?"
-msgstr "Você deseja reiniciar o XBMC após atualização finalizar?"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Você deseja reiniciar o Kodi após atualização finalizar?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Deseja verificar se há uma nova versão no repositório?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Existe uma nova versão estável do Kodi disponível."
 
 msgctxt "#32020"
 msgid "General"
 msgstr "Geral"
 
 msgctxt "#32021"
-msgid "Enable XBMC version check?"
-msgstr "Habilitar verificação de versão do XBMC?"
+msgid "Enable Kodi version check?"
+msgstr "Habilitar verificação de versão do Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -91,3 +75,27 @@ msgstr "Linux: Atualizar o sistema completamente"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Atualizar usando apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Uma nova versão estável do Kodi se encontra disponível."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "visite http://kodi.tv para maiores informações."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Uma nova versão estável do Kodi se encontra disponível."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Visite http://kodi.tv para maiores informações."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Usando %s enquanto %s está disponível."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Recomendável que você atualize para versão mais recente."

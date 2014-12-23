@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+
 #ifdef HAS_WEB_SERVER
 #include <sys/types.h>
 #include <sys/select.h>
@@ -49,14 +50,15 @@ public:
   CWebServer();
   virtual ~CWebServer() { }
 
+  // implementation of JSONRPC::ITransportLayer
+  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
+  virtual bool Download(const char *path, CVariant &result);
+  virtual int GetCapabilities();
+
   bool Start(int port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
   void SetCredentials(const std::string &username, const std::string &password);
-
-  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
-  virtual bool Download(const char *path, CVariant &result);
-  virtual int GetCapabilities();
 
   static void RegisterRequestHandler(IHTTPRequestHandler *handler);
   static void UnregisterRequestHandler(IHTTPRequestHandler *handler);
@@ -121,15 +123,10 @@ private:
 
   struct MHD_Daemon *m_daemon_ip6;
   struct MHD_Daemon *m_daemon_ip4;
-  bool m_running, m_needcredentials;
+  bool m_running;
+  bool m_needcredentials;
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
   static std::vector<IHTTPRequestHandler *> m_requestHandlers;
-
-  typedef struct ConnectionHandler
-  {
-    IHTTPRequestHandler *requestHandler;
-    struct MHD_PostProcessor *postprocessor;
-  } ConnectionHandler;
 };
 #endif

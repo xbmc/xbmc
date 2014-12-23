@@ -3201,6 +3201,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Annonser disse tjenestene til andre systemer med Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "iOS 8 kompatibilitetsmodus"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Tillat volumkontroll"
@@ -3683,7 +3687,7 @@ msgstr "Ja/Nei-dialog"
 
 msgctxt "#10101"
 msgid "Progress dialogue"
-msgstr "Forløpsdialgboks"
+msgstr "Framdriftsviser"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -4135,15 +4139,15 @@ msgstr "Batterinivå"
 
 msgctxt "#12396"
 msgid "Auto updates: On"
-msgstr "Automatiske oppdateringer: på"
+msgstr "Oppdateringer: På"
 
 msgctxt "#12397"
 msgid "Auto updates: Notify"
-msgstr "Automatiske oppdateringer: varsle"
+msgstr "Oppdateringer: Varsle"
 
 msgctxt "#12398"
 msgid "Auto updates: Never"
-msgstr "Automatiske oppdateringer: av"
+msgstr "Oppdateringer: Av"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -7221,10 +7225,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Utvidelse for at tjenerdelen skal kunne bruke PVR."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Vennligst besøk kodi.tv/pvr for mer informasjon."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Konflikt advarsel"
@@ -8323,7 +8323,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr "Kunngjøre bibliotek oppdateringer via UPnP"
+msgstr "Kunngjøre biblioteksoppdateringer via UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8947,7 +8947,7 @@ msgstr "Overskriv gamle filer?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
-msgstr "Ekskluder sti fra biblioteksoppdateringer"
+msgstr "Utelat sti fra biblioteksoppdateringer"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
@@ -9731,7 +9731,7 @@ msgstr "Bildetekst"
 
 msgctxt "#21863"
 msgid "Author"
-msgstr "Laget av"
+msgstr "Utvikler"
 
 msgctxt "#21864"
 msgid "Headline"
@@ -9887,7 +9887,7 @@ msgstr "Oppdater bibliotek ved oppstart"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Skjul forløpet av biblioteksoppdateringer"
+msgstr "Skjul fremdrift av biblioteksoppdateringer"
 
 msgctxt "#22002"
 msgid "DNS suffix"
@@ -10267,7 +10267,7 @@ msgstr "Utvidelsen har ikke den korrekte strukturen"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "%s er brukt av følgende installerte utvidelse(r)"
+msgstr "%s er brukt av følgende utvidelse(r):"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
@@ -10548,6 +10548,10 @@ msgstr "Automatisk last ned første undertekst"
 msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Automatisk last ned første undertekst fra søksresultatlisten"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Skjul inkompatible"
 
 msgctxt "#25000"
 msgid "Notifications"

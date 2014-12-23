@@ -6749,10 +6749,6 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Tarvitset virittimen, ohjelmiston, ja"
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Lisätietoja on osoitteessa kodi.tv/pvr."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Ristiriitavaroitus"

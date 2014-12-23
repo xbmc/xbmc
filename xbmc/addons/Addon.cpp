@@ -216,7 +216,7 @@ void AddonProps::Serialize(CVariant &variant) const
     variant["fanart"] = URIUtils::AddFileToFolder(path, fanart);
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); it++)
+  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
   {
     CVariant dep(CVariant::VariantTypeObject);
     dep["addonid"] = it->first;
@@ -229,7 +229,7 @@ void AddonProps::Serialize(CVariant &variant) const
   else
     variant["broken"] = broken;
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (InfoMap::const_iterator it = extrainfo.begin(); it != extrainfo.end(); it++)
+  for (InfoMap::const_iterator it = extrainfo.begin(); it != extrainfo.end(); ++it)
   {
     CVariant info(CVariant::VariantTypeObject);
     info["key"] = it->first;
@@ -295,9 +295,9 @@ CAddon::CAddon(const AddonProps &props)
 }
 
 CAddon::CAddon(const CAddon &rhs)
-  : m_props(rhs.Props())
+  : m_props(rhs.Props()),
+    m_settings(rhs.m_settings)
 {
-  m_settings  = rhs.m_settings;
   m_addonXmlDoc = rhs.m_addonXmlDoc;
   m_settingsLoaded = rhs.m_settingsLoaded;
   m_userSettingsLoaded = rhs.m_userSettingsLoaded;

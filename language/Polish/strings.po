@@ -4679,7 +4679,7 @@ msgstr "Aktywuj obsługę czcionek odwróconych"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
-msgstr "Pokazuj wiadomości RSS"
+msgstr "Pokazuj wiadomości z kanałów RSS"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
@@ -6023,19 +6023,19 @@ msgstr "Wszystkie wideo"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "Nieoglądane"
+msgstr "Nieobejrzane"
 
 msgctxt "#16102"
 msgid "Watched"
-msgstr "Oglądane"
+msgstr "Obejrzane"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Oznacz jako oglądane"
+msgstr "Oznacz jako obejrzane"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Oznacz jako nieoglądane"
+msgstr "Oznacz jako nieobejrzane"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Dodatek umożliwiająca użycie funkcji serwera TV."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Odwiedź kodi.tv/pvr, aby dowiedzieć się więcej."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Odwiedź strony wiki po więcej informacji: http://kodi.wiki/view/PVR"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7979,7 +7979,7 @@ msgstr "Aktywuj animacje"
 
 msgctxt "#20080"
 msgid "Disable RSS during music"
-msgstr "Ukrywaj wiadomości RSS podczas odtwarzania muzyki"
+msgstr "Ukrywaj kanały RSS podczas odtwarzania muzyki"
 
 msgctxt "#20081"
 msgid "Enable shortcut buttons"
@@ -8775,7 +8775,7 @@ msgstr "* Wszystkie sezony"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "Ukrywaj oglądane"
+msgstr "Ukrywaj obejrzane"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -8783,7 +8783,7 @@ msgstr "Kod Prod."
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Pokazuj fabułę dla nieoglądanych pozycji"
+msgstr "Pokazuj fabułę dla nieobejrzanych pozycji"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -9315,7 +9315,7 @@ msgstr "Pokazuj pasek przewijania"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Filtr oglądanych pozycji jako przełącznik w trybie biblioteki"
+msgstr "Filtr obejrzanych pozycji jako przełącznik w trybie biblioteki"
 
 msgctxt "#21385"
 msgid "Open"
@@ -10887,7 +10887,7 @@ msgstr "Używaj"
 
 msgctxt "#33056"
 msgid "Watch your"
-msgstr "Oglądaj"
+msgstr "Obejrzyj"
 
 msgctxt "#33057"
 msgid "Listen to"
@@ -11467,7 +11467,7 @@ msgstr "Określa schemat dźwiękowy używany przez interfejs użytkownika."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
-msgstr "Określa czy przewijanie wiadomości RSS jest aktywne"
+msgstr "Określa czy przewijanie wiadomości RSS jest aktywne."
 
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
@@ -11587,7 +11587,7 @@ msgstr "Aktywuje bibliotekę wideo."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Wyświetla fabułę dla nieoglądanych mediów w bibliotece wideo."
+msgstr "Pokazuje fabułę dla nieobejrzanych pozycji w bibliotece wideo."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."

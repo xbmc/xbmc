@@ -277,7 +277,15 @@ const char* CAEChannelInfo::GetChName(const enum AEChannel ch)
     "UNKNOWN5",
     "UNKNOWN6",
     "UNKNOWN7",
-    "UNKNOWN8"
+    "UNKNOWN8",
+    "UNKNOWN9",
+    "UNKNOWN10",
+    "UNKNOWN11",
+    "UNKNOWN12",
+    "UNKNOWN13",
+    "UNKNOWN14",
+    "UNKNOWN15",
+    "UNKNOWN16"
   };
 
   return channels[ch];

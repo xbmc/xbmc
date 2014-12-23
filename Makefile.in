@@ -496,13 +496,11 @@ LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
 $(FFMPEGOBJS): dvdpcodecs
 endif
 
-ifneq (@USE_LIBXBMC@,1)
-MAINOBJS+=xbmc/main/main.a
-else
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/android/activity/activity.a
+else
+MAINOBJS+=xbmc/main/main.a
 endif # USE_ANDROID
-endif # USE_LIBXBMC
 
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
@@ -523,7 +521,7 @@ lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -read_only_relocs suppress
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS) -Wl,-Bsymbolic
 endif
 
 @APP_NAME_LC@.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
@@ -646,10 +644,24 @@ endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
 	@install -m 0644 tools/Linux/@APP_NAME_LC@.desktop $(DESTDIR)$(datarootdir)/applications/@APP_NAME_LC@.desktop
+
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/16x16/apps
+	@install -m 0644 tools/Linux/packaging/media/icon16x16.png $(DESTDIR)$(datadir)/icons/hicolor/16x16/apps/@APP_NAME_LC@.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/22x22/apps
+	@install -m 0644 tools/Linux/packaging/media/icon22x22.png $(DESTDIR)$(datadir)/icons/hicolor/22x22/apps/@APP_NAME_LC@.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/24x24/apps
+	@install -m 0644 tools/Linux/packaging/media/icon24x24.png $(DESTDIR)$(datadir)/icons/hicolor/24x24/apps/@APP_NAME_LC@.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/32x32/apps
+	@install -m 0644 tools/Linux/packaging/media/icon32x32.png $(DESTDIR)$(datadir)/icons/hicolor/32x32/apps/@APP_NAME_LC@.png
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
-	@install -m 0644 media/icon48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/@APP_NAME_LC@.png
+	@install -m 0644 tools/Linux/packaging/media/icon48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/@APP_NAME_LC@.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps
+	@install -m 0644 tools/Linux/packaging/media/icon64x64.png $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps/@APP_NAME_LC@.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/128x128/apps
+	@install -m 0644 tools/Linux/packaging/media/icon128x128.png $(DESTDIR)$(datadir)/icons/hicolor/128x128/apps/@APP_NAME_LC@.png
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
-	@install -m 0644 media/icon256x256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/@APP_NAME_LC@.png
+	@install -m 0644 tools/Linux/packaging/media/icon256x256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/@APP_NAME_LC@.png
+
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
 	@echo "Copying bindings to $(DESTDIR)$(includedir)/@APP_NAME_LC@"

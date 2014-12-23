@@ -327,6 +327,13 @@ namespace PVR
     bool OpenRecordedStream(const CPVRRecording &tag);
 
     /*!
+    * @brief Try to playback the given file item
+    * @param item The file item to playback.
+    * @return True if the file could be playback, otherwise false.
+    */
+    bool PlayMedia(const CFileItem& item);
+
+    /*!
      * @brief Start recording on a given channel if it is not already recording, stop if it is.
      * @param channel the channel to start/stop recording.
      * @return True if the recording was started or stopped successfully, false otherwise.

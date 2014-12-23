@@ -1237,6 +1237,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Ár"
 
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "Halda upphaflegum hljóðstyrk við niðurblöndun"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Móttakari styður DTS-HD"
@@ -2413,9 +2417,17 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Þjöppunarhlutfall"
 
+msgctxt "#666"
+msgid "Enable component-specific logging"
+msgstr "Virkja skráningu fyrir ákveðnar einingar"
+
 msgctxt "#667"
 msgid "Enable Dolby Digital transcoding"
 msgstr "Virkja Dolby Digital umkóðun"
+
+msgctxt "#668"
+msgid "Specify component-specific logging..."
+msgstr "Skilgreina skráningu fyrir ákveðnar einingar"
 
 msgctxt "#669"
 msgid "Verbose logging for SMB library"
@@ -2448,6 +2460,22 @@ msgstr "Fjölorð viðburðaskráningu fyrir JSON-RPC beiðnir"
 msgctxt "#676"
 msgid "Verbose logging for AUDIO component"
 msgstr "Fjölorð viðburðaskráningu fyrir HLJÓÐ tæki"
+
+msgctxt "#677"
+msgid "Verbose logging for AirTunes library"
+msgstr "Ítarleg skráning fyrir AirTunes skráasafn"
+
+msgctxt "#678"
+msgid "Verbose logging for UPnP components"
+msgstr "Ítarleg skráning fyrir UPnP einingar"
+
+msgctxt "#679"
+msgid "Verbose logging for CEC library"
+msgstr "Ítarleg skráning fyrir CEC skráasafn"
+
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Ítarleg skráning fyrir VIDEO einingu"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3181,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Tilkynna þjónustur til annarra kerfa með Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Samhæfður hamur við iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Leyfa hljóð-styrkstilli"
@@ -3225,6 +3257,22 @@ msgctxt "#1376"
 msgid "Pressure"
 msgstr "Þrýstingur"
 
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Nánd"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Vindstyrkur"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Tætingsleg"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Mjög"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Öfgakennt"
@@ -3233,9 +3281,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Hringiður"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Heiðskírt"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Biluð"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Skýstrokkur"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Hitabeltisstormur"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Hvirfilvindur"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Kalt"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3244,6 +3312,26 @@ msgstr "Vindasamt"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Stillingar"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Gola"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Þýður"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Allhvass vindur"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Varhugavert"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Ofsafengin"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5069,9 +5157,17 @@ msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr "Nota MPEG-2 VDPAU"
 
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir Mpeg-(1/2) kóðun. Ef ekki virkt þá mun örgjörvinn vera notaður í staðinn. Gömul Radeon skjákort gætu stundum klikkað ef þetta er virkt."
+
 msgctxt "#13443"
 msgid "Use MPEG-4 VDPAU"
 msgstr "Nota MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir Mpeg-4 kóðun. Ef ekki virkt þá mun örgjörvinn vera notaður í staðinn. Sum ION kort valda vandamálum ef þetta er haft sjálfgefið virkt."
 
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
@@ -5084,6 +5180,10 @@ msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir VC-1 
 msgctxt "#13447"
 msgid "Use MPEG-2 VAAPI"
 msgstr "Nota Mpeg-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
+msgstr "Virkjaðu þennan valkost til að nota vélbúnaðarhröðun fyrir Mpeg-(1/2) kóðun. Ef ekki virkt þá mun örgjörvinn vera notaður í staðinn. Sumar Mpeg-2 myndir geta haft græna slikju útúr köntum."
 
 msgctxt "#13449"
 msgid "Use MPEG-4 VAAPI"
@@ -5112,6 +5212,10 @@ msgstr "Hugbúnaður"
 msgctxt "#13456"
 msgid "Hardware accelerated"
 msgstr "Vélbúnaðar-hraðlað"
+
+msgctxt "#13457"
+msgid "Prefer VAAPI render method"
+msgstr "Kjósa VAAPI renderingu"
 
 msgctxt "#13458"
 msgid "Allow hardware acceleration (OMXPlayer)"
@@ -5565,6 +5669,10 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "Spila"
 
+msgctxt "#14087"
+msgid "Discs"
+msgstr "Diskar"
+
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "Spila DVD sjálfvirkt"
@@ -5620,6 +5728,18 @@ msgstr "Stöðva afritun geisladisks"
 msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Hröðun"
+
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Afspilunarhamur Blu-Ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Spila aðalmynd"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Sýna einfaldaða valmynd"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6064,6 +6184,34 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI Bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "VAAPI Motion Adaptive"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "VAAPI Motion Compensated"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Advanced"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Advanced (Half)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Half)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7141,6 +7289,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Ekki sýna 'tenging rofnaði' aðvaranir"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Hópa saman atriði"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Engin upptöku-viðbót fannst"
@@ -7154,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Viðbót fyrir bakenda til að hægt sé að nota upptökutæki."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Vinsamlega farðu á kodi.tv/pvr til að fræðast meira."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Farðu á http://kodi.wiki/view/PVR til að fræðast frekar."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8376,6 +8528,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf Vafri"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10469,6 +10625,26 @@ msgctxt "#24125"
 msgid "Custom location"
 msgstr "Sérsniðin staðsetning"
 
+msgctxt "#24126"
+msgid "Auto download first subtitle"
+msgstr "Sækja sjálfvirkt fyrsta þýðingartexta"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Hala sjálfvirkt niður fyrsta þýðingartexta í niðurstöðulista leitar"
+
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Uppsetning hefur verið færð"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Uppsetningin á XBMC hefur verið flutt á nýjan stað fyrir Kodi. Nánar á http://kodi.wiki/view/Migration - þessi skilaboð munu ekki birtast aftur!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Fela ósamhæft"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Tilkynningar"
@@ -10480,6 +10656,10 @@ msgstr "Fela útlend"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Velja úr öllum titlum ..."
+
+msgctxt "#25003"
+msgid "Show Blu-ray menu"
+msgstr "Sýna Blu-ray valblöð"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10668,6 +10848,14 @@ msgstr "Helgi"
 msgctxt "#33038"
 msgid "%s day"
 msgstr "%s dagur"
+
+msgctxt "#33039"
+msgid "%s Streams"
+msgstr "%s Straumar"
+
+msgctxt "#33040"
+msgid "%s Devices"
+msgstr "%s Afspilunartæki"
 
 msgctxt "#33049"
 msgid "Alert"
@@ -12385,6 +12573,10 @@ msgctxt "#36393"
 msgid "Folder used to save screenshots taken within Kodi."
 msgstr "Mappa sem notuð er til þess að vista skjáskot sem tekin eru í Kodi."
 
+msgctxt "#36394"
+msgid "Enables log messages from additional libraries to be included in the log."
+msgstr "Virkja skráningu skilaboða frá öðrum söfnum í atburðaskránni"
+
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
 msgstr "Flokkur sem inniheldur stillingar fyrir aðallæsingu."
@@ -12529,6 +12721,26 @@ msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Veldu uppsetningu sýndar-lyklaborðs."
 
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Ef virkjað þá er VAAPI rendering kosin. Þetta gerir minna álag á örgjörva en rekill gæti frosið!"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Leyfa vélbúnaðarhröðun (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Nota DVDPlayer fyrir afkóðun á kvikmyndaskrám með MMAL hröðlun"
+
+msgctxt "#36500"
+msgid "Stereoscopic 3D mode (current)"
+msgstr "Stereoscopic 3D hamur (núverandi)"
+
+msgctxt "#36501"
+msgid "Stereoscopic 3D mode"
+msgstr "Stereoscopic 3D hamur"
+
 msgctxt "#36502"
 msgid "Disabled"
 msgstr "Óvirkt"
@@ -12557,6 +12769,14 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Byggt á vélbúnaði"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoscopic (2D)"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic 3D videos"
+msgstr "Afspilunarhamur á stereoscopic 3D myndefni"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Spurðu mig"
@@ -12573,6 +12793,18 @@ msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Sama og kvikmynd (skynja sjálfvirkt)"
 
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Gera stereoscopic 3D ham óvirkan þegar afspilun líkur"
+
+msgctxt "#36527"
+msgid "Select playback mode"
+msgstr "Veldu afspilunarham"
+
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "Veldu stereoscopic 3D ham"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Veldu ham til vara..."
@@ -12581,9 +12813,37 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Sama og kvikmynd"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Veldu hvernig hljóð er blandað niður, til dæmis 5.1 í 2.0: [Virkt] heldur hljóðstyrk upprunalegs hljóðs en hljóðsviðið mun verða samþjappað. [Óvirkt] heldur hljóðsviði upprunahljóðs við niðurblöndun en hljóðstyrk úr er lægri. Athugið - Hljóðsvið er mismunur á milli lægsta og hæðsta hljóðs í hljóðveitu. Gerðu þetta virkt ef tal í mynd heyrist varla."
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "Skilgreina önnur söfn sem eiga að skrá í atburðaskránna."
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Stereoscopic 3D hamur á myndefni"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "Snúa við Stereoscopic 3D ham (víxla augum)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Veldu í hvaða ham stereoscopic 3D verða spilaðar. [Spurðu mig] mun koma með valglugga til að velja æskilegan ham fyrir hverja afspilun. [Æskilegur hamur] mun velja æskilegan ham sem tilgreindur er í 'Kerfi -> Myndvélbúnaður' hlutanum af stillingunum. [Monoscopic (2D)] mun spila myndskeiðin í mono/2D. [Hunsa] gerir óvirka alla stereoscopic 3D vinnslu og meðhöndlun."
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Virkt] Skipta notendaviðmóti (og sumum sjónvörpum) yfir í 2D ham þegar afspilun líkur. [Óvirkt] Notendaviðmót og sjónvarp verða áfram í stereoscopic 3D ham. Í mynd-spilunarlistum verður ekki skipt úr stereoscopic 3D ham á milli kvikmynda, jafnvel þótt efnið sé ekki í þrívídd."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Breytir stereoscopic 3D ham notendaviðmóts."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Sjálfgefinn hamur sem stereoscopic 3D efni nota til afspilunnar."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12601,6 +12861,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Virkja vélbúnaðarhraðal við afkóðun kvikmyndaskráa."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "Stereoscopic 3D dýpt á þýðingartextum"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Setur sýnilega dýpt á þýðingartextum fyrir stereoscopic 3D myndefni. Eftir því sem gildið er hærra því nær virðast þýðingartextarnir vera áhorfandanum."
@@ -12612,6 +12876,10 @@ msgstr "Nota hærri gæði í plötuumslög og aðdáendamyndverk (notar meira m
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Takmarkar upplausn notandaviðmóts til að spara minni. Hefur ekki áhrif á afspilun. Þarfnast endurræsingar."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Nota iOS8 samhæfðan AirPlay stuðning. Ef þú lendir í vandræðum með að eldri iOS tæki skynja ekki Kodi sem stutt tæki þá skaltu prófa að slökkva á þessu. Þessi valkostur verður aðeins virkur við næstu endurræsingu á Kodi!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12644,6 +12912,14 @@ msgstr "Sjónvarpsþáttur"
 msgctxt "#36903"
 msgid "TV shows"
 msgstr "Sjónvarpsþættir"
+
+msgctxt "#36904"
+msgid "season"
+msgstr "þáttaröð"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "þáttaraðir"
 
 msgctxt "#36906"
 msgid "episode"
@@ -12796,3 +13072,11 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Ótakmarkað"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Skilgreina hvernig á að opna/spila Blu-Ray diska. Ekki er enn kominn fullur stuðningur við diska valblöð og þau geta valdið vandræðum."
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "Hraðað með grafískur örgjörva"

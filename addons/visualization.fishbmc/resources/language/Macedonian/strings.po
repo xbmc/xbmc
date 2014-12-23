@@ -16,30 +16,50 @@ msgstr ""
 "Language: mk\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Детаљи [Го напрегаат процесорот]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "ниско"
+msgstr "Ниско"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "нормално"
+msgstr "Нормално"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "високо"
+msgstr "Високо"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "екстремно"
+msgstr "Екстремно"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Енергичен Режим [почести режимни промени]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Брзински [прескокнува кадри]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Многу ниско"
 
 msgctxt "#30008"
 msgid "Low"
-msgstr "Мин."
+msgstr "Ниско"
 
 msgctxt "#30009"
 msgid "Normal"
-msgstr "Нормален"
+msgstr "Нормално"
 
 msgctxt "#30010"
 msgid "High"
-msgstr "висок"
+msgstr "Високо"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Користи фајл за зачувување [побрзо пуштање]"

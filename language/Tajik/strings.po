@@ -7033,10 +7033,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Барномаи иловагӣ барои сервер, то ки тавонад PVR-ро истифода барад."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Лутфан, барои маълумоти муфассал ба вебсайти \"kodi.tv/pvr\" гузаред."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Огоҳӣ дар бораи ихтилоф"

@@ -19,8 +19,8 @@
  */
 
 #if defined(TARGET_DARWIN_OSX)
-#include <CoreServices/CoreServices.h>
 #include "utils/URIUtils.h"
+#include "osx/DarwinUtils.h"
 #elif defined(TARGET_POSIX)
 #else
 #endif
@@ -34,23 +34,9 @@ bool IsAliasShortcut(const std::string& path)
 #if defined(TARGET_DARWIN_OSX)
   // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
-  if (!URIUtils::HasExtension(path, ".alias"))
+  if (!URIUtils::HasExtension(path, ".alias"))// TODO - check if this is still needed with the new API
   {
-    FSRef fileRef;
-    Boolean targetIsFolder, wasAliased;
-
-    // It is better to call FSPathMakeRefWithOptions and pass kFSPathMakeRefDefaultOptions
-    //   since it will succeed for paths such as "/Volumes" unlike FSPathMakeRef.
-    if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
-    {
-      if (noErr == FSIsAliasFile(&fileRef, &wasAliased, &targetIsFolder))
-      {
-        if (wasAliased)
-        {
-          rtn = true;
-        }
-      }
-    }
+    rtn = CDarwinUtils::IsAliasShortcut(path);
   }
 #elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
@@ -68,23 +54,7 @@ bool IsAliasShortcut(const std::string& path)
 void TranslateAliasShortcut(std::string& path)
 {
 #if defined(TARGET_DARWIN_OSX)
-  FSRef fileRef;
-  Boolean targetIsFolder, wasAliased;
-
-  if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
-  {
-    if (noErr == FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI))
-    {
-      if (wasAliased)
-      {
-        char real_path[PATH_MAX];
-        if (noErr == FSRefMakePath(&fileRef, (UInt8*)real_path, PATH_MAX))
-        {
-          path = real_path;
-        }
-      }
-    }
-  }
+  CDarwinUtils::TranslateAliasShortcut(path);
 #elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
 

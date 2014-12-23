@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (Canada) (http://www.transifex.com/projects/p/xbmc-addons/language/fr_CA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Récupérer les imagettes d'albums sur fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Récupérer les imagettes d'albums sur Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Obtenir les critiques sur"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "Langue préférée"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Obtenir les évaluations sur"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Obtenir les styles d'albums sur"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Obtenir les ambiances d'albums sur"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Obtenir les thème d'albums sur"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Récupérer les imagettes d'albums sur allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Illustrations"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Récupérer les imagettes d'albums sur theaudiodb.com"

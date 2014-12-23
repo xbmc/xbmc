@@ -1,0 +1,31 @@
+--- Python/dynload_shlib.c	2014-08-13 15:13:49.879675283 +0200
++++ Python/dynload_shlib.c	2014-08-13 19:03:57.456363680 +0200
+@@ -112,10 +112,6 @@
+         dlopenflags = PyThreadState_GET()->interp->dlopenflags;
+ #endif
+ 
+-	if (Py_VerboseFlag)
+-		PySys_WriteStderr("dlopen(\"%s\", %x);\n", pathname, 
+-				  dlopenflags);
+-
+ #ifdef __VMS
+ 	/* VMS currently don't allow a pathname, use a logical name instead */
+ 	/* Concatenate 'python_module_' and shortname */
+@@ -125,8 +121,17 @@
+ 	PyOS_snprintf(pathbuf, sizeof(pathbuf), "python_module_%-.200s", 
+ 		      shortname);
+ 	pathname = pathbuf;
++#elif defined(ANDROID)
++	/* Android does not allow a pathname and wants lib*.so */
++	PyOS_snprintf(pathbuf, sizeof(pathbuf), "lib%-.200s.so", 
++		      shortname);
++	pathname = pathbuf;
+ #endif
+ 
++	if (Py_VerboseFlag)
++		PySys_WriteStderr("dlopen(\"%s\", %x);\n", pathname, 
++				  dlopenflags);
++
+ 	handle = dlopen(pathname, dlopenflags);
+ 
+ 	if (handle == NULL) {

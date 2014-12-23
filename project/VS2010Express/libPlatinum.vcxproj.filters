@@ -66,9 +66,6 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServer.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerListener.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
@@ -78,13 +75,7 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdp.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdpListener.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.h">
@@ -96,13 +87,7 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnP.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnPHelper.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltVersion.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltXmlHelper.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.h">

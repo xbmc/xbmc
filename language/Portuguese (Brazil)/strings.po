@@ -4839,11 +4839,11 @@ msgstr "Adicionar à fila"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
-msgstr "Pesquisar no IMDb..."
+msgstr "Buscar no IMDb..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "Pesquisar por novas informações"
+msgstr "Buscar por novas informações"
 
 msgctxt "#13350"
 msgid "Current playlist"
@@ -6695,7 +6695,7 @@ msgstr "Tamanho do Disco"
 
 msgctxt "#19117"
 msgid "Search for channels"
-msgstr "Procurar por canais"
+msgstr "Buscar por canais"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
@@ -6703,7 +6703,7 @@ msgstr "Não e possível usar funções PVR ao fazer uma busca."
 
 msgctxt "#19119"
 msgid "On which server do you want to search?"
-msgstr "Em qual servidor você deseja procurar?"
+msgstr "Em qual servidor você deseja buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6787,7 +6787,7 @@ msgstr "Nome do novo grupo"
 
 msgctxt "#19140"
 msgid "Search..."
-msgstr "Procurar..."
+msgstr "Buscar..."
 
 msgctxt "#19141"
 msgid "Group"
@@ -6795,7 +6795,7 @@ msgstr "Grupo"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr "Guia de pesquisa"
+msgstr "Guia de busca"
 
 msgctxt "#19143"
 msgid "Group management"
@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on para poder usar o PVR."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Por favor visite kodi.tv/pvr para entender mais."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Por favor visite http://kodi.wiki/view/PVR para maiores detalhes."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7355,7 +7355,7 @@ msgstr "Procurar por logo do canal"
 
 msgctxt "#19286"
 msgid "Searching for channel icons"
-msgstr "Procurando por logos de canais"
+msgstr "Buscando por logos de canais"
 
 msgctxt "#19287"
 msgid "All channels"
@@ -8963,7 +8963,7 @@ msgstr "Exibir Fanart nas coleções de video e música"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
-msgstr "Procurando por conteúdo novo"
+msgstr "Buscando por conteúdo novo"
 
 msgctxt "#20416"
 msgid "First aired"
@@ -10543,7 +10543,7 @@ msgstr "Add-on é incompatível devido a dependências não satisfeitas."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
-msgstr "Pausar quando procurando por legendas"
+msgstr "Pausar quando buscar por legendas"
 
 msgctxt "#24106"
 msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
@@ -10551,7 +10551,7 @@ msgstr "Especifique onde legendas transferidas serão salvas, no mesmo local do 
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
-msgstr "Procurando por legendas..."
+msgstr "Buscando por legendas..."
 
 msgctxt "#24108"
 msgid "%d subtitles found"
@@ -10636,6 +10636,14 @@ msgstr "Automaticamente efetue download da legenda sincronizada da lista de resu
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Configuração foi movida"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "A configuração do XBMC foi movida para um novo local para o Kodi. Por favor verifique em http://kodi.wiki/view/Migration - Este alerta não será mostrado novamente!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Ocultar incompatíveis"
 
 msgctxt "#25000"
 msgid "Notifications"

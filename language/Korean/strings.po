@@ -7306,8 +7306,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "PVR 사용을 위한 백엔드 애드온"
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "kodi.tv/pvr 에서 자세한 정보를 확인하세요."
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "더 알아보려면 http://kodi.wiki/view/PVR 를 방문하세요."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -12535,7 +12535,7 @@ msgstr "프록시 서버 포트를 설정합니다."
 
 msgctxt "#36384"
 msgid "Configure the proxy server username."
-msgstr "프록시 서버 사용자 이름을 설정합니다."
+msgstr "프록시 서버 사용자명을 설정합니다."
 
 msgctxt "#36385"
 msgid "Configure the proxy server password."
@@ -12575,7 +12575,7 @@ msgstr "Kodi에서 캡처한 스크린샷을 저장할 폴더"
 
 msgctxt "#36394"
 msgid "Enables log messages from additional libraries to be included in the log."
-msgstr "추가 라이브러리로부터 로그에 포함할 로그 메시지를 활성화합니다."
+msgstr "추가 라이브러리의 로그를 디버그 로그에 포함합니다."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12819,7 +12819,7 @@ msgstr "다운믹스 방식을 선택합니다. (예: 5.1 채널을 2.0 채널�
 
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
-msgstr "로그에 포함할 로그 메시지를 가진 추가 라이브러리를 지정합니다."
+msgstr "로그에 포함할 추가 라이브러리를 지정합니다."
 
 msgctxt "#36535"
 msgid "Stereoscopic 3D mode of video"

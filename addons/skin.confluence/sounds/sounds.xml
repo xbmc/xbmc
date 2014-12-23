@@ -12,7 +12,7 @@
 <!-- file to play when the action occurs.                                   -->
 
 <!-- Valid entries for <name> can be found at                               -->
-<!-- http://wiki.xbmc.org/index.php?title=Keymap                            -->
+<!-- http://kodi.wiki/view/Keymap                                           -->
 
 
 <!-- Also window specific sound can be played                               -->
@@ -28,7 +28,7 @@
 <!-- by setting the file to play.                                           -->
 
 <!-- Valid entries for <name> can be found at                               -->
-<!-- http://wiki.xbmc.org/?title=Window_IDs                                 -->
+<!-- http://kodi.wiki/view/Window_IDs                                       -->
 
 <!-- Note: Only wav files are supported                                     -->
 

@@ -478,7 +478,7 @@ msgstr "İlk çalıştırma yardımı...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye yada fare imlecini sekmenin sol tarafına götürünüz. [CR][CR]Pencereyi kapatmak için \"Ok\" tuşuna basınız. Bu bildiri bir daha çıkmayacaktır."
+msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye ya da fare imlecini sekmenin sol tarafına götürün. [CR][CR]Pencereyi kapatmak için \"Tamam\" tuşuna basın. Bu bildiri bir daha çıkmayacaktır."
 
 msgctxt "#31413"
 msgid "Local subtitle available"

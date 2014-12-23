@@ -3205,6 +3205,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Обяви тези услуги към други системи чрез Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Режим на съвместимост с iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Включи регулатора на звука"
@@ -6153,6 +6157,22 @@ msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Motion Compensated"
 
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Advanced"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - Advanced (Half)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Half)"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Пост обработка"
@@ -7225,6 +7245,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Без предупреждения за пропаднала връзка"
 
+msgctxt "#19270"
+msgid "Group Items"
+msgstr "Групиране"
+
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
 msgstr "Няма открити ПВР добавки"
@@ -7238,8 +7262,8 @@ msgid "Add-on for the backend to be able to use PVR."
 msgstr "Добавка за сървъра, за да може да се ползва ПВР."
 
 msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "За да научите повече посетете www.kodi.tv/pvr"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "За да научите повече посетете http://kodi.wiki/view/PVR."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9199,7 +9223,7 @@ msgstr "Налагай следния район за DVD плейъра"
 
 msgctxt "#21373"
 msgid "Video output"
-msgstr "Видео изxод"
+msgstr "Видео изход"
 
 msgctxt "#21374"
 msgid "Video aspect"
@@ -12804,6 +12828,10 @@ msgstr "Ползвай висококачествени текстури за о
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Ограничава резолюцията на интерфейса, с цел пестене на памет. Не засяга възпроизвеждането на видео. Изисква се рестарт."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Специален режим за AirPlay, който може да изключите ако устройства които работят под стара версия на iOS не засичат Kodi. Опцията изисква рестартиране на Коди!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."

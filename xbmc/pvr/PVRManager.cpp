@@ -1078,6 +1078,36 @@ void CPVRManager::CloseStream(void)
   SAFE_DELETE(m_currentFile);
 }
 
+bool CPVRManager::PlayMedia(const CFileItem& item)
+{
+  if (!g_PVRManager.IsStarted())
+  {
+    CLog::Log(LOGERROR, "CApplication - %s PVR manager not started to play file '%s'", __FUNCTION__, item.GetPath().c_str());
+    return false;
+  }
+
+  CFileItem pvrItem(item);
+  if (URIUtils::IsPVRChannel(item.GetPath()) && !item.HasPVRChannelInfoTag())
+    pvrItem = *g_PVRChannelGroups->GetByPath(item.GetPath());
+  else if (URIUtils::IsPVRRecording(item.GetPath()) && !item.HasPVRRecordingInfoTag())
+    pvrItem = *g_PVRRecordings->GetByPath(item.GetPath());
+  
+  if (!pvrItem.HasPVRChannelInfoTag() && !pvrItem.HasPVRRecordingInfoTag())
+    return false;
+    
+  // check parental lock if we want to play a channel
+  if (pvrItem.IsPVRChannel() && !g_PVRManager.CheckParentalLock(*pvrItem.GetPVRChannelInfoTag()))
+    return false;
+  
+  if (!g_application.IsCurrentThread())  
+  {
+    CApplicationMessenger::Get().MediaPlay(pvrItem);
+    return true;
+  }
+    
+  return g_application.PlayFile(pvrItem, false) == PLAYBACK_OK;
+}
+
 void CPVRManager::UpdateCurrentFile(void)
 {
   CSingleLock lock(m_critSection);

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- http://www.w3.org/TR/css3-color/#colorunits -->
 <colors>
 	<color name="aliceblue">fff0f8ff</color>
 	<color name="antiquewhite">fffaebd7</color>
@@ -26,6 +27,7 @@
 	<color name="darkgoldenrod">ffb8860b</color>
 	<color name="darkgray">ffa9a9a9</color>
 	<color name="darkgreen">ff006400</color>
+	<color name="darkgrey">ffa9a9a9</color>
 	<color name="darkkhaki">ffbdb76b</color>
 	<color name="darkmagenta">ff8b008b</color>
 	<color name="darkolivegreen">ff556b2f</color>
@@ -36,11 +38,13 @@
 	<color name="darkseagreen">ff8fbc8f</color>
 	<color name="darkslateblue">ff483d8b</color>
 	<color name="darkslategray">ff2f4f4f</color>
+	<color name="darkslategrey">ff2f4f4f</color>
 	<color name="darkturquoise">ff00ced1</color>
 	<color name="darkviolet">ff9400d3</color>
 	<color name="deeppink">ffff1493</color>
 	<color name="deepskyblue">ff00bfff</color>
 	<color name="dimgray">ff696969</color>
+	<color name="dimgrey">ff696969</color>
 	<color name="dodgerblue">ff1e90ff</color>
 	<color name="firebrick">ffb22222</color>
 	<color name="floralwhite">fffffaf0</color>
@@ -53,10 +57,11 @@
 	<color name="gray">ff808080</color>
 	<color name="green">ff008000</color>
 	<color name="greenyellow">ffadff2f</color>
+	<color name="grey">ff808080</color>
 	<color name="honeydew">fff0fff0</color>
 	<color name="hotpink">ffff69b4</color>
-	<color name="indianred ">ffcd5c5c</color>
-	<color name="indigo  ">ff4b0082</color>
+	<color name="indianred">ffcd5c5c</color>
+	<color name="indigo">ff4b0082</color>
 	<color name="ivory">fffffff0</color>
 	<color name="khaki">fff0e68c</color>
 	<color name="lavender">ffe6e6fa</color>
@@ -67,13 +72,15 @@
 	<color name="lightcoral">fff08080</color>
 	<color name="lightcyan">ffe0ffff</color>
 	<color name="lightgoldenrodyellow">fffafad2</color>
-	<color name="lightgrey">ffd3d3d3</color>
+	<color name="lightgray">ffd3d3d3</color>
 	<color name="lightgreen">ff90ee90</color>
+	<color name="lightgrey">ffd3d3d3</color>
 	<color name="lightpink">ffffb6c1</color>
 	<color name="lightsalmon">ffffa07a</color>
 	<color name="lightseagreen">ff20b2aa</color>
 	<color name="lightskyblue">ff87cefa</color>
 	<color name="lightslategray">ff778899</color>
+	<color name="lightslategrey">ff778899</color>
 	<color name="lightsteelblue">ffb0c4de</color>
 	<color name="lightyellow">ffffffe0</color>
 	<color name="lime">ff00ff00</color>
@@ -84,7 +91,7 @@
 	<color name="mediumaquamarine">ff66cdaa</color>
 	<color name="mediumblue">ff0000cd</color>
 	<color name="mediumorchid">ffba55d3</color>
-	<color name="mediumpurple">ff9370d8</color>
+	<color name="mediumpurple">ff9370db</color>
 	<color name="mediumseagreen">ff3cb371</color>
 	<color name="mediumslateblue">ff7b68ee</color>
 	<color name="mediumspringgreen">ff00fa9a</color>
@@ -106,7 +113,7 @@
 	<color name="palegoldenrod">ffeee8aa</color>
 	<color name="palegreen">ff98fb98</color>
 	<color name="paleturquoise">ffafeeee</color>
-	<color name="palevioletred">ffd87093</color>
+	<color name="palevioletred">ffdb7093</color>
 	<color name="papayawhip">ffffefd5</color>
 	<color name="peachpuff">ffffdab9</color>
 	<color name="peru">ffcd853f</color>
@@ -127,6 +134,7 @@
 	<color name="skyblue">ff87ceeb</color>
 	<color name="slateblue">ff6a5acd</color>
 	<color name="slategray">ff708090</color>
+	<color name="slategrey">ff708090</color>
 	<color name="snow">fffffafa</color>
 	<color name="springgreen">ff00ff7f</color>
 	<color name="steelblue">ff4682b4</color>
@@ -134,6 +142,7 @@
 	<color name="teal">ff008080</color>
 	<color name="thistle">ffd8bfd8</color>
 	<color name="tomato">ffff6347</color>
+	<color name="transparent">00000000</color>
 	<color name="turquoise">ff40e0d0</color>
 	<color name="violet">ffee82ee</color>
 	<color name="wheat">fff5deb3</color>

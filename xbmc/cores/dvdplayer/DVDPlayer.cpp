@@ -2136,7 +2136,13 @@ void CDVDPlayer::OnExit()
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
     CloseStream(m_CurrentAudio,    !m_bAbortRequest);
     CloseStream(m_CurrentVideo,    !m_bAbortRequest);
-    CloseStream(m_CurrentSubtitle, !m_bAbortRequest);
+
+    // the generalization principle was abused for subtitle player. actually it is not a stream player like
+    // video and audio. subtitle player does not run on its own thread, hence waitForBuffers makes
+    // no sense here. waitForBuffers is abused to clear overlay container (false clears container)
+    // subtitles are added from video player. after video player has finished, overlays have to be cleared.
+    CloseStream(m_CurrentSubtitle, false);  // clear overlay container
+
     CloseStream(m_CurrentTeletext, !m_bAbortRequest);
 
     // destroy objects
@@ -2239,15 +2245,18 @@ void CDVDPlayer::HandleMessages()
 
         CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
         double start = DVD_NOPTS_VALUE;
+        double offset = 0;
+        int64_t beforeSeek = GetTime();
 
         // This should always be the case.
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
           FlushBuffers(false, start, true);
+          offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
 
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.SetDisplayAfterSeek(2500, offset);
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {

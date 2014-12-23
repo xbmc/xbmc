@@ -329,8 +329,8 @@
       <!-- D-pad does what you'd expect. Triggers fast forward and rewind. Left stick scans forward and back. -->
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
-      <hat id="1" position="up">BigStepForward</hat>
-      <hat id="1" position="down">BigStepBack</hat>
+      <hat id="1" position="up">ChapterOrBigStepForward</hat>
+      <hat id="1" position="down">ChapterOrBigStepBack</hat>
       <hat id="1" position="left">StepBack</hat>
       <hat id="1" position="right">StepForward</hat>
     </joystick>
@@ -361,8 +361,8 @@
       <button id="15">ChapterOrBigStepBack</button>
       <axis id="3">AnalogRewind</axis>
       <axis id="6">AnalogFastForward</axis>
-      <hat id="1" position="up">BigStepForward</hat>
-      <hat id="1" position="down">BigStepBack</hat>
+      <hat id="1" position="up">ChapterOrBigStepForward</hat>
+      <hat id="1" position="down">ChapterOrBigStepBack</hat>
       <hat id="1" position="left">StepBack</hat>
       <hat id="1" position="right">StepForward</hat>
     </joystick>

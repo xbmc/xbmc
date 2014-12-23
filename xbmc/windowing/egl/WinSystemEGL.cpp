@@ -151,6 +151,18 @@ bool CWinSystemEGL::CreateWindow(RESOLUTION_INFO &res)
   if(m_egl)
     m_egl->SetNativeResolution(res);
 
+  int quirks;
+  m_egl->GetQuirks(&quirks);
+  if (quirks & EGL_QUIRK_RECREATE_DISPLAY_ON_CREATE_WINDOW)
+  {
+    if (m_context != EGL_NO_CONTEXT)
+      if (!m_egl->InitDisplay(&m_display))
+      {
+        CLog::Log(LOGERROR, "%s: Could not reinit display",__FUNCTION__);
+        return false;
+      }
+  }
+
   if (!m_egl->CreateSurface(m_display, m_config, &m_surface))
   {
     CLog::Log(LOGNOTICE, "%s: Could not create a surface. Trying with a fresh Native Window.",__FUNCTION__);

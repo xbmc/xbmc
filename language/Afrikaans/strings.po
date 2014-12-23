@@ -7049,10 +7049,6 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Byvoegsel vir die agterkant om PVR te kan gebruik."
 
-msgctxt "#19274"
-msgid "Please visit kodi.tv/pvr to learn more."
-msgstr "Besoek asb kodi.tv/pvr om meer te leer."
-
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Konflik waarskuwing"
