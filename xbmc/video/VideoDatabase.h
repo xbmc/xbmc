@@ -779,10 +779,7 @@ protected:
   int GetFileId(const CStdString& url);
 
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);
-  int AddGenre(const CStdString& strGenre1);
   int AddActor(const CStdString& strActor, const CStdString& thumbURL, const CStdString &thumb = "");
-  int AddCountry(const CStdString& strCountry);
-  int AddStudio(const CStdString& strStudio1);
 
   int AddTvShow();
   int AddMusicVideo(const CStdString& strFilenameAndPath);
@@ -804,33 +801,16 @@ protected:
   int GetMatchingTvShow(const CVideoInfoTag &show);
 
   // link functions - these two do all the work
-  void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
-  void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
-  void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
-  void UpdateLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
-  void UpdateActorLinkTable(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void AddLinkToActor(int mediaId, const char *mediaType, int actorId, const CStdString &role, int order);
+  void AddToLinkTable(int mediaId, const std::string& mediaType, const std::string& table, int valueId, const char *foreignKey = NULL);
+  void RemoveFromLinkTable(int mediaId, const std::string& mediaType, const std::string& table, int valueId, const char *foreignKey = NULL);
 
-  void AddCast(int idMedia, const char *table, const char *field, const std::vector<SActorInfo> &cast);
-  void AddArtistToMusicVideo(int lMVideo, int idArtist);
+  void AddLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void UpdateLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
+  void UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
 
-  void AddDirectorToMovie(int idMovie, int idDirector);
-  void AddDirectorToTvShow(int idTvShow, int idDirector);
-  void AddDirectorToEpisode(int idEpisode, int idDirector);
-  void AddDirectorToMusicVideo(int lMVideo, int idDirector);
-  void AddWriterToEpisode(int idEpisode, int idWriter);
-  void AddWriterToMovie(int idMovie, int idWriter);
-
-  void AddGenreToMovie(int idMovie, int idGenre);
-  void AddGenreToTvShow(int idTvShow, int idGenre);
-  void AddGenreToMusicVideo(int idMVideo, int idGenre);
-
-  void AddStudioToMovie(int idMovie, int idStudio);
-  void AddStudioToTvShow(int idTvShow, int idStudio);
-  void AddStudioToMusicVideo(int idMVideo, int idStudio);
-
-  void AddCountryToMovie(int idMovie, int idCountry);
-
-  void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<int>& vecDirectors, std::vector<int>& vecGenres, std::vector<int>& vecStudios);
+  void AddCast(int mediaId, const char *mediaType, const std::vector<SActorInfo> &cast);
 
   void DeleteStreamDetails(int idFile);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
@@ -842,9 +822,10 @@ protected:
   CVideoInfoTag GetDetailsForEpisode(const dbiplus::sql_record* const record, bool getDetails = false);
   CVideoInfoTag GetDetailsForMusicVideo(std::auto_ptr<dbiplus::Dataset> &pDS, bool getDetails = false);
   CVideoInfoTag GetDetailsForMusicVideo(const dbiplus::sql_record* const record, bool getDetails = false);
-  bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
-  bool GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
-  void GetCast(const CStdString &table, const CStdString &table_id, int type_id, std::vector<SActorInfo> &cast);
+  bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const char *type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
+  bool GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const char *type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
+  void GetCast(int media_id, const std::string &media_type, std::vector<SActorInfo> &cast);
+  void GetTags(int media_id, const std::string &media_type, std::vector<std::string> &tags);
 
   void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
@@ -854,6 +835,8 @@ private:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
+  void CreateLinkIndex(const char *table);
+  void CreateForeignLinkIndex(const char *table, const char *foreignkey);
 
   /*! \brief (Re)Create the generic database views for movies, tvshows,
      episodes and music videos
@@ -873,6 +856,9 @@ private:
    \return the number of rows, -1 for an error.
    */
   int RunQuery(const CStdString &sql);
+
+  void AppendIdLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
+  void AppendLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
 
   /*! \brief Determine whether the path is using lookup using folders
    \param path the path to check
