@@ -1106,7 +1106,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   if (params.GetAlbumId() && m_musicdatabase.GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, art))
     items.AppendArt(art, MediaTypeAlbum);
 
-  if (params.GetArtistId() && m_musicdatabase.GetArtForItem(params.GetArtistId(), MediaTypeArtist, art));
+  if (params.GetArtistId() && m_musicdatabase.GetArtForItem(params.GetArtistId(), MediaTypeArtist, art))
     items.AppendArt(art, MediaTypeArtist);
 
   // add in the "New Playlist" item if we're in the playlists folder
