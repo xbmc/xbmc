@@ -197,10 +197,10 @@ return out.str();
 
 }
 
-std::auto_ptr<Preset> IdlePreset::allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs)
+std::unique_ptr<Preset> IdlePreset::allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs)
 {
 
   std::istringstream in(presetText());
-  return std::auto_ptr<Preset>(new Preset(in, IDLE_PRESET_NAME, presetInputs, presetOutputs));
+  return std::unique_ptr<Preset>(new Preset(in, IDLE_PRESET_NAME, presetInputs, presetOutputs));
 }
 

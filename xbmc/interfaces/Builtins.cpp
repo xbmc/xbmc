@@ -727,7 +727,7 @@ int CBuiltins::Execute(const std::string& execString)
           break;
       }
 
-      auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
+      unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
       if (state.get())
         items.Sort(state->GetSortMethod());
       else

@@ -239,7 +239,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 
 bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)
 {
-  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
+  unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
   CMusicInfoTag tag;
   if (NULL != pLoader.get())
     pLoader->Load(path, tag, &art);

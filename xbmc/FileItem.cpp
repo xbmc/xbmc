@@ -2180,7 +2180,7 @@ void CFileItemList::FilterCueItems()
               itemstodelete.push_back(strMediaFile);
               // get the additional stuff (year, genre etc.) from the underlying media files tag.
               CMusicInfoTag tag;
-              auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
+              unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
               if (NULL != pLoader.get())
               {
                 // get id3tag
@@ -3006,7 +3006,7 @@ bool CFileItem::LoadMusicTag()
   // load tag from file
   CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
   CMusicInfoTagLoaderFactory factory;
-  auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
+  unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
   if (NULL != pLoader.get())
   {
     if (pLoader->Load(m_strPath, *GetMusicInfoTag()))

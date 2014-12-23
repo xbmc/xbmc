@@ -1293,7 +1293,7 @@ TEST(TestDatabaseUtils, GetFieldValue)
 // TEST(TestDatabaseUtils, GetDatabaseResults)
 // {
 //   static bool GetDatabaseResults(MediaType mediaType, const FieldList &fields,
-//                                  const std::auto_ptr<dbiplus::Dataset> &dataset,
+//                                  const std::unique_ptr<dbiplus::Dataset> &dataset,
 //                                  DatabaseResults &results);
 // }
 

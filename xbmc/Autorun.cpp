@@ -110,7 +110,7 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
 #endif
 
   const CURL pathToUrl(mediaPath);
-  auto_ptr<IDirectory> pDir ( CDirectoryFactory::Create( pathToUrl ));
+  unique_ptr<IDirectory> pDir ( CDirectoryFactory::Create( pathToUrl ));
   bool bPlaying = RunDisc(pDir.get(), mediaPath, nAddedToPlaylist, true, bypassSettings, startFromBeginning);
 
   if ( !bPlaying && nAddedToPlaylist > 0 )

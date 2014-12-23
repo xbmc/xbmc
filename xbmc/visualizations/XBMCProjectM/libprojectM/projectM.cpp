@@ -800,7 +800,7 @@ void projectM::selectPreset ( unsigned int index )
 	timeKeeper->StartPreset();
 }
 
-void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs) {
+void projectM::switchPreset(std::unique_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs) {
 
 	if (_settings.shuffleEnabled)
 		*m_presetPos = m_presetChooser->weightedRandom();
