@@ -485,12 +485,12 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   if ( bytesRead < 0 && errno == EINVAL )
   {
-    CLog::Log(LOGERROR, "%s - Error( %"PRIdS", %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %" PRIdS ", %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
     bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
   }
 
   if ( bytesRead < 0 )
-    CLog::Log(LOGERROR, "%s - Error( %"PRIdS", %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %" PRIdS ", %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
 
   return bytesRead;
 }
