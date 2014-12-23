@@ -624,7 +624,8 @@ const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
 const infomap control_labels[] = {{ "hasfocus",         CONTROL_HAS_FOCUS },
                                   { "isvisible",        CONTROL_IS_VISIBLE },
                                   { "isenabled",        CONTROL_IS_ENABLED },
-                                  { "getlabel",         CONTROL_GET_LABEL }};
+                                  { "getlabel",         CONTROL_GET_LABEL },
+                                  { "getlabel2",        CONTROL_GET_LABEL2 }};
 
 const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "position",         PLAYLIST_POSITION },
@@ -3303,6 +3304,16 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       const CGUIControl *control = window->GetControl(info.GetData1());
       if (control)
         return control->GetDescription();
+    }
+  }
+  else if (info.m_info == CONTROL_GET_LABEL2)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+    if (window)
+    {
+      const CGUIControl *control = window->GetControl(info.GetData1());
+      if (control)
+        return control->GetDescription2();
     }
   }
   else if (info.m_info == WINDOW_PROPERTY)

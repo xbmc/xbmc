@@ -748,3 +748,8 @@ void CGUIEditControl::SetFocus(bool focus)
   g_Windowing.EnableTextInput(focus);
   CGUIControl::SetFocus(focus);
 }
+
+std::string CGUIEditControl::GetDescription2() const
+{
+  return GetLabel2();
+}
