@@ -125,16 +125,23 @@ APP_VERSION_TAG_LC=$(echo $APP_VERSION_TAG | ${AWK} '{print tolower($0)}')
 APP_VERSION_CODE=${APP_VERSION_CODE-$(${AWK} '/VERSION_CODE/ {print $2}' version.txt)}
 APP_ADDON_API=${APP_ADDON_API-$(${AWK} '/ADDON_API/ {print $2}' version.txt)}
 if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSION_MINOR" != "" \
-&& test "$APP_VERSION_TAG" != "" && test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
-  final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG}"
+&& test "$APP_VERSION_CODE" != "" && test "$APP_ADDON_API" != ""; then
+  APP_VERSION=${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
+  if test "$APP_VERSION_TAG" != ""; then
+    APP_VERSION=${APP_VERSION}-${APP_VERSION_TAG}
+  fi
+
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)
+  AC_SUBST(APP_VERSION)
   AC_SUBST(APP_VERSION_MAJOR)
   AC_SUBST(APP_VERSION_MINOR)
   AC_SUBST(APP_VERSION_TAG)
   AC_SUBST(APP_VERSION_TAG_LC)
   AC_SUBST(APP_VERSION_CODE)
   AC_SUBST(APP_ADDON_API)
+
+  final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION}"
 else
   AC_MSG_ERROR(could not detect application Version, make sure version.txt is complete)
 fi

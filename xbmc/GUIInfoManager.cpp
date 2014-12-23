@@ -418,9 +418,6 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
                                   { "isstacked",        CONTAINER_STACKED },
-                                  { "folderthumb",      CONTAINER_FOLDERTHUMB },
-                                  { "tvshowthumb",      CONTAINER_TVSHOWTHUMB },
-                                  { "seasonthumb",      CONTAINER_SEASONTHUMB },
                                   { "folderpath",       CONTAINER_FOLDERPATH },
                                   { "foldername",       CONTAINER_FOLDERNAME },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
@@ -448,11 +445,13 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
+                                  { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "subitem",          CONTAINER_SUBITEM },
                                   { "hasfocus",         CONTAINER_HAS_FOCUS }};
 
 const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
-                                  { "content",          CONTAINER_CONTENT }};
+                                  { "content",          CONTAINER_CONTENT },
+                                  { "art",              CONTAINER_ART }};
 
 const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "icon",             LISTITEM_ICON },
@@ -1789,6 +1788,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *f
     break;
   case CONTAINER_NUM_PAGES:
   case CONTAINER_NUM_ITEMS:
+  case CONTAINER_CURRENT_ITEM:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
     break;
@@ -3247,7 +3247,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     return time.GetAsLocalizedDate(m_stringParameters[info.GetData1()],false);
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
-           info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
+           info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION ||
+           info.m_info == CONTAINER_CURRENT_ITEM)
   {
     const CGUIControl *control = NULL;
     if (info.GetData1())
@@ -3290,6 +3291,12 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]).asString();
+  }
+  else if (info.m_info == CONTAINER_ART)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
   }
   else if (info.m_info == CONTROL_GET_LABEL)
   {
@@ -3393,24 +3400,6 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, std::string *f
     if(m_currentMovieThumb.empty())
       return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
-  }
-  else if (info == CONTAINER_FOLDERTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB, fallback);
-  }
-  else if (info == CONTAINER_TVSHOWTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("tvshow.thumb");
-  }
-  else if (info == CONTAINER_SEASONTHUMB)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("season.thumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)

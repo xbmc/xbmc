@@ -275,7 +275,19 @@ bool CAddonMgr::Init()
   m_cp_context = m_cpluff->create_context(&status);
   assert(m_cp_context);
   status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
+  if (status != CP_OK)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
+    return false;
+  }
+
   status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
+  if (status != CP_OK)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
+    return false;
+  }
+
   status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
   if (status != CP_OK)
   {
@@ -391,7 +403,7 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*=
       {
         // Ignore duplicates due to add-ons with multiple extension points
         bool found = false;
-        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); addonIt++)
+        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
         {
           if ((*addonIt)->ID() == temp[j]->ID())
             found = true;

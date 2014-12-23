@@ -79,7 +79,7 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
     m_response = CJSONVariantWriter::Write(result, false);
   }
 
-  m_responseHeaderFields.insert(pair<string, string>("Content-Type", "application/json"));
+  m_responseHeaderFields.insert(pair<string, string>(MHD_HTTP_HEADER_CONTENT_TYPE, "application/json"));
 
   m_request.clear();
   

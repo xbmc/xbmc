@@ -96,9 +96,8 @@ CRepository::CRepository(const cp_extension_t *ext)
 }
 
 CRepository::CRepository(const CRepository &rhs)
-  : CAddon(rhs)
+  : CAddon(rhs), m_dirs(rhs.m_dirs)
 {
-  m_dirs = rhs.m_dirs;
 }
 
 CRepository::~CRepository()

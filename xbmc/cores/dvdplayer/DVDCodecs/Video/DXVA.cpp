@@ -308,7 +308,9 @@ bool CDXVAContext::CreateContext()
   // Some older Ati devices can only open a single decoder at a given time
   std::string renderer = g_Windowing.GetRenderRenderer();
   if (renderer.find("Radeon HD 2") != std::string::npos ||
-      renderer.find("Radeon HD 3") != std::string::npos)
+      renderer.find("Radeon HD 3") != std::string::npos ||
+      renderer.find("Radeon HD 4") != std::string::npos ||
+      renderer.find("Radeon HD 5") != std::string::npos)
   {
     m_atiWorkaround = true;
   }

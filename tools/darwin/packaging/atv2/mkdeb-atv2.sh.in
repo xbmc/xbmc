@@ -48,7 +48,12 @@ fi
 PACKAGE=org.xbmc.@APP_NAME_LC@-atv2
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
-REVISION=0~@APP_VERSION_TAG_LC@
+REVISION=0
+
+if [ "@APP_VERSION_TAG_LC@" != "" ]; then
+  REVISION=$REVISION~@APP_VERSION_TAG_LC@
+fi
+
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 SIZE="$(du -s -k ${APP} | awk '{print $1}')"
 

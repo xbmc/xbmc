@@ -216,18 +216,33 @@ bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 
 bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 {
-  CStdString modestr = resolution;
+  CStdString mode = resolution;
   // switch display resolution
-  aml_set_sysfs_str("/sys/class/display/mode", modestr.c_str());
-
-  // setup gui freescale depending on display resolution
-  DisableFreeScale();
-  if (StringUtils::StartsWith(modestr, "1080"))
-  {
-    EnableFreeScale();
-  }
+  aml_set_sysfs_str("/sys/class/display/mode", mode.c_str());
+  SetupVideoScaling(mode.c_str());
 
   return true;
+}
+
+void CEGLNativeTypeAmlogic::SetupVideoScaling(const char *mode)
+{
+  aml_set_sysfs_int("/sys/class/graphics/fb0/blank",      1);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler",          0);
+
+  if (strstr(mode, "1080"))
+  {
+    aml_set_sysfs_str("/sys/class/graphics/fb0/request2XScale", "8");
+    aml_set_sysfs_str("/sys/class/graphics/fb1/scale_axis",     "1280 720 1920 1080");
+    aml_set_sysfs_str("/sys/class/graphics/fb1/scale",          "0x10001");
+  }
+  else
+  {
+    aml_set_sysfs_str("/sys/class/graphics/fb0/request2XScale", "16 1280 720");
+  }
+
+  aml_set_sysfs_int("/sys/class/graphics/fb0/blank", 0);
 }
 
 void CEGLNativeTypeAmlogic::EnableFreeScale()

@@ -3617,6 +3617,7 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
 
+    g_audioManager.DeInitialize();
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
     CAEFactory::UnLoadEngine();
@@ -4022,12 +4023,25 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
          */
         if (item.IsResumePointSet())
           options.starttime = item.GetCurrentResumeTime();
+        else if (item.HasVideoInfoTag())
+        {
+          // No resume point is set, but check if this item is part of a multi-episode file
+          const CVideoInfoTag *tag = item.GetVideoInfoTag();
+
+          if (tag->m_iBookmarkId > 0)
+          {
+            CBookmark bookmark;
+            dbs.GetBookMarkForEpisode(*tag, bookmark);
+            options.starttime = bookmark.timeInSeconds;
+            options.state = bookmark.playerState;
+          }
+        }
       }
       else if (item.HasVideoInfoTag())
       {
         const CVideoInfoTag *tag = item.GetVideoInfoTag();
 
-        if (tag->m_iBookmarkId != -1 && tag->m_iBookmarkId != 0)
+        if (tag->m_iBookmarkId > 0)
         {
           CBookmark bookmark;
           dbs.GetBookMarkForEpisode(*tag, bookmark);

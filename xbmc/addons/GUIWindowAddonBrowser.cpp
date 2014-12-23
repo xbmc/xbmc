@@ -537,7 +537,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
 
   if (addonIDs.size() > 0)
   {
-    for (vector<string>::const_iterator it = addonIDs.begin(); it != addonIDs.end() ; it++)
+    for (vector<string>::const_iterator it = addonIDs.begin(); it != addonIDs.end() ; ++it)
     {
       CFileItemPtr item = items.Get(*it);
       if (item)

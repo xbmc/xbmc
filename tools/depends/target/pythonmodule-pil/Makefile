@@ -2,13 +2,20 @@ include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile Imaging-1.1.7-access.patch \
       Imaging-1.1.7-crosscompiling-0.1.patch Imaging-1.1.7-setuptools-0.1.patch
 
+VERSION.TXT := $(XBMCROOT)/version.txt
+APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
+
 # lib name, version
 LIBNAME=Imaging
 VERSION=1.1.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+ifeq ($(OS),android)
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm"
+else
 CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" LDFLAGS="$(LDFLAGS)"
+endif
 
 LIBDYLIB=$(PLATFORM)/dist/PIL-$(VERSION)-py2.6-$(OS)-$(CPU).egg
 
@@ -33,9 +40,8 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build -x bdist_egg --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	mkdir -p $(PREFIX)/lib/python2.6/site-packages/PIL
-	unzip -oq $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
-	echo 'PIL' > $(PREFIX)/lib/python2.6/site-packages/PIL.pth
+	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
+	unzip -oq $(LIBDYLIB) -d $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
 	touch $@
 
 clean:

@@ -89,7 +89,6 @@ protected:
   virtual void FormatAndSort(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnCacheFileItems(CFileItemList &items);
-  virtual void OnFinalizeFileItems(CFileItemList &items);
   virtual void GetGroupedItems(CFileItemList &items) { }
 
   void ClearFileItems();

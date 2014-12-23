@@ -194,10 +194,20 @@ namespace VIDEO
     }
     else
     { // scan all the paths of this subtree that is in the database
-      vector< pair<int, string> > subpaths;
-      m_database.GetSubPaths(m_strStartDir, subpaths);
-      for (vector< pair<int, string> >::iterator it = subpaths.begin(); it < subpaths.end(); ++it)
-        m_pathsToScan.insert(it->second);
+      vector<string> rootDirs;
+      if (URIUtils::IsMultiPath(strDirectory))
+        CMultiPathDirectory::GetPaths(strDirectory, rootDirs);
+      else
+        rootDirs.push_back(strDirectory);
+
+      for (vector<string>::const_iterator it = rootDirs.begin(); it < rootDirs.end(); ++it)
+      {
+        m_pathsToScan.insert(*it);
+        vector< pair<int, string> > subpaths;
+        m_database.GetSubPaths(*it, subpaths);
+        for (vector< pair<int, string> >::iterator it = subpaths.begin(); it < subpaths.end(); ++it)
+          m_pathsToScan.insert(it->second);
+      }
     }
     m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;

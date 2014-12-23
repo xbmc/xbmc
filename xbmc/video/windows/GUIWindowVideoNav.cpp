@@ -285,6 +285,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       dir.GetQueryParams(items.GetPath(),params);
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
 
+      int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
+
       // perform the flattening logic for tvshows with a single (unwatched) season (+ optional special season)
       if (node == NODE_TYPE_SEASONS && !items.IsEmpty())
       {
@@ -294,7 +296,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
           itemsSize -= 1;
 
-        int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
         bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
                         (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
                          (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
@@ -359,10 +360,21 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           items.SetContent("episodes");
-          // grab the season thumb as the folder thumb
-          int seasonID = m_database.GetSeasonId(details.m_iDbId, params.GetSeason());
+
+          int seasonID = -1;
+          int seasonParam = params.GetSeason();
+
+          // grab all season art when flatten always
+          if (seasonParam == -2 && iFlatten == 2)
+            seasonParam = -1;
+
+          if (seasonParam >= -1)
+            seasonID = m_database.GetSeasonId(details.m_iDbId, seasonParam);
+          else
+            seasonID = items[items.Size() - items.GetObjectCount()]->GetVideoInfoTag()->m_iIdSeason;
+
           CGUIListItem::ArtMap seasonArt;
-          if (m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
+          if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
           {
             items.AppendArt(seasonArt, MediaTypeSeason);
             // set an art fallback for "thumb"

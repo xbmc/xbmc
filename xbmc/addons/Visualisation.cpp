@@ -321,7 +321,7 @@ void CVisualisation::ClearBuffers()
   m_bWantsFreq = false;
   m_iNumBuffers = 0;
 
-  while (m_vecBuffers.size() > 0)
+  while (!m_vecBuffers.empty())
   {
     CAudioBuffer* pAudioBuffer = m_vecBuffers.front();
     delete pAudioBuffer;
