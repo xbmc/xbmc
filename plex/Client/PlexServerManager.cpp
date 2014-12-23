@@ -202,7 +202,7 @@ void CPlexServerManager::UpdateFromDiscovery(const CPlexServerPtr& server)
   if (mergedServer->GetActiveConnection())
     NotifyAboutServer(mergedServer, true);
 
-  SetBestServer(server, false);
+  SetBestServer(mergedServer, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
