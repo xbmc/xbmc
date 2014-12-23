@@ -438,6 +438,9 @@ namespace PVR
     void SetHidden(bool bHidden);
     bool IsHidden(void) const;
 
+    int GetPosition(void) const;
+    void SetPosition(int iPosition);
+
   protected:
     /*!
      * @brief Load the channels stored in the database.
@@ -525,6 +528,7 @@ namespace PVR
     bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
     time_t           m_iLastWatched;                /*!< last time group has been watched */
     bool             m_bHidden;                     /*!< true if this group is hidden, false otherwise */
+    bool             m_iPosition;                   /*!< the position of this group within the group list */
     PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
     PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
     CCriticalSection m_critSection;

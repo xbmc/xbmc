@@ -85,6 +85,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
     updateGroup->SetGroupID(group.GroupID());
     updateGroup->SetGroupName(group.GroupName());
     updateGroup->SetGroupType(group.GroupType());
+    updateGroup->SetPosition(group.GetPosition());
 
     // don't override properties we only store locally in our PVR database
     if (!bUpdateFromClient)
@@ -92,14 +93,34 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
       updateGroup->SetLastWatched(group.LastWatched());
       updateGroup->SetHidden(group.IsHidden());
     }
-
   }
+
+  // sort groups
+  SortGroups();
 
   // persist changes
   if (bUpdateFromClient)
     return updateGroup->Persist();
 
   return true;
+}
+
+void CPVRChannelGroups::SortGroups()
+{
+  CSingleLock lock(m_critSection);
+
+  // check if one of the group holds a valid sort position
+  std::vector<CPVRChannelGroupPtr>::iterator it = std::find_if(m_groups.begin(), m_groups.end(), [](const CPVRChannelGroupPtr &group) {
+    return (group->GetPosition() > 0);
+  });
+
+  // sort by position if we found a valid sort position
+  if (it != m_groups.end())
+  {
+    std::sort(m_groups.begin(), m_groups.end(), [](const CPVRChannelGroupPtr &group1, const CPVRChannelGroupPtr &group2) {
+      return group1->GetPosition() < group2->GetPosition();
+    });
+  }
 }
 
 CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
