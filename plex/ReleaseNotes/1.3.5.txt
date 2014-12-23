@@ -1,0 +1,5 @@
+Fixes:
+  - Fix playlist playback ordering.
+  - Fix a edge case where bestServer would not match the correct server.
+  - Increase timeout for pre-play loading, since we check the files on
+    disk it might cause the disks to spin up and we need to increase it.
