@@ -54,6 +54,7 @@ namespace PVR
     bool ActionButtonUngroupedChannels(CGUIMessage &message);
     bool ActionButtonGroupMembers(CGUIMessage &message);
     bool ActionButtonChannelGroups(CGUIMessage &message);
+    bool ActionButtonHideGroup(CGUIMessage &message);
     bool OnMessageClick(CGUIMessage &message);
 
     CPVRChannelGroupPtr m_selectedGroup;

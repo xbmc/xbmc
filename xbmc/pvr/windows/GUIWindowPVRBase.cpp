@@ -220,7 +220,7 @@ bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
     return false;
 
   CFileItemList options;
-  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options);
+  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options, true);
 
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(19146));

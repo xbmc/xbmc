@@ -8839,7 +8839,13 @@ msgctxt "#19288"
 msgid "Foreground"
 msgstr ""
 
-#empty strings from id 19289 to 19498
+#. Label for button to hide a group in the group manager
+#: addons/skin/confluence
+msgctxt "#19289"
+msgid "Hide group"
+msgstr ""
+
+#empty strings from id 19290 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"
