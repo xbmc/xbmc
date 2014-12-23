@@ -1208,7 +1208,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
         { // TODO: The parameter for these should really be on the first not the second property
           int controlID = atoi(prop.param().c_str());
           if (controlID)
-            return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, 0));
+            return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, atoi(prop.param(1).c_str())));
           return 0;
         }
       }
@@ -3302,7 +3302,18 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     {
       const CGUIControl *control = window->GetControl(info.GetData1());
       if (control)
-        return control->GetDescription();
+      {
+		int index = info.GetData2();
+		CLog::Log(LOGNOTICE, "test %d", index);
+		if (index)
+		{
+			return control->GetDescription2(index);
+		}
+		else
+		{
+			return control->GetDescription();
+	    }
+      }
     }
   }
   else if (info.m_info == WINDOW_PROPERTY)
