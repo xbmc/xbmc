@@ -36,7 +36,7 @@ endif
 
 ifeq ($(OS),android)
   DEPENDS += mdnsresponder android-sources-ics
-  EXCLUDED_DEPENDS = gmp nettle gnutls
+  FFMPEG_DEPENDS = gnutls
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
