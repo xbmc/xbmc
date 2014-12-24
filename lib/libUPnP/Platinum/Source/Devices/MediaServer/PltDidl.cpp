@@ -170,6 +170,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_XBMC_VOTES;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_ARTWORK, len, true) == 0) {
             mask |= PLT_FILTER_MASK_XBMC_ARTWORK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER;
         }
 
         if (next_comma < 0) {

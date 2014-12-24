@@ -260,6 +260,7 @@ PLT_MediaObject::Reset()
     m_XbmcInfo.rating = 0.0f;
     m_XbmcInfo.votes = "";
     m_XbmcInfo.artwork.Clear();
+    m_XbmcInfo.unique_identifier = "";
 
     m_Didl = "";
 
@@ -559,6 +560,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         m_XbmcInfo.artwork.ToDidl(didl, "artwork");
     }
 
+    // xbmc unique identifier
+    if (mask & PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER && !m_XbmcInfo.unique_identifier.IsEmpty()) {
+        didl += "<xbmc:uniqueidentifier>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.unique_identifier);
+        didl += "</xbmc:uniqueidentifier>";
+    }
+
     // class is required
     didl += "<upnp:class";
 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
@@ -780,6 +788,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
     m_XbmcInfo.artwork.FromDidl(children);
+
+    PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
     // we may have modified the tree to "fix" issues, so as not to break a renderer
