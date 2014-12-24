@@ -218,6 +218,9 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 template<class TheDll, typename TheStruct, typename TheProps>
 ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
 {
+  /* ensure that a previous instance is destroyed */
+  Destroy();
+
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
@@ -257,9 +260,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   {
     HandleException(e, "m_pDll->Create");
   }
-
-  if (!m_initialized)
-    SAFE_DELETE(m_pHelpers);
 
   return status;
 }
