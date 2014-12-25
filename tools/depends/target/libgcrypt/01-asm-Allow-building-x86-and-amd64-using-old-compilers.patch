@@ -1,0 +1,55 @@
+From 5eec04a43e6c562e956353449be931dd43dfe1cc Mon Sep 17 00:00:00 2001
+From: Werner Koch <wk@gnupg.org>
+Date: Tue, 2 Sep 2014 09:25:20 +0200
+Subject: [PATCH] asm: Allow building x86 and amd64 using old compilers.
+
+* src/hwf-x86.c (get_xgetbv): Build only if AVX support is enabled.
+--
+
+Old as(1) versions do not support the xgetvb instruction.  Thus build
+this function only if asm support has been requested.
+
+GnuPG-bug-id: 1708
+---
+ src/hwf-x86.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/hwf-x86.c b/src/hwf-x86.c
+index 0591b4f..7ee246d 100644
+--- a/src/hwf-x86.c
++++ b/src/hwf-x86.c
+@@ -96,6 +96,7 @@ get_cpuid(unsigned int in, unsigned int *eax, unsigned int *ebx,
+     *edx = regs[3];
+ }
+ 
++#if defined(ENABLE_AVX_SUPPORT) || defined(ENABLE_AVX2_SUPPORT)
+ static unsigned int
+ get_xgetbv(void)
+ {
+@@ -109,6 +110,7 @@ get_xgetbv(void)
+ 
+   return t_eax;
+ }
++#endif /* ENABLE_AVX_SUPPORT || ENABLE_AVX2_SUPPORT */
+ 
+ #endif /* i386 && GNUC */
+ 
+@@ -145,6 +147,7 @@ get_cpuid(unsigned int in, unsigned int *eax, unsigned int *ebx,
+     *edx = regs[3];
+ }
+ 
++#if defined(ENABLE_AVX_SUPPORT) || defined(ENABLE_AVX2_SUPPORT)
+ static unsigned int
+ get_xgetbv(void)
+ {
+@@ -158,6 +161,7 @@ get_xgetbv(void)
+ 
+   return t_eax;
+ }
++#endif /* ENABLE_AVX_SUPPORT || ENABLE_AVX2_SUPPORT */
+ 
+ #endif /* x86-64 && GNUC */
+ 
+-- 
+1.8.4.3
+
