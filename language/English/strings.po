@@ -6339,7 +6339,29 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13499
+#: system/settings/settings.xml
+msgctxt "#13460"
+msgid "Time seek forward"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13461"
+msgid "Time seek backward"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Time seek forward" with label #13460
+#: system/settings/settings.xml
+msgctxt "#13462"
+msgid "The fast time seek forward in seconds."
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Time seek backward" with label #13461
+#: system/settings/settings.xml
+msgctxt "#13463"
+msgid "The fast time seek backward in seconds."
+msgstr ""
+
+#empty strings from id 13464 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"

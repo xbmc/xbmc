@@ -135,8 +135,6 @@ void CAdvancedSettings::Initialize()
   m_videoSmallStepBackTries = 3;
   m_videoSmallStepBackDelay = 300;
   m_videoUseTimeSeeking = true;
-  m_videoTimeSeekForward = 30;
-  m_videoTimeSeekBackward = -30;
   m_videoTimeSeekForwardBig = 600;
   m_videoTimeSeekBackwardBig = -600;
   m_videoPercentSeekForward = 2;
@@ -555,8 +553,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "smallstepbackdelay", m_videoSmallStepBackDelay, 100, 5000); //MS
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_videoUseTimeSeeking);
-    XMLUtils::GetInt(pElement, "timeseekforward", m_videoTimeSeekForward, 0, 6000);
-    XMLUtils::GetInt(pElement, "timeseekbackward", m_videoTimeSeekBackward, -6000, 0);
     XMLUtils::GetInt(pElement, "timeseekforwardbig", m_videoTimeSeekForwardBig, 0, 6000);
     XMLUtils::GetInt(pElement, "timeseekbackwardbig", m_videoTimeSeekBackwardBig, -6000, 0);
 

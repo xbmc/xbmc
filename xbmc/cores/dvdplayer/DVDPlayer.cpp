@@ -2692,7 +2692,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+      seek = bPlus ? CSettings::Get().GetInt("videoplayer.timeseekforward") : CSettings::Get().GetInt("videoplayer.timeseekbackward");
     seek *= 1000;
     seek += GetTime();
   }

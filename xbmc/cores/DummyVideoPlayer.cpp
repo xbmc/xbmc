@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
+#include "settings/Settings.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -150,7 +151,7 @@ void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+      seek = bPlus ? CSettings::Get().GetInt("videoplayer.timeseekforward") : CSettings::Get().GetInt("videoplayer.timeseekbackward");
     // do the seek
     SeekTime(GetTime() + seek * 1000);
   }

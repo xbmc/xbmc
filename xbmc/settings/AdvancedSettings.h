@@ -152,8 +152,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoSmallStepBackTries;
     int m_videoSmallStepBackDelay;
     bool m_videoUseTimeSeeking;
-    int m_videoTimeSeekForward;
-    int m_videoTimeSeekBackward;
     int m_videoTimeSeekForwardBig;
     int m_videoTimeSeekBackwardBig;
     int m_videoPercentSeekForward;
