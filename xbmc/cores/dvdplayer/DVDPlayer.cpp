@@ -1401,7 +1401,7 @@ void CDVDPlayer::Process()
     CheckBetterStream(m_CurrentTeletext, pStream);
 
     // demux video stream
-    if (CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
+    if (CSettings::Get().GetBool("subtitles.parsecaptions") && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
     {
       if (m_pCCDemuxer)
       {

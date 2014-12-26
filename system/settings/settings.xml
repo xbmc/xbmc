@@ -975,6 +975,11 @@
             <heading>657</heading>
           </control>
         </setting>
+        <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
           <default>true</default>
