@@ -1900,9 +1900,12 @@ void CMixer::SetColor()
   }
   else
   {
-    m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
-    void const * pm_CSCMatix[] = { &m_CSCMatrix };
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
+    if(vdp_st != VDP_STATUS_ERROR)
+    {
+      void const * pm_CSCMatix[] = { &m_CSCMatrix };
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    }
   }
 
   CheckStatus(vdp_st, __LINE__);
