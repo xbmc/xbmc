@@ -18,6 +18,7 @@
  *
  */
 
+#include <algorithm>
 #include "DDSImage.h"
 #include "XBTF.h"
 #include "libsquish/squish.h"
