@@ -916,6 +916,12 @@ void CLinuxRendererGLES::UnInit()
   m_RenderFeaturesCallBackCtx = NULL;
 }
 
+void CLinuxRendererGLES::releaseTexImage()
+{
+  CLog::Log(LOGDEBUG, "CLinuxRendererGLES::releaseTexImage");
+  ReleaseBuffer_1(0);
+  ReleaseBuffer_1(1);
+}
 inline void CLinuxRendererGLES::ReorderDrawPoints()
 {
 
@@ -953,7 +959,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
       // The media buffer has been queued to the SurfaceView but we didn't render it
       // We have to do to the updateTexImage or it will get stuck
       buf.mediacodec->UpdateTexImage();
-      SAFE_RELEASE(buf.mediacodec);
+      //SAFE_RELEASE(buf.mediacodec);
     }
   }
 #endif
@@ -967,6 +973,18 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
     }
   }
 #endif
+}
+void CLinuxRendererGLES::ReleaseBuffer_1(int idx)
+{
+  YUVBUFFER &buf = m_buffers[idx];
+  if ( m_renderMethod & RENDER_MEDIACODEC )
+  {
+    if (buf.mediacodec)
+    {
+      buf.mediacodec->releaseTexImage();
+      SAFE_RELEASE(buf.mediacodec);
+    }
+  }
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
@@ -2610,7 +2628,7 @@ void CLinuxRendererGLES::UploadSurfaceTexture(int index)
     buf.fields[0][0].id = buf.mediacodec->GetTextureID();
     buf.mediacodec->UpdateTexImage();
     buf.mediacodec->GetTransformMatrix(m_textureMatrix);
-    SAFE_RELEASE(buf.mediacodec);
+    //SAFE_RELEASE(buf.mediacodec);
   }
 
   CalculateTextureSourceRects(index, 1);

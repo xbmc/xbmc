@@ -458,6 +458,14 @@ void CXBMCRenderManager::UnInit()
     m_pRenderer->UnInit();
 }
 
+void CXBMCRenderManager::releaseTexImage()
+{
+#if defined(TARGET_ANDROID)
+  if (m_pRenderer)
+    m_pRenderer->releaseTexImage();
+#endif
+}
+
 bool CXBMCRenderManager::Flush()
 {
   if (!m_pRenderer)

@@ -49,7 +49,7 @@
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-
+static int CodecRelease = 0;
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
   // All devices 'should' be capiable of surface rendering
@@ -254,13 +254,28 @@ void CDVDMediaCodecInfo::GetTransformMatrix(float *textureMatrix)
   m_surfacetexture->getTransformMatrix(textureMatrix);
 }
 
+void CDVDMediaCodecInfo::releaseTexImage()
+{
+  if (CodecRelease == 2)
+    return;
+  m_surfacetexture->releaseTexImage();
+  CodecRelease = 2;
+}
 void CDVDMediaCodecInfo::UpdateTexImage()
 {
   CSingleLock lock(m_section);
-
-  if (!m_valid)
+  if (CodecRelease == 2)
     return;
 
+  if (!m_valid)
+  {
+    if (CodecRelease == 1)
+    {
+      m_surfacetexture->releaseTexImage();
+      CodecRelease = 2;
+    }
+    return;
+  }
   // updateTexImage will check and spew any prior gl errors,
   // clear them before we call updateTexImage.
   glGetError();
@@ -301,6 +316,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec()
 , m_bitstream(NULL)
 , m_render_sw(false)
 {
+  CodecRelease = 0;
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
 }
 
@@ -480,6 +496,14 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
   // invalidate any inflight outputbuffers, make sure
   // m_output is empty so we do not create new ones
+  if (CodecRelease == 2)
+  {
+    CodecRelease = 2;
+  }
+  else
+  {
+    CodecRelease = 1;
+  }
   m_input.clear();
   m_output.clear();
   FlushInternal();
@@ -495,6 +519,12 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   // m_videobuffer.mediacodec is unioned with m_videobuffer.data[0]
   // so be very careful when and how you touch it.
   m_videobuffer.mediacodec = NULL;
+  CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Dispose_CodecRelease=%d", CodecRelease);
+  while (CodecRelease != 2)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Dispose_sleep");
+    usleep(5000);
+  }
 
   if (m_codec)
   {
@@ -1151,10 +1181,14 @@ void CDVDVideoCodecAndroidMediaCodec::ReleaseSurfaceTexture(void)
 
   // it is safe to delete here even though these items
   // were created in the main thread instance
+
+  if (m_textureId > 0)
+  {
+    m_surfaceTexture->release();
+  }
   SAFE_DELETE(m_surface);
   m_frameAvailable.reset();
   m_surfaceTexture.reset();
-
   if (m_textureId > 0)
   {
     GLuint texture_id = m_textureId;

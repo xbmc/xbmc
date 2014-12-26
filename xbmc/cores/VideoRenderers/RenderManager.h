@@ -105,6 +105,7 @@ public:
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
+  void releaseTexImage();
   bool Flush();
 
   void AddOverlay(CDVDOverlay* o, double pts)

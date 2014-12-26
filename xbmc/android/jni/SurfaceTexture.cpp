@@ -87,6 +87,11 @@ void CJNISurfaceTexture::updateTexImage()
     "updateTexImage", "()V");
 }
 
+void CJNISurfaceTexture::releaseTexImage()
+{
+  call_method<void>(m_object,
+    "releaseTexImage", "()V");
+}
 void CJNISurfaceTexture::detachFromGLContext()
 {
   call_method<void>(m_object,

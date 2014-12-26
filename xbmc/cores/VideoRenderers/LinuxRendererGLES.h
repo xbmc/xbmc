@@ -137,10 +137,12 @@ public:
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
+  virtual void         releaseTexImage();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
   virtual void         ReorderDrawPoints();
   virtual void         ReleaseBuffer(int idx);
+  virtual void         ReleaseBuffer_1(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
   virtual unsigned int GetOptimalBufferSize();

@@ -66,7 +66,7 @@ public:
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
   void                UpdateTexImage();
-
+  void                releaseTexImage();
 private:
   // private because we are reference counted
   virtual            ~CDVDMediaCodecInfo();

@@ -624,6 +624,9 @@ bool CDVDPlayer::CloseFile(bool reopen)
 
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
+#if defined(HAS_VIDEO_PLAYBACK)
+  g_renderManager.releaseTexImage();
+#endif
 
   // tell demuxer to abort
   if(m_pDemuxer)

@@ -85,6 +85,7 @@ public:
 
   virtual bool AddVideoPicture(DVDVideoPicture* picture, int index) { return false; }
   virtual void Flush() {};
+  virtual void releaseTexImage() {};
 
   /**
    * Returns number of references a single buffer can retain when rendering a single frame

@@ -50,6 +50,7 @@ public:
   void    setOnFrameAvailableListener(const CJNISurfaceTextureOnFrameAvailableListener &listener);
   void    setDefaultBufferSize(int width, int height);
   void    updateTexImage();
+  void    releaseTexImage();
   void    detachFromGLContext();
   void    attachToGLContext(int texName);
   void    getTransformMatrix(float* mtx); // mtx MUST BE a preallocated 4x4 float array
