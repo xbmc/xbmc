@@ -49,7 +49,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" delayed="true" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
           <level>2</level>
@@ -62,7 +62,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
@@ -75,7 +75,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
           <level>0</level>
@@ -272,7 +272,7 @@
           <dependencies>
             <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
           </dependencies>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -410,7 +410,7 @@
               <option label="36036">2</option> <!-- ADJUST_REFRESHRATE_ON_STARTSTOP -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
           <level>2</level>
@@ -421,7 +421,7 @@
           <dependencies>
             <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>2</level>
@@ -441,7 +441,7 @@
           <dependencies>
             <dependency type="enable" setting="videoplayer.usedisplayasclock" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
           <level>4</level>
@@ -459,7 +459,7 @@
               </and>
             </dependency>
           </dependencies>
-          <control type="spinner" format="number" />
+          <control type="list" format="number" />
         </setting>
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
           <level>2</level>
@@ -484,7 +484,7 @@
               <option label="631">1</option> <!-- ViewModeZoom -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="3">
@@ -514,7 +514,7 @@
               <option label="36028">100</option> <!-- Ignore -->
             </options>
           </constraints>
-          <control type="spinner" format="integer" delayed="true"/>
+          <control type="list" format="integer" delayed="true"/>
         </setting>
         <setting id="videoplayer.quitstereomodeonstop" type="boolean" label="36526" help="36538">
           <level>2</level>
@@ -531,7 +531,7 @@
           <constraints>
             <options>rendermethods</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoplayer.hqscalers" type="integer" parent="videoplayer.rendermethod" label="13435" help="36154">
           <level>2</level>
@@ -541,7 +541,7 @@
             <step>10</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
@@ -586,7 +586,7 @@
               <option label="13456">1</option> <!-- Hardware     -->
             </options>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
@@ -794,7 +794,7 @@
               <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="myvideos.extractflags" type="boolean" label="20433" help="36178">
           <level>1</level>
@@ -861,7 +861,7 @@
               <option label="21465">4</option> <!-- SUBTITLE_ALIGN_TOP_OUTSIDE -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.stereoscopicdepth" type="integer" label="36545" help="36546">
           <level>0</level>
@@ -871,7 +871,7 @@
             <step>1</step>
             <maximum>10</maximum>
           </constraints>
-          <control type="spinner" format="integer" delayed="true"/>
+          <control type="list" format="integer" delayed="true"/>
         </setting>
       </group>
       <group id="3">
@@ -881,7 +881,7 @@
           <constraints>
             <options>fonts</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
           <level>1</level>
@@ -894,7 +894,7 @@
           <dependencies>
             <dependency type="update" setting="subtitles.font" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.style" type="integer" parent="subtitles.font" label="736" help="36187">
           <level>1</level>
@@ -910,7 +910,7 @@
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.color" type="integer" parent="subtitles.font" label="737" help="36188">
           <level>1</level>
@@ -930,7 +930,7 @@
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
           <level>1</level>
@@ -1018,7 +1018,7 @@
             <step>1</step>
             <maximum>8</maximum>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="dvds.automenu" type="boolean" label="21882" help="36196">
           <level>1</level>
@@ -1037,7 +1037,7 @@
               <option label="14103">2</option> <!-- play main movie -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>
@@ -1195,7 +1195,7 @@
             <step>15</step>
             <maximum>2880</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1210,7 +1210,7 @@
               <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="epg.preventupdateswhileplayingtv" type="boolean" label="19230" help="36222">
           <level>2</level>
@@ -1250,7 +1250,7 @@
               <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>
@@ -1267,7 +1267,7 @@
             <step>1</step>
             <maximum>60</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
@@ -1284,7 +1284,7 @@
             <step>250</step>
             <maximum>10000</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14046</formatlabel>
           </control>
         </setting>
@@ -1300,7 +1300,7 @@
             <step>1</step>
             <maximum>720</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1312,7 +1312,7 @@
             <step>1</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="pvrrecord.defaultlifetime" type="integer" label="19174" help="36236">
           <level>2</level>
@@ -1322,7 +1322,7 @@
             <step>1</step>
             <maximum>365</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>17999</formatlabel>
           </control>
         </setting>
@@ -1334,7 +1334,7 @@
             <step>1</step>
             <maximum>60</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1346,7 +1346,7 @@
             <step>1</step>
             <maximum>60</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1379,7 +1379,7 @@
           <dependencies>
             <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1405,7 +1405,7 @@
           <dependencies>
             <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -1464,7 +1464,7 @@
           <dependencies>
             <dependency type="enable" setting="pvrparental.enabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
@@ -1572,7 +1572,7 @@
               <option label="640">1</option> <!-- REPLAY_GAIN_ALBUM -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="musicplayer.replaygainpreamp" type="integer" parent="musicplayer.replaygaintype" label="641" help="36268">
           <level>2</level>
@@ -1582,7 +1582,7 @@
             <step>1</step>
             <maximum>101</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14050</formatlabel>
           </control>
           <dependencies>
@@ -1597,7 +1597,7 @@
             <step>1</step>
             <maximum>101</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14050</formatlabel>
           </control>
           <dependencies>
@@ -1622,7 +1622,7 @@
             <step>1</step>
             <maximum>15</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
@@ -1723,7 +1723,7 @@
           <constraints>
             <options>audiocdactions</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="audiocds.usecddb" type="boolean" label="227" help="36284">
           <level>1</level>
@@ -1800,7 +1800,7 @@
           <dependencies>
             <dependency type="enable" setting="karaoke.enabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
           <level>2</level>
@@ -1814,7 +1814,7 @@
             <dependency type="enable" setting="karaoke.enabled">true</dependency>
             <dependency type="update" setting="karaoke.font" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
           <level>2</level>
@@ -1830,7 +1830,7 @@
           <dependencies>
             <dependency type="enable" setting="karaoke.enabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
           <level>2</level>
@@ -1911,7 +1911,7 @@
           <constraints>
             <options>resolutions</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>
@@ -1925,7 +1925,7 @@
             <step>1</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
@@ -1948,7 +1948,7 @@
         <setting id="weather.currentlocation" type="integer" label="0" help="36317">
           <level>4</level>
           <default>1</default>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="weather.addon" type="addon" label="24029" help="36318">
           <level>0</level>
@@ -2104,7 +2104,7 @@
           <dependencies>
             <dependency type="enable" setting="services.esenabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="services.esmaxclients" type="integer" label="797" help="36337">
           <requirement>HAS_EVENT_SERVER</requirement>
@@ -2118,7 +2118,7 @@
           <dependencies>
             <dependency type="enable" setting="services.esenabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="services.esallinterfaces" type="boolean" label="794" help="36338">
           <level>1</level>
@@ -2140,7 +2140,7 @@
           <dependencies>
             <dependency type="enable" setting="services.esenabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="services.escontinuousdelay" type="integer" label="796" help="36340">
           <requirement>HAS_EVENT_SERVER</requirement>
@@ -2154,7 +2154,7 @@
           <dependencies>
             <dependency type="enable" setting="services.esenabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
       </group>
     </category>
@@ -2240,7 +2240,7 @@
           <constraints>
             <options>monitors</options>
           </constraints>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" delayed="true" />
         </setting>
         <setting id="videoscreen.screen" type="integer" label="240" help="36351">
           <level>0</level>
@@ -2251,7 +2251,7 @@
           <dependencies>
             <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" delayed="true" />
         </setting>
         <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
           <level>0</level>
@@ -2282,7 +2282,7 @@
             <dependency type="update" setting="videoscreen.screen" />
             <dependency type="update" setting="videoscreen.resolution" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" delayed="true" />
         </setting>
         <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <level>2</level>
@@ -2332,7 +2332,7 @@
           <updates>
             <update type="change" />
           </updates>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>1</level>
@@ -2397,7 +2397,7 @@
               <option label="34110">10</option> <!-- AE_CH_LAYOUT_7_1 -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="audiooutput.config" type="integer" label="337" help="36361">
           <level>2</level>
@@ -2409,7 +2409,7 @@
               <option label="420">3</option>
             </options>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="audiooutput.samplerate" type="integer" label="458" help="36523">
           <level>2</level>
@@ -2431,7 +2431,7 @@
               <option label="34128">192000</option>
             </options>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
         <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
           <level>2</level>
@@ -2453,7 +2453,7 @@
           <constraints>
             <options>aequalitylevels</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="audiooutput.streamsilence" type="integer" label="421" help="34111">
           <level>1</level>
@@ -2461,7 +2461,7 @@
           <constraints>
             <options>audiostreamsilence</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -2475,7 +2475,7 @@
               <option label="34123">0</option> <!-- AE_SOUND_OFF -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="3">
@@ -2636,7 +2636,7 @@
           <dependencies>
             <dependency type="enable" setting="network.usehttpproxy">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="network.httpproxyserver" type="string" parent="network.usehttpproxy" label="706" help="36382">
           <level>2</level>
@@ -2696,7 +2696,7 @@
             <step>512</step>
             <maximum>102400</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14048</formatlabel>
           </control>
         </setting>
@@ -2712,7 +2712,7 @@
             <step>5</step>
             <maximum>120</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -2724,7 +2724,7 @@
             <step>5</step>
             <maximum>120</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
@@ -2734,7 +2734,7 @@
           <constraints>
             <options>shutdownstates</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -2809,7 +2809,7 @@
             <step>1</step>
             <maximum>100</maximum>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="list" format="integer" />
         </setting>
       </group>
     </category>
@@ -2824,7 +2824,7 @@
             <step>256</step>
             <maximum>4096</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2838,7 +2838,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2850,7 +2850,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2862,7 +2862,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2876,7 +2876,7 @@
             <step>256</step>
             <maximum>4096</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2888,7 +2888,7 @@
             <step>256</step>
             <maximum>4096</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2900,7 +2900,7 @@
             <step>256</step>
             <maximum>4096</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2914,7 +2914,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2926,7 +2926,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2940,7 +2940,7 @@
             <step>256</step>
             <maximum>16384</maximum>
           </constraints>
-          <control type="spinner" format="string">
+          <control type="list" format="string">
             <formatlabel>14049</formatlabel>
           </control>
         </setting>
@@ -2969,7 +2969,7 @@
               <option label="12398">2</option> <!-- AUTO_UPDATES_NEVER -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="general.addonnotifications" type="boolean" label="0" help="36414">
           <level>4</level>
