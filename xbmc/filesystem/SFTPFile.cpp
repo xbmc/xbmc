@@ -435,11 +435,19 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 
+#if LIBSSH_VERSION_MINOR >= 6
+  int method = ssh_userauth_list(m_session, NULL);
+#else
   int method = ssh_auth_list(m_session);
+#endif
 
   // Try to authenticate with public key first
   int publicKeyAuth = SSH_AUTH_DENIED;
+#if LIBSSH_VERSION_MINOR >= 6
+  if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_publickey_auto(m_session, NULL, NULL)) == SSH_AUTH_ERROR)
+#else
   if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_autopubkey(m_session, NULL)) == SSH_AUTH_ERROR)
+#endif
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to authenticate via publickey '%s'", ssh_get_error(m_session));
     return false;
