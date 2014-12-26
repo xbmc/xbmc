@@ -22,9 +22,9 @@
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
 
-CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const std::string& mType)
+CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const std::string& mType):
+  m_sType(mType)
 {
-  m_sType = mType;
   m_pMode = m_pContext = NULL;
   m_pSource = m_pTarget = NULL;
   m_iInitWidth = m_iInitHeight = 0;
