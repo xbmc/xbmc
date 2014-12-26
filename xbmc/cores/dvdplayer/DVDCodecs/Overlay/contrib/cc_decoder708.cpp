@@ -972,6 +972,16 @@ void process_service_block (cc708_service_decoder *decoder, unsigned char *data,
     }
     i+=used;
   }
+
+  // update rollup windows
+  int rollups = 0;
+  for (int i = 0; i<I708_MAX_WINDOWS; i++)
+  {
+    if (decoder->windows[i].is_defined && decoder->windows[i].visible && decoder->windows[i].anchor_point == anchorpoint_bottom_left)
+      rollups++;
+  }
+  if (rollups)
+    updateScreen(decoder);
 }
 
 void process_current_packet (cc708_service_decoder *decoders)
