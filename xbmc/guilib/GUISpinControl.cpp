@@ -438,6 +438,7 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
   changed |= m_imgspinDown.Process(currentTime);
   changed |= m_imgspinUp.Process(currentTime);
   changed |= m_imgspinUpFocus.Process(currentTime);
+  changed |= m_label.Process(currentTime);
 
   if (changed)
     MarkDirtyRegion();
