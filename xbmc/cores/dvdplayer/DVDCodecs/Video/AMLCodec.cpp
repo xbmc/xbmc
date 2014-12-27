@@ -468,6 +468,9 @@ static vformat_t codecid_to_vformat(enum AVCodecID id)
     case AV_CODEC_ID_CAVS:
       format = VFORMAT_AVS;
       break;
+    case AV_CODEC_ID_HEVC:
+      format = VFORMAT_HEVC;
+      break;
 
     default:
       format = VFORMAT_UNSUPPORT;
@@ -576,6 +579,10 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case AV_CODEC_ID_AVS:
       // avs
       dec_type = VIDEO_DEC_FORMAT_AVS;
+      break;
+    case AV_CODEC_ID_HEVC:
+      // h265
+      dec_type = VIDEO_DEC_FORMAT_HEVC;
       break;
     default:
       dec_type = VIDEO_DEC_FORMAT_UNKNOW;
@@ -949,6 +956,28 @@ static int h264_write_header(am_private_t *para, am_packet_t *pkt)
     return ret;
 }
 
+static int hevc_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
+{
+    memcpy(pkt->hdr->data, buf, size);
+    pkt->hdr->size = size;
+    return PLAYER_SUCCESS;
+}
+
+static int hevc_write_header(am_private_t *para, am_packet_t *pkt)
+{
+    int ret = -1;
+
+    if (para->extradata) {
+      ret = hevc_add_header(para->extradata, para->extrasize, pkt);
+    }
+    if (ret == PLAYER_SUCCESS) {
+      pkt->codec = &para->vcodec;
+      pkt->newflag = 1;
+      ret = write_av_packet(para, pkt);
+    }
+    return ret;
+}
+
 static int wmv3_write_header(am_private_t *para, am_packet_t *pkt)
 {
     CLog::Log(LOGDEBUG, "wmv3_write_header");
@@ -1120,6 +1149,11 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
         */
         } else if (VFORMAT_MJPEG == para->video_format) {
             ret = mjpeg_write_header(para, pkt);
+            if (ret != PLAYER_SUCCESS) {
+                return ret;
+            }
+        } else if (VFORMAT_HEVC == para->video_format) {
+            ret = hevc_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
@@ -1617,6 +1651,12 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       // vc1 in an avi file
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)EXTERNAL_PTS;
+      break;
+    case VFORMAT_HEVC:
+      am_private->gcodec.format = VIDEO_DEC_FORMAT_HEVC;
+      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      if (m_hints.ptsinvalid)
+        am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
   }
   am_private->gcodec.param = (void *)((unsigned int)am_private->gcodec.param | (am_private->video_rotation_degree << 16));
