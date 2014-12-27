@@ -3024,7 +3024,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
           if (viewState)
-            bReturn = ((unsigned int)viewState->GetDisplaySortOrder() == info.GetData1());
+            bReturn = ((unsigned int)viewState->GetSortOrder() == info.GetData1());
         }
         break;
       }

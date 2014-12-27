@@ -1954,7 +1954,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
-      const SORT_METHOD_DETAILS &details = m_sortDetails[j];
+      const GUIViewSortDetails &details = m_sortDetails[j];
       ar << (int)details.m_sortDescription.sortBy;
       ar << (int)details.m_sortDescription.sortOrder;
       ar << (int)details.m_sortDescription.sortAttributes;
@@ -2020,7 +2020,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> detailSize;
     for (unsigned int j = 0; j < detailSize; ++j)
     {
-      SORT_METHOD_DETAILS details;
+      GUIViewSortDetails details;
       ar >> (int&)tempint;
       details.m_sortDescription.sortBy = (SortBy)tempint;
       ar >> (int&)tempint;
@@ -3084,7 +3084,7 @@ void CFileItemList::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
 
 void CFileItemList::AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks)
 {
-  SORT_METHOD_DETAILS sort;
+  GUIViewSortDetails sort;
   sort.m_sortDescription = sortDescription;
   sort.m_buttonLabel = buttonLabel;
   sort.m_labelMasks = labelMasks;

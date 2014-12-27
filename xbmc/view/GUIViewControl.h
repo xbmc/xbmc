@@ -30,8 +30,8 @@ class CFileItemList;
 class CGUIViewControl
 {
 public:
-  CGUIViewControl(void);
-  virtual ~CGUIViewControl(void);
+  CGUIViewControl();
+  virtual ~CGUIViewControl();
 
   void Reset();
   void SetParentWindow(int window);
@@ -66,12 +66,12 @@ protected:
   void UpdateViewVisibility();
   int GetView(VIEW_TYPE type, int id) const;
 
-  std::vector<CGUIControl *> m_allViews;
-  std::vector<CGUIControl *> m_visibleViews;
-  typedef std::vector<CGUIControl *>::const_iterator ciViews;
+  std::vector<CGUIControl*> m_allViews;
+  std::vector<CGUIControl*> m_visibleViews;
+  typedef std::vector<CGUIControl*>::const_iterator ciViews;
 
-  CFileItemList*        m_fileItems;
-  int                   m_viewAsControl;
-  int                   m_parentWindow;
-  int                   m_currentView;
+  CFileItemList* m_fileItems;
+  int m_viewAsControl;
+  int m_parentWindow;
+  int m_currentView;
 };
