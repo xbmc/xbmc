@@ -28,6 +28,7 @@ enum AML_DEVICE_TYPE
   AML_DEVICE_TYPE_M1,
   AML_DEVICE_TYPE_M3,
   AML_DEVICE_TYPE_M6,
+  AML_DEVICE_TYPE_MXS,
   AML_DEVICE_TYPE_M8
 };
 
@@ -47,7 +48,6 @@ int aml_get_sysfs_int(const char *path);
 bool aml_present();
 void aml_permissions();
 bool aml_hw3d_present();
-bool aml_wired_present();
 enum AML_DEVICE_TYPE aml_get_device_type();
 void aml_cpufreq_min(bool limit);
 void aml_cpufreq_max(bool limit);
