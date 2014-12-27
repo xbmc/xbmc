@@ -27,8 +27,8 @@
   #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
-  #include "guilib/MatrixGLES.h"
 #endif
+#include "guilib/MatrixGLES.h"
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
@@ -417,6 +417,11 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
+  glMatrixModview.Push();
+  glMatrixModview->Translatef(state.x, state.y, 0.0f);
+  glMatrixModview->Scalef(state.width, state.height, 1.0f);
+  glMatrixModview.Load();
+
 #ifdef HAS_GL
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -429,11 +434,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glTranslatef(state.x    , state.y     , 0.0f);
-  glScalef    (state.width, state.height, 1.0f);
 
   VerifyGLState();
 
@@ -448,14 +448,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glDrawArrays(GL_QUADS, 0, m_count * 4);
   glPopClientAttrib();
 
-  glPopMatrix();
 #else
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.Translatef(state.x, state.y, 0.0f);
-  g_matrices.Scalef(state.width, state.height, 1.0f);
-  VerifyGLState();
-
   g_Windowing.EnableGUIShader(SM_FONTS);
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
@@ -495,8 +488,9 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   g_Windowing.DisableGUIShader();
 
-  g_matrices.PopMatrix();
 #endif
+
+  glMatrixModview.PopLoad();
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
