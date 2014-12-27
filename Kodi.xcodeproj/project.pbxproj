@@ -1234,6 +1234,15 @@
 		DF40BC31178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF40BC27178B4C07009DB567 /* ScriptInvocationManager.cpp */; };
 		DF448457140048A60069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF448455140048A60069344B /* AirTunesServer.cpp */; };
 		DF44845E140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
+		DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
+		DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */; };
+		DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
+		DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */; };
+		DF4BF0191A4EF31F0053AC56 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
+		DF4BF01A1A4EF31F0053AC56 /* cc_decoder708.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */; };
+		DF4BF01D1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF01B1A4EF3410053AC56 /* DVDDemuxCC.cpp */; };
+		DF4BF01E1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF01B1A4EF3410053AC56 /* DVDDemuxCC.cpp */; };
+		DF4BF01F1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF01B1A4EF3410053AC56 /* DVDDemuxCC.cpp */; };
 		DF52566D1732C1890094A464 /* DVDDemuxCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52566B1732C1890094A464 /* DVDDemuxCDDA.cpp */; };
 		DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
 		DF5276E2151BAEDA00B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769C151BAEDA00B5B63B /* HttpResponse.cpp */; };
@@ -1492,7 +1501,6 @@
 		DFF0F15817528350002DA3A4 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
 		DFF0F15B17528350002DA3A4 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
 		DFF0F15E17528350002DA3A4 /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */; };
-		DFF0F15F17528350002DA3A4 /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; };
 		DFF0F16017528350002DA3A4 /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
 		DFF0F16117528350002DA3A4 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		DFF0F16217528350002DA3A4 /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
@@ -2263,7 +2271,6 @@
 		DFF0F48417528350002DA3A4 /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
 		DFF0F48717528350002DA3A4 /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		DFF0F48817528350002DA3A4 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
-		DFF0F48917528350002DA3A4 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
 		DFF0F48A17528350002DA3A4 /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = E4991595174E70BF00741B6D /* yuv2rgb.neon.S */; };
 		DFF0F49D1752838E002DA3A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFF0F4901752838E002DA3A4 /* InfoPlist.strings */; };
 		DFF1FE23199D2FFF0008211F /* KodiAppliance.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFC8B7CE199C2B3A00424777 /* KodiAppliance.mm */; };
@@ -2324,10 +2331,8 @@
 		E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
 		E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
 		E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
-		E38E1F870D25F9FD00618676 /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; };
 		E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
 		E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
-		E38E1F8A0D25F9FD00618676 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
 		E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
 		E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
 		E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
@@ -2750,7 +2755,6 @@
 		E49911C0174E5D2500741B6D /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
 		E49911C3174E5D2500741B6D /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
 		E49911C6174E5D2500741B6D /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */; };
-		E49911C7174E5D2500741B6D /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; };
 		E49911C8174E5D2500741B6D /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
 		E49911C9174E5D2500741B6D /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		E49911CA174E5D2500741B6D /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
@@ -3526,7 +3530,6 @@
 		E499158C174E68EE00741B6D /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
 		E4991591174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		E4991592174E6B5C00741B6D /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
-		E4991593174E707400741B6D /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
 		E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = E4991595174E70BF00741B6D /* yuv2rgb.neon.S */; };
 		E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
 		E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
@@ -4919,6 +4922,12 @@
 		DF448456140048A60069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
 		DF44845B140048C80069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
 		DF44845C140048C80069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
+		DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cc_decoder.c; sourceTree = "<group>"; };
+		DF4BF0121A4EF30F0053AC56 /* cc_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc_decoder.h; sourceTree = "<group>"; };
+		DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cc_decoder708.cpp; sourceTree = "<group>"; };
+		DF4BF0141A4EF30F0053AC56 /* cc_decoder708.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc_decoder708.h; sourceTree = "<group>"; };
+		DF4BF01B1A4EF3410053AC56 /* DVDDemuxCC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxCC.cpp; sourceTree = "<group>"; };
+		DF4BF01C1A4EF3410053AC56 /* DVDDemuxCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxCC.h; sourceTree = "<group>"; };
 		DF52566B1732C1890094A464 /* DVDDemuxCDDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxCDDA.cpp; sourceTree = "<group>"; };
 		DF52566C1732C1890094A464 /* DVDDemuxCDDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxCDDA.h; sourceTree = "<group>"; };
 		DF52769A151BAEDA00B5B63B /* Base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Base64.cpp; sourceTree = "<group>"; };
@@ -5247,8 +5256,6 @@
 		E38E15250D25F9F900618676 /* DVDFactoryCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDFactoryCodec.h; sourceTree = "<group>"; };
 		E38E15290D25F9F900618676 /* DVDOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlay.h; sourceTree = "<group>"; };
 		E38E152A0D25F9F900618676 /* DVDOverlayCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodec.h; sourceTree = "<group>"; };
-		E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecCC.cpp; sourceTree = "<group>"; };
-		E38E152C0D25F9F900618676 /* DVDOverlayCodecCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecCC.h; sourceTree = "<group>"; };
 		E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecFFmpeg.cpp; sourceTree = "<group>"; };
 		E38E152E0D25F9F900618676 /* DVDOverlayCodecFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecFFmpeg.h; sourceTree = "<group>"; };
 		E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecText.cpp; sourceTree = "<group>"; };
@@ -5256,8 +5263,6 @@
 		E38E15310D25F9F900618676 /* DVDOverlayImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayImage.h; sourceTree = "<group>"; };
 		E38E15320D25F9F900618676 /* DVDOverlaySpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlaySpu.h; sourceTree = "<group>"; };
 		E38E15330D25F9F900618676 /* DVDOverlayText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayText.h; sourceTree = "<group>"; };
-		E38E15350D25F9F900618676 /* cc_decoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cc_decoder.c; sourceTree = "<group>"; };
-		E38E15360D25F9F900618676 /* cc_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc_decoder.h; sourceTree = "<group>"; };
 		E38E153B0D25F9F900618676 /* DllLibMpeg2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibMpeg2.h; sourceTree = "<group>"; };
 		E38E153C0D25F9F900618676 /* DVDVideoCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodec.h; sourceTree = "<group>"; };
 		E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecFFmpeg.cpp; sourceTree = "<group>"; };
@@ -8288,6 +8293,17 @@
 			path = generic;
 			sourceTree = "<group>";
 		};
+		DF4BF0101A4EF30F0053AC56 /* contrib */ = {
+			isa = PBXGroup;
+			children = (
+				DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */,
+				DF4BF0121A4EF30F0053AC56 /* cc_decoder.h */,
+				DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */,
+				DF4BF0141A4EF30F0053AC56 /* cc_decoder708.h */,
+			);
+			path = contrib;
+			sourceTree = "<group>";
+		};
 		DF527729151BAF4C00B5B63B /* websocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -8872,12 +8888,10 @@
 		E38E15280D25F9F900618676 /* Overlay */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15340D25F9F900618676 /* libspucc */,
+				DF4BF0101A4EF30F0053AC56 /* contrib */,
 				E38E15290D25F9F900618676 /* DVDOverlay.h */,
 				DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */,
 				E38E152A0D25F9F900618676 /* DVDOverlayCodec.h */,
-				E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */,
-				E38E152C0D25F9F900618676 /* DVDOverlayCodecCC.h */,
 				E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */,
 				E38E152E0D25F9F900618676 /* DVDOverlayCodecFFmpeg.h */,
 				8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */,
@@ -8892,15 +8906,6 @@
 				E38E15330D25F9F900618676 /* DVDOverlayText.h */,
 			);
 			path = Overlay;
-			sourceTree = "<group>";
-		};
-		E38E15340D25F9F900618676 /* libspucc */ = {
-			isa = PBXGroup;
-			children = (
-				E38E15350D25F9F900618676 /* cc_decoder.c */,
-				E38E15360D25F9F900618676 /* cc_decoder.h */,
-			);
-			path = libspucc;
 			sourceTree = "<group>";
 		};
 		E38E153A0D25F9F900618676 /* Video */ = {
@@ -8942,6 +8947,8 @@
 				E38E154A0D25F9F900618676 /* DVDDemux.h */,
 				AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */,
 				AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */,
+				DF4BF01B1A4EF3410053AC56 /* DVDDemuxCC.cpp */,
+				DF4BF01C1A4EF3410053AC56 /* DVDDemuxCC.h */,
 				DF52566B1732C1890094A464 /* DVDDemuxCDDA.cpp */,
 				DF52566C1732C1890094A464 /* DVDDemuxCDDA.h */,
 				E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */,
@@ -10698,6 +10705,7 @@
 				E38E1F4E0D25F9FD00618676 /* dll_tracker.cpp in Sources */,
 				E38E1F500D25F9FD00618676 /* dll_tracker_file.cpp in Sources */,
 				E38E1F510D25F9FD00618676 /* dll_tracker_library.cpp in Sources */,
+				DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */,
 				E38E1F540D25F9FD00618676 /* dll_util.cpp in Sources */,
 				E38E1F560D25F9FD00618676 /* DllLoader.cpp in Sources */,
 				E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */,
@@ -10716,10 +10724,8 @@
 				E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */,
 				E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */,
-				E38E1F870D25F9FD00618676 /* DVDOverlayCodecCC.cpp in Sources */,
 				E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */,
-				E38E1F8A0D25F9FD00618676 /* cc_decoder.c in Sources */,
 				E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */,
 				E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */,
@@ -10825,6 +10831,7 @@
 				E38E20640D25F9FD00618676 /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				E38E20650D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */,
 				E38E20660D25F9FD00618676 /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
+				DF4BF01D1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				E38E20670D25F9FD00618676 /* DirectoryNodeRecentlyAddedMovies.cpp in Sources */,
 				E38E20680D25F9FD00618676 /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
 				E38E20690D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */,
@@ -11685,6 +11692,7 @@
 				7CCDA7A0192756250074CF51 /* NptConsole.cpp in Sources */,
 				7CCDA7A3192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A6192756250074CF51 /* NptDataBuffer.cpp in Sources */,
+				DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */,
 				7CCDA7AF192756250074CF51 /* NptDebug.cpp in Sources */,
 				7CCDA7B8192756250074CF51 /* NptDigest.cpp in Sources */,
 				7CCDA7BB192756250074CF51 /* NptDynamicLibraries.cpp in Sources */,
@@ -11987,7 +11995,6 @@
 				DFF0F15817528350002DA3A4 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				DFF0F15B17528350002DA3A4 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				DFF0F15E17528350002DA3A4 /* DVDOverlayCodec.cpp in Sources */,
-				DFF0F15F17528350002DA3A4 /* DVDOverlayCodecCC.cpp in Sources */,
 				DFF0F16017528350002DA3A4 /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				DFF0F16117528350002DA3A4 /* DVDOverlayCodecSSA.cpp in Sources */,
 				DFF0F16217528350002DA3A4 /* DVDOverlayCodecText.cpp in Sources */,
@@ -12304,6 +12311,7 @@
 				DFF0F2A017528350002DA3A4 /* GUIRadioButtonControl.cpp in Sources */,
 				DFF0F2A117528350002DA3A4 /* GUIRenderingControl.cpp in Sources */,
 				DFF0F2A217528350002DA3A4 /* GUIResizeControl.cpp in Sources */,
+				DF4BF01A1A4EF31F0053AC56 /* cc_decoder708.cpp in Sources */,
 				DFF0F2A317528350002DA3A4 /* GUIRSSControl.cpp in Sources */,
 				DFF0F2A417528350002DA3A4 /* GUIScrollBarControl.cpp in Sources */,
 				DFF0F2A517528350002DA3A4 /* GUISelectButtonControl.cpp in Sources */,
@@ -12496,6 +12504,7 @@
 				DFF0F35F17528350002DA3A4 /* PlayListB4S.cpp in Sources */,
 				DFF0F36017528350002DA3A4 /* PlayListFactory.cpp in Sources */,
 				DFF0F36117528350002DA3A4 /* PlayListM3U.cpp in Sources */,
+				DF4BF0191A4EF31F0053AC56 /* cc_decoder.c in Sources */,
 				DFF0F36217528350002DA3A4 /* PlayListPLS.cpp in Sources */,
 				DFF0F36317528350002DA3A4 /* PlayListURL.cpp in Sources */,
 				DFF0F36417528350002DA3A4 /* PlayListWPL.cpp in Sources */,
@@ -12770,7 +12779,6 @@
 				DFF0F48417528350002DA3A4 /* DVDFactoryCodec.cpp in Sources */,
 				DFF0F48717528350002DA3A4 /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				DFF0F48817528350002DA3A4 /* fstrcmp.c in Sources */,
-				DFF0F48917528350002DA3A4 /* cc_decoder.c in Sources */,
 				DFF0F48A17528350002DA3A4 /* yuv2rgb.neon.S in Sources */,
 				DF3C3C0E1752A7EE000989C3 /* IOSEAGLView.mm in Sources */,
 				DF3C3C0F1752A7EE000989C3 /* IOSExternalTouchController.mm in Sources */,
@@ -12869,6 +12877,7 @@
 				7CCDA21F192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
 				7CCDA228192753E30074CF51 /* PltMediaBrowser.cpp in Sources */,
 				7CCDA231192753E30074CF51 /* PltMediaCache.cpp in Sources */,
+				DF4BF01F1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				7CCDA23A192753E30074CF51 /* PltMediaItem.cpp in Sources */,
 				7CCDA243192753E30074CF51 /* PltMediaServer.cpp in Sources */,
 				7CCDA24C192753E30074CF51 /* PltSyncMediaBrowser.cpp in Sources */,
@@ -13088,6 +13097,7 @@
 			files = (
 				E49910B7174D0E2A00741B6D /* IOSKeyboard.mm in Sources */,
 				E49910B8174D0E2A00741B6D /* IOSKeyboardView.mm in Sources */,
+				DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */,
 				E49910BA174D0E2A00741B6D /* XBMCApplication.m in Sources */,
 				E49910BB174D0E2A00741B6D /* XBMCController.mm in Sources */,
 				E49910DC174E4A6400741B6D /* IOSEAGLView.mm in Sources */,
@@ -13180,6 +13190,7 @@
 				E49911B7174E5D0A00741B6D /* dll.cpp in Sources */,
 				E49911B8174E5D0A00741B6D /* dll_tracker.cpp in Sources */,
 				E49911B9174E5D0A00741B6D /* dll_tracker_file.cpp in Sources */,
+				DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */,
 				E49911BA174E5D0A00741B6D /* dll_tracker_library.cpp in Sources */,
 				E49911BB174E5D0A00741B6D /* dll_util.cpp in Sources */,
 				E49911BC174E5D0A00741B6D /* DllLoader.cpp in Sources */,
@@ -13189,7 +13200,6 @@
 				E49911C0174E5D2500741B6D /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E49911C3174E5D2500741B6D /* DVDAudioCodecPassthrough.cpp in Sources */,
 				E49911C6174E5D2500741B6D /* DVDOverlayCodec.cpp in Sources */,
-				E49911C7174E5D2500741B6D /* DVDOverlayCodecCC.cpp in Sources */,
 				E49911C8174E5D2500741B6D /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				E49911C9174E5D2500741B6D /* DVDOverlayCodecSSA.cpp in Sources */,
 				E49911CA174E5D2500741B6D /* DVDOverlayCodecText.cpp in Sources */,
@@ -13775,6 +13785,7 @@
 				E499143C174E604700741B6D /* Thread.cpp in Sources */,
 				E499143D174E604700741B6D /* Timer.cpp in Sources */,
 				E499143E174E605900741B6D /* AlarmClock.cpp in Sources */,
+				DF4BF01E1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */,
 				E4991440174E605900741B6D /* Archive.cpp in Sources */,
 				E4991441174E605900741B6D /* AsyncFileCopy.cpp in Sources */,
@@ -13968,7 +13979,6 @@
 				E499158C174E68EE00741B6D /* DVDFactoryCodec.cpp in Sources */,
 				E4991591174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				E4991592174E6B5C00741B6D /* fstrcmp.c in Sources */,
-				E4991593174E707400741B6D /* cc_decoder.c in Sources */,
 				E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */,
 				0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
 				DFBB4319178B5E6F006CC20A /* CompileInfo.cpp in Sources */,
