@@ -1,4 +1,4 @@
-# Buliding instructions for Plex Home Theater
+# Building instructions for Plex Home Theater
 
 ## Generic instructions
 
