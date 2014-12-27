@@ -169,6 +169,7 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_videoBusyDialogDelay_ms = 500;
   m_stagefrightConfig.useAVCcodec = -1;
+  m_stagefrightConfig.useHEVCcodec = -1;
   m_stagefrightConfig.useVC1codec = -1;
   m_stagefrightConfig.useVPXcodec = -1;
   m_stagefrightConfig.useMP4codec = -1;
@@ -601,6 +602,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     if (pStagefrightElem)
     {
       XMLUtils::GetInt(pStagefrightElem,"useavccodec",m_stagefrightConfig.useAVCcodec, -1, 1);
+      XMLUtils::GetInt(pStagefrightElem,"usehevccodec",m_stagefrightConfig.useHEVCcodec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usevc1codec",m_stagefrightConfig.useVC1codec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usevpxcodec",m_stagefrightConfig.useVPXcodec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usemp4codec",m_stagefrightConfig.useMP4codec, -1, 1);
