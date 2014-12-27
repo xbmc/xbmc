@@ -429,7 +429,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     m_checkvideo = true;
     skipCreateStreams = true;
   }
-  else if (iformat && (strcmp(iformat->name, "mpegts") != 0))
+  else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
   {
     m_streaminfo = true;
   }
