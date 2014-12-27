@@ -29,7 +29,6 @@ CJNIBase::CJNIBase(std::string classname):
 }
 
 CJNIBase::CJNIBase(const jhobject &object):
-    m_className(""),
     m_object(object)
 {
   m_object.setGlobal();
