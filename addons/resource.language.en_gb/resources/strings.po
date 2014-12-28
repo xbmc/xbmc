@@ -12392,7 +12392,7 @@ msgctxt "#24031"
 msgid "Error loading settings"
 msgstr ""
 
-#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#24032"
 msgid "All Add-ons"
 msgstr ""
@@ -12400,7 +12400,7 @@ msgstr ""
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24033"
-msgid "Get Add-ons"
+msgid "Install from repository"
 msgstr ""
 
 msgctxt "#24034"
@@ -12669,7 +12669,13 @@ msgctxt "#24086"
 msgid "Installing add-on..."
 msgstr ""
 
-#empty strings from id 24087 to 24088
+#. Used in add-on browser
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24087"
+msgid "All repositories"
+msgstr ""
+
+#empty strings id 24088
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -12900,16 +12906,49 @@ msgctxt "#24134"
 msgid "We were unable to load your configured language. Please check your language settings."
 msgstr ""
 
-#empty strings from id 24135 to 24998
+#empty strings from id 24135 to 24993
 
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24994"
+msgid "Running"
+msgstr ""
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24995"
+msgid "Orphaned Dependencies"
+msgstr ""
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24996"
+msgid "Required Dependencies"
+msgstr ""
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24997"
+msgid "System Add-ons"
+msgstr ""
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24998"
+msgid "My Add-ons"
+msgstr ""
+
+#. Used in add-on browser
 msgctxt "#24999"
 msgid "Hide incompatible"
 msgstr ""
 
+#. Used in add-on browser
 msgctxt "#25000"
 msgid "Notifications"
 msgstr ""
 
+#. Used in add-on browser
 msgctxt "#25001"
 msgid "Hide foreign"
 msgstr ""

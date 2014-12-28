@@ -329,9 +329,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
     CAddonInstaller::Get().GetInstallList(addons);
 
     CURL url(strDirectory);
-    CAddonsDirectory::GenerateListing(url,addons,items);
+    CAddonsDirectory::GenerateAddonListing(url, addons, items, g_localizeStrings.Get(24067));
     result = true;
-    items.SetProperty("reponame",g_localizeStrings.Get(24067));
     items.SetPath(strDirectory);
 
     if (m_guiState.get() && !m_guiState->HideParentDirItems())
@@ -546,7 +545,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   CFileItemList items;
   for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, ""));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
     if (!items.Contains(item->GetPath()))
     {
       items.Add(item);

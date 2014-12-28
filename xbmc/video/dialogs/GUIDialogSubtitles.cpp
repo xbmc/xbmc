@@ -257,7 +257,7 @@ void CGUIDialogSubtitles::FillServices()
   std::string service = addons.front()->ID();
   for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://", false));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://" + (*addonIt)->ID(), false));
     m_serviceItems->Add(item);
     if ((*addonIt)->ID() == defaultService)
       service = (*addonIt)->ID();
