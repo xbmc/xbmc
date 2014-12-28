@@ -120,7 +120,7 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
 
     CFileItemPtr pFileItem;
     current->UpdateMetadata();
-    
+
     if (!results->Contains(strFilePath))
     {
       pFileItem.reset(new CFileItem(strCurrent, true));
@@ -169,7 +169,7 @@ void CPVRRecordings::Update(void)
   m_bIsUpdating = true;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Updating recordings");
   UpdateFromClients();
 
   lock.Enter();
@@ -213,7 +213,7 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
 
   VECFILEITEMS itemList = items.GetList();
   CFileItem item;
-  
+
   for (VECFILEITEMS::const_iterator it = itemList.begin(); it != itemList.end(); ++it)
     allDeleted &= Delete(*(it->get()));
 
@@ -224,7 +224,7 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
   if (!item.IsPVRRecording())
   {
-    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot delete file: no valid recording tag", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cannot delete file, no valid recording tag");
     return false;
   }
 
@@ -236,7 +236,7 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 {
   if (!item.IsPVRRecording())
   {
-    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot rename file: no valid recording tag", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cannot rename file, no valid recording tag");
     return false;
   }
 
@@ -253,7 +253,7 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
   {
     bResult = true;
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
+    CLog::LogF(LOGDEBUG, "Item path %s", item->GetPath().c_str());
     CFileItemList items;
     if (item->m_bIsFolder)
     {
@@ -262,15 +262,15 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
     else
       items.Add(item);
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
+    CLog::LogF(LOGDEBUG, "Will set watched for %d items", items.Size());
     for (int i=0;i<items.Size();++i)
     {
-      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+      CLog::LogF(LOGDEBUG, "Setting watched for item %d", i);
 
       CFileItemPtr pItem=items[i];
       if (pItem->m_bIsFolder)
       {
-        CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
+        CLog::LogF(LOGDEBUG, "Path %s is a folder, will call recursively", pItem->GetPath().c_str());
         if (pItem->GetLabel() != "..")
         {
           SetRecordingsPlayCount(pItem, count);
