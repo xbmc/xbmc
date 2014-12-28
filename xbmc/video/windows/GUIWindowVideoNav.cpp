@@ -936,6 +936,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
            (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
             item->GetVideoInfoTag()->m_type == MediaTypeTvShow ||         // tvshows
+           (item->GetVideoInfoTag()->m_type == MediaTypeSeason && item->GetVideoInfoTag()->m_iSeason > 0) ||  // seasons without "all seasons" and "specials"
             item->GetVideoInfoTag()->m_type == MediaTypeEpisode ||        // episodes
             item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo ||     // musicvideos
             item->GetVideoInfoTag()->m_type == "tag" ||                   // tags

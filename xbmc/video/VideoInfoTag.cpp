@@ -83,6 +83,7 @@ void CVideoInfoTag::Reset()
   m_duration = 0;
   m_lastPlayed.Reset();
   m_showLink.clear();
+  m_namedSeasons.clear();
   m_streamDetails.Reset();
   m_playCount = 0;
   m_fEpBookmark = 0;
@@ -241,6 +242,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
   XMLUtils::SetStringArray(movie, "showlink", m_showLink);
+
+  for (const auto& namedSeason : m_namedSeasons)
+  {
+    TiXmlElement season("namedseason");
+    season.SetAttribute("number", namedSeason.first);
+    season.SetValue(namedSeason.second);
+    movie->InsertEndChild(season);
+  }
  
   TiXmlElement resume("resume");
   XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
@@ -330,6 +339,12 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iTrack;
     ar << dynamic_cast<IArchivable&>(m_streamDetails);
     ar << m_showLink;
+    ar << static_cast<int>(m_namedSeasons.size());
+    for (const auto& namedSeason : m_namedSeasons)
+    {
+      ar << namedSeason.first;
+      ar << namedSeason.second;
+    }
     ar << m_fEpBookmark;
     ar << m_basePath;
     ar << m_parentPathID;
@@ -409,6 +424,18 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iTrack;
     ar >> dynamic_cast<IArchivable&>(m_streamDetails);
     ar >> m_showLink;
+
+    int namedSeasonSize;
+    ar >> namedSeasonSize;
+    for (int i = 0; i < namedSeasonSize; ++i)
+    {
+      int seasonNumber;
+      ar >> seasonNumber;
+      std::string seasonName;
+      ar >> seasonName;
+      m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
+    }
+
     ar >> m_fEpBookmark;
     ar >> m_basePath;
     ar >> m_parentPathID;
@@ -528,7 +555,15 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldPath] = path;
     break;
   }
-  case FieldSortTitle:                sortable[FieldSortTitle] = m_strSortTitle; break;
+  case FieldSortTitle:
+  {
+    // seasons with a custom name/title need special handling as they should be sorted by season number
+    if (m_type == MediaTypeSeason && !m_strSortTitle.empty())
+      sortable[FieldSortTitle] = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), m_iSeason);
+    else
+      sortable[FieldSortTitle] = m_strSortTitle;
+    break;
+  }
   case FieldTvShowStatus:             sortable[FieldTvShowStatus] = m_strStatus; break;
   case FieldProductionCode:           sortable[FieldProductionCode] = m_strProductionCode; break;
   case FieldAirDate:                  sortable[FieldAirDate] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : (m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::Empty); break;
@@ -726,6 +761,18 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   std::vector<std::string> showLink(m_showLink);
   if (XMLUtils::GetStringArray(movie, "showlink", showLink, prioritise, g_advancedSettings.m_videoItemSeparator))
     SetShowLink(showLink);
+
+  const TiXmlElement* namedSeason = movie->FirstChildElement("namedseason");
+  while (namedSeason != nullptr)
+  {
+    int seasonNumber;
+    std::string seasonName = namedSeason->ValueStr();
+    if (!seasonName.empty() &&
+        namedSeason->Attribute("number", &seasonNumber) != nullptr)
+      m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
+
+    namedSeason = thumb->NextSiblingElement("namedseason");
+  }
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
@@ -1091,6 +1138,11 @@ void CVideoInfoTag::SetShowLink(std::vector<std::string> showLink)
 void CVideoInfoTag::SetUniqueId(std::string uniqueId)
 {
   m_strUniqueId = Trim(std::move(uniqueId));
+}
+
+void CVideoInfoTag::SetNamedSeasons(std::map<int, std::string> namedSeasons)
+{
+  m_namedSeasons = std::move(namedSeasons);
 }
 
 std::string CVideoInfoTag::Trim(std::string &&value)
