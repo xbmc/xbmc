@@ -52,6 +52,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
     m_tmp_iFirstDay(0),
     m_tmp_day(11),
     m_bTimerActive(false),
+    m_selectedChannelEntry(0),
     m_timerItem(NULL)
 {
   m_loadType = LOAD_EVERY_TIME;

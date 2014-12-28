@@ -684,7 +684,6 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   std::string strBackendName;
   std::string strBackendVersion;
   std::string strBackendHost;
-  std::string strBackendDiskspace;
   std::string strBackendTimers;
   std::string strBackendRecordings;
   std::string strBackendChannels;

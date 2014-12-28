@@ -49,6 +49,10 @@ using namespace PVR;
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
+  m_bIsRadio = 0;
+  m_iSelectedUngroupedChannel = 0;
+  m_iSelectedGroupMember = 0;
+  m_iSelectedChannelGroup = 0;
   m_ungroupedChannels = new CFileItemList;
   m_groupMembers      = new CFileItemList;
   m_channelGroups     = new CFileItemList;

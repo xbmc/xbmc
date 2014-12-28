@@ -68,7 +68,7 @@ namespace PVR
     virtual void SetInvalid();
     
     static std::string GetSelectedItemPath(bool bRadio);
-    static void SetSelectedItemPath(bool bRadio, const std::string path);
+    static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
