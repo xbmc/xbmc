@@ -1,12 +1,12 @@
 INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS  = DVDOverlayCodec.cpp
-SRCS += DVDOverlayCodecCC.cpp
 SRCS += DVDOverlayCodecFFmpeg.cpp
 SRCS += DVDOverlayCodecSSA.cpp
 SRCS += DVDOverlayCodecText.cpp
 SRCS += DVDOverlayCodecTX3G.cpp
-SRCS += libspucc/cc_decoder.c
+SRCS += contrib/cc_decoder.c
+SRCS += contrib/cc_decoder708.cpp
 
 LIB = Overlay.a
 

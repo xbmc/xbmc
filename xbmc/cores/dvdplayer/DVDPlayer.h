@@ -92,6 +92,7 @@ class CDVDDemux;
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
+class CDVDDemuxCC;
 
 namespace PVR
 {
@@ -428,6 +429,7 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
+  CDVDDemuxCC* m_pCCDemuxer;
 
   struct SDVDInfo
   {

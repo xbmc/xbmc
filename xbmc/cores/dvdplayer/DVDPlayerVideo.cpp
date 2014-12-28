@@ -36,7 +36,6 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "guilib/GraphicContext.h"
 #include <sstream>
@@ -132,7 +131,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_pOverlayContainer = pOverlayContainer;
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
-  m_pOverlayCodecCC = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_bRenderSubs = false;
@@ -766,63 +764,7 @@ void CDVDPlayerVideo::Process()
 
 void CDVDPlayerVideo::OnExit()
 {
-  if (m_pOverlayCodecCC)
-  {
-    m_pOverlayCodecCC->Dispose();
-    m_pOverlayCodecCC = NULL;
-  }
-
   CLog::Log(LOGNOTICE, "thread end: video_thread");
-}
-
-void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts)
-{
-  // check userdata type
-  uint8_t* data = pVideoUserData->data;
-  int size = pVideoUserData->size;
-
-  if (size >= 2)
-  {
-    if (data[0] == 'C' && data[1] == 'C')
-    {
-      data += 2;
-      size -= 2;
-
-      // closed captioning
-      if (!m_pOverlayCodecCC)
-      {
-        m_pOverlayCodecCC = new CDVDOverlayCodecCC();
-        CDVDCodecOptions options;
-        CDVDStreamInfo info;
-        if (!m_pOverlayCodecCC->Open(info, options))
-        {
-          delete m_pOverlayCodecCC;
-          m_pOverlayCodecCC = NULL;
-        }
-      }
-
-      if (m_pOverlayCodecCC)
-      {
-        DemuxPacket packet;
-        packet.pData = data;
-        packet.iSize = size;
-        packet.pts = DVD_NOPTS_VALUE;
-        packet.dts = DVD_NOPTS_VALUE;
-        m_pOverlayCodecCC->Decode(&packet);
-
-        CDVDOverlay* overlay;
-        while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)
-        {
-          overlay->iPTSStartTime += pts;
-          if(overlay->iPTSStopTime != 0.0)
-            overlay->iPTSStopTime += pts;
-
-          m_pOverlayContainer->Add(overlay);
-          overlay->Release();
-        }
-      }
-    }
-  }
 }
 
 void CDVDPlayerVideo::SetSpeed(int speed)

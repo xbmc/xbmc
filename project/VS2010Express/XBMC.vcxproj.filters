@@ -22,9 +22,6 @@
     <Filter Include="cores\dvdplayer\DVDCodecs\Overlay">
       <UniqueIdentifier>{cc80e830-cd3b-4790-9d73-b727b997efdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Overlay\libspucc">
-      <UniqueIdentifier>{43526341-7b96-462d-9f71-685e426251ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\dvdplayer\DVDDemuxers">
       <UniqueIdentifier>{59ff29b6-c2b5-4ed8-a80c-e5dd130802a7}</UniqueIdentifier>
     </Filter>
@@ -322,6 +319,9 @@
     <Filter Include="video\videosync">
       <UniqueIdentifier>{9775d5c0-c640-4606-a625-e6cdcf9f959e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\dvdplayer\DVDCodecs\Overlay\contrib">
+      <UniqueIdentifier>{43526341-7b96-462d-9f71-685e426251ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -420,9 +420,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
@@ -434,9 +431,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\libspucc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
@@ -3086,6 +3080,15 @@
     <ClCompile Include="..\..\xbmc\filesystem\OverrideFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.c">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.cpp">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3202,9 +3205,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
@@ -3228,9 +3228,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayText.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\libspucc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.h">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
@@ -6008,6 +6005,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.h">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

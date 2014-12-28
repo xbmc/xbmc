@@ -47,7 +47,7 @@ enum AVDiscard;
 
 enum StreamType
 {
-  STREAM_NONE,    // if unknown
+  STREAM_NONE = 0,// if unknown
   STREAM_AUDIO,   // audio stream
   STREAM_VIDEO,   // video stream
   STREAM_DATA,    // data stream
@@ -60,7 +60,8 @@ enum StreamSource {
   STREAM_SOURCE_DEMUX         = 0x100,
   STREAM_SOURCE_NAV           = 0x200,
   STREAM_SOURCE_DEMUX_SUB     = 0x300,
-  STREAM_SOURCE_TEXT          = 0x400
+  STREAM_SOURCE_TEXT          = 0x400,
+  STREAM_SOURCE_VIDEOMUX      = 0x500
 };
 
 #define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
