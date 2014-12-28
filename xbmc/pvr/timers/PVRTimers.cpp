@@ -220,7 +220,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       }
     }
     if (it->second->size() == 0)
-      m_tags.erase(++it);
+      m_tags.erase(it++);
     else
       ++it;
   }
