@@ -79,7 +79,7 @@ bool CPVRTimers::Update(void)
     m_bIsUpdating = true;
   }
 
-  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating timers", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Updating timers");
   CPVRTimers newTimerList;
   g_PVRClients->GetTimers(&newTimerList);
   return UpdateEntries(newTimerList);
@@ -128,8 +128,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
             timerNotifications.push_back(strMessage);
           }
 
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %d on client %d",
-              __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::LogF(LOGDEBUG, "Updated timer %d on client %d", (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
         }
       }
       else
@@ -164,15 +163,14 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
           timerNotifications.push_back(strMessage);
         }
 
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
-            __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+        CLog::LogF(LOGDEBUG, "Added timer %d on client %d", (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
       }
     }
   }
 
   /* to collect timer with changed starting time */
   VecTimerInfoTag timersToMove;
-  
+
   /* check for deleted timers */
   for (MapTags::iterator it = m_tags.begin(); it != m_tags.end();)
   {
@@ -182,8 +180,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       if (!timers.GetByClient(timer->m_iClientId, timer->m_iClientIndex))
       {
         /* timer was not found */
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
-            __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
+        CLog::LogF(LOGDEBUG, "Deleted timer %d on client %d", timer->m_iClientIndex, timer->m_iClientId);
 
         if (g_PVRManager.IsStarted())
         {
@@ -204,14 +201,13 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       else if (timer->StartAsUTC() != it->first)
       {
         /* timer start has changed */
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
-            __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
+        CLog::LogF(LOGDEBUG, "Changed start time timer %d on client %d", timer->m_iClientIndex, timer->m_iClientId);
 
         timer->ClearEpgTag();
 
         /* remember timer */
         timersToMove.push_back(timer);
-        
+
         /* remove timer for now, reinsert later */
         it->second->erase(it->second->begin() + iTimerPtr);
 
@@ -446,7 +442,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
 
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::LogF(LOGDEBUG, "Deleted timer %d on client %d", (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
           bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
           timerIt = it->second->erase(timerIt);
           SetChanged();
@@ -506,7 +502,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
 
   bool bReturn = newTimer->AddToClient();
   if (!bReturn)
-    CLog::Log(LOGERROR, "PVRTimers - %s - unable to add an instant timer on the client", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Unable to add an instant timer on the client");
 
   delete newTimer;
 
@@ -519,7 +515,7 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
 {
   if (!item.m_channel)
   {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No channel given");
     CGUIDialogOK::ShowAndGetInput(19033,0,19109,0); // Couldn't save timer
     return false;
   }
@@ -541,7 +537,7 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no TimerInfoTag given", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No TimerInfoTag given");
     return false;
   }
 
@@ -557,7 +553,7 @@ bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no TimerInfoTag given", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No TimerInfoTag given");
     return false;
   }
 
@@ -573,7 +569,7 @@ bool CPVRTimers::UpdateTimer(CFileItem &item)
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no TimerInfoTag given", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No TimerInfoTag given");
     return false;
   }
 
