@@ -428,21 +428,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.synctype" type="integer" parent="videoplayer.usedisplayasclock" label="13500" help="36167">
-          <level>2</level>
-          <default>2</default> <!-- SYNC_RESAMPLE -->
-          <constraints>
-            <options>
-              <option label="13501">0</option> <!-- SYNC_DISCON -->
-              <option label="13502">1</option> <!-- SYNC_SKIPDUP -->
-              <option label="13503">2</option> <!-- SYNC_RESAMPLE -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.usedisplayasclock" operator="is">true</dependency>
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
         <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
           <level>4</level>
           <default>5.0</default>
@@ -455,7 +440,6 @@
             <dependency type="enable">
               <and>
                 <condition setting="videoplayer.usedisplayasclock" operator="is">true</condition>
-                <condition setting="videoplayer.synctype" operator="is">2</condition> <!-- SYNC_RESAMPLE -->
               </and>
             </dependency>
           </dependencies>
