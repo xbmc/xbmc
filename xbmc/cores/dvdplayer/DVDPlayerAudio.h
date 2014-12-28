@@ -134,7 +134,6 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
   double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
