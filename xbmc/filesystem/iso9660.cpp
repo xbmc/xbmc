@@ -71,45 +71,60 @@ extern "C"
 //******************************************************************************************************************
 const string iso9660::ParseName(struct iso9660_Directory& isodir)
 {
-  string temp_text = (char*)isodir.FileName;
-  temp_text.resize(isodir.Len_Fi);
-  int iPos = isodir.Len_Fi;
+#define CHECK_LEN(x) if(33 + iPos + (x) >= isodir.ucRecordLength) return temp_text;
+
+  string temp_text;
+  int iPos = 0;
+
+  CHECK_LEN(isodir.Len_Fi);
+
+  temp_text.assign((const char*)isodir.FileName, isodir.Len_Fi);
+  iPos += isodir.Len_Fi;
+
+  CHECK_LEN(1);
 
   if (isodir.FileName[iPos] == 0)
   {
     iPos++;
   }
 
+  CHECK_LEN(2);
+
   if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos + 1] == 'R')
   {
+    CHECK_LEN(5);
+
     // rockridge
     iPos += 5;
     do
     {
+      // ??
+      // "?" "?"  LEN
+      // BP1 BP2  BP3
+      CHECK_LEN(3);
+
+      int iLen = isodir.FileName[iPos + 2];
+      if (iLen == 0)
+        break; //this is the fix for rockridge support
+
+      CHECK_LEN(iLen);
+
       if (isodir.FileName[iPos] == 'N' && isodir.FileName[iPos + 1] == 'M')
       {
         // altername name
         // "N" "M"  LEN_NM  1  FLAGS  NAMECONTENT
         // BP1 BP2    BP3      BP4  BP5     BP6-LEN_NM
-        int iNameLen = isodir.FileName[iPos + 2] - 5;
-        temp_text = (char*) & isodir.FileName[iPos + 5];
-        temp_text.resize(iNameLen);
-        iPos += (iNameLen + 5);
+        if(iLen >= 5)
+          temp_text.assign((const char*) & isodir.FileName[iPos + 5], iLen - 5);
       }
-      if ( isascii(isodir.FileName[iPos]) && isascii(isodir.FileName[iPos + 1]))
-      {
-        // ??
-        // "?" "?"  LEN
-        // BP1 BP2  BP3
-        iPos += isodir.FileName[iPos + 2];
-      }
+
+      iPos += iLen;
     }
-    while (33 + iPos < isodir.ucRecordLength && isodir.FileName[iPos + 2] != 0);
-    // when this isodir.FileName[iPos+2] is equal to 0 it should break out
-    // as it has finished the loop
-    // this is the fix for rockridge support
+    while (true);
   }
   return temp_text;
+
+#undef CHECK_LEN
 }
 
 bool iso9660::IsRockRidge(struct iso9660_Directory& isodir)
@@ -227,14 +242,20 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   }
   m_lastpath->next = ( struct iso_directories *)malloc( sizeof( struct iso_directories ) );
   if (!m_lastpath->next )
+  {
+    free(pCurr_dir_cache);
     return NULL;
+  }
 
   m_lastpath = m_lastpath->next;
   m_lastpath->next = NULL;
   m_lastpath->dir = pDir;
   m_lastpath->path = (char *)malloc(strlen(path) + 1);
   if (!m_lastpath->path )
+  {
+    free(pCurr_dir_cache);
     return NULL;
+  }
 
   strcpy( m_lastpath->path, path );
 
@@ -291,12 +312,18 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->dirpointer = NULL;
           pFile_Pointer->path = (char *)malloc(strlen(path) + 1);
           if (!pFile_Pointer->path)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           strcpy( pFile_Pointer->path, path );
           pFile_Pointer->name = (char *)malloc( temp_text.length() + 1);
           if (!pFile_Pointer->name)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 #ifdef _DEBUG_OUTPUT
@@ -616,7 +643,8 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
-      strcpy(wfdFile->cFileName, m_searchpointer->name );
+      strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
+      wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
 
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -642,7 +670,8 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
-    strcpy(wfdFile->cFileName, m_searchpointer->name );
+    strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
+    wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
 
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -702,7 +731,9 @@ HANDLE iso9660::OpenFile(const char *filename)
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 
-  strcpy(work, filename );
+  strncpy(work, filename, sizeof(work) - 1 );
+  work[sizeof(work) - 1] = 0;
+
   pointer2 = work;
 
   while ( strpbrk(pointer2 + 1, "\\" ) )

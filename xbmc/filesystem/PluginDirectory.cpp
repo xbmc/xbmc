@@ -50,6 +50,9 @@ int CPluginDirectory::handleCounter = 0;
 CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory()
+  : m_cancelled(false)
+  , m_success(false)
+  , m_totalItems(0)
 {
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
@@ -499,10 +502,10 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
       if (progressBar)
       {
         progressBar->SetHeading(scriptName);
-        progressBar->SetLine(0, retrievingDir ? 1040 : 10214);
+        progressBar->SetLine(0, 10214);
         progressBar->SetLine(1, "");
         progressBar->SetLine(2, "");
-        progressBar->ShowProgressBar(retrievingDir);
+        progressBar->ShowProgressBar(false);
         progressBar->StartModal();
       }
     }

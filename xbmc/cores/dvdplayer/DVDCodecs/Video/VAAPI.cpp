@@ -65,7 +65,9 @@ CVAAPIContext::CVAAPIContext()
   m_context = 0;
   m_refCount = 0;
   m_attributes = NULL;
+  m_attributeCount = 0;
   m_profiles = NULL;
+  m_profileCount = 0;
   m_display = NULL;
 }
 
@@ -461,16 +463,17 @@ DVDCodecAvailableType g_vaapi_available[] = {
 };
 const size_t settings_count = sizeof(g_vaapi_available) / sizeof(DVDCodecAvailableType);
 
-CDecoder::CDecoder() : m_vaapiOutput(&m_inMsgEvent)
+CDecoder::CDecoder()
+  : m_vaapiOutput(&m_inMsgEvent)
+  , m_codecControl(0)
+  , m_presentPicture(NULL)
 {
   m_vaapiConfig.videoSurfaces = &m_videoSurfaces;
 
   m_vaapiConfigured = false;
   m_DisplayState = VAAPI_OPEN;
-  m_vaapiConfig.context = 0;
-  m_vaapiConfig.contextId = VA_INVALID_ID;
-  m_vaapiConfig.configId = VA_INVALID_ID;
   m_avctx = NULL;
+  memset(&m_hwContext, 0, sizeof(vaapi_context));
 }
 
 CDecoder::~CDecoder()
@@ -1252,6 +1255,7 @@ void CVaapiRenderPicture::Sync()
 //-----------------------------------------------------------------------------
 
 VaapiBufferPool::VaapiBufferPool()
+  : procPicId(0)
 {
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
@@ -1278,7 +1282,23 @@ VaapiBufferPool::~VaapiBufferPool()
 COutput::COutput(CEvent *inMsgEvent) :
   CThread("Vaapi-Output"),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent)
+  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+  glXBindTexImageEXT(NULL),
+  glXReleaseTexImageEXT(NULL),
+  m_state(0),
+  m_bStateMachineSelfTrigger(false),
+  m_extTimeout(0),
+  m_vaError(false),
+  m_Display(NULL),
+  m_Window(None),
+  m_glContext(None),
+  m_glWindow(None),
+  m_pixmap(None),
+  m_glPixmap(None),
+  m_textureTarget(0),
+  m_pp(NULL),
+  m_diMethods(0),
+  m_currentDiMethod(0)
 {
   m_inMsgEvent = inMsgEvent;
 
@@ -2458,10 +2478,15 @@ bool CSkipPostproc::DoesSync()
 //-----------------------------------------------------------------------------
 
 CVppPostproc::CVppPostproc()
+  : m_configId(VA_INVALID_ID)
+  , m_contextId(VA_INVALID_ID)
+  , m_filter(VA_INVALID_ID)
+  , m_forwardRefs(0)
+  , m_backwardRefs(0)
+  , m_currentIdx(0)
+  , m_frameCount(0)
+  , m_vppMethod(0)
 {
-  m_contextId = VA_INVALID_ID;
-  m_configId = VA_INVALID_ID;
-  m_filter = VA_INVALID_ID;
 }
 
 CVppPostproc::~CVppPostproc()
@@ -2943,12 +2968,17 @@ bool CVppPostproc::CheckSuccess(VAStatus status)
 #define CACHED_BUFFER_SIZE 4096
 
 CFFmpegPostproc::CFFmpegPostproc()
+ : m_pFilterIn(NULL)
+ , m_pFilterOut(NULL)
+ , m_diMethod(0)
 {
   m_cache = NULL;
   m_pFilterFrameIn = NULL;
   m_pFilterFrameOut = NULL;
   m_pFilterGraph = NULL;
+  memset(&m_DVDPic, 0, sizeof(m_DVDPic));
   m_DVDPic.pts = DVD_NOPTS_VALUE;
+  m_DVDPic.dts = DVD_NOPTS_VALUE;
   m_frametime = 0;
   m_lastOutPts = DVD_NOPTS_VALUE;
 }

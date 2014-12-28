@@ -1514,7 +1514,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
   m_droppingStats.m_lastPts = pts;
 
   // get decoder stats
-  if (!m_pVideoCodec->GetCodecStats(iDecoderPts, iDroppedPics))
+  if (m_pVideoCodec == NULL || !m_pVideoCodec->GetCodecStats(iDecoderPts, iDroppedPics))
     iDecoderPts = pts;
   if (iDecoderPts == DVD_NOPTS_VALUE)
     iDecoderPts = pts;

@@ -43,7 +43,11 @@ using namespace std;
 #define SEEKTIMOUT 30000
 
 #ifdef HAS_FILESYSTEM_RAR
-CRarFileExtractThread::CRarFileExtractThread() : CThread("RarFileExtract"), hRunning(true), hQuit(true)
+CRarFileExtractThread::CRarFileExtractThread()
+  : CThread("RarFileExtract")
+  , hRunning(true)
+  , hQuit(true)
+  , m_iSize(0)
 {
   m_pArc = NULL;
   m_pCmd = NULL;
@@ -130,6 +134,9 @@ CRarFile::CRarFile()
   m_bUseFile = false;
   m_bOpen = false;
   m_bSeekable = true;
+  m_iFilePosition = 0;
+  m_iFileSize = 0;
+  m_iBufferStart = 0;
 }
 
 CRarFile::~CRarFile()
@@ -645,11 +652,8 @@ bool CRarFile::OpenInArchive()
     AddEndSlash(m_pCmd->ExtrPath);
 
     // Set password for encrypted archives
-    if ((m_strPassword.size() > 0) &&
-        (m_strPassword.size() < sizeof (m_pCmd->Password)))
-    {
-      strcpy(m_pCmd->Password, m_strPassword.c_str());
-    }
+    strncpy(m_pCmd->Password, m_strPassword.c_str(), sizeof (m_pCmd->Password) - 1);
+    m_pCmd->Password[sizeof (m_pCmd->Password) - 1] = 0;
 
     m_pCmd->ParseDone();
 

@@ -36,17 +36,14 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 //*********************************************************************************************
 CUDFFile::CUDFFile()
+  : m_hFile(INVALID_HANDLE_VALUE)
 {
-  m_bOpened = false;
 }
 
 //*********************************************************************************************
 CUDFFile::~CUDFFile()
 {
-  if (m_bOpened)
-  {
-    Close();
-  }
+  Close();
 }
 //*********************************************************************************************
 bool CUDFFile::Open(const CURL& url)
@@ -56,12 +53,8 @@ bool CUDFFile::Open(const CURL& url)
 
   m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetFileName().c_str());
   if (m_hFile == INVALID_HANDLE_VALUE)
-  {
-    m_bOpened = false;
     return false;
-  }
 
-  m_bOpened = true;
   return true;
 }
 
@@ -73,7 +66,7 @@ ssize_t CUDFFile::Read(void *lpBuf, size_t uiBufSize)
   if (uiBufSize > LONG_MAX)
     uiBufSize = LONG_MAX;
 
-  if (!m_bOpened)
+  if (m_hFile == INVALID_HANDLE_VALUE)
     return -1;
   char *pData = (char *)lpBuf;
 
@@ -83,15 +76,15 @@ ssize_t CUDFFile::Read(void *lpBuf, size_t uiBufSize)
 //*********************************************************************************************
 void CUDFFile::Close()
 {
-  if (!m_bOpened) return ;
+  if (m_hFile == INVALID_HANDLE_VALUE) return ;
   m_udfIsoReaderLocal.CloseFile( m_hFile);
-  m_bOpened = false;
+  m_hFile = INVALID_HANDLE_VALUE;
 }
 
 //*********************************************************************************************
 int64_t CUDFFile::Seek(int64_t iFilePosition, int iWhence)
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   int64_t lNewPos = m_udfIsoReaderLocal.Seek(m_hFile, iFilePosition, iWhence);
   return lNewPos;
 }
@@ -99,14 +92,14 @@ int64_t CUDFFile::Seek(int64_t iFilePosition, int iWhence)
 //*********************************************************************************************
 int64_t CUDFFile::GetLength()
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   return m_udfIsoReaderLocal.GetFileSize(m_hFile);
 }
 
 //*********************************************************************************************
 int64_t CUDFFile::GetPosition()
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   return m_udfIsoReaderLocal.GetFilePosition(m_hFile);
 }
 

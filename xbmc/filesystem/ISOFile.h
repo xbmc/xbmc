@@ -49,7 +49,6 @@ public:
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
 protected:
-  bool m_bOpened;
   HANDLE m_hFile;
   CRingBuffer m_cache;
 };

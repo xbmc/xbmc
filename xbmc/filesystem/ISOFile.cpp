@@ -34,17 +34,14 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 //*********************************************************************************************
 CISOFile::CISOFile()
+  : m_hFile(INVALID_HANDLE_VALUE)
 {
-  m_bOpened = false;
 }
 
 //*********************************************************************************************
 CISOFile::~CISOFile()
 {
-  if (m_bOpened)
-  {
-    Close();
-  }
+  Close();
 }
 //*********************************************************************************************
 bool CISOFile::Open(const CURL& url)
@@ -57,19 +54,15 @@ bool CISOFile::Open(const CURL& url)
   }
   m_hFile = m_isoReader.OpenFile((char*)strFName.c_str());
   if (m_hFile == INVALID_HANDLE_VALUE)
-  {
-    m_bOpened = false;
     return false;
-  }
 
-  m_bOpened = true;
   return true;
 }
 
 //*********************************************************************************************
 ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
 {
-  if (!m_bOpened)
+  if (m_hFile == INVALID_HANDLE_VALUE)
     return -1;
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
@@ -110,14 +103,15 @@ ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
 //*********************************************************************************************
 void CISOFile::Close()
 {
-  if (!m_bOpened) return ;
+  if (m_hFile == INVALID_HANDLE_VALUE) return ;
   m_isoReader.CloseFile( m_hFile);
+  m_hFile = INVALID_HANDLE_VALUE;
 }
 
 //*********************************************************************************************
 int64_t CISOFile::Seek(int64_t iFilePosition, int iWhence)
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   int64_t lNewPos = m_isoReader.Seek(m_hFile, iFilePosition, iWhence);
   if(lNewPos >= 0)
     m_cache.Clear();
@@ -127,14 +121,14 @@ int64_t CISOFile::Seek(int64_t iFilePosition, int iWhence)
 //*********************************************************************************************
 int64_t CISOFile::GetLength()
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   return m_isoReader.GetFileSize(m_hFile);
 }
 
 //*********************************************************************************************
 int64_t CISOFile::GetPosition()
 {
-  if (!m_bOpened) return -1;
+  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
   return m_isoReader.GetFilePosition(m_hFile);
 }
 

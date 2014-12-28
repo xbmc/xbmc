@@ -37,6 +37,7 @@
 #include <map>
 #include <va/va.h>
 #include "linux/sse4/DllLibSSE4.h"
+#include <string.h>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -103,6 +104,32 @@ class CVAAPIContext;
 
 struct CVaapiConfig
 {
+  CVaapiConfig()
+   : surfaceWidth(0)
+   , surfaceHeight(0)
+   , vidWidth(0)
+   , vidHeight(0)
+   , outWidth(0)
+   , outHeight(0)
+   //, aspect
+   , configId(VA_INVALID_ID)
+   , contextId(VA_INVALID_ID)
+   , stats(NULL)
+   , vaapi(NULL)
+   , upscale(0)
+   , videoSurfaces(0)
+   , maxReferences(0)
+   , useInteropYuv(false)
+   , context(NULL)
+   , dpy(0)
+   , profile(0)
+   //, attrib
+   , x11dsp(NULL)
+  {
+    memset(&aspect, 0, sizeof(aspect));
+    memset(&attrib, 0, sizeof(attrib));
+  }
+
   int surfaceWidth;
   int surfaceHeight;
   int vidWidth;
@@ -131,6 +158,13 @@ struct CVaapiConfig
  */
 struct CVaapiDecodedPicture
 {
+  CVaapiDecodedPicture()
+    : videoSurface(VA_INVALID_ID)
+    , index(0)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
+
   DVDVideoPicture DVDPic;
   VASurfaceID videoSurface;
   int index;
@@ -141,6 +175,16 @@ struct CVaapiDecodedPicture
  */
 struct CVaapiProcessedPicture
 {
+  CVaapiProcessedPicture()
+    : videoSurface(VA_INVALID_ID)
+    , frame(NULL)
+    , id(0)
+    , source(VPP_SRC)
+    , crop(false)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
+
   DVDVideoPicture DVDPic;
   VASurfaceID videoSurface;
   AVFrame *frame;
@@ -156,6 +200,17 @@ struct CVaapiProcessedPicture
 
 struct VaapiGlx
 {
+  VaapiGlx()
+    : x11dsp(NULL)
+    , vadsp(0)
+    , pixmap(0)
+    , glPixmap(0)
+    , textureTarget(0)
+    , glXBindTexImageEXT(NULL)
+    , glXReleaseTexImageEXT(NULL)
+    , bound(0)
+  {}
+
   Display *x11dsp;
   VADisplay vadsp;
   Pixmap pixmap;
@@ -180,7 +235,10 @@ class CVaapiRenderPicture
 public:
   CVaapiRenderPicture(CCriticalSection &section)
     : texWidth(0), texHeight(0), texture(None), valid(false), vaapi(NULL), avFrame(NULL),
-      usefence(false), refCount(0), renderPicSection(section) { fence = None; }
+      fence(None), usefence(false), refCount(0), renderPicSection(section)
+  {
+    memset(&DVDPic, 0, sizeof(DVDPic));
+  }
   void Sync();
   bool CopyGlx();
   DVDVideoPicture DVDPic;
@@ -469,6 +527,9 @@ protected:
 class CPostproc
 {
 public:
+  CPostproc()
+   : m_step(0)
+  {}
   virtual ~CPostproc() {};
   virtual bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) = 0;
   virtual bool Init(EINTERLACEMETHOD method) = 0;
