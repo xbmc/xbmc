@@ -5168,8 +5168,26 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       return false;
 
     CFileItemList sets;
-    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets))
+    GroupAttribute groupingAttributes = ignoreSingleMovieSets ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
+    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets, groupingAttributes))
       return false;
+
+    // if we want to ignore single movie sets we have to look through the
+    // resulting list because GroupUtils re-adds movies that would be alone
+    // in a set, so we have to manually remove them
+    if (ignoreSingleMovieSets)
+    {
+      for (int index = 0; index < sets.Size(); ++index)
+      {
+        const CFileItemPtr set = sets.Get(index);
+        if (!set->HasVideoInfoTag() ||
+            set->GetVideoInfoTag()->m_type != MediaTypeVideoCollection)
+        {
+          sets.Remove(index);
+          --index;
+        }
+      }
+    }
 
     items.ClearItems();
     items.Append(sets);
@@ -5958,7 +5976,7 @@ bool CVideoDatabase::GetItems(const CStdString &strBaseDir, VIDEODB_CONTENT_TYPE
   else if (itemType.Equals("studios"))
     return GetStudiosNav(strBaseDir, items, mediaType, filter);
   else if (itemType.Equals("sets"))
-    return GetSetsNav(strBaseDir, items, mediaType, filter);
+    return GetSetsNav(strBaseDir, items, mediaType, filter, CSettings::Get().GetBool("videolibrary.hidesingleitemsets"));
   else if (itemType.Equals("countries"))
     return GetCountriesNav(strBaseDir, items, mediaType, filter);
   else if (itemType.Equals("tags"))

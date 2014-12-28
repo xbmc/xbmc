@@ -1799,7 +1799,10 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
        (CSettings::Get().GetBool("videolibrary.groupmoviesets") || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
       CFileItemList groupedItems;
-      if (GroupUtils::Group(GroupBySet, m_strFilterPath, items, groupedItems, GroupAttributeIgnoreSingleItems))
+      GroupAttribute groupingAttributes = GroupAttributeNone;
+      if (CSettings::Get().GetBool("videolibrary.hidesingleitemsets"))
+        groupingAttributes = GroupAttributeIgnoreSingleItems;
+      if (GroupUtils::Group(GroupBySet, m_strFilterPath, items, groupedItems, groupingAttributes))
       {
         items.ClearItems();
         items.Append(groupedItems);

@@ -11274,7 +11274,10 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr ""
 
-#empty string with id 21416
+#: system/settings/settings.xml
+msgctxt "#21416"
+msgid "Hide sets containing a single movie"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21417"
@@ -14069,7 +14072,11 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#empty string with id 36157
+#. Description of setting "Hide sets containing a single movie" with label #21416
+#: system/settings/settings.xml
+msgctxt "#36157"
+msgid "Don't group movies into a set if it only contains a single movie."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
