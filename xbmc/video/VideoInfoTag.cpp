@@ -491,7 +491,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldPlot:                     sortable[FieldPlot] = m_strPlot; break;
   case FieldTitle:
   {
-    // make sure not to overwrite an existing path with an empty one
+    // make sure not to overwrite an existing title with an empty one
     std::string title = m_strTitle;
     if (!title.empty() || sortable.find(FieldTitle) == sortable.end())
       sortable[FieldTitle] = title;
