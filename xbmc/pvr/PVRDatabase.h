@@ -221,7 +221,7 @@ namespace PVR
     CPVRDatabase *database = g_PVRManager.GetTVDatabase();
     if (!database || !database->IsOpen())
     {
-      CLog::Log(LOGERROR, "PVR - failed to open the database");
+      CLog::LogF(LOGERROR, "Failed to open the database");
       database = NULL;
     }
 
