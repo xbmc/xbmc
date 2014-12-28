@@ -61,11 +61,11 @@ bool CPVRChannelGroupInternal::Load(void)
   {
     UpdateChannelPaths();
     g_PVRManager.RegisterObserver(this);
-      
+
     return true;
   }
 
-  CLog::Log(LOGERROR, "PVRChannelGroupInternal - %s - failed to load channels", __FUNCTION__);
+  CLog::LogF(LOGERROR, "Failed to load channels");
   return false;
 }
 
@@ -233,8 +233,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
   }
   else
   {
-    CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database",
-        __FUNCTION__);
+    CLog::LogF(LOGINFO, "No channels in the database");
   }
 
   SortByChannelNumber();
@@ -309,7 +308,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       if (existingChannel->UpdateFromClient(*member.channel))
       {
         bReturn = true;
-        CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - updated %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
+        CLog::LogF(LOGINFO,"Updated %s channel '%s'", m_bRadio ? "Radio" : "TV", member.channel->ChannelName().c_str());
       }
     }
     else
@@ -317,7 +316,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       /* new channel */
       UpdateFromClient(*member.channel, bUseBackendChannelNumbers ? member.channel->ClientChannelNumber() : 0);
       bReturn = true;
-      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
+      CLog::LogF(LOGINFO,"Added %s channel '%s'", m_bRadio ? "Radio" : "TV", member.channel->ChannelName().c_str());
     }
   }
 
