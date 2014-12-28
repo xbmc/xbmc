@@ -828,33 +828,47 @@ void CDecoder::ReadFormatOf( AVCodecID codec
   switch (codec)
   {
     case AV_CODEC_ID_MPEG1VIDEO:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     case AV_CODEC_ID_MPEG2VIDEO:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG2_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     case AV_CODEC_ID_H264:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_H264_HIGH;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     case AV_CODEC_ID_WMV3:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     case AV_CODEC_ID_VC1:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     case AV_CODEC_ID_MPEG4:
+    {
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    }
     default:
+    {
       vdp_decoder_profile = 0;
       vdp_chroma_type     = 0;
       break;
+    }
   }
 }
 
@@ -1389,207 +1403,231 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
   {
     switch (state)
     {
-    case M_TOP: // TOP
-      if (port == &m_controlPort)
+      case M_TOP: // TOP
       {
-        switch (signal)
+        if (port == &m_controlPort)
         {
-        case CMixerControlProtocol::FLUSH:
-          Flush();
-          msg->Reply(CMixerControlProtocol::ACC);
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case CMixerControlProtocol::FLUSH:
+            {
+              Flush();
+              msg->Reply(CMixerControlProtocol::ACC);
+              return;
+            }
+            default:
+              break;
+            }
+        }
+        {
+          std::string portName = port == NULL ? "timer" : port->portName;
+          CLog::Log(LOGWARNING, "CMixer::%s - signal: %d form port: %s not handled for state: %d", __FUNCTION__, signal, portName.c_str(), m_state);
+        }
+        return;
+      }
+      case M_TOP_ERROR: // TOP
+        break;
+      case M_TOP_UNCONFIGURED:
+      {
+        if (port == &m_controlPort)
+        {
+          switch (signal)
+          {
+            case CMixerControlProtocol::INIT:
+            {
+              CVdpauConfig *data;
+              data = (CVdpauConfig*)msg->data;
+              if (data)
+              {
+                m_config = *data;
+              }
+              Init();
+              if (!m_vdpError)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                msg->Reply(CMixerControlProtocol::ACC);
+              }
+              else
+              {
+                msg->Reply(CMixerControlProtocol::ERROR);
+              }
+              return;
+            }
+            default:
+              break;
+          }
+        }
+        break;
+      }
+      case M_TOP_CONFIGURED:
+      {
+        if (port == &m_dataPort)
+        {
+          switch (signal)
+          {
+            case CMixerDataProtocol::FRAME:
+            {
+              CVdpauDecodedPicture *frame;
+              frame = (CVdpauDecodedPicture*)msg->data;
+              if (frame)
+              {
+                m_decodedPics.push(*frame);
+              }
+              m_extTimeout = 0;
+              return;
+          }
+          case CMixerDataProtocol::BUFFER:
+          {
+            VdpOutputSurface *surf;
+            surf = (VdpOutputSurface*)msg->data;
+            if (surf)
+            {
+              m_outputSurfaces.push(*surf);
+            }
+            m_extTimeout = 0;
+            return;
+          }
+          default:
+            break;
         }
       }
-      {
-        std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "CMixer::%s - signal: %d form port: %s not handled for state: %d", __FUNCTION__, signal, portName.c_str(), m_state);
-      }
-      return;
-
-    case M_TOP_ERROR: // TOP
       break;
-
-    case M_TOP_UNCONFIGURED:
-      if (port == &m_controlPort)
-      {
-        switch (signal)
-        {
-        case CMixerControlProtocol::INIT:
-          CVdpauConfig *data;
-          data = (CVdpauConfig*)msg->data;
-          if (data)
-          {
-            m_config = *data;
-          }
-          Init();
-          if (!m_vdpError)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            msg->Reply(CMixerControlProtocol::ACC);
-          }
-          else
-          {
-            msg->Reply(CMixerControlProtocol::ERROR);
-          }
-          return;
-        default:
-          break;
-        }
-      }
-      break;
-
-    case M_TOP_CONFIGURED:
-      if (port == &m_dataPort)
-      {
-        switch (signal)
-        {
-        case CMixerDataProtocol::FRAME:
-          CVdpauDecodedPicture *frame;
-          frame = (CVdpauDecodedPicture*)msg->data;
-          if (frame)
-          {
-            m_decodedPics.push(*frame);
-          }
-          m_extTimeout = 0;
-          return;
-        case CMixerDataProtocol::BUFFER:
-          VdpOutputSurface *surf;
-          surf = (VdpOutputSurface*)msg->data;
-          if (surf)
-          {
-            m_outputSurfaces.push(*surf);
-          }
-          m_extTimeout = 0;
-          return;
-        default:
-          break;
-        }
-      }
-      break;
-
+    }
     case M_TOP_CONFIGURED_WAIT1:
+    {
       if (port == NULL) // timeout
       {
         switch (signal)
         {
         case CMixerControlProtocol::TIMEOUT:
-          if (!m_decodedPics.empty() && !m_outputSurfaces.empty())
-          {
-            m_state = M_TOP_CONFIGURED_STEP1;
-            m_bStateMachineSelfTrigger = true;
-          }
-          else
-          {
-            m_extTimeout = 100;
-          }
-          return;
+        {
+            if (!m_decodedPics.empty() && !m_outputSurfaces.empty())
+            {
+              m_state = M_TOP_CONFIGURED_STEP1;
+              m_bStateMachineSelfTrigger = true;
+            }
+            else
+            {
+              m_extTimeout = 100;
+            }
+            return;
+        }
         default:
           break;
         }
       }
       break;
-
+    }
     case M_TOP_CONFIGURED_STEP1:
+    {
       if (port == NULL) // timeout
       {
         switch (signal)
         {
-        case CMixerControlProtocol::TIMEOUT:
-          m_mixerInput.push_front(m_decodedPics.front());
-          m_decodedPics.pop();
-          if (m_mixerInput.size() < 2)
+          case CMixerControlProtocol::TIMEOUT:
           {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 0;
+            m_mixerInput.push_front(m_decodedPics.front());
+            m_decodedPics.pop();
+            if (m_mixerInput.size() < 2)
+            {
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              m_extTimeout = 0;
+              return;
+            }
+            InitCycle();
+            ProcessPicture();
+            if (m_vdpError)
+            {
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              m_extTimeout = 1000;
+              return;
+            }
+            if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+              m_outputSurfaces.pop();
+            m_config.stats->IncProcessed();
+            m_config.stats->DecDecoded();
+            m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
+            if (m_mixersteps > 1)
+            {
+              m_state = M_TOP_CONFIGURED_WAIT2;
+              m_extTimeout = 0;
+            }
+            else
+            {
+              FiniCycle();
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              m_extTimeout = 0;
+            }
             return;
           }
-          InitCycle();
-          ProcessPicture();
-          if (m_vdpError)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 1000;
-            return;
-          }
-          if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
-            m_outputSurfaces.pop();
-          m_config.stats->IncProcessed();
-          m_config.stats->DecDecoded();
-          m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
-          if (m_mixersteps > 1)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT2;
-            m_extTimeout = 0;
-          }
-          else
-          {
-            FiniCycle();
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 0;
-          }
-          return;
-        default:
-          break;
+          default:
+            break;
         }
       }
       break;
-
+    }
     case M_TOP_CONFIGURED_WAIT2:
+    {
       if (port == NULL) // timeout
       {
         switch (signal)
         {
-        case CMixerControlProtocol::TIMEOUT:
-          if (!m_outputSurfaces.empty())
+          case CMixerControlProtocol::TIMEOUT:
           {
-            m_state = M_TOP_CONFIGURED_STEP2;
-            m_bStateMachineSelfTrigger = true;
+            if (!m_outputSurfaces.empty())
+            {
+              m_state = M_TOP_CONFIGURED_STEP2;
+              m_bStateMachineSelfTrigger = true;
+            }
+            else
+            {
+              m_extTimeout = 100;
+            }
+            return;
           }
-          else
-          {
-            m_extTimeout = 100;
+          default:
+            break;
           }
-          return;
-        default:
-          break;
         }
+        break;
       }
-      break;
-
-    case M_TOP_CONFIGURED_STEP2:
-       if (port == NULL) // timeout
-       {
-         switch (signal)
-         {
-         case CMixerControlProtocol::TIMEOUT:
-           m_processPicture.outputSurface = m_outputSurfaces.front();
-           m_mixerstep = 1;
-           ProcessPicture();
-           if (m_vdpError)
-           {
-             m_state = M_TOP_CONFIGURED_WAIT1;
-             m_extTimeout = 1000;
-             return;
-           }
-           if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
-             m_outputSurfaces.pop();
-           m_config.stats->IncProcessed();
-           m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
-           FiniCycle();
-           m_state = M_TOP_CONFIGURED_WAIT1;
-           m_extTimeout = 0;
-           return;
-         default:
-           break;
-         }
-       }
-       break;
-
-    default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CMixer::%s - no valid state: %d", __FUNCTION__, m_state);
-      return;
+      case M_TOP_CONFIGURED_STEP2:
+      {
+        if (port == NULL) // timeout
+        {
+          switch (signal)
+          {
+            case CMixerControlProtocol::TIMEOUT:
+            {
+              m_processPicture.outputSurface = m_outputSurfaces.front();
+              m_mixerstep = 1;
+              ProcessPicture();
+              if (m_vdpError)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                m_extTimeout = 1000;
+                return;
+              }
+              if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+                m_outputSurfaces.pop();
+              m_config.stats->IncProcessed();
+              m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
+              FiniCycle();
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              m_extTimeout = 0;
+              return;
+            }
+            default:
+              break;
+          }
+        }
+        break;
+      }
+      default: // we are in no state, should not happen
+      {
+        CLog::Log(LOGERROR, "CMixer::%s - no valid state: %d", __FUNCTION__, m_state);
+        return;
+      }
     }
   } // for
 }
@@ -1871,23 +1909,31 @@ void CMixer::SetColor()
   switch(m_mixerInput[1].DVDPic.color_matrix)
   {
     case AVCOL_SPC_BT709:
+    {
       colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
       break;
+    }
     case AVCOL_SPC_BT470BG:
     case AVCOL_SPC_SMPTE170M:
+    {
       colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
       break;
+    }
     case AVCOL_SPC_SMPTE240M:
+    {
       colorStandard = VDP_COLOR_STANDARD_SMPTE_240M;
       break;
+    }
     case AVCOL_SPC_FCC:
     case AVCOL_SPC_UNSPECIFIED:
     case AVCOL_SPC_RGB:
     default:
+    {
       if(m_config.surfaceWidth > 1000)
         colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
       else
         colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
+    }
   }
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
@@ -2073,71 +2119,91 @@ void CMixer::SetHWUpscaling()
   switch (m_config.upscale)
   {
     case 9:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 8:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 7:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 6:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 5:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 4:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 3:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 2:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     case 1:
+    {
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+    }
     default:
+    {
        DisableHQScaling();
        return;
+    }
   }
   CheckStatus(vdp_st, __LINE__);
 #endif
