@@ -6339,27 +6339,7 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13499
-
-#: system/settings/settings.xml
-msgctxt "#13500"
-msgid "A/V sync method"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13501"
-msgid "Audio clock"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13502"
-msgid "Video clock (Drop/Dupe audio)"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13503"
-msgid "Video clock (Resample audio)"
-msgstr ""
+#empty strings from id 13460 to 13503
 
 #: system/settings/settings.xml
 msgctxt "#13504"
@@ -14125,11 +14105,7 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> A/V sync method" with label #13500
-#: system/settings/settings.xml
-msgctxt "#36167"
-msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
-msgstr ""
+#empty string with id 36167
 
 #. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
 #: system/settings/settings.xml
