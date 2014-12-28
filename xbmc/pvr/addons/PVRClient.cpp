@@ -153,7 +153,7 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
 
   /* initialise the add-on */
   bool bReadyToUse(false);
-  CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
+  CLog::LogF(LOGDEBUG, "Creating PVR add-on instance '%s'", Name().c_str());
   try
   {
     if ((status = CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create()) == ADDON_STATUS_OK)
@@ -181,7 +181,7 @@ void CPVRClient::Destroy(void)
   m_bReadyToUse = false;
 
   /* reset 'ready to use' to false */
-  CLog::Log(LOGDEBUG, "PVR - %s - destroying PVR add-on '%s'", __FUNCTION__, GetFriendlyName().c_str());
+  CLog::LogF(LOGDEBUG, "Destroying PVR add-on '%s'", GetFriendlyName().c_str());
 
   /* destroy the add-on */
   try { CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Destroy(); }
@@ -332,7 +332,8 @@ bool CPVRClient::CheckAPIVersion(void)
 
   if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
   {
-    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.asString().c_str(), m_apiVersion.asString().c_str());
+    CLog::LogF(LOGERROR, "Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'",
+    Name().c_str(), minVersion.asString().c_str(), m_apiVersion.asString().c_str());
     return false;
   }
 
@@ -344,7 +345,8 @@ bool CPVRClient::CheckAPIVersion(void)
 
   if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
   {
-    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
+    CLog::LogF(LOGERROR, "Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'",
+    Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
     return false;
   }
 
@@ -363,7 +365,8 @@ bool CPVRClient::GetAddonProperties(void)
     PVR_ERROR retVal = m_pStruct->GetAddonCapabilities(&addonCapabilities);
     if (retVal != PVR_ERROR_NO_ERROR)
     {
-      CLog::Log(LOGERROR, "PVR - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
+      CLog::LogF(LOGERROR, "Couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s",
+      GetFriendlyName().c_str(), Author().c_str());
       return false;
     }
   }
@@ -580,8 +583,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
     PVR_CHANNEL_GROUP tag;
     WriteClientGroupInfo(*group, tag);
 
-    CLog::Log(LOGDEBUG, "PVR - %s - get group members for group '%s' from add-on '%s'",
-        __FUNCTION__, tag.strGroupName, GetFriendlyName().c_str());
+    CLog::LogF(LOGDEBUG, "Get group members for group '%s' from add-on '%s'", tag.strGroupName, GetFriendlyName().c_str());
     retVal = m_pStruct->GetChannelGroupMembers(&handle, tag);
 
     LogError(retVal, __FUNCTION__);
@@ -1225,8 +1227,7 @@ bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
 {
   if (error != PVR_ERROR_NO_ERROR)
   {
-    CLog::Log(LOGERROR, "PVR - %s - addon '%s' returned an error: %s",
-        strMethod, GetFriendlyName().c_str(), ToString(error));
+    CLog::LogF(LOGERROR, "%s - addon '%s' returned an error: %s", strMethod, GetFriendlyName().c_str(), ToString(error));
     return false;
   }
   return true;
@@ -1234,7 +1235,8 @@ bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
 
 void CPVRClient::LogException(const std::exception &e, const char *strFunctionName) const
 {
-  CLog::Log(LOGERROR, "PVR - exception '%s' caught while trying to call '%s' on add-on '%s'. Please contact the developer of this add-on: %s", e.what(), strFunctionName, GetFriendlyName().c_str(), Author().c_str());
+  CLog::LogF(LOGERROR, "Exception '%s' caught while trying to call '%s' on add-on '%s'. Please contact the developer of this add-on: %s",
+  e.what(), strFunctionName, GetFriendlyName().c_str(), Author().c_str());
 }
 
 bool CPVRClient::CanPlayChannel(const CPVRChannel &channel) const
@@ -1374,11 +1376,11 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
 
   if(!CanPlayChannel(channel))
   {
-    CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel.ChannelName().c_str());
+    CLog::LogF(LOGDEBUG, "Add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel.ChannelName().c_str());
   }
   else if (!channel.StreamURL().empty())
   {
-    CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel.StreamURL().c_str());
+    CLog::LogF(LOGDEBUG, "Opening live stream on url '%s'", channel.StreamURL().c_str());
     bReturn = true;
 
     // the Njoy N7 sometimes doesn't switch channels, but opens a stream to the previous channel
@@ -1394,7 +1396,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   }
   else
   {
-    CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel.ChannelName().c_str());
+    CLog::LogF(LOGDEBUG, "Opening live stream for channel '%s'", channel.ChannelName().c_str());
     PVR_CHANNEL tag;
     WriteClientChannelInfo(channel, tag);
 
