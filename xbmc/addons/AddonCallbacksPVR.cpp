@@ -73,7 +73,7 @@ CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
   CAddonCallbacks *addon = static_cast<CAddonCallbacks *>(addonData);
   if (!addon || !addon->GetHelperPVR())
   {
-    CLog::Log(LOGERROR, "PVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Called with a null pointer");
     return NULL;
   }
 
@@ -84,20 +84,20 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HA
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CPVRChannelGroups *xbmcGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
   if (!group || !xbmcGroups)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   if (strlen(group->strGroupName) == 0)
   {
-    CLog::Log(LOGERROR, "PVR - %s - empty group name", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Empty group name");
     return;
   }
 
@@ -110,22 +110,22 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
-  
+
   CPVRClient *client      = GetPVRClient(addonData);
   CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
   if (!member || !client || !group)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CPVRChannelPtr channel  = g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
+    CLog::LogF(LOGERROR, "Cannot find group '%s' or channel '%d'", member->strGroupName, member->iChannelUniqueId);
   }
   else if (group->IsRadio() == channel->IsRadio())
   {
@@ -138,14 +138,14 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CEpg *xbmcEpg = static_cast<CEpg *>(handle->dataAddress);
   if (!xbmcEpg)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -157,7 +157,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -165,7 +165,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
   CPVRChannelGroupInternal *xbmcChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
   if (!channel || !client || !xbmcChannels)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -178,7 +178,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -186,7 +186,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
   CPVRRecordings *xbmcRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
   if (!recording || !client || !xbmcRecordings)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -199,7 +199,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -207,14 +207,14 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   CPVRTimers *xbmcTimers = static_cast<CPVRTimers *>(handle->dataAddress);
   if (!timer || !client || !xbmcTimers)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetID());
   if (!channel)
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find channel %d on client %d", __FUNCTION__, timer->iClientChannelUid, client->GetID());
+    CLog::LogF(LOGERROR, "Cannot find channel %d on client %d", timer->iClientChannelUid, client->GetID());
     return;
   }
 
@@ -228,7 +228,7 @@ void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   CPVRClient *client = GetPVRClient(addonData);
   if (!hook || !client)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -250,7 +250,7 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !strFileName)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -269,8 +269,8 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
   /* display a notification for 5 seconds */
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
 
-  CLog::Log(LOGDEBUG, "PVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
-      __FUNCTION__, bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
+  CLog::LogF(LOGDEBUG, "Recording %s on client '%s': name='%s' filename='%s'",
+      bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
 }
 
 void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
@@ -303,7 +303,7 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
   CPVRClient *client = GetPVRClient(addonData);
   if (!client)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
