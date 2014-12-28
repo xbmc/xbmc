@@ -53,7 +53,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   m_bUpdateChannelsOnly = bChannelsOnly;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
+  CLog::LogF(LOGDEBUG, "Updating %s", bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsRadio->Update(bChannelsOnly) &&
        m_groupsTV->Update(bChannelsOnly);
 
@@ -253,7 +253,7 @@ CFileItemPtr CPVRChannelGroupsContainer::GetByChannelIDFromAll(int iChannelID) c
 
 void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void) const
 {
-  CLog::Log(LOGINFO, "PVRChannelGroupsContainer - %s - starting channel icon search", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Starting channel icon search");
 
   CPVRChannelGroupPtr channelgrouptv  = GetGroupAllTV();
   CPVRChannelGroupPtr channelgroupradio = GetGroupAllRadio();
