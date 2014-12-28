@@ -195,9 +195,9 @@
 								<info>ListItem.Label</info>
 							</control>
 							<control type="label">
-								<left>700</left>
+								<left>750</left>
 								<top>0</top>
-								<width>270</width>
+								<width>230</width>
 								<height>40</height>
 								<font>font12</font>
 								<aligny>center</aligny>
@@ -332,9 +332,9 @@
 								<info>ListItem.Label</info>
 							</control>
 							<control type="label">
-								<left>700</left>
+								<left>750</left>
 								<top>0</top>
-								<width>270</width>
+								<width>230</width>
 								<height>40</height>
 								<font>font12</font>
 								<aligny>center</aligny>
