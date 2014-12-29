@@ -24,7 +24,7 @@
 class CAddonPythonInvoker : public CPythonInvoker
 {
 public:
-  CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler);
+  explicit CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler);
   virtual ~CAddonPythonInvoker();
 
 protected:
