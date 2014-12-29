@@ -1654,11 +1654,18 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
   m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
-  char mode[256] = {0};
-  aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
-  RESOLUTION_INFO res;
-  if (aml_mode_to_resolution(mode, &res))
-    m_display_rect = CRect(0, 0, res.iScreenWidth, res.iScreenHeight);
+
+  char buffer[256] = {0};
+  aml_get_sysfs_str("/sys/class/ppmgr/ppscaler", buffer, 255);
+  if (!strstr(buffer, "enabled"))     // Scaler not enabled, use screen size
+  {
+    CLog::Log(LOGDEBUG, "ppscaler not enabled");
+    memset(buffer, 0, 256);
+    aml_get_sysfs_str("/sys/class/display/mode", buffer, 255);
+    RESOLUTION_INFO res;
+    if (aml_mode_to_resolution(buffer, &res))
+      m_display_rect = CRect(0, 0, res.iScreenWidth, res.iScreenHeight);
+  }
 
 /*
   // if display is set to 1080xxx, then disable deinterlacer for HD content
@@ -2277,7 +2284,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     SetVideo3dMode(MODE_3D_DISABLE);
   }
 
-#if 0
+#if 1
   std::string s_dst_rect = StringUtils::Format("%i,%i,%i,%i",
     (int)dst_rect.x1, (int)dst_rect.y1,
     (int)dst_rect.Width(), (int)dst_rect.Height());
