@@ -1062,6 +1062,9 @@ AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
   [#include <mpeg2dec/mpeg2.h>])
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADER([taglib/taglib.h],, AC_MSG_ERROR($missing_library))
+AC_LANG_POP([C++])
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 
