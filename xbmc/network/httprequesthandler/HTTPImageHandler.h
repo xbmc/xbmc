@@ -25,7 +25,8 @@
 class CHTTPImageHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPImageHandler() { };
+  CHTTPImageHandler() { }
+  virtual ~CHTTPImageHandler() { }
 
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPImageHandler(); }
   virtual bool CheckHTTPRequest(const HTTPRequest &request);

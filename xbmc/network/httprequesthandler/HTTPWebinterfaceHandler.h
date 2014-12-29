@@ -25,7 +25,8 @@
 class CHTTPWebinterfaceHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPWebinterfaceHandler() { };
+  CHTTPWebinterfaceHandler() { }
+  virtual ~CHTTPWebinterfaceHandler() { }
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPWebinterfaceHandler(); }
   virtual bool CheckHTTPRequest(const HTTPRequest &request);

@@ -25,7 +25,8 @@
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPJsonRpcHandler() { };
+  CHTTPJsonRpcHandler() { }
+  virtual ~CHTTPJsonRpcHandler() { }
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPJsonRpcHandler(); }
   virtual bool CheckHTTPRequest(const HTTPRequest &request);
