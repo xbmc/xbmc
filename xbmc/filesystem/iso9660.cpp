@@ -227,14 +227,20 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   }
   m_lastpath->next = ( struct iso_directories *)malloc( sizeof( struct iso_directories ) );
   if (!m_lastpath->next )
+  {
+    free(pCurr_dir_cache);
     return NULL;
+  }
 
   m_lastpath = m_lastpath->next;
   m_lastpath->next = NULL;
   m_lastpath->dir = pDir;
   m_lastpath->path = (char *)malloc(strlen(path) + 1);
   if (!m_lastpath->path )
+  {
+    free(pCurr_dir_cache);
     return NULL;
+  }
 
   strcpy( m_lastpath->path, path );
 
@@ -291,12 +297,18 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->dirpointer = NULL;
           pFile_Pointer->path = (char *)malloc(strlen(path) + 1);
           if (!pFile_Pointer->path)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           strcpy( pFile_Pointer->path, path );
           pFile_Pointer->name = (char *)malloc( temp_text.length() + 1);
           if (!pFile_Pointer->name)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 #ifdef _DEBUG_OUTPUT
@@ -616,7 +628,11 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
-      strcpy(wfdFile->cFileName, m_searchpointer->name );
+      if (sizeof(m_searchpointer->name) > sizeof(wfdFile->cFileName) -1)
+        CLog::Log(LOGWARNING, "iso9660::FindFirstFile length of search pattern too large");
+
+      strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
+      wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
 
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -642,7 +658,11 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
-    strcpy(wfdFile->cFileName, m_searchpointer->name );
+    if (sizeof(m_searchpointer->name) > sizeof(wfdFile->cFileName) -1)
+      CLog::Log(LOGWARNING, "iso9660::FindNextFile Search pattern too large");
+
+    strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
+    wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
 
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -702,7 +722,12 @@ HANDLE iso9660::OpenFile(const char *filename)
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 
-  strcpy(work, filename );
+  if (sizeof(filename) > sizeof(work) -1)
+    CLog::Log(LOGWARNING, "iso9660::OpenFile supplied path length too large");
+
+  strncpy(work, filename, sizeof(work) - 1 );
+  work[sizeof(work) - 1] = 0;
+
   pointer2 = work;
 
   while ( strpbrk(pointer2 + 1, "\\" ) )

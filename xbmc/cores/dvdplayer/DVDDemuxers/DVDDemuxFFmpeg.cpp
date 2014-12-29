@@ -642,8 +642,8 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double starttime = 0.0f;
 
   // for dvd's we need the original time
-  if(dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
-    starttime = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput)->GetTimeStampCorrection() / DVD_TIME_BASE;
+  if(CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
+    starttime = menu->GetTimeStampCorrection() / DVD_TIME_BASE;
   else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
@@ -1606,8 +1606,9 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       // Force thread count to 1 since the h264 decoder will not extract
       // SPS and PPS to extradata during multi-threaded decoding
       av_dict_set(&thread_opt, "threads", "1", 0);
-      avcodec_open2(st->codec, codec, &thread_opt);
-
+      int res = avcodec_open2(st->codec, codec, &thread_opt);
+      if(res < 0)
+        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::ParsePacket() unable to open codec %d", res);
       av_dict_free(&thread_opt);
     }
 

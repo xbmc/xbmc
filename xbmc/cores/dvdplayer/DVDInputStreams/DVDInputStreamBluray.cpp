@@ -200,7 +200,11 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   m_player  = player;
   m_navmode = false;
   m_hold = HOLD_NONE;
+  m_angle = 0;
   memset(&m_event, 0, sizeof(m_event));
+#ifdef HAVE_LIBBLURAY_BDJ
+  memset(&m_argb,  0, sizeof(m_argb));
+#endif
 }
 
 CDVDInputStreamBluray::~CDVDInputStreamBluray()
@@ -804,7 +808,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     }
 
     const BD_PG_RLE_ELEM *rlep = ov->img;
-    uint8_t *img = (uint8_t*) malloc(ov->w * ov->h);
+    uint8_t *img = (uint8_t*) malloc((size_t)ov->w * (size_t)ov->h);
     if (!img)
       return;
     unsigned pixels = ov->w * ov->h;

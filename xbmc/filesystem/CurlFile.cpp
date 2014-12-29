@@ -225,6 +225,7 @@ CCurlFile::CReadState::CReadState()
   m_multiHandle = NULL;
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
+  m_stillRunning = 0;
   m_filePos = 0;
   m_fileSize = 0;
   m_bufferSize = 0;
@@ -374,6 +375,9 @@ CCurlFile::~CCurlFile()
 }
 
 CCurlFile::CCurlFile()
+ : m_writeOffset(0)
+ , m_overflowBuffer(NULL)
+ , m_overflowSize(0)
 {
   g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
   m_opened = false;

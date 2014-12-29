@@ -48,6 +48,7 @@ CShoutcastFile::CShoutcastFile() :
   m_buffer = NULL;
   m_cacheReader = NULL;
   m_tagPos = 0;
+  m_metaint = 0;
 }
 
 CShoutcastFile::~CShoutcastFile()
