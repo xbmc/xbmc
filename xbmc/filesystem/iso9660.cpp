@@ -722,12 +722,7 @@ HANDLE iso9660::OpenFile(const char *filename)
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 
-  if (sizeof(filename) > sizeof(work) -1)
-    CLog::Log(LOGWARNING, "iso9660::OpenFile supplied path length too large");
-
-  strncpy(work, filename, sizeof(work) - 1 );
-  work[sizeof(work) - 1] = 0;
-
+  strcpy(work, filename );
   pointer2 = work;
 
   while ( strpbrk(pointer2 + 1, "\\" ) )
