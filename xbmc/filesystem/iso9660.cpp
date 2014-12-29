@@ -628,11 +628,7 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
-      if (sizeof(m_searchpointer->name) > sizeof(wfdFile->cFileName) -1)
-        CLog::Log(LOGWARNING, "iso9660::FindFirstFile length of search pattern too large");
-
-      strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1 );
-      wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = 0;
+      strcpy(wfdFile->cFileName, m_searchpointer->name );
 
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
