@@ -199,7 +199,7 @@ double CDVDAudio::GetDelay()
 {
   CSingleLock lock (m_critSection);
 
-  double delay = 0.0;
+  double delay = 0.3;
   if(m_pAudioStream)
     delay = m_pAudioStream->GetDelay();
 
