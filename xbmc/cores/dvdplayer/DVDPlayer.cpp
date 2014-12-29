@@ -168,7 +168,14 @@ public:
 
   bool operator()(const SelectionStream& ss) const
   {
-    if (ss.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream)
+    const CVideoSettings videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+    
+    // if subtitles have been turned on but no specific stream has been selected, 
+    // which happens when there is only one available subtitle
+    if (videoSettings.m_SubtitleOn && videoSettings.m_SubtitleStream == -1)
+      return false;
+
+    if (ss.type_index == videoSettings.m_SubtitleStream)
       return false;
 
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
