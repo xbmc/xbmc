@@ -65,7 +65,6 @@ namespace PVR
     CFileItemList      *m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
 
-    bool m_bShowHiddenChannels;
     bool m_bUpdateRequired;
   };
 }
