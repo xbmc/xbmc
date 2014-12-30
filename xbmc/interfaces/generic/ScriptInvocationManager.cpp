@@ -21,10 +21,10 @@
 #include <vector>
 
 #include "ScriptInvocationManager.h"
-#include "ILanguageInvocationHandler.h"
-#include "ILanguageInvoker.h"
-#include "LanguageInvokerThread.h"
 #include "filesystem/File.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/generic/LanguageInvokerThread.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -184,7 +184,7 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
   return it != m_invocationHandlers.end() && it->second != NULL;
 }
 
-ILanguageInvoker* CScriptInvocationManager::GetLanguageInvoker(const std::string &script) const
+LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::string &script) const
 {
   std::string extension = URIUtils::GetExtension(script);
   StringUtils::ToLower(extension);
@@ -192,9 +192,9 @@ ILanguageInvoker* CScriptInvocationManager::GetLanguageInvoker(const std::string
   CSingleLock lock(m_critSection);
   map<string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
   if (it != m_invocationHandlers.end() && it->second != NULL)
-    return it->second->CreateInvoker();
+    return LanguageInvokerPtr(it->second->CreateInvoker());
 
-  return NULL;
+  return LanguageInvokerPtr();
 }
 
 int CScriptInvocationManager::Execute(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
@@ -202,11 +202,16 @@ int CScriptInvocationManager::Execute(const std::string &script, const ADDON::Ad
   if (script.empty() || !CFile::Exists(script, false))
     return -1;
 
-  ILanguageInvoker *invoker = GetLanguageInvoker(script);
-  if (invoker == NULL)
+  LanguageInvokerPtr invoker = GetLanguageInvoker(script);
+  return Execute(script, invoker, addon, arguments);
+}
+
+int CScriptInvocationManager::Execute(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
+{
+  if (script.empty() || languageInvoker == NULL || !CFile::Exists(script, false))
     return -1;
 
-  CLanguageInvokerThreadPtr invokerThread = CLanguageInvokerThreadPtr(new CLanguageInvokerThread(invoker, this));
+  CLanguageInvokerThreadPtr invokerThread = CLanguageInvokerThreadPtr(new CLanguageInvokerThread(languageInvoker, this));
   if (invokerThread == NULL)
     return -1;
 
