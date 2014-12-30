@@ -59,6 +59,7 @@
 #include "addons/AddonInstaller.h"
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
+#include "dialogs/GUIDialogPVRGroupManager.h"
 
 using namespace MUSIC_INFO;
 using namespace PVR;
@@ -199,6 +200,15 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
     if (IsStarted())
     {
       CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      if (dialog)
+        dialog->DoModal();
+    }
+  }
+  else if (settingId == "pvrmanager.groupmanager")
+  {
+    if (IsStarted())
+    {
+      CGUIDialogPVRGroupManager *dialog = (CGUIDialogPVRGroupManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->DoModal();
     }

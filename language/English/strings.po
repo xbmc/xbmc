@@ -14360,7 +14360,10 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
-#empty string with id 36213
+#: system/settings/settings.xml
+msgctxt "#36213"
+msgid "Open the group manager, which allows modification of groups and their respective channels"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36214"
