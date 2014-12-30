@@ -650,14 +650,6 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 
 /********** Client methods **********/
 
-bool CPVRDatabase::DeleteClients()
-{
-  CLog::Log(LOGDEBUG, "PVR - %s - deleting all clients from the database", __FUNCTION__);
-
-  return DeleteValues("clients");
-      //TODO && DeleteValues("map_channels_clients");
-}
-
 bool CPVRDatabase::Delete(const CPVRClient &client)
 {
   /* invalid client uid */

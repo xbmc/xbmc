@@ -154,11 +154,6 @@ namespace PVR
 
     /*! @name Client methods */
     //@{
-    /*!
-     * @brief Remove all client information from the database.
-     * @return True if all clients were removed successfully.
-     */
-    bool DeleteClients();
 
     /*!
      * @brief Add a client to the database if it's not already in there.
