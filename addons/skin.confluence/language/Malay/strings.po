@@ -560,6 +560,10 @@ msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Mendapatkan maklumat ramalan..."
 
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Peta"
+
 msgctxt "#31950"
 msgid "WEATHER"
 msgstr "CUACA"

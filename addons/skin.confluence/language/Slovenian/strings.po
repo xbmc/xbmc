@@ -462,7 +462,7 @@ msgstr "[B]PRILAGODITE NASTAVITVE SISTEMA[/B][CR][CR]Nastavite in prilagodite za
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from kodi.tv[CR]Modify Add-on settings"
-msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke · Brskajte in namestite nove dodatke iz kodi.tv[CR]Nastavite dodatke"
+msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke · Brskajte in namestite nove dodatke s kodi.tv[CR]Nastavite dodatke"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -470,7 +470,7 @@ msgstr "[B]PRILAGODITVE NASTAVITVE TV[/B][CR][CR]Spremenite informacije v celoza
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje Kodi-ja preko UPnP-ja in HTTP-ja · Nastavite deljenje datotek[CR]Vključite Zeroconf · Prilagodite AirPlay"
+msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje Kodija preko UPnP-ja in HTTP-ja · Nastavite deljenje datotek[CR]Vključite Zeroconf · Prilagodite AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -566,7 +566,7 @@ msgstr "Prenašam vremenske informacije ..."
 
 msgctxt "#31910"
 msgid "Maps"
-msgstr "Karte"
+msgstr "Zemljevidi"
 
 msgctxt "#31950"
 msgid "WEATHER"
