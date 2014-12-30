@@ -27,7 +27,9 @@
 #define CONTROL_BTNSORTBY                 3
 #define CONTROL_BTNSORTASC                4
 #define CONTROL_BTNGROUPITEMS             5
+#define CONTROL_BTNSHOWHIDDEN             6
 #define CONTROL_BTNCHANNELGROUPS          28
+#define CONTROL_BTNFILTERCHANNELS         31
 
 #define CONTROL_LABEL_HEADER1             29
 #define CONTROL_LABEL_HEADER2             30
