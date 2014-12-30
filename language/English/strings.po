@@ -6948,11 +6948,13 @@ msgstr ""
 #empty strings from id 14105 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
+#: xbmc/settings/MediaSourceSettings.cpp
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
+#: xbmc/settings/MediaSourceSettings.cpp
 msgctxt "#15013"
 msgid "What would you like to do with media items from %s"
 msgstr ""
@@ -10958,7 +10960,17 @@ msgctxt "#20469"
 msgid "Keep current set (%s)"
 msgstr ""
 
-#empty strings from id 20470 to 21329
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#20470"
+msgid "Retry"
+msgstr ""
+
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#20471"
+msgid "Skip"
+msgstr ""
+
+#empty strings from id 20472 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml

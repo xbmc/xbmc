@@ -19,9 +19,14 @@
  */
 
 #include "MediaSourceSettings.h"
+#include "ApplicationMessenger.h"
 #include "URL.h"
 #include "Util.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -493,4 +498,134 @@ bool CMediaSourceSettings::SetSources(TiXmlNode *root, const char *section, cons
   }
 
   return true;
+}
+
+std::map<std::string, std::pair<bool, bool> > CMediaSourceSettings::HandleSourceExistence(const std::string &type, const std::set<std::string> &paths,
+  bool showDialog, int headingLabel /* = 15012 */, int textLabel /* = 15013 */, int okLabel /* = 20470 */, int cancelLabel /* = 20471 */)
+{
+  std::map<std::string, std::pair<bool, bool> > sourcesExistence;
+  if (type.empty() || paths.empty())
+    return sourcesExistence;
+
+  VECSOURCES* sources = Get().GetSources(type);
+  if (sources == NULL || sources->empty())
+    return sourcesExistence;
+
+  // get all paths that are part of a source
+  std::vector<std::string> sourcePaths;
+  for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end(); ++source)
+    sourcePaths.push_back(source->strPath);
+  sourcePaths = URIUtils::ExpandPaths(sourcePaths);
+
+  // go through all paths that are part of a source and are part of the paths to be scanned
+  // and check whether they exist or not (and should be skipped or not)
+  std::vector<std::string> nonExistingSources;
+  for (std::vector<std::string>::const_iterator sourcePath = sourcePaths.begin(); sourcePath != sourcePaths.end(); ++sourcePath)
+  {
+    for (std::set<std::string>::const_iterator pathToScan = paths.begin(); pathToScan != paths.end(); ++pathToScan)
+    {
+      // check if the path to scan is not already marked for skipping
+      // and matches the source path we are processing right now
+      if (!URIUtils::IsInPath(*pathToScan, nonExistingSources) &&
+          URIUtils::IsInPath(*pathToScan, *sourcePath))
+      {
+        // if the path exists everything is fine
+        CLog::Log(LOGDEBUG, "Checking existence of %s", sourcePath->c_str());
+        bool exist = CDirectory::Exists(*sourcePath, false);
+        bool choice = true;
+        if (!exist)
+        {
+          nonExistingSources.push_back(*sourcePath);
+
+          // ask the user what to do with the non-existing item
+          if (showDialog)
+            choice = PromptForSource(*sourcePath, headingLabel, textLabel, okLabel, cancelLabel);
+        }
+
+        sourcesExistence.insert(std::make_pair(*sourcePath, std::make_pair(exist, choice)));
+        break;
+      }
+    }
+  }
+
+  return sourcesExistence;
+}
+
+std::vector<std::string> CMediaSourceSettings::FindSourcesToSkip(const std::string &type, const std::set<std::string> &paths,
+  bool showDialog, int headingLabel /* = 15012 */, int textLabel /* = 15013 */, int okLabel /* = 20470 */, int cancelLabel /* = 20471 */)
+{
+  std::vector<std::string> sourcesToSkip;
+  if (type.empty() || paths.empty())
+    return sourcesToSkip;
+
+  VECSOURCES* sources = Get().GetSources(type);
+  if (sources == NULL || sources->empty())
+    return sourcesToSkip;
+
+  // get all paths that are part of a source
+  std::vector<std::string> sourcePaths;
+  for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end(); ++source)
+    sourcePaths.push_back(source->strPath);
+  sourcePaths = URIUtils::ExpandPaths(sourcePaths);
+
+  // go through all paths that are part of a source and are part of the paths to be scanned
+  // and check whether they exist or not (and should be skipped or not)
+  for (std::vector<std::string>::const_iterator sourcePath = sourcePaths.begin(); sourcePath != sourcePaths.end(); ++sourcePath)
+  {
+    for (std::set<std::string>::const_iterator pathToScan = paths.begin(); pathToScan != paths.end(); ++pathToScan)
+    {
+      // check if the path to scan is not already marked for skipping
+      // and matches the source path we are processing right now
+      if (!URIUtils::IsInPath(*pathToScan, sourcesToSkip) &&
+        URIUtils::IsInPath(*pathToScan, *sourcePath))
+      {
+        while (true)
+        {
+          // if the path exists everything is fine
+          CLog::Log(LOGDEBUG, "Checking existence of %s", sourcePath->c_str());
+          if (CDirectory::Exists(*sourcePath, false))
+            break;
+
+          if (showDialog)
+          {
+            // ask the user whether to retry accessing the path or to skip it completely
+            if (!PromptForSource(*sourcePath, headingLabel, textLabel, okLabel, cancelLabel))
+              continue;
+          }
+
+          // either we can't show a dialog and assume that the path should be skipped
+          // or the user has decided to skip the path
+          sourcesToSkip.push_back(*sourcePath);
+          break;
+        }
+      }
+    }
+  }
+
+  return sourcesToSkip;
+}
+
+bool CMediaSourceSettings::PromptForSource(const std::string& path, int headingLabel, int textLabel, int okLabel, int cancelLabel)
+{
+  CGUIDialogYesNo *dialog = static_cast<CGUIDialogYesNo*>(g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO));
+  if (dialog == NULL)
+    return false;
+
+  CURL parentUrl(path);
+  dialog->SetHeading(headingLabel);
+  dialog->SetText(StringUtils::Format(g_localizeStrings.Get(textLabel).c_str(), parentUrl.GetWithoutUserDetails().c_str()));
+  dialog->SetChoice(0, cancelLabel);
+  dialog->SetChoice(1, okLabel);
+
+  //send message and wait for user input
+  ThreadMessage msg =
+  {
+    TMSG_DIALOG_DOMODAL,
+    WINDOW_DIALOG_YES_NO,
+    (unsigned int)g_windowManager.GetActiveWindow()
+  };
+  CApplicationMessenger::Get().SendMessage(msg, true);
+
+  // if the user decides to retry, do the whole procedure again
+  return dialog->IsConfirmed();
 }

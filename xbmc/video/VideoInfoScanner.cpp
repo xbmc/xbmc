@@ -38,6 +38,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
@@ -115,6 +116,9 @@ namespace VIDEO
 
       SetPriority(GetMinPriority());
 
+      // get all sources that can be skipped because they are unavailable
+      std::vector<std::string> sourcesToSkip = CMediaSourceSettings::FindSourcesToSkip("video", m_pathsToScan, m_showDialog);
+
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
       // result in unexpected behaviour.
@@ -129,8 +133,8 @@ namespace VIDEO
          * reference points to the entry in the set a null reference error
          * occurs.
          */
-        CStdString directory = *m_pathsToScan.begin();
-        if (!CDirectory::Exists(directory))
+        std::string directory = *m_pathsToScan.begin();
+        if (URIUtils::IsInPath(directory, sourcesToSkip) || !CDirectory::Exists(directory))
         {
           /*
            * Note that this will skip clean (if m_bClean is enabled) if the directory really
@@ -190,7 +194,14 @@ namespace VIDEO
     if (strDirectory.empty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
       // we go.
-      m_database.GetPaths(m_pathsToScan);
+      std::set<CStdString> pathsToScan;
+      m_database.GetPaths(pathsToScan);
+      m_database.Close();
+
+      // TODO: can be removed once CVideoDatabase::GetPaths() handles an
+      // std::set<std::string> instead of an std::set<CStdString>
+      for (std::set<CStdString>::const_iterator path = pathsToScan.begin(); path != pathsToScan.end(); ++path)
+        m_pathsToScan.insert(*path);
     }
     else
     { // scan all the paths of this subtree that is in the database
@@ -278,7 +289,7 @@ namespace VIDEO
      * the check for file or folder exclusion to prevent an infinite while loop
      * in Process().
      */
-    set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+    set<std::string>::iterator it = m_pathsToScan.find(strDirectory);
     if (it != m_pathsToScan.end())
       m_pathsToScan.erase(it);
 
@@ -724,7 +735,7 @@ namespace VIDEO
        * Remove this path from the list we're processing in order to avoid hitting
        * it twice in the main loop.
        */
-      set<CStdString>::iterator it = m_pathsToScan.find(item->GetPath());
+      set<std::string>::iterator it = m_pathsToScan.find(item->GetPath());
       if (it != m_pathsToScan.end())
         m_pathsToScan.erase(it);
 

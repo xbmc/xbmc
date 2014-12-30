@@ -46,6 +46,16 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
   return !basePath.empty() && StringUtils::StartsWith(uriPath, basePath);
 }
 
+bool URIUtils::IsInPath(const std::string &uri, const std::vector<std::string> &baseURIs)
+{
+  for (std::vector<std::string>::const_iterator it = baseURIs.begin(); it != baseURIs.end(); ++it)
+  {
+    if (URIUtils::IsInPath(uri, *it))
+      return true;
+  }
+  return false;
+}
+
 /* returns filename extension including period of filename */
 std::string URIUtils::GetExtension(const CURL& url)
 {
@@ -1332,4 +1342,22 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
 bool URIUtils::IsUsingFastSwitch(const CStdString& strFile)
 {
   return IsUDP(strFile) || IsTCP(strFile) || IsPVRChannel(strFile);
+}
+
+std::vector<std::string> URIUtils::ExpandPaths(const std::vector<std::string> &paths)
+{
+  std::vector<std::string> expandedPaths;
+  for (std::vector<std::string>::const_iterator path = paths.begin(); path != paths.end(); ++path)
+  {
+    if (IsMultiPath(*path))
+    {
+      std::vector<std::string> multiPaths;
+      CMultiPathDirectory::GetPaths(*path, multiPaths);
+      expandedPaths.insert(expandedPaths.end(), multiPaths.begin(), multiPaths.end());
+    }
+    else
+      expandedPaths.push_back(*path);
+  }
+
+  return expandedPaths;
 }

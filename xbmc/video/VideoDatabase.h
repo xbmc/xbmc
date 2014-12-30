@@ -883,7 +883,9 @@ private:
   CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
 
   std::vector<int> CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
-                                  std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
+                                  std::map<int, std::pair<bool, bool> > &pathsExistenceDecisions,
+                                  std::string &deletedFileIDs, bool silent);
+  static void UpdateProgress(CGUIDialogProgressBarHandle *handle, CGUIDialogProgress *progress, int current, int total, bool &canceled);
 
   static void AnnounceRemove(std::string content, int id, bool scanning = false);
   static void AnnounceUpdate(std::string content, int id);

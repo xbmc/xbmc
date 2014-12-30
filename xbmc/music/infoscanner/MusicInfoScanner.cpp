@@ -39,6 +39,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -111,14 +112,40 @@ void CMusicInfoScanner::Process()
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
 
       if (m_handle)
+      {
         m_handle->SetTitle(g_localizeStrings.Get(505));
+        m_handle->SetText(g_localizeStrings.Get(314));
+      }
 
       // Reset progress vars
       m_currentItem=0;
       m_itemCount=-1;
 
+      SetPriority(GetMinPriority());
+
+      // get all sources that can be skipped because they are unavailable
+      std::vector<std::string> sourcesToSkip = CMediaSourceSettings::FindSourcesToSkip("music", m_pathsToScan, m_showDialog);
+
+      std::set<std::string> pathsToScan;
+      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      {
+        if (URIUtils::IsInPath(*it, sourcesToSkip))
+        {
+          /*
+          * Note that this will skip scanning (if m_bClean is disabled) if the directory really
+          * doesn't exist. Since the music scanner is fed with a list of existing paths from the DB
+          * and cleans out all songs under that path as its first step before re-adding files, if
+          * the entire source is offline we totally empty the music database in one go.
+          */
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__, it->c_str());
+        }
+        else
+          pathsToScan.insert(*it);
+      }
+
+      m_pathsToScan = pathsToScan;
+
       // Create the thread to count all files to be scanned
-      SetPriority( GetMinPriority() );
       if (m_handle)
         m_fileCountReader.Create();
 

@@ -29,6 +29,7 @@ public:
   URIUtils(void);
   virtual ~URIUtils(void);
   static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
+  static bool IsInPath(const std::string &uri, const std::vector<std::string> &baseURIs);
 
   static CStdString GetDirectory(const CStdString &strFilePath);
 
@@ -218,6 +219,8 @@ public:
    \return True if the path has been updated/changed otherwise false
    */
   static bool UpdateUrlEncoding(std::string &strFilename);
+
+  static std::vector<std::string> ExpandPaths(const std::vector<std::string> &paths);
 
 private:
   static std::string resolvePath(const std::string &path);

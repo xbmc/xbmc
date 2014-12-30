@@ -7744,7 +7744,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     int total = m_pDS->num_rows();
     int current = 0;
+    bool canceled = false;
+    UpdateProgress(handle, progress, current, total, canceled);
 
+    std::vector< std::pair<std::string, std::string> > vecFilesToTestForDelete;
+    std::set<std::string> pathsToTestForDelete;
     while (!m_pDS->eof())
     {
       std::string path = m_pDS->fv("path.strPath").get_asString();
@@ -7764,29 +7768,89 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
-      if (handle == NULL && progress != NULL)
+      std::string idFile = m_pDS->fv("files.idFile").get_asString();
+      if (URIUtils::IsOnDVD(fullPath))
+        filesToTestForDelete += idFile + ",";
+      else
       {
-        int percentage = current * 100 / total;
-        if (percentage > progress->GetPercentage())
-        {
-          progress->SetPercentage(percentage);
-          progress->Progress();
-        }
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
-          return;
-        }
+        pathsToTestForDelete.insert(path);
+        vecFilesToTestForDelete.push_back(std::make_pair(idFile, std::string(fullPath)));
       }
-      else if (handle != NULL)
-        handle->SetPercentage(current * 100 / (float)total);
 
-      m_pDS->next();
+      UpdateProgress(handle, progress, current, total, canceled);
+      if (canceled)
+      {
+        m_pDS->close();
+        RollbackTransaction();
+        ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
+        return;
+      }
+
       current++;
+      m_pDS->next();
     }
     m_pDS->close();
+
+    std::map<int, std::pair<bool, bool> > pathsExistenceDecisions;
+    std::vector<std::string> sourcesNotToDelete;
+    std::vector<std::string> sourcesToDelete;
+
+    // go through all sources, look for non-exising ones and ask the user whether to remove or keep them
+    std::map<std::string, std::pair<bool, bool> > sourcesExistenceDecisions =
+      CMediaSourceSettings::Get().HandleSourceExistence("videos", pathsToTestForDelete, showProgress, 15012, 15013, 15014, 15015);
+
+    // reset progress to 0%
+    current = 0;
+    total = static_cast<int>(sourcesExistenceDecisions.size());
+    UpdateProgress(handle, progress, 0, 1, canceled);
+
+    // fill the decisions into the map
+    for (std::map<std::string, std::pair<bool, bool> >::const_iterator source = sourcesExistenceDecisions.begin(); source != sourcesExistenceDecisions.end(); ++source)
+    {
+      int sourcePathId = GetPathId(source->first);
+      // only mark a source as to be deleted if it doesn't exist and the user chose to delete it
+      pathsExistenceDecisions.insert(std::make_pair(sourcePathId, source->second));
+
+      if (!source->second.first && !source->second.second)
+        sourcesToDelete.push_back(source->first);
+      else
+        sourcesNotToDelete.push_back(source->first);
+
+      UpdateProgress(handle, progress, current, total, canceled);
+      if (canceled)
+      {
+        m_pDS->close();
+        RollbackTransaction();
+        ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
+        return;
+      }
+
+      current++;
+    }
+
+    // reset progress to 0%
+    current = 0;
+    total = static_cast<int>(vecFilesToTestForDelete.size());
+    UpdateProgress(handle, progress, 0, 1, canceled);
+
+    for (std::vector< std::pair<std::string, std::string> >::const_iterator file = vecFilesToTestForDelete.begin(); file != vecFilesToTestForDelete.end(); ++file)
+    {
+      // remove optical, non-existing files
+      if (!URIUtils::IsInPath(file->second, sourcesNotToDelete) &&
+         (URIUtils::IsInPath(file->second, sourcesToDelete) || !CFile::Exists(file->second, false)))
+         filesToTestForDelete += file->first + ",";
+
+      UpdateProgress(handle, progress, current, total, canceled);
+      if (canceled)
+      {
+        m_pDS->close();
+        RollbackTransaction();
+        ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
+        return;
+      }
+
+      current++;
+    }
 
     std::string filesToDelete;
 
@@ -7802,7 +7866,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
     m_pDS->close();
 
-    std::map<int, bool> pathsDeleteDecisions;
     std::vector<int> movieIDs;
     std::vector<int> tvshowIDs;
     std::vector<int> episodeIDs;
@@ -7812,15 +7875,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     {
       StringUtils::TrimRight(filesToTestForDelete, ",");
 
-      movieIDs = CleanMediaType(MediaTypeMovie, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-      episodeIDs = CleanMediaType(MediaTypeEpisode, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-      musicVideoIDs = CleanMediaType(MediaTypeMusicVideo, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-    }
-
-    if (progress != NULL)
-    {
-      progress->SetPercentage(100);
-      progress->Progress();
+      movieIDs = CleanMediaType(MediaTypeMovie, filesToTestForDelete, pathsExistenceDecisions, filesToDelete, !showProgress);
+      episodeIDs = CleanMediaType(MediaTypeEpisode, filesToTestForDelete, pathsExistenceDecisions, filesToDelete, !showProgress);
+      musicVideoIDs = CleanMediaType(MediaTypeMusicVideo, filesToTestForDelete, pathsExistenceDecisions, filesToDelete, !showProgress);
     }
 
     if (!filesToDelete.empty())
@@ -7876,19 +7933,20 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     sql = "SELECT path.idPath, path.strPath, path.idParentPath FROM path "
             "WHERE NOT ((strContent IS NULL OR strContent = '') "
                    "AND (strSettings IS NULL OR strSettings = '') "
-                   "AND (strHash IS NULL OR strHash = '') "
                    "AND (exclude IS NULL OR exclude != 1))";
     m_pDS->query(sql.c_str());
     std::string strIds;
     while (!m_pDS->eof())
     {
-      std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
+      std::string strPath = m_pDS->fv(1).get_asString();
+      std::map<int, std::pair<bool, bool> >::const_iterator pathsExistenceDecision = pathsExistenceDecisions.find(m_pDS->fv(0).get_asInt());
       // Check if we have a decision for the parent path
-      std::map<int, bool>::const_iterator pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
-      if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-           (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
-          ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
-           (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
+      std::map<int, std::pair<bool, bool> >::const_iterator pathsExistenceDecisionByParent = pathsExistenceDecisions.find(m_pDS->fv(2).get_asInt());
+      if (((pathsExistenceDecision != pathsExistenceDecisions.end() && !pathsExistenceDecision->second.first && !pathsExistenceDecision->second.second) ||
+           (pathsExistenceDecision == pathsExistenceDecisions.end() &&
+            (URIUtils::IsInPath(strPath, sourcesToDelete) || !CDirectory::Exists(strPath, false)))) &&
+          ((pathsExistenceDecisionByParent != pathsExistenceDecisions.end() && pathsExistenceDecisionByParent->second.first && !pathsExistenceDecisionByParent->second.second) ||
+           (pathsExistenceDecisionByParent == pathsExistenceDecisions.end())))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();
@@ -8033,7 +8091,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 }
 
 std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
-                                                std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent)
+                                                std::map<int, std::pair<bool, bool> > &pathsExistenceDecisions, std::string &deletedFileIDs, bool silent)
 {
   std::vector<int> cleanedIDs;
   if (mediaType.empty() || cleanableFileIDs.empty())
@@ -8077,8 +8135,6 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                     parentPathIdField.c_str(),
                     table.c_str(), cleanableFileIDs.c_str());
 
-  // map of parent path ID to boolean pair (if not exists and user choice)
-  std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
   m_pDS2->query(sql.c_str());
   while (!m_pDS2->eof())
   {
@@ -8089,49 +8145,32 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
     std::string sourcePath;
     GetSourcePath(parentPath, sourcePath, scanSettings);
     int sourcePathID = GetPathId(sourcePath);
-    std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
+    std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsExistenceDecision = pathsExistenceDecisions.find(sourcePathID);
     bool del = true;
-    if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
+    if (sourcePathsExistenceDecision == pathsExistenceDecisions.end())
     {
-      bool sourcePathNotExists = !CDirectory::Exists(sourcePath, false);
+      bool sourcePathExists = CDirectory::Exists(sourcePath, false);
       // if the parent path exists, the file will be deleted without asking
       // if the parent path doesn't exist, ask the user whether to remove all items it contained
-      if (sourcePathNotExists)
+      if (!sourcePathExists)
       {
         // in silent mode assume that the files are just temporarily missing
         if (silent)
           del = false;
         else
-        {
-          CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-          if (pDialog != NULL)
-          {
-            CURL sourceUrl(sourcePath);
-            pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
-            pDialog->SetChoice(0, 15015);
-            pDialog->SetChoice(1, 15014);
-
-            //send message and wait for user input
-            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
-            CApplicationMessenger::Get().SendMessage(tMsg, true);
-
-            del = !pDialog->IsConfirmed();
-          }
-        }
+          del = CMediaSourceSettings::PromptForSource(sourcePath, 15012, 15013, 15015, 15014);
       }
 
-      sourcePathsDeleteDecisions.insert(make_pair(sourcePathID, make_pair(sourcePathNotExists, del)));
-      pathsDeleteDecisions.insert(make_pair(sourcePathID, sourcePathNotExists && del));
+      pathsExistenceDecisions.insert(make_pair(sourcePathID, make_pair(sourcePathExists, !del)));
     }
     // the only reason not to delete the file is if the parent path doesn't
     // exist and the user decided to delete all the items it contained
-    else if (sourcePathsDeleteDecision->second.first &&
-             !sourcePathsDeleteDecision->second.second)
+    else if (!sourcePathsExistenceDecision->second.first &&
+             sourcePathsExistenceDecision->second.second)
       del = false;
 
     if (scanSettings.parent_name)
-      pathsDeleteDecisions.insert(make_pair(m_pDS2->fv(2).get_asInt(), del));
+      pathsExistenceDecisions.insert(make_pair(m_pDS2->fv(2).get_asInt(), make_pair(false, !del)));
 
     if (del)
     {
@@ -8144,6 +8183,34 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   m_pDS2->close();
 
   return cleanedIDs;
+}
+
+void CVideoDatabase::UpdateProgress(CGUIDialogProgressBarHandle *handle, CGUIDialogProgress *progress, int current, int total, bool &canceled)
+{
+  canceled = false;
+  if (handle == NULL && progress == NULL)
+    return;
+
+  int percentage = current * 100 / total;
+  if (handle != NULL)
+    handle->SetPercentage(static_cast<float>(percentage));
+  else
+  {
+    // only update the percentage value if it has changed to avoid constantly
+    // re-drawing the whole progress dialog which is very slow
+    if (percentage != progress->GetPercentage())
+    {
+      progress->SetPercentage(percentage);
+      progress->Progress();
+    }
+
+    // check if the process was canceled
+    if (progress->IsCanceled())
+    {
+      progress->Close();
+      canceled = true;
+    }
+  }
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
