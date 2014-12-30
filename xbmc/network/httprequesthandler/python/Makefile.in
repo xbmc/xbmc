@@ -1,0 +1,9 @@
+SRCS  = HTTPPythonInvoker.cpp \
+        HTTPPythonWsgiInvoker.cpp \
+
+LIB = httprequesthandlers-python.a
+
+INCLUDES += @PYTHON_CPPFLAGS@
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
