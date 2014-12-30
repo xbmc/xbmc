@@ -44,8 +44,25 @@ public:
   bool HasLanguageInvoker(const std::string &script) const;
   LanguageInvokerPtr GetLanguageInvoker(const std::string &script) const;
 
-  int Execute(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
-  int Execute(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
+  /*!
+   * \brief Executes the given script asynchronously in a separate thread.
+   *
+   * \param script Path to the script to be executed
+   * \param addon (Optional) Addon to which the script belongs
+   * \param arguments (Optional) List of arguments passed to the script
+   * \return -1 if an error occurred, otherwise the ID of the script
+   */
+  int ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
+  /*!
+  * \brief Executes the given script asynchronously in a separate thread.
+  *
+  * \param script Path to the script to be executed
+  * \param languageInvoker Language invoker to be used to execute the script
+  * \param addon (Optional) Addon to which the script belongs
+  * \param arguments (Optional) List of arguments passed to the script
+  * \return -1 if an error occurred, otherwise the ID of the script
+  */
+  int ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
   bool Stop(int scriptId, bool wait = false);
   bool Stop(const std::string &scriptPath, bool wait = false);
 

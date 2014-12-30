@@ -962,7 +962,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
     {
       if (!CScriptInvocationManager::Get().Stop(addon->LibPath()))
-        CScriptInvocationManager::Get().Execute(addon->LibPath(), addon);
+        CScriptInvocationManager::Get().ExecuteAsync(addon->LibPath(), addon);
       return true;
     }
   }

@@ -575,7 +575,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_EXECUTE_SCRIPT:
-      CScriptInvocationManager::Get().Execute(pMsg->strParam);
+      CScriptInvocationManager::Get().ExecuteAsync(pMsg->strParam);
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
