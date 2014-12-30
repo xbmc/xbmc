@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.25"
+  version="1.0.26"
   name="Euphoria"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -42,7 +42,7 @@
     <summary lang="is">Eins geggjuð og skjáhvíla getur orðið</summary>
     <summary lang="it">Quanto di più psichedelico possa essere un salvaschermo</summary>
     <summary lang="ja">スクリーンセーバーはここまでサイケになれる</summary>
-    <summary lang="ko">싸이키델릭 화면보호기</summary>
+    <summary lang="ko">싸이키델릭 화면 보호기</summary>
     <summary lang="lt">Psihodelinė užsklanda nunešanti stoga</summary>
     <summary lang="lv">Cik nu vien psihodēlisks ekrānsaudzētājs var būt</summary>
     <summary lang="mk">Најпсиходелична заштита на екран</summary>

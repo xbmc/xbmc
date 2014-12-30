@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-osx32.xbmc.org"
 		name="Kodi PVR Add-on repository"
-		version="1.1.16"
+		version="1.1.17"
 		provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -57,7 +57,7 @@
 		<summary lang="pt_BR">Instalar Add-ons de PVR do repositório Kodi.tv</summary>
 		<summary lang="ru">Установить дополнения с сайта Kodi.tv</summary>
 		<summary lang="sk">Inštalovať PVR doplnky z Kodi.tv</summary>
-		<summary lang="sl">Namestite dodatke PVR z Kodi.tv</summary>
+		<summary lang="sl">Namestite dodatke PVR s Kodi.tv</summary>
 		<summary lang="sv">Installera PVR-tillägg från Kodi.tv</summary>
 		<summary lang="tg">Насб кардани барномаи иловагии PVR аз Kodi.tv</summary>
 		<summary lang="th">ติดตั้งส่วนเสริม PVR จาก Kodi.tv</summary>

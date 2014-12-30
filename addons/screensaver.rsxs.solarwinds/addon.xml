@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.25"
+  version="1.0.26"
   name="Solarwinds"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -41,7 +41,7 @@
     <summary lang="is">Dáleiðandi skjáhvíla með brellum með agnir</summary>
     <summary lang="it">Un salvaschermo con effetti particellari ipnotizzanti</summary>
     <summary lang="ja">幻想的な粒子エフェクトのスクリーンセーバー</summary>
-    <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
+    <summary lang="ko">매혹적인 파티클 이펙트 화면 보호기</summary>
     <summary lang="lt">Įtaigaus dalelių poveikio ekrano užsklanda</summary>
     <summary lang="lv">Hipnotizējošs daļiņu efekta ekrānsaudzētājs</summary>
     <summary lang="mk">Заштита на екран со смирувачки честички</summary>
