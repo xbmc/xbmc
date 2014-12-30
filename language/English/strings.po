@@ -7784,7 +7784,7 @@ msgid "Programme info"
 msgstr ""
 
 msgctxt "#19048"
-msgid "Group management"
+msgid "Group manager"
 msgstr ""
 
 msgctxt "#19049"
