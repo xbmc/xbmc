@@ -339,7 +339,7 @@ void CAdvancedSettings::Initialize()
   m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
-
+  m_Force10BitRgbOutput = false;
 //caused lots of jerks
 //#ifdef TARGET_WINDOWS
 //  m_ForcedSwapTime = 2.0;
@@ -869,6 +869,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
+  XMLUtils::GetBoolean(pRootElement, "force10BitRbgOutput", m_Force10BitRgbOutput);
   XMLUtils::GetBoolean(pRootElement,"allowd3d9ex", m_AllowD3D9Ex);
   XMLUtils::GetBoolean(pRootElement,"forced3d9ex", m_ForceD3D9Ex);
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);

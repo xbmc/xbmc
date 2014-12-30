@@ -204,6 +204,7 @@ protected:
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
+  bool                 m_use10bitTexture;
 
   bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];

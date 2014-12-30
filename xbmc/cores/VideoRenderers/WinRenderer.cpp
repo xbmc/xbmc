@@ -63,6 +63,7 @@ static RenderMethodDetail *FindRenderMethod(RenderMethod m)
 
 CWinRenderer::CWinRenderer()
 {
+  m_use10bitTexture = g_advancedSettings.m_Force10BitRgbOutput;
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
 
@@ -506,7 +507,8 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   D3DFORMAT format = D3DFMT_X8R8G8B8;
   DWORD usage = D3DUSAGE_RENDERTARGET;
-
+  if (m_use10bitTexture && g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage))
+    format = D3DFMT_A2R10G10B10;
   if      (m_renderMethod == RENDER_DXVA)                            format = D3DFMT_X8R8G8B8;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) format = D3DFMT_A2B10G10R10;

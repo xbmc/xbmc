@@ -122,6 +122,7 @@ protected:
   void SetMonitor(HMONITOR monitor);
   void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
   void BuildPresentParameters();
+  void DwmEnableDisableComposition(bool beforeReset);
   virtual void UpdateMonitor() {};
   BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat);
   void OnMove();
@@ -148,6 +149,7 @@ protected:
   IDirect3DStateBlock9*       m_stateBlock;
   int64_t                     m_systemFreq;
   bool                        m_useD3D9Ex;
+  bool                        m_use10bitTexture;
   DWORD                       m_defaultD3DUsage;
   D3DPOOL                     m_defaultD3DPool;
   bool                        m_useWindowedDX;

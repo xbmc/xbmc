@@ -50,7 +50,12 @@ using namespace std;
 // Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.
 typedef HRESULT (WINAPI *LPDIRECT3DCREATE9EX)( UINT SDKVersion, IDirect3D9Ex **ppD3D);
 static LPDIRECT3DCREATE9EX g_Direct3DCreate9Ex;
-static HMODULE             g_D3D9ExHandle;
+
+typedef HRESULT(WINAPI *LPDWMENABLECOMPOSITION)(UINT uCompositionAction);
+static LPDWMENABLECOMPOSITION g_DwmEnableComposition;
+#define DWM_EC_DISABLECOMPOSITION         0
+#define DWM_EC_ENABLECOMPOSITION          1
+
 
 static bool LoadD3D9Ex()
 {
@@ -62,6 +67,18 @@ static bool LoadD3D9Ex()
     return false;
   return true;
 }
+
+static bool LoadDwmEnableComposition()
+{
+  HMODULE hDwmapiDll = GetModuleHandle("Dwmapi.dll");
+  if (!hDwmapiDll)
+    return false;
+  g_DwmEnableComposition = (LPDWMENABLECOMPOSITION)GetProcAddress(hDwmapiDll, "DwmEnableComposition");
+  if (g_DwmEnableComposition == NULL)
+    return false;
+  return true;
+}
+
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
@@ -104,6 +121,9 @@ bool CRenderSystemDX::InitRenderSystem()
   m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && LoadD3D9Ex());
   m_pD3D = NULL;
 
+  m_use10bitTexture = (m_useD3D9Ex && g_advancedSettings.m_Force10BitRgbOutput && LoadDwmEnableComposition());
+  if (m_use10bitTexture)
+    CLog::Log(LOGDEBUG, __FUNCTION__ " - m_use10bitTexture enabled");
   if (m_useD3D9Ex)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - trying D3D9Ex...");
@@ -111,6 +131,7 @@ bool CRenderSystemDX::InitRenderSystem()
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - D3D9Ex creation failure, falling back to D3D9");
       m_useD3D9Ex = false;
+      m_use10bitTexture = false;
     }
     else
     {
@@ -193,7 +214,11 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   BuildPresentParameters();
 
   if (m_useD3D9Ex && !m_needNewDevice)
+  {
+    DwmEnableDisableComposition(true);
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+    DwmEnableDisableComposition(false);
+  }
   else
   {
     OnDeviceLost();
@@ -285,9 +310,14 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (m_useWindowedDX) ? 0 : (int)m_refreshRate;
-  m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
+
+  // Can only use 10 bit back buffer in exclusive mode
+  if (m_use10bitTexture  && !m_useWindowedDX)
+    m_D3DPP.BackBufferFormat = D3DFMT_A2R10G10B10;
+  else
+    m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
 
   D3DFORMAT zFormat = D3DFMT_D16;
   if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
@@ -363,7 +393,11 @@ void CRenderSystemDX::OnDeviceReset()
   {
     // just need a reset
     if (m_useD3D9Ex)
+    {
+      DwmEnableDisableComposition(true);
       m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+      DwmEnableDisableComposition(false);
+    }
     else
       m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
   }
@@ -641,7 +675,9 @@ bool CRenderSystemDX::BeginRender()
     case S_PRESENT_MODE_CHANGED:
       // Timing leads us here on occasion.
       BuildPresentParameters();
+      DwmEnableDisableComposition(true);
       m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+      DwmEnableDisableComposition(false);
       break;
     case S_PRESENT_OCCLUDED:
       m_nDeviceStatus = D3D_OK;
@@ -1059,3 +1095,21 @@ void CRenderSystemDX::FlushGPU()
 }
 
 #endif
+
+// We must disable desktop composition on windows vista / win 7
+// otherwise we can't change back buffer format
+void CRenderSystemDX::DwmEnableDisableComposition(bool beforeReset)
+{
+  if (!m_use10bitTexture)
+    return;
+  HRESULT hr;
+  if (m_D3DPP.Windowed == FALSE && beforeReset == true)
+  { 
+    hr = g_DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+  }
+
+  if (m_D3DPP.Windowed == TRUE && beforeReset == false)
+  {
+    hr = g_DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+  }
+}

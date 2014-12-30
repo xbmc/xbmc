@@ -340,6 +340,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_AllowD3D9Ex;
     bool m_ForceD3D9Ex;
+    bool m_Force10BitRgbOutput;
     bool m_AllowDynamicTextures;
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
