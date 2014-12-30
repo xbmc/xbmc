@@ -118,5 +118,6 @@ bool CPVRDirectory::IsLiveTV(const std::string& strPath)
 
 bool CPVRDirectory::HasRecordings()
 {
-  return g_PVRRecordings->GetNumRecordings() > 0;
+  return g_PVRManager.IsStarted() ? 
+    g_PVRRecordings->GetNumRecordings() > 0 : false;
 }
