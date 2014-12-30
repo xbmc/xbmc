@@ -593,7 +593,9 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   else
     m_vaapiConfig.maxReferences = 2;
 
-  m_vaapiConfig.maxReferences += surfaces;
+  // add an extra surface for safety, some faulty material
+  // make ffmpeg require more buffers
+  m_vaapiConfig.maxReferences += surfaces + 1;
 
   if (!ConfigVAAPI())
   {
