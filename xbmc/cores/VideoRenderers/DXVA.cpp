@@ -664,6 +664,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect
     vs.Start = frameIdx + (sampIdx - pastFrames) * 2;
     vs.End = vs.Start + 2;
     vs.PlanarAlpha = DXVA2_Fixed32OpaqueAlpha();
+    vs.SampleFormat = m_desc.SampleFormat;
     vs.SampleFormat.SampleFormat = sampleFormat;
     
     // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
