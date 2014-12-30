@@ -88,11 +88,12 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
+
+    // Add parent buttons before the Manage button
+    CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
     
     buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
   }
-
-  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
