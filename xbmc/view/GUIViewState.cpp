@@ -472,7 +472,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
   if (sortOrder == SortOrderNone)
     return;
 
-  if (m_currentSortMethod < 0 && m_currentSortMethod >= (int)m_sortMethods.size())
+  if (m_currentSortMethod < 0 || m_currentSortMethod >= (int)m_sortMethods.size())
     return;
 
   m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder = sortOrder;
