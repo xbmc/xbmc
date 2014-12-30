@@ -197,16 +197,16 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
   return LanguageInvokerPtr();
 }
 
-int CScriptInvocationManager::Execute(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
+int CScriptInvocationManager::ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
 {
   if (script.empty() || !CFile::Exists(script, false))
     return -1;
 
   LanguageInvokerPtr invoker = GetLanguageInvoker(script);
-  return Execute(script, invoker, addon, arguments);
+  return ExecuteAsync(script, invoker, addon, arguments);
 }
 
-int CScriptInvocationManager::Execute(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
+int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
 {
   if (script.empty() || languageInvoker == NULL || !CFile::Exists(script, false))
     return -1;

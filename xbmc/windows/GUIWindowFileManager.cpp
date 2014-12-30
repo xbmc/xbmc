@@ -614,7 +614,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 #ifdef HAS_PYTHON
   if (pItem->IsPythonScript())
   {
-    CScriptInvocationManager::Get().Execute(pItem->GetPath());
+    CScriptInvocationManager::Get().ExecuteAsync(pItem->GetPath());
     return ;
   }
 #endif
