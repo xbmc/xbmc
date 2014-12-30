@@ -10,7 +10,7 @@ APPLY_PATCHES=no
 ffmpg_config = --prefix=$(PREFIX) --extra-version="xbmc-$(VERSION)"
 ffmpg_config += --cc=$(CC) --cxx=$(CXX)
 ffmpg_config += --disable-devices --disable-doc
-ffmpg_config += --disable-ffplay --disable-ffmpeg
+ffmpg_config += --disable-ffplay --disable-ffmpeg --disable-sdl
 ffmpg_config += --disable-ffprobe --disable-ffserver
 ffmpg_config += --enable-gpl --enable-runtime-cpudetect
 ffmpg_config += --enable-postproc --enable-pthreads
