@@ -328,6 +328,12 @@
     <Filter Include="video\jobs">
       <UniqueIdentifier>{f413004c-1ab9-42ce-bb1a-0636e5286a00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\httprequesthandler\python">
+      <UniqueIdentifier>{0a6159ba-a21c-4570-9db0-dc5dfb463de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interfaces\legacy\mod_python">
+      <UniqueIdentifier>{cab84406-0994-411b-bebe-79b332d04703}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3133,6 +3139,36 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.cpp">
       <Filter>video\jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPPythonHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\generic\ILanguageInvoker.cpp">
+      <Filter>interfaces\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\python\HTTPSessionManager.cpp">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\mod_python\Cookie.cpp">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\mod_python\HttpRequest.cpp">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\mod_python\Session.cpp">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcmod_python.cpp">
+      <Filter>interfaces\python\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonInvoker.cpp">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Webinterface.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\python\HTTPModPythonInvoker.cpp">
+      <Filter>network\httprequesthandler\python</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6096,6 +6132,39 @@
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.h">
       <Filter>video\jobs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonRequest.h">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPPythonHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPSessionManager.h">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\mod_python\Cookie.h">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\mod_python\HttpRequest.h">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\mod_python\ModuleXbmcmod_python.h">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\mod_python\Session.h">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\mod_python\Table.h">
+      <Filter>interfaces\legacy\mod_python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonInvoker.h">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Webinterface.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPModPythonInvoker.h">
+      <Filter>network\httprequesthandler\python</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
@@ -6136,6 +6205,9 @@
     <CustomBuild Include="..\..\version.txt" />
     <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
       <Filter>win32</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcmod_python.i">
+      <Filter>interfaces\swig</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
