@@ -583,7 +583,7 @@ msgstr "Resolutie"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Verversingsfrequentie scherm aanpassen aan video"
+msgstr "Verversingsfrequentie van het scherm aanpassen aan dat van de video."
 
 msgctxt "#171"
 msgid "Sort title"
@@ -3703,7 +3703,7 @@ msgstr "Addon verkenner"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
-msgstr "Herstel bovengenoemde instellingen naar standaard"
+msgstr "Herstel bovengenoemde instellingen naar standaardwaarden"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -6447,7 +6447,7 @@ msgstr "Verplaats kanaal naar:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr "Opname informatie"
+msgstr "Opname-informatie"
 
 msgctxt "#19054"
 msgid "Hide channel"
@@ -6523,7 +6523,7 @@ msgstr "TV gids niet opslaan in de database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr "Kanaal wisselen vertragen"
+msgstr "Vertraag kanaalwisseling"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -6911,11 +6911,11 @@ msgstr "Duur van directe opname"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr "Standaard opname prioriteit"
+msgstr "Standaard opnameprioriteit"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr "Standaard opname levensduur"
+msgstr "Standaard opnamelevensduur"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
@@ -6931,7 +6931,7 @@ msgstr "Afspelen"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr "Toon kanaal Informatie bij wisselen kanaal"
+msgstr "Toon kanaalinformatie bij wisselen van kanalen"
 
 msgctxt "#19180"
 msgid "TV"
@@ -8427,11 +8427,11 @@ msgstr "Extra informatie downloaden tijdens updates"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Standaarddiesnt voor albuminformatie"
+msgstr "Standaarddienst voor albuminformatie"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Standaarddiesnt voor artiestinformatie"
+msgstr "Standaarddienst voor artiestinformatie"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -8455,11 +8455,11 @@ msgstr "Downloaden van artiestinformatie mislukt"
 
 msgctxt "#20220"
 msgid "Override song tags with online information"
-msgstr "Overschrijf nummer tags met online informatie"
+msgstr "Overschrijf nummertags met online informatie"
 
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
-msgstr "Wanneer dit is geactiveerd, zal alle informatie die voor albums en artiesten is gedownload worden overschreven voor als wat je hebt ingesteld in jouw muziektags, zoals genres, jaar, artiesten, etc. Handig als je MusicBrainz indentificatie hebt in jouw muziektags."
+msgstr "Indien geactiveerd, zal alle gedownloade albums- en muziekinformatie worden overschreven m.b.t. muziektaginstellingen, bijvoorbeeld genres, jaar en artiesten. Handig als je MusicBrainz-indentificatie hebt in je muziektags."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -10051,7 +10051,7 @@ msgstr "Gids"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Toegestane afwijking in beeldverhouding om zwarte balken te minimaliseren"
+msgstr "Toegestane beeldaspectafwijking voor reduceren zwarte balken"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -10391,7 +10391,7 @@ msgstr "Controleren op updates"
 
 msgctxt "#24056"
 msgid "Last updated %s"
-msgstr "Laats geüpdatet %s "
+msgstr "Laatst geüpdate %s "
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -10571,7 +10571,7 @@ msgstr "Talen van te downloaden ondertiteling"
 
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
-msgstr "Stel te gebruiken talen in wanneer er wordt gezocht naar ondertiteling. Niet alle ondertiteling diensten gebruiken alle talen."
+msgstr "Stel de te gebruiken talen in wanneer er gezocht wordt naar ondertitels. Niet alle ondertiteldiensten gebruiken alle talen."
 
 msgctxt "#24113"
 msgid "Failed to download subtitle"
@@ -10591,7 +10591,7 @@ msgstr "Standaard TV dienst"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles."
-msgstr "Selecteer de standaarddienst die zal worden gebruik om te zoeken naar serie ondertiteling."
+msgstr "Selecteer de standaarddienst die zal worden gebruikt om te zoeken naar ondertiteling voor TV shows."
 
 msgctxt "#24118"
 msgid "Default Movie Service"
@@ -10599,7 +10599,7 @@ msgstr "Standaard films dienst"
 
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles."
-msgstr "Selecteer de standaarddienst die zal worden gebruikt om te zoeken voor film ondertiteling."
+msgstr "Selecteer de standaarddienst die zal worden gebruikt om te zoeken voor ondertiteling voor films."
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -11455,7 +11455,7 @@ msgstr "Kies de lettertypes die getoond worden in de gebruikersinterface. De let
 
 msgctxt "#36108"
 msgid "Resize the view of the user interface."
-msgstr "Wijzig het formaat van de gebruikersinterface,"
+msgstr "Wijzig het formaat van de gebruikersinterface."
 
 msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
@@ -11491,7 +11491,7 @@ msgstr "Kies welke karakterset gebruikt moet worden om tekst weer te geven in de
 
 msgctxt "#36117"
 msgid "Select country location."
-msgstr "Selecteer de land locatie."
+msgstr "Selecteer het land."
 
 msgctxt "#36118"
 msgid "Select your current timezone."
@@ -11499,7 +11499,7 @@ msgstr "Selecteer de huidige tijdszone."
 
 msgctxt "#36119"
 msgid "Select the default audio track when different language tracks are available."
-msgstr "Kies de standaard audio taal als er meerdere talen beschikbaar zijn."
+msgstr "Kies de standaard audiotaal als er meerdere talen beschikbaar zijn."
 
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
@@ -11515,11 +11515,11 @@ msgstr "Toon het (..) item in lijsten om naar de bovenliggende map te gaan."
 
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
-msgstr "Laat bestandsextensies zien bij media bestanden. Bijvoorbeeld, 'Jij Geniet Van Mij.mp3' wordt getoond als 'Jij Geniet Van Mij'."
+msgstr "Laat bestandsextensies zien bij mediabestanden.\nBijvoorbeeld: 'Jij Geniet Van Mij' wordt getoond als 'Jij Geniet Van Mij.mp3'."
 
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
-msgstr "Negeer bepaalde woorden of tekens tijdens het sorteren. Bijvoorbeeld, 'The Simpsons' wordt gesorteerd als 'Simpsons'."
+msgstr "Negeer bepaalde woorden of tekens tijdens het sorteren.\nBijvoorbeeld: 'The Simpsons' wordt gesorteerd als 'Simpsons'."
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
@@ -11587,7 +11587,7 @@ msgstr "Activeer de videobibliotheek."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Laat de plot informatie voor onbekeken media zien in de Video Bibliotheek."
+msgstr "Laat de plotinformatie voor onbekeken media zien in de videobibliotheek."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -11603,7 +11603,7 @@ msgstr "Groepeer films in 'Film sets' wanneer je de film bibliotheek verkent."
 
 msgctxt "#36146"
 msgid "Check for new media files on Kodi startup."
-msgstr "Controleer op nieuwe media bestanden bij het opstarten van Kodi"
+msgstr "Controleer op nieuwe mediabestanden bij het opstarten van Kodi."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11611,15 +11611,15 @@ msgstr "Verberg de voortgang tijdens het scannen van de bibliotheek"
 
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
-msgstr "Verwijder items uit de bibliotheek die niet meer gevonden kunnen worden (oftewel hernoemd, gewist of op een extern geheugen dat momenteel niet aangesloten is)."
+msgstr "Verwijder items uit de bibliotheek die niet meer gevonden kunnen worden. Die items zijn ofwel hernoemd of gewist, of staan op een extern geheugen dat momenteel niet aangesloten is."
 
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
-msgstr "Exporteer de Video bibliotheek database naar XML bestanden. Dit zal optioneel de huidige XML bestanden overschrijven."
+msgstr "Exporteer de videobibliotheekdatabase naar XML bestanden. Dit zal optioneel de huidige XML bestanden overschrijven."
 
 msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
-msgstr "Importeer een XML bestand in de Video bibliotheek database."
+msgstr "Importeer een XML bestand in de videobibliotheekdatabase."
 
 msgctxt "#36151"
 msgid "Category containing settings for how video playback is handled."
@@ -11635,7 +11635,7 @@ msgstr "Kies de manier waarop video behandeld, verbeterd en getoond wordt."
 
 msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
-msgstr "Gebruik hogekwaliteits verbeteraars bij het opschalen van een video door tenminste dit percentage."
+msgstr "Gebruik hogekwaliteitsverbeteraars bij het opschalen van een video met tenminste dit percentage."
 
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
@@ -11671,7 +11671,7 @@ msgstr "Activeer decodering voor videobestanden gebruikmakend van pixelbuffer-ob
 
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
-msgstr "Toestaan de verversingsfrequentie van het scherm te veranderen zodat het het beste overeenkomt met de video frame frequentie. dit kan leiden tot een soepelere afspeling van video`s."
+msgstr "Veranderen van de verversingsfrequentie van het scherm toestaan, zodat dit overeenkomt met de videoframefrequentie. Dit kan leiden tot het optimaler afspelen van video's."
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."
@@ -11695,11 +11695,11 @@ msgstr "Selecteer de kwaliteit van resampling voor gevallen waarbij de audio-uit
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
-msgstr "Laat de videospeler toe de beeldverhouding licht aan te passen om zo een groter deel van het scherm te kunnen vullen."
+msgstr "Pas de beeldverhouding licht aan om zo een groter deel van het scherm te kunnen vullen."
 
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
-msgstr "Kies het zoom-niveau voor 4:3 video's wanneer afgespeeld op breedbeeld schermen."
+msgstr "Kies het zoomniveau voor 4:3 video's op breedbeeldschermen."
 
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
@@ -11723,7 +11723,7 @@ msgstr "Categorie met instellingen voor hoe videobestandslijsten wordt verwerkt.
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Kies tussen Kiezen, Afspelen (standaard), Hervatten en Informatie tonen. Kiezen zal een item selecteren, bv. een folder openen in bestandsbeheermodus. Hervatten zal automatisch video's hervatten vanaf de laatst bekeken positie, zelfs na het herstarten van het systeem."
+msgstr "Schakel tussen Kiezen, Afspelen (standaard), Hervatten en Informatie tonen. Kiezen zal een item selecteren, bv. een folder openen in bestandsbeheermodus. Hervatten zal automatisch video's hervatten vanaf de laatst bekeken positie, zelfs na het herstarten van het systeem."
 
 msgctxt "#36178"
 msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
@@ -11731,7 +11731,7 @@ msgstr "Haal miniatuurafbeeldingen en metadatainformatie zoals codec en beeldver
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
-msgstr "Wanneer een bestand in de bibliotheek geïmporteerd wordt, zal de metadata titel getoond worden in plaats van de bestandsnaam."
+msgstr "Wanneer een bestand in de bibliotheek geïmporteerd wordt, zal de metadatatitel getoond worden in plaats van de bestandsnaam."
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
@@ -11743,11 +11743,11 @@ msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
-msgstr "Combineert opgesplitste videobestanden, DVD mappen en film mappen tot één enkel item in niet-bibliotheekweergaven."
+msgstr "Combineert opgesplitste videobestanden, DVD-mappen en filmmappen tot één enkel item in niet-bibliotheekweergaven."
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
-msgstr "Laat titel, genre, enz. selectieniveau's weg uit de bibliotheek. Een categorie selecteren brengt u meteen naar de titel-lijst."
+msgstr "Verwijder titel- en genreniveau's etc. uit de bibliotheekview. Het selecteren van een categorie brengt u meteen naar de titellijst."
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
@@ -11827,7 +11827,7 @@ msgstr "Categorie voor algemene instellingen van PVR/Live TV functies."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
-msgstr "Activeer de personal Video Recorder (PVR) functies in Kodi. dit vereist dat minstens één PVR Add-on is geïnstalleerd."
+msgstr "Activeer de personal Video Recorder (PVR) functies in Kodi. Dit vereist dat tenminste één PVR Add-on is geïnstalleerd."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11863,11 +11863,11 @@ msgstr "Categorie voor PVR menu`s en op-beeld scherminstellingen, evenals kanaal
 
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
-msgstr "Toon de programmeringsinformatie wanneer kanalen worden verandert, zoals de huidige TV uitzending."
+msgstr "Toon de programmeringsinformatie wanneer kanalen worden veranderd, zoals de huidige TV-uitzending."
 
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
-msgstr "sluit de op beeld scherm knoppen af na verwisselen van kanalen."
+msgstr "Sluit het controlemenu na een nieuwe kanaalkeuze."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11911,7 +11911,7 @@ msgstr "Categorie voor PVR afspelen en kanaalwissel instellingen."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
-msgstr "Toon het beeld van het gekozen kanaal in een klein venstertje in plaats van op volledig scherm."
+msgstr "Toon het beeld van het gekozen kanaal in een venstertje in plaats van op volledig scherm."
 
 msgctxt "#36228"
 msgid "Continue with the last viewed channel on startup."
@@ -12059,7 +12059,7 @@ msgstr "Categorie die instellingen bevat voor hoe het afspelen van muziek wordt 
 
 msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
-msgstr "Kodi speelt automatisch het volgende item in de huidige map. Bijvoorbeeld, in Bestanden overzicht: nadat een nummer afgespeeld wordt, wordt automatisch het volgende nummer uit dezelfde map afgespeeld."
+msgstr "Kodi speelt automatisch het volgende item in de huidige map. Bijvoorbeeld, in Bestandenoverzicht: nadat een nummer afgespeeld is, wordt automatisch het volgende nummer uit dezelfde map afgespeeld."
 
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
@@ -12143,7 +12143,7 @@ msgstr "Selecteer de locatie op uw harde schijf waar geripte nummers bewaard moe
 
 msgctxt "#36286"
 msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Beheer hoe bewaarde muziek hernoemd wordt op basis van metadata. Tags: [B]%N[/B]: Nummer, [B]%S[/B]: Schijfnummer, [B]%A[/B]: Artiest, [B]%T[/B]: Titel, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Jaar, [B]%F[/B]: Bestandsnaam, [B]%D[/B]: Duur, [B]%J[/B]: Datum, [B]%R[/B]: Waardering, [B]%I[/B]: bestandsgrootte."
+msgstr "Beheer hoe opgeslagen muziek hernoemd wordt op basis van metadata. Tags: [B]%N[/B]: Nummer, [B]%S[/B]: Schijfnummer, [B]%A[/B]: Artiest, [B]%T[/B]: Titel, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Jaar, [B]%F[/B]: Bestandsnaam, [B]%D[/B]: Duur, [B]%J[/B]: Datum, [B]%R[/B]: Waardering, [B]%I[/B]: bestandsgrootte."
 
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
@@ -12719,7 +12719,7 @@ msgstr "Bepaalt of video-decodering moeten worden uitgevoerd via de software (ve
 
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
-msgstr "Selecteer virtuele toetsenbord lay-outs."
+msgstr "Selecteer virtuele toetsenbordlayouts."
 
 msgctxt "#36433"
 msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
@@ -13075,7 +13075,7 @@ msgstr "Onbeperkt"
 
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
-msgstr "Specificeer hoe Blu-rays moeten worden geopend/afgespeeld. Disk menu`s worden nog niet volledig ondersteunt en kunnen mogelijk problemen veroorzaken."
+msgstr "Specificeer hoe Blu-rays moeten worden geopend/afgespeeld. Diskmenu's worden nog niet volledig ondersteund, en kunnen mogelijk problemen veroorzaken."
 
 msgctxt "#38010"
 msgid "GPU accelerated"

@@ -1223,7 +1223,7 @@ msgstr "เล่นแผ่น"
 
 msgctxt "#342"
 msgid "Movies"
-msgstr "ภาพยนต์"
+msgstr "ภาพยนตร์"
 
 msgctxt "#343"
 msgid "Adjust framerate"
@@ -1575,7 +1575,7 @@ msgstr "ไม่มีแคช"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "ลบภาพยนต์ จาก คลังข้อมูล"
+msgstr "ลบภาพยนตร์ จาก คลังข้อมูล"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -3265,6 +3265,10 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "ความหนาแน่น"
 
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "ไม่สม่ำเสมอ"
+
 msgctxt "#1380"
 msgid "Very"
 msgstr "มาก"
@@ -3871,7 +3875,7 @@ msgstr "ข้อมูลอัลบั้ม"
 
 msgctxt "#10524"
 msgid "Movie info"
-msgstr "ข้อมูลภาพยนต์"
+msgstr "ข้อมูลภาพยนตร์"
 
 msgctxt "#12000"
 msgid "Select dialogue"
@@ -4827,7 +4831,7 @@ msgstr "ปิด LED ขณะเล่น"
 
 msgctxt "#13346"
 msgid "Movie information"
-msgstr "ข้อมูลภาพยนต์"
+msgstr "ข้อมูลภาพยนตร์"
 
 msgctxt "#13347"
 msgid "Queue item"
@@ -5887,7 +5891,7 @@ msgstr "ป้อนชื่อเรื่องใหม่"
 
 msgctxt "#16009"
 msgid "Enter the movie name"
-msgstr "ป้อนชื่อภาพยนต์"
+msgstr "ป้อนชื่อภาพยนตร์"
 
 msgctxt "#16010"
 msgid "Enter the profile name"
@@ -7367,7 +7371,7 @@ msgstr "อื่น ๆ / ไม่ทราบ"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
-msgstr "ภาพยนต์/ละครชีวิต"
+msgstr "ภาพยนตร์/ละครชีวิต"
 
 msgctxt "#19501"
 msgid "Detective/Thriller"
@@ -8655,7 +8659,7 @@ msgstr "นักแสดง"
 
 msgctxt "#20338"
 msgid "Movie"
-msgstr "ภาพยนต์"
+msgstr "ภาพยนตร์"
 
 msgctxt "#20339"
 msgid "Director"
@@ -8671,7 +8675,7 @@ msgstr "เส้นทางนี้ออกจากคลังข้อม
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "ภาพยนต์"
+msgstr "ภาพยนตร์"
 
 msgctxt "#20343"
 msgid "TV shows"
@@ -9243,7 +9247,7 @@ msgstr "โฟลเดอร์คำบรรยายที่กำหนด
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
-msgstr "ไดเร็กทอรี่ภาพยนต์ & คำบรรยายสำรอง"
+msgstr "ไดเร็กทอรี่ภาพยนตร์ & คำบรรยายสำรอง"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
@@ -9427,7 +9431,7 @@ msgstr "ตัวดึงข้อมูล"
 
 msgctxt "#21413"
 msgid "Default movie scraper"
-msgstr "ค่าเริ่มต้น ตัวดึงข้อมูลของภาพยนต์"
+msgstr "ค่าเริ่มต้น ตัวดึงข้อมูลของภาพยนตร์"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
@@ -10199,7 +10203,7 @@ msgstr "แหล่งข้อมูลสื่อ"
 
 msgctxt "#24007"
 msgid "Movie information"
-msgstr "ข้อมูลภาพยนต์"
+msgstr "ข้อมูลภาพยนตร์"
 
 msgctxt "#24008"
 msgid "Screensaver"
@@ -12797,6 +12801,10 @@ msgctxt "#36527"
 msgid "Select playback mode"
 msgstr "เลือกโหมดการเล่น"
 
+msgctxt "#36528"
+msgid "Select stereoscopic 3D mode"
+msgstr "เลือก โหมดกวรแยกภาพ 3 มิติ"
+
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "เลือกโหมดอื่น..."
@@ -12805,9 +12813,37 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "แบบเดียวกับภาพยนตร์"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "เลือกวิธีการรวมช่องสัญญาณเสียง, ตัวอย่างเช่น จาก 5.1 ไปยัง 2.0: [เปิดใช้งาน] รักษาระดับความดังของแหล่งเสียงเดิม แม้ว่าช่วงไดนามิกได้ถูกบีบอัด [ปิดใช้งาน] รักษาไดนามิกของแหล่งเสียงเดิมเมื่อรวมช่องเสียง แม้ว่าความดังจะลดลง. หมายเหตุ - ช่วงไดนามิกคือความแตกต่างระหว่างเสียงเงียบที่สุดและดังที่สุดในเสียงต้นฉบับ เปิดใช้งานการตั้งค่านี้ถ้าการสนทนาในภาพยนตร์เบาเกินไป"
+
+msgctxt "#36534"
+msgid "Specify additional libraries whose log messages are to be included in the log."
+msgstr "ระบุคลังข้อมูลเพิ่มเติม ที่ข้อความจะถูกรวมเข้าในบันทึกการแก้ไขจุดบกพร่อง."
+
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "โหมดการแยกภาพ 3 มิติ ของวิดีโอ"
+
+msgctxt "#36536"
+msgid "Invert Stereoscopic 3D mode (flip eyes)"
+msgstr "กลับโหมดการแยกภาพ 3 มิติ (สลับสายตา)"
+
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "เลือกโหมดการแยกภาพวิดีโอ 3 มิติ ที่จะเล่น [ถามฉัน] จะแสดงโต้ตอบเพื่อเลือกโหมดที่ต้องการสำหรับการเล่นแต่ละครั้ง [โหมดที่ต้องการ] จะใช้โหมดที่ต้องการที่ระบุไว้ใน 'ระบบ ->วิดีโอ  ฮาร์ดแวร์' ในส่วนของ การตั้งค่า [ภาพเดียว (2 มิติ)] จะแบ่งเล่นวิดีโอในแบบภาพเดียว/2มิติ [ละเว้น] ปิดการใช้งานการประมวลผลและการจัดการ ในการแยกภาพ 3 มิติ ทุกอย่าง"
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[เปิดใช้งาน] สลับ GUI (และทีวีบางรุ่น) กลับไปเป็นโหมด 2 มิติ เมื่อจบการเล่น [ปิดใช้งาน] GUI และทีวีจะอยู่ในโหมด 3 สามมิติ สำหรับรายการเล่นวิดีโอ โหมดการแยกภาพ 3 สามมิติ ซึ่งจะไม่เปลี่ยนระหว่างแฟ้มวิดีโอ ไม่เว้นแม้อันที่ไม่เป็นการแยกภาพสามมิติ"
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "เปลี่ยนโหมดการแสดงผล 3 มิติ ของส่วนติดต่อผู้ใช้."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "กำหนดเลือก โหมดที่ใช้แยกภาพสื่อ 3 มิติ อย่างเช่นวิดีโอที่จะเล่น"
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12825,6 +12861,10 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์สำหรับไฟล์วิดีโอ."
 
+msgctxt "#36545"
+msgid "Stereoscopic 3D depth of subtitles"
+msgstr "ความลึกในการแยกภาพแบบ 3 มิติ ของคำบรรยาย"
+
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "กำหนดความลึกเสมือนของคำบรรยาย สำหรับวิดีโอแบบ 3 มิติ. ค่าที่สูงขึ้น, จะทำให้คำบรรยายปรากฎใกล้ขึ้นในมุมมอง."
@@ -12832,6 +12872,14 @@ msgstr "กำหนดความลึกเสมือนของคำบ
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "ใช้พื้นผิวคุณภาพสูงขึ้น สำหรับปกและแฟนอาร์ต (ใช้หน่วยความจำมากขึ้น)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr "จำกัดความละเอียดของ GUI เพื่อประหยัดหน่วยความจำ. ไม่ส่งผลกับการเล่นวิดีโอ. จำเป็นต้องเริ่มระบบใหม่."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "ใช้ การสนับสนุน iOS8 ในการรองรับ AirPlay หากคุณมีปัญหากับอุปกรณ์ iOS ที่เก่ากว่า ในการตรวจหา Kodi เป็นเป้าหมายที่ถูกต้อง ลองปิดตัวเลือกนี้ออกตัวเลือกนี้จะมีผลด้วยการเริ่ม Kodi ใหม่เท่านั้น!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12865,6 +12913,14 @@ msgctxt "#36903"
 msgid "TV shows"
 msgstr "รายการทีวี"
 
+msgctxt "#36904"
+msgid "season"
+msgstr "ฤดู"
+
+msgctxt "#36905"
+msgid "seasons"
+msgstr "ฤดู"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "ตอน"
@@ -12872,6 +12928,14 @@ msgstr "ตอน"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "ตอน"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "วิดีโอเพลง"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "วิดีโอเพลง"
 
 msgctxt "#36910"
 msgid "set"
@@ -12985,6 +13049,10 @@ msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
 msgstr "เลือกส่วนนี้ ถ้าการเชื่อมต่อสัญญาณเสียงออก รองรับการเชื่อมต่อหลายช่องสัญญาณเสียงแบบ Dolby Digital 5.1 เท่านั้น, ซึ่งจะทำให้เสียงหลายช่องสัญญาณ เช่น AAC5.1 or FLAC5.1 สามารถรับฟังได้ในแบบ 5.1 รอบทิศทาง. ข้อควรจำ - ไม่แนะนำในการใช้งานบน Pi เพราะต้องใช้ซีพียูบางส่วน."
 
+msgctxt "#37025"
+msgid "Configure audio encoder settings such as quality and compression level"
+msgstr "กำหนดการตั้งค่าตัวเข้ารหัสเสียง อย่างเช่นคุณภาพและระดับการบีบอัด"
+
 msgctxt "#37026"
 msgid "Auto"
 msgstr "อัตโนมัติ"
@@ -13000,3 +13068,15 @@ msgstr "720"
 msgctxt "#37029"
 msgid "900"
 msgstr "900"
+
+msgctxt "#37030"
+msgid "Unlimited"
+msgstr "ไม่จำกัด"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "กำหนดวิธีการที่ Blu-rays จะถูกเปิด/เล่นกลับ เมนูของแผ่นดิสค์ขณะนี้ยังไม่รองรับโดยสมบูรณ์ และอาจสร้างปัญหาได้"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "เร่งความเร็ว GPU แล้ว"

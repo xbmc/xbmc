@@ -965,6 +965,10 @@ msgctxt "#379"
 msgid "PM"
 msgstr "PM"
 
+msgctxt "#387"
+msgid "Clouds"
+msgstr "Awan"
+
 msgctxt "#391"
 msgid "Low"
 msgstr "Rendah"
@@ -2389,6 +2393,10 @@ msgctxt "#33021"
 msgid "Precipitation"
 msgstr "Presipitasi"
 
+msgctxt "#33022"
+msgid "Precip"
+msgstr "Pracip"
+
 msgctxt "#33029"
 msgid "Details"
 msgstr "Perincian"
@@ -2400,6 +2408,10 @@ msgstr "Pandangan"
 msgctxt "#33031"
 msgid "Coverflow"
 msgstr "Aliran Kulit Hadapan"
+
+msgctxt "#33035"
+msgid "Maps"
+msgstr "Peta"
 
 msgctxt "#33037"
 msgid "Weekend"

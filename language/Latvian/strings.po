@@ -3241,6 +3241,14 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Pielāgota tranzīta ierīce"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Temperatūra"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Spiediens"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Ekstrēms"
@@ -3252,6 +3260,10 @@ msgstr "virpuļi"
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Bojāts"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -5855,7 +5867,7 @@ msgstr "Bob"
 
 msgctxt "#16022"
 msgid "Bob (inverted)"
-msgstr "Bob (invertētais)"
+msgstr "Bob (inversais)"
 
 msgctxt "#16024"
 msgid "Cancelling..."
@@ -6100,6 +6112,18 @@ msgstr "DXVA-HD"
 msgctxt "#16327"
 msgid "VAAPI Bob"
 msgstr "VAAPI Bob"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Papildus"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Puse)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7236,6 +7260,10 @@ msgstr "Izvēlēties ikonu"
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr "Pārlūkot ikonu"
+
+msgctxt "#19286"
+msgid "Searching for channel icons"
+msgstr "Meklē kanālu ikonas"
 
 msgctxt "#19287"
 msgid "All channels"
@@ -8404,6 +8432,10 @@ msgstr "Secure Shell (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Zeroconf pārlūks"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10500,6 +10532,10 @@ msgstr "Pielāgota atrašanās vieta"
 msgctxt "#24126"
 msgid "Auto download first subtitle"
 msgstr "Automatiski lejupielādēt pirmos subtitrus"
+
+msgctxt "#24127"
+msgid "Automatically download first subtitle from the search result list"
+msgstr "Automātiski lejupielādēt pirmos subtitrus no meklēšanas rezultātu saraksta"
 
 msgctxt "#24128"
 msgid "Configuration has been moved"
@@ -12653,6 +12689,10 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr "Atlasīt, kā audio ir lejupmiksēts, piemēram, no 5.1 uz 2.0: [Ieslēgts] patur sākotnējā audio avota skaļuma līmeni lejupmiksējot, tomēr skaļuma diapazons tiks saspiests. [Izslēgts] lejupmiksējot patur sākotnējā audio avota skaļuma diapazonu, taču skaļuma līmenis būs mazāks. \nPiezīme - Skaļuma diapazons ir starpība starp klusākajām un skaļākajām skaņām audio avotā. Ieslēdziet šo iestatījumu, ja dialogi filmā ir knapi dzirdami."
 
+msgctxt "#36535"
+msgid "Stereoscopic 3D mode of video"
+msgstr "Video stereoskopiskais 3D režīms"
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Mainīt lietotāja saskarnes stereoskopisko 3D režīmu."
@@ -12697,6 +12737,10 @@ msgctxt "#36603"
 msgid "Category containing settings for how video output is handled."
 msgstr "Kategorija, kas satur iestatījumus video izvades darbībai."
 
+msgctxt "#36900"
+msgid "movie"
+msgstr "filma"
+
 msgctxt "#36901"
 msgid "movies"
 msgstr "filmas"
@@ -12713,6 +12757,10 @@ msgctxt "#36904"
 msgid "season"
 msgstr "sezona"
 
+msgctxt "#36905"
+msgid "seasons"
+msgstr "sezonas"
+
 msgctxt "#36906"
 msgid "episode"
 msgstr "sērija"
@@ -12720,6 +12768,14 @@ msgstr "sērija"
 msgctxt "#36907"
 msgid "episodes"
 msgstr "sērijas"
+
+msgctxt "#36908"
+msgid "musicvideo"
+msgstr "mūzikas video"
+
+msgctxt "#36909"
+msgid "musicvideos"
+msgstr "mūzikas video"
 
 msgctxt "#36910"
 msgid "set"
@@ -12737,9 +12793,29 @@ msgctxt "#36913"
 msgid "videos"
 msgstr "Video"
 
+msgctxt "#36914"
+msgid "music"
+msgstr "mūzika"
+
+msgctxt "#36915"
+msgid "music"
+msgstr "mūzika"
+
+msgctxt "#36916"
+msgid "artist"
+msgstr "mākslinieks"
+
+msgctxt "#36917"
+msgid "artists"
+msgstr "mākslinieki"
+
 msgctxt "#36918"
 msgid "album"
 msgstr "Albums"
+
+msgctxt "#36919"
+msgid "albums"
+msgstr "albumi"
 
 msgctxt "#36920"
 msgid "song"
@@ -12816,3 +12892,19 @@ msgstr "Atlasiet šo, ja audio izejas savienojums atbalsta tikai daudzkanālu au
 msgctxt "#37026"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#37027"
+msgid "540"
+msgstr "540"
+
+msgctxt "#37028"
+msgid "720"
+msgstr "720"
+
+msgctxt "#37029"
+msgid "900"
+msgstr "900"
+
+msgctxt "#38010"
+msgid "GPU accelerated"
+msgstr "GPU paātrināts"

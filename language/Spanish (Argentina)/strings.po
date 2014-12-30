@@ -8959,7 +8959,7 @@ msgstr "Descargar fanart"
 
 msgctxt "#20414"
 msgid "Show fanart in video and music libraries"
-msgstr "Mostrar fanarts en COlecciones de música y video "
+msgstr "Mostrar fanarts en Colecciones de música y video "
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9039,7 +9039,7 @@ msgstr "Extraer los metadatos de información del medio"
 
 msgctxt "#20434"
 msgid "Sets"
-msgstr "Colecciones"
+msgstr "Sets"
 
 msgctxt "#20435"
 msgid "Combine split video items"
@@ -9131,7 +9131,7 @@ msgstr "Ignorar la jerarquía de la Colección"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "Colección de películas"
+msgstr "'Set' de películas"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
@@ -9163,15 +9163,15 @@ msgstr "Seleccionar %s"
 
 msgctxt "#20465"
 msgid "Manage movie set"
-msgstr "Administrar Colección de películas"
+msgstr "Administrar 'set' de películas"
 
 msgctxt "#20466"
 msgid "Select movie set"
-msgstr "Seleccionar set de películas"
+msgstr "Seleccionar 'set' de películas"
 
 msgctxt "#20467"
 msgid "No set (Remove from %s)"
-msgstr "No establecido (Remover de %s)"
+msgstr "Eliminiar de 'set' %s"
 
 msgctxt "#20468"
 msgid "Add movie to a new set"

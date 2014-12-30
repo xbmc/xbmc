@@ -6631,7 +6631,7 @@ msgstr "Usluga"
 
 msgctxt "#19100"
 msgid "Mux"
-msgstr "Mux"
+msgstr "Multipleks"
 
 msgctxt "#19101"
 msgid "Provider"

@@ -6231,7 +6231,7 @@ msgstr "Posnetki"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
-msgstr "Mapa z ikonami kanala"
+msgstr "Mapa ikon programov"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6419,7 +6419,7 @@ msgstr "Pojdi na konec"
 
 msgctxt "#19066"
 msgid "Channel icons"
-msgstr "Ikone kanala"
+msgstr "Ikone programov"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6575,7 +6575,7 @@ msgstr "Vnesite ime mape posnetka"
 
 msgctxt "#19105"
 msgid "Please select a channel"
-msgstr "Prosim izberite program"
+msgstr "Prosim, izberite program"
 
 msgctxt "#19106"
 msgid "Next timer on"
@@ -7275,7 +7275,7 @@ msgstr "Prebrskajte za ikono"
 
 msgctxt "#19286"
 msgid "Searching for channel icons"
-msgstr "Iščem ikone za kanale"
+msgstr "Iščem ikone pogramov"
 
 msgctxt "#19287"
 msgid "All channels"
@@ -9115,7 +9115,7 @@ msgstr "Pretok bo ustavljen!"
 
 msgctxt "#21334"
 msgid "Zap to channel: %s failed!"
-msgstr "Povezava s kanalom: %s ni uspel!"
+msgstr "Preklop na program: %s ni uspel!"
 
 msgctxt "#21335"
 msgid "Are you sure to start the stream?"
@@ -11721,6 +11721,10 @@ msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Uvozite skupine programov iz hrbtenic PVR (če je podprto). To bo izbrisalo uporabniško ustvarjene skupine, če se ne nahajajo v hrbtenici."
 
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgstr "Razvrstite programe po njihovi številki v hrbtenici, a prepustite Kodiju da jih sam oštevilči."
+
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
 msgstr "Uporabite številčenje iz hrbtenice namesto ročnega nastavljanja preko Kodi-ja."
@@ -11731,7 +11735,7 @@ msgstr "Odprite upravljalnika programov, ki omogoča urejanje zaporedja programo
 
 msgctxt "#36208"
 msgid "Instruct the backend to search for channels (if supported)."
-msgstr "Podučite hrbtenico za iskanje kanalov (v primeru da obstajajo)."
+msgstr "Naročite hrbtenici iskanje kanalov (če podpira)."
 
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
@@ -11743,11 +11747,11 @@ msgstr "Kategorija nastavitev menijev PVR, prikaza informacij med predvajanjem i
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
-msgstr "Mapa kjer so shranjene ikone kanalov."
+msgstr "Mapa, kjer so shranjene ikone programov."
 
 msgctxt "#36217"
 msgid "Scan for missing channel icons."
-msgstr "Išči manjkajoče ikone za kanale."
+msgstr "Preglejte za manjkajoče ikone progamov."
 
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."

@@ -4535,7 +4535,7 @@ msgstr "Alarm"
 
 msgctxt "#13209"
 msgid "Alarm clock interval (in minutes)"
-msgstr "Alarmuj w interwale (w minutach)"
+msgstr "Częstotliwość ponawiania alarmu (w minutach)"
 
 msgctxt "#13210"
 msgid "Started, alarm in %im"
@@ -4839,7 +4839,7 @@ msgstr "Dodaj do kolejki"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
-msgstr "Przeszukiwanie IMDb..."
+msgstr "Wyszukiwanie w IMDb..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
@@ -5875,7 +5875,7 @@ msgstr "Ogólne"
 
 msgctxt "#16002"
 msgid "Internet lookup"
-msgstr "Przeszukiwanie w Internecie"
+msgstr "Wyszukiwanie w Internecie"
 
 msgctxt "#16003"
 msgid "Player"
@@ -6515,7 +6515,7 @@ msgstr "Przejdź do aktualnych"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "Odświeżaj przewodnik w interwale"
+msgstr "Częstotliwość odświeżania przewodnika"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
@@ -8579,15 +8579,15 @@ msgstr "Sortuj: Identyfikator"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
-msgstr "Przeszukiwanie filmów przy użyciu %s"
+msgstr "Wyszukiwanie filmów przy użyciu %s"
 
 msgctxt "#20318"
 msgid "Scanning music videos using %s"
-msgstr "Przeszukiwanie teledysków przy użyciu %s"
+msgstr "Wyszukiwanie teledysków przy użyciu %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
-msgstr "Przeszukiwanie seriali przy użyciu %s"
+msgstr "Wyszukiwanie seriali przy użyciu %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
@@ -8595,7 +8595,7 @@ msgstr "Wyszukiwanie wykonawców przy użyciu %s"
 
 msgctxt "#20321"
 msgid "Scanning albums using %s"
-msgstr "Przeszukiwanie albumów przy użyciu %s"
+msgstr "Wyszukiwanie albumów przy użyciu %s"
 
 msgctxt "#20323"
 msgid "Movie plot"

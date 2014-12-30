@@ -11671,7 +11671,7 @@ msgstr "Piksel arabelleği nesnelerini kullanarak video dosyalarının kod çöz
 
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
-msgstr "Ekranın yenileme hızını video kare hızı ile en iyi eşleşecek şekilde değiştirilmesine izin. Bu daha yumuşak video oynatımı sağlar."
+msgstr "Ekranın yenileme hızını video kare hızı ile en iyi eşleşecek şekilde değiştirilmesine izin ver. Bu daha yumuşak video oynatımı sağlar."
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."

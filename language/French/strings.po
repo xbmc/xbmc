@@ -12879,7 +12879,7 @@ msgstr "Limite la résolution de l'interface pour économiser de la mémoire. Ce
 
 msgctxt "#36549"
 msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
-msgstr "Utiliser le support AirPLay compatible iOS8. Si vous avez des soucis avec des périphériques tournant sur des versions plus anciennes d'iOS pour détecter Kodi comme une cible valide, essayez de désactiver cette option. Cette option prend effect au prochain redémarrage de Kodi seulement !"
+msgstr "Utiliser le support AirPlay compatible iOS8. Si vous avez des périphériques tournant sur des versions plus anciennes d'iOS qui ne détectent pas Kodi comme une cible valide, essayez de désactiver cette option. Cette option ne prendra effet qu'au prochain redémarrage de Kodi !"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
