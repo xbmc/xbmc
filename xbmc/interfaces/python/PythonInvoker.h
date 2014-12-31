@@ -54,7 +54,7 @@ protected:
 
   virtual void onSuccess() { }
   virtual void onAbort() { }
-  virtual void onError();
+  virtual void onError(const std::string &exceptionType = "", const std::string &exceptionValue = "", const std::string &exceptionTraceback = "");
 
   std::string m_sourceFile;
   unsigned int  m_argc;

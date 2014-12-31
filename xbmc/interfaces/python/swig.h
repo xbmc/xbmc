@@ -180,6 +180,12 @@ namespace PythonBindings
      *  obtained. It will also clear the python message.
      */
     PythonToCppException();
+    PythonToCppException(const std::string &exceptionType, const std::string &exceptionValue, const std::string &exceptionTraceback);
+
+    static bool ParsePythonException(std::string &exceptionType, std::string &exceptionValue, std::string &exceptionTraceback);
+
+  protected:
+    void SetMessage(const std::string &exceptionType, const std::string &exceptionValue, const std::string &exceptionTraceback);
   };
 
   template<class T> struct PythonCompare
