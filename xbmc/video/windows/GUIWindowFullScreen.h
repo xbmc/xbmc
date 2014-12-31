@@ -57,8 +57,8 @@ private:
 
   /*! \brief Convert the current timecode into a time in seconds to seek
    */
-  double GetTimeCodeStamp();
-
+  double GetTimeCodeAsSeconds();
+  std::string GetTimeCodeAsString();
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
   CGUIInfoBool m_showCodec;
@@ -66,8 +66,6 @@ private:
   bool m_bShowCurrentTime;
 
   bool m_bGroupSelectShow;
-  bool m_timeCodeShow;
   unsigned int m_timeCodeTimeout;
-  int m_timeCodeStamp[6];
-  int m_timeCodePosition;
+  int m_timeCode;
 };
