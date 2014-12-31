@@ -250,7 +250,7 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         esac
         platform_os="osx"
-        platform_min_version=macosx-version-min=10.6
+        platform_min_version=macosx-version-min=10.7
       ;;
 
       arm-apple-darwin*)
@@ -260,7 +260,7 @@ case $host in
         if test "$use_cpu" != "armv7"; then
           AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         fi
-        platform_min_version="iphoneos-version-min=4.2"
+        platform_min_version="iphoneos-version-min=5.1"
         found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=iphoneos$use_sdk
@@ -293,7 +293,7 @@ case $host in
     esac
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
-    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version"
+    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir=$sdk_name"_"$use_cpu-target
     tool_dir=buildtools-native;
