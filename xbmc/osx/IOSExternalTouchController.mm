@@ -69,10 +69,10 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setTextColor:[UIColor grayColor]];
     [descriptionLabel setBackgroundColor:[UIColor clearColor]];
     //text is aligned left in its frame
-    [descriptionLabel setTextAlignment:UITextAlignmentCenter];
+    [descriptionLabel setTextAlignment:NSTextAlignmentCenter];
     [descriptionLabel setContentMode:UIViewContentModeCenter];
     //setup multiline behaviour
-    [descriptionLabel setLineBreakMode:UILineBreakModeTailTruncation];
+    [descriptionLabel setLineBreakMode:(NSLineBreakMode)UILineBreakModeTailTruncation];
 
     [descriptionLabel setNumberOfLines:5];
     std::string descText    = g_localizeStrings.Get(34404) + "\n";

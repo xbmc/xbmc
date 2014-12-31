@@ -1746,10 +1746,10 @@ void Renderer::render_texture_to_screen(PresetOutputs *presetOutputs)
 		default: flipx=1;flipy=1; break;
 	}
 
-	float pointsFlip[4][2] = {{-0.5*flipx, -0.5*flipy},
-				  {-0.5*flipx,  0.5*flipy},
-				  { 0.5*flipx,  0.5*flipy},
-				  { 0.5*flipx, -0.5*flipy}};
+	float pointsFlip[4][2] = {{(float)-0.5*flipx, (float)-0.5*flipy},
+				  {(float)-0.5*flipx,  (float)0.5*flipy},
+				  { (float)0.5*flipx,  (float)0.5*flipy},
+				  { (float)0.5*flipx, (float)-0.5*flipy}};
 	
 	glVertexPointer(2,GL_FLOAT,0,pointsFlip);
 	glDrawArrays(GL_TRIANGLE_FAN,0,4);	

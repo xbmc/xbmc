@@ -1563,7 +1563,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         do
         {
           unsigned int time_left = endTime.MillisLeft();
-          struct timeval t = { time_left / 1000, (time_left % 1000) * 1000 };
+          struct timeval t = { (int)time_left / 1000, ((int)time_left % 1000) * 1000 };
 
           // Wait until data is available or a timeout occurs.
           rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t);
