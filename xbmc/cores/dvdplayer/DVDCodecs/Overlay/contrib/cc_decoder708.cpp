@@ -35,10 +35,13 @@ unsigned char get_internal_from_G1 (unsigned char g1_char)
 // G2: Extended Control Code Set 1
 unsigned char get_internal_from_G2 (unsigned char g2_char)
 {
+  // according to the comment a few lines above those lines are indeed wrong
+  /*
     if (g2_char>=0x20 && g2_char<=0x3F)
         return g2_char-0x20;
     if (g2_char>=0x60 && g2_char<=0x7F)
         return g2_char+0x20;
+  */
     // Rest unmapped, so we return a blank space
     return 0x20;
 }
@@ -696,7 +699,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
   {
     // Specs unclear here: Do we need to delete the text in the existing window?
     // We do this because one of the sample files demands it.
-    //  clearWindowText (&decoder->windows[window]);
+    clearWindowText (&decoder->windows[window]);
   }
   // ...also makes the defined windows the current window (setCurrentWindow)
   handle_708_CWx_SetCurrentWindow (decoder, window);
