@@ -18,12 +18,14 @@ ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
 ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
 ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
+ffmpg_config += --enable-gnutls
+
 ifeq ($(CROSS_COMPILING), yes)
   ffmpg_config += --arch=$(CPU) --enable-cross-compile
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
-  ffmpg_config += --enable-vdpau --enable-vaapi --enable-gnutls
+  ffmpg_config += --enable-vdpau --enable-vaapi
   ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 endif
 ifeq ($(OS), android)
@@ -32,7 +34,7 @@ ifeq ($(OS), android)
   else
     ffmpg_config += --cpu=i686 --disable-mmx
   endif
-  ffmpg_config += --target-os=linux --enable-gnutls
+  ffmpg_config += --target-os=linux
 endif
 ifeq ($(OS), ios)
   ffmpg_config += --cpu=cortex-a8 --yasmexe=$(NATIVEPREFIX)/bin/yasm
