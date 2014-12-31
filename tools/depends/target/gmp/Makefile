@@ -18,9 +18,14 @@ ifeq ($(OS),linux)
   endif
 endif
 
+ifeq ($(OS),ios)
+CONFIGURE_FLAGS=CC_FOR_BUILD=llvm-gcc CPP_FOR_BUILD="llvm-gcc -E" --disable-assembly
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared $(ABI)
+          ./configure --prefix=$(PREFIX) --disable-shared $(ABI) $(CONFIGURE_FLAGS)
+
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).a
 
