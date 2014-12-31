@@ -25,7 +25,7 @@
     xbmc.core = {
         'DEFAULT_ALBUM_COVER': 'images/DefaultAlbumCover.png',
         'DEFAULT_VIDEO_COVER': 'images/DefaultVideo.png',
-        'JSON_RPC': 'jsonrpc',
+        'JSON_RPC': '/jsonrpc',
         'applyDeviceFixes': function () {
             window.document.addEventListener('touchmove', function (e) {
                 e.preventDefault();
