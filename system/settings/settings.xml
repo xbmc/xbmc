@@ -1099,6 +1099,13 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="pvrmanager.groupmanager" type="action" label="19048" help="36213">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
         <setting id="pvrmanager.channelscan" type="action" label="19117" help="36208">
           <level>1</level>
           <dependencies>

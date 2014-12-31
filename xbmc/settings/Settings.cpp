@@ -786,6 +786,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("pvrmanager.enabled");
   settingSet.insert("pvrmanager.channelmanager");
+  settingSet.insert("pvrmanager.groupmanager");
   settingSet.insert("pvrmanager.channelscan");
   settingSet.insert("pvrmanager.resetdb");
   settingSet.insert("pvrclient.menuhook");

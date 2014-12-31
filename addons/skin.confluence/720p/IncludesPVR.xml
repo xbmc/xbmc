@@ -79,7 +79,6 @@
 				<left>0</left>
 				<top>60</top>
 				<width>250</width>
-				<height>600</height>
 				<onleft>9000</onleft>
 				<onright>50</onright>
 				<onup>9000</onup>
@@ -163,15 +162,6 @@
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 				</control>
-				<control type="radiobutton" id="5">
-					<description>Group recording items by folder structure</description>
-					<left>0</left>
-					<right>40</right>
-					<textwidth>235</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>19270</label>
-					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
-				</control>
 				<control type="button" id="2">
 					<description>View As button</description>
 					<left>0</left>
@@ -195,6 +185,46 @@
 					<altlabel>31050</altlabel>
 					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
+				<control type="radiobutton" id="31">
+					<description>Filter</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>587</label>
+					<selected>Container.Filtered</selected>
+					<onclick>right</onclick>
+					<visible>Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)</visible>
+				</control>
+				<!-- Misc Options (ID is completely arbitrary) -->
+				<control type="label" id="205">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31026</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="radiobutton" id="5">
+					<description>Group recording items by folder structure</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19270</label>
+					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
+				</control>
+				<control type="radiobutton" id="6">
+					<description>Show hidden channels</description>
+					<left>0</left>
+					<right>40</right>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19051</label>
+					<visible>Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)</visible>
+				</control>
+				<!-- Playback controls -->
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
