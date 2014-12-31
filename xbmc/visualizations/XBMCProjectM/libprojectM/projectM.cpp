@@ -278,7 +278,7 @@ DLLEXPORT void projectM::renderFrame()
 		if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
 		{
                         CSectionLock lock(&mutex);
-			m_activePreset = m_activePreset2;			
+			m_activePreset = std::move(m_activePreset2);			
 			switchPreset(m_activePreset2, presetInputs2, presetOutputs2);
 			timeKeeper->EndSmoothing();
 		}
