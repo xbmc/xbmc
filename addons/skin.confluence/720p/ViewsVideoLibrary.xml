@@ -813,7 +813,7 @@
 						<height>26</height>
 						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
@@ -884,7 +884,7 @@
 						<height>26</height>
 						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
@@ -1229,7 +1229,7 @@
 						<height>26</height>
 						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
@@ -1300,7 +1300,7 @@
 						<height>26</height>
 						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
