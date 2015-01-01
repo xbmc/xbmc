@@ -351,10 +351,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   Node indexOp = null
   Node sizeNode = null
 
-  List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
+  List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") && it.@name != "toString" }
   List operators =  clazz.function.findAll { it.@name.startsWith("operator ") }
   List properties = clazz.variable.findAll { it.@access != null && it.@access == "public" }
   List properties_set = properties.findAll { it.@feature_immutable == null || it.@feature_immutable == 0 }
+  List stringifyMethods = clazz.function.findAll { it.@name == "toString" }
 
   operators.each {
     // we have an operator. The only one we can handle is ==
@@ -586,6 +587,10 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
  if (properties.size() > 0) { %>
     pythonType.tp_getset = ${classNameAsVariable}_getsets;
+<%
+ }
+ if (stringifyMethods.size() == 1) { %>
+    pythonType.tp_str = (reprfunc)${module.@name}_${PythonTools.getClassNameAsVariable(clazz)}_toString;
 <%
  }
  if (doAsMapping) { %>
