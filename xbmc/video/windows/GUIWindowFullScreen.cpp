@@ -92,8 +92,9 @@ static CLinuxResourceCounter m_resourceCounter;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
+  m_skipStepCount = 0;
   m_timeCode = 0;
-  m_timeCodeTimeout = 0;
+  m_userTimeout = 0;
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
@@ -165,14 +166,24 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
     else
-      g_application.m_pPlayer->Seek(false, false);
+    {
+      m_skipStepCount--;
+      if (m_skipStepCount < -(int)g_advancedSettings.m_skipSteps.size())
+        m_skipStepCount = -(int)g_advancedSettings.m_skipSteps.size();
+      m_userTimeout = XbmcThreads::SystemClockMillis();
+    }
     return true;
 
   case ACTION_STEP_FORWARD:
     if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
     else
-      g_application.m_pPlayer->Seek(true, false);
+    {
+      m_skipStepCount++;
+      if (m_skipStepCount > (int)g_advancedSettings.m_skipSteps.size())
+        m_skipStepCount = (int)g_advancedSettings.m_skipSteps.size();
+      m_userTimeout = XbmcThreads::SystemClockMillis();
+    }
     return true;
 
   case ACTION_BIG_STEP_BACK:
@@ -672,15 +683,34 @@ void CGUIWindowFullScreen::FrameMove()
     }
   }
 
-  if (m_timeCode != 0)
+  // Skip operates in two ways:
+  // 1) User enters a time code (digits 0-9) and presses left (or right) arrow key. When arrow key is pressed the 
+  // entered time code is executed. i.e user presses 100 and right arrow key => A one minute forward skip step is performed.
+  // 2) User presses an arrow key one or more times, each time key is pressed skip step counter is increased. The final
+  // skip is determined by the skip step array, If the array is { 15, 30, 60, 180, 300, 600, 900, 1800, 3600, 7200 }
+  // and the user presses skip step twice, a 30 sek skip is performed. Note - skip step array is a configuartion property.
+  if (m_userTimeout != 0)
   {
-    if ( (XbmcThreads::SystemClockMillis() - m_timeCodeTimeout) >= 2500)
+    // Here if we are in time code mode we cancel the entered time code ( user took to long)
+    // if in skip step mode we ecute the skip step
+    if ((XbmcThreads::SystemClockMillis() - m_userTimeout) >= g_advancedSettings.m_skipTimeout)
     {
+      m_userTimeout = 0;
       m_timeCode = 0;
+      if (m_skipStepCount != 0)
+      {
+        SeekToSkipStep();
+      }
     }
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-    std::string  strDispTime = GetTimeCodeAsString();
+    std::string  strDispTime;
+
+    if (m_timeCode != 0) // We have a time code
+      strDispTime += GetTimeCodeAsString(m_timeCode,100);
+    else // we have a skip step or nothing
+      strDispTime += GetTimeCodeAsString(GetSkipStepTimeCode(),60);
+
     strDispTime += "/" + g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS) + " [" + g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
@@ -694,7 +724,7 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_VISIBLE(BLUE_BAR);
     SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
-  else if (m_timeCode != 0)
+  else if (m_userTimeout != 0)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
     SET_CONTROL_HIDDEN(LABEL_ROW2);
@@ -738,7 +768,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
   if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
-    m_timeCodeTimeout = XbmcThreads::SystemClockMillis();
+    m_userTimeout = XbmcThreads::SystemClockMillis();
 
     m_timeCode = m_timeCode * 10 + remote - REMOTE_0;
   }
@@ -756,6 +786,24 @@ void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION di
   m_timeCode = 0;
 }
 
+int CGUIWindowFullScreen::GetSkipStepTimeCode()
+{
+  if (m_skipStepCount == 0)
+    return 0;
+  return g_advancedSettings.m_skipSteps[std::abs(m_skipStepCount) - 1];
+}
+
+void CGUIWindowFullScreen::SeekToSkipStep()
+{
+  double seek = (((m_skipStepCount < 0) ? -1 : 1) * GetSkipStepTimeCode());
+  seek = g_application.GetTime() + seek;
+
+  if (seek < g_application.GetTotalTime())
+    g_application.SeekTime(seek);
+
+  m_skipStepCount = 0;
+}
+
 double CGUIWindowFullScreen::GetTimeCodeAsSeconds()
 {
   int t = m_timeCode;
@@ -766,12 +814,12 @@ double CGUIWindowFullScreen::GetTimeCodeAsSeconds()
   return h * 3600 + m * 60 + s;
 }
 
-std::string CGUIWindowFullScreen::GetTimeCodeAsString()
+std::string CGUIWindowFullScreen::GetTimeCodeAsString(int timeCode, int base)
 {
-  int t = m_timeCode;
-  int s = t % 100; t /= 100;
-  int m = t % 100; t /= 100;
-  int h = t % 100;
+  int t = timeCode;
+  int s = t % base; t /= base;
+  int m = t % base; t /= base;
+  int h = t % base;
 
   boost::format fmt("%02i:%02i:%02i");
   fmt % h;

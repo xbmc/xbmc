@@ -340,6 +340,9 @@ void CAdvancedSettings::Initialize()
   m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
   m_Force10BitRgbOutput = false;
+  m_skipSteps = { 15, 30, 60, 180, 300, 600, 900, 1800, 3600, 7200 };
+  m_skipTimeout = 2500;
+
 //caused lots of jerks
 //#ifdef TARGET_WINDOWS
 //  m_ForcedSwapTime = 2.0;
@@ -847,7 +850,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
+  
+  // Transform into vector of ints
+  string skipSteps;
+  XMLUtils::GetString(pRootElement, "skipsteps", skipSteps);
+  for (auto step : StringUtils::Split(skipSteps, ','))
+  {
+    m_skipSteps.push_back(atoi(step.c_str()));
+  }
 
+  XMLUtils::GetUInt(pRootElement, "skiptimeout", m_skipTimeout);
+  
   //airtunes + airplay
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
   XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  

@@ -58,7 +58,19 @@ private:
   /*! \brief Convert the current timecode into a time in seconds to seek
    */
   double GetTimeCodeAsSeconds();
-  std::string GetTimeCodeAsString();
+
+  /*! \brief Returns timecode as "HH:MM:SS" formated string
+  */
+  std::string GetTimeCodeAsString(int timeCode, int base);
+
+  /*! \brief Seeks to content of Skip Step array
+  */
+  void SeekToSkipStep();
+  
+  /*! \brief converts skip step klicks to seconds
+  */
+  int GetSkipStepTimeCode();
+
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
   CGUIInfoBool m_showCodec;
@@ -66,6 +78,7 @@ private:
   bool m_bShowCurrentTime;
 
   bool m_bGroupSelectShow;
-  unsigned int m_timeCodeTimeout;
+  unsigned int m_userTimeout;
   int m_timeCode;
+  int m_skipStepCount;
 };
