@@ -1079,7 +1079,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (AE_IS_RAW(format.m_dataFormat)) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
+  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+    CLog::Log(LOGDEBUG, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;
