@@ -429,7 +429,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   // All of the methods on this class
   static PyMethodDef ${classNameAsVariable}_methods[] = { <%
     normalMethods.each {  %>
-    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
+    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS${it.@storage == 'static' ? '|METH_STATIC' : ''}, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 
     // now do all of the explcit feature:python:method's that may be in this class
     List tmpl = []
@@ -780,7 +780,7 @@ namespace PythonBindings
 
   static PyMethodDef ${module.@name}_methods[] = { <%
     module.depthFirst().findAll({ it.name() == 'function' && Helper.parents(it, { Node lnode -> lnode.name() == 'class'}).size() == 0 }).each {  %>
-    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
+    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS${it.@storage == 'static' ? '|METH_STATIC' : ''}, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 %>
     {NULL, NULL, 0, NULL}
   };
