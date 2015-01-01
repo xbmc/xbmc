@@ -25,6 +25,6 @@ HEADER_SEARCH_PATHS = $(inherited) $SRCROOT xbmc xbmc/linux xbmc/osx xbmc/cores/
 LIBRARY_SEARCH_PATHS = $(inherited) $(SRCROOT) $(SRCROOT)/lib/libRTV $(SRCROOT)/lib/libXDAAP $(SRCROOT)/lib/cmyth/libcmyth $(SRCROOT)/lib/cmyth/librefmem $(SRCROOT)/lib/libsquish $(SRCROOT)/lib/SlingboxLib $(SRCROOT)/xbmc/interfaces/json-rpc "$(SRCROOT)/xbmc/interfaces/python" "$(SRCROOT)/xbmc/interfaces/legacy"
 FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SDKROOT)/System/Library/PrivateFrameworks/" "$(SDKROOT)/System/Library/Frameworks/"
 
-XBMC_OTHER_LDFLAGS_COMMON = $(inherited) -Wl,-headerpad_max_install_names -Wl,-all_load -L$XBMC_DEPENDS/lib -lbz2 -lintl -lexpat -lssl -lgpg-error -lresolv -lffi -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -lsmbclient -lpython2.6 -lyajl -ljpeg -lcrypto -lgcrypt -lavdevice -lavfilter -lavcodec -lavformat -lpostproc -lavutil -lswresample -lswscale -ltag -L$XBMC_DEPENDS/lib/mysql -lmysqlclient -lxml2 -lxslt
+XBMC_OTHER_LDFLAGS_COMMON = $(inherited) -Wl,-headerpad_max_install_names -Wl,-all_load -L$XBMC_DEPENDS/lib -lbz2 -lintl -lexpat -lssl -lgpg-error -lresolv -lffi -lssh -llzo2 -lpcre -lpcrecpp -lfribidi -lfreetype -lfontconfig -lsqlite3 -ltinyxml -lmicrohttpd -lsmbclient -lpython2.6 -lyajl -ljpeg -lcrypto -lgcrypt -lavdevice -lavfilter -lavcodec -lavformat -lpostproc -lavutil -lswresample -lswscale -ltag -L$XBMC_DEPENDS/lib/mysql -lmysqlclient -lxml2 -lxslt -lnettle -lgmp -lhogweed -lgnutls
 
 

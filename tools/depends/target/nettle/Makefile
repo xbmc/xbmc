@@ -7,9 +7,15 @@ VERSION=2.7.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+ifeq ($(OS),ios)
+  ifneq (,$(findstring 3.,$(XCODE_VERSION)))
+    CONFIGURE_FLAGS=-disable-assembler
+  endif
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl
+          ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl $(CONFIGURE_FLAGS)
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
 
