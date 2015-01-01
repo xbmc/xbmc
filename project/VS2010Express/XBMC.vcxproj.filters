@@ -6057,9 +6057,4 @@
       <Filter>win32</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">
-      <Filter>interfaces\swig</Filter>
-    </None>
-  </ItemGroup>
 </Project>
