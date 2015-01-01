@@ -1285,6 +1285,7 @@ if test "x$use_pulse" != "xno"; then
       if test "x$use_pulse" = "xyes"; then
         AC_MSG_ERROR($pulse_not_found)
       else
+        use_pulse="no"
         AC_MSG_RESULT($pulse_disabled)
       fi
     fi
