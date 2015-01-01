@@ -1422,6 +1422,8 @@ void CDVDPlayer::Process()
           CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
           if (pSubStream)
             ProcessSubData(pSubStream, pkt);
+          else
+            CDVDDemuxUtils::FreeDemuxPacket(pkt);
         }
       }
     }
