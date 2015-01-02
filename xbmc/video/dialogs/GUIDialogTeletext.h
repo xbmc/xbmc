@@ -32,6 +32,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
   virtual bool OnBack(int actionID);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
