@@ -338,7 +338,7 @@ bool CGUIWindowPVRTimers::ShowTimerSettings(CFileItem *item)
   /* Check item is TV timer information tag */
   if (!item->IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "CGUIWindowPVRTimers: Can't open timer settings dialog, no timer info tag!");
+    CLog::LogF(LOGERROR, "Can't open timer settings dialog, no timer info tag!");
     return false;
   }
 

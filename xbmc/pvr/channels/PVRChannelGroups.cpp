@@ -198,7 +198,8 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
     // user defined group wasn't found
     if (existingGroup.GroupType() == PVR_GROUP_TYPE_DEFAULT && !group)
     {
-      CLog::Log(LOGDEBUG, "PVR - %s - user defined group %s with id '%u' does not exist on the client anymore; deleting it", __FUNCTION__, existingGroup.GroupName().c_str(), existingGroup.GroupID());
+      CLog::LogF(LOGDEBUG, "User defined group %s with id '%u' does not exist on the client anymore, deleting it",
+      existingGroup.GroupName().c_str(), existingGroup.GroupID());
       DeleteGroup(*m_groups.at(iGroupPtr));
     }
   }
@@ -228,10 +229,11 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   if (bSyncWithBackends)
   {
     GetGroupsFromClients();
-    CLog::Log(LOGDEBUG, "PVR - %s - %" PRIuS" new user defined %s channel groups fetched from clients", __FUNCTION__, (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
+    CLog::LogF(LOGDEBUG, "%" PRIuS" new user defined %s channel groups fetched from clients",
+    (m_groups.size() - iSize), m_bRadio ? "Radio" : "TV");
   }
   else
-    CLog::Log(LOGDEBUG, "PVR - %s - 'synchannelgroups' is disabled; skipping groups from clients", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "Sync channel groups from backend is disabled, skipping groups from clients");
 
   std::vector<CPVRChannelGroupPtr> emptyGroups;
 
@@ -243,7 +245,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
     {
       if (!(*it)->Load())
       {
-        CLog::Log(LOGDEBUG, "PVR - %s - failed to load channel group '%s'", __FUNCTION__, (*it)->GroupName().c_str());
+        CLog::LogF(LOGDEBUG, "Failed to load channel group '%s'", (*it)->GroupName().c_str());
         return false;
       }
 
@@ -255,7 +257,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
   for (std::vector<CPVRChannelGroupPtr>::iterator it = emptyGroups.begin(); it != emptyGroups.end(); ++it)
   {
-    CLog::Log(LOGDEBUG, "PVR - %s - deleting empty group '%s'", __FUNCTION__, (*it)->GroupName().c_str());
+    CLog::LogF(LOGDEBUG, "Deleting empty group '%s'", (*it)->GroupName().c_str());
     DeleteGroup(*(*it));
   }
 
@@ -274,7 +276,7 @@ bool CPVRChannelGroups::Load(void)
   // remove previous contents
   Clear();
 
-  CLog::Log(LOGDEBUG, "PVR - %s - loading all %s channel groups", __FUNCTION__, m_bRadio ? "radio" : "TV");
+  CLog::LogF(LOGDEBUG, "Loading all %s channel groups", m_bRadio ? "Radio" : "TV");
 
   // create the internal channel group
   CPVRChannelGroupPtr internalGroup = CPVRChannelGroupPtr(new CPVRChannelGroupInternal(m_bRadio));
@@ -282,19 +284,19 @@ bool CPVRChannelGroups::Load(void)
 
   // load groups from the database
   database->Get(*this);
-  CLog::Log(LOGDEBUG, "PVR - %s - %" PRIuS" %s groups fetched from the database", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::LogF(LOGDEBUG, "%" PRIuS" %s groups fetched from the database", m_groups.size(), m_bRadio ? "Radio" : "TV");
 
   // load channels of internal group
   if (!internalGroup->Load())
   {
-    CLog::Log(LOGERROR, "PVR - %s - failed to load channels", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to load channels");
     return false;
   }
 
   // load the other groups from the database
   if (!LoadUserDefinedChannelGroups())
   {
-    CLog::Log(LOGERROR, "PVR - %s - failed to load channel groups", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to load channel groups");
     return false;
   }
 
@@ -302,7 +304,7 @@ bool CPVRChannelGroups::Load(void)
   CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
   SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
 
-  CLog::Log(LOGDEBUG, "PVR - %s - %" PRIuS" %s channel groups loaded", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::LogF(LOGDEBUG, "%" PRIuS" %s channel groups loaded", m_groups.size(), m_bRadio ? "Radio" : "TV");
 
   // need at least 1 group
   return m_groups.size() > 0;
@@ -311,7 +313,7 @@ bool CPVRChannelGroups::Load(void)
 bool CPVRChannelGroups::PersistAll(void)
 {
   bool bReturn(true);
-  CLog::Log(LOGDEBUG, "PVR - %s - persisting all changes in channel groups", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Persisting all changes in channel groups");
 
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
@@ -492,7 +494,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   // don't delete internal groups
   if (group.IsInternalGroup())
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot delete internal group '%s'", __FUNCTION__, group.GroupName().c_str());
+    CLog::LogF(LOGERROR, "Cannot delete internal group '%s'", group.GroupName().c_str());
     return false;
   }
 

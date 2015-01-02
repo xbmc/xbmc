@@ -67,7 +67,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId) :
   m_strTitle(timer.strTitle),
   m_strDirectory(timer.strDirectory)
-{  
+{
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
@@ -320,8 +320,8 @@ std::string CPVRTimerInfoTag::GetStatus() const
     strReturn = g_localizeStrings.Get(19162);
   else if (m_state == PVR_TIMER_STATE_CONFLICT_OK)
     strReturn = g_localizeStrings.Get(19275);
-  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)	
-    strReturn = g_localizeStrings.Get(19276);	
+  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)
+    strReturn = g_localizeStrings.Get(19276);
   else if (m_state == PVR_TIMER_STATE_ERROR)
     strReturn = g_localizeStrings.Get(257);
 
@@ -443,9 +443,9 @@ void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTagPtr tag)
 {
   CSingleLock lock(m_critSection);
   if (tag && m_epgTag != tag)
-    CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", m_strTitle.c_str(), tag->Title().c_str());
+    CLog::LogF(LOGINFO, "Timer %s set to epg event %s", m_strTitle.c_str(), tag->Title().c_str());
   else if (!tag && m_epgTag)
-    CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", m_strTitle.c_str());
+    CLog::LogF(LOGINFO, "Timer %s set to no epg event", m_strTitle.c_str());
   m_epgTag = tag;
 }
 
@@ -491,7 +491,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   CPVRTimerInfoTag *newTag = new CPVRTimerInfoTag();
   if (!newTag)
   {
-    CLog::Log(LOGERROR, "%s - couldn't create new timer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Couldn't create new timer");
     return NULL;
   }
 
@@ -499,7 +499,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   CPVRChannelPtr channel = tag.ChannelTag();
   if (!channel)
   {
-    CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No channel set");
     delete newTag;
     return NULL;
   }
@@ -507,7 +507,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   /* check if the epg end date is in the future */
   if (tag.EndAsLocalTime() < CDateTime::GetCurrentDateTime())
   {
-    CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
+    CLog::LogF(LOGERROR, "End time is in the past");
     delete newTag;
     return NULL;
   }
@@ -606,8 +606,8 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
   case PVR_TIMER_STATE_COMPLETED:
     strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str());
     break;
-  case PVR_TIMER_STATE_CONFLICT_OK:	
-  case PVR_TIMER_STATE_CONFLICT_NOK:	
+  case PVR_TIMER_STATE_CONFLICT_OK:
+  case PVR_TIMER_STATE_CONFLICT_NOK:
     strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19277).c_str(), m_strTitle.c_str());
     break;
   case PVR_TIMER_STATE_ERROR:

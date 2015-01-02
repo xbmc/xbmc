@@ -148,7 +148,7 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
       SetProperty("IsRadio", m_bRadio ? "true" : "");
     }
     break;
-      
+
     case GUI_MSG_CLICKED:
     {
       switch (message.GetSenderId())
@@ -436,7 +436,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
   }
   else
   {
-    CLog::Log(LOGERROR, "CGUIWindowPVRCommon - %s - can't open recording: no valid filename", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Can't open recording, no valid filename");
     CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
     return false;
   }

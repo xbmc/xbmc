@@ -160,7 +160,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
   value["channelnumber"] = m_iCachedChannelNumber;
   value["subchannelnumber"] = m_iCachedSubChannelNumber;
-  
+
   CEpgInfoTag epg;
   if (GetEPGNow(epg))
   {
@@ -342,7 +342,7 @@ bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIco
     SetChanged();
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
-	  
+
     return true;
   }
 
@@ -361,15 +361,15 @@ bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUser
   {
     m_strChannelName = strName;
     m_bIsUserSetName = bIsUserSetName;
-    
-    /* if the user changes the name manually to an empty string we reset the 
+
+    /* if the user changes the name manually to an empty string we reset the
        flag and use the name from the client instead */
     if (bIsUserSetName && strChannelName.empty())
     {
       m_bIsUserSetName = false;
       m_strChannelName = ClientChannelName();
     }
-    
+
     SetChanged();
     m_bChanged = true;
 
@@ -599,8 +599,7 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
   CEpg *epg = GetEPG();
   if (!epg)
   {
-    CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
-        __FUNCTION__, m_strChannelName.c_str());
+    CLog::LogF(LOGDEBUG, "Cannot get EPG for channel '%s'", m_strChannelName.c_str());
     return -1;
   }
 

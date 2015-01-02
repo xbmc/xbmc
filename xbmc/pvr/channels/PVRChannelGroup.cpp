@@ -136,19 +136,17 @@ bool CPVRChannelGroup::Load(void)
   m_bUsingBackendChannelNumbers = CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers");
 
   int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
-  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
-        __FUNCTION__, iChannelCount, m_strGroupName.c_str());
+  CLog::LogF(LOGDEBUG, "%d channels loaded from the database for group '%s'", iChannelCount, m_strGroupName.c_str());
 
   if (!Update())
   {
-    CLog::Log(LOGERROR, "PVRChannelGroup - %s - failed to update channels", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to update channels");
     return false;
   }
 
   if (Size() - iChannelCount > 0)
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-        __FUNCTION__, Size() - iChannelCount, m_strGroupName.c_str());
+    CLog::LogF(LOGDEBUG, "%d channels added from clients to group '%s'", Size() - iChannelCount, m_strGroupName.c_str());
   }
 
   SortAndRenumber();
@@ -238,8 +236,8 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   else
     bReturn = true;
 
-  CLog::Log(LOGNOTICE, "CPVRChannelGroup - %s - %s channel '%s' moved to channel number '%d'",
-      __FUNCTION__, (m_bRadio ? "radio" : "tv"), entry.channel->ChannelName().c_str(), iNewChannelNumber);
+  CLog::LogF(LOGNOTICE, "%s channel '%s' moved to channel number '%d'", (m_bRadio ? "Radio" : "TV"),
+      entry.channel->ChannelName().c_str(), iNewChannelNumber);
 
   return bReturn;
 }
@@ -660,8 +658,8 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
       AddToGroup(*existingChannel, iChannelNumber);
 
       bReturn = true;
-      CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' at position %d in group '%s'",
-          __FUNCTION__, m_bRadio ? "radio" : "TV", existingChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
+      CLog::LogF(LOGINFO,"Added %s channel '%s' at position %d in group '%s'", m_bRadio ? "Radio" : "TV",
+          existingChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
     }
   }
 
@@ -686,8 +684,8 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
     if (channels.GetByClient(channel->UniqueID(), channel->ClientID()) == NULL)
     {
       /* channel was not found */
-      CLog::Log(LOGINFO,"PVRChannelGroup - %s - deleted %s channel '%s' from group '%s'",
-          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(), GroupName().c_str());
+      CLog::LogF(LOGINFO,"Deleted %s channel '%s' from group '%s'", m_bRadio ? "Radio" : "TV",
+          channel->ChannelName().c_str(), GroupName().c_str());
 
       /* remove this channel from all non-system groups if this is the internal group */
       if (IsInternalGroup())
@@ -757,15 +755,15 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
 
     if (m_members.at(ptr).channel->ClientChannelNumber() <= 0)
     {
-      CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid client channel number",
-          __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::LogF(LOGERROR, "Removing invalid channel '%s' from client '%i': no valid client channel number",
+          channel->ChannelName().c_str(), channel->ClientID());
       bDelete = true;
     }
 
     if (!bDelete && channel->UniqueID() <= 0)
     {
-      CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid unique ID",
-          __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::LogF(LOGERROR, "Removing invalid channel '%s' from client '%i': no valid unique ID",
+          channel->ChannelName().c_str(), channel->ClientID());
       bDelete = true;
     }
 
@@ -905,8 +903,7 @@ bool CPVRChannelGroup::Persist(void)
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
-        __FUNCTION__, GroupName().c_str(), (int) m_members.size());
+    CLog::LogF(LOGDEBUG, "Persisting channel group '%s' with %d channels", GroupName().c_str(), (int) m_members.size());
     m_bChanged = false;
     lock.Leave();
 
@@ -1040,7 +1037,7 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
   /* TODO: while pvr manager is starting up do accept setting changes. */
   if(!g_PVRManager.IsStarted())
   {
-    CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
+    CLog::LogF(LOGWARNING, "Setting change ignored while PVR manager is starting");
     return;
   }
 
@@ -1060,8 +1057,8 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
     /* check whether this channel group has to be renumbered */
     if (bChannelOrderChanged || bChannelNumbersChanged)
     {
-      CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - renumbering group '%s' to use the backend channel order and/or numbers",
-          __FUNCTION__, m_strGroupName.c_str());
+      CLog::LogF(LOGDEBUG, "Renumbering group '%s' to use the backend channel order and/or numbers",
+          m_strGroupName.c_str());
       SortAndRenumber();
       Persist();
     }
@@ -1173,7 +1170,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;
   CSingleLock lock(m_critSection);
-  
+
   for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     if (it->channel && !it->channel->IsHidden())
@@ -1189,7 +1186,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
             if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
               date = epgDate;
             break;
-            
+
           case EPG_LAST_DATE:
             epgDate = epg->GetLastDate();
             if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
@@ -1199,7 +1196,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
       }
     }
   }
-  
+
   return date;
 }
 
