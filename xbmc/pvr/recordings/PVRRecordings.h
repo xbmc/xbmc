@@ -41,8 +41,7 @@ namespace PVR
     PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
     bool                         m_bGroupItems;
-    CVideoDatabase               m_db;
-    bool                         m_dbLoaded;
+    CVideoDatabase               m_database;
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;

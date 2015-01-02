@@ -43,14 +43,14 @@ CPVRRecordings::CPVRRecordings(void) :
     m_iLastId(0),
     m_bGroupItems(true)
 {
-  m_dbLoaded = m_db.Open();
+  m_database.Open();
 }
 
 CPVRRecordings::~CPVRRecordings()
 {
   Clear();
-  if (m_dbLoaded)
-    m_db.Close();
+  if (m_database.IsOpen())
+    m_database.Close();
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -126,8 +126,8 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     CFileItemPtr pFileItem;
-    if (m_dbLoaded)
-      current->UpdateMetadata(m_db);
+    if (m_database.IsOpen())
+      current->UpdateMetadata(m_database);
 
     if (!results->Contains(strFilePath))
     {
@@ -256,7 +256,7 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 {
   bool bResult = false;
 
-  if (m_dbLoaded)
+  if (m_database.IsOpen())
   {
     bResult = true;
 
@@ -296,11 +296,11 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
         // Clear resume bookmark
         if (count > 0)
         {
-          m_db.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+          m_database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
           recording->SetLastPlayedPosition(0);
         }
 
-        m_db.SetPlayCount(*pItem, count);
+        m_database.SetPlayCount(*pItem, count);
       }
     }
   }
@@ -333,8 +333,8 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       if (!IsDirectoryMember(strDirectoryPath, current->m_strDirectory))
         continue;
 
-      if (m_dbLoaded)
-        current->UpdateMetadata(m_db);
+      if (m_database.IsOpen())
+        current->UpdateMetadata(m_database);
       CFileItemPtr pFileItem(new CFileItem(*current));
       pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
@@ -373,8 +373,8 @@ void CPVRRecordings::GetAll(CFileItemList &items)
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
     CPVRRecordingPtr current = it->second;
-    if (m_dbLoaded)
-      current->UpdateMetadata(m_db);
+    if (m_database.IsOpen())
+      current->UpdateMetadata(m_database);
 
     CFileItemPtr pFileItem(new CFileItem(*current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
