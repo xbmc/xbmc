@@ -91,7 +91,7 @@ bool CGUIWindowPVRBase::OnAction(const CAction &action)
     case ACTION_PREVIOUS_CHANNELGROUP:
     case ACTION_NEXT_CHANNELGROUP:
       // switch to next or previous group
-      SetGroup(ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup());
+      SetGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup());
       return true;
   }
 
