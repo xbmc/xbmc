@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <cstdio>
 #include "DecoderManager.h"
 
 std::vector<IDecoder *> DecoderManager::m_decoders;

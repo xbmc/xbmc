@@ -38,7 +38,7 @@
 #include "XBTFWriter.h"
 #include "md5.h"
 #include "cmdlineargs.h"
-#include "libsquish/squish.h"
+#include "squish.h"
 
 #ifdef TARGET_WINDOWS
 #define strncasecmp _strnicmp
@@ -46,7 +46,7 @@
 
 #ifdef USE_LZO_PACKING
 #ifdef TARGET_WINDOWS
-#include "../../lib/win32/liblzo/LZO1X.H"
+#include "win32/liblzo/LZO1X.H"
 #else
 #include <lzo/lzo1x.h>
 #endif

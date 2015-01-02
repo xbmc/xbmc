@@ -18,6 +18,7 @@
  *
  */
 
+#include <cstring>
 #include "GIFDecoder.h"
 #include "GifHelper.h"
 

@@ -21,6 +21,7 @@
 #include "GifHelper.h"
 #include <algorithm>
 #include <stdlib.h>
+#include <cstring>
 
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))
 #define GIF_MAX_MEMORY 82944000U // about 79 MB, which is equivalent to 10 full hd frames.
