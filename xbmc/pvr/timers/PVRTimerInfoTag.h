@@ -62,7 +62,6 @@ namespace PVR
 
   class CPVRTimerInfoTag;
   typedef boost::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-  #define PVR_VIRTUAL_CHANNEL_UID (-1)
 
   class CPVRTimerInfoTag : public ISerializable
   {

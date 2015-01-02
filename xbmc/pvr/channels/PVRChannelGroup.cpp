@@ -752,8 +752,6 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
   {
     bool bDelete = false;
     CPVRChannelPtr channel = m_members.at(ptr).channel;
-    if (channel->IsVirtual())
-      continue;
 
     if (m_members.at(ptr).channel->ClientChannelNumber() <= 0)
     {
@@ -1281,7 +1279,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;
@@ -1298,8 +1296,6 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath, bUserSetIcon);
 
-  if (bVirtual)
-    channel->SetStreamURL(strStreamURL);
   if (iEPGSource == 0)
     channel->SetEPGScraper("client");
 

@@ -75,25 +75,17 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
 
-  if (pItem->GetPath() == "pvr://channels/.add.channel")
-  {
-    /* If yes show only "New Channel" on context menu */
-    buttons.Add(CONTEXT_BUTTON_ADD, 19046);                                           /* add new channel */
-  }
-  else
-  {
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
-    buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
-    buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
+  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
+  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
 
-    if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
+  if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
+    buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
 
-    // Add parent buttons before the Manage button
-    CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
+  // Add parent buttons before the Manage button
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
     
-    buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
-  }
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)

@@ -418,11 +418,9 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
+    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
 
     bool ToggleChannelLocked(const CFileItem &channel);
-
-    virtual bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { return false; }
 
     /*!
      * @brief Get a channel given the channel number on the client.

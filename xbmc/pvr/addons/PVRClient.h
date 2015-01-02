@@ -44,7 +44,6 @@ namespace PVR
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
   typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
-  #define PVR_VIRTUAL_CLIENT_ID (-1)
 
   /*!
    * Interface from XBMC to a PVR add-on.

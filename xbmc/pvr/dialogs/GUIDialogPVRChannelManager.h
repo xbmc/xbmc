@@ -63,7 +63,6 @@ namespace PVR
     virtual bool OnClickButtonGroupManager(CGUIMessage &message);
     virtual bool OnClickButtonEditChannel(CGUIMessage &message);
     virtual bool OnClickButtonDeleteChannel(CGUIMessage &message);
-    virtual bool OnClickButtonNewChannel(CGUIMessage &message);
 
     virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber);
     virtual void SetItemsUnchanged(void);

@@ -279,7 +279,6 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_bIsLocked               = m_pDS->fv("bIsLocked").get_asBool();
         channel->m_strIconPath             = m_pDS->fv("sIconPath").get_asString();
         channel->m_strChannelName          = m_pDS->fv("sChannelName").get_asString();
-        channel->m_bIsVirtual              = m_pDS->fv("bIsVirtual").get_asBool();
         channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
         channel->m_iLastWatched            = (time_t) m_pDS->fv("iLastWatched").get_asInt();
@@ -771,7 +770,7 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
         "iClientChannelNumber, iClientSubChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idEpg) "
         "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, '%s', '%s', %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.ClientSubChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(),
         channel.EpgID());
   }
@@ -784,7 +783,7 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
         "iClientChannelNumber, iClientSubChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel, idEpg) "
         "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, '%s', '%s', %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.ClientSubChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID(),
         channel.EpgID());
   }
