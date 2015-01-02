@@ -449,38 +449,6 @@
 					<onup>14</onup>
 					<ondown>7</ondown>
 				</control>
-				<control type="button" id="31">
-					<description>Edit channel Button</description>
-					<left>0</left>
-					<top>65</top>
-					<width>380</width>
-					<height>35</height>
-					<font>font12</font>
-					<texturefocus border="5">button-focus2.png</texturefocus>
-					<texturenofocus border="5">button-nofocus.png</texturenofocus>
-					<align>center</align>
-					<label>19203</label>
-					<onleft>20</onleft>
-					<onright>9000</onright>
-					<onup>30</onup>
-					<ondown>32</ondown>
-				</control>
-				<control type="button" id="32">
-					<description>Delete channel Button</description>
-					<left>0</left>
-					<top>105</top>
-					<width>380</width>
-					<height>35</height>
-					<font>font12</font>
-					<texturefocus border="5">button-focus2.png</texturefocus>
-					<texturenofocus border="5">button-nofocus.png</texturenofocus>
-					<align>center</align>
-					<label>19211</label>
-					<onleft>20</onleft>
-					<onright>9000</onright>
-					<onup>31</onup>
-					<ondown>33</ondown>
-				</control>
 			</control>
 		</control>
 		<control type="group" id="9000">

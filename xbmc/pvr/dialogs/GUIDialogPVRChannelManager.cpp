@@ -52,8 +52,6 @@
 #define RADIOBUTTON_PARENTAL_LOCK 14
 #define CONTROL_LIST_CHANNELS     20
 #define BUTTON_GROUP_MANAGER      30
-#define BUTTON_EDIT_CHANNEL       31
-#define BUTTON_DELETE_CHANNEL     32
 #define BUTTON_RADIO_TV           34
 
 using namespace PVR;
@@ -416,55 +414,6 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonEditChannel(CGUIMessage &message)
-{
-  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-  if (!pItem)
-    return false;
-
-  if (pItem->GetProperty("Virtual").asBoolean())
-  {
-    std::string strURL = pItem->GetProperty("StreamURL").asString();
-    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
-      pItem->SetProperty("StreamURL", strURL);
-    return true;
-  }
-
-  CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
-  return true;
-}
-
-bool CGUIDialogPVRChannelManager::OnClickButtonDeleteChannel(CGUIMessage &message)
-{
-  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-  if (!pItem)
-    return false;
-
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return true;
-
-  pDialog->SetHeading(19211);
-  pDialog->SetLine(0, "");
-  pDialog->SetLine(1, 750);
-  pDialog->SetLine(2, "");
-  pDialog->DoModal();
-
-  if (pDialog->IsConfirmed())
-  {
-    if (pItem->GetProperty("Virtual").asBoolean())
-    {
-      pItem->GetPVRChannelInfoTag()->SetVirtual(true);
-      m_channelItems->Remove(m_iSelected);
-      m_viewControl.SetItems(*m_channelItems);
-      Renumber();
-      return true;
-    }
-    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
-  }
-  return true;
-}
-
 bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage &message)
 {
   int iControl = message.GetSenderId();
@@ -494,10 +443,6 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage &message)
     return OnClickEPGSourceSpin(message);
   case BUTTON_GROUP_MANAGER:
     return OnClickButtonGroupManager(message);
-  case BUTTON_EDIT_CHANNEL:
-    return OnClickButtonEditChannel(message);
-  case BUTTON_DELETE_CHANNEL:
-    return OnClickButtonDeleteChannel(message);
   default:
     return false;
   }
