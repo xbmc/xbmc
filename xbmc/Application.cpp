@@ -135,8 +135,6 @@
 #endif
 #ifdef HAS_KARAOKE
 #include "music/karaoke/karaokelyricsmanager.h"
-#include "music/karaoke/GUIDialogKaraokeSongSelector.h"
-#include "music/karaoke/GUIWindowKaraokeLyrics.h"
 #endif
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
@@ -168,116 +166,35 @@
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
-#include "windows/GUIWindowHome.h"
-#include "settings/windows/GUIWindowSettings.h"
-#include "windows/GUIWindowFileManager.h"
-#include "settings/windows/GUIWindowSettingsCategory.h"
-#include "music/windows/GUIWindowMusicPlaylist.h"
-#include "music/windows/GUIWindowMusicSongs.h"
-#include "music/windows/GUIWindowMusicNav.h"
-#include "music/windows/GUIWindowMusicPlaylistEditor.h"
-#include "video/windows/GUIWindowVideoPlaylist.h"
-#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/windows/GUIWindowVideoNav.h"
-#include "profiles/windows/GUIWindowSettingsProfile.h"
-#ifdef HAS_GL
-#include "rendering/gl/GUIWindowTestPatternGL.h"
-#endif
-#ifdef HAS_DX
-#include "rendering/dx/GUIWindowTestPatternDX.h"
-#endif
-#include "settings/windows/GUIWindowSettingsScreenCalibration.h"
-#include "programs/GUIWindowPrograms.h"
-#include "pictures/GUIWindowPictures.h"
-#include "windows/GUIWindowWeather.h"
-#include "windows/GUIWindowLoginScreen.h"
-#include "addons/GUIWindowAddonBrowser.h"
-#include "music/windows/GUIWindowVisualisation.h"
-#include "windows/GUIWindowDebugInfo.h"
-#include "windows/GUIWindowPointer.h"
-#include "windows/GUIWindowSystemInfo.h"
 #include "windows/GUIWindowScreensaver.h"
-#include "windows/GUIWindowScreensaverDim.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "windows/GUIWindowStartup.h"
-#include "video/windows/GUIWindowFullScreen.h"
-#include "video/dialogs/GUIDialogVideoOSD.h"
-#include "music/dialogs/GUIDialogMusicOverlay.h"
-#include "video/dialogs/GUIDialogVideoOverlay.h"
 #include "video/VideoInfoScanner.h"
 #include "video/PlayerController.h"
 
 // Dialog includes
-#include "music/dialogs/GUIDialogMusicOSD.h"
-#include "music/dialogs/GUIDialogVisualisationPresetList.h"
-#include "dialogs/GUIDialogTextViewer.h"
-#include "network/GUIDialogNetworkSetup.h"
-#include "dialogs/GUIDialogMediaSource.h"
-#include "video/dialogs/GUIDialogVideoSettings.h"
-#include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "profiles/dialogs/GUIDialogLockSettings.h"
-#include "settings/dialogs/GUIDialogContentSettings.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogSeekBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
-#include "video/dialogs/GUIDialogFileStacking.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogSubMenu.h"
-#include "dialogs/GUIDialogFavourites.h"
 #include "dialogs/GUIDialogButtonMenu.h"
-#include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogPlayerControls.h"
-#include "music/dialogs/GUIDialogSongInfo.h"
-#include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "dialogs/GUIDialogSmartPlaylistRule.h"
-#include "pictures/GUIDialogPictureInfo.h"
 #include "addons/GUIDialogAddonSettings.h"
-#include "addons/GUIDialogAddonInfo.h"
-#ifdef HAS_LINUX_NETWORK
-#include "network/GUIDialogAccessPoints.h"
-#endif
 
-/* PVR related include Files */
+// PVR related include Files
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVRChannels.h"
-#include "pvr/windows/GUIWindowPVRRecordings.h"
-#include "pvr/windows/GUIWindowPVRGuide.h"
-#include "pvr/windows/GUIWindowPVRTimers.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
-#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
-#include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
-#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
-#include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 
 #include "epg/EpgContainer.h"
 
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
-#include "video/dialogs/GUIDialogTeletext.h"
-#include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
-#include "dialogs/GUIDialogMediaFilter.h"
-#include "video/dialogs/GUIDialogSubtitles.h"
+#include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
+#include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CompileInfo.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1336,127 +1253,7 @@ bool CApplication::Initialize()
   {
     CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
 
-    g_windowManager.Add(new CGUIWindowHome);
-    g_windowManager.Add(new CGUIWindowPrograms);
-    g_windowManager.Add(new CGUIWindowPictures);
-    g_windowManager.Add(new CGUIWindowFileManager);
-    g_windowManager.Add(new CGUIWindowSettings);
-    g_windowManager.Add(new CGUIWindowSystemInfo);
-#ifdef HAS_GL
-    g_windowManager.Add(new CGUIWindowTestPatternGL);
-#endif
-#ifdef HAS_DX
-    g_windowManager.Add(new CGUIWindowTestPatternDX);
-#endif
-    g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);
-    g_windowManager.Add(new CGUIWindowSettingsCategory);
-    g_windowManager.Add(new CGUIWindowVideoNav);
-    g_windowManager.Add(new CGUIWindowVideoPlaylist);
-    g_windowManager.Add(new CGUIWindowLoginScreen);
-    g_windowManager.Add(new CGUIWindowSettingsProfile);
-    g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));
-    g_windowManager.Add(new CGUIWindowAddonBrowser);
-    g_windowManager.Add(new CGUIWindowScreensaverDim);
-    g_windowManager.Add(new CGUIWindowDebugInfo);
-    g_windowManager.Add(new CGUIWindowPointer);
-    g_windowManager.Add(new CGUIDialogYesNo);
-    g_windowManager.Add(new CGUIDialogProgress);
-    g_windowManager.Add(new CGUIDialogExtendedProgressBar);
-    g_windowManager.Add(new CGUIDialogKeyboardGeneric);
-    g_windowManager.Add(new CGUIDialogVolumeBar);
-    g_windowManager.Add(new CGUIDialogSeekBar);
-    g_windowManager.Add(new CGUIDialogSubMenu);
-    g_windowManager.Add(new CGUIDialogContextMenu);
-    g_windowManager.Add(new CGUIDialogKaiToast);
-    g_windowManager.Add(new CGUIDialogNumeric);
-    g_windowManager.Add(new CGUIDialogGamepad);
-    g_windowManager.Add(new CGUIDialogButtonMenu);
-    g_windowManager.Add(new CGUIDialogMuteBug);
-    g_windowManager.Add(new CGUIDialogPlayerControls);
-#ifdef HAS_KARAOKE
-    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall);
-    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge);
-#endif
-    g_windowManager.Add(new CGUIDialogSlider);
-    g_windowManager.Add(new CGUIDialogMusicOSD);
-    g_windowManager.Add(new CGUIDialogVisualisationPresetList);
-    g_windowManager.Add(new CGUIDialogVideoSettings);
-    g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);
-    g_windowManager.Add(new CGUIDialogVideoBookmarks);
-    // Don't add the filebrowser dialog - it's created and added when it's needed
-    g_windowManager.Add(new CGUIDialogNetworkSetup);
-    g_windowManager.Add(new CGUIDialogMediaSource);
-    g_windowManager.Add(new CGUIDialogProfileSettings);
-    g_windowManager.Add(new CGUIDialogFavourites);
-    g_windowManager.Add(new CGUIDialogSongInfo);
-    g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);
-    g_windowManager.Add(new CGUIDialogSmartPlaylistRule);
-    g_windowManager.Add(new CGUIDialogBusy);
-    g_windowManager.Add(new CGUIDialogPictureInfo);
-    g_windowManager.Add(new CGUIDialogAddonInfo);
-    g_windowManager.Add(new CGUIDialogAddonSettings);
-#ifdef HAS_LINUX_NETWORK
-    g_windowManager.Add(new CGUIDialogAccessPoints);
-#endif
-
-    g_windowManager.Add(new CGUIDialogLockSettings);
-
-    g_windowManager.Add(new CGUIDialogContentSettings);
-
-    g_windowManager.Add(new CGUIDialogPlayEject);
-
-    g_windowManager.Add(new CGUIDialogPeripheralManager);
-    g_windowManager.Add(new CGUIDialogPeripheralSettings);
-    
-    g_windowManager.Add(new CGUIDialogMediaFilter);
-    g_windowManager.Add(new CGUIDialogSubtitles);
-
-    g_windowManager.Add(new CGUIWindowMusicPlayList);
-    g_windowManager.Add(new CGUIWindowMusicSongs);
-    g_windowManager.Add(new CGUIWindowMusicNav);
-    g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
-
-    /* Load PVR related Windows and Dialogs */
-    g_windowManager.Add(new CGUIDialogTeletext);
-    g_windowManager.Add(new CGUIWindowPVRChannels(false));
-    g_windowManager.Add(new CGUIWindowPVRRecordings(false));
-    g_windowManager.Add(new CGUIWindowPVRGuide(false));
-    g_windowManager.Add(new CGUIWindowPVRTimers(false));
-    g_windowManager.Add(new CGUIWindowPVRSearch(false));
-    g_windowManager.Add(new CGUIWindowPVRChannels(true));
-    g_windowManager.Add(new CGUIWindowPVRRecordings(true));
-    g_windowManager.Add(new CGUIWindowPVRGuide(true));
-    g_windowManager.Add(new CGUIWindowPVRTimers(true));
-    g_windowManager.Add(new CGUIWindowPVRSearch(true));
-    g_windowManager.Add(new CGUIDialogPVRGuideInfo);
-    g_windowManager.Add(new CGUIDialogPVRRecordingInfo);
-    g_windowManager.Add(new CGUIDialogPVRTimerSettings);
-    g_windowManager.Add(new CGUIDialogPVRGroupManager);
-    g_windowManager.Add(new CGUIDialogPVRChannelManager);
-    g_windowManager.Add(new CGUIDialogPVRGuideSearch);
-    g_windowManager.Add(new CGUIDialogPVRChannelsOSD);
-    g_windowManager.Add(new CGUIDialogPVRGuideOSD);
-
-    g_windowManager.Add(new CGUIDialogSelect);
-    g_windowManager.Add(new CGUIDialogMusicInfo);
-    g_windowManager.Add(new CGUIDialogOK);
-    g_windowManager.Add(new CGUIDialogVideoInfo);
-    g_windowManager.Add(new CGUIDialogTextViewer);
-    g_windowManager.Add(new CGUIWindowFullScreen);
-    g_windowManager.Add(new CGUIWindowVisualisation);
-    g_windowManager.Add(new CGUIWindowSlideShow);
-    g_windowManager.Add(new CGUIDialogFileStacking);
-#ifdef HAS_KARAOKE
-    g_windowManager.Add(new CGUIWindowKaraokeLyrics);
-#endif
-
-    g_windowManager.Add(new CGUIDialogVideoOSD);
-    g_windowManager.Add(new CGUIDialogMusicOverlay);
-    g_windowManager.Add(new CGUIDialogVideoOverlay);
-    g_windowManager.Add(new CGUIWindowScreensaver);
-    g_windowManager.Add(new CGUIWindowWeather);
-    g_windowManager.Add(new CGUIWindowStartup);
-
+    g_windowManager.CreateWindows();
     /* window id's 3000 - 3100 are reserved for python */
 
     // Make sure we have at least the default skin
@@ -2576,7 +2373,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // handle extra global presses
-  
+
   // notify action listeners
   if (NotifyActionListeners(action))
     return true;
@@ -2593,8 +2390,8 @@ bool CApplication::OnAction(const CAction &action)
     if (!CBuiltins::IsSystemPowerdownCommand(action.GetName()) ||
         g_PVRManager.CanSystemPowerdown())
     {
-      CBuiltins::Execute(action.GetName());
-      m_navigationTimer.StartZero();
+    CBuiltins::Execute(action.GetName());
+    m_navigationTimer.StartZero();
     }
     return true;
   }
@@ -3306,115 +3103,7 @@ bool CApplication::Cleanup()
 {
   try
   {
-    g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST);
-    g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
-    g_windowManager.Delete(WINDOW_MUSIC_FILES);
-    g_windowManager.Delete(WINDOW_MUSIC_NAV);
-    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_INFO);
-    g_windowManager.Delete(WINDOW_VIDEO_FILES);
-    g_windowManager.Delete(WINDOW_VIDEO_PLAYLIST);
-    g_windowManager.Delete(WINDOW_VIDEO_NAV);
-    g_windowManager.Delete(WINDOW_FILES);
-    g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
-    g_windowManager.Delete(WINDOW_DIALOG_PROGRESS);
-    g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
-    g_windowManager.Delete(WINDOW_DIALOG_GAMEPAD);
-    g_windowManager.Delete(WINDOW_DIALOG_SUB_MENU);
-    g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
-    g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
-    g_windowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
-    g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
-    g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
-    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
-    g_windowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
-    g_windowManager.Delete(WINDOW_DIALOG_SELECT);
-    g_windowManager.Delete(WINDOW_DIALOG_OK);
-    g_windowManager.Delete(WINDOW_DIALOG_FILESTACKING);
-    g_windowManager.Delete(WINDOW_DIALOG_KEYBOARD);
-    g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
-    g_windowManager.Delete(WINDOW_DIALOG_PROFILE_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_LOCK_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
-    g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
-    g_windowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_FAVOURITES);
-    g_windowManager.Delete(WINDOW_DIALOG_SONG_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
-    g_windowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
-    g_windowManager.Delete(WINDOW_DIALOG_BUSY);
-    g_windowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_ADDON_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
-    g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
-    g_windowManager.Delete(WINDOW_DIALOG_MEDIA_FILTER);
-    g_windowManager.Delete(WINDOW_DIALOG_SUBTITLES);
-
-    /* Delete PVR related windows and dialogs */
-    g_windowManager.Delete(WINDOW_TV_CHANNELS);
-    g_windowManager.Delete(WINDOW_TV_RECORDINGS);
-    g_windowManager.Delete(WINDOW_TV_GUIDE);
-    g_windowManager.Delete(WINDOW_TV_TIMERS);
-    g_windowManager.Delete(WINDOW_TV_SEARCH);
-    g_windowManager.Delete(WINDOW_RADIO_CHANNELS);
-    g_windowManager.Delete(WINDOW_RADIO_RECORDINGS);
-    g_windowManager.Delete(WINDOW_RADIO_GUIDE);
-    g_windowManager.Delete(WINDOW_RADIO_TIMERS);
-    g_windowManager.Delete(WINDOW_RADIO_SEARCH);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_GROUP_MANAGER);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_SCAN);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
-    g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
-
-    g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
-    g_windowManager.Delete(WINDOW_DIALOG_PLAY_EJECT);
-    g_windowManager.Delete(WINDOW_STARTUP_ANIM);
-    g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
-    g_windowManager.Delete(WINDOW_VISUALISATION);
-    g_windowManager.Delete(WINDOW_KARAOKELYRICS);
-    g_windowManager.Delete(WINDOW_SETTINGS_MENU);
-    g_windowManager.Delete(WINDOW_SETTINGS_PROFILES);
-    g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES);  // all the settings categories
-    g_windowManager.Delete(WINDOW_TEST_PATTERN);
-    g_windowManager.Delete(WINDOW_SCREEN_CALIBRATION);
-    g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
-    g_windowManager.Delete(WINDOW_SCREENSAVER);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD);
-    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OVERLAY);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OVERLAY);
-    g_windowManager.Delete(WINDOW_SLIDESHOW);
-    g_windowManager.Delete(WINDOW_ADDON_BROWSER);
-    g_windowManager.Delete(WINDOW_SKIN_SETTINGS);
-
-    g_windowManager.Delete(WINDOW_HOME);
-    g_windowManager.Delete(WINDOW_PROGRAMS);
-    g_windowManager.Delete(WINDOW_PICTURES);
-    g_windowManager.Delete(WINDOW_WEATHER);
-
-    g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYPROGRAMS);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYWEATHER);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYMUSIC);
-    g_windowManager.Remove(WINDOW_SETTINGS_SYSTEM);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
-    g_windowManager.Remove(WINDOW_SETTINGS_SERVICE);
-    g_windowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYPVR);
-    g_windowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
-
-    g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
-    g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
+    g_windowManager.DestroyWindows();
 
     CAddonMgr::Get().DeInit();
 
@@ -3789,14 +3478,14 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
         if (!haveTimes && !times.empty())
           dbs.SetStackTimes(item.GetPath(), times);
 
-        if (item.m_lStartOffset == STARTOFFSET_RESUME)
+        if( item.m_lStartOffset == STARTOFFSET_RESUME )
         {
           // can only resume seek here, not dvdstate
           CBookmark bookmark;
           std::string path = item.GetPath();
           if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
-          if (dbs.GetResumeBookMark(path, bookmark))
+          if( dbs.GetResumeBookMark(path, bookmark) )
             seconds = bookmark.timeInSeconds;
           else
             seconds = 0.0f;
@@ -5010,7 +4699,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
   {
     if (!CBuiltins::IsSystemPowerdownCommand(actionStr) ||
         g_PVRManager.CanSystemPowerdown())
-      CBuiltins::Execute(actionStr);
+    CBuiltins::Execute(actionStr);
   }
   else
   {
