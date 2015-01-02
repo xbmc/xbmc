@@ -43,8 +43,7 @@ CGUIVideoControl::~CGUIVideoControl(void)
 void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // TODO Proper processing which marks when its actually changed. Just mark always for now.
-  if (g_renderManager.RendererHandlesPresent())
-    MarkDirtyRegion();
+  MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
 }

@@ -2227,7 +2227,7 @@ void CApplication::Render()
     bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
 
     m_bPresentFrame = false;
-    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback() && g_renderManager.RendererHandlesPresent())
+    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
       m_bPresentFrame = g_renderManager.FrameWait(100);
       hasRendered = true;

@@ -293,17 +293,10 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_sleeptime = 1.0;
     m_presentevent.notifyAll();
 
-    m_firstFlipPage = false;  // tempfix
-
     CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - %d", m_QueueSize);
   }
 
   return result;
-}
-
-bool CXBMCRenderManager::RendererHandlesPresent() const
-{
-  return IsConfigured() && (m_firstFlipPage || m_format != RENDER_FMT_BYPASS);
 }
 
 bool CXBMCRenderManager::IsConfigured() const
@@ -660,8 +653,6 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       return;
 
     if(!m_pRenderer) return;
-
-    m_firstFlipPage = true;              // tempfix
 
     EPRESENTMETHOD presentmethod;
 
