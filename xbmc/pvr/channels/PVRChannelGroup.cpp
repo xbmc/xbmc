@@ -900,7 +900,8 @@ bool CPVRChannelGroup::Persist(void)
   bool bReturn(true);
   CSingleLock lock(m_critSection);
 
-  if (!HasChanges())
+  /* don't persist until the group is fully loaded and has changes */
+  if (!HasChanges() || !m_bLoaded)
     return bReturn;
 
   if (CPVRDatabase *database = GetPVRDatabase())
