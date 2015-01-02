@@ -86,10 +86,9 @@ namespace PVR
     /*!
      * @brief Add or update a channel entry in the database
      * @param channel The channel to persist.
-     * @param bQueueWrite If true, don't write immediately
      * @return True when persisted or queued, false otherwise.
      */
-    bool Persist(CPVRChannel &channel, bool bQueueWrite = false);
+    bool Persist(CPVRChannel &channel);
 
     /*!
      * @brief Remove a channel entry from the database
@@ -195,7 +194,6 @@ namespace PVR
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
 
     bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
-    int GetLastChannelId(void);
     bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
 
     /*!

@@ -244,7 +244,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   return m_bChanged;
 }
 
-bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
+bool CPVRChannel::Persist()
 {
   {
     // not changed
@@ -255,7 +255,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    bool bReturn = database->Persist(*this, bQueueWrite);
+    bool bReturn = database->Persist(*this);
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
