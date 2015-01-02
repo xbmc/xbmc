@@ -201,6 +201,14 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
     std::string audio_language = g_langInfo.GetAudioLanguage();
     PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
                    , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
+
+    bool hearingimp = CSettings::Get().GetBool("accessibility.audiohearing");
+    PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
+                   , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
+
+    bool visualimp = CSettings::Get().GetBool("accessibility.audiovisual");
+    PREDICATE_RETURN(!visualimp ? !(lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED
+                   , !visualimp ? !(rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED);
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -278,6 +286,10 @@ public:
     {
       PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
                      , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+
+      bool hearingimp = CSettings::Get().GetBool("accessibility.subhearing");
+      PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
+                     , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
     }
 
     PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT

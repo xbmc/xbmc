@@ -131,14 +131,16 @@ public:
   int orig_type; // type of original source
 
   enum EFlags
-  { FLAG_NONE     = 0x0000 
-  , FLAG_DEFAULT  = 0x0001
-  , FLAG_DUB      = 0x0002
-  , FLAG_ORIGINAL = 0x0004
-  , FLAG_COMMENT  = 0x0008
-  , FLAG_LYRICS   = 0x0010
-  , FLAG_KARAOKE  = 0x0020
-  , FLAG_FORCED   = 0x0040
+  { FLAG_NONE             = 0x0000 
+  , FLAG_DEFAULT          = 0x0001
+  , FLAG_DUB              = 0x0002
+  , FLAG_ORIGINAL         = 0x0004
+  , FLAG_COMMENT          = 0x0008
+  , FLAG_LYRICS           = 0x0010
+  , FLAG_KARAOKE          = 0x0020
+  , FLAG_FORCED           = 0x0040
+  , FLAG_HEARING_IMPAIRED = 0x0080
+  , FLAG_VISUAL_IMPAIRED  = 0x0100
   } flags;
 };
 

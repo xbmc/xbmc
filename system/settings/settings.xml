@@ -1030,6 +1030,27 @@
         </setting>
       </group>
     </category>
+    <category id="accessibility" label="37032" help="37033">
+      <group id="1">
+        <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="accessibility.audiohearing" type="boolean" label="37036" help="37037">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="accessibility.subhearing" type="boolean" label="37038" help="37039">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="scrapers" label="0" help="36197">
       <visible>false</visible>
       <group id="1">
