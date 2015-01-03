@@ -229,6 +229,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Weather.h"
 #include "DatabaseManager.h"
+#include "input/InputManager.h"
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"
@@ -239,12 +240,6 @@
 #endif
 #ifdef HAS_IRSERVERSUITE
   #include "input/windows/IRServerSuite.h"
-#endif
-
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "input/SDLJoystick.h"
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -395,7 +390,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
-      g_application.ProcessMouse();
+      CInputManager::GetInstance().ProcessMouse(g_application.GetActiveWindowID());
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
@@ -916,10 +911,8 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
-#ifdef HAS_SDL_JOYSTICK
-  // Pass the mapping of axis to triggers to g_Joystick
-  g_Joystick.LoadAxesConfigs(CButtonTranslator::GetInstance().GetAxesConfigs());
-#endif
+  //Initialize sdl joystick if available
+  CInputManager::GetInstance().InitializeInputs();
 
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
@@ -1323,7 +1316,7 @@ bool CApplication::Initialize()
   ResetScreenSaver();
 
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.SetEnabled(CSettings::Get().GetBool("input.enablejoystick") &&
+  CInputManager::GetInstance().SetEnabledJoystick(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
@@ -2728,10 +2721,10 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 #endif
 
     // process input actions
-    ProcessRemote(frameTime);
-    ProcessGamepad(frameTime);
-    ProcessEventServer(frameTime);
-    ProcessPeripherals(frameTime);
+    CInputManager::GetInstance().ProcessRemote(GetActiveWindowID());
+    CInputManager::GetInstance().ProcessGamepad(GetActiveWindowID());
+    CInputManager::GetInstance().ProcessEventServer(GetActiveWindowID(), frameTime);
+    CInputManager::GetInstance().ProcessPeripherals(frameTime);
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
@@ -2744,312 +2737,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       g_windowManager.Process(CTimeUtils::GetFrameTime());
     g_windowManager.FrameMove();
   }
-}
-
-bool CApplication::ProcessGamepad(float frameTime)
-{
-#ifdef HAS_SDL_JOYSTICK
-  if (!m_AppFocused)
-    return false;
-
-  int iWin = GetActiveWindowID();
-  int keymapId, joyId;
-  g_Joystick.Update();
-  std::string joyName;
-  if (g_Joystick.GetButton(joyName, joyId))
-  {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-
-    ResetScreenSaver();
-    if (WakeUpScreenSaverAndDPMS())
-    {
-      g_Joystick.Reset();
-      return true;
-    }
-
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-    keymapId = joyId + 1;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
-    {
-      CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
-    }
-  }
-  if (g_Joystick.GetAxis(joyName, joyId))
-  {
-    keymapId = joyId + 1;
-    if (g_Joystick.GetAmount(joyName, joyId) < 0)
-    {
-      keymapId = -keymapId;
-    }
-
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
-    {
-      ResetScreenSaver();
-      if (WakeUpScreenSaverAndDPMS())
-      {
-        return true;
-      }
-
-      float amount = g_Joystick.GetAmount(joyName, joyId);
-      CAction action(actionID, fullrange ? (amount + 1.0f)/2.0f : fabs(amount), 0.0f, actionName);
-      g_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
-    }
-  }
-  int position = 0;
-  if (g_Joystick.GetHat(joyName, joyId, position))
-  {
-    keymapId = joyId + 1;
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-
-    ResetScreenSaver();
-    if (WakeUpScreenSaverAndDPMS())
-    {
-      g_Joystick.Reset();
-      return true;
-    }
-
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-
-    keymapId = position << 16 | keymapId;
-
-    if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joyName, keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
-    {
-      CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
-    }
-  }
-#endif
-  return false;
-}
-
-bool CApplication::ProcessRemote(float frameTime)
-{
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  if (g_RemoteControl.GetButton())
-  {
-    CKey key(g_RemoteControl.GetButton(), g_RemoteControl.GetHoldTime());
-    g_RemoteControl.Reset();
-    return OnKey(key);
-  }
-#endif
-  return false;
-}
-
-bool CApplication::ProcessPeripherals(float frameTime)
-{
-  CKey key;
-  if (g_peripherals.GetNextKeypress(frameTime, key))
-    return OnKey(key);
-  return false;
-}
-
-bool CApplication::ProcessMouse()
-{
-  MEASURE_FUNCTION;
-
-  if (!g_Mouse.IsActive() || !m_AppFocused)
-    return false;
-
-  // Get the mouse command ID
-  uint32_t mousekey = g_Mouse.GetKey();
-  if (mousekey == KEY_MOUSE_NOOP)
-    return true;
-
-  // Reset the screensaver and idle timers
-  m_idleTimer.StartZero();
-  ResetScreenSaver();
-  if (WakeUpScreenSaverAndDPMS())
-    return true;
-
-  // Retrieve the corresponding action
-  int iWin = GetActiveWindowID();
-  CKey key(mousekey, (unsigned int) 0);
-  CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
-
-  // Deactivate mouse if non-mouse action
-  if (!mouseaction.IsMouse())
-    g_Mouse.SetActive(false);
-
-  // Consume ACTION_NOOP.
-  // Some views or dialogs gets closed after any ACTION and
-  // a sensitive mouse might cause problems.
-  if (mouseaction.GetID() == ACTION_NOOP)
-    return false;
-
-  // If we couldn't find an action return false to indicate we have not
-  // handled this mouse action
-  if (!mouseaction.GetID())
-  {
-    CLog::LogF(LOGDEBUG, "unknown mouse command %d", mousekey);
-    return false;
-  }
-
-  // Log mouse actions except for move and noop
-  if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
-    CLog::LogF(LOGDEBUG, "trying mouse action %s", mouseaction.GetName().c_str());
-
-  // The action might not be a mouse action. For example wheel moves might
-  // be mapped to volume up/down in mouse.xml. In this case we do not want
-  // the mouse position saved in the action.
-  if (!mouseaction.IsMouse())
-    return OnAction(mouseaction);
-
-  // This is a mouse action so we need to record the mouse position
-  return OnAction(CAction(mouseaction.GetID(),
-                          g_Mouse.GetHold(MOUSE_LEFT_BUTTON),
-                          (float)g_Mouse.GetX(),
-                          (float)g_Mouse.GetY(),
-                          (float)g_Mouse.GetDX(),
-                          (float)g_Mouse.GetDY(),
-                          mouseaction.GetName()));
-}
-
-bool CApplication::ProcessEventServer(float frameTime)
-{
-#ifdef HAS_EVENT_SERVER
-  CEventServer* es = CEventServer::GetInstance();
-  if (!es || !es->Running() || es->GetNumberOfClients()==0)
-    return false;
-
-  // process any queued up actions
-  if (es->ExecuteNextAction())
-  {
-    // reset idle timers
-    m_idleTimer.StartZero();
-    ResetScreenSaver();
-    WakeUpScreenSaverAndDPMS();
-  }
-
-  // now handle any buttons or axis
-  std::string joystickName;
-  bool isAxis = false;
-  float fAmount = 0.0;
-
-  // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
-  // when the action exits XBMC
-  es = CEventServer::GetInstance();
-  if (!es || !es->Running() || es->GetNumberOfClients()==0)
-    return false;
-  unsigned int wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
-
-  if (wKeyID)
-  {
-    if (joystickName.length() > 0)
-    {
-      if (isAxis == true)
-      {
-        if (fabs(fAmount) >= 0.08)
-          m_lastAxisMap[joystickName][wKeyID] = fAmount;
-        else
-          m_lastAxisMap[joystickName].erase(wKeyID);
-      }
-
-      return ProcessJoystickEvent(joystickName, wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, fAmount);
-    }
-    else
-    {
-      CKey key;
-      if (wKeyID & ES_FLAG_UNICODE)
-      {
-        key = CKey((uint8_t)0, wKeyID & ~ES_FLAG_UNICODE, 0, 0, 0);
-        return OnKey(key);
-      }
-
-      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
-        key = CKey(wKeyID, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-        key = CKey(wKeyID, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_UP)
-        key = CKey(wKeyID, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-        key = CKey(wKeyID, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
-      else
-        key = CKey(wKeyID);
-      key.SetFromService(true);
-      return OnKey(key);
-    }
-  }
-
-  if (!m_lastAxisMap.empty())
-  {
-    // Process all the stored axis.
-    for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
-    {
-      for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
-        ProcessJoystickEvent((*iter).first, (*iterAxis).first, JACTIVE_AXIS, (*iterAxis).second);
-    }
-  }
-
-  {
-    CPoint pos;
-    if (es->GetMousePos(pos.x, pos.y) && g_Mouse.IsEnabled())
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.xrel = 0;
-      newEvent.motion.yrel = 0;
-      newEvent.motion.state = 0;
-      newEvent.motion.which = 0x10;  // just a different value to distinguish between mouse and event client device.
-      newEvent.motion.x = (uint16_t)pos.x;
-      newEvent.motion.y = (uint16_t)pos.y;
-      OnEvent(newEvent);  // had to call this to update g_Mouse position
-      return OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
-    }
-  }
-#endif
-  return false;
-}
-
-bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime /*=0*/)
-{
-#if defined(HAS_EVENT_SERVER)
-  m_idleTimer.StartZero();
-
-   // Make sure to reset screen saver, mouse.
-   ResetScreenSaver();
-   if (WakeUpScreenSaverAndDPMS())
-     return true;
-
-   g_Mouse.SetActive(false);
-
-   int iWin = GetActiveWindowID();
-   int actionID;
-   std::string actionName;
-   bool fullRange = false;
-
-   // Translate using regular joystick translator.
-   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName, wKeyID, inputType, actionID, actionName, fullRange))
-     return ExecuteInputAction( CAction(actionID, fAmount, 0.0f, actionName, holdTime) );
-   else
-     CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
-#endif
-
-   return false;
 }
 
 bool CApplication::ExecuteInputAction(const CAction &action)

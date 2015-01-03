@@ -3101,6 +3101,9 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestHttpRangeUtils.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputManager.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6032,6 +6035,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputManager.h">
+      <Filter>input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

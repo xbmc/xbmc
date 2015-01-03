@@ -123,8 +123,6 @@ private:
   std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
 };
 
-extern CJoystick g_Joystick;
-
 #endif
 
 #endif

@@ -36,6 +36,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
+#include "input/InputManager.h"
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
@@ -615,7 +616,7 @@ bool CWinEventsX11Imp::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        g_Joystick.Update(event);
+        CInputManager::GetInstance().UpdateJoystick(event);
         ret = true;
         break;
 

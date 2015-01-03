@@ -75,6 +75,7 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class CNetwork;
+class CInputManager;
 
 namespace VIDEO
 {
@@ -116,6 +117,7 @@ class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMs
                      public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
   friend class CApplicationPlayer;
+  friend class CInputManager;
 public:
 
   enum ESERVERS
@@ -359,6 +361,8 @@ public:
     return m_bTestMode;
   }
 
+  bool IsAppFocused() const { return m_AppFocused; }
+
   void Minimize();
   bool ToggleDPMS(bool manual);
 
@@ -487,12 +491,6 @@ protected:
   void VolumeChanged() const;
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
-  bool ProcessMouse();
-  bool ProcessRemote(float frameTime);
-  bool ProcessGamepad(float frameTime);
-  bool ProcessEventServer(float frameTime);
-  bool ProcessPeripherals(float frameTime);
-  bool ProcessJoystickEvent(const std::string& joystickName, int button, short inputType, float fAmount, unsigned int holdTime = 0);
   bool ExecuteInputAction(const CAction &action);
   int  GetActiveWindowID(void);
 
@@ -510,10 +508,6 @@ protected:
   CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
-#endif
-
-#ifdef HAS_EVENT_SERVER
-  std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
 
   ReplayGainSettings m_replayGainSettings;
