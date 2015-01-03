@@ -235,7 +235,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
       mode = (RENDER_STEREO_MODE) convertedMode;
   }
 
-  CLog::Log(LOGDEBUG, "StereoscopicsManager: autodetected GUI stereo mode for movie mode %s is: %s", playerMode.c_str(), GetLabelForStereoMode(mode).c_str());
+  CLog::Log(LOGDEBUG, "StereoscopicsManager: autodetected stereo mode for movie mode %s is: %s", playerMode.c_str(), ConvertGuiStereoModeToString(mode));
   return mode;
 }
 
@@ -354,7 +354,7 @@ void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
   if (settingId == "videoscreen.stereoscopicmode")
   {
     RENDER_STEREO_MODE mode = GetStereoMode();
-    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode setting changed to %s", GetLabelForStereoMode(mode).c_str());
+    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode setting changed to %s", ConvertGuiStereoModeToString(mode));
     ApplyStereoMode(mode);
   }
 }
@@ -438,11 +438,11 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
 void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
 {
   RENDER_STEREO_MODE currentMode = g_graphicsContext.GetStereoMode();
-  CLog::Log(LOGDEBUG, "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: %s | Target: %s", GetLabelForStereoMode(currentMode).c_str(), GetLabelForStereoMode(mode).c_str());
+  CLog::Log(LOGDEBUG, "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: %s | Target: %s", ConvertGuiStereoModeToString(currentMode), ConvertGuiStereoModeToString(mode));
   if (currentMode != mode)
   {
     g_graphicsContext.SetStereoMode(mode);
-    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to %s", GetLabelForStereoMode(mode).c_str());
+    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to %s", ConvertGuiStereoModeToString(mode));
     if (notify)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36501), GetLabelForStereoMode(mode));
   }
