@@ -26,7 +26,7 @@ exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
 CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
-USERDATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/${bin_name}"
+USERDATA_DIR="${HOME}/.${bin_name}"
 
 
 # Check for some options used by this script
@@ -50,13 +50,7 @@ migrate_home()
   #check if data migration is needed
   if [ -d "${HOME}/.xbmc" ] && [ ! -d "${USERDATA_DIR}" ]; then
       echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $USERDATA_DIR"
-      mv ${HOME}/.xbmc ${USERDATA_DIR}
-      ln -s $USERDATA_DIR ${HOME}/.xbmc
-      touch ${USERDATA_DIR}/.kodi_data_was_migrated
-  elif [ -d "${HOME}/.kodi" ] && [ ! -d "${USERDATA_DIR}" ]; then
-      echo "INFO: migrating userdata folder. Renaming ${HOME}/.kodi to $USERDATA_DIR"
-      mv ${HOME}/.kodi ${USERDATA_DIR}
-      ln -s $USERDATA_DIR ${HOME}/.kodi
+      mv ${HOME}/.xbmc $USERDATA_DIR
       touch ${USERDATA_DIR}/.kodi_data_was_migrated
   fi
 }
