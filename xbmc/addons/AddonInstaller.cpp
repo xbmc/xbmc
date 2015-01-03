@@ -359,9 +359,9 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
       if (!CheckDependencies(dep, preDeps, database))
       {
         database.Close();
+        preDeps.push_back(dep->ID());
         return false;
       }
-      preDeps.push_back(dep->ID());
     }
   }
   database.Close();
