@@ -647,7 +647,7 @@ bool CApplication::Create()
   {
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on $XDG_CACHE_HOME/%s (%s)\n", lcAppName.c_str(),
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
       CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
@@ -1056,10 +1056,10 @@ bool CApplication::InitDirectoriesLinux()
    special://xbmc/          => [read-only] system directory (/usr/share/kodi)
    special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
                                installations like skins, screensavers, etc.
-                               ($XDG_DATA_HOME/kodi)
+                               ($HOME/.kodi)
                                NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($XDG_DATA_HOME/kodi/userdata)
+                               mapped to special://home/userdata ($HOME/.kodi/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -1081,15 +1081,14 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  std::string appBinPath, appPath, xdgDataPath, xdgCachePath;
+  std::string appBinPath, appPath;
   std::string appName = CCompileInfo::GetAppName();
-  std::string lowerAppName = appName;
-  StringUtils::ToLower(lowerAppName);
+  std::string dotLowerAppName = "." + appName;
+  StringUtils::ToLower(dotLowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
-  const char* xdgDataHome = "XDG_DATA_HOME";
-  const char* xdgCacheHome = "XDG_CACHE_HOME";
+
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
   if (getenv(envAppHome))
@@ -1111,31 +1110,20 @@ bool CApplication::InitDirectoriesLinux()
     }
   }
 
-  if (getenv(xdgDataHome))
-    xdgDataPath = getenv(xdgDataHome);
-  else
-    xdgDataPath = userHome + "/.local/share/";
-
-  if (getenv(xdgCacheHome))
-    xdgCachePath = getenv(xdgCacheHome);
-  else
-    xdgCachePath = userHome + "/.cache/";
-
   /* Set some environment variables */
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
-    /* map our special drives */
+    // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(xdgDataPath + lowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(xdgDataPath + lowerAppName + "/userdata");
+    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
 
-    CStdString strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/");
-    CDirectory::Create(strTempPath);
-    strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/temp");
+    CStdString strTempPath = userHome;
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
@@ -1144,6 +1132,7 @@ bool CApplication::InitDirectoriesLinux()
     g_advancedSettings.m_logFolder = strTempPath;
 
     CreateUserDirs();
+
   }
   else
   {

@@ -28,24 +28,23 @@
 
  special://xbmc/          - the main XBMC folder (i.e. where the app resides).
  special://home/          - a writeable version of the main XBMC folder
-                             Linux: $XDG_DATA_HOME/kodi/ (defaults to ~/.local/share)
+                             Linux: ~/.kodi/
                              OS X:  ~/Library/Application Support/Kodi/
                              Win32: ~/Application Data/XBMC/
  special://userhome/      - a writable version of the user home directory
-                             Linux: $XDG_DATA_HOME/kodi/ (defaults to ~/.local/share)
-                             OS X: ~/.kodi
+                             Linux, OS X: ~/.kodi
                              Win32: home directory of user
  special://masterprofile/ - the master users userdata folder - usually special://home/userdata
-                             Linux: $XDG_DATA_HOME/kodi/userdata/ (defaults to ~/.local/share)
+                             Linux: ~/.kodi/userdata/
                              OS X:  ~/Library/Application Support/Kodi/UserData/
                              Win32: ~/Application Data/XBMC/UserData/
  special://profile/       - the current users userdata folder - usually special://masterprofile/profiles/<current_profile>
-                             Linux: $XDG_DATA_HOME/kodi/userdata/profiles/<current_profile> (defaults to ~/.local/share)
+                             Linux: ~/.kodi/userdata/profiles/<current_profile>
                              OS X:  ~/Library/Application Support/Kodi/UserData/profiles/<current_profile>
                              Win32: ~/Application Data/XBMC/UserData/profiles/<current_profile>
 
  special://temp/          - the temporary directory.
-                             Linux: $XDG_CACHE_HOME/kodi/temp (defaults to ~/.cache)
+                             Linux: ~/.kodi/temp
                              OS X:  ~/
                              Win32: ~/Application Data/XBMC/cache
 */
