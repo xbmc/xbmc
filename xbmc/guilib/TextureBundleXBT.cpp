@@ -18,7 +18,7 @@
  *
  */
 
-#include "libsquish/squish.h"
+#include "squish.h"
 #include "system.h"
 #include "TextureBundleXBT.h"
 #include "Texture.h"
