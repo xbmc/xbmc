@@ -90,6 +90,8 @@ class CDVDInputStream;
 typedef boost::shared_ptr<CDVDInputStream> InputStreamPtr;
 
 class CDVDDemux;
+typedef boost::shared_ptr<CDVDDemux> DemuxPtr;
+
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
@@ -205,7 +207,7 @@ public:
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (SelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
+  int              Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
 
@@ -381,6 +383,7 @@ protected:
 
   bool OpenInputStream();
   bool OpenDemuxStream();
+  bool OpenDemuxStream(InputStreamPtr& input);
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
@@ -429,7 +432,8 @@ protected:
 
   CDVDInputStream* m_pInputStream;                  // master input stream for current playing file
   std::map<int, InputStreamPtr> m_pInputStreams;    // input streams for current playing file
-  CDVDDemux* m_pDemuxer;                            // demuxer for current playing file
+  CDVDDemux* m_pDemuxer;                            // master demuxer for current playing file
+  std::map<int, DemuxPtr> m_pDemuxers;              // demuxers for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   CDVDDemuxCC* m_pCCDemuxer;
 
