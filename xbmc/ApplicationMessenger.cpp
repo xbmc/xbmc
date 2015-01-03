@@ -43,7 +43,11 @@
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/IPlayer.h"
+
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
+
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
 
