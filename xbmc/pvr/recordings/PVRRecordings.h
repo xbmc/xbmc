@@ -24,6 +24,7 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoDatabase.h"
 
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 
@@ -40,6 +41,7 @@ namespace PVR
     PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
     bool                         m_bGroupItems;
+    CVideoDatabase               m_database;
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
@@ -58,7 +60,7 @@ namespace PVR
 
   public:
     CPVRRecordings(void);
-    virtual ~CPVRRecordings(void) { Clear(); };
+    virtual ~CPVRRecordings(void);
 
     int Load();
     void Unload();
