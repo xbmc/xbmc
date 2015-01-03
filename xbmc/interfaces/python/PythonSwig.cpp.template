@@ -72,7 +72,8 @@ Helper.setup(this,classes,
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.outtm'),
-      (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.outtm')
+      (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.outtm'),
+      (Pattern.compile('''(r.){0,1}XBMCAddon::MultiDictionary<\\(.*\\)>''')) : new File('typemaps/python.multidict.outtm')
     ], '${result} = makePythonInstance(${api},true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types

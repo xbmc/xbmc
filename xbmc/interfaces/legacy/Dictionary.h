@@ -42,4 +42,6 @@ namespace XBMCAddon
   template<class T> class Dictionary : public std::map<String,T> {};
 
   typedef Dictionary<StringOrInt> Properties;
+
+  template<class T> class MultiDictionary : public std::multimap<String, T> {};
 }
