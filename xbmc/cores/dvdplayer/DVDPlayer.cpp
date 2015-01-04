@@ -861,6 +861,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   PredicateSubtitlePriority psp(as.language);
   streams = m_SelectionStreams.Get(STREAM_SUBTITLE, psp);
   valid   = false;
+  CloseStream(m_CurrentSubtitle, false);
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenStream(m_CurrentSubtitle, it->id, it->source))
