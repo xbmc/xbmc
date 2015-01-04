@@ -189,6 +189,7 @@ public:
   int              IndexOf (StreamType type, int source, int id) const;
   int              IndexOf (StreamType type, CDVDPlayer& p) const;
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
+  int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 

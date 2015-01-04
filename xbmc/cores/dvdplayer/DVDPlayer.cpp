@@ -506,6 +506,22 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   g_dataCacheCore.SignalVideoInfoChange();
 }
 
+int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
+{
+  CSingleLock lock(m_section);
+  int count = 0;
+  for(size_t i=0;i<m_Streams.size();i++)
+  {
+    if(type && m_Streams[i].type != type)
+      continue;
+    if (source && m_Streams[i].source != source)
+      continue;
+    count++;
+    continue;
+  }
+  return count;
+}
+
 void CDVDPlayer::CreatePlayers()
 {
 #ifdef HAS_OMXPLAYER
@@ -1435,7 +1451,7 @@ void CDVDPlayer::Process()
             break;
 
           first = false;
-          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.IndexOf(STREAM_SUBTITLE,STREAM_SOURCE_VIDEOMUX,-1)+1)
+          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
           {
             m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
             m_SelectionStreams.Update(NULL, m_pCCDemuxer, "");
