@@ -497,9 +497,17 @@ bool URIUtils::PathStarts(const std::string& url, const char *start)
   return StringUtils::StartsWith(url, start);
 }
 
-bool URIUtils::PathEquals(const std::string& url, const std::string &start)
+bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */)
 {
-  return url == start;
+  std::string path1 = url;
+  std::string path2 = start;
+  if (ignoreTrailingSlash)
+  {
+    RemoveSlashAtEnd(path1);
+    RemoveSlashAtEnd(path2);
+  }
+
+  return path1 == path2;
 }
 
 bool URIUtils::IsRemote(const CStdString& strFile)
