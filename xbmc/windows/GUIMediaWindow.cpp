@@ -218,7 +218,7 @@ bool CGUIMediaWindow::OnBack(int actionID)
 {
   CURL filterUrl(m_strFilterPath);
   if (actionID == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot() &&
-     (m_vecItems->GetPath() != m_startDirectory || (m_canFilterAdvanced && filterUrl.HasOption("filter"))))
+     (!URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true) || (m_canFilterAdvanced && filterUrl.HasOption("filter"))))
   {
     GoParentFolder();
     return true;
@@ -1458,7 +1458,7 @@ void CGUIMediaWindow::OnInitWindow()
   m_rootDir.SetAllowThreads(false);
 
   // the start directory may change during Refresh
-  bool updateStartDirectory = (m_startDirectory == m_vecItems->GetPath());
+  bool updateStartDirectory = URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true);
   Refresh();
   if (updateStartDirectory)
   {
