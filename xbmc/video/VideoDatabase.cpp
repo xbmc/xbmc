@@ -6534,30 +6534,6 @@ bool CVideoDatabase::HasContent(VIDEODB_CONTENT_TYPE type)
   return result;
 }
 
-int CVideoDatabase::GetMusicVideoCount(const CStdString& strWhere)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
-
-    CStdString strSQL = StringUtils::Format("select count(1) as nummovies from musicvideo_view where %s",strWhere.c_str());
-    m_pDS->query( strSQL.c_str() );
-
-    int iResult = 0;
-    if (!m_pDS->eof())
-      iResult = m_pDS->fv("nummovies").get_asInt();
-
-    m_pDS->close();
-    return iResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return 0;
-}
-
 ScraperPtr CVideoDatabase::GetScraperForPath( const CStdString& strPath )
 {
   SScanSettings settings;

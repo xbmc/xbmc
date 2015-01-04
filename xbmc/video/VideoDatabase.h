@@ -715,7 +715,6 @@ public:
   CStdString GetItemById(const CStdString &itemType, int id);
 
   // partymode
-  int GetMusicVideoCount(const CStdString& strWhere);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
   bool GetRandomMusicVideo(CFileItem* item, int& idSong, const CStdString& strWhere);
 
