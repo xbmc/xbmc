@@ -7234,7 +7234,9 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, int& idSong, const CSt
     if (NULL == m_pDS.get()) return false;
 
     // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = StringUtils::Format("select * from musicvideo_view where %s", strWhere.c_str());
+    CStdString strSQL = "select * from musicvideo_view";
+    if (!strWhere.empty())
+      strSQL += PrepareSQL(" where %s", strWhere.c_str());
     strSQL += PrepareSQL(" order by RANDOM() limit 1");
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
