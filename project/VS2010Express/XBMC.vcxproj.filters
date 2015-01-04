@@ -3104,6 +3104,9 @@
     <ClCompile Include="..\..\xbmc\input\InputManager.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6038,6 +6041,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InputManager.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.h">
+      <Filter>network\httprequesthandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
