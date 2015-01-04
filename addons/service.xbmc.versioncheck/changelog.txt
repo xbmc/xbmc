@@ -1,3 +1,15 @@
+v0.3.2
+- Don't notify on newer unreleased builds
+
+v0.3.1
+- Don't notify on newer unreleased builds
+
+v0.3.0
+- Update with 14.0 Helix
+
+v0.2.7
+- Fix popup on Kodi 15.0 builds
+
 v0.2.6
 - Update with 14.0 Helix rc 3
 
