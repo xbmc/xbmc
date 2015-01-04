@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include "utils/Job.h"
@@ -75,6 +76,8 @@ public:
    \return a hash string for this image
    */
   bool CacheTexture(CBaseTexture **texture = NULL);
+
+  static bool ResizeTexture(const std::string &url, uint8_t* &result, size_t &result_size);
 
   std::string m_url;
   std::string m_oldHash;
