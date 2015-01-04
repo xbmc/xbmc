@@ -44,7 +44,6 @@ public:
     m_DataFormat = AE_FMT_INVALID;
     m_Channels = 0;
     m_Bitrate = 0;
-    m_CodecName = "";
   };
   virtual ~ICodec() {};
 

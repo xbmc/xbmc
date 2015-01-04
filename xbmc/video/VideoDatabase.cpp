@@ -3745,7 +3745,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
     int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
       return;
-    CStdString strSQL = StringUtils::Format("select * from settings where idFile=%i", idFile);
+    CStdString strSQL = PrepareSQL("select * from settings where idFile=%i", idFile);
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     {
@@ -6534,30 +6534,6 @@ bool CVideoDatabase::HasContent(VIDEODB_CONTENT_TYPE type)
   return result;
 }
 
-int CVideoDatabase::GetMusicVideoCount(const CStdString& strWhere)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
-
-    CStdString strSQL = StringUtils::Format("select count(1) as nummovies from musicvideo_view where %s",strWhere.c_str());
-    m_pDS->query( strSQL.c_str() );
-
-    int iResult = 0;
-    if (!m_pDS->eof())
-      iResult = m_pDS->fv("nummovies").get_asInt();
-
-    m_pDS->close();
-    return iResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return 0;
-}
-
 ScraperPtr CVideoDatabase::GetScraperForPath( const CStdString& strPath )
 {
   SScanSettings settings;
@@ -7234,7 +7210,9 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, int& idSong, const CSt
     if (NULL == m_pDS.get()) return false;
 
     // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = StringUtils::Format("select * from musicvideo_view where %s", strWhere.c_str());
+    CStdString strSQL = "select * from musicvideo_view";
+    if (!strWhere.empty())
+      strSQL += PrepareSQL(" where %s", strWhere.c_str());
     strSQL += PrepareSQL(" order by RANDOM() limit 1");
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query

@@ -39,6 +39,9 @@ class Main:
         if xbmc.getCondVisibility('System.Platform.Linux') and __addon__.getSetting("upgrade_apt") == 'true':
             packages = ['xbmc']
             _versionchecklinux(packages)
+        # temporary don't notify Windows untill crashing has been solved
+        elif xbmc.getCondVisibility('System.Platform.Windows'):
+            pass
         else:
             oldversion, version_installed, version_available, version_stable = _versioncheck()
             if oldversion:
