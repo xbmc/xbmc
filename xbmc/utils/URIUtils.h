@@ -106,10 +106,11 @@ public:
    Comparison is case-sensitive.
    \param path1 a std::string path.
    \param path2 the second path the path should be compared against.
+   \param ignoreTrailingSlash ignore any trailing slashes in both paths
    \return true if the paths are equal, false otherwise.
    \sa IsProtocol, PathStarts
    */
-  static bool PathEquals(const std::string& path1, const std::string &path2);
+  static bool PathEquals(const std::string& path1, const std::string &path2, bool ignoreTrailingSlash = false);
 
   static bool IsAddonsPath(const CStdString& strFile);
   static bool IsSourcesPath(const CStdString& strFile);
