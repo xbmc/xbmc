@@ -497,7 +497,8 @@ namespace INFO
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
 
-#define CONTROL_GET_LABEL           29996
+#define CONTROL_GET_LABEL           29995
+#define CONTROL_GET_LABEL2          29996
 #define CONTROL_IS_ENABLED          29997
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
