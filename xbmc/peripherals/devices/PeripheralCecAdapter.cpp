@@ -862,6 +862,8 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     xbmcKey.iButton = XINPUT_IR_REMOTE_ROOT_MENU;
     PushCecKeypress(xbmcKey);
     break;
+//Increase this to the highest version before this breaks
+#if CEC_CLIENT_VERSION > CEC_CLIENT_VERSION_2_1_4
   case CEC_USER_CONTROL_CODE_TOP_MENU:
     xbmcKey.iButton = XINPUT_IR_REMOTE_TOP_MENU;
     PushCecKeypress(xbmcKey);
@@ -870,6 +872,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     xbmcKey.iButton = XINPUT_IR_REMOTE_DVD_MENU;
     PushCecKeypress(xbmcKey);
     break;
+#endif
   case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
     xbmcKey.iButton = XINPUT_IR_REMOTE_MENU;
     PushCecKeypress(xbmcKey);
@@ -1067,11 +1070,14 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_SELECT_AV_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_AUDIO_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
+//Increase this to the highest version before this breaks
+#if CEC_CLIENT_VERSION > CEC_CLIENT_VERSION_2_1_4
   case CEC_USER_CONTROL_CODE_NUMBER_ENTRY_MODE:
   case CEC_USER_CONTROL_CODE_NUMBER11:
   case CEC_USER_CONTROL_CODE_NUMBER12:
   case CEC_USER_CONTROL_CODE_SELECT_BROADCAST_TYPE:
   case CEC_USER_CONTROL_CODE_SELECT_SOUND_PRESENTATION:
+#endif
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
     break;
@@ -1288,7 +1294,12 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
   // client version matches the version of libCEC that we originally used the API from
+#ifdef CEC_CLIENT_VERSION_2_2_0
   m_configuration.clientVersion = CEC_CLIENT_VERSION_2_2_0;
+#else
+  //Please decrease this to the lowest tested version
+  m_configuration.clientVersion = CEC_CLIENT_VERSION_2_1_4;
+#endif
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
