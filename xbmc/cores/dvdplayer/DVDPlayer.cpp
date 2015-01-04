@@ -1010,6 +1010,15 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
 
     return true;
   }
+  if (source == STREAM_SOURCE_VIDEOMUX)
+  {
+    CDemuxStream* st = m_pCCDemuxer->GetStream(stream.id);
+    if (st == NULL || st->disabled)
+      return false;
+    if (st->type != stream.type)
+      return false;
+    return true;
+  }
 
   return false;
 }
@@ -1432,7 +1441,7 @@ void CDVDPlayer::Process()
             OpenDefaultStreams(false);
           }
           CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
-          if (pSubStream)
+          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId && m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
             ProcessSubData(pSubStream, pkt);
           else
             CDVDDemuxUtils::FreeDemuxPacket(pkt);
