@@ -2659,7 +2659,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // Now check with the player if action can be handled.
-  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO || g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
       (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD && (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
       action.GetID() == ACTION_STOP)
   {
