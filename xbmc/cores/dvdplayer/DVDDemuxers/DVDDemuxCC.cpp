@@ -226,8 +226,8 @@ DemuxPacket* CDVDDemuxCC::Decode()
         m_streamdata[i].hasData = false;
         break;
       }
+      m_hasData = false;
     }
-    m_hasData = false;
   }
   return pPacket;
 }

@@ -220,6 +220,7 @@ void printTVtoBuf (cc708_service_decoder *decoder)
   }
   decoder->text[decoder->textlen++] = '\r';
   decoder->text[decoder->textlen++] = '\n';
+  decoder->text[decoder->textlen++] = '\0';
 }
 
 void updateScreen (cc708_service_decoder *decoder)
@@ -405,7 +406,8 @@ void process_cr (cc708_service_decoder *decoder)
     break;
   }
 
-  if (decoder->windows[decoder->current_window].anchor_point == anchorpoint_bottom_left)
+  if (decoder->windows[decoder->current_window].anchor_point == anchorpoint_bottom_left ||
+      decoder->windows[decoder->current_window].anchor_point == anchorpoint_bottom_center)
   {
     rollupWindow(decoder, decoder->current_window);
     updateScreen(decoder);
@@ -498,7 +500,6 @@ void process_character (cc708_service_decoder *decoder, unsigned char internal_c
     }
     break;
   }
-
 }
 
 // G0 - Code Set - ASCII printable characters
@@ -527,10 +528,22 @@ void handle_708_CWx_SetCurrentWindow (cc708_service_decoder *decoder, int new_wi
     decoder->current_window=new_window;
 }
 
+void clearWindowText(e708Window *window)
+{
+  for (int i = 0; i<I708_MAX_ROWS; i++)
+  {
+    memset(window->rows[i], ' ', I708_MAX_COLUMNS);
+    window->rows[i][I708_MAX_COLUMNS] = 0;
+  }
+  memset(window->rows[I708_MAX_ROWS], 0, I708_MAX_COLUMNS + 1);
+  window->is_empty = 1;
+
+}
+
 void clearWindow (cc708_service_decoder *decoder, int window)
 {
-  // TODO: Removes any existing text from the specified window. When a window
-  // is cleared the entire window is filled with the window fill color.
+  if (decoder->windows[window].is_defined)
+    clearWindowText(&decoder->windows[window]);
 }
 
 void handle_708_CLW_ClearWindows (cc708_service_decoder *decoder, int windows_bitmap)
@@ -617,18 +630,6 @@ void handle_708_TGW_ToggleWindows (cc708_service_decoder *decoder, int windows_b
   }
 }
 
-void clearWindowText (e708Window *window)
-{
-  for (int i=0;i<I708_MAX_ROWS;i++)
-  {
-    memset (window->rows[i],' ',I708_MAX_COLUMNS);
-    window->rows[i][I708_MAX_COLUMNS]=0;
-  }
-  memset (window->rows[I708_MAX_ROWS],0,I708_MAX_COLUMNS+1);
-  window->is_empty=1;
-
-}
-
 void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, unsigned char *data)
 {
   if (decoder->windows[window].is_defined &&
@@ -695,12 +696,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
     memset(&decoder->windows[window].attribs, 0, sizeof(e708Window_attribs));
     clearWindowText (&decoder->windows[window]);
   }
-  else
-  {
-    // Specs unclear here: Do we need to delete the text in the existing window?
-    // We do this because one of the sample files demands it.
-    clearWindowText (&decoder->windows[window]);
-  }
+
   // ...also makes the defined windows the current window (setCurrentWindow)
   handle_708_CWx_SetCurrentWindow (decoder, window);
   memcpy (decoder->windows[window].commands, data+1, 6);
@@ -977,14 +973,21 @@ void process_service_block (cc708_service_decoder *decoder, unsigned char *data,
   }
 
   // update rollup windows
-  int rollups = 0;
+  int update = 0;
   for (int i = 0; i<I708_MAX_WINDOWS; i++)
   {
-    if (decoder->windows[i].is_defined && decoder->windows[i].visible && decoder->windows[i].anchor_point == anchorpoint_bottom_left)
-      rollups++;
+    if (decoder->windows[i].is_defined && decoder->windows[i].visible &&
+      (decoder->windows[i].anchor_point == anchorpoint_bottom_left ||
+      decoder->windows[i].anchor_point == anchorpoint_bottom_center))
+    {
+      update++;
+      break;
+    }
   }
-  if (rollups)
+  if (update)
+  {
     updateScreen(decoder);
+  }
 }
 
 void process_current_packet (cc708_service_decoder *decoders)
