@@ -3,7 +3,7 @@
 	<include name="leftMenuInitSlide">
 		<animation effect="slide" start="-74" end="0" time="400">Visible</animation>
 		<animation effect="slide" start="0" end="-74" time="400">Hidden</animation>
-		<animation effect="slide" start="0" end="-74" time="0" condition="Skin.String(SectionType,playqueue) + [Player.HasAudio | Player.HasVideo]">Conditional</animation>
+		<animation effect="slide" start="0" end="-104" time="0" condition="Skin.String(SectionType,playqueue) + [Player.HasAudio | Player.HasVideo]">Conditional</animation>
 	</include>
 	<include name="leftMenuSlide">
 		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
