@@ -521,8 +521,6 @@ namespace PVR
      */
     CFileItemPtr GetByChannelUpDown(const CFileItem &channel, bool bChannelUp) const;
 
-    void ResetChannelNumbers(void);
-
     /*!
      * @brief Get a channel given it's channel ID.
      * @param iChannelID The channel ID.

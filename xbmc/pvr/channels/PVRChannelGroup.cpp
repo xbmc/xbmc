@@ -973,10 +973,6 @@ void CPVRChannelGroup::ResetChannelNumberCache(void)
   if (!m_bSelectedGroup)
     return;
 
-  /* reset the channel number cache */
-  if (!IsInternalGroup())
-    g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
-
   /* set all channel numbers on members of this group */
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
@@ -1023,13 +1019,6 @@ bool CPVRChannelGroup::HasChanges(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bChanged || HasNewChannels() || HasChangedChannels();
-}
-
-void CPVRChannelGroup::ResetChannelNumbers(void)
-{
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
-    m_members.at(iChannelPtr).channel->SetCachedChannelNumber(0);
 }
 
 void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
