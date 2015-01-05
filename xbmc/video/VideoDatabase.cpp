@@ -5611,7 +5611,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
         strSQL = PrepareSQL("select distinct tvshow_view.c%02d from tvshow_view", VIDEODB_ID_TV_PREMIERED);
-        extFilter.AppendGroup(PrepareSQL("tvshowview.c%02d", VIDEODB_ID_TV_PREMIERED));
+        extFilter.AppendGroup(PrepareSQL("tvshow_view.c%02d", VIDEODB_ID_TV_PREMIERED));
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
