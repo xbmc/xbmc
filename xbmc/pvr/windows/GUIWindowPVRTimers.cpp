@@ -76,7 +76,14 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
     buttons.Add(CONTEXT_BUTTON_ACTIVATE, 19058);        /* activate/deactivate */
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* delete timer */
     buttons.Add(CONTEXT_BUTTON_EDIT, 19057);            /* edit timer */
-    buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* rename timer */
+
+    if (pItem->GetPVRTimerInfoTag()->m_type == PVR_TIMER_TYPE_ONCE_MANUAL
+     || pItem->GetPVRTimerInfoTag()->m_type == PVR_TIMER_TYPE_SERIE_MANUAL )
+    {
+      // an epg based timer will have it's title from the epg tag
+      buttons.Add(CONTEXT_BUTTON_RENAME, 118);          /* rename timer */
+    }
+
     buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
@@ -210,19 +217,34 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
     if (!item->HasPVRTimerInfoTag())
       return bReturn;
 
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return bReturn;
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 19040);
-    pDialog->SetLine(1, "");
-    pDialog->SetLine(2, item->GetPVRTimerInfoTag()->m_strTitle);
-    pDialog->DoModal();
+    bool cancel(false);
+    bool bConfirm(false);
 
-    if (!pDialog->IsConfirmed())
-      return bReturn;
+    if(!item->GetPVRTimerInfoTag()->m_bIsRepeating)
+    {
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      if (!pDialog)
+        return bReturn;
+      pDialog->SetHeading(122);
+      pDialog->SetLine(0, 19040);
+      pDialog->SetLine(1, "");
+      pDialog->SetLine(2, item->GetPVRTimerInfoTag()->m_strTitle);
+      pDialog->DoModal();
 
-    g_PVRTimers->DeleteTimer(*item);
+      if (!pDialog->IsConfirmed())
+        return bReturn;
+    }
+    else
+    {
+      /* prompt user for deleting the complete schedule */
+      bConfirm = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(122),g_localizeStrings.Get(803),"",
+          StringUtils::Format(g_localizeStrings.Get(824).c_str(), item->GetPVRTimerInfoTag()->GetType().c_str()),cancel);
+
+      if (cancel)
+        return bReturn;
+    }
+
+    g_PVRTimers->DeleteTimer(*item, false, bConfirm);
   }
 
   return bReturn;
@@ -271,22 +293,37 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
   if (!timerTag || timerTag->m_iClientIndex < 0)
     return false;
 
-  /* show a confirmation dialog */
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return false;
-  pDialog->SetHeading(122);
-  pDialog->SetLine(0, 19040);
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, timerTag->m_strTitle);
-  pDialog->DoModal();
+  bool bCancel(false);
+  bool bConfirm(false);
 
-  /* prompt for the user's confirmation */
-  if (!pDialog->IsConfirmed())
-    return false;
+  if(!timerTag->m_bIsRepeating)
+  {
+    /* show a confirmation dialog */
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog)
+      return false;
+    pDialog->SetHeading(122);
+    pDialog->SetLine(0, 19040);
+    pDialog->SetLine(1, "");
+    pDialog->SetLine(2, timerTag->m_strTitle);
+    pDialog->DoModal();
+
+    /* prompt for the user's confirmation */
+    if (!pDialog->IsConfirmed())
+      return false;
+  }
+  else
+  {
+    /* prompt user for deleting the complete schedule */
+    bConfirm = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(122),g_localizeStrings.Get(803),"",
+        StringUtils::Format(g_localizeStrings.Get(824).c_str(), timerTag->GetType().c_str()), bCancel);
+
+    if (bCancel)
+      return false;
+  }
 
   /* delete the timer */
-  return g_PVRTimers->DeleteTimer(*item);
+  return g_PVRTimers->DeleteTimer(*item, false, bConfirm);
 }
 
 bool CGUIWindowPVRTimers::ActionShowTimer(CFileItem *item)

@@ -311,9 +311,10 @@ namespace PVR
      * @brief Delete a timer on the backend.
      * @param timer The timer to delete.
      * @param bForce Set to true to delete a timer that is currently recording a program.
+     * @param bDeleteSchedule Set to true to delete the complete schedule instead of the given timer only.
      * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false, bool bDeleteSchedule = false);
 
     /*!
      * @brief Rename a timer on the server.
@@ -479,6 +480,9 @@ namespace PVR
     bool SupportsRecordingPlayCount(void) const;
     bool SupportsRecordingEdl(void) const;
     bool SupportsTimers(void) const;
+    bool SupportsSerieEpgTimers(void) const;
+    bool SupportsNewEpisodesTimers(void) const;
+    int  GetSupportedTimers(void) const;
     bool SupportsTV(void) const;
     bool HandlesDemuxing(void) const;
     bool HandlesInputStream(void) const;

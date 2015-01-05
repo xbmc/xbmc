@@ -87,7 +87,8 @@ namespace PVR
 
     virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false);
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false);
-    virtual bool StartRecordFile(const CFileItem &item);
+    virtual bool ShowTimerSettings(CFileItem *item);
+    virtual bool StartRecordFile(const CFileItem &item, bool bAdvanced = false);
     virtual bool StopRecordFile(const CFileItem &item);
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);

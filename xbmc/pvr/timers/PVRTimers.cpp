@@ -447,7 +447,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
           CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
-          bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
+          bReturn = (*timerIt)->DeleteFromClient(true, false) || bReturn;
           timerIt = it->second->erase(timerIt);
           SetChanged();
         }
@@ -536,7 +536,7 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
   return item.AddToClient();
 }
 
-bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
+bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */, bool bDeleteSchedule /* = false */)
 {
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
@@ -549,7 +549,7 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
   if (!tag)
     return false;
 
-  return tag->DeleteFromClient(bForce);
+  return tag->DeleteFromClient(bForce,bDeleteSchedule);
 }
 
 bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)

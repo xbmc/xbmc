@@ -316,6 +316,27 @@ namespace PVR
     bool HasTimerSupport(int iClientId);
 
     /*!
+     * @brief Check whether a client supports timers.
+     * @param iClientId The id of the client to check.
+     * @return True if supports repeating epg based timers, false otherwise.
+     */
+    bool HasSerieEpgTimerSupport(int iClientId);
+
+    /*!
+     * @brief Check whether a client supports timers.
+     * @param iClientId The id of the client to check.
+     * @return True if supports 'new episodes only' rule, false otherwise.
+     */
+    bool HasNewEpisodesTimerSupport(int iClientId);
+
+    /*!
+     * @brief Get a mask of the supported timers timers.
+     * @param iClientId The id of the client to check.
+     * @return Binary mask of supported PVR_TIMER_TYPE types.
+     */
+    int GetSupportedTimers(int iClientId);
+
+    /*!
      * @brief Get all timers from clients
      * @param timers Store the timers in this container.
      * @return The amount of timers that were added.
@@ -342,10 +363,11 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
+     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
 
     /*!
      * @brief Rename a timer on the backend.

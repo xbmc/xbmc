@@ -118,6 +118,28 @@ extern "C" {
   } PVR_TIMER_STATE;
 
   /*!
+   * @brief PVR timer types
+   * Members should always have a value from 2^x, to allow them to use as bit flag.
+   */
+  typedef enum
+  {
+    PVR_TIMER_TYPE_NONE                             = 0x000, /*!< @brief no timer support */
+    PVR_TIMER_TYPE_ONCE_MANUAL                      = 0x001, /*!< @brief non repeating manual timer */
+    PVR_TIMER_TYPE_ONCE_EPG                         = 0x002, /*!< @brief non repeating epg based timer */
+    PVR_TIMER_TYPE_SERIE_MANUAL                     = 0x004, /*!< @brief repeating manual timer */
+    PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_THIS_CHANNEL   = 0x008, /*!< @brief repeating epg based timer, any time on this channel */
+    PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_ANY_CHANNEL    = 0x010, /*!< @brief repeating epg based timer, any time on any channel */
+    PVR_TIMER_TYPE_SERIE_EPG_WEEKLY_AROUND_TIME     = 0x020, /*!< @brief repeating epg based timer, weekly around this time */
+    PVR_TIMER_TYPE_SERIE_EPG_DAILY_AROUND_TIME      = 0x040, /*!< @brief repeating epg based timer, daily around this time */
+    PVR_TIMER_TYPE_SERIE_EPG_WEEKENDS               = 0x080, /*!< @brief repeating epg based timer, weekends only */
+    PVR_TIMER_TYPE_SERIE_EPG_WEEKDAYS               = 0x100, /*!< @brief repeating epg based timer, weekdays only */
+    PVR_TIMER_TYPE_SERIE_EPG_UNKNOWN                = 0x200  /*!< @brief repeating epg based timer which is not supported by xbmc (non of the above). 
+                                                                         timers of this type are non editable in xbmc.
+                                                                         this flag can not be used with 'iSupportedTimersMask' */
+
+  } PVR_TIMER_TYPE;
+
+  /*!
    * @brief PVR menu hook categories
    */
   typedef enum
@@ -150,7 +172,6 @@ extern "C" {
     bool bSupportsTV;                   /*!< @brief true if this add-on provides TV channels */
     bool bSupportsRadio;                /*!< @brief true if this add-on supports radio channels */
     bool bSupportsRecordings;           /*!< @brief true if this add-on supports playback of recordings stored on the backend */
-    bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
     bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
@@ -159,6 +180,8 @@ extern "C" {
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
     bool bSupportsRecordingEdl;         /*!< @brief true if the backend supports retrieving an edit decision list for recordings. */
+    bool bSupportsTimerNewEpisodes;     /*!< @brief true if the backend supports recording new episodes only (repeating timer) */
+    int  iSupportedTimersMask;          /*!< @brief mask of supported timer types (PVR_TIMER_TYPE) which the backend supports, '0' if no timer support */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -259,14 +282,16 @@ extern "C" {
     time_t          startTime;                                 /*!< @brief (required) start time of the recording in UTC. instant timers that are sent to the add-on by xbmc will have this value set to 0 */
     time_t          endTime;                                   /*!< @brief (required) end time of the recording in UTC */
     PVR_TIMER_STATE state;                                     /*!< @brief (required) the state of this timer */
+    PVR_TIMER_TYPE  type;                                      /*!< @brief (required) the type of this timer */
     char            strTitle[PVR_ADDON_NAME_STRING_LENGTH];    /*!< @brief (optional) title of this timer */
     char            strDirectory[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) the directory where the recording will be stored in */
     char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
     int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
     int             iLifetime;                                 /*!< @brief (optional) lifetimer of this timer in days */
-    bool            bIsRepeating;                              /*!< @brief (optional) true if this is a recurring timer */
-    time_t          firstDay;                                  /*!< @brief (optional) the first day this recording is active in case of a repeating event */
-    int             iWeekdays;                                 /*!< @brief (optional) weekday mask */
+    bool            bNewEpisodesOnly;                          /*!< @brief (optional) true if backend should only record new episodes in case of a repeating epg based timer */
+    bool            bIsRepeating;                              /*!< @brief (optional) true if this is a recurring timer, manual or epg based */
+    time_t          firstDay;                                  /*!< @brief (optional) the first day this recording is active in case of a repeating manual timer */
+    int             iWeekdays;                                 /*!< @brief (optional) weekday mask in case of a manual repeating timer*/
     int             iEpgUid;                                   /*!< @brief (optional) epg event id */
     unsigned int    iMarginStart;                              /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
@@ -368,7 +393,7 @@ extern "C" {
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool, bool);
     PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
     bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
     void         (__cdecl* CloseLiveStream)(void);

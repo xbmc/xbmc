@@ -64,6 +64,20 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   #define PVR_VIRTUAL_CHANNEL_UID (-1)
 
+  enum WeekdayMask
+  {
+    BITFLAG_MONDAY    = 0x01,
+    BITFLAG_TUESDAY   = 0x02,
+    BITFLAG_WEDNESDAY = 0x04,
+    BITFLAG_THURSDAY  = 0x08,
+    BITFLAG_FRIDAY    = 0x10,
+    BITFLAG_SATURDAY  = 0x20,
+    BITFLAG_SUNDAY    = 0x40,
+    BITFLAG_WEEKDAYS  = 0x1F,
+    BITFLAG_WEEKENDS  = 0x60,
+    BITFLAG_ALL_DAYS  = 0x7F
+  };
+
   class CPVRTimerInfoTag : public ISerializable
   {
     friend class CPVRTimers;
@@ -87,10 +101,12 @@ namespace PVR
     void DisplayError(PVR_ERROR err) const;
 
     std::string GetStatus() const;
+    std::string GetType() const;
 
     bool SetDuration(int iDuration);
 
     static CPVRTimerInfoTag *CreateFromEpg(const EPG::CEpgInfoTag &tag);
+    static CPVRTimerInfoTag *CreateSerieRecFromEpg(const EPG::CEpgInfoTag &tag, const PVR_TIMER_TYPE &type);
     EPG::CEpgInfoTagPtr GetEpgInfoTag(void) const;
 
     int ChannelNumber(void) const;
@@ -153,7 +169,7 @@ namespace PVR
 
     /* Client control functions */
     bool AddToClient() const;
-    bool DeleteFromClient(bool bForce = false) const;
+    bool DeleteFromClient(bool bForce = false, bool bDeleteSchedule = false) const;
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
@@ -166,12 +182,14 @@ namespace PVR
     std::string           m_strDirectory;       /*!< @brief directory where the recording must be stored */
     std::string           m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;              /*!< @brief the state of this timer */
+    PVR_TIMER_TYPE        m_type;               /*!< @brief the recording type of this timer */
     int                   m_iClientId;          /*!< @brief ID of the backend */
     int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
     int                   m_iClientChannelUid;  /*!< @brief channel uid */
     int                   m_iPriority;          /*!< @brief priority of the timer */
     int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
-    bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
+    bool                  m_bNewEpisodesOnly;   /*!< @brief only record new episodes for repeating epg based timers */
+    bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags in case of a manual repeating timer */
     int                   m_iWeekdays;          /*!< @brief bit based store of weekdays to repeat */
     std::string           m_strFileNameAndPath; /*!< @brief filename is only for reference */
     int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
@@ -190,6 +208,6 @@ namespace PVR
     EPG::CEpgInfoTagPtr   m_epgTag;
     CDateTime             m_StartTime; /*!< start time */
     CDateTime             m_StopTime;  /*!< stop time */
-    CDateTime             m_FirstDay;  /*!< if it is a repeating timer the first date it starts */
+    CDateTime             m_FirstDay;  /*!< if it is a manual repeating timer the first date it starts */
   };
 }

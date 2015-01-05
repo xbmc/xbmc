@@ -4517,6 +4517,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::s
       return disc;
     }
   case LISTITEM_ARTIST:
+    if (item->HasPVRTimerInfoTag())
+      return item->GetPVRTimerInfoTag()->GetType();
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
