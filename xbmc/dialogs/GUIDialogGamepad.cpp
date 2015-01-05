@@ -32,8 +32,6 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")
 {
   m_bCanceled = false;
-  m_strUserInput = "";
-  m_strPassword = "";
   m_iRetries = 0;
   m_bUserInputCleanup = true;
 }
