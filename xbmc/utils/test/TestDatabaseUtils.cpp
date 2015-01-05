@@ -422,7 +422,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMovie)
 
   refstr = StringUtils::Format("CASE WHEN length(movie_view.c%02d) > 0 THEN movie_view.c%02d "
                 "ELSE movie_view.c%02d END", VIDEODB_ID_SORTTITLE,
-                VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE, VIDEODB_ID_TITLE);
+                VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE);
   varstr = DatabaseUtils::GetField(FieldTitle, MediaTypeMovie,
                                    DatabaseQueryPartOrderBy);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
