@@ -80,7 +80,8 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
   int iActionId = action.GetID();
   if (GetFocusedControlID() == CONTROL_LIST_CHANNELS &&
       (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
-       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP))
+       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
+       iActionId == ACTION_MOUSE_MOVE)) // item should be selected on hover
   {
     bReturn = true;
     if (!m_bMovingMode)
