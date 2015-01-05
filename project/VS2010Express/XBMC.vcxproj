@@ -1306,10 +1306,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestStdString.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStopwatch.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2082,7 +2078,6 @@
     <ClInclude Include="..\..\xbmc\utils\SeekHandler.h" />
     <ClInclude Include="..\..\xbmc\utils\SortUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Splash.h" />
-    <ClInclude Include="..\..\xbmc\utils\StdString.h" />
     <ClInclude Include="..\..\xbmc\utils\Stopwatch.h" />
     <ClInclude Include="..\..\xbmc\utils\StreamDetails.h" />
     <ClInclude Include="..\..\xbmc\utils\StreamUtils.h" />
