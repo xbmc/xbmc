@@ -57,6 +57,14 @@ const std::array<TYPE, 4> dependencyTypes = {
     ADDON_SCRIPT_MODULE,
 };
 
+const std::array<TYPE, 5> infoProviderTypes = {
+  ADDON_SCRAPER_ALBUMS,
+  ADDON_SCRAPER_ARTISTS,
+  ADDON_SCRAPER_MOVIES,
+  ADDON_SCRAPER_MUSICVIDEOS,
+  ADDON_SCRAPER_TVSHOWS,
+};
+
 
 bool IsSystemAddon(const AddonPtr& addon)
 {
@@ -233,10 +241,18 @@ bool Browse(const CURL& path, CFileItemList &items)
 
   if (category.empty())
   {
+    {
+      CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
+      item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.infoproviders"));
+      item->m_bIsFolder = true;
+      items.Add(item);
+    }
     for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
     {
       const TYPE type = (TYPE)i;
       if (std::find(dependencyTypes.begin(), dependencyTypes.end(), type) != dependencyTypes.end())
+        continue;
+      if (std::find(infoProviderTypes.begin(), infoProviderTypes.end(), type) != infoProviderTypes.end())
         continue;
 
       for (unsigned int j = 0; j < addons.size(); ++j)
@@ -255,8 +271,33 @@ bool Browse(const CURL& path, CFileItemList &items)
       }
     }
   }
-  else
+  else if (category == "group.infoproviders")
   {
+    items.SetProperty("addoncategory", g_localizeStrings.Get(24993));
+    items.SetLabel(g_localizeStrings.Get(24993));
+
+    for (const auto& type : infoProviderTypes)
+    {
+      for (const auto& addon : addons)
+      {
+        if (addon->IsType(type))
+        {
+          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
+          CURL itemPath = path;
+          itemPath.SetFileName(TranslateType(type, false));
+          item->SetPath(itemPath.Get());
+          item->m_bIsFolder = true;
+          std::string thumb = GetIcon(type);
+          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
+            item->SetArt("thumb", thumb);
+          items.Add(item);
+          break;
+        }
+      }
+    }
+  }
+  else
+  { // fallback to addon type
     TYPE type = TranslateType(category);
     items.SetProperty("addoncategory",TranslateType(type, true));
     addons.erase(std::remove_if(addons.begin(), addons.end(),
