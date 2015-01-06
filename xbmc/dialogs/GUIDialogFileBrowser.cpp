@@ -444,7 +444,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   }
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetCurrentView((m_browsingForImages && CAutoSwitch::ByFileCount(*m_vecItems)) ? DEFAULT_VIEW_ICONS : DEFAULT_VIEW_LIST);
+  m_viewControl.SetCurrentView((m_browsingForImages && CAutoSwitch::ByFileCount(*m_vecItems)) ? CONTROL_THUMBS : CONTROL_LIST);
 
   std::string strPath2 = m_Directory->GetPath();
   URIUtils::RemoveSlashAtEnd(strPath2);
