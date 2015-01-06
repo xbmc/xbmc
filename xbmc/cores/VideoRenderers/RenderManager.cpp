@@ -381,7 +381,10 @@ void CXBMCRenderManager::FrameFinish()
   SPresent& m = m_Queue[m_presentsource];
 
   if(g_graphicsContext.IsFullScreenVideo())
+  {
+    CSingleExit lock(g_graphicsContext);
     WaitPresentTime(m.timestamp);
+  }
 
   m_clock_framefinish = GetPresentTime();
 
