@@ -309,6 +309,8 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
         case CONTEXT_BUTTON_UPDATE_EPG:
           OnContextButtonUpdateEpg(item, (CONTEXT_BUTTON)button);
           break;
+        default:
+          break;
       }
 
       // Refresh the list in case anything was changed
