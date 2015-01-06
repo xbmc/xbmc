@@ -39,6 +39,8 @@ public:
   GLint GetCord1Loc() { return m_hCord1; }
   GLint GetUniColLoc() { return m_hUniCol; }
   GLint GetCoord0MatrixLoc() { return m_hCoord0Matrix; }
+  GLint GetFieldLoc() { return m_hField; }
+  GLint GetStepLoc() { return m_hStep; }
 
 protected:
   GLint m_hTex0;
@@ -51,6 +53,8 @@ protected:
   GLint m_hCord0;
   GLint m_hCord1;
   GLint m_hCoord0Matrix;
+  GLint m_hField;
+  GLint m_hStep;
 
   GLfloat *m_proj;
   GLfloat *m_model;

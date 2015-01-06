@@ -1469,14 +1469,28 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
 
-  YUVPLANE &plane = m_buffers[index].fields[field][0];
+  YUVPLANE &plane = m_buffers[index].fields[0][0];
+  YUVPLANE &planef = m_buffers[index].fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+  if (field != FIELD_FULL)
+  {
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB);
+    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
+    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
+
+    if     (field == FIELD_TOP)
+      glUniform1i(fieldLoc, 1);
+    else if(field == FIELD_BOT)
+      glUniform1i(fieldLoc, 0);
+    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
+  }
+  else
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1504,10 +1518,20 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
     ver[i][3] = 1.0f;
   }
 
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y1;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y2;
+  if (field == FIELD_FULL)
+  {
+    tex[0][0] = tex[3][0] = plane.rect.x1;
+    tex[0][1] = tex[1][1] = plane.rect.y1;
+    tex[1][0] = tex[2][0] = plane.rect.x2;
+    tex[2][1] = tex[3][1] = plane.rect.y2;
+  }
+  else
+  {
+    tex[0][0] = tex[3][0] = planef.rect.x1;
+    tex[0][1] = tex[1][1] = planef.rect.y1 * 2.0f;
+    tex[1][0] = tex[2][0] = planef.rect.x2;
+    tex[2][1] = tex[3][1] = planef.rect.y2 * 2.0f;
+  }
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
@@ -1535,13 +1559,27 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   #endif
 
   YUVPLANE &plane = m_buffers[index].fields[0][0];
+  YUVPLANE &planef = m_buffers[index].fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  if (field != FIELD_FULL)
+  {
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
+    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
+    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
+
+    if     (field == FIELD_TOP)
+      glUniform1i(fieldLoc, 1);
+    else if(field == FIELD_BOT)
+      glUniform1i(fieldLoc, 0);
+    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
+  }
+  else
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
 
   glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
@@ -1569,10 +1607,20 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   }
 
   // Set texture coordinates (MediaCodec is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
+  if (field == FIELD_FULL)
+  {
+    tex[0][0] = tex[3][0] = plane.rect.x1;
+    tex[0][1] = tex[1][1] = plane.rect.y2;
+    tex[1][0] = tex[2][0] = plane.rect.x2;
+    tex[2][1] = tex[3][1] = plane.rect.y1;
+  }
+  else
+  {
+    tex[0][0] = tex[3][0] = planef.rect.x1;
+    tex[0][1] = tex[1][1] = planef.rect.y2 * 2.0f;
+    tex[1][0] = tex[2][0] = planef.rect.x2;
+    tex[2][1] = tex[3][1] = planef.rect.y1 * 2.0f;
+  }
 
   for(int i = 0; i < 4; i++)
   {
@@ -2541,7 +2589,6 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
 #ifdef HAS_LIBSTAGEFRIGHT
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
 
   DeleteEGLIMGTexture(index);
 
@@ -2551,16 +2598,23 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  if(m_renderMethod & RENDER_POT)
+  for (int f=0; f<3; ++f)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    YUVPLANE  &plane  = fields[f][0];
+
+    plane.texwidth  = im.width;
+    plane.texheight = im.height;
+    plane.pixpertex_x = 1;
+    plane.pixpertex_y = 1;
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      plane.texwidth  = NP2(plane.texwidth);
+      plane.texheight = NP2(plane.texheight);
+    }
   }
+
+  YUVPLANE  &plane  = fields[0][0];
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
   VerifyGLState();
@@ -2621,7 +2675,6 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
 
   memset(&im    , 0, sizeof(im));
   memset(&fields, 0, sizeof(fields));
@@ -2629,15 +2682,21 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  if(m_renderMethod & RENDER_POT)
+  for (int f=0; f<3; ++f)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    YUVPLANE  &plane  = fields[f][0];
+
+    plane.texwidth  = im.width;
+    plane.texheight = im.height;
+    plane.pixpertex_x = 1;
+    plane.pixpertex_y = 1;
+
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      plane.texwidth  = NP2(plane.texwidth);
+      plane.texheight = NP2(plane.texheight);
+    }
   }
 
   return true;
@@ -2847,9 +2906,6 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
-  if(m_renderMethod & RENDER_EGLIMG)
-    return false;
-
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
@@ -2876,10 +2932,20 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
     return false;
 
   if(m_renderMethod & RENDER_EGLIMG)
-    return false;
+  {
+    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+      return true;
+    else
+      return false;
+  }
 
   if(m_renderMethod & RENDER_MEDIACODEC)
-    return false;
+  {
+    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+      return true;
+    else
+      return false;
+  }
 
   if(m_renderMethod & RENDER_CVREF)
     return false;
@@ -2890,7 +2956,7 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-#if defined(__i386__) || defined(__x86_64__)
+#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
   || method == VS_INTERLACEMETHOD_SW_BLEND)
@@ -2933,7 +2999,10 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
     return VS_INTERLACEMETHOD_NONE;
 
   if(m_renderMethod & RENDER_EGLIMG)
-    return VS_INTERLACEMETHOD_NONE;
+    return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
+
+  if(m_renderMethod & RENDER_MEDIACODEC)
+    return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
@@ -2941,7 +3010,7 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_IMXMAP)
     return VS_INTERLACEMETHOD_NONE;
 
-#if defined(__i386__) || defined(__x86_64__)
+#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 #else
   return VS_INTERLACEMETHOD_SW_BLEND;
