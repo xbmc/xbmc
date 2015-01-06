@@ -307,9 +307,8 @@ bool CGUIWindowPlexPreplayVideo::Update(const CStdString &strDirectory, bool upd
   if (!currentURL.HasOption("checkfiles"))
   {
     currentURL.SetOption("checkFiles", "1");
-    m_vecItems->SetPath(currentURL.Get());
-    CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_PLEX_PREPLAY_VIDEO, g_windowManager.GetActiveWindow(), 0, 0);
-    g_windowManager.SendThreadMessage(msg, WINDOW_PLEX_PREPLAY_VIDEO);
+    CPlexDirectoryFetchJob *job = new CPlexDirectoryFetchJob(currentURL, CPlexDirectoryCache::CACHE_STRATEGY_ALWAYS);
+    CJobManager::GetInstance().AddJob(job, this);
   }
   if (ret)
     UpdateItem();
@@ -349,6 +348,13 @@ void CGUIWindowPlexPreplayVideo::OnJobComplete(unsigned int jobID, bool success,
       m_friends.Copy(fjob->m_items);
     else if (fjob->m_url.GetFileName() == "pms/social/networks.xml")
       m_networks.Copy(fjob->m_items);
+
+    if (fjob->m_url.HasOption("checkFiles"))
+    {
+      m_vecItems->SetPath(fjob->m_url.Get());
+      CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_PLEX_PREPLAY_VIDEO, g_windowManager.GetActiveWindow(), 0, 0);
+      g_windowManager.SendThreadMessage(msg, WINDOW_PLEX_PREPLAY_VIDEO);
+    }
   }
 }
 
