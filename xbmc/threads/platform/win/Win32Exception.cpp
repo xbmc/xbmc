@@ -117,7 +117,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   // Create the dump file where the xbmc.exe resides
   bool returncode = false;
   std::string dumpFileName;
-  CStdStringW dumpFileNameW;
+  std::wstring dumpFileNameW;
   SYSTEMTIME stLocalTime;
   GetLocalTime(&stLocalTime);
 
@@ -190,7 +190,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   #define STACKWALK_MAX_NAMELEN 1024
 
   std::string dumpFileName, strOutput;
-  CStdStringW dumpFileNameW;
+  std::wstring dumpFileNameW;
   CHAR cTemp[STACKWALK_MAX_NAMELEN];
   DWORD dwBytes;
   SYSTEMTIME stLocalTime;
