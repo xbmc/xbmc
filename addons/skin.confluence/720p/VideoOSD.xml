@@ -110,8 +110,6 @@
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
 				<onclick>PlayerControl(Next)</onclick>
-				<enable>IntegerGreaterThan(Playlist.Length(video),1)</enable>
-				<animation effect="fade" start="100" end="0" time="100" condition="!IntegerGreaterThan(Playlist.Length(video),1)">Conditional</animation>
 			</control>
 			<control type="image" id="2200">
 				<width>270</width>
