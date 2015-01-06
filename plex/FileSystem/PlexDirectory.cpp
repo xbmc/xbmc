@@ -147,14 +147,6 @@ bool CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetPlaylistsDirectory(fileItems, url.GetOptions());
   }
 
-  if (boost::starts_with(m_url.GetFileName(), "library/metadata") &&
-      !boost::ends_with(m_url.GetFileName(), "children") &&
-      !boost::ends_with(m_url.GetFileName(), "extras"))
-  {
-    m_file.SetTimeout(60);
-    m_url.SetOption("checkFiles", "1");
-  }
-
   if (m_url.HasProtocolOption("containerSize"))
   {
     m_url.SetOption("X-Plex-Container-Size", m_url.GetProtocolOption("containerSize"));

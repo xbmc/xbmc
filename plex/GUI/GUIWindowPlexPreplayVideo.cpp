@@ -102,6 +102,10 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
   {
     m_focusSaver.SaveFocus(this);
   }
+  else if (message.GetMessage() == GUI_MSG_UPDATE)
+  {
+     Refresh(false);
+  }
 
   return ret;
 }
@@ -294,11 +298,19 @@ bool CGUIWindowPlexPreplayVideo::OnBack(int actionID)
   return true;
 }
 
-///////////////////////////////////the////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPreplayVideo::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
   bool ret = CGUIMediaWindow::Update(strDirectory, updateFilterPath);
 
+  CURL currentURL(strDirectory);
+  if (!currentURL.HasOption("checkfiles"))
+  {
+    currentURL.SetOption("checkFiles", "1");
+    m_vecItems->SetPath(currentURL.Get());
+    CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_PLEX_PREPLAY_VIDEO, g_windowManager.GetActiveWindow(), 0, 0);
+    g_windowManager.SendThreadMessage(msg, WINDOW_PLEX_PREPLAY_VIDEO);
+  }
   if (ret)
     UpdateItem();
 
