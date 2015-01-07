@@ -1720,12 +1720,6 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.cpp">
-      <Filter>pvr\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.cpp">
-      <Filter>pvr\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
@@ -4687,12 +4681,6 @@
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.h">
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h">
