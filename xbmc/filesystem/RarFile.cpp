@@ -557,7 +557,7 @@ void CRarFile::InitFromUrl(const CURL& url)
 
   m_bFileOptions = 0;
 
-  for( vector<std::string>::iterator it = options.begin();it != options.end(); it++)
+  for( vector<std::string>::iterator it = options.begin();it != options.end(); ++it)
   {
     size_t iEqual = (*it).find('=');
     if(iEqual != std::string::npos)

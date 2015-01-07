@@ -461,7 +461,7 @@ void CRarManager::ClearCache(bool force)
 #ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
   map<std::string, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j;
-  for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
+  for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; ++j)
   {
 
     for (vector<CFileInfo>::iterator it2 = j->second.second.begin(); it2 != j->second.second.end(); ++it2)

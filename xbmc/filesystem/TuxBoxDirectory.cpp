@@ -194,7 +194,7 @@ void CTuxBoxDirectory::GetRootAndChildStringEnigma2(std::string& strBQRequest, s
   strXMLChildString = StringUtils::Format("e2bouquet");
 }
 
-bool CTuxBoxDirectory::GetRootAndChildString(const std::string strPath, std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString )
+bool CTuxBoxDirectory::GetRootAndChildString(const std::string& strPath, std::string& strBQRequest, std::string& strXMLRootString, std::string& strXMLChildString )
 {
   //Advanced Settings: RootMode! Movies:
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4

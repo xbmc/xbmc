@@ -332,7 +332,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   }
 
   // check if we can find this session in our cache
-  for(std::vector<CSession>::iterator it = m_sessions.begin(); it != m_sessions.end(); it++)
+  for(std::vector<CSession>::iterator it = m_sessions.begin(); it != m_sessions.end(); ++it)
   {
     if(it->origin         == header.origin
     && it->msgid          == header.msgid
@@ -496,7 +496,7 @@ namespace XFILE
       g_sapsessions.Create();
 
     // check if we can find this session in our cache
-    for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+    for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); ++it)
     {
 
       if(it->payload_type != "application/sdp")

@@ -208,7 +208,7 @@ std::string CSMB::URLEncode(const CURL &url)
   std::vector<std::string> parts;
   std::vector<std::string>::iterator it;
   StringUtils::Tokenize(url.GetFileName(), parts, "/");
-  for( it = parts.begin(); it != parts.end(); it++ )
+  for( it = parts.begin(); it != parts.end(); ++it )
   {
     flat += "/";
     flat += URLEncode((*it));
