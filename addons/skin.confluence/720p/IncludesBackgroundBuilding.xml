@@ -50,7 +50,7 @@
 			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
-			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis) + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels)</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)</visible>
 			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
 		</control>
 		<control type="videowindow">
