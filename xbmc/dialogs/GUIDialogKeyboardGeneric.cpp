@@ -220,7 +220,6 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
     break;
 
   case GUI_MSG_SET_TEXT:
-  case GUI_MSG_INPUT_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
       // the edit control only handles these messages if it is either focues
@@ -271,9 +270,9 @@ void CGUIDialogKeyboardGeneric::Character(const std::string &ch)
   CGUIControl *edit = GetControl(CTL_EDIT);
   if (edit)
   {
-    CGUIMessage msg(GUI_MSG_INPUT_TEXT, GetID(), CTL_EDIT);
-    msg.SetLabel(ch);
-    edit->OnMessage(msg);
+    CAction action(ACTION_INPUT_TEXT);
+    action.SetText(ch);
+    edit->OnAction(action);
   }
 }
 

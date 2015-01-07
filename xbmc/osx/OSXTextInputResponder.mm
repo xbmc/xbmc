@@ -27,6 +27,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "ApplicationMessenger.h"
+#include "guilib/key.h"
 #undef BOOL
 
 void SendKeyboardText(const char *text)
@@ -37,9 +39,12 @@ void SendKeyboardText(const char *text)
   if ((unsigned char)*text < ' ' || *text == 127)
     return;
 
-  CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
-  msg.SetLabel(text);
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetFocusedWindow());
+  ThreadMessage tMsg = {TMSG_GUI_ACTION};
+  tMsg.param1 = WINDOW_INVALID;
+  CAction *action = new CAction(ACTION_INPUT_TEXT);
+  action->SetText(text);
+  tMsg.lpVoid = action;
+  CApplicationMessenger::Get().SendMessage(tMsg, false);
 }
 
 void SendEditingText(const char *text, unsigned int location, unsigned int length)
