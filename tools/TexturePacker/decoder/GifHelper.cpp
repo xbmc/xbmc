@@ -84,7 +84,7 @@ GifHelper::~GifHelper()
   int err = DGifCloseFile(m_gif);
   if (err == D_GIF_ERR_CLOSE_FAILED)
   {
-    fprintf(stderr, "Gif::~Gif(): D_GIF_ERR_CLOSE_FAILED");
+    fprintf(stderr, "Gif::~Gif(): D_GIF_ERR_CLOSE_FAILED\n");
     free(m_gif);
   }
   Release();
@@ -120,14 +120,14 @@ bool GifHelper::LoadGifMetaData(GifFileType* file)
 #if GIFLIB_MAJOR >= 5
     char* error = GifErrorString(m_gif->Error);
     if (error)
-      fprintf(stderr, "Gif::LoadGif(): Could not read file %s - %s", m_filename.c_str(), error);
+      fprintf(stderr, "Gif::LoadGif(): Could not read file %s - %s\n", m_filename.c_str(), error);
 #else
     int error = GifLastError();
     if (error)
-      fprintf(stderr, "Gif::LoadGif(): Could not read file %s - %d", m_filename.c_str(), error);
+      fprintf(stderr, "Gif::LoadGif(): Could not read file %s - %d\n", m_filename.c_str(), error);
 #endif
     else
-      fprintf(stderr, "Gif::LoadGif(): Could not read file %s (reasons unknown)", m_filename.c_str());
+      fprintf(stderr, "Gif::LoadGif(): Could not read file %s (reasons unknown)\n", m_filename.c_str());
     return false;
   }
 
@@ -135,7 +135,7 @@ bool GifHelper::LoadGifMetaData(GifFileType* file)
   m_width  = m_gif->SWidth;
   if (!m_height || !m_width)
   {
-    fprintf(stderr, "Gif::LoadGif(): Zero sized image. File %s", m_filename.c_str());
+    fprintf(stderr, "Gif::LoadGif(): Zero sized image. File %s\n", m_filename.c_str());
     return false;
   }
 
@@ -158,7 +158,7 @@ bool GifHelper::LoadGifMetaData(GifFileType* file)
   }
   else
   {
-    fprintf(stderr, "Gif::LoadGif(): No images found in file %s", m_filename.c_str());
+    fprintf(stderr, "Gif::LoadGif(): No images found in file %s\n", m_filename.c_str());
     return false;
   }
 
@@ -169,7 +169,7 @@ bool GifHelper::LoadGifMetaData(GifFileType* file)
   {
     // at least 1 image
     m_numFrames = std::max(1U, GIF_MAX_MEMORY / m_imageSize);
-    fprintf(stderr, "Gif::LoadGif(): Memory consumption too high: %lu bytes. Restricting animation to %u. File %s", memoryUsage, m_numFrames, m_filename.c_str());
+    fprintf(stderr, "Gif::LoadGif(): Memory consumption too high: %lu bytes. Restricting animation to %u. File %s\n", memoryUsage, m_numFrames, m_filename.c_str());
   }
 
   return true;
@@ -191,14 +191,14 @@ bool GifHelper::LoadGifMetaData(const char* file)
 #if GIFLIB_MAJOR >= 5
     char* error = GifErrorString(err);
     if (error)
-      fprintf(stderr, "Gif::LoadGif(): Could not open file %s - %s", m_filename.c_str(), error);
+      fprintf(stderr, "Gif::LoadGif(): Could not open file %s - %s\n", m_filename.c_str(), error);
 #else
     int error = GifLastError();
     if (error)
-      fprintf(stderr, "Gif::LoadGif(): Could not open file %s - %d", m_filename.c_str(), error);
+      fprintf(stderr, "Gif::LoadGif(): Could not open file %s - %d\n", m_filename.c_str(), error);
 #endif
     else
-      fprintf(stderr, "Gif::LoadGif(): Could not open file %s (reasons unknown)", m_filename.c_str());
+      fprintf(stderr, "Gif::LoadGif(): Could not open file %s (reasons unknown)\n", m_filename.c_str());
     return false;
   }
   return LoadGifMetaData(m_gif);
@@ -218,7 +218,7 @@ bool GifHelper::LoadGif(const char* file)
   }
   catch (std::bad_alloc& ba)
   {
-    fprintf(stderr, "Gif::Load(): Out of memory while reading file %s - %s", m_filename.c_str(), ba.what());
+    fprintf(stderr, "Gif::Load(): Out of memory while reading file %s - %s\n", m_filename.c_str(), ba.what());
     Release();
     return false;
   }
@@ -329,7 +329,7 @@ bool GifHelper::ExtractFrames(unsigned int count)
 
   if (!m_pTemplate)
   {
-    fprintf(stderr, "Gif::ExtractFrames(): No frame template available");
+    fprintf(stderr, "Gif::ExtractFrames(): No frame template available\n");
     return false;
   }
 
@@ -347,7 +347,7 @@ bool GifHelper::ExtractFrames(unsigned int count)
     if (frame.m_top + frame.m_height > m_height || frame.m_left + frame.m_width > m_width
       || !frame.m_width || !frame.m_height)
     {
-      fprintf(stderr, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
+      fprintf(stderr, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)\n",
         frame.m_width, frame.m_height, frame.m_left, frame.m_top, m_width, m_height);
       return false;
     }
@@ -423,7 +423,7 @@ bool GifHelper::PrepareTemplate(const GifFrame &frame)
     {
       if (!m_hasBackground)
       {
-        fprintf(stderr, "Gif::PrepareTemplate(): Disposal method DISPOSE_BACKGROUND encountered, but the gif has no background.");
+        fprintf(stderr, "Gif::PrepareTemplate(): Disposal method DISPOSE_BACKGROUND encountered, but the gif has no background.\n");
         return false;
       }
       SetFrameAreaToBack(m_pTemplate, frame);
@@ -445,14 +445,14 @@ bool GifHelper::PrepareTemplate(const GifFrame &frame)
       }
       if (!valid)
       {
-        fprintf(stderr, "Gif::PrepareTemplate(): Disposal method DISPOSE_PREVIOUS encountered, but could not find a suitable frame.");
+        fprintf(stderr, "Gif::PrepareTemplate(): Disposal method DISPOSE_PREVIOUS encountered, but could not find a suitable frame.\n");
         return false;
       }
       break;
     }
   default:
     {
-      fprintf(stderr, "Gif::PrepareTemplate(): Unknown disposal method: %d", frame.m_disposal);
+      fprintf(stderr, "Gif::PrepareTemplate(): Unknown disposal method: %d\n", frame.m_disposal);
       return false;
     }
   }
@@ -493,14 +493,14 @@ bool GifHelper::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
 #if GIFLIB_MAJOR >= 5
     char* error = GifErrorString(err);
     if (error)
-      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory - %s", error);
+      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory - %s\n", error);
 #else
     int error = GifLastError();
     if (error)
-      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory - %d", error);
+      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory - %d\n", error);
 #endif
     else
-      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory (reasons unknown)");
+      fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory (reasons unknown)\n");
     return false;
   }
 
@@ -519,7 +519,7 @@ bool GifHelper::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
   }
   catch (std::bad_alloc& ba)
   {
-    fprintf(stderr, "Gif::LoadImageFromMemory(): Out of memory while extracting gif frames - %s", ba.what());
+    fprintf(stderr, "Gif::LoadImageFromMemory(): Out of memory while extracting gif frames - %s\n", ba.what());
     Release();
     return false;
   }

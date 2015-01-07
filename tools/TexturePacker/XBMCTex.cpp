@@ -176,7 +176,7 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
   }
   else
   {
-    printf("Error opening %s (%s)\n", fullPath.c_str(), strerror(errno));
+    fprintf(stderr, "Error opening %s (%s)\n", fullPath.c_str(), strerror(errno));
   }
 }
 
@@ -417,7 +417,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
   CXBTFWriter writer(xbtf, OutputFile);
   if (!writer.Create())
   {
-    printf("Error creating file\n");
+    fprintf(stderr, "Error creating file\n");
     return 1;
   }
 
@@ -441,7 +441,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       SDL_Surface* image = IMG_Load(fullPath.c_str());
       if (!image)
       {
-        printf("...unable to load image %s\n", file.GetPath());
+        fprintf(stderr, "...unable to load image %s\n", file.GetPath());
         continue;
       }
 
@@ -516,13 +516,13 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
   if (!writer.UpdateHeader(dupes))
   {
-    printf("Error writing header to file\n");
+    fprintf(stderr, "Error writing header to file\n");
     return 1;
   }
 
   if (!writer.Close())
   {
-    printf("Error closing file\n");
+    fprintf(stderr, "Error closing file\n");
     return 1;
   }
 
@@ -596,7 +596,7 @@ int main(int argc, char* argv[])
 #endif
     else
     {
-      printf("Unrecognized command line flag: %s\n", args[i]);
+      fprintf(stderr, "Unrecognized command line flag: %s\n", args[i]);
     }
   }
 

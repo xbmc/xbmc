@@ -71,7 +71,7 @@ bool DecoderManager::LoadFile(const std::string &filename, DecodedFrames &frames
   {
     if (m_decoders[i]->CanDecode(filename))
     {
-      fprintf(stderr, "This is a %s - lets load it via %s...\n", m_decoders[i]->GetImageFormatName(), m_decoders[i]->GetDecoderName());
+      fprintf(stdout, "This is a %s - lets load it via %s...\n", m_decoders[i]->GetImageFormatName(), m_decoders[i]->GetDecoderName());
       return m_decoders[i]->LoadFile(filename, frames);
     }
   }
