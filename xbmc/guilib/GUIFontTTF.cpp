@@ -53,9 +53,6 @@ using namespace std;
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
-int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
-                                                  // A larger number means more of the "dead space" is placed between
-                                                  // words rather than between letters.
 
 class CFreeTypeLibrary
 {
@@ -423,26 +420,27 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       startX -= w;
     }
 
-    float spacePerLetter = 0; // for justification effects
+    float spacePerSpaceCharacter = 0; // for justification effects
     if ( alignment & XBFONT_JUSTIFIED )
     {
       // first compute the size of the text to render in both characters and pixels
-      unsigned int lineChars = 0;
+      unsigned int numSpaces = 0;
       float linePixels = 0;
       for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
       {
         Character *ch = GetCharacter(*pos);
         if (ch)
-        { // spaces have multiple times the justification spacing of normal letters
-          lineChars += ((*pos & 0xffff) == L' ') ? justification_word_weight : 1;
+        {
+          if ((*pos & 0xffff) == L' ')
+            numSpaces +=  1;
           linePixels += ch->advance;
         }
       }
-      if (lineChars > 1)
-        spacePerLetter = (maxPixelWidth - linePixels) / (lineChars - 1);
+      if (numSpaces > 0)
+        spacePerSpaceCharacter = (maxPixelWidth - linePixels) / numSpaces;
     }
-    float cursorX = 0; // current position along the line
 
+    float cursorX = 0; // current position along the line
     for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
     {
       // If starting text on a new line, determine justification effects
@@ -482,9 +480,9 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       if ( alignment & XBFONT_JUSTIFIED )
       {
         if ((*pos & 0xffff) == L' ')
-          cursorX += ch->advance + spacePerLetter * justification_word_weight;
+          cursorX += ch->advance + spacePerSpaceCharacter;
         else
-          cursorX += ch->advance + spacePerLetter;
+          cursorX += ch->advance;
       }
       else
         cursorX += ch->advance;
