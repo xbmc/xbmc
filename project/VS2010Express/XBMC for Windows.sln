@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kodi", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7} = {C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}
 	EndProjectSection
@@ -39,21 +39,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libexif_dll", "..\..\lib\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\xbmc\visualizations\DirectXSpectrum\directx_spectrum.vcxproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodplug_2010", "..\..\lib\libmodplug\libmodplug_2010.vcxproj", "{C15B374E-7126-48FF-B618-A375D7B17FCF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libRTV", "..\..\lib\libRTV\libRTV.vcxproj", "{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\visualizations\WaveForm\Waveform.vcxproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\tools\depends\native\libsquish-native\src\vs7\squish\squish_2010.vcxproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\lib\stsound\StSoundLibrary\StSoundLibrary.vcxproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvgmstream_dll", "..\..\lib\vgmstream\win32\win32.vcxproj", "{3600E1C5-FECA-468C-83F3-FE467DBE2A66}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libNoseFartXBMC_dll", "..\..\lib\nosefart\NoseFartXBMC.vcxproj", "{17238C64-04D6-4B51-B205-4A5A84ADB9FA}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsidplay_dll", "..\..\lib\libsidplay2\libsidplay\win\VC\libsidplay.vcxproj", "{FB3AB83A-C37A-4636-87FD-827F8506A8FC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpluff", "..\..\lib\cpluff\libcpluff\win32\cpluff.vcxproj", "{88968763-3D6B-48A8-B495-CC8C187FAC02}"
 EndProject
@@ -202,12 +192,6 @@ Global
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug|Win32.Build.0 = Debug|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release|Win32.ActiveCfg = Release|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release|Win32.Build.0 = Release|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug|Win32.Build.0 = Debug|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release|Win32.ActiveCfg = Release|Win32
-		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release|Win32.Build.0 = Release|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -226,30 +210,6 @@ Global
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|Win32.Build.0 = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|Win32.ActiveCfg = Release|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|Win32.Build.0 = Release|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug|Win32.Build.0 = Debug|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release|Win32.ActiveCfg = Release|Win32
-		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release|Win32.Build.0 = Release|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug|Win32.ActiveCfg = Debug|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug|Win32.Build.0 = Debug|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release|Win32.ActiveCfg = Release|Win32
-		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release|Win32.Build.0 = Release|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug|Win32.Build.0 = Debug|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Release|Win32.ActiveCfg = Release|Win32
-		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Release|Win32.Build.0 = Release|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug|Win32.Build.0 = Debug|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Release|Win32.ActiveCfg = Release|Win32
-		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Release|Win32.Build.0 = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug|Win32.ActiveCfg = Debug|Win32
