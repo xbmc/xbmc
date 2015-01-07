@@ -1193,7 +1193,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
     RECT crop;
 
-    if (!(CMediaSettings::Get().GetCurrentVideoSettings().m_Crop && AutoCrop(pPicture, crop)))
+    if (!AutoCrop(pPicture, crop))
     { // reset to defaults
       crop.left   = 0;
       crop.right  = 0;
@@ -1229,6 +1229,9 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 
 bool CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 {
+  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_Crop)
+    return false;
+
   if ((pPicture->format != RENDER_FMT_YUV420P) &&
     (pPicture->format != RENDER_FMT_NV12) &&
     (pPicture->format != RENDER_FMT_YUYV422) &&
