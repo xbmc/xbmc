@@ -19,11 +19,9 @@
  */
 
 #include "HTTPWebinterfaceHandler.h"
-#include "Util.h"
 #include "addons/AddonManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "network/WebServer.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -33,27 +31,20 @@ using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
+CHTTPWebinterfaceHandler::CHTTPWebinterfaceHandler(const HTTPRequest &request)
+  : CHTTPFileHandler(request)
+{
+  // resolve the URL into a file path and a HTTP response status
+  std::string file;
+  int responseStatus = ResolveUrl(request.url, file);
+
+  // set the file and the HTTP response status
+  SetFile(file, responseStatus);
+}
+
 bool CHTTPWebinterfaceHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return true;
-}
-
-int CHTTPWebinterfaceHandler::HandleRequest()
-{
-  m_responseCode = ResolveUrl(m_request.url, m_url);
-  if (m_responseCode != MHD_HTTP_OK)
-  {
-    if (m_responseCode == MHD_HTTP_FOUND)
-      m_responseType = HTTPRedirect;
-    else
-      m_responseType = HTTPError;
-
-    return MHD_YES;
-  }
-
-  m_responseType = HTTPFileDownload;
-
-  return MHD_YES;
 }
 
 int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &path)

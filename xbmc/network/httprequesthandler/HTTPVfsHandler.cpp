@@ -28,30 +28,28 @@
 
 using namespace std;
 
-bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request)
+CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
+  : CHTTPFileHandler(request)
 {
-  return (request.url.find("/vfs") == 0);
-}
+  std::string file;
+  int responseStatus = MHD_HTTP_BAD_REQUEST;
 
-int CHTTPVfsHandler::HandleRequest()
-{
   if (m_request.url.size() > 5)
   {
-    m_path = m_request.url.substr(5);
+    file = m_request.url.substr(5);
 
-    if (XFILE::CFile::Exists(m_path))
+    if (XFILE::CFile::Exists(file))
     {
       bool accessible = false;
-      if (m_path.substr(0, 8) == "image://")
+      if (file.substr(0, 8) == "image://")
         accessible = true;
       else
       {
         string sourceTypes[] = { "video", "music", "pictures" };
         unsigned int size = sizeof(sourceTypes) / sizeof(string);
 
-        string realPath = URIUtils::GetRealPath(m_path);
-        // for rar:// and zip:// paths we need to extract the path to the archive
-        // instead of using the VFS path
+        string realPath = URIUtils::GetRealPath(file);
+        // for rar:// and zip:// paths we need to extract the path to the archive instead of using the VFS path
         while (URIUtils::IsInArchive(realPath))
           realPath = CURL(realPath).GetHostName();
 
@@ -82,28 +80,20 @@ int CHTTPVfsHandler::HandleRequest()
       }
 
       if (accessible)
-      {
-        m_responseCode = MHD_HTTP_OK;
-        m_responseType = HTTPFileDownload;
-      }
+        responseStatus = MHD_HTTP_OK;
       // the file exists but not in one of the defined sources so we deny access to it
       else
-      {
-        m_responseCode = MHD_HTTP_UNAUTHORIZED;
-        m_responseType = HTTPError;
-      }
+        responseStatus = MHD_HTTP_UNAUTHORIZED;
     }
     else
-    {
-      m_responseCode = MHD_HTTP_NOT_FOUND;
-      m_responseType = HTTPError;
-    }
-  }
-  else
-  {
-    m_responseCode = MHD_HTTP_BAD_REQUEST;
-    m_responseType = HTTPError;
+      responseStatus = MHD_HTTP_NOT_FOUND;
   }
 
-  return MHD_YES;
+  // set the file and the HTTP response status
+  SetFile(file, responseStatus);
+}
+
+bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request)
+{
+  return request.url.find("/vfs") == 0;
 }

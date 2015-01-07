@@ -31,8 +31,9 @@
 #include <stdint.h>
 #include <microhttpd.h>
 
-#include "XBDateTime.h"
+#include "utils/HttpRangeUtils.h"
 
+class CDateTime;
 class CWebServer;
 
 enum HTTPMethod
@@ -43,7 +44,7 @@ enum HTTPMethod
   HEAD
 };
 
-enum HTTPResponseType
+typedef enum HTTPResponseType
 {
   HTTPNone,
   // creates and returns a HTTP error
@@ -62,16 +63,25 @@ enum HTTPResponseType
   // creates a HTTP response from a buffer by copying followed by freeing the buffer
   // the buffer must have been malloc'ed and not new'ed
   HTTPMemoryDownloadFreeCopy
-};
+} HTTPResponseType;
 
 typedef struct HTTPRequest
 {
+  CWebServer *webserver;
   struct MHD_Connection *connection;
   std::string url;
   HTTPMethod method;
   std::string version;
-  CWebServer *webserver;
+  CHttpRanges ranges;
 } HTTPRequest;
+
+typedef struct HTTPResponseDetails {
+  HTTPResponseType type;
+  int status;
+  std::multimap<std::string, std::string> headers;
+  std::string contentType;
+  uint64_t totalLength;
+} HTTPResponseDetails;
 
 class IHTTPRequestHandler
 {
@@ -107,11 +117,6 @@ public:
   virtual bool CanHandleRequest(const HTTPRequest &request) = 0;
 
   /*!
-   * \brief Returns the HTTP request handled by the HTTP request handler.
-   */
-  const HTTPRequest& GetRequest() { return m_request; }
-
-  /*!
    * \brief Handles the HTTP request.
    *
    * \return MHD_NO if a severe error has occurred otherwise MHD_YES.
@@ -119,32 +124,35 @@ public:
   virtual int HandleRequest() = 0;
 
   /*!
-  * \brief Returns the type of the response.
-  */
-  HTTPResponseType GetResponseType() const { return m_responseType; }
+   * \brief Whether the HTTP response could also be provided in ranges.
+   */
+  virtual bool CanHandleRanges() const { return false; }
 
   /*!
-  * \brief Returns the HTTP status of the response.
+  * \brief Whether the HTTP response can be cached.
   */
-  int GetResponseCode() const { return m_responseCode; }
+  virtual bool CanBeCached() const { return false; }
 
   /*!
-  * \brief Returns the HTTP response's header field-value pairs.
+  * \brief Returns the maximum age (in seconds) for which the response can be cached.
+  *
+  * \details This is only used if the response can be cached.
   */
-  const std::multimap<std::string, std::string>& GetResponseHeaderFields() const { return m_responseHeaderFields; };
+  virtual int GetMaximumAgeForCaching() const { return 0; }
+
+  /*!
+  * \brief Returns the last modification date of the response data.
+  *
+  * \details This is only used if the response can be cached.
+  */
+  virtual bool GetLastModifiedDate(CDateTime &lastModified) const { return false; }
  
   /*!
-   * \brief Returns the raw data of the response.
+   * \brief Returns the ranges with raw data belonging to the response.
    *
    * \details This is only used if the response type is one of the HTTPMemoryDownload types.
    */
-  virtual void* GetResponseData() const { return NULL; };
-  /*!
-  * \brief Returns the length of the raw data of the response.
-  *
-  * \details This is only used if the response type is one of the HTTPMemoryDownload types.
-  */
-  virtual size_t GetResponseDataLength() const { return 0; }
+  virtual HttpResponseRanges GetResponseData() const { return HttpResponseRanges(); };
 
   /*!
   * \brief Returns the URL to which the request should be redirected.
@@ -159,6 +167,51 @@ public:
   * \details This is only used if the response type is HTTPFileDownload.
   */
   virtual std::string GetResponseFile() const { return ""; }
+
+  /*!
+  * \brief Returns the HTTP request handled by the HTTP request handler.
+  */
+  const HTTPRequest& GetRequest() const { return m_request; }
+
+  /*!
+  * \brief Returns true if the HTTP request is ranged, otherwise false.
+  */
+  bool IsRequestRanged() const { return m_ranged; }
+
+  /*!
+  * \brief Sets whether the HTTP request contains ranges or not
+  */
+  void SetRequestRanged(bool ranged) { m_ranged = ranged; }
+
+  /*!
+   * \brief Sets the response status of the HTTP response.
+   *
+   * \param status HTTP status of the response
+   */
+  void SetResponseStatus(int status) { m_response.status = status; }
+
+  /*!
+  * \brief Checks if the given HTTP header field is part of the response details.
+  *
+  * \param field HTTP header field name
+  * \return True if the header field is set, otherwise false.
+  */
+  bool HasResponseHeader(const std::string &field) const;
+
+  /*!
+   * \brief Adds the given HTTP header field and value to the response details.
+   *
+   * \param field HTTP header field name
+   * \param value HTTP header field value
+   * \param allowMultiple Whether the same header is allowed multiple times
+   * \return True if the header field was added, otherwise false.
+   */
+  bool AddResponseHeader(const std::string &field, const std::string &value, bool allowMultiple = false);
+
+  /*!
+  * \brief Returns the HTTP response header details.
+  */
+  const HTTPResponseDetails& GetResponseDetails() const { return m_response; }
 
   /*!
    * \brief Adds the given key-value pair extracted from the HTTP POST data.
@@ -190,11 +243,13 @@ protected:
 #endif
   { return true; }
 
-  HTTPRequest m_request;
+  bool GetRequestedRanges(uint64_t totalLength);
 
-  int m_responseCode;
-  HTTPResponseType m_responseType;
-  std::multimap<std::string, std::string> m_responseHeaderFields;
+  HTTPRequest m_request;
+  HTTPResponseDetails m_response;
 
   std::map<std::string, std::string> m_postFields;
+
+private:
+  bool m_ranged;
 };

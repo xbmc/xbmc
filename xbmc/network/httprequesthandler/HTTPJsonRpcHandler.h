@@ -35,13 +35,12 @@ public:
 
   virtual int HandleRequest();
 
-  virtual void* GetResponseData() const { return (void *)m_response.c_str(); };
-  virtual size_t GetResponseDataLength() const { return m_response.size(); }
+  virtual HttpResponseRanges GetResponseData() const;
 
   virtual int GetPriority() const { return 2; }
 
 protected:
-  CHTTPJsonRpcHandler(const HTTPRequest &request)
+  explicit CHTTPJsonRpcHandler(const HTTPRequest &request)
     : IHTTPRequestHandler(request)
   { }
 
@@ -53,7 +52,8 @@ protected:
 
 private:
   std::string m_requestData;
-  std::string m_response;
+  std::string m_responseData;
+  CHttpResponseRange m_responseRange;
 
   class CHTTPClient : public JSONRPC::IClient
   {

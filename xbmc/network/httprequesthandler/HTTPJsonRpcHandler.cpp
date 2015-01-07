@@ -48,8 +48,8 @@ int CHTTPJsonRpcHandler::HandleRequest()
     if (!contentType.empty() && contentType.compare("application/json-rpc") != 0 &&
         contentType.compare("application/json") != 0 && contentType.compare("application/jsonrequest") != 0)
     {
-      m_responseType = HTTPError;
-      m_responseCode = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
+      m_response.type = HTTPError;
+      m_response.status = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
       return MHD_YES;
     }
 
@@ -70,23 +70,33 @@ int CHTTPJsonRpcHandler::HandleRequest()
   }
 
   if (isRequest)
-    m_response = CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
+    m_responseData = CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
   else
   {
     // get the whole output of JSONRPC.Introspect
     CVariant result;
     CJSONServiceDescription::Print(result, m_request.webserver, &client);
-    m_response = CJSONVariantWriter::Write(result, false);
+    m_responseData = CJSONVariantWriter::Write(result, false);
   }
 
-  m_responseHeaderFields.insert(pair<string, string>(MHD_HTTP_HEADER_CONTENT_TYPE, "application/json"));
-
   m_requestData.clear();
-  
-  m_responseType = HTTPMemoryDownloadNoFreeCopy;
-  m_responseCode = MHD_HTTP_OK;
+
+  m_responseRange.SetData(m_responseData.c_str(), m_responseData.size());
+
+  m_response.type = HTTPMemoryDownloadNoFreeCopy;
+  m_response.status = MHD_HTTP_OK;
+  m_response.contentType = "application/json";
+  m_response.totalLength = m_responseData.size();
 
   return MHD_YES;
+}
+
+HttpResponseRanges CHTTPJsonRpcHandler::GetResponseData() const
+{
+  HttpResponseRanges ranges;
+  ranges.push_back(m_responseRange);
+
+  return ranges;
 }
 
 #if (MHD_VERSION >= 0x00040001)

@@ -22,9 +22,9 @@
 #include <string>
 
 #include "addons/IAddon.h"
-#include "network/httprequesthandler/IHTTPRequestHandler.h"
+#include "network/httprequesthandler/HTTPFileHandler.h"
 
-class CHTTPWebinterfaceHandler : public IHTTPRequestHandler
+class CHTTPWebinterfaceHandler : public CHTTPFileHandler
 {
 public:
   CHTTPWebinterfaceHandler() { }
@@ -32,20 +32,10 @@ public:
   
   virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPWebinterfaceHandler(request); }
   virtual bool CanHandleRequest(const HTTPRequest &request);
-
-  virtual int HandleRequest();
-
-  virtual std::string GetRedirectUrl() const { return m_url; }
-  virtual std::string GetResponseFile() const { return m_url; }
   
   static int ResolveUrl(const std::string &url, std::string &path);
   static int ResolveUrl(const std::string &url, std::string &path, ADDON::AddonPtr &addon);
 
 protected:
-  CHTTPWebinterfaceHandler(const HTTPRequest &request)
-    : IHTTPRequestHandler(request)
-  { }
-
-private:
-  std::string m_url;
+  explicit CHTTPWebinterfaceHandler(const HTTPRequest &request);
 };

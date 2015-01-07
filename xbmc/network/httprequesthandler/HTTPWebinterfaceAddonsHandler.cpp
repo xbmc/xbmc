@@ -34,19 +34,31 @@ bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request
 
 int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
-  m_response = ADDON_HEADER;
+  m_responseData = ADDON_HEADER;
   VECADDONS addons;
   CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
   IVECADDONS addons_it;
   for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
-    m_response += "<li><a href=/addons/"+ (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
+    m_responseData += "<li><a href=/addons/" + (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
 
-  m_response += "</ul>\n</body></html>";
+  m_responseData += "</ul>\n</body></html>";
 
-  m_responseType = HTTPMemoryDownloadNoFreeCopy;
-  m_responseCode = MHD_HTTP_OK;
+  m_responseRange.SetData(m_responseData.c_str(), m_responseData.size());
+
+  m_response.type = HTTPMemoryDownloadNoFreeCopy;
+  m_response.status = MHD_HTTP_OK;
+  m_response.contentType = "text/html";
+  m_response.totalLength = m_responseData.size();
 
   return MHD_YES;
+}
+
+HttpResponseRanges CHTTPWebinterfaceAddonsHandler::GetResponseData() const
+{
+  HttpResponseRanges ranges;
+  ranges.push_back(m_responseRange);
+
+  return ranges;
 }
 
 

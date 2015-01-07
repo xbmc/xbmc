@@ -25,35 +25,30 @@
 
 using namespace std;
 
-bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request)
+CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
+  : CHTTPFileHandler(request)
 {
-  return (request.url.find("/image/") == 0);
-}
+  std::string file;
+  int responseStatus = MHD_HTTP_BAD_REQUEST;
 
-int CHTTPImageHandler::HandleRequest()
-{
+  // resolve the URL into a file path and a HTTP response status
   if (m_request.url.size() > 7)
   {
-    m_path = m_request.url.substr(7);
+    file = m_request.url.substr(7);
 
     XFILE::CImageFile imageFile;
-    const CURL pathToUrl(m_path);
+    const CURL pathToUrl(file);
     if (imageFile.Exists(pathToUrl))
-    {
-      m_responseCode = MHD_HTTP_OK;
-      m_responseType = HTTPFileDownload;
-    }
+      responseStatus = MHD_HTTP_OK;
     else
-    {
-      m_responseCode = MHD_HTTP_NOT_FOUND;
-      m_responseType = HTTPError;
-    }
-  }
-  else
-  {
-    m_responseCode = MHD_HTTP_BAD_REQUEST;
-    m_responseType = HTTPError;
+      responseStatus = MHD_HTTP_NOT_FOUND;
   }
 
-  return MHD_YES;
+  // set the file and the HTTP response status
+  SetFile(file, responseStatus);
+}
+
+bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request)
+{
+  return request.url.find("/image/") == 0;
 }

@@ -34,16 +34,16 @@ public:
 
   virtual int HandleRequest();
 
-  virtual void* GetResponseData() const { return (void *)m_response.c_str(); };
-  virtual size_t GetResponseDataLength() const { return m_response.size(); }
+  virtual HttpResponseRanges GetResponseData() const;
 
   virtual int GetPriority() const { return 1; }
 
 protected:
-  CHTTPWebinterfaceAddonsHandler(const HTTPRequest &request)
+  explicit CHTTPWebinterfaceAddonsHandler(const HTTPRequest &request)
     : IHTTPRequestHandler(request)
   { }
 
 private:
-  std::string m_response;
+  std::string m_responseData;
+  CHttpResponseRange m_responseRange;
 };
