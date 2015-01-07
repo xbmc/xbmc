@@ -80,7 +80,7 @@ CMusicInfoScanner::~CMusicInfoScanner()
 
 void CMusicInfoScanner::Process()
 {
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "kodi", "OnScanStarted");
   try
   {
     if (m_bClean)
@@ -249,7 +249,7 @@ void CMusicInfoScanner::Process()
   CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
   
   m_bRunning = false;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "kodi", "OnScanFinished");
   
   // we need to clear the musicdb cache and update any active lists
   CUtil::DeleteMusicDatabaseDirectoryCache();
