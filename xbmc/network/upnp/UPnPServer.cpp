@@ -414,7 +414,7 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
     int item_id;
     string item_type;
 
-    if (strcmp(sender, "xbmc"))
+    if (strcmp(sender, "kodi"))
         return;
 
     if (strcmp(message, "OnUpdate") && strcmp(message, "OnRemove")
@@ -1075,7 +1075,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "kodi", "OnUpdate", data);
             }
             updatelisting = true;
         }
