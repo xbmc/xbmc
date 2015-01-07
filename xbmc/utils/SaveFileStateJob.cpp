@@ -117,7 +117,7 @@ bool CSaveFileStateJob::DoWork()
               CVariant data;
               data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
               data["type"] = m_item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "kodi", "OnUpdate", data);
             }
 
             updateListing = true;
