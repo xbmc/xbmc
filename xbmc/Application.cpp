@@ -647,7 +647,7 @@ bool CApplication::Create()
   {
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
+    fprintf(stderr,"Could not init logging classes. Permission errors on $XDG_CACHE_HOME/%s (%s)\n", lcAppName.c_str(),
       CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
@@ -1056,10 +1056,10 @@ bool CApplication::InitDirectoriesLinux()
    special://xbmc/          => [read-only] system directory (/usr/share/kodi)
    special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
                                installations like skins, screensavers, etc.
-                               ($HOME/.kodi)
+                               ($XDG_DATA_HOME/kodi)
                                NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.kodi/userdata)
+                               mapped to special://home/userdata ($XDG_DATA_HOME/kodi/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
                                Generally special://masterprofile for the master profile or
                                special://masterprofile/profiles/<profile_name> for other profiles.
@@ -1081,10 +1081,30 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
+  /* Get XDG paths.
+   * Though a slash is expected at the end anyway, let's cover ourselves, just in case. */
+  std::string xdgDataPath;
+  if (getenv("XDG_DATA_HOME"))
+  {
+    xdgDataPath = getenv("XDG_DATA_HOME");
+    URIUtils::AddSlashAtEnd(xdgDataPath);
+  }
+  else
+    xdgDataPath = userHome + "/.local/share/";
+
+  std::string xdgCachePath;
+  if (getenv("XDG_CACHE_HOME"))
+  {
+    xdgCachePath = getenv("XDG_CACHE_HOME");
+    URIUtils::AddSlashAtEnd(xdgCachePath);
+  }
+  else
+    xdgCachePath = userHome + "/.cache/";
+
   std::string appBinPath, appPath;
   std::string appName = CCompileInfo::GetAppName();
-  std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
+  std::string lowerAppName = appName;
+  StringUtils::ToLower(lowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
@@ -1109,20 +1129,64 @@ bool CApplication::InitDirectoriesLinux()
     }
   }
 
+  /* Check if XDG paths actually exist
+   * This does some silly things since Create doesn't do multiple levels */
+  if (!CDirectory::Exists(xdgDataPath))
+  {
+    std::stringstream ss(xdgDataPath);
+    std::string seg, longseg = "";
+    std::vector<std::string> seglist;
+
+    while (std::getline(ss, seg, '/'))
+    {
+       seglist.push_back(seg);
+       longseg = longseg + "/" + seg;
+       CDirectory::Create(longseg);
+    }
+
+    if (!CDirectory::Exists(xdgDataPath))
+    {
+      fprintf(stderr, "Unable to find or create XDG_DATA_HOME (%s)!\n", xdgDataPath.c_str());
+      exit(1);
+    }
+  }
+
+  if (!CDirectory::Exists(xdgCachePath))
+  {
+    std::stringstream ss(xdgCachePath);
+    std::string seg, longseg = "";
+    std::vector<std::string> seglist;
+
+    while (std::getline(ss, seg, '/'))
+    {
+       seglist.push_back(seg);
+       longseg = longseg + "/" + seg;
+       CDirectory::Create(longseg);
+    }
+
+    if (!CDirectory::Exists(xdgCachePath))
+    {
+      fprintf(stderr, "Unable to find or create XDG_CACHE_HOME (%s)!\n", xdgCachePath.c_str());
+      exit(1);
+    }
+  }
+
   /* Set some environment variables */
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
-    // map our special drives
+    /* Map our special drives */
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
+    CSpecialProtocol::SetHomePath(xdgDataPath + lowerAppName);
+    CSpecialProtocol::SetMasterProfilePath(xdgDataPath + lowerAppName + "/userdata");
 
-    std::string strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
+    std::string strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/");
+    CDirectory::Create(strTempPath);
+    strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/temp");
+
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
@@ -1131,7 +1195,6 @@ bool CApplication::InitDirectoriesLinux()
     g_advancedSettings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-
   }
   else
   {
