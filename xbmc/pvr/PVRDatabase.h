@@ -180,6 +180,20 @@ namespace PVR
      * @return The database ID of the client or -1 if it wasn't found.
      */
     int GetClientId(const std::string &strClientUid);
+
+    /*!
+    * @brief Updates the last watched timestamp for the channel
+    * @param channel the channel
+    * @return whether the update was successful
+    */
+    bool UpdateLastWatched(const CPVRChannel &channel);
+
+    /*!
+    * @brief Updates the last watched timestamp for the channel group
+    * @param group the group
+    * @return whether the update was successful
+    */
+    bool UpdateLastWatched(const CPVRChannelGroup &group);
     //@}
 
   private:

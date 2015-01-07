@@ -773,3 +773,19 @@ bool CPVRDatabase::Persist(CPVRChannel &channel)
 
   return bReturn;
 }
+
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
+{
+  std::string strQuery = PrepareSQL("UPDATE channels SET iLastWatched = %d WHERE idChannel = %d",
+    channel.LastWatched(), channel.ChannelID());
+
+  return ExecuteQuery(strQuery);
+}
+
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup &group)
+{
+  std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %d WHERE idGroup = %d",
+    group.LastWatched(), group.GroupID());
+
+  return ExecuteQuery(strQuery);
+}
