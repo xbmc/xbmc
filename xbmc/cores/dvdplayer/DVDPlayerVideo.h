@@ -124,7 +124,7 @@ protected:
 #define EOS_BUFFER_LEVEL 8
 
   void AutoCrop(DVDVideoPicture* pPicture);
-  void AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
+  bool AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
   CRect m_crop;
 
   int OutputPicture(const DVDVideoPicture* src, double pts);
