@@ -697,8 +697,6 @@ void CUtil::ClearTempFonts()
   }
 }
 
-static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", NULL};
-
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 {
   int64_t n;
@@ -1834,6 +1832,234 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
+void CUtil::GetPathsToLookForAssociatedItems(const std::string& videoPath,
+  const char* common_sub_dirs[],
+  std::vector<std::string>& paths)
+{
+  std::string videoFileName;
+  std::string strPath;
+
+  URIUtils::Split(videoPath, strPath, videoFileName);
+  std::string videoFileNameNoExt(URIUtils::ReplaceExtension(videoFileName, ""));
+  paths.push_back(strPath);
+
+  if (StringUtils::StartsWithNoCase(videoPath, "rar://")) // <--- if this is found in main path then ignore it!
+  {
+    CURL url(videoPath);
+    std::string strArchive = url.GetHostName();
+    URIUtils::Split(strArchive, strPath, videoFileName);
+    paths.push_back(strPath);
+  }
+
+  int iSize = paths.size();
+  for (int i=0; i<iSize; ++i)
+  {
+    std::vector<std::string> directories = StringUtils::Split(paths[i], "/");
+    if (directories.size() == 1)
+      directories = StringUtils::Split(paths[i], "\\");
+
+    // if it's inside a cdX dir, add parent path
+    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 
+      && StringUtils::StartsWithNoCase(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2
+    {
+      std::string strPath2;
+      URIUtils::GetParentPath(paths[i], strPath2);
+      paths.push_back(strPath2);
+    }
+  }
+
+  // checking if any of the common subdirs exist ..
+  iSize = paths.size();
+  for (int i=0;i<iSize;++i)
+  {
+    for (int j=0; common_sub_dirs[j]; j++)
+    {
+      std::string strPath2 = URIUtils::AddFileToFolder(paths[i], common_sub_dirs[j]);
+      URIUtils::AddSlashAtEnd(strPath2);
+      if (CDirectory::Exists(strPath2))
+        paths.push_back(strPath2);
+    }
+  }
+  // .. done checking for common subdirs
+
+  // check if there any cd-directories in the paths we have added so far
+  iSize = paths.size();
+  for (int i=0;i<9;++i) // 9 cd's
+  {
+    std::string cdDir = StringUtils::Format("cd%i",i+1);
+    for (int i=0;i<iSize;++i)
+    {
+      std::string strPath2 = URIUtils::AddFileToFolder(paths[i], cdDir);
+      URIUtils::AddSlashAtEnd(strPath2);
+      bool pathAlreadyAdded = false;
+      for (unsigned int i=0; i<paths.size(); i++)
+      {
+        // if movie file is inside cd-dir, this directory can exist in vector already
+        if (StringUtils::EqualsNoCase(paths[i], strPath2))
+          pathAlreadyAdded = true;
+      }
+      if (CDirectory::Exists(strPath2) && !pathAlreadyAdded) 
+        paths.push_back(strPath2);
+    }
+  }
+  // .. done checking for cd-dirs
+}
+
+void CUtil::ScanPathsForAssociatedItems(const std::string& videoPath,
+  std::vector<std::string>& paths,
+  const std::vector<std::string>& item_exts,
+  std::vector<std::string>& itemPaths)
+{
+  std::string videoFileName;
+  std::string strPath;
+
+  URIUtils::Split(videoPath, strPath, videoFileName);
+  std::string videoFileNameNoExt(URIUtils::ReplaceExtension(videoFileName, ""));
+
+  CURL url(videoPath);
+  std::string isoFileNameNoExt;
+  if (url.IsProtocol("bluray"))
+    url = CURL(url.GetHostName());
+  //a path inside an iso
+  if (url.IsProtocol("udf"))
+  {
+    std::string isoPath = url.GetHostName();
+    URIUtils::RemoveSlashAtEnd(isoPath);
+    CFileItem iso(isoPath, false);
+
+    if (iso.IsDiscImage())
+    {
+      std::string isoFileName;
+      URIUtils::Split(iso.GetPath(), isoPath, isoFileName);
+      isoFileNameNoExt = URIUtils::ReplaceExtension(isoFileName, "");
+      paths.push_back(isoPath);
+    }
+  }
+
+  std::string strItem;
+
+  CLog::Log(LOGDEBUG,"%s: Searching for associated items...", __FUNCTION__);
+  for (unsigned int step = 0; step < paths.size(); step++)
+  {
+    if (paths[step].length() != 0)
+    {
+      CFileItemList items;
+      std::string exts = StringUtils::Join(item_exts, "|");
+      CDirectory::GetDirectory(paths[step], items, exts ,DIR_FLAG_NO_FILE_DIRS);
+
+      for (int j = 0; j < items.Size(); j++)
+      {
+        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
+
+        if (StringUtils::StartsWithNoCase(strItem, videoFileNameNoExt)
+          || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
+        {
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          {
+            // zip-file name equals videoFileNameNoExt, don't check in zip-file
+            ScanArchiveForAssociatedItems( items[j]->GetPath(), "", item_exts, itemPaths );
+          }
+          else    // not a rar/zip file
+          {
+            for (unsigned int i = 0; i < item_exts.size(); i++)
+            {
+              if (URIUtils::HasExtension(strItem, item_exts[i]))
+              {
+                itemPaths.push_back( items[j]->GetPath() ); 
+                CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+              }
+            }
+          }
+        }
+        else
+        {
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          {
+            // check videoFileNameNoExt in zip-file
+            ScanArchiveForAssociatedItems( items[j]->GetPath(), videoFileNameNoExt, item_exts, itemPaths );
+          }
+        }
+      }
+    }
+  }
+}
+
+int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
+  const std::string& videoNameNoExt,
+  const std::vector<std::string>& item_exts,
+  std::vector<std::string>& itemPaths)
+{
+  int nItemsAdded = 0;
+  CFileItemList ItemList;
+
+  // zip only gets the root dir
+  if (URIUtils::HasExtension(strArchivePath, ".zip"))
+  {
+    CURL pathToUrl(strArchivePath);
+    CURL zipURL = URIUtils::CreateArchivePath("zip", pathToUrl, "");
+    if (!CDirectory::GetDirectory(zipURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
+      return false;
+  }
+  else
+  {
+#ifdef HAS_FILESYSTEM_RAR
+    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
+    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
+    if( !g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, "") )
+      return false;
+#else
+    return false;
+#endif
+  }
+  for (int it= 0 ; it <ItemList.Size();++it)
+  {
+    std::string strPathInRar = ItemList[it]->GetPath();
+    std::string strExt = URIUtils::GetExtension(strPathInRar);
+
+    CLog::Log(LOGDEBUG, "ScanArchiveForAssociatedItems:: Found file %s", strPathInRar.c_str());
+    // always check any embedded rar archives
+    // checking for embedded rars, moved this outside the item_exts[] loop. We only need to check this once for each file.
+    if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
+    {
+      CURL urlRar;
+      CURL pathToUrl(strArchivePath);
+      if (strExt == ".rar")
+        urlRar = URIUtils::CreateArchivePath("rar", pathToUrl, strPathInRar);
+      else
+        urlRar = URIUtils::CreateArchivePath("zip", pathToUrl, strPathInRar);
+      ScanArchiveForAssociatedItems(urlRar.Get(), videoNameNoExt, item_exts, itemPaths);
+    }
+    // done checking if this is a rar-in-rar
+
+    // check that the found filename matches the video filename
+    int fnl = videoNameNoExt.size();
+    if (fnl && !StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt))
+      continue;
+
+    unsigned int iPos=0;
+    while (iPos < item_exts.size())
+    {
+      if (StringUtils::EqualsNoCase(strExt, item_exts[iPos]))
+      {
+        CURL pathToURL(strArchivePath);
+        std::string strSourceUrl;
+        if (URIUtils::HasExtension(strArchivePath, ".rar"))
+          strSourceUrl = URIUtils::CreateArchivePath("rar", pathToURL, strPathInRar).Get();
+        else
+          strSourceUrl = strPathInRar;
+
+        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, strSourceUrl.c_str() );
+        itemPaths.push_back( strSourceUrl );
+        nItemsAdded++;
+      }
+      iPos++;
+    }
+  }
+  return nItemsAdded;
+}
+
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles )
 {
   unsigned int startTimer = XbmcThreads::SystemClockMillis();
@@ -1861,36 +2087,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     || item.IsLiveTV()
     || !item.IsVideo())
     return;
-  
-  vector<std::string> strLookInPaths;
-  
-  std::string strMovieFileName;
-  std::string strPath;
-  
-  URIUtils::Split(strMovie, strPath, strMovieFileName);
-  std::string strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
-  strLookInPaths.push_back(strPath);
-  
-  CURL url(strMovie);
-  std::string isoFileNameNoExt;
-  if (url.IsProtocol("bluray"))
-      url = CURL(url.GetHostName());
-  //a path inside an iso
-  if (url.IsProtocol("udf"))
-  {
-    std::string isoPath = url.GetHostName();
-    URIUtils::RemoveSlashAtEnd(isoPath);
-    CFileItem iso(isoPath, false);
 
-    if (iso.IsDiscImage())
-    {
-      std::string isoFileName;
-      URIUtils::Split(iso.GetPath(), isoPath, isoFileName);
-      isoFileNameNoExt = URIUtils::ReplaceExtension(isoFileName, "");
-      strLookInPaths.push_back(isoPath);
-    }
-  }
-  
   if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() && !CSettings::Get().GetString("subtitles.custompath").empty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(CSettings::Get().GetString("subtitles.custompath")))
@@ -1906,129 +2103,25 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     
     CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(1);
   }
-  
-  if (StringUtils::StartsWith(strMovie, "rar://")) // <--- if this is found in main path then ignore it!
-  {
-    CURL url(strMovie);
-    std::string strArchive = url.GetHostName();
-    URIUtils::Split(strArchive, strPath, strMovieFileName);
-    strLookInPaths.push_back(strPath);
-  }
-  
-  int iSize = strLookInPaths.size();
-  for (int i=0; i<iSize; ++i)
-  {
-    vector<string> directories = StringUtils::Split( strLookInPaths[i], "/" );
-    if (directories.size() == 1)
-      directories = StringUtils::Split( strLookInPaths[i], "\\" );
 
-    // if it's inside a cdX dir, add parent path
-    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && StringUtils::StartsWithNoCase(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2
-    {
-      std::string strPath2;
-      URIUtils::GetParentPath(strLookInPaths[i], strPath2);
-      strLookInPaths.push_back(strPath2);
-    }
-  }
+  std::vector<std::string> strLookInPaths;
+  GetPathsToLookForAssociatedItems(strMovie, common_sub_dirs, strLookInPaths);
 
-  // checking if any of the common subdirs exist ..
-  iSize = strLookInPaths.size();
-  for (int i=0;i<iSize;++i)
-  {
-    for (int j=0; common_sub_dirs[j]; j++)
-    {
-      std::string strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j]);
-      URIUtils::AddSlashAtEnd(strPath2);
-      if (CDirectory::Exists(strPath2))
-        strLookInPaths.push_back(strPath2);
-    }
-  }
-  // .. done checking for common subdirs
-  
-  // check if there any cd-directories in the paths we have added so far
-  iSize = strLookInPaths.size();
-  for (int i=0;i<9;++i) // 9 cd's
-  {
-    std::string cdDir = StringUtils::Format("cd%i",i+1);
-    for (int i=0;i<iSize;++i)
-    {
-      std::string strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],cdDir);
-      URIUtils::AddSlashAtEnd(strPath2);
-      bool pathAlreadyAdded = false;
-      for (unsigned int i=0; i<strLookInPaths.size(); i++)
-      {
-        // if movie file is inside cd-dir, this directory can exist in vector already
-        if (StringUtils::EqualsNoCase(strLookInPaths[i], strPath2))
-          pathAlreadyAdded = true;
-      }
-      if (CDirectory::Exists(strPath2) && !pathAlreadyAdded) 
-        strLookInPaths.push_back(strPath2);
-    }
-  }
-  // .. done checking for cd-dirs
-  
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
   if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() == 1)
   {
-    strPath = CSettings::Get().GetString("subtitles.custompath");
+    std::string strPath = CSettings::Get().GetString("subtitles.custompath");
     URIUtils::AddSlashAtEnd(strPath);
     strLookInPaths.push_back(strPath);
   }
-  
-  std::string strDest;
-  std::string strItem;
-  
-  // 2 steps for movie directory and alternate subtitles directory
-  CLog::Log(LOGDEBUG,"%s: Searching for subtitles...", __FUNCTION__);
-  for (unsigned int step = 0; step < strLookInPaths.size(); step++)
-  {
-    if (strLookInPaths[step].length() != 0)
-    {
-      CFileItemList items;
-      
-      CDirectory::GetDirectory(strLookInPaths[step], items, g_advancedSettings.m_subtitlesExtensions, DIR_FLAG_NO_FILE_DIRS);
-      
-      for (int j = 0; j < items.Size(); j++)
-      {
-        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
-        
-        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt)
-          || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
-        {
-          // is this a rar or zip-file
-          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
-          {
-            // zip-file name equals strMovieFileNameNoExt, don't check in zip-file
-            ScanArchiveForSubtitles( items[j]->GetPath(), "", vecSubtitles );
-          }
-          else    // not a rar/zip file
-          {
-            for (int i = 0; sub_exts[i]; i++)
-            {
-              //Cache subtitle with same name as movie
-              if (URIUtils::HasExtension(strItem, sub_exts[i]))
-              {
-                vecSubtitles.push_back( items[j]->GetPath() ); 
-                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, CURL::GetRedacted(items[j]->GetPath()).c_str() );
-              }
-            }
-          }
-        }
-        else
-        {
-          // is this a rar or zip-file
-          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
-          {
-            // check strMovieFileNameNoExt in zip-file
-            ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
-          }
-        }
-      }
-    }
-  }
 
-  iSize = vecSubtitles.size();
-  for (int i = 0; i < iSize; i++)
+  std::vector<std::string> sub_exts = StringUtils::Split(g_advancedSettings.m_subtitlesExtensions, "|");
+
+  ScanPathsForAssociatedItems(strMovie, strLookInPaths, sub_exts, vecSubtitles);
+
+  unsigned int iSize = vecSubtitles.size();
+  std::string strDest;
+  for (unsigned int i = 0; i < iSize; i++)
   {
     if (URIUtils::HasExtension(vecSubtitles[i], ".smi"))
     {
@@ -2057,78 +2150,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
-int CUtil::ScanArchiveForSubtitles( const std::string& strArchivePath, const std::string& strMovieFileNameNoExt, std::vector<std::string>& vecSubtitles )
-{
-  int nSubtitlesAdded = 0;
-  CFileItemList ItemList;
- 
-  // zip only gets the root dir
-  if (URIUtils::HasExtension(strArchivePath, ".zip"))
-  {
-   CURL pathToUrl(strArchivePath);
-   CURL zipURL = URIUtils::CreateArchivePath("zip", pathToUrl, "");
-   if (!CDirectory::GetDirectory(zipURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
-    return false;
-  }
-  else
-  {
- #ifdef HAS_FILESYSTEM_RAR
-   // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
-   // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-   if( !g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, "") )
-    return false;
- #else
-   return false;
- #endif
-  }
-  for (int it= 0 ; it <ItemList.Size();++it)
-  {
-   std::string strPathInRar = ItemList[it]->GetPath();
-   std::string strExt = URIUtils::GetExtension(strPathInRar);
-   
-   CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInRar.c_str());
-   // always check any embedded rar archives
-   // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
-   if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
-   {
-    CURL urlRar;
-    CURL pathToUrl(strArchivePath);
-    if (strExt == ".rar")
-      urlRar = URIUtils::CreateArchivePath("rar", pathToUrl, strPathInRar);
-    else
-      urlRar = URIUtils::CreateArchivePath("zip", pathToUrl, strPathInRar);
-    ScanArchiveForSubtitles(urlRar.Get(), strMovieFileNameNoExt, vecSubtitles);
-   }
-   // done checking if this is a rar-in-rar
-
-   // check that the found filename matches the movie filename
-   int fnl = strMovieFileNameNoExt.size();
-   if (fnl && !StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), strMovieFileNameNoExt))
-     continue;
-
-   int iPos=0;
-    while (sub_exts[iPos])
-    {
-     if (StringUtils::EqualsNoCase(strExt, sub_exts[iPos]))
-     {
-       CURL pathToURL(strArchivePath);
-      CStdString strSourceUrl;
-      if (URIUtils::HasExtension(strArchivePath, ".rar"))
-       strSourceUrl = URIUtils::CreateArchivePath("rar", pathToURL, strPathInRar).Get();
-      else
-       strSourceUrl = strPathInRar;
-      
-       CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, strSourceUrl.c_str() );
-       vecSubtitles.push_back( strSourceUrl );
-       nSubtitlesAdded++;
-     }
-     
-     iPos++;
-    }
-  }
-
-  return nSubtitlesAdded;
-}
 
 void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, const CStdString& strStream, ExternalStreamInfo& info)
 {
@@ -2318,6 +2339,34 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
   }
 
   return std::string();
+}
+
+
+void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio)
+{
+  unsigned int startTimer = XbmcThreads::SystemClockMillis();
+
+  // new array for commons audio sub dirs
+  const char * common_audio_dirs[] = {"audio",
+    "tracks",
+    NULL};
+
+  CFileItem item(videoPath, false);
+  if ( item.IsInternetStream()
+   ||  item.IsHDHomeRun()
+   ||  item.IsSlingbox()
+   ||  item.IsPlayList()
+   ||  item.IsLiveTV()
+   || !item.IsVideo()) 
+    return;
+
+  std::vector<std::string> strLookInPaths;
+  GetPathsToLookForAssociatedItems(videoPath, common_audio_dirs, strLookInPaths);
+
+  std::vector<std::string> audio_exts = StringUtils::Split(g_advancedSettings.m_musicExtensions, "|");
+  ScanPathsForAssociatedItems(videoPath, strLookInPaths, audio_exts, vecAudio);
+
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
 bool CUtil::CanBindPrivileged()

@@ -22,9 +22,12 @@
 
 #include <string>
 #include <vector>
+#include "boost/shared_ptr.hpp"
+#include <map>
 
 class CFileItem;
 class CDVDDemux;
+typedef boost::shared_ptr<CDVDDemux> DemuxPtr;
 class CStreamDetails;
 class CStreamDetailSubtitle;
 class CDVDInputStream;
@@ -42,12 +45,16 @@ public:
   static bool GetFileStreamDetails(CFileItem *pItem);
   static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const std::string &path = "");
 
+  static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, const std::map<int, DemuxPtr>& m_extDemuxer, CStreamDetails &details, const std::string &path = "");
+  static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, CStreamDetails &details, bool handleExternalAudio, const std::string &path = "");
+
   /** \brief Probe the file's internal and external streams and store the info in the StreamDetails parameter.
   *   \param[out] details The file's StreamDetails consisting of internal streams and external subtitle streams.
   */
-  static bool DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemuxer, const std::vector<CStreamDetailSubtitle> &subs, CStreamDetails &details);
+  static bool DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemuxer, const std::map<int, DemuxPtr>& pDemuxers, const std::vector<CStreamDetailSubtitle>& subs, CStreamDetails &details);
 
   static bool GetFileDuration(const std::string &path, int &duration);
+  static bool AddExternalAudioToDetails(const std::string &path, CStreamDetails &details);
 
   /** \brief Probe the streams of an external subtitle file and store the info in the StreamDetails parameter.
   *   \param[out] details The external subtitle file's StreamDetails.
