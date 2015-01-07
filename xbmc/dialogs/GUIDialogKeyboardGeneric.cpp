@@ -32,6 +32,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "ApplicationMessenger.h"
+#include "windowing/WindowingFactory.h"
 
 #define BUTTON_ID_OFFSET      100
 #define BUTTONS_PER_ROW        20
@@ -76,6 +77,7 @@ void CGUIDialogKeyboardGeneric::OnWindowLoaded()
   CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
   if (edit)
     edit->SetShowCursorAlways(true);
+  g_Windowing.EnableTextInput(false);
 
   CGUIDialog::OnWindowLoaded();
 }
