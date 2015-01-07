@@ -39,11 +39,11 @@ class CVideoReferenceClock : public CThread
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate);
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged();
+    void    UpdateRefreshrate();
     void    Stop();
 
   private:
     void    Process();
-    void    UpdateRefreshrate();
     void    SendVblankSignal();
     void    UpdateClock(int NrVBlanks, bool CheckMissed);
     double  UpdateInterval();

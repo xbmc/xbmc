@@ -101,7 +101,7 @@ bool CVideoSyncCocoa::Setup(PUPDATECLOCK func)
   else
 #endif
   {
-    GetFps();//UpdateRefreshrate(true); - FIXME?NEEDED?
+    GetFps();
     return true;
   }
 }
@@ -133,6 +133,7 @@ void CVideoSyncCocoa::UpdateFPS(double fps)
   {
     CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Detected refreshrate: %i hertz", fpsInt);
     m_fps = fpsInt;
+    g_VideoReferenceClock.UpdateRefreshrate();
   }
 }
 
