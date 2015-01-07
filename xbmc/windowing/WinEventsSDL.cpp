@@ -457,19 +457,6 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       CApplicationMessenger::Get().Minimize();
       return true;
 
-    case SDLK_v: // CMD-v to paste clipboard text
-      if (g_Windowing.IsTextInputEnabled())
-      {
-        const char *szStr = Cocoa_Paste();
-        if (szStr)
-        {
-          CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
-          msg.SetLabel(szStr);
-          g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
-        }
-      }
-      return true;
-
     default:
       return false;
     }
