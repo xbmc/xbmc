@@ -55,7 +55,7 @@ void CPlayList::AnnounceRemove(int pos)
   CVariant data;
   data["playlistid"] = m_id;
   data["position"] = pos;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnRemove", data);
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "kodi", "OnRemove", data);
 }
 
 void CPlayList::AnnounceClear()
@@ -65,7 +65,7 @@ void CPlayList::AnnounceClear()
 
   CVariant data;
   data["playlistid"] = m_id;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnClear", data);
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "kodi", "OnClear", data);
 }
 
 void CPlayList::AnnounceAdd(const CFileItemPtr& item, int pos)
@@ -76,7 +76,7 @@ void CPlayList::AnnounceAdd(const CFileItemPtr& item, int pos)
   CVariant data;
   data["playlistid"] = m_id;
   data["position"] = pos;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnAdd", item, data);
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Playlist, "kodi", "OnAdd", item, data);
 }
 
 void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
