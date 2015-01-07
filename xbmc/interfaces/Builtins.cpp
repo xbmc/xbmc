@@ -869,7 +869,7 @@ int CBuiltins::Execute(const std::string& execString)
         else
           iPlaySpeed *= 2;
 
-        if (iPlaySpeed > 32 || iPlaySpeed < -32)
+        if (iPlaySpeed > 16 || iPlaySpeed < -16)
           iPlaySpeed = 1;
 
         g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
