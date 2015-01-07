@@ -61,10 +61,13 @@
 
 #include <stdio.h>
 #include <algorithm>
+#include <boost/format.hpp>
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
 
+#define SKIP_TIMEOUT 1500
+#define TIMECODE_TIMEOUT 2500
 using namespace PVR;
 
 #define BLUE_BAR                          0
@@ -91,10 +94,9 @@ static CLinuxResourceCounter m_resourceCounter;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
-  m_timeCodeStamp[0] = 0;
-  m_timeCodePosition = 0;
-  m_timeCodeShow = false;
-  m_timeCodeTimeout = 0;
+  m_skipStepCount = 0;
+  m_timeCode = 0;
+  m_userTimeout = 0;
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
@@ -124,7 +126,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  if (m_timeCodePosition > 0 && action.GetButtonCode())
+  if (m_timeCode > 0 && action.GetButtonCode())
   { // check whether we have a mapping in our virtual videotimeseek "window" and have a select action
     CKey key(action.GetButtonCode());
     CAction timeSeek = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_TIME_SEEK, key, false);
@@ -155,7 +157,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_PLAYER_PLAY:
   case ACTION_PAUSE:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
     {
       SeekToTimeCodeStamp(SEEK_ABSOLUTE);
       return true;
@@ -163,22 +165,32 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_STEP_BACK:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
     else
-      g_application.m_pPlayer->Seek(false, false);
+    {
+      m_skipStepCount--;
+      if (m_skipStepCount < -(int)g_advancedSettings.m_skipSteps.size())
+        m_skipStepCount = -(int)g_advancedSettings.m_skipSteps.size();
+      m_userTimeout = XbmcThreads::SystemClockMillis() + SKIP_TIMEOUT;
+    }
     return true;
 
   case ACTION_STEP_FORWARD:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
     else
-      g_application.m_pPlayer->Seek(true, false);
+    {
+      m_skipStepCount++;
+      if (m_skipStepCount > (int)g_advancedSettings.m_skipSteps.size())
+        m_skipStepCount = (int)g_advancedSettings.m_skipSteps.size();
+      m_userTimeout = XbmcThreads::SystemClockMillis() + SKIP_TIMEOUT;
+    }
     return true;
 
   case ACTION_BIG_STEP_BACK:
   case ACTION_CHAPTER_OR_BIG_STEP_BACK:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
     else
       g_application.m_pPlayer->Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
@@ -186,7 +198,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_BIG_STEP_FORWARD:
   case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
     else
       g_application.m_pPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
@@ -311,7 +323,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
   case ACTION_SMALL_STEP_BACK:
-    if (m_timeCodePosition > 0)
+    if (m_timeCode > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
     else
     {
@@ -672,26 +684,31 @@ void CGUIWindowFullScreen::FrameMove()
       OnMessage(msg);
     }
   }
-
-  if (m_timeCodeShow && m_timeCodePosition != 0)
+  // Skip now operates in two ways:
+  // 1) (Old behavior - keyboard friendly) User enters a time code (digits 0-9) and presses left (or right) arrow key. When arrow key is pressed the 
+  // entered time code is executed. i.e. user presses 100 and right arrow key => A one minute forward skip step is performed.
+  // 2) (New feature - remote friendly) User presses an arrow key one or more times, each time key is pressed skip step counter is increased. The final
+  // skip is determined by the skip step array, If the array is { 15, 30, 60, 180, 300, 600, 900, 1800, 3600, 7200 }
+  // and the user presses skip step twice, a 30 sec skip is performed. Note - skip step array is a configuration property.
+  if (m_userTimeout != 0)
   {
-    if ( (XbmcThreads::SystemClockMillis() - m_timeCodeTimeout) >= 2500)
+    if (XbmcThreads::SystemClockMillis() >= m_userTimeout)
     {
-      m_timeCodeShow = false;
-      m_timeCodePosition = 0;
-    }
-    std::string strDispTime = "00:00:00";
-
-    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-
-    for (int pos = 7, i = m_timeCodePosition; pos >= 0 && i > 0; pos--)
-    {
-      if (strDispTime[pos] != ':')
+      m_userTimeout = 0;
+      m_timeCode = 0;
+      if (m_skipStepCount != 0)
       {
-        i -= 1;
-        strDispTime[pos] = (char)m_timeCodeStamp[i] + '0';
+        SeekToSkipStep();
       }
     }
+
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+    std::string  strDispTime;
+
+    if (m_timeCode != 0) // We have a time code
+      strDispTime += GetTimeCodeAsString(m_timeCode,100);
+    else // we have a skip step or nothing
+      strDispTime += GetTimeCodeAsString(GetSkipStepTimeCode(),60);
 
     strDispTime += "/" + g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS) + " [" + g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
@@ -706,7 +723,7 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_VISIBLE(BLUE_BAR);
     SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
-  else if (m_timeCodeShow)
+  else if (m_userTimeout != 0)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
     SET_CONTROL_HIDDEN(LABEL_ROW2);
@@ -750,46 +767,63 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
   if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
-    m_timeCodeShow = true;
-    m_timeCodeTimeout = XbmcThreads::SystemClockMillis();
-
-    if (m_timeCodePosition < 6)
-      m_timeCodeStamp[m_timeCodePosition++] = remote - REMOTE_0;
-    else
-    {
-      // rotate around
-      for (int i = 0; i < 5; i++)
-        m_timeCodeStamp[i] = m_timeCodeStamp[i+1];
-      m_timeCodeStamp[5] = remote - REMOTE_0;
-    }
+    m_userTimeout = XbmcThreads::SystemClockMillis() + TIMECODE_TIMEOUT;
+    m_timeCode = m_timeCode * 10 + remote - REMOTE_0;
   }
 }
 
 void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION direction)
 {
-  double total = GetTimeCodeStamp();
+  double total = GetTimeCodeAsSeconds();
   if (type == SEEK_RELATIVE)
     total = g_application.GetTime() + (((direction == SEEK_FORWARD) ? 1 : -1) * total);
 
   if (total < g_application.GetTotalTime())
     g_application.SeekTime(total);
 
-  m_timeCodePosition = 0;
-  m_timeCodeShow = false;
+  m_timeCode = 0;
 }
 
-double CGUIWindowFullScreen::GetTimeCodeStamp()
+int CGUIWindowFullScreen::GetSkipStepTimeCode()
 {
-  // Convert the timestamp into an integer
-  int tot = 0;
-  for (int i = 0; i < m_timeCodePosition; i++)
-    tot = tot * 10 + m_timeCodeStamp[i];
+  if (m_skipStepCount == 0)
+    return 0;
+  return g_advancedSettings.m_skipSteps[std::abs(m_skipStepCount) - 1] * ((m_skipStepCount < 0) ? -1 : 1);
+}
 
+void CGUIWindowFullScreen::SeekToSkipStep()
+{
+  double seek = g_application.GetTime() + GetSkipStepTimeCode();
+
+  if (seek < g_application.GetTotalTime())
+    g_application.SeekTime(seek);
+
+  m_skipStepCount = 0;
+}
+
+double CGUIWindowFullScreen::GetTimeCodeAsSeconds()
+{
+  int t = m_timeCode;
   // Interpret result as HHMMSS
-  int s = tot % 100; tot /= 100;
-  int m = tot % 100; tot /= 100;
-  int h = tot % 100;
+  int s = t % 100; t /= 100;
+  int m = t % 100; t /= 100;
+  int h = t % 100;
   return h * 3600 + m * 60 + s;
+}
+
+std::string CGUIWindowFullScreen::GetTimeCodeAsString(int timeCode, int base)
+{
+  int t = abs(timeCode);
+  int s = t % base; t /= base;
+  int m = t % base; t /= base;
+  int h = t % base;
+
+  boost::format fmt("%c%02i:%02i:%02i");
+  fmt % (timeCode < 0 ? '-' : '+');
+  fmt % h;
+  fmt % m;
+  fmt % s;
+  return fmt.str();
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

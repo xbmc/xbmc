@@ -339,6 +339,7 @@ void CAdvancedSettings::Initialize()
   m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
+  m_skipSteps = { 15, 30, 60, 180, 300, 600, 900, 1800, 3600, 7200 };
 
 //caused lots of jerks
 //#ifdef TARGET_WINDOWS
@@ -847,7 +848,15 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
-
+  // Transform into vector of ints
+  string skipSteps;
+  XMLUtils::GetString(pRootElement, "skipsteps", skipSteps);
+  if (skipSteps.length() > 0)
+  {
+    m_skipSteps.clear();
+    for (auto step : StringUtils::Split(skipSteps, ','))
+      m_skipSteps.push_back(atoi(step.c_str()));
+  }
   //airtunes + airplay
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
   XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  
