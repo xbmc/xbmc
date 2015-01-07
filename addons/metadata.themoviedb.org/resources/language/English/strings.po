@@ -43,3 +43,7 @@ msgstr ""
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr ""
+
+msgctxt "#30007"
+msgid "Include adult rated titles in searches"
+msgstr ""
