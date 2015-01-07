@@ -32,19 +32,6 @@
 #define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/system/airplay/libshairplay-1.dll"
 #define DLL_PATH_LIBCEC        "special://xbmcbin/system/libcec.dll"
 
-/* paplayer */
-#define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
-#define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap.dll"
-#define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC.dll"
-#define DLL_PATH_MID_CODEC     "special://xbmcbin/system/players/paplayer/timidity.dll"
-#define DLL_PATH_NSF_CODEC     "special://xbmcbin/system/players/paplayer/nosefart.dll"
-#define DLL_PATH_OGG_CODEC     "special://xbmcbin/system/players/paplayer/vorbisfile.dll"
-#define DLL_PATH_SID_CODEC     "special://xbmcbin/system/players/paplayer/libsidplay2.dll"
-#define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU.dll"
-#define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream.dll"
-#define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary.dll"
-#define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug.dll"
-
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass.dll"
 #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-0.dll"

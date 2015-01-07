@@ -100,23 +100,6 @@ setfilepath /xbmc/system/players/dvdplayer
 checkfiles libmpeg2-0.dll
 echo "##### building of libmpeg2 dlls done #####"
 
-echo "##### building timidity dlls #####"
-cd /xbmc/lib/timidity/
-if  [ "$MAKECLEAN" == "clean" ]; then
-  make -f Makefile.win32 clean
-fi
-make -f Makefile.win32 $MAKEFLAGS
-setfilepath /xbmc/system/players/paplayer
-checkfiles timidity.dll
-echo "##### building of timidity dlls done #####"
-
-echo "##### building asap dlls #####"
-cd /xbmc/lib/asap/win32
-runBackgroundProcess "./build_xbmc_win32.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/paplayer
-checkfiles xbmc_asap.dll
-echo "##### building of asap dlls done #####"
-
 # wait for key press
 if [ $NOPROMPT == 0 ]; then
   echo press a key to close the window
