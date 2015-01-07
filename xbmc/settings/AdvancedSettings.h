@@ -215,7 +215,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_extraLogLevels;
     CStdString m_cddbAddress;
 
-    unsigned int m_skipTimeout;
     std::vector<int> m_skipSteps;
 
     //airtunes + airplay

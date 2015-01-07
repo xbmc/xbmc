@@ -66,6 +66,8 @@
 #include "linux/LinuxResourceCounter.h"
 #endif
 
+#define SKIP_TIMEOUT 1500
+#define TIMECODE_TIMEOUT 2500
 using namespace PVR;
 
 #define BLUE_BAR                          0
@@ -170,7 +172,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       m_skipStepCount--;
       if (m_skipStepCount < -(int)g_advancedSettings.m_skipSteps.size())
         m_skipStepCount = -(int)g_advancedSettings.m_skipSteps.size();
-      m_userTimeout = XbmcThreads::SystemClockMillis();
+      m_userTimeout = XbmcThreads::SystemClockMillis() + SKIP_TIMEOUT;
     }
     return true;
 
@@ -182,8 +184,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       m_skipStepCount++;
       if (m_skipStepCount > (int)g_advancedSettings.m_skipSteps.size())
         m_skipStepCount = (int)g_advancedSettings.m_skipSteps.size();
-      m_userTimeout = XbmcThreads::SystemClockMillis();
+      m_userTimeout = XbmcThreads::SystemClockMillis() + SKIP_TIMEOUT;
     }
+
     return true;
 
   case ACTION_BIG_STEP_BACK:
@@ -685,15 +688,15 @@ void CGUIWindowFullScreen::FrameMove()
 
   // Skip operates in two ways:
   // 1) User enters a time code (digits 0-9) and presses left (or right) arrow key. When arrow key is pressed the 
-  // entered time code is executed. i.e user presses 100 and right arrow key => A one minute forward skip step is performed.
+  // entered time code is executed. i.e. user presses 100 and right arrow key => A one minute forward skip step is performed.
   // 2) User presses an arrow key one or more times, each time key is pressed skip step counter is increased. The final
   // skip is determined by the skip step array, If the array is { 15, 30, 60, 180, 300, 600, 900, 1800, 3600, 7200 }
-  // and the user presses skip step twice, a 30 sek skip is performed. Note - skip step array is a configuartion property.
+  // and the user presses skip step twice, a 30 sec skip is performed. Note - skip step array is a configuration property.
   if (m_userTimeout != 0)
   {
     // Here if we are in time code mode we cancel the entered time code ( user took to long)
     // if in skip step mode we ecute the skip step
-    if ((XbmcThreads::SystemClockMillis() - m_userTimeout) >= g_advancedSettings.m_skipTimeout)
+    if (XbmcThreads::SystemClockMillis() >= m_userTimeout)
     {
       m_userTimeout = 0;
       m_timeCode = 0;
@@ -768,8 +771,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
   if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
-    m_userTimeout = XbmcThreads::SystemClockMillis();
-
+    m_userTimeout = XbmcThreads::SystemClockMillis() + TIMECODE_TIMEOUT;
     m_timeCode = m_timeCode * 10 + remote - REMOTE_0;
   }
 }
@@ -790,13 +792,12 @@ int CGUIWindowFullScreen::GetSkipStepTimeCode()
 {
   if (m_skipStepCount == 0)
     return 0;
-  return g_advancedSettings.m_skipSteps[std::abs(m_skipStepCount) - 1];
+  return g_advancedSettings.m_skipSteps[std::abs(m_skipStepCount) - 1] * ((m_skipStepCount < 0) ? -1 : 1);
 }
 
 void CGUIWindowFullScreen::SeekToSkipStep()
 {
-  double seek = (((m_skipStepCount < 0) ? -1 : 1) * GetSkipStepTimeCode());
-  seek = g_application.GetTime() + seek;
+  double seek = g_application.GetTime() + GetSkipStepTimeCode();
 
   if (seek < g_application.GetTotalTime())
     g_application.SeekTime(seek);
@@ -816,12 +817,13 @@ double CGUIWindowFullScreen::GetTimeCodeAsSeconds()
 
 std::string CGUIWindowFullScreen::GetTimeCodeAsString(int timeCode, int base)
 {
-  int t = timeCode;
+  int t = abs(timeCode);
   int s = t % base; t /= base;
   int m = t % base; t /= base;
   int h = t % base;
 
-  boost::format fmt("%02i:%02i:%02i");
+  boost::format fmt("%c%02i:%02i:%02i");
+  fmt % (timeCode < 0 ? '-' : '+');
   fmt % h;
   fmt % m;
   fmt % s;
