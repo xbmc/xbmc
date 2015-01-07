@@ -214,7 +214,7 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
             }
 
             // open the file
-            CStdString path (CURL::Decode((const char*) filepath));
+            std::string path (CURL::Decode((const char*) filepath));
             NPT_File file(path.c_str());
             NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_READ);
             if (NPT_FAILED(result)) {
@@ -277,7 +277,7 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
             return;
 
-        CStdString buffer;
+        std::string buffer;
 
         buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
         rct->SetStateVariable("Volume", buffer.c_str());
@@ -314,7 +314,7 @@ CUPnPRenderer::UpdateState()
         avt->SetStateVariable("NumberOfTracks", "1");
         avt->SetStateVariable("CurrentTrack", "1");
 
-        CStdString buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
+        std::string buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
         avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
@@ -330,14 +330,14 @@ CUPnPRenderer::UpdateState()
     } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
-        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
-        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
+        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");
 
         CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (slideshow)
         {
-          CStdString index;
+          std::string index;
           index = StringUtils::Format("%d", slideshow->NumSlides());
           avt->SetStateVariable("NumberOfTracks", index.c_str());
           index = StringUtils::Format("%d", slideshow->CurrentSlide());
@@ -403,7 +403,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     PLT_MediaObject* object = BuildObject(item, file_path, false, thumb_loader);
     if (object) {
         // fetch the item's artwork
-        CStdString thumb;
+        std::string thumb;
         if (object->m_ObjectClass.type == "object.item.audioItem.musicTrack")
             thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
         else

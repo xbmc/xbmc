@@ -253,7 +253,7 @@ void CJpegIO::Close()
   ReleaseThumbnailBuffer();
 }
 
-bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny, bool read)
+bool CJpegIO::Open(const std::string &texturePath, unsigned int minx, unsigned int miny, bool read)
 {
   Close();
 
@@ -398,7 +398,7 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
   return true;
 }
 
-bool CJpegIO::CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif)
+bool CJpegIO::CreateThumbnail(const std::string& sourceFile, const std::string& destFile, int minx, int miny, bool rotateExif)
 {
   //Copy sourceFile to buffer, pass to CreateThumbnailFromMemory for decode+re-encode
   if (!Open(sourceFile, minx, miny, false))
@@ -407,7 +407,7 @@ bool CJpegIO::CreateThumbnail(const CStdString& sourceFile, const CStdString& de
   return CreateThumbnailFromMemory(m_inputBuff, m_inputBuffSize, destFile, minx, miny);
 }
 
-bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny)
+bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const std::string& destFile, unsigned int minx, unsigned int miny)
 {
   //Decode a jpeg residing in buffer, pass to CreateThumbnailFromSurface for re-encode
   unsigned int pitch = 0;
@@ -432,7 +432,7 @@ bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufS
   return true;
 }
 
-bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile)
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile)
 {
   //Encode raw data from buffer, save to destFile
   struct jpeg_compress_struct cinfo;
@@ -535,7 +535,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
 // override libjpeg's error function to avoid an exit() call
 void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
 {
-  CStdString msg = StringUtils::Format("Error %i: %s",cinfo->err->msg_code, cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
+  std::string msg = StringUtils::Format("Error %i: %s",cinfo->err->msg_code, cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
   CLog::Log(LOGWARNING, "JpegIO: %s", msg.c_str());
 
   my_error_mgr *myerr = (my_error_mgr*)cinfo->err;
@@ -675,7 +675,7 @@ bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   return Read(buffer, bufSize, width, height);
 }
 
-bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
                                          unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
   //Encode raw data from buffer, save to destbuffer

@@ -34,7 +34,7 @@ bool CMediaSource::IsWritable() const
   return CUtil::SupportsWriteFileOperations(strPath);
 }
 
-void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<string> &paths)
+void CMediaSource::FromNameAndPaths(const std::string &category, const std::string &name, const vector<string> &paths)
 {
   vecPaths = paths;
   if (paths.size() == 0)
@@ -97,7 +97,7 @@ void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras)
     unsigned int j;
     for ( j=0;j<sources.size();++j)
     {
-      if (sources[j].strPath.Equals(extras[i].strPath))
+      if (StringUtils::EqualsNoCase(sources[j].strPath, extras[i].strPath))
       {
         sources[j] = extras[i];
         break;
@@ -113,7 +113,7 @@ void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)
   unsigned int i;
   for( i=0;i<sources.size();++i )
   {
-    if (sources[i].strPath.Equals(source.strPath))
+    if (StringUtils::EqualsNoCase(sources[i].strPath, source.strPath))
     {
       sources[i] = source;
       break;

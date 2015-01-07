@@ -30,7 +30,7 @@
 TEST(TestFileOperationJob, ActionCopy)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destfile;
+  std::string tmpfilepath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -44,7 +44,7 @@ TEST(TestFileOperationJob, ActionCopy)
   item->Select(true);
   items.Add(item);
 
-  CStdString destpath = URIUtils::GetDirectory(tmpfilepath);
+  std::string destpath = URIUtils::GetDirectory(tmpfilepath);
   destpath = URIUtils::AddFileToFolder(destpath, "copy");
   destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
   ASSERT_FALSE(XFILE::CFile::Exists(destfile));
@@ -64,7 +64,7 @@ TEST(TestFileOperationJob, ActionCopy)
 TEST(TestFileOperationJob, ActionMove)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destfile;
+  std::string tmpfilepath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -78,7 +78,7 @@ TEST(TestFileOperationJob, ActionMove)
   item->Select(true);
   items.Add(item);
 
-  CStdString destpath = URIUtils::GetDirectory(tmpfilepath);
+  std::string destpath = URIUtils::GetDirectory(tmpfilepath);
   destpath = URIUtils::AddFileToFolder(destpath, "move");
   destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
   ASSERT_FALSE(XFILE::CFile::Exists(destfile));
@@ -98,7 +98,7 @@ TEST(TestFileOperationJob, ActionMove)
 TEST(TestFileOperationJob, ActionDelete)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destfile;
+  std::string tmpfilepath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -112,7 +112,7 @@ TEST(TestFileOperationJob, ActionDelete)
   item->Select(true);
   items.Add(item);
 
-  CStdString destpath = URIUtils::GetDirectory(tmpfilepath);
+  std::string destpath = URIUtils::GetDirectory(tmpfilepath);
   destpath = URIUtils::AddFileToFolder(destpath, "delete");
   destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
   ASSERT_FALSE(XFILE::CFile::Exists(destfile));
@@ -148,7 +148,7 @@ TEST(TestFileOperationJob, ActionDelete)
 TEST(TestFileOperationJob, ActionReplace)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destfile;
+  std::string tmpfilepath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -162,7 +162,7 @@ TEST(TestFileOperationJob, ActionReplace)
   item->Select(true);
   items.Add(item);
 
-  CStdString destpath = URIUtils::GetDirectory(tmpfilepath);
+  std::string destpath = URIUtils::GetDirectory(tmpfilepath);
   destpath = URIUtils::AddFileToFolder(destpath, "replace");
   destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
   ASSERT_FALSE(XFILE::CFile::Exists(destfile));
@@ -188,14 +188,14 @@ TEST(TestFileOperationJob, ActionReplace)
 TEST(TestFileOperationJob, ActionCreateFolder)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  std::string tmpfilepath, destpath;
   CFileItemList items;
   CFileOperationJob job;
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CStdString tmpfiledirectory =
+  std::string tmpfiledirectory =
     CXBMCTestUtils::Instance().TempFileDirectory(tmpfile);
 
   tmpfile->Close();
@@ -224,14 +224,14 @@ TEST(TestFileOperationJob, ActionCreateFolder)
 TEST(TestFileOperationJob, ActionDeleteFolder)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  std::string tmpfilepath, destpath;
   CFileItemList items;
   CFileOperationJob job;
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CStdString tmpfiledirectory =
+  std::string tmpfiledirectory =
     CXBMCTestUtils::Instance().TempFileDirectory(tmpfile);
 
   tmpfile->Close();
@@ -264,7 +264,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 TEST(TestFileOperationJob, GetFunctions)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destfile;
+  std::string tmpfilepath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -278,7 +278,7 @@ TEST(TestFileOperationJob, GetFunctions)
   item->Select(true);
   items.Add(item);
 
-  CStdString destpath = URIUtils::GetDirectory(tmpfilepath);
+  std::string destpath = URIUtils::GetDirectory(tmpfilepath);
   destpath = URIUtils::AddFileToFolder(destpath, "getfunctions");
   destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
   ASSERT_FALSE(XFILE::CFile::Exists(destfile));

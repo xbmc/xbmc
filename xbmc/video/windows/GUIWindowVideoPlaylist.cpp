@@ -329,7 +329,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
   else
   {
     CFileItemPtr pItem = m_vecItems->Get(iItem);
-    CStdString strPath = pItem->GetPath();
+    std::string strPath = pItem->GetPath();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     // need to update Playlist FileItem's startOffset and resumePoint based on GUIWindowVideoPlaylist FileItem
     if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
@@ -371,14 +371,14 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 /// \brief Save current playlist to playlist folder
 void CGUIWindowVideoPlaylist::SavePlayList()
 {
-  CStdString strNewFileName;
+  std::string strNewFileName;
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
-    CStdString strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
+    std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
 
     CPlayListM3U playlist;
     playlist.Add(*m_vecItems);
@@ -499,7 +499,7 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     return true;
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = "special://profile/PartyMode-Video.xsp";
+    std::string playlist = "special://profile/PartyMode-Video.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

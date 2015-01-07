@@ -100,7 +100,7 @@ namespace PERIPHERALS
     bool IsMuted(void);
 
     // CPeripheral callbacks
-    void OnSettingChanged(const CStdString &strChangedSetting);
+    void OnSettingChanged(const std::string &strChangedSetting);
     void OnDeviceRemoved(void);
 
     // input
@@ -126,7 +126,7 @@ namespace PERIPHERALS
     void SetConfigurationFromLibCEC(const CEC::libcec_configuration &config);
     void SetVersionInfo(const CEC::libcec_configuration &configuration);
 
-    static void ReadLogicalAddresses(const CStdString &strString, CEC::cec_logical_addresses &addresses);
+    static void ReadLogicalAddresses(const std::string &strString, CEC::cec_logical_addresses &addresses);
     static void ReadLogicalAddresses(int iLocalisedId, CEC::cec_logical_addresses &addresses);
     bool WriteLogicalAddresses(const CEC::cec_logical_addresses& addresses, const std::string& strSettingName, const std::string& strAdvancedSettingName);
 
@@ -155,7 +155,7 @@ namespace PERIPHERALS
     bool                              m_bHasButton;
     bool                              m_bIsReady;
     bool                              m_bHasConnectedAudioSystem;
-    CStdString                        m_strMenuLanguage;
+    std::string                        m_strMenuLanguage;
     CDateTime                         m_standbySent;
     std::vector<CecButtonPress>       m_buttonQueue;
     CecButtonPress                    m_currentButton;
@@ -177,7 +177,7 @@ namespace PERIPHERALS
     bool                              m_bActiveSourceBeforeStandby;
     bool                              m_bOnPlayReceived;
     bool                              m_bPlaybackPaused;
-    CStdString                        m_strComPort;
+    std::string                        m_strComPort;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread
@@ -191,7 +191,7 @@ namespace PERIPHERALS
 
   protected:
     void UpdateMenuLanguage(void);
-    CStdString UpdateAudioSystemStatus(void);
+    std::string UpdateAudioSystemStatus(void);
     bool WaitReady(void);
     bool SetInitialConfiguration(void);
     void Process(void);

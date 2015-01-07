@@ -54,7 +54,7 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual std::string GetDescription() const;
-  void SetToggleSelect(const CStdString &toggleSelect);
+  void SetToggleSelect(const std::string &toggleSelect);
   void SetAltClickActions(const CGUIAction &clickActions);
 
 protected:

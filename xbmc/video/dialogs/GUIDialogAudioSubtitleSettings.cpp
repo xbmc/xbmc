@@ -184,7 +184,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_SUBTITLE_BROWSER)
   {
-    CStdString strPath;
+    std::string strPath;
     if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
       strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
     else
@@ -414,7 +414,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
   for (int i = 0; i < audioStreamCount; ++i)
   {
     std::string strItem;
-    CStdString strLanguage;
+    std::string strLanguage;
 
     SPlayerAudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
@@ -448,8 +448,8 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting
     SPlayerSubtitleStreamInfo info;
     g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
 
-    CStdString strItem;
-    CStdString strLanguage;
+    std::string strItem;
+    std::string strLanguage;
 
     if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
       strLanguage = g_localizeStrings.Get(13205); // Unknown

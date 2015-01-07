@@ -202,7 +202,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   CBookmark resumemark;
   
     // open the d/b and retrieve the bookmarks for the current movie
-  CStdString path = g_application.CurrentFile();
+  std::string path = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
     path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
@@ -222,7 +222,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     if (m_bookmarks[i].type == CBookmark::RESUME)
       m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
     
-    CStdString bookmarkTime;
+    std::string bookmarkTime;
     if (m_bookmarks[i].type == CBookmark::EPISODE)
       bookmarkTime = StringUtils::Format("%s %li %s %li", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
     else
@@ -293,7 +293,7 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  CStdString path = g_application.CurrentFile();
+  std::string path = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
     path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
@@ -361,7 +361,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
   else
   {
-    CStdString path = g_application.CurrentFile();
+    std::string path = g_application.CurrentFile();
     if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
        !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
       path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
@@ -404,7 +404,7 @@ bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
     CContextButtons choices;
     for (unsigned int i=0; i < episodes.size(); ++i)
     {
-      CStdString strButton = StringUtils::Format("%s %i, %s %i",
+      std::string strButton = StringUtils::Format("%s %i, %s %i",
                                                  g_localizeStrings.Get(20373).c_str(), episodes[i].m_iSeason,
                                                  g_localizeStrings.Get(20359).c_str(), episodes[i].m_iEpisode);
       choices.Add(i, strButton);

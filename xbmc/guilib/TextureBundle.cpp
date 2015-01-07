@@ -31,7 +31,7 @@ CTextureBundle::~CTextureBundle(void)
 {
 }
 
-bool CTextureBundle::HasFile(const CStdString& Filename)
+bool CTextureBundle::HasFile(const std::string& Filename)
 {
   if (m_useXBT)
   {
@@ -57,7 +57,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
   }
 }
 
-void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
+void CTextureBundle::GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures)
 {
   if (m_useXBT)
   {
@@ -69,7 +69,7 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
   }
 }
 
-bool CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+bool CTextureBundle::LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
                                      int &width, int &height)
 {
   if (m_useXBT)
@@ -86,7 +86,7 @@ bool CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTe
   }
 }
 
-int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+int CTextureBundle::LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
                               int &width, int &height, int& nLoops, int** ppDelays)
 {
   if (m_useXBT)
@@ -116,7 +116,7 @@ void CTextureBundle::SetThemeBundle(bool themeBundle)
   m_tbXBT.SetThemeBundle(themeBundle);
 }
 
-CStdString CTextureBundle::Normalize(const CStdString &name)
+std::string CTextureBundle::Normalize(const std::string &name)
 {
   return CTextureBundleXBT::Normalize(name);
 }

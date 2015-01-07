@@ -20,7 +20,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 #define FLOFSIZE 4
 #define SUBTITLE_CACHESIZE 50
@@ -431,7 +431,7 @@ typedef struct TextCacheStruct_t
   short           pop, gpop, drcs, gdrcs;
   unsigned short *ColorTable;
 
-  CStdString      line30;
+  std::string      line30;
 } TextCacheStruct_t;
 
 /* struct for all Information needed for Page Rendering */

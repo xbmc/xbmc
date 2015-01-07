@@ -40,5 +40,5 @@ protected:
   void UpdatePictureInfo();
 
   CFileItemList* m_pictureInfo;
-  CStdString    m_currentPicture;
+  std::string    m_currentPicture;
 };

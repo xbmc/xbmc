@@ -73,13 +73,13 @@ class CTextureMap
 {
 public:
   CTextureMap();
-  CTextureMap(const CStdString& textureName, int width, int height, int loops);
+  CTextureMap(const std::string& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
   void Add(CBaseTexture* texture, int delay);
   bool Release();
 
-  const CStdString& GetName() const;
+  const std::string& GetName() const;
   const CTextureArray& GetTexture();
   void Dump() const;
   uint32_t GetMemoryUsage() const;
@@ -88,7 +88,7 @@ public:
 protected:
   void FreeTexture();
 
-  CStdString m_textureName;
+  std::string m_textureName;
   CTextureArray m_texture;
   unsigned int m_referenceCount;
   uint32_t m_memUsage;
@@ -107,20 +107,20 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
-  bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
-  static bool CanLoad(const CStdString &texturePath); ///< Returns true if the texture manager can load this texture
-  const CTextureArray& Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-  void ReleaseTexture(const CStdString& strTextureName, bool immediately = false);
+  bool HasTexture(const std::string &textureName, std::string *path = NULL, int *bundle = NULL, int *size = NULL);
+  static bool CanLoad(const std::string &texturePath); ///< Returns true if the texture manager can load this texture
+  const CTextureArray& Load(const std::string& strTextureName, bool checkBundleOnly = false);
+  void ReleaseTexture(const std::string& strTextureName, bool immediately = false);
   void Cleanup();
   void Dump() const;
   uint32_t GetMemoryUsage() const;
   void Flush();
-  CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
-  void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);
+  std::string GetTexturePath(const std::string& textureName, bool directory = false);
+  void GetBundledTexturesFromPath(const std::string& texturePath, std::vector<std::string> &items);
 
-  void AddTexturePath(const CStdString &texturePath);    ///< Add a new path to the paths to check when loading media
-  void SetTexturePath(const CStdString &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
-  void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
+  void AddTexturePath(const std::string &texturePath);    ///< Add a new path to the paths to check when loading media
+  void SetTexturePath(const std::string &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
+  void RemoveTexturePath(const std::string &texturePath); ///< Remove a path from the paths to check when loading media
 
   void FreeUnusedTextures(unsigned int timeDelay = 0); ///< Free textures (called from app thread only)
   void ReleaseHwTexture(unsigned int texture);
@@ -133,7 +133,7 @@ protected:
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
 
-  std::vector<CStdString> m_texturePaths;
+  std::vector<std::string> m_texturePaths;
   CCriticalSection m_section;
 };
 

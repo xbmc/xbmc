@@ -37,7 +37,7 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
-CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)
+CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &oldHash)
 {
   m_url = url;
   m_oldHash = oldHash;
@@ -68,7 +68,7 @@ bool CTextureCacheJob::DoWork()
 
   // check whether we need cache the job anyway
   bool needsRecaching = false;
-  CStdString path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
+  std::string path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
@@ -79,7 +79,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   // unwrap the URL as required
   std::string additional_info;
   unsigned int width, height;
-  CStdString image = DecodeImageURL(m_url, width, height, additional_info);
+  std::string image = DecodeImageURL(m_url, width, height, additional_info);
 
   m_details.updateable = additional_info != "music" && UpdateableURL(image);
 
@@ -127,10 +127,10 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   return false;
 }
 
-CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, std::string &additional_info)
+std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, std::string &additional_info)
 {
   // unwrap the URL as required
-  CStdString image(url);
+  std::string image(url);
   additional_info.clear();
   width = height = 0;
   if (StringUtils::StartsWith(url, "image://"))
@@ -154,7 +154,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
   return image;
 }
 
-CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels)
+CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels)
 {
   if (additional_info == "music")
   { // special case for embedded music images
@@ -183,7 +183,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
   return texture;
 }
 
-bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
+bool CTextureCacheJob::UpdateableURL(const std::string &url) const
 {
   // we don't constantly check online images
   if (StringUtils::StartsWith(url, "http://") ||
@@ -192,7 +192,7 @@ bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
   return true;
 }
 
-CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
+std::string CTextureCacheJob::GetImageHash(const std::string &url)
 {
   struct __stat64 st;
   if (XFILE::CFile::Stat(url, &st) == 0)
@@ -208,7 +208,7 @@ CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
   return "";
 }
 
-CTextureDDSJob::CTextureDDSJob(const CStdString &original)
+CTextureDDSJob::CTextureDDSJob(const std::string &original)
 {
   m_original = original;
 }

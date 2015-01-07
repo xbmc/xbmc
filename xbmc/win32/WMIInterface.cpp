@@ -188,9 +188,9 @@ void CWIN32Wmi::testquery()
   pclsObj = NULL;
 }
 
-std::vector<CStdString> CWIN32Wmi::GetWMIStrVector(CStdString& strQuery, CStdStringW& strProperty)
+std::vector<std::string> CWIN32Wmi::GetWMIStrVector(std::string& strQuery, std::wstring& strProperty)
 {
-  std::vector<CStdString> strResult;
+  std::vector<std::string> strResult;
   pEnumerator = NULL;
   pclsObj = NULL;
 
@@ -236,7 +236,7 @@ std::vector<CStdString> CWIN32Wmi::GetWMIStrVector(CStdString& strQuery, CStdStr
   return strResult;
 }
 
-CStdString CWIN32Wmi::GetWMIString(CStdString& strQuery, CStdStringW& strProperty)
+std::string CWIN32Wmi::GetWMIString(std::string& strQuery, std::wstring& strProperty)
 {
   return GetWMIStrVector(strQuery, strProperty)[0];
 }

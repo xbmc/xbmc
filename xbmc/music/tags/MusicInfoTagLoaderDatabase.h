@@ -29,7 +29,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderDatabase(void);
       virtual ~CMusicInfoTagLoaderDatabase();
 
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+      virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
   };
 }
 

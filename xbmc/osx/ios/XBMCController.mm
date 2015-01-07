@@ -147,11 +147,11 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     if (!thumb.empty())
     {
       bool needsRecaching;
-      CStdString cachedThumb(CTextureCache::Get().CheckCachedImage(thumb, false, needsRecaching));
+      std::string cachedThumb(CTextureCache::Get().CheckCachedImage(thumb, false, needsRecaching));
       LOG("thumb: %s, %s", thumb.c_str(), cachedThumb.c_str());
       if (!cachedThumb.empty())
       {
-        CStdString thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
+        std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
         [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
       }
     }

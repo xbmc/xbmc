@@ -25,10 +25,10 @@
 #define AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_
 
 #pragma once
+#include <string>
 
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
-#include "utils/StdString.h"
 
 class CNfoFile
 {
@@ -45,7 +45,7 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1);
+  NFOResult Create(const std::string&, const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
@@ -73,7 +73,7 @@ private:
   ADDON::TYPE m_type;
   CScraperUrl m_scurl;
 
-  int Load(const CStdString&);
+  int Load(const std::string&);
   int Scrape(ADDON::ScraperPtr& scraper);
 };
 

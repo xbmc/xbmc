@@ -30,6 +30,11 @@
 #include "utils/MathUtils.h"
 #include "RenderManager.h"
 
+#ifndef ASSERT
+#include <crtdbg.h>
+#define ASSERT(f) _ASSERTE((f))
+#endif
+
 #ifdef HAS_DX
 
 using namespace OVERLAY;

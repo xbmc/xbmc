@@ -370,9 +370,9 @@ int CGUITextBox::GetCurrentPage() const
   return m_offset / m_itemsPerPage + 1;
 }
 
-CStdString CGUITextBox::GetLabel(int info) const
+std::string CGUITextBox::GetLabel(int info) const
 {
-  CStdString label;
+  std::string label;
   switch (info)
   {
   case CONTAINER_NUM_PAGES:

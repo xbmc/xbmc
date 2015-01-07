@@ -23,6 +23,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#include <string>
 #include <sstream>
 #include <iostream>
 #include <map>
@@ -32,7 +33,6 @@
 #include "storage/cdioSupport.h"
 
 #include "utils/AutoPtrHandle.h"
-#include "utils/StdString.h"
 
 namespace CDDB
 {
@@ -67,47 +67,47 @@ class Xcddb
 public:
   Xcddb();
   virtual ~Xcddb();
-  void setCDDBIpAdress(const CStdString& ip_adress);
-  void setCacheDir(const CStdString& pCacheDir );
+  void setCDDBIpAdress(const std::string& ip_adress);
+  void setCacheDir(const std::string& pCacheDir );
 
 //  int queryCDinfo(int real_track_count, toc cdtoc[]);
   bool queryCDinfo(MEDIA_DETECT::CCdInfo* pInfo, int inexact_list_select);
   bool queryCDinfo(MEDIA_DETECT::CCdInfo* pInfo);
   int getLastError() const;
   const char * getLastErrorText() const;
-  const CStdString& getYear() const;
-  const CStdString& getGenre() const;
-  const CStdString& getTrackArtist(int track) const;
-  const CStdString& getTrackTitle(int track) const;
-  void getDiskArtist(CStdString& strdisk_artist) const;
-  void getDiskTitle(CStdString& strdisk_title) const;
-  const CStdString& getTrackExtended(int track) const;
+  const std::string& getYear() const;
+  const std::string& getGenre() const;
+  const std::string& getTrackArtist(int track) const;
+  const std::string& getTrackTitle(int track) const;
+  void getDiskArtist(std::string& strdisk_artist) const;
+  void getDiskTitle(std::string& strdisk_title) const;
+  const std::string& getTrackExtended(int track) const;
   uint32_t calc_disc_id(int nr_of_tracks, toc cdtoc[]);
-  const CStdString& getInexactArtist(int select) const;
-  const CStdString& getInexactTitle(int select) const;
+  const std::string& getInexactArtist(int select) const;
+  const std::string& getInexactTitle(int select) const;
   bool queryCache( uint32_t discid );
   bool writeCacheFile( const char* pBuffer, uint32_t discid );
   bool isCDCached( int nr_of_tracks, toc cdtoc[] );
   bool isCDCached( MEDIA_DETECT::CCdInfo* pInfo );
 
 protected:
-  CStdString m_strNull;
+  std::string m_strNull;
   AUTOPTR::CAutoPtrSocket m_cddb_socket;
   const static int recv_buffer = 4096;
   int m_lastError;
-  std::map<int, CStdString> m_mapTitles;
-  std::map<int, CStdString> m_mapArtists;
-  std::map<int, CStdString> m_mapExtended_track;
+  std::map<int, std::string> m_mapTitles;
+  std::map<int, std::string> m_mapArtists;
+  std::map<int, std::string> m_mapExtended_track;
 
-  std::map<int, CStdString> m_mapInexact_cddb_command_list;
-  std::map<int, CStdString> m_mapInexact_artist_list;
-  std::map<int, CStdString> m_mapInexact_title_list;
+  std::map<int, std::string> m_mapInexact_cddb_command_list;
+  std::map<int, std::string> m_mapInexact_artist_list;
+  std::map<int, std::string> m_mapInexact_title_list;
 
 
-  CStdString m_strDisk_artist;
-  CStdString m_strDisk_title;
-  CStdString m_strYear;
-  CStdString m_strGenre;
+  std::string m_strDisk_artist;
+  std::string m_strDisk_title;
+  std::string m_strYear;
+  std::string m_strGenre;
 
   void addTitle(const char *buffer);
   void addExtended(const char *buffer);
@@ -121,16 +121,16 @@ protected:
   int cddb_sum(int n);
   void addInexactList(const char *list);
   void addInexactListLine(int line_cnt, const char *line, int len);
-  const CStdString& getInexactCommand(int select) const;
-  CStdString GetCacheFile(uint32_t disc_id) const;
+  const std::string& getInexactCommand(int select) const;
+  std::string GetCacheFile(uint32_t disc_id) const;
   /*! \brief Trim and convert some text to UTF8
    \param untrimmedText original text to trim and convert
    \return a utf8 version of the trimmed text
    */
-  CStdString TrimToUTF8(const CStdString &untrimmed);
+  std::string TrimToUTF8(const std::string &untrimmed);
 
-  CStdString m_cddb_ip_adress;
-  CStdString cCacheDir;
+  std::string m_cddb_ip_adress;
+  std::string cCacheDir;
 };
 }
 

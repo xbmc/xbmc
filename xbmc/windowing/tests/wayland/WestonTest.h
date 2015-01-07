@@ -24,9 +24,9 @@
 #include <gtest/gtest.h>
 
 #ifdef UNICODE
-  typedef CStdStringW        CStdString;
+  typedef std::wstring westring;
 #else
-  typedef CStdStringA        CStdString;
+  typedef std::string  westring;
 #endif
 
 typedef int32_t pid_t;
@@ -39,7 +39,7 @@ public:
   WestonTest();
   ~WestonTest();
   pid_t Pid();
-  const CStdString & TempSocketName();
+  const westring & TempSocketName();
   
   virtual void SetUp();
 

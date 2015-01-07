@@ -2897,10 +2897,10 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
         dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-      CStdString strEDL;
+      std::string strEDL;
       strEDL += StringUtils::Format(", edl:%s", m_Edl.GetInfo().c_str());
 
-      CStdString strBuf;
+      std::string strBuf;
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {

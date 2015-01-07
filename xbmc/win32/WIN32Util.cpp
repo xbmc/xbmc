@@ -412,7 +412,7 @@ std::string CWIN32Util::GetSystemPath()
 std::string CWIN32Util::GetProfilePath()
 {
   std::string strProfilePath;
-  CStdString strHomePath;
+  std::string strHomePath;
 
   CUtil::GetHomePath(strHomePath);
 
@@ -808,7 +808,7 @@ bool CWIN32Util::HasGLDefaultDrivers()
 {
   unsigned int a=0,b=0;
 
-  CStdString strVendor = g_Windowing.GetRenderVendor();
+  std::string strVendor = g_Windowing.GetRenderVendor();
   g_Windowing.GetRenderVersion(a, b);
 
   if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
@@ -972,9 +972,9 @@ extern "C"
 {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
   {
-    CStdStringW wfilename, wmode;
+    std::string modetmp = _Mode;
+    std::wstring wfilename, wmode(modetmp.begin(), modetmp.end());
     g_charsetConverter.utf8ToW(_Filename, wfilename, false);
-    wmode = _Mode;
     return _wfopen(wfilename.c_str(), wmode.c_str());
   }
 }

@@ -30,12 +30,10 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderNSF(void);
       virtual ~CMusicInfoTagLoaderNSF();
 
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
-      virtual int GetStreamCount(const CStdString& strFileName);
+      virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+      virtual int GetStreamCount(const std::string& strFileName);
     private:
       void* m_nsf;
       DllNosefart m_dll;
   };
 }
-
-extern CStdString strNSFDLL;

@@ -94,7 +94,7 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
         || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
-      CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
+      std::string art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
       if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
@@ -128,7 +128,7 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
         || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
-      CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
+      std::string art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
       if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
@@ -162,7 +162,7 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
         || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
-      CStdString art = CVideoInfoScanner::GetImage(item.get(), true, false, "thumb");
+      std::string art = CVideoInfoScanner::GetImage(item.get(), true, false, "thumb");
       std::string type;
       if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
@@ -213,7 +213,7 @@ void CEdenVideoArtUpdater::Process()
       if (!db.GetArtForItem(episode->GetVideoInfoTag()->m_iDbId, episode->GetVideoInfoTag()->m_type, artwork)
           || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
       {
-        CStdString art = CVideoInfoScanner::GetImage(episode.get(), true, episode->GetVideoInfoTag()->m_basePath != episode->GetPath(), "thumb");
+        std::string art = CVideoInfoScanner::GetImage(episode.get(), true, episode->GetVideoInfoTag()->m_basePath != episode->GetPath(), "thumb");
         if (CacheTexture(art, cachedThumb, episode->GetLabel()))
           artwork.insert(make_pair("thumb", art));
         else
@@ -328,14 +328,14 @@ bool CEdenVideoArtUpdater::CacheTexture(std::string &originalUrl, const std::str
   return false;
 }
 
-CStdString CEdenVideoArtUpdater::GetCachedActorThumb(const CFileItem &item)
+std::string CEdenVideoArtUpdater::GetCachedActorThumb(const CFileItem &item)
 {
   return GetThumb("actor" + item.GetLabel(), CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
-CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdString &path)
+std::string CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const std::string &path)
 {
-  CStdString label;
+  std::string label;
   if (season == -1)
     label = g_localizeStrings.Get(20366);
   else if (season == 0)
@@ -345,22 +345,22 @@ CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdStri
   return GetThumb("season" + path + label, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
-CStdString CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
+std::string CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
 {
   // get the locally cached thumb
-  CStdString strCRC = StringUtils::Format("%sepisode%i",
+  std::string strCRC = StringUtils::Format("%sepisode%i",
                                           item.GetVideoInfoTag()->m_strFileNameAndPath.c_str(),
                                           item.GetVideoInfoTag()->m_iEpisode);
   return GetThumb(strCRC, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
-CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
+std::string CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
 {
   if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.empty())
     return GetThumb(item.GetVideoInfoTag()->m_strPath, CProfilesManager::Get().GetVideoThumbFolder(), true);
   else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
   {
-    CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    std::string path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (URIUtils::IsStack(path))
       path = CStackDirectory::GetFirstStackedFile(path);
     return GetThumb(path, CProfilesManager::Get().GetVideoThumbFolder(), true);
@@ -368,26 +368,26 @@ CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
   return GetThumb(item.GetPath(), CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
-CStdString CEdenVideoArtUpdater::GetCachedFanart(const CFileItem &item)
+std::string CEdenVideoArtUpdater::GetCachedFanart(const CFileItem &item)
 {
   if (!item.GetVideoInfoTag()->m_artist.empty())
     return GetThumb(StringUtils::Join(item.GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator), URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), "Music/Fanart/"), false);
-  CStdString path = item.GetVideoInfoTag()->GetPath();
+  std::string path = item.GetVideoInfoTag()->GetPath();
   if (path.empty())
     return "";
   return GetThumb(path, URIUtils::AddFileToFolder(CProfilesManager::Get().GetVideoThumbFolder(), "Fanart/"), false);
 }
 
-CStdString CEdenVideoArtUpdater::GetThumb(const CStdString &path, const CStdString &path2, bool split)
+std::string CEdenVideoArtUpdater::GetThumb(const std::string &path, const std::string &path2, bool split)
 {
   // get the locally cached thumb
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
-  CStdString thumb;
+  std::string thumb;
   if (split)
   {
-    CStdString hex = StringUtils::Format("%08x", (__int32)crc);
+    std::string hex = StringUtils::Format("%08x", (__int32)crc);
     thumb = StringUtils::Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
   }
   else

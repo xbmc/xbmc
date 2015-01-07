@@ -66,7 +66,7 @@ public:
 
 protected:
   bool UpdateColors();
-  CStdString ShortenPath(const CStdString &path);
+  std::string ShortenPath(const std::string &path);
 
   /*! \brief Return the maximum width of this label control.
    \return Return the width of the control if available, else the width of the current text.

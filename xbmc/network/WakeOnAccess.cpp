@@ -498,7 +498,7 @@ static void AddHost (const std::string& host, vector<string>& hosts)
 
 static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>& hosts)
 {
-  if (setting.type.Equals("mysql"))
+  if (StringUtils::EqualsNoCase(setting.type, "mysql"))
     AddHost(setting.host, hosts);
 }
 

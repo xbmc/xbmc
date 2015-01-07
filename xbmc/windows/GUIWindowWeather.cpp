@@ -239,7 +239,7 @@ void CGUIWindowWeather::SetLocation(int loc)
   {
     ClearProperties();
     g_weatherManager.SetArea(loc);
-    CStdString strLabel = g_weatherManager.GetLocation(loc);
+    std::string strLabel = g_weatherManager.GetLocation(loc);
     size_t iPos = strLabel.rfind(", ");
     if (iPos != std::string::npos)
       strLabel = strLabel.substr(0, iPos);
@@ -264,12 +264,12 @@ void CGUIWindowWeather::SetProperties()
   SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
   SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
   // we use the icons code number for fanart as it's the safest way
-  CStdString fanartcode = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  std::string fanartcode = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   URIUtils::RemoveExtension(fanartcode);
   SetProperty("Current.FanartCode", fanartcode);
 
   // Future weather
-  CStdString day;
+  std::string day;
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day = StringUtils::Format("Day%i.", i);
@@ -301,7 +301,7 @@ void CGUIWindowWeather::ClearProperties()
   SetProperty("Current.FanartCode", "");
   
   // Future weather
-  CStdString day;
+  std::string day;
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day = StringUtils::Format("Day%i.", i);

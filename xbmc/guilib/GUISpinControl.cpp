@@ -21,6 +21,7 @@
 #include "GUISpinControl.h"
 #include "Key.h"
 #include "utils/StringUtils.h"
+#include <stdio.h>
 
 using namespace std;
 
@@ -370,7 +371,7 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     strcpy(m_szTyped, "");
   }
 
-  CStdString text;
+  std::string text;
 
   if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
@@ -409,11 +410,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     {
       if (m_bShowRange)
       {
-        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), std::string(m_vecLabels[m_iValue]).c_str() );
       }
       else
       {
-        text = StringUtils::Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("%s", std::string(m_vecLabels[m_iValue]).c_str() );
       }
     }
     else text = StringUtils::Format("?%i?", m_iValue);
@@ -512,7 +513,7 @@ void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
   m_fEnd = fEnd;
 }
 
-void CGUISpinControl::SetValueFromLabel(const CStdString &label)
+void CGUISpinControl::SetValueFromLabel(const std::string &label)
 {
   if (m_iType == SPIN_CONTROL_TYPE_TEXT)
   {

@@ -87,7 +87,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   std::string infoLabel(g_infoManager.GetLabel(m_info));
-  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel) : 0;
+  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
     m_color = color;

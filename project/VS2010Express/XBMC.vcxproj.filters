@@ -2563,9 +2563,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestSortUtils.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestStdString.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestStopwatch.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
@@ -4441,9 +4438,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Splash.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\StdString.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Stopwatch.h">

@@ -30,7 +30,6 @@
 #include <sys/wait.h>
 
 #include "Util.h"
-#include "utils/StdString.h"
 
 #include "WestonProcess.h"
 
@@ -88,8 +87,8 @@ FindBinaryFromPATH(const std::string &binary)
 }
 }
 
-xt::Process::Process(const CStdString &xbmcTestBase,
-                     const CStdString &tempFileName) :
+xt::Process::Process(const westring &xbmcTestBase,
+                     const westring &tempFileName) :
   m_pid(0)
 {
   std::stringstream socketOptionStream;

@@ -26,8 +26,8 @@
 #include "guilib/Geometry.h"
 #include "guilib/TransformMatrix.h"
 #include "guilib/DirtyRegion.h"
-#include "utils/StdString.h"
 #include <stdint.h>
+#include <string>
 
 typedef enum _RenderingSystemType
 {
@@ -133,9 +133,9 @@ public:
   virtual void Project(float &x, float &y, float &z) { }
 
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
-  const CStdString& GetRenderVendor() const { return m_RenderVendor; }
-  const CStdString& GetRenderRenderer() const { return m_RenderRenderer; }
-  const CStdString& GetRenderVersionString() const { return m_RenderVersion; }
+  const std::string& GetRenderVendor() const { return m_RenderVendor; }
+  const std::string& GetRenderRenderer() const { return m_RenderRenderer; }
+  const std::string& GetRenderVersionString() const { return m_RenderVersion; }
   bool SupportsDXT() const;
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
@@ -152,9 +152,9 @@ protected:
   unsigned int        m_maxTextureSize;
   unsigned int        m_minDXTPitch;
 
-  CStdString   m_RenderRenderer;
-  CStdString   m_RenderVendor;
-  CStdString   m_RenderVersion;
+  std::string   m_RenderRenderer;
+  std::string   m_RenderVendor;
+  std::string   m_RenderVersion;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;

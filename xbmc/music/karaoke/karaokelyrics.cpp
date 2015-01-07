@@ -67,7 +67,7 @@ bool CKaraokeLyrics::InitGraphics()
   return true;
 }
 
-void CKaraokeLyrics::initData( const CStdString & songPath )
+void CKaraokeLyrics::initData( const std::string & songPath )
 {
   m_songPath = songPath;
 
@@ -113,7 +113,7 @@ double CKaraokeLyrics::getSongTime() const
   return songtime >= 0 ? songtime : 0.0;
 }
 
-CStdString CKaraokeLyrics::getSongFile() const
+std::string CKaraokeLyrics::getSongFile() const
 {
   return m_songPath;
 }

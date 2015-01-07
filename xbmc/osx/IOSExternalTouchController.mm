@@ -75,13 +75,13 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setLineBreakMode:UILineBreakModeTailTruncation];
 
     [descriptionLabel setNumberOfLines:5];
-    CStdString descText    = g_localizeStrings.Get(34404) + "\n";
+    std::string descText    = g_localizeStrings.Get(34404) + "\n";
     descText              += g_localizeStrings.Get(34405) + "\n";
     descText              += g_localizeStrings.Get(34406) + "\n";
     descText              += g_localizeStrings.Get(34407) + "\n";
     descText              += g_localizeStrings.Get(34408) + "\n";
 
-    NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:descText];
+    NSString *stringFromUTFString = [[NSString alloc] initWithUTF8String:descText.c_str()];
     
     [descriptionLabel setText:stringFromUTFString];
     [stringFromUTFString release];
@@ -93,7 +93,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel release];
 
     //load the splash image
-    CStdString strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
+    std::string strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
     xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
     
     //make a view with the image
