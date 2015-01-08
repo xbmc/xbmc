@@ -143,8 +143,10 @@ private:
 
   /* Only one mode at a time can have the current or preferred
    * flags set, so only one pointer is set here */
-  ModeGeometry *m_current;
-  ModeGeometry *m_preferred;
+  ModeGeometry m_current;
+  ModeGeometry m_preferred;
+  bool m_currentValid;
+  bool m_preferredValid;
 };
 }
 }
