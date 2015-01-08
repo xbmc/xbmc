@@ -7,6 +7,9 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$5" output="\1" dest="3">
+			<RegExp input="$$1" output="\1\\&apos;\2" dest="1">
+				<expression repeat="yes">((?:[^%]*(?:%20))*[^%]*)(?:%27)((?:[^%]*(?:%20))*[^%]*)</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;url&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/searchtrack.php?s=\1&amp;amp;t=\2&lt;/url&gt;" dest="6">
 				<expression trim="1,2">(.+)%20(?:%20|-)%20(.+)</expression>
 			</RegExp>
