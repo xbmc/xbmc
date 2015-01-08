@@ -1,1 +1,0 @@
-libogg http://mirrors.xbmc.org/build-deps/sources/libogg-1.3.0.tar.gz
