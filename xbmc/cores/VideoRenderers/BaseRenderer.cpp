@@ -301,8 +301,8 @@ RESOLUTION CBaseRenderer::GetResolution() const
 
 float CBaseRenderer::GetAspectRatio() const
 {
-  float width = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  float height = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  float width = (float)m_sourceWidth;
+  float height = (float)m_sourceHeight;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
@@ -614,11 +614,6 @@ void CBaseRenderer::ManageDisplay()
       break;
   }
 
-  m_sourceRect.x1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  m_sourceRect.y1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  m_sourceRect.x2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  m_sourceRect.y2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
-
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
 
@@ -719,7 +714,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
       newHeight = screenHeight;
     }
     // now work out the zoom amount so that no zoom is done
-    CDisplaySettings::Get().SetZoomAmount((m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom) / newHeight);
+    CDisplaySettings::Get().SetZoomAmount(m_sourceHeight / newHeight);
   }
   else if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeCustom)
   {

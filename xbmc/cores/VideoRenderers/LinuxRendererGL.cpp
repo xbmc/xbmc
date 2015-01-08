@@ -3287,7 +3287,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   }
 
   if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_CROP            ||
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||

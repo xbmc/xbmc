@@ -36,7 +36,6 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
-#define SETTING_VIDEO_CROP                "video.crop"
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
 #define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
@@ -87,8 +86,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_VIDEO_SCALINGMETHOD)
     videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_VIDEO_PLAYBACK
-  else if (settingId == SETTING_VIDEO_CROP)
-    videoSettings.m_Crop = static_cast<const CSettingBool*>(setting)->GetValue();
   else if (settingId == SETTING_VIDEO_VIEW_MODE)
   {
     videoSettings.m_ViewMode = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -318,9 +315,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.Supports(RENDERFEATURE_CROP))
-    AddToggle(groupVideo, SETTING_VIDEO_CROP, 644, 0, videoSettings.m_Crop);
-
   if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     entries.clear();
