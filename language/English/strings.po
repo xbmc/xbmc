@@ -7852,7 +7852,9 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr ""
 
-#empty string with id 19065
+msgctxt "#19065"
+msgid "Timer settings"
+msgstr ""
 
 #. Name of a shortcut to a custom folder for channel icons
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
