@@ -37,7 +37,7 @@ CGUIPlexDefaultActionHandler::CGUIPlexDefaultActionHandler()
   m_ActionSettings.push_back(*action);
   
   action = new ACTION_SETTING(ACTION_PLEX_SHUFFLE_ALL);
-  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = true;
+  action->WindowSettings[WINDOW_VIDEO_NAV].contextMenuVisisble = false;
   m_ActionSettings.push_back(*action);
 
   action = new ACTION_SETTING(ACTION_PLEX_NOW_PLAYING);
