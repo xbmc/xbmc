@@ -2176,7 +2176,7 @@ bool CActiveAE::Initialize()
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
                                                  &reply,
-                                                 10000))
+                                                 60000))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
