@@ -921,15 +921,15 @@ void CApplicationMessenger::MediaPlay(string filename)
   MediaPlay(item);
 }
 
-void CApplicationMessenger::MediaPlay(const CFileItem &item)
+void CApplicationMessenger::MediaPlay(const CFileItem &item, bool wait)
 {
   CFileItemList list;
   list.Add(CFileItemPtr(new CFileItem(item)));
 
-  MediaPlay(list);
+  MediaPlay(list, 0, wait);
 }
 
-void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
+void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song, bool wait)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
   CFileItemList* listcopy = new CFileItemList();
@@ -937,7 +937,7 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.param1 = song;
   tMsg.param2 = 1;
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)

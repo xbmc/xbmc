@@ -625,7 +625,7 @@ CUPnPRenderer::PlayMedia(const NPT_String& uri, const NPT_String& meta, PLT_Acti
     if (item->IsPicture()) {
         CApplicationMessenger::Get().PictureShow(item->GetPath());
     } else {
-        CApplicationMessenger::Get().MediaPlay(*item);
+        CApplicationMessenger::Get().MediaPlay(*item, false);
     }
 
     if (g_application.m_pPlayer->IsPlaying() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
