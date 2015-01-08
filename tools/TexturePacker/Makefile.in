@@ -31,7 +31,7 @@ all: $(TARGET)
 
 $(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 # TexturePacker run native on build system, build it with native tools
-	make -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
+	$(MAKE) -C @abs_top_srcdir@/lib/libsquish/ libsquish-native.so
 	$(CXX_FOR_BUILD) $(CXXFLAGS_FOR_BUILD) $(DEFINES) $(NATIVE_ARCH) $(SRCS) $(LDFLAGS_FOR_BUILD) -o $(TARGET)
 
 include @abs_top_srcdir@/Makefile.include

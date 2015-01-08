@@ -1,3 +1,5 @@
 #!/bin/sh
-BOOTSTRAP_STANDALONE=1 make -f bootstrap.mk &&
-BOOTSTRAP_STANDALONE=1 make -f codegenerator.mk
+MAKE=make
+[ "`uname`" = "FreeBSD" ] && MAKE=gmake
+BOOTSTRAP_STANDALONE=1 $MAKE -f bootstrap.mk &&
+BOOTSTRAP_STANDALONE=1 $MAKE -f codegenerator.mk

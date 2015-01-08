@@ -73,7 +73,7 @@ $(SWIG):
 
 $(GENERATED_JSON): $(JSON_BUILDER)
 	@echo Jsonbuilder: $(JSON_BUILDER)
-	make -C $(INTERFACES_DIR)/json-rpc $(notdir $@)
+	$(MAKE) -C $(INTERFACES_DIR)/json-rpc $(notdir $@)
 
 $(JSON_BUILDER):
 ifeq ($(BOOTSTRAP_FROM_DEPENDS), yes)
@@ -81,5 +81,5 @@ ifeq ($(BOOTSTRAP_FROM_DEPENDS), yes)
 	@false
 else
 #build json builder - ".." because makefile is in the parent dir of "bin"
-	make -C $(abspath $(dir $@)..)
+	$(MAKE) -C $(abspath $(dir $@)..)
 endif
