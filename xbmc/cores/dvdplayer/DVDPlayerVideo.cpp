@@ -1191,16 +1191,9 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
-  if ((pPicture->format == RENDER_FMT_YUV420P) ||
-     (pPicture->format == RENDER_FMT_NV12) ||
-     (pPicture->format == RENDER_FMT_YUYV422) ||
-     (pPicture->format == RENDER_FMT_UYVY422))
-  {
     RECT crop;
 
-    if (CMediaSettings::Get().GetCurrentVideoSettings().m_Crop)
-      AutoCrop(pPicture, crop);
-    else
+    if (!AutoCrop(pPicture, crop))
     { // reset to defaults
       crop.left   = 0;
       crop.right  = 0;
@@ -1232,11 +1225,19 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
       g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
     }
 # undef HYST
-  }
 }
 
-void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
+bool CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 {
+  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_Crop)
+    return false;
+
+  if ((pPicture->format != RENDER_FMT_YUV420P) &&
+    (pPicture->format != RENDER_FMT_NV12) &&
+    (pPicture->format != RENDER_FMT_YUYV422) &&
+    (pPicture->format != RENDER_FMT_UYVY422))
+    return false;
+
   crop.left   = CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
   crop.right  = CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
   crop.top    = CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
@@ -1363,6 +1364,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
     crop.top = crop.bottom = max;
   else
     crop.top = crop.bottom = min;
+  return true;
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()
