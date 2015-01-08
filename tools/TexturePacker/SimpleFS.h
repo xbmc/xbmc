@@ -66,6 +66,37 @@ public:
     return 0;
   }
 
+  uint64_t GetFileSize()
+  {
+    long curPos = ftell(m_file);
+    uint64_t fileSize = 0;
+    if (fseek(m_file, 0, SEEK_END) == 0)
+    {
+      long size = ftell(m_file);
+      if (size >= 0)
+        fileSize = (uint64_t)size;
+    }
+
+    // restore fileptr
+    Seek(curPos);
+
+    return fileSize;
+  }
+
+  uint64_t Seek(uint64_t offset)
+  {
+    uint64_t seekedBytes = 0;
+    int seekRet = fseek(m_file, offset, SEEK_SET);
+    if (seekRet == 0)
+      seekedBytes = offset;
+    return seekedBytes;
+  }
+  
+  FILE *getFP()
+  {
+    return m_file;
+  }
+
 private:
   FILE* m_file;
 };
