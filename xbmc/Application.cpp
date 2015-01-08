@@ -1081,26 +1081,6 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  /* Get XDG paths.
-   * Though a slash is expected at the end anyway, let's cover ourselves, just in case. */
-  std::string xdgDataPath;
-  if (getenv("XDG_DATA_HOME"))
-  {
-    xdgDataPath = getenv("XDG_DATA_HOME");
-    URIUtils::AddSlashAtEnd(xdgDataPath);
-  }
-  else
-    xdgDataPath = userHome + "/.local/share/";
-
-  std::string xdgCachePath;
-  if (getenv("XDG_CACHE_HOME"))
-  {
-    xdgCachePath = getenv("XDG_CACHE_HOME");
-    URIUtils::AddSlashAtEnd(xdgCachePath);
-  }
-  else
-    xdgCachePath = userHome + "/.cache/";
-
   std::string appBinPath, appPath;
   std::string appName = CCompileInfo::GetAppName();
   std::string lowerAppName = appName;
@@ -1108,9 +1088,11 @@ bool CApplication::InitDirectoriesLinux()
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
+  const char* envXdgData = "XDG_DATA_HOME";
+  const char* envXdgCache = "XDG_CACHE_HOME";
 
   CUtil::GetHomePath(appBinPath, envAppBinHome);
-  if (getenv(envAppHome))
+  if (getenv(envAppHome) != NULL && getenv(envAppHome)[0] != '\0')
     appPath = getenv(envAppHome);
   else
   {
@@ -1128,6 +1110,26 @@ bool CApplication::InitDirectoriesLinux()
       }
     }
   }
+
+  /* Get XDG paths.
+   * Though a slash is expected at the end anyway, let's cover ourselves, just in case. */
+  std::string xdgDataPath;
+  if (getenv(envXdgData) != NULL && getenv(envXdgData)[0] != '\0')
+  {
+    xdgDataPath = getenv(envXdgData);
+    URIUtils::AddSlashAtEnd(xdgDataPath);
+  }
+  else
+    xdgDataPath = userHome + "/.local/share/";
+
+  std::string xdgCachePath;
+  if (getenv(envXdgCache) != NULL && getenv(envXdgCache)[0] != '\0')
+  {
+    xdgCachePath = getenv(envXdgCache);
+    URIUtils::AddSlashAtEnd(xdgCachePath);
+  }
+  else
+    xdgCachePath = userHome + "/.cache/";
 
   /* Check if XDG paths actually exist
    * This does some silly things since Create doesn't do multiple levels */
@@ -1183,12 +1185,17 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(xdgDataPath + lowerAppName);
     CSpecialProtocol::SetMasterProfilePath(xdgDataPath + lowerAppName + "/userdata");
 
-    std::string strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/");
-    CDirectory::Create(strTempPath);
-    strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/temp");
+    std::string strTempPath;
 
-    if (getenv(envAppTemp))
+    if (getenv(envAppTemp) != NULL && getenv(envAppTemp)[0] != '\0')
       strTempPath = getenv(envAppTemp);
+    else
+    {
+      strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/");
+      CDirectory::Create(strTempPath);
+      strTempPath = URIUtils::AddFileToFolder(xdgCachePath, lowerAppName + "/temp");
+    }
+
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1208,7 +1215,7 @@ bool CApplication::InitDirectoriesLinux()
 
     std::string strTempPath = appPath;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
-    if (getenv(envAppTemp))
+    if (getenv(envAppTemp) != NULL && getenv(envAppTemp)[0] != '\0')
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
     CreateUserDirs();
