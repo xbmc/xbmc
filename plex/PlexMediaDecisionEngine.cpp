@@ -80,7 +80,7 @@ bool CPlexMediaDecisionEngine::resolveItem(const CFileItem& _item, CFileItem &re
 
   if (!item.GetProperty("isResolved").asBoolean())
   {
-    if (!g_playlistPlayer.HasPlayedFirstFile() && item.IsVideo())
+    if ((g_playlistPlayer.GetCurrentSong() == 0)  && item.IsVideo())
     {
       int selectedMedia = CGUIDialogPlexMedia::ProcessMediaChoice(item);
       if (selectedMedia == -1)
