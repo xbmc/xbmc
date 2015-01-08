@@ -57,7 +57,7 @@ bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFile
   std::list<std::string> exportList=gNfsConnection.GetExportList(url);
   std::list<std::string>::iterator it;
   
-  for(it=exportList.begin();it!=exportList.end();it++)
+  for(it=exportList.begin();it!=exportList.end();++it)
   {
       std::string currentExport(*it);     
       URIUtils::RemoveSlashAtEnd(nonConstStrPath);

@@ -82,7 +82,7 @@ namespace XFILE
 
     // get all virtual folders and add them to the item list
     playlist.GetVirtualFolders(virtualFolders);
-    for (std::vector<std::string>::const_iterator virtualFolder = virtualFolders.begin(); virtualFolder != virtualFolders.end(); virtualFolder++)
+    for (std::vector<std::string>::const_iterator virtualFolder = virtualFolders.begin(); virtualFolder != virtualFolders.end(); ++virtualFolder)
     {
       CFileItemPtr pItem = CFileItemPtr(new CFileItem(*virtualFolder, true));
       IFileDirectory *dir = CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get());

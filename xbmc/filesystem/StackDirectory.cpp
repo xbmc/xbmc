@@ -70,7 +70,7 @@ namespace XFILE
         RegExps.push_back(tempRE);
       else
         CLog::Log(LOGERROR, "Invalid video stack RE (%s). Must have exactly 4 captures.", itRegExp->c_str());
-      itRegExp++;
+      ++itRegExp;
     }
     return GetStackedTitlePath(strPath, RegExps);
   }
@@ -147,7 +147,7 @@ namespace XFILE
           }
         }
         offset = 0;
-        itRegExp++;
+        ++itRegExp;
       }
       if (!strCommonDir.empty() && !strStackTitle.empty())
         strStackTitlePath = strCommonDir + strStackTitle;
@@ -188,7 +188,7 @@ namespace XFILE
       return false;
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
-    for (vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
+    for (vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); ++itPath)
       StringUtils::Replace(*itPath, ",,", ",");
 
     return true;

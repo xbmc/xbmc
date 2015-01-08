@@ -48,7 +48,7 @@ using namespace XFILE;
 using namespace std;
 
 
-static std::string CorrectPath(const std::string path)
+static std::string CorrectPath(const std::string& path)
 {
   if (path == "~")
     return "./";
@@ -245,17 +245,15 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
 
 bool CSFTPSession::DirectoryExists(const char *path)
 {
-  bool exists = false;
   uint32_t permissions = 0;
-  exists = GetItemPermissions(path, permissions);
+  bool exists = GetItemPermissions(path, permissions);
   return exists && S_ISDIR(permissions);
 }
 
 bool CSFTPSession::FileExists(const char *path)
 {
-  bool exists = false;
   uint32_t permissions = 0;
-  exists = GetItemPermissions(path, permissions);
+  bool exists = GetItemPermissions(path, permissions);
   return exists && S_ISREG(permissions);
 }
 
@@ -566,7 +564,7 @@ void CSFTPSessionManager::ClearOutIdleSessions()
     if (iter->second->IsIdle())
       sessions.erase(iter++);
     else
-      iter++;
+      ++iter;
   }
 }
 

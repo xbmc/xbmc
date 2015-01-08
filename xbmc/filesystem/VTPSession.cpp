@@ -367,7 +367,7 @@ bool CVTPSession::GetChannels(std::vector<Channel> &channels)
   if(!SendCommand("LSTC", code, lines))
     return false;
 
-  for(std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
+  for(std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); ++it)
   {
     std::string& data(*it);
     size_t space, colon;

@@ -343,7 +343,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
         NPT_String max_string = "";
         int        max_count  = 0;
-        for(std::map<NPT_String, int>::iterator it = classes.begin(); it != classes.end(); it++)
+        for(std::map<NPT_String, int>::iterator it = classes.begin(); it != classes.end(); ++it)
         {
           if(it->second > max_count)
           {
