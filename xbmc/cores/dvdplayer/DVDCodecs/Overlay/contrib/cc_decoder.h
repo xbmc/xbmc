@@ -27,33 +27,7 @@
  * available at http://sourceforge.net/projects/ccdecoder/.
  */
 
-#ifdef TARGET_POSIX
-#undef EMULATE_INTTYPES
-#else
-#define EMULATE_INTTYPES
-#endif /* TARGET_POSIX */
-
-#ifndef EMULATE_INTTYPES
-#   include <stdint.h>
-#else
-    typedef signed char  int8_t;
-    typedef signed short int16_t;
-    typedef signed int   int32_t;
-    typedef unsigned char  uint8_t;
-    typedef unsigned short uint16_t;
-    typedef unsigned int   uint32_t;
-
-#   ifdef CONFIG_WIN32
-        typedef signed __int64   int64_t;
-        typedef unsigned __int64 uint64_t;
-#   elif __WORDSIZE == 64
-        typedef long int                int64_t;
-        typedef unsigned long int       uint64_t;
-#   else /* other OS */
-        typedef signed long long   int64_t;
-        typedef unsigned long long uint64_t;
-#   endif /* other OS */
-#endif /* EMULATE_INTTYPES */
+#include <stdint.h>
 
 #define CC_ROWS 15
 #define CC_COLUMNS 32
@@ -67,7 +41,8 @@ typedef struct cc_attribute_s {
 } cc_attribute_t;
 
 /* CC character cell */
-typedef struct cc_char_cell_s {
+typedef struct cc_char_cell_s 
+{
   uint8_t c;                   /* character code, not the same as ASCII */
   cc_attribute_t attributes;   /* attributes of this character, if changed */
 			       /* here */
@@ -75,7 +50,8 @@ typedef struct cc_char_cell_s {
 } cc_char_cell_t;
 
 /* a single row in the closed captioning memory */
-typedef struct cc_row_s {
+typedef struct cc_row_s
+{
   cc_char_cell_t cells[CC_COLUMNS];
   int pos;                   /* position of the cursor */
   int num_chars;             /* how many characters in the row are data */
@@ -85,19 +61,22 @@ typedef struct cc_row_s {
 } cc_row_t;
 
 /* closed captioning memory for a single channel */
-typedef struct cc_buffer_s {
+typedef struct cc_buffer_s 
+{
   cc_row_t rows[CC_ROWS];
   int rowpos;              /* row cursor position */
 } cc_buffer_t;
 
 /* captioning memory for all channels */
-typedef struct cc_memory_s {
+typedef struct cc_memory_s
+{
   cc_buffer_t channel[CC_CHANNELS];
   int channel_no;          /* currently active channel */
 } cc_memory_t;
 
 /* The closed captioning decoder data structure */
-struct cc_decoder_s {
+struct cc_decoder_s
+{
   /* CC decoder buffer  - one onscreen, one offscreen */
   cc_memory_t buffer[2];
   /* onscreen, offscreen buffer ptrs */
@@ -118,11 +97,10 @@ struct cc_decoder_s {
 typedef struct cc_decoder_s cc_decoder_t;
 
 #define NUM_CC_PALETTES 2
-extern char *cc_schemes[NUM_CC_PALETTES + 1];
-
 #define CC_FONT_MAX 256
 
-typedef struct cc_config_s {
+typedef struct cc_config_s
+{
   int cc_enabled;             /* true if closed captions are enabled */
   char font[CC_FONT_MAX];     /* standard captioning font & size */
   int font_size;
@@ -133,15 +111,6 @@ typedef struct cc_config_s {
   
   int config_version;         /* the decoder should be updated when this is increased */
 } cc_config_t;
-
-typedef struct cc_state_s {
-  cc_config_t *cc_cfg;
-  /* the following variables are not controlled by configuration files; they */
-  /* are intrinsic to the properties of the configuration options and the */
-  /* currently played video */
-  int            can_cc;      /* true if captions can be displayed */
-                              /* (e.g., font fits on screen) */
-} cc_state_t;
 
 cc_decoder_t *cc_decoder_open();
 void cc_decoder_close(cc_decoder_t *this_obj);

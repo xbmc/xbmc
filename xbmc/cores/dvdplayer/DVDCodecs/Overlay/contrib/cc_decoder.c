@@ -130,18 +130,6 @@ static void build_char_table(void)
  chartbl[0x7e] = 0xB1;
  chartbl[0x7f] = 0xA4;    /* FIXME: this should be a solid block */
 }
-/*
-static int ccbuf_has_displayable(cc_buffer_t *buf)
-{
-  int i;
-  int found = 0;
-  for (i = 0; !found && i < CC_ROWS; i++) {
-    if (buf->rows[i].num_chars > 0)
-      found = 1;
-  }
-  return found;
-}
-*/
 
 static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
 {
@@ -149,11 +137,8 @@ static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
   int pos = rowbuf->pos;
   int left_displayable = (pos > 0) && (pos <= rowbuf->num_chars);
 
-#if LOG_DEBUG > 2
-  printf("cc_decoder: ccbuf_add_char: %c @ %d/%d\n", c, buf->rowpos, pos);
-#endif
-
-  if (pos >= CC_COLUMNS) {
+  if (pos >= CC_COLUMNS)
+  {
     printf("cc_decoder: ccbuf_add_char: row buffer overflow\n");
     return;
   }
@@ -166,12 +151,10 @@ static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
   /* midrow PAC attributes are applied only if there is no displayable */
   /* character to the immediate left. This makes the implementation rather */
   /* complicated, but this is what the EIA-608 standard specifies. :-( */
-  if (rowbuf->pac_attr_chg && !rowbuf->attr_chg && !left_displayable) {
+  if (rowbuf->pac_attr_chg && !rowbuf->attr_chg && !left_displayable)
+  {
     rowbuf->attr_chg = 1;
     rowbuf->cells[pos].attributes = rowbuf->pac_attr;
-#ifdef LOG_DEBUG
-    printf("cc_decoder: ccbuf_add_char: Applying midrow PAC.\n");
-#endif
   }
 
   rowbuf->cells[pos].c = c;
@@ -222,10 +205,8 @@ static void ccbuf_tab(cc_buffer_t *buf, int tabsize)
 {
   cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   rowbuf->pos += tabsize;
-  if (rowbuf->pos > CC_COLUMNS) {
-#ifdef LOG_DEBUG
-    printf("cc_decoder: ccbuf_tab: row buffer overflow\n");
-#endif
+  if (rowbuf->pos > CC_COLUMNS) 
+  {
     rowbuf->pos = CC_COLUMNS;
     return;
   }
@@ -236,18 +217,13 @@ static void ccbuf_tab(cc_buffer_t *buf, int tabsize)
 
 static void ccmem_clear(cc_memory_t *buf)
 {
-#ifdef LOG_DEBUG
-  printf("cc_decoder.c: ccmem_clear: Clearing CC memory\n");
-#endif
   memset(buf, 0, sizeof (cc_memory_t));
 }
-
 
 static void ccmem_init(cc_memory_t *buf)
 {
   ccmem_clear(buf);
 }
-
 
 static void ccmem_exit(cc_memory_t *buf)
 {
@@ -259,11 +235,7 @@ static void ccmem_exit(cc_memory_t *buf)
 static void cc_set_channel(cc_decoder_t *dec, int channel)
 {
   (*dec->active)->channel_no = channel;
-#ifdef LOG_DEBUG
-  printf("cc_decoder: cc_set_channel: selecting channel %d\n", channel);
-#endif
 }
-
 
 static cc_buffer_t *active_ccbuffer(cc_decoder_t *dec)
 {
@@ -278,9 +250,6 @@ static void cc_swap_buffers(cc_decoder_t *dec)
   /* hide caption in displayed memory */
   /* cc_hide_displayed(dec); */
 
-#ifdef LOG_DEBUG
-  printf("cc_decoder: cc_swap_buffers: swapping caption memory\n");
-#endif
   temp = dec->on_buf;
   dec->on_buf = dec->off_buf;
   dec->off_buf = temp;
@@ -315,22 +284,19 @@ static void cc_decode_PAC(cc_decoder_t *dec, int channel,
   buf = active_ccbuffer(dec);
 
   row = rowdata[((c1 & 0x07) << 1) | ((c2 & 0x20) >> 5)];
-  if (c2 & 0x10) {
+  if (c2 & 0x10)
+  {
     column = ((c2 & 0x0e) >> 1) * 4;   /* preamble indentation */
     color = WHITE;                     /* indented lines have white color */
   }
-  else if ((c2 & 0x0e) == 0x0e) {
+  else if ((c2 & 0x0e) == 0x0e)
+  {
     italics = 1;                       /* italics, they are always white */
     color = WHITE;
   }
   else
     color = (c2 & 0x0e) >> 1;
   underline = c2 & 0x01;
-
-#ifdef LOG_DEBUG
-  printf("cc_decoder: cc_decode_PAC: row %d, col %d, ul %d, it %d, clr %d\n",
-	 row, column, underline, italics, color);
-#endif
 
   ccbuf_set_cursor(buf, row, column, underline, italics, color);
 }
@@ -342,7 +308,6 @@ static void cc_decode_ext_attribute(cc_decoder_t *dec, int channel,
   cc_set_channel(dec, channel);
 }
 
-
 static void cc_decode_special_char(cc_decoder_t *dec, int channel,
 				   uint8_t c1, uint8_t c2)
 {
@@ -350,12 +315,8 @@ static void cc_decode_special_char(cc_decoder_t *dec, int channel,
 
   cc_set_channel(dec, channel);
   buf = active_ccbuffer(dec);
-#ifdef LOG_DEBUG
-  printf("cc_decoder: cc_decode_special_char: Mapping %x to %x\n", c2, specialchar[c2 & 0xf]);
-#endif
   ccbuf_add_char(buf, specialchar[c2 & 0xf]);
 }
-
 
 static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
 				  uint8_t c1, uint8_t c2)
@@ -365,21 +326,18 @@ static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
 
   cc_set_channel(dec, channel);
   buf = active_ccbuffer(dec);
-  if (c2 < 0x2e) {
+  if (c2 < 0x2e)
+  {
     attr.italic = 0;
     attr.foreground = (c2 & 0xe) >> 1;
   }
-  else {
+  else
+  {
     attr.italic = 1;
     attr.foreground = WHITE;
   }
   attr.underline = c2 & 0x1;
   attr.background = BLACK;
-#ifdef LOG_DEBUG
-  printf("cc_decoder: cc_decode_midrow_attr: attribute %x\n", c2);
-  printf("cc_decoder: cc_decode_midrow_attr: ul %d, it %d, clr %d\n",
-	 attr.underline, attr.italic, attr.foreground);
-#endif
 
   ccbuf_apply_attribute(buf, &attr);
 }
@@ -388,21 +346,15 @@ static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
 static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
 					uint8_t c1, uint8_t c2)
 {
-#ifdef LOG_DEBUG
-  printf("cc_decoder: decode_misc: decoding %x %x\n", c1, c2);
-#endif
-
   cc_set_channel(dec, channel);
 
-  switch (c2) {          /* 0x20 <= c2 <= 0x2f */
+  switch (c2) 
+  {          /* 0x20 <= c2 <= 0x2f */
 
   case 0x20:             /* RCL */
     break;
 
   case 0x21:             /* backspace */
-#ifdef LOG_DEBUG
-    printf("cc_decoder: backspace\n");
-#endif
     break;
 
   case 0x24:             /* DER */
@@ -447,7 +399,6 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
   }
 }
 
-
 static void cc_decode_tab(cc_decoder_t *dec, int channel,
 			  uint8_t c1, uint8_t c2)
 {
@@ -458,58 +409,60 @@ static void cc_decode_tab(cc_decoder_t *dec, int channel,
   ccbuf_tab(buf, c2 & 0x3);
 }
 
-
 static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 {
   uint8_t c1 = data & 0x7f;
   uint8_t c2 = (data >> 8) & 0x7f;
 
-#if LOG_DEBUG >= 3
-  printf("decoding %x %x\n", c1, c2);
-#endif
-
-  if (c1 & 0x60) {             /* normal character, 0x20 <= c1 <= 0x7f */
+  if (c1 & 0x60)
+  {             /* normal character, 0x20 <= c1 <= 0x7f */
     cc_decode_standard_char(dec, c1, c2);
   }
-  else if (c1 & 0x10) {        /* control code or special character */
+  else if (c1 & 0x10)
+  {                            /* control code or special character */
                                /* 0x10 <= c1 <= 0x1f */
     int channel = (c1 & 0x08) >> 3;
     c1 &= ~0x08;
 
     /* control sequences are often repeated. In this case, we should */
     /* evaluate it only once. */
-    if (data != dec->lastcode) {
-
-      if (c2 & 0x40) {         /* preamble address code: 0x40 <= c2 <= 0x7f */
-	cc_decode_PAC(dec, channel, c1, c2);
+    if (data != dec->lastcode)
+    {
+      if (c2 & 0x40)
+      {         /* preamble address code: 0x40 <= c2 <= 0x7f */
+	      cc_decode_PAC(dec, channel, c1, c2);
       }
-      else {
-	switch (c1) {
-	  
-	case 0x10:             /* extended background attribute code */
-	  cc_decode_ext_attribute(dec, channel, c1, c2);
-	  break;
+      else
+      {
+	      switch (c1)
+        {
+	    	case 0x10:             /* extended background attribute code */
+	        cc_decode_ext_attribute(dec, channel, c1, c2);
+	        break;
 
-	case 0x11:             /* attribute or special character */
-	  if ((c2 & 0x30) == 0x30) { /* special char: 0x30 <= c2 <= 0x3f  */
-	    cc_decode_special_char(dec, channel, c1, c2);
-	  }
-	  else if (c2 & 0x20) {     /* midrow attribute: 0x20 <= c2 <= 0x2f */
-	    cc_decode_midrow_attr(dec, channel, c1, c2);
-	  }
-	  break;
+	      case 0x11:             /* attribute or special character */
+	        if ((c2 & 0x30) == 0x30)
+          { /* special char: 0x30 <= c2 <= 0x3f  */
+	          cc_decode_special_char(dec, channel, c1, c2);
+	        }
+	        else if (c2 & 0x20)
+          {     /* midrow attribute: 0x20 <= c2 <= 0x2f */
+	          cc_decode_midrow_attr(dec, channel, c1, c2);
+	        }
+	        break;
 
-	case 0x14:             /* possibly miscellaneous control code */
-	  cc_decode_misc_control_code(dec, channel, c1, c2);
-	  break;
+	      case 0x14:             /* possibly miscellaneous control code */
+	        cc_decode_misc_control_code(dec, channel, c1, c2);
+	        break;
 
-	case 0x17:            /* possibly misc. control code TAB offset */
-	                      /* 0x21 <= c2 <= 0x23 */
-	  if (c2 >= 0x21 && c2 <= 0x23) {
-	    cc_decode_tab(dec, channel, c1, c2);
-	  }
-	  break;
-	}
+	      case 0x17:            /* possibly misc. control code TAB offset */
+	                            /* 0x21 <= c2 <= 0x23 */
+	        if (c2 >= 0x21 && c2 <= 0x23)
+          {
+	          cc_decode_tab(dec, channel, c1, c2);
+	        }
+	        break;
+	      }
       }
     }
   }
@@ -554,23 +507,22 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
   uint32_t curbytes = 0;
   int odd_offset = 1;
 
-  while (curbytes < buf_len) {
+  while (curbytes < buf_len) 
+  {
     int skip = 2;
-
     uint8_t cc_code = *current++;
     curbytes++;
     
-    if (buf_len - curbytes < 2) {
-#ifdef LOG_DEBUG
-      fprintf(stderr, "Not enough data for 2-byte CC encoding\n");
-#endif
+    if (buf_len - curbytes < 2)
+    {
       break;
     }
     
     uint8_t data1 = *current;
     uint8_t data2 = *(current + 1);
     
-    switch (cc_code) {
+    switch (cc_code)
+    {
     case 0xfe:
       /* expect 2 byte encoding (perhaps CC3, CC4?) */
       /* ignore for time being */
@@ -579,9 +531,9 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
       
     case 0xff:
       /* expect EIA-608 CC1/CC2 encoding */
-      if (good_parity(data1 | (data2 << 8))) {
-	cc_decode_EIA608(dec, data1 | (data2 << 8));
-
+      if (good_parity(data1 | (data2 << 8)))
+      {
+	      cc_decode_EIA608(dec, data1 | (data2 << 8));
       }
       skip = 5;
       break;
@@ -594,15 +546,12 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
     case 0x01:
       odd_offset = data2 & 0x80;
       if (odd_offset)
-	skip = 2;
+	      skip = 2;
       else
-	skip = 5;
+	      skip = 5;
       break;
       
     default:
-#ifdef LOG_DEBUG
-      fprintf(stderr, "Unknown CC encoding: %x\n", cc_code);
-#endif
       skip = 2;
       break;
     }
@@ -610,8 +559,6 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
     curbytes += skip;
   }
 }
-
-
 
 cc_decoder_t *cc_decoder_open()
 {
@@ -628,12 +575,8 @@ cc_decoder_t *cc_decoder_open()
   dec->lastcode = 0;
   dec->capid = 0;
 
-#ifdef LOG_DEBUG
-  printf("spucc: cc_decoder_open\n");
-#endif
   return dec;
 }
-
 
 void cc_decoder_close(cc_decoder_t *dec)
 {
@@ -641,10 +584,6 @@ void cc_decoder_close(cc_decoder_t *dec)
   ccmem_exit(&dec->buffer[1]);
 
   free(dec);
-
-#ifdef LOG_DEBUG
-  printf("spucc: cc_decoder_close\n");
-#endif
 }
 
 
