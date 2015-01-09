@@ -906,8 +906,6 @@ void CGUISettings::Initialize()
 
 #ifdef TARGET_RASPBERRY_PI
   AddBool(adv, "videoplayer.useffmpegavio", 44406, true);
-#else
-  AddBool(adv, "videoplayer.useffmpegavio", 44406, false);
 #endif
 
   /* PLEX */
