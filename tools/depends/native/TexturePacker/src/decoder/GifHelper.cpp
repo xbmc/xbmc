@@ -460,8 +460,8 @@ bool GifHelper::PrepareTemplate(const GifFrame &frame)
       return false;
     }
   }
-  return true;
 #endif
+  return true;
 }
 
 void GifHelper::SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame)
