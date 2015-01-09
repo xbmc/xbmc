@@ -29,14 +29,15 @@ public:
   CJNIPowerManager(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIPowerManager() {};
 
-  CJNIWakeLock  newWakeLock(const std::string &name);
+  CJNIWakeLock  newWakeLock(int levelAndFlags, const std::string &name);
   void          reboot(const std::string &reason);
   void          goToSleep(int64_t timestamp);
 
   static void   PopulateStaticFields();
 
+  static int FULL_WAKE_LOCK;
+  static int SCREEN_BRIGHT_WAKE_LOCK;
+
 private:
   CJNIPowerManager();
-
-  static int FULL_WAKE_LOCK;
 };

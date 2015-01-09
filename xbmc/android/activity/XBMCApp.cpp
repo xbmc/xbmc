@@ -268,7 +268,8 @@ bool CXBMCApp::EnableWakeLock(bool on)
     std::string appName = CCompileInfo::GetAppName();
     StringUtils::ToLower(appName);
     std::string className = "org.xbmc." + appName;
-    m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(className.c_str()));
+    // SCREEN_BRIGHT_WAKE_LOCK is marked as deprecated but there is no real alternatives for now
+    m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(CJNIPowerManager::SCREEN_BRIGHT_WAKE_LOCK, className.c_str()));
     if (m_wakeLock)
       m_wakeLock->setReferenceCounted(false);
     else
