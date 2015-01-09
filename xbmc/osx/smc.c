@@ -52,12 +52,11 @@ void _ultostr(char *str, UInt32 val)
 
 kern_return_t SMCOpen(void)
 {
-  kern_return_t result;
   mach_port_t   masterPort;
   io_iterator_t iterator;
   io_object_t   device;
   
-  result = IOMasterPort(MACH_PORT_NULL, &masterPort);
+  kern_return_t result = IOMasterPort(MACH_PORT_NULL, &masterPort);
   
   CFMutableDictionaryRef matchingDictionary = IOServiceMatching("AppleSMC");
   result = IOServiceGetMatchingServices(masterPort, matchingDictionary, &iterator);
