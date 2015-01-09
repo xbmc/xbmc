@@ -2099,7 +2099,7 @@ bool CApplication::LoadUserWindows()
           // Root element should be <window>
           TiXmlElement* pRootElement = xmlDoc.RootElement();
           std::string strValue = pRootElement->Value();
-          if (!StringUtils::CompareNoCase(strValue, "window"))
+          if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
             CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
             continue;
