@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include 03-gcrypt-android-select.patch Makefile
 
 # lib name, version
 LIBNAME=libgcrypt
-VERSION=1.4.5
+VERSION=1.6.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
@@ -12,7 +12,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
 
 ifeq ($(OS),osx)
-CONFIGURE+=--disable-asm
+CONFIGURE+=--disable-asm --disable-avx-support --disable-avx2-support
 endif
 
 LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
@@ -27,10 +27,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../01-inline-gcc.patch
-	cd $(PLATFORM); patch -p0 < ../02-armasm.patch
+	cd $(PLATFORM); patch -p1 < ../01-asm-Allow-building-x86-and-amd64-using-old-compilers.patch 
+	#cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
-	cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
+	#cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
