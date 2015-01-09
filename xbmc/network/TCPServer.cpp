@@ -112,7 +112,7 @@ void CTCPServer::Process()
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
+    for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); ++it)
     {
       FD_SET(*it, &rfds);
       if ((intptr_t)*it > (intptr_t)max_fd)
@@ -182,7 +182,7 @@ void CTCPServer::Process()
         }
       }
 
-      for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
+      for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); ++it)
       {
         if (FD_ISSET(*it, &rfds))
         {

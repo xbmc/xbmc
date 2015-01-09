@@ -1217,7 +1217,7 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 
   bool sorted = false;
   vector<string> tokens = StringUtils::Split(criteria, ",");
-  for (vector<string>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); itr++) {
+  for (vector<string>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); ++itr) {
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */
     sorting.sortOrder = StringUtils::StartsWith(*itr, "+") ? SortOrderAscending : SortOrderDescending;

@@ -67,18 +67,17 @@
 
 using namespace std;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6])
-
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
+  m_interfaceName(interfaceName),
+  m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                                        (uint8_t)interfaceMacAddrRaw[0],
+                                        (uint8_t)interfaceMacAddrRaw[1],
+                                        (uint8_t)interfaceMacAddrRaw[2],
+                                        (uint8_t)interfaceMacAddrRaw[3],
+                                        (uint8_t)interfaceMacAddrRaw[4],
+                                        (uint8_t)interfaceMacAddrRaw[5]))
 {
    m_network = network;
-   m_interfaceName = interfaceName;
-   m_interfaceMacAdr = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-                                           (uint8_t)interfaceMacAddrRaw[0],
-                                           (uint8_t)interfaceMacAddrRaw[1],
-                                           (uint8_t)interfaceMacAddrRaw[2],
-                                           (uint8_t)interfaceMacAddrRaw[3],
-                                           (uint8_t)interfaceMacAddrRaw[4],
-                                           (uint8_t)interfaceMacAddrRaw[5]);
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
