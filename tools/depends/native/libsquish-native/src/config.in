@@ -18,4 +18,4 @@ CXXFLAGS += -msse
 endif
 
 # where should we install to
-INSTALL_DIR ?= /usr/local
+INSTALL_DIR ?= @PREFIX@
