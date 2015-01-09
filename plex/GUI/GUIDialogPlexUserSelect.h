@@ -16,9 +16,7 @@ public:
   CStdString getSelectedUser() { return m_selectedUser; }
   CStdString getSelectedUserThumb() { return m_selectedUserThumb; }
 
-private:
   void fetchUsers();
-//  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   bool m_authed;
   bool m_userSwitched;
   CStdString m_selectedUser;

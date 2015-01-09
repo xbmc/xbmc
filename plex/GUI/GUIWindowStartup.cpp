@@ -28,16 +28,40 @@
 #include "Application.h"
 #include "GUI/GUIDialogPlexUserSelect.h"
 #include "GUISettings.h"
+#include "PlexTypes.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::~CGUIWindowStartup(void)
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowStartup::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_MYPLEX_STATE_CHANGE)
+  {
+    CGUIDialogPlexUserSelect* dialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
+    if (dialog && dialog->IsDialogRunning())
+    {
+      if (!g_plexApplication.myPlexManager->IsPinProtected() || g_guiSettings.GetBool("myplex.automaticlogic"))
+      {
+        // user removed pin lock?
+        dialog->m_authed = true;
+        dialog->m_userSwitched = false;
+        dialog->Close();
+      }
+    }
+  }
+  return CGUIWindow::OnMessage(message);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
@@ -67,6 +91,7 @@ void CGUIWindowStartup::OnWindowLoaded()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowStartup::OnAction(const CAction &action)
 {
   if (action.IsMouse())

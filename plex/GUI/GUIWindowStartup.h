@@ -30,4 +30,5 @@ public:
   virtual ~CGUIWindowStartup(void);
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
+  virtual bool OnMessage(CGUIMessage &message);
 };

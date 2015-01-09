@@ -50,6 +50,13 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
       fetchUsers();
   }
 
+  if (message.GetMessage() == GUI_MSG_MYPLEX_STATE_CHANGE)
+  {
+    // users might have changed, let's refetch them.
+    if (g_plexApplication.myPlexManager->IsSignedIn())
+      fetchUsers();
+  }
+
   return CGUIDialogSelect::OnMessage(message);
 }
 
@@ -103,7 +110,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
     isAdmin = GetSelectedItem()->GetProperty("admin").asBoolean();
   
   CFileItemPtr item = m_vecList->Get(m_viewControl.GetSelectedItem());
-  if (item && (item->GetProperty("protected").asBoolean() && !isAdmin))
+  if (item && item->GetProperty("protected").asBoolean())
   {
     bool firstTry = true;
     m_selectedUser = item->GetProperty("title").asString();
