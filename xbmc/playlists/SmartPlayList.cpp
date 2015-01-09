@@ -1352,7 +1352,7 @@ std::string CSmartPlaylist::GetSaveLocation() const
 void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList)
 {
   vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
-  for (vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); field++)
+  for (vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); ++field)
   {
     for (unsigned int i = 0; i < NUM_FIELDS; i++)
     {
