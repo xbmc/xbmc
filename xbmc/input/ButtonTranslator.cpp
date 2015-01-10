@@ -411,8 +411,10 @@ static const ActionMapping mousekeys[] =
   { "longclick",   KEY_MOUSE_LONG_CLICK },
   { "wheelup",     KEY_MOUSE_WHEEL_UP },
   { "wheeldown",   KEY_MOUSE_WHEEL_DOWN },
+  { "mousemove",   KEY_MOUSE_MOVE },
   { "mousedrag",   KEY_MOUSE_DRAG },
-  { "mousemove",   KEY_MOUSE_MOVE }
+  { "mousedragstart", KEY_MOUSE_DRAG_START },
+  { "mousedragend",   KEY_MOUSE_DRAG_END }
 };
 
 static const ActionMapping touchcommands[] =
