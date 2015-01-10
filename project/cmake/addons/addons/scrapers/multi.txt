@@ -1,0 +1,15 @@
+metadata.album.universal
+metadata.artists.universal
+metadata.common.allmusic.com
+metadata.common.amazon.de
+metadata.common.fanart.tv
+metadata.common.hdtrailers.net
+metadata.common.htbackdrops.com
+metadata.common.imdb.com
+metadata.common.last.fm
+metadata.common.musicbrainz.org
+metadata.common.theaudiodb.com
+metadata.common.themoviedb.org
+metadata.musicvideos.theaudiodb.com
+metadata.themoviedb.org
+metadata.tvdb.com

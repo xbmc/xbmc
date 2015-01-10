@@ -86,7 +86,8 @@ endif()
 # look for all the addons to be built
 file(GLOB_RECURSE addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
 foreach(addon ${addons})
-  if(NOT (addon MATCHES platforms.txt))
+  if(NOT (addon MATCHES multi.txt OR
+          addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
     separate_arguments(def)
     list(GET def 0 id)
@@ -119,8 +120,16 @@ foreach(addon ${addons})
         endif()
 
         # prepare the setup of the call to externalproject_add()
-        set(EXTERNALPROJECT_SETUP INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
-                                  CMAKE_ARGS ${BUILD_ARGS})
+        set(EXTERNALPROJECT_SETUP INSTALL_DIR "${CMAKE_INSTALL_PREFIX}")
+
+        # check if a specific file exists
+        if(EXISTS ${dir}/multi.txt)
+          list(APPEND EXTERNALPROJECT_SETUP CONFIGURE_COMMAND ""
+                                            BUILD_COMMAND ""
+                                            INSTALL_COMMAND "")
+        else()
+          list(APPEND EXTERNALPROJECT_SETUP CMAKE_ARGS ${BUILD_ARGS})
+        endif()
 
         # get the URL and revision of the addon
         list(LENGTH def deflength)
@@ -140,6 +149,37 @@ foreach(addon ${addons})
                               URL ${url}
                               "${EXTERNALPROJECT_SETUP}"
                              )
+        endif()
+
+        # handle multi-addon addons
+        if(EXISTS ${dir}/multi.txt)
+          # get the source directory of the external project
+          externalproject_get_property(${id} SOURCE_DIR)
+
+          # make sure that the source directory is not empty
+          # otherwise externalproject_add will complain and fail
+          file(WRITE ${SOURCE_DIR}/.empty "")
+
+          file(STRINGS ${dir}/multi.txt multi)
+          string(REPLACE "\n" ";" multi "${multi}")
+
+          foreach(entry ${multi})
+            # make sure the output directory is clean
+            if(EXISTS "${CMAKE_INSTALL_PREFIX}/${entry}")
+              file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${entry}/")
+            endif()
+
+            # add the addon and depend on the multi-addon using its
+            # source directory to copy addons from there
+            externalproject_add(${entry}
+                                DEPENDS ${id}
+                                SOURCE_DIR "${SOURCE_DIR}"
+                                UPDATE_COMMAND ""
+                                CONFIGURE_COMMAND ""
+                                BUILD_COMMAND ""
+                                INSTALL_COMMAND ${CMAKE_COMMAND} -E
+                                                copy_directory <SOURCE_DIR>/${entry} ${CMAKE_INSTALL_PREFIX}/${entry})
+          endforeach()
         endif()
       endif()
     endif()

@@ -213,6 +213,9 @@ set WORKSPACE=%CD%\..\..
   xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\application\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+
+  rem copy metadata addons included through cmake
+  xcopy BUILD_WIN32\addons\metadata.* BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   
   SET build_path=%CD%
   IF %buildpvraddons%==true (

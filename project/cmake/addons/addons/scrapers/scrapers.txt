@@ -1,0 +1,1 @@
+scrapers https://github.com/xbmc/repo-scrapers 9eb5041
