@@ -145,7 +145,25 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
 {
   CDVDDemuxCC *ctx = (CDVDDemuxCC*)userdata;
 
-  int idx;
+  unsigned int idx;
+
+  // switch back from 608 fallback if we got 708
+  if (ctx->m_ccDecoder->m_seen608 && ctx->m_ccDecoder->m_seen708)
+  {
+    for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
+    {
+      if (ctx->m_streamdata[idx].service == 0)
+        break;
+    }
+    if (idx < ctx->m_streamdata.size())
+    {
+      ctx->m_streamdata.erase(ctx->m_streamdata.begin() + idx);
+      ctx->m_ccDecoder->m_seen608 = false;
+    }
+    if (service == 0)
+      return;
+  }
+
   for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
   {
     if (ctx->m_streamdata[idx].service == service)
@@ -164,6 +182,11 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     data.streamIdx = idx;
     data.service = service;
     ctx->m_streamdata.push_back(data);
+
+    if (service == 0)
+      ctx->m_ccDecoder->m_seen608 = true;
+    else
+      ctx->m_ccDecoder->m_seen708 = true;
   }
 
   ctx->m_streamdata[idx].pts = ctx->m_curPts;
@@ -212,14 +235,29 @@ DemuxPacket* CDVDDemuxCC::Decode()
 
   if (m_hasData)
   {
-    for (int i=0; i<m_streamdata.size(); i++)
+    for (unsigned int i=0; i<m_streamdata.size(); i++)
     {
       if (m_streamdata[i].hasData)
       {
         int service = m_streamdata[i].service;
-        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_ccDecoder->m_cc708decoders[service].textlen);
-        pPacket->iSize = m_ccDecoder->m_cc708decoders[service].textlen;
-        memcpy(pPacket->pData, m_ccDecoder->m_cc708decoders[service].text, pPacket->iSize);
+
+        char *data;
+        int len;
+        if (service == 0)
+        {
+          data = m_ccDecoder->m_cc608decoder->text;
+          len = m_ccDecoder->m_cc608decoder->textlen;
+        }
+        else
+        {
+          data = m_ccDecoder->m_cc708decoders[service].text;
+          len = m_ccDecoder->m_cc708decoders[service].textlen;
+        }
+
+        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(len);
+        pPacket->iSize = len;
+        memcpy(pPacket->pData, data, pPacket->iSize);
+
         pPacket->iStreamId = i;
         pPacket->pts = m_streamdata[i].pts;
         pPacket->duration = 0;

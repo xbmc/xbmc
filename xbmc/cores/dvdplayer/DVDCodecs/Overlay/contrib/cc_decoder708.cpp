@@ -1071,6 +1071,11 @@ void decode_708 (const unsigned char *data, int datalength, cc708_service_decode
 
     switch (cc_type)
     {
+    case 0:
+      // only use 608 as fallback
+      if (!decoders[0].parent->m_seen708)
+        decode_cc(decoders[0].parent->m_cc608decoder, (uint8_t*)data+i, 3);
+      break;
     case 2:
       if (cc_valid==0) // This ends the previous packet
         process_current_packet(decoders);
@@ -1111,8 +1116,13 @@ void ccx_decoders_708_init(cc708_service_decoder *decoders, void (*handler)(int 
     decoders[i].userdata = userdata;
     decoders[i].parent = parent;
   }
+  decoders[0].parent->m_cc608decoder->callback = handler;
+  decoders[0].parent->m_cc608decoder->userdata = userdata;
+
   decoders[0].parent->m_current_packet_length = 0;
   decoders[0].parent->m_last_seq = -1;
+  decoders[0].parent->m_seen708 = false;
+  decoders[0].parent->m_seen608 = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1122,15 +1132,18 @@ void ccx_decoders_708_init(cc708_service_decoder *decoders, void (*handler)(int 
 CDecoderCC708::CDecoderCC708()
 {
   m_inited = false;
+  cc_decoder_init();
 }
 
 CDecoderCC708::~CDecoderCC708()
 {
   delete [] m_cc708decoders;
+  cc_decoder_close(m_cc608decoder);
 }
 
 void CDecoderCC708::Init(void (*handler)(int service, void *userdata), void *userdata)
 {
+  m_cc608decoder = cc_decoder_open();
   m_cc708decoders = new cc708_service_decoder[8];
   ccx_decoders_708_init(m_cc708decoders, handler, userdata, this);
 }

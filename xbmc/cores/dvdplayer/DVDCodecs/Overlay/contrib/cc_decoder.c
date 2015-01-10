@@ -39,41 +39,30 @@ extern "C" {
 
 #include "cc_decoder.h"
 
-//#undef LOG_DEBUG
-
-/* number of text colors specified by EIA-608 standard */
-#define NUM_FG_COL 7
-
-#ifndef TARGET_WINDOWS
-/* colors specified by the EIA 608 standard */
-enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK, TRANSPARENT };
-#else
 /* colors specified by the EIA 608 standard */
 enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK };
-#endif
 
 /* --------------------- misc. EIA 608 definitions -------------------*/
 
 #define TRANSP_SPACE 0x19   /* code for transparent space, essentially 
-			       arbitrary */
-
-#define MAX(a, b) ((a) > (b)? (a) : (b))
+			                       arbitrary */
 
 /* mapping from PAC row code to actual CC row */
-static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6,
-			 7, 8, 9};
+static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6, 7, 8, 9};
 /* FIXME: do real TM */
 /* must be mapped as a music note in the captioning font */ 
 
-static char specialchar[] = {0xAE,0xB0,0xBD,0xBF,0x54,0xA2,0xA3,0xB6,0xA0,
-        TRANSP_SPACE,0xA8,0xA2,0xAA,0xAE,0xB4,0xBB}; 
+static unsigned char specialchar[] = {0xAE,0xB0,0xBD,0xBF,0x54,0xA2,0xA3,0xB6,0xA0,
+                                      TRANSP_SPACE,0xA8,0xA2,0xAA,0xAE,0xB4,0xBB};
 
 /* character translation table - EIA 608 codes are not all the same as ASCII */
-static char chartbl[128];
+static unsigned char chartbl[128];
 
 /* CC codes use odd parity for error detection, since they originally were */
 /* transmitted via noisy video signals */
 static int parity_table[256];
+
+static cc_buffer_t* active_ccbuffer(cc_decoder_t* dec);
 
 /*---------------- general utility functions ---------------------*/
 
@@ -90,7 +79,6 @@ static int parity(uint8_t byte)
   return ones & 1;
 }
 
-
 static void build_parity_table(void)
 {
   uint8_t byte;
@@ -102,7 +90,6 @@ static void build_parity_table(void)
   }
 }
 
-
 static int good_parity(uint16_t data)
 {
   int ret = parity_table[data & 0xff] && parity_table[(data & 0xff00) >> 8];
@@ -110,7 +97,6 @@ static int good_parity(uint16_t data)
     printf("Bad parity in EIA-608 data (%x)\n", data);
   return ret;
 }
-
 
 static void build_char_table(void)
 {
@@ -139,13 +125,7 @@ static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
 
   if (pos >= CC_COLUMNS)
   {
-    printf("cc_decoder: ccbuf_add_char: row buffer overflow\n");
     return;
-  }
-
-  if (pos > rowbuf->num_chars) {
-    /* fill up to indented position with transparent spaces, if necessary */
-    /* ccrow_fill_transp(rowbuf); */
   }
 
   /* midrow PAC attributes are applied only if there is no displayable */
@@ -215,9 +195,24 @@ static void ccbuf_tab(cc_buffer_t *buf, int tabsize)
 
 /*----------------- cc_memory_t methods --------------------------------*/
 
+static void ccrow_der(cc_row_t *row, int pos)
+{
+  int i;
+  for (i = pos; i < CC_COLUMNS; i++)
+  {
+    row->cells[i].c = ' ';
+  }
+}
+
 static void ccmem_clear(cc_memory_t *buf)
 {
+  int i;
   memset(buf, 0, sizeof (cc_memory_t));
+  for (i = 0; i < CC_ROWS; i++)
+  {
+    ccrow_der(&buf->channel[0].rows[i], 0);
+    ccrow_der(&buf->channel[1].rows[i], 0);
+  }
 }
 
 static void ccmem_init(cc_memory_t *buf)
@@ -228,6 +223,51 @@ static void ccmem_init(cc_memory_t *buf)
 static void ccmem_exit(cc_memory_t *buf)
 {
 /*FIXME: anything to deallocate?*/
+}
+
+void ccmem_tobuf(cc_decoder_t *dec)
+{
+  cc_buffer_t *buf = &dec->on_buf->channel[dec->on_buf->channel_no];
+  int empty = 1;
+  dec->textlen = 0;
+  int i,j;
+  for (i = 0; i < CC_ROWS; i++)
+  {
+    for (j = 0; j<CC_COLUMNS; j++)
+      if (buf->rows[i].cells[j].c != ' ')
+      {
+        empty = 0;
+        break;
+      }
+    if (!empty)
+      break;
+  }
+  if (empty)
+    return; // Nothing to write
+
+  for (i = 0; i<CC_ROWS; i++)
+  {
+    int empty = 1;
+    for (j = 0; j<CC_COLUMNS; j++)
+      if (buf->rows[i].cells[j].c != ' ')
+        empty = 0;
+    if (!empty)
+    {
+      int f, l; // First,last used char
+      for (f = 0; f<CC_COLUMNS; f++)
+        if (buf->rows[i].cells[f].c != ' ')
+          break;
+      for (l = CC_COLUMNS-1; l>0; l--)
+        if (buf->rows[i].cells[f].c != ' ')
+          break;
+      for (j = f; j <= l; j++)
+        dec->text[dec->textlen++] = buf->rows[i].cells[j].c;
+      dec->text[dec->textlen++] = '\n';
+    }
+  }
+  dec->text[dec->textlen++] = '\n';
+  dec->text[dec->textlen++] = '\0';
+  dec->callback(0, dec->userdata);
 }
 
 /*----------------- cc_decoder_t methods --------------------------------*/
@@ -256,6 +296,27 @@ static void cc_swap_buffers(cc_decoder_t *dec)
 
   /* show new displayed memory */
   /* cc_show_displayed(dec); */
+}
+
+static void cc_roll_up(cc_decoder_t *dec)
+{
+  cc_buffer_t *buf = active_ccbuffer(dec);
+  int i, j;
+  for (i = buf->rowpos - dec->rollup_rows + 1; i < buf->rowpos; i++)
+  {
+    if (i < 0)
+      continue;
+
+    for (j = 0; j < CC_COLUMNS; j++)
+    {
+      buf->rows[i].cells[j] = buf->rows[i + 1].cells[j];
+    }
+  }
+  for (j = 0; j < CC_COLUMNS; j++)
+  {
+    buf->rows[buf->rowpos].cells[j].c = ' ';
+  }
+  buf->rows[buf->rowpos].pos = 0;
 }
 
 static void cc_decode_standard_char(cc_decoder_t *dec, uint8_t c1, uint8_t c2)
@@ -347,32 +408,39 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
 					uint8_t c1, uint8_t c2)
 {
   cc_set_channel(dec, channel);
+  cc_buffer_t *buf;
 
   switch (c2) 
   {          /* 0x20 <= c2 <= 0x2f */
-
   case 0x20:             /* RCL */
+    dec->style = CC_POPON;
+    dec->active = &dec->off_buf;
     break;
 
   case 0x21:             /* backspace */
     break;
 
   case 0x24:             /* DER */
+    buf = active_ccbuffer(dec);
+    ccrow_der(&buf->rows[buf->rowpos], buf->rows[buf->rowpos].pos);
     break;
 
   case 0x25:             /* RU2 */
-    break;
-
+    dec->rollup_rows = 2;
   case 0x26:             /* RU3 */
-    break;
-
+    dec->rollup_rows = 3;
   case 0x27:             /* RU4 */
+    dec->rollup_rows = 4;
+    dec->style = CC_ROLLUP;
+    dec->active = &dec->on_buf;
     break;
 
   case 0x28:             /* FON */
     break;
 
   case 0x29:             /* RDC */
+    dec->style = CC_PAINTON;
+    dec->active = &dec->on_buf;
     break;
 
   case 0x2a:             /* TR */
@@ -387,6 +455,10 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
     break;
 
   case 0x2d:             /* carriage return */
+    if (dec->style == CC_ROLLUP)
+    {
+      cc_roll_up(dec);
+    }
     break;
 
   case 0x2e:             /* ENM - erase non-displayed memory */
@@ -395,6 +467,12 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
 
   case 0x2f:             /* EOC - swap displayed and non displayed memory */
     cc_swap_buffers(dec);
+    dec->style = CC_POPON;
+    dec->active = &dec->off_buf;
+    ccmem_tobuf(dec);
+    break;
+
+  default:
     break;
   }
 }
@@ -416,7 +494,14 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 
   if (c1 & 0x60)
   {             /* normal character, 0x20 <= c1 <= 0x7f */
+    if (dec->style == CC_NOTSET)
+      return;
+
     cc_decode_standard_char(dec, c1, c2);
+    if (dec->style == CC_ROLLUP)
+    {
+      ccmem_tobuf(dec);
+    }
   }
   else if (c1 & 0x10)
   {                            /* control code or special character */
@@ -441,9 +526,15 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 	        break;
 
 	      case 0x11:             /* attribute or special character */
+          if (dec->style == CC_NOTSET)
+            return;
 	        if ((c2 & 0x30) == 0x30)
           { /* special char: 0x30 <= c2 <= 0x3f  */
 	          cc_decode_special_char(dec, channel, c1, c2);
+            if (dec->style == CC_ROLLUP)
+            {
+              ccmem_tobuf(dec);
+            }
 	        }
 	        else if (c2 & 0x20)
           {     /* midrow attribute: 0x20 <= c2 <= 0x2f */
@@ -473,90 +564,31 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 
 void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
 {
-  /* The first number may denote a channel number. I don't have the
-   * EIA-708 standard, so it is hard to say.
-   * From what I could figure out so far, the general format seems to be:
-   *
-   * repeat
-   *
-   *   0xfe starts 2 byte sequence of unknown purpose. It might denote
-   *        field #2 in line 21 of the VBI. We'll ignore it for the
-   *        time being.
-   *
-   *   0xff starts 2 byte EIA-608 sequence, field #1 in line 21 of the VBI.
-   *        Followed by a 3-code triplet that starts either with 0xff or
-   *        0xfe. In either case, the following triplet needs to be ignored
-   *        for line 21, field 1.
-   *
-   *   0x00 is padding, followed by 2 more 0x00.
-   *
-   *   0x01 always seems to appear at the beginning, always seems to
-   *        be followed by 0xf8, 8-bit number. 
-   *        The lower 7 bits of this 8-bit number seem to denote the
-   *        number of code triplets that follow.
-   *        The most significant bit denotes whether the Line 21 field 1 
-   *        captioning information is at odd or even triplet offsets from this
-   *        beginning triplet. 1 denotes odd offsets, 0 denotes even offsets.
-   *      
-   *        Most captions are encoded with odd offsets, so this is what we
-   *        will assume.
-   *
-   * until end of packet
-   */
-  uint8_t *current = buffer;
-  uint32_t curbytes = 0;
-  int odd_offset = 1;
-
-  while (curbytes < buf_len) 
+  uint32_t i;
+  for (i = 0; i<buf_len; i += 3)
   {
-    int skip = 2;
-    uint8_t cc_code = *current++;
-    curbytes++;
     
-    if (buf_len - curbytes < 2)
+    unsigned char cc_valid = buffer[i] & 0x04;
+    unsigned char cc_type = buffer[i] & 0x03;
+
+    uint8_t data1 = buffer[i + 1];
+    uint8_t data2 = buffer[i + 2];
+    
+    switch (cc_type)
     {
-      break;
-    }
-    
-    uint8_t data1 = *current;
-    uint8_t data2 = *(current + 1);
-    
-    switch (cc_code)
-    {
-    case 0xfe:
-      /* expect 2 byte encoding (perhaps CC3, CC4?) */
-      /* ignore for time being */
-      skip = 2;
-      break;
-      
-    case 0xff:
-      /* expect EIA-608 CC1/CC2 encoding */
+    case 0:
       if (good_parity(data1 | (data2 << 8)))
       {
-	      cc_decode_EIA608(dec, data1 | (data2 << 8));
+        cc_decode_EIA608(dec, data1 | (data2 << 8));
       }
-      skip = 5;
       break;
       
-    case 0x00:
-      /* This seems to be just padding */
-      skip = 2;
-      break;
-      
-    case 0x01:
-      odd_offset = data2 & 0x80;
-      if (odd_offset)
-	      skip = 2;
-      else
-	      skip = 5;
+    case 1:
       break;
       
     default:
-      skip = 2;
       break;
     }
-    current += skip;
-    curbytes += skip;
   }
 }
 
@@ -573,7 +605,6 @@ cc_decoder_t *cc_decoder_open()
   dec->active = &dec->off_buf;
 
   dec->lastcode = 0;
-  dec->capid = 0;
 
   return dec;
 }

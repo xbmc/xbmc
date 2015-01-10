@@ -74,6 +74,14 @@ typedef struct cc_memory_s
   int channel_no;          /* currently active channel */
 } cc_memory_t;
 
+enum cc_style
+{
+  CC_NOTSET = 0,
+  CC_ROLLUP,
+  CC_PAINTON,
+  CC_POPON
+};
+
 /* The closed captioning decoder data structure */
 struct cc_decoder_s
 {
@@ -85,32 +93,20 @@ struct cc_decoder_s
   /* which buffer is active for receiving data */
   cc_memory_t **active;
 
-  /* for logging and debugging purposes, captions are assigned increasing */
-  /*   unique ids. */
-  uint32_t capid;
-
   /* the last captioning code seen (control codes are often sent twice
      in a row, but should be processed only once) */
   uint32_t lastcode;
+
+  uint16_t rollup_rows;
+  enum cc_style style;
+
+  void *userdata;
+  void(*callback)(int service, void *userdata);
+  char text[CC_ROWS*CC_COLUMNS + 1];
+  int textlen;
 };
 
 typedef struct cc_decoder_s cc_decoder_t;
-
-#define NUM_CC_PALETTES 2
-#define CC_FONT_MAX 256
-
-typedef struct cc_config_s
-{
-  int cc_enabled;             /* true if closed captions are enabled */
-  char font[CC_FONT_MAX];     /* standard captioning font & size */
-  int font_size;
-  char italic_font[CC_FONT_MAX];   /* italic captioning font & size */
-  int center;                 /* true if captions should be centered */
-                              /* according to text width */
-  int cc_scheme;              /* which captioning scheme to use */
-  
-  int config_version;         /* the decoder should be updated when this is increased */
-} cc_config_t;
 
 cc_decoder_t *cc_decoder_open();
 void cc_decoder_close(cc_decoder_t *this_obj);
