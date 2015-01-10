@@ -106,6 +106,20 @@ foreach(addon ${addons})
         foreach(platform ${platforms})
           if(${platform} STREQUAL "all" OR ${platform} STREQUAL ${CORE_SYSTEM_NAME})
             set(platform_found TRUE)
+          else()
+            # check if the platform is defined as "!<platform>"
+            string(SUBSTRING ${platform} 0 1 platform_first)
+            if(${platform_first} STREQUAL "!")
+              # extract the platform
+              string(LENGTH ${platform} platform_length)
+              MATH(EXPR platform_length "${platform_length} - 1")
+              string(SUBSTRING ${platform} 1 ${platform_length} platform)
+
+              # check if the current platform does not match the extracted platform
+              if (NOT ${platform} STREQUAL ${CORE_SYSTEM_NAME})
+                set(platform_found TRUE)
+              endif()
+            endif()
           endif()
         endforeach()
       else()

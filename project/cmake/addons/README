@@ -14,7 +14,10 @@ where
 
 Reserved filenames (for additional information on how to build an addon)
 are:
-  * platforms.txt: list of platforms to build an addon for (or "all")
+  * platforms.txt: List of platforms to build an addon for (or "all"). It is
+    also supported to specify negated platforms with a leading exclamation mark
+    (i), e.g. "!windows".
+    Available platforms are: linux, windows, darwin, ios, android, rbpi
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
