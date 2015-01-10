@@ -628,7 +628,9 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
       {
         /* we need the first characters, this is blocking this thread, which is not optimal :( */
         u.SetProtocolOptions("");
-        
+        u.RemoveOption("X-Plex-Container-Start");
+        u.RemoveOption("X-Plex-Container-Size");
+
         /* cut off the all in the end */
         u.SetFileName(u.GetFileName().substr(0, u.GetFileName().size()-3));
         
