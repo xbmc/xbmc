@@ -811,36 +811,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -901,36 +882,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
@@ -1265,36 +1227,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -1355,36 +1298,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
