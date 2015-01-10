@@ -32,7 +32,7 @@ AC_CHECK_HEADER([gif_lib.h],, AC_MSG_ERROR("gif_lib.h not found"))
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <gif_lib.h>]], [[
 #if !defined GIFLIB_MAJOR || GIFLIB_MAJOR < 5
 #error libgif version < 5;
-#endif ]])], [], [AC_MSG_ERROR([[libgif version must be 5.0.5 or higher.]])])
+#endif ]])], [], [AC_MSG_NOTICE([[WARNING: libgif version is unsupported, please consider upgrading to 5.0.5 or higher.]])])
 
 AC_CHECK_LIB([gif],[main],, AC_MSG_ERROR("libgif not found"))
 AC_CHECK_HEADER([jpeglib.h],, AC_MSG_ERROR("jpeglib.h not found"))
