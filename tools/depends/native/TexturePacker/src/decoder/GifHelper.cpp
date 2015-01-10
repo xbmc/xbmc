@@ -284,9 +284,9 @@ bool GifHelper::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
   int transparent = -1;
   frame.m_delay = 0;
   frame.m_disposal = 0;
+#if GIFLIB_MAJOR >= 5
   if (m_gif->ExtensionBlockCount > 0)
   {
-#if GIFLIB_MAJOR >= 5
     GraphicsControlBlock gcb;
     if (!DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
     {
@@ -301,7 +301,10 @@ bool GifHelper::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
     frame.m_delay = gcb.DelayTime * 10;
     frame.m_disposal = gcb.DisposalMode;
     transparent = gcb.TransparentColor;
+  }
 #else
+  if (m_gif->ImageCount > 0)
+  {
     ExtensionBlock* extb = m_gif->SavedImages[imgIdx].ExtensionBlocks;
     while (extb && extb->Function != GRAPHICS_EXT_FUNC_CODE)
       extb++;
@@ -315,8 +318,8 @@ bool GifHelper::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
       else
         transparent = -1;
     }
-#endif
   }
+#endif
 
   if (transparent >= 0 && (unsigned)transparent < frame.m_palette.size())
     frame.m_palette[transparent].x = 0;
@@ -457,8 +460,8 @@ bool GifHelper::PrepareTemplate(const GifFrame &frame)
       return false;
     }
   }
-  return true;
 #endif
+  return true;
 }
 
 void GifHelper::SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame)
