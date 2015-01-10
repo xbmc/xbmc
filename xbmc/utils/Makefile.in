@@ -30,6 +30,7 @@ SRCS += HTMLTable.cpp
 SRCS += HTMLUtil.cpp
 SRCS += HttpHeader.cpp
 SRCS += HttpParser.cpp
+SRCS += HttpRangeUtils.cpp
 SRCS += HttpResponse.cpp
 SRCS += InfoLoader.cpp
 SRCS += JobManager.cpp
