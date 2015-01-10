@@ -138,6 +138,13 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
       continue;
     }
 
+    // filter out root partition
+    if (strcmp(mountpoint, "/") == 0)
+    {
+      udev_device_unref(device);
+      continue;
+    }
+
     // filter out things mounted on /tmp
     if (strstr(mountpoint, "/tmp"))
     {
@@ -145,28 +152,42 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
       continue;
     }
 
-    // look for usb devices on the usb bus, or mounted on /media/usbX (sdcards) or cdroms
+    // look for devices on the usb bus, or mounted on */media/ (sdcards), or optical devices
     const char *bus = udev_device_get_property_value(device, "ID_BUS");
-    const char *cdrom = udev_device_get_property_value(device, "ID_CDROM");
-    if (removable  &&
-      ((bus        && strstr(bus, "usb")) ||
-       (cdrom      && strstr(cdrom,"1"))  ||
-       (mountpoint && strstr(mountpoint, "/media/"))))
-    {
-      const char *udev_label = udev_device_get_property_value(device, "ID_FS_LABEL");
-      std::string label;
-      if (udev_label)
-        label = udev_label;
-      else
-        label = URIUtils::GetFileName(mountpoint);
+    const char *optical = udev_device_get_property_value(device, "ID_CDROM"); // matches also DVD, Blu-ray
+    bool isRemovable = ((bus        && strstr(bus, "usb")) ||
+                        (optical    && strstr(optical,"1"))  ||
+                        (mountpoint && strstr(mountpoint, "/media/")));
 
-      CMediaSource share;
-      share.strName  = label;
-      share.strPath  = mountpoint;
-      share.m_ignore = true;
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-      AddOrReplace(disks, share);
+    // filter according to requested device type
+    if (removable != isRemovable)
+    {
+      udev_device_unref(device);
+      continue;
     }
+
+    const char *udev_label = udev_device_get_property_value(device, "ID_FS_LABEL");
+    std::string label;
+    if (udev_label)
+      label = udev_label;
+    else
+      label = URIUtils::GetFileName(mountpoint);
+
+    CMediaSource share;
+    share.strName  = label;
+    share.strPath  = mountpoint;
+    share.m_ignore = true;
+    if (isRemovable)
+    {
+      if (optical)
+        share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+      else
+        share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+    }
+    else
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+
+    disks.push_back(share);
     udev_device_unref(device);
   }
   udev_enumerate_unref(u_enum);
