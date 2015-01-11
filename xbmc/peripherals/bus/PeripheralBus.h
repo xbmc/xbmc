@@ -149,6 +149,11 @@ namespace PERIPHERALS
 
     virtual bool IsInitialised(void) const { return m_bInitialised; }
 
+    /*!
+     * \brief Poll for events
+     */
+    virtual void ProcessEvents(void) { }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);

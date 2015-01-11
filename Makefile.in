@@ -32,6 +32,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/binary/interfaces/api1/Codec/addon-callbacks-codec.a \
                    xbmc/addons/binary/interfaces/api1/GUI/addon-callbacks-gui.a \
                    xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
+                   xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
                    xbmc/addons/binary/interfaces/api1/PVR/addon-callbacks-pvr.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
@@ -76,6 +77,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/network/dacp/dacp.a \
                    xbmc/network/websocket/websocket.a \
                    xbmc/network/network.a \
+                   xbmc/peripherals/addons/peripheral-addons.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
                    xbmc/peripherals/devices/peripheral-devices.a \
                    xbmc/peripherals/dialogs/peripheral-dialogs.a \
@@ -207,7 +209,8 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.codec \
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
-	lib/addons/library.kodi.inputstream
+	lib/addons/library.kodi.inputstream \
+	lib/addons/library.kodi.peripheral \
 
 ESTUARY_MEDIA=addons/skin.estuary/media
 SKIN_DIRS=$(ESTUARY_MEDIA)
@@ -329,6 +332,7 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.kodi.audioengine
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.guilib
+	$(MAKE) -C lib/addons/library.kodi.peripheral
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 	$(MAKE) -C lib/addons/library.kodi.inputstream
 dvdpcodecs: dllloader

@@ -25,11 +25,14 @@
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
+#include "peripherals/addons/AddonJoystickButtonMapping.h"
+#include "peripherals/addons/AddonJoystickInputHandling.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
 struct SortBySettingsOrder
@@ -534,6 +537,50 @@ void CPeripheral::ClearSettings(void)
     ++it;
   }
   m_settings.clear();
+}
+
+void CPeripheral::RegisterJoystickInputHandler(IJoystickInputHandler* handler)
+{
+  std::map<IJoystickInputHandler*, IJoystickDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  if (it == m_inputHandlers.end())
+  {
+    CAddonJoystickInputHandling* inputHandling = new CAddonJoystickInputHandling(this, handler);
+    RegisterJoystickDriverHandler(inputHandling, false);
+    m_inputHandlers[handler] = inputHandling;
+  }
+}
+
+void CPeripheral::UnregisterJoystickInputHandler(IJoystickInputHandler* handler)
+{
+  std::map<IJoystickInputHandler*, IJoystickDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  if (it != m_inputHandlers.end())
+  {
+    UnregisterJoystickDriverHandler(it->second);
+    delete it->second;
+    m_inputHandlers.erase(it);
+  }
+}
+
+void CPeripheral::RegisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+{
+  std::map<IJoystickButtonMapper*, IJoystickDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  if (it == m_buttonMappers.end())
+  {
+    CAddonJoystickButtonMapping* addonMapping = new CAddonJoystickButtonMapping(this, mapper);
+    RegisterJoystickDriverHandler(addonMapping, false);
+    m_buttonMappers[mapper] = addonMapping;
+  }
+}
+
+void CPeripheral::UnregisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+{
+  std::map<IJoystickButtonMapper*, IJoystickDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  if (it != m_buttonMappers.end())
+  {
+    UnregisterJoystickDriverHandler(it->second);
+    delete it->second;
+    m_buttonMappers.erase(it);
+  }
 }
 
 bool CPeripheral::operator ==(const PeripheralScanResult& right) const

@@ -30,6 +30,7 @@
 #include "addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.h"
 #include "addons/binary/interfaces/api1/GUI/AddonGUIWindow.h"
 #include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
+#include "addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h"
 #include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
@@ -49,7 +50,8 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperPVR(nullptr),
     m_helperADSP(nullptr),
     m_helperCODEC(nullptr),
-    m_helperInputStream(nullptr)
+    m_helperInputStream(nullptr),
+    m_helperPeripheral(nullptr)
 {
   m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
   m_callbacks->addonData                    = this;
@@ -68,6 +70,8 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
   m_callbacks->CodecLib_UnRegisterMe        = CAddonInterfaces::CodecLib_UnRegisterMe;
   m_callbacks->INPUTSTREAMLib_RegisterMe    = CAddonInterfaces::INPUTSTREAMLib_RegisterMe;
   m_callbacks->INPUTSTREAMLib_UnRegisterMe  = CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe;
+  m_callbacks->PeripheralLib_RegisterMe     = CAddonInterfaces::PeripheralLib_RegisterMe;
+  m_callbacks->PeripheralLib_UnRegisterMe   = CAddonInterfaces::PeripheralLib_UnRegisterMe;
 }
 
 CAddonInterfaces::~CAddonInterfaces()
@@ -79,6 +83,7 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<V1::KodiAPI::AudioDSP::CAddonCallbacksADSP*>(m_helperADSP);
   delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(m_helperCODEC);
   delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
+  delete static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(m_helperPeripheral);
 
   free((char*)m_callbacks->libBasePath);
   delete m_callbacks;
@@ -274,6 +279,33 @@ void CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe(void *addonData, void* cbTabl
 
   delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(addon->m_helperInputStream);
   addon->m_helperInputStream = nullptr;
+}
+/*\_____________________________________________________________________________
+\*/
+CB_PeripheralLib* CAddonInterfaces::PeripheralLib_RegisterMe(void *addonData)
+{
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
+  }
+
+  addon->m_helperPeripheral = new V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral(addon->m_addon);
+  return static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(addon->m_helperPeripheral)->GetCallbacks();
+}
+
+void CAddonInterfaces::PeripheralLib_UnRegisterMe(void *addonData, CB_PeripheralLib* cbTable)
+{
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  delete static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(addon->m_helperPeripheral);
+  addon->m_helperPeripheral = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/

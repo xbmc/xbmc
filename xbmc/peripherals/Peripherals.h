@@ -19,6 +19,7 @@
  *
  */
 
+#include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "messaging/IMessageTarget.h"
@@ -35,13 +36,19 @@ class TiXmlElement;
 class CAction;
 class CKey;
 
+namespace JOYSTICK
+{
+  class IJoystickButtonMapper;
+}
+
 namespace PERIPHERALS
 {
   #define g_peripherals CPeripherals::GetInstance()
 
   class CPeripherals :  public ISettingCallback,
                         public Observable,
-                        public KODI::MESSAGING::IMessageTarget
+                        public KODI::MESSAGING::IMessageTarget,
+                        public IEventScannerCallback
   {
   public:
     static CPeripherals &GetInstance();
@@ -200,6 +207,13 @@ namespace PERIPHERALS
      */
     virtual bool GetNextKeypress(float frameTime, CKey &key);
 
+    /*!
+     * @brief Request event scan rate
+     * @brief rateHz The rate in Hz
+     * @return A handle that unsets its rate when expired
+     */
+    EventRateHandle SetEventScanRate(float rateHz) { return m_eventScanner.SetRate(rateHz); }
+
     bool SupportsCEC(void) const
     {
 #if defined(HAVE_LIBCEC)
@@ -208,7 +222,17 @@ namespace PERIPHERALS
       return false;
 #endif
     }
-    
+
+    // implementation of IEventScannerCallback
+    virtual void ProcessEvents(void) override;
+
+    virtual PeripheralAddonPtr GetAddon(const CPeripheral* device);
+
+    virtual void ResetButtonMaps(const std::string& controllerId);
+
+    void RegisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
+    void UnregisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
+
     virtual void OnSettingChanged(const CSetting *setting) override;
     virtual void OnSettingAction(const CSetting *setting) override;
 
@@ -230,6 +254,7 @@ namespace PERIPHERALS
 #endif
     std::vector<CPeripheralBus *>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
+    CEventScanner                        m_eventScanner;
     CCriticalSection                     m_critSection;
   };
 }

@@ -22,13 +22,17 @@
 
 #include <utility>
 
+#include "addons/PeripheralAddon.h"
+#include "addons/AddonJoystickButtonMap.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
+#include "bus/virtual/PeripheralBusAddon.h"
 #include "devices/PeripheralBluetooth.h"
 #include "devices/PeripheralCecAdapter.h"
 #include "devices/PeripheralDisk.h"
 #include "devices/PeripheralHID.h"
 #include "devices/PeripheralImon.h"
+#include "devices/PeripheralJoystick.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
@@ -37,6 +41,7 @@
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
+#include "bus/virtual/PeripheralBusAddon.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -58,10 +63,12 @@
 #endif
 
 
+using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
 
-CPeripherals::CPeripherals(void)
+CPeripherals::CPeripherals(void) :
+  m_eventScanner(this)
 {
   Clear();
 }
@@ -95,6 +102,7 @@ void CPeripherals::Initialise(void)
 #if defined(HAVE_LIBCEC)
     m_busses.push_back(new CPeripheralBusCEC(this));
 #endif
+    m_busses.push_back(new CPeripheralBusAddon(this));
 
     /* initialise all known busses */
     for (int iBusPtr = (int)m_busses.size() - 1; iBusPtr >= 0; iBusPtr--)
@@ -107,6 +115,8 @@ void CPeripherals::Initialise(void)
       }
     }
 
+    m_eventScanner.Start();
+
     m_bInitialised = true;
     KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   }
@@ -114,6 +124,8 @@ void CPeripherals::Initialise(void)
 
 void CPeripherals::Clear(void)
 {
+  m_eventScanner.Stop();
+
   CSingleLock lock(m_critSection);
   /* delete busses and devices */
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
@@ -143,12 +155,17 @@ void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERA
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
-    if (type == PERIPHERAL_BUS_UNKNOWN || m_busses.at(iBusPtr)->Type() == type)
-    {
+    bool bScan = false;
+
+    if (type == PERIPHERAL_BUS_UNKNOWN)
+      bScan = true;
+    else if (m_busses.at(iBusPtr)->Type() == PERIPHERAL_BUS_ADDON)
+      bScan = true;
+    else if (type == m_busses.at(iBusPtr)->Type())
+      bScan = true;
+
+    if (bScan)
       m_busses.at(iBusPtr)->TriggerDeviceScan();
-      if (type != PERIPHERAL_BUS_UNKNOWN)
-        break;
-    }
   }
 }
 
@@ -246,11 +263,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     mappedResult.m_busType = bus.Type();
 
   /* check whether there's something mapped in peripherals.xml */
-  if (!GetMappingForDevice(bus, mappedResult))
-  {
-    /* don't create instances for devices that aren't mapped in peripherals.xml */
-    return NULL;
-  }
+  GetMappingForDevice(bus, mappedResult);
 
   switch(mappedResult.m_mappedType)
   {
@@ -294,6 +307,10 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
 
   case PERIPHERAL_IMON:
     peripheral = new CPeripheralImon(mappedResult);
+    break;
+
+  case PERIPHERAL_JOYSTICK:
+    peripheral = new CPeripheralJoystick(mappedResult);
     break;
 
   default:
@@ -696,6 +713,81 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
   }
 
   return false;
+}
+
+void CPeripherals::ProcessEvents(void)
+{
+  std::vector<CPeripheralBus*> busses;
+  {
+    CSingleLock lock(m_critSection);
+    busses = m_busses;
+  }
+
+  for (CPeripheralBus* bus : busses)
+    bus->ProcessEvents();
+}
+
+PeripheralAddonPtr CPeripherals::GetAddon(const CPeripheral* device)
+{
+  PeripheralAddonPtr addon;
+
+  CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(GetBusByType(PERIPHERAL_BUS_ADDON));
+  if (device && addonBus)
+  {
+    PeripheralBusType busType = device->GetBusType();
+
+    if (busType == PERIPHERAL_BUS_ADDON)
+    {
+      // If device is from an add-on, use that add-on
+      unsigned int index;
+      addonBus->SplitLocation(device->Location(), addon, index);
+    }
+    else
+    {
+      // Otherwise, have the add-on bus find a suitable add-on
+      addonBus->GetAddonWithButtonMap(device, addon);
+    }
+  }
+
+  return addon;
+}
+
+void CPeripherals::ResetButtonMaps(const std::string& controllerId)
+{
+  CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(GetBusByType(PERIPHERAL_BUS_ADDON));
+
+  std::vector<CPeripheral*> peripherals;
+  GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
+
+  for (std::vector<CPeripheral*>::iterator it = peripherals.begin(); it != peripherals.end(); ++it)
+  {
+    CPeripheral* peripheral = *it;
+
+    PeripheralAddonPtr addon;
+    if (addonBus->GetAddonWithButtonMap(peripheral, addon))
+    {
+      CAddonJoystickButtonMap buttonMap(peripheral, addon, controllerId);
+      buttonMap.Reset();
+    }
+  }
+}
+
+void CPeripherals::RegisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+{
+  std::vector<CPeripheral*> peripherals;
+  GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
+
+  for (std::vector<CPeripheral*>::iterator it = peripherals.begin(); it != peripherals.end(); ++it)
+    (*it)->RegisterJoystickButtonMapper(mapper);
+}
+
+void CPeripherals::UnregisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+{
+  std::vector<CPeripheral*> peripherals;
+  GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
+
+  for (std::vector<CPeripheral*>::iterator it = peripherals.begin(); it != peripherals.end(); ++it)
+    (*it)->UnregisterJoystickButtonMapper(mapper);
 }
 
 void CPeripherals::OnSettingChanged(const CSetting *setting)

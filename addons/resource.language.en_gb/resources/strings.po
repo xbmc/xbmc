@@ -15495,7 +15495,13 @@ msgctxt "#35009"
 msgid "Don't use the custom keymap for this device"
 msgstr ""
 
-#empty strings from id 35010 to 35099
+#. Name of add-ons extending the kodi.peripheral extension point
+#: xbmc/addons/Addon.cpp
+msgctxt "#35010"
+msgid "Peripheral libraries"
+msgstr ""
+
+#empty strings from id 35011 to 35099
 
 #: system/settings/settings.xml
 msgctxt "#35100"

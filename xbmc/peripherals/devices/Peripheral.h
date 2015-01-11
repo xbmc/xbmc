@@ -19,13 +19,20 @@
  *
  */
 
+#include <map>
 #include <set>
 #include <string>
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;
-
 class CSetting;
+
+namespace JOYSTICK
+{
+  class IJoystickButtonMapper;
+  class IJoystickDriverHandler;
+  class IJoystickInputHandler;
+}
 
 namespace PERIPHERALS
 {
@@ -163,6 +170,15 @@ namespace PERIPHERALS
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
+    virtual void RegisterJoystickDriverHandler(JOYSTICK::IJoystickDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IJoystickDriverHandler* handler) { }
+
+    virtual void RegisterJoystickInputHandler(JOYSTICK::IJoystickInputHandler* handler);
+    virtual void UnregisterJoystickInputHandler(JOYSTICK::IJoystickInputHandler* handler);
+
+    virtual void RegisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
+    virtual void UnregisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
+
   protected:
     virtual void ClearSettings(void);
 
@@ -185,5 +201,7 @@ namespace PERIPHERALS
     std::vector<CPeripheral *>       m_subDevices;
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
+    std::map<JOYSTICK::IJoystickInputHandler*, JOYSTICK::IJoystickDriverHandler*> m_inputHandlers;
+    std::map<JOYSTICK::IJoystickButtonMapper*, JOYSTICK::IJoystickDriverHandler*> m_buttonMappers;
   };
 }
