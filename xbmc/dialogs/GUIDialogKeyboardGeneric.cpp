@@ -106,7 +106,13 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
 {
   bool handled(true);
-  if (action.GetID() == ACTION_BACKSPACE)
+  /* PLEX */
+  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
+  {
+    OnBack(action.GetID());
+  }
+  /* END PLEX */
+  else if (action.GetID() == ACTION_BACKSPACE)
   {
     Backspace();
   }
