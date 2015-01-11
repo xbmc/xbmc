@@ -3272,7 +3272,7 @@ bool CDVDPlayer::OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint,
   if(current.id    < 0
   || current.hint != hint)
   {
-    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO)
+    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
       SAFE_DELETE(m_pCCDemuxer);
 
     if (!player->OpenStream( hint ))
@@ -3328,9 +3328,9 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   m_HasVideo = true;
 
   // open CC demuxer if video is mpeg2
-  if (hint.codec == AV_CODEC_ID_MPEG2VIDEO && !m_pCCDemuxer)
+  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264) && !m_pCCDemuxer)
   {
-    m_pCCDemuxer = new CDVDDemuxCC();
+    m_pCCDemuxer = new CDVDDemuxCC(hint.codec);
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
 
