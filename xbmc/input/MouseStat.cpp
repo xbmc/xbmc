@@ -23,7 +23,6 @@
 #include "settings/lib/Setting.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
-#include "utils/log.h"
 
 CMouseStat::CMouseStat()
 {
