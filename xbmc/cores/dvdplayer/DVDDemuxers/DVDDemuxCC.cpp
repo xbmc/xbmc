@@ -173,6 +173,43 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
                 m_ccReorderBuffer.push_back(cc);
             }
           }
+          else if (len >= 6 &&
+                   buf[0] == 'C' && buf[1] == 'C' && buf[2] == 1)
+          {
+            int oddfirst = buf[4] & 0x80;
+            int cc_count = (buf[4] & 0x3e) >> 1;
+            int extrafield = buf[4] & 0x01;
+            if (extrafield)
+              cc_count++;
+
+            if (cc_count > 0 && len >= 5 + cc_count * 3 * 2)
+            {
+              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
+              uint8_t *src = buf + 5;
+              uint8_t *dst = cc->m_data;
+
+              for (int i = 0; i < cc_count; i++)
+              {
+                for (int j = 0; j < 2; j++)
+                {
+                  if (i == cc_count - 1 && extrafield && j == 1)
+                    break;
+
+                  if ((!oddfirst == j) && (src[0] == 0xFF))
+                  {
+                    dst[0] = 0x04;
+                    dst[1] = src[1];
+                    dst[2] = src[2];
+                    dst += 3;
+                  }
+                  src += 3;
+                }
+              }
+              cc->m_pts = pSrcPacket->pts;
+              m_ccReorderBuffer.push_back(cc);
+              picType = 1;
+            }
+          }
         }
       }
       else if (m_codec == AV_CODEC_ID_H264)
