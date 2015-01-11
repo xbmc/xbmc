@@ -7,7 +7,6 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm verdof</summary>
     <summary lang="ar">شاشة توقف تمكن من تظليم الشاشة</summary>
-    <summary lang="ast">Un curiapantalles qu'escurez la pantalla</summary>
     <summary lang="be">Ахоўнік экрану што зацямняе экран</summary>
     <summary lang="bg">Скрийнсейвър, който затъмнява екрана</summary>
     <summary lang="ca">Estalvi de pantalla que enfosqueix la pantalla</summary>
@@ -61,7 +60,6 @@
     <summary lang="zh_TW">讓螢幕變暗的螢幕保護程式</summary>
     <description lang="af">Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%</description>
     <description lang="ar">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
-    <description lang="ast">Dim ye un cenciellu curiapantalles qu'escurez la to pantalla. El valor ye configurable ente'l 20% y el 100%.</description>
     <description lang="be">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="bg">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>

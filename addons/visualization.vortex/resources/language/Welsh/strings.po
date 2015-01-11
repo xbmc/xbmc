@@ -16,13 +16,41 @@ msgstr ""
 "Language: cy\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Rhagosodiadau Hap"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Amse Rhwg Rhagosodiadau"
+msgstr "Amser Rhwng Rhagosodiadau"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Amser Hap Ychwanegol"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Cloi'r Rhagosodiadau"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Galluogi'r Newidiadau"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Rhwystro'r rhagosodiad cyntaf"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Dangos FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Dangos y consol dadfygio"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Dangos y dadansoddiad sain"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

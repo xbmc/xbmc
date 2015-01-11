@@ -16,6 +16,10 @@ msgstr ""
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detall [intensiu de CPU]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Baix"
