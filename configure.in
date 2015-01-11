@@ -141,6 +141,9 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(APP_VERSION_CODE)
   AC_SUBST(APP_ADDON_API)
 
+  dashes="------------------------"
+  final_message="\n  ${APP_NAME} Configuration:"
+  final_message="\n$dashes$final_message\n$dashes"
   final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION}"
 else
   AC_MSG_ERROR(could not detect application Version, make sure version.txt is complete)
@@ -227,10 +230,6 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
-
-dashes="------------------------"
-final_message="\n  ${APP_NAME} Configuration:"
-final_message="\n$dashes$final_message\n$dashes"
 
 AC_ARG_WITH([ffmpeg],
   [AS_HELP_STRING([--with-ffmpeg],
