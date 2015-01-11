@@ -6755,7 +6755,7 @@ msgstr "Maksymalny czas trwania"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
-msgstr "Uwzględnij nieznane gatunki"
+msgstr "Uwzględniaj nieznane gatunki"
 
 msgctxt "#19133"
 msgid "Search string"
@@ -6763,7 +6763,7 @@ msgstr "Wyrażenie wyszukiwania"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr "Uwzględnij opis"
+msgstr "Uwzględniaj opis"
 
 msgctxt "#19135"
 msgid "Case sensitive"
@@ -10943,7 +10943,7 @@ msgstr "Niestandardowe tło"
 
 msgctxt "#33071"
 msgid "Custom backgrounds"
-msgstr "Niestandardowe tło"
+msgstr "Niestandardowe tła"
 
 msgctxt "#33072"
 msgid "View Readme"
@@ -11691,7 +11691,7 @@ msgstr "Maksymalna prędkość dopasowania wideo do aktualnej częstotliwości o
 
 msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
-msgstr "Określa jakość próbkowania w przypadku, gdy urządzenie podłączone do wyjścia dźwięku wymaga innego próbkowania niż to używane przez źródło. [Niska] jest szybkie i ma minimalny wpływ na zasoby systemowe takie, jak użycie procesora, [Średnia] i [Wysoka] będzie używać proporcjonalnie więcej zasobów systemowych."
+msgstr "Określa jakość próbkowania w przypadku, gdy urządzenie podłączone do wyjścia dźwięku wymaga innego próbkowania niż to używane przez źródło. [Niska] jest szybkie i ma minimalny wpływ na zasoby systemowe takie, jak użycie procesora, [Średnia] i [Wysoka] używa proporcjonalnie więcej zasobów systemowych."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11819,7 +11819,7 @@ msgstr "Domyślnie używany ekstraktor metadanych teledysków podczas aktualizac
 
 msgctxt "#36201"
 msgid "Settings for PVR/Live TV features."
-msgstr "Ustawienia funkcji odtwarzania i nagrywania programów telewizyjnych"
+msgstr "Ustawienia funkcji odtwarzania i nagrywania programów telewizyjnych."
 
 msgctxt "#36202"
 msgid "Category for general settings for PVR/Live TV features."
@@ -12711,7 +12711,7 @@ msgstr "Zaznacz tę opcję, gdy złącze dźwiękowe obsługuje wielokanałowy d
 
 msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
-msgstr "Określa sposób akceleracji przetwarzania wideo. Obejmuje to dekodowanie i skalowanie."
+msgstr "Określa sposób sprzętowej akceleracji przetwarzania wideo, z uwzględnieniem dekodowania i skalowania."
 
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."

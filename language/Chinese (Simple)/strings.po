@@ -10475,7 +10475,7 @@ msgstr "助手插件"
 
 msgctxt "#24082"
 msgid "Add-on libraries"
-msgstr "插件库"
+msgstr "插件模块"
 
 msgctxt "#24083"
 msgid "Information libraries"

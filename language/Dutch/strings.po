@@ -10591,7 +10591,7 @@ msgstr "Standaard TV dienst"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles."
-msgstr "Selecteer de standaarddienst die zal worden gebruikt om te zoeken naar ondertiteling voor TV shows."
+msgstr "Selecteer de standaarddienst die zal worden gebruikt om te zoeken naar ondertiteling voor series."
 
 msgctxt "#24118"
 msgid "Default Movie Service"

@@ -5677,6 +5677,10 @@ msgctxt "#14102"
 msgid "Blu-ray playback mode"
 msgstr "Modo de reprodución do Blu-ray"
 
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Reproducir filme"
+
 msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr "Amosar menú simplificado"
@@ -5744,6 +5748,10 @@ msgstr "Sons de navegación"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Pel predefinida"
+
+msgctxt "#15110"
+msgid "Larger font size"
+msgstr "Fonte de maior tamaño"
 
 msgctxt "#15111"
 msgid "Theme"

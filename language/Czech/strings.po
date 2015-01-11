@@ -10479,7 +10479,7 @@ msgstr "Doplňky knihoven"
 
 msgctxt "#24083"
 msgid "Information libraries"
-msgstr "Informace o klihovně"
+msgstr "Informace o knihovně"
 
 msgctxt "#24084"
 msgid "Visualisation libraries"

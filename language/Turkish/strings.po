@@ -10227,7 +10227,7 @@ msgstr "Altyazılar"
 
 msgctxt "#24013"
 msgid "Lyrics"
-msgstr "Şakı Sözleri"
+msgstr "Şarkı Sözleri"
 
 msgctxt "#24014"
 msgid "TV information"
@@ -11307,7 +11307,7 @@ msgstr "Ekran koruyucu devreye girince aygıtı bekleme moduna geçir"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "Ekran koruyucuyu kapatır iken aygıtları uyanıdır"
+msgstr "Ekran koruyucuyu kapatırken aygıtları uyandır"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -13031,7 +13031,7 @@ msgstr "Downmix yaparken orta kanalı artır."
 
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
-msgstr "Daha yüksek artwork renk derinliğini etkinleştir"
+msgstr "Daha yüksek çizim renk derinliğini etkinleştir"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"

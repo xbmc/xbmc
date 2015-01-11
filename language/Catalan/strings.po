@@ -10601,6 +10601,10 @@ msgctxt "#24122"
 msgid "Update all"
 msgstr "Actualitza-ho tota"
 
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Continua el video"
+
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Localització personalitzada"
@@ -11916,6 +11920,10 @@ msgstr "Retard de repetició contínua (ms)."
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr "Habilita la protecció amb contrasenya de l'AirPlay."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Canvia la paraula de pas de AirPlay"
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."

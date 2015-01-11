@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Pencatatan log terinci untuk pustaka CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Pencatatan log terperinci untuk komponen VIDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Bersihkan Pustaka"
@@ -3265,6 +3269,10 @@ msgctxt "#1379"
 msgid "Ragged"
 msgstr "Kasar"
 
+msgctxt "#1380"
+msgid "Very"
+msgstr "Sangat"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Ekstrim"
@@ -3272,6 +3280,10 @@ msgstr "Ekstrim"
 msgctxt "#1382"
 msgid "Whirls"
 msgstr "Whirl"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Langit Cerah"
 
 msgctxt "#1384"
 msgid "Broken"
@@ -3281,6 +3293,18 @@ msgctxt "#1385"
 msgid "Tornado"
 msgstr "Tornado"
 
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropis"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Badai"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Dingin"
+
 msgctxt "#1389"
 msgid "Windy"
 msgstr "Berangin"
@@ -3288,6 +3312,26 @@ msgstr "Berangin"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Setelan"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Angin sepoi - sepoi"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Lembut"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Angin kencang, dekat badai"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Parah"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Kekerasan"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -6153,6 +6197,22 @@ msgctxt "#16329"
 msgid "VAAPI Motion Compensated"
 msgstr "VAAPI Motion Compensated"
 
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "Tingkat Lanjut - MMAL"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "Tingkat Lanjut (Setengah) - MMAL"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "Bob - MMAL"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "Bob (Setengah) - MMAL"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Pos-pemrosesan"
@@ -7244,6 +7304,10 @@ msgstr "Anda butuh tuner, software backend, dan sebuah"
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Pengaya untuk backend agar dapat menggunakan PVR."
+
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Silakan kunjungi http://kodi.wiki/view/PVR untuk mempelajari lebih lanjut"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8464,6 +8528,10 @@ msgstr "Secure Shel (SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Peramban Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10568,6 +10636,14 @@ msgstr "Otomatis mengunduh subtitle pertama dari daftar hasil pencarian"
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Konfigurasi telah dipindahkan"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Konfigurasi Kodi telah dipindahkan ke lokasi baru untuk Kodi. Silahkan baca http://kodi.wiki/view/Migration - Pesan ini tidak akan ditampilkan lagi!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Sembunyikan Inkompatibel"
 
 msgctxt "#25000"
 msgid "Notifications"

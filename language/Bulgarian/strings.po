@@ -2967,11 +2967,11 @@ msgstr "Въведете нов етикет"
 
 msgctxt "#1030"
 msgid "Browse for image"
-msgstr "Преглед за снимка"
+msgstr "Преглед за картина"
 
 msgctxt "#1031"
 msgid "Browse for image folder"
-msgstr "Преглед за папка със снимки"
+msgstr "Преглед за папка с картини"
 
 msgctxt "#1032"
 msgid "Add network location..."
@@ -9747,7 +9747,7 @@ msgstr "Доп. местоположение"
 
 msgctxt "#21858"
 msgid "Image type"
-msgstr "Тип изображение"
+msgstr "Тип картина"
 
 msgctxt "#21859"
 msgid "Time created"
@@ -12199,11 +12199,11 @@ msgstr "Категорията съдържа всички настройки с
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
-msgstr "Изберете колко време ще бъде показвано всяко изображение по време на слайдшоу."
+msgstr "Изберете колко време ще бъде показвано всяка картина по време на слайдшоу."
 
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
-msgstr "Към изображенията в слайдшоуто ще се приложат панорамни и увеличаващи ефекти, докато те се показват."
+msgstr "Към картините в слайдшоуто ще се приложат панорамни и увеличаващи ефекти, докато те се показват."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."

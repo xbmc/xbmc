@@ -27,7 +27,7 @@ msgstr "الموسيقى"
 
 msgctxt "#3"
 msgid "Videos"
-msgstr "المقاطع المرئيه"
+msgstr "الفيديو"
 
 msgctxt "#4"
 msgid "TV-Guide"
@@ -311,7 +311,7 @@ msgstr "العرض: قائمة"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "فحص"
+msgstr "بحث"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -343,7 +343,7 @@ msgstr "إنشاء مصغرات"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "إنشاء مصغرات"
+msgstr "إنشاء صور مصغرة"
 
 msgctxt "#111"
 msgid "Shortcuts"

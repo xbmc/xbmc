@@ -2473,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Cofnodi hyglyw ar gyfer llyfrgell CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Cofnodi llawn cydran VIDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Glanhau'r llyfrgell"
@@ -3245,6 +3249,30 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr "Dyfais hebrwng cyfaddas"
 
+msgctxt "#1375"
+msgid "Temperature"
+msgstr "Tymheredd"
+
+msgctxt "#1376"
+msgid "Pressure"
+msgstr "Pwysedd"
+
+msgctxt "#1377"
+msgid "Proximity"
+msgstr "Agosrwydd"
+
+msgctxt "#1378"
+msgid "Intensity"
+msgstr "Dwyster"
+
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Blêr"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Iawn"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Eithafol"
@@ -3253,9 +3281,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Chwyrliau"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Awyr yn Glir"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Wedi Torri"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Trofannol"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Corwynt"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Oer"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3264,6 +3312,26 @@ msgstr "Gwyntog"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Gosodiadau"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Awel"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Ysgafn"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Gwynt mawr, bron yn dymestl"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Gerwin"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Mawr"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -5665,6 +5733,14 @@ msgctxt "#14102"
 msgid "Blu-ray playback mode"
 msgstr "Modd chwarae Blu-ray"
 
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Chwarae'r prif ffilm"
+
+msgctxt "#14104"
+msgid "Show simplified menu"
+msgstr "Dangos y ddewislen syml"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Ffynhonnell ddim ar gael"
@@ -6108,6 +6184,34 @@ msgstr "VDPAU - Bob"
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
+
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "Bob VAAPI"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "Mudiant Addasol VAAPI"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "Digolledu Symudedd VAAPI"
+
+msgctxt "#16330"
+msgid "MMAL - Advanced"
+msgstr "MMAL - Uwch"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MAAL - Uwch (Hanner)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - Bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - Bob (Hanner)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7200,6 +7304,10 @@ msgstr "Mae angen tiwniwr, meddalwedd offer cefn ac"
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Ychwanegyn ar gyfer y offer cefn er mwyn defnyddio'r Recordydd."
+
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Ewch i http://kodi.wiki/view/PVR i ddysgu rhagor."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8420,6 +8528,10 @@ msgstr "Cragen Diogel(SSH/SFTP)"
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
 msgstr "Protocol Ffeilio Apple (AFP)"
+
+msgctxt "#20262"
+msgid "Zeroconf Browser"
+msgstr "Porwr Zeroconf"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -10520,6 +10632,10 @@ msgstr "Awto llwytho i lawr yr isdeitl cyntaf"
 msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr "Llwytho'r isdeitl cyntaf yn awtomatig o'r rhestr canlyniadau chwilio"
+
+msgctxt "#24128"
+msgid "Configuration has been moved"
+msgstr "Mae'r ffurfweddiad wedi symud"
 
 msgctxt "#25000"
 msgid "Notifications"
