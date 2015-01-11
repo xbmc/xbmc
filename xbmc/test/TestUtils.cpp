@@ -118,9 +118,10 @@ bool CXBMCTestUtils::SetReferenceFileBasePath()
   if (xbmcPath.empty())
     return false;
 
-  /* Set xbmc path and xbmcbin path */
+  /* Set xbmc, xbmcbin and home path */
   CSpecialProtocol::SetXBMCPath(xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+  CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
 
   return true;
 }
