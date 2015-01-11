@@ -153,6 +153,8 @@ INSTALL_FILTER += .*repository\.pvr-ios\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-win32\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-osx.*\.xbmc\.org.*
 ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
@@ -161,6 +163,8 @@ DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
 DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a

@@ -976,7 +976,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 
   TiXmlNode* pDevice;
 
-  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand", NULL};
+  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand", "joystick", NULL};
   for (int i = 0; types[i]; ++i)
   {
     std::string type(types[i]);
@@ -1009,6 +1009,8 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateMouseCommand(pButton);
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
+        else if (type == "joystick")
+            buttonCode = TranslateJoystickString(pButton->Value());
 
         if (buttonCode)
         {
@@ -1492,4 +1494,42 @@ int CButtonTranslator::GetTouchActionCode(int window, int action, std::string &a
 
   actionString = touchIt->second.strID;
   return touchIt->second.id;
+}
+
+uint32_t CButtonTranslator::TranslateJoystickString(const char *szButton)
+{
+  if (!szButton)
+    return 0;
+  uint32_t buttonCode = 0;
+  std::string strButton = szButton;
+  StringUtils::ToLower(strButton);
+
+  if (strButton == "a") buttonCode = KEY_JOYSTICK_BUTTON_A;
+  else if (strButton == "b") buttonCode = KEY_JOYSTICK_BUTTON_B;
+  else if (strButton == "x") buttonCode = KEY_JOYSTICK_BUTTON_X;
+  else if (strButton == "y") buttonCode = KEY_JOYSTICK_BUTTON_Y;
+  else if (strButton == "start") buttonCode = KEY_JOYSTICK_BUTTON_START;
+  else if (strButton == "back") buttonCode = KEY_JOYSTICK_BUTTON_BACK;
+  else if (strButton == "left") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_LEFT;
+  else if (strButton == "right") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_RIGHT;
+  else if (strButton == "up") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_UP;
+  else if (strButton == "down") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_DOWN;
+  else if (strButton == "leftthumb") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON;
+  else if (strButton == "rightthumb") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON;
+  else if (strButton == "leftstickup") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
+  else if (strButton == "leftstickdown") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
+  else if (strButton == "leftstickleft") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
+  else if (strButton == "leftstickright") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
+  else if (strButton == "rightstickup") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
+  else if (strButton == "rightstickdown") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
+  else if (strButton == "rightstickleft") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
+  else if (strButton == "rightstickright") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+  else if (strButton == "lefttrigger") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_TRIGGER;
+  else if (strButton == "righttrigger") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER;
+  else if (strButton == "leftbumper") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_SHOULDER;
+  else if (strButton == "rightbumper") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
+  else if (strButton == "guide") buttonCode = KEY_JOYSTICK_BUTTON_GUIDE;
+  else CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s", strButton.c_str());
+
+  return buttonCode;
 }

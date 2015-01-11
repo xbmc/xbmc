@@ -31,6 +31,9 @@
 //  XBIRRemote.h
 //  XINPUT_IR_REMOTE-*
 
+/*
+ * EventServer "gamepad" keys based on original Xbox controller
+ */
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256
 #define KEY_BUTTON_B                        257
@@ -68,6 +71,35 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_DOWN    281 // for defining different actions per direction
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
+
+/*
+ * joystick.xml keys based on Xbox 360 controller
+ */
+#define KEY_JOYSTICK_BUTTON_A                        284
+#define KEY_JOYSTICK_BUTTON_B                        285
+#define KEY_JOYSTICK_BUTTON_X                        286
+#define KEY_JOYSTICK_BUTTON_Y                        287
+#define KEY_JOYSTICK_BUTTON_LEFT_SHOULDER            288
+#define KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER           289
+#define KEY_JOYSTICK_BUTTON_LEFT_TRIGGER             290
+#define KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER            291
+#define KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON        292
+#define KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON       293
+#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP     294
+#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN   295
+#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT   296
+#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT  297
+#define KEY_JOYSTICK_BUTTON_DPAD_UP                  298
+#define KEY_JOYSTICK_BUTTON_DPAD_DOWN                299
+#define KEY_JOYSTICK_BUTTON_DPAD_LEFT                300
+#define KEY_JOYSTICK_BUTTON_DPAD_RIGHT               301
+#define KEY_JOYSTICK_BUTTON_START                    302
+#define KEY_JOYSTICK_BUTTON_BACK                     303
+#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP      304
+#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN    305
+#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT    306
+#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT   307
+#define KEY_JOYSTICK_BUTTON_GUIDE                    308
 
 // 0xF000 -> 0xF200 is reserved for the keyboard; a keyboard press is either
 #define KEY_VKEY            0xF000 // a virtual key/functional key e.g. cursor left

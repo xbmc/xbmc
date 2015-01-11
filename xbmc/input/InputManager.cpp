@@ -260,6 +260,35 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
   return false;
 }
 
+void CInputManager::ProcessQueuedActions()
+{
+  std::vector<CAction> queuedActions;
+  {
+    CSingleLock lock(m_actionMutex);
+    queuedActions.swap(m_queuedActions);
+  }
+
+  for (const CAction& action : queuedActions)
+    g_application.OnAction(action);
+}
+
+void CInputManager::QueueAction(const CAction& action)
+{
+  CSingleLock lock(m_actionMutex);
+
+  // Avoid dispatching multiple analog actions per frame with the same ID
+  if (action.IsAnalog())
+  {
+    m_queuedActions.erase(std::remove_if(m_queuedActions.begin(), m_queuedActions.end(),
+      [&action](const CAction& queuedAction)
+      {
+        return action.GetID() == queuedAction.GetID();
+      }), m_queuedActions.end());
+  }
+
+  m_queuedActions.push_back(action);
+}
+
 bool CInputManager::Process(int windowId, float frameTime)
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
@@ -271,6 +300,7 @@ bool CInputManager::Process(int windowId, float frameTime)
   ProcessRemote(windowId);
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
+  ProcessQueuedActions();
   
   return true;
 }
