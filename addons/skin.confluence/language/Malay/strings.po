@@ -548,6 +548,10 @@ msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Ramalan Mingguan"
 
+msgctxt "#31904"
+msgid "Daily Forecast"
+msgstr "Ramalan Harian"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Ramalan"
@@ -603,3 +607,7 @@ msgstr "MAIN CAKERA"
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr "Sistem"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"
