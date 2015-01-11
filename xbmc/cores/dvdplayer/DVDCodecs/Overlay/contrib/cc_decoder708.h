@@ -2,6 +2,10 @@
 
 #include <sys/stat.h>
 
+extern "C"{
+#include "cc_decoder.h"
+}
+
 #define MAX_708_PACKET_LENGTH   128
 #define CCX_DECODERS_708_MAX_SERVICES 8
 #define I708_MAX_ROWS 15
@@ -291,7 +295,10 @@ public:
   void Decode(const unsigned char *data, int datalength);
   bool m_inited;
   cc708_service_decoder* m_cc708decoders;
+  cc_decoder_t *m_cc608decoder;
   unsigned char m_current_packet[MAX_708_PACKET_LENGTH]; // Length according to EIA-708B, part 5
   int m_current_packet_length;
   int m_last_seq;
+  bool m_seen708;
+  bool m_seen608;
 };

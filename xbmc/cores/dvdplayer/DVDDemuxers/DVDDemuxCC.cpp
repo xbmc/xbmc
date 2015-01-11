@@ -24,6 +24,53 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/contrib/cc_decoder708.h"
 #include "utils/log.h"
 
+class CBitstream
+{
+public:
+  CBitstream(uint8_t *data, int bits)
+  {
+    m_data = data;
+    m_offset = 0;
+    m_len = bits;
+    m_error = false;
+  }
+  unsigned int readBits(int num)
+  {
+    int r = 0;
+    while (num > 0)
+    {
+      if (m_offset >= m_len)
+      {
+        m_error = true;
+        return 0;
+      }
+      num--;
+      if (m_data[m_offset / 8] & (1 << (7 - (m_offset & 7))))
+        r |= 1 << num;
+      m_offset++;
+    }
+    return r;
+  }
+  unsigned int readGolombUE(int maxbits = 32)
+  {
+    int lzb = -1;
+    int bits = 0;
+    for (int b = 0; !b; lzb++, bits++)
+    {
+      if (bits > maxbits)
+        return 0;
+      b = readBits(1);
+    }
+    return (1 << lzb) - 1 + readBits(lzb);
+  }
+
+private:
+  uint8_t *m_data;
+  int m_offset;
+  int m_len;
+  bool m_error;
+};
+
 class CCaptionBlock
 {
 public:
@@ -46,10 +93,11 @@ bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
   return (lhs->m_pts > rhs->m_pts);
 }
 
-CDVDDemuxCC::CDVDDemuxCC()
+CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec)
 {
   m_hasData = false;
   m_ccDecoder = NULL;
+  m_codec = codec;
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
@@ -95,32 +143,77 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
   {
     if ((startcode & 0xffffff00) == 0x00000100)
     {
-      int scode = startcode & 0xFF;
-      if (scode == 0x00)
+      if (m_codec == AV_CODEC_ID_MPEG2VIDEO)
       {
-        if (len > 4)
+        int scode = startcode & 0xFF;
+        if (scode == 0x00)
+        {
+          if (len > 4)
+          {
+            uint8_t *buf = pSrcPacket->pData + p;
+            picType = (buf[1] & 0x38) >> 3;
+          }
+        }
+        else if (scode == 0xb2) // user data
         {
           uint8_t *buf = pSrcPacket->pData + p;
-          picType = (buf[1] & 0x38) >> 3;
-        }
-      }
-      else if (scode == 0xb2) // user data
-      {
-        uint8_t *buf = pSrcPacket->pData + p;
-        if (len >= 6 &&
+          if (len >= 6 &&
             buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
             buf[4] == 3 && (buf[5] & 0x40))
-        {
-          int cc_count = buf[5] & 0x1f;
-          if (cc_count > 0 && len >= 7 + cc_count * 3)
           {
-            CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
-            memcpy(cc->m_data, buf+7, cc_count * 3);
-            cc->m_pts = pSrcPacket->pts;
-            if (picType == 1 || picType == 2)
+            int cc_count = buf[5] & 0x1f;
+            if (cc_count > 0 && len >= 7 + cc_count * 3)
+            {
+              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
+              memcpy(cc->m_data, buf + 7, cc_count * 3);
+              cc->m_pts = pSrcPacket->pts;
+              if (picType == 1 || picType == 2)
+                m_ccTempBuffer.push_back(cc);
+              else
+                m_ccReorderBuffer.push_back(cc);
+            }
+          }
+        }
+      }
+      else if (m_codec == AV_CODEC_ID_H264)
+      {
+        int scode = startcode & 0x9F;
+        // slice data comes after SEI
+        if (scode >= 1 && scode <= 5)
+        {
+          uint8_t *buf = pSrcPacket->pData + p;
+          CBitstream bs(buf, len * 8);
+          bs.readGolombUE();
+          int sliceType = bs.readGolombUE();
+          if (sliceType == 2 || sliceType == 7) // I slice
+            picType = 1;
+          else if (sliceType == 0 || sliceType == 5) // P slice
+            picType = 2;
+          if (picType == 0)
+          {
+            while (!m_ccTempBuffer.empty())
+            {
+              m_ccReorderBuffer.push_back(m_ccTempBuffer.back());
+              m_ccTempBuffer.pop_back();
+            }
+          }
+        }
+        if (scode == 0x06) // SEI
+        {
+          uint8_t *buf = pSrcPacket->pData + p;
+          if (len >= 12 &&
+            buf[3] == 0 && buf[4] == 49 &&
+            buf[5] == 'G' && buf[6] == 'A' && buf[7] == '9' && buf[8] == '4' && buf[9] == 3)
+          {
+            uint8_t *userdata = buf + 10;
+            int cc_count = userdata[0] & 0x1f;
+            if (len >= cc_count * 3 + 10)
+            {
+              CCaptionBlock *cc = new CCaptionBlock(cc_count * 3);
+              memcpy(cc->m_data, userdata + 2, cc_count * 3);
+              cc->m_pts = pSrcPacket->pts;
               m_ccTempBuffer.push_back(cc);
-            else
-              m_ccReorderBuffer.push_back(cc);
+            }
           }
         }
       }
@@ -145,7 +238,25 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
 {
   CDVDDemuxCC *ctx = (CDVDDemuxCC*)userdata;
 
-  int idx;
+  unsigned int idx;
+
+  // switch back from 608 fallback if we got 708
+  if (ctx->m_ccDecoder->m_seen608 && ctx->m_ccDecoder->m_seen708)
+  {
+    for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
+    {
+      if (ctx->m_streamdata[idx].service == 0)
+        break;
+    }
+    if (idx < ctx->m_streamdata.size())
+    {
+      ctx->m_streamdata.erase(ctx->m_streamdata.begin() + idx);
+      ctx->m_ccDecoder->m_seen608 = false;
+    }
+    if (service == 0)
+      return;
+  }
+
   for (idx = 0; idx < ctx->m_streamdata.size(); idx++)
   {
     if (ctx->m_streamdata[idx].service == service)
@@ -164,6 +275,11 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     data.streamIdx = idx;
     data.service = service;
     ctx->m_streamdata.push_back(data);
+
+    if (service == 0)
+      ctx->m_ccDecoder->m_seen608 = true;
+    else
+      ctx->m_ccDecoder->m_seen708 = true;
   }
 
   ctx->m_streamdata[idx].pts = ctx->m_curPts;
@@ -212,14 +328,29 @@ DemuxPacket* CDVDDemuxCC::Decode()
 
   if (m_hasData)
   {
-    for (int i=0; i<m_streamdata.size(); i++)
+    for (unsigned int i=0; i<m_streamdata.size(); i++)
     {
       if (m_streamdata[i].hasData)
       {
         int service = m_streamdata[i].service;
-        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_ccDecoder->m_cc708decoders[service].textlen);
-        pPacket->iSize = m_ccDecoder->m_cc708decoders[service].textlen;
-        memcpy(pPacket->pData, m_ccDecoder->m_cc708decoders[service].text, pPacket->iSize);
+
+        char *data;
+        int len;
+        if (service == 0)
+        {
+          data = m_ccDecoder->m_cc608decoder->text;
+          len = m_ccDecoder->m_cc608decoder->textlen;
+        }
+        else
+        {
+          data = m_ccDecoder->m_cc708decoders[service].text;
+          len = m_ccDecoder->m_cc708decoders[service].textlen;
+        }
+
+        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(len);
+        pPacket->iSize = len;
+        memcpy(pPacket->pData, data, pPacket->iSize);
+
         pPacket->iStreamId = i;
         pPacket->pts = m_streamdata[i].pts;
         pPacket->duration = 0;

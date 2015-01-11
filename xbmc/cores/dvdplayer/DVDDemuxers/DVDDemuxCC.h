@@ -28,7 +28,7 @@ class CDecoderCC708;
 class CDVDDemuxCC : public CDVDDemux
 {
 public:
-  CDVDDemuxCC();
+  CDVDDemuxCC(AVCodecID codec);
   virtual ~CDVDDemuxCC();
 
   virtual void Reset() {};
@@ -64,4 +64,5 @@ protected:
   std::vector<CCaptionBlock*> m_ccReorderBuffer;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   CDecoderCC708 *m_ccDecoder;
+  AVCodecID m_codec;
 };
