@@ -583,6 +583,9 @@ std::string CGUIPlexDefaultActionHandler::GetFilteredURI(const CFileItem& item) 
     itemUrl.SetFileName(fname);
   }
 
+  itemUrl.RemoveOption("X-Plex-Container-Start");
+  itemUrl.RemoveOption("X-Plex-Container-Size");
+
   // set sourceType
   if (item.m_bIsFolder)
   {
@@ -590,7 +593,7 @@ std::string CGUIPlexDefaultActionHandler::GetFilteredURI(const CFileItem& item) 
     itemUrl.SetOption("sourceType", sourceType);
   }
 
-  return CPlexPlayQueueManager::getURIFromItem(item,itemUrl.GetUrlWithoutOptions().substr(17, std::string::npos));
+  return CPlexPlayQueueManager::getURIFromItem(item,itemUrl.Get().substr(17, std::string::npos));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
