@@ -1196,7 +1196,7 @@
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
-            <maximum>14</maximum>
+            <maximum>31</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>17999</formatlabel>
