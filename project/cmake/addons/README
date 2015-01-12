@@ -14,7 +14,10 @@ where
 
 Reserved filenames (for additional information on how to build an addon)
 are:
-  * platforms.txt: list of platforms to build an addon for (or "all")
+  * platforms.txt: List of platforms to build an addon for (or "all"). It is
+    also supported to specify negated platforms with a leading exclamation mark
+    (i), e.g. "!windows".
+    Available platforms are: linux, windows, darwin, ios, android, rbpi
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
@@ -32,6 +35,8 @@ specific paths:
     directories of the addons' dependencies.
   * APP_ROOT points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
+  * BUILD_DIR points to the directory where the addons and their dependencies
+    will be downloaded and built.
   * PACKAGE_ZIP=1 will mean the add-ons will be 'packaged' into a common folder,
     rather than being placed in <CMAKE_INSTALL_PREFIX>/lib/kodi/addons and
     <CMAKE_INSTALL_PREFIX>/share/kodi/addons.

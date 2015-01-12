@@ -30,14 +30,14 @@ executing cmake with the -D<variable-name>=<value> option) to e.g. access
 specific paths:
   * CMAKE_BUILD_TYPE specifies the type of the build. This can be either "Debug"
     or "Release" (default is "Release").
-  * CMAKE_INSTALL_PREFIX points to the directory where the built dependencies
-    (their include and library file) will be installed to.
   * CMAKE_TOOLCHAIN_FILE can be used to pass a toolchain file into the add-on
     builds.
   * CORE_SYSTEM_NAME is the name of the platform (e.g. "linux" or "android") in
     lower-case (defaults to lowercase(CMAKE_SYSTEM_NAME)).
   * APP_ROOT points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
+  * DEPENDS_PATH points to the directory where the built dependencies
+    (their include and library file) will be installed to.
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
   * DEPENDS_TO_BUILD is a quoted, space delimited list of <dependency>s that

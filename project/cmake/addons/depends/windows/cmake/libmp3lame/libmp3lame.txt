@@ -1,1 +1,0 @@
-libmp3lame http://mirrors.xbmc.org/build-deps/sources/lame-3.99.5.tar.gz
