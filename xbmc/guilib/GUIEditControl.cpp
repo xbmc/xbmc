@@ -103,17 +103,6 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
     SetLabel2(message.GetLabel());
     UpdateText();
   }
-  else if (message.GetMessage() == GUI_MSG_INPUT_TEXT && !message.GetLabel().empty()
-        && (HasFocus() || message.GetControlId() == GetID()))
-  {
-    m_edit.clear();
-    std::wstring str;
-    g_charsetConverter.utf8ToW(message.GetLabel(), str);
-    m_text2.insert(m_cursorPos, str);
-    m_cursorPos += str.size();
-    UpdateText();
-    return true;
-  }
   else if (message.GetMessage() == GUI_MSG_INPUT_TEXT_EDIT && HasFocus())
   {
     g_charsetConverter.utf8ToW(message.GetLabel(), m_edit);
@@ -290,6 +279,16 @@ bool CGUIEditControl::OnAction(const CAction &action)
       ClearMD5();
       m_edit.clear();
       OnSMSCharacter(action.GetID() - REMOTE_0);
+      return true;
+    }
+    else if (action.GetID() == ACTION_INPUT_TEXT)
+    {
+      m_edit.clear();
+      std::wstring str;
+      g_charsetConverter.utf8ToW(action.GetText(), str);
+      m_text2.insert(m_cursorPos, str);
+      m_cursorPos += str.size();
+      UpdateText();
       return true;
     }
   }
