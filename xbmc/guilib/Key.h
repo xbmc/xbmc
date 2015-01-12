@@ -89,8 +89,10 @@
 #define KEY_MOUSE_LONG_CLICK       0xE020
 #define KEY_MOUSE_WHEEL_UP         0xE101
 #define KEY_MOUSE_WHEEL_DOWN       0xE102
-#define KEY_MOUSE_DRAG             0xE103
-#define KEY_MOUSE_MOVE             0xE104
+#define KEY_MOUSE_MOVE             0xE103
+#define KEY_MOUSE_DRAG             0xE104
+#define KEY_MOUSE_DRAG_START       0xE105
+#define KEY_MOUSE_DRAG_END         0xE106
 #define KEY_MOUSE_NOOP             0xEFFF
 #define KEY_MOUSE_END              0xEFFF
 
