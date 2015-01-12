@@ -908,6 +908,12 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     FetchItemPage(m_viewControl.GetSelectedItem());
   }
 
+  // if the update failed we want to get back up
+  if (!ret)
+  {
+    g_windowManager.PreviousWindow();
+  }
+
   return ret;
 }
 
