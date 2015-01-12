@@ -4571,6 +4571,16 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return dateTime.GetAsLocalizedDate();
       break;
     }
+    if (item->HasEPGInfoTag())
+    {
+      if (item->GetEPGInfoTag()->FirstAiredAsLocalTime().IsValid())
+      {
+        CDateTime dateTime;
+        dateTime = item->GetEPGInfoTag()->FirstAiredAsLocalTime();
+        return dateTime.GetAsLocalizedDate(true);
+        break;
+      }
+    }
     break;
   case LISTITEM_GENRE:
     if (item->HasVideoInfoTag())
