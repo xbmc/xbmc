@@ -911,6 +911,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   // if the update failed we want to get back up
   if (!ret)
   {
+    CLog::Log(LOGDEBUG, "Update failed, going to previous window.");
     g_windowManager.PreviousWindow();
   }
 
