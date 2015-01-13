@@ -1,6 +1,28 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- Thumbs -->
+	<include name="ListSelectedFanArt">
+		<control type="group">
+			<posy>-40</posy>
+			<posx>40</posx>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>142</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-wide-big.png" background="true">$INFO[ListItem.Art(fanart)]</texture>
+				<visible>ListItem.Type(movie)</visible>
+			</control>			
+			<control type="image">
+				<include>PosListItem</include>
+				<width>142</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-wide-big.png" background="true" fallback="default-thumb-small.png">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>ListItem.Type(episode)</visible>
+			</control>
+		</control>
+	</include>
 	<include name="ListSelectedArt">
 		<!-- TV Show Banner -->
 		<control type="group">
