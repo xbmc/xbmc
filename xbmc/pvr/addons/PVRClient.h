@@ -129,6 +129,11 @@ namespace PVR
     const std::string& GetBackendVersion(void) const;
 
     /*!
+     * @brief the ip address or alias of the pvr backend server
+     */
+    const std::string& GetBackendHostname(void) const;
+
+    /*!
      * @return The connection string reported by the backend.
      */
     const std::string& GetConnectionString(void) const;
@@ -625,6 +630,7 @@ namespace PVR
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
     bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
     PVR_SIGNAL_STATUS      m_qualityInfo;           /*!< stream quality information */
+    std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
     std::string m_strUserPath;    /*!< @brief translated path to the user profile */

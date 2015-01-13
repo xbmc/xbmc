@@ -26,6 +26,7 @@ class CBuiltins
 {
 public:
   static bool HasCommand(const std::string& execString);
+  static bool IsSystemPowerdownCommand(const std::string& execString);
   static void GetHelp(std::string &help);
   static int Execute(const std::string& execString);
 };
