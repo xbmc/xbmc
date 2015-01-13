@@ -175,11 +175,11 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
     {
       IHTTPRequestHandler *requestHandler = *it;
-      if (requestHandler->CheckHTTPRequest(request))
+      if (requestHandler->CanHandleRequest(request))
       {
         // We found a matching IHTTPRequestHandler
         // so let's get a new instance for this request
-        IHTTPRequestHandler *handler = requestHandler->GetInstance();
+        IHTTPRequestHandler *handler = requestHandler->Create(request);
 
         // If we got a POST request we need to take
         // care of the POST data
@@ -219,7 +219,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
         }
         // No POST request so nothing special to handle
         else
-          return HandleRequest(handler, request);
+          return HandleRequest(handler);
       }
     }
   }
@@ -259,7 +259,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
           MHD_destroy_post_processor(conHandler->postprocessor);
         *con_cls = NULL;
 
-        int ret = HandleRequest(conHandler->requestHandler, request);
+        int ret = HandleRequest(conHandler->requestHandler);
         delete conHandler;
         return ret;
       }
@@ -272,8 +272,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
       {
         IHTTPRequestHandler *requestHandler = *it;
-        if (requestHandler->CheckHTTPRequest(request))
-          return HandleRequest(requestHandler->GetInstance(), request);
+        if (requestHandler->CanHandleRequest(request))
+          return HandleRequest(requestHandler->Create(request));
       }
     }
   }
@@ -302,12 +302,13 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   return MHD_YES;
 }
 
-int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request)
+int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
 {
   if (handler == NULL)
-    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
+    return MHD_NO;
 
-  int ret = handler->HandleHTTPRequest(request);
+  const HTTPRequest &request = handler->GetRequest();
+  int ret = handler->HandleRequest();
   if (ret == MHD_NO)
   {
     delete handler;
@@ -315,39 +316,39 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
   }
 
   struct MHD_Response *response = NULL;
-  int responseCode = handler->GetHTTPResonseCode();
-  switch (handler->GetHTTPResponseType())
+  int responseCode = handler->GetResponseCode();
+  switch (handler->GetResponseType())
   {
     case HTTPNone:
       delete handler;
       return MHD_NO;
 
     case HTTPRedirect:
-      ret = CreateRedirect(request.connection, handler->GetHTTPRedirectUrl(), response);
+      ret = CreateRedirect(request.connection, handler->GetRedirectUrl(), response);
       break;
 
     case HTTPFileDownload:
-      ret = CreateFileDownloadResponse(request.connection, handler->GetHTTPResponseFile(), request.method, response, responseCode);
+      ret = CreateFileDownloadResponse(request.connection, handler->GetResponseFile(), request.method, response, responseCode);
       break;
 
     case HTTPMemoryDownloadNoFreeNoCopy:
-      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetResponseData(), handler->GetResponseDataLength(), false, false, response);
       break;
 
     case HTTPMemoryDownloadNoFreeCopy:
-      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetResponseData(), handler->GetResponseDataLength(), false, true, response);
       break;
 
     case HTTPMemoryDownloadFreeNoCopy:
-      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetResponseData(), handler->GetResponseDataLength(), true, false, response);
       break;
 
     case HTTPMemoryDownloadFreeCopy:
-      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetResponseData(), handler->GetResponseDataLength(), true, true, response);
       break;
 
     case HTTPError:
-      ret = CreateErrorResponse(request.connection, handler->GetHTTPResonseCode(), request.method, response);
+      ret = CreateErrorResponse(request.connection, handler->GetResponseCode(), request.method, response);
       break;
 
     default:
@@ -361,7 +362,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
     return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
-  multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
+  multimap<string, string> header = handler->GetResponseHeaderFields();
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); ++it)
     AddHeader(response, it->first, it->second);
 

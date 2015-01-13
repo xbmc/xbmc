@@ -19,22 +19,22 @@
  */
 
 #include "HTTPImageHandler.h"
-#include "network/WebServer.h"
 #include "URL.h"
 #include "filesystem/ImageFile.h"
+#include "network/WebServer.h"
 
 using namespace std;
 
-bool CHTTPImageHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.find("/image/") == 0);
 }
 
-int CHTTPImageHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPImageHandler::HandleRequest()
 {
-  if (request.url.size() > 7)
+  if (m_request.url.size() > 7)
   {
-    m_path = request.url.substr(7);
+    m_path = m_request.url.substr(7);
 
     XFILE::CImageFile imageFile;
     const CURL pathToUrl(m_path);

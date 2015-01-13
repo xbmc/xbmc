@@ -94,7 +94,7 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              unsigned int size);
 #endif
-  static int HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request);
+  static int HandleRequest(IHTTPRequestHandler *handler);
   static void ContentReaderFreeCallback (void *cls);
   static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode);

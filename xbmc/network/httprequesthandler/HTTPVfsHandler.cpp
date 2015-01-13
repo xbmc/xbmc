@@ -28,16 +28,16 @@
 
 using namespace std;
 
-bool CHTTPVfsHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.find("/vfs") == 0);
 }
 
-int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPVfsHandler::HandleRequest()
 {
-  if (request.url.size() > 5)
+  if (m_request.url.size() > 5)
   {
-    m_path = request.url.substr(5);
+    m_path = m_request.url.substr(5);
 
     if (XFILE::CFile::Exists(m_path))
     {

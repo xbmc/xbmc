@@ -19,8 +19,9 @@
  *
  */
 
-#include "IHTTPRequestHandler.h"
 #include <string>
+
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
 
 class CHTTPVfsHandler : public IHTTPRequestHandler
 {
@@ -28,13 +29,19 @@ public:
   CHTTPVfsHandler() { }
   virtual ~CHTTPVfsHandler() { }
   
-  virtual IHTTPRequestHandler* GetInstance() { return new CHTTPVfsHandler(); }
-  virtual bool CheckHTTPRequest(const HTTPRequest &request);
-  virtual int HandleHTTPRequest(const HTTPRequest &request);
+  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPVfsHandler(request); }
+  virtual bool CanHandleRequest(const HTTPRequest &request);
 
-  virtual std::string GetHTTPResponseFile() const { return m_path; }
+  virtual int HandleRequest();
+
+  virtual std::string GetResponseFile() const { return m_path; }
 
   virtual int GetPriority() const { return 2; }
+
+protected:
+  CHTTPVfsHandler(const HTTPRequest &request)
+    : IHTTPRequestHandler(request)
+  { }
 
 private:
   std::string m_path;

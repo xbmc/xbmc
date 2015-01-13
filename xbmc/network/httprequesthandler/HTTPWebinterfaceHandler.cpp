@@ -19,13 +19,13 @@
  */
 
 #include "HTTPWebinterfaceHandler.h"
-#include "network/WebServer.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
-#include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "Util.h"
+#include "network/WebServer.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #define DEFAULT_PAGE        "index.html"
 
@@ -33,14 +33,14 @@ using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
-bool CHTTPWebinterfaceHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPWebinterfaceHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return true;
 }
 
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPWebinterfaceHandler::HandleRequest()
 {
-  m_responseCode = ResolveUrl(request.url, m_url);
+  m_responseCode = ResolveUrl(m_request.url, m_url);
   if (m_responseCode != MHD_HTTP_OK)
   {
     if (m_responseCode == MHD_HTTP_FOUND)

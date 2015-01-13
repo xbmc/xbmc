@@ -19,20 +19,20 @@
  */
 
 #include "HTTPWebinterfaceAddonsHandler.h"
-#include "network/WebServer.h"
 #include "addons/AddonManager.h"
+#include "network/WebServer.h"
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
 
 using namespace std;
 using namespace ADDON;
 
-bool CHTTPWebinterfaceAddonsHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.compare("/addons") == 0 || request.url.compare("/addons/") == 0);
 }
 
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_response = ADDON_HEADER;
   VECADDONS addons;

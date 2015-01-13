@@ -20,6 +20,14 @@
 
 #include "IHTTPRequestHandler.h"
 
+IHTTPRequestHandler::IHTTPRequestHandler(const HTTPRequest &request)
+  : m_request(request),
+    m_responseCode(MHD_HTTP_INTERNAL_SERVER_ERROR),
+    m_responseType(HTTPError),
+    m_responseHeaderFields(),
+    m_postFields()
+{ }
+
 void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string &value)
 {
   if (key.empty())
