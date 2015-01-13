@@ -94,6 +94,7 @@
 #include "git_revision.h"
 #include "GUI/GUIPlexMediaWindow.h"
 #include "Playlists/PlexPlayQueueManager.h"
+#include "GUI/GUIDialogPlexUserSelect.h"
 
 using namespace PLAYLIST;
 /* END PLEX */
@@ -2037,7 +2038,22 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     return ret;
   }
   case SYSTEM_CURRENT_USER:
-    strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+    {
+      strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+
+      /* PLEX */
+      // if we're on the User pin selection dialog, we temporarilly return the selected user
+      // rather than the currently logged one
+      if (g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_NUMERIC)
+      {
+        CGUIDialogPlexUserSelect *userDialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
+        if (userDialog && !userDialog->getSelectedUser().IsEmpty())
+        {
+          strLabel = userDialog->getSelectedUser();
+        }
+      }
+      /* END PLEX */
+    }
     break;
   case SYSTEM_CURRENT_USER_THUMB:
     strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().thumb;

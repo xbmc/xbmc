@@ -23,6 +23,7 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
   {
     m_authed = false;
     m_userSwitched = false;
+    m_selectedUser = "";
 
     SetHeading("Switch to User");
     
@@ -104,6 +105,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
   if (item && (item->GetProperty("protected").asBoolean() && !isAdmin))
   {
     bool firstTry = true;
+    m_selectedUser = item->GetProperty("title").asString();
     while (true)
     {
       CStdString pin;
@@ -150,5 +152,8 @@ void CGUIDialogPlexUserSelect::OnSelected()
   }
 
   if (close)
+  {
+    m_selectedUser = "";
     Close();
+  }
 }
