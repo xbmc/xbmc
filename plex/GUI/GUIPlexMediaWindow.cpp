@@ -553,7 +553,9 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 #ifdef USE_PAGING
   if ((action.GetID() > ACTION_NONE &&
       action.GetID() <= ACTION_PAGE_DOWN) ||
-      action.GetID() >= KEY_ASCII) // KEY_ASCII means that we letterjumped.
+      action.GetID() >= KEY_ASCII || // KEY_ASCII means that we letterjumped.
+      action.GetID() == ACTION_MOUSE_WHEEL_UP ||
+      action.GetID() == ACTION_MOUSE_WHEEL_DOWN)
   {
     FetchItemPage(m_viewControl.GetSelectedItem());
   }
