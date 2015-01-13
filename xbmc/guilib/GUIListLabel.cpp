@@ -121,7 +121,7 @@ void CGUIListLabel::SetWidth(float width)
   CGUIControl::SetWidth(m_width);
 }
 
-void CGUIListLabel::SetLabel(const CStdString &label)
+void CGUIListLabel::SetLabel(const std::string &label)
 {
   m_label.SetText(label);
 }

@@ -65,7 +65,7 @@ public:
   void SetRange(int iStart, int iEnd);
   void SetFloatRange(float fStart, float fEnd);
   void SetValue(int iValue);
-  void SetValueFromLabel(const CStdString &label);
+  void SetValueFromLabel(const std::string &label);
   void SetFloatValue(float fValue);
   void SetStringValue(const std::string& strValue);
   int GetValue() const;

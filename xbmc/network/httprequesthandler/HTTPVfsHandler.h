@@ -25,7 +25,8 @@
 class CHTTPVfsHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPVfsHandler() { };
+  CHTTPVfsHandler() { }
+  virtual ~CHTTPVfsHandler() { }
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPVfsHandler(); }
   virtual bool CheckHTTPRequest(const HTTPRequest &request);

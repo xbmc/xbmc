@@ -165,10 +165,10 @@ AddonPtr CScraper::Clone() const
 
 CScraper::CScraper(const CScraper &rhs)
   : CAddon(rhs), m_fLoaded(false),
-    m_pathContent(rhs.m_pathContent),
-    m_persistence(rhs.m_persistence),
+    m_language(rhs.m_language),
     m_requiressettings(rhs.m_requiressettings),
-    m_language(rhs.m_language)
+    m_persistence(rhs.m_persistence),
+    m_pathContent(rhs.m_pathContent)
 {
 }
 

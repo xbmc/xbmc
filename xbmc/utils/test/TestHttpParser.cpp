@@ -19,14 +19,13 @@
  */
 
 #include "utils/HttpParser.h"
-#include "utils/StdString.h"
 
 #include "gtest/gtest.h"
 
 TEST(TestHttpParser, General)
 {
   HttpParser a;
-  CStdString str = "POST /path/script.cgi HTTP/1.0\r\n"
+  std::string str = "POST /path/script.cgi HTTP/1.0\r\n"
                    "From: amejia@xbmc.org\r\n"
                    "User-Agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT"
                      " 4.0)\r\n"
@@ -34,7 +33,7 @@ TEST(TestHttpParser, General)
                    "Content-Length: 35\r\n"
                    "\r\n"
                    "home=amejia&favorite+flavor=orange\r\n";
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   EXPECT_EQ(a.Done, a.addBytes(str.c_str(), str.length()));
 

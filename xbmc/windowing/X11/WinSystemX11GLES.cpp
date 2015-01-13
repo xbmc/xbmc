@@ -58,7 +58,7 @@ bool CWinSystemX11GLES::IsExtSupported(const char* extension)
   if(strncmp(extension, "EGL_", 4) != 0)
     return CRenderSystemGLES::IsExtSupported(extension);
 
-  CStdString name;
+  std::string name;
 
   name  = " ";
   name += extension;
@@ -67,7 +67,7 @@ bool CWinSystemX11GLES::IsExtSupported(const char* extension)
   return m_eglext.find(name) != std::string::npos;
 }
 
-bool CWinSystemX11GLES::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11GLES::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;

@@ -125,9 +125,10 @@ namespace PVR
     /*!
      * @brief Get the list of groups.
      * @param results The file list to store the results in.
+     * @param bExcludeHidden Decides whether to filter hidden groups
      * @return The amount of items that were added.
      */
-    int GetGroupList(CFileItemList* results) const;
+    int GetGroupList(CFileItemList* results, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the previous group in this container.

@@ -159,7 +159,7 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
       if (!FillThumb(*pItem, false)) // Check for user thumbs but ignore folder thumbs
       {
         // No user thumb, use embedded art
-        CStdString thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "music");
+        std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "music");
         pItem->SetArt("thumb", thumb);
       }
     }
@@ -177,7 +177,7 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true *
 {
   if (item.HasArt("thumb"))
     return true;
-  CStdString thumb = GetCachedImage(item, "thumb");
+  std::string thumb = GetCachedImage(item, "thumb");
   if (thumb.empty())
   {
     thumb = item.GetUserMusicThumb(false, folderThumbs);

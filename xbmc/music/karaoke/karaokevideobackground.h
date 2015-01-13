@@ -21,7 +21,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 class CBaseTexture;
 class FFmpegVideoDecoder;
@@ -47,7 +47,7 @@ public:
   // Start playing the video. It is called each time a new song is being played. Should continue playing existing 
   // video from the position it was paused. If it returns false, the video rendering is disabled and 
   // KaraokeVideoFFMpeg object is deleted. Must write the reason for failure into the log file.
-  bool Start( const CStdString& filename = "" );
+  bool Start( const std::string& filename = "" );
 
   // Render the current frame into the screen. This function also must handle video loops and 
   // switching to the next video when necessary. Hence it shouldn't take too long.
@@ -65,13 +65,13 @@ private:
   // Dismisses the object, freeing all the memory and unloading the libraries. The object must be inited before using again.
   void Dismiss();
 
-  bool openVideoFile( const CStdString& filename );
+  bool openVideoFile( const std::string& filename );
   void closeVideoFile();
   
   // FFMpeg objects
   FFmpegVideoDecoder * m_decoder;
 
-  CStdString       m_curVideoFile;
+  std::string       m_curVideoFile;
   int              m_videoWidth;   // shown video width, i.e. upscaled or downscaled as necessary
   int              m_videoHeight;  // shown video height, i.e. upscaled or downscaled as necessary
   int              m_displayLeft, m_displayRight, m_displayTop, m_displayBottom;  // Video as shown at the display

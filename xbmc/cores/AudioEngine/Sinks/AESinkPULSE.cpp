@@ -319,7 +319,7 @@ static pa_channel_position_t AEChannelToPAChannel(AEChannel ae_channel)
   return pa_channel;
 }
 
-static pa_channel_map AEChannelMapToPAChannel(CAEChannelInfo info)
+static pa_channel_map AEChannelMapToPAChannel(const CAEChannelInfo& info)
 {
   pa_channel_map map;
   pa_channel_map_init(&map);

@@ -45,7 +45,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   void Update();
-  void SetLabel(int iControl, const CStdString& strLabel);
+  void SetLabel(int iControl, const std::string& strLabel);
 
   bool OnPopupMenu(int iItem);
   CGUIViewControl m_viewControl;

@@ -91,7 +91,7 @@ CHTSPDirectorySession* CHTSPDirectorySession::Acquire(const CURL& url)
 {
   CSingleLock lock(g_section);
 
-  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); it++)
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); ++it)
   {
     if(it->hostname == url.GetHostName()
     && it->port     == url.GetPort()
@@ -129,7 +129,7 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
     return;
 
   CSingleLock lock(g_section);
-  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); it++)
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); ++it)
   {
     if(it->session == session)
     {
@@ -156,7 +156,7 @@ void CHTSPDirectorySession::CheckIdle(DWORD idle)
       it = g_sessions.erase(it);
     }
     else
-      it++;
+      ++it;
   }
 }
 
@@ -329,7 +329,7 @@ SChannels CHTSPDirectorySession::GetChannels(STag& tag)
   SChannels channels;
 
   std::vector<int>::iterator it;
-  for(it = tag.channels.begin(); it != tag.channels.end(); it++)
+  for(it = tag.channels.begin(); it != tag.channels.end(); ++it)
   {
     SChannels::iterator it2 = m_channels.find(*it);
     if(it2 == m_channels.end())
@@ -375,7 +375,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
 
   SEvent event;
 
-  for(SChannels::iterator it = channels.begin(); it != channels.end(); it++)
+  for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
   {
     if(!m_session->GetEvent(event, it->second.event))
       event.Clear();
@@ -439,7 +439,7 @@ bool CHTSPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     STags tags = m_session->GetTags();
     std::string filename, label;
-    for(STags::iterator it = tags.begin(); it != tags.end(); it++)
+    for(STags::iterator it = tags.begin(); it != tags.end(); ++it)
     {
       filename = StringUtils::Format("tags/%d/", it->second.id);
       label = StringUtils::Format("Tag: %s", it->second.name.c_str());

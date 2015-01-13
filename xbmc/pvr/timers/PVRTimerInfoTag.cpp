@@ -38,10 +38,10 @@
 using namespace PVR;
 using namespace EPG;
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(void)
+CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
+  m_strTitle(g_localizeStrings.Get(19056)), // New Timer
+  m_strDirectory("/")
 {
-  m_strTitle           = g_localizeStrings.Get(19056); // New Timer
-  m_strDirectory       = "/";
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
   m_iClientChannelUid  = PVR_VIRTUAL_CHANNEL_UID;
@@ -64,10 +64,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iTimerId           = 0;
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId)
-{
-  m_strTitle           = timer.strTitle;
-  m_strDirectory       = timer.strDirectory;
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId) :
+  m_strTitle(timer.strTitle),
+  m_strDirectory(timer.strDirectory)
+{  
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
@@ -148,6 +148,10 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_state              = orig.m_state;
   m_iChannelNumber     = orig.m_iChannelNumber;
   m_iTimerId           = orig.m_iTimerId;
+  m_iGenreType         = orig.m_iGenreType;
+  m_iGenreSubType      = orig.m_iGenreSubType;
+  m_epgTag             = orig.m_epgTag;
+  m_genre              = orig.m_genre;
 
   return *this;
 }

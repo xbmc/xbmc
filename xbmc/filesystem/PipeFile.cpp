@@ -214,7 +214,7 @@ void CPipeFile::RemoveListener(IPipeListener *l)
     if ( (*i) == l)
       i = m_listeners.erase(i);
     else
-      i++;
+      ++i;
   }
 }
 

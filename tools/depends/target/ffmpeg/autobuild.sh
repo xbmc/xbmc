@@ -131,6 +131,7 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--disable-devices \
 	--disable-ffplay \
 	--disable-ffmpeg \
+	--disable-sdl \
 	--disable-ffprobe \
 	--disable-ffserver \
 	--disable-doc \

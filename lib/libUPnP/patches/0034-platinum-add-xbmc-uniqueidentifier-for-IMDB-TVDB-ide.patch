@@ -1,0 +1,109 @@
+From 03a57931ab47724558d3ed8762a2c978cf056501 Mon Sep 17 00:00:00 2001
+From: montellese <montellese@xbmc.org>
+Date: Sat, 29 Nov 2014 19:58:33 +0100
+Subject: [PATCH] platinum: add xbmc:uniqueidentifier for IMDB/TVDB identifiers
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp    |  2 ++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h      |  2 ++
+ .../Platinum/Source/Devices/MediaServer/PltMediaItem.cpp       | 10 ++++++++++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h |  1 +
+ .../Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h  |  2 +-
+ 5 files changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 2bb6a04..7b853c8 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -170,6 +170,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_XBMC_VOTES;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_ARTWORK, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_XBMC_ARTWORK;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER;
+         }
+ 
+         if (next_comma < 0) {
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index 0f7c892..a5015db 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -99,6 +99,7 @@
+ #define PLT_FILTER_MASK_XBMC_RATING                 NPT_UINT64_C(0x0000200000000000)
+ #define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000300000000000)
+ #define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000400000000000)
++#define PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER      NPT_UINT64_C(0x0001000000000000)
+ 
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+@@ -148,6 +149,7 @@
+ #define PLT_FILTER_FIELD_XBMC_RATING                "xbmc:rating"
+ #define PLT_FILTER_FIELD_XBMC_VOTES                 "xbmc:votes"
+ #define PLT_FILTER_FIELD_XBMC_ARTWORK               "xbmc:artwork"
++#define PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER     "xbmc:uniqueidentifier"
+ 
+ extern const char* didl_header;
+ extern const char* didl_footer;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 0c6830f..f8ddd85 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -268,6 +268,7 @@ PLT_MediaObject::Reset()
+     m_XbmcInfo.rating = 0.0f;
+     m_XbmcInfo.votes = "";
+     m_XbmcInfo.artwork.Clear();
++    m_XbmcInfo.unique_identifier = "";
+ 
+     m_Didl = "";
+ 
+@@ -567,6 +568,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+         m_XbmcInfo.artwork.ToDidl(didl, "artwork");
+     }
+ 
++    // xbmc unique identifier
++    if (mask & PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER && !m_XbmcInfo.unique_identifier.IsEmpty()) {
++        didl += "<xbmc:uniqueidentifier>";
++        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.unique_identifier);
++        didl += "</xbmc:uniqueidentifier>";
++    }
++
+     // class is required
+     didl += "<upnp:class";
+ 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
+@@ -789,6 +797,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+     PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
+     m_XbmcInfo.artwork.FromDidl(children);
+ 
++    PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
++
+     // re serialize the entry didl as a we might need to pass it to a renderer
+     // we may have modified the tree to "fix" issues, so as not to break a renderer
+     // (don't write xml prefix as this didl could be part of a larger document)
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 18a094f..dd7f8ae 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -170,6 +170,7 @@ typedef struct {
+   NPT_Float rating;
+   NPT_String votes;
+   PLT_Artworks artwork;
++  NPT_String unique_identifier;
+ } PLT_XbmcInfo;
+ 
+ /*----------------------------------------------------------------------
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 21f1d28..8fb23dd 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -70,7 +70,7 @@ typedef struct PLT_CapabilitiesData {
+ typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
+ 
+ // explicitely specify res otherwise WMP won't return a URL!
+-#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork"
++#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork,xbmc:uniqueidentifier"
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_MediaContainerListener
+-- 
+1.9.4.msysgit.2
+

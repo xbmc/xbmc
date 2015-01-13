@@ -1081,7 +1081,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
-  m_pYUVShader->SetMatrices(g_matrices.GetMatrix(MM_PROJECTION), g_matrices.GetMatrix(MM_MODELVIEW));
+  m_pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
   m_pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -1140,8 +1140,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   glActiveTexture(GL_TEXTURE0);
   glDisable(m_textureTarget);
-
-  g_matrices.MatrixMode(MM_MODELVIEW);
 
   VerifyGLState();
 }
@@ -1207,19 +1205,15 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 //TODO
 //  glPushAttrib(GL_VIEWPORT_BIT);
 //  glPushAttrib(GL_SCISSOR_BIT);
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
-  VerifyGLState();
+  glMatrixModview.Push();
+  glMatrixModview->LoadIdentity();
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
-  VerifyGLState();
-  g_matrices.Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
+  glMatrixProject.Push();
+  glMatrixProject->LoadIdentity();
+  glMatrixProject->Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
+
   CRect viewport(0, 0, m_sourceWidth, m_sourceHeight);
   g_Windowing.SetViewPort(viewport);
-  g_matrices.MatrixMode(MM_MODELVIEW);
   VerifyGLState();
 
 
@@ -1265,14 +1259,12 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 
   m_pYUVShader->Disable();
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix(); // pop modelview
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PopMatrix(); // pop projection
+  glMatrixModview.PopLoad();
+  glMatrixProject.PopLoad();
+
 //TODO
 //  glPopAttrib(); // pop scissor
 //  glPopAttrib(); // pop viewport
-  g_matrices.MatrixMode(MM_MODELVIEW);
   VerifyGLState();
 
   m_fbo.EndRender();
@@ -1776,17 +1768,17 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
+  glMatrixModview.Push();
   // fixme - we know that cvref  & eglimg are already flipped in y direction
   // but somehow this also effects the rendercapture here
   // therefore we have to skip the flip here or we get upside down
   // images
   if (m_renderMethod != RENDER_CVREF)
   {
-    g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
-    g_matrices.Scalef(1.0f, -1.0f, 1.0f);
+    glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
+    glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
   }
+  glMatrixModview.Load();
 
   capture->BeginRender();
 
@@ -1806,8 +1798,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   capture->EndRender();
 
   // revert model view matrix
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
+  glMatrixModview.PopLoad();
 
   // restore original video rect
   m_destRect = saveSize;

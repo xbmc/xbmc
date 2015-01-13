@@ -284,7 +284,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
   case 'O':
-    if (movie && movie->m_strMPAARating)
+    if (movie)
     {// MPAA Rating
       value = movie->m_strMPAARating;
     }

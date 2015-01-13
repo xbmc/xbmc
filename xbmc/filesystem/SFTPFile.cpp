@@ -48,7 +48,7 @@ using namespace XFILE;
 using namespace std;
 
 
-static std::string CorrectPath(const std::string path)
+static std::string CorrectPath(const std::string& path)
 {
   if (path == "~")
     return "./";
@@ -245,17 +245,15 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
 
 bool CSFTPSession::DirectoryExists(const char *path)
 {
-  bool exists = false;
   uint32_t permissions = 0;
-  exists = GetItemPermissions(path, permissions);
+  bool exists = GetItemPermissions(path, permissions);
   return exists && S_ISDIR(permissions);
 }
 
 bool CSFTPSession::FileExists(const char *path)
 {
-  bool exists = false;
   uint32_t permissions = 0;
-  exists = GetItemPermissions(path, permissions);
+  bool exists = GetItemPermissions(path, permissions);
   return exists && S_ISREG(permissions);
 }
 
@@ -435,11 +433,19 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 
+#if LIBSSH_VERSION_MINOR >= 6
+  int method = ssh_userauth_list(m_session, NULL);
+#else
   int method = ssh_auth_list(m_session);
+#endif
 
   // Try to authenticate with public key first
   int publicKeyAuth = SSH_AUTH_DENIED;
+#if LIBSSH_VERSION_MINOR >= 6
+  if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_publickey_auto(m_session, NULL, NULL)) == SSH_AUTH_ERROR)
+#else
   if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_autopubkey(m_session, NULL)) == SSH_AUTH_ERROR)
+#endif
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to authenticate via publickey '%s'", ssh_get_error(m_session));
     return false;
@@ -566,7 +572,7 @@ void CSFTPSessionManager::ClearOutIdleSessions()
     if (iter->second->IsIdle())
       sessions.erase(iter++);
     else
-      iter++;
+      ++iter;
   }
 }
 

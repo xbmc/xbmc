@@ -268,7 +268,7 @@ void COpenMaxVideo::SetDropState(bool bDrop)
 
     // blow all video frames
     pthread_mutex_lock(&m_omx_queue_mutex);
-    while (m_omx_output_ready.size() > 0)
+    while (!m_omx_output_ready.empty())
     {
       m_dts_queue.pop();
       OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_output_ready.front()->omx_buffer;
@@ -664,9 +664,7 @@ OMX_ERRORTYPE COpenMaxVideo::AllocOMXInputBuffers(void)
 }
 OMX_ERRORTYPE COpenMaxVideo::FreeOMXInputBuffers(bool wait)
 {
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_input_port, 0);
+  OMX_ERRORTYPE omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_input_port, 0);
   if (omx_err)
     CLog::Log(LOGERROR, "%s::%s - OMX_CommandFlush failed with omx_err(0x%x)\n",
       CLASSNAME, __func__, omx_err);

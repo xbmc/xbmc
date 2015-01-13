@@ -110,9 +110,13 @@ struct sampleFormat
 };
 
 /* Sample formats go from float -> 32 bit int -> 24 bit int (packed in 32) -> -> 24 bit int -> 16 bit int */
+// versions of Kodi before 14.0 had a bug which made S24NE4MSB the first format selected
+// this bug worked around some driver bug of some IEC958 devices which report S32 but can't handle it
+// correctly. So far I have never seen and WASAPI device using S32 and don't think probing S24 before
+// S32 has any negative impact.
 static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, AE_FMT_FLOAT},
-                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 32, AE_FMT_S32NE},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 32, 24, AE_FMT_S24NE4MSB},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 32, AE_FMT_S32NE},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 24, 24, AE_FMT_S24NE3},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 16, 16, AE_FMT_S16NE} };
 
@@ -1075,7 +1079,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (AE_IS_RAW(format.m_dataFormat)) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
+  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+    CLog::Log(LOGDEBUG, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;

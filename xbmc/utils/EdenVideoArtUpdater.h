@@ -22,6 +22,7 @@
 #include <string>
 #include "threads/Thread.h"
 #include "TextureDatabase.h"
+#include <string>
 
 class CFileItem;
 
@@ -45,12 +46,12 @@ private:
   bool CacheTexture(std::string &originalUrl, const std::string &cachedFile, const std::string &label, std::string &type);
   bool CacheTexture(std::string &originalUrl, const std::string &oldCachedFile, const std::string &label);
 
-  CStdString GetCachedActorThumb(const CFileItem &item);
-  CStdString GetCachedSeasonThumb(int season, const CStdString &path);
-  CStdString GetCachedEpisodeThumb(const CFileItem &item);
-  CStdString GetCachedVideoThumb(const CFileItem &item);
-  CStdString GetCachedFanart(const CFileItem &item);
-  CStdString GetThumb(const CStdString &path, const CStdString &path2, bool split /* = false */);
+  std::string GetCachedActorThumb(const CFileItem &item);
+  std::string GetCachedSeasonThumb(int season, const std::string &path);
+  std::string GetCachedEpisodeThumb(const CFileItem &item);
+  std::string GetCachedVideoThumb(const CFileItem &item);
+  std::string GetCachedFanart(const CFileItem &item);
+  std::string GetThumb(const std::string &path, const std::string &path2, bool split /* = false */);
 
   CTextureDatabase m_textureDB;
 };

@@ -1,37 +1,17 @@
-diff --git a/include/libssh/misc.h b/include/libssh/misc.h
-index 9897c4e..fe4f602 100644
---- a/include/libssh/misc.h
-+++ b/include/libssh/misc.h
-@@ -35,8 +35,12 @@ int ssh_is_ipaddr_v4(const char *str);
- int ssh_is_ipaddr(const char *str);
+--- a/ConfigureChecks.cmake	2014-12-27 04:30:13.000000000 -0600
++++ b/ConfigureChecks.cmake	2015-01-07 12:20:43.000000000 -0600
+@@ -104,8 +104,14 @@
+ check_function_exists(poll HAVE_POLL)
+ check_function_exists(select HAVE_SELECT)
+ check_function_exists(getaddrinfo HAVE_GETADDRINFO)
++
++if (APPLE)
++check_symbol_exists(ntohll sys/_endian.h HAVE_NTOHLL)
++check_symbol_exists(htonll sys/_endian.h HAVE_HTONLL)
++else (APPLE)
+ check_function_exists(ntohll HAVE_NTOHLL)
+ check_function_exists(htonll HAVE_HTONLL)
++endif(APPLE)
  
- /* macro for byte ordering */
-+#if !defined(ntohll)
- uint64_t ntohll(uint64_t);
-+#endif
-+#if !defined(htonll)
- #define htonll(x) ntohll(x)
-+#endif
- 
- /* list processing */
- 
-diff --git a/src/misc.c b/src/misc.c
-index 008be1b..3c2d8bb 100644
---- a/src/misc.c
-+++ b/src/misc.c
-@@ -286,6 +286,7 @@ int ssh_is_ipaddr(const char *str) {
- 
- #endif /* _WIN32 */
- 
-+#if !defined(ntohll)
- uint64_t ntohll(uint64_t a) {
- #ifdef WORDS_BIGENDIAN
-   return a;
-@@ -298,6 +299,7 @@ uint64_t ntohll(uint64_t a) {
-   return ((((uint64_t) low) << 32) | ( high));
- #endif
- }
-+#endif
- 
- char *ssh_lowercase(const char* str) {
-   char *new, *p;
+ if (WIN32)
+     check_function_exists(_strtoui64 HAVE__STRTOUI64)

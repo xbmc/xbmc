@@ -186,7 +186,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_synctype = SYNC_DISCON;
   m_setsynctype = SYNC_DISCON;
   if (CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
-    m_setsynctype = CSettings::Get().GetInt("videoplayer.synctype");
+    m_setsynctype = SYNC_RESAMPLE;
   m_prevsynctype = -1;
 
   m_error = 0;
@@ -428,12 +428,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (speed == DVD_PLAYSPEED_NORMAL)
       {
         m_dvdAudio.Resume();
+        m_syncclock = true;
       }
       else
       {
-        m_syncclock = true;
-        if (speed != DVD_PLAYSPEED_PAUSE)
-          m_dvdAudio.Flush();
+        m_dvdAudio.Flush();
         m_dvdAudio.Pause();
       }
       m_speed = speed;
@@ -562,9 +561,9 @@ void CDVDPlayerAudio::Process()
     }
 
     // Zero out the frame data if we are supposed to silence the audio
-    if (m_silence)
+    if (m_silence || m_syncclock)
     {
-      int size = audioframe.nb_frames * audioframe.framesize * audioframe.channel_count / audioframe.planes;
+      int size = audioframe.nb_frames * audioframe.framesize / audioframe.planes;
       for (unsigned int i=0; i<audioframe.planes; i++)
         memset(audioframe.data[i], 0, size);
     }
@@ -639,21 +638,19 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double absolute;
   double clock = m_pClock->GetClock(absolute);
   double error = m_dvdAudio.GetPlayingPts() - clock;
-  EMasterClock master = m_pClock->GetMaster();
-
-  if( (fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock)
-  &&  (master == MASTER_CLOCK_AUDIO
-    || master == MASTER_CLOCK_AUDIO_VIDEOREF) )
-  {
-    m_pClock->Update(clock+error, absolute, 0.0, "CDVDPlayerAudio::HandleSyncError1");
-    m_errors.Flush();
-    m_error = 0;
-    m_syncclock = false;
-
-    return;
-  }
 
   m_errors.Add(error);
+
+  if (fabs(error) > DVD_MSEC_TO_TIME(100))
+  {
+    m_syncclock = true;
+    return;
+  }
+  else if (m_syncclock && fabs(error) < DVD_MSEC_TO_TIME(50))
+  {
+    m_syncclock = false;
+    m_errors.Flush();
+  }
 
   //check if measured error for 2 seconds
   if (m_errors.Get(m_error))
@@ -707,7 +704,27 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
 bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 {
-  if (m_synctype == SYNC_DISCON)
+  if (m_syncclock)
+  {
+    double absolute;
+    double clock = m_pClock->GetClock(absolute);
+    double error = m_dvdAudio.GetPlayingPts() - clock;
+    m_dvdAudio.SetResampleRatio(1.0);
+    if (error > 0)
+    {
+      int dups = std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration;
+      for (int i = 0; i < dups; i++)
+      {
+        m_dvdAudio.AddPackets(audioframe);
+      }
+      m_dvdAudio.AddPackets(audioframe);
+    }
+    else
+    {
+      m_dvdAudio.SetPlayingPts(m_audioClock);
+    }
+  }
+  else if (m_synctype == SYNC_DISCON)
   {
     m_dvdAudio.AddPackets(audioframe);
   }

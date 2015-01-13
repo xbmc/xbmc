@@ -32,7 +32,7 @@ CTextureInfo::CTextureInfo()
   useLarge = false;
 }
 
-CTextureInfo::CTextureInfo(const CStdString &file)
+CTextureInfo::CTextureInfo(const std::string &file)
 {
   orientation = 0;
   useLarge = false;
@@ -646,9 +646,9 @@ bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
     return false;
 }
 
-bool CGUITextureBase::SetFileName(const CStdString& filename)
+bool CGUITextureBase::SetFileName(const std::string& filename)
 {
-  if (m_info.filename.Equals(filename)) return false;
+  if (m_info.filename == filename) return false;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeResources();

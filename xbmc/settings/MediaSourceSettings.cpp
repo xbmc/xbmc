@@ -324,7 +324,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   {
     if (pPathName->FirstChild())
     {
-      CStdString strPath = pPathName->FirstChild()->ValueStr();
+      std::string strPath = pPathName->FirstChild()->ValueStr();
 
       // make sure there are no virtualpaths or stack paths defined in sources.xml
       if (!URIUtils::IsStack(strPath))

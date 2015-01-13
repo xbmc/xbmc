@@ -85,6 +85,18 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
         m_convert_bitstream = m_converter->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
 
         break;
+      case AV_CODEC_ID_HEVC:
+        m_pFormatName = "stf-h265";
+        if (hints.extrasize < 22 || hints.extradata == NULL)
+        {
+          CLog::Log(LOGNOTICE,
+              "%s::%s - hvcC data too small or missing", CLASSNAME, __func__);
+          return false;
+        }
+        m_converter     = new CBitstreamConverter();
+        m_convert_bitstream = m_converter->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
+
+        break;
       case CODEC_ID_MPEG2VIDEO:
         m_pFormatName = "stf-mpeg2";
         break;

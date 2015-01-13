@@ -588,7 +588,7 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
   if (letter < 2 || letter > 9 || !m_letterOffsets.size())
     return;
 
-  const CStdString letters = letterMap[letter - 2];
+  const std::string letters = letterMap[letter - 2];
   // find where we currently are
   int offset = CorrectOffset(GetOffset(), GetCursor());
   unsigned int currentLetter = 0;
@@ -596,7 +596,7 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
     currentLetter++;
 
   // now switch to the next letter
-  CStdString current = m_letterOffsets[currentLetter].second;
+  std::string current = m_letterOffsets[currentLetter].second;
   size_t startPos = (letters.find(current) + 1) % letters.size();
   // now jump to letters[startPos], or another one in the same range if possible
   size_t pos = startPos;
@@ -939,13 +939,13 @@ void CGUIBaseContainer::UpdateScrollByLetter()
   m_letterOffsets.clear();
 
   // for scrolling by letter we have an offset table into our vector.
-  CStdString currentMatch;
+  std::string currentMatch;
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CGUIListItemPtr item = m_items[i];
     // The letter offset jumping is only for ASCII characters at present, and
     // our checks are all done in uppercase
-    CStdString nextLetter;
+    std::string nextLetter;
     std::wstring character = item->GetSortLabel().substr(0, 1);
     StringUtils::ToUpper(character);
     g_charsetConverter.wToUTF8(character, nextLetter);

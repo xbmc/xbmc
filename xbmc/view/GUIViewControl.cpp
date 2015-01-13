@@ -37,8 +37,7 @@ CGUIViewControl::CGUIViewControl(void)
 }
 
 CGUIViewControl::~CGUIViewControl(void)
-{
-}
+{ }
 
 void CGUIViewControl::Reset()
 {
@@ -157,13 +156,16 @@ void CGUIViewControl::UpdateView()
 
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
-  if (!control || !m_fileItems) return -1;
+  if (!control || !m_fileItems)
+    return -1;
+
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID());
   g_windowManager.SendMessage(msg, m_parentWindow);
 
   int iItem = msg.GetParam1();
   if (iItem >= m_fileItems->Size())
     return -1;
+
   return iItem;
 }
 
@@ -349,4 +351,3 @@ void CGUIViewControl::UpdateViewVisibility()
       m_visibleViews.push_back(view);
   }
 }
-

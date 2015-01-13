@@ -1,0 +1,23 @@
+From 5f6442d1b24dfe98a7134ffdb5c47490f140e6e3 Mon Sep 17 00:00:00 2001
+From: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+Date: Fri, 5 Dec 2014 08:44:15 -0800
+Subject: [PATCH] libnfs.c: fix typo, it is readahead not readahaed
+
+Signed-off-by: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+---
+ lib/libnfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libnfs.c b/lib/libnfs.c
+index 2bacd91..8a81a94 100644
+--- a/lib/libnfs.c
++++ b/lib/libnfs.c
+@@ -248,7 +248,7 @@ static int nfs_set_context_args(struct nfs_context *nfs, char *arg, char *val)
+ 		rpc_set_uid(nfs_get_rpc_context(nfs), atoi(val));
+ 	} else if (!strcmp(arg, "gid")) {
+ 		rpc_set_gid(nfs_get_rpc_context(nfs), atoi(val));
+-	} else if (!strcmp(arg, "readahaed")) {
++	} else if (!strcmp(arg, "readahead")) {
+ 		rpc_set_readahead(nfs_get_rpc_context(nfs), atoi(val));
+ 	}
+ 	return 0;

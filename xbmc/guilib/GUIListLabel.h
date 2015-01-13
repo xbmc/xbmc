@@ -48,7 +48,7 @@ public:
   virtual void SetInvalid();
   virtual void SetWidth(float width);
 
-  void SetLabel(const CStdString &label);
+  void SetLabel(const std::string &label);
   void SetSelected(bool selected);
   void SetScrolling(bool scrolling);
 

@@ -21,12 +21,12 @@
  */
 
 #include <map>
+#include <string>
 
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
-#include "utils/StdString.h"
 
 // forward definitions
 class CAction;
@@ -66,31 +66,31 @@ public:
 
   void PlayActionSound(const CAction& action);
   void PlayWindowSound(int id, WINDOW_SOUND event);
-  void PlayPythonSound(const CStdString& strFileName, bool useCached = true);
+  void PlayPythonSound(const std::string& strFileName, bool useCached = true);
 
   void Enable(bool bEnable);
   void SetVolume(float level);
   void Stop();
 private:
-  typedef std::map<const CStdString, CSoundInfo> soundCache;
+  typedef std::map<const std::string, CSoundInfo> soundCache;
   typedef std::map<int, IAESound*              > actionSoundMap;
   typedef std::map<int, CWindowSounds          > windowSoundMap;
-  typedef std::map<const CStdString, IAESound* > pythonSoundsMap;
+  typedef std::map<const std::string, IAESound* > pythonSoundsMap;
 
   soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
   pythonSoundsMap     m_pythonSounds;
 
-  CStdString          m_strMediaDir;
+  std::string          m_strMediaDir;
   bool                m_bEnabled;
 
   CCriticalSection    m_cs;
 
-  IAESound* LoadSound(const CStdString &filename);
+  IAESound* LoadSound(const std::string &filename);
   void      FreeSound(IAESound *sound);
   void      FreeSoundAllUsage(IAESound *sound);
-  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier);
+  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const std::string& strIdentifier);
 };
 
 extern CGUIAudioManager g_audioManager;

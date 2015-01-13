@@ -1,0 +1,13 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: squish
+Description: squish DXT lib
+Version: 1.0.0-kodi
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lsquish
+Cflags: -I${includedir}

@@ -9,6 +9,7 @@
       <xs:attribute name="library" type="xs:string"/>
       <xs:attribute name="language" type="xs:string"/>
       <xs:attribute name="requiressetting" type="xs:boolean"/>
+      <xs:attribute name="cachepersistence" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:simpleType name="simpleIdentifier">

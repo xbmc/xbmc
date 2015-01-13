@@ -42,7 +42,7 @@ bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
   return (CSettings::Get().GetBool("videoscreen.fakefullscreen") || !fullScreen);
 }
 
-bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemWin32DX::CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   if(!CWinSystemWin32::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
@@ -99,8 +99,8 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
 
 std::string CWinSystemWin32DX::GetClipboardText(void)
 {
-  CStdStringW unicode_text;
-  CStdStringA utf8_text;
+  std::wstring unicode_text;
+  std::string utf8_text;
 
   if (OpenClipboard(NULL))
   {

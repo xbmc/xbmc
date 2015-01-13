@@ -22,7 +22,6 @@
 #include <string.h>
 #include <algorithm> 
 #include "RegExp.h"
-#include "StdString.h"
 #include "log.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
@@ -543,11 +542,11 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   if (iLog < LOGDEBUG || iLog > LOGNONE)
     return;
 
-  CStdString str = "{";
+  std::string str = "{";
   int size = GetSubCount(); // past the subpatterns is junk
   for (int i = 0; i <= size; i++)
   {
-    CStdString t = StringUtils::Format("[%i,%i]", m_iOvector[(i*2)], m_iOvector[(i*2)+1]);
+    std::string t = StringUtils::Format("[%i,%i]", m_iOvector[(i*2)], m_iOvector[(i*2)+1]);
     if (i != size)
       t += ",";
     str += t;

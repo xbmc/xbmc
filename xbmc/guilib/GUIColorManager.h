@@ -33,9 +33,9 @@
  \brief
  */
 
-#include "utils/StdString.h"
-
 #include <map>
+#include <string>
+#include <stdint.h>
 
 class CXBMCTinyXML;
 
@@ -47,18 +47,18 @@ public:
   CGUIColorManager(void);
   virtual ~CGUIColorManager(void);
 
-  void Load(const CStdString &colorFile);
+  void Load(const std::string &colorFile);
 
-  color_t GetColor(const CStdString &color) const;
+  color_t GetColor(const std::string &color) const;
 
   void Clear();
 
 protected:
   bool LoadXML(CXBMCTinyXML &xmlDoc);
 
-  std::map<CStdString, color_t> m_colors;
-  typedef std::map<CStdString, color_t>::iterator iColor;
-  typedef std::map<CStdString, color_t>::const_iterator icColor;
+  std::map<std::string, color_t> m_colors;
+  typedef std::map<std::string, color_t>::iterator iColor;
+  typedef std::map<std::string, color_t>::const_iterator icColor;
 };
 
 /*!

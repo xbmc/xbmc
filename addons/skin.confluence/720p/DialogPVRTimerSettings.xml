@@ -24,14 +24,14 @@
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
-		<control type="label" id="2">
+		<control type="label">
 			<description>header label</description>
 			<left>40</left>
 			<top>20</top>
 			<width>650</width>
 			<height>30</height>
 			<font>font13_title</font>
-			<label>-</label>
+			<label>$LOCALIZE[19065]</label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>selected</textcolor>

@@ -6339,27 +6339,7 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13499
-
-#: system/settings/settings.xml
-msgctxt "#13500"
-msgid "A/V sync method"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13501"
-msgid "Audio clock"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13502"
-msgid "Video clock (Drop/Dupe audio)"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13503"
-msgid "Video clock (Resample audio)"
-msgstr ""
+#empty strings from id 13460 to 13503
 
 #: system/settings/settings.xml
 msgctxt "#13504"
@@ -7824,7 +7804,7 @@ msgid "Programme info"
 msgstr ""
 
 msgctxt "#19048"
-msgid "Group management"
+msgid "Group manager"
 msgstr ""
 
 msgctxt "#19049"
@@ -7892,7 +7872,9 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr ""
 
-#empty string with id 19065
+msgctxt "#19065"
+msgid "Timer settings"
+msgstr ""
 
 #. Name of a shortcut to a custom folder for channel icons
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
@@ -8859,7 +8841,13 @@ msgctxt "#19288"
 msgid "Foreground"
 msgstr ""
 
-#empty strings from id 19289 to 19498
+#. Label for button to hide a group in the group manager
+#: addons/skin/confluence
+msgctxt "#19289"
+msgid "Hide group"
+msgstr ""
+
+#empty strings from id 19290 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"
@@ -12723,7 +12711,17 @@ msgctxt "#24129"
 msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
 msgstr ""
 
-#empty strings from id 24130 to 24998
+#: system/settings/settings.xml
+msgctxt "#24130"
+msgid "Enable parsing for closed captions"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24131"
+msgid "Enable to parse for CC in video stream. Puts slightly more load on the CPU"
+msgstr ""
+
+#empty strings from id 24132 to 24998
 
 msgctxt "#24999"
 msgid "Hide incompatible"
@@ -14129,11 +14127,7 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> A/V sync method" with label #13500
-#: system/settings/settings.xml
-msgctxt "#36167"
-msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
-msgstr ""
+#empty string with id 36167
 
 #. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
 #: system/settings/settings.xml
@@ -14388,7 +14382,10 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
-#empty string with id 36213
+#: system/settings/settings.xml
+msgctxt "#36213"
+msgid "Open the group manager, which allows modification of groups and their respective channels"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36214"
@@ -16144,7 +16141,55 @@ msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
 
-#empty strings from id 37032 to 38009
+#. Title of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37032"
+msgid "Accessibility"
+msgstr ""
+
+#. Description of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37033"
+msgid "Video playback related accessibility settings, e.g., "Prefer subtitles for the hearing impaired""
+msgstr ""
+
+#. Setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37034"
+msgid "Prefer audio stream for the visually impaired"
+msgstr ""
+
+#. Description of setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37035"
+msgid "Prefer the audio stream for the visually impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37036"
+msgid "Prefer audio stream for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37037"
+msgid "Prefer the audio stream for the hearing impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37038"
+msgid "Prefer subtitles for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37039"
+msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
+msgstr ""
+
+#empty strings from id 37040 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

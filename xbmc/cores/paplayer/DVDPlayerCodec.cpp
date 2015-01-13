@@ -45,7 +45,6 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_audioPos = 0;
   m_pPacket = NULL;
   m_nDecodedLen = 0;
-  m_strFileName = "";
   m_bInited = false;
   m_pResampler = NULL;
   m_needConvert = false;

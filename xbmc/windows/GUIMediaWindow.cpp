@@ -218,7 +218,7 @@ bool CGUIMediaWindow::OnBack(int actionID)
 {
   CURL filterUrl(m_strFilterPath);
   if (actionID == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot() &&
-     (m_vecItems->GetPath() != m_startDirectory || (m_canFilterAdvanced && filterUrl.HasOption("filter"))))
+     (!URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true) || (m_canFilterAdvanced && filterUrl.HasOption("filter"))))
   {
     GoParentFolder();
     return true;
@@ -526,14 +526,14 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState.get())
   {
     // Update sorting controls
-    if (m_guiState->GetDisplaySortOrder() == SortOrderNone)
+    if (m_guiState->GetSortOrder() == SortOrderNone)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSORTASC, m_guiState->GetDisplaySortOrder() != SortOrderAscending);
+      SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSORTASC, m_guiState->GetSortOrder() != SortOrderAscending);
     }
 
     // Update list/thumb control
@@ -571,7 +571,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
   if (guiState.get())
   {
     SortDescription sorting = guiState->GetSortMethod();
-    sorting.sortOrder = guiState->GetDisplaySortOrder();
+    sorting.sortOrder = guiState->GetSortOrder();
     // If the sort method is "sort by playlist" and we have a specific
     // sort order available we can use the specified sort order to do the sorting
     // We do this as the new SortBy methods are a superset of the SORT_METHOD methods, thus
@@ -588,7 +588,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
-        if (guiState->GetDisplaySortOrder() == SortOrderDescending)
+        if (guiState->GetSortOrder() == SortOrderDescending)
           sorting.sortOrder = sorting.sortOrder == SortOrderDescending ? SortOrderAscending : SortOrderDescending;
       }
     }
@@ -630,7 +630,7 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
     viewState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(items, labelMasks);
 
-    items.Sort(viewState->GetSortMethod().sortBy, viewState->GetDisplaySortOrder(), viewState->GetSortMethod().sortAttributes);
+    items.Sort(viewState->GetSortMethod().sortBy, viewState->GetSortOrder(), viewState->GetSortMethod().sortAttributes);
   }
 }
 
@@ -1276,7 +1276,12 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
         strParentPath = url.Get();
       }
 
-      URIUtils::AddSlashAtEnd(strPath);
+      // set the original path exactly as it was passed in
+      if (URIUtils::PathEquals(strPath, strDirectory, true))
+        strPath = strDirectory;
+      else
+        URIUtils::AddSlashAtEnd(strPath);
+
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
       strPath = strParentPath;
@@ -1458,7 +1463,7 @@ void CGUIMediaWindow::OnInitWindow()
   m_rootDir.SetAllowThreads(false);
 
   // the start directory may change during Refresh
-  bool updateStartDirectory = (m_startDirectory == m_vecItems->GetPath());
+  bool updateStartDirectory = URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true);
   Refresh();
   if (updateStartDirectory)
   {

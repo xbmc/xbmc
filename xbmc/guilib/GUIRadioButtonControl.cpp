@@ -204,7 +204,7 @@ bool CGUIRadioButtonControl::UpdateColors()
   return changed;
 }
 
-void CGUIRadioButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+void CGUIRadioButtonControl::SetToggleSelect(const std::string &toggleSelect)
 {
   m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }

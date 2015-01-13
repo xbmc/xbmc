@@ -445,21 +445,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.synctype" type="integer" parent="videoplayer.usedisplayasclock" label="13500" help="36167">
-          <level>2</level>
-          <default>2</default> <!-- SYNC_RESAMPLE -->
-          <constraints>
-            <options>
-              <option label="13501">0</option> <!-- SYNC_DISCON -->
-              <option label="13502">1</option> <!-- SYNC_SKIPDUP -->
-              <option label="13503">2</option> <!-- SYNC_RESAMPLE -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.usedisplayasclock" operator="is">true</dependency>
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
         <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
           <level>4</level>
           <default>5.0</default>
@@ -472,7 +457,6 @@
             <dependency type="enable">
               <and>
                 <condition setting="videoplayer.usedisplayasclock" operator="is">true</condition>
-                <condition setting="videoplayer.synctype" operator="is">2</condition> <!-- SYNC_RESAMPLE -->
               </and>
             </dependency>
           </dependencies>
@@ -736,7 +720,7 @@
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.prefervaapirender" type="boolean" parent="videoplayer.usevaapi" label="13457" help="36433">
@@ -992,6 +976,11 @@
             <heading>657</heading>
           </control>
         </setting>
+        <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
           <default>true</default>
@@ -1058,6 +1047,27 @@
         </setting>
       </group>
     </category>
+    <category id="accessibility" label="37032" help="37033">
+      <group id="1">
+        <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="accessibility.audiohearing" type="boolean" label="37036" help="37037">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="accessibility.subhearing" type="boolean" label="37038" help="37039">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="scrapers" label="0" help="36197">
       <visible>false</visible>
       <group id="1">
@@ -1121,6 +1131,13 @@
       </group>
       <group id="3">
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="pvrmanager.groupmanager" type="action" label="19048" help="36213">
           <level>1</level>
           <dependencies>
             <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
@@ -1196,7 +1213,7 @@
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
-            <maximum>14</maximum>
+            <maximum>31</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>17999</formatlabel>

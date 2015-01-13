@@ -169,6 +169,7 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_videoBusyDialogDelay_ms = 500;
   m_stagefrightConfig.useAVCcodec = -1;
+  m_stagefrightConfig.useHEVCcodec = -1;
   m_stagefrightConfig.useVC1codec = -1;
   m_stagefrightConfig.useVPXcodec = -1;
   m_stagefrightConfig.useMP4codec = -1;
@@ -406,11 +407,11 @@ void CAdvancedSettings::Initialize()
   m_extraLogLevels = 0;
 
   #if defined(TARGET_DARWIN)
-    CStdString logDir = getenv("HOME");
+    std::string logDir = getenv("HOME");
     #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
     #else // ios/atv2
-    logDir += "/" + CStdString(CDarwinUtils::GetAppRootFolder()) + "/";
+    logDir += "/" + std::string(CDarwinUtils::GetAppRootFolder()) + "/";
     #endif
     m_logFolder = logDir;
   #else
@@ -440,7 +441,7 @@ bool CAdvancedSettings::Load()
   return true;
 }
 
-void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
+void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 {
   CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
@@ -601,6 +602,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     if (pStagefrightElem)
     {
       XMLUtils::GetInt(pStagefrightElem,"useavccodec",m_stagefrightConfig.useAVCcodec, -1, 1);
+      XMLUtils::GetInt(pStagefrightElem,"usehevccodec",m_stagefrightConfig.useHEVCcodec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usevc1codec",m_stagefrightConfig.useVC1codec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usevpxcodec",m_stagefrightConfig.useVPXcodec, -1, 1);
       XMLUtils::GetInt(pStagefrightElem,"usemp4codec",m_stagefrightConfig.useMP4codec, -1, 1);
@@ -956,7 +958,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
-  CStdString tmp;
+  std::string tmp;
   if (XMLUtils::GetPath(pRootElement, "cachepath", tmp))
     m_cachePath = tmp;
   URIUtils::AddSlashAtEnd(m_cachePath);
@@ -1000,7 +1002,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
     while (pSubstitute)
     {
-      CStdString strFrom, strTo;
+      std::string strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
         strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
@@ -1233,18 +1235,18 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         int iDefaultSeason = 1;
         if (pRegExp->ToElement())
         {
-          CStdString byDate = XMLUtils::GetAttribute(pRegExp->ToElement(), "bydate");
+          std::string byDate = XMLUtils::GetAttribute(pRegExp->ToElement(), "bydate");
           if (byDate == "true")
           {
             bByDate = true;
           }
-          CStdString defaultSeason = XMLUtils::GetAttribute(pRegExp->ToElement(), "defaultseason");
+          std::string defaultSeason = XMLUtils::GetAttribute(pRegExp->ToElement(), "defaultseason");
           if(!defaultSeason.empty())
           {
             iDefaultSeason = atoi(defaultSeason.c_str());
           }
         }
-        CStdString regExp = pRegExp->FirstChild()->Value();
+        std::string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
         else
@@ -1285,7 +1287,7 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
     {
       if (pRegExp->FirstChild())
       {
-        CStdString regExp = pRegExp->FirstChild()->Value();
+        std::string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, regExp);
         else
@@ -1298,9 +1300,9 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
   }
 }
 
-void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
+void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions)
 {
-  CStdString extraExtensions;
+  std::string extraExtensions;
   if (XMLUtils::GetString(pRootElement, "add", extraExtensions) && !extraExtensions.empty())
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
@@ -1315,7 +1317,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
   }
 }
 
-void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
+void CAdvancedSettings::AddSettingsFile(const std::string &filename)
 {
   m_settingsFiles.push_back(filename);
 }

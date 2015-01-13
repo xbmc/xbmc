@@ -39,6 +39,8 @@
 #include "video/VideoInfoTag.h"
 #include "XBDateTime.h"
 
+class CVideoDatabase;
+
 namespace PVR
 {
   class CPVRRecording;
@@ -149,7 +151,7 @@ namespace PVR
      * @brief Get the resume point and play count from the database if the 
      * client doesn't handle it itself.
      */
-    void UpdateMetadata(void);
+    void UpdateMetadata(CVideoDatabase &db);
 
     /*!
      * @brief Update this tag with the contents of the given tag.

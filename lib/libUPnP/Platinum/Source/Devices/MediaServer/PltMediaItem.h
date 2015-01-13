@@ -169,6 +169,7 @@ typedef struct {
   NPT_Float rating;
   NPT_String votes;
   PLT_Artworks artwork;
+  NPT_String unique_identifier;
 } PLT_XbmcInfo;
 
 /*----------------------------------------------------------------------

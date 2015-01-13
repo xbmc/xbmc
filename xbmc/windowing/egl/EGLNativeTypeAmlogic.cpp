@@ -22,7 +22,9 @@
 #include "guilib/gui3d.h"
 #include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/SysfsUtils.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <linux/fb.h>
 #include <sys/ioctl.h>
@@ -49,13 +51,12 @@ CEGLNativeTypeAmlogic::~CEGLNativeTypeAmlogic()
 
 bool CEGLNativeTypeAmlogic::CheckCompatibility()
 {
-  char name[256] = {0};
+  std::string name;
   std::string modalias = "/sys/class/graphics/" + m_framebuffer_name + "/device/modalias";
 
-  aml_get_sysfs_str(modalias.c_str(), name, 255);
-  CStdString strName = name;
-  StringUtils::Trim(strName);
-  if (strName == "platform:mesonfb")
+  SysfsUtils::GetString(modalias, name);
+  StringUtils::Trim(name);
+  if (name == "platform:mesonfb")
     return true;
   return false;
 }
@@ -127,9 +128,9 @@ bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 
 bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 {
-  char mode[256] = {0};
-  aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
-  return aml_mode_to_resolution(mode, res);
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+  return aml_mode_to_resolution(mode.c_str(), res);
 }
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
@@ -180,8 +181,8 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  char valstr[256] = {0};
-  aml_get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
+  std::string valstr;
+  SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr);
   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
   resolutions.clear();
@@ -210,15 +211,15 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 {
   std::string blank_framebuffer = "/sys/class/graphics/" + m_framebuffer_name + "/blank";
-  aml_set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
+  SysfsUtils::SetInt(blank_framebuffer.c_str(), show ? 0 : 1);
   return true;
 }
 
 bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 {
-  CStdString mode = resolution;
+  std::string mode = resolution;
   // switch display resolution
-  aml_set_sysfs_str("/sys/class/display/mode", mode.c_str());
+  SysfsUtils::SetString("/sys/class/display/mode", mode.c_str());
   SetupVideoScaling(mode.c_str());
 
   return true;
@@ -226,67 +227,67 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 
 void CEGLNativeTypeAmlogic::SetupVideoScaling(const char *mode)
 {
-  aml_set_sysfs_int("/sys/class/graphics/fb0/blank",      1);
-  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler",          0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank",      1);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/ppmgr/ppscaler",          0);
 
   if (strstr(mode, "1080"))
   {
-    aml_set_sysfs_str("/sys/class/graphics/fb0/request2XScale", "8");
-    aml_set_sysfs_str("/sys/class/graphics/fb1/scale_axis",     "1280 720 1920 1080");
-    aml_set_sysfs_str("/sys/class/graphics/fb1/scale",          "0x10001");
+    SysfsUtils::SetString("/sys/class/graphics/fb0/request2XScale", "8");
+    SysfsUtils::SetString("/sys/class/graphics/fb1/scale_axis",     "1280 720 1920 1080");
+    SysfsUtils::SetString("/sys/class/graphics/fb1/scale",          "0x10001");
   }
   else
   {
-    aml_set_sysfs_str("/sys/class/graphics/fb0/request2XScale", "16 1280 720");
+    SysfsUtils::SetString("/sys/class/graphics/fb0/request2XScale", "16 1280 720");
   }
 
-  aml_set_sysfs_int("/sys/class/graphics/fb0/blank", 0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", 0);
 }
 
 void CEGLNativeTypeAmlogic::EnableFreeScale()
 {
   // enable OSD free scale using frame buffer size of 720p
-  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_width",  1280);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_height", 720);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/scale_width",  1280);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/scale_height", 720);
 
   // enable video free scale (scaling to 1920x1080 with frame buffer size 1280x720)
-  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
-  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
-  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
-  aml_set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
+  SysfsUtils::SetInt("/sys/class/ppmgr/ppscaler", 0);
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
+  SysfsUtils::SetInt("/sys/class/ppmgr/ppscaler", 1);
+  SysfsUtils::SetString("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
+  SysfsUtils::SetString("/sys/class/ppmgr/disp", "1280 720");
   //
-  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_width",  1280);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_height", 720);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/scale_width",  1280);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/scale_height", 720);
   //
-  aml_set_sysfs_int("/sys/class/video/disable_video", 2);
-  aml_set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
-  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 2);
+  SysfsUtils::SetString("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
+  SysfsUtils::SetString("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
   //
-  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
-  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 1);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 1);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()
 {
   // turn off frame buffer freescale
-  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 0);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
 
-  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  aml_set_sysfs_int("/sys/class/video/disable_video", 0);
+  SysfsUtils::SetInt("/sys/class/ppmgr/ppscaler", 0);
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 0);
   // now default video display to off
-  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
 
   // revert display axis
   int fd0;
@@ -297,9 +298,9 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
     struct fb_var_screeninfo vinfo;
     if (ioctl(fd0, FBIOGET_VSCREENINFO, &vinfo) == 0)
     {
-      char daxis_str[255] = {0};
+      char daxis_str[256] = {0};
       sprintf(daxis_str, "%d %d %d %d 0 0 0 0", 0, 0, vinfo.xres-1, vinfo.yres-1);
-      aml_set_sysfs_str("/sys/class/display/axis", daxis_str);
+      SysfsUtils::SetString("/sys/class/display/axis", daxis_str);
     }
     close(fd0);
   }

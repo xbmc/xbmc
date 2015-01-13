@@ -58,7 +58,7 @@ protected:
   // override base class methods
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
-  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
+  virtual void DoSearch(const std::string& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
   virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -66,7 +66,7 @@ protected:
   virtual bool OnClick(int iItem);
   virtual std::string GetStartFolder(const std::string &dir);
 
-  virtual CStdString GetQuickpathName(const CStdString& strPath) const;
+  virtual std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
 };

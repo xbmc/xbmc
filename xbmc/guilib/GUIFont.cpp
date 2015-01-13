@@ -31,7 +31,7 @@
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
 CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,
-  int speed /* = defaultSpeed */, const CStdString &scrollSuffix /* = " | " */)
+  int speed /* = defaultSpeed */, const std::string &scrollSuffix /* = " | " */)
 {
     initialWait = wait;
     initialPos = pos;
@@ -57,7 +57,7 @@ float CScrollInfo::GetPixelsPerFrame()
   return pixelSpeed * m_averageFrameTime;
 }
 
-CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
+CGUIFont::CGUIFont(const std::string& strFontName, uint32_t style, color_t textColor,
 		   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font)
 {
   m_strFontName = strFontName;
@@ -78,7 +78,7 @@ CGUIFont::~CGUIFont()
     m_font->RemoveReference();
 }
 
-CStdString& CGUIFont::GetFontName()
+std::string& CGUIFont::GetFontName()
 {
   return m_strFontName;
 }

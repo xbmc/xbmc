@@ -410,6 +410,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
               {
                 /* We have a boo boo ! */
                 CLog::Log(LOGERROR, "ParseRLE: unknown RLE code 0x%.4x", i_code);
+                pSPU->Release();
                 return NULL;
               }
             }
@@ -421,6 +422,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
       {
         CLog::Log(LOGERROR, "ParseRLE: out of bounds, %i at (%i,%i) is out of %ix%i",
                  i_code >> 2, i_x, i_y, i_width, i_height );
+        pSPU->Release();
         return NULL;
       }
 
@@ -441,6 +443,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
       if ((uint8_t *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((uint8_t *)p_dest - pSPU->result));
+        pSPU->Release();
         return NULL;
       }
       *p_dest++ = i_code;
@@ -450,6 +453,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
     if ( i_x > i_width )
     {
       CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, %i > %i", i_x, i_width );
+      pSPU->Release();
       return NULL;
     }
 
@@ -478,12 +482,14 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
       if ((uint8_t *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((uint8_t *)p_dest - pSPU->result));
+        pSPU->Release();
         return NULL;
       }
       *p_dest++ = i_width << 2;
       i_y++;
     }
 
+    pSPU->Release();
     return NULL;
   }
 

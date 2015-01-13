@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:attribute name="point" type="xs:string" use="required"/>
+      <xs:attribute name="id" type="simpleIdentifier"/>
+      <xs:attribute name="name" type="xs:string"/>
+      <xs:attribute name="library" type="xs:string" use="required"/>
+      <xs:attribute name="start" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="simpleIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^.]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

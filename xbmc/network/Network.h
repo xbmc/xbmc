@@ -32,10 +32,10 @@ enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2,
 class NetworkAccessPoint
 {
 public:
-   NetworkAccessPoint(const std::string &essId, const std::string &macAddress, int signalStrength, EncMode encryption, int channel = 0)
-   {
-      m_essId          = essId;
-      m_macAddress     = macAddress;
+    NetworkAccessPoint(const std::string &essId, const std::string &macAddress, int signalStrength, EncMode encryption, int channel = 0):
+      m_essId(essId),
+      m_macAddress(macAddress)
+    {
       m_dBm            = signalStrength;
       m_encryptionMode = encryption;
       m_channel        = channel;

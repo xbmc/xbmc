@@ -80,7 +80,8 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
   int iActionId = action.GetID();
   if (GetFocusedControlID() == CONTROL_LIST_CHANNELS &&
       (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
-       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP))
+       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
+       iActionId == ACTION_MOUSE_MOVE)) // item should be selected on hover
   {
     bReturn = true;
     if (!m_bMovingMode)
@@ -242,10 +243,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
   if (OnMessage(msg))
   {
-    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
+      bool selected(msg.GetParam1() == 1);
       pItem->SetProperty("Changed", true);
       pItem->SetProperty("ActiveChannel", selected);
       m_bContainsChanges = true;
@@ -368,10 +369,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
   if (OnMessage(msg))
   {
-    bool selected(msg.GetParam1() == 1);
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
+      bool selected(msg.GetParam1() == 1);
       pItem->SetProperty("Changed", true);
       pItem->SetProperty("UseEPG", selected);
       m_bContainsChanges = true;

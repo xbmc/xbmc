@@ -54,10 +54,10 @@ public:
   CMusicInfoScanner();
   virtual ~CMusicInfoScanner();
 
-  void Start(const CStdString& strDirectory, int flags);
+  void Start(const std::string& strDirectory, int flags);
   void StartCleanDatabase();
-  void FetchAlbumInfo(const CStdString& strDirectory, bool refresh=false);
-  void FetchArtistInfo(const CStdString& strDirectory, bool refresh=false);
+  void FetchAlbumInfo(const std::string& strDirectory, bool refresh = false);
+  void FetchArtistInfo(const std::string& strDirectory, bool refresh = false);
   bool IsScanning();
   void Stop();
 
@@ -111,7 +111,7 @@ public:
    \param albums [in/out] list of albums to categorise - art field may be altered.
    \param path [in] path containing albums.
    */
-  static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
+  static void FindArtForAlbums(VECALBUMS &albums, const std::string &path);
 
   /*! \brief Update the database information for a MusicDB album
    Given an album, search and update its info with the given scraper.
@@ -175,7 +175,7 @@ protected:
    \param items [in] list of FileItems to scan
    \param scannedItems [in] list to populate with the scannedItems
    */
-  int RetrieveMusicInfo(const CStdString& strDirectory, CFileItemList& items);
+  int RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items);
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
     Given a list of FileItems, scan in the tags for those FileItems
@@ -185,14 +185,14 @@ protected:
    \param scannedItems [in] list to populate with the scannedItems
    */
   INFO_RET ScanTags(const CFileItemList& items, CFileItemList& scannedItems);
-  int GetPathHash(const CFileItemList &items, CStdString &hash);
+  int GetPathHash(const CFileItemList &items, std::string &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
 
-  bool DoScan(const CStdString& strDirectory);
+  bool DoScan(const std::string& strDirectory);
 
   virtual void Run();
   int CountFiles(const CFileItemList& items, bool recursive);
-  int CountFilesRecursively(const CStdString& strPath);
+  int CountFilesRecursively(const std::string& strPath);
 
   /*! \brief Resolve a MusicBrainzID to a URL
    If we have a MusicBrainz ID for an artist or album, 
@@ -201,7 +201,7 @@ protected:
    \param preferredScraper [in] A ScraperPtr to the preferred album/artist scraper.
    \param musicBrainzURL [out] will be populated with the MB URL for the artist/album.
    */
-  bool ResolveMusicBrainz(const CStdString &strMusicBrainzID, const ADDON::ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL);
+  bool ResolveMusicBrainz(const std::string &strMusicBrainzID, const ADDON::ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL);
 
 protected:
   bool m_showDialog;

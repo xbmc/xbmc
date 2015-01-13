@@ -104,13 +104,11 @@ protected:
   int        m_width;
   int        m_height;
 
-  CStdString m_RenderExtensions;
+  std::string m_RenderExtensions;
 
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method
   ESHADERMETHOD m_method;      // Current GUI Shader method
 
-  GLfloat    m_view[16];
-  GLfloat    m_projection[16];
   GLint      m_viewPort[4];
 };
 

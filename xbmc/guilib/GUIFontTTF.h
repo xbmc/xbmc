@@ -27,6 +27,10 @@
  *
  */
 
+#include <string>
+#include <stdint.h>
+#include <vector>
+
 #include "utils/auto_buffer.h"
 
 // forward definition
@@ -72,17 +76,17 @@ class CGUIFontTTFBase
 
 public:
 
-  CGUIFontTTFBase(const CStdString& strFileName);
+  CGUIFontTTFBase(const std::string& strFileName);
   virtual ~CGUIFontTTFBase(void);
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
+  bool Load(const std::string& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
 
   virtual void Begin() = 0;
   virtual void End() = 0;
 
-  const CStdString& GetFileName() const { return m_strFileName; };
+  const std::string& GetFileName() const { return m_strFileName; };
 
 protected:
   struct Character
@@ -106,7 +110,7 @@ protected:
                             uint32_t alignment, float maxPixelWidth, bool scrolling);
 
   float m_height;
-  CStdString m_strFilename;
+  std::string m_strFilename;
 
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(character_t letter);
@@ -167,7 +171,7 @@ protected:
 
   static int justification_word_weight;
 
-  CStdString m_strFileName;
+  std::string m_strFileName;
   XUTILS::auto_buffer m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
 private:

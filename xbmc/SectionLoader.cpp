@@ -25,6 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -44,16 +45,16 @@ CSectionLoader::~CSectionLoader(void)
   UnloadAll();
 }
 
-LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnload /*=true*/, bool bLoadSymbols /*=false*/)
+LibraryLoader *CSectionLoader::LoadDLL(const std::string &dllname, bool bDelayUnload /*=true*/, bool bLoadSymbols /*=false*/)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  if (!dllname) return NULL;
+  if (dllname.empty()) return NULL;
   // check if it's already loaded, and increase the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName.Equals(dllname))
+    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount++;
       return dll.m_pDll;
@@ -76,16 +77,16 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
   return newDLL.m_pDll;
 }
 
-void CSectionLoader::UnloadDLL(const CStdString &dllname)
+void CSectionLoader::UnloadDLL(const std::string &dllname)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  if (!dllname) return;
+  if (dllname.empty()) return;
   // check if it's already loaded, and decrease the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName.Equals(dllname))
+    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount--;
       if (0 == dll.m_lReferenceCount)

@@ -62,7 +62,7 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 {
 }
 
-void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string path)
+void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
 {
   m_selectedItemPaths.at(bRadio) = path;
 }
@@ -91,7 +91,7 @@ bool CGUIWindowPVRBase::OnAction(const CAction &action)
     case ACTION_PREVIOUS_CHANNELGROUP:
     case ACTION_NEXT_CHANNELGROUP:
       // switch to next or previous group
-      SetGroup(ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup());
+      SetGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup());
       return true;
   }
 
@@ -220,7 +220,7 @@ bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
     return false;
 
   CFileItemList options;
-  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options);
+  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options, true);
 
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(19146));
@@ -330,10 +330,9 @@ bool CGUIWindowPVRBase::StartRecordFile(const CFileItem &item)
   if (!item.HasEPGInfoTag())
     return false;
 
+  // tag has been checked for NULL in HasEPGInfoTag()
   const CEpgInfoTag *tag = item.GetEPGInfoTag();
-  CPVRChannelPtr channel;
-  if (tag)
-    channel = tag->ChannelTag();
+  CPVRChannelPtr channel = tag->ChannelTag();
 
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;

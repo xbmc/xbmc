@@ -33,7 +33,6 @@
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDDemuxers/DVDDemuxFFmpeg.h"
-
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 
@@ -53,6 +52,8 @@
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
 #include "libswscale/swscale.h"
+
+#include "DVDDemuxers/DVDDemuxCC.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -200,6 +201,14 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
     std::string audio_language = g_langInfo.GetAudioLanguage();
     PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
                    , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
+
+    bool hearingimp = CSettings::Get().GetBool("accessibility.audiohearing");
+    PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
+                   , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
+
+    bool visualimp = CSettings::Get().GetBool("accessibility.audiovisual");
+    PREDICATE_RETURN(!visualimp ? !(lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED
+                   , !visualimp ? !(rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED);
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -277,6 +286,10 @@ public:
     {
       PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
                      , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+
+      bool hearingimp = CSettings::Get().GetBool("accessibility.subhearing");
+      PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
+                     , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
     }
 
     PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -445,9 +458,10 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
     int source;
     if(input) /* hack to know this is sub decoder */
       source = Source(STREAM_SOURCE_DEMUX, filename);
-    else
+    else if (!filename2.empty())
       source = Source(STREAM_SOURCE_DEMUX_SUB, filename);
-
+    else
+      source = Source(STREAM_SOURCE_VIDEOMUX, filename);
 
     for(int i=0;i<count;i++)
     {
@@ -490,6 +504,22 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   }
   g_dataCacheCore.SignalAudioInfoChange();
   g_dataCacheCore.SignalVideoInfoChange();
+}
+
+int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
+{
+  CSingleLock lock(m_section);
+  int count = 0;
+  for(size_t i=0;i<m_Streams.size();i++)
+  {
+    if(type && m_Streams[i].type != type)
+      continue;
+    if (source && m_Streams[i].source != source)
+      continue;
+    count++;
+    continue;
+  }
+  return count;
 }
 
 void CDVDPlayer::CreatePlayers()
@@ -546,6 +576,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_players_created = false;
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
+  m_pCCDemuxer = NULL;
   m_pInputStream = NULL;
 
   m_dvd.Clear();
@@ -846,6 +877,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   PredicateSubtitlePriority psp(as.language);
   streams = m_SelectionStreams.Get(STREAM_SUBTITLE, psp);
   valid   = false;
+  CloseStream(m_CurrentSubtitle, false);
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenStream(m_CurrentSubtitle, it->id, it->source))
@@ -858,7 +890,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     }
   }
   if(!valid)
-    CloseStream(m_CurrentSubtitle, true);
+    CloseStream(m_CurrentSubtitle, false);
 
   if (!dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream) || m_PlayerOptions.state.size() == 0)
     SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
@@ -872,7 +904,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
       valid = true;
   }
   if(!valid)
-    CloseStream(m_CurrentTeletext, true);
+    CloseStream(m_CurrentTeletext, false);
 }
 
 bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -993,6 +1025,15 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
         return false;
     }
 
+    return true;
+  }
+  if (source == STREAM_SOURCE_VIDEOMUX)
+  {
+    CDemuxStream* st = m_pCCDemuxer->GetStream(stream.id);
+    if (st == NULL || st->disabled)
+      return false;
+    if (st->type != stream.type)
+      return false;
     return true;
   }
 
@@ -1396,6 +1437,34 @@ void CDVDPlayer::Process()
     CheckBetterStream(m_CurrentVideo,    pStream);
     CheckBetterStream(m_CurrentSubtitle, pStream);
     CheckBetterStream(m_CurrentTeletext, pStream);
+
+    // demux video stream
+    if (CSettings::Get().GetBool("subtitles.parsecaptions") && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
+    {
+      if (m_pCCDemuxer)
+      {
+        bool first = true;
+        while(!m_bAbortRequest)
+        {
+          DemuxPacket *pkt = m_pCCDemuxer->Read(first ? pPacket : NULL);
+          if (!pkt)
+            break;
+
+          first = false;
+          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
+          {
+            m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
+            m_SelectionStreams.Update(NULL, m_pCCDemuxer, "");
+            OpenDefaultStreams(false);
+          }
+          CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
+          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId && m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
+            ProcessSubData(pSubStream, pkt);
+          else
+            CDVDDemuxUtils::FreeDemuxPacket(pkt);
+        }
+      }
+    }
 
     // process the packet
     ProcessPacket(pStream, pPacket);
@@ -2148,6 +2217,7 @@ void CDVDPlayer::OnExit()
     // destroy objects
     SAFE_DELETE(m_pDemuxer);
     SAFE_DELETE(m_pSubtitleDemuxer);
+    SAFE_DELETE(m_pCCDemuxer);
     SAFE_DELETE(m_pInputStream);
 
     // clean up all selection streams
@@ -2827,10 +2897,10 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
         dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-      CStdString strEDL;
+      std::string strEDL;
       strEDL += StringUtils::Format(", edl:%s", m_Edl.GetInfo().c_str());
 
-      CStdString strBuf;
+      std::string strBuf;
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {
@@ -3096,8 +3166,8 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     if(pts == DVD_NOPTS_VALUE)
       pts = 0;
     pts += m_offset_pts;
-    m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
-
+    if (!m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE)))
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, pts);
     stream = m_pSubtitleDemuxer->GetStream(iStream);
     if(!stream || stream->disabled)
       return false;
@@ -3130,6 +3200,17 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
 
     if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       hint.filename = "dvd";
+  }
+  else if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_VIDEOMUX)
+  {
+    if(!m_pCCDemuxer)
+      return false;
+
+    stream = m_pCCDemuxer->GetStream(iStream);
+    if(!stream || stream->disabled)
+      return false;
+
+    hint.Assign(*stream, false);
   }
 
   bool res;
@@ -3191,6 +3272,9 @@ bool CDVDPlayer::OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint,
   if(current.id    < 0
   || current.hint != hint)
   {
+    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
+      SAFE_DELETE(m_pCCDemuxer);
+
     if (!player->OpenStream( hint ))
       return false;
   }
@@ -3242,6 +3326,13 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     return false;
 
   m_HasVideo = true;
+
+  // open CC demuxer if video is mpeg2
+  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264) && !m_pCCDemuxer)
+  {
+    m_pCCDemuxer = new CDVDDemuxCC(hint.codec);
+    m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
+  }
 
   /* we are potentially going to be waiting on this */
   m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);

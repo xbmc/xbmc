@@ -27,8 +27,11 @@
  *
  */
 
-#include "utils/StdString.h"
 #include <assert.h>
+#include <math.h>
+#include <string>
+#include <stdint.h>
+#include <vector>
 
 typedef uint32_t character_t;
 typedef uint32_t color_t;
@@ -55,7 +58,7 @@ class CGUIFontTTFBase;
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ");
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const std::string &scrollSuffix = " | ");
 
   void SetSpeed(int speed)
   {
@@ -70,7 +73,7 @@ public:
     // value will mean the text starts to the right
     pixelPos = -initialPos;
     // privates:
-    m_averageFrameTime = 1000.f / abs(defaultSpeed);
+    m_averageFrameTime = 1000.f / fabs((float)defaultSpeed);
     m_lastFrameTime = 0;
   }
   uint32_t GetCurrentChar(const vecText &text) const
@@ -90,7 +93,7 @@ public:
   unsigned int characterPos;
   unsigned int initialWait;
   float initialPos;
-  CStdStringW suffix;
+  std::wstring suffix;
 
   static const int defaultSpeed = 60;
 private:
@@ -105,11 +108,11 @@ private:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
+  CGUIFont(const std::string& strFontName, uint32_t style, color_t textColor,
 	   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font);
   virtual ~CGUIFont();
 
-  CStdString& GetFontName();
+  std::string& GetFontName();
 
   void DrawText( float x, float y, color_t color, color_t shadowColor,
                  const vecText &text, uint32_t alignment, float maxPixelWidth)
@@ -151,7 +154,7 @@ public:
   void SetFont(CGUIFontTTFBase* font);
 
 protected:
-  CStdString m_strFontName;
+  std::string m_strFontName;
   uint32_t m_style;
   color_t m_shadowColor;
   color_t m_textColor;

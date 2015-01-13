@@ -442,6 +442,9 @@ namespace PVR
     void SetSelectedGroup(bool bSetTo);
     bool IsSelectedGroup(void) const;
 
+    void SetHidden(bool bHidden);
+    bool IsHidden(void) const;
+
   protected:
     /*!
      * @brief Load the channels stored in the database.
@@ -518,8 +521,6 @@ namespace PVR
      */
     CFileItemPtr GetByChannelUpDown(const CFileItem &channel, bool bChannelUp) const;
 
-    void ResetChannelNumbers(void);
-
     /*!
      * @brief Get a channel given it's channel ID.
      * @param iChannelID The channel ID.
@@ -538,6 +539,7 @@ namespace PVR
     bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
     bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
     time_t           m_iLastWatched;                /*!< last time group has been watched */
+    bool             m_bHidden;                     /*!< true if this group is hidden, false otherwise */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
     

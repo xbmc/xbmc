@@ -277,7 +277,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
-      CStdString path(CProfilesManager::Get().GetDatabaseFolder());
+      std::string path(CProfilesManager::Get().GetDatabaseFolder());
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -301,7 +301,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "karaoke.importcsv")
   {
-    CStdString path(CProfilesManager::Get().GetDatabaseFolder());
+    std::string path(CProfilesManager::Get().GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
@@ -321,7 +321,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     CBuiltins::Execute("exportlibrary(music)");
   else if (settingId == "musiclibrary.import")
   {
-    CStdString path;
+    std::string path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
@@ -341,7 +341,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     CBuiltins::Execute("exportlibrary(video)");
   else if (settingId == "videolibrary.import")
   {
-    CStdString path;
+    std::string path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))

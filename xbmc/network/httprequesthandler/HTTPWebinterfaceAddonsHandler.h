@@ -24,7 +24,8 @@
 class CHTTPWebinterfaceAddonsHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPWebinterfaceAddonsHandler() { };
+  CHTTPWebinterfaceAddonsHandler() { }
+  virtual ~CHTTPWebinterfaceAddonsHandler() { }
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPWebinterfaceAddonsHandler(); }
   virtual bool CheckHTTPRequest(const HTTPRequest &request);

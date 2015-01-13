@@ -36,7 +36,7 @@ typedef void* GUIHANDLE;
 #endif
 
 /* current ADDONGUI API version */
-#define XBMC_GUI_API_VERSION "5.3.0"
+#define XBMC_GUI_API_VERSION "5.6.0"
 
 /* min. ADDONGUI API version */
 #define XBMC_GUI_MIN_API_VERSION "5.3.0"

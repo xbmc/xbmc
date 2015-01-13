@@ -51,9 +51,9 @@ float square_error(float x, float y)
   return std::max(yonx, xony);
 }
 
-static CStdString ModeFlagsToString(unsigned int flags, bool identifier)
+static std::string ModeFlagsToString(unsigned int flags, bool identifier)
 {
-  CStdString res;
+  std::string res;
   if(flags & D3DPRESENTFLAG_INTERLACED)
     res += "i";
   else
@@ -138,7 +138,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
     bool found = false;
     for (ResolutionInfos::const_iterator  it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
     {
-      if (it->strMode.Equals(cal.strMode))
+      if (StringUtils::EqualsNoCase(it->strMode, cal.strMode))
       {
         found = true;
         break;
@@ -447,7 +447,7 @@ void CDisplaySettings::ApplyCalibrations()
     {
       if (res == RES_WINDOW)
         continue;
-      if (itCal->strMode.Equals(m_resolutions[res].strMode))
+      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
         // overscan
         m_resolutions[res].Overscan.left = itCal->Overscan.left;
@@ -500,7 +500,7 @@ void CDisplaySettings::UpdateCalibrations()
     bool found = false;
     for (ResolutionInfos::iterator itCal = m_calibrations.begin(); itCal != m_calibrations.end(); ++itCal)
     {
-      if (itCal->strMode.Equals(m_resolutions[res].strMode))
+      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
         // TODO: erase calibrations with default values
         *itCal = m_resolutions[res];
@@ -751,13 +751,13 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const 
 void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
 #if defined(HAS_GLX)
-  std::vector<CStdString> monitors;
+  std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
   std::string currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&
-       CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
+       StringUtils::EqualsNoCase(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput, monitors[i]))
     {
       current = monitors[i];
     }

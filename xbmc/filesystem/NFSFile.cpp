@@ -137,7 +137,7 @@ void CNfsConnection::clearMembers()
 void CNfsConnection::destroyOpenContexts()
 {
   CSingleLock lock(openContextLock);
-  for(tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();it++)
+  for(tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();++it)
   {
     m_pLibNfs->nfs_destroy_context(it->second.pContext);
   }
@@ -258,7 +258,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
       
       std::list<std::string>::iterator it;
       
-      for(it=exportList.begin();it!=exportList.end();it++)
+      for(it=exportList.begin();it!=exportList.end();++it)
       {
         //if path starts with the current export path
         if(StringUtils::StartsWith(path, *it))
@@ -291,12 +291,11 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
 bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 {
   CSingleLock lock(*this);
-  bool ret = false;
   int nfsRet = 0;
   std::string exportPath;
 
   resolveHost(url);
-  ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
+  bool ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
   
   if( (ret && (exportPath != m_exportPath  ||
        url.GetHostName() != m_hostName))    ||
@@ -374,7 +373,7 @@ void CNfsConnection::CheckIfIdle()
   {
     CSingleLock lock(keepAliveLock);
     //handle keep alive on opened files
-    for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();it++)
+    for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();++it)
     {
       if(it->second.refreshCounter > 0)
       {

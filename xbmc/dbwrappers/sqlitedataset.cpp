@@ -637,7 +637,7 @@ const void* SqliteDataset::getExecRes() {
 }
 
 
-bool SqliteDataset::query(const char *query) {
+bool SqliteDataset::query(const std::string &query) {
     if(!handle()) throw DbErrors("No Database Connection");
     std::string qry = query;
     int fs = qry.find("select");
@@ -648,7 +648,7 @@ bool SqliteDataset::query(const char *query) {
   close();
 
   sqlite3_stmt *stmt = NULL;
-  if (db->setErr(sqlite3_prepare_v2(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)
+  if (db->setErr(sqlite3_prepare_v2(handle(),query.c_str(),-1,&stmt, NULL),query.c_str()) != SQLITE_OK)
     throw DbErrors(db->getErrorMsg());
 
   // column headers
@@ -688,7 +688,7 @@ bool SqliteDataset::query(const char *query) {
     }
     result.records.push_back(res);
   }
-  if (db->setErr(sqlite3_finalize(stmt),query) == SQLITE_OK)
+  if (db->setErr(sqlite3_finalize(stmt),query.c_str()) == SQLITE_OK)
   {
     active = true;
     ds_state = dsSelect;
@@ -699,10 +699,6 @@ bool SqliteDataset::query(const char *query) {
   {
     throw DbErrors(db->getErrorMsg());
   }  
-}
-
-bool SqliteDataset::query(const string &q){
-  return query(q.c_str());
 }
 
 void SqliteDataset::open(const string &sql) {

@@ -287,7 +287,7 @@
 						<width>600</width>
 						<height>260</height>
 						<font>font13</font>
-						<align>justify</align>
+						<align>left</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>61</pagecontrol>

@@ -1,0 +1,34 @@
+include ../../../Makefile.include
+
+SRCS= \
+  alpha.cpp \
+  clusterfit.cpp \
+  colourblock.cpp \
+  colourfit.cpp \
+  colourset.cpp \
+  maths.cpp \
+  rangefit.cpp \
+  singlecolourfit.cpp \
+  squish.cpp
+
+CXXFLAGS += -I.
+LIB = libsquish.a
+
+OBJ = $(SRCS:%.cpp=%.o)
+
+%.o : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o$@ -c $<
+
+$(LIB): $(OBJ)
+	$(AR) cr $@ $?
+	$(RANLIB) $@
+
+install: $(LIB) squish.pc
+	install squish.h $(PREFIX)/include 
+	install libsquish.a $(PREFIX)/lib
+	install squish.pc $(PREFIX)/lib/pkgconfig
+
+squish.pc: squish.pc.in
+	sed 's|@PREFIX@|$(PREFIX)|' $@.in > $@
+
+all: $(LIB)

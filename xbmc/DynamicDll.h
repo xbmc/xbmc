@@ -20,7 +20,7 @@
  */
 
 #include "cores/DllLoader/LibraryLoader.h"
-#include "utils/StdString.h"
+#include <string>
 #include "DllPaths.h"
 
 ///////////////////////////////////////////////////////////
@@ -520,20 +520,20 @@ class DllDynamic
 {
 public:
   DllDynamic();
-  DllDynamic(const CStdString& strDllName);
+  DllDynamic(const std::string& strDllName);
   virtual ~DllDynamic();
   virtual bool Load();
   virtual void Unload();
   virtual bool IsLoaded() const { return m_dll!=NULL; }
   bool CanLoad();
   bool EnableDelayedUnload(bool bOnOff);
-  bool SetFile(const CStdString& strDllName);
-  const CStdString &GetFile() const { return m_strDllName; }
+  bool SetFile(const std::string& strDllName);
+  const std::string &GetFile() const { return m_strDllName; }
 
 protected:
   virtual bool ResolveExports()=0;
   virtual bool LoadSymbols() { return false; }
   bool  m_DelayUnload;
   LibraryLoader* m_dll;
-  CStdString m_strDllName;
+  std::string m_strDllName;
 };

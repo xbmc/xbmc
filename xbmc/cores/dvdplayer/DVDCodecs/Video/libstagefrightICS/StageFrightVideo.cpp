@@ -415,6 +415,11 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   const char* mimetype;
   switch (hints.codec)
   {
+  case AV_CODEC_ID_HEVC:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useHEVCcodec == 0)
+      return false;
+    mimetype = "video/hevc";
+    break;
   case CODEC_ID_H264:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useAVCcodec == 0)
       return false;

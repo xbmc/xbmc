@@ -35,10 +35,10 @@ class CPlayerCoreConfig
 friend class CPlayerCoreFactory;
 
 public:
-  CPlayerCoreConfig(std::string name, const EPLAYERCORES eCore, const TiXmlElement* pConfig, const std::string& id = "")
+  CPlayerCoreConfig(std::string name, const EPLAYERCORES eCore, const TiXmlElement* pConfig, const std::string& id = ""):
+    m_name(name),
+    m_id(id)
   {
-    m_name = name;
-    m_id = id;
     m_eCore = eCore;
     m_bPlaysAudio = false;
     m_bPlaysVideo = false;

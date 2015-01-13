@@ -26,8 +26,8 @@ class CViewState;
 class CViewDatabase : public CDatabase
 {
 public:
-  CViewDatabase(void);
-  virtual ~CViewDatabase(void);
+  CViewDatabase();
+  virtual ~CViewDatabase();
   virtual bool Open();
 
   bool GetViewState(const std::string &path, int windowID, CViewState &state, const std::string &skin);
@@ -38,6 +38,6 @@ protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
-  virtual int GetSchemaVersion() const { return 6; };
-  const char *GetBaseDBName() const { return "ViewModes"; };
+  virtual int GetSchemaVersion() const { return 6; }
+  const char *GetBaseDBName() const { return "ViewModes"; }
 };

@@ -46,7 +46,7 @@ bool CVTPDirectory::GetChannels(const std::string& base, CFileItemList &items)
     return false;
 
   vector<CVTPSession::Channel>::iterator it;
-  for(it = channels.begin(); it != channels.end(); it++)
+  for(it = channels.begin(); it != channels.end(); ++it)
   {
     CFileItemPtr item(new CFileItem("", false));
 

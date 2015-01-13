@@ -39,7 +39,7 @@ enum VideoSelectAction
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
-  CGUIWindowVideoBase(int id, const CStdString &xmlFile);
+  CGUIWindowVideoBase(int id, const std::string &xmlFile);
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
@@ -53,7 +53,7 @@ public:
 
   /*! \brief Show dialog allowing selection of wanted playback item */
   static bool ShowPlaySelection(CFileItemPtr& item);
-  static bool ShowPlaySelection(CFileItemPtr& item, const CStdString& directory);
+  static bool ShowPlaySelection(CFileItemPtr& item, const std::string& directory);
 
 
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)
@@ -74,23 +74,23 @@ public:
    \param results the fileitemlist to append the search results to.
    \sa DoSearch
    */
-  static void AppendAndClearSearchItems(CFileItemList &searchItems, const CStdString &prependLabel, CFileItemList &results);
+  static void AppendAndClearSearchItems(CFileItemList &searchItems, const std::string &prependLabel, CFileItemList &results);
 
   /*! \brief Prompt the user for assigning content to a path.
    Based on changes, we then call OnUnassignContent, update or refresh scraper information in the database
    and optionally start a scan
    \param path the path to assign content for
    */
-  static void OnAssignContent(const CStdString &path);
+  static void OnAssignContent(const std::string &path);
 
   /*! \brief checks the database for a resume position and puts together a string
    \param item selected item
    \return string containing the resume position or an empty string if there is no resume position
    */
-  static CStdString GetResumeString(const CFileItem &item);
+  static std::string GetResumeString(const CFileItem &item);
 
 protected:
-  void OnScan(const CStdString& strPath, bool scanAll = false);
+  void OnScan(const std::string& strPath, bool scanAll = false);
   virtual void OnInitWindow();
   virtual void UpdateButtons();
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
@@ -106,7 +106,7 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
-  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
+  virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {};
   virtual std::string GetStartFolder(const std::string &dir);
 
   bool OnClick(int iItem);
@@ -138,7 +138,7 @@ protected:
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
 
-  static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
+  static bool OnUnAssignContent(const std::string &path, int label1, int label2, int label3);
 
   static bool StackingAvailable(const CFileItemList &items);
 

@@ -106,7 +106,8 @@ void CPVRDatabase::CreateTables()
         "bIsRadio        bool, "
         "iGroupType      integer, "
         "sName           varchar(64), "
-        "iLastWatched    integer"
+        "iLastWatched    integer, "
+        "bIsHidden       bool"
       ")"
   );
 
@@ -187,6 +188,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iSubChannelNumber integer");
     m_pDS->exec("UPDATE map_channelgroups_channels SET iSubChannelNumber = 0");
   }
+
+  if (iVersion < 27)
+    m_pDS->exec("ALTER TABLE channelgroups ADD bIsHidden bool");
 }
 
 int CPVRDatabase::GetLastChannelId(void)
@@ -428,7 +432,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
     // XXX work around for frodo: fix this up so it uses one query for all db types
     // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
-    if (g_advancedSettings.m_databaseTV.type.Equals("mysql"))
+    if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseTV.type, "mysql"))
     {
       std::string strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
       bDelete = ExecuteQuery(strQuery);
@@ -507,6 +511,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
         CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("idGroup").get_asInt(), m_pDS->fv("sName").get_asString());
         data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
         data.SetLastWatched((time_t) m_pDS->fv("iLastWatched").get_asInt());
+        data.SetHidden(m_pDS->fv("bIsHidden").get_asBool());
         results.Update(data);
 
         CLog::Log(LOGDEBUG, "PVR - %s - group '%s' loaded from the database", __FUNCTION__, data.GroupName().c_str());
@@ -701,11 +706,11 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched) VALUES (%i, %i, '%s', %u)",
-          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched());
+      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, bIsHidden) VALUES (%i, %i, '%s', %u, %i)",
+          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden());
     else
-      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched) VALUES (%i, %i, %i, '%s', %u)",
-          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched());
+      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, bIsHidden) VALUES (%i, %i, %i, '%s', %u, %i)",
+          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden());
 
     bReturn = ExecuteQuery(strQuery);
 

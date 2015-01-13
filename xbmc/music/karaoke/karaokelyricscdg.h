@@ -32,7 +32,7 @@ typedef uint32_t color_t;
 class CKaraokeLyricsCDG : public CKaraokeLyrics
 {
   public:
-	CKaraokeLyricsCDG( const CStdString& cdgFile );
+	CKaraokeLyricsCDG( const std::string& cdgFile );
     ~CKaraokeLyricsCDG();
 
     //! Parses the lyrics or song file, and loads the lyrics into memory. Returns true if the
@@ -46,7 +46,7 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     virtual bool HasVideo();
 
     //! Should return video parameters if HasVideo() returned true
-    virtual void GetVideoParameters( CStdString& path, int64_t& offset  );
+    virtual void GetVideoParameters(std::string& path, int64_t& offset);
 
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
@@ -82,7 +82,7 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 	void setPixel( int x, int y, BYTE color );
 
     //! CDG file name
-	CStdString         m_cdgFile;
+	std::string         m_cdgFile;
 
 	typedef struct
 	{

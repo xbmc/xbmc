@@ -226,7 +226,7 @@ CD3DEffect::~CD3DEffect()
   Release();
 }
 
-bool CD3DEffect::Create(const CStdString &effectString, DefinesMap* defines)
+bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
 {
   Release();
   m_effectString = effectString;
@@ -335,12 +335,12 @@ bool CD3DEffect::CreateEffect()
 	definemacros.back().Name = 0;
 	definemacros.back().Definition = 0;
 
-  hr = D3DXCreateEffect(g_Windowing.Get3DDevice(),  m_effectString, m_effectString.length(), &definemacros[0], NULL, 0, NULL, &m_effect, &pError );
+  hr = D3DXCreateEffect(g_Windowing.Get3DDevice(),  m_effectString.c_str(), m_effectString.length(), &definemacros[0], NULL, 0, NULL, &m_effect, &pError );
   if(hr == S_OK)
     return true;
   else if(pError)
   {
-    CStdString error;
+    std::string error;
     error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
     CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): %s", error.c_str());
   }

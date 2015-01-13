@@ -59,6 +59,7 @@
 #include "addons/AddonInstaller.h"
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
+#include "dialogs/GUIDialogPVRGroupManager.h"
 
 using namespace MUSIC_INFO;
 using namespace PVR;
@@ -203,6 +204,15 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
         dialog->DoModal();
     }
   }
+  else if (settingId == "pvrmanager.groupmanager")
+  {
+    if (IsStarted())
+    {
+      CGUIDialogPVRGroupManager *dialog = (CGUIDialogPVRGroupManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      if (dialog)
+        dialog->DoModal();
+    }
+  }
   else if (settingId == "pvrclient.menuhook")
   {
     if (IsStarted())
@@ -271,7 +281,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
     return true;
 
   // there's add-ons that couldn't be updated
-  for (std::map<std::string, std::string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); ++it)
   {
     if (!InstallAddonAllowed(it->first))
     {
@@ -292,7 +302,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   Cleanup();
 
   // upgrade all add-ons
-  for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); it++)
+  for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
   {
     CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
     CAddonInstaller::Get().Install(it->first, true, it->second, false);

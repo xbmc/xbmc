@@ -137,14 +137,19 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
 
   glEnable(GL_SCISSOR_TEST); 
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.LoadIdentity();
+  glMatrixProject.Clear();
+  glMatrixModview->LoadIdentity();
+  glMatrixProject->Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixProject.Load();
 
-  g_matrices.Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixModview.Clear();
+  glMatrixModview->LoadIdentity();
+  glMatrixModview.Load();
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.LoadIdentity();
-  
+  glMatrixTexture.Clear();
+  glMatrixTexture->LoadIdentity();
+  glMatrixTexture.Load();
+
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glEnable(GL_BLEND);          // Turn Blending On
   glDisable(GL_DEPTH_TEST);  
@@ -238,7 +243,7 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
   }
   else
   {
-    CStdString name;
+    std::string name;
     name  = " ";
     name += extension;
     name += " ";
@@ -357,12 +362,10 @@ void CRenderSystemGLES::CaptureStateBlock()
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PushMatrix();
-  g_matrices.MatrixMode(MM_TEXTURE);
-  g_matrices.PushMatrix();
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
+  glMatrixProject.Push();
+  glMatrixModview.Push();
+  glMatrixTexture.Push();
+
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   glActiveTexture(GL_TEXTURE0);
 //TODO - NOTE: Only for Screensavers & Visualisations
@@ -374,12 +377,9 @@ void CRenderSystemGLES::ApplyStateBlock()
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_TEXTURE);
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
+  glMatrixProject.PopLoad();
+  glMatrixModview.PopLoad();
+  glMatrixTexture.PopLoad();
   glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);  
@@ -398,20 +398,14 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   float w = (float)m_viewPort[2]*0.5f;
   float h = (float)m_viewPort[3]*0.5f;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.LoadIdentity();
-  g_matrices.Translatef(-(w + offset.x), +(h + offset.y), 0);
-  g_matrices.LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.LoadIdentity();
-  g_matrices.Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  g_matrices.MatrixMode(MM_MODELVIEW);
+  glMatrixModview->LoadIdentity();
+  glMatrixModview->Translatef(-(w + offset.x), +(h + offset.y), 0);
+  glMatrixModview->LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  glMatrixModview.Load();
 
-  GLfloat* matx;
-  matx = g_matrices.GetMatrix(MM_MODELVIEW);
-  memcpy(m_view, matx, 16 * sizeof(GLfloat));
-  matx = g_matrices.GetMatrix(MM_PROJECTION);
-  memcpy(m_projection, matx, 16 * sizeof(GLfloat));
+  glMatrixProject->LoadIdentity();
+  glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  glMatrixProject.Load();
 
   g_graphicsContext.EndPaint();
 }
@@ -419,7 +413,7 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
 void CRenderSystemGLES::Project(float &x, float &y, float &z)
 {
   GLfloat coordX, coordY, coordZ;
-  if (g_matrices.Project(x, y, z, m_view, m_projection, m_viewPort, &coordX, &coordY, &coordZ))
+  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX, &coordY, &coordZ))
   {
     x = coordX;
     y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
@@ -434,8 +428,8 @@ bool CRenderSystemGLES::TestRender()
   //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetCurrentResolutionInfo();
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
-  g_matrices.PushMatrix();
-  g_matrices.Rotatef( theta, 0.0f, 0.0f, 1.0f );
+  glMatrixModview.Push();
+  glMatrixModview->Rotatef( theta, 0.0f, 0.0f, 1.0f );
 
   EnableGUIShader(SM_DEFAULT);
 
@@ -465,7 +459,7 @@ bool CRenderSystemGLES::TestRender()
 
   DisableGUIShader();
 
-  g_matrices.PopMatrix();
+  glMatrixModview.Pop();
 
   theta += 1.0f;
 
@@ -477,8 +471,7 @@ void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatri
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
+  glMatrixModview.Push();
   GLfloat matrix[4][4];
 
   for(int i = 0; i < 3; i++)
@@ -490,7 +483,8 @@ void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatri
   matrix[2][3] = 0.0f;
   matrix[3][3] = 1.0f;
 
-  g_matrices.MultMatrixf(&matrix[0][0]);
+  glMatrixModview->MultMatrixf(&matrix[0][0]);
+  glMatrixModview.Load();
 }
 
 void CRenderSystemGLES::RestoreHardwareTransform()
@@ -498,8 +492,7 @@ void CRenderSystemGLES::RestoreHardwareTransform()
   if (!m_bRenderCreated)
     return;
 
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PopMatrix();
+  glMatrixModview.PopLoad();
 }
 
 void CRenderSystemGLES::CalculateMaxTexturesize()

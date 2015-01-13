@@ -14,13 +14,13 @@ endif()
 
 include(ExternalProject)
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/../output/depends)
+if(NOT DEPENDS_PATH)
+  set(DEPENDS_PATH ${PROJECT_SOURCE_DIR}/../build/depends)
 else()
-  file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)
+  file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
 endif()
-get_filename_component(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" ABSOLUTE)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
+get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
+list(APPEND CMAKE_PREFIX_PATH ${DEPENDS_PATH})
 
 if(NOT DEPENDS_TO_BUILD)
   set(DEPENDS_TO_BUILD "all")
@@ -67,11 +67,11 @@ foreach(file ${cmake_input_files})
         message(STATUS "${id} extraflags: ${extraflags}")
       endif()
 
-      set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
+      set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${DEPENDS_PATH}
                      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                      -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
-                     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+                     -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
                      -DARCH_DEFINES=${ARCH_DEFINES}
                      -DENABLE_STATIC=1
                      -DBUILD_SHARED_LIBS=0
@@ -97,7 +97,7 @@ foreach(file ${cmake_input_files})
         set(INSTALL_COMMAND INSTALL_COMMAND ${CMAKE_COMMAND}
                                             -DINPUTDIR=${CMAKE_BINARY_DIR}/build/${id}/src/${id}-build/
                                             -DINPUTFILE=${dir}/install.txt
-                                            -DDESTDIR=${CMAKE_INSTALL_PREFIX}
+                                            -DDESTDIR=${DEPENDS_PATH}
                                             -DENABLE_STATIC=1
                                             "${extraflags}"
                                             -P ${PROJECT_SOURCE_DIR}/install.cmake)
@@ -153,5 +153,5 @@ if(EXISTS ${PROJECT_SOURCE_DIR}/${CORE_SYSTEM_NAME}/CMakeLists.txt)
   message(STATUS "Processing ${CORE_SYSTEM_NAME}")
   add_subdirectory(${CORE_SYSTEM_NAME})
 else()
-  message(FATAL_ERROR "CORE_SYSTEM_NAME: ${PROJECT_SOURCE_DIR}/${CORE_SYSTEM_NAME}/CMakeLists.txt")
+  message(STATUS "No platform specific file ${PROJECT_SOURCE_DIR}/${CORE_SYSTEM_NAME}/CMakeLists.txt found")
 endif()

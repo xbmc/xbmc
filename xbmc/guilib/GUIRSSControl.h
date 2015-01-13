@@ -44,7 +44,7 @@ class CRssReader;
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-  CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags);
+  CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, std::string& strRSSTags);
   CGUIRSSControl(const CGUIRSSControl &from);
   virtual ~CGUIRSSControl(void);
   virtual CGUIRSSControl *Clone() const { return new CGUIRSSControl(*this); };
@@ -69,7 +69,7 @@ protected:
   CRssReader* m_pReader;
   vecText m_feed;
 
-  CStdString m_strRSSTags;
+  std::string m_strRSSTags;
 
   CLabelInfo m_label;
   CGUIInfoColor m_channelColor;

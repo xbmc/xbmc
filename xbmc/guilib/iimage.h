@@ -18,7 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "utils/StdString.h"
+#include <string>
 
 class IImage
 {
@@ -57,7 +57,7 @@ public:
    \param bufferoutSize The output buffer size
    \return true if the thumbnail was successfully created
    */
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
                                           unsigned char* &bufferout, unsigned int &bufferoutSize)=0;
   /*!
    \brief Frees the output buffer allocated by CreateThumbnailFromSurface

@@ -29,7 +29,7 @@
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
-  CPythonInvoker(ILanguageInvocationHandler *invocationHandler);
+  explicit CPythonInvoker(ILanguageInvocationHandler *invocationHandler);
   virtual ~CPythonInvoker();
 
   virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>());

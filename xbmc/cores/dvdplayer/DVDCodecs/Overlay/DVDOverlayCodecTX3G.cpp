@@ -27,10 +27,13 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/auto_buffer.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program
 // adapted from https://trac.handbrake.fr/browser/trunk/libhb/dectx3gsub.c;
+
+#define LEN_CHECK(x)    do { if((end - pos) < (x)) return OC_ERROR; } while(0)
 
 // NOTE: None of these macros check for buffer overflow
 #define READ_U8()       *pos;                                                     pos += 1;
@@ -92,15 +95,12 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   if (m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
-  uint8_t *data = pPacket->pData;
-  int size = pPacket->iSize;
-
   m_pOverlay = new CDVDOverlayText();
   CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
 
   // do not move this. READ_XXXX macros modify pos.
-  uint8_t  *pos = data;
-  uint8_t  *end = pos + size;
+  uint8_t  *pos = pPacket->pData;
+  uint8_t  *end = pPacket->pData + pPacket->iSize;
 
   // Parse the packet as a TX3G TextSample.
   // Look for a single StyleBox ('styl') and 
@@ -108,18 +108,26 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   // Ignore all other box types.
   // NOTE: Buffer overflows on read are not checked.
   // ALSO: READ_XXXX/SKIP_XXXX macros will modify pos.
+  LEN_CHECK(2);
   uint16_t textLength = READ_U16();
+  LEN_CHECK(textLength);
   uint8_t *text = READ_ARRAY(textLength);
 
   int numStyleRecords = 0;
   // reserve one more style slot for broken encoders
-  uint8_t *bgnStyle   = (uint8_t*)calloc(textLength+1, 1);
-  uint8_t *endStyle   = (uint8_t*)calloc(textLength+1, 1);
+
+  XUTILS::auto_buffer bgnStyle(textLength+1);
+  XUTILS::auto_buffer endStyle(textLength+1);
+
+  memset(bgnStyle.get(), 0, textLength+1);
+  memset(endStyle.get(), 0, textLength+1);
+
   int bgnColorIndex = 0, endColorIndex = 0;
   uint32_t textColorRGBA = m_textColor;
   while (pos < end)
   {
     // Read TextSampleModifierBox
+    LEN_CHECK(4);
     uint32_t size = READ_U32();
     if (size == 0)
       size = pos - end;   // extends to end of packet
@@ -128,6 +136,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
       CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: TextSampleModifierBox has unsupported large size" );
       break;
     }
+    LEN_CHECK(4);
     uint32_t type = READ_U32();
     if (type == FOURCC("uuid"))
     {
@@ -141,14 +150,17 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
       if ( numStyleRecords != 0 )
       {
         CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: found additional StyleBoxes on subtitle; skipping" );
+        LEN_CHECK(size);
         SKIP_ARRAY(size);
         continue;
       }
 
+      LEN_CHECK(2);
       numStyleRecords = READ_U16();
       for (int i = 0; i < numStyleRecords; i++)
       {
         StyleRecord curRecord;
+        LEN_CHECK(12);
         curRecord.bgnChar         = READ_U16();
         curRecord.endChar         = READ_U16();
         curRecord.fontID          = READ_U16();
@@ -164,8 +176,8 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
         if (curRecord.endChar > textLength)
           curRecord.endChar = textLength;
 
-        bgnStyle[curRecord.bgnChar] |= curRecord.faceStyleFlags;
-        endStyle[curRecord.endChar] |= curRecord.faceStyleFlags;
+        bgnStyle.get()[curRecord.bgnChar] |= curRecord.faceStyleFlags;
+        endStyle.get()[curRecord.endChar] |= curRecord.faceStyleFlags;
         bgnColorIndex = curRecord.bgnChar;
         endColorIndex = curRecord.endChar;
         textColorRGBA = curRecord.textColorRGBA;
@@ -174,6 +186,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     else
     {
       // Found some other kind of TextSampleModifierBox. Skip it.
+      LEN_CHECK(size);
       SKIP_ARRAY(size);
     }
   }
@@ -192,8 +205,8 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
       continue;   // ...without incrementing 'charIndex'
     }
 
-    uint8_t bgnStyles = bgnStyle[charIndex];
-    uint8_t endStyles = endStyle[charIndex];
+    uint8_t bgnStyles = bgnStyle.get()[charIndex];
+    uint8_t endStyles = endStyle.get()[charIndex];
 
     // [B] or [/B] -> toggle bold on and off
     // [I] or [/I] -> toggle italics on and off
@@ -228,9 +241,6 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     charIndex++;
   }
   
-  free(bgnStyle);
-  free(endStyle);
-    
   if (strUTF8.empty())
     return OC_BUFFER;
 

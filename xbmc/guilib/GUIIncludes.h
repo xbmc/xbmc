@@ -20,10 +20,10 @@
  *
  */
 
-#include "utils/StdString.h"
-
 #include <map>
 #include <set>
+#include <string>
+#include <vector>
 #include "interfaces/info/InfoBool.h"
 
 // forward definitions
@@ -40,7 +40,7 @@ public:
   ~CGUIIncludes();
 
   void ClearIncludes();
-  bool LoadIncludes(const CStdString &includeFile);
+  bool LoadIncludes(const std::string &includeFile);
   bool LoadIncludesFromXML(const TiXmlElement *root);
 
   /*! \brief Resolve <include>name</include> tags recursively for the given XML element
@@ -49,18 +49,18 @@ public:
    \param node an XML Element - all child elements are traversed.
    */
   void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
-  const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
+  const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
 private:
   void ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
-  CStdString ResolveConstant(const CStdString &constant) const;
-  bool HasIncludeFile(const CStdString &includeFile) const;
-  std::map<CStdString, TiXmlElement> m_includes;
-  std::map<CStdString, TiXmlElement> m_defaults;
-  std::map<CStdString, TiXmlElement> m_skinvariables;
-  std::map<CStdString, CStdString> m_constants;
-  std::vector<CStdString> m_files;
-  typedef std::vector<CStdString>::const_iterator iFiles;
+  std::string ResolveConstant(const std::string &constant) const;
+  bool HasIncludeFile(const std::string &includeFile) const;
+  std::map<std::string, TiXmlElement> m_includes;
+  std::map<std::string, TiXmlElement> m_defaults;
+  std::map<std::string, TiXmlElement> m_skinvariables;
+  std::map<std::string, std::string> m_constants;
+  std::vector<std::string> m_files;
+  typedef std::vector<std::string>::const_iterator iFiles;
 
   std::set<std::string> m_constantAttributes;
   std::set<std::string> m_constantNodes;

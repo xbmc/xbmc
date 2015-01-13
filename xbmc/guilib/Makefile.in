@@ -82,6 +82,7 @@ ifeq (@USE_OPENGL@,1)
 SRCS += TextureGL.cpp
 SRCS += GUIFontTTFGL.cpp
 SRCS += GUITextureGL.cpp
+SRCS += MatrixGLES.cpp
 endif
 
 ifeq (@USE_OPENGLES@,1)

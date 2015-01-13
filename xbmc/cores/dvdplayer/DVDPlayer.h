@@ -92,6 +92,7 @@ class CDVDDemux;
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
+class CDVDDemuxCC;
 
 namespace PVR
 {
@@ -188,6 +189,7 @@ public:
   int              IndexOf (StreamType type, int source, int id) const;
   int              IndexOf (StreamType type, CDVDPlayer& p) const;
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
+  int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 
@@ -428,6 +430,7 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
+  CDVDDemuxCC* m_pCCDemuxer;
 
   struct SDVDInfo
   {

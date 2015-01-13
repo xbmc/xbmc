@@ -280,18 +280,18 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
 
 void CGUIWindowMusicPlayList::SavePlayList()
 {
-  CStdString strNewFileName;
+  std::string strNewFileName;
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
-    CStdString strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
+    std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
 
     // get selected item
     int iItem = m_viewControl.GetSelectedItem();
-    CStdString strSelectedItem = "";
+    std::string strSelectedItem = "";
     if (iItem >= 0 && iItem < m_vecItems->Size())
     {
       CFileItemPtr pItem = m_vecItems->Get(iItem);
@@ -301,7 +301,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
       }
     }
 
-    CStdString strOldDirectory = m_vecItems->GetPath();
+    std::string strOldDirectory = m_vecItems->GetPath();
     m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
     CPlayListM3U playlist;
@@ -406,7 +406,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label
-  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  std::string items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   MarkPlaying();
@@ -446,10 +446,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
+    std::string strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
     if (strTrackLeft.empty())
       strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-    CStdString strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
+    std::string strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.empty())
       strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
@@ -470,7 +470,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       //        currently it is hacked into m_iprogramCount
 
       // No music info and it's not CDDA so we'll just show the filename
-      CStdString str;
+      std::string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
       str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
       pItem->SetLabel(str);
@@ -599,7 +599,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+    std::string playlist = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

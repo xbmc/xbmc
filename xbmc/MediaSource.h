@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 #include <vector>
 #include "GUIPassword.h"
 
@@ -46,12 +46,12 @@ public:
 
   bool operator==(const CMediaSource &right) const;
 
-  void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<std::string> &paths);
+  void FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths);
   bool IsWritable() const;
-  CStdString strName; ///< Name of the share, can be choosen freely.
-  CStdString strStatus; ///< Status of the share (eg has disk etc.)
-  CStdString strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
-  CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
+  std::string strName; ///< Name of the share, can be choosen freely.
+  std::string strStatus; ///< Status of the share (eg has disk etc.)
+  std::string strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
+  std::string strPath; ///< Path of the share, eg. iso9660:// or F:
 
   /*!
   \brief The type of the media source.
@@ -90,11 +90,11 @@ public:
   Value is unknown or unspecified.
   */
   LockType m_iLockMode;
-  CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
+  std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
   int m_iHasLock;
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 
-  CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
+  std::string m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
   std::vector<std::string> vecPaths;
   bool m_ignore; /// <Do not store in xml

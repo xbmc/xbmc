@@ -20,7 +20,7 @@
 
 #include "DDSImage.h"
 #include "XBTF.h"
-#include "libsquish/squish.h"
+#include <squish.h>
 #include "utils/log.h"
 #include <string.h>
 
