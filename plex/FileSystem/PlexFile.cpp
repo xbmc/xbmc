@@ -215,7 +215,7 @@ bool CPlexFile::Service(const CStdString &strURL, CStdString &strHTML)
           m_tokenInvalid = true;
       }
     }
-    CLog::Log(LOGDEBUG, "CPlexFile::Service got error: %d (token invalid: %s) from %s", m_httpresponse, m_tokenInvalid ? "YES" : "NO", strURL.c_str());
+    CLog::Log(LOGDEBUG, "CPlexFile::Service got error: %ld (token invalid: %s) from %s", m_httpresponse, m_tokenInvalid ? "YES" : "NO", strURL.c_str());
 
     if (m_tokenInvalid)
       g_plexApplication.myPlexManager->Poke();
