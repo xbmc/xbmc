@@ -2116,6 +2116,7 @@ void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
   renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
   renderFeatures.push_back(RENDERFEATURE_STRETCH);
   renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
+  renderFeatures.push_back(RENDERFEATURE_ROTATION);
   return;
 }
 
