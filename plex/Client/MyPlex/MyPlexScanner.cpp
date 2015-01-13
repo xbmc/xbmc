@@ -30,7 +30,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
   {
     CLog::Log(LOGERROR, "CMyPlexScanner::DoScan not authorized from myPlex");
     if (dir.IsTokenInvalid())
-      return CMyPlexManager::ERROR_INVALID_TOKEN;
+      return CMyPlexManager::ERROR_INVALID_AUTH_TOKEN;
     else if (dir.GetHTTPResponseCode() == 401)
       return CMyPlexManager::ERROR_WRONG_CREDS;
     return CMyPlexManager::ERROR_NETWORK;

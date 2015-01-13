@@ -143,7 +143,7 @@ std::string CMyPlexManager::errorToString(CMyPlexManager::EMyPlexError error)
 {
   switch (error)
   {
-    case ERROR_INVALID_TOKEN:
+    case ERROR_INVALID_AUTH_TOKEN:
       return "invalid token";
     case ERROR_NETWORK:
       return "network";
@@ -186,7 +186,7 @@ void CMyPlexManager::BroadcastState()
       if (m_lastError == ERROR_WRONG_CREDS && g_windowManager.GetActiveWindow() != WINDOW_SETTINGS_SYSTEM && m_homeId != -1)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20117), "Please try again", 3000, false);
 
-      if (m_lastError == ERROR_INVALID_TOKEN)
+      if (m_lastError == ERROR_INVALID_AUTH_TOKEN)
       {
 
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Disconnected from plex.tv", "Please login again...", 3000, false);
@@ -237,7 +237,7 @@ TiXmlElement* CMyPlexManager::GetXml(const CURL &url, bool POST)
     // we need to check for 401 or 422, both can mean that the token is wrong
     if (file.IsTokenInvalid())
     {
-      m_lastError = ERROR_INVALID_TOKEN;
+      m_lastError = ERROR_INVALID_AUTH_TOKEN;
       m_state = STATE_NOT_LOGGEDIN;
     }
     else if (file.GetLastHTTPResponseCode() == 401)
@@ -380,7 +380,7 @@ int CMyPlexManager::DoScanMyPlex()
 
   if (m_lastError != ERROR_NOERROR)
   {
-    if (m_lastError == ERROR_INVALID_TOKEN || m_lastError == ERROR_WRONG_CREDS)
+    if (m_lastError == ERROR_INVALID_AUTH_TOKEN || m_lastError == ERROR_WRONG_CREDS)
       m_state = STATE_NOT_LOGGEDIN;
     else if (m_lastError == ERROR_NETWORK)
       m_state = STATE_REFRESH;
