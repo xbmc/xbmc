@@ -106,6 +106,11 @@ namespace XFILE
       return m_file.GetLastHTTPResponseCode();
     }
 
+    bool IsTokenInvalid() const
+    {
+      return m_file.IsTokenInvalid();
+    }
+
     virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
 
     virtual bool IsAllowed(const CStdString& strFile) const

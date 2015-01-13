@@ -11,6 +11,7 @@ namespace XFILE
   class CPlexFile : public CCurlFile
   {
   public:
+
     CPlexFile(void);
     virtual ~CPlexFile() {};
 
@@ -27,5 +28,13 @@ namespace XFILE
      * there is something else wrong */
     static bool CanBeTranslated(const CURL &url);
     static CStdString GetMimeType(const CURL &url);
+    bool IsTokenInvalid() const
+    {
+      return m_tokenInvalid;
+    }
+
+  protected:
+    bool m_tokenInvalid;
+    virtual bool Service(const CStdString &strURL, CStdString &strHTML);
   };
 }

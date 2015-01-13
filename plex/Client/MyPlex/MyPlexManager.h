@@ -29,6 +29,7 @@ public:
   {
     ERROR_NOERROR,
     ERROR_NETWORK,
+    ERROR_INVALID_TOKEN,
     ERROR_WRONG_CREDS,
     ERROR_PARSE,
     ERROR_TMEOUT
@@ -70,6 +71,9 @@ private:
   void CacheUserInfo(TiXmlElement* userXml);
   
   void BroadcastState();
+  std::string stateToString(EMyPlexState state);
+  std::string errorToString(EMyPlexError error);
+
   TiXmlElement* GetXml(const CURL &url, bool POST=false);
   
   /* XML Parsing */
@@ -96,5 +100,4 @@ private:
   CMyPlexPinInfo m_currentPinInfo;
   
   CXBMCTinyXML m_doc;
-  bool m_havePlexServers;
 };

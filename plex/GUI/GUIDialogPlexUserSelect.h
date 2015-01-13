@@ -16,7 +16,7 @@ public:
   CStdString getSelectedUser() { return m_selectedUser; }
   CStdString getSelectedUserThumb() { return m_selectedUserThumb; }
 
-  void fetchUsers();
+  bool fetchUsers();
   bool m_authed;
   bool m_userSwitched;
   CStdString m_selectedUser;

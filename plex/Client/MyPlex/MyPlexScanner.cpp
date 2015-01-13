@@ -28,12 +28,12 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
 
   if (!dir.GetDirectory(url.Get(), list))
   {
-    if (dir.GetHTTPResponseCode() == 401)
-    {
-      CLog::Log(LOGERROR, "CMyPlexScanner::DoScan not authorized from myPlex");
+    CLog::Log(LOGERROR, "CMyPlexScanner::DoScan not authorized from myPlex");
+    if (dir.IsTokenInvalid())
+      return CMyPlexManager::ERROR_INVALID_TOKEN;
+    else if (dir.GetHTTPResponseCode() == 401)
       return CMyPlexManager::ERROR_WRONG_CREDS;
-    }
-    return CMyPlexManager::ERROR_NOERROR;
+    return CMyPlexManager::ERROR_NETWORK;
   }
 
   PlexServerList serverList;

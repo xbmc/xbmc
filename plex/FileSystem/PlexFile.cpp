@@ -18,17 +18,16 @@ using namespace std;
 
 typedef pair<string, string> stringPair;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 vector<stringPair> CPlexFile::GetHeaderList()
 {
   std::vector<std::pair<std::string, std::string> > hdrs;
   
   hdrs.push_back(stringPair("X-Plex-Version", g_infoManager.GetVersion()));
-
   hdrs.push_back(stringPair("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
   hdrs.push_back(stringPair("X-Plex-Provides", "player"));
   hdrs.push_back(stringPair("X-Plex-Product", "Plex Home Theater"));
   hdrs.push_back(stringPair("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename")));
-  
   hdrs.push_back(stringPair("X-Plex-Platform", "Plex Home Theater"));
   hdrs.push_back(stringPair("X-Plex-Model", PlexUtils::GetMachinePlatform()));
 #ifdef TARGET_RPI
@@ -64,6 +63,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
   return hdrs;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexFile::CPlexFile(void) : CCurlFile()
 {
   BOOST_FOREACH(stringPair sp, GetHeaderList())
@@ -72,8 +72,8 @@ CPlexFile::CPlexFile(void) : CCurlFile()
   SetUserAgent(PLEX_HOME_THEATER_USER_AGENT);
 }
 
-bool
-CPlexFile::BuildHTTPURL(CURL& url)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexFile::BuildHTTPURL(CURL& url)
 {
   CURL newUrl;
   CPlexServerPtr server;
@@ -116,14 +116,15 @@ CPlexFile::BuildHTTPURL(CURL& url)
   return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexFile::CanBeTranslated(const CURL &url)
 {
   CURL t(url);
   return BuildHTTPURL(t);
 }
 
-bool
-CPlexFile::Open(const CURL &url)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexFile::Open(const CURL &url)
 {
   CURL newUrl(url);
   if (BuildHTTPURL(newUrl))
@@ -131,8 +132,8 @@ CPlexFile::Open(const CURL &url)
   return false;
 }
 
-int
-CPlexFile::Stat(const CURL &url, struct __stat64 *buffer)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexFile::Stat(const CURL &url, struct __stat64 *buffer)
 {
   CURL newUrl(url);
 
@@ -151,8 +152,8 @@ CPlexFile::Stat(const CURL &url, struct __stat64 *buffer)
   return -1;
 }
 
-bool
-CPlexFile::Exists(const CURL &url)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexFile::Exists(const CURL &url)
 {
   CURL newUrl(url);
   if (BuildHTTPURL(newUrl))
@@ -187,4 +188,38 @@ int CPlexFile::IoControl(EIoControl request, void* param)
     return 1;
   else
     return CCurlFile::IoControl(request, param);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexFile::Service(const CStdString &strURL, CStdString &strHTML)
+{
+  bool ret = CCurlFile::Service(strURL, strHTML);
+  m_tokenInvalid = false;
+
+  if (!ret && (m_httpresponse == 422 || m_httpresponse == 401))
+  {
+    if (m_httpresponse == 422)
+    {
+      m_tokenInvalid = true;
+    }
+    else
+    {
+      CXBMCTinyXML doc;
+      doc.Parse(strHTML);
+      TiXmlElement* root = doc.RootElement();
+      if (root)
+      {
+        // do we have a <error> node?
+        TiXmlNode* error = root->FirstChild("error");
+        if (error && error->FirstChild())
+          m_tokenInvalid = true;
+      }
+    }
+    CLog::Log(LOGDEBUG, "CPlexFile::Service got error: %d (token invalid: %s) from %s", m_httpresponse, m_tokenInvalid ? "YES" : "NO", strURL.c_str());
+
+    if (m_tokenInvalid)
+      g_plexApplication.myPlexManager->Poke();
+  }
+
+  return ret;
 }

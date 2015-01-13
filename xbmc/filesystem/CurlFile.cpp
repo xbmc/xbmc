@@ -858,10 +858,10 @@ bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
     }
   }
   /* PLEX */
-  else if (m_httpresponse == 500 && !m_state->m_httpheader.GetValue("X-Plex-Protocol").IsEmpty())
+  else if (boost::starts_with(strURL, "plexserver://"))
   {
-    /* Additional debug data? */
-    CLog::Log(LOGDEBUG, "CURL: Failed with 500 on a Plex Server, reading data");
+    // read the failure as well, since it can contain important information.
+    CLog::Log(LOGDEBUG, "CCurlFile::Service reading extra failure information");
     ReadData(strHTML);
   }
   /* END PLEX */
