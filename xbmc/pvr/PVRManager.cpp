@@ -1145,22 +1145,21 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   g_infoManager.SetCurrentItem(*m_currentFile);
 
   CPVRChannel* channelTag = item.GetPVRChannelInfoTag();
-  CEpgInfoTag epgTagNow;
-  bool bHasTagNow = channelTag->GetEPGNow(epgTagNow);
+  CEpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
 
   if (channelTag->IsRadio())
   {
     CMusicInfoTag* musictag = item.GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetTitle(bHasTagNow ?
-          epgTagNow.Title() :
+      musictag->SetTitle(epgTagNow ?
+          epgTagNow->Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
               "" :
               g_localizeStrings.Get(19055)); // no information available
-      if (bHasTagNow)
-        musictag->SetGenre(epgTagNow.Genre());
-      musictag->SetDuration(bHasTagNow ? epgTagNow.GetDuration() : 3600);
+      if (epgTagNow)
+        musictag->SetGenre(epgTagNow->Genre());
+      musictag->SetDuration(epgTagNow ? epgTagNow->GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());
@@ -1174,18 +1173,18 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CVideoInfoTag *videotag = item.GetVideoInfoTag();
     if (videotag)
     {
-      videotag->m_strTitle = bHasTagNow ?
-          epgTagNow.Title() :
+      videotag->m_strTitle = epgTagNow ?
+          epgTagNow->Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
               "" :
               g_localizeStrings.Get(19055); // no information available
-      if (bHasTagNow)
-        videotag->m_genre = epgTagNow.Genre();
+      if (epgTagNow)
+        videotag->m_genre = epgTagNow->Genre();
       videotag->m_strPath = channelTag->Path();
       videotag->m_strFileNameAndPath = channelTag->Path();
-      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : "";
-      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : "";
-      videotag->m_iEpisode = bHasTagNow ? epgTagNow.EpisodeNum() : 0;
+      videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
+      videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
+      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNum() : 0;
     }
   }
 

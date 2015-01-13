@@ -20,10 +20,12 @@
  */
 
 #include "guilib/GUIDialog.h"
+#include <boost/shared_ptr.hpp>
 
 namespace EPG
 {
   class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 
 namespace PVR
@@ -44,7 +46,7 @@ namespace PVR
   protected:
     virtual void OnInitWindow();
 
-    bool ActionStartTimer(const EPG::CEpgInfoTag *tag);
+    bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
     bool ActionCancelTimer(CFileItemPtr timer);
 
     bool OnClickButtonOK(CGUIMessage &message);

@@ -672,7 +672,11 @@ namespace INFO
 
 // forward
 class CGUIWindow;
-namespace EPG { class CEpgInfoTag; }
+namespace EPG
+{
+  class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
+}
 
 // Info Flags
 // Stored in the top 8 bits of GUIInfo::m_data1
@@ -899,10 +903,9 @@ protected:
 
   /*!
    * @brief Get the EPG tag that is currently active
-   * @param tag The active tag
-   * @return True if an EPG tag is active and 'tag' was updated, false otherwise
+   * @return the currently active tag or NULL if no active tag was found
    */
-  bool GetEpgInfoTag(EPG::CEpgInfoTag& tag) const;
+  EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
 
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;

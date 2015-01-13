@@ -161,17 +161,18 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["channelnumber"] = m_iCachedChannelNumber;
   value["subchannelnumber"] = m_iCachedSubChannelNumber;
   
-  CEpgInfoTag epg;
-  if (GetEPGNow(epg))
+  CEpgInfoTagPtr epg(GetEPGNow());
+  if (epg)
   {
     // add the properties of the current EPG item to the main object
-    epg.Serialize(value);
+    epg->Serialize(value);
     // and add an extra sub-object with only the current EPG details
-    epg.Serialize(value["broadcastnow"]);
+    epg->Serialize(value["broadcastnow"]);
   }
 
-  if (GetEPGNext(epg))
-    epg.Serialize(value["broadcastnext"]);
+  epg = GetEPGNext();
+  if (epg)
+    epg->Serialize(value["broadcastnext"]);
 }
 
 /********** XBMC related channel methods **********/
@@ -616,16 +617,24 @@ bool CPVRChannel::ClearEPG() const
   return true;
 }
 
-bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
+CEpgInfoTagPtr CPVRChannel::GetEPGNow() const
 {
   CEpg *epg = GetEPG();
-  return epg ? epg->InfoTagNow(tag) : false;
+  if (epg)
+    return epg->GetTagNow();
+
+  CEpgInfoTagPtr empty;
+  return empty;
 }
 
-bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
+CEpgInfoTagPtr CPVRChannel::GetEPGNext() const
 {
   CEpg *epg = GetEPG();
-  return epg ? epg->InfoTagNext(tag) : false;
+  if (epg)
+    return epg->GetTagNext();
+
+  CEpgInfoTagPtr empty;
+  return empty;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)

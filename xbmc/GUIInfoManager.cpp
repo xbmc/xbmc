@@ -1528,9 +1528,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       {
         if (m_currentFile->HasPVRChannelInfoTag())
         {
-          CEpgInfoTag tag;
-          return m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(tag) ?
-                   tag.Title() :
+          CEpgInfoTagPtr tag(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
+          return tag ?
+                   tag->Title() :
                    CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
         }
@@ -2647,10 +2647,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case VIDEOPLAYER_HAS_EPG:
       if (m_currentFile->HasPVRChannelInfoTag())
-      {
-        CEpgInfoTag epgTag;
-        bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
-      }
+        bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
     break;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
       if(g_application.m_pPlayer->IsPlaying())
@@ -3185,9 +3182,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == PLAYER_FINISH_TIME)
   {
     CDateTime time;
-    CEpgInfoTag currentTag;
-    if (GetEpgInfoTag(currentTag))
-      time = currentTag.EndAsLocalTime();
+    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
+    if (currentTag)
+      time = currentTag->EndAsLocalTime();
     else
     {
       time = CDateTime::GetCurrentDateTime();
@@ -3198,9 +3195,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == PLAYER_START_TIME)
   {
     CDateTime time;
-    CEpgInfoTag currentTag;
-    if (GetEpgInfoTag(currentTag))
-      time = currentTag.StartAsLocalTime();
+    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
+    if (currentTag)
+      time = currentTag->StartAsLocalTime();
     else
     {
       time = CDateTime::GetCurrentDateTime();
@@ -3772,56 +3769,70 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   else if (m_currentFile->HasPVRChannelInfoTag())
   {
     CPVRChannel* tag = m_currentFile->GetPVRChannelInfoTag();
-    CEpgInfoTag epgTag;
+    CEpgInfoTagPtr epgTag;
 
     switch (item)
     {
     /* Now playing infos */
     case VIDEOPLAYER_ORIGINALTITLE:
-      return tag->GetEPGNow(epgTag) ?
-          epgTag.Title() :
+      epgTag = tag->GetEPGNow();
+      return epgTag ?
+          epgTag->Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
     case VIDEOPLAYER_GENRE:
-      return tag->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
+      epgTag = tag->GetEPGNow();
+      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_PLOT:
-      return tag->GetEPGNow(epgTag) ? epgTag.Plot() : "";
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->Plot() : "";
     case VIDEOPLAYER_PLOT_OUTLINE:
-      return tag->GetEPGNow(epgTag) ? epgTag.PlotOutline() : "";
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->PlotOutline() : "";
     case VIDEOPLAYER_STARTTIME:
-      return tag->GetEPGNow(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:
-      return tag->GetEPGNow(epgTag) ? epgTag.EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
 
     /* Next playing infos */
     case VIDEOPLAYER_NEXT_TITLE:
-      return tag->GetEPGNext(epgTag) ?
-          epgTag.Title() :
+      epgTag = tag->GetEPGNext();
+      return epgTag ?
+          epgTag->Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
     case VIDEOPLAYER_NEXT_GENRE:
-      return tag->GetEPGNext(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
+      epgTag = tag->GetEPGNext();
+      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     case VIDEOPLAYER_NEXT_PLOT:
-      return tag->GetEPGNext(epgTag) ? epgTag.Plot() : "";
+      epgTag = tag->GetEPGNext();
+      return epgTag ? epgTag->Plot() : "";
     case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      return tag->GetEPGNext(epgTag) ? epgTag.PlotOutline() : "";
+      epgTag = tag->GetEPGNext();
+      return epgTag ? epgTag->PlotOutline() : "";
     case VIDEOPLAYER_NEXT_STARTTIME:
-      return tag->GetEPGNext(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      epgTag = tag->GetEPGNext();
+      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_ENDTIME:
-      return tag->GetEPGNext(epgTag) ? epgTag.EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      epgTag = tag->GetEPGNext();
+      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_DURATION:
       {
         std::string duration;
-        if (tag->GetEPGNext(epgTag) && epgTag.GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(epgTag.GetDuration());
+        epgTag = tag->GetEPGNext();
+        if (epgTag && epgTag->GetDuration() > 0)
+          duration = StringUtils::SecondsToTimeString(epgTag->GetDuration());
         return duration;
       }
 
     case VIDEOPLAYER_PARENTAL_RATING:
       {
         std::string rating;
-        if (tag->GetEPGNow(epgTag) && epgTag.ParentalRating() > 0)
-          rating = StringUtils::Format("%i", epgTag.ParentalRating());
+        epgTag = tag->GetEPGNow();
+        if (epgTag && epgTag->ParentalRating() > 0)
+          rating = StringUtils::Format("%i", epgTag->ParentalRating());
         return rating;
       }
       break;
@@ -4044,12 +4055,12 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
     SetCurrentMovie(item);
 
   if (item.HasEPGInfoTag())
-    *m_currentFile->GetEPGInfoTag() = *item.GetEPGInfoTag();
+    m_currentFile->SetEPGInfoTag(item.GetEPGInfoTag());
   else if (item.HasPVRChannelInfoTag())
   {
-    CEpgInfoTag tag;
-    if (item.GetPVRChannelInfoTag()->GetEPGNow(tag))
-      *m_currentFile->GetEPGInfoTag() = tag;
+    CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
+    if (tag)
+      m_currentFile->SetEPGInfoTag(tag);
   }
 
   SetChanged();
@@ -4400,9 +4411,9 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
         const CFileItem *pItem = (const CFileItem *)item;
         if (pItem && pItem->HasPVRChannelInfoTag())
         {
-          CEpgInfoTag epgNow;
-          if (pItem->GetPVRChannelInfoTag()->GetEPGNow(epgNow))
-            value = (int) epgNow.ProgressPercentage();
+          CEpgInfoTagPtr epgNow(pItem->GetPVRChannelInfoTag()->GetEPGNow());
+          if (epgNow)
+            value = (int) epgNow->ProgressPercentage();
         }
         else if (pItem && pItem->HasEPGInfoTag())
         {
@@ -4458,9 +4469,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_TITLE:
     if (item->HasPVRChannelInfoTag())
     {
-      CEpgInfoTag epgTag;
-      return item->GetPVRChannelInfoTag()->GetEPGNow(epgTag) ?
-          epgTag.Title() :
+      CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+      return epgTag ?
+          epgTag->Title() :
           CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
     }
@@ -4568,8 +4579,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     if (item->HasPVRChannelInfoTag())
     {
-      CEpgInfoTag epgTag;
-      return item->GetPVRChannelInfoTag()->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
+      CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
     }
     if (item->HasPVRRecordingInfoTag())
       return StringUtils::Join(item->GetPVRRecordingInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
@@ -4600,8 +4611,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetEPGInfoTag()->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
     if (item->HasPVRChannelInfoTag())
     {
-      CEpgInfoTag epgTag;
-      return item->GetPVRChannelInfoTag()->GetEPGNow(epgTag) ? epgTag.StartAsLocalTime().GetAsLocalizedDateTime(false, false) : CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime(false, false);
+      CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedDateTime(false, false) : CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime(false, false);
     }
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(false, false);
@@ -4656,9 +4667,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasPVRChannelInfoTag())
       {
         const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-        CEpgInfoTag tag;
-        if (channel && channel->GetEPGNow(tag))
-          return StringUtils::SecondsToTimeString(tag.GetDuration());
+        if (channel)
+        {
+          CEpgInfoTagPtr tag(channel->GetEPGNow());
+          if (tag)
+            return StringUtils::SecondsToTimeString(tag->GetDuration());
+        }
         return "";
       }
       else if (item->HasPVRRecordingInfoTag())
@@ -4687,9 +4701,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.Plot();
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->Plot();
+      }
       return "";
     }
     if (item->HasEPGInfoTag())
@@ -4709,9 +4726,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.PlotOutline();
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->PlotOutline();
+      }
       return "";
     }
     if (item->HasEPGInfoTag())
@@ -4894,9 +4914,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.StartAsLocalTime().GetAsLocalizedTime("", false);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->StartAsLocalTime().GetAsLocalizedTime("", false);
+      }
       return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     }
     if (item->HasEPGInfoTag())
@@ -4912,9 +4935,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.EndAsLocalTime().GetAsLocalizedTime("", false);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->EndAsLocalTime().GetAsLocalizedTime("", false);
+      }
       return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     }
     if (item->HasEPGInfoTag())
@@ -4926,9 +4952,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.StartAsLocalTime().GetAsLocalizedDate(true);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->StartAsLocalTime().GetAsLocalizedDate(true);
+      }
       return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     }
     if (item->HasEPGInfoTag())
@@ -4944,9 +4973,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNow(tag))
-        return tag.EndAsLocalTime().GetAsLocalizedDate(true);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->EndAsLocalTime().GetAsLocalizedDate(true);
+      }
       return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     }
     if (item->HasEPGInfoTag())
@@ -5008,73 +5040,100 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_NEXT_STARTTIME:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.StartAsLocalTime().GetAsLocalizedTime("", false);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->StartAsLocalTime().GetAsLocalizedTime("", false);
+      }
     }
     return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
   case LISTITEM_NEXT_ENDTIME:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.EndAsLocalTime().GetAsLocalizedTime("", false);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->EndAsLocalTime().GetAsLocalizedTime("", false);
+      }
     }
     return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
   case LISTITEM_NEXT_STARTDATE:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.StartAsLocalTime().GetAsLocalizedDate(true);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->StartAsLocalTime().GetAsLocalizedDate(true);
+      }
     }
     return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
   case LISTITEM_NEXT_ENDDATE:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.EndAsLocalTime().GetAsLocalizedDate(true);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->EndAsLocalTime().GetAsLocalizedDate(true);
+      }
     }
     return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
   case LISTITEM_NEXT_PLOT:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.Plot();
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->Plot();
+      }
     }
     return "";
   case LISTITEM_NEXT_PLOT_OUTLINE:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.PlotOutline();
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->PlotOutline();
+      }
     }
     return "";
   case LISTITEM_NEXT_DURATION:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return StringUtils::SecondsToTimeString(tag.GetDuration());
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return StringUtils::SecondsToTimeString(tag->GetDuration());
+      }
     }
     return "";
   case LISTITEM_NEXT_GENRE:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator);
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return StringUtils::Join(tag->Genre(), g_advancedSettings.m_videoItemSeparator);
+      }
     }
     return "";
   case LISTITEM_NEXT_TITLE:
     {
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      CEpgInfoTag tag;
-      if (channel && channel->GetEPGNext(tag))
-        return tag.Title();
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNext());
+        if (tag)
+          return tag->Title();
+      }
     }
     return "";
   case LISTITEM_PARENTALRATING:
@@ -5243,8 +5302,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasPVRChannelInfoTag())
       {
-        CEpgInfoTag epgTag;
-        return pItem->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
+        return (pItem->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
       }
       else
       {
@@ -5612,18 +5670,14 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
   return false;
 }
 
-bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
+CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const
 {
+  CEpgInfoTagPtr currentTag;
   if (m_currentFile->HasEPGInfoTag())
   {
-    CEpgInfoTag* currentTag =  m_currentFile->GetEPGInfoTag();
+    currentTag = m_currentFile->GetEPGInfoTag();
     while (currentTag && !currentTag->IsActive())
-      currentTag = currentTag->GetNextEvent().get();
-    if (currentTag)
-    {
-      tag = *currentTag;
-      return true;
-    }
+      currentTag = currentTag->GetNextEvent();
   }
-  return false;
+  return currentTag;
 }

@@ -469,9 +469,8 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
-  CEpgInfoTag epgTag;
-  bool bHasEpgNow = channel.GetEPGNow(epgTag);
-  CPVRTimerInfoTag *newTimer = bHasEpgNow ? CPVRTimerInfoTag::CreateFromEpg(epgTag) : NULL;
+  CEpgInfoTagPtr epgTag(channel.GetEPGNow());
+  CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
@@ -624,8 +623,8 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
 {
   if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->ChannelTag())
   {
-    const CEpgInfoTag *epgTag = item->GetEPGInfoTag();
-    const CPVRChannelPtr channel = epgTag->ChannelTag();
+    const CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
+    const CPVRChannelPtr channel(epgTag->ChannelTag());
     CSingleLock lock(m_critSection);
 
     for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)

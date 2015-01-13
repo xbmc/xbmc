@@ -1203,9 +1203,9 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           ms = (int)(g_application.GetTime() * 1000.0);
         else
         {
-          EPG::CEpgInfoTag epg;
-          if (GetCurrentEpg(epg))
-            ms = epg.Progress() * 1000;
+          EPG::CEpgInfoTagPtr epg(GetCurrentEpg());
+          if (epg)
+            ms = epg->Progress() * 1000;
         }
 
         MillisecondsToTimeObject(ms, result);
@@ -1232,9 +1232,9 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           result = g_application.GetPercentage();
         else
         {
-          EPG::CEpgInfoTag epg;
-          if (GetCurrentEpg(epg))
-            result = epg.ProgressPercentage();
+          EPG::CEpgInfoTagPtr epg(GetCurrentEpg());
+          if (epg)
+            result = epg->ProgressPercentage();
           else
             result = 0;
         }
@@ -1265,9 +1265,9 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           ms = (int)(g_application.GetTotalTime() * 1000.0);
         else
         {
-          EPG::CEpgInfoTag epg;
-          if (GetCurrentEpg(epg))
-            ms = epg.GetDuration() * 1000;
+          EPG::CEpgInfoTagPtr epg(GetCurrentEpg());
+          if (epg)
+            ms = epg->GetDuration() * 1000;
         }
         
         MillisecondsToTimeObject(ms, result);
@@ -1661,17 +1661,14 @@ bool CPlayerOperations::IsPVRChannel()
   return g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio();
 }
 
-bool CPlayerOperations::GetCurrentEpg(EPG::CEpgInfoTag &epg)
+EPG::CEpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
 {
   if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
-    return false;
+    return EPG::CEpgInfoTagPtr();
 
   CPVRChannelPtr currentChannel;
   if (!g_PVRManager.GetCurrentChannel(currentChannel))
-    return false;
+    return EPG::CEpgInfoTagPtr();
 
-  if (!currentChannel->GetEPGNow(epg))
-    return false;
-
-  return true;
+  return currentChannel->GetEPGNow();
 }

@@ -200,40 +200,40 @@ int CEpgDatabase::Get(CEpg &epg)
     {
       while (!m_pDS->eof())
       {
-        CEpgInfoTag newTag;
+        CEpgInfoTagPtr newTag(new CEpgInfoTag());
 
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
         CDateTime startTime(iStartTime);
-        newTag.m_startTime = startTime;
+        newTag->m_startTime = startTime;
 
         iEndTime = (time_t) m_pDS->fv("iEndTime").get_asInt();
         CDateTime endTime(iEndTime);
-        newTag.m_endTime = endTime;
+        newTag->m_endTime = endTime;
 
         iFirstAired = (time_t) m_pDS->fv("iFirstAired").get_asInt();
         CDateTime firstAired(iFirstAired);
-        newTag.m_firstAired = firstAired;
+        newTag->m_firstAired = firstAired;
 
-        newTag.m_iUniqueBroadcastID = m_pDS->fv("iBroadcastUid").get_asInt();
-        newTag.m_iBroadcastId       = m_pDS->fv("idBroadcast").get_asInt();
-        newTag.m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();
-        newTag.m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
-        newTag.m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
-        newTag.m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
-        newTag.m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
-        newTag.m_genre              = StringUtils::Split(m_pDS->fv("sGenre").get_asString().c_str(), g_advancedSettings.m_videoItemSeparator);
-        newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
-        newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
-        newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
-        newTag.m_iEpisodeNumber     = m_pDS->fv("iEpisodeId").get_asInt();
-        newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
-        newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag.m_iSeriesNumber      = m_pDS->fv("iSeriesId").get_asInt();
-        newTag.m_strRecordingId     = m_pDS->fv("sRecordingId").get_asString().c_str();
-        newTag.m_strIconPath        = m_pDS->fv("sIconPath").get_asString().c_str();
+        newTag->m_iUniqueBroadcastID = m_pDS->fv("iBroadcastUid").get_asInt();
+        newTag->m_iBroadcastId       = m_pDS->fv("idBroadcast").get_asInt();
+        newTag->m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();
+        newTag->m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
+        newTag->m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
+        newTag->m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
+        newTag->m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
+        newTag->m_genre              = StringUtils::Split(m_pDS->fv("sGenre").get_asString().c_str(), g_advancedSettings.m_videoItemSeparator);
+        newTag->m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
+        newTag->m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
+        newTag->m_bNotify            = m_pDS->fv("bNotify").get_asBool();
+        newTag->m_iEpisodeNumber     = m_pDS->fv("iEpisodeId").get_asInt();
+        newTag->m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
+        newTag->m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
+        newTag->m_iSeriesNumber      = m_pDS->fv("iSeriesId").get_asInt();
+        newTag->m_strRecordingId     = m_pDS->fv("sRecordingId").get_asString().c_str();
+        newTag->m_strIconPath        = m_pDS->fv("sIconPath").get_asString().c_str();
 
-        epg.AddEntry(newTag);
+        epg.AddEntry(*newTag);
         ++iReturn;
 
         m_pDS->next();

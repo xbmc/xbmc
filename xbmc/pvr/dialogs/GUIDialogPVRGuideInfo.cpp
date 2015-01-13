@@ -51,7 +51,7 @@ CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 {
 }
 
-bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
+bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
 {
   bool bReturn = false;
 
@@ -142,7 +142,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
   {
     bReturn = true;
 
-    const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
+    const CEpgInfoTagPtr tag(m_progItem->GetEPGInfoTag());
     if (!tag || !tag->HasPVRChannel())
     {
       /* invalid channel */
@@ -171,7 +171,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
   {
     Close();
     PlayBackRet ret = PLAYBACK_CANCELED;
-    CEpgInfoTag *epgTag = m_progItem->GetEPGInfoTag();
+    CEpgInfoTagPtr epgTag(m_progItem->GetEPGInfoTag());
 
     if (epgTag)
     {
@@ -203,7 +203,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage &message)
 
   if (message.GetSenderId() == CONTROL_BTN_FIND)
   {
-    const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
+    const CEpgInfoTagPtr tag(m_progItem->GetEPGInfoTag());
     if (tag && tag->HasPVRChannel())
     {
       int windowSearchId = tag->ChannelTag()->IsRadio() ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
@@ -248,7 +248,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
 
-  const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
+  const CEpgInfoTagPtr tag(m_progItem->GetEPGInfoTag());
   if (!tag)
   {
     /* no epg event selected */
