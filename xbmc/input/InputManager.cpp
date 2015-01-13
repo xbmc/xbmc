@@ -152,30 +152,44 @@ bool CInputManager::ProcessGamepad(int windowId)
       return ExecuteInputAction(action);
     }
   }
-  if (m_Joystick.GetAxis(joyName, joyId))
+  std::list<std::pair<std::string, int> > usedAxes;
+  if (m_Joystick.GetAxes(usedAxes))
   {
-    keymapId = joyId + 1;
-    if (m_Joystick.GetAmount(joyName, joyId) < 0)
+    bool compoundReturn = false;
+    for (std::list<std::pair<std::string, int> >::iterator it = usedAxes.begin();
+         it != usedAxes.end();
+         ++it)
     {
-      keymapId = -keymapId;
-    }
+      joyName = it->first;
+      joyId = it->second;
 
-    int actionID;
-    std::string actionName;
-    bool fullrange;
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
-    {
-      g_application.ResetScreenSaver();
-      if (g_application.WakeUpScreenSaverAndDPMS())
+      keymapId = joyId + 1;
+      if (m_Joystick.GetAmount(joyName, joyId) < 0)
       {
-        return true;
+        keymapId = -keymapId;
       }
 
-      float amount = m_Joystick.GetAmount(joyName, joyId);
-      CAction action(actionID, fullrange ? (amount + 1.0f) / 2.0f : fabs(amount), 0.0f, actionName);
-      m_Mouse.SetActive(false);
-      return ExecuteInputAction(action);
+      int actionID;
+      std::string actionName;
+      bool fullrange;
+      if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_AXIS, actionID, actionName, fullrange))
+      {
+        g_application.ResetScreenSaver();
+        if (g_application.WakeUpScreenSaverAndDPMS())
+        {
+          return true;
+        }
+
+        float amount = m_Joystick.GetAmount(joyName, joyId);
+        amount = fullrange ? (amount + 1.0f) / 2.0f : amount;
+
+        CAction action(actionID, amount, 0.0f, actionName);
+
+        m_Mouse.SetActive(false);
+        compoundReturn |= ExecuteInputAction(action);
+      }
     }
+    return compoundReturn;
   }
   int position = 0;
   if (m_Joystick.GetHat(joyName, joyId, position))

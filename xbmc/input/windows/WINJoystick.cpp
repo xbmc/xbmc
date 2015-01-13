@@ -427,6 +427,33 @@ bool CJoystick::GetAxis(std::string &joyName, int &id)
   return true;
 }
 
+bool CJoystick::GetAxes(std::list<std::pair<std::string, int> >& axes, bool consider_still)
+{
+  std::list<std::pair<std::string, int> > ret;
+  if (!IsEnabled() || !IsAxisActive())
+    return false;
+
+  LPDIRECTINPUTDEVICE8 joy;
+  int axisId;
+
+  for (size_t i = 0; i < m_Axes.size(); ++i)
+  {
+    int deadzone = m_Axes[i].trigger ? 0 : m_DeadzoneRange;
+    int amount = m_Axes[i].val - m_Axes[i].rest;
+    CLog::LogF(LOGDEBUG, "checking axis %d/%d; amount %d (deadzone %d)", i, m_Axes.size(), amount, deadzone);
+    CLog::LogF(LOGDEBUG, "axis %d: trigger:%s, val:%d, rest:%d", i,m_Axes[i].trigger?"yes":"no", m_Axes[i].val, m_Axes[i].rest);
+    if (consider_still || abs(amount) > deadzone)
+    {
+      CLog::LogF(LOGDEBUG, "adding axis %d (%d)", i, axisId);
+      MapAxis(i, joy, axisId);
+      ret.push_back(std::pair<std::string, int>(m_JoystickNames[JoystickIndex(joy)], axisId));
+    }
+  }
+  axes = ret;
+
+  return true;
+}
+
 int CJoystick::GetAxisWithMaxAmount() const
 {
   int maxAmount = 0, axis = -1;

@@ -157,6 +157,7 @@
 #define ACTION_CALIBRATE_SWAP_ARROWS  47 // select next arrow. Can b used in: settingsScreenCalibration.xml windowid=11
 #define ACTION_CALIBRATE_RESET        48 // reset calibration to defaults. Can b used in: settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
 #define ACTION_ANALOG_MOVE            49 // analog thumbstick move. Can b used in: slideshow.xml window id=2007/settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
+// see also ACTION_ANALOG_MOVE_X, ACTION_ANALOG_MOVE_Y
 #define ACTION_ROTATE_PICTURE_CW      50 // rotate current picture clockwise during slideshow. Can be used in slideshow.xml window id=2007
 #define ACTION_ROTATE_PICTURE_CCW     51 // rotate current picture counterclockwise during slideshow. Can be used in slideshow.xml window id=2007
 
@@ -372,6 +373,11 @@
 #define ACTION_GESTURE_SWIPE_DOWN_TEN   550
 // 5xx is reserved for additional gesture actions
 #define ACTION_GESTURE_END            599
+
+// other, non-gesture actions
+#define ACTION_ANALOG_MOVE_X            601 // analog thumbstick move, horizontal axis; see ACTION_ANALOG_MOVE
+#define ACTION_ANALOG_MOVE_Y            602 // analog thumbstick move, vertical axis; see ACTION_ANALOG_MOVE
+
 
 // The NOOP action can be specified to disable an input event. This is
 // useful in user keyboard.xml etc to disable actions specified in the
