@@ -14,6 +14,7 @@ public:
   bool DidAuth() { return m_authed; }
   bool DidSwitchUser() { return m_userSwitched; }
   CStdString getSelectedUser() { return m_selectedUser; }
+  CStdString getSelectedUserThumb() { return m_selectedUserThumb; }
 
 private:
   void fetchUsers();
@@ -21,6 +22,7 @@ private:
   bool m_authed;
   bool m_userSwitched;
   CStdString m_selectedUser;
+  CStdString m_selectedUserThumb;
 };
 
 #endif // GUIDIALOGPLEXUSERSELECT_H

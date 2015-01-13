@@ -24,6 +24,7 @@ bool CGUIDialogPlexUserSelect::OnMessage(CGUIMessage &message)
     m_authed = false;
     m_userSwitched = false;
     m_selectedUser = "";
+    m_selectedUserThumb = "";
 
     SetHeading("Switch to User");
     
@@ -106,6 +107,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
   {
     bool firstTry = true;
     m_selectedUser = item->GetProperty("title").asString();
+    m_selectedUserThumb = item->GetArt("thumb");
     while (true)
     {
       CStdString pin;
@@ -154,6 +156,7 @@ void CGUIDialogPlexUserSelect::OnSelected()
   if (close)
   {
     m_selectedUser = "";
+    m_selectedUserThumb = "";
     Close();
   }
 }
