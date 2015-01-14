@@ -2935,6 +2935,9 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
 
     BeginTransaction();
 
+    set<int> paths;
+    GetPathsForTvShow(idTvShow, paths);
+
     std::string strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
@@ -2954,9 +2957,6 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
       strSQL=PrepareSQL("delete from tvshow where idShow=%i", idTvShow);
       m_pDS->exec(strSQL.c_str());
 
-      // TODO: why do we invalidate the path hash here??
-      set<int> paths;
-      GetPathsForTvShow(idTvShow, paths);
       for (set<int>::const_iterator i = paths.begin(); i != paths.end(); ++i)
       {
         std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path WHERE idPath=%i", *i));
@@ -3039,6 +3039,11 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     // the ancilliary tables are still purged
     if (!bKeepId)
     {
+      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
+      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
+      if (!path.empty())
+        InvalidatePathHash(path);
+
       std::string strSQL = PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL.c_str());
     }
