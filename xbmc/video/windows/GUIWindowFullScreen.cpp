@@ -53,19 +53,18 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "input/ButtonTranslator.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
 #include "filesystem/File.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #include <stdio.h>
 #include <algorithm>
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
-
-using namespace PVR;
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
@@ -88,8 +87,10 @@ using namespace PVR;
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
+using namespace PVR;
+
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
-    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
+    : CGUIWindowFullScreenBase(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
   m_timeCodeStamp[0] = 0;
   m_timeCodePosition = 0;
@@ -235,65 +236,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case REMOTE_8:
   case REMOTE_9:
     {
-      if (g_application.CurrentFileItem().IsLiveTV())
-      {
-        if(CPVRManager::Get().IsPlaying())
-        {
-          // pvr client addon
-          CPVRChannelPtr playingChannel;
-          if(!g_PVRManager.GetCurrentChannel(playingChannel))
-            return false;
-
-          if (action.GetID() == REMOTE_0)
-          {
-            CPVRChannelGroupPtr group = g_PVRChannelGroups->GetPreviousPlayedGroup();
-            if (group)
-            {
-              g_PVRManager.SetPlayingGroup(group);
-              CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
-              if (fileItem && fileItem->HasPVRChannelInfoTag())
-              {
-                CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) fileItem->GetPVRChannelInfoTag()->ChannelNumber()));
-              }
-            }
-          }
-          else
-          {
-            int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-            CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-            if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            {
-              int iChannelNumber = atoi(strChannel.c_str());
-              if (iChannelNumber > 0 && iChannelNumber != playingChannel->ChannelNumber())
-              {
-                CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
-                CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-                if (!channel || !channel->HasPVRChannelInfoTag())
-                  return false;
-
-                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
-              }
-            }
-          }
-        }
-        else
-        {
-          // filesystem provider like slingbox, cmyth, etc
-          int iChannelNumber = -1;
-          CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
-            iChannelNumber = atoi(strChannel.c_str());
-            
-          if (iChannelNumber > 0)
-            g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
-        }
-      }
-      else
+      if (!g_application.CurrentFileItem().IsLiveTV())
       {
         ChangetheTimeCode(action.GetID());
+        return true;
       }
-      return true;
     }
     break;
 
@@ -350,7 +297,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       break;
   }
 
-  return CGUIWindow::OnAction(action);
+  return CGUIWindowFullScreenBase::OnAction(action);
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()

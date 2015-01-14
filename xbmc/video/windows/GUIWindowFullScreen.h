@@ -20,10 +20,10 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
+#include "windows/GUIWindowFullScreenBase.h"
 #include "threads/CriticalSection.h"
 
-class CGUIWindowFullScreen : public CGUIWindow
+class CGUIWindowFullScreen : public CGUIWindowFullScreenBase
 {
 public:
   CGUIWindowFullScreen(void);

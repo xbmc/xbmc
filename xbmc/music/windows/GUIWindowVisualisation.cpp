@@ -33,18 +33,15 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace MUSIC_INFO;
-using namespace PVR;
 
 #define START_FADE_LENGTH  2.0f // 2 seconds on startup
 
 #define CONTROL_VIS          2
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
-    : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml"),
+    : CGUIWindowFullScreenBase(WINDOW_VISUALISATION, "MusicVisualisation.xml"),
       m_initTimer(true), m_lockedTimer(true)
 {
   m_bShowPreset = false;
@@ -127,60 +124,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;*/
 
-    case REMOTE_0:
-    case REMOTE_1:
-    case REMOTE_2:
-    case REMOTE_3:
-    case REMOTE_4:
-    case REMOTE_5:
-    case REMOTE_6:
-    case REMOTE_7:
-    case REMOTE_8:
-    case REMOTE_9:
-      {
-        if (g_application.CurrentFileItem().IsLiveTV() && g_PVRManager.IsPlaying())
-        {
-          // pvr client addon
-          CPVRChannelPtr playingChannel;
-          if(!g_PVRManager.GetCurrentChannel(playingChannel))
-            return false;
-
-          if (action.GetID() == REMOTE_0)
-          {
-            CPVRChannelGroupPtr group = g_PVRChannelGroups->GetPreviousPlayedGroup();
-            if (group)
-            {
-              g_PVRManager.SetPlayingGroup(group);
-              CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
-              if (fileItem && fileItem->HasPVRChannelInfoTag())
-              {
-                CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) fileItem->GetPVRChannelInfoTag()->ChannelNumber()));
-              }
-            }
-          }
-          else
-          {
-            int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-            CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-            if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            {
-              int iChannelNumber = atoi(strChannel.c_str());
-              if (iChannelNumber > 0 && iChannelNumber != playingChannel->ChannelNumber())
-              {
-                CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
-                CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-                if (!channel || !channel->HasPVRChannelInfoTag())
-                  return false;
-
-                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
-              }
-            }
-          }
-        }
-        return true;
-      }
-      break;
   }
 
   if (passToVis)
@@ -190,7 +133,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       return control->OnAction(action);
   }
 
-  return CGUIWindow::OnAction(action);
+  return CGUIWindowFullScreenBase::OnAction(action);
 }
 
 bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)

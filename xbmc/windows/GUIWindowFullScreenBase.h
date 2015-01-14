@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,25 +21,14 @@
  */
 
 #include "guilib/GUIWindow.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/Stopwatch.h"
+#include "threads/CriticalSection.h"
+#include "pvr/windows/GUIWindowPVRFullScreen.h"
 
-#include "windows/GUIWindowFullScreenBase.h"
-
-class CGUIWindowVisualisation :
-      public CGUIWindowFullScreenBase
+class CGUIWindowFullScreenBase : public CGUIWindow, public CGUIWindowPVRFullScreen
 {
 public:
-  CGUIWindowVisualisation(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  CGUIWindowFullScreenBase(int id, const CStdString &xmlFile);
+  virtual ~CGUIWindowFullScreenBase(void) {};
+
   virtual bool OnAction(const CAction &action);
-  virtual void FrameMove();
-protected:
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-
-  CStopWatch m_initTimer;
-  CStopWatch m_lockedTimer;
-  bool m_bShowPreset;
-  MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };
-
