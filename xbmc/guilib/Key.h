@@ -93,6 +93,9 @@
 #define KEY_MOUSE_DRAG             0xE104
 #define KEY_MOUSE_DRAG_START       0xE105
 #define KEY_MOUSE_DRAG_END         0xE106
+#define KEY_MOUSE_RDRAG            0xE107
+#define KEY_MOUSE_RDRAG_START      0xE108
+#define KEY_MOUSE_RDRAG_END        0xE109
 #define KEY_MOUSE_NOOP             0xEFFF
 #define KEY_MOUSE_END              0xEFFF
 
