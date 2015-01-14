@@ -196,6 +196,7 @@ public:
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void ActivateScreenSaver(bool forceType = false);
+  bool SetupNetwork();
   void CloseNetworkShares();
 
   void ShowAppMigrationMessage();
