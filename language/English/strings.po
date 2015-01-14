@@ -2722,9 +2722,7 @@ msgctxt "#643"
 msgid "Avoid clipping on ReplayGained files"
 msgstr ""
 
-msgctxt "#644"
-msgid "Crop black bars"
-msgstr ""
+#empty string with id 644
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
