@@ -18,6 +18,7 @@
  *
  */
 
+#include <errno.h>
 #include <vector>
 
 #include "ScriptInvocationManager.h"
@@ -228,6 +229,43 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
   invokerThread->Execute(script, arguments);
 
   return invokerThread->GetId();
+}
+
+int CScriptInvocationManager::ExecuteSync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, uint32_t timeoutMs /* = 0 */, bool waitShutdown /* = false */)
+{
+  if (script.empty() || !CFile::Exists(script, false))
+    return -1;
+
+  LanguageInvokerPtr invoker = GetLanguageInvoker(script);
+  return ExecuteSync(script, invoker, addon, arguments, timeoutMs, waitShutdown);
+}
+
+int CScriptInvocationManager::ExecuteSync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, uint32_t timeoutMs /* = 0 */, bool waitShutdown /* = false */)
+{
+  int scriptId = ExecuteAsync(script, languageInvoker, addon, arguments);
+  if (scriptId < 0)
+    return -1;
+
+  bool timeout = timeoutMs > 0;
+  while ((!timeout || timeoutMs > 0) && IsRunning(scriptId))
+  {
+    unsigned int sleepMs = 100U;
+    if (timeout && timeoutMs < sleepMs)
+      sleepMs = timeoutMs;
+
+    Sleep(sleepMs);
+
+    if (timeout)
+      timeoutMs -= sleepMs;
+  }
+
+  if (IsRunning(scriptId))
+  {
+    Stop(scriptId, waitShutdown);
+    return ETIMEDOUT;
+  }
+
+  return 0;
 }
 
 bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
