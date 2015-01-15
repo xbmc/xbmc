@@ -2961,7 +2961,9 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
   || method == VS_INTERLACEMETHOD_SW_BLEND)
 #else
-  if(method == VS_INTERLACEMETHOD_SW_BLEND)
+  if(method == VS_INTERLACEMETHOD_SW_BLEND
+  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
 #endif
     return true;
 
