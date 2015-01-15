@@ -3087,6 +3087,9 @@
     <ClCompile Include="..\..\xbmc\test\TestUtil.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMultiSource.cpp">
+      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5970,6 +5973,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h">
       <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMultiSource.h">
+      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

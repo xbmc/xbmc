@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include <vector>
 
 class CDVDInputStream;
 class IDVDPlayer;
@@ -28,5 +29,6 @@ class IDVDPlayer;
 class CDVDFactoryInputStream
 {
 public:
-  static CDVDInputStream* CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content);
+  static CDVDInputStream* CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content, bool scanforextaudio = false);
+  static CDVDInputStream* CreateInputStream(IDVDPlayer* pPlayer, const std::vector<std::string>& filenames);
 };
