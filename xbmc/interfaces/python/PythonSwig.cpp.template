@@ -353,6 +353,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   boolean hasLtOp = false
   boolean hasGtOp = false
   Node indexOp = null
+  boolean indexOpSupportsSet = false
   Node sizeNode = null
 
   List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") && it.@name != "toString" }
@@ -370,7 +371,12 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     else if (it.@name.substring(9) == ">")
       hasGtOp = true
     else if (it.@name.substring(9) == "[]")
+    {
       indexOp = it
+
+      if (it.@decl != null && it.@decl.endsWith('.r.'))
+        indexOpSupportsSet = true
+    }
     else
       System.err.println ("Warning: class ${fullClassName} has an operator \"${it.@name}\" that is being ignored.");
   }
@@ -408,14 +414,70 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   {
     return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))-> size();
   }
+<%
+    if (indexOpSupportsSet)
+    {
+      Node indexOpKeyParam = indexOp?.parm[0]
+      String indexOpReturns = Helper.getReturnSwigType(indexOp)
+%>
+  static int ${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)}_set(PyObject* self, PyObject* pykey, PyObject* pyvalue)
+  {
+    XBMC_TRACE;
 
+    ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(indexOpKeyParam.@type))} ${indexOpKeyParam.@name};
+    ${SwigTypeParser.SwigType_lstr(indexOpReturns)} value;
+    try
+    {
+      ${Helper.getInConversion(indexOpKeyParam.@type, indexOpKeyParam.@name, 'pykey', indexOp)}
+      ${Helper.getInConversion(indexOpReturns, 'value', 'pyvalue', indexOp)}
+
+      ((${fullClassName}*)retrieveApiInstance((PyObject*)self, &Ty${classNameAsVariable}_Type, "operator []", "${fullClassName}"))-> operator[](${indexOpKeyParam.@name}) = value;
+
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return -1;
+    }
+    catch (const XbmcCommons::Exception& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return -1;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"operator []\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"operator []\"");
+      return -1;
+    }
+
+    return 0;
+  }
+<%
+    }
+%>
   //=========================================================================
   // tp_as_mapping struct for ${fullClassName}
   //=========================================================================
   PyMappingMethods ${module.@name}_${classNameAsVariable}_as_mapping = {
     ${module.@name}_${classNameAsVariable}_size_,    /* inquiry mp_length;                  __len__ */
     (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)},   /* binaryfunc mp_subscript             __getitem__ */
-    0,                  /* objargproc mp_ass_subscript;     __setitem__ */
+<%
+    if (indexOpSupportsSet)
+    {
+%>
+    (objobjargproc)${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)}_set,   /* objobjargproc mp_ass_subscript             __setitem__ */
+<%
+    }
+    else
+    {
+%>
+    0,                  /* objargproc mp_ass_subscript             __setitem__ */
+<%
+    }
+%>
   };
 <%
   }
