@@ -665,6 +665,19 @@ public class Helper
    }
 
    /**
+    * Because the return type of a property is a combination of the function
+    * 'decl' and the function 'type,' this method will construct a valid Swig
+    * typestring from the two.
+    */
+   public static String getPropertyReturnSwigType(Node method)
+   {
+      // we're going to take a shortcut here because it appears only the pointer indicator
+      // ends up attached to the decl.
+      String prefix = (method.@decl != null && method.@decl == 'p.') ? 'p.' : ''
+      return method.@type != null ? prefix + method.@type : 'void'
+   }
+
+   /**
     * Because the return type is a combination of the function 'decl' and the
     * function 'type,' this method will construct a valid Swig typestring from 
     * the two.
