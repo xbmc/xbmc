@@ -528,10 +528,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
       PyObject* result = NULL;
    <%
   properties.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} apiResult = (${SwigTypeParser.SwigType_lstr(it.@type)})theObj->${it.@sym_name};
-        ${Helper.getOutConversion(it.@type, 'result', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} apiResult = (${SwigTypeParser.SwigType_lstr(returns)})theObj->${it.@sym_name};
+        ${Helper.getOutConversion(returns, 'result', it)}
       }
       else<%
   } %>
@@ -597,10 +598,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 
 <%
   properties_set.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} tmp;
-        ${Helper.getInConversion(it.@type, 'tmp', 'value', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} tmp;
+        ${Helper.getInConversion(returns, 'tmp', 'value', it)}
         if (PyErr_Occurred())
           throw PythonBindings::PythonToCppException();
         
