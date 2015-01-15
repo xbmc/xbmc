@@ -1319,6 +1319,19 @@ int CBuiltins::Execute(const std::string& execString)
     }
     else if (execute == "skin.setimage")
     {
+      if (params.size() > 2)
+      {
+        value = params[2];
+        URIUtils::AddSlashAtEnd(value);
+        bool bIsSource;
+        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        {
+          CMediaSource share;
+          share.strName = g_localizeStrings.Get(13278);
+          share.strPath = value;
+          localShares.push_back(share);
+        }
+      }
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
         CSkinSettings::Get().SetString(string, value);
     }
