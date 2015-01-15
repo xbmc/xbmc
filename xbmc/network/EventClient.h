@@ -75,8 +75,8 @@ namespace EVENTCLIENT
                       bool isAxis,
                       bool bRepeat,
                       bool bUseAmount):
-      m_mapName(mapName),
-      m_buttonName(buttonName)
+      m_buttonName(buttonName),
+      m_mapName(mapName)
     {
       m_iKeyCode   = iKeyCode;
       m_fAmount    = fAmount;
