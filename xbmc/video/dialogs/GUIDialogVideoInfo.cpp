@@ -842,7 +842,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
-      StringUtils::CompareNoCase(result, "fanart://Current"))
+    StringUtils::EqualsNoCase(result, "fanart://Current"))
     return;   // user cancelled
 
   if (StringUtils::EqualsNoCase(result, "fanart://Local"))
