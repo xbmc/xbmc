@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "Util.h"
+#include "Application.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -42,6 +43,9 @@ void TestBasicEnvironment::SetUp()
    * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
    */
   g_advancedSettings.Initialize();
+
+  // Need to configure the network as some tests access the network member
+  g_application.SetupNetwork();
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
