@@ -49,16 +49,6 @@ using namespace DXVA;
 using namespace AUTOPTR;
 using namespace std;
 
-#define CHECK(a) \
-do { \
-  HRESULT res = a; \
-  if(FAILED(res)) \
-  { \
-    CLog::Log(LOGERROR, __FUNCTION__" - failed executing "#a" at line %d with error %x", __LINE__, res); \
-    return false; \
-  } \
-} while(0);
-
 #define LOGIFERROR(a) \
 do { \
   HRESULT res = a; \
@@ -309,7 +299,7 @@ bool CProcessorHD::CreateSurfaces()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   LPDIRECT3DSURFACE9 surfaces[32];
-  for (unsigned idx = 0; idx < m_size; idx++)
+  for (uint32_t idx = 0; idx < m_size; idx++)
   {
     CHECK(pD3DDevice->CreateOffscreenPlainSurface(
       (m_width + 15) & ~15,
@@ -321,7 +311,7 @@ bool CProcessorHD::CreateSurfaces()
   }
 
   m_context = new CSurfaceContext();
-  for (int i = 0; i < m_size; i++)
+  for (uint32_t i = 0; i < m_size; i++)
   {
     m_context->AddSurface(surfaces[i]);
   }
@@ -386,10 +376,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDire
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
-  CRect rectTarget(0, 0, desc.Width, desc.Height);
+  CRect rectTarget(0, 0, static_cast<float>(desc.Width), static_cast<float>(desc.Height));
   CWIN32Util::CropSource(src, dst, rectTarget);
-  RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
-  RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
+  RECT sourceRECT = { static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
+                      static_cast<LONG>(src.x2), static_cast<LONG>(src.y2) };
+  RECT dstRECT = { static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1),
+                   static_cast<LONG>(dst.x2), static_cast<LONG>(dst.y2) };
 
   DXVAHD_FRAME_FORMAT dxvaFrameFormat = DXVAHD_FRAME_FORMAT_PROGRESSIVE;
 
@@ -477,9 +469,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDire
   LOGIFERROR( m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_SOURCE_RECT
                                                    , sizeof(srcRect), &srcRect));
 
-  ApplyFilter( DXVAHD_FILTER_BRIGHTNESS, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness
+  ApplyFilter( DXVAHD_FILTER_BRIGHTNESS, static_cast<int>(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)
                                              , 0, 100, 50);
-  ApplyFilter( DXVAHD_FILTER_CONTRAST, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast
+  ApplyFilter( DXVAHD_FILTER_CONTRAST, static_cast<int>(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
                                              , 0, 100, 50);
 
   unsigned int uiRange = g_Windowing.UseLimitedColor() ? 1 : 0;

@@ -1172,7 +1172,7 @@ void CDVDPlayer::Process()
     }
     else
     {
-      starttime = m_Edl.RestoreCutTime(m_PlayerOptions.starttime * 1000); // s to ms
+      starttime = m_Edl.RestoreCutTime(static_cast<int>(m_PlayerOptions.starttime * 1000)); // s to ms
     }
     CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
@@ -2094,7 +2094,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
   const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
 
   CEdl::Cut cut;
-  if(!m_Edl.InCut(clock, &cut))
+  if(!m_Edl.InCut(static_cast<int>(clock), &cut))
     return;
 
   if(cut.action == CEdl::CUT
@@ -2102,7 +2102,8 @@ void CDVDPlayer::CheckAutoSceneSkip()
   {
     CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
-              CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
+              CEdl::MillisecondsToTimeString(cut.end).c_str(),
+              CEdl::MillisecondsToTimeString(static_cast<int>(clock)).c_str());
     /*
      * Seeking either goes to the start or the end of the cut depending on the play direction.
      */
@@ -2124,7 +2125,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
   {
     CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
-              CEdl::MillisecondsToTimeString(clock).c_str());
+              CEdl::MillisecondsToTimeString(static_cast<int>(clock)).c_str());
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
@@ -2322,11 +2323,11 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
           FlushBuffers(false, start, true);
-          offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
+          offset = static_cast<double>(DVD_TIME_TO_MSEC(start) - beforeSeek);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
 
-        g_infoManager.SetDisplayAfterSeek(2500, offset);
+        g_infoManager.SetDisplayAfterSeek(2500, static_cast<int>(offset));
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {
@@ -2457,7 +2458,7 @@ void CDVDPlayer::HandleMessages()
           if ( (speed != DVD_PLAYSPEED_PAUSE && speed != DVD_PLAYSPEED_NORMAL) ||
                (m_playSpeed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_NORMAL) )
           {
-            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), (speed < 0), true, true, false, true));
+            m_messenger.Put(new CDVDMsgPlayerSeek(static_cast<int>(GetTime()), (speed < 0), true, true, false, true));
           }
           else
           {
@@ -2469,7 +2470,7 @@ void CDVDPlayer::HandleMessages()
         }
         else if (m_playSpeed < 0 && speed >= 0)
         {
-          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
+          int iTime = static_cast<int>(DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset));
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, true, true, false, false, true));
         }
 
@@ -2849,7 +2850,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
    * There is a 5 second grace period applied when seeking for scenes backwards. If there is no
    * grace period applied it is impossible to go backwards past a scene marker.
    */
-  int64_t clock = GetTime();
+  int clock = static_cast<int>(GetTime());
   if (!bPlus && clock > 5 * 1000) // 5 seconds
     clock -= 5 * 1000;
 
@@ -4303,8 +4304,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HasCut())
   {
-    state.time        = (double) m_Edl.RemoveCutTime(llrint(state.time));
-    state.time_total  = (double) m_Edl.RemoveCutTime(llrint(state.time_total));
+    state.time        = (double) m_Edl.RemoveCutTime(static_cast<int>(llrint(state.time)));
+    state.time_total  = (double) m_Edl.RemoveCutTime(static_cast<int>(llrint(state.time_total)));
   }
 
   if(state.time_total <= 0)

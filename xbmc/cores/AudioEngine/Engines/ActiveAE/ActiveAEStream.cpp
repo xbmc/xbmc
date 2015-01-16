@@ -96,7 +96,7 @@ void CActiveAEStream::InitRemapper()
   for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
   {
     avLast = avCur;
-    avCur = CAEUtil::GetAVChannel(m_format.m_channelLayout[i]);
+    avCur = static_cast<unsigned int>(CAEUtil::GetAVChannel(m_format.m_channelLayout[i]));
     if(avCur < avLast)
     {
       needRemap = true;
@@ -221,7 +221,7 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
 
       if (!copied)
       {
-        m_currentBuffer->timestamp = pts;
+        m_currentBuffer->timestamp = static_cast<int64_t>(pts);
         m_currentBuffer->clockId = m_clockId;
         m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
@@ -235,7 +235,7 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
       {
         CSingleLock lock(*m_statsLock);
         m_currentBuffer->pkt->nb_samples += minFrames;
-        m_bufferedTime += (double)minFrames / m_currentBuffer->pkt->config.sample_rate;
+        m_bufferedTime += static_cast<float>(minFrames) / m_currentBuffer->pkt->config.sample_rate;
       }
 
       if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples)

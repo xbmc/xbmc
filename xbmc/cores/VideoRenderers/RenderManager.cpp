@@ -1073,7 +1073,7 @@ void CXBMCRenderManager::PrepareNextRender()
   double clocktime = GetPresentTime();
   double frametime = 1.0 / GetMaximumFPS();
   double correction = 0.0;
-  int fps = g_VideoReferenceClock.GetRefreshRate();
+  int fps = static_cast<int>(g_VideoReferenceClock.GetRefreshRate());
   if((fps > 0) && g_graphicsContext.IsFullScreenVideo() && (clocktime != m_clock_framefinish))
   {
     correction = frametime;

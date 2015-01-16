@@ -53,7 +53,7 @@ TEST(TestFile, Read)
   currentPos = firstBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
   EXPECT_TRUE(memcmp(firstBuf.c_str(), buf, firstBuf.length()) == 0);
-  EXPECT_TRUE(file.Read(buf, secondBuf.length()));
+  EXPECT_GT(0, file.Read(buf, secondBuf.length()));
   currentPos += secondBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
   EXPECT_TRUE(memcmp(secondBuf.c_str(), buf, secondBuf.length()) == 0);
@@ -142,7 +142,7 @@ TEST(TestFile, Stat)
   ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
   EXPECT_EQ(0, file->Stat(&buffer));
   file->Close();
-  EXPECT_TRUE(buffer.st_mode | _S_IFREG);
+  EXPECT_NE(0, buffer.st_mode | _S_IFREG);
   EXPECT_EQ(-1, XFILE::CFile::Stat("", &buffer));
   EXPECT_EQ(ENOENT, errno);
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));

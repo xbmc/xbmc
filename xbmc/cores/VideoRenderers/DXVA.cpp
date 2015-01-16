@@ -493,7 +493,7 @@ bool CProcessor::CreateSurfaces()
   }
 
   m_context = new CSurfaceContext();
-  for (int i = 0; i < m_size; i++)
+  for (uint32_t i = 0; i < m_size; i++)
   {
     m_context->AddSurface(surfaces[i]);
   }
@@ -609,10 +609,12 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect
   
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
-  CRect rectTarget(0, 0, desc.Width, desc.Height);
+  CRect rectTarget(0, 0, static_cast<float>(desc.Width), static_cast<float>(desc.Height));
   CWIN32Util::CropSource(src, dst, rectTarget);
-  RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
-  RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
+  RECT sourceRECT = { static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
+                      static_cast<LONG>(src.x2), static_cast<LONG>(src.y2) };
+  RECT dstRECT    = { static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1),
+                      static_cast<LONG>(dst.x2), static_cast<LONG>(dst.y2) };
 
   // set sample format for progressive and interlaced
   UINT sampleFormat = DXVA2_SampleProgressiveFrame;
@@ -693,9 +695,9 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect
     blt.DestFormat.NominalRange          = DXVA2_NominalRange_0_255;
   blt.Alpha = DXVA2_Fixed32OpaqueAlpha();
 
-  blt.ProcAmpValues.Brightness = ConvertRange( m_brightness, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness
+  blt.ProcAmpValues.Brightness = ConvertRange( m_brightness, static_cast<int>(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)
                                              , 0, 100, 50);
-  blt.ProcAmpValues.Contrast   = ConvertRange( m_contrast, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast
+  blt.ProcAmpValues.Contrast   = ConvertRange( m_contrast, static_cast<int>(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
                                              , 0, 100, 50);
   blt.ProcAmpValues.Hue        = m_hue.DefaultValue;
   blt.ProcAmpValues.Saturation = m_saturation.DefaultValue;

@@ -22,6 +22,7 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/NFSFile.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -116,7 +117,7 @@ TEST(TestRarFile, Stat)
   strpathinrar = itemlist[0]->GetPath();
 
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &buffer));
-  EXPECT_TRUE(buffer.st_mode | _S_IFREG);
+  EXPECT_NE(0, buffer.st_mode | _S_IFREG);
 }
 
 /* Test case to test for graceful handling of corrupted input.
@@ -216,7 +217,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[1]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());
@@ -261,7 +262,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[2]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   /*
    * FIXME: Reading symlinks in RARs is currently broken. It takes a long time
@@ -276,7 +277,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[3]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(30, file.GetLength());
@@ -286,7 +287,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[0]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
@@ -296,7 +297,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[1]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());
@@ -343,7 +344,7 @@ TEST(TestRarFile, StoredRAR)
   /* TODO: Should this set the itemlist to an empty list instead? */
   EXPECT_FALSE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlistemptydir));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   /* FIXME: This directory appears a second time as a file */
   strpathinrar = itemlist[3]->GetPath();
@@ -353,7 +354,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[4]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(22, file.GetLength());
@@ -363,7 +364,7 @@ TEST(TestRarFile, StoredRAR)
   strpathinrar = itemlist[0]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
@@ -374,7 +375,7 @@ TEST(TestRarFile, StoredRAR)
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar,
                                     "/testdir/testsubdir/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());
@@ -434,7 +435,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[1]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());
@@ -479,7 +480,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[2]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   /*
    * FIXME: Reading symlinks in RARs is currently broken. It takes a long time
@@ -494,7 +495,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[3]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(30, file.GetLength());
@@ -504,7 +505,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[0]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
@@ -514,7 +515,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[1]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());
@@ -561,7 +562,7 @@ TEST(TestRarFile, NormalRAR)
   /* TODO: Should this set the itemlist to an empty list instead? */
   EXPECT_FALSE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlistemptydir));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   /* FIXME: This directory appears a second time as a file */
   strpathinrar = itemlist[3]->GetPath();
@@ -571,7 +572,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[4]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(22, file.GetLength());
@@ -581,7 +582,7 @@ TEST(TestRarFile, NormalRAR)
   strpathinrar = itemlist[0]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
@@ -592,7 +593,7 @@ TEST(TestRarFile, NormalRAR)
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar,
                                     "/testdir/testsubdir/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
-  EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
+  EXPECT_NE(0, (stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
   ASSERT_TRUE(file.Open(strpathinrar));
   EXPECT_EQ(0, file.GetPosition());

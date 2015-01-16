@@ -232,7 +232,7 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
 
   g_VideoReferenceClock.SetSpeed(speed);
 
-  return rate;
+  return static_cast<int>(rate);
 }
 
 void CDVDClock::CheckSystemClock()
