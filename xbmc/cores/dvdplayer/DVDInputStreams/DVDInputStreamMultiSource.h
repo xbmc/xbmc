@@ -31,6 +31,8 @@ class IDVDPlayer;
 class CDVDInputStreamMultiSource : public CDVDInputStream
 {
 
+  friend class CDVDDemuxMultiSource;
+
 public:
   CDVDInputStreamMultiSource(IDVDPlayer* pPlayer, const std::vector<std::string>& filenames);
   virtual ~CDVDInputStreamMultiSource();
