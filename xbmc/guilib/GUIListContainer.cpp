@@ -138,7 +138,16 @@ bool CGUIListContainer::MoveUp(bool wrapAround)
   }
   else if (GetCursor() == 0 && GetOffset())
   {
-    ScrollToOffset(GetOffset() - 1);
+    if (m_scroller.isPagingEnabled())
+    {
+      int pagingOffset = GetPagingOffset(false);
+      SetCursor(GetCursor() - 1 + pagingOffset);
+      ScrollToOffset(GetOffset() - pagingOffset);
+    }
+    else
+    {
+      ScrollToOffset(GetOffset() - 1);
+    }
   }
   else if (wrapAround)
   {
@@ -166,7 +175,16 @@ bool CGUIListContainer::MoveDown(bool wrapAround)
     }
     else
     {
-      ScrollToOffset(GetOffset() + 1);
+      if (m_scroller.isPagingEnabled())
+      {
+        int pagingOffset = GetPagingOffset(true);
+        SetCursor(GetCursor() + 1 - pagingOffset);
+        ScrollToOffset(GetOffset() + pagingOffset);
+      }
+      else
+      {
+        ScrollToOffset(GetOffset() + 1);
+      }
     }
   }
   else if(wrapAround)

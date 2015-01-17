@@ -538,6 +538,9 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const std::string
     if (XMLUtils::GetUInt(control, scrollerTag.c_str(), scrollTime))
     {
       scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
+      const char *paging = node->Attribute("paging");
+      if (paging && strnicmp(paging, "true", 4) == 0)
+        scroller.setPaging(true);
       return true;
     }
   }
