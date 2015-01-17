@@ -476,9 +476,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
       RENDER_STEREO_MODE preferred = GetPreferredPlaybackMode();
       RENDER_STEREO_MODE playing   = GetStereoModeOfPlayingVideo();
 
-      int idx_playing   = -1
-        , idx_mono      = -1;
-        
+      int idx_playing   = -1;
 
       // add choices
       int idx_preferred = pDlgSelect->Add(g_localizeStrings.Get(36524) // preferred
@@ -486,7 +484,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
                                      + GetLabelForStereoMode(preferred)
                                      + ")");
 
-      idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
+      int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
 
       if(playing != RENDER_STEREO_MODE_OFF && playing != preferred && g_Windowing.SupportsStereo(playing))
         idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
