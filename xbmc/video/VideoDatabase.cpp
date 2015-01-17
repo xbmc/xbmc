@@ -7214,10 +7214,9 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, int& idSong, const std
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
     std::string strSQL = "select * from musicvideo_view";
     if (!strWhere.empty())
-      strSQL += PrepareSQL(" where %s", strWhere.c_str());
+      strSQL += " where " + strWhere;
     strSQL += PrepareSQL(" order by RANDOM() limit 1");
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
