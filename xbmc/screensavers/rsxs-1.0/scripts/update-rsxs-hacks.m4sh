@@ -1,0 +1,138 @@
+AS_INIT
+
+m4_define([RS_MESSAGE_FD], 6)
+m4_define([AS_MESSAGE_FD], [RS_MESSAGE_FD])
+m4_define([RS_ORIGINAL_STDIN_FD], 7)
+
+exec RS_ORIGINAL_STDIN_FD<&0 </dev/null RS_MESSAGE_FD>&2
+
+rs_input=
+rs_output=
+rs_help=
+rs_usage=
+rs_version=
+rs_configs=""
+
+rs_prev=
+rs_dashdash=
+for rs_option; do
+	if test -n "$rs_prev"; then
+		eval rs_$rs_prev=\$rs_option
+		rs_prev=
+		continue
+	fi
+
+	case $rs_option in
+	*=*) rs_optarg=`expr "X$rs_option" : '[[^=]]*=\(.*\)'` ;;
+	*)   rs_optarg= ;;
+	esac
+
+	case $rs_option in
+	-i | --input)
+		rs_prev=input ;;
+	-i=* | --input=*)
+		rs_input=$rs_optarg ;;
+	-o | --output)
+		rs_prev=output ;;
+	-o=* | --output=*)
+		rs_output=$rs_optarg ;;
+	-? | --help)
+		rs_help=: ;;
+	--usage)
+		rs_usage=: ;;
+	-V | --version)
+		rs_version=: ;;
+	-*)
+		AS_ERROR([unrecognized option: $rs_option
+Try `$[0] --help' for more information.])dnl
+		;;
+	*)
+		rs_config="$rs_top_srcdir/config/rs-$rs_option.conf"
+		if test -f "$rs_config"; then
+			rs_config=`echo "$rs_config" | sed "s/'/'\\\\\\\\''/g"`
+			rs_configs="$rs_configs '$rs_config'"
+		else
+			AS_ERROR([no config for `$rs_option' found])
+		fi
+		;;
+	esac
+done
+
+if test -n "$rs_prev"; then
+	ac_option=--`echo $rs_prev | sed 's/_/-/g'`
+	AS_ERROR([missing argument to $rs_option])
+fi
+
+if test -n "$rs_help"; then
+	cat <<_RSEOF
+\`update-rsxs-hacks' updates XScreenSaver config files.
+
+Usage: $[0] [[OPTION]]... [[HACK]]...
+
+Reads an XScreenSaver config file, strips out any existing
+Really Slick XScreenSavers hacks, then adds the specified
+hacks.
+
+File options:
+  -i, --input=FILE           Input file (default: standard input)
+  -o, --output=FILE          Output file (default: standard output)
+
+Help options:
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+  -V, --version              Print program version
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
+
+Report bugs to <@PACKAGE_BUGREPORT@>.
+_RSEOF
+	AS_EXIT
+fi
+
+if test -n "$rs_usage"; then
+	cat <<_RSEOF
+Usage: $[0] [[-io?V]] [[--input=FILE]] [[--output=FILE]]
+_RSEOF
+	AS_EXIT
+fi
+
+rs_data=
+if test -n "$rs_input"; then
+	rs_data=`cat "$rs_input" 2>/dev/null` || {
+		AS_ERROR([could not read `$rs_input'])
+	}
+else
+	rs_data=`cat <&RS_ORIGINAL_STDIN_FD 2>/dev/null` || {
+		AS_ERROR([could not read standard input])
+	}
+fi
+
+rs_head=`echo "$rs_data" | sed '/^\*\{0,1\}programs:/q'`
+rs_body=
+if test -n "$rs_configs"; then
+	rs_body=`echo; eval "for i in $rs_configs; do sed 's/\\\\\\\\n\\$/\\\\\\\\n\\\\\\\\/' \\"\\$i\\"; done"`
+fi
+rs_tail=`echo; echo "$rs_data" | sed -n ['
+/^\\*\\{0,1\\}programs:/ {
+	h
+	:a
+	n; H
+	/\\\\$/ { b a }
+	g
+	s/\\\\\\n-\\{0,1\\}[ \\t]*GL:[ \\t]*"Really Slick\\([^\\\\]*\\\\[^n][^\\\\]*\\)*[^\\\\]*\\\\n//g
+	s/^[^\\\\]*\\\\\\n//
+	p
+	:b
+	n; p; b b
+}']`
+
+if test -n "$rs_output"; then
+	echo "$rs_head$rs_body$rs_tail" 2>/dev/null >$rs_output || {
+		AS_ERROR([could not write to `$rs_output'])
+	}
+else
+	echo "$rs_head$rs_body$rs_tail" || {
+		AS_ERROR([could not write to standard output])
+	}
+fi
