@@ -508,7 +508,7 @@ void CButtonTranslator::AddDevice(std::string& strDevice)
 {
   // Only add the device if it isn't already in the list
   std::list<std::string>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+  for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
     if (*it == strDevice)
       return;
 
@@ -524,7 +524,7 @@ void CButtonTranslator::RemoveDevice(std::string& strDevice)
 {
   // Find the device
   std::list<std::string>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+  for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
     if (*it == strDevice)
       break;
   if (it == m_deviceList.end())
@@ -566,7 +566,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 
       // Load mappings for any HID devices we have connected
       std::list<std::string>::iterator it;
-      for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+      for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
       {
         std::string devicedir = DIRS_TO_CHECK[dirIndex];
         devicedir.append(*it);
@@ -880,7 +880,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     if (windowID == -1) 
       m_joystickAxesConfigs[*it] = axesConfig;
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
-    it++;
+    ++it;
   }
 }
 
@@ -901,7 +901,7 @@ void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap
 {
   // find or create WindowMap entry, match on pattern equality
   JoystickMap::iterator jit;
-  for (jit = joystick->begin(); jit != joystick->end(); jit++)
+  for (jit = joystick->begin(); jit != joystick->end(); ++jit)
   {
     if (jit->first->GetPattern() == joyName->GetPattern())
       break;
@@ -910,14 +910,14 @@ void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap
   
   // find or create ActionMap, and merge/overwrite new entries
   ActionMap *a = &(*w)[windowID];
-  for (ActionMap::const_iterator it = map.begin(); it != map.end(); it++)
+  for (ActionMap::const_iterator it = map.begin(); it != map.end(); ++it)
     (*a)[it->first] = it->second;
 }
 
 CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
 {
   JoystickMap::const_iterator it;
-  for (it = maps.begin(); it != maps.end(); it++)
+  for (it = maps.begin(); it != maps.end(); ++it)
   {
     if (it->first->RegFind(joyName) >= 0)
     {

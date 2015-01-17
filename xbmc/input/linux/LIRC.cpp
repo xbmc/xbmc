@@ -39,7 +39,8 @@
 
 CRemoteControl g_RemoteControl;
 
-CRemoteControl::CRemoteControl()
+CRemoteControl::CRemoteControl():
+  m_deviceName(LIRC_DEVICE)
 {
   m_fd = -1;
   m_file = NULL;
@@ -47,7 +48,6 @@ CRemoteControl::CRemoteControl()
   m_button = 0;
   m_holdTime = 0;
   m_used = true;
-  m_deviceName = LIRC_DEVICE;
   m_inotify_fd = -1;
   m_inotify_wd = -1;
   m_bLogConnectFailure = true;

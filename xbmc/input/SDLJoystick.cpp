@@ -416,11 +416,11 @@ void CJoystick::ApplyAxesConfigs()
 {
   // load axes configuration from keymap
   int axesCount = 0;
-  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); it++)
+  for (std::map<int, SDL_Joystick*>::const_iterator it = m_Joysticks.begin(); it != m_Joysticks.end(); ++it)
   {
     std::string joyName(SDL_JoystickName(it->second));
     std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
-    for (axesCfg = m_AxesConfigs.begin(); axesCfg != m_AxesConfigs.end(); axesCfg++)
+    for (axesCfg = m_AxesConfigs.begin(); axesCfg != m_AxesConfigs.end(); ++axesCfg)
     {
       if (axesCfg->first->RegFind(joyName) >= 0)
         break;
