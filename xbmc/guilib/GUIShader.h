@@ -41,6 +41,8 @@ public:
   GLint GetCoord0MatrixLoc() { return m_hCoord0Matrix; }
   GLint GetFieldLoc() { return m_hField; }
   GLint GetStepLoc() { return m_hStep; }
+  GLint GetContrastLoc() { return m_hContrast; }
+  GLint GetBrightnessLoc() { return m_hBrightness; }
 
 protected:
   GLint m_hTex0;
@@ -55,6 +57,8 @@ protected:
   GLint m_hCoord0Matrix;
   GLint m_hField;
   GLint m_hStep;
+  GLint m_hContrast;
+  GLint m_hBrightness;
 
   GLfloat *m_proj;
   GLfloat *m_model;

@@ -30,6 +30,9 @@ uniform int       m_method;
 uniform int       m_field;
 uniform float     m_step;
 
+uniform float     m_brightness;
+uniform float     m_contrast;
+
 void main ()
 {
   vec2 source;
@@ -45,5 +48,9 @@ void main ()
   below.x = source.x;
   below.y = source.y + (2.0*m_step*bstep);
 
-  gl_FragColor = mix(texture2D(m_samp0, source), texture2D(m_samp0, below), 0.5);
+  vec4 color = mix(texture2D(m_samp0, source), texture2D(m_samp0, below), 0.5);
+  color = color * m_contrast;
+  color = color + m_brightness;
+
+  gl_FragColor.rgba = color;
 }

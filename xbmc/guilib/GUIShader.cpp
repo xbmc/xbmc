@@ -44,6 +44,8 @@ CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_ver
   m_hCoord0Matrix = 0;
   m_hField  = 0;
   m_hStep   = 0;
+  m_hContrast = 0;
+  m_hBrightness = 0;
 
   m_proj   = NULL;
   m_model  = NULL;
@@ -59,6 +61,8 @@ void CGUIShader::OnCompiledAndLinked()
   m_hUniCol = glGetUniformLocation(ProgramHandle(), "m_unicol");
   m_hField  = glGetUniformLocation(ProgramHandle(), "m_field");
   m_hStep   = glGetUniformLocation(ProgramHandle(), "m_step");
+  m_hContrast   = glGetUniformLocation(ProgramHandle(), "m_contrast");
+  m_hBrightness = glGetUniformLocation(ProgramHandle(), "m_brightness");
 
   // Variables passed directly to the Vertex shader
   m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
@@ -94,6 +98,8 @@ bool CGUIShader::OnEnabled()
 
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, glMatrixProject.Get());
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, glMatrixModview.Get());
+  glUniform1f(m_hBrightness, 0.0f);
+  glUniform1f(m_hContrast, 1.0f);
 
   return true;
 }

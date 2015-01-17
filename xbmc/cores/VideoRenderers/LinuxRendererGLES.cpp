@@ -1359,6 +1359,11 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][2];
@@ -1423,6 +1428,11 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
   glBindTexture(m_textureTarget, textureId);
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1509,6 +1519,11 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   }
   else
     g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1599,6 +1614,11 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   else
     g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
 
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+
   glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -1684,6 +1704,11 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][2];
@@ -1756,6 +1781,11 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
   glBindTexture(m_textureTarget, plane.id);
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -2842,10 +2872,10 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   }
 
   if(feature == RENDERFEATURE_BRIGHTNESS)
-    return false;
+    return true;
 
   if(feature == RENDERFEATURE_CONTRAST)
-    return false;
+    return true;
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
