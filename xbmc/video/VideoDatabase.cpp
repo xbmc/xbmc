@@ -1425,13 +1425,18 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     int idActor = -1;
-    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", name.c_str());
+
+    // ATTENTION: the trimming of actor names should really not be done here but after the scraping / NFO-parsing
+    std::string trimmedName = name.c_str();
+    StringUtils::Trim(trimmedName);
+
+    std::string strSQL=PrepareSQL("select actor_id from actor where name = '%s'", trimmedName.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values( NULL, '%s','%s')", name.c_str(),thumbURLs.c_str());
+      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.c_str(), thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
       idActor = (int)m_pDS->lastinsertid();
     }
