@@ -1407,7 +1407,6 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton == "enter") buttonCode = XINPUT_IR_REMOTE_ENTER;
   else if (strButton == "xbox") buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else if (strButton == "playlist") buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton == "guide") buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton == "teletext") buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton == "red") buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton == "green") buttonCode = XINPUT_IR_REMOTE_GREEN;
