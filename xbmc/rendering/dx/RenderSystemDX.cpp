@@ -330,7 +330,7 @@ void CRenderSystemDX::DeleteDevice()
   CSingleLock lock(m_resourceSection);
 
   // tell any shared resources
-  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnDestroyDevice();
 
   SAFE_RELEASE(m_pD3DDevice);
@@ -348,7 +348,7 @@ void CRenderSystemDX::OnDeviceLost()
   else
   {
     // just resetting the device
-    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDevice();
   }
 }
@@ -370,7 +370,7 @@ void CRenderSystemDX::OnDeviceReset()
 
   if (m_nDeviceStatus == S_OK)
   { // we're back
-    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
 
     g_renderManager.Flush();
@@ -379,7 +379,7 @@ void CRenderSystemDX::OnDeviceReset()
   }
   else
   {
-    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDevice();
   }
 }
@@ -561,7 +561,7 @@ bool CRenderSystemDX::CreateDevice()
   m_needNewDevice = false;
 
   // tell any shared objects about our resurrection
-  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnCreateDevice();
 
   return true;
