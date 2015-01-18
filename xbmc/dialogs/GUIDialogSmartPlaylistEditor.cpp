@@ -429,6 +429,8 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
   m_playlist.SetType(ConvertType(type));
   UpdateButtons();
 
+  SET_CONTROL_LABEL(CONTROL_HEADING, 21432);
+
   CGUIDialog::OnInitWindow();
 }
 
