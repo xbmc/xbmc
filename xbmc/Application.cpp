@@ -3010,7 +3010,15 @@ bool CApplication::ProcessGamepad(float frameTime)
       }
 
       float amount = g_Joystick.GetAmount(joyName, joyId);
-      CAction action(actionID, fullrange ? (amount + 1.0f)/2.0f : fabs(amount), 0.0f, actionName);
+
+      float amount_x = joyId == 0 ? amount : 0.0f;
+      float amount_y = joyId == 1 ? amount : 0.0f;
+
+      amount_x = fullrange ? (amount_x + 1.0f) / 2.0f : amount_x;
+      amount_y = fullrange ? (amount_y + 1.0f) / 2.0f : amount_y;
+
+      CAction action(actionID, amount_x, -amount_y, actionName);
+
       g_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
