@@ -621,7 +621,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
 
   error_concealment.hdr.id = MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT;
   error_concealment.hdr.size = sizeof(MMAL_PARAMETER_BOOLEAN_T);
-  error_concealment.enable = MMAL_FALSE;
+  error_concealment.enable = g_advancedSettings.m_omxDecodeStartWithValidFrame;
   status = mmal_port_parameter_set(m_dec_input, &error_concealment.hdr);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to disable error concealment on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
