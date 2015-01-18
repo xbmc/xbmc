@@ -6017,6 +6017,7 @@ msgctxt "#13394"
 msgid "Calculating folder size"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#13395"
 msgid "Video settings"
 msgstr ""

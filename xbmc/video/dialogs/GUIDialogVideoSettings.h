@@ -36,6 +36,7 @@ protected:
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
   virtual void Save();
+  virtual void SetupView();
 
   // specialization of CGUIDialogSettingsManualBase
   virtual void InitializeSettings();
