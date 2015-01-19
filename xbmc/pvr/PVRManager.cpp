@@ -48,6 +48,7 @@
 #include "PVRManager.h"
 #include "PVRDatabase.h"
 #include "PVRGUIInfo.h"
+#include "PVRActionListener.h"
 #include "addons/PVRClients.h"
 #include "channels/PVRChannel.h"
 #include "channels/PVRChannelGroupsContainer.h"
@@ -354,6 +355,9 @@ void CPVRManager::Cleanup(void)
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
+  
+  /* unregister application action listener */
+  g_application.UnregisterActionListener(&CPVRActionListener::Get());
 
   HideProgressDialog();
 
@@ -418,6 +422,9 @@ void CPVRManager::Start(bool bAsync /* = false */, int openWindowId /* = 0 */)
   if (!m_database)
     m_database = new CPVRDatabase;
   m_database->Open();
+  
+  /* register application action listener */
+  g_application.RegisterActionListener(&CPVRActionListener::Get());
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
