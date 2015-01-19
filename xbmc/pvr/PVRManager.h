@@ -544,11 +544,10 @@ namespace PVR
     bool SetWakeupCommand(void);
 
     /*!
-     * @brief Handle PVR specific cActions
-     * @param action The action to process
-     * @return True if action could be handled, false otherwise.
+     * @brief Wait until the pvr manager is loaded
+     * @return True when loaded, false otherwise
      */
-    bool OnAction(const CAction &action);
+    bool WaitUntilInitialised(void);
 
     /*!
      * @brief Create EPG tags for all channels in internal channel groups

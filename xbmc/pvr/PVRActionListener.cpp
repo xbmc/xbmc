@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -51,6 +52,30 @@ bool CPVRActionListener::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
+    case ACTION_PVR_PLAY:
+    case ACTION_PVR_PLAY_TV:
+    case ACTION_PVR_PLAY_RADIO:
+    {
+      // see if we're already playing a PVR stream and if not or the stream type
+      // doesn't match the demanded type, start playback of according type
+      bool isPlayingPvr(g_PVRManager.IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
+      switch (action.GetID())
+      {
+        case ACTION_PVR_PLAY:
+          if (!isPlayingPvr)
+            g_PVRManager.StartPlayback(PlaybackTypeAny);
+          break;
+        case ACTION_PVR_PLAY_TV:
+          if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
+            g_PVRManager.StartPlayback(PlaybackTypeTv);
+          break;
+        case ACTION_PVR_PLAY_RADIO:
+          if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
+            g_PVRManager.StartPlayback(PlaybackTypeRadio);
+          break;
+      }
+      return true;
+    }
     case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:

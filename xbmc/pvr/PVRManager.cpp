@@ -1558,42 +1558,6 @@ void CPVRManager::ExecutePendingJobs(void)
   m_triggerEvent.Reset();
 }
 
-bool CPVRManager::OnAction(const CAction &action)
-{
-  // process PVR specific play actions
-  if (action.GetID() == ACTION_PVR_PLAY || action.GetID() == ACTION_PVR_PLAY_TV || action.GetID() == ACTION_PVR_PLAY_RADIO)
-  {
-    // pvr not active yet, show error message
-    if (!IsStarted())
-    {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(19045), g_localizeStrings.Get(19044));
-    }
-    else
-    {
-      // see if we're already playing a PVR stream and if not or the stream type
-      // doesn't match the demanded type, start playback of according type
-      bool isPlayingPvr(IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
-      switch (action.GetID())
-      {
-        case ACTION_PVR_PLAY:
-          if (!isPlayingPvr)
-            StartPlayback(PlaybackTypeAny);
-          break;
-        case ACTION_PVR_PLAY_TV:
-          if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            StartPlayback(PlaybackTypeTv);
-          break;
-        case ACTION_PVR_PLAY_RADIO:
-          if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            StartPlayback(PlaybackTypeRadio);
-          break;
-      }
-    }
-    return true;
-  }
-  return false;
-}
-
 bool CPVRChannelSwitchJob::DoWork(void)
 {
   // announce OnStop and delete m_previous when done
