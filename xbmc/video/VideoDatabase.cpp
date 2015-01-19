@@ -3979,7 +3979,7 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, vector<int> &tim
 }
 
 /// \brief Sets the stack times for a particular video file
-void CVideoDatabase::SetStackTimes(const std::string& filePath, vector<int> &times)
+void CVideoDatabase::SetStackTimes(const std::string& filePath, const vector<int> &times)
 {
   try
   {
