@@ -4053,6 +4053,7 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		430C881312D64A730098821A /* IPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPowerSyscall.h; sourceTree = "<group>"; };
 		431376FF12D6455C00680C15 /* GUIDialogCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCache.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
@@ -7126,6 +7127,7 @@
 		4367217312D6640E002508E6 /* interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				42DAC16B1A6E780C0066B4C8 /* IActionListener.h */,
 				DF40BC21178B4C07009DB567 /* generic */,
 				7C89674213C03B21003631FE /* info */,
 				F5AE407F13415D9E0004BD79 /* json-rpc */,
