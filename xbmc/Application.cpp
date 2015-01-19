@@ -459,6 +459,8 @@ CApplication::~CApplication(void)
   delete m_playerController;
   delete m_pInertialScrollingHandler;
   delete m_pPlayer;
+
+  m_actionListeners.clear();
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -2583,7 +2585,11 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // handle extra global presses
-
+  
+  // notify action listeners
+  if (NotifyActionListeners(action))
+    return true;
+  
   // screenshot : take a screenshot :)
   if (action.GetID() == ACTION_TAKE_SCREENSHOT)
   {
@@ -5888,4 +5894,32 @@ void CApplication::CloseNetworkShares()
 #ifdef HAS_FILESYSTEM_SFTP
   CSFTPSessionManager::DisconnectAllSessions();
 #endif
+}
+
+void CApplication::RegisterActionListener(IActionListener *listener)
+{
+  CSingleLock lock(m_critSection);
+  std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
+  if (it == m_actionListeners.end())
+    m_actionListeners.push_back(listener);
+}
+
+void CApplication::UnregisterActionListener(IActionListener *listener)
+{
+  CSingleLock lock(m_critSection);
+  std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
+  if (it != m_actionListeners.end())
+    m_actionListeners.erase(it);
+}
+
+bool CApplication::NotifyActionListeners(const CAction &action) const
+{
+  CSingleLock lock(m_critSection);
+  for (std::vector<IActionListener *>::const_iterator it = m_actionListeners.begin(); it != m_actionListeners.end(); ++it)
+  {
+    if ((*it)->OnAction(action))
+      return true;
+  }
+  
+  return false;
 }
