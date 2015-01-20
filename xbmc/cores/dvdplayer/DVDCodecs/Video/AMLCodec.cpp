@@ -1744,6 +1744,7 @@ void CAMLCodec::CloseDecoder()
   // return tsync to default so external apps work
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
+  SetVideo3dMode(MODE_3D_DISABLE);
   ShowMainVideo(false);
 }
 
@@ -2146,6 +2147,7 @@ void CAMLCodec::SetVideo3dMode(const int mode3d)
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
   SysfsUtils::SetInt("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
+  old3dmode = mode3d;
 }
 
 std::string CAMLCodec::GetStereoMode()
@@ -2159,8 +2161,6 @@ std::string CAMLCodec::GetStereoMode()
     default:                                  stereo_mode = m_hints.stereo_mode; break;
   }
 
-  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
-    stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
   return stereo_mode;
 }
 

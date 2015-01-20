@@ -649,17 +649,19 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
   return -1;
 }
 
+void CRenderSystemGLES::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+{
+  CRenderSystemBase::SetStereoMode(mode, view);
+
+  g_sysinfo.HWSetStereoMode(mode, view);
+}
+
 bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
 {
-  switch(mode)
-  {
-    case RENDER_STEREO_MODE_INTERLACED:
-      if (g_sysinfo.HasHW3DInterlaced())
-        return true;
+  if (g_sysinfo.HWSupportsStereo(mode))
+    return true;
 
-    default:
-      return CRenderSystemBase::SupportsStereo(mode);
-  }
+  return CRenderSystemBase::SupportsStereo(mode);
 }
 
 #endif
