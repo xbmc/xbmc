@@ -26,8 +26,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "utils/URIUtils.h"
 
-using namespace std;
-
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
 {
@@ -45,10 +43,10 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         accessible = true;
       else
       {
-        string sourceTypes[] = { "video", "music", "pictures" };
-        unsigned int size = sizeof(sourceTypes) / sizeof(string);
+        std::string sourceTypes[] = { "video", "music", "pictures" };
+        unsigned int size = sizeof(sourceTypes) / sizeof(std::string);
 
-        string realPath = URIUtils::GetRealPath(file);
+        std::string realPath = URIUtils::GetRealPath(file);
         // for rar:// and zip:// paths we need to extract the path to the archive instead of using the VFS path
         while (URIUtils::IsInArchive(realPath))
           realPath = CURL(realPath).GetHostName();
@@ -66,9 +64,9 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
             if (source->m_iHasLock == 2 || !source->m_allowSharing)
               continue;
 
-            for (vector<string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); ++path)
+            for (std::vector<std::string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); ++path)
             {
-              string realSourcePath = URIUtils::GetRealPath(*path);
+              std::string realSourcePath = URIUtils::GetRealPath(*path);
               if (URIUtils::IsInPath(realPath, realSourcePath))
               {
                 accessible = true;

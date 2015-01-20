@@ -28,9 +28,6 @@
 
 #define MAX_STRING_POST_SIZE 20000
 
-using namespace std;
-using namespace JSONRPC;
-
 bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.compare("/jsonrpc") == 0);
@@ -42,7 +39,7 @@ int CHTTPJsonRpcHandler::HandleRequest()
   bool isRequest = false;
   if (m_request.method == POST)
   {
-    string contentType = CWebServer::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+    std::string contentType = CWebServer::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
     // If the content-type of the m_request was specified, it must be application/json-rpc, application/json, or application/jsonrequest
     // http://www.jsonrpc.org/historical/json-rpc-over-http.html
     if (!contentType.empty() && contentType.compare("application/json-rpc") != 0 &&
@@ -57,10 +54,10 @@ int CHTTPJsonRpcHandler::HandleRequest()
   }
   else if (m_request.method == GET)
   {
-    map<string, string> arguments;
+    std::map<std::string, std::string> arguments;
     if (CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
     {
-      map<string, string>::const_iterator argument = arguments.find("request");
+      std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
       if (argument != arguments.end() && !argument->second.empty())
       {
         m_requestData = argument->second;
@@ -70,12 +67,12 @@ int CHTTPJsonRpcHandler::HandleRequest()
   }
 
   if (isRequest)
-    m_responseData = CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
+    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
   else
   {
     // get the whole output of JSONRPC.Introspect
     CVariant result;
-    CJSONServiceDescription::Print(result, m_request.webserver, &client);
+    JSONRPC::CJSONServiceDescription::Print(result, m_request.webserver, &client);
     m_responseData = CJSONVariantWriter::Write(result, false);
   }
 
@@ -118,7 +115,7 @@ bool CHTTPJsonRpcHandler::appendPostData(const char *data, unsigned int size)
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetPermissionFlags()
 {
-  return OPERATION_PERMISSION_ALL;
+  return JSONRPC::OPERATION_PERMISSION_ALL;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetAnnouncementFlags()

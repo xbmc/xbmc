@@ -56,9 +56,7 @@
 
 #define HEADER_NEWLINE        "\r\n"
 
-using namespace XFILE;
 using namespace std;
-using namespace JSONRPC;
 
 typedef struct ConnectionHandler
 {
@@ -67,7 +65,7 @@ typedef struct ConnectionHandler
 } ConnectionHandler;
 
 typedef struct {
-  boost::shared_ptr<CFile> file;
+  boost::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
   size_t rangeCountTotal;
   string boundary;
@@ -731,7 +729,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   const HTTPResponseDetails &responseDetails = handler->GetResponseDetails();
   HttpResponseRanges responseRanges = handler->GetResponseData();
 
-  boost::shared_ptr<CFile> file = boost::make_shared<CFile>();
+  boost::shared_ptr<XFILE::CFile> file = boost::make_shared<XFILE::CFile>();
   std::string filePath = handler->GetResponseFile();
 
   if (!file->Open(filePath, READ_NO_CACHE))
@@ -1125,7 +1123,7 @@ void CWebServer::SetCredentials(const string &username, const string &password)
 
 bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
-  if (!CFile::Exists(path))
+  if (!XFILE::CFile::Exists(path))
     return false;
 
   protocol = "http";
@@ -1149,7 +1147,7 @@ bool CWebServer::Download(const char *path, CVariant &result)
 
 int CWebServer::GetCapabilities()
 {
-  return Response | FileDownloadRedirect;
+  return JSONRPC::Response | JSONRPC::FileDownloadRedirect;
 }
 
 void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)

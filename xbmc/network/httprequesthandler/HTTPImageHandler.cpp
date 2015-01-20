@@ -23,8 +23,6 @@
 #include "filesystem/ImageFile.h"
 #include "network/WebServer.h"
 
-using namespace std;
-
 CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
 {

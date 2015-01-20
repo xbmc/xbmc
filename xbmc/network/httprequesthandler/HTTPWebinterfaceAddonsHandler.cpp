@@ -24,9 +24,6 @@
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
 
-using namespace std;
-using namespace ADDON;
-
 bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.compare("/addons") == 0 || request.url.compare("/addons/") == 0);
@@ -35,11 +32,10 @@ bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request
 int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
-  IVECADDONS addons_it;
-  for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
-    m_responseData += "<li><a href=/addons/" + (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_WEB_INTERFACE, addons);
+  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
+    m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
 
   m_responseData += "</ul>\n</body></html>";
 
