@@ -33,7 +33,14 @@ int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
   ADDON::VECADDONS addons;
-  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_WEB_INTERFACE, addons);
+  if (!ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_WEB_INTERFACE, addons) || addons.empty())
+  {
+    m_response.type = HTTPError;
+    m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
+
+    return MHD_YES;
+  }
+
   for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
     m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
 
