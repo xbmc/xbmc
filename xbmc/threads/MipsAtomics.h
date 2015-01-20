@@ -21,8 +21,7 @@
  * Most of this file was borrowed from the linux kernel.
  */
 
-#ifndef __ATOMIC_MIPS_H_
-#define __ATOMIC_MIPS_H_
+#pragma once
 
 #include <inttypes.h>
 #include <pthread.h>
@@ -109,6 +108,3 @@ static __inline__ long atomic_sub(int i, volatile long* v)
 
 	return temp;
 }
-
-
-#endif
