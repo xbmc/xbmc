@@ -1822,6 +1822,7 @@
     <ClInclude Include="..\..\xbmc\input\XBMC_vkeys.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h" />
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h" />
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoExpression.h" />

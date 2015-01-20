@@ -4569,6 +4569,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h">
       <Filter>interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h">
       <Filter>interfaces</Filter>
     </ClInclude>
