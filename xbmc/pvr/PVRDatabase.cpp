@@ -193,25 +193,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE channelgroups ADD bIsHidden bool");
 }
 
-int CPVRDatabase::GetLastChannelId(void)
-{
-  int iReturn(0);
-
-  std::string strQuery = PrepareSQL("SELECT MAX(idChannel) as iMaxChannel FROM channels");
-  if (ResultQuery(strQuery))
-  {
-    try
-    {
-      if (!m_pDS->eof())
-        iReturn = m_pDS->fv("iMaxChannel").get_asInt();
-      m_pDS->close();
-    }
-    catch (...) {}
-  }
-
-  return iReturn;
-}
-
 /********** Channel methods **********/
 
 bool CPVRDatabase::DeleteChannels(void)
@@ -591,21 +572,13 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
 bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
 {
   bool bReturn(true);
-  int iLastChannel(0);
-
-  /* we can only safely get this from a local db */
-  if (m_sqlite)
-    iLastChannel = GetLastChannelId();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < group.m_members.size(); iChannelPtr++)
   {
     PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
+    
     if (member.channel->IsChanged() || member.channel->IsNew())
-    {
-      if (m_sqlite && member.channel->IsNew())
-        member.channel->SetChannelID(++iLastChannel);
-      bReturn &= Persist(*member.channel, m_sqlite || !member.channel->IsNew());
-    }
+      bReturn &= Persist(*member.channel);
   }
 
   bReturn &= CommitInsertQueries();
@@ -750,7 +723,7 @@ int CPVRDatabase::Persist(const AddonPtr client)
   return iReturn;
 }
 
-bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
+bool CPVRDatabase::Persist(CPVRChannel &channel)
 {
   bool bReturn(false);
 
@@ -789,18 +762,30 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bQueueWrite /* = false */)
         channel.EpgID());
   }
 
-  if (bQueueWrite)
+  if (ExecuteQuery(strQuery))
   {
-    QueueInsertQuery(strQuery);
-    bReturn = true;
-  }
-  else if (ExecuteQuery(strQuery))
-  {
-    CSingleLock lock(channel.m_critSection);
-    if (channel.m_iChannelId <= 0)
-      channel.m_iChannelId = (int)m_pDS->lastinsertid();
+    /* update the channel ID for new channels */
+    if (channel.ChannelID() <= 0)
+      channel.SetChannelID((int)m_pDS->lastinsertid());
+
     bReturn = true;
   }
 
   return bReturn;
+}
+
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
+{
+  std::string strQuery = PrepareSQL("UPDATE channels SET iLastWatched = %d WHERE idChannel = %d",
+    channel.LastWatched(), channel.ChannelID());
+
+  return ExecuteQuery(strQuery);
+}
+
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup &group)
+{
+  std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %d WHERE idGroup = %d",
+    group.LastWatched(), group.GroupID());
+
+  return ExecuteQuery(strQuery);
 }

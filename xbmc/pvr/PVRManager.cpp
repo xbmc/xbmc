@@ -1639,12 +1639,10 @@ void CPVRManager::UpdateLastWatched(CPVRChannel &channel)
   // NOTE: method could be called with a fileitem copy as argument so we need to obtain the right channel instance
   CPVRChannelPtr channelPtr = m_channelGroups->GetChannelById(channel.ChannelID());
   channelPtr->SetLastWatched(tNow);
-  channelPtr->Persist();
 
   // update last watched timestamp for group
   CPVRChannelGroupPtr group = GetPlayingGroup(channel.IsRadio());
   group->SetLastWatched(tNow);
-  group->Persist();
 
   /* update last played group */
   m_channelGroups->SetLastPlayedGroup(group);

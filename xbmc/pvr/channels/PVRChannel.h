@@ -88,10 +88,9 @@ namespace PVR
 
     /*!
      * @brief Persists the changes in the database.
-     * @param bQueueWrite Queue the change and write changes later.
      * @return True if the changes were saved succesfully, false otherwise.
      */
-    bool Persist(bool bQueueWrite = false);
+    bool Persist();
 
     /*!
      * @return The identifier given to this channel by the TV database.

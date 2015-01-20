@@ -244,7 +244,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   return m_bChanged;
 }
 
-bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
+bool CPVRChannel::Persist()
 {
   {
     // not changed
@@ -255,7 +255,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    bool bReturn = database->Persist(*this, bQueueWrite);
+    bool bReturn = database->Persist(*this);
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
@@ -399,17 +399,15 @@ bool CPVRChannel::SetVirtual(bool bIsVirtual)
 
 bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 {
-  CSingleLock lock(m_critSection);
-
-  if (m_iLastWatched != iLastWatched)
   {
-    /* update last watched  */
-    m_iLastWatched = iLastWatched;
-    SetChanged();
-    m_bChanged = true;
+    CSingleLock lock(m_critSection);
 
-    return true;
+    if (m_iLastWatched != iLastWatched)
+      m_iLastWatched = iLastWatched;
   }
+
+  if (CPVRDatabase *database = GetPVRDatabase())
+    return database->UpdateLastWatched(*this);
 
   return false;
 }
