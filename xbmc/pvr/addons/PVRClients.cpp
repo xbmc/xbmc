@@ -1005,9 +1005,6 @@ void CPVRClients::Process(void)
         ShowDialogNoClientsEnabled();
     }
 
-    PVR_CLIENT client;
-    if (GetPlayingClient(client))
-      client->UpdateCharInfoSignalStatus();
     Sleep(1000);
   }
 }
@@ -1278,18 +1275,6 @@ std::string CPVRClients::GetCurrentInputFormat(void) const
     strReturn = currentChannel->InputFormat();
 
   return strReturn;
-}
-
-PVR_STREAM_PROPERTIES CPVRClients::GetCurrentStreamProperties(void)
-{
-  PVR_STREAM_PROPERTIES props;
-  PVR_CLIENT client;
-  
-  memset(&props, 0, sizeof(props));
-  if (GetPlayingClient(client))
-    client->GetStreamProperties(&props);
-
-  return props;
 }
 
 bool CPVRClients::IsPlaying(void) const

@@ -862,19 +862,6 @@ void CPVRManager::ResetPlayingTag(void)
     m_guiInfo->ResetPlayingTag();
 }
 
-int CPVRManager::GetPreviousChannel(void)
-{
-  CPVRChannelPtr currentChannel;
-  if (GetCurrentChannel(currentChannel))
-  {
-    CPVRChannelGroupPtr selectedGroup = GetPlayingGroup(currentChannel->IsRadio());
-    CFileItemPtr channel = selectedGroup->GetLastPlayedChannel(currentChannel->ChannelID());
-    if (channel && channel->HasPVRChannelInfoTag())
-      return channel->GetPVRChannelInfoTag()->ChannelNumber();
-  }
-  return -1;
-}
-
 bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
 {
   bool bReturn = false;

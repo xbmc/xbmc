@@ -65,8 +65,7 @@ namespace PVR
     int Load();
     void Unload();
     void Clear();
-    void UpdateEntry(const CPVRRecording &tag);
-    void UpdateFromClient(const CPVRRecording &tag) { UpdateEntry(tag); }
+    void UpdateFromClient(const CPVRRecording &tag);
 
     /**
      * @brief refresh the recordings list from the clients.

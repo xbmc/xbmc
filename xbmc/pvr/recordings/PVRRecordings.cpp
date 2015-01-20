@@ -447,7 +447,7 @@ void CPVRRecordings::Clear()
   m_recordings.clear();
 }
 
-void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
+void CPVRRecordings::UpdateFromClient(const CPVRRecording &tag)
 {
   CSingleLock lock(m_critSection);
 

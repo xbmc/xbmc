@@ -195,11 +195,6 @@ namespace PVR
     CPVRDatabase *GetTVDatabase(void) const { return m_database; }
 
     /*!
-     * @brief Updates the recordings and the "now" and "next" timers.
-     */
-    void UpdateRecordingsCache(void);
-
-    /*!
      * @brief Get a GUIInfoManager character string.
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
@@ -346,12 +341,6 @@ namespace PVR
      * @return True if the recording was started or stopped successfully, false otherwise.
      */
     bool StartRecordingOnPlayingChannel(bool bOnOff);
-
-    /*!
-     * @brief Get the channel number of the previously selected channel.
-     * @return The requested channel number or -1 if it wasn't found.
-     */
-    int GetPreviousChannel(void);
 
     /*!
      * @brief Check whether there are active timers.
@@ -555,12 +544,6 @@ namespace PVR
     bool SetWakeupCommand(void);
 
     /*!
-     * @brief Wait until the pvr manager is loaded
-     * @return True when loaded, false otherwise
-     */
-    bool WaitUntilInitialised(void);
-
-    /*!
      * @brief Handle PVR specific cActions
      * @param action The action to process
      * @return True if action could be handled, false otherwise.
@@ -593,26 +576,6 @@ namespace PVR
      */
     bool Load(void);
     
-    /*!
-     * @brief Update all recordings.
-     */
-    void UpdateRecordings(void);
-
-    /*!
-     * @brief Update all timers.
-     */
-    void UpdateTimers(void);
-
-    /*!
-     * @brief Update all channels.
-     */
-    void UpdateChannels(void);
-
-    /*!
-     * @brief Update all channel groups and channels in them.
-     */
-    void UpdateChannelGroups(void);
-
     /*!
      * @brief Reset all properties.
      */
