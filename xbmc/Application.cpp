@@ -259,8 +259,6 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
-#include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
-#include "pvr/dialogs/GUIDialogPVRDirectorOSD.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
@@ -1443,8 +1441,6 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPVRGuideSearch);
     g_windowManager.Add(new CGUIDialogPVRChannelsOSD);
     g_windowManager.Add(new CGUIDialogPVRGuideOSD);
-    g_windowManager.Add(new CGUIDialogPVRDirectorOSD);
-    g_windowManager.Add(new CGUIDialogPVRCutterOSD);
 
     g_windowManager.Add(new CGUIDialogSelect);
     g_windowManager.Add(new CGUIDialogMusicInfo);
@@ -3383,8 +3379,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);

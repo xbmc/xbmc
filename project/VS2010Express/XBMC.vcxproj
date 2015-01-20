@@ -720,8 +720,6 @@
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.cpp" />
@@ -1966,8 +1964,6 @@
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h" />
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.h" />
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.h" />

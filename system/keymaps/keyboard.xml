@@ -550,18 +550,6 @@
       <escape>Close</escape>
     </keyboard>
   </PVROSDGuide>
-  <PVROSDDirector>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-    </keyboard>
-  </PVROSDDirector>
-  <PVROSDCutter>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-    </keyboard>
-  </PVROSDCutter>
   <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>

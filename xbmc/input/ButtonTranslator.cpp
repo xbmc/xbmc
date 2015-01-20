@@ -304,8 +304,6 @@ static const ActionMapping windows[] =
         {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
         {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
         {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
-        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
-        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},

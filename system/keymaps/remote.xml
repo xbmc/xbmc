@@ -602,22 +602,6 @@
       <guide>Close</guide>
     </remote>
   </PVROSDGuide>
-  <PVROSDDirector>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <contentsmenu>Close</contentsmenu>
-      <rootmenu>Close</rootmenu>
-    </remote>
-  </PVROSDDirector>
-  <PVROSDCutter>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <contentsmenu>Close</contentsmenu>
-      <rootmenu>Close</rootmenu>
-    </remote>
-  </PVROSDCutter>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>
