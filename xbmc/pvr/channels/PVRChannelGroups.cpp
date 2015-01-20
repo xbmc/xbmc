@@ -525,35 +525,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   return bFound;
 }
 
-void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
-{
-  int iListGroupPtr(0);
-  int iSelectedGroupPtr(0);
-  CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(false);
-  std::vector< std::pair<std::string, int> > labels;
-
-  // fetch all groups
-  {
-    CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
-    {
-      // skip empty groups
-      if ((*it)->Size() == 0)
-        continue;
-
-      if ((*it)->GroupID() == selectedGroup->GroupID())
-        iSelectedGroupPtr = iListGroupPtr;
-
-      labels.push_back(make_pair((*it)->GroupName(), iListGroupPtr++));
-    }
-  }
-
-  // selected group
-  CGUIMessage msgSel(GUI_MSG_SET_LABELS, iWindowId, iControlId, iSelectedGroupPtr);
-  msgSel.SetPointer(&labels);
-  g_windowManager.SendMessage(msgSel);
-}
-
 bool CPVRChannelGroups::CreateChannelEpgs(void)
 {
   bool bReturn(false);

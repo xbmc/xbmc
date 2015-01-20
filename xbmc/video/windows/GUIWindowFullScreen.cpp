@@ -53,8 +53,6 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "input/ButtonTranslator.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
 #include "filesystem/File.h"
@@ -65,13 +63,10 @@
 #include "linux/LinuxResourceCounter.h"
 #endif
 
-using namespace PVR;
-
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
 #define LABEL_ROW2                       11
 #define LABEL_ROW3                       12
-#define CONTROL_GROUP_CHOOSER            503
 
 //Displays current position, visible after seek or when forced
 //Alt, use conditional visibility Player.DisplayAfterSeek
@@ -98,7 +93,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
-  m_bGroupSelectShow = false;
   m_loadType = KEEP_IN_MEMORY;
   // audio
   //  - language
@@ -280,18 +274,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
-  case ACTION_PREVIOUS_CHANNELGROUP:
-    {
-      if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
-        ChangetheTVGroup(false);
-      return true;
-    }
-  case ACTION_NEXT_CHANNELGROUP:
-    {
-      if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
-        ChangetheTVGroup(true);
-      return true;
-    }
   default:
       break;
   }
@@ -332,8 +314,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   }
 
   m_showCodec.Parse("player.showcodec", GetID());
-
-  FillInTVGroups();
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -352,7 +332,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowInfo(false);
       g_infoManager.SetShowCodec(false);
       m_bShowCurrentTime = false;
-      m_bGroupSelectShow = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
@@ -399,61 +378,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_renderManager.Update();
 #endif
       return true;
-    }
-  case GUI_MSG_CLICKED:
-    {
-      unsigned int iControl = message.GetSenderId();
-      if (iControl == CONTROL_GROUP_CHOOSER && g_PVRManager.IsStarted())
-      {
-        // Get the currently selected label of the Select button
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-        OnMessage(msg);
-        std::string strLabel = msg.GetLabel();
-
-        CPVRChannelPtr playingChannel;
-        if (g_PVRManager.GetCurrentChannel(playingChannel))
-        {
-          CPVRChannelGroupPtr selectedGroup = g_PVRChannelGroups->Get(playingChannel->IsRadio())->GetByName(strLabel);
-          if (selectedGroup)
-          {
-            g_PVRManager.SetPlayingGroup(selectedGroup);
-            CLog::Log(LOGDEBUG, "%s - switched to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
-
-            if (!selectedGroup->IsGroupMember(*playingChannel))
-            {
-              CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group",
-                  __FUNCTION__, playingChannel->ChannelName().c_str(), selectedGroup->GroupName().c_str());
-              CFileItemPtr switchChannel = selectedGroup->GetByChannelNumber(1);
-
-              if (switchChannel && switchChannel->HasPVRChannelInfoTag())
-                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->GetPVRChannelInfoTag()->ChannelNumber()));
-              else
-              {
-                CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
-                CApplicationMessenger::Get().MediaStop(false);
-              }
-            }
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "%s - could not switch to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
-            CApplicationMessenger::Get().MediaStop(false);
-          }
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "%s - cannot find the current channel", __FUNCTION__);
-          CApplicationMessenger::Get().MediaStop(false);
-        }
-
-        // hide the control and reset focus
-        m_bGroupSelectShow = false;
-        SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
-//      SET_CONTROL_FOCUS(0, 0);
-
-        return true;
-      }
-      break;
     }
   case GUI_MSG_SETFOCUS:
   case GUI_MSG_LOSTFOCUS:
@@ -646,7 +570,6 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_VISIBLE(LABEL_ROW2);
     SET_CONTROL_VISIBLE(LABEL_ROW3);
     SET_CONTROL_VISIBLE(BLUE_BAR);
-    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
   else if (m_timeCodeShow)
   {
@@ -654,15 +577,6 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW2);
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_VISIBLE(BLUE_BAR);
-    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
-  }
-  else if (m_bGroupSelectShow)
-  {
-    SET_CONTROL_HIDDEN(LABEL_ROW1);
-    SET_CONTROL_HIDDEN(LABEL_ROW2);
-    SET_CONTROL_HIDDEN(LABEL_ROW3);
-    SET_CONTROL_HIDDEN(BLUE_BAR);
-    SET_CONTROL_VISIBLE(CONTROL_GROUP_CHOOSER);
   }
   else
   {
@@ -670,7 +584,6 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW2);
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_HIDDEN(BLUE_BAR);
-    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
 }
 
@@ -740,47 +653,6 @@ void CGUIWindowFullScreen::SeekChapter(int iChapter)
 
   // Make sure gui items are visible.
   g_infoManager.SetDisplayAfterSeek();
-}
-
-void CGUIWindowFullScreen::FillInTVGroups()
-{
-  if (!g_PVRManager.IsStarted())
-    return;
-
-  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
-  g_windowManager.SendMessage(msgReset);
-
-  const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRManager.IsPlayingRadio());
-  if (groups)
-    groups->FillGroupsGUI(GetID(), CONTROL_GROUP_CHOOSER);
-}
-
-void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
-{
-  if (!g_PVRManager.IsStarted())
-    return;
-
-  CGUIControl* pButton = GetControl(CONTROL_GROUP_CHOOSER);
-  if (!pButton)
-    return;
-
-  if (!m_bGroupSelectShow)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_GROUP_CHOOSER);
-    SET_CONTROL_FOCUS(CONTROL_GROUP_CHOOSER, 0);
-
-    // fire off an event that we've pressed this button...
-    OnAction(CAction(ACTION_SELECT_ITEM));
-
-    m_bGroupSelectShow = true;
-  }
-  else
-  {
-    if (next)
-      pButton->OnRight();
-    else
-      pButton->OnLeft();
-  }
 }
 
 void CGUIWindowFullScreen::ToggleOSD()

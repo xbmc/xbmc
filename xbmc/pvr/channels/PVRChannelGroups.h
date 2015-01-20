@@ -194,13 +194,6 @@ namespace PVR
     bool IsRadio(void) const { return m_bRadio; }
 
     /*!
-     * @brief Call by a guiwindow/dialog to add the groups to a control
-     * @param iWindowId The window to add the groups to.
-     * @param iControlId The control to add the groups to
-     */
-    void FillGroupsGUI(int iWindowId, int iControlId) const;
-
-    /*!
      * @brief Update the contents of the groups in this container.
      * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
      * @return True if the update was successful, false otherwise.
