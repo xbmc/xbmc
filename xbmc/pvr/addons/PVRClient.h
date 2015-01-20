@@ -497,32 +497,6 @@ namespace PVR
     bool GetPlayingChannel(CPVRChannelPtr &channel) const;
     bool GetPlayingRecording(CPVRRecording &recording) const;
 
-    /*! @name Signal status methods */
-    //@{
-
-    /*!
-     * @brief Get the quality data for the live stream that is currently playing.
-     * @param status A copy of the quality data.
-     */
-    void GetQualityData(PVR_SIGNAL_STATUS *status) const;
-
-    /*!
-     * @return The current signal quality level.
-     */
-    int GetSignalLevel(void) const;
-
-    /*!
-     * @return The current signal/noise ratio.
-     */
-    int GetSNR(void) const;
-
-    /*!
-     * @brief Update the signal status for the tv stream that's currently being read.
-     */
-    void UpdateCharInfoSignalStatus(void);
-
-    //@}
-
     static const char *ToString(const PVR_ERROR error);
 
     /*!
@@ -562,11 +536,6 @@ namespace PVR
      * @return True when compatible, false otherwise.
      */
     bool CheckAPIVersion(void);
-
-    /*!
-     * @brief Reset the signal quality data to the initial values.
-     */
-    void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
 
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
@@ -629,7 +598,6 @@ namespace PVR
     bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
     bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
-    PVR_SIGNAL_STATUS      m_qualityInfo;           /*!< stream quality information */
     std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */

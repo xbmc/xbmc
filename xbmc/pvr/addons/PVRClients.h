@@ -224,12 +224,6 @@ namespace PVR
     bool CanSeekStream(void) const;
 
     /*!
-     * @brief Get the properties of the current playing stream content.
-     * @return A pointer to the properties or NULL if no stream is playing.
-     */
-    PVR_STREAM_PROPERTIES GetCurrentStreamProperties(void);
-
-    /*!
      * @brief Get the input format name of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
