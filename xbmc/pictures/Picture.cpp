@@ -210,8 +210,8 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
         }
       }
       delete[] scaled;
-      delete texture;
     }
+    delete texture;
   }
   // now save to a file
   if (success)
