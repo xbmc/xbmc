@@ -43,7 +43,9 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
      "guishader_frag_multi_blendcolor.glsl",
      "guishader_frag_rgba.glsl",
      "guishader_frag_rgba_oes.glsl",
-     "guishader_frag_rgba_blendcolor.glsl"
+     "guishader_frag_rgba_blendcolor.glsl",
+     "guishader_frag_rgba_bob.glsl",
+     "guishader_frag_rgba_bob_oes.glsl"
     };
 
 CRenderSystemGLES::CRenderSystemGLES()
@@ -645,6 +647,38 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
 {
   if (m_pGUIshader[m_method])
     return m_pGUIshader[m_method]->GetCoord0MatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetField()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetFieldLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetStep()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetStepLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetContrast()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetContrastLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetBrightness()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetBrightnessLoc();
 
   return -1;
 }

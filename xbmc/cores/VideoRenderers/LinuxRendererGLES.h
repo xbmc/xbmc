@@ -181,6 +181,7 @@ protected:
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
+  virtual void ReleaseShaders();
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
 
@@ -313,7 +314,8 @@ protected:
                 , unsigned width,  unsigned height
                 , unsigned int stride, int bpp, void* data );
 
-  Shaders::BaseYUV2RGBShader     *m_pYUVShader;
+  Shaders::BaseYUV2RGBShader     *m_pYUVProgShader;
+  Shaders::BaseYUV2RGBShader     *m_pYUVBobShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;

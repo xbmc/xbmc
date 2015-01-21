@@ -226,7 +226,7 @@ void CStageFrightVideoPrivate::OES_shader_setUp()
   "uniform mat4 texMatrix;\n"
   "void main() {\n"
   "  vec2 vTexCoords = 0.5 * (vPosition.xy + vec2(1.0, 1.0));\n"
-  "  texCoords = (texMatrix * vec4(vTexCoords, 0.0, 1.0)).xy;\n"
+  "  texCoords = (texMatrix * vec4(vTexCoords.x, 1.0 - vTexCoords.y, 0.0, 1.0)).xy;\n"
   "  gl_Position = vPosition;\n"
   "}\n";
 
