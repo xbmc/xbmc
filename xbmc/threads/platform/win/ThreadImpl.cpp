@@ -19,18 +19,21 @@
  */
 
 #include <windows.h>
+#include <process.h>
 #include "threads/platform/win/Win32Exception.h"
 
 void CThread::SpawnThread(unsigned stacksize)
 {
   // Create in the suspended state, so that no matter the thread priorities and scheduled order, the handle will be assigned
   // before the new thread exits.
-  m_ThreadOpaque.handle = CreateThread(NULL, stacksize, (LPTHREAD_START_ROUTINE)&staticThread, this, CREATE_SUSPENDED, &m_ThreadId);
+  unsigned threadId;
+  m_ThreadOpaque.handle = (HANDLE)_beginthreadex(NULL, stacksize, &staticThread, this, CREATE_SUSPENDED, &threadId);
   if (m_ThreadOpaque.handle == NULL)
   {
     if (logger) logger->Log(LOGERROR, "%s - fatal error %d creating thread", __FUNCTION__, GetLastError());
     return;
   }
+  m_ThreadId = threadId;
 
   if (ResumeThread(m_ThreadOpaque.handle) == -1)
     if (logger) logger->Log(LOGERROR, "%s - fatal error %d resuming thread", __FUNCTION__, GetLastError());
