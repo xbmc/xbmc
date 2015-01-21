@@ -427,8 +427,16 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
 
   case 0x25:             /* RU2 */
     dec->rollup_rows = 2;
+    dec->style = CC_ROLLUP;
+    dec->active = &dec->on_buf;
+    break;
+
   case 0x26:             /* RU3 */
     dec->rollup_rows = 3;
+    dec->style = CC_ROLLUP;
+    dec->active = &dec->on_buf;
+    break;
+
   case 0x27:             /* RU4 */
     dec->rollup_rows = 4;
     dec->style = CC_ROLLUP;
