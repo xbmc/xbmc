@@ -39,6 +39,11 @@ else()
 endif()
 get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
 
+if(NOT PLATFORM_DIR)
+  set(PLATFORM_DIR ${APP_ROOT}/project/cmake/platform/${CORE_SYSTEM_NAME})
+  file(TO_CMAKE_PATH "${PLATFORM_DIR}" PLATFORM_DIR)
+endif()
+
 # make sure CMAKE_PREFIX_PATH is set
 if(NOT CMAKE_PREFIX_PATH)
   set(CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
@@ -90,6 +95,15 @@ if(NOT KODI_LIB_DIR)
   set(KODI_LIB_DIR "${DEPENDS_PATH}/lib/kodi")
 else()
   file(TO_CMAKE_PATH "${KODI_LIB_DIR}" KODI_LIB_DIR)
+endif()
+
+# check for platform specific stuff
+if(EXISTS ${PLATFORM_DIR}/defines.txt)
+  file(STRINGS ${PLATFORM_DIR}/defines.txt platformdefines)
+
+  if(NOT ARCH_DEFINES AND platformdefines)
+    set(ARCH_DEFINES ${platformdefines})
+  endif()
 endif()
 
 ### prepare the build environment for the binary addons
