@@ -296,7 +296,7 @@
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19201</label>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onleft>20</onleft>
 					<onup>7</onup>
 					<ondown>9</ondown>
