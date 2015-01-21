@@ -30,7 +30,7 @@ struct threadOpaque
 
 typedef DWORD ThreadIdentifier;
 typedef threadOpaque ThreadOpaque;
-typedef DWORD THREADFUNC;
+#define THREADFUNC unsigned __stdcall
 
 namespace XbmcThreads
 {
