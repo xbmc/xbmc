@@ -96,6 +96,7 @@ bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec)
 {
   m_hasData = false;
+  m_curPts = 0;
   m_ccDecoder = NULL;
   m_codec = codec;
 }
