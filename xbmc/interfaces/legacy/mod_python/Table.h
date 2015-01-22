@@ -28,7 +28,7 @@
 
 namespace XBMCAddon
 {
-  namespace xbmchttp
+  namespace xbmcmod_python
   {
     class Table : public AddonClass
     {

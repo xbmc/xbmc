@@ -1,5 +1,6 @@
 SRCS = Cookie.cpp \
        HttpRequest.cpp \
+       Session.cpp \
 
 LIB=legacy-mod_python.a
 

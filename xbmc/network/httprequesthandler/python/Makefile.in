@@ -1,5 +1,6 @@
 SRCS  = HTTPModPythonInvoker.cpp \
         HTTPPythonInvoker.cpp \
+        HTTPSessionManager.cpp \
 
 LIB = httprequesthandlers-python.a
 

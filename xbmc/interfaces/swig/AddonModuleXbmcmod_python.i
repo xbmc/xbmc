@@ -30,6 +30,8 @@
 #include "interfaces/legacy/mod_python/Cookie.h"
 #include "interfaces/legacy/mod_python/HttpRequest.h"
 #include "interfaces/legacy/mod_python/ModuleXbmcmod_python.h"
+#include "interfaces/legacy/mod_python/Session.h"
+#include "interfaces/legacy/mod_python/Table.h"
 
 using namespace XBMCAddon;
 using namespace xbmcmod_python;
@@ -45,6 +47,7 @@ using namespace xbmcmod_python;
 %feature("knownbasetypes") XBMCAddon::xbmcaddon "AddonClass"
 
 %feature("sequence") Table "contains";
+%feature("sequence") Session "contains";
 
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"
@@ -53,6 +56,8 @@ using namespace xbmcmod_python;
 
 %include "interfaces/legacy/mod_python/HttpRequest.h"
 %include "interfaces/legacy/mod_python/Cookie.h"
+%include "interfaces/legacy/mod_python/Table.h"
+%include "interfaces/legacy/mod_python/Session.h"
 
 %{
 #endif
