@@ -1336,7 +1336,7 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
     if (!CStackDirectory::GetPaths(strFilename, files))
       return false;
 
-    for (vector<string>::iterator file = files.begin(); file != files.end(); file++)
+    for (vector<string>::iterator file = files.begin(); file != files.end(); ++file)
       UpdateUrlEncoding(*file);
 
     std::string stackPath;
