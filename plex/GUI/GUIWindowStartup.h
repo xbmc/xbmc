@@ -21,6 +21,8 @@
  */
 
 #include "guilib/GUIWindow.h"
+#include "FileItem.h"
+#include "GUIViewControl.h"
 
 class CGUIWindowStartup :
       public CGUIWindow
@@ -28,7 +30,24 @@ class CGUIWindowStartup :
 public:
   CGUIWindowStartup(void);
   virtual ~CGUIWindowStartup(void);
+
+  bool fetchUsers();
+
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual bool OnMessage(CGUIMessage &message);
+
+private:
+  void SelectUserByName(CStdString user);
+  void OnUserSelected(CFileItemPtr item);
+
+  CFileItemList m_users;
+
+  bool m_authed;
+  bool m_userSwitched;
+  CStdString m_selectedUser;
+  CStdString m_selectedUserThumb;
+
+  CGUIViewControl m_viewControl;
+
 };
