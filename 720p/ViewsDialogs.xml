@@ -207,7 +207,7 @@
 					<texture>bg-overlay-grainy.png</texture>
 				</control>
 				<control type="image">
-					<posy>50</posy>					
+					<posy>50</posy>
 					<width>1280</width>
 					<height>620</height>
 					<aspectratio aligny="top">keep</aspectratio>
@@ -365,7 +365,7 @@
 								<selectedcolor>Unfocused</selectedcolor>
 								<textoffsetx>140</textoffsetx>
 								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
-							</control>							
+							</control>
 							<control type="label">
 								<posx>0</posx>
 								<posy>62</posy>
@@ -423,8 +423,8 @@
 					<colordiffuse>FF000000</colordiffuse>
 					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
 				</control>-->
-				<!-- title bg -->
-				<!--><control type="image">
+			<!-- title bg -->
+			<!--><control type="image">
 					<width>600</width>
 					<height>80</height>
 					<texture border="10" flipy="true">base-rounded-half.png</texture>
@@ -523,7 +523,7 @@
 								<selectedcolor>Unfocused</selectedcolor>
 								<textoffsetx>140</textoffsetx>
 								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
-							</control>							
+							</control>
 							<control type="label">
 								<posx>0</posx>
 								<posy>62</posy>
@@ -2722,9 +2722,9 @@
 				<control type="image">
 					<include>FullScreenScaled</include>
 					<texture>bg-overlay-grainy.png</texture>
-				</control>				
+				</control>
 				<control type="image">
-					<posy>50</posy>					
+					<posy>50</posy>
 					<width>1280</width>
 					<height>620</height>
 					<aspectratio aligny="top">keep</aspectratio>
