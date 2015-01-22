@@ -124,12 +124,12 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
   /* empty list for hidden channels */
-  if (m_vecItems->Size() == 0 && m_bShowHiddenChannels)
+  if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
   {
-      /* show the visible channels instead */
-      m_bShowHiddenChannels = false;
-      lock.Leave();
-      Update(GetDirectoryPath());
+    /* show the visible channels instead */
+    m_bShowHiddenChannels = false;
+    lock.Leave();
+    Update(GetDirectoryPath());
   }
 
   return bReturn;
@@ -137,6 +137,13 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
 
 void CGUIWindowPVRChannels::UpdateButtons(void)
 {
+  CGUIRadioButtonControl *btnShowHidden = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWHIDDEN);
+  if (btnShowHidden)
+  {
+    btnShowHidden->SetVisible(g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetNumHiddenChannels() > 0);
+    btnShowHidden->SetSelected(m_bShowHiddenChannels);
+  }
+
   CGUIWindowPVRBase::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : GetGroup()->GroupName());
 }
