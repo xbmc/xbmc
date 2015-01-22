@@ -6022,6 +6022,7 @@ msgctxt "#13395"
 msgid "Video settings"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
 msgstr ""
