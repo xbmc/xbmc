@@ -2796,7 +2796,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 
     std::string strSelectedAlbum = pDlg->GetSelectedLabelText();
     map<ULONG, std::string>::iterator it;
-    for (it = mapCDDBIds.begin();it != mapCDDBIds.end();it++)
+    for (it = mapCDDBIds.begin();it != mapCDDBIds.end();++it)
     {
       if (it->second == strSelectedAlbum)
       {
@@ -3225,7 +3225,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir, const Filt
     // get data from returned rows
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3389,7 +3389,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     // get data from returned rows
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3490,7 +3490,7 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
     int count = 0;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3819,7 +3819,7 @@ void CMusicDatabase::UpdateTables(int version)
       }
       m_pDS->close();
 
-      for (vector<string>::const_iterator it = contentPaths.begin(); it != contentPaths.end(); it++)
+      for (vector<string>::const_iterator it = contentPaths.begin(); it != contentPaths.end(); ++it)
       {
         std::string originalPath = *it;
         std::string path = CLegacyPathTranslation::TranslateMusicDbPath(originalPath);

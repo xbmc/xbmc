@@ -235,7 +235,6 @@ CJpegIO::CJpegIO()
   m_orientation = 0;
   m_inputBuffSize = 0;
   m_inputBuff = NULL;
-  m_texturePath = "";
   memset(&m_cinfo, 0, sizeof(m_cinfo));
   m_thumbnailbuffer = NULL;
 }

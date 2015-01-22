@@ -594,7 +594,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
     if (pictures[i].data().size())
     {
       string      mime =             pictures[i].mimeType().toCString();
-      if (mime.find("image/") != 0)
+      if (mime.compare(0, 6, "image/") != 0)
         continue;
       TagLib::uint size =            pictures[i].data().size();
       tag.SetCoverArtInfo(size, mime);

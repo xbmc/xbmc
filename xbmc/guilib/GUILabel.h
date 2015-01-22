@@ -33,7 +33,8 @@
 class CLabelInfo
 {
 public:
-  CLabelInfo()
+  CLabelInfo():
+    scrollSuffix(" | ")
   {
     font = NULL;
     align = XBFONT_LEFT;
@@ -41,7 +42,6 @@ public:
     width = 0;
     angle = 0;
     scrollSpeed = CScrollInfo::defaultSpeed;
-    scrollSuffix = " | ";
   };
   bool UpdateColors()
   {

@@ -32,9 +32,9 @@
 using namespace std;
 
 
-CImageLoader::CImageLoader(const std::string &path, const bool useCache)
+CImageLoader::CImageLoader(const std::string &path, const bool useCache):
+  m_path(path)
 {
-  m_path = path;
   m_texture = NULL;
   m_use_cache = useCache;
 }
@@ -78,9 +78,9 @@ bool CImageLoader::DoWork()
   return true;
 }
 
-CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path)
+CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):
+  m_path(path)
 {
-  m_path = path;
   m_refCount = 1;
   m_timeToDelete = 0;
 }

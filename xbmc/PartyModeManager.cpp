@@ -610,7 +610,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
     std::string sqlWhereMusic = "songview.idSong IN (";
     std::string sqlWhereVideo = "idMVideo IN (";
 
-    for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
+    for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); ++it)
     {
       std::string song = StringUtils::Format("%i,", it->second);
       if (it->first == 1)

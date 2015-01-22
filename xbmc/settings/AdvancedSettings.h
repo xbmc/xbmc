@@ -69,10 +69,10 @@ struct TVShowRegexp
   bool byDate;
   std::string regexp;
   int defaultSeason;
-  TVShowRegexp(bool d, const std::string& r, int s = 1)
+  TVShowRegexp(bool d, const std::string& r, int s = 1):
+    regexp(r)
   {
     byDate = d;
-    regexp = r;
     defaultSeason = s;
   }
 };

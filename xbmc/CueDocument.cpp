@@ -69,9 +69,6 @@ using namespace XFILE;
 
 CCueDocument::CCueDocument(void)
 {
-  m_strArtist = "";
-  m_strAlbum = "";
-  m_strGenre = "";
   m_iYear = 0;
   m_replayGainAlbumPeak = 0.0f;
   m_replayGainAlbumGain = 0.0f;
@@ -249,7 +246,7 @@ void CCueDocument::GetMediaFiles(vector<std::string>& mediaFiles)
   for (int i = 0; i < m_iTotalTracks; i++)
     uniqueFiles.insert(m_Track[i].strFile);
 
-  for (set<std::string>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (set<std::string>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); ++it)
     mediaFiles.push_back(*it);
 }
 

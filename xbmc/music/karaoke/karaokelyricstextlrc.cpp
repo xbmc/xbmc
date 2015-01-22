@@ -47,8 +47,8 @@ typedef struct
  
 CKaraokeLyricsTextLRC::CKaraokeLyricsTextLRC( const std::string & lyricsFile )
   : CKaraokeLyricsText()
+  , m_lyricsFile(lyricsFile)
 {
-  m_lyricsFile = lyricsFile;
 }
 
 
