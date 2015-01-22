@@ -42,11 +42,11 @@ function(add_addon_depends addon searchpath)
         endif()
 
         set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
-                       -DOUTPUT_DIR=${DEPENDS_PATH}
+                       -DOUTPUT_DIR=${OUTPUT_DIR}
                        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
-                       -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
+                       -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}
                        -DARCH_DEFINES=${ARCH_DEFINES}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
@@ -82,7 +82,7 @@ function(add_addon_depends addon searchpath)
           set(INSTALL_COMMAND INSTALL_COMMAND ${CMAKE_COMMAND}
                                               -DINPUTDIR=${BUILD_DIR}/${id}/src/${id}-build/
                                               -DINPUTFILE=${dir}/install.txt
-                                              -DDESTDIR=${DEPENDS_PATH}
+                                              -DDESTDIR=${OUTPUT_DIR}
                                               -DENABLE_STATIC=1
                                               "${extraflags}"
                                               -P ${PROJECT_SOURCE_DIR}/install.cmake)

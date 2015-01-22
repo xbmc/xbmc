@@ -143,30 +143,47 @@ foreach(addon ${addons})
         # get the URL and revision of the addon
         list(LENGTH def deflength)
         list(GET def 1 url)
-        list(GET def 2 revision)
 
-        # download and extract all addons
-        if(deflength GREATER 2)
+        set(archive_name ${id})
+
           # if there is a 3rd parameter in the file, we consider it a git revision
+        if(deflength GREATER 2)
+          list(GET def 2 revision)
+
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
+          set(archive_name ${archive_name}-${revision})
         endif()
-        if(NOT EXISTS ${BUILD_DIR}/download/${id}.tar.gz)
-          file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${id}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
+
+        # download and extract the addon
+        if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          # cleanup any of the previously downloaded archives of this addon
+          file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
+          if(archives)
+            message(STATUS "Removing old archives of ${id}: ${archives}")
+            file(REMOVE ${archives})
+          endif()
+
+          # download the addon
+          file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
           list(GET dlstatus 0 retcode)
           if(NOT ${retcode} EQUAL 0)
             message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
           endif()
         endif()
+
+        # remove any previously extracted version of the addon
         if(EXISTS "${BUILD_DIR}/${id}")
           file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
         endif()
-        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${id}.tar.gz
+
+        # extract the addon from the archive
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
                         WORKING_DIRECTORY ${BUILD_DIR})
-        file(GLOB extract_dir "${BUILD_DIR}/${id}-${revision}*")
+        file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
         if(extract_dir STREQUAL "")
-          message(FATAL_ERROR "Error extracting ${BUILD_DIR}/download/${id}.tar.gz")
+          message(FATAL_ERROR "Error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
         else()
           file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
         endif()
