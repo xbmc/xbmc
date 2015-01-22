@@ -26,33 +26,17 @@
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
-			<control type="label">
+			<control type="label" id="2">
 				<description>header label</description>
 				<left>40</left>
 				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>$LOCALIZE[3] - $LOCALIZE[5]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>selected</textcolor>
 				<shadowcolor>black</shadowcolor>
-				<visible>Window.IsVisible(123)</visible>
-			</control>
-			<control type="label">
-				<description>header label</description>
-				<left>40</left>
-				<top>20</top>
-				<width>720</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<label>$LOCALIZE[292] - $LOCALIZE[5]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>selected</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<visible>Window.IsVisible(124)</visible>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>

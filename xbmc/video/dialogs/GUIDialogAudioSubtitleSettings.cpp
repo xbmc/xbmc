@@ -252,6 +252,13 @@ void CGUIDialogAudioSubtitleSettings::Save()
   CSettings::Get().Save();
 }
 
+void CGUIDialogAudioSubtitleSettings::SetupView()
+{
+  CGUIDialogSettingsManualBase::SetupView();
+
+  SetHeading(13396);
+}
+
 void CGUIDialogAudioSubtitleSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();

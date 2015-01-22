@@ -6017,10 +6017,12 @@ msgctxt "#13394"
 msgid "Calculating folder size"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#13395"
 msgid "Video settings"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
 msgstr ""

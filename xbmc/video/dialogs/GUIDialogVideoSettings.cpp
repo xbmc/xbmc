@@ -185,6 +185,13 @@ void CGUIDialogVideoSettings::Save()
   }
 }
 
+void CGUIDialogVideoSettings::SetupView()
+{
+  CGUIDialogSettingsManualBase::SetupView();
+
+  SetHeading(13395);
+}
+
 void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
