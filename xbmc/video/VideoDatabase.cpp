@@ -8054,7 +8054,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   if (isEpisode)
     sql += "JOIN tvshowlinkpath ON tvshowlinkpath.idShow = episode.idShow JOIN path AS showPath ON showPath.idPath=tvshowlinkpath.idPath ";
 
-  sql += PrepareSQL("JOIN path as parentPath ON parentPath.idPath = %s "
+  sql += PrepareSQL("LEFT JOIN path as parentPath ON parentPath.idPath = %s "
                     "WHERE %s.idFile IN (%s)",
                     parentPathIdField.c_str(),
                     table.c_str(), cleanableFileIDs.c_str());
@@ -8064,56 +8064,59 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   m_pDS2->query(sql.c_str());
   while (!m_pDS2->eof())
   {
-    std::string parentPath = m_pDS2->fv(3).get_asString();
-
-    // try to find the source path the parent path belongs to
-    SScanSettings scanSettings;
-    std::string sourcePath;
-    GetSourcePath(parentPath, sourcePath, scanSettings);
-    int sourcePathID = GetPathId(sourcePath);
-    std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
     bool del = true;
-    if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
+    if (m_pDS2->fv(3).get_isNull() == false)
     {
-      bool sourcePathNotExists = !CDirectory::Exists(sourcePath, false);
-      // if the parent path exists, the file will be deleted without asking
-      // if the parent path doesn't exist, ask the user whether to remove all items it contained
-      if (sourcePathNotExists)
+      std::string parentPath = m_pDS2->fv(3).get_asString();
+
+      // try to find the source path the parent path belongs to
+      SScanSettings scanSettings;
+      std::string sourcePath;
+      GetSourcePath(parentPath, sourcePath, scanSettings);
+      int sourcePathID = GetPathId(sourcePath);
+      std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
+      if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
       {
-        // in silent mode assume that the files are just temporarily missing
-        if (silent)
-          del = false;
-        else
+        bool sourcePathNotExists = !CDirectory::Exists(sourcePath, false);
+        // if the parent path exists, the file will be deleted without asking
+        // if the parent path doesn't exist, ask the user whether to remove all items it contained
+        if (sourcePathNotExists)
         {
-          CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-          if (pDialog != NULL)
+          // in silent mode assume that the files are just temporarily missing
+          if (silent)
+            del = false;
+          else
           {
-            CURL sourceUrl(sourcePath);
-            pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
-            pDialog->SetChoice(0, 15015);
-            pDialog->SetChoice(1, 15014);
+            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+            if (pDialog != NULL)
+            {
+              CURL sourceUrl(sourcePath);
+              pDialog->SetHeading(15012);
+              pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
+              pDialog->SetChoice(0, 15015);
+              pDialog->SetChoice(1, 15014);
 
-            //send message and wait for user input
-            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
-            CApplicationMessenger::Get().SendMessage(tMsg, true);
+              //send message and wait for user input
+              ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
+              CApplicationMessenger::Get().SendMessage(tMsg, true);
 
-            del = !pDialog->IsConfirmed();
+              del = !pDialog->IsConfirmed();
+            }
           }
         }
+
+        sourcePathsDeleteDecisions.insert(make_pair(sourcePathID, make_pair(sourcePathNotExists, del)));
+        pathsDeleteDecisions.insert(make_pair(sourcePathID, sourcePathNotExists && del));
       }
+      // the only reason not to delete the file is if the parent path doesn't
+      // exist and the user decided to delete all the items it contained
+      else if (sourcePathsDeleteDecision->second.first &&
+               !sourcePathsDeleteDecision->second.second)
+        del = false;
 
-      sourcePathsDeleteDecisions.insert(make_pair(sourcePathID, make_pair(sourcePathNotExists, del)));
-      pathsDeleteDecisions.insert(make_pair(sourcePathID, sourcePathNotExists && del));
+      if (scanSettings.parent_name)
+        pathsDeleteDecisions.insert(make_pair(m_pDS2->fv(2).get_asInt(), del));
     }
-    // the only reason not to delete the file is if the parent path doesn't
-    // exist and the user decided to delete all the items it contained
-    else if (sourcePathsDeleteDecision->second.first &&
-             !sourcePathsDeleteDecision->second.second)
-      del = false;
-
-    if (scanSettings.parent_name)
-      pathsDeleteDecisions.insert(make_pair(m_pDS2->fv(2).get_asInt(), del));
 
     if (del)
     {
