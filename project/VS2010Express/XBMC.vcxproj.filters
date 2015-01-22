@@ -1759,6 +1759,9 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\PVRActionListener.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
@@ -4569,6 +4572,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h">
       <Filter>interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h">
       <Filter>interfaces</Filter>
     </ClInclude>
@@ -4718,6 +4724,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\PVRActionListener.h">
+      <Filter>pvr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h">
       <Filter>pvr</Filter>

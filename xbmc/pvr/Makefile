@@ -1,6 +1,7 @@
 SRCS=PVRGUIInfo.cpp \
      PVRManager.cpp \
-     PVRDatabase.cpp
+     PVRDatabase.cpp \
+     PVRActionListener.cpp
 
 LIB=pvr.a
 

@@ -177,8 +177,8 @@
       <altname>Sony Computer Entertainment Wireless Controller</altname>      
       <button id="5">ChannelUp</button>
       <button id="7">ChannelDown</button>
-      <button id="8">PreviousChannelGroup</button>
-      <button id="6">NextChannelGroup</button>
+      <button id="8">StepBack</button>
+      <button id="6">StepForward</button>
     </joystick>
   </FullscreenLiveTV>
   <FullscreenRadio>
@@ -188,8 +188,8 @@
       <altname>Sony Computer Entertainment Wireless Controller</altname>      
       <button id="5">ChannelUp</button>
       <button id="7">ChannelDown</button>
-      <button id="8">PreviousChannelGroup</button>
-      <button id="6">NextChannelGroup</button>
+      <button id="8">StepBack</button>
+      <button id="6">StepForward</button>
     </joystick>
   </FullscreenRadio>
   <FullscreenInfo>

@@ -35,14 +35,12 @@ public:
   virtual void Render();
   virtual void OnWindowLoaded();
   void ChangetheTimeCode(int remote);
-  void ChangetheTVGroup(bool next);
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
   void SeekChapter(int iChapter);
-  void FillInTVGroups();
   void ToggleOSD();
   void TriggerOSD();
 
@@ -65,7 +63,6 @@ private:
 
   bool m_bShowCurrentTime;
 
-  bool m_bGroupSelectShow;
   bool m_timeCodeShow;
   unsigned int m_timeCodeTimeout;
   int m_timeCodeStamp[6];

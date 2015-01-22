@@ -726,6 +726,7 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\PVRActionListener.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRGUIInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp" />
@@ -1822,6 +1823,7 @@
     <ClInclude Include="..\..\xbmc\input\XBMC_vkeys.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h" />
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h" />
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoExpression.h" />
@@ -1970,6 +1972,7 @@
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h" />
+    <ClInclude Include="..\..\xbmc\pvr\PVRActionListener.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRGUIInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h" />

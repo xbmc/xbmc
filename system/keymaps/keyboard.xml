@@ -523,16 +523,16 @@
   </NumericInput>
   <FullscreenLiveTV>
     <keyboard>
-      <left>PreviousChannelGroup</left>
-      <right>NextChannelGroup</right>
+      <left>StepBack</left>
+      <right>StepForward</right>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
     </keyboard>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <keyboard>
-      <left>PreviousChannelGroup</left>
-      <right>NextChannelGroup</right>
+      <left>StepBack</left>
+      <right>StepForward</right>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
     </keyboard>

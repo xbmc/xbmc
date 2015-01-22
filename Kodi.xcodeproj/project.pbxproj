@@ -179,6 +179,9 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
+		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
+		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		432D7CE412D86DA500CE4C49 /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432D7CE312D86DA500CE4C49 /* NetworkLinux.cpp */; };
 		432D7CF712D870E800CE4C49 /* TCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432D7CF612D870E800CE4C49 /* TCPServer.cpp */; };
@@ -4053,6 +4056,9 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
+		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
+		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
 		430C881312D64A730098821A /* IPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPowerSyscall.h; sourceTree = "<group>"; };
 		431376FF12D6455C00680C15 /* GUIDialogCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCache.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
@@ -7126,6 +7132,7 @@
 		4367217312D6640E002508E6 /* interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				42DAC16B1A6E780C0066B4C8 /* IActionListener.h */,
 				DF40BC21178B4C07009DB567 /* generic */,
 				7C89674213C03B21003631FE /* info */,
 				F5AE407F13415D9E0004BD79 /* json-rpc */,
@@ -7981,6 +7988,8 @@
 		C8482871156CFCD8005A996F /* pvr */ = {
 			isa = PBXGroup;
 			children = (
+				42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */,
+				42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */,
 				C8482872156CFCD8005A996F /* addons */,
 				C8482878156CFCD8005A996F /* channels */,
 				C8482884156CFCD8005A996F /* dialogs */,
@@ -11871,6 +11880,7 @@
 				7CCDACC119275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
+				42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */,
 				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
 				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */,
@@ -11961,6 +11971,7 @@
 				DFF0F14417528350002DA3A4 /* AEPackIEC61937.cpp in Sources */,
 				DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */,
 				DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */,
+				42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */,
 				DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */,
 				DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */,
 				DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */,
@@ -13815,6 +13826,7 @@
 				E499146F174E605900741B6D /* ScraperUrl.cpp in Sources */,
 				E4991470174E605900741B6D /* Screenshot.cpp in Sources */,
 				E4991471174E605900741B6D /* SeekHandler.cpp in Sources */,
+				42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */,
 				E4991472174E605900741B6D /* SortUtils.cpp in Sources */,
 				E4991473174E605900741B6D /* Splash.cpp in Sources */,
 				E4991474174E605900741B6D /* Stopwatch.cpp in Sources */,
