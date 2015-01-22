@@ -15,7 +15,7 @@ TOC
 
 We currently recommend Ubuntu "Precise Pangolin" (12.04) 64Bit. This is what our continuous 
 integration system "jenkins" is using.
-Additionally, building from OSX Snow Leopard is working.
+Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
 
 NOTE TO NEW USERS: All lines that are prefixed with the '#'
 character are commands that need to be typed into a terminal window /
@@ -53,7 +53,33 @@ JRE: openjre-6-jre (java version "1.6.0_27")
 To develop Kodi for Android the Android SDK and NDK are required.
 
 --------------------------------------------------------------------
-3.1. Getting the Android SDK and NDK
+3.1. Prerequesites when compiling on Mac OSX
+--------------------------------------------------------------------
+
+a. When building on Mac OSX you should download the java version from here: http://support.apple.com/kb/DL1572
+Or ensure otherwise that you are using java 1.6 (java -version tells you the version).
+b. The compilation for android needs a case sensitive filesystem. The
+   filesystem used on normal osx installations is case insensitive. So you 
+   need to generate a writeable hdd image and format it with hfs+ (case sensitive).
+   The size should be 20GB.
+c. Generate a writable dmg with the following command:
+   # hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev ~/android-dev.dmg
+d. Whenever you want to compile/develop you need to mount it:
+   # open ~/android-dev.dmg
+e. Your workspace can be accessed in /Volumes/android-dev/ then
+f. Once you have your hdd image with case sensitive hfs+ file system do all steps
+   below inside of this filesystem. In the end you need to adapt all pathes in this
+   document so that they match your local environment. As an example here is a
+   configure line from step 5.1 which demonstrates possible pathes. In this 
+   example the hdd image is mounted on /Volumes/android-dev.
+   ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
+               --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
+               --with-ndk=/Volumes/android-dev/android/android-ndk-r10d \
+               --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-14 \
+               --prefix=/Volumes/android-dev/android/xbmc-depends
+
+--------------------------------------------------------------------
+3.2. Getting the Android SDK and NDK
 --------------------------------------------------------------------
 
 To get the Android SDK, go to http://developer.android.com/sdk and
@@ -61,7 +87,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision r9. For the SDK just use the latest available. 
+         Revision at least r9c (10d recommended). For the SDK just use the latest available. 
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
@@ -69,7 +95,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README aswell):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r9
+/opt/android-ndk-r10d
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.8-vanilla/android-14
@@ -84,7 +110,7 @@ Make sure you have a recent JRE and JDK installed otherwise the
 Android SDK will not work. (see point 2.)
 
 --------------------------------------------------------------------
-3.2. Installing Android SDK packages
+3.3. Installing Android SDK packages
 --------------------------------------------------------------------
 
 After having extracted the Android SDK to <android-sdk> you need to
@@ -92,9 +118,9 @@ install some android packages using the Android SDK Manager:
 
    # cd <android-sdk>/tools
    # ./android update sdk -u -t platform,platform-tool
-
+   # ./android update sdk -u -t build-tools-20.0.0
 --------------------------------------------------------------------
-3.3. Setup the Android toolchain
+3.4. Setup the Android toolchain
 --------------------------------------------------------------------
 
 To be able to compile Kodi and the libraries it depends on for the
@@ -125,10 +151,12 @@ Building for x86 architecture:
      --install-dir=<android-toolchain-x86>/android-14 --platform=android-14 \
      --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
 
-Make sure to pick a toolchain for your desired architecture.
+Make sure to pick a toolchain for your desired architecture. If an error about
+the used system is shown - please add proper --system parameter as mentioned
+in the error message.
 
 --------------------------------------------------------------------
-3.4. Create a (new) debug key to sign debug APKs
+3.5. Create a (new) debug key to sign debug APKs
 --------------------------------------------------------------------
 
   All packages must be signed. The following command will generate a
@@ -179,7 +207,10 @@ on with the Android toolchain and creating an Android Application Package
    Verify that all deps built correctly (it will tell you so) before
    continuing. You will get crazy build errors otherwise. If in doubt
    run another 'make' (single threaded) until the message 
-   "Dependencies built successfully." appears.
+   "Dependencies built successfully." appears. If the single make
+   fails keep cleaning the dependend library in charge by issueing
+   make -C target/<name_of_failed_lib> distclean. Then try make again.
+   Rinse and repeat until you are really done and all libs are built.
 
 --------------------------------------------------------------------
 5.2. Building Kodi
