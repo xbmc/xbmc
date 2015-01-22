@@ -40,6 +40,8 @@
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
 #include "utils/URIUtils.h"
+#include "settings/Settings.h"
+#include "utils/LangCodeExpander.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -151,6 +153,8 @@ GetMimeType(const CFileItem& item,
             mime = "audio/" + ext;
         else if (item.IsPicture() )
             mime = "image/" + ext;
+        else if (item.IsSubtitle())
+            mime = "text/" + ext;
     }
 
     /* nothing we can figure out */
@@ -603,6 +607,99 @@ BuildObject(CFileItem&                    item,
                   upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(), wrappedUrl.c_str()));
                 upnp_server->AddSafeResourceUri(object, rooturi, ips, wrappedUrl.c_str(), ("xbmc.org:*:" + itArtwork->first + ":*").c_str());
             }
+        }
+    }
+
+    //Add external subtitle
+    if (upnp_server && item.IsVideo()) //only if video file
+    {
+        // find any available external subtitles
+        std::vector<std::string> filenames;
+        std::vector<std::string> subtitles;
+        CUtil::ScanForExternalSubtitles(file_path.GetChars(), filenames);
+
+        std::string ext;
+        for (unsigned int i = 0; i < filenames.size(); i++)
+        {
+            ext = URIUtils::GetExtension(filenames[i]).c_str();
+            ext = ext.substr(1);
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
+               subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
+            if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" || ext == "smi")
+            {
+                subtitles.push_back(filenames[i]);
+            }
+        }
+
+        std::string subtitlePath;
+
+        if (subtitles.size() == 1)
+        {
+            subtitlePath = subtitles[0];
+        }
+        else if (!subtitles.empty())
+        {
+            /* trying to find subtitle with prefered language settings */
+            std::string preferredLanguage = (CSettings::Get().GetSetting("locale.subtitlelanguage"))->ToString();
+            std::string preferredLanguageCode;
+            CLangCodeExpander::ConvertToThreeCharCode(preferredLanguageCode, preferredLanguage);
+
+            for (unsigned int i = 0; i < subtitles.size(); i++)
+            {
+                ExternalStreamInfo info;
+                CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i], info);
+
+                if (preferredLanguageCode == info.language)
+                {
+                    subtitlePath = subtitles[i];
+                    break;
+                }
+            }
+            /* if not found subtitle with prefered language, get the first one */
+            if (subtitlePath.empty())
+            {
+                subtitlePath = subtitles[0];
+            }
+        }
+
+        if (!subtitlePath.empty())
+        {
+            /* subtitles are added as 2 resources, 2 sec resources and 1 addon to video resource, to be compatible with
+               the most of the devices; all UPnP devices take the last one it could handle,
+               and skip ones it doesn't "understand" */
+            // add subtitle resource with standard protocolInfo
+            NPT_String protocolInfo = GetProtocolInfo(CFileItem(subtitlePath, false), "http", context);
+            upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()), protocolInfo);
+            // add subtitle resource with smi/caption protocol info (some devices)
+            PLT_ProtocolInfo protInfo = PLT_ProtocolInfo(protocolInfo);
+            protocolInfo = protInfo.GetProtocol() + ":" + protInfo.GetMask() + ":smi/caption:" + protInfo.GetExtra();
+            upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()), protocolInfo);
+
+            ext = URIUtils::GetExtension(subtitlePath).c_str();
+            ext = ext.substr(1);
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+            NPT_String subtitle_uri = object->m_Resources[object->m_Resources.GetItemCount() - 1].m_Uri;
+
+            // add subtitle to video resource (the first one) (for some devices)
+            object->m_Resources[0].m_CustomData["xmlns:pv"] = "http://www.pv.com/pvns/";
+            object->m_Resources[0].m_CustomData["pv:subtitleFileUri"] = subtitle_uri;
+            object->m_Resources[0].m_CustomData["pv:subtitleFileType"] = ext.c_str();
+
+            // for samsung devices
+            PLT_SecResource sec_res;
+            sec_res.name = "CaptionInfoEx";
+            sec_res.value = subtitle_uri;
+            sec_res.attributes["type"] = ext.c_str();
+            object->m_SecResources.Add(sec_res);
+            sec_res.name = "CaptionInfo";
+            object->m_SecResources.Add(sec_res);
+
+            // adding subtitle uri for movie md5, for later use in http response
+            NPT_String movie_md5 = object->m_Resources[0].m_Uri;
+            movie_md5 = movie_md5.Right(movie_md5.GetLength() - movie_md5.Find("/%25/") - 5);
+            upnp_server->AddSubtitleUriForSecResponse(movie_md5, subtitle_uri);
         }
     }
 
