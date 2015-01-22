@@ -926,7 +926,7 @@ void CWinSystemX11::OnLostDevice()
   g_renderManager.Flush();
 
   { CSingleLock lock(m_resourceSection);
-    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDevice();
   }
 
@@ -1230,7 +1230,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 #if defined(HAS_GLX)
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
-    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
 #endif
   }
