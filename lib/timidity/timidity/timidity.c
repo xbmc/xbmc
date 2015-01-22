@@ -974,7 +974,13 @@ static int set_gus_patchconf(char *name, int line,
     {
 	int err;
 	if((err = set_gus_patchconf_opts(name, line, opts[j], tone)) != 0)
+    {
+#ifdef SET_GUS_PATCHCONF_COMMENT
+        if(old_name != NULL)
+            free(old_name);
+#endif
 	    return err;
+    }
     }
 #ifdef SET_GUS_PATCHCONF_COMMENT
 		if(tone->comment == NULL ||
