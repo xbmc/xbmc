@@ -91,6 +91,25 @@ passed_ldflags="$LDFLAGS"
 passed_cxxflags="$CXXFLAGS"
 platform_cc=gcc
 platform_cxx=g++
+
+case $build in
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  *darwin*)
+    build_os="osx"
+  ;;
+  *)
+    AC_MSG_ERROR(unsupported native build platform: $build)
+esac
+
+
 case $host in
   arm*-*linux-android*)
     if test "x$use_cpu" = "xauto"; then
@@ -482,6 +501,7 @@ AC_SUBST(platform_cxxflags)
 AC_SUBST(platform_ldflags)
 AC_SUBST(platform_includes)
 AC_SUBST(platform_os)
+AC_SUBST(build_os)
 AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
