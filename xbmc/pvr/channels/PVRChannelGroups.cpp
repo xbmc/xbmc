@@ -77,8 +77,9 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
 
     if (!updateGroup)
     {
-      // create a new group if none was found
-      updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup());
+      // create a new group if none was found. Copy the properties immediately 
+      // so the group doesn't get flagged as "changed" further down.
+      updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup(group.IsRadio(), group.GroupID(), group.GroupName()));
       m_groups.push_back(updateGroup);
     }
 
