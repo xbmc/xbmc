@@ -42,7 +42,7 @@ protected:
 
 TEST_F(TestArchive, IsStoring)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   CArchive arstore(file, CArchive::store);
   EXPECT_TRUE(arstore.IsStoring());
   EXPECT_FALSE(arstore.IsLoading());
@@ -51,7 +51,7 @@ TEST_F(TestArchive, IsStoring)
 
 TEST_F(TestArchive, IsLoading)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   CArchive arload(file, CArchive::load);
   EXPECT_TRUE(arload.IsLoading());
   EXPECT_FALSE(arload.IsStoring());
@@ -60,7 +60,7 @@ TEST_F(TestArchive, IsLoading)
 
 TEST_F(TestArchive, FloatArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   float float_ref = 1, float_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -77,7 +77,7 @@ TEST_F(TestArchive, FloatArchive)
 
 TEST_F(TestArchive, DoubleArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   double double_ref = 2, double_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -94,7 +94,7 @@ TEST_F(TestArchive, DoubleArchive)
 
 TEST_F(TestArchive, IntegerArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   int int_ref = 3, int_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -111,7 +111,7 @@ TEST_F(TestArchive, IntegerArchive)
 
 TEST_F(TestArchive, UnsignedIntegerArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   unsigned int unsigned_int_ref = 4, unsigned_int_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -128,7 +128,7 @@ TEST_F(TestArchive, UnsignedIntegerArchive)
 
 TEST_F(TestArchive, Int64tArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   int64_t int64_t_ref = 5, int64_t_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -145,7 +145,7 @@ TEST_F(TestArchive, Int64tArchive)
 
 TEST_F(TestArchive, UInt64tArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   uint64_t uint64_t_ref = 6, uint64_t_var = 0;
 
   CArchive arstore(file, CArchive::store);
@@ -162,7 +162,7 @@ TEST_F(TestArchive, UInt64tArchive)
 
 TEST_F(TestArchive, BoolArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   bool bool_ref = true, bool_var = false;
 
   CArchive arstore(file, CArchive::store);
@@ -179,7 +179,7 @@ TEST_F(TestArchive, BoolArchive)
 
 TEST_F(TestArchive, CharArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   char char_ref = 'A', char_var = '\0';
 
   CArchive arstore(file, CArchive::store);
@@ -196,7 +196,7 @@ TEST_F(TestArchive, CharArchive)
 
 TEST_F(TestArchive, WStringArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   std::wstring wstring_ref = L"test wstring", wstring_var;
 
   CArchive arstore(file, CArchive::store);
@@ -213,7 +213,7 @@ TEST_F(TestArchive, WStringArchive)
 
 TEST_F(TestArchive, StringArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   std::string string_ref = "test string", string_var;
 
   CArchive arstore(file, CArchive::store);
@@ -230,7 +230,7 @@ TEST_F(TestArchive, StringArchive)
 
 TEST_F(TestArchive, SYSTEMTIMEArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   SYSTEMTIME SYSTEMTIME_ref = { 1, 2, 3, 4, 5, 6, 7, 8 };
   SYSTEMTIME SYSTEMTIME_var = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -248,7 +248,7 @@ TEST_F(TestArchive, SYSTEMTIMEArchive)
 
 TEST_F(TestArchive, CVariantArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   CVariant CVariant_ref((int)1), CVariant_var;
 
   CArchive arstore(file, CArchive::store);
@@ -266,7 +266,7 @@ TEST_F(TestArchive, CVariantArchive)
 
 TEST_F(TestArchive, CVariantArchiveString)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   CVariant CVariant_ref("teststring"), CVariant_var;
 
   CArchive arstore(file, CArchive::store);
@@ -284,7 +284,7 @@ TEST_F(TestArchive, CVariantArchiveString)
 
 TEST_F(TestArchive, StringVectorArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   std::vector<std::string> strArray_ref, strArray_var;
   strArray_ref.push_back("test strArray_ref 0");
   strArray_ref.push_back("test strArray_ref 1");
@@ -308,7 +308,7 @@ TEST_F(TestArchive, StringVectorArchive)
 
 TEST_F(TestArchive, IntegerVectorArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   std::vector<int> iArray_ref, iArray_var;
   iArray_ref.push_back(0);
   iArray_ref.push_back(1);
@@ -332,7 +332,7 @@ TEST_F(TestArchive, IntegerVectorArchive)
 
 TEST_F(TestArchive, MultiTypeArchive)
 {
-  ASSERT_TRUE(file);
+  ASSERT_TRUE(file != NULL);
   float float_ref = 1, float_var = 0;
   double double_ref = 2, double_var = 0;
   int int_ref = 3, int_var = 0;

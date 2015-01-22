@@ -30,7 +30,7 @@ TEST(TestFileUtils, DeleteItem_CFileItemPtr)
   XFILE::CFile *tmpfile;
   std::string tmpfilepath;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")) != NULL);
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
@@ -45,7 +45,7 @@ TEST(TestFileUtils, DeleteItemString)
 {
   XFILE::CFile *tmpfile;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")) != NULL);
   EXPECT_TRUE(CFileUtils::DeleteItem(XBMC_TEMPFILEPATH(tmpfile)));
 }
 

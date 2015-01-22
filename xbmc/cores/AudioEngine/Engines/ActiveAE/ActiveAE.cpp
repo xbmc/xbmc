@@ -33,9 +33,9 @@ using namespace ActiveAE;
 
 #include "utils/TimeUtils.h"
 
-#define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
-#define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds
-#define MAX_BUFFER_TIME 0.1   // max time of a buffer in seconds
+#define MAX_CACHE_LEVEL 0.5f   // total cache time of stream in seconds
+#define MAX_WATER_LEVEL 0.25f  // buffered time after stream stages in seconds
+#define MAX_BUFFER_TIME 0.1f   // max time of a buffer in seconds
 
 void CEngineStats::Reset(unsigned int sampleRate)
 {
@@ -119,7 +119,7 @@ int64_t CEngineStats::GetPlayingPTS()
   if (m_playingPTS == 0)
     return 0;
 
-  int64_t pts = m_playingPTS + m_sinkDelay.GetDelay()*1000;
+  int64_t pts = static_cast<int64_t>(m_playingPTS + m_sinkDelay.GetDelay()*1000);
 
   if (pts < 0)
     return 0;
@@ -609,7 +609,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             {
               AEDelayStatus status;
               m_stats.GetDelay(status);
-              m_extDrainTimer.Set(status.GetDelay() * 1000);
+              m_extDrainTimer.Set(static_cast<unsigned int>(status.GetDelay() * 1000));
             }
             m_extDrain = true;
           }
@@ -984,7 +984,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     if (buffertime > MAX_BUFFER_TIME)
     {
       CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, buffertime, (int)(MAX_BUFFER_TIME*1000));
-      m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
+      m_sinkFormat.m_frames = static_cast<unsigned int>(MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate);
     }
   }
 
@@ -1007,7 +1007,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     inputFormat.m_frameSize = inputFormat.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(inputFormat.m_dataFormat) >> 3);
     m_silenceBuffers = new CActiveAEBufferPool(inputFormat);
-    m_silenceBuffers->Create(MAX_WATER_LEVEL*1000);
+    m_silenceBuffers->Create(static_cast<unsigned int>(MAX_WATER_LEVEL*1000));
     sinkInputFormat = inputFormat;
     m_internalFormat = inputFormat;
 
@@ -1085,7 +1085,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         if (!m_encoderBuffers)
         {
           m_encoderBuffers = new CActiveAEBufferPool(format);
-          m_encoderBuffers->Create(MAX_WATER_LEVEL*1000);
+          m_encoderBuffers->Create(static_cast<unsigned int>(MAX_WATER_LEVEL*1000));
         }
       }
 
@@ -1118,11 +1118,13 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (!(*it)->m_inputBuffers)
       {
         // align input buffers with period of sink or encoder
-        (*it)->m_format.m_frames = m_internalFormat.m_frames * ((float)(*it)->m_format.m_sampleRate / m_internalFormat.m_sampleRate);
+        (*it)->m_format.m_frames = static_cast<unsigned int>(m_internalFormat.m_frames *
+                                                             (static_cast<float>((*it)->m_format.m_sampleRate)
+                                                             / m_internalFormat.m_sampleRate));
 
         // create buffer pool
         (*it)->m_inputBuffers = new CActiveAEBufferPool((*it)->m_format);
-        (*it)->m_inputBuffers->Create(MAX_CACHE_LEVEL*1000);
+        (*it)->m_inputBuffers->Create(static_cast<unsigned int>(MAX_CACHE_LEVEL*1000));
         (*it)->m_streamSpace = (*it)->m_format.m_frameSize * (*it)->m_format.m_frames;
 
         // if input format does not follow ffmpeg channel mask, we may need to remap channels
@@ -1137,7 +1139,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       {
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_resampleBuffers->m_changeResampler = (*it)->m_forceResampler;
-        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels);
+        (*it)->m_resampleBuffers->Create(static_cast<unsigned int>(MAX_CACHE_LEVEL*1000), false, m_settings.stereoupmix, m_settings.normalizelevels);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_resampleBuffers->m_fillPackets = true;
@@ -1190,7 +1192,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (!m_sinkBuffers)
   {
     m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
-    m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
+    m_sinkBuffers->Create(static_cast<unsigned int>(MAX_WATER_LEVEL*1000), true, false);
   }
 
   // reset gui sounds
@@ -1774,7 +1776,8 @@ bool CActiveAE::RunStages()
             // fading
             if ((*it)->m_fadingSamples == -1)
             {
-              (*it)->m_fadingSamples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
+              (*it)->m_fadingSamples = static_cast<int>(m_internalFormat.m_sampleRate *
+                                                        static_cast<float>((*it)->m_fadingTime) / 1000.0f);
               if ((*it)->m_fadingSamples > 0)
                 (*it)->m_volume = (*it)->m_fadingBase;
               else
@@ -1789,7 +1792,7 @@ bool CActiveAE::RunStages()
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
               float delta = (*it)->m_fadingTarget - (*it)->m_fadingBase;
-              int samples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
+              int samples = static_cast<int>(m_internalFormat.m_sampleRate * static_cast<float>((*it)->m_fadingTime) / 1000.0f);
               fadingStep = delta / samples;
             }
 
@@ -1850,7 +1853,7 @@ bool CActiveAE::RunStages()
             // fading
             if ((*it)->m_fadingSamples == -1)
             {
-              (*it)->m_fadingSamples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
+              (*it)->m_fadingSamples = static_cast<int>(m_internalFormat.m_sampleRate * static_cast<float>((*it)->m_fadingTime) / 1000.0f);
               (*it)->m_volume = (*it)->m_fadingBase;
             }
             if ((*it)->m_fadingSamples > 0)
@@ -1858,7 +1861,7 @@ bool CActiveAE::RunStages()
               nb_floats = mix->pkt->config.channels / mix->pkt->planes;
               nb_loops = mix->pkt->nb_samples;
               float delta = (*it)->m_fadingTarget - (*it)->m_fadingBase;
-              int samples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
+              int samples = static_cast<int>(m_internalFormat.m_sampleRate * static_cast<float>((*it)->m_fadingTime) / 1000.0f);
               fadingStep = delta / samples;
             }
 
@@ -1963,7 +1966,7 @@ bool CActiveAE::RunStages()
             AEDelayStatus status;
             m_stats.GetDelay(status);
             int64_t now = XbmcThreads::SystemClockMillis();
-            int64_t timestamp = now + status.GetDelay() * 1000;
+            int64_t timestamp = static_cast<int64_t>(now + status.GetDelay() * 1000);
             busy |= m_vizBuffers->ResampleBuffers(timestamp);
             while(!m_vizBuffers->m_outputSamples.empty())
             {

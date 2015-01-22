@@ -808,7 +808,7 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
     // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
-    CRect tgtRect(0, 0, destWidth, destHeight);
+    CRect tgtRect(0, 0, static_cast<float>(destWidth), static_cast<float>(destHeight));
     CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
 
     // Manipulate the coordinates to work only on the active parts of the textures,

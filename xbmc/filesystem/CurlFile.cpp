@@ -163,11 +163,11 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
     return CURL_READFUNC_PAUSE;
   }
 
-  int64_t retSize = XMIN(m_fileSize - m_filePos, int64_t(nitems * size));
-  memcpy(buffer, m_readBuffer + m_filePos, retSize);
+  int64_t retSize = std::min(m_fileSize - m_filePos, int64_t(nitems * size));
+  memcpy(buffer, m_readBuffer + m_filePos, static_cast<size_t>(retSize));
   m_filePos += retSize;
 
-  return retSize;
+  return static_cast<size_t>(retSize);
 }
 
 size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t nitems)
@@ -1061,7 +1061,7 @@ ssize_t CCurlFile::Write(const void* lpBuf, size_t uiBufSize)
   }
 
   m_writeOffset += m_state->m_filePos;
-  return m_state->m_filePos;
+  return static_cast<ssize_t>(m_state->m_filePos);
 }
 
 bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)

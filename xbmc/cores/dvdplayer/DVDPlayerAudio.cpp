@@ -423,7 +423,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      double speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
       if (speed == DVD_PLAYSPEED_NORMAL)
       {
@@ -712,7 +712,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     m_dvdAudio.SetResampleRatio(1.0);
     if (error > 0)
     {
-      int dups = std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration;
+      int dups = static_cast<int>(std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration);
       for (int i = 0; i < dups; i++)
       {
         m_dvdAudio.AddPackets(audioframe);

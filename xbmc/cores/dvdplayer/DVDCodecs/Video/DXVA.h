@@ -37,10 +37,10 @@ namespace DXVA {
 do { \
   HRESULT res = a; \
   if(FAILED(res)) \
-  { \
-    CLog::Log(LOGERROR, "DXVA - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    { \
+    CLog::Log(LOGERROR, __FUNCTION__" - failed executing "#a" at line %d with error %x", __LINE__, res); \
     return false; \
-  } \
+    } \
 } while(0);
 
 class CSurfaceContext

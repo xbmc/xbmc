@@ -139,7 +139,7 @@ TEST_F(TestZipFile, Stat)
   strpathinzip = itemlist[0]->GetPath();
 
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinzip, &buffer));
-  EXPECT_TRUE(buffer.st_mode | _S_IFREG);
+  EXPECT_NE(0, buffer.st_mode | _S_IFREG);
 }
 
 /* Test case to test for graceful handling of corrupted input.

@@ -775,7 +775,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
         // we need to get duration slightly different for matroska embedded text subtitels
         if(m_bMatroska && stream->codec && stream->codec->codec_id == AV_CODEC_ID_TEXT && m_pkt.pkt.convergence_duration != 0)
-          m_pkt.pkt.duration = m_pkt.pkt.convergence_duration;
+          m_pkt.pkt.duration = static_cast<int>(m_pkt.pkt.convergence_duration);
 
         if(m_bAVI && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         {
@@ -1165,7 +1165,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
+        st->fAspect = static_cast<float>(SelectAspect(pStream, &st->bForcedAspect) *
+                                         pStream->codec->width / pStream->codec->height);
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 

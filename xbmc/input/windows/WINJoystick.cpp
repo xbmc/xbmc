@@ -285,7 +285,7 @@ void CJoystick::Update()
     }
 
     // get button states first, they take priority over axis
-    for (int b = 0; b < caps.dwButtons; b++)
+    for (int b = 0; b < static_cast<int>(caps.dwButtons); b++)
     {
       if (js.rgbButtons[b] & 0x80)
       {
@@ -296,7 +296,7 @@ void CJoystick::Update()
     }
 
     // get hat position
-    for (int h = 0; h < caps.dwPOVs; h++)
+    for (int h = 0; h < static_cast<int>(caps.dwPOVs); h++)
     {
       if ((LOWORD(js.rgdwPOV[h]) == 0xFFFF) != true)
       {
@@ -563,7 +563,7 @@ void CJoystick::MapAxis(int axisIdx, LPDIRECTINPUTDEVICE8 &joy, int &axisNum) co
 {
   int axisCount = 0;
   size_t i;
-  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && axisCount + m_devCaps[i].dwAxes <= axisIdx; ++i)
+  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && axisCount + static_cast<int>(m_devCaps[i].dwAxes) <= axisIdx; ++i)
     axisCount += m_devCaps[i].dwAxes;
   if (i != m_pJoysticks.size())
   {
@@ -593,7 +593,7 @@ void CJoystick::MapButton(int buttonIdx, LPDIRECTINPUTDEVICE8 &joy, int &buttonN
 {
   int buttonCount = 0;
   size_t i;
-  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && buttonCount + m_devCaps[i].dwButtons <= buttonIdx; ++i)
+  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && buttonCount + static_cast<int>(m_devCaps[i].dwButtons) <= buttonIdx; ++i)
     buttonCount += m_devCaps[i].dwButtons;
   if (i != m_pJoysticks.size())
   {
@@ -623,7 +623,7 @@ void CJoystick::MapHat(int hatIdx, LPDIRECTINPUTDEVICE8 &joy, int &hatNum) const
 {
   int hatCount = 0;
   size_t i;
-  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && hatCount + m_devCaps[i].dwPOVs <= hatIdx; ++i)
+  for (i = 0; i != m_pJoysticks.size() && m_pJoysticks[i] != joy && hatCount + static_cast<int>(m_devCaps[i].dwPOVs) <= hatIdx; ++i)
     hatCount += m_devCaps[i].dwPOVs;
   if (i != m_pJoysticks.size())
   {

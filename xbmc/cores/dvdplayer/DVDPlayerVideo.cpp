@@ -421,7 +421,7 @@ void CDVDPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
-      m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
+      m_fForcedAspectRatio = static_cast<float>(*((CDVDMsgDouble*)pMsg));
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -1032,7 +1032,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
                                 , pPicture->iHeight
                                 , pPicture->iDisplayWidth
                                 , pPicture->iDisplayHeight
-                                , config_framerate
+                                , static_cast<float>(config_framerate)
                                 , flags
                                 , pPicture->format
                                 , pPicture->extended_format

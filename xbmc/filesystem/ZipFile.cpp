@@ -346,7 +346,7 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
   else if (mZipItem.method == 0) // uncompressed. just read from file, but mind our boundaries.
   {
     if (uiBufSize+m_iFilePos > mZipItem.csize)
-      uiBufSize = mZipItem.csize-m_iFilePos;
+      uiBufSize = static_cast<size_t>(mZipItem.csize-m_iFilePos);
 
     if (uiBufSize == 0)
       return 0; // we are past eof, this shouldn't happen but test anyway
@@ -444,7 +444,7 @@ bool CZipFile::FillBuffer()
 {
   ssize_t sToRead = 65535;
   if (m_iZipFilePos+65535 > mZipItem.csize)
-    sToRead = mZipItem.csize-m_iZipFilePos;
+    sToRead = static_cast<ssize_t>(mZipItem.csize-m_iZipFilePos);
 
   if (sToRead <= 0)
     return false; // eof!
