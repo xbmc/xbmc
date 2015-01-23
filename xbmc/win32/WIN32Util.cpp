@@ -42,6 +42,7 @@
 #include "utils/Environment.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "win32/crts_caller.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
@@ -50,6 +51,8 @@
                      "special://xbmc/system/python/;" \
                      "special://xbmc/system/webserver/;" \
                      "special://xbmc/"
+
+#include <locale.h>
 
 extern HWND g_hWnd;
 
@@ -1598,3 +1601,10 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
   else
     return StringUtils::Format("Unknown error (0x%X)", dwError);
 }
+
+bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
+{
+  const int param = enable ? _ENABLE_PER_THREAD_LOCALE : _DISABLE_PER_THREAD_LOCALE;
+  return CALL_IN_CRTS(_configthreadlocale, param) != -1;
+}
+
