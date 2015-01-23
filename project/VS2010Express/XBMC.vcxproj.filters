@@ -3092,6 +3092,9 @@
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\crts_caller.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
     </ClCompile>
@@ -6020,6 +6023,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h">
       <Filter>cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\crts_caller.h">
+      <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h">
       <Filter>filesystem</Filter>
