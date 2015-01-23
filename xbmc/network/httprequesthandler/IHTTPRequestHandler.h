@@ -245,6 +245,7 @@ protected:
   { return true; }
 
   bool GetRequestedRanges(uint64_t totalLength);
+  bool GetHostnameAndPort(std::string& hostname, uint16_t &port);
 
   HTTPRequest m_request;
   HTTPResponseDetails m_response;

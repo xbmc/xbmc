@@ -18,8 +18,11 @@
  *
  */
 
+#include <limits>
+
 #include "IHTTPRequestHandler.h"
 #include "network/WebServer.h"
+#include "utils/StringUtils.h"
 
 IHTTPRequestHandler::IHTTPRequestHandler()
   : m_request(),
@@ -93,4 +96,36 @@ bool IHTTPRequestHandler::GetRequestedRanges(uint64_t totalLength)
     return true;
 
   return m_request.webserver->GetRequestedRanges(m_request.connection, totalLength, m_request.ranges);
+}
+
+bool IHTTPRequestHandler::GetHostnameAndPort(std::string& hostname, uint16_t &port)
+{
+  if (m_request.webserver == NULL || m_request.connection == NULL)
+    return false;
+
+  std::string hostnameAndPort = m_request.webserver->GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_HOST);
+  if (hostnameAndPort.empty())
+    return false;
+
+  size_t pos = hostnameAndPort.find(':');
+  hostname = hostnameAndPort.substr(0, pos);
+  if (hostname.empty())
+    return false;
+
+  if (pos != std::string::npos)
+  {
+    std::string strPort = hostnameAndPort.substr(pos + 1);
+    if (!StringUtils::IsNaturalNumber(strPort))
+      return false;
+
+    unsigned long portL = strtoul(strPort.c_str(), NULL, 0);
+    if (portL > std::numeric_limits<uint16_t>::max())
+      return false;
+
+    port = static_cast<uint16_t>(portL);
+  }
+  else
+    port = 80;
+
+  return true;
 }
