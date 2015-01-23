@@ -149,6 +149,7 @@ CMMALRenderer::CMMALRenderer()
   m_vout_input_pool = NULL;
   memset(m_buffers, 0, sizeof m_buffers);
   m_release_queue = mmal_queue_create();
+  m_iYV12RenderBuffer = 0;
   Create();
 }
 
@@ -322,6 +323,7 @@ void CMMALRenderer::Reset()
 
 void CMMALRenderer::Flush()
 {
+  m_iYV12RenderBuffer = 0;
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 }
 
@@ -336,13 +338,12 @@ void CMMALRenderer::Update()
 
 void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  int source = m_iYV12RenderBuffer;
 #if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d %x %d", CLASSNAME, __func__, clear, flags, alpha);
+  CLog::Log(LOGDEBUG, "%s::%s - %d %x %d %d", CLASSNAME, __func__, clear, flags, alpha, source);
 #endif
 
   if (!m_bConfigured) return;
-
-  CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
 
@@ -350,16 +351,9 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   // for sizing video playback on a layer other than the gles layer.
   if (m_RenderUpdateCallBackFn)
     (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-}
 
-void CMMALRenderer::FlipPage(int source)
-{
-  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+  if (m_format == RENDER_FMT_BYPASS)
     return;
-
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, source);
-#endif
 
   YUVBUFFER *buffer = &m_buffers[source];
   // we only want to upload frames once
@@ -387,6 +381,18 @@ void CMMALRenderer::FlipPage(int source)
   else assert(0);
 }
 
+void CMMALRenderer::FlipPage(int source)
+{
+  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+    return;
+
+#if defined(MMAL_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, source);
+#endif
+
+  m_iYV12RenderBuffer = source;
+}
+
 unsigned int CMMALRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
@@ -406,6 +412,7 @@ unsigned int CMMALRenderer::PreInit()
   m_formats.push_back(RENDER_FMT_MMAL);
   m_formats.push_back(RENDER_FMT_BYPASS);
 
+  m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = NUM_BUFFERS;
 
   return 0;

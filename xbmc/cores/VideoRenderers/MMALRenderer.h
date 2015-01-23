@@ -94,6 +94,7 @@ public:
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 protected:
+  int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
   std::vector<ERenderFormat> m_formats;
