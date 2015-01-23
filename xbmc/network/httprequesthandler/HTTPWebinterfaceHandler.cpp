@@ -32,7 +32,7 @@ CHTTPWebinterfaceHandler::CHTTPWebinterfaceHandler(const HTTPRequest &request)
 {
   // resolve the URL into a file path and a HTTP response status
   std::string file;
-  int responseStatus = ResolveUrl(request.url, file);
+  int responseStatus = ResolveUrl(request.pathUrl, file);
 
   // set the file and the HTTP response status
   SetFile(file, responseStatus);

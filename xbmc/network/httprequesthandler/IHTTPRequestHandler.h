@@ -69,7 +69,8 @@ typedef struct HTTPRequest
 {
   CWebServer *webserver;
   struct MHD_Connection *connection;
-  std::string url;
+  std::string pathUrlFull;
+  std::string pathUrl;
   HTTPMethod method;
   std::string version;
   CHttpRanges ranges;

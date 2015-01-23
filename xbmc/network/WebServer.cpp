@@ -192,7 +192,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   CWebServer *server = reinterpret_cast<CWebServer*>(cls);
   std::auto_ptr<ConnectionHandler> conHandler(reinterpret_cast<ConnectionHandler*>(*con_cls));
   HTTPMethod methodType = GetMethod(method);
-  HTTPRequest request = { server, connection, url, methodType, version };
+  HTTPRequest request = { server, connection, conHandler->fullUri, url, methodType, version };
 
   // remember if the request was new
   bool isNewRequest = conHandler->isNew;
@@ -210,7 +210,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     std::multimap<std::string, std::string> getValues;
     GetRequestHeaderValues(connection, MHD_GET_ARGUMENT_KIND, getValues);
 
-    CLog::Log(LOGDEBUG, "webserver  [IN] %s %s %s", version, method, conHandler->fullUri.c_str());
+    CLog::Log(LOGDEBUG, "webserver  [IN] %s %s %s", version, method, request.pathUrlFull.c_str());
     if (!getValues.empty())
     {
       std::string tmp;
@@ -456,7 +456,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
   int ret = handler->HandleRequest();
   if (ret == MHD_NO)
   {
-    CLog::Log(LOGERROR, "CWebServer: failed to handle HTTP request for %s", request.url.c_str());
+    CLog::Log(LOGERROR, "CWebServer: failed to handle HTTP request for %s", request.pathUrl.c_str());
     delete handler;
     return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
@@ -466,7 +466,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
   switch (responseDetails.type)
   {
     case HTTPNone:
-      CLog::Log(LOGERROR, "CWebServer: HTTP request handler didn't process %s", request.url.c_str());
+      CLog::Log(LOGERROR, "CWebServer: HTTP request handler didn't process %s", request.pathUrl.c_str());
       delete handler;
       return MHD_NO;
 
@@ -490,14 +490,14 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
       break;
 
     default:
-      CLog::Log(LOGERROR, "CWebServer: internal error while HTTP request handler processed %s", request.url.c_str());
+      CLog::Log(LOGERROR, "CWebServer: internal error while HTTP request handler processed %s", request.pathUrl.c_str());
       delete handler;
       return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   if (ret == MHD_NO)
   {
-    CLog::Log(LOGERROR, "CWebServer: failed to create HTTP response for %s", request.url.c_str());
+    CLog::Log(LOGERROR, "CWebServer: failed to create HTTP response for %s", request.pathUrl.c_str());
     delete handler;
     return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
@@ -574,7 +574,7 @@ int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus
   std::multimap<std::string, std::string> headerValues;
   GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
 
-  CLog::Log(LOGDEBUG, "webserver [OUT] %s %d %s", request.version.c_str(), responseStatus, request.url.c_str());
+  CLog::Log(LOGDEBUG, "webserver [OUT] %s %d %s", request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
 
   for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
     CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", header->first.c_str(), header->second.c_str());
@@ -842,7 +842,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
                                                   &CWebServer::ContentReaderFreeCallback);
     if (response == NULL)
     {
-      CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP response for %s to be filled from %s", request.url.c_str(), filePath.c_str());
+      CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP response for %s to be filled from %s", request.pathUrl.c_str(), filePath.c_str());
       return MHD_NO;
     }
 
@@ -857,7 +857,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
     response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
     if (response == NULL)
     {
-      CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP HEAD response for %s", request.url.c_str());
+      CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP HEAD response for %s", request.pathUrl.c_str());
       return MHD_NO;
     }
 

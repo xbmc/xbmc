@@ -32,9 +32,9 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   std::string file;
   int responseStatus = MHD_HTTP_BAD_REQUEST;
 
-  if (m_request.url.size() > 5)
+  if (m_request.pathUrl.size() > 5)
   {
-    file = m_request.url.substr(5);
+    file = m_request.pathUrl.substr(5);
 
     if (XFILE::CFile::Exists(file))
     {
@@ -93,5 +93,5 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
 
 bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request)
 {
-  return request.url.find("/vfs") == 0;
+  return request.pathUrl.find("/vfs") == 0;
 }
