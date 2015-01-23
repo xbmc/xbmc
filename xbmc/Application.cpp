@@ -2175,9 +2175,6 @@ bool CApplication::RenderNoPresent()
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
   {
-    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-    g_renderManager.Render(true, 0, 255);
-
     // close window overlays
     CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
     if (overlay) overlay->Close(true);
@@ -2220,17 +2217,17 @@ void CApplication::Render()
   bool limitFrames = false;
   unsigned int singleFrameTime = 10; // default limit 100 fps
 
+  // Whether externalplayer is playing and we're unfocused
+  bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
+
   {
     // Less fps in DPMS
     bool lowfps = m_dpmsIsActive || g_Windowing.EnableFrameLimiter();
-    // Whether externalplayer is playing and we're unfocused
-    bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
 
     m_bPresentFrame = false;
-    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback() && g_renderManager.RendererHandlesPresent())
+    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
-      m_bPresentFrame = g_renderManager.FrameWait(100);
-      hasRendered = true;
+      m_bPresentFrame = g_renderManager.HasFrame();
     }
     else
     {
@@ -2273,8 +2270,6 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
-  g_renderManager.FrameMove();
-
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if(g_graphicsContext.GetStereoMode())
   {
@@ -2295,8 +2290,6 @@ void CApplication::Render()
     if(RenderNoPresent())
       hasRendered = true;
   }
-
-  g_renderManager.FrameFinish();
 
   g_Windowing.EndRender();
 
@@ -2322,7 +2315,7 @@ void CApplication::Render()
     flip = true;
 
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
-  if (limitFrames || !flip)
+  if (limitFrames || !(flip || m_bPresentFrame))
   {
     if (!limitFrames)
       singleFrameTime = 40; //if not flipping, loop at 25 fps
@@ -2334,6 +2327,11 @@ void CApplication::Render()
 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
+
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
+  {
+    g_renderManager.FrameWait(100);
+  }
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   CTimeUtils::UpdateFrameTime(flip);

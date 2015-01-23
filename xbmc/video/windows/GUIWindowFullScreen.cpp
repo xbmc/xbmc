@@ -281,6 +281,12 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   return CGUIWindow::OnAction(action);
 }
 
+void CGUIWindowFullScreen::ClearBackground()
+{
+  if (g_renderManager.IsVideoLayer())
+    g_graphicsContext.Clear(0);
+}
+
 void CGUIWindowFullScreen::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
@@ -376,6 +382,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 #ifdef HAS_VIDEO_PLAYBACK
       // make sure renderer is uptospeed
       g_renderManager.Update();
+      g_renderManager.FrameFinish();
 #endif
       return true;
     }
@@ -585,20 +592,38 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_HIDDEN(BLUE_BAR);
   }
+
+  g_renderManager.FrameMove();
 }
 
 void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
 {
+  if (g_renderManager.IsGuiLayer())
+    MarkDirtyRegion();
+
+  CGUIWindow::Process(currentTime, dirtyregion);
+
   // TODO: This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
   //       which is probably the job of the renderer as it can more easily track resizing etc.
-  MarkDirtyRegion();
-  CGUIWindow::Process(currentTime, dirtyregion);
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowFullScreen::Render()
 {
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  g_renderManager.Render(true, 0, 255);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   CGUIWindow::Render();
+}
+
+void CGUIWindowFullScreen::RenderEx()
+{
+  CGUIWindow::RenderEx();
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+#ifdef HAS_VIDEO_PLAYBACK
+  g_renderManager.Render(false, 0, 255, false);
+  g_renderManager.FrameFinish();
+#endif
 }
 
 void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
@@ -665,6 +690,8 @@ void CGUIWindowFullScreen::ToggleOSD()
     else
       pOSD->DoModal();
   }
+
+  MarkDirtyRegion();
 }
 
 void CGUIWindowFullScreen::TriggerOSD()

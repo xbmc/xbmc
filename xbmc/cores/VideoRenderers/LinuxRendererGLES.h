@@ -144,6 +144,7 @@ public:
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
   virtual unsigned int GetOptimalBufferSize();
+  virtual bool         IsGuiLayer();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -177,6 +178,7 @@ public:
 
 protected:
   virtual void Render(DWORD flags, int index);
+  void RenderUpdateVideo(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();

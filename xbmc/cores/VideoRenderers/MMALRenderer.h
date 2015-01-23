@@ -90,6 +90,7 @@ public:
   virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
   virtual unsigned int GetOptimalBufferSize() { return NUM_BUFFERS; }
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
+  virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 protected:
