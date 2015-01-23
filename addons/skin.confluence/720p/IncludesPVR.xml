@@ -205,6 +205,7 @@
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
+					<visible>Control.IsVisible(5) | Control.IsVisible(6)</visible>
 				</control>
 				<control type="radiobutton" id="5">
 					<description>Group recording items by folder structure</description>
