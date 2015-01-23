@@ -100,31 +100,57 @@ bool COMXVideo::SendDecoderConfig()
   /* send decoder config */
   if(m_extrasize > 0 && m_extradata != NULL)
   {
-    OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
+    uint32_t copyAmount = m_extrasize;
+    int copyStart = 0, retryCount = 0;
+    OMX_BUFFERHEADERTYPE *omx_buffer = 0;
 
-    if(omx_buffer == NULL)
+    while (copyAmount > 0)
     {
-      CLog::Log(LOGERROR, "%s::%s - buffer error 0x%08x", CLASSNAME, __func__, omx_err);
-      return false;
-    }
+      //additional protection incase 'copyAmount' rolled under because of subtraction.
+      // if 'copyStart' is eq/larger than available data, we can assume a roll under occured
+      if (copyStart >= m_extrasize)
+      {
+        CLog::Log(LOGERROR, "%s::%s - had to safebreak. check values", CLASSNAME, __func__);
+        break;
+      }
 
-    omx_buffer->nOffset = 0;
-    omx_buffer->nFilledLen = m_extrasize;
-    if(omx_buffer->nFilledLen > omx_buffer->nAllocLen)
-    {
-      CLog::Log(LOGERROR, "%s::%s - omx_buffer->nFilledLen > omx_buffer->nAllocLen", CLASSNAME, __func__);
-      return false;
-    }
+      omx_buffer = m_omx_decoder.GetInputBuffer(100);
+      if(omx_buffer != NULL)
+      {
+        omx_buffer->nFilledLen = copyAmount > omx_buffer->nAllocLen ? omx_buffer->nAllocLen : copyAmount;
 
-    memset((unsigned char *)omx_buffer->pBuffer, 0x0, omx_buffer->nAllocLen);
-    memcpy((unsigned char *)omx_buffer->pBuffer, m_extradata, omx_buffer->nFilledLen);
-    omx_buffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG | OMX_BUFFERFLAG_ENDOFFRAME;
-  
-    omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
-    if (omx_err != OMX_ErrorNone)
-    {
-      CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
-      return false;
+        //clear ENTIRE buffer, not just amount we are about to fill. intentional
+        memset((unsigned char *)omx_buffer->pBuffer, 0, omx_buffer->nAllocLen);
+        memcpy((unsigned char *)omx_buffer->pBuffer, m_extradata + copyStart, omx_buffer->nFilledLen);
+
+        copyAmount -= omx_buffer->nFilledLen;
+        copyStart += omx_buffer->nFilledLen;
+
+        //only set end frame on last block of data
+        omx_buffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG;
+        if (copyAmount < 1)
+          omx_buffer->nFlags |= OMX_BUFFERFLAG_ENDOFFRAME;
+
+        //--
+        retryCount = 0;
+        while (retryCount < 5)
+        {
+          omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
+          if (omx_err != OMX_ErrorNone)
+            retryCount++;
+          else
+            break;
+        }
+      }
+      else
+        retryCount++;
+
+      //--
+      if (retryCount > 4)
+      {
+        CLog::Log(LOGERROR, "%s::%s - retry failed, result(0x%x)\n", CLASSNAME, __func__, omx_err);
+        return false;
+      }
     }
   }
   return true;
