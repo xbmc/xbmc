@@ -265,10 +265,10 @@ void CGUIWindowPVRGuide::UpdateViewChannel()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
 
   m_vecItems->Clear();
-  if ((!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0) && currentChannel.get())
+  if (!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0)
   {
     CFileItemPtr item;
-    item.reset(new CFileItem("pvr://guide/" + currentChannel->ChannelName() + "/empty.epg", false));
+    item.reset(new CFileItem("pvr://guide/channel/empty.epg", false));
     item->SetLabel(g_localizeStrings.Get(19028));
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);
