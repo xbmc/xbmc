@@ -1439,6 +1439,7 @@
     <ClCompile Include="..\..\xbmc\view\GUIViewState.cpp" />
     <ClCompile Include="..\..\xbmc\view\ViewDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\view\ViewStateSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\win32\crts_caller.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
@@ -2134,6 +2135,7 @@
     <ClInclude Include="..\..\xbmc\view\ViewDatabase.h" />
     <ClInclude Include="..\..\xbmc\view\ViewState.h" />
     <ClInclude Include="..\..\xbmc\view\ViewStateSettings.h" />
+    <ClInclude Include="..\..\xbmc\win32\crts_caller.h" />
     <ClInclude Include="..\..\xbmc\win32\IMMNotificationClient.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />

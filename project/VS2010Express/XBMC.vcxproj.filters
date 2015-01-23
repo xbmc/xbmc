@@ -3080,6 +3080,9 @@
     <ClCompile Include="..\..\xbmc\cores\DataCacheCore.cpp">
       <Filter>cores</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\crts_caller.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6027,6 +6030,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h">
       <Filter>cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\crts_caller.h">
+      <Filter>win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
