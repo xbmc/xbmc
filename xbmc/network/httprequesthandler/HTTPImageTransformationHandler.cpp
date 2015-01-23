@@ -48,7 +48,7 @@ CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPReque
     m_buffer(NULL),
     m_responseData()
 {
-  m_url = m_request.url.substr(ImageBasePath.size());
+  m_url = m_request.pathUrl.substr(ImageBasePath.size());
   if (m_url.empty())
   {
     m_response.status = MHD_HTTP_BAD_REQUEST;
@@ -103,7 +103,7 @@ CHTTPImageTransformationHandler::~CHTTPImageTransformationHandler()
 bool CHTTPImageTransformationHandler::CanHandleRequest(const HTTPRequest &request)
 {
   if ((request.method != GET && request.method != HEAD) ||
-      request.url.find(ImageBasePath) != 0 || request.url.size() <= ImageBasePath.size())
+    request.pathUrl.find(ImageBasePath) != 0 || request.pathUrl.size() <= ImageBasePath.size())
     return false;
 
   // get the transformation options
