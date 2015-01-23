@@ -1108,6 +1108,7 @@
 					<onright>75</onright>
 					<pagecontrol>75</pagecontrol>
 					<scrolltime>200</scrolltime>
+					<visible>Pvr.IsPlayingTv | Pvr.IsPlayingRadio</visible>
 					<itemlayout height="40">
 						<control type="image">
 							<left>0</left>
