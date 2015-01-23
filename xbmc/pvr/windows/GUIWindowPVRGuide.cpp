@@ -21,6 +21,7 @@
 #include "GUIWindowPVRGuide.h"
 
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
@@ -207,6 +208,14 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
         Refresh(true);
         bReturn = true;
       }
+      break;
+    }
+    case GUI_MSG_CHANGE_VIEW_MODE:
+    {
+      // let's set the view mode first before update
+      CGUIWindowPVRBase::OnMessage(message);
+      Refresh(true);
+      bReturn = true;
       break;
     }
     case GUI_MSG_REFRESH_LIST:
