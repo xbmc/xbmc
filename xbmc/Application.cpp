@@ -2217,16 +2217,17 @@ void CApplication::Render()
   bool limitFrames = false;
   unsigned int singleFrameTime = 10; // default limit 100 fps
 
+  // Whether externalplayer is playing and we're unfocused
+  bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
+
   {
     // Less fps in DPMS
     bool lowfps = m_dpmsIsActive || g_Windowing.EnableFrameLimiter();
-    // Whether externalplayer is playing and we're unfocused
-    bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
 
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
-      m_bPresentFrame = g_renderManager.FrameWait(100);
+      m_bPresentFrame = g_renderManager.HasFrame();
     }
     else
     {
@@ -2326,6 +2327,11 @@ void CApplication::Render()
 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
+
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
+  {
+    g_renderManager.FrameWait(100);
+  }
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   CTimeUtils::UpdateFrameTime(flip);

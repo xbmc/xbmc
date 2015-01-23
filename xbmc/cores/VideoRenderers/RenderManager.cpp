@@ -316,13 +316,21 @@ void CXBMCRenderManager::Update()
     m_pRenderer->Update();
 }
 
-bool CXBMCRenderManager::FrameWait(int ms)
+void CXBMCRenderManager::FrameWait(int ms)
 {
   XbmcThreads::EndTime timeout(ms);
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
     m_presentevent.wait(lock, timeout.MillisLeft());
-  return m_presentstep != PRESENT_IDLE;
+}
+
+bool CXBMCRenderManager::HasFrame()
+{
+  CSingleLock lock(m_presentlock);
+  if (m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
+    return true;
+  else
+    return false;
 }
 
 void CXBMCRenderManager::FrameMove()
