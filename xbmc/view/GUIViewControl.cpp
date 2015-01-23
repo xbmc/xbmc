@@ -95,7 +95,7 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
   CGUIControl *pNewView = m_visibleViews[m_currentView];
 
   // make only current control visible...
-  for (ciViews view = m_allViews.begin(); view != m_allViews.end(); view++)
+  for (ciViews view = m_allViews.begin(); view != m_allViews.end(); ++view)
     (*view)->SetVisible(false);
   pNewView->SetVisible(true);
 
@@ -239,7 +239,7 @@ void CGUIViewControl::SetFocused()
 bool CGUIViewControl::HasControl(int viewControlID) const
 {
   // run through our controls, checking for the id
-  for (ciViews it = m_allViews.begin(); it != m_allViews.end(); it++)
+  for (ciViews it = m_allViews.begin(); it != m_allViews.end(); ++it)
   {
     if ((*it)->GetID() == viewControlID)
       return true;
