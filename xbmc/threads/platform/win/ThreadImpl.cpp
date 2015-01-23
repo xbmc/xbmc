@@ -21,6 +21,7 @@
 #include <windows.h>
 #include <process.h>
 #include "threads/platform/win/Win32Exception.h"
+#include "../../win32/WIN32Util.h"
 
 void CThread::SpawnThread(unsigned stacksize)
 {
@@ -72,6 +73,8 @@ void CThread::SetThreadInfo()
   __except(EXCEPTION_EXECUTE_HANDLER)
   {
   }
+
+  CWIN32Util::SetThreadLocalLocale(true); // avoid crashing with setlocale(), see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 
     win32_exception::install_handler();
 }
