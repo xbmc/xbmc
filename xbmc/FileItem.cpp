@@ -1169,6 +1169,11 @@ void CFileItem::FillInDefaultIcon()
       { // archive
         SetIconImage("DefaultFile.png");
       }
+      else if ( IsPVRRecording() )
+      {
+        // PVR recording
+        SetIconImage("DefaultVideo.png");
+      }
       else if ( IsAudio() )
       {
         // audio
@@ -1177,10 +1182,6 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("DefaultVideo.png");
-      }
-      else if (IsPVRRecording())
-      {
         SetIconImage("DefaultVideo.png");
       }
       else if (IsPVRTimer())
