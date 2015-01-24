@@ -107,6 +107,18 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     SetTitle(data.strTitle);
   if (data.strPlotOutline)
     SetPlotOutline(data.strPlotOutline);
+  if (data.strShowID)
+    SetShowID(data.strShowID);
+  if (data.strActor)
+    SetActor(data.strActor);
+  if (data.strDirector)
+    SetDirector(data.strDirector);
+  if (data.strWriter)
+    SetWriter(data.strWriter);
+  if (data.strOriginalTitle)
+    SetOriginalTitle(data.strOriginalTitle);
+  if (data.strYearEPG)
+    SetYearEPG(data.strYearEPG);
   if (data.strPlot)
     SetPlot(data.strPlot);
   if (data.strEpisodeName)
@@ -142,6 +154,12 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_iUniqueBroadcastID == right.m_iUniqueBroadcastID &&
           m_strTitle           == right.m_strTitle &&
           m_strPlotOutline     == right.m_strPlotOutline &&
+          m_strShowID          == right.m_strShowID &&
+          m_strActor           == right.m_strActor &&
+          m_strDirector        == right.m_strDirector &&
+          m_strWriter          == right.m_strWriter &&
+          m_strOriginalTitle   == right.m_strOriginalTitle &&
+          m_strYearEPG         == right.m_strYearEPG &&
           m_strPlot            == right.m_strPlot &&
           m_genre              == right.m_genre &&
           m_strEpisodeName     == right.m_strEpisodeName &&
@@ -167,6 +185,12 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
+  value["showid"] = m_strShowID;
+  value["actor"] = m_strActor;
+  value["director"] = m_strDirector;
+  value["writer"] = m_strWriter;
+  value["originaltitle"] = m_strOriginalTitle;
+  value["yearepg"] = m_strYearEPG;
   value["plot"] = m_strPlot;
   value["genre"] = m_genre;
   value["filenameandpath"] = m_strFileNameAndPath;
@@ -461,6 +485,144 @@ std::string CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
   CSingleLock lock(m_critSection);
   if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
     retVal = m_strPlotOutline;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetShowID(const std::string &strShowID)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strShowID != strShowID;
+    m_bChanged |= bUpdate;
+    m_strShowID = strShowID;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::ShowID(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strShowID;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetActor(const std::string &strActor)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strActor != strActor;
+    m_bChanged |= bUpdate;
+    m_strActor = strActor;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::Actor(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strActor;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetDirector(const std::string &strDirector)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strDirector != strDirector;
+    m_bChanged |= bUpdate;
+    m_strDirector = strDirector;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::Director(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strDirector;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetWriter(const std::string &strWriter)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strWriter != strWriter;
+    m_bChanged |= bUpdate;
+    m_strWriter = strWriter;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::Writer(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strWriter;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetOriginalTitle(const std::string &strOriginalTitle)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strOriginalTitle != strOriginalTitle;
+    m_bChanged |= bUpdate;
+    m_strOriginalTitle = strOriginalTitle;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::OriginalTitle(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strOriginalTitle;
+
+  return retVal;
+}
+
+void CEpgInfoTag::SetYearEPG(const std::string &strYearEPG)
+{
+  bool bUpdate(false);
+  {
+    CSingleLock lock(m_critSection);
+    bUpdate = m_strYearEPG != strYearEPG;
+    m_bChanged |= bUpdate;
+    m_strYearEPG = strYearEPG;
+  }
+  if (bUpdate)
+    UpdatePath();
+}
+
+std::string CEpgInfoTag::YearEPG(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  CSingleLock lock(m_critSection);
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+    retVal = m_strYearEPG;
 
   return retVal;
 }
@@ -861,6 +1023,12 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
     bChanged = (
         m_strTitle           != tag.m_strTitle ||
         m_strPlotOutline     != tag.m_strPlotOutline ||
+        m_strShowID          != tag.m_strShowID ||
+        m_strActor           != tag.m_strActor ||
+        m_strDirector        != tag.m_strDirector ||
+        m_strWriter          != tag.m_strWriter ||
+        m_strOriginalTitle   != tag.m_strOriginalTitle ||
+        m_strYearEPG         != tag.m_strYearEPG ||
         m_strPlot            != tag.m_strPlot ||
         m_startTime          != tag.m_startTime ||
         m_endTime            != tag.m_endTime ||
@@ -891,6 +1059,12 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
 
       m_strTitle           = tag.m_strTitle;
       m_strPlotOutline     = tag.m_strPlotOutline;
+      m_strShowID          = tag.m_strShowID;
+      m_strActor           = tag.m_strActor;
+      m_strDirector        = tag.m_strDirector;
+      m_strWriter          = tag.m_strWriter;
+      m_strOriginalTitle   = tag.m_strOriginalTitle;
+      m_strYearEPG         = tag.m_strYearEPG;
       m_strPlot            = tag.m_strPlot;
       m_startTime          = tag.m_startTime;
       m_endTime            = tag.m_endTime;
