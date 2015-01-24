@@ -75,6 +75,12 @@ extern "C" {
     time_t        startTime;           /*!< @brief (required) start time in UTC */
     time_t        endTime;             /*!< @brief (required) end time in UTC */
     const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
+    const char *  strShowID;           /*!< @brief (optional) showid */
+    const char *  strActor;            /*!< @brief (optional) actor */
+    const char *  strDirector;         /*!< @brief (optional) director */
+    const char *  strWriter;           /*!< @brief (optional) writer */	
+    const char *  strOriginalTitle;    /*!< @brief (optional) originaltitle */
+    const char *  strYearEPG;          /*!< @brief (optional) yearepg */	
     const char *  strPlot;             /*!< @brief (optional) plot */
     const char *  strIconPath;         /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
