@@ -123,7 +123,7 @@ function(add_addon_depends addon searchpath)
             else()
               # manually specify the configure command to be able to pass in the custom PKG_CONFIG_PATH
               set(CONFIGURE_COMMAND PKG_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
-                                    ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags}
+                                    ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags} ${BUILD_ARGS}
                                     ${BUILD_DIR}/${id}/src/${id}
                                     -DPACKAGE_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
                                     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
