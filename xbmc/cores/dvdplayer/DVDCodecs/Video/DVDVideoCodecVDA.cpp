@@ -238,6 +238,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       }
     }
 
+<<<<<<< HEAD
     if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
     {
       // Main@L3.2, VDA cannot handle greater than 4 reference frames
@@ -304,6 +305,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       memset(m_videobuffer.data[2], 0, iChromaPixels);
     }
 
+=======
+>>>>>>> FETCH_HEAD
     // setup the decoder configuration dict
     CFMutableDictionaryRef decoderConfiguration = CFDictionaryCreateMutable(
       kCFAllocatorDefault, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
@@ -325,6 +328,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
     // setup the destination image buffer dict, vda will output this pict format
     CFMutableDictionaryRef destinationImageBufferAttributes = CFDictionaryCreateMutable(
+<<<<<<< HEAD
       kCFAllocatorDefault, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     OSType cvPixelFormatType = kCVPixelFormatType_422YpCbCr8;
     CFNumberRef pixelFormat  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &cvPixelFormatType);
@@ -340,13 +344,25 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     // release the retained object refs, destinationImageBufferAttributes owns them now
     CFRelease(pixelFormat);
     CFRelease(iosurfaceDictionary);
+=======
+      kCFAllocatorDefault, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+
+    OSType cvPixelFormatType = kCVPixelFormatType_422YpCbCr8;
+    CFNumberRef pixelFormat  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &cvPixelFormatType);
+    CFDictionarySetValue(destinationImageBufferAttributes, kCVPixelBufferPixelFormatTypeKey, pixelFormat);
+>>>>>>> FETCH_HEAD
 
     // create the VDADecoder object
     OSStatus status;
     try
     {
+<<<<<<< HEAD
       status = VDADecoderCreate(decoderConfiguration, destinationImageBufferAttributes,
         (VDADecoderOutputCallback*)VDADecoderCallback, this, (VDADecoder*)&m_vda_decoder);
+=======
+      status = m_dll->VDADecoderCreate(decoderConfiguration, destinationImageBufferAttributes,
+        (VDADecoderOutputCallback *)VDADecoderCallback, this, (VDADecoder*)&m_vda_decoder);
+>>>>>>> FETCH_HEAD
     }
     catch (...)
     {
@@ -424,7 +440,13 @@ int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
     }
   }
 
+<<<<<<< HEAD
   if (!m_decode_async)
+=======
+  // TODO: queue depth is related to the number of reference frames in encoded h.264.
+  // so we need to buffer until we get N ref frames + 1.
+  if (m_queue_depth < 4)
+>>>>>>> FETCH_HEAD
   {
     // force synchronous decode to fix issues with ATI GPUs,
     // we still have to sort returned frames by pts to handle out-of-order demuxer packets. 

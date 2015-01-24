@@ -68,11 +68,14 @@ public:
   int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   bool ptsinvalid;  // pts cannot be trusted (avi's).
+<<<<<<< HEAD
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degress counter clockwise
   int bitsperpixel;
   int pid;
   std::string stereo_mode; // stereoscopic 3d mode
+=======
+>>>>>>> FETCH_HEAD
 
   // AUDIO
   int channels;

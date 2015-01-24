@@ -50,13 +50,20 @@ namespace ADDON
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_WEB_INTERFACE,
+<<<<<<< HEAD
     ADDON_SERVICE,
     ADDON_AUDIOENCODER,
+=======
+>>>>>>> FETCH_HEAD
     ADDON_VIDEO, // virtual addon types
     ADDON_AUDIO,
     ADDON_IMAGE,
     ADDON_EXECUTABLE,
+<<<<<<< HEAD
     ADDON_VIZ_LIBRARY,
+=======
+    ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
+>>>>>>> FETCH_HEAD
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
     ADDON_SCRIPT_MODULE,
@@ -74,16 +81,26 @@ namespace ADDON
 
   class CAddonMgr;
   class AddonVersion;
+<<<<<<< HEAD
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<std::string, std::string> InfoMap;
+=======
+  typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
+  typedef std::map<CStdString, CStdString> InfoMap;
+>>>>>>> FETCH_HEAD
   class AddonProps;
 
   class IAddon : public boost::enable_shared_from_this<IAddon>
   {
   public:
     virtual ~IAddon() {};
+<<<<<<< HEAD
     virtual AddonPtr Clone() const =0;
     virtual TYPE Type() const =0;
+=======
+    virtual AddonPtr Clone(const AddonPtr& self) const =0;
+    virtual const TYPE Type() const =0;
+>>>>>>> FETCH_HEAD
     virtual bool IsType(TYPE type) const =0;
     virtual AddonProps Props() const =0;
     virtual AddonProps& Props() =0;
@@ -91,6 +108,7 @@ namespace ADDON
     virtual const std::string Name() const =0;
     virtual bool Enabled() const =0;
     virtual bool IsInUse() const =0;
+<<<<<<< HEAD
     virtual const AddonVersion Version() const =0;
     virtual const AddonVersion MinVersion() const =0;
     virtual const std::string Summary() const =0;
@@ -104,6 +122,20 @@ namespace ADDON
     virtual const std::string Icon() const =0;
     virtual int  Stars() const =0;
     virtual const std::string Disclaimer() const =0;
+=======
+    virtual const AddonVersion Version() =0;
+    virtual const CStdString Summary() const =0;
+    virtual const CStdString Description() const =0;
+    virtual const CStdString Path() const =0;
+    virtual const CStdString Profile() const =0;
+    virtual const CStdString LibPath() const =0;
+    virtual const CStdString ChangeLog() const =0;
+    virtual const CStdString FanArt() const =0;
+    virtual const CStdString Author() const =0;
+    virtual const CStdString Icon() const =0;
+    virtual const int  Stars() const =0;
+    virtual const CStdString Disclaimer() const =0;
+>>>>>>> FETCH_HEAD
     virtual const InfoMap &ExtraInfo() const =0;
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;

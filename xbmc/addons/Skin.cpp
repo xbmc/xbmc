@@ -488,4 +488,10 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
     current = list[0].second;
 }
 
+bool CSkinInfo::IsInUse() const
+{
+  // Could extend this to prompt for reverting to the standard skin perhaps
+  return g_guiSettings.GetString("lookandfeel.skin") == ID();
+}
+
 } /*namespace ADDON*/

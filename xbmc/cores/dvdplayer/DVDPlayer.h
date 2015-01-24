@@ -190,6 +190,7 @@ public:
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
+<<<<<<< HEAD
 
   SelectionStreams Get(StreamType type);
   template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)
@@ -198,6 +199,8 @@ public:
     std::stable_sort(streams.begin(), streams.end(), compare);
     return streams;
   }
+=======
+>>>>>>> FETCH_HEAD
 
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
@@ -334,11 +337,15 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
+<<<<<<< HEAD
   bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
   void SetSubtitleVisibleInternal(bool bVisible);
 
+=======
+  int  AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+>>>>>>> FETCH_HEAD
   /**
    * one of the DVD_PLAYSPEED defines
    */
@@ -428,7 +435,9 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
-
+  
+  double m_subLastPts;
+  
   struct SDVDInfo
   {
     void Clear()
@@ -471,7 +480,10 @@ protected:
       time          = 0;
       time_total    = 0;
       time_offset   = 0;
+<<<<<<< HEAD
       time_src      = ETIMESOURCE_CLOCK;
+=======
+>>>>>>> FETCH_HEAD
       dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
@@ -496,7 +508,10 @@ protected:
 
     double time;              // current playback time
     double time_total;        // total playback time
+<<<<<<< HEAD
     ETimeSource time_src;     // current time source
+=======
+>>>>>>> FETCH_HEAD
     double dts;               // last known dts
 
     std::string player_state;  // full player state
@@ -545,6 +560,7 @@ protected:
   } m_EdlAutoSkipMarkers;
 
   CPlayerOptions m_PlayerOptions;
+<<<<<<< HEAD
 
   bool m_HasVideo;
   bool m_HasAudio;
@@ -554,4 +570,6 @@ protected:
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
+=======
+>>>>>>> FETCH_HEAD
 };

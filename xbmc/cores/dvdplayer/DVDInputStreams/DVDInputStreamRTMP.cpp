@@ -134,6 +134,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
     return false;
 
   CSingleLock lock(m_RTMPSection);
+<<<<<<< HEAD
 
   // libRTMP can and will alter strFile, so take a copy of it
   m_sStreamPlaying = (char*)calloc(strlen(strFile)+1,sizeof(char));
@@ -141,6 +142,32 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 
   if (!m_libRTMP.SetupURL(m_rtmp, m_sStreamPlaying))
     return false;
+=======
+
+  // libRTMP can and will alter strFile, so take a copy of it
+  m_sStreamPlaying = (char*)calloc(strlen(strFile)+1,sizeof(char));
+  strcpy(m_sStreamPlaying,strFile);
+
+  {
+    if (!m_libRTMP.SetupURL(m_rtmp, m_sStreamPlaying))
+      return false;
+
+  // SetOpt and SetAVal copy pointers to the value. librtmp doesn't use the values until the Connect() call,
+  // so value objects must stay allocated until then. To be extra safe, keep the values around until Close(),
+  // in case librtmp needs them again.
+  m_optionvalues.clear();
+    for (int i=0; options[i].name; i++)
+    {
+    CStdString tmp = m_item.GetProperty(options[i].name);
+      if (!tmp.empty())
+      {
+      m_optionvalues.push_back(tmp);
+        AVal av_tmp;
+      SetAVal(av_tmp, m_optionvalues.back());
+        m_libRTMP.SetOpt(m_rtmp, &options[i].key, &av_tmp);
+      }
+    }
+>>>>>>> FETCH_HEAD
 
   /* Look for protocol options in the URL.
    * Options are added to the URL in space separated key=value pairs.
@@ -177,6 +204,7 @@ void CDVDInputStreamRTMP::Close()
   if (m_rtmp)
     m_libRTMP.Close(m_rtmp);
 
+  m_optionvalues.clear();
   m_eof = true;
   m_bPaused = false;
 }

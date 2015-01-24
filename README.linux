@@ -1,0 +1,145 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required libraries and headers
+4. How to compile
+5. How to run
+6. Uninstalling
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 bitdepth
+is required with OpenGL.
+
+NOTE TO NEW LINUX USERS: All lines that are prefixed with the '$'
+character are commands that need to be typed into a terminal window /
+console (similar to the command prompt for Windows). Note that the '$'
+character itself should NOT be typed as part of the command.
+
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+You will have to grab the source code of course. First install the subversion
+package provided by your distribution. Then from a terminal, type:
+
+   $ cd $HOME
+   $ svn checkout http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
+
+-----------------------------------------------------------------------------
+3. Installing the required libraries and headers
+-----------------------------------------------------------------------------
+
+You will then need the required libraries. The following is the list of packages
+that are used to build XBMC packages on Debian/Ubuntu (with all supported
+external libraries enabled).
+
+Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
+ autotools-dev, autoconf, automake, unzip, libboost-dev,
+ libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
+ libsamplerate-dev, libogg-dev, libvorbis-dev, libvorbisenc2, libfreetype6-dev,
+ libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
+ libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
+ libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
+ libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev, libxinerama-dev, libcurl3,
+ libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
+ libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
+ libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
+ libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
+ libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
+ python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
+ zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev, libiso9660-dev, libssl-dev,
+ libmicrohttpd-dev, libmodplug-dev, libssh-dev, gettext, cvs, libtool
+
+*** For developers and anyone else who compiles frequently it is recommended to
+use ccache
+
+--------------------------------------------------------------
+3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
+--------------------------------------------------------------
+
+For this, you need to specify the PPA in your apt sources. Please find them on
+the forum.
+
+http://forum.xbmc.org/showthread.php?t=33327
+
+Update apt:
+   $ sudo apt-get update
+
+Here is the magic command to get the build dependencies (used to compile the
+version on the PPA).
+   $ sudo apt-get build-dep xbmc
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+
+To create the XBMC executable manually perform these steps:
+
+.0  $ ./bootstrap
+
+.1  $ ./configure <option1> <option2> ... (See --help for available options)
+
+A full listing of supported options can be viewed by typing
+'./configure --help'.
+
+.2  $ make
+
+Tip: by adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used. So for dualcore the command is: 
+
+    $ make -j2
+
+.3  $ make -C lib/addons/script.module.pil
+
+.4  $ make -C lib/addons/script.module.pysqlite
+    
+.5  $ make install
+
+This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
+
+NOTE: You may need to run this with sudo (sudo make install) if your user
+doesn't have write permissions to the prefix you have provided (as in the
+default case, /usr/local).
+
+Tip: To override the location that XBMC is installed, use PREFIX=<path>.
+For example.
+
+    $ make install DESTDIR=$HOME/xbmc
+
+-----------------------------------------------------------------------------
+5. How to run
+-----------------------------------------------------------------------------
+How to run xbmc depends on the type of installation you have done. It is
+possible to run XBMC without the requirement to install xbmc anywhere else. In
+this case, type the following from the top source directory.
+
+    $ ./xbmc.bin
+
+If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX, you
+can just issue 'xbmc' in a teminal session.
+
+If you overridden PREFIX to install XBMC into some non-standard location, you
+will have to run xbmc by directly running 'xbmc.bin'. For example.
+
+    $ $HOME/xbmc/usr/share/xbmc.bin
+
+If you wish to use VDPAU decoding you will now have to change the Render Method
+in Settings->Videos->Player from "Auto Detect" to "VDPAU".
+
+-----------------------------------------------------------------------------
+6. Uninstalling
+-----------------------------------------------------------------------------
+Issue "make uninstall"  ("sudo make uninstall" if you user doesn't have write
+permission to the install directory) from your source tree. If you would like
+to also remove any settings and 3rd party addons (skins, scripts, etc) you
+should also run "rm -rf ~/.xbmc".
+
+NOTE: If you have rerun configure with a different prefix, you will either need
+to rerun configure with the correct prefix for this step to work correctly.
+
+EOF
+

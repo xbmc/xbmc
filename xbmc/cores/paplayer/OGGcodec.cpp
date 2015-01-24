@@ -36,8 +36,13 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_TimeOffset = 0.0;
   m_CurrentStream=0;
   m_TotalTime = 0;
+<<<<<<< HEAD
   m_inited = false;
   memset(&m_VorbisFile, 0, sizeof(m_VorbisFile));
+=======
+  m_VorbisFile.datasource = NULL;
+  m_inited = false;
+>>>>>>> FETCH_HEAD
 }
 
 OGGCodec::~OGGCodec()
@@ -49,7 +54,11 @@ bool OGGCodec::Init(const std::string &strFile1, unsigned int filecache)
 {
   if (m_inited)
     return true;
+<<<<<<< HEAD
   std::string strFile=strFile1;
+=======
+  CStdString strFile=strFile1;
+>>>>>>> FETCH_HEAD
   if (!m_dll.Load())
     return false;
 

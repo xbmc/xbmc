@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<<<<<<< HEAD
 <language locale="zh">
+=======
+<language>
+>>>>>>> FETCH_HEAD
   <charsets>
     <gui unicodefont="true">CP950</gui>
     <subtitle>CP950</subtitle>
@@ -10,14 +14,22 @@
     <subtitle>zh</subtitle>
   </dvd>
   <regions>
+<<<<<<< HEAD
     <region name="台北 (12h)" locale="TW"> 
+=======
+    <region name="台北 (12h)"> 
+>>>>>>> FETCH_HEAD
       <dateshort>YYYY/MM/DD</dateshort> 
       <datelong>YYYY年M月D日 DDDD</datelong> 
       <time symbolAM="上午" symbolPM="下午">xx h:mm:ss</time> 
       <tempunit>C</tempunit> 
       <speedunit>kmh</speedunit> 
     </region> 
+<<<<<<< HEAD
     <region name="台北 (24h)" locale="TW"> 
+=======
+    <region name="台北 (24h)"> 
+>>>>>>> FETCH_HEAD
       <dateshort>YYYY/MM/DD</dateshort> 
       <datelong>YYYY年M月D日 DDDD</datelong> 
       <time symbolAM="" symbolPM="">H:mm:ss</time> 

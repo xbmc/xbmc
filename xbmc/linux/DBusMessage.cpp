@@ -19,8 +19,12 @@
  */
 #include "DBusMessage.h"
 #ifdef HAS_DBUS
+<<<<<<< HEAD
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+=======
+#include "log.h"
+>>>>>>> FETCH_HEAD
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
@@ -113,6 +117,7 @@ bool CDBusMessage::SendAsync(DBusBusType type)
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(type, &error);
 
+<<<<<<< HEAD
   bool result;
   if (con && m_message)
     result = dbus_connection_send(con, m_message, NULL);
@@ -122,6 +127,12 @@ bool CDBusMessage::SendAsync(DBusBusType type)
   dbus_error_free (&error);
   dbus_connection_unref(con);
   return result;
+=======
+  if (con && m_message)
+    return dbus_connection_send(con, m_message, NULL);
+  else
+    return false;
+>>>>>>> FETCH_HEAD
 }
 
 DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)

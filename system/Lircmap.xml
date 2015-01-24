@@ -59,6 +59,7 @@
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
 		<teletext>Teletext</teletext>
+<<<<<<< HEAD
 		<print>Print</print>
 
 		<!-- new kernel-based lirc button names -->
@@ -105,6 +106,8 @@
 		<menu>KEY_DVD</menu>
 		<clear>KEY_CLEAR</clear>
 		<enter>KEY_ENTER</enter>
+=======
+>>>>>>> FETCH_HEAD
 	</remote>
 	
 	<remote device="XboxDVDDongle">
@@ -413,10 +416,15 @@
 
 	<remote device="linux-input-layer">
 	<altname>cx23885_remote</altname>
+<<<<<<< HEAD
+=======
+	<altname>devinput</altname>
+>>>>>>> FETCH_HEAD
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
+<<<<<<< HEAD
 		<select>KEY_OK</select>
 		<select>KEY_ENTER</select>
 		<enter>KEY_ENTER</enter>
@@ -434,6 +442,15 @@
 		<pause>KEY_PAUSE</pause>
 		<stop>KEY_STOP</stop>
 		<stop>KEY_STOPCD</stop>
+=======
+		<select>KEY_ENTER</select>
+		<start>KEY_SELECT</start>
+		<back>KEY_EXIT</back>
+		<record>KEY_RECORD</record>
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+>>>>>>> FETCH_HEAD
 		<forward>KEY_FASTFORWARD</forward>
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
@@ -441,6 +458,7 @@
 		<channelplus>KEY_CHANNELUP</channelplus>
 		<channelminus>KEY_CHANNELDOWN</channelminus>
 		<skipplus>KEY_NEXTSONG</skipplus>
+<<<<<<< HEAD
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
 		<skipminus>KEY_PREVIOUS</skipminus>
@@ -448,15 +466,24 @@
 		<title>KEY_EPG</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
+=======
+		<skipminus>KEY_PREVIOUSSONG</skipminus>
+		<title>KEY_TEXT</title>
+		<subtitle>KEY_SUBTITLE</subtitle>
+>>>>>>> FETCH_HEAD
 		<mute>KEY_MUTE</mute>
 		<power>KEY_POWER</power>
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<mypictures>KEY_MHP</mypictures>
+<<<<<<< HEAD
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TV</mytv>
 		<liveradio>KEY_RADIO</liveradio>
 		<mytv>KEY_TUNER</mytv>
+=======
+		<mytv>KEY_TV</mytv>
+>>>>>>> FETCH_HEAD
 		<one>KEY_1</one>
 		<two>KEY_2</two>
 		<three>KEY_3</three>
@@ -467,6 +494,7 @@
 		<eight>KEY_8</eight>
 		<nine>KEY_9</nine>
 		<zero>KEY_0</zero>
+<<<<<<< HEAD
 		<one>KEY_NUMERIC_1</one>
 		<two>KEY_NUMERIC_2</two>
 		<three>KEY_NUMERIC_3</three>
@@ -479,10 +507,13 @@
 		<zero>KEY_NUMERIC_0</zero>
 		<star>KEY_NUMERIC_STAR</star>
 		<hash>KEY_NUMERIC_POUND</hash>
+=======
+>>>>>>> FETCH_HEAD
 		<red>KEY_RED</red>
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
+<<<<<<< HEAD
 		<menu>KEY_DVD</menu>
 		<menu>KEY_MENU</menu>
 		<info>KEY_INFO</info>
@@ -594,5 +625,7 @@
 		<blue>KEY_BLUE</blue>
 		<recordedtv>KEY_PVR</recordedtv> 
 		<liveradio>KEY_RADIO</liveradio> 
+=======
+>>>>>>> FETCH_HEAD
 	</remote>
 </lircmap>

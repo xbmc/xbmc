@@ -66,6 +66,7 @@
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
+<<<<<<< HEAD
       <power>ShutDown()</power>
       <myvideo>ActivateWindow(MyVideos)</myvideo>
       <mymusic>ActivateWindow(MyMusic)</mymusic>
@@ -80,6 +81,17 @@
       <green>ActivateWindow(MyVideos)</green>
       <yellow>ActivateWindow(MyMusic)</yellow>
       <blue>ActivateWindow(MyPictures)</blue>
+=======
+      <power>XBMC.ShutDown()</power>
+      <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
+      <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
+      <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
+      <mytv>XBMC.ActivateWindow(VideoLibrary,TvShows)</mytv>
+      <red>XBMC.ActivateWindow(Home)</red>
+      <green>XBMC.ActivateWindow(MyVideos)</green>
+      <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
+      <blue>XBMC.ActivateWindow(MyPictures)</blue>
+>>>>>>> FETCH_HEAD
       <zero>Number0</zero>
       <one>Number1</one>
       <two>JumpSMS2</two>
@@ -95,9 +107,15 @@
   </global>
   <Home>
     <remote>
+<<<<<<< HEAD
       <info>ActivateWindow(SystemInfo)</info>
       <clear>ActivateWindow(Weather)</clear>
       <hash>ActivateWindow(Settings)</hash>
+=======
+      <info>XBMC.ActivateWindow(SystemInfo)</info>
+      <clear>XBMC.ActivateWindow(Weather)</clear>
+      <hash>XBMC.ActivateWindow(Settings)</hash>
+>>>>>>> FETCH_HEAD
     </remote>
   </Home>
   <MyTVRecordings>
@@ -188,6 +206,7 @@
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
       <start>OSD</start>
+<<<<<<< HEAD
       <select>OSD</select>
       <title>CodecInfo</title>
       <info>Info</info>
@@ -200,6 +219,16 @@
       <hash>AudioNextLanguage</hash>
       <pageplus>SkipNext</pageplus>
       <pageminus>SkipPrevious</pageminus>
+=======
+      <select>AspectRatio</select>
+      <title>CodecInfo</title>
+      <info>Info</info>
+      <teletext>XBMC.ActivateWindow(Teletext)</teletext>
+      <subtitle>ShowSubtitles</subtitle>
+      <star>ShowSubtitles</star>
+      <language>AudioNextLanguage</language>
+      <hash>AudioNextLanguage</hash>
+>>>>>>> FETCH_HEAD
     </remote>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -253,16 +282,26 @@
   </MusicOSD>
   <VisualisationSettings>
     <remote>
+<<<<<<< HEAD
       <menu>Back</menu>
       <contentsmenu>Back</contentsmenu>
       <rootmenu>Back</rootmenu>
+=======
+      <menu>Close</menu>
+      <back>Close</back>
+>>>>>>> FETCH_HEAD
     </remote>
   </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
+<<<<<<< HEAD
       <menu>Back</menu>
       <contentsmenu>Back</contentsmenu>
       <rootmenu>Back</rootmenu>
+=======
+      <menu>Close</menu>
+      <back>Close</back>
+>>>>>>> FETCH_HEAD
     </remote>
   </VisualisationPresetList>
   <SlideShow>

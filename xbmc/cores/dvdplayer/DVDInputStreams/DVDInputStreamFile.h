@@ -36,9 +36,12 @@ public:
   virtual int64_t GetLength();
   virtual BitstreamStats GetBitstreamStats() const ;
   virtual int GetBlockSize();
+<<<<<<< HEAD
   virtual void SetReadRate(unsigned rate);
   virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
 
+=======
+>>>>>>> FETCH_HEAD
 protected:
   XFILE::CFile* m_pFile;
   bool m_eof;

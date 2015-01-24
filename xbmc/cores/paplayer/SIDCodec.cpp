@@ -20,6 +20,10 @@
 
 #include "SIDCodec.h"
 #include "cores/DllLoader/DllLoader.h"
+<<<<<<< HEAD
+=======
+#include "Util.h"
+>>>>>>> FETCH_HEAD
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -71,7 +75,10 @@ bool SIDCodec::Init(const std::string &strFile, unsigned int filecache)
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000;
+<<<<<<< HEAD
   m_DataFormat = AE_FMT_S16NE;
+=======
+>>>>>>> FETCH_HEAD
 
   return true;
 }
@@ -94,7 +101,11 @@ int64_t SIDCodec::Seek(int64_t iSeekTime)
 
   while (m_iDataPos < iSeekTime/1000*48000*2)
   {
+<<<<<<< HEAD
     int64_t iRead = iSeekTime/1000*48000*2-m_iDataPos;
+=======
+    __int64 iRead = iSeekTime/1000*48000*2-m_iDataPos;
+>>>>>>> FETCH_HEAD
     if (iRead > 3840*2)
     {
       m_dll.SetSpeed(m_sid,32*100);

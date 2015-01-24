@@ -89,7 +89,11 @@ public:
   virtual bool SkipNext(){return false;}
 
   // set the total time - useful when info comes from a preset tag
+<<<<<<< HEAD
   virtual void SetTotalTime(int64_t totaltime) {}
+=======
+  virtual void SetTotalTime(__int64 totaltime) {}
+>>>>>>> FETCH_HEAD
 
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}

@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  *      Copyright (C) 2011-2013 Team XBMC
  *      http://xbmc.org
+=======
+ *      Copyright (C) 2011 Team XBMC
+ *      http://www.xbmc.org
+>>>>>>> FETCH_HEAD
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,12 +18,19 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
+<<<<<<< HEAD
  *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
+=======
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+>>>>>>> FETCH_HEAD
  *
  */
 
 #include "AddonInstaller.h"
+<<<<<<< HEAD
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -39,6 +51,22 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
+=======
+#include "log.h"
+#include "Util.h"
+#include "LocalizeStrings.h"
+#include "FileSystem/Directory.h"
+#include "GUISettings.h"
+#include "Settings.h"
+#include "Application.h"
+#include "JobManager.h"
+#include "GUIDialogYesNo.h"
+#include "addons/AddonManager.h"
+#include "addons/Repository.h"
+#include "GUIWindowManager.h"      // for callback
+#include "GUIUserMessages.h"       // for callback
+#include "StringUtils.h"
+>>>>>>> FETCH_HEAD
 
 using namespace std;
 using namespace XFILE;
@@ -55,7 +83,10 @@ struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, un
 
 CAddonInstaller::CAddonInstaller()
 {
+<<<<<<< HEAD
   m_repoUpdateJob = 0;
+=======
+>>>>>>> FETCH_HEAD
 }
 
 CAddonInstaller::~CAddonInstaller()
@@ -68,6 +99,7 @@ CAddonInstaller &CAddonInstaller::Get()
   return addonInstaller;
 }
 
+<<<<<<< HEAD
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   if (success)
@@ -89,6 +121,19 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     PrunePackageCache();
   }
 
+=======
+void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job2)
+{
+  CSingleLock lock(m_critSection);
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
+    m_downloadJobs.erase(i);
+  lock.Leave();
+
+  if (success)
+    CAddonMgr::Get().FindAddons();
+
+>>>>>>> FETCH_HEAD
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -110,13 +155,21 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
 bool CAddonInstaller::IsDownloading() const
 {
   CSingleLock lock(m_critSection);
+<<<<<<< HEAD
   return !m_downloadJobs.empty();
+=======
+  return m_downloadJobs.size() > 0;
+>>>>>>> FETCH_HEAD
 }
 
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 {
   CSingleLock lock(m_critSection);
+<<<<<<< HEAD
   vector<std::string> addonIDs;
+=======
+  vector<CStdString> addonIDs;
+>>>>>>> FETCH_HEAD
   for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
     if (i->second.jobID)
@@ -126,7 +179,11 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
   CAddonDatabase database;
   database.Open();
+<<<<<<< HEAD
   for (vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end();++it)
+=======
+  for (vector<CStdString>::iterator it = addonIDs.begin(); it != addonIDs.end();++it)
+>>>>>>> FETCH_HEAD
   {
     AddonPtr addon;
     if (database.GetAddon(*it, addon))
@@ -134,7 +191,11 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
   }
 }
 
+<<<<<<< HEAD
 bool CAddonInstaller::GetProgress(const std::string &addonID, unsigned int &percent) const
+=======
+bool CAddonInstaller::GetProgress(const CStdString &addonID, unsigned int &percent) const
+>>>>>>> FETCH_HEAD
 {
   CSingleLock lock(m_critSection);
   JobMap::const_iterator i = m_downloadJobs.find(addonID);
@@ -146,7 +207,11 @@ bool CAddonInstaller::GetProgress(const std::string &addonID, unsigned int &perc
   return false;
 }
 
+<<<<<<< HEAD
 bool CAddonInstaller::Cancel(const std::string &addonID)
+=======
+bool CAddonInstaller::Cancel(const CStdString &addonID)
+>>>>>>> FETCH_HEAD
 {
   CSingleLock lock(m_critSection);
   JobMap::iterator i = m_downloadJobs.find(addonID);
@@ -159,6 +224,7 @@ bool CAddonInstaller::Cancel(const std::string &addonID)
   return false;
 }
 
+<<<<<<< HEAD
 bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &addon)
 {
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
@@ -221,17 +287,30 @@ bool CAddonInstaller::Install(const std::string &addonID, bool force, const std:
     if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
       return false;
   }
+=======
+void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
+{
+  AddonPtr addon;
+  bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon);
+  if (addonInstalled && !force)
+    return;
+>>>>>>> FETCH_HEAD
 
   // check whether we have it available in a repository
   CAddonDatabase database;
   database.Open();
   if (database.GetAddon(addonID, addon))
   {
+<<<<<<< HEAD
     std::string repo;
+=======
+    CStdString repo;
+>>>>>>> FETCH_HEAD
     database.GetRepoForAddon(addonID,repo);
     AddonPtr ptr;
     CAddonMgr::Get().GetAddon(repo,ptr);
     RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(ptr);
+<<<<<<< HEAD
     std::string hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
@@ -295,10 +374,56 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   std::string archive = URIUtils::AddFileToFolder(items[0]->GetPath(), "addon.xml");
 
   CXBMCTinyXML xml;
+=======
+    CStdString hash;
+    if (therepo)
+      hash = therepo->GetAddonHash(addon);
+
+    // check whether we already have the addon installing
+    CSingleLock lock(m_critSection);
+    if (m_downloadJobs.find(addonID) != m_downloadJobs.end())
+      return; // already installing this addon
+
+    if (background)
+    {
+      unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, addonInstalled, referer), this);
+      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
+    }
+    else
+    {
+      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
+      lock.Leave();
+      CAddonInstallJob job(addon, hash, addonInstalled, referer);
+      if (!job.DoWork())
+      { // TODO: dump something to debug log?
+      }
+      lock.Enter();
+      JobMap::iterator i = m_downloadJobs.find(addon->ID());
+      m_downloadJobs.erase(i);
+    }
+  }
+}
+
+bool CAddonInstaller::InstallFromZip(const CStdString &path)
+{
+  // grab the descriptive XML document from the zip, and read it in
+  CFileItemList items;
+  // BUG: some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
+  CStdString zipDir;
+  CUtil::CreateArchivePath(zipDir, "zip", path, "");
+  if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
+    return false;
+
+  // TODO: possibly add support for github generated zips here?
+  CStdString archive = CUtil::AddFileToFolder(items[0]->m_strPath, "addon.xml");
+
+  TiXmlDocument xml;
+>>>>>>> FETCH_HEAD
   AddonPtr addon;
   if (xml.LoadFile(archive) && CAddonMgr::Get().LoadAddonDescriptionFromMemory(xml.RootElement(), addon))
   {
     // set the correct path
+<<<<<<< HEAD
     addon->Props().path = items[0]->GetPath();
     addon->Props().icon = URIUtils::AddFileToFolder(items[0]->GetPath(), "icon.png");
 
@@ -602,13 +727,109 @@ bool CAddonInstallJob::DoWork()
       installFrom = archivedFiles[0]->GetPath();
     }
     repoPtr.reset();
+=======
+    addon->Props().path = path;
+
+    // install the addon
+    CSingleLock lock(m_critSection);
+    if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
+      return false;
+
+    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon), this);
+    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
+    return true;
+  }
+  return false;
+}
+
+void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
+{
+  // first check we have the main repository updated...
+  AddonPtr addon;
+  if (CAddonMgr::Get().GetAddon("repository.xbmc.org", addon))
+  {
+    VECADDONS addons;
+    CAddonDatabase database;
+    database.Open();
+    if (!database.GetRepository(addon->ID(), addons))
+    {
+      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
+      addons = CRepositoryUpdateJob::GrabAddons(repo, false);
+    }
+  }
+  // now install the addons
+  for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
+    CAddonInstaller::Get().Install(*i);
+}
+
+CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
+: m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
+{
+}
+
+bool CAddonInstallJob::DoWork()
+{
+  // Addons are installed by downloading the .zip package on the server to the local
+  // packages folder, then extracting from the local .zip package into the addons folder
+  // Both these functions are achieved by "copying" using the vfs.
+
+  CStdString dest="special://home/addons/packages/";
+  CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
+                                              CUtil::GetFileName(m_addon->Path()));
+
+  CStdString installFrom;
+  if (CUtil::HasSlashAtEnd(m_addon->Path()))
+  { // passed in a folder - all we need do is copy it across
+    installFrom = m_addon->Path();
+  }
+  else
+  {
+    // zip passed in - download + extract
+    CStdString path(m_addon->Path());
+    if (!m_referer.IsEmpty() && CUtil::IsInternetStream(path))
+    {
+      CURL url(path);
+      url.SetProtocolOptions(m_referer);
+      path = url.Get();
+    }
+    if (!CFile::Exists(package) && !DownloadPackage(path, dest))
+    {
+      CFile::Delete(package);
+      return false;
+    }
+
+    // at this point we have the package - check that it is valid
+    if (!CFile::Exists(package) || !CheckHash(package))
+    {
+      CFile::Delete(package);
+      return false;
+    }
+
+    // check the archive as well - should have just a single folder in the root
+    CStdString archive;
+    CUtil::CreateArchivePath(archive,"zip",package,"");
+
+    CFileItemList archivedFiles;
+    CDirectory::GetDirectory(archive, archivedFiles);
+
+    if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+    { // invalid package
+      CFile::Delete(package);
+      return false;
+    }
+    installFrom = archivedFiles[0]->m_strPath;
+>>>>>>> FETCH_HEAD
   }
 
   // run any pre-install functions
   bool reloadAddon = OnPreInstall();
 
   // perform install
+<<<<<<< HEAD
   if (!Install(installFrom, repoPtr))
+=======
+  if (!Install(installFrom))
+>>>>>>> FETCH_HEAD
     return false; // something went wrong
 
   // run any post-install guff
@@ -618,7 +839,11 @@ bool CAddonInstallJob::DoWork()
   return true;
 }
 
+<<<<<<< HEAD
 bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::string &dest)
+=======
+bool CAddonInstallJob::DownloadPackage(const CStdString &path, const CStdString &dest)
+>>>>>>> FETCH_HEAD
 { // need to download/copy the package first
   CFileItemList list;
   list.Add(CFileItemPtr(new CFileItem(path,false)));
@@ -629,6 +854,7 @@ bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::strin
 
 bool CAddonInstallJob::OnPreInstall()
 {
+<<<<<<< HEAD
   return m_addon->OnPreInstall();
 }
 
@@ -709,12 +935,61 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
 
     // Update the addon manager so that it has the newly installed add-on.
     CAddonMgr::Get().FindAddons();
+=======
+  // check whether this is an active skin - we need to unload it if so
+  if (g_guiSettings.GetString("lookandfeel.skin") == m_addon->ID())
+  {
+    g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
+    return true;
+  }
+  return false;
+}
+
+bool CAddonInstallJob::Install(const CStdString &installFrom)
+{
+  CStdString addonFolder(installFrom);
+  CUtil::RemoveSlashAtEnd(addonFolder);
+  addonFolder = CUtil::AddFileToFolder("special://home/addons/",
+                                       CUtil::GetFileName(addonFolder));
+
+  CFileItemList install;
+  install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
+  install[0]->Select(true);
+  CFileOperationJob job(CFileOperationJob::ActionReplace, install, "special://home/addons/");
+
+  AddonPtr addon;
+  if (!job.DoWork() || !CAddonMgr::Get().LoadAddonDescription(addonFolder, addon))
+  { // failed extraction or failed to load addon description
+    CStdString addonID = CUtil::GetFileName(addonFolder);
+    ReportInstallError(addonID, addonID);
+    CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
+    CFileItemList list;
+    list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
+    list[0]->Select(true);
+    CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+    return false;
+  }
+
+  // resolve dependencies
+  CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
+  ADDONDEPS deps = addon->GetDeps();
+  CStdString referer;
+  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
+  for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
+  {
+    if (it->first.Equals("xbmc.metadata"))
+      continue;
+    AddonPtr dependency;
+    if (!CAddonMgr::Get().GetAddon(it->first,dependency))
+      CAddonInstaller::Get().Install(it->first, false, referer, false); // no new job for these
+>>>>>>> FETCH_HEAD
   }
   return true;
 }
 
 void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 {
+<<<<<<< HEAD
   if (CSettings::Get().GetBool("general.addonnotifications"))
   {
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(),
@@ -729,6 +1004,31 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID,
                                                 const std::string& fileName)
+=======
+  if (m_addon->Type() < ADDON_VIZ_LIBRARY && g_settings.m_bAddonNotifications)
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(m_addon->Icon(),
+                                                        m_addon->Name(),
+                                                        g_localizeStrings.Get(m_update ? 24065 : 24064),
+                                                        TOAST_DISPLAY_TIME,false,
+                                                        TOAST_DISPLAY_TIME);
+  }
+  if (m_addon->Type() == ADDON_SKIN)
+  {
+    if (reloadAddon || CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
+                                                        g_localizeStrings.Get(24099),"",""))
+    {
+      g_guiSettings.SetString("lookandfeel.skin",m_addon->ID().c_str());
+      g_application.m_guiDialogKaiToast.ResetTimer();
+      g_application.m_guiDialogKaiToast.Close(true);
+      g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
+    }
+  }
+}
+
+void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
+                                                const CStdString& fileName)
+>>>>>>> FETCH_HEAD
 {
   AddonPtr addon;
   CAddonDatabase database;
@@ -738,6 +1038,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID,
   {
     AddonPtr addon2;
     CAddonMgr::Get().GetAddon(addonID, addon2);
+<<<<<<< HEAD
     CGUIDialogKaiToast::QueueNotification(addon->Icon(),
                                           addon->Name(),
                                           g_localizeStrings.Get(addon2 ? 113 : 114),
@@ -805,4 +1106,40 @@ void CAddonUnInstallJob::OnPostUnInstall()
     CFavouritesDirectory::Save(items);
 
   m_addon->OnPostUnInstall();
+=======
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                                        addon->Icon(),
+                                                        addon->Name(),
+                                                        g_localizeStrings.Get(addon2 ? 113 : 114),
+                                                        TOAST_DISPLAY_TIME, false);
+  }
+  else
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                                        CGUIDialogKaiToast::Error,
+                                                        fileName,
+                                                        g_localizeStrings.Get(114),
+                                                        TOAST_DISPLAY_TIME, false);
+  }
+}
+
+bool CAddonInstallJob::CheckHash(const CStdString& zipFile)
+{
+  if (m_hash.IsEmpty())
+    return true;
+  CStdString md5 = CUtil::GetFileMD5(zipFile);
+  if (!md5.Equals(m_hash))
+  {
+    CFile::Delete(zipFile);
+    ReportInstallError(m_addon->ID(), CUtil::GetFileName(zipFile));
+    CLog::Log(LOGERROR, "MD5 mismatch after download %s", zipFile.c_str());
+    return false;
+  }
+  return true;
+}
+
+CStdString CAddonInstallJob::AddonID() const
+{
+  return (m_addon) ? m_addon->ID() : "";
+>>>>>>> FETCH_HEAD
 }

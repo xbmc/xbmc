@@ -85,7 +85,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_MODULE:
+<<<<<<< HEAD
     case ADDON_SUBTITLE_MODULE:
+=======
+>>>>>>> FETCH_HEAD
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(props));
     case ADDON_SCRIPT_WEATHER:
@@ -209,7 +212,10 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 
 CAddonMgr::CAddonMgr()
 {
+<<<<<<< HEAD
   m_cpluff = NULL;
+=======
+>>>>>>> FETCH_HEAD
 }
 
 CAddonMgr::~CAddonMgr()
@@ -453,7 +459,11 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
+<<<<<<< HEAD
 bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
+=======
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
+>>>>>>> FETCH_HEAD
 {
   CSingleLock lock(m_critSection);
 
@@ -463,6 +473,7 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   {
     addon = GetAddonFromDescriptor(cpaddon, type==ADDON_UNKNOWN?"":TranslateType(type));
     m_cpluff->release_info(m_cp_context, cpaddon);
+<<<<<<< HEAD
 
     if (addon)
     {
@@ -474,6 +485,10 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
       if (runningAddon)
         addon = runningAddon;
     }
+=======
+    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+      return false;
+>>>>>>> FETCH_HEAD
     return NULL != addon.get();
   }
   if (cpaddon)
@@ -511,6 +526,9 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
     break;
   case ADDON_WEB_INTERFACE:
     setting = CSettings::Get().GetString("services.webskin");
+    break;
+  case ADDON_WEB_INTERFACE:
+    setting = g_guiSettings.GetString("services.webskin");
     break;
   default:
     return false;
@@ -639,7 +657,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_MODULE:
+<<<<<<< HEAD
     case ADDON_SUBTITLE_MODULE:
+=======
+>>>>>>> FETCH_HEAD
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SERVICE:
@@ -673,6 +694,29 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   return AddonPtr();
 }
 
+<<<<<<< HEAD
+=======
+void CAddonMgr::UpdateRepos(bool force)
+{
+  CSingleLock lock(m_critSection);
+  if (!force && m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
+    return;
+  m_watch.StartZero();
+  VECADDONS addons;
+  GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
+    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    {
+      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
+    }
+  }
+}
+
+>>>>>>> FETCH_HEAD
 /*
  * libcpluff interaction
  */
@@ -864,6 +908,7 @@ bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPt
   m_cpluff->destroy_context(context);
   return addon != NULL;
 }
+<<<<<<< HEAD
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
@@ -908,6 +953,9 @@ void CAddonMgr::StopServices(const bool onlylogin)
   }
 }
 
+=======
+  
+>>>>>>> FETCH_HEAD
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)

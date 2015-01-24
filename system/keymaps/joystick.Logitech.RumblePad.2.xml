@@ -3,7 +3,10 @@
   <global>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+>>>>>>> FETCH_HEAD
       <button id="1">FullScreen</button>
       <button id="2">Select</button>
       <button id="3">Back</button>
@@ -30,6 +33,7 @@
   <Home>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
       <button id="3">ActivateWindow(Favourites)</button>
     </joystick>
@@ -39,6 +43,37 @@
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+      <button id="3">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </Home>
+
+  <MyPictures>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">ParentDir</button>
+    </joystick>
+  </MyPictures>
+
+  <MyMusicPlaylist>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Playlist</button>
+    </joystick>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Playlist</button>
+    </joystick>
+  </MyMusicPlaylistEditor>
+
+  <MyMusicFiles>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">ParentDir</button>
+>>>>>>> FETCH_HEAD
       <button id="4">Queue</button>
     </joystick>
   </MyMusicFiles>
@@ -46,7 +81,11 @@
   <MyMusicLibrary>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+      <button id="3">ParentDir</button>
+>>>>>>> FETCH_HEAD
       <button id="4">Queue</button>
     </joystick>
   </MyMusicLibrary>
@@ -54,7 +93,10 @@
   <FullscreenVideo>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+>>>>>>> FETCH_HEAD
       <button id="2">Pause</button>
       <button id="3">Stop</button>
       <button id="4">AspectRatio</button>
@@ -72,29 +114,40 @@
   <FullscreenLiveTV>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
       <hat    id="1" position="left">PreviousChannelGroup</hat>
       <hat    id="1" position="right">NextChannelGroup</hat>
       <hat    id="1" position="up">ChannelUp</hat>
       <hat    id="1" position="down">ChannelDown</hat>
+=======
+      <button id="3">Close</button>
+>>>>>>> FETCH_HEAD
     </joystick>
   </FullscreenLiveTV>
 
   <FullscreenRadio>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
       <hat    id="1" position="left">PreviousChannelGroup</hat>
       <hat    id="1" position="right">NextChannelGroup</hat>
       <hat    id="1" position="up">ChannelUp</hat>
       <hat    id="1" position="down">ChannelDown</hat>
+=======
+      <button id="3">Close</button>
+>>>>>>> FETCH_HEAD
     </joystick>
   </FullscreenRadio>
 
   <Visualisation>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+>>>>>>> FETCH_HEAD
       <button id="2">Pause</button>
       <button id="3">Stop</button>
       <button id="4">ActivateWindow(VisualisationPresetList)</button>
@@ -109,10 +162,37 @@
     </joystick>
   </Visualisation>
 
+<<<<<<< HEAD
   <SlideShow>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+  <MusicOSD>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+>>>>>>> FETCH_HEAD
       <button id="1">ZoomNormal</button>
       <button id="2">Pause</button>
       <button id="3">Stop</button>
@@ -128,15 +208,60 @@
   <ScreenCalibration>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+>>>>>>> FETCH_HEAD
       <button id="2">NextCalibration</button>
     </joystick>
   </ScreenCalibration>
 
+<<<<<<< HEAD
   <MyVideoLibrary>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+  <SelectDialog>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </SelectDialog>
+
+  <VideoOSD>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </VideoOSD>
+
+  <OSDVideoSettings>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">ParentDir</button>
+>>>>>>> FETCH_HEAD
       <button id="4">Queue</button>
       <button id="5">Info</button>
     </joystick>
@@ -145,16 +270,33 @@
   <MyVideoFiles>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
+<<<<<<< HEAD
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+      <button id="3">ParentDir</button>
+>>>>>>> FETCH_HEAD
       <button id="4">Queue</button>
       <button id="5">Info</button>
     </joystick>
   </MyVideoFiles>
 
+<<<<<<< HEAD
   <VirtualKeyboard>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
+=======
+  <MyVideoPlaylist>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Playlist</button>
+    </joystick>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+>>>>>>> FETCH_HEAD
       <button id="1">Symbols</button>
       <button id="3">BackSpace</button>
       <button id="4">Shift</button>
@@ -165,4 +307,70 @@
     </joystick>
   </VirtualKeyboard>
 
+<<<<<<< HEAD
+=======
+  <ContextMenu>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </ContextMenu>
+
+  <FileStackingDialog>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </FileStackingDialog>
+
+  <MusicInformation>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </MusicInformation>
+
+  <MovieInformation>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </MovieInformation>
+
+  <PictureInfo>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </PictureInfo>
+
+  <AddonInformation>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </AddonInformation>
+
+  <AddonSettings>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </AddonSettings>
+
+  <TextViewer>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </TextViewer>
+
+  <NumericInput>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </NumericInput>
+
+>>>>>>> FETCH_HEAD
 </keymap>

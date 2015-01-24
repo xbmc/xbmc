@@ -44,6 +44,7 @@ CAEChannelInfo ICodec::GetChannelInfo()
   return CAEUtil::GuessChLayout(m_Channels);
 }
 
+<<<<<<< HEAD
 class CQueueNextFileJob : public CJob
 {
   CFileItem m_item;
@@ -59,6 +60,8 @@ public:
   }
 };
 
+=======
+>>>>>>> FETCH_HEAD
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
@@ -954,7 +957,55 @@ int64_t PAPlayer::GetTotalTime64()
 
 int64_t PAPlayer::GetTotalTime()
 {
+<<<<<<< HEAD
   return m_playerGUIData.m_totalTime;
+=======
+  if (!m_pAudioDecoder[stream] || dec.GetStatus() == STATUS_NO_FILE)
+    return false;
+
+  bool ret = false;
+  int amount = m_resampler[stream].GetInputSamples();
+  if (amount > 0 && amount <= (int)dec.GetDataSize())
+  { // resampler wants more data - let's feed it
+    m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
+    ret = true;
+  }
+  else if (m_Chunklen[stream] > m_pAudioDecoder[stream]->GetSpace())
+  { // resampler probably have data but wait until we can send atleast a packet
+    ret = false;
+  }
+  else if (m_resampler[stream].GetData(m_packet[stream][0].packet))
+  {
+    // got some data from our resampler - construct audio packet
+    m_packet[stream][0].length = PACKET_SIZE;
+    m_packet[stream][0].stream = stream;
+
+    unsigned char *pcmPtr = m_packet[stream][0].packet;
+    int len = m_packet[stream][0].length;
+    StreamCallback(&m_packet[stream][0]);
+
+    memcpy(m_pcmBuffer[stream]+m_bufferPos[stream], pcmPtr, len);
+    m_bufferPos[stream] += len;
+
+    while (m_bufferPos[stream] >= (int)m_pAudioDecoder[stream]->GetChunkLen())
+    {
+      int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
+      if (rtn == 0) //no pcm data added
+      {
+        Sleep(1);
+        continue;
+      }
+
+      m_bufferPos[stream] -= rtn;
+      memmove(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
+    }
+
+    // something done
+    ret = true;
+  }
+
+  return ret;
+>>>>>>> FETCH_HEAD
 }
 
 int PAPlayer::GetCacheLevel() const
@@ -1040,6 +1091,7 @@ bool PAPlayer::SkipNext()
   return false;
 }
 
+<<<<<<< HEAD
 void PAPlayer::UpdateGUIData(StreamInfo *si)
 {
   /* Store data need by external threads in member
@@ -1069,6 +1121,9 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
 }
 
 void PAPlayer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+=======
+void PAPlayer::WaitForStream()
+>>>>>>> FETCH_HEAD
 {
   CExclusiveLock lock(m_streamsLock);
   m_jobCounter--;

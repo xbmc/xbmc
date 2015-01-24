@@ -103,10 +103,17 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 #define CORRECT_SEP_STR(str)
 #endif
 
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
 static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
 {
   std::string strname;
+=======
+#ifdef _WIN32
+static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
+{
+  CStdString strname;
+>>>>>>> FETCH_HEAD
   g_charsetConverter.wToUTF8(wdata->cFileName, strname);
   size_t size = sizeof(data->cFileName) / sizeof(char);
   strncpy(data->cFileName, strname.c_str(), size);
@@ -131,7 +138,11 @@ static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
 
 static void to_WIN32_FIND_DATAW(LPWIN32_FIND_DATA data, LPWIN32_FIND_DATAW wdata)
 {
+<<<<<<< HEAD
   std::wstring strwname;
+=======
+  CStdStringW strwname;
+>>>>>>> FETCH_HEAD
   g_charsetConverter.utf8ToW(data->cFileName, strwname, false);
   size_t size = sizeof(wdata->cFileName) / sizeof(wchar_t);
   wcsncpy(wdata->cFileName, strwname.c_str(), size);
@@ -167,15 +178,26 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
     e[0] = '\0';
   }
 
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
   struct _WIN32_FIND_DATAW FindFileDataW;
   std::wstring strwfile;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(p), strwfile, false);
+=======
+#ifdef _WIN32
+  struct _WIN32_FIND_DATAW FindFileDataW;
+  CStdStringW strwfile;
+  g_charsetConverter.utf8ToW(_P(p), strwfile, false);
+>>>>>>> FETCH_HEAD
   HANDLE res = FindFirstFileW(strwfile.c_str(), &FindFileDataW);
   if (res != INVALID_HANDLE_VALUE)
     to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
 #else
+<<<<<<< HEAD
   HANDLE res = FindFirstFile(CSpecialProtocol::TranslatePath(p).c_str(), lpFindFileData);
+=======
+  HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
+>>>>>>> FETCH_HEAD
 #endif
   free(p);
   return res;
@@ -183,7 +205,11 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
 
 extern "C" BOOL WINAPI dllFindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATA lpFindFileData)
 {
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
+=======
+#ifdef _WIN32
+>>>>>>> FETCH_HEAD
   struct _WIN32_FIND_DATAW FindFileDataW;
   to_WIN32_FIND_DATAW(lpFindFileData, &FindFileDataW);
   BOOL res = FindNextFileW(hFindFile, &FindFileDataW);
@@ -567,7 +593,11 @@ extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD
 
 extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR* lpFilePart)
 {
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
+=======
+#ifdef _WIN32
+>>>>>>> FETCH_HEAD
   if (!lpFileName) return 0;
   if(strstr(lpFileName, "://"))
   {
@@ -600,7 +630,11 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
 
 extern "C" DWORD WINAPI dllGetFullPathNameW(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer, LPWSTR* lpFilePart)
 {
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
+=======
+#ifdef _WIN32
+>>>>>>> FETCH_HEAD
   if (!lpFileName) return 0;
   if(wcsstr(lpFileName, L"://"))
   {

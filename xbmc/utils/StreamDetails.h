@@ -59,8 +59,12 @@ public:
   int m_iHeight;
   float m_fAspect;
   int m_iDuration;
+<<<<<<< HEAD
   std::string m_strCodec;
   std::string m_strStereoMode;
+=======
+  CStdString m_strCodec;
+>>>>>>> FETCH_HEAD
 };
 
 class CStreamDetailAudio : public CStreamDetail

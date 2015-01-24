@@ -1,8 +1,78 @@
 SRCS=Application.cpp \
+<<<<<<< HEAD
      ApplicationMessenger.cpp \
      ApplicationPlayer.cpp \
      AppParamParser.cpp \
      Autorun.cpp \
+=======
+     CueDocument.cpp \
+     GUISettings.cpp \
+     GUIWindowAddonBrowser.cpp \
+     GUIWindowSettings.cpp \
+     GUIWindowSettingsCategory.cpp \
+     GUIWindowSettingsProfile.cpp \
+     GUIWindowSettingsScreenCalibration.cpp \
+     Settings.cpp \
+     SettingsControls.cpp \
+     GUIDialogMusicScan.cpp \
+     GUIViewControl.cpp \
+     GUIViewState.cpp \
+     GUIViewStateAddonBrowser.cpp \
+     GUIViewStateMusic.cpp \
+     GUIWindowMusicBase.cpp \
+     GUIWindowMusicInfo.cpp \
+     GUIWindowMusicNav.cpp \
+     GUIWindowMusicOverlay.cpp \
+     GUIWindowMusicPlaylist.cpp \
+     GUIWindowMusicPlaylistEditor.cpp \
+     GUIWindowMusicSongs.cpp \
+     SmartPlaylist.cpp \
+     GUIDialogVideoScan.cpp \
+     GUIViewStateVideo.cpp \
+     GUIWindowVideoBase.cpp \
+     GUIWindowVideoFiles.cpp \
+     GUIWindowVideoInfo.cpp \
+     GUIWindowVideoNav.cpp \
+     GUIWindowVideoOverlay.cpp \
+     GUIWindowVideoPlaylist.cpp \
+     VideoInfoScanner.cpp \
+     PlayList.cpp \
+     PlayListB4S.cpp \
+     PlayListFactory.cpp \
+     PlayListM3U.cpp \
+     PlayListPlayer.cpp \
+     PlayListPLS.cpp \
+     PlayListWPL.cpp \
+     PlayListURL.cpp \
+     PlayListXML.cpp \
+     APEv2Tag.cpp \
+     FlacTag.cpp \
+     Id3Tag.cpp \
+     MusicInfoLoader.cpp \
+     MusicInfoScanner.cpp \
+     MusicInfoTag.cpp \
+     MusicInfoTagLoaderAAC.cpp \
+     MusicInfoTagLoaderApe.cpp \
+     MusicInfoTagLoaderCDDA.cpp \
+     MusicInfoTagLoaderDatabase.cpp \
+     MusicInfoTagLoaderFactory.cpp \
+     MusicInfoTagLoaderFlac.cpp \
+     MusicInfoTagLoaderMidi.cpp \
+     MusicInfoTagLoaderMod.cpp \
+     MusicInfoTagLoaderMP3.cpp \
+     MusicInfoTagLoaderMP4.cpp \
+     MusicInfoTagLoaderMPC.cpp \
+     MusicInfoTagLoaderNSF.cpp \
+     MusicInfoTagLoaderOgg.cpp \
+     MusicInfoTagLoaderShn.cpp \
+     MusicInfoTagLoaderSPC.cpp \
+     MusicInfoTagLoaderWav.cpp \
+     MusicInfoTagLoaderWavPack.cpp \
+     MusicInfoTagLoaderWMA.cpp \
+     MusicInfoTagLoaderYM.cpp \
+     OggTag.cpp \
+     VorbisTag.cpp \
+>>>>>>> FETCH_HEAD
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
      CompileInfo.cpp \

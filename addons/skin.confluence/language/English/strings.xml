@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Change Your</string>
+  <string id="31001">Love</string>
+  <string id="31002">Hate</string>
+  <string id="31003">Power Options</string>
+  <string id="31004">Working...</string>
+  <string id="31005">Hide INFO</string>
+
+  <string id="31007">Plugins</string>
+
+  <string id="31020">Recently Added</string>
+  <string id="31021">Video - Files</string>
+  <string id="31022">Music - Files</string>
+  <string id="31023">Playing</string>
+  <string id="31024">Page</string>
+  <string id="31025">Items</string>
+  <string id="31026">Misc Options</string>
+  <string id="31027">Location</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Poster Wrap</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Full list</string>
+  <string id="31031">Pic Thumbs</string>
+  <string id="31032">Image Wrap</string>
+  <string id="31033">Info</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Now Playing</string>
+
+  <string id="31042">PLAYING</string>
+  <string id="31043">PAUSED</string>
+  <string id="31044">FAST FORWARD</string>
+  <string id="31045">REWIND</string>
+  <string id="31046">Audio Properties</string>
+  <string id="31047">Current Preset</string>
+  <string id="31048">Visualization Presets</string>
+  <string id="31049">End Time</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Open playlist</string>
+  <string id="31056">Save playlist</string>
+  <string id="31057">Close playlist</string>
+  <string id="31058">System music files</string>
+  <string id="31059">Current playlist</string>
+  <string id="31060">This file is stacked, select the part you want to play from.</string>
+  <string id="31061">Current Selected</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Home screen options</string>
+  <string id="31102">Background</string>
+  <string id="31103">Show "Paused" in picture slide show</string>
+  <string id="31104">Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
+  <string id="31105">Show media titles in background scanner</string>
+  <string id="31106">Miscellaneous options</string>
+  <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Hide Main Menu Buttons</string>
+  <string id="31109">Media backgrounds</string>
+  <string id="31110">Edit Background for Media Type</string>
+  <string id="31111">Hide</string>
+  <string id="31112">Options</string>
+  <string id="31113">Single Image</string>
+  <string id="31114">Multi Image</string>
+  <string id="31115">Customizer</string>
+  <string id="31116"></string>
+  <string id="31117">Show Recently added Videos</string>
+  <string id="31118">Home Page Programs Submenu</string>
+  <string id="31119">Enable Custom Add-on Button</string>
+  <string id="31120">BUTTON LABEL</string>
+  <string id="31121">PATH TO ADD-ON</string>
+  <string id="31122">Weather Page</string>
+  <string id="31123">Use "Posters" instead of "Banners" for TV Shows</string>
+  <string id="31124">Show Background "Now Playing" Video</string>
+  <string id="31125">Show Background "Now Playing" Visualization</string>
+
+  <string id="31126">Enable Lyrics in Music OSD</string>
+  <string id="31127">PATH TO LYRICS ADD-ON</string>
+  <string id="31128">Lyrics</string>
+  <string id="31129">Enable Subtitle Download in Video OSD</string>
+  <string id="31130">PATH TO SUBTITLE ADD-ON</string>
+
+  <string id="31140">Music OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">Shortcuts</string>
+  <string id="31201">Categories</string>
+  <string id="31202">Show Cast</string>
+  <string id="31203">Choose Your Song</string>
+  <string id="31204">Section Links</string>
+  <string id="31205">Lyrics Source</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Current Temp</string>
+  <string id="31301">Last Updated</string>
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Picture</string>
+  <string id="31305">No Disc Media Detected</string>
+  <string id="31306">Eject</string>
+  <string id="31307">Hide Fanart</string>
+  <string id="31308">Movie Details</string>
+  <string id="31309">Memory Used:</string>
+  <string id="31310">Track Number</string>
+  <string id="31311">Fanart image[CR][CR]Unavailable[CR][CR] Click button to set</string>
+  <string id="31312">Current Scraper</string>
+  <string id="31313">Choose a Scraper</string>
+  <string id="31314">Content Scanning Options</string>
+  <string id="31315">Basic</string>
+  <string id="31316"></string>
+  <string id="31317">Set Fanart Path</string>
+  <string id="31318">Small Fanart</string>
+  <string id="31319">Selected Profile</string>
+  <string id="31320">Last Logged In</string>
+  <string id="31321">Karaoke Song Selector</string>
+  <string id="31322">Aired</string>
+  <string id="31323">Latest Movies</string>
+  <string id="31324">Latest Episodes</string>
+  <string id="31325">Playlist Options</string>
+  <string id="31326">Created</string>
+  <string id="31327">Resolution</string>
+  <string id="31328">Recently Added</string>
+  <string id="31329">[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]</string>
+  <string id="31330">Click button to play[CR][CR]Movie trailer</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Movie menu</string>
+  <string id="31356">Download Subtitles</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Skin default</string>
+  <string id="31391">Skin default with no Caps</string>
+  <string id="31392">Arial based</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver</string>
+  <string id="31401">[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts</string>
+  <string id="31402">[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options</string>
+  <string id="31403">[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows</string>
+  <string id="31404">[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information</string>
+  <string id="31405">[B]CONFIGURE NETWORK SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
+  <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
+  <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
+  <string id="31408">[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings</string>
+
+  <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
+</strings>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
 <!-- French language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/fr/ -->
@@ -11,4 +12,10 @@
     <string id="30004">Activer les bandes-annonces (You Tube)</string>
     <string id="30005">Garder le titre original</string>
     <string id="30006">Pays favori de certification</string>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+    <string id="30000">Activer les Fanarts</string>
+    <string id="30001">Récupérer les Trailers sur HD-Trailers.net</string>
+>>>>>>> FETCH_HEAD
 </strings>

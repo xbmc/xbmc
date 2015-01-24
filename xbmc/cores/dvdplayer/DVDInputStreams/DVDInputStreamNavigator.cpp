@@ -372,6 +372,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         //libdvdnav never sets logical, why.. don't know..
         event->logical = GetActiveSubtitleStream();
 
+<<<<<<< HEAD
         /* correct stream ids for disabled subs if needed */
         if(!IsSubtitleStreamEnabled())
         {
@@ -380,6 +381,8 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           event->physical_wide |= 0x80;
         }
 
+=======
+>>>>>>> FETCH_HEAD
         if(event->logical<0 && GetSubTitleStreamCount()>0)
         {
           /* this will not take effect in this event */

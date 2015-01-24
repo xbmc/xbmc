@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: airplanez-->
+<!--Email: airplanez@gmail.com-->
+<!--Date of translation: 12/07/2010-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">변경</string>
+  <string id="31001">좋아함</string>
+  <string id="31002">싫어함</string>
+  <string id="31003">전원 옵션</string>
+  <string id="31004">동작중...</string>
+  <string id="31005">정보 숨기기</string>
+  <string id="31007">플러그인</string>
+  <string id="31020">최근 추가됨</string>
+  <string id="31021">비디오 - 파일</string>
+  <string id="31022">음악 - 파일</string>
+  <string id="31023">재생중</string>
+  <string id="31024">페이지</string>
+  <string id="31025">항목</string>
+  <string id="31026">기타 옵션</string>
+  <string id="31027">위치</string>
+  <string id="31028">포스터 나열</string>
+  <string id="31029">팬아트</string>
+  <string id="31030">전체 목록</string>
+  <string id="31031">사진 미리보기</string>
+  <string id="31032">이미지 나열</string>
+  <string id="31033">정보</string>
+  <string id="31040">지금 재생중</string>
+  <string id="31042">재생중</string>
+  <string id="31043">일시중지됨</string>
+  <string id="31044">빨리 감기</string>
+  <string id="31045">되감기</string>
+  <string id="31046">오디오 속성</string>
+  <string id="31047">현재 사전설정</string>
+  <string id="31048">시각화 사전설정</string>
+  <string id="31049">종료 시간</string>
+  <string id="31055">재생목록 열기</string>
+  <string id="31056">재생목록 저장</string>
+  <string id="31057">재생목록 닫기</string>
+  <string id="31058">시스템 음악 파일</string>
+  <string id="31059">현재 재생목록</string>
+  <string id="31060">이 파일은 연결되었습니다, 재생하고 싶은 부분을 선택하세요.</string>
+  <string id="31061">현재 선택됨</string>
+  <string id="31100">
+  </string>
+  <string id="31101">홈 화면 옵션</string>
+  <string id="31102">배경</string>
+  <string id="31103">사진 슬라이드쇼에 "일시중지됨" 보이기</string>
+  <string id="31104">윈도우에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/COLOR]</string>
+  <string id="31105">백그라운드 스캐너에 미디어 제목 보이기</string>
+  <string id="31106">기타 옵션</string>
+  <string id="31107">비디오 파일명에서 읽은 플래그 숨기기 [COLOR=grey3](블루레이, HD-DVD)[/COLOR]</string>
+  <string id="31108">메인 메뉴 버튼 숨기기</string>
+  <string id="31109">미디어 배경</string>
+  <string id="31110">미디어 형식의 배경 수정</string>
+  <string id="31111">숨기기</string>
+  <string id="31112">옵션</string>
+  <string id="31113">단일 이미지</string>
+  <string id="31114">다중 이미지</string>
+  <string id="31115">사용자 지정</string>
+  <string id="31117">최근 추가된 비디오 보이기</string>
+  <string id="31118">홈 페이지 프로그램 하위메뉴</string>
+  <string id="31120">버튼 라벨</string>
+  <string id="31122">날씨 페이지</string>
+  <string id="31123">TV 쇼에 "배너" 대신 "포스터" 사용</string>
+  <string id="31124">비디오 배경에 "지금 재생중" 보이기</string>
+  <string id="31125">시각화 배경에 "지금 재생중" 보이기</string>
+  <string id="31128">가사</string>
+  <string id="31131">수평 홈 메뉴 사용</string>
+  <string id="31132">가사 추가기능</string>
+  <string id="31133">자막 추가기능</string>
+  <string id="31134">홈 페이지 비디오 하위메뉴</string>
+  <string id="31135">홈 페이지 음악 하위메뉴</string>
+  <string id="31136">홈 페이지 사진 하위메뉴</string>
+  <string id="31140">음악 OSD</string>
+  <string id="31141">비디오 OSD</string>
+  <string id="31200">바로가기</string>
+  <string id="31201">카테고리</string>
+  <string id="31202">배역 보이기</string>
+  <string id="31203">노래 선택</string>
+  <string id="31204">섹션 링크</string>
+  <string id="31205">가사 소스</string>
+  <string id="31300">현재 온도</string>
+  <string id="31301">마지막 업데이트</string>
+  <string id="31302">메뉴</string>
+  <string id="31303">
+  </string>
+  <string id="31304">사진</string>
+  <string id="31305">디스크 미디어 감지되지 않음</string>
+  <string id="31306">꺼내기</string>
+  <string id="31307">팬아트 숨기기</string>
+  <string id="31308">영화 상세정보</string>
+  <string id="31309">사용 메모리:</string>
+  <string id="31310">트랙 번호</string>
+  <string id="31311">팬아트 이미지[CR][CR]사용할수 없음[CR][CR] 설정하려면 버튼을 누르세요</string>
+  <string id="31312">현재 자료수집기</string>
+  <string id="31313">자료수집기를 선택하세요</string>
+  <string id="31314">컨텐츠 검색 옵션</string>
+  <string id="31315">기본</string>
+  <string id="31316">
+  </string>
+  <string id="31317">팬아트 경로 설정</string>
+  <string id="31318">작은 팬아트</string>
+  <string id="31319">선택된 프로파일</string>
+  <string id="31320">마지막 로그인</string>
+  <string id="31321">노래방 노래 선택기</string>
+  <string id="31322">방영됨</string>
+  <string id="31323">최근 영화</string>
+  <string id="31324">최근 에피소드</string>
+  <string id="31325">재생목록 옵션</string>
+  <string id="31326">제작일</string>
+  <string id="31327">해상도</string>
+  <string id="31328">최근 추가됨</string>
+  <string id="31329">[B]타이머 설정![/B] [COLOR=grey2] - 시스템 자동 종료[/COLOR]</string>
+  <string id="31330">영화 예고편을[CR][CR]재생하려면 누르세요</string>
+  <string id="31351">일시중지</string>
+  <string id="31352">중지</string>
+  <string id="31353">빨리 감기</string>
+  <string id="31354">되감기</string>
+  <string id="31355">영화 메뉴</string>
+  <string id="31356">자막 다운로드</string>
+  <string id="31390">스킨 기본값</string>
+  <string id="31391">대문자 없는 스킨 기본값</string>
+  <string id="31392">Arial 기본값</string>
+  <string id="31400">[B]모양새 설정[/B][CR][CR]스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경[CR]화면보호기 설정</string>
+  <string id="31401">[B]비디오 설정[/B][CR][CR]비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경[CR]자막 글꼴 설정</string>
+  <string id="31402">[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정 · 노래방 옵션 설정</string>
+  <string id="31403">[B]사진 설정[/B][CR][CR]사진 목록 옵션 변경 · 슬라이드쇼 설정</string>
+  <string id="31404">[B]날씨 설정[/B][CR][CR]날씨 정보를 수집할 세 도시 설정</string>
+  <string id="31405">[B]네트워크 설정[/B][CR][CR]UPnP 및 HTTP 를 통한 XBMC 제어 설정 · 파일 공유 설정[CR]인터넷 접근 옵션 설정</string>
+  <string id="31406">[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정</string>
+  <string id="31407">[B]스킨 설정[/B][CR][CR]Confluence 스킨 설정 · 홈 메뉴 항목 추가 및 제거[CR]스킨 배경 변경</string>
+  <string id="31408">[B]추가기능 설정[/B][CR][CR]설치된 추가기능 관리 · xbmc.org 에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경</string>
+  <string id="31421">로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요</string>
+</strings>

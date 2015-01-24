@@ -31,6 +31,7 @@
 #include "utils/fstrcmp.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
+<<<<<<< HEAD
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/StringUtils.h"
@@ -41,6 +42,11 @@
 #include "Util.h"
 #include "URL.h"
 
+=======
+#include "XMLUtils.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
+>>>>>>> FETCH_HEAD
 #include <sstream>
 
 using namespace std;
@@ -130,9 +136,15 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
   if (ext)
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
+<<<<<<< HEAD
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings") == "true";
     std::string persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
     if (!persistence.empty())
+=======
+    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings").Equals("true");
+    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
+    if (!persistence.IsEmpty())
+>>>>>>> FETCH_HEAD
       m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
@@ -226,7 +238,11 @@ void CScraper::ClearCache()
     {
       // wipe cache
       if (items[i]->m_dateTime + m_persistence <= CDateTime::GetCurrentDateTime())
+<<<<<<< HEAD
         CFile::Delete(items[i]->GetPath());
+=======
+        CFile::Delete(items[i]->m_strPath);
+>>>>>>> FETCH_HEAD
     }
   }
   else
@@ -965,6 +981,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl
   return fRet;
 }
 
+<<<<<<< HEAD
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbum &album)
 {
@@ -1029,4 +1046,24 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl, const CScraperUrl &scurl,
 }
 
 }
+=======
+bool CScraper::IsInUse() const
+{
+  if (Supports(CONTENT_ALBUMS) || Supports(CONTENT_ARTISTS))
+  { // music scraper
+    CMusicDatabase db;
+    if (db.Open() && db.ScraperInUse(ID()))
+      return true;
+  }
+  else
+  { // video scraper
+    CVideoDatabase db;
+    if (db.Open() && db.ScraperInUse(ID()))
+      return true;
+  }
+  return false;
+}
+
+}; /* namespace ADDON */
+>>>>>>> FETCH_HEAD
 

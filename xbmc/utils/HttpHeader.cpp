@@ -167,12 +167,21 @@ std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
   return values;
 }
 
+<<<<<<< HEAD
 std::string CHttpHeader::GetHeader(void) const
+=======
+CStdString CHttpHeader::GetValue(CStdString strParam) const
+>>>>>>> FETCH_HEAD
 {
   if (m_protoLine.empty() && m_params.empty())
     return "";
 
+<<<<<<< HEAD
   std::string strHeader(m_protoLine + "\r\n");
+=======
+  std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
+  if (pIter != m_params.end()) return pIter->second;
+>>>>>>> FETCH_HEAD
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
     strHeader += ((*iter).first + ": " + (*iter).second + "\r\n");
@@ -181,7 +190,11 @@ std::string CHttpHeader::GetHeader(void) const
   return strHeader;
 }
 
+<<<<<<< HEAD
 std::string CHttpHeader::GetMimeType(void) const
+=======
+void CHttpHeader::GetHeader(CStdString& strHeader) const
+>>>>>>> FETCH_HEAD
 {
   std::string strValue(GetValueRaw("content-type"));
 
@@ -200,6 +213,7 @@ std::string CHttpHeader::GetCharset(void) const
   StringUtils::ToUpper(strValue);
   const size_t len = strValue.length();
 
+<<<<<<< HEAD
   // extract charset value from 'contenttype/contentsubtype;pram1=param1Val ; charset=XXXX\t;param2=param2Val'
   // most common form: 'text/html; charset=XXXX'
   // charset value can be in double quotes: 'text/xml; charset="XXX XX"'
@@ -235,6 +249,13 @@ std::string CHttpHeader::GetCharset(void) const
       }
       pos = strValue.find(';', pos); // find next parameter
     }
+=======
+  std::map<CStdString,CStdString>::const_iterator iter = m_params.begin();
+  while (iter != m_params.end())
+  {
+    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+    iter++;
+>>>>>>> FETCH_HEAD
   }
 
   return ""; // no charset is detected

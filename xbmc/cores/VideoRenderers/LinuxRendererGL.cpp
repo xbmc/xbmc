@@ -301,6 +301,64 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_nonLinStretch    = false;
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
+<<<<<<< HEAD
+=======
+  return true;
+}
+
+void CLinuxRendererGL::ChooseUpscalingMethod()
+{
+  m_upscalingWidth  = m_destRect.Width();
+  m_upscalingHeight = m_destRect.Height();
+
+  int upscale = g_advancedSettings.m_videoHighQualityScaling;
+
+  // See if we're a candiate for upscaling.
+  bool candidateForUpscaling = false;
+  if (upscale != SOFTWARE_UPSCALING_DISABLED && (int)m_sourceWidth < m_upscalingWidth && (int)m_sourceHeight < m_upscalingHeight)
+  {
+    CLog::Log(LOGWARNING, "Upscale: possible given resolution increase.");
+    candidateForUpscaling = true;
+  }
+
+  // Turn if off if we're told to upscale HD content and we're not always on.
+  if (upscale == SOFTWARE_UPSCALING_SD_CONTENT && (m_sourceHeight >= 720 || m_sourceWidth >= 1280))
+  {
+    CLog::Log(LOGWARNING, "Upscale: Disabled due to HD source.");
+    candidateForUpscaling = false;
+  }
+
+  if (candidateForUpscaling)
+  {
+    ESCALINGMETHOD ret = (ESCALINGMETHOD)g_advancedSettings.m_videoHighQualityScalingMethod;
+
+    // Make sure to override the default setting for the video
+    g_settings.m_currentVideoSettings.m_ScalingMethod = ret;
+
+    // Initialize software upscaling.
+    if (g_advancedSettings.m_videoHighQualityScalingMethod < 10) //non-hardware
+    {
+      InitializeSoftwareUpscaling();
+      CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+    }
+  }
+}
+
+void CLinuxRendererGL::InitializeSoftwareUpscaling()
+{
+  // Allocate a new destination image.
+  m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
+
+  // Free the old planes if they exist.
+  for (int i=0; i<3; i++)
+  {
+    if (m_imScaled.plane[i])
+    {
+      delete [] m_imScaled.plane[i];
+      m_imScaled.plane[i] = 0;
+    }
+  }
+>>>>>>> FETCH_HEAD
 
   m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && CSettings::Get().GetBool("videoplayer.usepbo");
 
@@ -523,7 +581,169 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
 
 void CLinuxRendererGL::Reset()
 {
+<<<<<<< HEAD
   for(int i=0; i<m_NumYV12Buffers; i++)
+=======
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+#ifdef HAVE_LIBVDPAU
+  if ((m_renderMethod & RENDER_VDPAU))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+    return;
+  }
+#endif
+  if (!(im->flags&IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
+
+  // See if we need to recreate textures.
+  if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
+  {
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+      (this->*m_textureCreate)(i);
+
+    im->flags = IMAGE_FLAG_READY;
+  }
+
+  // if we don't have a shader, fallback to SW YUV2RGB for now
+  if (m_renderMethod & RENDER_SW)
+  {
+    if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
+    {
+      delete [] m_rgbBuffer;
+      m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
+      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    }
+
+    struct SwsContext *context = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                             im->width, im->height, PIX_FMT_BGRA,
+                                                             SWS_FAST_BILINEAR | SwScaleCPUFlags(),
+                                                             NULL, NULL, NULL);
+    uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
+    int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
+    int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+    m_dllSwScale->sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(context);
+    SetEvent(m_eventTexturesDone[source]);
+  }
+  else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
+  {
+    // Perform the scaling.
+    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2], 0 };
+    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2], 0 };
+    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2], 0 };
+    int      algorithm   = 0;
+
+    switch (m_scalingMethod)
+    {
+    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
+    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
+    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
+    default: break;
+    }
+
+    struct SwsContext *ctx = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                         m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
+                                                         algorithm | SwScaleCPUFlags(), NULL, NULL, NULL);
+    m_dllSwScale->sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(ctx);
+
+    im = &m_imScaled;
+    im->flags = IMAGE_FLAG_READY;
+  }
+
+  static int imaging = -1;
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+    deinterlacing = false;
+  else
+    deinterlacing = true;
+
+  if (imaging==-1)
+  {
+    imaging = 0;
+    if (glewIsSupported("GL_ARB_imaging"))
+    {
+      CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+      imaging = 1;
+    }
+    else
+    {
+      unsigned int maj=0, min=0;
+      g_Windowing.GetRenderVersion(maj, min);
+      if (maj>=2)
+      {
+        imaging = 1;
+      }
+      else if (min>=2)
+      {
+        imaging = 1;
+      }
+    }
+  }
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+
+  if (m_renderMethod & RENDER_SW)
+  {
+    if (imaging==1 &&
+        ((g_settings.m_currentVideoSettings.m_Brightness!=50) ||
+         (g_settings.m_currentVideoSettings.m_Contrast!=50)))
+    {
+      GLfloat brightness = ((GLfloat)g_settings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
+      GLfloat contrast   = ((GLfloat)g_settings.m_currentVideoSettings.m_Contrast)/50.0f;
+
+      glPixelTransferf(GL_RED_SCALE  , contrast);
+      glPixelTransferf(GL_GREEN_SCALE, contrast);
+      glPixelTransferf(GL_BLUE_SCALE , contrast);
+      glPixelTransferf(GL_RED_BIAS   , brightness);
+      glPixelTransferf(GL_GREEN_BIAS , brightness);
+      glPixelTransferf(GL_BLUE_BIAS  , brightness);
+      VerifyGLState();
+      imaging++;
+    }
+
+    // Load RGB image
+    if (deinterlacing)
+    {
+      LoadPlane( fields[FIELD_ODD][0] , GL_BGRA, buf.flipindex
+               , im->width, im->height >> 1
+               , m_sourceWidth*2, m_rgbBuffer );
+
+      LoadPlane( fields[FIELD_EVEN][0], GL_BGRA, buf.flipindex
+               , im->width, im->height >> 1
+               , m_sourceWidth*2, m_rgbBuffer + m_sourceWidth*4);
+    }
+    else
+    {
+      LoadPlane( fields[FIELD_FULL][0], GL_BGRA, buf.flipindex
+               , im->width, im->height
+               , m_sourceWidth, m_rgbBuffer );
+    }
+
+    if (imaging==2)
+    {
+      imaging--;
+      glPixelTransferf(GL_RED_SCALE, 1.0);
+      glPixelTransferf(GL_GREEN_SCALE, 1.0);
+      glPixelTransferf(GL_BLUE_SCALE, 1.0);
+      glPixelTransferf(GL_RED_BIAS, 0.0);
+      glPixelTransferf(GL_GREEN_BIAS, 0.0);
+      glPixelTransferf(GL_BLUE_BIAS, 0.0);
+      VerifyGLState();
+    }
+  }
+  else
+>>>>>>> FETCH_HEAD
   {
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
@@ -766,6 +986,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
+<<<<<<< HEAD
   bool pixelRatioChanged    = (CDisplaySettings::Get().GetPixelRatio() > 1.001f || CDisplaySettings::Get().GetPixelRatio() < 0.999f) !=
                               (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
   bool nonLinStretchChanged = false;
@@ -773,6 +994,15 @@ void CLinuxRendererGL::UpdateVideoFilter()
   {
     m_nonLinStretchGui   = CDisplaySettings::Get().IsNonLinearStretched();
     m_pixelRatio         = CDisplaySettings::Get().GetPixelRatio();
+=======
+  bool pixelRatioChanged    = (g_settings.m_fPixelRatio > 1.001f || g_settings.m_fPixelRatio < 0.999f) !=
+                              (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+  bool nonLinStretchChanged = false;
+  if (m_nonLinStretchGui != g_settings.m_bNonLinStretch || pixelRatioChanged)
+  {
+    m_nonLinStretchGui   = g_settings.m_bNonLinStretch;
+    m_pixelRatio         = g_settings.m_fPixelRatio;
+>>>>>>> FETCH_HEAD
     m_reloadShaders      = 1;
     nonLinStretchChanged = true;
 
@@ -788,7 +1018,11 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
+<<<<<<< HEAD
   if (m_scalingMethodGui == CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
+=======
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && !nonLinStretchChanged)
+>>>>>>> FETCH_HEAD
     return;
 
   //recompile YUV shader when non-linear stretch is turned on/off
@@ -796,7 +1030,11 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_nonLinStretch || nonLinStretchChanged)
     m_reloadShaders = 1;
 
+<<<<<<< HEAD
   m_scalingMethodGui = CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
+=======
+  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+>>>>>>> FETCH_HEAD
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -949,7 +1187,11 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
+<<<<<<< HEAD
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
+=======
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
+>>>>>>> FETCH_HEAD
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
@@ -1250,19 +1492,33 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
+<<<<<<< HEAD
   m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+=======
+  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+>>>>>>> FETCH_HEAD
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
+<<<<<<< HEAD
   if (g_application.m_pPlayer->IsInMenu())
     m_pYUVShader->SetNonLinStretch(1.0);
   else
     m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
 
   if     (field == FIELD_TOP)
+=======
+  if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+    m_pYUVShader->SetNonLinStretch(1.0);
+  else
+    m_pYUVShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+
+  if     (field == FIELD_ODD)
+>>>>>>> FETCH_HEAD
     m_pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
@@ -1374,7 +1630,11 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
+<<<<<<< HEAD
   if     (field == FIELD_TOP)
+=======
+  if     (field == FIELD_ODD)
+>>>>>>> FETCH_HEAD
     m_pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
@@ -1486,10 +1746,17 @@ void CLinuxRendererGL::RenderFromFBO()
 
     //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
     //having non-linear stretch on breaks the alignment
+<<<<<<< HEAD
     if (g_application.m_pPlayer->IsInMenu())
       m_pVideoFilterShader->SetNonLinStretch(1.0);
     else
       m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+=======
+    if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+      m_pVideoFilterShader->SetNonLinStretch(1.0);
+    else
+      m_pVideoFilterShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+>>>>>>> FETCH_HEAD
 
     m_pVideoFilterShader->Enable();
   }
@@ -1535,8 +1802,58 @@ void CLinuxRendererGL::RenderFromFBO()
 
 void CLinuxRendererGL::RenderProgressiveWeave(int index, int field)
 {
+<<<<<<< HEAD
   bool scale = (int)m_sourceHeight != m_destRect.Height() ||
                (int)m_sourceWidth != m_destRect.Width();
+=======
+#ifdef HAVE_LIBVDPAU
+  CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+  if (!vdpau)
+    return;
+
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  glEnable(m_textureTarget);
+
+  if (!vdpau->m_glPixmapTexture)
+  {
+    glGenTextures (1, &(vdpau->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)vdpau->m_glPixmapTexture);
+  }
+
+  glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
+  vdpau->BindPixmap();
+
+  glActiveTextureARB(GL_TEXTURE0);
+
+  // Try some clamping or wrapping
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  if (m_pVideoFilterShader)
+  {
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    m_pVideoFilterShader->SetSourceTexture(0);
+    m_pVideoFilterShader->SetWidth(m_sourceWidth);
+    m_pVideoFilterShader->SetHeight(m_sourceHeight);
+
+    //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
+    //having non-linear stretch on breaks the alignment
+    if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+      m_pVideoFilterShader->SetNonLinStretch(1.0);
+    else
+      m_pVideoFilterShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+
+    m_pVideoFilterShader->Enable();
+  }
+  else
+  {
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  }
+>>>>>>> FETCH_HEAD
 
   if (m_fbo.fbo.IsSupported() && (scale || m_renderQuality == RQ_MULTIPASS))
   {
@@ -1590,10 +1907,17 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
     //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
     //having non-linear stretch on breaks the alignment
+<<<<<<< HEAD
     if (g_application.m_pPlayer->IsInMenu())
       m_pVideoFilterShader->SetNonLinStretch(1.0);
     else
       m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+=======
+    if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+      m_pVideoFilterShader->SetNonLinStretch(1.0);
+    else
+      m_pVideoFilterShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+>>>>>>> FETCH_HEAD
 
     m_pVideoFilterShader->Enable();
   }
@@ -1628,6 +1952,18 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
   if (m_pVideoFilterShader)
     m_pVideoFilterShader->Disable();
 
+<<<<<<< HEAD
+=======
+#if USE_VAAPI_GLX_BIND
+  status = vaEndRenderSurfaceGLX(display->get(), va.surfglx->m_id);
+  if(status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
+    return;
+  }
+#endif
+
+>>>>>>> FETCH_HEAD
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif
@@ -1887,7 +2223,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   bool pboSetup = false;
+<<<<<<< HEAD
   if (m_pboUsed)
+=======
+  if (m_pboused)
+>>>>>>> FETCH_HEAD
   {
     pboSetup = true;
     glGenBuffersARB(3, pbo);
@@ -2116,7 +2456,11 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
+<<<<<<< HEAD
   if (m_pboUsed)
+=======
+  if (m_pboused)
+>>>>>>> FETCH_HEAD
   {
     pboSetup = true;
     glGenBuffersARB(2, pbo);
@@ -2799,7 +3143,11 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
+<<<<<<< HEAD
   if (m_pboUsed)
+=======
+  if (m_pboused)
+>>>>>>> FETCH_HEAD
   {
     pboSetup = true;
     glGenBuffersARB(1, pbo);

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetLastFMDiscographyByMBID dest="5" clearbuffers="no">
@@ -304,3 +305,54 @@
 	</ParseLastFMAlbumThumbs>
 
 </scraperfunctions>
+=======
+<scraperfunctions>
+	<GetLastFMDiscography dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMDiscography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMDiscography>
+	<ParseLastFMDiscography dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="2+">
+				<expression repeat="yes">&lt;album[^&gt;]*&gt;[^&lt;]*&lt;name&gt;([^&lt;]*?)&lt;/name&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseLastFMDiscography>
+	<GetLastFMArtistThumbsByID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;mbid=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetLastFMArtistThumbsByID>
+	<GetLastFMArtistThumbsByName dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetLastFMArtistThumbsByName>
+	<ParseLastFMArtistThumbs dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="6">
+				<expression repeat="yes" noclean="1">&lt;size name="original"[^&gt;]*&gt;([^&lt;]*)&lt;[^&lt;]*&lt;size name="large"[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</ParseLastFMArtistThumbs>
+	<GetLastFMAlbumThumbs dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;album=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumThumbs>
+	<ParseLastFMAlbumThumbs dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2">
+				<expression noclean="1">&lt;image size=&quot;extralarge&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2+">
+				<expression noclean="1">&lt;image size=&quot;large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</ParseLastFMAlbumThumbs>	
+</scraperfunctions>
+>>>>>>> FETCH_HEAD

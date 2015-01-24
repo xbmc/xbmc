@@ -1598,3 +1598,12 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
   else
     return StringUtils::Format("Unknown error (0x%X)", dwError);
 }
+<<<<<<< HEAD
+=======
+
+void CWinIdleTimer::StartZero()
+{
+  SetThreadExecutionState(ES_SYSTEM_REQUIRED);
+  CStopWatch::StartZero();
+}
+>>>>>>> FETCH_HEAD

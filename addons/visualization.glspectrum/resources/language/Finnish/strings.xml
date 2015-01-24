@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Muoto</string>
+    <string id="30001">Täytetty</string>
+    <string id="30002">Rautalanka</string>
+    <string id="30003">Pisteet</string>
+    <string id="30004">Palkin korkeus</string>
+    <string id="30005">Pieni</string>
+    <string id="30006">Oletus</string>
+    <string id="30007">Suuri</string>
+    <string id="30008">Erittäin suuri</string>
+    <string id="30009">Nopeus</string>
+    <string id="30010">Erittäin hidas</string>
+    <string id="30011">Hidas</string>
+    <string id="30012">Oletus</string>
+    <string id="30013">Nopea</string>
+    <string id="30014">Erittäin nopea</string>
+</strings>

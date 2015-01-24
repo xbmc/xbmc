@@ -46,6 +46,7 @@ private:
 class CWinShader
 {
 protected:
+<<<<<<< HEAD
   CWinShader() :
     m_vbsize(0),
     m_FVF(0),
@@ -58,6 +59,20 @@ protected:
   virtual bool UnlockVertexBuffer();
   virtual bool LoadEffect(const std::string& filename, DefinesMap* defines);
   virtual bool Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int vertexIndexStep);
+=======
+  CWinShader() {}
+
+public:
+  void Release(); // for user code only, like the SAFE_RELEASE() construct
+
+protected:
+  virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
+  virtual bool LockVertexBuffer(void **data);
+  virtual bool UnlockVertexBuffer();
+  virtual void ReleaseInternal();
+  virtual bool LoadEffect(CStdString filename, DefinesMap* defines);
+  virtual bool Execute();
+>>>>>>> FETCH_HEAD
 
   CD3DEffect   m_effect;
 
@@ -72,13 +87,18 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
+<<<<<<< HEAD
   virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
+=======
+  virtual bool Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight);
+>>>>>>> FETCH_HEAD
   virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
                       float brightness,
                       unsigned int flags,
                       YUVBuffer* YUVbuf);
+<<<<<<< HEAD
   CYUV2RGBShader() : 
     m_sourceWidth (0),
     m_sourceHeight(0),
@@ -87,6 +107,8 @@ public:
       memset(&m_texSteps,0,sizeof(m_texSteps));
     }
   virtual ~CYUV2RGBShader();
+=======
+>>>>>>> FETCH_HEAD
 
 protected:
   virtual void PrepareParameters(CRect sourceRect,
@@ -94,16 +116,25 @@ protected:
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
+<<<<<<< HEAD
   virtual void SetShaderParameters(YUVBuffer* YUVbuf);
+=======
+  virtual void SetShaderParameters();
+  virtual void ReleaseInternal();
+>>>>>>> FETCH_HEAD
   virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 
 private:
   CYUV2RGBMatrix m_matrix;
   unsigned int   m_sourceWidth, m_sourceHeight;
   CRect          m_sourceRect, m_destRect;
+<<<<<<< HEAD
   ERenderFormat  m_format;
   CD3DTexture    m_YUVPlanes[3];
   float          m_texSteps[2];
+=======
+  CD3DTexture    m_YUVPlanes[3];
+>>>>>>> FETCH_HEAD
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -160,9 +191,15 @@ protected:
 
 
 private:
+<<<<<<< HEAD
   unsigned int  m_sourceWidth, m_sourceHeight;
   CRect         m_sourceRect, m_destRect;
 };
+=======
+  CD3DTexture   m_HQKernelTexture;
+  unsigned int  m_sourceWidth, m_sourceHeight;
+  CRect         m_sourceRect, m_destRect;
+>>>>>>> FETCH_HEAD
 
 class CConvolutionShaderSeparable : public CConvolutionShader
 {

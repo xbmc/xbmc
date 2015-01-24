@@ -100,6 +100,15 @@ bool bVecDirsInited = false;
 extern void update_cache_dialog(const char* tmp);
 #endif
 
+<<<<<<< HEAD
+=======
+struct _env
+{
+  const char* name;
+  char* value;
+};
+
+>>>>>>> FETCH_HEAD
 #define EMU_MAX_ENVIRONMENT_ITEMS 100
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;
@@ -112,7 +121,13 @@ extern "C" void __stdcall init_emu_environ()
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
+<<<<<<< HEAD
 #if defined(TARGET_WINDOWS)
+=======
+#ifdef _XBOX
+  dll_putenv("OS=xbox");
+#elif defined(_WIN32)
+>>>>>>> FETCH_HEAD
   // fill our array with the windows system vars
   LPTSTR lpszVariable; 
   LPTCH lpvEnv;
@@ -128,7 +143,11 @@ extern "C" void __stdcall init_emu_environ()
     FreeEnvironmentStrings(lpvEnv);
   }
   dll_putenv("OS=win32");
+<<<<<<< HEAD
 #elif defined(TARGET_DARWIN)
+=======
+#elif defined(__APPLE__)
+>>>>>>> FETCH_HEAD
   dll_putenv("OS=darwin");
 #elif defined(TARGET_POSIX)
   dll_putenv("OS=linux");
@@ -199,6 +218,7 @@ extern "C" void __stdcall update_emu_environ()
       && CSettings::Get().GetInt("network.httpproxyport") > 0
       && CSettings::Get().GetInt("network.httpproxytype") == 0)
   {
+<<<<<<< HEAD
     std::string strProxy;
     if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
         !CSettings::Get().GetString("network.httpproxypassword").empty())
@@ -213,6 +233,26 @@ extern "C" void __stdcall update_emu_environ()
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );
+=======
+    const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
+    const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
+    // Should we check for valid strings here? should HTTPS_PROXY use https://?
+    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+#ifdef _WIN32
+    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+#endif
+    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    {
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+#ifdef _WIN32
+      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
+      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+#endif
+    }
+>>>>>>> FETCH_HEAD
   }
   else
   {
@@ -246,10 +286,17 @@ static int convert_fmode(const char* mode)
   return iMode;
 }
 
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
 static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 {
   std::string strname;
+=======
+#ifdef _WIN32
+static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
+{
+  CStdString strname;
+>>>>>>> FETCH_HEAD
   g_charsetConverter.wToUTF8(wdata->name, strname);
   size_t size = sizeof(data->name) / sizeof(char);
   strncpy(data->name, strname.c_str(), size);
@@ -264,7 +311,11 @@ static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 
 static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 {
+<<<<<<< HEAD
   std::wstring strwname;
+=======
+  CStdStringW strwname;
+>>>>>>> FETCH_HEAD
   g_charsetConverter.utf8ToW(data->name, strwname, false);
   size_t size = sizeof(wdata->name) / sizeof(wchar_t);
   wcsncpy(wdata->name, strwname.c_str(), size);
@@ -847,8 +898,13 @@ extern "C"
 
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
+<<<<<<< HEAD
       std::wstring strwfile;
       g_charsetConverter.utf8ToW(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile, false);
+=======
+      CStdStringW strwfile;
+      g_charsetConverter.utf8ToW(CUtil::ValidatePath(_P(str)), strwfile, false);
+>>>>>>> FETCH_HEAD
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
         to_finddata64i32(&wdata, data);
@@ -2077,6 +2133,11 @@ extern "C"
         }
       }
     }
+<<<<<<< HEAD
+=======
+
+    LeaveCriticalSection(&dll_cs_environ);
+>>>>>>> FETCH_HEAD
 
     if (value != NULL)
     {

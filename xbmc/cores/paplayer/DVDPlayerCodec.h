@@ -65,6 +65,7 @@ private:
   DemuxPacket* m_pPacket;
 
   int  m_nDecodedLen;
+<<<<<<< HEAD
 
   CAEChannelInfo m_ChannelInfo;
 
@@ -77,6 +78,8 @@ private:
   bool m_needConvert;
   AEDataFormat m_srcFormat;
   int m_srcFrameSize;
+=======
+>>>>>>> FETCH_HEAD
 };
 
 #endif

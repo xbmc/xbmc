@@ -31,11 +31,15 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+<<<<<<< HEAD
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
+=======
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+>>>>>>> FETCH_HEAD
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "commons/Exception.h"
@@ -206,8 +210,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   m_streaminfo = streaminfo;
   m_currentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
+<<<<<<< HEAD
   m_program = UINT_MAX;
   const AVIOInterruptCB int_cb = { interrupt_cb, this };
+=======
+  g_demuxer = this;
+  m_program = UINT_MAX;
+>>>>>>> FETCH_HEAD
 
   if (!pInput) return false;
 
@@ -222,6 +231,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     if     ( content.compare("video/x-vobsub") == 0 )
       iformat = av_find_input_format("mpeg");
     else if( content.compare("video/x-dvd-mpeg") == 0 )
+<<<<<<< HEAD
       iformat = av_find_input_format("mpeg");
     else if( content.compare("video/x-mpegts") == 0 )
       iformat = av_find_input_format("mpegts");
@@ -235,6 +245,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   // try to abort after 30 seconds
   m_timeout.Set(30000);
+=======
+      iformat = m_dllAvFormat.av_find_input_format("mpeg");
+    else if( content.compare("video/x-mpegts") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpegts");
+  }
+
+  // try to abort after 30 seconds
+  m_timeout = CTimeUtils::GetTimeMS() + 30000;
+>>>>>>> FETCH_HEAD
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
@@ -268,14 +287,46 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   }
   else
   {
+<<<<<<< HEAD
     unsigned char* buffer = (unsigned char*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, this, dvd_file_read, NULL, dvd_file_seek);
+=======
+    unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+    m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
+>>>>>>> FETCH_HEAD
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
     if(m_ioContext->max_packet_size)
       m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
+<<<<<<< HEAD
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;
+=======
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      m_ioContext->is_streamed = 1;
+    }
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+    {
+      m_ioContext->is_streamed = 1;
+    }
+    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
+    {
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+        m_ioContext->is_streamed = 1;
+
+      // this actually speeds up channel changes by almost a second
+      // however, it alsa makes player not buffer anything, this
+      // leads to buffer underruns in audio renderer
+      //if(context->is_streamed)
+      //  streaminfo = false;
+    }
+    else
+    {
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+        m_ioContext->is_streamed = 1;
+    }
+>>>>>>> FETCH_HEAD
 
     if( iformat == NULL )
     {
@@ -283,6 +334,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
       bool trySPDIFonly = (m_pInput->GetContent() == "audio/x-spdif-compressed");
 
+<<<<<<< HEAD
       if (!trySPDIFonly)
         av_probe_input_buffer(m_ioContext, &iformat, strFile.c_str(), NULL, 0, 0);
 
@@ -292,6 +344,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       // specifically, or in case the file is a wav which may contain DTS or
       // IEC 61937 (e.g. ac3-in-wav) and we want to check for those formats.
       if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
+=======
+      // read data using avformat's buffers
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
+      if (pd.buf_size <= 0)
+>>>>>>> FETCH_HEAD
       {
         AVProbeData pd;
         uint8_t probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
@@ -300,6 +357,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
         pd.buf = probe_buffer;
         pd.filename = strFile.c_str();
 
+<<<<<<< HEAD
         // read data using avformat's buffers
         pd.buf_size = avio_read(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
         if (pd.buf_size <= 0)
@@ -325,11 +383,41 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
           // may be just padded.
           AVInputFormat *iformat2;
           iformat2 = av_find_input_format("spdif");
+=======
+      bool trySPDIFonly = (m_pInput->GetContent() == "audio/x-spdif-compressed");
+
+      if (!trySPDIFonly)
+        iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+
+      // the advancedsetting is for allowing the user to force outputting the
+      // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
+      // it (this is temporary until we handle 44.1 kHz passthrough properly)
+      if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_dvdplayerIgnoreDTSinWAV))
+      {
+        // check for spdif and dts
+        // This is used with wav files and audio CDs that may contain
+        // a DTS or AC3 track padded for S/PDIF playback. If neither of those
+        // is present, we assume it is PCM audio.
+        // AC3 is always wrapped in iec61937 (ffmpeg "spdif"), while DTS
+        // may be just padded.
+        AVInputFormat *iformat2;
+        iformat2 = m_dllAvFormat.av_find_input_format("spdif");
+
+        if (iformat2 && iformat2->read_probe(&pd) > AVPROBE_SCORE_MAX / 4)
+        {
+          iformat = iformat2;
+        }
+        else
+        {
+          // not spdif or no spdif demuxer, try dts
+          iformat2 = m_dllAvFormat.av_find_input_format("dts");
+>>>>>>> FETCH_HEAD
 
           if (iformat2 && iformat2->read_probe(&pd) > AVPROBE_SCORE_MAX / 4)
           {
             iformat = iformat2;
           }
+<<<<<<< HEAD
           else
           {
             // not spdif or no spdif demuxer, try dts
@@ -346,6 +434,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
               CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
               return false;
             }
+=======
+          else if (trySPDIFonly)
+          {
+            // not dts either, return false in case we were explicitely
+            // requested to only check for S/PDIF padded compressed audio
+            CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
+            return false;
+>>>>>>> FETCH_HEAD
           }
         }
       }
@@ -473,9 +569,37 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
     CreateStreams();
 
+<<<<<<< HEAD
   // allow IsProgramChange to return true
   if (skipCreateStreams && GetNrOfStreams() == 0)
     m_program = 0;
+=======
+  // add the ffmpeg streams to our own stream array
+  if (m_pFormatContext->nb_programs)
+  {
+    // look for first non empty stream and discard nonselected programs
+    for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
+    {
+      if(m_program == UINT_MAX && m_pFormatContext->programs[i]->nb_stream_indexes > 0)
+        m_program = i;
+
+      if(i != m_program)
+        m_pFormatContext->programs[i]->discard = AVDISCARD_ALL;
+    }
+    if(m_program != UINT_MAX)
+    {
+      // add streams from selected program
+      for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+        AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+    }
+  }
+  // if there were no programs or they were all empty, add all streams
+  if (m_program == UINT_MAX)
+  {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      AddStream(i);
+  }
+>>>>>>> FETCH_HEAD
 
   return true;
 }
@@ -704,9 +828,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       ParsePacket(&m_pkt.pkt);
 
+<<<<<<< HEAD
       AVStream *stream = m_pFormatContext->streams[m_pkt.pkt.stream_index];
 
       if (IsVideoReady())
+=======
+      if (m_program != UINT_MAX)
+>>>>>>> FETCH_HEAD
       {
         if (m_program != UINT_MAX)
         {
@@ -862,9 +990,12 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   if(time < 0)
     time = 0;
 
+<<<<<<< HEAD
   m_pkt.result = -1;
   av_free_packet(&m_pkt.pkt);
 
+=======
+>>>>>>> FETCH_HEAD
   CDVDInputStream::ISeekTime* ist = dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInput);
   if (ist)
   {
@@ -1013,6 +1144,7 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
   // add the ffmpeg streams to our own stream map
   if (m_pFormatContext->nb_programs)
   {
+<<<<<<< HEAD
     // check if desired program is available
     if (program < m_pFormatContext->nb_programs && m_pFormatContext->programs[program]->nb_stream_indexes > 0)
     {
@@ -1065,6 +1197,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
   if (pStream)
   {
     CDemuxStream* stream = NULL;
+=======
+    CDemuxStream* old = m_streams[iId];
+>>>>>>> FETCH_HEAD
 
     switch (pStream->codec->codec_type)
     {
@@ -1080,8 +1215,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
 	
+<<<<<<< HEAD
         if(av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+=======
+        if(m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0))
+          st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0)->value;
+>>>>>>> FETCH_HEAD
 
         break;
       }
@@ -1095,6 +1235,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           st->bVFR = false;
 
         // never trust pts in avi files with h264.
+<<<<<<< HEAD
         if (m_bAVI && pStream->codec->codec_id == AV_CODEC_ID_H264)
           st->bPTSInvalid = true;
 
@@ -1104,13 +1245,22 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         AVRational r_frame_rate = pStream->r_frame_rate;
 #endif
 
+=======
+        if (m_bAVI && pStream->codec->codec_id == CODEC_ID_H264)
+          st->bPTSInvalid = true;
+
+>>>>>>> FETCH_HEAD
         //average fps is more accurate for mkv files
         if (m_bMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
         {
           st->iFpsRate = pStream->avg_frame_rate.num;
           st->iFpsScale = pStream->avg_frame_rate.den;
         }
+<<<<<<< HEAD
         else if(r_frame_rate.den && r_frame_rate.num)
+=======
+        else if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
+>>>>>>> FETCH_HEAD
         {
           st->iFpsRate = r_frame_rate.num;
           st->iFpsScale = r_frame_rate.den;
@@ -1197,8 +1347,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           stream = st;
 	    
+<<<<<<< HEAD
           if(av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+=======
+          if(m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0))
+            st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0)->value;
+>>>>>>> FETCH_HEAD
 	
           break;
         }
@@ -1243,8 +1398,19 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     }
 
+<<<<<<< HEAD
     // set ffmpeg type
     stream->orig_type = pStream->codec->codec_type;
+=======
+    // delete old stream after new is created
+    // since dvdplayer uses the pointer to know
+    // if something changed in the demuxer
+    if (old)
+    {
+      if( old->ExtraData ) delete[] (BYTE*)(old->ExtraData);
+      delete old;
+    }
+>>>>>>> FETCH_HEAD
 
     // generic stuff
     if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
@@ -1272,11 +1438,20 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 
 #ifdef HAVE_LIBBLURAY
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
+<<<<<<< HEAD
       static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
+=======
+      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, m_streams[iId]->language);
+>>>>>>> FETCH_HEAD
 #endif
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
       // this stuff is really only valid for dvd's.
+
+      //FFMPEG has an error doesn't set type properly for DTS
+      if (m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143))
+        m_streams[iId]->codec = CODEC_ID_DTS;
+
       // this is so that the physicalid matches the
       // id's reported from libdvdnav
       switch(stream->codec)

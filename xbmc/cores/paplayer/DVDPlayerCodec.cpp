@@ -45,11 +45,14 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_audioPos = 0;
   m_pPacket = NULL;
   m_nDecodedLen = 0;
+<<<<<<< HEAD
   m_strFileName = "";
   m_bInited = false;
   m_pResampler = NULL;
   m_needConvert = false;
   m_srcFrameSize = 0;
+=======
+>>>>>>> FETCH_HEAD
 }
 
 DVDPlayerCodec::~DVDPlayerCodec()
@@ -150,7 +153,7 @@ bool DVDPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint);
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, false);
   if (!m_pAudioCodec)
   {
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);

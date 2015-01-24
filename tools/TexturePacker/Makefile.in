@@ -3,12 +3,21 @@ ifneq ($(or $(findstring powerpc,@ARCH@),$(findstring ppc, @ARCH@)),)
 DEFINES       += -DHOST_BIGENDIAN
 endif
 
+<<<<<<< HEAD
 SRCS           = \
   md5.cpp \
   SDL_anigif.cpp \
   XBTFWriter.cpp \
   XBMCTex.cpp \
   @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
+=======
+OBJS = \
+	SDL_anigif.o \
+	XBTFWriter.o \
+	XBMCTex.o \
+	md5.o \
+	../../guilib/XBTF.o
+>>>>>>> FETCH_HEAD
 
 TARGET         = TexturePacker
 CLEAN_FILES    = $(TARGET)

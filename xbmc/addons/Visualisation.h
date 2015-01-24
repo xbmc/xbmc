@@ -70,10 +70,17 @@ namespace ADDON
     bool HasSubModules() { return !m_submodules.empty(); }
     bool IsLocked();
     unsigned GetPreset();
+<<<<<<< HEAD
     std::string GetPresetName();
     bool GetPresetList(std::vector<std::string>& vecpresets);
     bool GetSubModuleList(std::vector<std::string>& vecmodules);
     static std::string GetFriendlyName(const std::string& vis, const std::string& module);
+=======
+    CStdString GetPresetName();
+    bool GetPresetList(std::vector<CStdString>& vecpresets);
+    bool GetSubModuleList(std::vector<CStdString>& vecmodules);
+    static CStdString GetFriendlyName(const CStdString& vis, const CStdString& module);
+>>>>>>> FETCH_HEAD
     void Destroy();
 
   private:

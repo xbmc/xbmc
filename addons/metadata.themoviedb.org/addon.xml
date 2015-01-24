@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.themoviedb.org"
+<<<<<<< HEAD
        name="The Movie Database"
        version="3.7.10"
        provider-name="XBMC Foundation">
@@ -9,6 +10,16 @@
     <import addon="metadata.common.hdtrailers.net" version="2.0.5"/>
     <import addon="metadata.common.themoviedb.org" version="2.12.1"/>
     <import addon="plugin.video.youtube" version="4.4.10" optional="true"/>
+=======
+       name="The MovieDB"
+       version="1.2.4"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.themoviedb.org" version="1.0.7"/>
+    <import addon="metadata.common.hdtrailers.net" version="1.0.6"/>
+    <import addon="metadata.common.imdb.com" version="2.0.5"/>
+>>>>>>> FETCH_HEAD
   </requires>
   <extension point="xbmc.metadata.scraper.movies"
              language="en"
@@ -24,6 +35,7 @@
     <summary lang="de">TMDB Filmscraper</summary>
     <summary lang="el">Scraper Ταινιών του TMDb</summary>
     <summary lang="en">TMDB Movie Scraper</summary>
+<<<<<<< HEAD
     <summary lang="en_NZ">TMDB Movie Scraper</summary>
     <summary lang="en_US">TMDB Movie Scraper</summary>
     <summary lang="es">Scraper de películas de TheMovieDB</summary>
@@ -115,6 +127,27 @@
     <description lang="vi">themoviedb.org là cơ sở dữ liệu về phim ảnh mở và miễn phí. Nó hoàn toàn được kiểm soát bởi những người như bạn. TMDb hiện tại đang được sử dụng bởi hàng triệu người dùng hàng tháng và với sự hỗ trợ của bộ API mạnh mẽ nó cũng được sử dụng bởi những thiết bị giải trí cá nhân như Kodi cho việc lấy dữ liệu về Phim ảnh, Poster và Fanart để làm tăng trải nghiệm của người sử dụng</description>
     <description lang="zh">themoviedb.org 是一个开放和自由的电影数据库。它完全由象你一样的用户来掌控。TMDb 每月为上百万用户提供服务，并通过强大的 API 界面为许多流行的媒体中心系统如 Kodi 提供电影资料、封面海报和同人画以丰富用户的体验。</description>
     <description lang="zh_TW">themoviedb.org是一個免費和開放的電影資料庫。它是完全由與您一樣的廣大使用者來更新資訊。 TMDb目前擁有數以百萬計的使用人次並且有著強大的API，許多受歡迎的媒體中心平台像Kodi藉由TMDb獲取電影的數據資料庫，海報和影片資訊，以豐富使用者體驗。</description>
+=======
+    <summary lang="de">Film-Scraper für TheMovieDB</summary>
+    <summary lang="es">Scraper de películas de TheMovieDB</summary>
+    <summary lang="hu">TMDB filmadat leolvasó</summary>
+    <summary lang="nl">TMDb-filmscraper</summary>       <!--Themoviedb.org gebruikt zelf als afkorting TMDb en niet TMDB.--> 
+    <summary lang="pl">Scraper filmowy TMDB</summary>
+    <summary lang="pt">Scraper de filmes TMDb</summary>
+    <summary lang="ro">Scraper de filme TMDb</summary>
+    <summary lang="ru">Обработчик Фильмов для TMDB</summary>
+    <summary lang="zh">TMDB电影刮削器</summary>
+    <description lang="en">themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like XBMC to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience.</description>
+    <description lang="de">TheMovieDB.org ist eine freie und offene Film-Datenbank. Sie wird nur User wie dir betrieben. TheMovieDB wird zur Zeit monatlich von Millionen genutzt. Mit der mächtigen API wird sie auch von vielen Media-Center, wie z.B. XBMC, genutzt um Filme-Meta-Daten, Poster und Fanrts zu beziehen, damit der User sein Media-Center verschönern kann</description>
+    <description lang="es">themovieDB.org es una base de datos de películas gratuita y abierta. Es una página web que se basa en contenido subido por los usuarios. TMDb es usada diariamente por mucha gente gracias a su API, que es usada por más programas aparte de XBMC para descargar información de películas así como Posters o Fanart (Fondos de escritorio basados en películas usados en distintos skins) para enriquecer la experiencia de usar XBMC.</description>
+    <description lang="hu">A themoviedb.org egy ingyenes és nyílt filmadatbázis. Teljes egészében olyan felhasználók töltik fel, mint például Te. A TMDb-t havonta emberek milliói használják és a hatékony API-n keresztül számos népszerű média center is, mint például az XBMC a filmadatok, poszterek, fanartképek letöltésére.</description>
+    <description lang="nl">Themoviedb.org is een vrije en open filmdatabank. Gebruikers zoals jij vormen de motor van deze site. Op dit moment gebruiken elke maand miljoenen mensen TMDb. De krachtige API van de site laat mediacenters zoals XBMC toe om metadata, posters en fanart op te halen en zo de gebruikerservaring te verrijken.</description>
+    <description lang="pl">themoviedb.org jest wolną i otwartą filmową bazą danych. Jest zarządzana całkowicie przez osoby takie jak Ty. Obecnie odwiedzają ją miliony osób miesięcznie, a dzięki dostępności API jest używana w wielu media center, takich jak XBMC, do pobierania informacji o filmach, plakatów i fanartów.</description>
+    <description lang="pt">O themoviedb.org é uma base de dados de filmes livre e aberta. É completamente actualizado por pessoas como você e usado por milhões todos os meses. Com o poderoso motor de busca disponível, também se tornou no favorito de muitos softwares média center, como o popular XBMC, para obter informação, posters e fanart que enriquecem a experiência do utilizador.</description>
+    <description lang="ro">themoviedb.org este o bază de date de filme gratuită și deschisă. Este actualizată de oameni ca și tine. TMDb este curent folosită de milioane de oameni în fiecare lună și datorită API-ului puternic, este de asemena folosită de multe centre media populare ca XBMC pentru a obține informații despre filme, afișe și imagini produse de fani (Fanart) care îmbogățesc experiența utilizatorului.</description>
+    <description lang="ru">themoviedb.org это бесплатная и открытая база данных фильмов. Она полностью поддерживается такими же людьми как и ты. В данный момент TMDb используется миллионами людей каждый месяц, и, с его мощным API, используется различными популярными медиа-центрами, такими как XBMC, для получения к Фильмам мета-данных, постеров и фанарта в целях улучшения пользовательского опыта.</description>
+    <description lang="zh">themoviedb.org是一个开放和自由的电影数据库。它完全由象你一样的用户来掌控。TMDb每月为上百万用户提供服务，并通过强大的API界面为许多流行的媒体中心系统如XBMC提供电影资料、封面海报和同人画以丰富用户的体验。</description>
+>>>>>>> FETCH_HEAD
     <platform>all</platform>
     <license>GPL v2.0</license>
     <forum></forum>

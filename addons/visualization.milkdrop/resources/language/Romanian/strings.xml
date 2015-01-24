@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Durată de contopire automată</string>
+    <string id="30001">Durată între vizualizări predefinite</string>
+    <string id="30002">Timp aleatoriu adițional</string>
+    <string id="30003">Activează filtrare anisotropică</string>
+    <string id="30004">Activează schimbări rapide</string>
+    <string id="30005">Prag de intensitate pentru schimbări rapide</string>
+    <string id="30006">Durată medie între schimbări rapide</string>
+    <string id="30007">Rată maximă de reîmprospătare</string>
+    <string id="30008">Activează 3D stereo</string>
+    <string id="30009">Pachet vizualizări predefinite</string>
+</strings>

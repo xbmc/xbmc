@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.mtv.com"
+       name="MTV"
+       version="1.0.5"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.musicvideos"
+             language="en"
+             library="mtv.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">MTV Music Video Scraper</summary>
+    <summary lang="de">MTV Scraper für Musikvideos</summary>
+    <summary lang="es">Scraper de Videoclips de MTV</summary>
+    <summary lang="fr">Scraper MTV pour vidéo-clips</summary>
+    <summary lang="hu">MTV videóklip leolvasó</summary>
+    <summary lang="kr">MTV 뮤직 비디오 스크래퍼</summary>
+    <summary lang="nl">MTV-muziekvideoscraper</summary>
+    <summary lang="pl">Scraper teledysków MTV</summary>
+    <summary lang="pt">Scraper de videoclips MTV</summary>
+    <summary lang="ro">Catalog MTV pentru videoclipuri</summary>
+    <summary lang="ru">Обработчик музыкальных видео для MTV</summary>
+    <summary lang="se">MTV Musikvideoskrapa</summary>
+    <summary lang="zh">MTV音乐电视刮削器</summary>
+    <description lang="en">Download Music Video information</description>
+    <description lang="de">Downloade Informationen zu Musikvideos von www.mtv.com</description>
+    <description lang="es">Descarga Información de Videoclips de www.mtv.com</description>
+    <description lang="fr">Télécharge les infos des vidéo-clips</description>
+    <description lang="hu">Zenei videóklip információk letöltése</description>
+    <description lang="kr">MTV 에서 뮤직비디오 정보 다운로드</description>
+    <description lang="nl">Muziekvideo-info ophalen van MTV</description>
+    <description lang="pl">Pobieraj informacje o teledyskach</description>
+    <description lang="pt">Descarregar informação de videoclips de www.mtv.com</description>
+    <description lang="ro">Descărcați informații videoclipuri.</description>
+    <description lang="ru">Загружать информацию о музыкальных видео с www.mtv.com</description>
+    <description lang="se">Ladda ner musikvideoinformation från MTV.</description>
+    <description lang="zh">下载音乐电视资料</description>
+    <platform>all</platform>
+  </extension>
+</addon>

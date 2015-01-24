@@ -71,6 +71,15 @@
 <!-- 1   left        D-Pad Left       -->
 <!-- 1   right       D-Pad Right      -->
 
+<<<<<<< HEAD
+=======
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+>>>>>>> FETCH_HEAD
 
 
 <keymap>
@@ -1225,6 +1234,7 @@
     </joystick>
   </Scripts>
   <Settings>
+<<<<<<< HEAD
     <joystick name="Controller (XBOX 360 For Windows)">
       <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
@@ -1244,6 +1254,34 @@
       <altname>Gamepad F310 (Controller)</altname>
       <altname>Razer Sabertooth Elite (Controller)</altname>
       <altname>Controller (XBOX One For Windows)</altname>
+=======
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </Settings>
+  <AddonInformation>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </TextViewer>
+  <MyPicturesSettings>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyPicturesSettings>
+  <MyProgramsSettings>
+    <joystick name="Xbox 360 Wireless Receiver">
+>>>>>>> FETCH_HEAD
       <button id="2">PreviousMenu</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">

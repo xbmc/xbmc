@@ -22,6 +22,7 @@
 #include "XBDateTime.h"
 #include "threads/SystemClock.h"
 
+<<<<<<< HEAD
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
@@ -30,6 +31,19 @@
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #elif defined(TARGET_WINDOWS)
+=======
+#ifdef __APPLE__
+#ifdef __ppc__
+#include <mach/mach_time.h>
+#include <CoreVideo/CVHostTime.h>
+#else
+#include <time.h>
+#include "posix-realtime-stub.h"
+#endif
+#elif defined(_LINUX)
+#include <time.h>
+#elif defined(_WIN32)
+>>>>>>> FETCH_HEAD
 #include <windows.h>
 #else
 #include <time.h>
@@ -39,9 +53,19 @@
 
 int64_t CurrentHostCounter(void)
 {
+<<<<<<< HEAD
 #if   defined(TARGET_DARWIN)
   return( (int64_t)CVGetCurrentHostTime() );
 #elif defined(TARGET_WINDOWS)
+=======
+#if defined(__APPLE__) && defined(__ppc__)
+  return( (int64_t)CVGetCurrentHostTime() );
+#elif defined(_LINUX)
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return( ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec );
+#else
+>>>>>>> FETCH_HEAD
   LARGE_INTEGER PerformanceCount;
   QueryPerformanceCounter(&PerformanceCount);
   return( (int64_t)PerformanceCount.QuadPart );
@@ -58,9 +82,18 @@ int64_t CurrentHostCounter(void)
 
 int64_t CurrentHostFrequency(void)
 {
+<<<<<<< HEAD
 #if defined(TARGET_DARWIN)
   return( (int64_t)CVGetHostClockFrequency() );
 #elif defined(TARGET_WINDOWS)
+=======
+#if defined(__APPLE__) && defined(__ppc__)
+  // needed for 10.5.8 on ppc
+  return( (int64_t)CVGetHostClockFrequency() );
+#elif defined(_LINUX)
+  return( (int64_t)1000000000L );
+#else
+>>>>>>> FETCH_HEAD
   LARGE_INTEGER Frequency;
   QueryPerformanceFrequency(&Frequency);
   return( (int64_t)Frequency.QuadPart );
@@ -85,6 +118,29 @@ unsigned int CTimeUtils::GetFrameTime()
   return frameTime;
 }
 
+<<<<<<< HEAD
+=======
+unsigned int CTimeUtils::GetTimeMS()
+{
+#ifdef _LINUX
+          uint64_t now_time;
+  static  uint64_t start_time = 0;
+#if defined(__APPLE__) && defined(__ppc__)
+  now_time = CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency();
+#else
+  struct timespec ts = {};
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+#endif
+  if (start_time == 0)
+    start_time = now_time;
+  return (now_time - start_time);
+#else
+  return timeGetTime();
+#endif
+}
+
+>>>>>>> FETCH_HEAD
 CDateTime CTimeUtils::GetLocalTime(time_t time)
 {
   CDateTime result;

@@ -25,7 +25,11 @@ ifeq ($(OSTYPE),Darwin)
   LDFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -L/opt/local/lib
   CPPFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -I /opt/local/include
 else
+<<<<<<< HEAD
   prefix=/usr/local
+=======
+  prefix=/usr
+>>>>>>> FETCH_HEAD
 endif
 
 ifeq ($(OSTYPE),Darwin)

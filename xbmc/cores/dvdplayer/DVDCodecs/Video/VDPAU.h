@@ -307,6 +307,7 @@ protected:
   void SetDeintSkipChroma();
   void SetDeinterlacing();
   void SetHWUpscaling();
+<<<<<<< HEAD
   void DisableHQScaling();
   EINTERLACEMETHOD GetDeinterlacingMethod(bool log = false);
   bool CheckStatus(VdpStatus vdp_st, int line);
@@ -321,6 +322,27 @@ protected:
   CVdpauConfig m_config;
   VdpVideoMixer m_videoMixer;
   VdpProcamp m_Procamp;
+=======
+
+  pictureAge picAge;
+  bool       recover;
+  vdpau_render_state *past[2], *current, *future;
+  int        tmpDeint;
+  float      tmpNoiseReduction, tmpSharpness;
+  float      tmpBrightness, tmpContrast;
+  int        OutWidth, OutHeight;
+  bool       upScale;
+
+  static inline void ClearUsedForRender(vdpau_render_state **st)
+  {
+    if (*st) {
+      (*st)->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+      *st = NULL;
+    }
+  }
+
+  VdpProcamp    m_Procamp;
+>>>>>>> FETCH_HEAD
   VdpCSCMatrix  m_CSCMatrix;
   bool m_PostProc;
   float m_Brightness;
@@ -546,12 +568,19 @@ class CDecoder
 
 public:
 
+<<<<<<< HEAD
   struct Desc
   {
     const char *name;
     uint32_t id;
     uint32_t aux; /* optional extra parameter... */
   };
+=======
+  static void* dl_handle;
+  VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
+  VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
+  VdpStatus (*dl_vdp_preemption_callback_register)(VdpDevice device, VdpPreemptionCallback callback, void* context);
+>>>>>>> FETCH_HEAD
 
   CDecoder();
   virtual ~CDecoder();

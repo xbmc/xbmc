@@ -154,8 +154,14 @@ public:
     iWidth = 0;
     fAspect = 0.0;
     bVFR = false;
+<<<<<<< HEAD
     bPTSInvalid = false;
     bForcedAspect = false;
+=======
+    iLevel = 0;
+    iProfile = 0;
+    bPTSInvalid = false;
+>>>>>>> FETCH_HEAD
     type = STREAM_VIDEO;
     iOrientation = 0;
     iBitsPerPixel = 0;
@@ -170,11 +176,18 @@ public:
   int iWidth; // width of the stream reported by the demuxer
   float fAspect; // display aspect of stream
   bool bVFR;  // variable framerate
+<<<<<<< HEAD
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degress counter clockwise
   int iBitsPerPixel;
   std::string stereo_mode; // expected stereo mode
+=======
+  int iLevel; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
+  int iProfile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
+  bool bPTSInvalid; // pts cannot be trusted (avi's).
+  
+>>>>>>> FETCH_HEAD
 };
 
 class CDemuxStreamAudio : public CDemuxStream

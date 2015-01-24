@@ -213,6 +213,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     switch(hints.profile)
     {
+<<<<<<< HEAD
       case FF_PROFILE_H264_HIGH_10:
       case FF_PROFILE_H264_HIGH_10_INTRA:
       case FF_PROFILE_H264_HIGH_422:
@@ -225,6 +226,29 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       // this we need to enable multithreading for hi10p via advancedsettings
       m_isSWCodec = true;
       break;
+=======
+      if(pCodec->id == hints.codec
+      && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
+      {
+        if ((pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_XVID) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+          continue;
+
+        CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
+        CVDPAU* vdp = new CVDPAU();
+        m_pCodecContext->codec_id = hints.codec;
+        m_pCodecContext->width    = hints.width;
+        m_pCodecContext->height   = hints.height;
+        if(vdp->Open(m_pCodecContext, pCodec->pix_fmts ? pCodec->pix_fmts[0] : PIX_FMT_NONE))
+        {
+          m_pHardware = vdp;
+          m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
+          break;
+        }
+        m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
+        CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
+        vdp->Release();
+      }
+>>>>>>> FETCH_HEAD
     }
   }
   else if (hints.codec == AV_CODEC_ID_HEVC
@@ -263,12 +287,19 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   else
     m_pCodecContext->thread_type = FF_THREAD_SLICE;
 
+<<<<<<< HEAD
 #if defined(TARGET_DARWIN_IOS)
   // ffmpeg with enabled neon will crash and burn if this is enabled
   m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
 #else
   if (pCodec->id != AV_CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
       && pCodec->id != AV_CODEC_ID_VP8
+=======
+  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,69,0)
+      && pCodec->id != CODEC_ID_VP8
+#endif
+>>>>>>> FETCH_HEAD
      )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 #endif
@@ -285,6 +316,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
+<<<<<<< HEAD
+=======
+  // set acceleration
+  m_pCodecContext->dsp_mask = 0;//FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
+
+>>>>>>> FETCH_HEAD
   // advanced setting override for skip loop filter (see avcodec.h for valid options)
   // TODO: allow per video setting?
   if (g_advancedSettings.m_iSkipLoopFilter != 0)
@@ -524,9 +561,16 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
                                , m_formats.end()
                                , m_pCodecContext->pix_fmt) == m_formats.end();
 
+<<<<<<< HEAD
     bool need_reopen  = false;
     if(m_filters != m_filters_next)
       need_reopen = true;
+=======
+    // convert the picture
+    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height,
+                                         m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
+                                         PIX_FMT_YUV420P, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+>>>>>>> FETCH_HEAD
 
     if(m_pFilterIn)
     {

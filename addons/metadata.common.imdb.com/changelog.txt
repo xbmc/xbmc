@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [B]2.7.8[/B]
 - fixed: add xml header
 
@@ -89,6 +90,8 @@
 [B]2.0.8[/B]
 - fixed: actor images
 
+=======
+>>>>>>> FETCH_HEAD
 [B]2.0.7[/B]
 - changed: fix actors due to IMDb changes
 
@@ -114,4 +117,8 @@
 - changed: adapted new IMDb layout
 
 [B]1.0.5[/B]
+<<<<<<< HEAD
 - fixed: tack /combined onto the end of the url to work around the new layout of IMDb
+=======
+- fixed: tack /combined onto the end of the url to work around the new layout of IMDb
+>>>>>>> FETCH_HEAD

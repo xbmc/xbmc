@@ -5,10 +5,16 @@
 
 <strings>
     <string id="30000">Fanartképek engedélyezése</string>
+<<<<<<< HEAD
     <string id="30001">Filmelőzetesek inkább a HD-Trailers.net-ről</string>
     <string id="30002">Preferált nyelv</string>
     <string id="30003">Értékelés letöltése innen</string>
     <string id="30004">Filmelőzetesek engedélyezése (YouTube)</string>
     <string id="30005">Eredeti filmcím megtartása</string>
     <string id="30006">Preferált korhatár-besorolás innen</string>
+=======
+    <string id="30001">Filmelőzetesek a HD-Trailers.net-ről</string>
+    <string id="30002">Preferált nyelv</string>
+    <string id="30003">Értékelés az IMDb-ről</string>
+>>>>>>> FETCH_HEAD
 </strings>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [B]1.5.9[/B]
 - Updated: language files from Transifex
 
@@ -77,3 +78,13 @@ v1.0.8
 
 v1.0.7
 - Fixed: season thumbs
+=======
+[B]1.1.0[/B]
+- Added: support decimals in episode numbers for DVD ordering
+
+[B]1.0.8[/B]
+- Fixed: fallback to other image languages if preferred doesn't exist
+
+[B]1.0.7[/B]
+- Fixed: season thumbs
+>>>>>>> FETCH_HEAD

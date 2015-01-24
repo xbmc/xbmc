@@ -319,6 +319,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
                     pbItem->SetLabelPreformated(true);
+<<<<<<< HEAD
                     {
                       CURL fileUrl;
                       fileUrl.SetProtocol("tuxbox");
@@ -332,6 +333,10 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                       pbItem->SetPath(fileUrl.Get());
                     }
                     pbItem->SetArt("thumb", GetPicon(strItemName)); //Set Picon Image
+=======
+                    pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";
+                    pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
+>>>>>>> FETCH_HEAD
 
                     //DEBUG Log
                     CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
@@ -606,8 +611,12 @@ bool CTuxBoxUtil::GetZapUrl(const std::string& strPath, CFileItem &items )
               CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
           }
         }
+<<<<<<< HEAD
         streamURL.SetFileName("");
         streamURL.SetPort(g_advancedSettings.m_iTuxBoxZapstreamPort);
+=======
+        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
+>>>>>>> FETCH_HEAD
       }
 
       if (g_application.m_pPlayer->IsPlaying() && !g_tuxbox.sZapstream.available)

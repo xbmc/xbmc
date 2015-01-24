@@ -23,8 +23,13 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
+<<<<<<< HEAD
 #include "music/tags/MusicInfoTag.h"
 #include "threads/SingleLock.h"
+=======
+#include "MusicInfoTag.h"
+#include "utils/SingleLock.h"
+>>>>>>> FETCH_HEAD
 #include "utils/log.h"
 #include <math.h>
 
@@ -90,6 +95,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     Destroy();
     return false;
   }
+<<<<<<< HEAD
   unsigned int blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
 
   if (blockSize == 0)
@@ -102,6 +108,10 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   /* allocate the pcmBuffer for 2 seconds of audio */
   m_pcmBuffer.Create(2 * blockSize * m_codec->m_SampleRate);
 
+=======
+  m_blockSize = m_codec->m_Channels * m_codec->m_BitsPerSample / 8;
+  
+>>>>>>> FETCH_HEAD
   // set total time from the given tag
   if (file.HasMusicInfoTag() && file.GetMusicInfoTag()->GetDuration())
     m_codec->SetTotalTime(file.GetMusicInfoTag()->GetDuration());
@@ -163,8 +173,15 @@ void *CAudioDecoder::GetData(unsigned int samples)
   
   if (size > m_pcmBuffer.getMaxReadSize())
   {
+<<<<<<< HEAD
     CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, m_pcmBuffer.getMaxReadSize());
     size = m_pcmBuffer.getMaxReadSize();
+=======
+    memcpy(m_outputBuffer, m_gaplessBuffer, size*sizeof(float));
+    memmove(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size)*sizeof(float));
+    m_gaplessBufferSize -= size;
+    return m_outputBuffer;
+>>>>>>> FETCH_HEAD
   }
 
   if (m_pcmBuffer.ReadData((char *)m_outputBuffer, size))

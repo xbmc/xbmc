@@ -36,11 +36,19 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
+<<<<<<< HEAD
 void CAlarmClock::Start(const std::string& strName, float n_secs, const std::string& strCommand, bool bSilent /* false */, bool bLoop /* false */)
 {
   // make lower case so that lookups are case-insensitive
   std::string lowerName(strName);
   StringUtils::ToLower(lowerName);
+=======
+void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */)
+{
+  // make lower case so that lookups are case-insensitive
+  CStdString lowerName(strName);
+  lowerName.ToLower();
+>>>>>>> FETCH_HEAD
   Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
@@ -79,7 +87,11 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
 
+<<<<<<< HEAD
 void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
+=======
+void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
+>>>>>>> FETCH_HEAD
 {
   CSingleLock lock(m_events);
 
@@ -117,6 +129,14 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
     if(!bSilent)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
   }
+<<<<<<< HEAD
+=======
+  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
+  {
+    if(!bSilent)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
+  }
+>>>>>>> FETCH_HEAD
   else
   {
     CApplicationMessenger::Get().ExecBuiltIn(iter->second.m_strCommand);

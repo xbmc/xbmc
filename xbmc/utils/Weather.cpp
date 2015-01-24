@@ -49,6 +49,7 @@ using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
+<<<<<<< HEAD
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
 #define LOCALIZED_TOKEN_FIRSTID2  1350
@@ -57,6 +58,48 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_LASTID3     17
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     97
+=======
+#define CONTROL_BTNREFRESH  2
+#define CONTROL_SELECTLOCATION 3
+#define CONTROL_LABELLOCATION 10
+#define CONTROL_LABELUPDATED 11
+#define CONTROL_IMAGELOGO  101
+
+#define CONTROL_IMAGENOWICON 21
+#define CONTROL_LABELNOWCOND 22
+#define CONTROL_LABELNOWTEMP 23
+#define CONTROL_LABELNOWFEEL 24
+#define CONTROL_LABELNOWUVID 25
+#define CONTROL_LABELNOWWIND 26
+#define CONTROL_LABELNOWDEWP 27
+#define CONTROL_LABELNOWHUMI 28
+
+#define CONTROL_STATICTEMP  223
+#define CONTROL_STATICFEEL  224
+#define CONTROL_STATICUVID  225
+#define CONTROL_STATICWIND  226
+#define CONTROL_STATICDEWP  227
+#define CONTROL_STATICHUMI  228
+
+#define CONTROL_LABELD0DAY  31
+#define CONTROL_LABELD0HI  32
+#define CONTROL_LABELD0LOW  33
+#define CONTROL_LABELD0GEN  34
+#define CONTROL_IMAGED0IMG  35
+
+#define PARTNER_ID    "1004124588"   //weather.com partner id
+#define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
+
+#define MAX_LOCATION   3
+#define LOCALIZED_TOKEN_FIRSTID    370
+#define LOCALIZED_TOKEN_LASTID     395
+#define LOCALIZED_TOKEN_FIRSTID2  1396
+#define LOCALIZED_TOKEN_LASTID2   1450
+#define LOCALIZED_TOKEN_FIRSTID3    11
+#define LOCALIZED_TOKEN_LASTID3     17
+#define LOCALIZED_TOKEN_FIRSTID4    71
+#define LOCALIZED_TOKEN_LASTID4     89
+>>>>>>> FETCH_HEAD
 
 /*
 FIXME'S
@@ -236,8 +279,27 @@ void CWeatherJob::LoadLocalizedToken()
 
     while (PODoc.GetNextEntry())
     {
+<<<<<<< HEAD
       if (PODoc.GetEntryType() != ID_FOUND)
         continue;
+=======
+      GetInteger(pNestElement, "s", iTmpInt);   //current wind strength
+      iTmpInt = ConvertSpeed(iTmpInt);    //convert speed if needed
+      GetString(pNestElement, "t", iTmpStr, "N");  //current wind direction
+
+      CStdString szCalm = g_localizeStrings.Get(1410);
+      if (iTmpStr ==  "CALM") {
+        m_info.currentWind = szCalm;
+      } else {
+        LocalizeOverviewToken(iTmpStr);
+        m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
+            iTmpStr, iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
+      }
+    }
+
+    GetInteger(pElement, "hmid", iTmpInt);    //current humidity
+    m_info.currentHumidity.Format("%i%%", iTmpInt);
+>>>>>>> FETCH_HEAD
 
       uint32_t id = PODoc.GetEntryID();
       PODoc.ParseEntry(ISSOURCELANG);
@@ -248,7 +310,30 @@ void CWeatherJob::LoadLocalizedToken()
           (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
           (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
       {
+<<<<<<< HEAD
         if (!PODoc.GetMsgid().empty())
+=======
+        const char *attr = pOneDayElement->Attribute("t");
+        if (attr)
+        {
+          m_info.forecast[i].m_day = attr;
+          LocalizeOverviewToken(m_info.forecast[i].m_day);
+        }
+
+        GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
+        if (iTmpStr == "N/A")
+          m_info.forecast[i].m_high = "";
+        else
+        {
+          CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
+          m_info.forecast[i].m_high.Format("%2.0f", temp.ToLocale());
+        }
+
+        GetString(pOneDayElement, "low", iTmpStr, "");
+        if (iTmpStr == "N/A")
+          m_info.forecast[i].m_low = "";
+        else
+>>>>>>> FETCH_HEAD
         {
           m_localizedTokens.insert(make_pair(PODoc.GetMsgid(), id));
           counter++;
@@ -256,6 +341,7 @@ void CWeatherJob::LoadLocalizedToken()
       }
     }
 
+<<<<<<< HEAD
     CLog::Log(LOGDEBUG, "POParser: loaded %i weather tokens", counter);
     return;
   }
@@ -266,6 +352,12 @@ void CWeatherJob::LoadLocalizedToken()
 
   // We load the tokens from the strings.xml file
   std::string strLanguagePath = "special://xbmc/language/English/strings.xml";
+=======
+void CWeatherJob::LoadLocalizedToken()
+{
+  // We load the english strings in to get our tokens
+  CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
+>>>>>>> FETCH_HEAD
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strLanguagePath) || !xmlDoc.RootElement())
@@ -288,7 +380,11 @@ void CWeatherJob::LoadLocalizedToken()
       if (attrId && !pChild->NoChildren())
       {
         int id = atoi(attrId);
+<<<<<<< HEAD
         if ((LOCALIZED_TOKEN_FIRSTID  <= id && id <= LOCALIZED_TOKEN_LASTID)  ||
+=======
+        if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
+>>>>>>> FETCH_HEAD
             (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
             (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
             (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))

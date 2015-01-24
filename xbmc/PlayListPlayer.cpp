@@ -30,6 +30,7 @@
 #include "playlists/PlayList.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+<<<<<<< HEAD
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -37,6 +38,9 @@
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/Key.h"
 #include "URL.h"
+=======
+#include "MusicInfoTag.h"
+>>>>>>> FETCH_HEAD
 
 using namespace PLAYLIST;
 
@@ -176,7 +180,11 @@ int CPlayListPlayer::GetNextSong()
   return iSong;
 }
 
+<<<<<<< HEAD
 bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
+=======
+void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
+>>>>>>> FETCH_HEAD
 {
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
@@ -196,7 +204,11 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   return Play(iSong, false);
 }
 
+<<<<<<< HEAD
 bool CPlayListPlayer::PlayPrevious()
+=======
+void CPlayListPlayer::PlayPrevious()
+>>>>>>> FETCH_HEAD
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
@@ -254,7 +266,31 @@ bool CPlayListPlayer::PlaySongId(int songId)
   return Play();
 }
 
+<<<<<<< HEAD
 bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+=======
+void CPlayListPlayer::PlaySongId(int songId)
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return;
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0) 
+    Play();
+
+  for (int i = 0; i < playlist.size(); i++)
+  {
+    if (playlist[i]->HasMusicInfoTag() && playlist[i]->GetMusicInfoTag()->GetDatabaseId() == songId)
+    {
+      Play(i);
+      return;
+    }
+  }
+  Play();
+}
+
+void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+>>>>>>> FETCH_HEAD
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
@@ -276,6 +312,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
         break;
   }
 
+  int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
   playlist.SetPlayed(true);
@@ -461,7 +498,11 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
   return false;
 }
 
+<<<<<<< HEAD
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = false */)
+=======
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
+>>>>>>> FETCH_HEAD
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;

@@ -1,4 +1,5 @@
 SRCS=Addon.cpp \
+<<<<<<< HEAD
      AddonCallbacks.cpp \
      AddonCallbacksAddon.cpp \
      AddonCallbacksCodec.cpp \
@@ -21,6 +22,18 @@ SRCS=Addon.cpp \
      Service.cpp \
      Skin.cpp \
      Visualisation.cpp \
+=======
+		 AddonManager.cpp \
+		 AddonStatusHandler.cpp \
+		 PluginSource.cpp \
+		 ScreenSaver.cpp \
+		 Scraper.cpp \
+		 Skin.cpp \
+		 Visualisation.cpp \
+		 fft.cpp \
+		 Repository.cpp \
+		 AddonInstaller.cpp \
+>>>>>>> FETCH_HEAD
 
 LIB=addons.a
 

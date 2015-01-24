@@ -281,9 +281,21 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       m_decode.size -= len;
 
       // get decoded data and the size of it
+<<<<<<< HEAD
       m_pAudioCodec->GetData(audioframe);
 
       if (audioframe.nb_frames == 0)
+=======
+      audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
+      audioframe.pts = m_audioClock;
+      audioframe.channel_map = m_pAudioCodec->GetChannelMap();
+      audioframe.channels = m_pAudioCodec->GetChannels(); /* get channels AFTER map so that it can be corrected if bad */
+      audioframe.bits_per_sample = m_pAudioCodec->GetBitsPerSample();
+      audioframe.sample_rate = m_pAudioCodec->GetSampleRate();
+      audioframe.passthrough = m_pAudioCodec->NeedPassthrough();
+
+      if (audioframe.size <= 0)
+>>>>>>> FETCH_HEAD
         continue;
 
       if (audioframe.pts == DVD_NOPTS_VALUE)
@@ -518,6 +530,7 @@ void CDVDPlayerAudio::Process()
 
     if( result & DECODE_FLAG_TIMEOUT )
     {
+<<<<<<< HEAD
       // Flush as the audio output may keep looping if we don't
       if(m_speed == DVD_PLAYSPEED_NORMAL && !m_stalled)
       {
@@ -525,6 +538,13 @@ void CDVDPlayerAudio::Process()
         m_dvdAudio.Flush();
         m_stalled = true;
       }
+=======
+      m_stalled = true;
+
+      // Flush as the audio output may keep looping if we don't
+      if(m_speed == DVD_PLAYSPEED_NORMAL)
+        m_dvdAudio.Flush();
+>>>>>>> FETCH_HEAD
 
       continue;
     }

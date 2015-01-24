@@ -23,12 +23,19 @@
 #include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogAddonSettings.h"
+<<<<<<< HEAD
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+=======
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
+#include "log.h"
+>>>>>>> FETCH_HEAD
 
 namespace ADDON
 {

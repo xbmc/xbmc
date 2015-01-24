@@ -37,7 +37,11 @@ public:
   virtual bool CanInit();
   virtual CAEChannelInfo GetChannelInfo();
 
+<<<<<<< HEAD
   virtual void SetTotalTime(int64_t totaltime)
+=======
+  virtual void SetTotalTime(__int64 totaltime)
+>>>>>>> FETCH_HEAD
   {
     m_TotalTime = totaltime*1000;
   }

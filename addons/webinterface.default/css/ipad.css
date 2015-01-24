@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .contentContainer {
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -6,4 +7,14 @@
 	bottom: auto;
 	background: #fff;
 	padding-bottom: 150px;
+=======
+.contentContainer {
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: absolute;
+	height: auto;
+	bottom: auto;
+	background: #fff;
+	padding-bottom: 150px;
+>>>>>>> FETCH_HEAD
 	}

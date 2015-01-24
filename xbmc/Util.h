@@ -63,6 +63,7 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
+<<<<<<< HEAD
   static void CleanString(const std::string& strFileName,
                           std::string& strTitle,
                           std::string& strTitleAndYear,
@@ -70,6 +71,13 @@ public:
                           bool bRemoveExtension = false,
                           bool bCleanChars = true);
   static CStdString GetTitleFromPath(const CURL& url, bool bIsFolder = false);
+=======
+  static const CStdString GetExtension(const CStdString& strFileName);
+  static void RemoveExtension(CStdString& strFileName);
+  static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
+  static void CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
+  static const CStdString GetFileName(const CStdString& strFileNameAndPath);
+>>>>>>> FETCH_HEAD
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
@@ -81,7 +89,28 @@ public:
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const std::vector<std::string>& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
+<<<<<<< HEAD
 
+=======
+  static void URLDecode(CStdString& strURLData);
+  static void URLEncode(CStdString& strURLData);
+
+  /*! \brief retrieve MD5sum of a file
+   \param strPath - path to the file to MD5sum
+   \return md5 sum of the file
+   */
+  static CStdString GetFileMD5(const CStdString& strPath);
+  static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
+  static bool IsISO9660(const CStdString& strFile);
+  static bool IsSmb(const CStdString& strFile);
+  static bool IsXBMS(const CStdString& strFile);
+  static bool IsURL(const CStdString& strFile);
+  static bool IsFTP(const CStdString& strFile);
+  static bool IsInternetStream(const CStdString& strFile, bool bStrictCheck = false);
+  static bool IsDAAP(const CStdString& strFile);
+  static bool IsUPnP(const CStdString& strFile);
+  static bool IsWritable(const CStdString& strFile);
+>>>>>>> FETCH_HEAD
   static bool IsPicture(const CStdString& strFile);
 
   /*! \brief retrieve MD5sum of a file
@@ -105,6 +134,12 @@ public:
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
+<<<<<<< HEAD
+=======
+  static void TakeScreenshot();
+  static void TakeScreenshot(const CStdString &filename, bool sync);
+  static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
+>>>>>>> FETCH_HEAD
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void StatToStat64(struct __stat64 *result, const struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
@@ -176,8 +211,11 @@ public:
 
 #ifdef UNIT_TESTING
   static bool TestSplitExec();
+<<<<<<< HEAD
   static bool TestGetQualifiedFilename();
   static bool TestMakeLegalPath();
+=======
+>>>>>>> FETCH_HEAD
 #endif
 
   static void InitRandomSeed();

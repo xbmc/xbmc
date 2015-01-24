@@ -1,0 +1,80 @@
+libass (0.9.11)
+ * Fix serious memory leaks
+ * Reduce frame/drawing initialization overhead
+
+libass (0.9.10)
+ * Basic (incorrect, but working) support for @font vertical text layout
+ * Fix multiple faces per font attachment
+ * charmap selection fixes
+ * Add ass_flush_events API function
+ * Improve fullname font matching
+ * Better PAR correction if text transforms are used
+ * Calculate drawing bounding box like VSFilter
+ * Performance improvements
+   * Cache vector clip masks
+   * Avoid unnecessary glyph copies
+ * Various rendering fixes
+
+libass (0.9.9)
+ * Parse numbers in a locale-independent way
+ * Remove support for freetype < 2.2.1, fontconfig < 2.4.1; this especially
+   means libass will not extract fonts into the file system anymore
+ * Disable script file size limit
+ * Match fonts against the full name ("name for humans")
+ * Reset clip mode after \iclip
+ * Improve VSFilter compatibility
+ * Update API documentation
+ * A couple of smaller fixes and cleanups
+
+libass (0.9.8)
+ * Support \q override tag
+ * Support wrap style 1 (i.e. wrap, but do not equalize line lengths)
+ * Support border style 3 (opaque box)
+ * Use the event bounding box (instead of vertical position and height) for
+   collision detection
+ * Embold glyphs if no bold variant is available, but was requested
+ * Modify \fax to be similar to VSFilter
+ * Trim spaces after line wrapping
+ * Fix border/shadow overlap combining in some cases
+ * Disable kerning by default.  Use "Kerning=yes" style override or
+   "Kerning: yes" in [Script Info] to enable it
+ * Slight bitmap handling optimizations
+ * Various bugfixes
+
+libass (0.9.7)
+ * Build system fixes
+ * Fixed cache lookup and overload problems
+ * All globals have been eliminated, libass is reentrant
+ * Dynamically allocate glyph and line buffers
+ * Fix up stroking of big borders
+ * Support empty lines (\N\N)
+ * Support for the following override tags:
+   \fax, \fay, \xshad, \yshad, \ybord, \xbord, \iclip, \u, \s, \p, \pbo
+ * Full subpixel accuracy for positioning
+ * PAR and rotation correction for EOSD rendering
+ * Drawing mode (including vector \clip and \iclip)
+ * Fixed a few memory leaks
+ * Removed MPlayer compatibility code
+ * Introduced message handling callback
+ * Various fixes to match VSFilter quirks and Windows font metrics
+ * Lots of bugfixes
+
+LibASS (0.9.6)
+ * Various fixes and updates to match VSFilter renderer.
+ * Support \blur tag and ScaledBordersAndShadow property.
+ * Fractional arguments and subpixel accuracy.
+ * Keep positions when pan-and-scan is used.
+ * Lots of bugfixes and other changes.
+
+LibASS (0.9.5)
+ * Support '=' and '.' in style name in arguments to ass_set_style_overrides().
+ * Allow overriding [Script Info] parameters with ass_set_style_overrides().
+ * Add workarounds for some buggy fonts.
+ * Remove buggy workarounds for some other fonts.
+ * Fixed ass_set_line_spacing() (was broken before).
+ * Negative margin sizes are now used for image cropping.
+ * Better handling of behind-the-camera objects.
+ * Case insensitive parsing of SSA/ASS section headers.
+ * Improved font matching.
+ * When 2 styles have the same name, the later one is used.
+ * Fixed several other bugs.

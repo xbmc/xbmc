@@ -4,6 +4,7 @@ INCLUDES += -I@abs_top_srcdir@/xbmc/linux
 
 .SUFFIXES : .m .mm
 
+<<<<<<< HEAD
 SRCS  = XBMCHelper.m
 SRCS += AutoPool.mm
 SRCS += DarwinUtils.mm
@@ -14,6 +15,23 @@ SRCS += OSXTextInputResponder.mm
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += smc.c
 endif
+=======
+# do not include eprintf.cpp as make links to libgcc.a where as xcode does not.
+SRCS = \
+	SDLMain.mm \
+	XBMCHelper.m \
+	CocoaInterface.mm \
+	CoreAudio.cpp \
+	DarwinStorageProvider.cpp \
+	CocoaPowerSyscall.cpp \
+	OSXGNUReplacements.c \
+	ZeroconfOSX.cpp \
+	ZeroconfBrowserOSX.cpp \
+	WinSystemOSX.mm \
+	WinSystemOSXGL.mm \
+	SemaphoreDarwin.cpp \
+	posix-realtime-stub.c
+>>>>>>> FETCH_HEAD
 	
 LIB = osx.a
 

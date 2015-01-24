@@ -60,6 +60,7 @@
   </Home>
   <MyFiles>
     <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
       <button id="7">Move</button>
       <button id="9">Copy</button>
       <button id="11">Highlight</button>
@@ -126,7 +127,11 @@
       <button id="4">SkipPrevious</button>
       <button id="5">OSD</button>
       <button id="6">Info</button>
+<<<<<<< HEAD
       <button id="8">ActivateWindow(music)</button>
+=======
+      <button id="8">XBMC.ActivateWindow(music)</button>
+>>>>>>> FETCH_HEAD
       <button id="10">IncreaseRating</button>
       <button id="11">DecreaseRating</button>
     </joystick>
@@ -219,4 +224,29 @@
       <button id="4">NextPicture</button>
     </joystick>
   </PictureInfo>
+  <MyPictures>
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </MyPictures>
+  <AddonBrowser>
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </AddonBrowser>
+  <AddonInformation>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

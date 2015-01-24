@@ -71,12 +71,21 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
 
 int CDVDAudioCodecPassthrough::GetEncodedSampleRate()
 {
+<<<<<<< HEAD
   return m_info.GetSampleRate();
 }
 
 enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
 {
   switch(m_info.GetDataType())
+=======
+  bool bSupportsAC3Out = false;
+  bool bSupportsDTSOut = false;
+  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+
+  // TODO - move this stuff somewhere else
+  if (AUDIO_IS_BITSTREAM(audioMode))
+>>>>>>> FETCH_HEAD
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
       return AE_FMT_AC3;
@@ -93,8 +102,37 @@ enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       return AE_FMT_TRUEHD;
 
+<<<<<<< HEAD
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
       return AE_FMT_DTSHD;
+=======
+    /* try AC3/DTS decoders first */
+    m_Codec = hints.codec;
+#ifdef USE_LIBA52_DECODER
+    if(m_Codec == CODEC_ID_AC3)
+    {
+      if (!m_dllA52.Load())
+        return false;
+      m_pStateA52 = m_dllA52.a52_init(0);
+      if(m_pStateA52 == NULL)
+        return false;
+      m_iSamplesPerFrame = 6*256;
+      return true;
+    }
+#endif
+#ifdef USE_LIBDTS_DECODER
+    if(m_Codec == CODEC_ID_DTS)
+    {
+      if (!m_dllDTS.Load())
+        return false;
+      m_pStateDTS = m_dllDTS.dts_init(0);
+      if(m_pStateDTS == NULL)
+        return false;
+      return true;
+    }
+#endif
+  }
+>>>>>>> FETCH_HEAD
 
     default:
       return AE_FMT_INVALID; //Unknown stream type
@@ -113,7 +151,32 @@ int CDVDAudioCodecPassthrough::GetEncodedChannels()
 
 CAEChannelInfo CDVDAudioCodecPassthrough::GetChannelMap()
 {
+<<<<<<< HEAD
   return m_info.GetChannelMap();
+=======
+  int len, framesize;
+  BYTE* frame;
+  m_OutputSize = 0;
+
+  len = ParseFrame(pData, iSize, &frame, &framesize);
+  if(!frame)
+    return len;
+
+#ifdef USE_LIBA52_DECODER
+  if(m_Codec == CODEC_ID_AC3)
+  {
+    m_OutputSize = PaddAC3Data(frame, framesize, m_OutputBuffer);
+    return len;
+  }
+#endif
+#ifdef USE_LIBDTS_DECODER
+  if(m_Codec == CODEC_ID_DTS)
+  {
+    m_OutputSize = PaddDTSData(frame, framesize, m_OutputBuffer);
+    return len;
+  }
+#endif
+>>>>>>> FETCH_HEAD
 }
 
 void CDVDAudioCodecPassthrough::Dispose()

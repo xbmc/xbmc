@@ -118,8 +118,15 @@ public:
   static void SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
+<<<<<<< HEAD
   virtual bool OnPreInstall();
   virtual void OnPostInstall(bool restart, bool update);
+=======
+  bool IsInUse() const;
+
+//  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
+  static double GetMinVersion();
+>>>>>>> FETCH_HEAD
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate

@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--Translator: Özgür BASKIN (queeup)-->
+<!--Email: ozgur.baskin@gmail.com-->
+<!--Date of translation: 29/11/2010-->
+<!--Turkish strings based on English strings revision 35510-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Değiştir</string>
+  <string id="31001">Aşk</string>
+  <string id="31002">Nefret</string>
+  <string id="31003">Güç Seçenekleri</string>
+  <string id="31004">Çalışıyor...</string>
+  <string id="31005">Bilgiyi Gizle</string>
+
+  <string id="31007">Eklentiler</string>
+
+  <string id="31020">Son Eklenenler</string>
+  <string id="31021">Video - Dosyalar</string>
+  <string id="31022">Müzik - Dosyalar</string>
+  <string id="31023">Oynatılıyor</string>
+  <string id="31024">Sayfa</string>
+  <string id="31025">Nesne</string>
+  <string id="31026">Çeşitli Ayarlar</string>
+  <string id="31027">Yer</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Kayan Poster</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Tam liste</string>
+  <string id="31031">Küçük Resimler</string>
+  <string id="31032">Kayan Resim</string>
+  <string id="31033">Bilgi</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Şimdi Çalınıyor</string>
+
+  <string id="31042">OYNATILIYOR</string>
+  <string id="31043">DURAKLATILDI</string>
+  <string id="31044">İLERİ SAR</string>
+  <string id="31045">GERİ SAR</string>
+  <string id="31046">Ses Özellikleri</string>
+  <string id="31047">Geçerli Önayar</string>
+  <string id="31048">Görsel Öğe Önayarları</string>
+  <string id="31049">Bitiş Zamanı</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Çalma listesini aç</string>
+  <string id="31056">Çalma listesini kaydet</string>
+  <string id="31057">Çalma listesini kapat</string>
+  <string id="31058">Sistem müzik dosyaları</string>
+  <string id="31059">Geçerli çalma listesi</string>
+  <string id="31060">Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin.</string>
+  <string id="31061">Seçilen Geçerli Parça</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Giriş ekranı seçenekleri</string>
+  <string id="31102">Arka Plan</string>
+  <string id="31103">Resim slayt gösterisinde "DURAKLATILDI"yı göster</string>
+  <string id="31104">Fragmanları pencere içinde oynat [COLOR=grey3](Sadece Video Bilgisi İletişim Kutusu İçin)[/COLOR]</string>
+  <string id="31105">Ortam başlıklarını arkaplan tarayıcısında göster</string>
+  <string id="31106">Çeşitli seçenekler</string>
+  <string id="31107">Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Ana Menü Tuşlarını Gizle</string>
+  <string id="31109">Medya arka planları</string>
+  <string id="31110">Medya Türü için Arka planı değiştir</string>
+  <string id="31111">Gizle</string>
+  <string id="31112">Seçenekler</string>
+  <string id="31113">Tek Resim</string>
+  <string id="31114">Çoklu Resim</string>
+  <string id="31115">Özelleştir</string>
+  <string id="31116"></string>
+  <string id="31117">Son Eklenen Videoları Göster</string>
+  <string id="31118">Ana Sayfa Programlar Alt Menüsü</string>
+  <string id="31119"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31120">TUŞ ETİKETİ</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31122">Hava Durumu Sayfası</string>
+  <string id="31123">TV Programları için "Afiş" yerine "Poster" kullan</string>
+  <string id="31124">Arkaplanda Oynatılan Videoyu göster</string>
+  <string id="31125">Arkaplanda Görsel Ögeyi göster</string>
+
+  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31128">Lyrics</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+  
+  <string id="31131">Yatay Ana Menü</string>
+  <string id="31132">Lyrics Eklentisi</string>
+  <string id="31133">Altyazı Eklentisi</string>
+  <string id="31134">Ana Sayfa Videolar Alt Menüsü</string>
+  <string id="31135">Ana Sayfa Müzik Alt Menüsü</string>
+  <string id="31136">Ana Sayfa Resimler Alt Menüsü</string>
+
+  <string id="31140">Müzik OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">Kısayollar</string>
+  <string id="31201">Kategoriler</string>
+  <string id="31202">Oyuncuları Göster</string>
+  <string id="31203">Şarkını Seç</string>
+  <string id="31204">Bölge Bağlantıları</string>
+  <string id="31205">Lyrics Kaynağı</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Mevcut Sıcaklık</string>
+  <string id="31301">Son Güncelleme</string>
+  <string id="31302">Menü</string>
+  <string id="31303"></string>
+  <string id="31304">Resim</string>
+  <string id="31305">Disk Ortamı Algılanmadı</string>
+  <string id="31306">Çıkart</string>
+  <string id="31307">Fanart'ı gizle</string>
+  <string id="31308">Film Detayları</string>
+  <string id="31309">Kullanılan Bellek:</string>
+  <string id="31310">Parça Numarası</string>
+  <string id="31311">Fanart resmi[CR][CR]Mevcut Değil[CR][CR] Ayarlamak için düğmeye basın</string>
+  <string id="31312">Geçerli Scraper</string>
+  <string id="31313">Scraper Seç</string>
+  <string id="31314">İçerik Tarama Seçenekleri</string>
+  <string id="31315">Temel Bilgiler</string>
+  <string id="31316"></string>
+  <string id="31317">Fanart Yolunu Ayarla</string>
+  <string id="31318">Küçük Fanart</string>
+  <string id="31319">Seçilen Profil</string>
+  <string id="31320">Son Giriş Yapan</string>
+  <string id="31321">Karaoke Şarkı Seçici</string>
+  <string id="31322">Gösterim</string>
+  <string id="31323">En Yeni Filmler</string>
+  <string id="31324">En Yeni Bölümler</string>
+  <string id="31325">Çalma Listesi Seçenekleri</string>
+  <string id="31326">Oluşturma</string>
+  <string id="31327">Çözünürlük</string>
+  <string id="31328">Son Eklenenler</string>
+  <string id="31329">[B]Zamanlayıcı ayarlandı![/B] [COLOR=grey2] - Sistem'in otomatik kapanma süresi[/COLOR]</string>
+  <string id="31330">Oynatmak için düğmeye basın[CR][CR]Film fragmanı</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Duraklat</string>
+  <string id="31352">Durdur</string>
+  <string id="31353">İleri Sar</string>
+  <string id="31354">Geri Sar</string>
+  <string id="31355">Film menüsü</string>
+  <string id="31356">Altyazıları İndir</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Dış görünüm varsayılanı</string>
+  <string id="31391">B. Harfsiz dış görünüm varsayılanı</string>
+  <string id="31392">Arial tabanlı</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Dış görünümü değiştir · Dil ve bölgesel ayarları değiştir · Dosya listeleme seçeneklerini değiştir · Ekran koruyucuyu ayarla</string>
+  <string id="31401">[B]VİDEO AYARLARINI YAPILANDIR[/B][CR][CR]Video kitaplığını yönet · Video oynatma seçeneklerini ayarla · Video listeleme seçeneklerini değiştir · Altyazı karakterlerini ayarla</string>
+  <string id="31402">[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik listeleme seçeneklerini değiştir · Şarkı sunumu ayarları · Karaoke seçeneklerini ayarla</string>
+  <string id="31403">[B]RESİM AYARLARINI YAPILANDIR[/B][CR][CR]Resim listeleme seçeneklerini değiştir · Slayt gösterisi ayarlarını yapılandır</string>
+  <string id="31404">[B]HAVA DURUMU AYARLARINI YAPILANDIR[/B][CR][CR]Hava Durumu bilgilerini almak için üç şehir seçin</string>
+  <string id="31405">[B]AĞ AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]İnternet erişim seçeneklerini ayarla</string>
+  <string id="31406">[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünüm ayarları · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem kilit ayarları</string>
+  <string id="31407">[B]DIŞ GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Confluence dış görünümü ayarları · Ana menü ögelerini ekle ve kaldır[CR]Arayüz arkaplanlarını değiştir</string>
+  <string id="31408">[B]EKLENTİLERİ YAPILANDIR[/B][CR][CR]Yüklenmiş eklentileri yönet · Eklentilere gözat ve yenilerini yükle[CR]Eklenti ayarlarını değiştir</string>
+
+  <string id="31421">Oturum açıp devam etmek için[CR]XBMC kullanıcı profilinizi seçin</string>
+</strings>

@@ -161,6 +161,7 @@ static bool LoadTexture(int width, int height, int stride
 
 COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
 {
+<<<<<<< HEAD
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;
@@ -168,6 +169,22 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   m_x      = 0.0f;
   m_y      = 0.0f;
   m_count  = 0;
+=======
+  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+
+  int width  = res.iWidth;
+  int height = res.iHeight;
+
+  m_width  = (float)width;
+  m_height = (float)height;
+  m_count  = 0;
+
+  if     (res.fPixelRatio > 1.0)
+    width  = MathUtils::round_int(width  * res.fPixelRatio);
+  else if(res.fPixelRatio < 1.0)
+    height = MathUtils::round_int(height / res.fPixelRatio);
+
+>>>>>>> FETCH_HEAD
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
   SQuads quads;

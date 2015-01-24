@@ -1,0 +1,61 @@
+v 2.0.4 (Ppic):
+- add some corections for LatestSong fields
+
+v 2.0.3 (Ppic):
+- restored album function (clic on random or recently added album will play the full album)
+  TO SKINNERS: the "playmedia" isn't needed for album, instead of that, "LatestSong.%d.Path" will be filled with command to run the script with albumid, then the script will make a playlist with all song of the album and play it ;)
+  
+  here is an example made by hitcher:
+  
+    made a custom button in the settings so the user can choose to use Albums -
+    
+    XML Code:
+    <control type="radiobutton" id="265">
+        <include>SettingsLabel</include>
+        <label>$LOCALIZE[31327]</label> <!--Enable Latest Albums (default Latest Songs)-->
+        <onclick>Skin.ToggleSetting(PlayAlbums)</onclick>
+        <selected>Skin.HasSetting(PlayAlbums)</selected>
+    </control> 
+    
+    Then used that condition when I run the script -
+    
+    XML Code:
+    <control type="button" id="5043">
+        <posx>-20</posx>
+        <posy>-20</posy>
+        <width>1</width>
+        <height>1</height>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+        <onfocus>XBMC.RunScript(script.recentlyadded,limit=10&amp;albums=False&amp;unplayed=True&amp;totals=True&amp;random=True)</onfocus>
+        <onfocus>SetFocus(300)</onfocus>
+        <visible>!Skin.HasSetting(PlayAlbums)</visible>
+    </control>
+    <control type="button" id="5043">
+        <posx>-20</posx>
+        <posy>-20</posy>
+        <width>1</width>
+        <height>1</height>
+        <texturenofocus>-</texturenofocus>
+        <texturefocus>-</texturefocus>
+        <onfocus>XBMC.RunScript(script.recentlyadded,limit=10&amp;albums=True&amp;unplayed=True&amp;totals=True&amp;random=True)</onfocus>
+        <onfocus>SetFocus(300)</onfocus>
+        <visible>Skin.HasSetting(PlayAlbums)</visible>
+    </control> 
+    
+    And finally in the actual control -
+    
+    XML Code:
+    <item id="10">
+        <icon>$INFO[Window.Property(LatestSong.1.Thumb)]</icon>
+        <label>$INFO[Window.Property(LatestSong.1.Album),, - ]$INFO[Window.Property(LatestSong.1.Title)]</label>
+        <onclick>$INFO[Window.Property(LatestSong.1.Path),PlayMedia(,)]</onclick>
+        <visible>!Skin.HasSetting(PlayAlbums) + !IsEmpty(Window.Property(LatestSong.1.Title))</visible>
+    </item>
+    <item id="10">
+        <icon>$INFO[Window.Property(LatestSong.1.Thumb)]</icon>
+        <label>$INFO[Window.Property(LatestSong.1.Album),, - ]$INFO[Window.Property(LatestSong.1.Artist)]</label>
+        <onclick>$INFO[Window.Property(LatestSong.1.Path)]</onclick>
+        <visible>Skin.HasSetting(PlayAlbums) + !IsEmpty(Window.Property(LatestSong.1.Artist))</visible>
+    </item>  
+  

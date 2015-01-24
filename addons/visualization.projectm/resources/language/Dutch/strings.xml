@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Weergavekwaliteit</string>
+    <string id="30001">Laag</string>
+    <string id="30002">Medium</string>
+    <string id="30003">Hoog</string>
+    <string id="30004">Maximum</string>
+    <string id="30005">Willekeurige modus</string>
+    <string id="30006">Smooth-Presetduur</string>
+    <string id="30007">Presetduur</string>
+    <string id="30008">Beatgevoeligheid</string>
+</strings>

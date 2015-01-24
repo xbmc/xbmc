@@ -107,9 +107,26 @@ void CStreamDetailAudio::Archive(CArchive& ar)
 }
 void CStreamDetailAudio::Serialize(CVariant& value) const
 {
+<<<<<<< HEAD
   value["codec"] = m_strCodec;
   value["language"] = m_strLanguage;
   value["channels"] = m_iChannels;
+=======
+  // technically, truehd, dtsma, and flac are equivalently good (they're all lossless)
+  if (m_strCodec == "flac")
+    return 6;
+  if (m_strCodec == "dtsma")
+    return 5;
+  if (m_strCodec == "truehd")
+    return 4;
+  if (m_strCodec == "eac3")
+    return 3;
+  if (m_strCodec == "dca")
+    return 2;
+  if (m_strCodec == "ac3")
+    return 1;
+  return 0;
+>>>>>>> FETCH_HEAD
 }
 
 bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)

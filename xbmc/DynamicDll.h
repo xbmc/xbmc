@@ -524,7 +524,11 @@ public:
   virtual ~DllDynamic();
   virtual bool Load();
   virtual void Unload();
+<<<<<<< HEAD
   virtual bool IsLoaded() const { return m_dll!=NULL; }
+=======
+  virtual bool IsLoaded() { return m_dll!=NULL; }
+>>>>>>> FETCH_HEAD
   bool CanLoad();
   bool EnableDelayedUnload(bool bOnOff);
   bool SetFile(const CStdString& strDllName);

@@ -287,9 +287,15 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           if (htmlText == "div" || htmlText == "span")
             htmlText = childNode->FirstChild()->FirstChild()->ValueStr();
 
+<<<<<<< HEAD
           std::wstring unicodeText, unicodeText2;
 
           g_charsetConverter.utf8ToW(htmlText, unicodeText2, m_rtlText);
+=======
+          CStdStringW unicodeText,unicodeText2;
+
+          fromRSSToUTF16(htmlText, unicodeText2);
+>>>>>>> FETCH_HEAD
           html.ConvertHTMLToW(unicodeText2, unicodeText);
 
           mTagElements.insert(StrPair(*i, unicodeText));

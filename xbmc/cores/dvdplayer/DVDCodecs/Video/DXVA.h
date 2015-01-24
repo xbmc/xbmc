@@ -27,9 +27,12 @@
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+<<<<<<< HEAD
 #include <list>
 #include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
+=======
+>>>>>>> FETCH_HEAD
 
 namespace DXVA {
 
@@ -166,4 +169,53 @@ protected:
   CEvent                       m_event;
 };
 
+<<<<<<< HEAD
+=======
+class CProcessor
+  : public ID3DResource
+{
+public:
+  CProcessor();
+ ~CProcessor();
+
+  bool           Open(const DXVA2_VideoDesc& dsc);
+  void           Close();
+  void           HoldSurface(IDirect3DSurface9* surface);
+  REFERENCE_TIME Add(IDirect3DSurface9* source);
+  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
+  int            Size() { return m_size; }
+
+  CProcessor* Acquire();
+  long        Release();
+
+  virtual void OnCreateDevice()  {}
+  virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
+  virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
+  virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
+
+  IDirectXVideoProcessorService* m_service;
+  IDirectXVideoProcessor*        m_process;
+  GUID                           m_device;
+
+  DXVA2_VideoProcessorCaps m_caps;
+  DXVA2_VideoDesc  m_desc;
+
+  DXVA2_ValueRange m_brightness;
+  DXVA2_ValueRange m_contrast;
+  DXVA2_ValueRange m_hue;
+  DXVA2_ValueRange m_saturation;
+  REFERENCE_TIME   m_time;
+  unsigned         m_size;
+
+  typedef std::deque<DXVA2_VideoSample> SSamples;
+  SSamples          m_sample;
+
+  CCriticalSection  m_section;
+  long              m_references;
+
+protected:
+  std::vector<IDirect3DSurface9*> m_heldsurfaces;
+};
+
+>>>>>>> FETCH_HEAD
 };

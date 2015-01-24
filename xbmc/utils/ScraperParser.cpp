@@ -29,9 +29,13 @@
 #include "utils/StringUtils.h"
 #include "log.h"
 #include "CharsetConverter.h"
+<<<<<<< HEAD
 #include "utils/StringUtils.h"
 #include "utils/XSLTUtils.h"
 #include "utils/XMLUtils.h"
+=======
+
+>>>>>>> FETCH_HEAD
 #include <sstream>
 #include <cstring>
 
@@ -483,8 +487,14 @@ void CScraperParser::Clean(std::string& strDirty)
       strBuffer = strDirty.substr(i+11,i2-i-11);
       std::string strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
+<<<<<<< HEAD
       StringUtils::Trim(strConverted);
       strDirty.replace(i, i2-i+11, strConverted);
+=======
+      RemoveWhiteSpace(strConverted);
+      strDirty.erase(i,i2-i+11);
+      strDirty.Insert(i,strConverted);
+>>>>>>> FETCH_HEAD
       i += strConverted.size();
     }
     else
@@ -497,8 +507,14 @@ void CScraperParser::Clean(std::string& strDirty)
     if ((i2 = strDirty.find("!!!TRIM!!!",i+10)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
+<<<<<<< HEAD
       StringUtils::Trim(strBuffer);
       strDirty.replace(i, i2-i+10, strBuffer);
+=======
+      RemoveWhiteSpace(strBuffer);
+      strDirty.erase(i,i2-i+10);
+      strDirty.Insert(i,strBuffer);
+>>>>>>> FETCH_HEAD
       i += strBuffer.size();
     }
     else
@@ -511,6 +527,7 @@ void CScraperParser::Clean(std::string& strDirty)
     if ((i2 = strDirty.find("!!!FIXCHARS!!!",i+14)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
+<<<<<<< HEAD
       std::wstring wbuffer;
       g_charsetConverter.utf8ToW(strBuffer, wbuffer, false, false, false);
       std::wstring wConverted;
@@ -519,6 +536,16 @@ void CScraperParser::Clean(std::string& strDirty)
       StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.replace(i, i2-i+14, strBuffer);
+=======
+      CStdStringW wbuffer;
+      g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
+      CStdStringW wConverted;
+      HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
+      g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
+      RemoveWhiteSpace(strBuffer);
+      strDirty.erase(i,i2-i+14);
+      strDirty.Insert(i,strBuffer);
+>>>>>>> FETCH_HEAD
       i += strBuffer.size();
     }
     else
@@ -539,6 +566,7 @@ void CScraperParser::Clean(std::string& strDirty)
   }
 }
 
+<<<<<<< HEAD
 void CScraperParser::ConvertJSON(std::string &string)
 {
   CRegExp reg;
@@ -565,6 +593,12 @@ void CScraperParser::ConvertJSON(std::string &string)
   }
 
   StringUtils::Replace(string, "\\\"","\"");
+=======
+void CScraperParser::RemoveWhiteSpace(CStdString &string)
+{
+  string.TrimLeft(" \t\r\n");
+  string.TrimRight(" \t\r\n");
+>>>>>>> FETCH_HEAD
 }
 
 void CScraperParser::ClearBuffers()

@@ -34,11 +34,18 @@ public:
   CHttpHeader();
   ~CHttpHeader();
 
+<<<<<<< HEAD
   void Parse(const std::string& strData);
   void AddParam(const std::string& param, const std::string& value, const bool overwrite = false);
 
   std::string GetValue(const std::string& strParam) const;
   std::vector<std::string> GetValues(std::string strParam) const;
+=======
+  void Parse(CStdString strData);
+  CStdString GetValue(CStdString strParam) const;
+
+  void GetHeader(CStdString& strHeader) const;
+>>>>>>> FETCH_HEAD
 
   std::string GetHeader(void) const;
 

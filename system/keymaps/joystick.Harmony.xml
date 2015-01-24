@@ -390,4 +390,19 @@
       <!-- Info  	-->      <button id="31">Back</button>
     </joystick>
   </PictureInfo>
+  <AddonInformation>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

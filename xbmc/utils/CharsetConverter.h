@@ -36,6 +36,7 @@ class CCharsetConverter : public ISettingCallback
 public:
   CCharsetConverter();
 
+<<<<<<< HEAD
   virtual void OnSettingChanged(const CSetting* setting);
 
   static void reset();
@@ -165,6 +166,55 @@ public:
   static bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data);
+=======
+  void reset();
+
+  void clear();
+
+  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
+
+  void utf16LEtoW(const CStdString16& utf16String, CStdStringW &wString);
+
+  void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
+
+  void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
+
+  void utf8ToStringCharset(CStdStringA& strSourceDest);
+
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString16& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString32& strDest);
+
+  void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+
+  bool isValidUtf8(const CStdString& str);
+
+  bool isValidUtf8(const char *buf, unsigned int len);
+
+  void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
+
+  void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16BEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
+  void ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest);
+
+  void utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest);
+
+  void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
+
+  std::vector<CStdString> getCharsetLabels();
+  CStdString& getCharsetLabelByName(const CStdString& charsetName);
+  CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
+  bool isBidiCharset(const CStdString& charset);
+
+  void unknownToUTF8(CStdStringA &sourceDest);
+  void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
+
+  void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
+  void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
+
+  CStdString utf8Left(const CStdStringA &source, int num_chars);
+>>>>>>> FETCH_HEAD
 private:
   static void resetUserCharset(void);
   static void resetSubtitleCharset(void);

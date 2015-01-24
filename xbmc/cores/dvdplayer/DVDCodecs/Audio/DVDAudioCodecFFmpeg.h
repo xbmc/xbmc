@@ -47,16 +47,36 @@ public:
   virtual int GetBitRate();
 
 protected:
+<<<<<<< HEAD
   AVCodecContext*     m_pCodecContext;
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
+=======
+  AVCodecContext* m_pCodecContext;
+  AVAudioConvert* m_pConvert;;
+  enum SampleFormat m_iSampleFormat;
+  enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
+
+  BYTE *m_pBuffer1;
+  int   m_iBufferSize1;
+>>>>>>> FETCH_HEAD
 
   AVFrame* m_pFrame1;
   int m_gotFrame;
 
   bool m_bOpenedCodec;
+<<<<<<< HEAD
   int      m_channels;
   uint64_t m_layout;
+=======
+  int m_iBuffered;
+
+  int     m_channels;
+  int64_t m_layout;
+
+  DllAvCodec m_dllAvCodec;
+  DllAvUtil m_dllAvUtil;
+>>>>>>> FETCH_HEAD
 
   void BuildChannelMap();
   void ConvertToFloat();  

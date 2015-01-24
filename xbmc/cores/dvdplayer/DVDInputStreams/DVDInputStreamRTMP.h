@@ -27,7 +27,10 @@
 class CDVDInputStreamRTMP 
   : public CDVDInputStream
   , public CDVDInputStream::ISeekTime
+<<<<<<< HEAD
   , public CDVDInputStream::ISeekable
+=======
+>>>>>>> FETCH_HEAD
 {
 public:
   CDVDInputStreamRTMP();
@@ -51,6 +54,7 @@ protected:
   bool       m_canSeek;
   bool       m_canPause;
   char*      m_sStreamPlaying;
+  std::vector<CStdString> m_optionvalues;
 
   RTMP       *m_rtmp;
   DllLibRTMP m_libRTMP;

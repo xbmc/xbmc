@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 LIBRARY libmodplug.dll
 EXPORTS
 
@@ -9,3 +10,16 @@ ModPlug_GetLength
 ModPlug_Seek
 ModPlug_GetSettings
 ModPlug_SetSettings
+=======
+LIBRARY libmodplug.dll
+EXPORTS
+
+ModPlug_Load
+ModPlug_Unload
+ModPlug_Read
+ModPlug_GetName
+ModPlug_GetLength
+ModPlug_Seek
+ModPlug_GetSettings
+ModPlug_SetSettings
+>>>>>>> FETCH_HEAD

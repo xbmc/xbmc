@@ -26,10 +26,19 @@
 #include "utils/Crc32.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+<<<<<<< HEAD
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+=======
+
+#include "Texture.h"
+#include "DDSImage.h"
+#include "Picture.h"
+#include "TextureManager.h"
+#include "SpecialProtocol.h"
+>>>>>>> FETCH_HEAD
 
 using namespace XFILE;
 
@@ -70,6 +79,12 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
       URIUtils::IsInPath(url, "androidapp://")   ||
       URIUtils::IsInPath(url, CProfilesManager::Get().GetThumbnailsFolder()))
     return true;
+  if (basePath.Left(8).Equals("special:"))
+  {
+    basePath = CSpecialProtocol::TranslatePath(basePath);
+    if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
+      return true;
+  }
   return false;
 }
 
@@ -158,6 +173,7 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
       *details = job.m_details;
     return success ? GetCachedPath(job.m_details.file) : "";
   }
+<<<<<<< HEAD
   lock.Leave();
 
   // wait for currently processing job to end.
@@ -174,6 +190,9 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
   if (!details)
     details = &tempDetails;
   return GetCachedImage(url, *details, true);
+=======
+  return "";
+>>>>>>> FETCH_HEAD
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)

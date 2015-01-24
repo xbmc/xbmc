@@ -35,12 +35,18 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_pCodecContext = NULL;
   m_bOpenedCodec = false;
 
+<<<<<<< HEAD
   m_channels = 0;
   m_layout = 0;
   
   m_pFrame1 = NULL;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_gotFrame = 0;
+=======
+  m_channelMap[0] = PCM_INVALID;
+  m_channels = 0;
+  m_layout = 0;
+>>>>>>> FETCH_HEAD
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
@@ -95,7 +101,10 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
+<<<<<<< HEAD
   m_pFrame1 = av_frame_alloc();
+=======
+>>>>>>> FETCH_HEAD
   m_bOpenedCodec = true;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
 
@@ -197,6 +206,7 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
   }
 }
 
+<<<<<<< HEAD
 int CDVDAudioCodecFFmpeg::GetBitRate()
 {
   if (m_pCodecContext) return m_pCodecContext->bit_rate;
@@ -252,10 +262,69 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   if (layout & AV_CH_TOP_BACK_RIGHT       ) m_channelLayout += AE_CH_BR  ;
 
   m_channels = m_pCodecContext->channels;
+=======
+static unsigned count_bits(int64_t value)
+{
+  unsigned bits = 0;
+  for(;value;++bits)
+    value &= value - 1;
+  return bits;
+}
+
+void CDVDAudioCodecFFmpeg::BuildChannelMap()
+{
+  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
+    return; //nothing to do here
+
+  m_channels = m_pCodecContext->channels;
+  m_layout   = m_pCodecContext->channel_layout;
+
+  int64_t layout;
+
+  int bits = count_bits(m_pCodecContext->channel_layout);
+  if (bits == m_pCodecContext->channels)
+    layout = m_pCodecContext->channel_layout;
+  else
+  {
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d ignoring", m_pCodecContext->channels, bits);
+    layout = m_dllAvCodec.avcodec_guess_channel_layout(m_pCodecContext->channels, m_pCodecContext->codec_id, NULL);
+  }
+
+  int index = 0;
+  if (layout & CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
+  if (layout & CH_FRONT_RIGHT          ) m_channelMap[index++] = PCM_FRONT_RIGHT          ;
+  if (layout & CH_FRONT_CENTER         ) m_channelMap[index++] = PCM_FRONT_CENTER         ;
+  if (layout & CH_LOW_FREQUENCY        ) m_channelMap[index++] = PCM_LOW_FREQUENCY        ;
+  if (layout & CH_BACK_LEFT            ) m_channelMap[index++] = PCM_BACK_LEFT            ;
+  if (layout & CH_BACK_RIGHT           ) m_channelMap[index++] = PCM_BACK_RIGHT           ;
+  if (layout & CH_FRONT_LEFT_OF_CENTER ) m_channelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
+  if (layout & CH_FRONT_RIGHT_OF_CENTER) m_channelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
+  if (layout & CH_BACK_CENTER          ) m_channelMap[index++] = PCM_BACK_CENTER          ;
+  if (layout & CH_SIDE_LEFT            ) m_channelMap[index++] = PCM_SIDE_LEFT            ;
+  if (layout & CH_SIDE_RIGHT           ) m_channelMap[index++] = PCM_SIDE_RIGHT           ;
+  if (layout & CH_TOP_CENTER           ) m_channelMap[index++] = PCM_TOP_CENTER           ;
+  if (layout & CH_TOP_FRONT_LEFT       ) m_channelMap[index++] = PCM_TOP_FRONT_LEFT       ;
+  if (layout & CH_TOP_FRONT_CENTER     ) m_channelMap[index++] = PCM_TOP_FRONT_CENTER     ;
+  if (layout & CH_TOP_FRONT_RIGHT      ) m_channelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
+  if (layout & CH_TOP_BACK_LEFT        ) m_channelMap[index++] = PCM_TOP_BACK_LEFT        ;
+  if (layout & CH_TOP_BACK_CENTER      ) m_channelMap[index++] = PCM_TOP_BACK_CENTER      ;
+  if (layout & CH_TOP_BACK_RIGHT       ) m_channelMap[index++] = PCM_TOP_BACK_RIGHT       ;
+
+  //terminate the channel map
+  m_channelMap[index] = PCM_INVALID;
+>>>>>>> FETCH_HEAD
 }
 
 CAEChannelInfo CDVDAudioCodecFFmpeg::GetChannelMap()
 {
   BuildChannelMap();
+<<<<<<< HEAD
   return m_channelLayout;
+=======
+
+  if (m_channelMap[0] == PCM_INVALID)
+    return NULL;
+
+  return m_channelMap;
+>>>>>>> FETCH_HEAD
 }

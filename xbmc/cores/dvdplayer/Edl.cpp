@@ -77,7 +77,11 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
    * back frame markers. However, this doesn't seem possible for MythTV.
    */
   float fFramesPerSecond;
+<<<<<<< HEAD
   if (iHeight <= 480 && int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content except for 1280x720/60
+=======
+  if (int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content
+>>>>>>> FETCH_HEAD
   {
     fFramesPerSecond = fFrameRate / 2; // ~29.97f - division used to retain accuracy of original.
     CLog::Log(LOGDEBUG, "%s - Assuming NTSC or 60i interlaced content. Adjusted frames per second from %.3f (~59.940 fps) to %.3f",
@@ -207,9 +211,15 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       continue;
     }
 
+<<<<<<< HEAD
     vector<string> strFields(2);
     strFields[0] = buffer1;
     strFields[1] = buffer2;
+=======
+      Cut cut;
+      cut.start = (int64_t)(dStart * 1000); // seconds to ms
+      cut.end = (int64_t)(dEnd * 1000); // seconds to ms
+>>>>>>> FETCH_HEAD
 
     if (iFieldsRead == 2) // If only 2 fields read, then assume it's a scene marker.
     {

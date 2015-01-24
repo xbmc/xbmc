@@ -1,0 +1,124 @@
+#!/usr/bin/make -f
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+# Get the SVN revision from the changelog
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+
+# Set this variable to yes for release builds to disable debugging and enable
+# optimizations.
+XBMC_RELEASE ?= yes
+
+# If not set already, try to set from debian/svnrevision
+ifeq (,$(SVNVERSION))
+	SVNVERSION = $(shell cat debian/svnrevision 2>/dev/null)
+endif
+
+# Whether we're building for release or not
+ifeq (yes,$(XBMC_RELEASE))
+  DEBUG_OPTIONS = --disable-debug
+else
+  DEBUG_OPTIONS = --enable-debug
+endif
+
+# Ubuntu or Debian specific options
+ifeq (Ubuntu,$(shell lsb_release -is))
+  DISTRO_SPECIFIC_OPTIONS = --enable-faac
+else
+  DISTRO_SPECIFIC_OPTIONS = --enable-external-libraries --disable-dvdcss \
+    --disable-non-free
+endif
+
+# Add the SVN revision if we could determine the svn revision
+ifneq (,$(SVNVERSION))
+  SVNVERSION_OPTION = SVN_REV="$(SVNVERSION)"
+endif
+
+# Various environment variables to set
+ENV_OPTIONS = CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+
+# List of options to pass to configure. Can be overridden.
+# Extra options can simply be passed using XBMC_CONFIG_EXTRA_OPTIONS env
+# variable.
+XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
+  --build=$(DEB_BUILD_GNU_TYPE) \
+  --prefix=/usr --docdir=/usr/share/doc/xbmc \
+  $(DEBUG_OPTIONS) \
+  --enable-gl --disable-gles --enable-vdpau --disable-vaapi \
+  --disable-vdadecoder --disable-openmax --disable-tegra --disable-profiling \
+  --enable-joystick --enable-xrandr --enable-goom --disable-ccache \
+  --enable-pulse --enable-rtmp --enable-ffmpeg-libvorbis --disable-mid \
+  --enable-hal --enable-avahi --disable-asap-codec \
+  --enable-webserver --disable-libdts --disable-liba52 \
+  $(XBMC_CONFIG_EXTRA_OPTIONS) \
+  $(DISTRO_SPECIFIC_OPTIONS) \
+  $(SVNVERSION_OPTION) \
+  $(ENV_OPTIONS)
+
+# Input files used for generating other files
+INPUT_FILES = debian/control.in
+
+# Use --parallel option only if debhelper supports it
+DH_PARALLEL_OPT=$(shell dh_testdir --parallel 2>/dev/null && echo "--parallel")
+
+%:
+	dh $@ $(DH_PARALLEL_OPT)
+
+# Target for generating control files
+.PHONY: debian/var_info
+%.in: debian/var_info
+	@echo "Generating $$(echo $@ | sed 's/\.in$$//') from $@"
+	perl -p \
+	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
+	-e 's{#LIBCURL_DEPENDS#}{qx(sh debian/var_info LIBCURL_DEPENDS)}ge;' \
+	-e 's{#XBMC_LIVE_DEPENDS#}{qx(sh debian/var_info XBMC_LIVE_DEPENDS)}ge;' \
+	< $@ > $$(echo $@ | sed 's/\.in$$//')
+
+override_dh_clean:
+	dh_clean
+	find . -name config.status -o -name config.cache -o -name config.log \
+		-exec rm -f "{}" \;
+	debian/rules $(INPUT_FILES)
+
+override_dh_auto_configure: configure
+	./configure $(XBMC_CONFIG_OPTIONS)
+
+override_dh_auto_install:
+	$(MAKE) -C lib/addons/script.module.pil
+	$(MAKE) -C lib/addons/script.module.pysqlite
+	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
+		WII_EXTRA_OPTS=-DCWIID_OLD
+
+override_dh_install:
+	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
+		-XLicence.txt -XLicense.txt -XLiberationSans-Regular.ttf \
+		-XDejaVuSans.ttf -XDejaVuSans-Bold.ttf
+	# Delete stuff that is in other packages
+	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
+	rm -rf debian/xbmc-data/usr/share/xbmc/web
+	# Add in live.d scripts to packaging 
+	mkdir -p debian/xbmc-live/etc/xbmc 
+	cp -rf tools/XBMCLive/live.d debian/xbmc-live/etc/xbmc 
+
+
+override_dh_strip:
+	dh_strip --dbg-package=xbmc-dbg
+
+override_dh_makeshlibs:
+	# We don't install shared libraries in standard locations so don't edit
+	# postinst/postrm scripts to call ldconfig
+	dh_makeshlibs -n
+
+override_dh_gencontrol:
+	dh_gencontrol
+	# Need to manually add dependencies for dlopened libs.
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBCURL_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBVDPAU_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBRTMP_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"

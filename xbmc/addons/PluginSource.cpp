@@ -19,7 +19,11 @@
  */
 #include "PluginSource.h"
 #include "AddonManager.h"
+<<<<<<< HEAD
 #include "utils/StringUtils.h"
+=======
+#include "StringUtils.h"
+>>>>>>> FETCH_HEAD
 
 using namespace std;
 
@@ -29,7 +33,11 @@ namespace ADDON
 CPluginSource::CPluginSource(const AddonProps &props)
   : CAddon(props)
 {
+<<<<<<< HEAD
   std::string provides;
+=======
+  CStdString provides;
+>>>>>>> FETCH_HEAD
   InfoMap::const_iterator i = Props().extrainfo.find("provides");
   if (i != Props().extrainfo.end())
     provides = i->second;
@@ -39,16 +47,25 @@ CPluginSource::CPluginSource(const AddonProps &props)
 CPluginSource::CPluginSource(const cp_extension_t *ext)
   : CAddon(ext)
 {
+<<<<<<< HEAD
   std::string provides;
   if (ext)
   {
     provides = CAddonMgr::Get().GetExtValue(ext->configuration, "provides");
     if (!provides.empty())
+=======
+  CStdString provides;
+  if (ext)
+  {
+    provides = CAddonMgr::Get().GetExtValue(ext->configuration, "provides");
+    if (!provides.IsEmpty())
+>>>>>>> FETCH_HEAD
       Props().extrainfo.insert(make_pair("provides", provides));
   }
   SetProvides(provides);
 }
 
+<<<<<<< HEAD
 AddonPtr CPluginSource::Clone() const
 {
   return AddonPtr(new CPluginSource(*this));
@@ -60,6 +77,15 @@ void CPluginSource::SetProvides(const std::string &content)
   {
     vector<string> provides = StringUtils::Split(content, ' ');
     for (vector<string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
+=======
+void CPluginSource::SetProvides(const CStdString &content)
+{
+  vector<CStdString> provides;
+  if (!content.IsEmpty())
+  {
+    StringUtils::SplitString(content, " ", provides);
+    for (unsigned int i = 0; i < provides.size(); ++i)
+>>>>>>> FETCH_HEAD
     {
       Content content = Translate(*i);
       if (content != UNKNOWN)

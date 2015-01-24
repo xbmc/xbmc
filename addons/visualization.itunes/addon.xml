@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.itunes"
+  version="1.0.0"
+  name="iTunes Visualizations"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_osx="iTunes.mvis"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">iTunes Visualization Wrapper</summary>
+    <summary lang="de">iTunes Visualisierung</summary>
+    <summary lang="fi">iTunes -visualisoinnit</summary>
+    <summary lang="fr">Visualisation iTunes</summary>
+    <summary lang="hu">iTunes Vizualizáció</summary>
+    <summary lang="ko">아이튠 음악시각화 랩퍼</summary>
+    <summary lang="nl">iTunes-visualisaties</summary>
+    <summary lang="pl">Wrapper wizualizacji iTunes</summary>
+    <summary lang="pt">Visualização iTunes</summary>
+    <summary lang="se">iTunes visualiseringsomslag</summary>
+    <summary lang="zh">iTunes可视化效果包</summary>
+    <description lang="en">iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
+    <description lang="de">iTunes Visualisierung ermöglicht es von der OSX iTunes Installation die Visualisierung in XBMC nutzen zu können</description>
+    <description lang="fi">Mahdollistaa OSX iTunes -asennuksen visualisointien käytön XBMC:ssä.</description>
+    <description lang="fr">La visualisation iTunes vous permet d'utiliser vos visualisations depuis iTunes dans XBMC</description>
+    <description lang="hu">Az iTunes Vizualizáció lehetővé teszi, hogy használd az OSX iTunes telepítésedben meglévő vizualizációkat az XBMC-ben</description>
+    <description lang="ko">아이튠 음악시각화 랩퍼는 OSX 아이튠 음악 시각화를 XBMC에서 사용할수 있게 해줍니다.</description>
+    <description lang="nl">Dankzij iTunes-visualisaties kan XBMC gebruik maken van de visualisaties van uw iTunesinstallatie in OS X</description>
+    <description lang="pl">Wrapper pozwala XBMC na użycie wizualizacji z iTunes (tylko system OSX)</description>
+    <description lang="pt">O iTunes Visualization Wrapper permite usar visualizações do seu OSX iTunes no XBMC</description>
+    <description lang="se">iTunes visualiseringsomslag tillåter dig att använda visualiseringar från din OSX iTunes installation i XBMC</description>
+    <description lang="zh">iTunes可视化效果包允许你使用安装到XBMC的来自于OSX iTunes的可视化效果</description>
+    <platform>osx</platform>
+  </extension>
+</addon>

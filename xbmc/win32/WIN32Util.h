@@ -23,8 +23,11 @@
 #include "URL.h"
 #include "Cfgmgr32.h"
 #include "MediaSource.h"
+<<<<<<< HEAD
 #include "guilib/Geometry.h"
 #include "powermanagement/PowerManager.h"
+=======
+>>>>>>> FETCH_HEAD
 #include "utils/Stopwatch.h"
 
 enum Drive_Types
@@ -96,6 +99,13 @@ public:
   static std::string WUSysMsg(DWORD dwError);
 private:
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+};
+
+
+class CWinIdleTimer : public CStopWatch
+{
+public:
+  void StartZero();
 };
 
 

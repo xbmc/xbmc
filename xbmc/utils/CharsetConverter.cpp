@@ -231,6 +231,7 @@ void CConverterType::ReinitTo(const std::string& sourceCharset, const std::strin
       m_iconv = NO_ICONV;
     }
 
+<<<<<<< HEAD
     m_sourceSpecialCharset = NotSpecialCharset;
     m_sourceCharset = sourceCharset;
     m_targetSpecialCharset = NotSpecialCharset;
@@ -238,6 +239,14 @@ void CConverterType::ReinitTo(const std::string& sourceCharset, const std::strin
     m_targetSingleCharMaxLen = targetSingleCharMaxLen;
   }
 }
+=======
+      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno);
+        strDest.ReleaseBuffer();
+        return false;
+      }
+>>>>>>> FETCH_HEAD
 
 std::string CConverterType::ResolveSpecialCharset(enum SpecialCharset charset)
 {
@@ -666,7 +675,24 @@ void CCharsetConverter::resetKaraokeCharset(void)
 
 void CCharsetConverter::reinitCharsetsFromSettings(void)
 {
+<<<<<<< HEAD
   resetUserCharset(); // this will also reinit Subtitle and Karaoke charsets
+=======
+  // Try to flip hebrew/arabic characters, if any
+  if (bVisualBiDiFlip)
+  {
+    CStdStringA strFlipped;
+    FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
+    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
+    CSingleLock lock(m_critSection);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
+  }
+  else
+  {
+    CSingleLock lock(m_critSection);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
+  }
+>>>>>>> FETCH_HEAD
 }
 
 bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
@@ -674,7 +700,34 @@ bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32st
   return CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32StringDst, failOnBadChar);
 }
 
+<<<<<<< HEAD
 std::u32string CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar /*= true*/)
+=======
+void CCharsetConverter::fromW(const CStdStringW& strSource,
+                              CStdStringA& strDest, const CStdString& enc)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  CStdString strEnc = enc;
+  if (strEnc.Right(8) != "//IGNORE")
+    strEnc.append("//IGNORE");
+  convert(iconvString,4,WCHAR_CHARSET,strEnc,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::toW(const CStdStringA& strSource,
+                            CStdStringW& strDest, const CStdString& enc)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  CStdString strWchar = WCHAR_CHARSET;
+  strWchar.append("//IGNORE");
+  convert(iconvString,sizeof(wchar_t),enc,strWchar,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
+>>>>>>> FETCH_HEAD
 {
   std::u32string converted;
   utf8ToUtf32(utf8StringSrc, converted, failOnBadChar);
@@ -738,6 +791,7 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
+<<<<<<< HEAD
     wStringDst.clear();
     std::u32string utf32str;
     if (!CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32str, failOnBadChar))
@@ -747,6 +801,10 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
     const bool bidiResult = CInnerConverter::logicalToVisualBiDi(utf32str, utf32flipped, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF, failOnBadChar);
 
     return CInnerConverter::stdConvert(Utf32ToW, utf32flipped, wStringDst, failOnBadChar) && bidiResult;
+=======
+    CSingleLock lock(m_critSection);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
+>>>>>>> FETCH_HEAD
   }
   
   return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);

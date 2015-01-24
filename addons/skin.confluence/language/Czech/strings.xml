@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: ezechiel1917-->
+<!--Date of translation: 26/09/2010-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Změnit</string>
+  <string id="31001">Milovat</string>
+  <string id="31002">Nesnášet</string>
+  <string id="31003">Napájení</string>
+  <string id="31004">Pracuji...</string>
+  <string id="31005">Skrýt INFO</string>
+
+  <string id="31007">Pluginy</string>
+
+  <string id="31020">Nejnovější položky</string>
+  <string id="31021">Video - Soubory</string>
+  <string id="31022">Hudba - Soubory</string>
+  <string id="31023">Přehrává se</string>
+  <string id="31024">Strana</string>
+  <string id="31025">Položek</string>
+  <string id="31026">Další možnosti</string>
+  <string id="31027">Umístění</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Obaly</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Seznam I</string>
+  <string id="31031">Náhledy</string>
+  <string id="31032">Obrázky</string>
+  <string id="31033">Info</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Přehrává se</string>
+
+  <string id="31042">PŘEHRÁVÁ SE</string>
+  <string id="31043">POZASTAVENO</string>
+  <string id="31044">PŘETÁČÍ SE VPŘED</string>
+  <string id="31045">PŘETÁČÍ SE ZPĚT</string>
+  <string id="31046">Vlastnosti zvuku</string>
+  <string id="31047">Akutální předvolba</string>
+  <string id="31048">Předvolby vizualizace</string>
+  <string id="31049">Čas ukončení</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Otevřít seznam stop</string>
+  <string id="31056">Uložit seznam stop</string>
+  <string id="31057">Zavřít seznam stop</string>
+  <string id="31058">Hudební soubory systému</string>
+  <string id="31059">Aktuální seznam stop</string>
+  <string id="31060">Tento soubor se skládá z více částí. Vyberte tu, od které chcete spustit přehrávání.</string>
+  <string id="31061">Aktuálně vybraný</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Informace na Úvodní obrazovce</string>
+  <string id="31102">Pozadí</string>
+  <string id="31103">Zobrazovat "POZASTAVENO" při prezentaci obrázků</string>
+  <string id="31104">Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]</string>
+  <string id="31105">Zobrazovat názvy médií při vyhledávání na pozadí</string>
+  <string id="31106">Různé</string>
+  <string id="31107">Nezobrazovat ikony zdroje videí [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Zobrazení sekcí úvodní obrazovky</string>
+  <string id="31109">Pozadí úvodní obrazovky</string>
+  <string id="31110">Změnit pozadí úvodní obrazovky - sekce</string>
+  <string id="31111">Skrýt</string>
+  <string id="31112">Možnosti</string>
+  <string id="31113">1 obrázek</string>
+  <string id="31114">Více obrázků</string>
+  <string id="31115">Přizpůsobení</string>
+  <string id="31116">Skripty</string>
+  <string id="31117">Zobrazovat Nejnovější filmy a epizody</string>
+  <string id="31118">Úvodní obrazovka</string>
+  <string id="31119">Aktivovat položku v menu</string>
+  <string id="31120">NÁZEV POLOŽKY</string>
+  <string id="31121">CESTA KE SKRIPTU</string>
+  <string id="31122">Počasí</string>
+  <string id="31123">Použít u TV seriálů klasické náhledy místo širokoúhlých</string>
+  <string id="31124">Zobrazovat na pozadí právě přehrávané video</string>
+  <string id="31125">Zobrazovat na pozadí vizualizaci</string>
+
+  <string id="31126">Aktivovat OSD tlačítko pro zobrazení textu skladby</string>
+  <string id="31127">CESTA KE SKRIPTU S TEXTY SKLADEB</string>
+  <string id="31128">Texty skladeb</string>
+  <string id="31129">Aktivovat OSD tlačítko pro stažení titulků</string>
+  <string id="31130">CESTA KE SKRIPTU S TITULKY</string>
+
+  <string id="31140">Hudební OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">Zástupci</string>
+  <string id="31201">Kategorie</string>
+  <string id="31202">Zobrazovat obsazení</string>
+  <string id="31203">Vyberte vaši skladbu</string>
+  <string id="31204">Odkazy sekcí</string>
+  <string id="31205">Zdroj textu skladeb</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Aktuální teplota</string>
+  <string id="31301">Naposledy aktualizováno</string>
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Obrázky</string>
+  <string id="31305">Není vložen žádný optický disk</string>
+  <string id="31306">Vysunout</string>
+  <string id="31307">Skrýt Fanart</string>
+  <string id="31308">Detaily o filmu</string>
+  <string id="31309">Využitá paměť:</string>
+  <string id="31310">Číslo stopy</string>
+  <string id="31311">POZADÍ FANART[CR][CR]NENÍ K DISPOZICI[CR][CR] NASTAVTE HO STISKNUTÍM TLAČÍTKA</string>
+  <string id="31312">Současný stahovač</string>
+  <string id="31313">Změnit stahovač</string>
+  <string id="31314">Možnosti vyhledávání obsahu</string>
+  <string id="31315">Základní</string>
+  <string id="31316"></string>
+  <string id="31317">Umístění Fanartu</string>
+  <string id="31318">Malý Fanart</string>
+  <string id="31319">Vybraný profil</string>
+  <string id="31320">Naposledy přihlášen</string>
+  <string id="31321">Vyběr Karaoke skladby</string>
+  <string id="31322">Odvysíláno</string>
+  <string id="31323">Nejnovější filmy</string>
+  <string id="31324">Nejnovější epizody</string>
+  <string id="31325">Možnosti seznamu stop</string>
+  <string id="31326">Vytvořeno</string>
+  <string id="31327">Rozlišení</string>
+  <string id="31328">Nejnovější položky</string>
+  <string id="31329">[B]ČASOVAČ BYL NASTAVEN![/B] [COLOR=grey2] - SYSTÉM SE AUTOMATICKY VYPNE ZA[/COLOR]</string>
+  <string id="31330">Pro přehrání upoutávky[CR][CR]stiskněte tlačítko</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pozastavit</string>
+  <string id="31352">Zastavit</string>
+  <string id="31353">Přetočit vpřed</string>
+  <string id="31354">Přetočit zpět</string>
+  <string id="31355">Nabídka filmu</string>
+  <string id="31356">Stáhnout titulky</string>
+  <string id="31357"></string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]MOŽNOSTI PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky</string>
+  <string id="31401">[B]MOŽNOSTI VIDEA[/B][CR][CR]Správa knihovny videí · Možnosti přehrávání videa · Možnosti zobrazení video souborů[CR]Nastavení fontu titulků</string>
+  <string id="31402">[B]MOŽNOSTI HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudeb. souborů[CR]Služby pro odesílání informací o přehrávaných skladbách · Nastavení karaoke</string>
+  <string id="31403">[B]MOŽNOSTI OBRÁZKŮ[/B][CR][CR]Možnosti zobrazení obrázků · Konfigurace prezentace</string>
+  <string id="31404">[B]MOŽNOSTI POČASÍ[/B][CR][CR]Nastavení oblastí pro předpověď počasí</string>
+  <string id="31405">[B]MOŽNOSTI SÍTĚ[/B][CR][CR]Možnosti ovládání XBMC přes UPnP a HTTP · Nastavení sdílení médií[CR]Nastavení přístupu na internet</string>
+  <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Možnosti úsporného režimu · Ukládání informací o ladění · Konfigurace rodičovského zámku</string>
+  <string id="31407">[B]MOŽNOSTI VZHLEDU[/B][CR][CR]Přizpůsobení vzhledu Confluence · Správa sekcí na úvodní obrazovce[CR]Nastavení pozadí vzhledu</string>
+  <string id="31408">[B]MOŽNOSTI DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků</string>
+
+  <string id="31421">Přihlášení uživatele[CR]Pokračujte výběrem profilu</string>
+</strings>

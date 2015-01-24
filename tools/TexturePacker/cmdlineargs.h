@@ -55,7 +55,11 @@ public:
     CmdLineArgs (const int argc, const char **argv)
     {
       std::string cmdline;
+<<<<<<< HEAD
 #ifdef TARGET_POSIX
+=======
+#ifdef _LINUX
+>>>>>>> FETCH_HEAD
       cmdline = "\"";
 #endif
       for (int i = 0 ; i<argc ; i++)
@@ -63,14 +67,22 @@ public:
         cmdline += std::string(argv[i]);
         if ( i != (argc-1) )
         {
+<<<<<<< HEAD
 #ifdef TARGET_POSIX
+=======
+#ifdef _LINUX
+>>>>>>> FETCH_HEAD
           cmdline += "\" \"";
 #else
           cmdline += " ";
 #endif
         }
       }
+<<<<<<< HEAD
 #ifdef TARGET_POSIX
+=======
+#ifdef _LINUX
+>>>>>>> FETCH_HEAD
       cmdline += "\"";
 #endif
       m_cmdline = new char [cmdline.length() + 1];

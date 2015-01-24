@@ -79,7 +79,10 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_Gamma != right.m_Gamma) return true;
   if (m_Sharpness != right.m_Sharpness) return true;
   if (m_NoiseReduction != right.m_NoiseReduction) return true;
+<<<<<<< HEAD
   if (m_PostProcess != right.m_PostProcess) return true;
+=======
+>>>>>>> FETCH_HEAD
   if (m_VolumeAmplification != right.m_VolumeAmplification) return true;
   if (m_AudioDelay != right.m_AudioDelay) return true;
   if (m_OutputToAllSpeakers != right.m_OutputToAllSpeakers) return true;

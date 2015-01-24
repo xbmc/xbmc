@@ -22,7 +22,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "NfoFile.h"
+<<<<<<< HEAD
 #include "video/VideoInfoDownloader.h"
+=======
+#include "utils/IMDB.h"
+>>>>>>> FETCH_HEAD
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -92,13 +96,18 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   vector<ScraperPtr> vecScrapers;
 
+<<<<<<< HEAD
   // add selected scraper - first proirity
+=======
+  // add selected scraper
+>>>>>>> FETCH_HEAD
   if (m_info)
     vecScrapers.push_back(m_info);
 
   // Add all scrapers except selected and default
   VECADDONS addons;
   CAddonMgr::Get().GetAddons(m_type,addons);
+<<<<<<< HEAD
 
   for (unsigned i = 0; i < addons.size(); ++i)
   {
@@ -117,6 +126,16 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       ( !defaultScraper->RequiresSettings() || defaultScraper->HasUserSettings() ) )
     vecScrapers.push_back(defaultScraper);
 
+=======
+  // first pass - add language based scrapers
+  if (m_info && g_guiSettings.GetBool("scrapers.langfallback"))
+    AddScrapers(addons,vecScrapers);
+
+  // add default scraper
+  if ((m_info && m_info->ID() != defaultScraper->ID()) || !m_info)
+    vecScrapers.push_back(defaultScraper);
+
+>>>>>>> FETCH_HEAD
   // search ..
   int res = -1;
   for (unsigned int i=0;i<vecScrapers.size();++i)
@@ -175,7 +194,36 @@ int CNfoFile::Load(const CStdString& strFile)
 
 void CNfoFile::Close()
 {
+<<<<<<< HEAD
   m_doc.clear();
   m_headPos = 0;
   m_scurl.Clear();
+=======
+  if (m_doc != NULL)
+  {
+    delete m_doc;
+    m_doc = 0;
+  }
+
+  m_strImDbUrl = "";
+  m_strImDbNr = "";
+  m_size = 0;
+}
+
+void CNfoFile::AddScrapers(VECADDONS& addons,
+                           vector<ScraperPtr>& vecScrapers)
+{
+  for (unsigned i=0;i<addons.size();++i)
+  {
+    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+
+    // skip if scraper requires settings and there's nothing set yet
+    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
+      continue;
+
+    // add same language and multi-language
+    if (scraper->Language() == m_info->Language() || scraper->Language().Equals("multi"))
+      vecScrapers.push_back(scraper);
+  }
+>>>>>>> FETCH_HEAD
 }

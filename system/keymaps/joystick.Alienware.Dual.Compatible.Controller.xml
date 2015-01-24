@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
+=======
+>>>>>>> FETCH_HEAD
 <!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
@@ -19,7 +22,11 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                 -->
+<<<<<<< HEAD
 <!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
+=======
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+>>>>>>> FETCH_HEAD
 <!-- would automatically go to My Music on the press of the B button. -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
@@ -43,16 +50,26 @@
     <joystick name="Alienware Alienware Dual Compatible Game Pad">
       <button id="1">FullScreen</button> <!--square -->
       <button id="2">Select</button>  <!--x --> 
+<<<<<<< HEAD
       <button id="3">Back</button>   <!--circle --> 
+=======
+      <button id="3">ParentDir</button>   <!--circle --> 
+>>>>>>> FETCH_HEAD
       <button id="4">Queue</button> <!-- tri -->
       <button id="6">PreviousMenu</button> <!-- l1 -->
       <button id="7"></button>  <!-- l2 -->      
       <button id="11">Screenshot</button> <!-- l3 - left analog -->
       <button id="5"></button>    <!-- r1 -->      
       <button id="8"></button>  <!-- r2 -->
+<<<<<<< HEAD
       <button id="12">ActivateWindow(ShutdownMenu)</button> <!-- R3 - right analog -->      
       <button id="9"></button>  <!-- select -->      
       <button id="10">ActivateWindow(PlayerControls)</button>  <!-- start --> 
+=======
+      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button> <!-- R3 - right analog -->      
+      <button id="9"></button>  <!-- select -->      
+      <button id="10">XBMC.ActivateWindow(PlayerControls)</button>  <!-- start --> 
+>>>>>>> FETCH_HEAD
       <!-- Left Analog Left and Right-->
       <axis limit="-1" id="0">AnalogSeekBack</axis>        
       <axis limit="+1" id="0">AnalogSeekForward</axis>

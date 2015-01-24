@@ -6,9 +6,12 @@
 <strings>
     <string id="30000">Descargar Fanart</string>
     <string id="30001">Activar Trailers de HD-Trailers.net</string>
+<<<<<<< HEAD
     <string id="30002">Idioma preferido</string>
     <string id="30003">Obtener puntuación de</string>
     <string id="30004">Activar trailer (Youtube)</string>
     <string id="30005">Mantener título original</string>
     <string id="30006">Clasificación por edades</string>
+=======
+>>>>>>> FETCH_HEAD
 </strings>

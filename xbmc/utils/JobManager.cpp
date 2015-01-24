@@ -157,6 +157,7 @@ void CJobQueue::CancelJobs()
   for_each(m_jobQueue.begin(), m_jobQueue.end(), mem_fun_ref(&CJobPointer::FreeJob));
   m_jobQueue.clear();
   m_processing.clear();
+<<<<<<< HEAD
 }
 
 
@@ -164,6 +165,8 @@ bool CJobQueue::QueueEmpty() const
 {
   CSingleLock lock(m_section);
   return m_jobQueue.empty();
+=======
+>>>>>>> FETCH_HEAD
 }
 
 CJobManager &CJobManager::GetInstance()
@@ -398,6 +401,7 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
     lock.Leave();
+<<<<<<< HEAD
     try
     {
       if (item.m_callback)
@@ -407,6 +411,10 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     {
       CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, item.m_job->GetType());
     }
+=======
+    if (item.m_callback)
+      item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+>>>>>>> FETCH_HEAD
     lock.Enter();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())

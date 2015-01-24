@@ -33,12 +33,18 @@ public:
   CPluginSource(const cp_extension_t *ext);
   CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
+<<<<<<< HEAD
   virtual AddonPtr Clone() const;
   virtual bool IsType(TYPE type) const;
   bool Provides(const Content& content) const
   {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0;
   }
+=======
+  virtual bool IsType(TYPE type) const;
+  bool Provides(const Content& content) const {
+    return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
+>>>>>>> FETCH_HEAD
 
   bool ProvidesSeveral() const
   {
@@ -51,7 +57,11 @@ private:
    If no valid content types are passed in, we set the EXECUTABLE type
    \param content a space-separated list of content types
    */
+<<<<<<< HEAD
   void SetProvides(const std::string &content);
+=======
+  void SetProvides(const CStdString &content);
+>>>>>>> FETCH_HEAD
   std::set<Content> m_providedContent;
 };
 

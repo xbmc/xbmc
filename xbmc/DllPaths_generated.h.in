@@ -30,6 +30,7 @@
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
+<<<<<<< HEAD
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
@@ -38,6 +39,15 @@
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
+=======
+#define DLL_PATH_LIBCMYTH      "xbmc.so"
+
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
+#else
+#define DLL_PATH_LIBRTMP       "librtmp.so"
+#endif
+>>>>>>> FETCH_HEAD
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
@@ -63,6 +73,14 @@
 #define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
 #define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
 #define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
+<<<<<<< HEAD
+=======
+#else
+#define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC-@ARCH@.so"
+#define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug-@ARCH@.so"
+#define DLL_PATH_OGG_CODEC     "@executable_path/../Frameworks/@VORBISFILE_SONAME@"
+#endif
+>>>>>>> FETCH_HEAD
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
@@ -72,6 +90,15 @@
 /* cdrip */
 #define DLL_PATH_OGG           "@OGG_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
+<<<<<<< HEAD
+=======
+#else
+#define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc-@ARCH@.so"
+#define DLL_PATH_OGG           "@executable_path/../Frameworks/@OGG_SONAME@"
+#define DLL_PATH_VORBIS_ENC    "@executable_path/../Frameworks/@VORBISENC_SONAME@"
+#define DLL_PATH_VORBIS        "@executable_path/../Frameworks/@VORBIS_SONAME@"
+#endif
+>>>>>>> FETCH_HEAD
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
@@ -83,7 +110,19 @@
 /* xkbcommon */
 #define DLL_PATH_XKBCOMMON "@XKBCOMMON_LIBRARY_SONAME@"
 
+<<<<<<< HEAD
 /* sse4 */
 #define DLL_PATH_LIBSSE4      "special://xbmcbin/system/libsse4-@ARCH@.so"
+=======
+/* libbluray */
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
+#else
+#define DLL_PATH_LIBBLURAY "libbluray.dylib"
+#endif
+
+/* apple vdadecoder */
+#define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
+>>>>>>> FETCH_HEAD
 
 #endif

@@ -63,7 +63,12 @@
 #include "threads/SingleLock.h"
 #include "URL.h"
 
+<<<<<<< HEAD
 #include "playlists/PlayList.h"
+=======
+#include "PlayList.h"
+#include "FileItem.h"
+>>>>>>> FETCH_HEAD
 
 #include "pvr/PVRManager.h"
 #include "windows/GUIWindowLoginScreen.h"
@@ -122,8 +127,13 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecMessages.front();
 
+<<<<<<< HEAD
     if (pMsg->waitEvent)
       pMsg->waitEvent->Set();
+=======
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
+>>>>>>> FETCH_HEAD
 
     delete pMsg;
     m_vecMessages.pop();
@@ -133,8 +143,13 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
 
+<<<<<<< HEAD
     if (pMsg->waitEvent)
       pMsg->waitEvent->Set();
+=======
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
+>>>>>>> FETCH_HEAD
 
     delete pMsg;
     m_vecWindowMessages.pop();
@@ -166,8 +181,16 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 
   if (g_application.m_bStop)
   {
+<<<<<<< HEAD
     if (message.waitEvent)
       message.waitEvent.reset();
+=======
+    if (message.hWaitEvent)
+    {
+      CloseHandle(message.hWaitEvent);
+      message.hWaitEvent = NULL;
+    }
+>>>>>>> FETCH_HEAD
     return;
   }
 
@@ -441,7 +464,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
+<<<<<<< HEAD
         if (g_application.m_pPlayer->IsPlayingVideo())
+=======
+        if (g_application.IsPlayingVideo())
+>>>>>>> FETCH_HEAD
           g_application.StopPlaying();
 
         g_graphicsContext.Lock();
@@ -590,11 +617,16 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
+<<<<<<< HEAD
       if (pMsg->param1 != -1)
       {
         bool *result = (bool*)pMsg->lpVoid;
         *result = g_playlistPlayer.PlaySongId(pMsg->param1);
       }
+=======
+      if (pMsg->dwParam1 != (DWORD) -1)
+        g_playlistPlayer.PlaySongId(pMsg->dwParam1);
+>>>>>>> FETCH_HEAD
       else
         g_playlistPlayer.Play();
       break;
@@ -646,11 +678,16 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_PLAYLISTPLAYER_GET_ITEMS:
       if (pMsg->lpVoid)
       {
+<<<<<<< HEAD
         PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(pMsg->param1);
+=======
+        PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(pMsg->dwParam1);
+>>>>>>> FETCH_HEAD
         CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
 
         for (int i = 0; i < playlist.size(); i++)
           list->Add(CFileItemPtr(new CFileItem(*playlist[i])));
+<<<<<<< HEAD
       }
       break;
 
@@ -661,6 +698,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (indexes->size() == 2)
           g_playlistPlayer.Swap(pMsg->param1, indexes->at(0), indexes->at(1));
         delete indexes;
+=======
+>>>>>>> FETCH_HEAD
       }
       break;
 
@@ -908,6 +947,17 @@ CStdString CApplicationMessenger::GetResponse()
   return tmp;
 }
 
+<<<<<<< HEAD
+=======
+void CApplicationMessenger::HttpApi(string cmd, bool wait)
+{
+  SetResponse("");
+  ThreadMessage tMsg = {TMSG_HTTPAPI};
+  tMsg.strParam = cmd;
+  SendMessage(tMsg, wait);
+}
+
+>>>>>>> FETCH_HEAD
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
@@ -935,6 +985,7 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   CFileItemList* listcopy = new CFileItemList();
   listcopy->Copy(list);
   tMsg.lpVoid = (void*)listcopy;
+<<<<<<< HEAD
   tMsg.param1 = song;
   tMsg.param2 = 1;
   SendMessage(tMsg, true);
@@ -946,6 +997,10 @@ void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
   tMsg.lpVoid = NULL;
   tMsg.param1 = playlistid;
   tMsg.param2 = song;
+=======
+  tMsg.dwParam1 = song;
+  tMsg.dwParam2 = 1;
+>>>>>>> FETCH_HEAD
   SendMessage(tMsg, true);
 }
 
@@ -1002,6 +1057,7 @@ void CApplicationMessenger::PlayListPlayerPlay(int iSong)
   SendMessage(tMsg, true);
 }
 
+<<<<<<< HEAD
 bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
   bool returnState;
@@ -1009,6 +1065,12 @@ bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
   tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
   return returnState;
+=======
+void CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
+  SendMessage(tMsg, true);
+>>>>>>> FETCH_HEAD
 }
 
 void CApplicationMessenger::PlayListPlayerNext()
@@ -1037,6 +1099,7 @@ void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItemList 
   CFileItemList* listcopy = new CFileItemList();
   listcopy->Copy(list);
   tMsg.lpVoid = (void*)listcopy;
+<<<<<<< HEAD
   tMsg.param1 = playlist;
   SendMessage(tMsg, true);
 }
@@ -1062,6 +1125,9 @@ void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItemLi
 void CApplicationMessenger::PlayListPlayerRemove(int playlist, int position)
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, playlist, position};
+=======
+  tMsg.dwParam1 = playlist;
+>>>>>>> FETCH_HEAD
   SendMessage(tMsg, true);
 }
 

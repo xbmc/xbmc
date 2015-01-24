@@ -34,12 +34,17 @@ namespace ADDON
     CRepository(const cp_extension_t *props);
     virtual ~CRepository();
 
+<<<<<<< HEAD
     std::string Checksum() const;
+=======
+    CStdString Checksum();
+>>>>>>> FETCH_HEAD
 
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
      \return the md5 hash for the given addon, empty if non exists.
      */
+<<<<<<< HEAD
     std::string GetAddonHash(const AddonPtr& addon) const;
 
     struct DirInfo
@@ -65,6 +70,20 @@ namespace ADDON
 
   private:
     CRepository(const CRepository &rhs);
+=======
+    CStdString GetAddonHash(const AddonPtr& addon);
+    VECADDONS Parse();
+  private:
+    CStdString FetchChecksum(const CStdString& url);
+    CRepository(const CRepository&, const AddonPtr&);
+    CStdString m_info;
+    CStdString m_checksum;
+    CStdString m_datadir;
+    bool m_compressed; // gzipped info xml
+    bool m_zipped;     // zipped addons
+    bool m_hashes;     // repo supports hashes. e.g. plugin.i.rule-1.0.5.zip.md5
+    CCriticalSection m_critSection;
+>>>>>>> FETCH_HEAD
   };
 
   class CRepositoryUpdateJob : public CJob

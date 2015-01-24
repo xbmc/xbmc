@@ -26,9 +26,13 @@
 class CFileItem;
 class CDVDDemux;
 class CStreamDetails;
+<<<<<<< HEAD
 class CStreamDetailSubtitle;
 class CDVDInputStream;
 class CTextureDetails;
+=======
+class CDVDInputStream;
+>>>>>>> FETCH_HEAD
 
 class CDVDFileInfo
 {
@@ -40,6 +44,7 @@ public:
 
   // Probe the files streams and store the info in the VideoInfoTag
   static bool GetFileStreamDetails(CFileItem *pItem);
+<<<<<<< HEAD
   static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const std::string &path = "");
 
   /** \brief Probe the file's internal and external streams and store the info in the StreamDetails parameter.
@@ -48,6 +53,9 @@ public:
   static bool DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemuxer, const std::vector<CStreamDetailSubtitle> &subs, CStreamDetails &details);
 
   static bool GetFileDuration(const std::string &path, int &duration);
+=======
+  static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path = "");
+>>>>>>> FETCH_HEAD
 
   /** \brief Probe the streams of an external subtitle file and store the info in the StreamDetails parameter.
   *   \param[out] details The external subtitle file's StreamDetails.

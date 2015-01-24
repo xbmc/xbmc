@@ -1,7 +1,12 @@
 #pragma once
 /*
+<<<<<<< HEAD
  *      Copyright (C) 2011-2013 Team XBMC
  *      http://xbmc.org
+=======
+ *      Copyright (C) 2011 Team XBMC
+ *      http://www.xbmc.org
+>>>>>>> FETCH_HEAD
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,6 +19,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
+<<<<<<< HEAD
  *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
@@ -32,6 +38,17 @@ enum {
   AUTO_UPDATES_NEVER,
   AUTO_UPDATES_MAX
 };
+=======
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#include "FileOperationJob.h"
+#include "addons/IAddon.h"
+#include "addons/Addon.h"
+>>>>>>> FETCH_HEAD
 
 class CAddonInstaller : public IJobCallback
 {
@@ -40,6 +57,7 @@ public:
 
   bool IsDownloading() const;
   void GetInstallList(ADDON::VECADDONS &addons) const;
+<<<<<<< HEAD
   bool GetProgress(const std::string &addonID, unsigned int &percent) const;
   bool Cancel(const std::string &addonID);
 
@@ -50,27 +68,42 @@ public:
    \sa Install
    */
   bool PromptForInstall(const std::string &addonID, ADDON::AddonPtr &addon);
+=======
+  bool GetProgress(const CStdString &addonID, unsigned int &percent) const;
+  bool Cancel(const CStdString &addonID);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
    \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
+<<<<<<< HEAD
    \return true on successful install, false on failure.
    \sa DoInstall
    */
   bool Install(const std::string &addonID, bool force = false, const std::string &referer="", bool background = true);
+=======
+   */
+  void Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
    \return true if successful, false otherwise
+<<<<<<< HEAD
    \sa DoInstall
    */
   bool InstallFromZip(const std::string &path);
+=======
+   */
+  bool InstallFromZip(const CStdString &path);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Install a set of addons from the official repository (if needed)
    \param addonIDs a set of addon IDs to install
    */
+<<<<<<< HEAD
   void InstallFromXBMCRepo(const std::set<std::string> &addonIDs);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
@@ -101,6 +134,9 @@ public:
    */
   CDateTime LastRepoUpdate() const;
   void UpdateRepos(bool force = false, bool wait = false);
+=======
+  static void InstallFromXBMCRepo(const std::set<CStdString> &addonIDs);  
+>>>>>>> FETCH_HEAD
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -117,7 +153,11 @@ public:
     unsigned int progress;
   };
 
+<<<<<<< HEAD
   typedef std::map<std::string,CDownloadJob> JobMap;
+=======
+  typedef std::map<CStdString,CDownloadJob> JobMap;
+>>>>>>> FETCH_HEAD
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -126,6 +166,7 @@ private:
   CAddonInstaller const& operator=(CAddonInstaller const&);
   virtual ~CAddonInstaller();
 
+<<<<<<< HEAD
   /*! \brief Install an addon from a repository or zip
    \param addon the AddonPtr describing the addon
    \param hash the hash to verify the install. Defaults to "".
@@ -155,18 +196,27 @@ private:
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
   unsigned int m_repoUpdateJob;   ///< the job ID of the repository updates
   CEvent m_repoUpdateDone;        ///< event set when the repository updates are complete
+=======
+  CCriticalSection m_critSection;
+  JobMap m_downloadJobs;
+>>>>>>> FETCH_HEAD
 };
 
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
+<<<<<<< HEAD
   CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "");
+=======
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "");
+>>>>>>> FETCH_HEAD
 
   virtual bool DoWork();
 
   /*! \brief return the id of the addon being installed
    \return id of the installing addon
    */
+<<<<<<< HEAD
   std::string AddonID() const;
 
   /*! \brief Delete an addon following install failure
@@ -184,11 +234,21 @@ private:
   void OnPostInstall(bool reloadAddon);
   bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo=ADDON::AddonPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
+=======
+  CStdString AddonID() const;
+
+private:
+  bool OnPreInstall();
+  void OnPostInstall(bool reloadAddon);
+  bool Install(const CStdString &installFrom);
+  bool DownloadPackage(const CStdString &path, const CStdString &dest);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Queue a notification for addon installation/update failure
    \param addonID - addon id
    \param fileName - filename which is shown in case the addon id is unknown
    */
+<<<<<<< HEAD
   void ReportInstallError(const std::string& addonID, const std::string& fileName);
 
   ADDON::AddonPtr m_addon;
@@ -207,4 +267,18 @@ private:
   void OnPostUnInstall();
 
   ADDON::AddonPtr m_addon;
+=======
+  void ReportInstallError(const CStdString& addonID, const CStdString& fileName);
+
+  /*! \brief Check the hash of a downloaded addon with the hash in the repository
+   \param addonZip - filename of the zipped addon to check
+   \return true if the hash matches (or no hash is available on the repo), false otherwise
+   */
+  bool CheckHash(const CStdString& addonZip);
+
+  ADDON::AddonPtr m_addon;
+  CStdString m_hash;
+  bool m_update;
+  CStdString m_referer;
+>>>>>>> FETCH_HEAD
 };

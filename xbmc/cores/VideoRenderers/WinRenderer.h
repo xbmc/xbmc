@@ -98,6 +98,15 @@ struct SVideoBuffer
   virtual bool IsReadyToRender() { return true; };
 };
 
+struct SVideoBuffer
+{
+  virtual ~SVideoBuffer() {}
+  virtual void Release() {};            // Release any allocated resource
+  virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
+  virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
+  virtual void Clear() {};              // clear the buffer with solid black
+};
+
 // YV12 decoder textures
 struct SVideoPlane
 {
@@ -106,6 +115,7 @@ struct SVideoPlane
 };
 
 struct YUVBuffer : SVideoBuffer
+<<<<<<< HEAD
 {
   YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false) {}
   ~YUVBuffer();
@@ -136,6 +146,36 @@ struct DXVABuffer : SVideoBuffer
   ~DXVABuffer() { SAFE_RELEASE(pic); }
   DXVA::CRenderPicture *pic;
   unsigned int frameIdx;
+=======
+{
+  ~YUVBuffer();
+  bool Create(unsigned int width, unsigned int height);
+  virtual void Release();
+  virtual void StartDecode();
+  virtual void StartRender();
+  virtual void Clear();
+
+  SVideoPlane planes[MAX_PLANES];
+
+private:
+  unsigned int     m_width;
+  unsigned int     m_height;
+};
+
+struct DXVABuffer : SVideoBuffer
+{
+  DXVABuffer()
+  {
+    proc = NULL;
+    id   = 0;
+  }
+  ~DXVABuffer();
+  virtual void Release();
+  virtual void StartDecode();
+
+  DXVA::CProcessor* proc;
+  int64_t           id;
+>>>>>>> FETCH_HEAD
 };
 
 class CWinRenderer : public CBaseRenderer
@@ -180,10 +220,17 @@ public:
 
 protected:
   virtual void Render(DWORD flags);
+<<<<<<< HEAD
   void         RenderSW();
   void         RenderPS();
   void         Stage1();
   void         Stage2();
+=======
+  void         RenderSW(DWORD flags);
+  void         RenderPS(DWORD flags);
+  void         Stage1(DWORD flags);
+  void         Stage2(DWORD flags);
+>>>>>>> FETCH_HEAD
   void         ScaleFixedPipeline();
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
@@ -199,7 +246,11 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
+<<<<<<< HEAD
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
+=======
+  bool CreateIntermediateRenderTarget();
+>>>>>>> FETCH_HEAD
 
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;

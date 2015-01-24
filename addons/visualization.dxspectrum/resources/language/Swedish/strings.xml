@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 09/11/2010-->
+<!--$Revision$-->
+<strings>
+  <string id="30000">Läge</string>
+  <string id="30001">Fylld</string>
+  <string id="30002">Wireframe</string>
+  <string id="30003">Punkter</string>
+  <string id="30004">Stapelhöjd</string>
+  <string id="30005">Liten</string>
+  <string id="30006">Standard</string>
+  <string id="30007">Stor</string>
+  <string id="30008">Väldigt stor</string>
+  <string id="30009">Hastighet</string>
+  <string id="30010">Väldigt långsam</string>
+  <string id="30011">Långsam</string>
+  <string id="30012">Standard</string>
+  <string id="30013">Snabb</string>
+  <string id="30014">Väldigt snabb</string>
+</strings>

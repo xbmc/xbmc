@@ -45,9 +45,20 @@
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
 #endif
+<<<<<<< HEAD
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "android/activity/AndroidFeatures.h"
+=======
+#include "Audio/DVDAudioCodecLibMad.h"
+#ifdef USE_LIBFAAD_DECODER
+  #include "Audio/DVDAudioCodecLibFaad.h"
+#endif
+#include "Audio/DVDAudioCodecPcm.h"
+#include "Audio/DVDAudioCodecLPcm.h"
+#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
+  #include "Audio/DVDAudioCodecPassthrough.h"
+>>>>>>> FETCH_HEAD
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -210,6 +221,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     }
 #endif
 
+<<<<<<< HEAD
 #if defined(HAS_IMXVPU)
     if (!hint.software)
     {
@@ -223,6 +235,28 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
       {
         if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+=======
+#if defined(HAVE_LIBCRYSTALHD)
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usechd"))
+  {
+    if (CCrystalHD::GetInstance()->DevicePresent())
+    {
+      switch(hint.codec)
+      {
+        case CODEC_ID_VC1:
+        case CODEC_ID_H264:
+        case CODEC_ID_WMV3:
+        case CODEC_ID_MPEG2VIDEO:
+          if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
+            break;
+          if (hint.codec == CODEC_ID_MPEG2VIDEO && hint.width <= 720)
+            break;
+          CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
+        break;
+        default:
+        break;
+>>>>>>> FETCH_HEAD
       }
     }
 #endif
@@ -322,9 +356,95 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+<<<<<<< HEAD
   // try passthrough first
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
+=======
+  if (passthrough)
+  {
+#if (defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)) && !defined(WIN32)
+    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+    if( pCodec ) return pCodec;
+#endif
+
+    pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
+    if ( pCodec ) return pCodec;
+  }
+
+  switch (hint.codec)
+  {
+#ifdef USE_LIBA52_DECODER
+  case CODEC_ID_AC3:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#endif
+#ifdef USE_LIBDTS_DECODER
+  case CODEC_ID_DTS:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#endif
+  case CODEC_ID_MP2:
+  case CODEC_ID_MP3:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#ifdef USE_LIBFAAD_DECODER
+  case CODEC_ID_AAC:
+  //case CODEC_ID_MPEG4AAC:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#endif
+  case CODEC_ID_PCM_S32LE:
+  case CODEC_ID_PCM_S32BE:
+  case CODEC_ID_PCM_U32LE:
+  case CODEC_ID_PCM_U32BE:
+  case CODEC_ID_PCM_S24LE:
+  case CODEC_ID_PCM_S24BE:
+  case CODEC_ID_PCM_U24LE:
+  case CODEC_ID_PCM_U24BE:
+  case CODEC_ID_PCM_S24DAUD:
+  case CODEC_ID_PCM_S16LE:
+  case CODEC_ID_PCM_S16BE:
+  case CODEC_ID_PCM_U16LE:
+  case CODEC_ID_PCM_U16BE:
+  case CODEC_ID_PCM_S8:
+  case CODEC_ID_PCM_U8:
+  case CODEC_ID_PCM_ALAW:
+  case CODEC_ID_PCM_MULAW:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecPcm(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#if 0
+  //case CODEC_ID_LPCM_S16BE:
+  //case CODEC_ID_LPCM_S20BE:
+  case CODEC_ID_LPCM_S24BE:
+    {
+      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint, options );
+      if( pCodec ) return pCodec;
+      break;
+    }
+#endif
+  default:
+    {
+      pCodec = NULL;
+      break;
+    }
+  }
+>>>>>>> FETCH_HEAD
 
   pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;

@@ -4,6 +4,7 @@
 <!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
 
 <strings>
+<<<<<<< HEAD
     <string id="30000">Activar Fanart</string>
     <string id="30001">Activar trailers de HD-Trailers.net</string>
     <string id="30002">Idioma preferido</string>
@@ -11,4 +12,9 @@
     <string id="30004">Activar Trailer (YouTube)</string>
     <string id="30005">Manter Título Original</string>
     <string id="30006">País Preferido para Certificação</string>
+=======
+    <string id="30000">Ligar Fanart</string>
+    <string id="30001">Ligar trailers de HD-Trailers.net</string>
+    <string id="30002">Língua preferida</string>
+>>>>>>> FETCH_HEAD
 </strings>

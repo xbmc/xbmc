@@ -1,8 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language locale="uk">
   <charsets>
+<<<<<<< HEAD
     <gui unicodefont="true">utf-8</gui>
     <subtitle>CP1251</subtitle>
+=======
+    <gui unicodefont="false">CP1252</gui>
+    <subtitle>CP1252</subtitle>
+>>>>>>> FETCH_HEAD
   </charsets>
   <dvd>
     <menu>uk</menu>
@@ -11,12 +16,20 @@
   </dvd>
   <regions>
     <region name="Ukraine" locale="UA">
+<<<<<<< HEAD
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY 'р.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>mps</speedunit>
       <timezone>EET</timezone>
+=======
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+>>>>>>> FETCH_HEAD
     </region>
   </regions>
    <sorttokens>

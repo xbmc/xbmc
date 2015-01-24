@@ -142,6 +142,7 @@
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
+<<<<<<< HEAD
       <g mod="ctrl">ActivateWindow(TVGuide)</g>  <!-- MCE Guide -->
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
@@ -152,13 +153,29 @@
       <t mod="ctrl,shift">ActivateWindow(TVChannels)</t>  <!-- MCE My TV -->
       <a mod="ctrl">ActivateWindow(RadioChannels)</a>  <!-- MCE My Radio -->
       <!-- MCE keypresses without an obvious use in XBMC -->
+=======
+      <g mod="ctrl">OSD</g>               <!-- MCE Guide -->
+      <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
+      <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
+      <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
+      <!-- MCE keypresses without an obvious use in XBMC -->
+      <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
+      <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
+      <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
+      <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
+      <m mod="ctrl,shift">Notification(MCEKeypress, DVD menu, 3)</m>
+>>>>>>> FETCH_HEAD
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
   </global>
   <LoginScreen>
     <keyboard>
+<<<<<<< HEAD
       <end mod="ctrl">ShutDown()</end>
+=======
+      <end>XBMC.ShutDown()</end>
+>>>>>>> FETCH_HEAD
     </keyboard>
   </LoginScreen>
   <Home>
@@ -287,8 +304,13 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <o>CodecInfo</o>
+<<<<<<< HEAD
       <i>Back</i>
       <d mod="ctrl">Back</d>
+=======
+      <i>Close</i>
+      <d mod="ctrl">Close</d>
+>>>>>>> FETCH_HEAD
       <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
@@ -404,8 +426,15 @@
   </GUICalibration>
   <VideoOSD>
     <keyboard>
+<<<<<<< HEAD
       <m>Back</m>
       <g mod="ctrl">Back</g> <!-- MCE Guide button -->
+=======
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <m>Close</m>
+      <g mod="ctrl">close</g> <!-- MCE Guide button -->
+>>>>>>> FETCH_HEAD
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
@@ -559,10 +588,34 @@
   <PVROSDCutter>
     <keyboard>
       <backspace>Close</backspace>
+<<<<<<< HEAD
       <escape>Close</escape>
     </keyboard>
   </PVROSDCutter>
   <MyTVSettings>
+=======
+      <i>Close</i>
+      <d mod="ctrl">Close</d>
+      <key id='65446'>Close</key>
+    </keyboard>
+  </MovieInformation>
+  <AddonInformation>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </AddonInformation>
+  <AddonSettings>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </AddonSettings>
+  <TextViewer>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </TextViewer>
+  <LockSettings>
+>>>>>>> FETCH_HEAD
     <keyboard>
       <backspace>PreviousMenu</backspace>
     </keyboard>
@@ -574,7 +627,17 @@
   </FileBrowser>
   <ShutdownMenu>
     <keyboard>
+<<<<<<< HEAD
       <s>Back</s>
+=======
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+      <i>Close</i>
+      <d mod="ctrl">Close</d>
+      <o>Close</o>
+      <backspace>Close</backspace>
+      <space>Pause</space>
+>>>>>>> FETCH_HEAD
     </keyboard>
   </ShutdownMenu>
   <AddonInformation>
@@ -586,6 +649,7 @@
     <keyboard>
       <delete>Delete</delete>
     </keyboard>
+<<<<<<< HEAD
   </AddonSettings>
   <Addon>
     <keyboard>
@@ -595,4 +659,12 @@
       <f4>Blue</f4>
     </keyboard>
   </Addon>
+=======
+  </Favourites>
+  <NumericInput>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </NumericInput>
+>>>>>>> FETCH_HEAD
 </keymap>

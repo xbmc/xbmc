@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Portuguese strings.xml by hudo (hudokkow [AT] gmail [DOT] com) -->
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Modo</string>
+    <string id="30001">Preenchido</string>
+    <string id="30002">Contorno</string>
+    <string id="30003">Pontos</string>
+    <string id="30004">Altura das barras</string>
+    <string id="30005">Pequena</string>
+    <string id="30006">Padrão</string>
+    <string id="30007">Grande</string>
+    <string id="30008">Muito grande</string>
+    <string id="30009">Velocidade</string>
+    <string id="30010">Muito lento</string>
+    <string id="30011">Lento</string>
+    <string id="30012">Padrão</string>
+    <string id="30013">Rápido</string>
+    <string id="30014">Muito rápido</string>
+</strings>

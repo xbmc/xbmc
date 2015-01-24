@@ -69,10 +69,17 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->y          = 0;
   m_pInfo->width      = iWidth;
   m_pInfo->height     = iHeight;
+<<<<<<< HEAD
   m_pInfo->pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
   m_pInfo->name       = strdup(Name().c_str());
   m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
+=======
+  m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+  m_pInfo->name       = strdup(Name().c_str());
+  m_pInfo->presets    = strdup(_P(Path()).c_str());
+  m_pInfo->profile    = strdup(_P(Profile()).c_str());
+>>>>>>> FETCH_HEAD
 
   if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create() == ADDON_STATUS_OK)
     return true;
@@ -100,6 +107,7 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
 
 void CScreenSaver::Destroy()
 {
+<<<<<<< HEAD
 #ifdef HAS_PYTHON
   if (URIUtils::HasExtension(LibPath(), ".py"))
   {
@@ -107,6 +115,8 @@ void CScreenSaver::Destroy()
     return;
   }
 #endif
+=======
+>>>>>>> FETCH_HEAD
   // Release what was allocated in method CScreenSaver::CreateScreenSaver.
   if (m_pInfo)
   {

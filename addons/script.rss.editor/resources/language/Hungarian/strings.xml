@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="0">RSS Szerkesztő</string>
+  <string id="30">Szett szerkesztő</string>
+
+  <string id="1">Szett váltása</string>
+  <string id="4">Forrás</string>
+  <string id="5">Beállítás</string>
+  <string id="6">Attribútumok</string>
+
+  <string id="11">Eltávolítandó forrás választása</string>
+  <string id="12">RSS forrás URL címe</string>
+  <string id="13">Frissítési időköz</string>
+  <string id="14">Ezen RSS forrás helyének választása: %s</string>
+
+  <string id="20">Mik azok a szettek?</string>
+  <string id="21">Az XBMC-ben különböző szettek használatához,</string>
+  <string id="22">mindegyiket meg kell hívni a skin-ből</string>
+  <string id="23">egy egyedi azonosítóval</string>
+  <string id="24">Szett választása </string>
+  <string id="25">Azonosító megadása</string>
+  <string id="26">Szett %s már létezik</string>
+  <string id="27">Jobbról balra szövegtípus?</string>
+
+  <string id="40">Hiba: </string>
+  <string id="41">vagy nem található a rendszerben,</string>
+  <string id="42">vagy nem tartalmaz értelmezhető XML-t.</string>
+  <string id="43">Próbáld meg törölni a felhasználói mappából és újraindítani az XBMC-t.</string>
+  <string id="44">Törölni</string>
+  <string id="45">A Szett 1 nem törölhető</string>
+  <string id="46">A Szett 1 szükséges.  Nem törölheted.</string>
+  <string id="47">Szett 1 visszaállítása az alapbeállításra?</string>
+  <string id="48">Visszaállítás szükséges</string>
+  <string id="49">Az XBMC-t újra kell indítani a változtatásokhoz.</string>
+  <string id="50">Szett %s már létezik.</string>
+  <string id="51">Az általad megadott RSSFeeds.xml fájl hibás.</string>
+  <string id="52">Megpróbálom újragenerálni</string>
+  <string id="53">Minden korábbi beállítás elveszik</string>
+</strings>

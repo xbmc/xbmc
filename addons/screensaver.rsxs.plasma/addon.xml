@@ -12,6 +12,7 @@
     library_linux="Plasma.xbs"
     library_osx="Plasma.xbs"/>
   <extension point="xbmc.addon.metadata">
+<<<<<<< HEAD
     <summary lang="af">Seker die tweede mees psigedeliese sluimerskerm ooit</summary>
     <summary lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء على الإطلاق</summary>
     <summary lang="be">Напэўна, другі найбольш псіхадэлічны ахоўнік экрану</summary>
@@ -116,6 +117,28 @@
     <description lang="vi">Đây có thể là trình bảo vệ màn hình gây ảo giác mạnh thứ hai tại thời điểm này. Hãy thử xem các hình ảnh tạo nên từ các màu sắc di chuyển khắp nơi</description>
     <description lang="zh">或许是排名第二的迷幻效果屏幕保护程序。你将看到所有颜色满处乱飞。</description>
     <description lang="zh_TW">可能是現存第二最夢幻的螢幕保護程式。快來嘗試想像一下所有移動中的色彩變化。</description>
+=======
+    <summary lang="en">Probably the second most psychedelic screensaver ever</summary>
+    <summary lang="fi">Todennäköisesti toiseksi psykedeelisin näytönsäästäjä koskaan</summary>
+    <summary lang="fr">Probablement le second écran de veille le plus psychédélique</summary>
+    <summary lang="hu">A második legpszihedelikusabb képernyővédő</summary>
+    <summary lang="ko">아마도 두번째로 가장 사이키델릭한 화면보호기</summary>
+    <summary lang="nl">Waarschijnlijk de op één na meest psychedelische schermbeveiliging ooit</summary>
+    <summary lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie</summary>
+    <summary lang="pt">Provavelmente a segunda mais psicadélica protecção de ecrã</summary>
+    <summary lang="se">Förmodligen den näst psykedeliska skärmsläckaren</summary>
+    <summary lang="zh">也许是排名第二的迷幻效果屏幕保护程序</summary>
+    <description lang="en">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
+    <description lang="fi">Todennäköisesti toiseksi psykedeelisin olemassa oleva näytönsäästäjä. Kuvittelepa vain kaikki nuo värit lentelemässä ympäriinsä.</description>
+    <description lang="fr">Probablement le second économiseur le plus psychédélique de l'histoire. Essayez seulement d'imaginer toutes ces couleurs en mouvement.</description>
+    <description lang="hu">Valószínüleg a második legpszihedelikusabb képernyővédő ami létezik. Csak képzeld el mindezt a színkavalkádot mozogni.</description>
+    <description lang="ko">아마도 이세상에 존재하는것중 두번째로 가장 사이키델릭한 화면보호기. 오만가지 색상이 돌아다니는걸 상상해보세요.</description>
+    <description lang="nl">Waarschlijnlijk de op één na meest psychedelische schermbeveliging ooit. Probeer u het voor te stellen: al die kleuren die door mekaar lopen.</description>
+    <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferię poruszających się barw.</description>
+    <description lang="pt">Provavelmente a segunda mais psicadélica protecção de ecrã de sempre. Experimente-a para ver todas as cores moverem-se livremente.</description>
+    <description lang="se">Förmodligen den näst psykedeliska skärmsläckaren som finns. Försök bara att uppfatta alla färger som rör sig runt och runt.</description>
+    <description lang="zh">也许是排名第二的迷幻效果屏幕保护程序。你将看到所有颜色满处乱飞。</description>
+>>>>>>> FETCH_HEAD
     <platform>linux osx</platform>
   </extension>
 </addon>

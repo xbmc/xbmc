@@ -62,10 +62,13 @@ void CDVDStreamInfo::Clear()
   level    = 0;
   profile  = 0;
   ptsinvalid = false;
+<<<<<<< HEAD
   forced_aspect = false;
   bitsperpixel = 0;
   pid = 0;
   stereo_mode.clear();
+=======
+>>>>>>> FETCH_HEAD
 
   channels   = 0;
   samplerate = 0;
@@ -104,12 +107,17 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  stills   != right.stills
   ||  level    != right.level
   ||  profile  != right.profile
+<<<<<<< HEAD
   ||  ptsinvalid != right.ptsinvalid
   ||  forced_aspect != right.forced_aspect
   ||  bitsperpixel != right.bitsperpixel
   ||  pid != right.pid
   ||  vfr      != right.vfr
   ||  stereo_mode != right.stereo_mode ) return false;
+=======
+  ||  ptsinvalid != right.profile
+  ||  vfr      != right.vfr) return false;
+>>>>>>> FETCH_HEAD
 
   // AUDIO
   if( channels      != right.channels
@@ -168,6 +176,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   level    = right.level;
   profile  = right.profile;
   ptsinvalid = right.ptsinvalid;
+<<<<<<< HEAD
   forced_aspect = right.forced_aspect;
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
@@ -175,6 +184,8 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   vfr = right.vfr;
   software = right.software;
   stereo_mode = right.stereo_mode;
+=======
+>>>>>>> FETCH_HEAD
 
   // AUDIO
   channels      = right.channels;
@@ -226,12 +237,18 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     width     = stream->iWidth;
     aspect    = stream->fAspect;
     vfr       = stream->bVFR;
+<<<<<<< HEAD
     ptsinvalid = stream->bPTSInvalid;
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;
     bitsperpixel = stream->iBitsPerPixel;
     pid = stream->iPhysicalId;
     stereo_mode = stream->stereo_mode;
+=======
+    level     = stream->iLevel;
+    profile   = stream->iProfile;
+    ptsinvalid = stream->bPTSInvalid;
+>>>>>>> FETCH_HEAD
   }
   else if(  right.type == STREAM_SUBTITLE )
   {

@@ -87,7 +87,11 @@ ICodec* CodecFactory::CreateCodec(const std::string& strFileType)
   else if (fileType == "spc")
     return new SPCCodec();
 #endif
+<<<<<<< HEAD
   else if (fileType == "sid" || fileType == "sidstream")
+=======
+  else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
+>>>>>>> FETCH_HEAD
     return new SIDCodec();
   else if (VGMCodec::IsSupportedFormat(strFileType))
     return new VGMCodec();
@@ -120,6 +124,7 @@ ICodec* CodecFactory::CreateCodec(const std::string& strFileType)
 ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::string& strContent, unsigned int filecache)
 {
   CURL urlFile(strFile);
+<<<<<<< HEAD
   std::string content = strContent;
   StringUtils::ToLower(content);
   if( content == "audio/mpeg"
@@ -141,11 +146,19 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
           content == "audio/x-ms-wma" ||
           content == "audio/x-ape" ||
           content == "audio/ape")
+=======
+  if( strContent.Equals("audio/mpeg")
+  ||  strContent.Equals("audio/mp3") )
+    return new MP3Codec();
+  else if( strContent.Equals("audio/aac")
+    || strContent.Equals("audio/aacp") )
+>>>>>>> FETCH_HEAD
   {
     DVDPlayerCodec *pCodec = new DVDPlayerCodec;
     pCodec->SetContentType(content);
     return pCodec;
   }
+<<<<<<< HEAD
   else if( content == "application/ogg" || content == "audio/ogg")
     return CreateOGGCodec(strFile,filecache);
   else if (content == "audio/x-xbmc-pcm")
@@ -162,6 +175,12 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
     dvdcodec->SetContentType(content);
     return dvdcodec;
   }
+=======
+  else if( strContent.Equals("audio/x-ms-wma") )
+    return new DVDPlayerCodec();
+  else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
+    return CreateOGGCodec(strFile,filecache);
+>>>>>>> FETCH_HEAD
 
   if (urlFile.IsProtocol("shout"))
   {
@@ -178,12 +197,42 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
     //would be better if the papcodecs could work with bitstreams instead of filenames.
+<<<<<<< HEAD
+=======
+    codec = new DTSCodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+#endif
+#ifdef USE_LIBA52_DECODER
+    codec = new AC3Codec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+#endif
+#if !defined(USE_LIBDTS_DECODER) || !defined(USE_LIBA52_DECODER)
+>>>>>>> FETCH_HEAD
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))
     {
       return dvdcodec;
     }
+<<<<<<< HEAD
+=======
+    delete dvdcodec;
+#endif
+    codec = new ADPCMCodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+>>>>>>> FETCH_HEAD
 
     dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType(content);
@@ -206,6 +255,7 @@ ICodec* CodecFactory::CreateOGGCodec(const std::string& strFile,
   ICodec* codec = new OGGCodec();
   try
   {
+<<<<<<< HEAD
     if (codec->Init(strFile, filecache))
       return codec;
   }
@@ -216,3 +266,64 @@ ICodec* CodecFactory::CreateOGGCodec(const std::string& strFile,
   return new DVDPlayerCodec();
 }
 
+=======
+#if defined(USE_LIBDTS_DECODER) || defined(HAS_AC3_CDDA_CODEC)
+    ICodec* codec;
+#endif
+#ifdef USE_LIBDTS_DECODER
+    //lets see what it contains...
+    //this kinda sucks 'cause if it's plain cdda the file
+    //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
+    //would be better if the papcodecs could work with bitstreams instead of filenames.
+    codec = new DTSCDDACodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+#endif
+#ifdef HAS_AC3_CDDA_CODEC
+    codec = new AC3CDDACodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+#endif
+#if !defined(USE_LIBDTS_DECODER) || !defined(HAS_AC3_CDDA_CODEC)
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType("audio/x-spdif-compressed");
+    if (dvdcodec->Init(strFile, filecache))
+    {
+      return dvdcodec;
+    }
+    delete dvdcodec;
+#endif
+  }
+  else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
+    return CreateOGGCodec(strFile,filecache);
+
+  //default
+  return CreateCodec(urlFile.GetFileType());
+}
+
+ICodec* CodecFactory::CreateOGGCodec(const CStdString& strFile,
+                                     unsigned int filecache)
+{
+  // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec 
+  // it provides better timings for Karaoke. However OGGCodec() cannot handle 
+  // ogg-flac and ogg videos, that's why this block.
+  ICodec* codec = new OGGCodec();
+  try
+  {
+    if (codec->Init(strFile, filecache))
+      return codec;
+  }
+  catch( ... )
+  {
+  }
+  delete codec;
+  return new DVDPlayerCodec();
+}
+
+>>>>>>> FETCH_HEAD

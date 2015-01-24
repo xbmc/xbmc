@@ -40,13 +40,21 @@ class CAlarmClock : public CThread
 public:
   CAlarmClock();
   ~CAlarmClock();
+<<<<<<< HEAD
   void Start(const std::string& strName, float n_secs, const std::string& strCommand, bool bSilent = false, bool bLoop = false);
+=======
+  void Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent = false);
+>>>>>>> FETCH_HEAD
   inline bool IsRunning() const
   {
     return m_bIsRunning;
   }
 
+<<<<<<< HEAD
   inline bool HasAlarm(const std::string& strName)
+=======
+  inline bool HasAlarm(const CStdString& strName)
+>>>>>>> FETCH_HEAD
   {
     // note: strName should be lower case only here
     //       No point checking it at the moment due to it only being called
@@ -66,7 +74,11 @@ public:
     return 0.f;
   }
 
+<<<<<<< HEAD
   void Stop(const std::string& strName, bool bSilent = false);
+=======
+  void Stop(const CStdString& strName, bool bSilent = false);
+>>>>>>> FETCH_HEAD
   virtual void Process();
 private:
   std::map<std::string,SAlarmClockEvent> m_event;

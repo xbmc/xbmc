@@ -55,21 +55,35 @@ public:
    \param offset The offset from the current entry (defaults to 1, i.e. the next entry).
    \param autoPlay Whether we should start playing if not already (defaults to false).
    */
+<<<<<<< HEAD
   bool PlayNext(int offset = 1, bool autoPlay = false);
+=======
+  void PlayNext(int offset = 1, bool autoPlay = false);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Play the previous entry in the current playlist
    \sa PlayNext
    */
+<<<<<<< HEAD
   bool PlayPrevious();
   bool PlaySongId(int songId);
   bool Play();
+=======
+  void PlayPrevious();
+  void PlaySongId(int songId);
+  void Play();
+>>>>>>> FETCH_HEAD
 
   /*! \brief Start playing a particular entry in the current playlist
    \param index the index of the item to play. This value is modified to ensure it lies within the current playlist.
    \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
    \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
    */
+<<<<<<< HEAD
   bool Play(int index, bool replace = false, bool playPreviousOnFail = false);
+=======
+  void Play(int index, bool replace = false, bool playPreviousOnFail = false);
+>>>>>>> FETCH_HEAD
 
   /*! \brief Returns the index of the current item in active playlist.
    \return Current item in the active playlist.
@@ -129,10 +143,16 @@ public:
    Has no effect if Party Mode is enabled.
    \param playlist the playlist to (un)shuffle, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
    \param shuffle set true to shuffle, false to unshuffle.
+<<<<<<< HEAD
    \param notify notify the user with a Toast notification (defaults to false)
    \sa IsShuffled
    */
   void SetShuffle(int playlist, bool shuffle, bool notify = false);
+=======
+   \sa IsShuffled
+   */
+  void SetShuffle(int playlist, bool shuffle);
+>>>>>>> FETCH_HEAD
   
   /*! \brief Return whether a playlist is shuffled.
    If partymode is enabled, this always returns false.

@@ -19,7 +19,11 @@
  */
 #include "DBusUtil.h"
 #ifdef HAS_DBUS
+<<<<<<< HEAD
 #include "utils/log.h"
+=======
+#include "log.h"
+>>>>>>> FETCH_HEAD
 
 CVariant CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
 {

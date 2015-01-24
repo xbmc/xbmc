@@ -179,6 +179,7 @@ void Cocoa_DoAppleScript(const char* scriptSource)
 void Cocoa_DoAppleScriptFile(const char* filePath)
 {
   NSString* scriptFile = [NSString stringWithUTF8String:filePath];
+<<<<<<< HEAD
   NSString* appName = [NSString stringWithUTF8String:CCompileInfo::GetAppName()];
   NSMutableString *tmpStr = [NSMutableString stringWithString:@"~/Library/Application Support/"];
   [tmpStr appendString:appName];
@@ -192,6 +193,11 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
   [tmpStr appendString:appName];
   [tmpStr appendString:@"/system/AppleScripts"];
   NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:tmpStr];
+=======
+  NSString* userScriptsPath = [@"~/Library/Application Support/XBMC/scripts" stringByExpandingTildeInPath];
+  NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/XBMC/scripts"];
+  NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/XBMC/system/AppleScripts"];
+>>>>>>> FETCH_HEAD
 
   // Check whether a script exists in the app bundle's AppleScripts folder
   if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
@@ -384,6 +390,14 @@ void Cocoa_HideMouse()
 }
 
 void Cocoa_ShowMouse()
+<<<<<<< HEAD
+=======
+{
+  [NSCursor unhide];
+}
+
+void Cocoa_HideDock()
+>>>>>>> FETCH_HEAD
 {
   [NSCursor unhide];
 }

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>   <!--  3.8.2009 Finnish   -->
+  <!--Title-->
+  <string id="0">RSS Ticker</string>
+  
+  <!--Buttons-->
+  <string id="1">Vaihda setti</string>
+  <string id="4"> Syöte</string>
+  <string id="5"> Setti</string>
+  
+  <!--Feeds-->
+  <string id="11">Valitse poistettava syöte</string>
+  <string id="12">RSS-syötteen URL</string>
+  <string id="13">Päivitysväli</string>
+  <string id="14">Anna RSS-syötteen %s polku</string>
+  
+  <!--Sets-->
+  <string id="20">Mitä ovat setit?</string>
+  <string id="21">Käyttääksesi erilaisia settejä,</string>
+  <string id="22">käyttöliittymän täytyy kutsua kutakin</string>
+  <string id="23">omalla tunnuksellaan</string>
+  <string id="24">Valitse setti </string>
+  
+  <!--Misc-->
+  <string id="40">Virhe: </string>
+  <string id="41"> ei löytynyt järjestelmästä tai</string>
+  <string id="42">ei sisällä sopivaa XML-tiedostoa.</string>
+  <string id="43">Yritä poistaa se userdata-kansiosta ja käynnistä XBMC uudelleen.</string>
+  <string id="44">Poistaaksesi</string>
+  <string id="45">Et voi poistaa settiä 1</string>
+  <string id="46">Setti 1 vaaditaan. Et voi poistaa sitä.</string>
+  <string id="47">Palauta setti 1 oletukseksi?</string>
+  <string id="48">Nollaus vaaditaan</string>
+  <string id="49">XBMC täytyy käynnistää uudelleen, ottaksesi muutokset käyttöön</string>
+</strings>

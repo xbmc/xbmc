@@ -68,7 +68,11 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   else if (m_bIsVideo)
     partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
   else
+<<<<<<< HEAD
     partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+=======
+    partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
+>>>>>>> FETCH_HEAD
 
   playlistLoaded=playlist.Load(partyModePath);
 
@@ -113,9 +117,14 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CMusicDatabase db;
     if (db.Open())
     {
+<<<<<<< HEAD
       set<std::string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
+=======
+      if ( playlistLoaded )
+        m_strCurrentFilterMusic = playlist.GetWhereClause(db);
+>>>>>>> FETCH_HEAD
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
       m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
@@ -142,9 +151,14 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CVideoDatabase db;
     if (db.Open())
     {
+<<<<<<< HEAD
       set<std::string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
+=======
+      if ( playlistLoaded )
+        m_strCurrentFilterVideo = playlist.GetWhereClause(db);
+>>>>>>> FETCH_HEAD
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterVideo.c_str());
       m_iMatchingSongs += (int)db.GetMusicVideoIDs(m_strCurrentFilterVideo, songIDs2);

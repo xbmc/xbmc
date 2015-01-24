@@ -43,6 +43,7 @@ using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
 {
+<<<<<<< HEAD
   m_action = ActionCopy;
   m_heading = 0;
   m_line = 0;
@@ -59,6 +60,16 @@ CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
   m_displayProgress = displayProgress;
   m_heading = heading;
   m_line = line;
+  SetFileOperation(action, items, strDestFile);
+}
+
+void CFileOperationJob::SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile)
+=======
+}
+
+CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile)
+>>>>>>> FETCH_HEAD
+{
   SetFileOperation(action, items, strDestFile);
 }
 
@@ -131,7 +142,11 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
+<<<<<<< HEAD
   CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_GET_HIDDEN);
+=======
+  CDirectory::GetDirectory(strPath, items, "", false, false, DIR_CACHE_ONCE, true, false, true);
+>>>>>>> FETCH_HEAD
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -192,7 +207,11 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
         if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
+<<<<<<< HEAD
         if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
+=======
+        if (!DoProcessFolder(subdirAction, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
+>>>>>>> FETCH_HEAD
           return false;
         if (action == ActionDelete || action == ActionDeleteFolder)
           DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
@@ -222,7 +241,11 @@ CStdString CFileOperationJob::GetActionString(FileAction action)
   {
     case ActionCopy:
     case ActionReplace:
+<<<<<<< HEAD
       result = g_localizeStrings.Get(115);
+=======
+      base->m_currentOperation = g_localizeStrings.Get(115);
+>>>>>>> FETCH_HEAD
       break;
     case ActionMove:
       result = g_localizeStrings.Get(116);

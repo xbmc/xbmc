@@ -12,6 +12,7 @@
     library_linux="Solarwinds.xbs"
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
+<<<<<<< HEAD
     <summary lang="af">'n Betoverende deeltjie effek sluimerskerm</summary>
     <summary lang="ar">أداة ساحرة تؤثر بشاشة التوقف</summary>
     <summary lang="be">Ахоўнік экрану з зачаравальнымі эфэктамі часьціцаў</summary>
@@ -114,6 +115,30 @@
     <description lang="vi">Đây là trình bảo vệ có hiệu ứng thôi miên cục kỳ lợi hại. Bạn sẽ thấy sự sáng tạo từ những kiểu kết hợp có thể là không giới hạn</description>
     <description lang="zh">这是一个非常迷人的粒子效果屏幕保护程序。你会发现你能看到惊人数量的不同图案。</description>
     <description lang="zh_TW">這是一個非常令人著迷的粒子效果螢幕保護程式。您會發現可以達到一個另人驚豔的圖形數。</description>
+=======
+    <summary lang="en">A mesmerizing particle effects screensaver</summary>
+    <summary lang="fi">Lumoava partikkelitehostenäytönsäästäjä</summary>
+    <summary lang="fr">Un économiseur hypnotique à effets de particules</summary>
+    <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
+    <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
+    <summary lang="nl">Een hypnotiserende schermbeveiliging met partikeleffecten</summary>
+    <summary lang="pl">Wygaszacz hipnotyzujący efektami cząsteczek</summary>
+    <summary lang="pt">Protecção de ecrã com um efeito de partículas</summary>
+    <summary lang="ru">Завораживающий скринсейвер с эффектами частиц</summary>
+    <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
+    <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
+    <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>
+    <description lang="fr">C'est un économiseur d'écran à effets de particules vraiment hypnotique. Vous verrez que vous pouvez obtenir un nombre incroyable de modèles et d'effets différents.</description>
+    <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
+    <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
+    <description lang="nl">Dit is een erg hypnotiserende screensaver. Je kunt ongelooflijk veel verschillende patronen bekomen.</description>
+    <description lang="pl">Bardzo hipnotyzujący wygaszacz. Przekonaj się, ile niespotykanch wzorów da się osiągnąć.</description>
+    <description lang="pt">Protecção de ecrã fantástica com um efeito de partículas. Vai reparar que consegue um número quase infinito de padrões.</description>
+    <description lang="ru">Это - очень завораживающий хранитель экрана. Доступно огромное количество вариаций эффектов.</description>
+    <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
+    <description lang="zh">这是一个非常迷人的粒子效果屏幕保护程序。你会发现你能看到惊人数量的不同图案。</description>
+>>>>>>> FETCH_HEAD
     <platform>linux osx</platform>
   </extension>
 </addon>

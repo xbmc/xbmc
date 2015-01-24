@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="0">RSS Editor</string>
+  <string id="30">Set Editor</string>
+
+  <string id="1">Change Set</string>
+  <string id="4">Feed</string>
+  <string id="5">Set</string>
+  <string id="6">Edit Attributes</string>
+
+  <string id="11">Select a feed to remove</string>
+  <string id="12">RSS Feed URL</string>
+  <string id="13">Update Interval</string>
+  <string id="14">Enter the paths of your RSS feeds %s</string>
+
+  <string id="20">What Are Sets?</string>
+  <string id="21">To use different sets in your skin,</string>
+  <string id="22">each must be called from the skin</string>
+  <string id="23">with a unique id</string>
+  <string id="24">Select a Set </string>
+  <string id="25">Set ID</string>
+  <string id="26">Set %s already exists</string>
+  <string id="27">Enable Right to Left Text for this Set?</string>
+
+  <string id="40">Error: </string>
+  <string id="41">was either not found in the system,</string>
+  <string id="42">or does not contain parsable XML.</string>
+  <string id="43">Try deleting it from your userdata folder and restarting XBMC.</string>
+  <string id="44">To Remove</string>
+  <string id="45">Cannot Delete Set 1</string>
+  <string id="46">Set 1 is required.  You cannot delete this.</string>
+  <string id="47">Reset set 1 to default?</string>
+  <string id="48">Reset Required</string>
+  <string id="49">You need to restart XBMC for your changes to take effect</string>
+  <string id="50">Set %s already exists.</string>
+  <string id="51">Your RSSFeeds.xml file is corrupt.</string>
+  <string id="52">Attempt to regenerate</string>
+  <string id="53">You will loose all previous settings</string>
+</strings>

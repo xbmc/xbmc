@@ -58,6 +58,14 @@ class CPlayerController;
 #ifdef TARGET_WINDOWS
 #include "win32/WIN32Util.h"
 #endif
+<<<<<<< HEAD
+=======
+#ifdef _WIN32
+#include "win32/WIN32Util.h"
+#endif
+#include "Autorun.h"
+#include "Bookmark.h"
+>>>>>>> FETCH_HEAD
 #include "utils/Stopwatch.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
@@ -72,6 +80,7 @@ class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class DPMSSupport;
 class CSplash;
+<<<<<<< HEAD
 class CBookmark;
 class CNetwork;
 
@@ -99,6 +108,9 @@ struct ReplayGainSettings
   int iType;
   bool bAvoidClipping;
 };
+=======
+class CGUITextLayout;
+>>>>>>> FETCH_HEAD
 
 class CBackgroundPlayer : public CThread
 {
@@ -240,6 +252,7 @@ public:
   void StopShutdownTimer();
   void ResetShutdownTimers();
 
+<<<<<<< HEAD
   void StopVideoScan();
   void StopMusicScan();
   bool IsMusicScanning() const;
@@ -275,6 +288,10 @@ public:
   void StartMusicAlbumScan(const CStdString& strDirectory, bool refresh=false);
   void StartMusicArtistScan(const CStdString& strDirectory, bool refresh=false);
 
+=======
+  void SaveMusicScanSettings();
+  void RestoreMusicScanSettings();
+>>>>>>> FETCH_HEAD
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
@@ -395,6 +412,7 @@ protected:
 
   bool m_skinReverting;
 
+<<<<<<< HEAD
   bool m_loggingIn;
 
 #if defined(TARGET_DARWIN_IOS)
@@ -403,17 +421,29 @@ protected:
 #if defined(TARGET_ANDROID)
   friend class CWinEventsAndroid;
 #endif
+=======
+  bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
+
+  friend class CApplicationMessenger;
+>>>>>>> FETCH_HEAD
   // screensaver
   bool m_bScreenSave;
   ADDON::AddonPtr m_screenSaver;
 
   // timer information
+<<<<<<< HEAD
 #ifdef TARGET_WINDOWS
   CWinIdleTimer m_idleTimer;
   CWinIdleTimer m_screenSaverTimer;
 #else
   CStopWatch m_idleTimer;
   CStopWatch m_screenSaverTimer;
+=======
+#ifdef _WIN32
+  CWinIdleTimer m_idleTimer;
+#else
+  CStopWatch m_idleTimer;
+>>>>>>> FETCH_HEAD
 #endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
@@ -452,6 +482,8 @@ protected:
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
+  
+  CGUITextLayout *m_debugLayout;
 
   VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;

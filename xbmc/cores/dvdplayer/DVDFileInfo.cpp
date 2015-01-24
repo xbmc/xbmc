@@ -32,9 +32,13 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
+<<<<<<< HEAD
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
+=======
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+>>>>>>> FETCH_HEAD
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -144,6 +148,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   }
 
   if (pStreamDetails)
+<<<<<<< HEAD
   {
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
@@ -175,6 +180,9 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       }
     }
   }
+=======
+    DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
+>>>>>>> FETCH_HEAD
 
   int nVideoStream = -1;
   for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
@@ -267,9 +275,22 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
               aspect = hint.aspect;
             unsigned int nHeight = (unsigned int)((double)g_advancedSettings.GetThumbSize() / aspect);
 
+<<<<<<< HEAD
             uint8_t *pOutBuf = new uint8_t[nWidth * nHeight * 4];
             struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
                   PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+=======
+            DllSwScale dllSwScale;
+            dllSwScale.Load();
+
+            BYTE *pOutBuf = new BYTE[nWidth * nHeight * 4];
+            struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight,
+                  PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+            uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2], 0 };
+            int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2], 0 };
+            uint8_t *dst[] = { pOutBuf, 0, 0, 0 };
+            int     dstStride[] = { nWidth*4, 0, 0, 0 };
+>>>>>>> FETCH_HEAD
 
             if (context)
             {
@@ -329,11 +350,16 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (pItem->HasVideoInfoTag())
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
+<<<<<<< HEAD
   if (strFileNameAndPath.empty())
     strFileNameAndPath = pItem->GetPath();
 
   std::string playablePath = strFileNameAndPath;
   if (URIUtils::IsStack(playablePath))
+=======
+  CStdString playablePath = strFileNameAndPath;
+  if (CUtil::IsStack(playablePath))
+>>>>>>> FETCH_HEAD
     playablePath = XFILE::CStackDirectory::GetFirstStackedFile(playablePath);
 
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, playablePath, "");
@@ -375,7 +401,11 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
 }
 
 /* returns true if details have been added */
+<<<<<<< HEAD
 bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const std::string &path)
+=======
+bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path)
+>>>>>>> FETCH_HEAD
 {
   bool retVal = false;
   details.Reset();
@@ -440,18 +470,29 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   }  /* for iStream */
 
   details.DetermineBestStreams();
+<<<<<<< HEAD
 #ifdef HAVE_LIBBLURAY
+=======
+
+>>>>>>> FETCH_HEAD
   // correct bluray runtime. we need the duration from the input stream, not the demuxer.
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
     if(((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() > 0)
     {
+<<<<<<< HEAD
       CStreamDetailVideo* detailVideo = (CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO, 0);
       if (detailVideo)
         detailVideo->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
     }
   }
 #endif
+=======
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
+    }
+  }
+
+>>>>>>> FETCH_HEAD
   return retVal;
 }
 

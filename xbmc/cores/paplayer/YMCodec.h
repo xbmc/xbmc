@@ -39,7 +39,11 @@ public:
 private:
   DllStSound m_dll;
   void* m_ym;
+<<<<<<< HEAD
   int64_t m_iDataPos;
+=======
+  __int64 m_iDataPos;
+>>>>>>> FETCH_HEAD
 };
 
 #endif

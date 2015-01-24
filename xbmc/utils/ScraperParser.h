@@ -73,8 +73,16 @@ private:
    */
   void ParseXSLT(const std::string& input, std::string& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
+<<<<<<< HEAD
   void Clean(std::string& strDirty);
   void ConvertJSON(std::string &string);
+=======
+  void Clean(CStdString& strDirty);
+  /*! \brief Remove spaces, tabs, and newlines from a string
+   \param string the string in question, which will be modified.
+   */
+  void RemoveWhiteSpace(CStdString &string);
+>>>>>>> FETCH_HEAD
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
   void InsertToken(std::string& strOutput, int buf, const char* token);

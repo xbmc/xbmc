@@ -69,6 +69,7 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007, "DefaultAddonMovieInfo.png" },
    {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015, "DefaultAddonMusicVideoInfo.png" },
    {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
+<<<<<<< HEAD
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
    {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
@@ -94,6 +95,31 @@ static const TypeMapping types[] =
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
+=======
+   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0, "" },
+   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
+   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
+   {"visualization-library",             ADDON_VIZ_LIBRARY,             0, "" },
+   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
+   {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
+   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
+   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012, "DefaultAddonSubtitles.png" },
+   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
+   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014, "" },
+   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0, "" },
+   {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
+   {"xbmc.gui.webinterface",             ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
+   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
+   {"pvrclient",                         ADDON_PVRDLL,                  0, "" },
+   {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
+   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
+   {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
+   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" }};
+
+const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
+{
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+>>>>>>> FETCH_HEAD
   {
     const TypeMapping &map = types[index];
     if (type == map.type)
@@ -118,7 +144,37 @@ TYPE TranslateType(const std::string &string)
   return ADDON_UNKNOWN;
 }
 
+<<<<<<< HEAD
 const std::string GetIcon(const ADDON::TYPE& type)
+=======
+const CStdString GetIcon(const ADDON::TYPE& type)
+{
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  {
+    const TypeMapping &map = types[index];
+    if (type == map.type)
+      return map.icon;
+  }
+  return "";
+}
+
+/**
+ * AddonVersion
+ *
+ */
+
+bool AddonVersion::operator==(const AddonVersion &rhs) const
+{
+  return str.Equals(rhs.str);
+}
+
+bool AddonVersion::operator!=(const AddonVersion &rhs) const
+{
+  return !(*this == rhs);
+}
+
+bool AddonVersion::operator>(const AddonVersion &rhs) const
+>>>>>>> FETCH_HEAD
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -138,6 +194,7 @@ const std::string GetIcon(const ADDON::TYPE& type)
 
 #define SS(x) (x) ? x : ""
 
+<<<<<<< HEAD
 AddonProps::AddonProps(const cp_extension_t *ext)
   : id(SS(ext->plugin->identifier))
   , version(SS(ext->plugin->version))
@@ -145,14 +202,34 @@ AddonProps::AddonProps(const cp_extension_t *ext)
   , name(SS(ext->plugin->name))
   , path(SS(ext->plugin->plugin_path))
   , author(SS(ext->plugin->provider_name))
+=======
+#define EMPTY_IF(x,y) \
+  { \
+    CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
+    if (fan.Equals("true")) \
+      y.Empty(); \
+  }
+
+AddonProps::AddonProps(const cp_extension_t *ext)
+  : id(ext->plugin->identifier)
+  , version(ext->plugin->version)
+  , name(ext->plugin->name)
+  , path(ext->plugin->plugin_path)
+  , author(ext->plugin->provider_name)
+>>>>>>> FETCH_HEAD
   , stars(0)
 {
   if (ext->ext_point_id)
     type = TranslateType(ext->ext_point_id);
 
   icon = "icon.png";
+<<<<<<< HEAD
   fanart = URIUtils::AddFileToFolder(path, "fanart.jpg");
   changelog = URIUtils::AddFileToFolder(path, "changelog.txt");
+=======
+  fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
+  changelog = CUtil::AddFileToFolder(path, "changelog.txt");
+>>>>>>> FETCH_HEAD
   // Grab more detail from the props...
   const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(ext->plugin, "xbmc.addon.metadata");
   if (metadata)
@@ -170,6 +247,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+<<<<<<< HEAD
   BuildDependencies(ext->plugin);
 }
 
@@ -246,6 +324,8 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
     dependencies.insert(make_pair(std::string(plugin->imports[i].plugin_id),
                                   make_pair(AddonVersion(SS(plugin->imports[i].version)), plugin->imports[i].optional != 0)));
+=======
+>>>>>>> FETCH_HEAD
 }
 
 /**
@@ -255,6 +335,10 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
 
 CAddon::CAddon(const cp_extension_t *ext)
   : m_props(ext)
+<<<<<<< HEAD
+=======
+  , m_parent(AddonPtr())
+>>>>>>> FETCH_HEAD
 {
   BuildLibName(ext);
   Props().libname = m_strLibName;
@@ -449,7 +533,11 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
+<<<<<<< HEAD
   std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
+=======
+  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
+>>>>>>> FETCH_HEAD
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {

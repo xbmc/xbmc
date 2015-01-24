@@ -493,6 +493,176 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
   plane.flipindex = flipindex;
 }
 
+<<<<<<< HEAD
+=======
+void CLinuxRendererGLES::UploadYV12Texture(int source)
+{
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  if (!(im->flags&IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
+
+  // See if we need to recreate textures.
+  if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
+  {
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+      (this->*m_textureCreate)(i);
+
+    im->flags = IMAGE_FLAG_READY;
+  }
+
+  // if we don't have a shader, fallback to SW YUV2RGB for now
+  if (m_renderMethod & RENDER_SW)
+  {
+    if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
+    {
+      delete [] m_rgbBuffer;
+      m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
+      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    }
+
+    struct SwsContext *context = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                             im->width, im->height, PIX_FMT_BGRA,
+                                                             SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+    uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
+    int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
+    int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+    m_dllSwScale->sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(context);
+    SetEvent(m_eventTexturesDone[source]);
+  }
+  else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
+  {
+    // Perform the scaling.
+    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2], 0 };
+    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2], 0 };
+    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2], 0 };
+    int      algorithm   = 0;
+
+    switch (m_scalingMethod)
+    {
+    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
+    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
+    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
+    default: break;
+    }
+
+    struct SwsContext *ctx = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                         m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
+                                                         algorithm, NULL, NULL, NULL);
+    m_dllSwScale->sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(ctx);
+
+    im = &m_imScaled;
+    im->flags = IMAGE_FLAG_READY;
+  }
+
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+    deinterlacing = false;
+  else
+    deinterlacing = true;
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+
+  if (m_renderMethod & RENDER_SW)
+  {
+    // Load RGB image
+    if (deinterlacing)
+    {
+      LoadPlane( fields[FIELD_ODD][0] , GL_RGBA, buf.flipindex
+               , im->width, im->height >> 1
+               , m_sourceWidth*2, m_rgbBuffer );
+
+      LoadPlane( fields[FIELD_EVEN][0], GL_RGBA, buf.flipindex
+               , im->width, im->height >> 1
+               , m_sourceWidth*2, m_rgbBuffer + m_sourceWidth*4);      
+    }
+    else
+    {
+      LoadPlane( fields[FIELD_FULL][0], GL_RGBA, buf.flipindex
+               , im->width, im->height
+               , m_sourceWidth, m_rgbBuffer );
+    }
+  }
+  else
+  {
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+    if (deinterlacing)
+    {
+      // Load Y fields
+      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+               , im->width, im->height >> 1
+               , im->stride[0]*2, im->plane[0] );
+
+      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, buf.flipindex
+               , im->width, im->height >> 1
+               , im->stride[0]*2, im->plane[0] + im->stride[0]) ;
+    }
+    else
+    {
+      // Load Y plane
+      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+               , im->width, im->height
+               , im->stride[0], im->plane[0] );
+    }
+  }
+
+  VerifyGLState();
+
+  if (!(m_renderMethod & RENDER_SW))
+  {
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+    if (deinterlacing)
+    {
+      // Load Even U & V Fields
+      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[1]*2, im->plane[1] );
+
+      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[2]*2, im->plane[2] );
+      
+      // Load Odd U & V Fields
+      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[1]*2, im->plane[1] + im->stride[1] );
+
+      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[2]*2, im->plane[2] + im->stride[2] );
+
+    }
+    else
+    {
+      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> im->cshift_y
+               , im->stride[1], im->plane[1] );
+
+      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> im->cshift_y
+               , im->stride[2], im->plane[2] );
+    }
+  }
+  SetEvent(m_eventTexturesDone[source]);
+
+  CalculateTextureSourceRects(source, 3);
+
+  glDisable(m_textureTarget);
+}
+
+>>>>>>> FETCH_HEAD
 void CLinuxRendererGLES::Reset()
 {
   for(int i=0; i<m_NumYV12Buffers; i++)

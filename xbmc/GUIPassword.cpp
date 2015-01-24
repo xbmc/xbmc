@@ -202,8 +202,13 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
     if (!prompt)
       return (profile->getLockMode() == LOCK_MODE_EVERYONE);
 
+<<<<<<< HEAD
     if (profile->getDate().empty() &&
        (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+=======
+    if (profile->getDate().IsEmpty() &&
+       (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+>>>>>>> FETCH_HEAD
         profile->getLockMode() == LOCK_MODE_EVERYONE))
     {
       // user hasn't set a password and this is the first time they've used this account
@@ -394,6 +399,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       break;
     case WINDOW_ADDON_BROWSER:  // Addons
       bCheckPW = CProfilesManager::Get().GetCurrentProfile().addonmanagerLocked();
+      break;
+    case WINDOW_ADDON_BROWSER:  // Addons
+      bCheckPW = g_settings.GetCurrentProfile().addonmanagerLocked();
       break;
     case WINDOW_FILES:          // Files
       bCheckPW = CProfilesManager::Get().GetCurrentProfile().filesLocked();

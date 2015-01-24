@@ -303,6 +303,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )
+<<<<<<< HEAD
       value = StringUtils::Format("%" PRId64" kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
@@ -323,6 +324,10 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     if (pic && pic->GetDateTimeTaken().IsValid())
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
     break;
+=======
+      value.Format("%i kbps", item->m_dwSize);
+    break;           
+>>>>>>> FETCH_HEAD
   }
   if (!value.empty())
     return mask.m_prefix + value + mask.m_postfix;

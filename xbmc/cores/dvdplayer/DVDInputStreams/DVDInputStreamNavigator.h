@@ -71,7 +71,10 @@ class CDVDInputStreamNavigator
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
   , public CDVDInputStream::ISeekTime
+<<<<<<< HEAD
   , public CDVDInputStream::IMenus
+=======
+>>>>>>> FETCH_HEAD
 {
 public:
   CDVDInputStreamNavigator(IDVDPlayer* player);

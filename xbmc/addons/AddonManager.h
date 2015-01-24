@@ -82,7 +82,11 @@ namespace ADDON
 
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon);
+<<<<<<< HEAD
     bool SetDefault(const TYPE &type, const std::string &addonID);
+=======
+    bool SetDefault(const TYPE &type, const CStdString &addonID);
+>>>>>>> FETCH_HEAD
     /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
      \param addon [out] the retrieved addon pointer - only use if the function returns true.
@@ -90,6 +94,7 @@ namespace ADDON
      \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
      */
+<<<<<<< HEAD
     bool GetAddon(const std::string &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
@@ -97,6 +102,12 @@ namespace ADDON
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
+=======
+    bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
+    bool HasAddons(const TYPE &type, bool enabled = true);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
+>>>>>>> FETCH_HEAD
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
      \param getLocalVersion Whether to get the local addon version or the addon verion from the repository
@@ -111,6 +122,10 @@ namespace ADDON
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
+<<<<<<< HEAD
+=======
+    void UpdateRepos(bool force=false);
+>>>>>>> FETCH_HEAD
     void FindAddons();
     void RemoveAddon(const std::string& ID);
 
@@ -158,6 +173,14 @@ namespace ADDON
      \return true if addon is set, false otherwise.
      */
     bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
+
+    /*! \brief Load the addon in the given in-memory xml
+     This loads the addon using c-pluff which parses the addon descriptor file.
+     \param root Root element of an XML document.
+     \param addon [out] returned addon.
+     \return true if addon is set, false otherwise.
+     */
+    bool LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon);
 
     /*! \brief Load the addon in the given in-memory xml
      This loads the addon using c-pluff which parses the addon descriptor file.

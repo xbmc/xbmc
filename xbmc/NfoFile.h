@@ -70,11 +70,18 @@ private:
   std::string m_doc;
   size_t m_headPos;
   ADDON::ScraperPtr m_info;
+<<<<<<< HEAD
   ADDON::TYPE m_type;
   CScraperUrl m_scurl;
 
   int Load(const CStdString&);
   int Scrape(ADDON::ScraperPtr& scraper);
+=======
+  ADDON::TYPE       m_type;
+  bool DoScrape(ADDON::ScraperPtr& scraper);
+  void AddScrapers(ADDON::VECADDONS& addons,
+                   std::vector<ADDON::ScraperPtr>& vecScrapers);
+>>>>>>> FETCH_HEAD
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

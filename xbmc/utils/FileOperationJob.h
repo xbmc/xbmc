@@ -40,6 +40,7 @@ public:
   };
 
   CFileOperationJob();
+<<<<<<< HEAD
   CFileOperationJob(FileAction action, CFileItemList & items,
                     const CStdString& strDestFile,
                     bool displayProgress=false,
@@ -52,6 +53,11 @@ public:
   static CStdString GetActionString(FileAction action);
 
   const char* GetType() const { return m_displayProgress?"filemanager":""; }
+=======
+  CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile);
+>>>>>>> FETCH_HEAD
+
+  void SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile);
 
   virtual bool DoWork();
   const CStdString &GetAverageSpeed()     const { return m_avgSpeed; }

@@ -1,0 +1,60 @@
+#!/bin/sh -e
+# This script can be called in the following ways:
+#
+# After the package was removed:
+#       <postrm> remove
+#
+# After the package was purged:
+#       <postrm> purge
+#
+# After the package was upgraded:
+#       <old-postrm> upgrade <new-version>
+# if that fails:
+#       <new-postrm> failed-upgrade <old-version>
+#
+#
+# After all of the packages files have been replaced:
+#       <postrm> disappear <overwriting-package> <version>
+#
+#
+# If preinst fails during install:
+#       <new-postrm> abort-install
+#
+# If preinst fails during upgrade of removed package:
+#       <new-postrm> abort-install <old-version>
+#
+# If preinst fails during upgrade:
+#       <new-postrm> abort-upgrade <old-version>
+
+
+case "$1" in
+    remove)
+	update-alternatives \
+		--remove default.plymouth /lib/plymouth/themes/xbmc-logo/xbmc-logo.plymouth
+
+	rmdir /lib/plymouth/themes || :
+	rmdir /lib/plymouth || :
+
+	if which update-initramfs >/dev/null 2>&1
+	then
+	    update-initramfs -u
+	fi
+	;;
+
+    purge)
+	;;
+
+    upgrade|failed-upgrade|disappear)
+	;;
+
+    abort-install|abort-upgrade)
+	;;
+
+    *)
+	echo "$0 called with unknown argument \`$1'" 1>&2
+	exit 1
+	;;
+esac
+
+
+exit 0

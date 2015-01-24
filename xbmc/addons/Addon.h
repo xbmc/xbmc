@@ -38,9 +38,17 @@ namespace ADDON
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
 
 // utils
+<<<<<<< HEAD
 const std::string   TranslateType(const TYPE &type, bool pretty=false);
 const std::string   GetIcon(const TYPE &type);
       TYPE          TranslateType(const std::string &string);
+=======
+const CStdString    TranslateType(const TYPE &type, bool pretty=false);
+const CStdString    GetIcon(const TYPE &type);
+const TYPE          TranslateType(const CStdString &string);
+const CStdString    UpdateVideoScraper(const CStdString &scraper);
+const CStdString    UpdateMusicScraper(const CStdString &scraper);
+>>>>>>> FETCH_HEAD
 
 class AddonProps : public ISerializable
 {
@@ -54,10 +62,14 @@ public:
   {
   }
 
+<<<<<<< HEAD
   virtual ~AddonProps() {}
 
   AddonProps(const cp_extension_t *ext);
   AddonProps(const cp_plugin_info_t *plugin);
+=======
+  AddonProps(const cp_extension_t *ext);
+>>>>>>> FETCH_HEAD
 
   bool operator==(const AddonProps &rhs)
   { 
@@ -85,7 +97,11 @@ public:
   std::string changelog;
   std::string fanart;
   ADDONDEPS dependencies;
+<<<<<<< HEAD
   std::string broken;
+=======
+  CStdString broken;
+>>>>>>> FETCH_HEAD
   InfoMap    extrainfo;
   int        stars;
 private:
@@ -139,7 +155,11 @@ public:
   virtual std::string GetString(uint32_t id);
 
   // properties
+<<<<<<< HEAD
   TYPE Type() const { return m_props.type; }
+=======
+  const TYPE Type() const { return m_props.type; }
+>>>>>>> FETCH_HEAD
   bool IsType(TYPE type) const { return type == m_props.type; }
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
@@ -147,6 +167,7 @@ public:
   const std::string Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   virtual bool IsInUse() const { return false; };
+<<<<<<< HEAD
   const AddonVersion Version() const { return m_props.version; }
   const AddonVersion MinVersion() const { return m_props.minversion; }
   const std::string Summary() const { return m_props.summary; }
@@ -175,6 +196,22 @@ public:
    */
   bool MeetsVersion(const AddonVersion &version) const;
   virtual bool ReloadSettings();
+=======
+  const AddonVersion Version();
+  const CStdString Summary() const { return m_props.summary; }
+  const CStdString Description() const { return m_props.description; }
+  const CStdString Path() const { return m_props.path; }
+  const CStdString Profile() const { return m_profile; }
+  const CStdString LibPath() const;
+  const CStdString Author() const { return m_props.author; }
+  const CStdString ChangeLog() const { return m_props.changelog; }
+  const CStdString FanArt() const { return m_props.fanart; }
+  const CStdString Icon() const;
+  const int Stars() const { return m_props.stars; }
+  const CStdString Disclaimer() const { return m_props.disclaimer; }
+  const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
+  ADDONDEPS GetDeps();
+>>>>>>> FETCH_HEAD
 
   void MarkAsDisabled() { m_enabled = false; }
 

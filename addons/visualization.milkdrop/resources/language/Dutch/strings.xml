@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Automatische overgangstijd</string>
+    <string id="30001">Tijd tussen presets</string>
+    <string id="30002">Bijkomende willekeurige tijd</string>
+    <string id="30003">Anisotropisch filter inschakelen</string>
+    <string id="30004">Ruwe afkappingen inschakelen</string>
+    <string id="30005">Geluidssterktedrempel voor een ruwe afkapping</string>
+    <string id="30006">Gemiddelde tijd tussen ruwe afkappingen</string>
+    <string id="30007">Maximale verversingsfrequentie</string>
+    <string id="30008">Stereo 3D inschakelen</string>
+    <string id="30009">Presetpakket</string>
+</strings>

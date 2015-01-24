@@ -31,6 +31,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "Util.h"
 
+
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
   m_NeedRecalc  = true;
@@ -95,6 +96,7 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
 
 //===================================================================
 
+<<<<<<< HEAD
 CWinShader::~CWinShader()
 {
   if (m_effect.Get())
@@ -102,6 +104,12 @@ CWinShader::~CWinShader()
 
   if (m_vb.Get())
     m_vb.Release();
+=======
+void CWinShader::Release()
+{
+  ReleaseInternal(); // virtual, so calls the child function, which is supposed to call down the hierarchy
+  delete this;
+>>>>>>> FETCH_HEAD
 }
 
 bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
@@ -123,6 +131,30 @@ bool CWinShader::LockVertexBuffer(void **data)
     return false;
   }
   return true;
+<<<<<<< HEAD
+=======
+}
+
+bool CWinShader::UnlockVertexBuffer()
+{
+  if (!m_vb.Unlock())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock vertex buffer");
+    return false;
+  }
+  return true;
+}
+
+void CWinShader::ReleaseInternal()
+{
+  if (m_effect.Get())
+    m_effect.Release();
+  
+  if (m_vb.Get())
+    m_vb.Release();
+
+  //derived classes: always call Base::ReleaseInternal() at the end
+>>>>>>> FETCH_HEAD
 }
 
 bool CWinShader::UnlockVertexBuffer()
@@ -158,6 +190,7 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
   return true;
 }
 
+<<<<<<< HEAD
 bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int vertexIndexStep)
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
@@ -167,6 +200,12 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
   if (vecRT != NULL && !vecRT->empty())
     pD3DDevice->GetRenderTarget(0, &oldRT);
 
+=======
+bool CWinShader::Execute()
+{
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+>>>>>>> FETCH_HEAD
   pD3DDevice->SetFVF(m_FVF);
   pD3DDevice->SetStreamSource(0, m_vb.Get(), 0, m_vertsize);
 
@@ -184,6 +223,7 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
+<<<<<<< HEAD
 
     if (vecRT != NULL && vecRT->size() > iPass)
       pD3DDevice->SetRenderTarget(0, (*vecRT)[iPass]);
@@ -203,6 +243,17 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
     pD3DDevice->SetRenderTarget(0, oldRT);
     oldRT->Release();
   }
+=======
+    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, m_primitivesCount);
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitive %08X", hr);
+
+    if (!m_effect.EndPass())
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
+  }
+  if (!m_effect.End())
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
+>>>>>>> FETCH_HEAD
 
   // MSDN says: Setting a new render target will cause the viewport 
   // to be set to the full size of the new render target.
@@ -213,7 +264,11 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
 //==================================================================================
 
+<<<<<<< HEAD
 bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
+=======
+bool CYUV2RGBShader::Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight)
+>>>>>>> FETCH_HEAD
 {
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
@@ -221,7 +276,11 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   m_sourceHeight = sourceHeight;
   m_format = fmt;
 
+<<<<<<< HEAD
   unsigned int texWidth;
+=======
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
+>>>>>>> FETCH_HEAD
 
   DefinesMap defines;
 
@@ -312,6 +371,20 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
     return false;
   }
 
+<<<<<<< HEAD
+=======
+  m_sourceWidth = sourceWidth;
+  m_sourceHeight = sourceHeight;
+
+  if(!m_YUVPlanes[0].Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUV planes.");
+    return false;
+  }
+
+>>>>>>> FETCH_HEAD
   return true;
 }
 
@@ -324,6 +397,7 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
   PrepareParameters(sourceRect, destRect,
                     contrast, brightness, flags);
   UploadToGPU(YUVbuf);
+<<<<<<< HEAD
   SetShaderParameters(YUVbuf);
   Execute(NULL,4);
 }
@@ -335,6 +409,10 @@ CYUV2RGBShader::~CYUV2RGBShader()
     if (m_YUVPlanes[i].Get())
       m_YUVPlanes[i].Release();
   }
+=======
+  SetShaderParameters();
+  Execute();
+>>>>>>> FETCH_HEAD
 }
 
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
@@ -400,6 +478,7 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                          m_format);
 }
 
+<<<<<<< HEAD
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 {
   m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
@@ -410,22 +489,53 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   if (YUVbuf->GetActivePlanes() > 2)
     m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
+=======
+void CYUV2RGBShader::SetShaderParameters()
+{
+  m_effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
+  m_effect.SetTechnique( "YUV2RGB_T" );
+  m_effect.SetTexture( "g_YTexture",  m_YUVPlanes[0] ) ;
+  m_effect.SetTexture( "g_UTexture",  m_YUVPlanes[1] ) ;
+  m_effect.SetTexture( "g_VTexture",  m_YUVPlanes[2] ) ;
+}
+
+void CYUV2RGBShader::ReleaseInternal()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_YUVPlanes[i].Get())
+      m_YUVPlanes[i].Release();
+  }
+>>>>>>> FETCH_HEAD
 }
 
 bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 {
+<<<<<<< HEAD
   const POINT point = { 0, 0 };
 
   for (unsigned int i = 0; i<YUVbuf->GetActivePlanes(); i++)
   {
     const RECT rect = { 0, 0, YUVbuf->planes[i].texture.GetWidth(), YUVbuf->planes[i].texture.GetHeight() };
+=======
+  const RECT rect = { 0, 0, m_sourceWidth, m_sourceHeight };
+  const RECT recthalf = { 0, 0, m_sourceWidth / 2, m_sourceHeight / 2};
+  const POINT point = { 0, 0 };
+
+  for (int i = 0; i<3; i++)
+  {
+>>>>>>> FETCH_HEAD
     IDirect3DSurface9 *src, *dest;
     if(FAILED(YUVbuf->planes[i].texture.Get()->GetSurfaceLevel(0, &src)))
       CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for source YUV plane %d", i);
     if (FAILED(m_YUVPlanes[i].Get()->GetSurfaceLevel(0, &dest)))
       CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for destination YUV plane %d", i);
 
+<<<<<<< HEAD
     if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, &rect, dest, &point)))
+=======
+    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, i == 0 ? &rect : &recthalf, dest, &point)))
+>>>>>>> FETCH_HEAD
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to copy plane %d from sysmem to vidmem.", i);
       src->Release();
@@ -534,11 +644,15 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
       return false;
   }
 
+<<<<<<< HEAD
   if (!ChooseKernelD3DFormat())
   {
     CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the kernel.");
     return false;
   }
+=======
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
+>>>>>>> FETCH_HEAD
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
 
@@ -560,16 +674,26 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
   return true;
 }
 
+<<<<<<< HEAD
 void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
+=======
+void CConvolutionShader::Render(CD3DTexture &sourceTexture,
+                                unsigned int sourceWidth, unsigned int sourceHeight,
+>>>>>>> FETCH_HEAD
                                 CRect sourceRect,
                                 CRect destRect)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
+<<<<<<< HEAD
   SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps));
   Execute(NULL,4);
+=======
+  SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
+  Execute();
+>>>>>>> FETCH_HEAD
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -673,11 +797,21 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 8, sizeof(CUSTOMVERTEX), 2);
 
+<<<<<<< HEAD
   DefinesMap defines;
   if (m_floattex)
     defines["HAS_FLOAT_TEXTURE"] = "";
   if (m_rgba)
     defines["HAS_RGBA"] = "";
+=======
+  D3DLOCKED_RECT lr;
+  if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
+  memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*kern.GetSize()*4);
+  if (!m_HQKernelTexture.UnlockRect(0))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
+
+>>>>>>> FETCH_HEAD
 
   if(!LoadEffect(effectString, &defines))
   {
@@ -691,6 +825,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
   return true;
 }
 
+<<<<<<< HEAD
 void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
@@ -800,12 +935,24 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     m_sourceHeight = sourceHeight;
     m_destWidth = destWidth;
     m_destHeight = destHeight;
+=======
+void CConvolutionShader::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
+                                           CRect sourceRect,
+                                           CRect destRect)
+{
+  if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
+  || m_sourceRect != sourceRect || m_destRect != destRect)
+  {
+    m_sourceWidth = sourceWidth;
+    m_sourceHeight = sourceHeight;
+>>>>>>> FETCH_HEAD
     m_sourceRect = sourceRect;
     m_destRect = destRect;
 
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
+<<<<<<< HEAD
     // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
     // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
     CRect tgtRect(0, 0, destWidth, destHeight);
@@ -864,6 +1011,31 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
     for(int i = 0; i < 8; i++)
+=======
+    v[0].x = destRect.x1;
+    v[0].y = destRect.y1;
+    v[0].tu = sourceRect.x1 / sourceWidth;
+    v[0].tv = sourceRect.y1 / sourceHeight;
+
+    v[1].x = destRect.x2;
+    v[1].y = destRect.y1;
+    v[1].tu = sourceRect.x2 / sourceWidth;
+    v[1].tv = sourceRect.y1 / sourceHeight;
+
+    v[2].x = destRect.x2;
+    v[2].y = destRect.y2;
+    v[2].tu = sourceRect.x2 / sourceWidth;
+    v[2].tv = sourceRect.y2 / sourceHeight;
+
+    v[3].x = destRect.x1;
+    v[3].y = destRect.y2;
+    v[3].tu = sourceRect.x1 / sourceWidth;
+    v[3].tv = sourceRect.y2 / sourceHeight;
+
+    // -0.5 offset to compensate for D3D rasterization
+    // set z and rhw
+    for(int i = 0; i < 4; i++)
+>>>>>>> FETCH_HEAD
     {
       v[i].x -= 0.5;
       v[i].y -= 0.5;

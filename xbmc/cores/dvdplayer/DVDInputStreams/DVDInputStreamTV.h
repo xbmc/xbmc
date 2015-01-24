@@ -44,7 +44,11 @@ public:
   virtual bool    IsEOF();
   virtual int64_t GetLength();
 
+<<<<<<< HEAD
   virtual ENextStream NextStream();
+=======
+  virtual bool    NextStream();
+>>>>>>> FETCH_HEAD
   virtual int     GetBlockSize();
 
   bool            NextChannel(bool preview = false);

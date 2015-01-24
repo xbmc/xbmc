@@ -54,7 +54,11 @@ using namespace OVERLAY;
 static void LoadTexture(GLenum target
                       , GLsizei width, GLsizei height, GLsizei stride
                       , GLfloat* u, GLfloat* v
+<<<<<<< HEAD
                       , bool alpha, const GLvoid* pixels)
+=======
+                      , GLenum internalFormat, GLenum externalFormat, const GLvoid* pixels)
+>>>>>>> FETCH_HEAD
 {
   int width2  = width;
   int height2 = height;
@@ -70,6 +74,7 @@ static void LoadTexture(GLenum target
 #endif
   int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
+<<<<<<< HEAD
   if (!g_Windowing.SupportsNPOT(0))
   {
     width2  = NP2(width);
@@ -129,6 +134,20 @@ static void LoadTexture(GLenum target
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+=======
+#ifndef HAS_GLES
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+  if(externalFormat == GL_RGBA
+  || externalFormat == GL_BGRA)
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
+  else if(externalFormat == GL_RGB
+       || externalFormat == GL_BGR)
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
+  else
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+#endif
+
+>>>>>>> FETCH_HEAD
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
                 , externalFormat, GL_UNSIGNED_BYTE, NULL);
@@ -136,19 +155,31 @@ static void LoadTexture(GLenum target
   glTexSubImage2D(target, 0
                 , 0, 0, width, height
                 , externalFormat, GL_UNSIGNED_BYTE
+<<<<<<< HEAD
                 , pixelData);
+=======
+                , pixels);
+>>>>>>> FETCH_HEAD
 
   if(height < height2)
     glTexSubImage2D( target, 0
                    , 0, height, width, 1
                    , externalFormat, GL_UNSIGNED_BYTE
+<<<<<<< HEAD
                    , (unsigned char*)pixelData + stride * (height-1));
+=======
+                   , (unsigned char*)pixels + stride * (height-1));
+>>>>>>> FETCH_HEAD
 
   if(width  < width2)
     glTexSubImage2D( target, 0
                    , width, 0, 1, height
                    , externalFormat, GL_UNSIGNED_BYTE
+<<<<<<< HEAD
                    , (unsigned char*)pixelData + bytesPerPixel * (width-1));
+=======
+                   , (unsigned char*)pixels + stride - 1);
+>>>>>>> FETCH_HEAD
 
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -199,7 +230,12 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , o->height
             , stride
             , &m_u, &m_v
+<<<<<<< HEAD
             , false
+=======
+            , GL_RGBA
+            , GL_BGRA
+>>>>>>> FETCH_HEAD
             , rgba);
   if((BYTE*)rgba != o->data)
     free(rgba);
@@ -273,7 +309,12 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
             , max_y - min_y
             , o->width * 4
             , &m_u, &m_v
+<<<<<<< HEAD
             , false
+=======
+            , GL_RGBA
+            , GL_BGRA
+>>>>>>> FETCH_HEAD
             , rgba + min_x + min_y * o->width);
 
   free(rgba);
@@ -314,7 +355,12 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
             , quads.size_y
             , quads.size_x
             , &m_u, &m_v
+<<<<<<< HEAD
             , true
+=======
+            , GL_ALPHA
+            , GL_ALPHA
+>>>>>>> FETCH_HEAD
             , quads.data);
 
 

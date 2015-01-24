@@ -100,8 +100,16 @@ public:
 
   const CWeatherInfo &GetInfo() const;
 private:
+<<<<<<< HEAD
   void LocalizeOverview(std::string &str);
   void LocalizeOverviewToken(std::string &str);
+=======
+  bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
+  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
+  void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
+  void LocalizeOverview(CStdString &str);
+  void LocalizeOverviewToken(CStdString &str);
+>>>>>>> FETCH_HEAD
   void LoadLocalizedToken();
   static int ConvertSpeed(int speed);
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Modus</string>
+    <string id="30001">Gevuld</string>
+    <string id="30002">Draden</string>
+    <string id="30003">Punten</string>
+    <string id="30004">Balkhoogte</string>
+    <string id="30005">Klein</string>
+    <string id="30006">Standaard</string>
+    <string id="30007">Groot</string>
+    <string id="30008">Heel groot</string>
+    <string id="30009">Snelheid</string>
+    <string id="30010">Zeer traag</string>
+    <string id="30011">Traag</string>
+    <string id="30012">Standaard</string>
+    <string id="30013">Snel</string>
+    <string id="30014">Zeer snel</string>
+</strings>

@@ -99,7 +99,11 @@ std::string XBMC::XBMC_MD5::GetMD5(const std::string &text)
 
 #include <sys/types.h>		/* for stupid systems */
 #include <string.h>		/* for memcpy() */
+<<<<<<< HEAD
 #if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
+=======
+#if defined(HAVE_CONFIG_H) && !defined(_WIN32)
+>>>>>>> FETCH_HEAD
 #include "../config.h"
 #endif
 

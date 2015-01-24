@@ -1,3 +1,24 @@
 #!/bin/sh
+<<<<<<< HEAD
 BOOTSTRAP_STANDALONE=1 make -f bootstrap.mk &&
 BOOTSTRAP_STANDALONE=1 make -f codegenerator.mk
+=======
+
+set -e
+
+autoreconf -vif
+autoreconf -vif lib/cpluff
+# we must autoreconf libass as we don't know till later if it's used.
+[ -d lib/libass ] && autoreconf -vif lib/libass
+# order matters with libbdnav and friends
+[ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
+  autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
+autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+
+# Clean the generated files
+find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
+
+echo "Please (re)run configure..."
+
+>>>>>>> FETCH_HEAD

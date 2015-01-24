@@ -1,0 +1,89 @@
+# -*- sh -*-
+# This is a file run by sh used for replacing certain variables from input
+# files in the XBMC packaging.
+
+BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
+ autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
+ libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
+ libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
+ libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
+ libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
+ libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
+ libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
+ libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
+ libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
+ libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl,"
+
+if [ $(lsb_release -is) = "Ubuntu" ]; then
+    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
+fi
+
+case "$1" in
+    BUILD_DEPENDS)
+        printf "$BUILD_DEPENDS"
+        ;;
+    LIBCURL_DEPENDS)
+        LIBCURL_DEPENDS=$(cat /var/lib/dpkg/info/libcurl3-gnutls.shlibs | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        printf "$LIBCURL_DEPENDS"
+        ;;
+    XBMC_LIVE_DEPENDS)
+        XBMC_LIVE_DEPENDS="xbmc-standalone (= \${binary:Version}),
+         openssh-server,
+         \${python:Depends},
+         python-apt,
+         adduser,
+         sudo,
+         whois,
+         \${misc:Depends}, 
+         \${shlibs:Depends},"
+        if [ $(lsb_release -cs) = "karmic" ]; then
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         devicekit-disks,
+         devicekit-power,"
+        fi
+        if [ $(lsb_release -cs) = "lucid" ]; then
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         mkpasswd,"
+        fi
+        if [ $(lsb_release -cs) = "maverick" ]; then
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         policykit-1,"
+        else
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         policykit,"
+        fi
+
+        printf "$XBMC_LIVE_DEPENDS"
+        ;;
+    LIBVDPAU_DEPENDS)
+        LIBVDPAU_DEPENDS=""
+        if [ -r /var/lib/dpkg/info/libvdpau*.shlibs ]; then
+          LIBVDPAU_DEPENDS=$(cat /var/lib/dpkg/info/libvdpau*.shlibs | \
+          grep 'libvdpau ' | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        elif [ -r /var/lib/dpkg/info/nvidia-185-libvdpau.shlibs ]; then
+          LIBVDPAU_DEPENDS=$(cat /var/lib/dpkg/info/nvidia-185-libvdpau.shlibs | \
+          grep 'libvdpau ' | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        fi
+        if [ -z $LIBVDPAU_DEPENDS ]; then
+          echo "Error in getting shlibs information for libvdpau."
+          exit 1
+        fi
+        printf "$LIBVDPAU_DEPENDS"
+        ;;
+    LIBRTMP_DEPENDS)
+        LIBRTMP_DEPENDS=$(cat /var/lib/dpkg/info/librtmp0.shlibs | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        printf "$LIBRTMP_DEPENDS"
+        ;;
+esac
+
+exit 0

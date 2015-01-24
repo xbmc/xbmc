@@ -39,9 +39,15 @@ enum DVDStreamType
   DVDSTREAM_TYPE_TV     = 6,
   DVDSTREAM_TYPE_RTMP   = 7,
   DVDSTREAM_TYPE_HTSP   = 8,
+<<<<<<< HEAD
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
+=======
+  DVDSTREAM_TYPE_MMS    = 9,
+  DVDSTREAM_TYPE_MPLS   = 10,
+  DVDSTREAM_TYPE_BLURAY = 11,
+>>>>>>> FETCH_HEAD
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
@@ -97,7 +103,11 @@ public:
 
   class IChapter
   {
+<<<<<<< HEAD
     public:
+=======
+    public:    
+>>>>>>> FETCH_HEAD
     virtual ~IChapter() {};
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
@@ -105,6 +115,7 @@ public:
     virtual bool SeekChapter(int ch) = 0;
   };
 
+<<<<<<< HEAD
   class IMenus
   {
     public:
@@ -147,6 +158,8 @@ public:
     NEXTSTREAM_RETRY,
   };
 
+=======
+>>>>>>> FETCH_HEAD
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
@@ -161,6 +174,7 @@ public:
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
+<<<<<<< HEAD
   virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
 
   /*! \brief Indicate expected read rate in bytes per second.
@@ -173,6 +187,8 @@ public:
    \return true when cache status was succesfully obtained
    */
   virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
+=======
+>>>>>>> FETCH_HEAD
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;

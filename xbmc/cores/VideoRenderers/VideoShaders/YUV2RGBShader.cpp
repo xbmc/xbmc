@@ -369,14 +369,22 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
 
   string shaderfile;
 
+<<<<<<< HEAD
   if (m_format == RENDER_FMT_YUYV422)
+=======
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2)
+>>>>>>> FETCH_HEAD
   {
     if(rect)
       shaderfile = "yuv2rgb_basic_rect_YUY2.arb";
     else
       shaderfile = "yuv2rgb_basic_2d_YUY2.arb";
   }
+<<<<<<< HEAD
   else if (m_format == RENDER_FMT_UYVY422 || m_format == RENDER_FMT_CVBREF)
+=======
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+>>>>>>> FETCH_HEAD
   {
     if(rect)
       shaderfile = "yuv2rgb_basic_rect_UYVY.arb";

@@ -1,16 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
+<<<<<<< HEAD
   version="2.2.20"
   name="Default"
   provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.gui" version="4.0.0"/>
     <import addon="xbmc.json" version="6.0.0"/>
+=======
+  version="1.0.0"
+  name="Default"
+  provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.gui" version="2.11"/>
+>>>>>>> FETCH_HEAD
   </requires>
   <extension
     point="xbmc.gui.webinterface"/>
   <extension point="xbmc.addon.metadata">
+<<<<<<< HEAD
     <summary lang="af">Span Kodi Web Koppelvlak. (Kodi se verstek web koppelvlak)</summary>
     <summary lang="am">የ Kodi የዌብ ገጽታዎች (የ Kodi ነባር የዌብ ገጽታዎች)</summary>
     <summary lang="ar">واجهه فريق إكس بي إم سي للشبكة العنكبوتية (واجهه الشبكة العنكبوتية المبدئية لـ إكس بي إم سي)</summary>
@@ -130,6 +139,24 @@
     <description lang="vi">Giao diện Web mặc định cho Kodi; Thiết kế cho các thiết bị ở tất cả độ phân giải khác nhau</description>
     <description lang="zh">Kodi 的默认 web 界面；为支持所有分辨率的设备而设计</description>
     <description lang="zh_TW">Kodi的預設網頁介面；針對所有解析度的設備而設計</description>
+=======
+    <summary lang="de">Team XBMC Webinterface. (XBMC's standard Webinterface)</summary>
+    <summary lang="en">Team XBMC Web Interface. (XBMC's default web interface)</summary>
+    <summary lang="nl">Team XBMC Webinterface. (XBMC's standaard webinterface)</summary>
+    <summary lang="pl">Standardowy interfejs WWW XBMC.</summary>
+    <summary lang="pt">Interface Web da Team XBMC. (Interface Web padrão do XBMC)</summary>
+    <summary lang="ro">Interfață web XBMC. (Interfață web implicită pentru XBMC)</summary>
+    <summary lang="se">Team XBMC webbgränssnitt. (XBMC's standardwebbgränssnitt)</summary>
+    <summary lang="zh">Team XBMC Web 界面。（XBMC 的默认 web 界面）</summary>
+    <description lang="de">Standard XBMC Webinterface; Für alle Geräte und Auflösungen geeignet</description>
+    <description lang="en">Default web interface for XBMC; Designed for devices of all resolutions</description>
+    <description lang="nl">Standaard XBMC-webinterface; geschikt voor alle resoluties</description>
+    <description lang="pl">Domyślny interfejs WWW dla XBMC; Zaprojektowany dla urządzeń z dowolną rozdzielczością</description>
+    <description lang="pt">Interface Web padrão do XBMC. Desenhada para dispositivos com qualquer resolução</description>
+    <description lang="ro">Interfață web implicită pentru XBMC, realizată de echipa XBMC pentru dispozitive cu orice rezoluție</description>
+    <description lang="se">XBMC's standardwebbgränsnitt; Designat för alla upplösningar</description>
+    <description lang="zh">XBMC 的默认 web 界面；适应所有分辨率模式</description>
+>>>>>>> FETCH_HEAD
     <platform>all</platform>
   </extension>
 </addon>

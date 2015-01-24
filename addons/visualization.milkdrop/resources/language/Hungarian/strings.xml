@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- beállítás feliratok -->
+    <string id="30000">Automatikus keverési idő</string>
+    <string id="30001">Idő a beállításkészletek között</string>
+    <string id="30002">Többlet véletlen idő</string>
+    <string id="30003">Anisotropic szűrés bekapcsolása</string>
+    <string id="30004">Éles váltások engedélyezése</string>
+    <string id="30005">Hangerőküszöb az éles váltásokhoz</string>
+    <string id="30006">Átlagos idő az éles váltások között</string>
+    <string id="30007">Maximális frissítési frekvencia</string>
+    <string id="30008">Sztereó 3D engedélyezése</string>
+    <string id="30009">Beállításkészlet-csomag</string>
+</strings>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Automaattinen pehmennysaika</string>
+    <string id="30001">Esiasetusten välinen aika</string>
+    <string id="30002">Satunnainen lisäaika</string>
+    <string id="30003">Anisotrooppinen suodatus käytössä</string>
+    <string id="30004">Voimakkaat leikkaukset käytössä</string>
+    <string id="30005"> - Äänenvoimakkuuden kynnys</string>
+    <string id="30006"> - Keskimääräinen väli</string>
+    <string id="30007">Suurin ruudunpäivitysnopeus</string>
+    <string id="30008">Stereo 3D käytössä</string>
+    <string id="30009">Esiasetuspaketti</string>
+</strings>

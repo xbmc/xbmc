@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="31000">Ändern der</string>
+  <string id="31001">Liebe</string>
+  <string id="31002">Hass</string>
+  <string id="31003">Power Optionen</string>
+  <string id="31004">In Arbeit...</string>
+  <string id="31005">Verberge Info</string>
+
+  <string id="31007">Plugins</string>
+
+  <string id="31020">Kürzlich hinzugefügt</string>
+  <string id="31021">Video - Dateien</string>
+  <string id="31022">Musik - Dateien</string>
+  <string id="31023">Abspielen</string>
+  <string id="31024">Seite</string>
+  <string id="31025">Einträge</string>
+  <string id="31026">Allg. Optionen</string>
+  <string id="31027">Ort</string>
+
+  <string id="31028">Poster</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Komplette Liste</string>
+  <string id="31031">Bild Vorschau</string>
+  <string id="31032">Bild Wrap</string>
+  <string id="31033">Info</string>
+
+  <string id="31040">Jetzt gespielt</string>
+
+  <string id="31042">ABSPIELEN</string>
+  <string id="31043">PAUSE</string>
+  <string id="31044">SCHNELL VORLAUF</string>
+  <string id="31045">RÜCKLAUF</string>
+  <string id="31046">Audio Einstellungen</string>
+  <string id="31047">Aktuelle Einstellung</string>
+  <string id="31048">Visualisierungs Einstellungen</string>
+  <string id="31049">Schluss Zeit</string>
+
+  <string id="31055">Öffne Wiedergabeliste</string>
+  <string id="31056">Sichere Wiedergabeliste</string>
+  <string id="31057">Schliesse Wiedergabeliste</string>
+  <string id="31058">System Musik Dateien</string>
+  <string id="31059">Aktuelle Wiedergabeliste</string>
+  <string id="31060">Die Datei ist gestapelt, wähle den Teil zum abspielen.</string>
+  <string id="31061">Aktuell ausgewählt</string>
+
+  <string id="31100"></string>
+  <string id="31101">Home Screen Optionen</string>
+  <string id="31102">Hintergrund</string>
+  <string id="31103">Zeige "Pause" in Bilder Diaschau</string>
+  <string id="31104">Trailer im Fenster wiedergeben [COLOR=grey3](Video Information Dialog)[/COLOR]</string>
+  <string id="31105">Zeige Medien Titel beim Hintergrund Scannen</string>
+  <string id="31106">Sonstige Optionen</string>
+  <string id="31107">Flags von Dateinamen ausblenden [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Verstecke Hauptmenü Buttons</string>
+  <string id="31109">Home Screen Hintergrund</string>
+  <string id="31110">Ändere Hintergrund für Home Button</string>
+  <string id="31111">Verstecke</string>
+  <string id="31112">Optionen</string>
+  <string id="31113">Einzel Bild</string>
+  <string id="31114">Mehrfach Bild</string>
+  <string id="31115">Spezifische</string>
+  <string id="31116"></string>
+  <string id="31117">Zeige kürzlich hinzugefüge Videos</string>
+  <string id="31118">Hauptfenster Programme-Untermenü</string>
+  <string id="31119">Aktiviere individuellen Add-on Button</string>
+  <string id="31120">BUTTON BESCHRIFTUNG</string>
+  <string id="31121">PFAD ZUM ADD-ON</string>
+  <string id="31122">Wetter Seite</string>
+  <string id="31123">Verwende "Posters" anstelle von "Banners" für TV Shows</string>
+  <string id="31124">Zeige Hintergrund "Aktuell abgespielt" Video</string>
+  <string id="31125">Zeige Hintergrund "Aktuell abgespielt" Visualisierung</string>
+  <string id="31126">Aktiviere Lyrics in Musik OSD</string>
+  <string id="31127">PFAD ZUM LYRICS ADD-ON</string>
+  <string id="31128">Lyrics</string>
+  <string id="31129">Aktiviere Untertitel-Download im Video OSD </string>
+  <string id="31130">PFAD ZUM UNTERTITEL ADD-ON</string>
+  <string id="31131">Verwende horizontales Home Menü</string>
+
+  <string id="31140">Musik OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <string id="31200">Tastenkürzel</string>
+  <string id="31201">Kategorie</string>
+  <string id="31202">Zeige Darsteller</string>
+  <string id="31203">Wähle Dein Lied</string>
+  <string id="31204">Sektions Verknüpfung</string>
+  <string id="31205">Lyrics Quelle</string>
+
+  <string id="31300">Aktuelle Temperatur</string>
+  <string id="31301">Letztes Update</string>
+  <string id="31302">Menü</string>
+  <string id="31303"></string>
+  <string id="31304">Bild</string>
+  <string id="31305">Keine Disk vorhanden</string>
+  <string id="31306">Auswerfen</string>
+  <string id="31307">Verberge Fanart</string>
+  <string id="31308">Film Details</string>
+  <string id="31309">Speicher in Benutzung:</string>
+  <string id="31310">Lied Nummer</string>
+  <string id="31311">FANART BILD[CR][CR]NICHT VORHANDEN[CR][CR] CLICK BUTTON ZUM SETZEN</string>
+  <string id="31312">Aktueller Scraper</string>
+  <string id="31313">Wähle Scraper</string>
+  <string id="31314">Inhalt Scanning Optionen</string>
+  <string id="31315">Basic</string>
+  <string id="31316"></string>
+  <string id="31317">Setze Fanart Pfad</string>
+  <string id="31318">Kleines Fanart</string>
+  <string id="31319">Ausgewähltes Profil</string>
+  <string id="31320">Letzte Anmeldung</string>
+  <string id="31321">Karaoke Song Selector</string>
+  <string id="31322">Gesendet</string>
+  <string id="31323">Letzter Film</string>
+  <string id="31324">Letzte Episode</string>
+  <string id="31325">Wiedergabeliste Optionen</string>
+  <string id="31326">Erstellt</string>
+  <string id="31327">Auflösung</string>
+  <string id="31328">Kürzlich Hinzugefügt</string>
+  <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
+  <string id="31330">Starte[CR][CR]Filmtrailer</string>
+
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Vorspulen</string>
+  <string id="31354">Rückspulen</string>
+  <string id="31355">Filmmenü</string>
+  <string id="31356">Untertitel herunterladen</string>
+
+  <string id="31390">Skin Standard</string>
+  <string id="31391">Skin Standard ohne Großbuchstaben</string>
+  <string id="31392">Arial basiert</string>
+
+  <string id="31400">[B]KONFIGURIERE DIE DARSTELLUNGS EINSTELLUNGEN[/B][CR][CR]Wechsel den Skin · Wähle Sprache und Region · Wechsel Dateilisten Optionen[CR]Setze Bildschirmschoner</string>
+  <string id="31401">[B]KONFIGURIERE VIDEO EINSTELLUNGEN[/B][CR][CR]Organisiere die Video DB · Setze die Abspiel Optionen · Wechsel die Video Auflistungs Optionen · Setze Untertitel Schrift</string>
+  <string id="31402">[B]KONFIGURIERE MUSIK EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik DB · Setze die Musik Abspiel Optionen · Wechsel die Musik Auflistungs Optionen · Einrichten der Lied Vorlage · Setze Karaoke Optionen</string>
+  <string id="31403">[B]KONFIGURIERE BILDER EINSTELLUNGEN[/B][CR][CR]Setze Bild Auflistungs Optionen · Konfiguriere Diaschau</string>
+  <string id="31404">[B]KONFIGURIERE WETTER EINSTELLUNGEN[/B][CR][CR]Wähle drei Städte zum sammeln der Wetter Informationen</string>
+  <string id="31405">[B]KONFIGURIERE NETZWERK EINSTELLUNGEN[/B][CR][CR]Einrichten der Steuerung von XBMC via UPnP und HTTP · Konfiguriere Datei Zugriff[CR]Setze Internet Zugriffs Optionen</string>
+  <string id="31406">[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Setze und kalibriere Displays · Konfiguriere Audioausgabe · Setze Fernbedienungs Einstellungen · Setze Energiespar Optionen · Aktiviere Debugging · Einrichten Master Sperre</string>
+  <string id="31407">[B]KONFIGURIERE SKIN EINSTELLUNGEN[/B][CR][CR]Einrichten des Confluence Skin · Hinzufügen und entfernen der Home Menü Einträge[CR]Wechseln der Skin Hintergründe</string>
+  <string id="31408">[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen</string>
+  <string id="31421">Wähle Dein XBMC Benutzer Profil[CR]Zum Anmelden und Weitermachen</string>
+</strings>

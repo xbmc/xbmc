@@ -19,6 +19,68 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include "utils/LabelFormatter.h"
+#include <boost/shared_ptr.hpp>
+
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
+struct SSortFileItem
+{
+  /*! \brief Remove any articles (eg "the", "a") from the start of a label
+   \param label the label to process
+   \return the label stripped of any articles
+   */
+  static CStdString RemoveArticles(const CStdString &label);
+
+  // Sort by sort field
+  static bool Ascending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool Descending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersAscending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersDescending(const CFileItemPtr &left, const CFileItemPtr &right);
+
+  // Fill in sort field
+  static void ByLabel(CFileItemPtr &item);
+  static void ByLabelNoThe(CFileItemPtr &item);
+  static void ByFile(CFileItemPtr &item);
+  static void ByFullPath(CFileItemPtr &item);
+  static void ByDate(CFileItemPtr &item);
+  static void ByDateAdded(CFileItemPtr &item);
+  static void BySize(CFileItemPtr &item);
+  static void ByDriveType(CFileItemPtr &item);
+  static void BySongTitle(CFileItemPtr &item);
+  static void BySongTitleNoThe(CFileItemPtr &item);
+  static void BySongAlbum(CFileItemPtr &item);
+  static void BySongAlbumNoThe(CFileItemPtr &item);
+  static void BySongArtist(CFileItemPtr &item);
+  static void BySongArtistNoThe(CFileItemPtr &item);
+  static void BySongTrackNum(CFileItemPtr &item);
+  static void BySongDuration(CFileItemPtr &item);
+  static void BySongRating(CFileItemPtr &item);
+
+  static void ByProgramCount(CFileItemPtr &item);
+
+  static void ByGenre(CFileItemPtr &item);
+  static void ByCountry(CFileItemPtr &item);
+  static void ByYear(CFileItemPtr &item);
+
+  static void ByMovieTitle(CFileItemPtr &item);
+  static void ByMovieSortTitle(CFileItemPtr &item);
+  static void ByMovieSortTitleNoThe(CFileItemPtr &item);
+  static void ByMovieRating(CFileItemPtr &item);
+  static void ByMovieRuntime(CFileItemPtr &item);
+  static void ByMPAARating(CFileItemPtr &item);
+  static void ByStudio(CFileItemPtr &item);
+  static void ByStudioNoThe(CFileItemPtr &item);
+
+  static void ByEpisodeNum(CFileItemPtr &item);
+  static void ByProductionCode(CFileItemPtr &item);
+  static void ByLastPlayed(CFileItemPtr &item);
+  static void ByBitrate(CFileItemPtr &item);  
+};
+
+>>>>>>> FETCH_HEAD
 typedef enum {
   SORT_METHOD_NONE=0,
   SORT_METHOD_LABEL,
@@ -55,8 +117,11 @@ typedef enum {
   SORT_METHOD_FULLPATH,
   SORT_METHOD_LABEL_IGNORE_FOLDERS,
   SORT_METHOD_LASTPLAYED,
+<<<<<<< HEAD
   SORT_METHOD_PLAYCOUNT,
   SORT_METHOD_LISTENERS,
+=======
+>>>>>>> FETCH_HEAD
   SORT_METHOD_UNSORTED,
   SORT_METHOD_CHANNEL,
   SORT_METHOD_CHANNEL_NUMBER,

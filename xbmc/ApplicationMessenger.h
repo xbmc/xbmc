@@ -63,11 +63,14 @@ namespace MUSIC_INFO
 #define TMSG_PLAYLISTPLAYER_SHUFFLE   215
 #define TMSG_PLAYLISTPLAYER_GET_ITEMS 216
 #define TMSG_PLAYLISTPLAYER_PLAY_SONG_ID 217
+<<<<<<< HEAD
 #define TMSG_PLAYLISTPLAYER_INSERT 218
 #define TMSG_PLAYLISTPLAYER_REMOVE 219
 #define TMSG_PLAYLISTPLAYER_SWAP 223
 #define TMSG_PLAYLISTPLAYER_REPEAT 224
 #define TMSG_UPDATE_CURRENT_ITEM 225
+=======
+>>>>>>> FETCH_HEAD
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -178,7 +181,11 @@ public:
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
+<<<<<<< HEAD
   bool PlayListPlayerPlaySongId(int songId);
+=======
+  void PlayListPlayerPlaySongId(int songId);
+>>>>>>> FETCH_HEAD
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayListPlayerAdd(int playlist, const CFileItem &item);
@@ -224,6 +231,10 @@ public:
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
+<<<<<<< HEAD
+=======
+  void HttpApi(std::string cmd, bool wait = false);
+>>>>>>> FETCH_HEAD
   void ExecBuiltIn(const CStdString &command, bool wait = false);
 
   void NetworkMessage(int dwMessage, int dwParam = 0);

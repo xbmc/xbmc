@@ -81,8 +81,33 @@ static struct SInterlaceMapping
 , {VS_INTERLACEMETHOD_NONE                       , (VdpVideoMixerFeature)-1}
 };
 
+<<<<<<< HEAD
 static float studioCSCKCoeffs601[3] = {0.299, 0.587, 0.114}; //BT601 {Kr, Kg, Kb}
 static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg, Kb}
+=======
+#define CHECK_VDPAU_RETURN(vdp, value) \
+        do { \
+          if(CheckStatus(vdp, __LINE__)) \
+            return value; \
+        } while(0);
+
+//since libvdpau 0.4, vdp_device_create_x11() installs a callback on the Display*,
+//if we unload libvdpau with dlclose(), we segfault on XCloseDisplay,
+//so we just keep a static handle to libvdpau around
+void* CVDPAU::dl_handle;
+
+CVDPAU::CVDPAU()
+{
+  glXBindTexImageEXT = NULL;
+  glXReleaseTexImageEXT = NULL;
+  vdp_device = VDP_INVALID_HANDLE;
+  surfaceNum      = presentSurfaceNum = 0;
+  picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
+  vdpauConfigured = false;
+  recover = false;
+  m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+  m_mixerstep  = 0;
+>>>>>>> FETCH_HEAD
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -111,6 +136,7 @@ void CVDPAUContext::Release()
   }
 }
 
+<<<<<<< HEAD
 void CVDPAUContext::Close()
 {
   CLog::Log(LOGNOTICE, "VDPAU::Close - closing decoder context");
@@ -126,6 +152,22 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
     m_context->m_refCount++;
     *ctx = m_context;
     return true;
+=======
+  if (!dl_handle)
+  {
+    dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+    if (!dl_handle)
+    {
+      const char* error = dlerror();
+      if (!error)
+        error = "dlerror() returned NULL";
+
+      CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
+      //g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+
+      return false;
+    }
+>>>>>>> FETCH_HEAD
   }
 
   m_context = new CVDPAUContext();
@@ -177,6 +219,7 @@ bool CVDPAUContext::LoadSymbols()
       return false;
     }
   }
+<<<<<<< HEAD
 
   char* error;
   (void)dlerror();
@@ -189,6 +232,8 @@ bool CVDPAUContext::LoadSymbols()
     return false;
   }
   return true;
+=======
+>>>>>>> FETCH_HEAD
 }
 
 bool CVDPAUContext::CreateContext()
@@ -864,6 +909,33 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   VdpStatus vdp_st;
   VdpDecoderProfile vdp_decoder_profile;
+<<<<<<< HEAD
+=======
+  vid_width = avctx->width;
+  vid_height = avctx->height;
+
+  past[1] = past[0] = current = future = NULL;
+  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
+  ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
+
+  if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
+  {
+     max_references = ref_frames;
+     if (max_references > 16) max_references = 16;
+     if (max_references < 5)  max_references = 5;
+  }
+  else
+    max_references = 2;
+
+  vdp_st = vdp_decoder_create(vdp_device,
+                              vdp_decoder_profile,
+                              vid_width,
+                              vid_height,
+                              max_references,
+                              &decoder);
+  CHECK_VDPAU_RETURN(vdp_st, false);
+>>>>>>> FETCH_HEAD
 
   m_vdpauConfig.vidWidth = avctx->width;
   m_vdpauConfig.vidHeight = avctx->height;
@@ -945,8 +1017,23 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     return -1;
   }
 
+<<<<<<< HEAD
   VdpVideoSurface surf = (VdpVideoSurface)(uintptr_t)pic->data[3];
   surf = vdp->m_videoSurfaces.GetFree(surf != 0 ? surf : VDP_INVALID_HANDLE);
+=======
+  vdpau_render_state * render = NULL;
+
+  // find unused surface
+  for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
+  {
+    if(!(vdp->m_videoSurfaces[i]->state & (FF_VDPAU_STATE_USED_FOR_REFERENCE | FF_VDPAU_STATE_USED_FOR_RENDER)))
+    {
+      render = vdp->m_videoSurfaces[i];
+      render->state = 0;
+      break;
+    }
+  }
+>>>>>>> FETCH_HEAD
 
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (surf == VDP_INVALID_HANDLE)
@@ -1108,6 +1195,7 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   m_bufferStats.Get(decoded, processed, render);
 
+<<<<<<< HEAD
   uint64_t startTime = CurrentHostCounter();
   while (!retval)
   {
@@ -1115,6 +1203,31 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     // mixer will run with decoded >= 2. output is limited by number of output surfaces
     // In case mixer is bypassed we limit by looking at processed
     if (decoded < 3 && processed < 3)
+=======
+  if(pFrame)
+  { // we have a new frame from decoder
+
+    vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
+    if(!render) // old style ffmpeg gave data on plane 0
+      render = (vdpau_render_state*)pFrame->data[0];
+    if(!render)
+      return VC_ERROR;
+
+    render->state |= FF_VDPAU_STATE_USED_FOR_RENDER;
+
+    ClearUsedForRender(&past[0]);
+    past[0] = past[1];
+    past[1] = current;
+    current = render;
+
+    if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
+    ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
+>>>>>>> FETCH_HEAD
     {
       retval |= VC_BUFFER;
     }
@@ -1171,12 +1284,20 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       CLog::Log(LOGDEBUG,"CVDPAU::Decode long wait: %d", (int)((diff*1000)/CurrentHostFrequency()));
   }
 
+<<<<<<< HEAD
   if (!retval)
   {
     CLog::Log(LOGERROR, "VDPAU::%s - timed out waiting for output message", __FUNCTION__);
     m_DisplayState = VDPAU_ERROR;
     retval |= VC_ERROR;
   }
+=======
+    if(avctx->hurry_up)
+    {
+      ClearUsedForRender(&past[1]);
+      return VC_BUFFER;
+    }
+>>>>>>> FETCH_HEAD
 
   return retval;
 }
@@ -1237,6 +1358,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
+<<<<<<< HEAD
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
 
     m_ErrorCount++;
@@ -1253,6 +1375,13 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
     }
 
     return true;
+=======
+    if (past[0])
+      past_surfaces[1] = past[0]->surface;
+    if (past[1])
+      past_surfaces[0] = past[1]->surface;
+    futu_surfaces[0] = VDP_INVALID_HANDLE;
+>>>>>>> FETCH_HEAD
   }
   m_ErrorCount = 0;
   return false;
@@ -1304,6 +1433,7 @@ void CVdpauRenderPicture::Sync()
   CSingleLock lock(renderPicSection);
   if (usefence)
   {
+<<<<<<< HEAD
     if(glIsSync(fence))
     {
       glDeleteSync(fence);
@@ -1313,6 +1443,44 @@ void CVdpauRenderPicture::Sync()
   }
 #endif
 }
+=======
+    if(m_mixerstep == 1)
+    { // first field
+      if (past[1])
+      {
+        past_surfaces[1] = past[1]->surface;
+        past_surfaces[0] = past[1]->surface;
+      }
+      futu_surfaces[0] = current->surface;
+    }
+    else
+    { // second field
+      if (past[1])
+        past_surfaces[1] = past[1]->surface;
+      past_surfaces[0] = current->surface;
+      futu_surfaces[0] = VDP_INVALID_HANDLE;
+    }
+  }
+
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+
+  vdp_st = vdp_video_mixer_render(videoMixer,
+                                  VDP_INVALID_HANDLE,
+                                  0, 
+                                  m_mixerfield,
+                                  2,
+                                  past_surfaces,
+                                  current->surface,
+                                  1,
+                                  futu_surfaces,
+                                  NULL,
+                                  outputSurface,
+                                  &(outRectVid),
+                                  &(outRectVid),
+                                  0,
+                                  NULL);
+  CheckStatus(vdp_st, __LINE__);
+>>>>>>> FETCH_HEAD
 
 //-----------------------------------------------------------------------------
 // Mixer
@@ -1325,6 +1493,7 @@ CMixer::CMixer(CEvent *inMsgEvent) :
   m_inMsgEvent = inMsgEvent;
 }
 
+<<<<<<< HEAD
 CMixer::~CMixer()
 {
   Dispose();
@@ -1592,10 +1761,28 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
       return;
     }
   } // for
+=======
+  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    ClearUsedForRender(&past[0]);
+    return VC_BUFFER | VC_PICTURE;
+  }
+  else
+  {
+    if(m_mixerstep == 1)
+      return VC_PICTURE;
+    else
+    {
+      ClearUsedForRender(&past[1]);
+      return VC_BUFFER | VC_PICTURE;
+    }
+  }
+>>>>>>> FETCH_HEAD
 }
 
 void CMixer::Process()
 {
+<<<<<<< HEAD
   Message *msg = NULL;
   Protocol *port = NULL;
   bool gotMsg;
@@ -1603,6 +1790,13 @@ void CMixer::Process()
   m_state = M_TOP_UNCONFIGURED;
   m_extTimeout = 1000;
   m_bStateMachineSelfTrigger = false;
+=======
+  picture->format = DVDVideoPicture::FMT_VDPAU;
+  picture->iFlags &= DVP_FLAG_DROPPED;
+  picture->iWidth = OutWidth;
+  picture->iHeight = OutHeight;
+  picture->vdpau = this;
+>>>>>>> FETCH_HEAD
 
   while (!m_bStop)
   {

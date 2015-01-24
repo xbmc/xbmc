@@ -1,0 +1,15 @@
+auto lo
+iface lo inet loopback
+
+auto eth0 
+iface eth0 inet dhcp 
+
+# WiFi prototype
+
+#auto wlan0
+#iface wlan0 inet dhcp
+#wireless-essid yournetworkname
+#wireless-key yournetworkkey
+#wireless-channel 11
+#wireless-mode managed
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated by Daniel Alămiță -->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Modificare</string>
+  <string id="31001">Dragoste</string>
+  <string id="31002">Ură</string>
+  <string id="31003">Opțiuni de alimentare</string>
+  <string id="31004">Procesare...</string>
+  <string id="31005">Ascunde detalii</string>
+
+  <string id="31007">Module</string>
+
+  <string id="31020">Adăugate recent</string>
+  <string id="31021">Fișiere video</string>
+  <string id="31022">Fișiere audio</string>
+  <string id="31023">Redare</string>
+  <string id="31024">Pagina</string>
+  <string id="31025">Elemente</string>
+  <string id="31026">Opțiuni diverse</string>
+  <string id="31027">Locație</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Afișe</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Listă completă</string>
+  <string id="31031">Detalii</string>
+  <string id="31032">Ciclu imagini</string>
+  <string id="31033">Informații</string>
+
+  <!-- Extra labels -->
+  <string id="31040">În redare</string>
+
+  <string id="31042">ÎN REDARE</string>
+  <string id="31043">ÎN PAUZĂ</string>
+  <string id="31044">DERULARE ÎNAINTE</string>
+  <string id="31045">DERULARE ÎNAPOI</string>
+  <string id="31046">Proprietăți audio</string>
+  <string id="31047">Viz. predefinită curentă</string>
+  <string id="31048">Vizualizări predefinite</string>
+  <string id="31049">Se termină la</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Deschide listă de redare</string>
+  <string id="31056">Salvează lista de redare</string>
+  <string id="31057">Închide lista de redare</string>
+  <string id="31058">Fișiere de muzică în sistem</string>
+  <string id="31059">Listă de redare curentă</string>
+  <string id="31060">Acest fișier este în stivă, selectați partea din care doriți să redați.</string>
+  <string id="31061">Selectat curent</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Opțiuni ecran principal</string>
+  <string id="31102">Fundal</string>
+  <string id="31103">Arată „În pauză” la prezentare diapozitive</string>
+  <string id="31104">Redă trailere intr-o fereastră [COLOR=grey3](doar în dialogul de informații video)[/COLOR]</string>
+  <string id="31105">Arată titluri media la scanarea pe fundal</string>
+  <string id="31106">Opțiuni diverse</string>
+  <string id="31107">Ascunde marcare citit în nume de fișiere video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Ascundere butoane meniu principal</string>
+  <string id="31109">Fundale media</string>
+  <string id="31110">Modificare fundal pentru</string>
+  <string id="31111">Ascunde</string>
+  <string id="31112">Opțiuni</string>
+  <string id="31113">O singură imagine</string>
+  <string id="31114">Mai multe imagini</string>
+  <string id="31115">Personalizator</string>
+  <string id="31116"></string>
+  <string id="31117">Arată filme și episoade adăugate recent</string>
+  <string id="31118">Submeniu programe pagină inițială</string>
+  <string id="31119">Activează buton supliment personalizat</string>
+  <string id="31120">ETICHETĂ BUTON</string>
+  <string id="31121">CALE CĂTRE SUPLIMENT</string>
+  <string id="31122">Pagină meteo</string>
+  <string id="31123">Folosește „Afișe” în loc de „Bannere” pentru seriale</string>
+  <string id="31124">Arată video „Acum în redare” pe fundal</string>
+  <string id="31125">Arată vizualizare „Acum în redare” pe fundal</string>
+  <string id="31126">Activează descărcare versuri în meniul audio</string>
+  <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
+  <string id="31128">Versuri</string>
+  <string id="31129">Activează descărcare subtitrări în meniul video</string>
+  <string id="31130">CALE CĂTRE SUPLIMENT SUBTITRĂRI</string>
+  <string id="31131">Folosește meniu inițial orizontal</string>
+
+  <string id="31140">Meniu audio</string>
+  <string id="31141">Meniu video</string>
+
+  <!-- Script labels -->
+  <string id="31200">Scurtături</string>
+  <string id="31201">Categorii</string>
+  <string id="31202">Distribuție serial</string>
+  <string id="31203">Alegeți-vă cântecul</string>
+  <string id="31204">Legături secțiune</string>
+  <string id="31205">Sursă versuri</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Temperatură curentă</string>
+  <string id="31301">Ultima actualizare</string>
+  <string id="31302">Meniu</string>
+  <string id="31303"></string>
+  <string id="31304">Imagine</string>
+  <string id="31305">Niciun disc media detectat</string>
+  <string id="31306">Scoate</string>
+  <string id="31307">Ascunde Fanart</string>
+  <string id="31308">Detalii film</string>
+  <string id="31309">Utilizare memorie:</string>
+  <string id="31310">Număr pistă</string>
+  <string id="31311">Imagine Fanart indisponibilă[CR][CR]Clic pe buton pentru setare</string>
+  <string id="31312">Catalog curent</string>
+  <string id="31313">Alegeți un catalog (scraper)</string>
+  <string id="31314">Opțiuni de scanare conținut</string>
+  <string id="31315">De bază</string>
+  <string id="31316"></string>
+  <string id="31317">Setează cale Fanart</string>
+  <string id="31318">Fanart mic</string>
+  <string id="31319">Profil selectat</string>
+  <string id="31320">Ultima intrare</string>
+  <string id="31321">Selector cântec karaoke</string>
+  <string id="31322">Difuzat pe</string>
+  <string id="31323">Ultimele filme</string>
+  <string id="31324">Ultimele episoade</string>
+  <string id="31325">Opțiuni listă de redare</string>
+  <string id="31326">Creat</string>
+  <string id="31327">Rezoluție</string>
+  <string id="31328">Adăugate recent</string>
+  <string id="31329">[B]Cronometrul este setat![/B] [COLOR=grey2] - Închidere automată sistem în[/COLOR]</string>
+  <string id="31330">Clic pe buton pentru redare[CR][CR]Trailer film</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pauză</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Derulează înainte</string>
+  <string id="31354">Derulează înapoi</string>
+  <string id="31355">Meniu film</string>
+  <string id="31356">Descărcare subtitrare</string>
+  <string id="31357"></string>
+  
+  <!-- Skin Fontsets -->
+  <string id="31390">Standard pentru costum</string>
+  <string id="31391">Standard pentru costum fără majuscule</string>
+  <string id="31392">Cu Arial la bază</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]CONFIGURAȚI SETĂRI ASPECT[/B][CR][CR]Schimbați costumul · Alegeți limbă și regiune · Modificați opțiuni de listare fișiere[CR]Alegeți protector ecran</string>
+  <string id="31401">[B]CONFIGURAȚI SETĂRI VIDEO[/B][CR][CR]Administrați videoteca · Setați opțiuni redare video · Modificați opțiuni de listare video[CR]Alegeți font subtitrare</string>
+  <string id="31402">[B]CONFIGURAȚI SETĂRI MUZICĂ[/B][CR][CR]Administrați fonoteca · Setați opțiuni redare muzică · Modificați opțiuni de listare muzică[CR]Pregătiți trimitere cântec · Setați opțiuni karaoke</string>
+  <string id="31403">[B]CONFIGURAȚI SETĂRI IMAGINE[/B][CR][CR]Modificați opțiuni de listare imagini · Configurați prezentare diapozitive</string>
+  <string id="31404">[B]CONFIGURAȚI SETĂRI VREME[/B][CR][CR]Alegeți trei orașe pentru care se obțin informații meteo</string>
+  <string id="31405">[B]CONFIGURAȚI SETĂRI REȚEA[/B][CR][CR]Configurați controlul XBMC prin UPnP și HTTP · Configurați partajare fișiere[CR]Setați opțiuni de acces Internet</string>
+  <string id="31406">[B]CONFIGURAȚI SETĂRI SISTEM[/B][CR][CR]Configurați și calibrați afișaje · Configurați ieșire audio · Instalați telecomenzi[CR]Alegeți opțiuni de economisire energie · Activați depanare · Configurați blocarea principală</string>
+  <string id="31407">[B]CONFIGURAȚI SETĂRI COSTUM[/B][CR][CR]Configurați costumul Confluence · Adăugați și eliminați elemente din meniul principal[CR]Schimbați fundale costum</string>
+  <string id="31408">[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la xbmc.org[CR]Modificați setări suplimente</string>
+
+  <string id="31421">Selectați profilul dumneavoastră de utilizator XBMC[CR]pentru a vă autentifica și a continua</string>
+</strings>

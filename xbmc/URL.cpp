@@ -106,9 +106,28 @@ void CURL::Parse(const std::string& strURL1)
       int extLen = 3;
       if (iPos == std::string::npos)
       {
+<<<<<<< HEAD
         /* set filename and update extension*/
         SetFileName(strURL);
         return ;
+=======
+#ifndef _LINUX
+        // check for misconstructed protocols
+        iPos = strURL.Find(":");
+        if (iPos == strURL.GetLength() - 1)
+        {
+          SetProtocol(strURL.Left(iPos));
+          iPos += 1;
+          break;
+        }
+        else
+#endif
+        {
+          /* set filename and update extension*/
+          SetFileName(strURL);
+          return ;
+        }
+>>>>>>> FETCH_HEAD
       }
       iPos += extLen + 1;
       std::string archiveName = strURL.substr(0, iPos);

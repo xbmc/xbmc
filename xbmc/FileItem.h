@@ -396,8 +396,13 @@ public:
 
   virtual bool LoadMusicTag();
 
+<<<<<<< HEAD
   /* Returns the content type of this item if known */
   const std::string& GetMimeType() const { return m_mimetype; }
+=======
+  /* returns the content type of this item if known. will lookup for http streams */
+  const CStdString& GetMimeType(bool lookup = true) const;
+>>>>>>> FETCH_HEAD
 
   /* sets the mime-type if known beforehand */
   void SetMimeType(const std::string& mimetype) { m_mimetype = mimetype; } ;
@@ -424,6 +429,14 @@ public:
   void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
 
   bool IsSamePath(const CFileItem *item) const;
+<<<<<<< HEAD
+=======
+
+  bool IsAlbum() const;
+private:
+  // Gets the previously cached thumb file (with existence checks)
+  CStdString GetPreviouslyCachedMusicThumb() const;
+>>>>>>> FETCH_HEAD
 
   bool IsAlbum() const;
 

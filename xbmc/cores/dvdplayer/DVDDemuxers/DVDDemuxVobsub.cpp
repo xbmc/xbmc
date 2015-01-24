@@ -30,8 +30,11 @@
 
 #include <string.h>
 
+<<<<<<< HEAD
 using namespace std;
 
+=======
+>>>>>>> FETCH_HEAD
 CDVDDemuxVobsub::CDVDDemuxVobsub()
 {
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<<<<<<< HEAD
 <!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
 <!-- Russian language-Team URL: http://www.transifex.com/projects/p/xbmc-addons/language/ru/ -->
 <!-- Report language file syntax bugs at: alanwww1@xbmc.org -->
@@ -8,5 +9,12 @@
     <string id="30001">Использовать сквозную нумерацию (один сезон)</string>
     <string id="30002">Использовать фанарт</string>
     <string id="30003">Предпочитать постеры</string>
+=======
+<strings>
+    <string id="30000">Использовать Порядок DVD</string>
+    <string id="30001">Использовать Абсолютный Порядок (Один Сезон)</string>
+    <string id="30002">Включить Фанарт</string>
+    <string id="30003">Предпочтение к Постерам</string>
+>>>>>>> FETCH_HEAD
     <string id="30004">Язык</string>
 </strings>
