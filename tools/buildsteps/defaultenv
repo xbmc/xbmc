@@ -1,5 +1,6 @@
 BUILDTHREADS=${BUILDTHREADS:-1}
 SDK_VERSION=${SDK_VERSION:-"Default"}
+NDK_VERSION=${NDK_VERSION:-"Default"}
 Configuration=${Configuration:-"Default"}
 XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
@@ -34,7 +35,8 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   android)
-    DEFAULT_SDK_VERSION="Default"
+    DEFAULT_SDK_VERSION="14"
+    DEFAULT_NDK_VERSION="10d"
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;
@@ -56,6 +58,11 @@ then
   SDK_VERSION=$DEFAULT_SDK_VERSION
 fi
 
+if [ "$NDK_VERSION" == "Default" ]
+then
+  NDK_VERSION=$DEFAULT_NDK_VERSION
+fi 
+
 if [ "$XBMC_DEPENDS_ROOT" == "Default" ]
 then
   XBMC_DEPENDS_ROOT=$DEFAULT_XBMC_DEPENDS_ROOT
@@ -74,14 +81,14 @@ fi
 
 #helper functions
 
-#hash a dir based on the git revision, SDK_PATH, NDK_PATH, SDK_VERSION, TOOLCHAIN TOOLCHAIN_X86 (for droidx86) and XBMC_DEPENDS_ROOT
+#hash a dir based on the git revision, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN TOOLCHAIN_X86 (for droidx86) and XBMC_DEPENDS_ROOT
 function getBuildHash ()
 {
   local checkPath
   checkPath="$1"
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath)"
-  hashStr="$hashStr $SDK_PATH $NDK_PATH $SDK_VERSION $TOOLCHAIN $TOOLCHAIN_X86 $XBMC_DEPENDS_ROOT"
+  hashStr="$hashStr $SDK_PATH $NDK_PATH $NDK_VERSION $SDK_VERSION $TOOLCHAIN $TOOLCHAIN_X86 $XBMC_DEPENDS_ROOT"
   echo $hashStr
 }
 

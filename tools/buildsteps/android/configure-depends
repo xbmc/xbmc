@@ -2,15 +2,20 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
+NDK_ARCH="arm"
+#the following pathes must exist on the slave and use the defined scheme here!
+CURRENT_NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
+CURRENT_TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$SDK_VERSION-r$NDK_VERSION
+
 if [ "$(rebuildDepends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
     --with-tarballs=$TARBALLS \
     --host=arm-linux-androideabi \
     --with-sdk-path=$SDK_PATH \
-    --with-ndk=$NDK_PATH \
+    --with-ndk=$CURRENT_NDK_PATH \
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
-    --with-toolchain=$TOOLCHAIN \
+    --with-toolchain=$CURRENT_TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT \
     --enable-neon
 fi
