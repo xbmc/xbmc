@@ -94,6 +94,8 @@ public:
    */
   bool Render();
 
+  void RenderEx() const;
+
   /*! \brief Do any post render activities.
    */
   void AfterRender();
@@ -169,7 +171,6 @@ public:
 #endif
 private:
   void RenderPass() const;
-  void RenderEx() const;
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
