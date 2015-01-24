@@ -121,7 +121,7 @@ namespace VIDEO
       m_bCanInterrupt = false;
 
       bool bCancelled = false;
-      while (!bCancelled && m_pathsToScan.size())
+      while (!bCancelled && !m_pathsToScan.empty())
       {
         /*
          * A copy of the directory path is used because the path supplied is
