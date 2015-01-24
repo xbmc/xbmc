@@ -77,7 +77,7 @@
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
 				<left>0</left>
-				<top>60</top>
+				<top>55</top>
 				<width>250</width>
 				<onleft>9000</onleft>
 				<onright>50</onright>
