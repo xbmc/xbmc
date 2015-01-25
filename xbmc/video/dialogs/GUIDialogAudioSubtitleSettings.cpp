@@ -152,15 +152,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_AUDIO_STREAM)
   {
-
-#ifdef HAS_DS_PLAYER
-	  if (CSettings::Get().GetBool("dsplayer.videoaudioexpandedselector"))
-	  {
-		  ShowAudioSelector();
-		  return;
-	  }
-#endif
-
     m_audioStream = static_cast<const CSettingInt*>(setting)->GetValue();
     // only change the audio stream if a different one has been asked for
     if (g_application.m_pPlayer->GetAudioStream() != m_audioStream)
@@ -191,15 +182,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
   {
-
-#ifdef HAS_DS_PLAYER
-	  if (CSettings::Get().GetBool("dsplayer.videosubsexpandedselector"))
-	  {
-		  ShowSubsSelector();
-		  return;
-	  }
-#endif
-
     m_subtitleStream = videoSettings.m_SubtitleStream = static_cast<const CSettingInt*>(setting)->GetValue();
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
   }
@@ -259,6 +241,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
     Save();
 
 #ifdef HAS_DS_PLAYER
+  else if (settingId == SETTING_AUDIO_STREAM)
+  {
+      ShowAudioSelector();
+  }
+  else if (settingId == SETTING_SUBTITLE_STREAM)
+  {
+      ShowSubsSelector();
+  }
   else if (settingId == EDITONS_SETTINGS)
   {
 	  g_application.m_pPlayer->ShowEditionDlg(false);
