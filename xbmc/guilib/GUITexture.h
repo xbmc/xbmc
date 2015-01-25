@@ -33,6 +33,9 @@
 #include "system.h" // HAS_GL, HAS_DX, etc
 #include "GUIInfoTypes.h"
 
+// ffmpeg
+#include "video/FFmpegVideoDecoder.h"
+
 typedef uint32_t color_t;
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
@@ -75,6 +78,7 @@ public:
   CTextureInfo(const std::string &file);
   CTextureInfo& operator=(const CTextureInfo &right);
   bool       useLarge;
+  bool       useFFmpeg;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load
   int        orientation;     // orientation of the texture (0 - 7 == EXIForientation - 1)
   std::string diffuse;         // diffuse overlay texture
@@ -126,6 +130,9 @@ protected:
   bool CalculateSize();
   void LoadDiffuseImage();
   bool AllocateOnDemand();
+#ifdef USE_FFMPEG_CONTROL
+  bool UpdateFFmpeg(unsigned int currentTime);
+#endif
   bool UpdateAnimFrame();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
@@ -163,7 +170,7 @@ protected:
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };
+  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, FFMPEG, NORMAL_FAILED, LARGE_FAILED };
   ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;
@@ -171,6 +178,14 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+#ifdef USE_FFMPEG_CONTROL
+  // ffmpeg
+  FFmpegVideoDecoder *m_decoder;
+  CBaseTexture *m_frame;
+  unsigned int m_millisPerFrame;
+  unsigned int m_lastFrameTime;
+#endif
 };
 
 
