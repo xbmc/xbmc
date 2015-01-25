@@ -10,13 +10,14 @@ std::vector<std::string> CPlexAES::chunkData(const std::string& data)
 {
   std::vector<std::string> chunks;
   int i = 0;
+
   while (true)
   {
     std::string chunk = data.substr(i, 16);
     chunks.push_back(chunk);
     if (chunk.length() < 16)
       break;
-    
+
     i += 16;
   }
 
@@ -26,21 +27,23 @@ std::vector<std::string> CPlexAES::chunkData(const std::string& data)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexAES::encrypt(const std::string &data)
 {
-  std::vector<std::string> chunks = chunkData(data);
-  
+  if (data.empty()) {
+    return "";
+  }
+
+  unsigned char block[16], buffer[16];
   std::string outData;
-  BOOST_FOREACH(const std::string& chunk, chunks)
+
+  BOOST_FOREACH(const std::string& chunk, chunkData(data))
   {
-    unsigned char buffer[16];
-    memset(buffer, '\0', 16);
-    
-    if (aes_encrypt((const unsigned char*)chunk.c_str(), buffer, &m_encryptCtx) == EXIT_FAILURE)
+    strncpy((char *)&block[0], chunk.c_str(), chunk.length());
+    if (aes_encrypt(block, buffer, &m_encryptCtx) == EXIT_FAILURE)
     {
       CLog::Log(LOGWARNING, "CPlexAES::encrypt failed to encrypt data...");
       return "";
     }
-    
-    outData.append((char*)buffer, 16);
+
+    outData.append((const char*)buffer, chunk.length());
   }
 
   return outData;
@@ -49,23 +52,25 @@ std::string CPlexAES::encrypt(const std::string &data)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexAES::decrypt(const std::string &data)
 {
-  std::vector<std::string> chunks = chunkData(data);
-  
+  if (data.empty()) {
+    return "";
+  }
+
   std::string outData;
-  BOOST_FOREACH(const std::string& chunk, chunks)
+  unsigned char block[16], buffer[16];
+
+  BOOST_FOREACH(const std::string& chunk, chunkData(data))
   {
-    unsigned char buffer[16];
-    memset(buffer, '\0', 16);
-    
-    if (aes_decrypt((const unsigned char*)chunk.c_str(), buffer, &m_decryptCtx) == EXIT_FAILURE)
+    strncpy((char *)&block[0], chunk.c_str(), chunk.length());
+    if (aes_decrypt(block, buffer, &m_decryptCtx) == EXIT_FAILURE)
     {
       CLog::Log(LOGWARNING, "CPlexAES::decrypt failed to decrypt data...");
       return "";
     }
-    
+
     outData.append((const char*)buffer, chunk.length());
   }
-  
+
   return outData;
 }
 
@@ -73,7 +78,7 @@ std::string CPlexAES::decrypt(const std::string &data)
 std::string CPlexAES::decryptFile(const std::string &url)
 {
   XFILE::CFile file;
-  
+
   if (file.Open(url))
   {
     char buffer[4096];
@@ -84,9 +89,10 @@ std::string CPlexAES::decryptFile(const std::string &url)
       if (r < 4096)
         break;
     }
-    
+    file.Close();
+
     return decrypt(Base64::Decode(outData));
   }
-  
+
   return "";
 }
