@@ -413,9 +413,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
                                   { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
-                                  { "actor",            VIDEOPLAYER_ACTOR },
-                                  { "yearepg",          VIDEOPLAYER_YEAREPG },
-                                  { "showid",           VIDEOPLAYER_SHOWID }								  
+                                  { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER }								  
  };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -600,9 +598,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "dbid",             LISTITEM_DBID },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
-                                  { "actor",            LISTITEM_ACTOR },
-                                  { "yearepg",          LISTITEM_YEAREPG },
-                                  { "showid",           LISTITEM_SHOWID },
+                                  { "imdbnumber",       LISTITEM_IMDBNUMBER },
                                   { "episodename",      LISTITEM_EPISODENAME }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
@@ -1630,9 +1626,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_CHANNEL_GROUP:
   case VIDEOPLAYER_PARENTAL_RATING:
   case VIDEOPLAYER_PLAYCOUNT:
-  case VIDEOPLAYER_ACTOR:
-  case VIDEOPLAYER_YEAREPG:
-  case VIDEOPLAYER_SHOWID:
+  case VIDEOPLAYER_IMDBNUMBER:
   case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
   break;
@@ -3805,12 +3799,8 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ENDTIME:
       epgTag = tag->GetEPGNow();
       return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_ACTOR:
-      return epgTag ? epgTag->Actor() : "";
-    case VIDEOPLAYER_YEAREPG:
-      return epgTag ? epgTag->YearEPG() : "";
-    case VIDEOPLAYER_SHOWID:
-      return epgTag ? epgTag->ShowID() : "";
+    case VIDEOPLAYER_IMDBNUMBER:
+      return epgTag ? epgTag->IMDBNumber() : "";
 	
     /* Next playing infos */
     case VIDEOPLAYER_NEXT_TITLE:
@@ -4577,6 +4567,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     }
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetYearString();
+	if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Year();  
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
@@ -4869,6 +4861,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_CAST:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast();
+    if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Writer();
     break;
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
@@ -5210,36 +5204,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       return stereoMode;
     }
-  case LISTITEM_ACTOR:
+  case LISTITEM_IMDBNUMBER:
 	{
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
       if (channel)
       {
         CEpgInfoTagPtr tag(channel->GetEPGNow());
         if (tag)
-          return tag->Actor();
-      }
-    }
-    return "";
-  case LISTITEM_YEAREPG:
-	{
-      const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      if (channel)
-      {
-        CEpgInfoTagPtr tag(channel->GetEPGNow());
-        if (tag)
-          return tag->YearEPG();
-      }
-    }
-    return "";
-  case LISTITEM_SHOWID:
-	{
-      const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
-      if (channel)
-      {
-        CEpgInfoTagPtr tag(channel->GetEPGNow());
-        if (tag)
-          return tag->ShowID();
+          return tag->IMDBNumber();
       }
     }
     return "";
