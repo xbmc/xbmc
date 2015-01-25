@@ -324,6 +324,7 @@ void CGUIWindowStartup::setPinControlText(CStdString pin)
   CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_INPUT_LABEL);
   if (pLabel)
   {
-    pLabel->SetLabel(pin);
+    CStdString mask = "....";
+    pLabel->SetLabel(mask.Left(pin.size()));
   }
 }
