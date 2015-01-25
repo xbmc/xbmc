@@ -266,7 +266,7 @@ static const ActionMapping windows[] =
         {"plexplayqueue"            , WINDOW_PLEX_PLAY_QUEUE },
         {"plexextras"               , WINDOW_DIALOG_PLEX_EXTRAS },
         {"plexplaylistselection"    , WINDOW_PLEX_PLAYLIST_SELECTION },
-        {"selectuser"               , WINDOW_DIALOG_PLEX_USER_SELECT },
+        {"selectuser"               , WINDOW_STARTUP_ANIM },
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},

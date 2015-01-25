@@ -1131,3 +1131,16 @@ msgstr "Queueing and recommending video, Sharing your media"
 msgctxt "#52623"
 msgid "Subtitle offset"
 msgstr "Subtitle offset"
+
+msgctxt "#52624"
+msgid "Pin entry"
+msgstr "Pin entry"
+
+msgctxt "#52625"
+msgid "Wrong Pincode"
+msgstr "Wrong Pincode"
+
+msgctxt "#52626"
+msgid "Pin is required"
+msgstr "Pin is required"
+

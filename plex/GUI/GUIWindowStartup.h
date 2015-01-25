@@ -36,18 +36,16 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual bool OnMessage(CGUIMessage &message);
+  void OnNumber(unsigned int num);
 
 private:
   void SelectUserByName(CStdString user);
   void OnUserSelected(CFileItemPtr item);
 
   CFileItemList m_users;
-
-  bool m_authed;
-  bool m_userSwitched;
+  CStdString m_pin;
   CStdString m_selectedUser;
   CStdString m_selectedUserThumb;
 
   CGUIViewControl m_viewControl;
-
 };

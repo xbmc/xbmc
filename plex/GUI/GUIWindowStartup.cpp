@@ -31,28 +31,30 @@
 #include "PlexTypes.h"
 #include "log.h"
 #include "PlexDirectory.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
-#define CONTROL_LIST          3
+#define CONTROL_LIST 3
+
+#define CONTROL_NUM0 10
+#define CONTROL_NUM9 19
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CGUIWindowStartup::CGUIWindowStartup(void)
-    : CGUIWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml")
-{}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CGUIWindowStartup::~CGUIWindowStartup(void)
+CGUIWindowStartup::CGUIWindowStartup(void) : CGUIWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml")
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowStartup::OnMessage(CGUIMessage &message)
+CGUIWindowStartup::~CGUIWindowStartup(void) {}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
-    m_authed = false;
-    m_userSwitched = false;
     m_selectedUser = "";
     m_selectedUserThumb = "";
+    m_pin = "";
 
     m_users.Clear();
     m_viewControl.Reset();
@@ -72,8 +74,6 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage &message)
 
         m_users.Add(oldUser);
         m_viewControl.SetItems(m_users);
-
-        SelectUserByName(info.username);
       }
     }
 
@@ -100,14 +100,24 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage &message)
 
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
+    // check if user was selected
     int iAction = message.GetParam1();
     if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
     {
       int iSelected = m_viewControl.GetSelectedItem();
-      if(iSelected >= 0 && iSelected < (int)m_users.Size())
+      if (iSelected >= 0 && iSelected < (int)m_users.Size())
       {
         OnUserSelected(m_users.Get(iSelected));
       }
+    }
+
+    // check if we have some pin entry
+    int iControl = message.GetSenderId();
+    if (CONTROL_NUM0 <= iControl &&
+        iControl <= CONTROL_NUM9) // User numeric entry via dialog button UI
+    {
+      OnNumber(iControl - 10);
+      return true;
     }
   }
 
@@ -124,36 +134,33 @@ void CGUIWindowStartup::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST));
   m_viewControl.SetCurrentView(CONTROL_LIST);
 
-  if (g_plexApplication.myPlexManager->IsPinProtected() && !g_guiSettings.GetBool("myplex.automaticlogin"))
+  // focus the user list control
+  CGUIControl* list = (CGUIControl*)GetControl(CONTROL_LIST);
+  if (list)
   {
-//    CGUIDialogPlexUserSelect* dialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
-//    if (dialog)
-//    {
-//      while(true)
-//      {
-//        dialog->DoModal();
-//        if (dialog->DidAuth())
-//        {
-//          if (dialog->DidSwitchUser())
-//            g_windowManager.ActivateWindow(WINDOW_HOME);
-//          else
-//            g_windowManager.PreviousWindow();
-//          break;
-//        }
-//      }
-//    }
+    list->SetFocus(true);
   }
-  else
-  {
-    g_windowManager.PreviousWindow();
-  }
+
+  // select current user
+  std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+  SelectUserByName(currentUsername);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowStartup::OnAction(const CAction &action)
+bool CGUIWindowStartup::OnAction(const CAction& action)
 {
   if (action.IsMouse())
     return true;
+
+  // pin keys input
+  if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
+    OnNumber(action.GetID() - REMOTE_0);
+  else if (action.GetID() >= KEY_ASCII)
+  {
+    if (action.GetUnicode() >= 48 && action.GetUnicode() < 58) // number
+      OnNumber(action.GetUnicode() - 48);
+  }
+
   return CGUIWindow::OnAction(action);
 }
 
@@ -169,7 +176,7 @@ bool CGUIWindowStartup::fetchUsers()
     m_users.Clear();
     m_users.Copy(users);
 
-    for (int i = 0; i < m_users.Size(); i ++)
+    for (int i = 0; i < m_users.Size(); i++)
     {
       CFileItemPtr item = m_users.Get(i);
       if (item->GetProperty("restricted").asBoolean() == false)
@@ -181,17 +188,10 @@ bool CGUIWindowStartup::fetchUsers()
     }
 
     m_viewControl.SetItems(m_users);
-
-    SelectUserByName(currentUsername);
   }
   else if (dir.IsTokenInvalid())
   {
     CLog::Log(LOGDEBUG, "CGUIDialogPlexUserSelect::fetchUser got a invalid token!");
-    // not much more we can do at this point. We failed
-    // to get our user list because we had a invalid token
-    // so we just navigate "home"
-    //
-    m_authed = true;
     return false;
   }
 
@@ -201,7 +201,7 @@ bool CGUIWindowStartup::fetchUsers()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::SelectUserByName(CStdString user)
 {
-  for (int i=0; i < m_users.Size(); i++)
+  for (int i = 0; i < m_users.Size(); i++)
   {
     if (m_users.Get(i)->GetLabel() == user)
     {
@@ -214,65 +214,59 @@ void CGUIWindowStartup::SelectUserByName(CStdString user)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
 {
-  return;
-
   bool isAdmin = item->GetProperty("admin").asBoolean();
   bool close = false;
 
-  if (item->GetProperty("protected").asBoolean())
-  {
-    bool firstTry = true;
-    m_selectedUser = item->GetProperty("title").asString();
-    m_selectedUserThumb = item->GetArt("thumb");
-    while (true)
-    {
-      CStdString pin;
-      CGUIDialogNumeric* diag = (CGUIDialogNumeric*)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
-      if (diag)
-      {
-        CStdString initial = "";
-        diag->SetMode(CGUIDialogNumeric::INPUT_PASSWORD, (void*)&initial);
-        diag->SetHeading(firstTry ? "Enter PIN" : "Try again...");
-        diag->DoModal();
+  m_selectedUser = item->GetProperty("title").asString();
+  m_selectedUserThumb = item->GetArt("thumb");
 
-        if (!diag->IsConfirmed() || diag->IsCanceled())
-        {
-          close = false;
-          break;
-        }
-        else
-        {
-          diag->GetOutput(&pin);
-          if (g_plexApplication.myPlexManager->VerifyPin(pin, item->GetProperty("id").asInteger()))
-          {
-            m_authed = true;
-            if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id != item->GetProperty("id").asInteger())
-            {
-              m_userSwitched = true;
-              g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), pin);
-            }
-            break;
-          }
-          firstTry = false;
-        }
-      }
-    }
-  }
-  else
+  if (!item->GetProperty("protected").asBoolean())
   {
     // no PIN needed.
-    m_authed = true;
-    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id != item->GetProperty("id").asInteger())
+    if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id !=
+        item->GetProperty("id").asInteger())
     {
-      m_userSwitched = true;
       g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(-1));
     }
-  }
 
-  if (close)
-  {
     m_selectedUser = "";
     m_selectedUserThumb = "";
     g_windowManager.PreviousWindow();
+  }
+  else
+  {
+    // we selected a user that requires a pin, ask for pincode
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52624),
+                                          g_localizeStrings.Get(52626));
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::OnNumber(unsigned int num)
+{
+  m_pin += num + '0';
+
+  CFileItemPtr item = m_users.Get(m_viewControl.GetSelectedItem());
+
+  if (item && (m_pin.length() == 4))
+  {
+    // we got a full pin (4 chars), check it its valid
+    if (g_plexApplication.myPlexManager->VerifyPin(m_pin, item->GetProperty("id").asInteger()))
+    {
+      if (g_plexApplication.myPlexManager->GetCurrentUserInfo().id !=
+          item->GetProperty("id").asInteger())
+      {
+        g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), m_pin);
+      }
+
+      g_windowManager.PreviousWindow();
+    }
+    else
+    {
+      // we got an invalid pin
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52624),
+                                            g_localizeStrings.Get(52625));
+      m_pin = "";
+    }
   }
 }
