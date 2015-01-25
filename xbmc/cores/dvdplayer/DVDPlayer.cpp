@@ -211,14 +211,21 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
                    , !visualimp ? !(rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED);
   }
 
-  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+  if (CSettings::Get().GetBool("videoplayer.preferdefaultflag"))
+  {
+    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                   , rh.flags & CDemuxStream::FLAG_DEFAULT);
+  }
 
   PREDICATE_RETURN(lh.channels
                  , rh.channels);
 
   PREDICATE_RETURN(StreamUtils::GetCodecPriority(lh.codec)
                  , StreamUtils::GetCodecPriority(rh.codec));
+
+  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+
   return false;
 }
 

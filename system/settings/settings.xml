@@ -393,6 +393,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.preferdefaultflag" type="boolean" label="37040" help="37041">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.autoplaynextitem" type="boolean" label="13433" help="36152">
           <level>1</level>
           <default>false</default>

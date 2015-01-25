@@ -16181,7 +16181,19 @@ msgctxt "#37039"
 msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
 msgstr ""
 
-#empty strings from id 37040 to 38009
+#. Setting #37040 Settings -> Video -> Playback
+#: system/settings/settings.xml
+msgctxt "#37040"
+msgid "Prefer default audio streams"
+msgstr ""
+
+#. Description of setting #37040 Settings -> Video -> Playback
+#: system/settings/settings.xml
+msgctxt "#37041"
+msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channles or the used codec."
+msgstr ""
+
+#empty strings from id 37042 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
