@@ -169,6 +169,12 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
     CLog::Log(LOGWARNING, "CPlexAttributeParser::GetImageURL Could not convert width or height to a string");
   }
 
+  // add a size request for gravatar images
+  if (imageURL.GetHostName() == "www.gravatar.com")
+  {
+    imageURL.SetOption("s", "150");
+  }
+
   options.AddOption("width", swidth);
   options.AddOption("height", sheight);
   options.AddOption("url", imageURL.Get());
