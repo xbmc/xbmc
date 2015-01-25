@@ -103,7 +103,17 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
     }
     
     if (j->m_playlistList)
+    {
+      bool havePlaylists = AnyOwnedServerHasPlaylists();
       m_serverHasPlaylist[j->m_server->GetUUID()] = (j->m_playlistList->Size() > 0);
+
+      // server has new / no more playlists, we kick a message to notify
+      if (havePlaylists != AnyOwnedServerHasPlaylists())
+      {
+        CGUIMessage msg(GUI_MSG_PLEX_PLAYLIST_STATUS_CHANGED, PLEX_DATA_LOADER, 0);
+        g_windowManager.SendThreadMessage(msg);
+      }
+    }
 
     if (j->m_channelList)
     {

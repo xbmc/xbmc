@@ -44,7 +44,7 @@ public:
   CFileItemListPtr GetAllSharedSections() const;
   CFileItemListPtr GetAllChannels() const;
   
-  bool AnyOwendServerHasPlaylists()
+  bool AnyOwnedServerHasPlaylists()
   {
     CSingleLock lk(m_dataLock);
     

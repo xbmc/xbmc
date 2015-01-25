@@ -37,6 +37,7 @@
 #include "PlexFile.h"
 #include "NetworkInterface.h"
 #include "PlexPlayQueueManager.h"
+#include "PlexServerDataLoader.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CURL CPlexMediaServerClient::GetItemURL(CFileItemPtr item)
@@ -66,6 +67,7 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
     {
       /* give us a small breathing room to make sure PMS is up-to-date before reloading */
       Sleep(500);
+      g_plexApplication.dataLoader->Refresh();
       g_windowManager.SendThreadMessage(clientJob->m_msg);
     }
     else if (!success && clientJob->m_errorMsg)

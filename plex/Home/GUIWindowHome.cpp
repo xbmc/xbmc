@@ -410,7 +410,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           UpdateSections();
           
           // we have a new section, refresh it
-          if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
+          if (message.GetParam1() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
             RefreshSectionsForServer(message.GetStringParam());
           break;
         }
@@ -418,6 +418,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       break;
     }
       
+    case GUI_MSG_PLEX_PLAYLIST_STATUS_CHANGED:
+    {
+      UpdateSections();
+      break;
+    }
+
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_UPDATE:
     {
@@ -772,7 +778,7 @@ void CGUIWindowHome::UpdateSections()
       else if (item->HasProperty("playlists"))
       {
         havePlaylists = true;
-        if (g_plexApplication.serverManager->GetBestServer())
+        if (g_plexApplication.serverManager->GetBestServer() && g_plexApplication.dataLoader->AnyOwnedServerHasPlaylists())
           newList.push_back(item);
         else
           listUpdated = true;
