@@ -890,7 +890,7 @@ void CGUIWindowHome::UpdateSections()
 
   if (!havePlaylists &&
       g_plexApplication.serverManager->GetBestServer() &&
-      g_plexApplication.dataLoader->AnyOwendServerHasPlaylists())
+      g_plexApplication.dataLoader->AnyOwnedServerHasPlaylists())
     AddPlaylists(newList, listUpdated);
   
   if ((!havePlayqueues) && g_plexApplication.playQueueManager->getPlayQueuesCount())
