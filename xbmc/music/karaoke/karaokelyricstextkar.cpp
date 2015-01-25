@@ -135,8 +135,8 @@ class MidiTimestamp
 
 CKaraokeLyricsTextKAR::CKaraokeLyricsTextKAR( const std::string & midiFile )
   : CKaraokeLyricsText()
+  , m_midiFile(midiFile)
 {
-  m_midiFile = midiFile;
 }
 
 

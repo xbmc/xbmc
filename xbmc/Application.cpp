@@ -3202,7 +3202,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     }
   }
 
-  if (m_lastAxisMap.size() > 0)
+  if (!m_lastAxisMap.empty())
   {
     // Process all the stored axis.
     for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)

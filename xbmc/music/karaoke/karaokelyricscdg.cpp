@@ -33,8 +33,8 @@
 
 CKaraokeLyricsCDG::CKaraokeLyricsCDG( const std::string& cdgFile )
   : CKaraokeLyrics()
+  , m_cdgFile(cdgFile)
 {
-  m_cdgFile = cdgFile;
   m_pCdgTexture = 0;
   m_streamIdx = -1;
   m_bgAlpha = 0xff000000;

@@ -129,7 +129,7 @@ void CMusicInfoScanner::Process()
       m_needsCleanup = false;
 
       bool commit = true;
-      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
+      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
       {
         if (!CDirectory::Exists(*it) && !m_bClean)
         {
@@ -804,7 +804,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
         for (VECSONGS::iterator song  = album->songs.begin();
                                 song != album->songs.end();
-                                song++)
+                                ++song)
         {
           if (m_bStop)
             break;

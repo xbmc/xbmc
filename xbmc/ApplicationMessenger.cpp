@@ -118,7 +118,7 @@ void CApplicationMessenger::Cleanup()
 {
   CSingleLock lock (m_critSection);
 
-  while (m_vecMessages.size() > 0)
+  while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
 
@@ -129,7 +129,7 @@ void CApplicationMessenger::Cleanup()
     m_vecMessages.pop();
   }
 
-  while (m_vecWindowMessages.size() > 0)
+  while (!m_vecWindowMessages.empty())
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
 
@@ -203,7 +203,7 @@ void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
   CSingleLock lock (m_critSection);
-  while (m_vecMessages.size() > 0)
+  while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
@@ -871,7 +871,7 @@ void CApplicationMessenger::ProcessWindowMessages()
 {
   CSingleLock lock (m_critSection);
   //message type is window, process window messages
-  while (m_vecWindowMessages.size() > 0)
+  while (!m_vecWindowMessages.empty())
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
     //first remove the message from the queue, else the message could be processed more then once

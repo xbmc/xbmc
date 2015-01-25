@@ -27,9 +27,9 @@
 using namespace std;
 using namespace MUSIC_GRABBER;
 
-CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL)
+CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL):
+  m_strTitle2(strAlbumInfo)
 {
-  m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
   m_relevance = -1;
   m_bLoaded = false;

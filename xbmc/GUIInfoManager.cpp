@@ -5672,7 +5672,7 @@ std::string CGUIInfoManager::GetSkinVariableString(int info,
 
 bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map)
 {
-  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; ++it)
   {
     if (it->first->Get() != it->second)
       return true;

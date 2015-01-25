@@ -32,11 +32,11 @@ CTextureInfo::CTextureInfo()
   useLarge = false;
 }
 
-CTextureInfo::CTextureInfo(const std::string &file)
+CTextureInfo::CTextureInfo(const std::string &file):
+  filename(file)
 {
   orientation = 0;
   useLarge = false;
-  filename = file;
 }
 
 CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)

@@ -58,9 +58,9 @@ float CScrollInfo::GetPixelsPerFrame()
 }
 
 CGUIFont::CGUIFont(const std::string& strFontName, uint32_t style, color_t textColor,
-		   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font)
+                  color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font):
+  m_strFontName(strFontName)
 {
-  m_strFontName = strFontName;
   m_style = style & FONT_STYLE_MASK;
   m_textColor = textColor;
   m_shadowColor = shadowColor;

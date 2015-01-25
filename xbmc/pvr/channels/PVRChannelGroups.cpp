@@ -403,7 +403,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &
     }
 
     // no match return last visible group
-    for (std::vector<CPVRChannelGroupPtr>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); it++)
+    for (std::vector<CPVRChannelGroupPtr>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); ++it)
     {
       if (!(*it)->IsHidden())
         return *it;
@@ -432,7 +432,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &grou
     }
 
     // no match return first visible group
-    for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
+    for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
     {
       if (!(*it)->IsHidden())
         return *it;
