@@ -16190,7 +16190,7 @@ msgstr ""
 #. Description of setting #37040 Settings -> Video -> Playback
 #: system/settings/settings.xml
 msgctxt "#37041"
-msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channles or the used codec."
+msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channels or the used codec."
 msgstr ""
 
 #empty strings from id 37042 to 38009
