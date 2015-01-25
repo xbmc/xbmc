@@ -33,14 +33,17 @@
 #include "PlexDirectory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/XBMC_vkeys.h"
 
 #define CONTROL_LIST 3
 
 #define CONTROL_NUM0 10
 #define CONTROL_NUM9 19
+#define CONTROL_BACKSPACE 23
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CGUIWindowStartup::CGUIWindowStartup(void) : CGUIWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml")
+CGUIWindowStartup::CGUIWindowStartup(void)
+  : CGUIWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true)
 {
 }
 
@@ -58,6 +61,8 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 
     m_users.Clear();
     m_viewControl.Reset();
+
+    g_windowManager.setRetrictedAccess(true);
 
     /* Add the old user, so it can work offline as well */
     if (g_plexApplication.myPlexManager)
@@ -92,7 +97,7 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
       if (!fetchUsers())
       {
         CLog::Log(LOGERROR, "Unable to Fetch users, going back to home");
-        g_windowManager.PreviousWindow();
+        PreviousWindow();
         return true;
       }
     }
@@ -117,6 +122,11 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
         iControl <= CONTROL_NUM9) // User numeric entry via dialog button UI
     {
       OnNumber(iControl - 10);
+      return true;
+    }
+    else if (iControl == CONTROL_BACKSPACE)
+    {
+      OnBackSpace();
       return true;
     }
   }
@@ -155,10 +165,27 @@ bool CGUIWindowStartup::OnAction(const CAction& action)
   // pin keys input
   if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     OnNumber(action.GetID() - REMOTE_0);
+  else if (action.GetID() == ACTION_BACKSPACE)
+    OnBackSpace();
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+  { // input from the keyboard (vkey, not ascii)
+    BYTE b = action.GetID() & 0xFF;
+    if (b == XBMCVK_BACK)
+      OnBackSpace();
+  }
   else if (action.GetID() >= KEY_ASCII)
   {
     if (action.GetUnicode() >= 48 && action.GetUnicode() < 58) // number
       OnNumber(action.GetUnicode() - 48);
+    else if (action.GetUnicode() == 8)
+      OnBackSpace(); // backspace
+  }
+  else if (action.GetID() == ACTION_NAV_BACK)
+  {
+    if (m_allowEscOut)
+      PreviousWindow();
+
+    return true;
   }
 
   return CGUIWindow::OnAction(action);
@@ -231,7 +258,7 @@ void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
 
     m_selectedUser = "";
     m_selectedUserThumb = "";
-    g_windowManager.PreviousWindow();
+    PreviousWindow();
   }
   else
   {
@@ -259,7 +286,7 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
         g_plexApplication.myPlexManager->SwitchHomeUser(item->GetProperty("id").asInteger(), m_pin);
       }
 
-      g_windowManager.PreviousWindow();
+      PreviousWindow();
     }
     else
     {
@@ -269,4 +296,18 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
       m_pin = "";
     }
   }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::OnBackSpace()
+{
+  if (!m_pin.IsEmpty())
+    m_pin.Delete(m_pin.GetLength() - 1);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::PreviousWindow()
+{
+  m_allowEscOut = true;
+  g_windowManager.setRetrictedAccess(false);
+  g_windowManager.PreviousWindow();
 }

@@ -42,6 +42,7 @@
 
 #include "Client/PlexExtraInfoLoader.h"
 #include "Playlists/PlexPlayQueueManager.h"
+#include "GUI/GUIWindowStartup.h"
 
 #ifdef ENABLE_AUTOUPDATE
 #include "AutoUpdate/PlexAutoUpdate.h"
@@ -354,6 +355,10 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* 
     {
       CLog::Log(LOGDEBUG, "PlexApplication::Announce resuming from screensaver");
       g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
+
+      CGUIWindowStartup *window = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
+      if (window)
+        window->allowEscOut(false);
     }
   }
 }

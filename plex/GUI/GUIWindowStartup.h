@@ -37,6 +37,9 @@ public:
   virtual void OnWindowLoaded();
   virtual bool OnMessage(CGUIMessage &message);
   void OnNumber(unsigned int num);
+  void OnBackSpace();
+  void PreviousWindow();
+  inline void allowEscOut(bool allow) { m_allowEscOut = allow; }
 
 private:
   void SelectUserByName(CStdString user);
@@ -46,6 +49,7 @@ private:
   CStdString m_pin;
   CStdString m_selectedUser;
   CStdString m_selectedUserThumb;
+  bool m_allowEscOut;
 
   CGUIViewControl m_viewControl;
 };

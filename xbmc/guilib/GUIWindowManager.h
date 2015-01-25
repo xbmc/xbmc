@@ -52,6 +52,8 @@ public:
   bool SendMessage(CGUIMessage& message, int window);
  /* PLEX */
   int  RemoveThreadMessageByMessageIds(int *pMessageIDList);
+  void setRetrictedAccess(bool restricted) { m_restrictedAccessMode = restricted; }
+  bool isAccessRestricted() { return m_restrictedAccessMode; }
   /* END PLEX */
   void Initialize();
   void Add(CGUIWindow* pWindow);
@@ -177,6 +179,11 @@ private:
   bool m_initialized;
 
   CDirtyRegionTracker m_tracker;
+
+  /* PLEX */
+private :
+  bool m_restrictedAccessMode;
+  /* END PLEX */
 };
 
 /*!

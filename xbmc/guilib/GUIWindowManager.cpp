@@ -34,6 +34,8 @@
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/Variant.h"
+#include "PlexApplication.h"
+#include "GUI/GUIWindowStartup.h"
 
 using namespace std;
 
@@ -43,6 +45,10 @@ CGUIWindowManager::CGUIWindowManager(void)
   m_bShowOverlay = true;
   m_iNested = 0;
   m_initialized = false;
+
+  /* PLEX */
+  m_restrictedAccessMode = false;
+  /* END PLEX */
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
@@ -254,6 +260,23 @@ void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
   CSingleLock lock(g_graphicsContext);
+
+  /* PLEX */
+  if (isAccessRestricted() &&
+      ((g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) ||
+       (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+       (g_windowManager.GetActiveWindow() == WINDOW_NOW_PLAYING)
+       ))
+  {
+    g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
+
+    CGUIWindowStartup *window = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
+    if (window)
+      window->allowEscOut(false);
+    return;
+  }
+  /* END PLEX */
+
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
   int currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
@@ -338,6 +361,18 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
 {
+  /* PLEX */
+  if (isAccessRestricted() &&
+  ((iWindowID != WINDOW_VISUALISATION) &&
+   (iWindowID != WINDOW_FULLSCREEN_VIDEO) &&
+   (iWindowID != WINDOW_STARTUP_ANIM) &&
+   (iWindowID != WINDOW_NOW_PLAYING)
+   ))
+  {
+    return;
+  }
+  /*END PLEX */
+
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held

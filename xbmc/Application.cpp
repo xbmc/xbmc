@@ -1601,6 +1601,10 @@ bool CApplication::Initialize()
       else if (g_plexApplication.myPlexManager->IsPinProtected())
       {
         g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
+
+        CGUIWindowStartup *window = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
+        if (window)
+          window->allowEscOut(false);
       }
       else
       {
