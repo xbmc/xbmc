@@ -2040,31 +2040,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_CURRENT_USER:
     {
       strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
-
-      // if we're on the User pin selection dialog, we temporarilly return the selected user
-      // rather than the currently logged one
-      if (g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_NUMERIC)
-      {
-        CGUIDialogPlexUserSelect *userDialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
-        if (userDialog && !userDialog->getSelectedUser().IsEmpty())
-        {
-          strLabel = userDialog->getSelectedUser();
-        }
-      }
-
     }
     break;
   case SYSTEM_CURRENT_USER_THUMB:
     strLabel = g_plexApplication.myPlexManager->GetCurrentUserInfo().thumb;
-
-    if (g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_NUMERIC)
-    {
-      CGUIDialogPlexUserSelect *userDialog = (CGUIDialogPlexUserSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_USER_SELECT);
-      if (userDialog && !userDialog->getSelectedUserThumb().IsEmpty())
-      {
-        strLabel = userDialog->getSelectedUserThumb();
-      }
-    }
     break;
   /* END PLEX */
 
