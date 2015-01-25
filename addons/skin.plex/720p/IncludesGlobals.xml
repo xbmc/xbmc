@@ -128,6 +128,10 @@
 		<textcolor>white</textcolor>
 		<shadowcolor>FF444444</shadowcolor>
 	</include>
+	<include name="OrangeFont">
+		<textcolor>orange</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
+	</include>
 	<include name="WhiteShadow">
 		<textcolor>white</textcolor>
 		<shadowcolor>FF444444</shadowcolor>
@@ -411,7 +415,10 @@
 		<value condition="Container.PlexContent(Episode)">$LOCALIZE[31114]</value>
 		<value condition="Container.PlexContent(Channels)">$LOCALIZE[32107]</value>
 		<value condition="Container.PlexContent(Clip) | Container.PlexContent(Homemovies)">$LOCALIZE[31144]</value>
-		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>
+		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>		
+		<value condition="Container.PlexContent(MixedContent) + ListItem.Type(episode)">$LOCALIZE[31143]</value>
+		<value condition="Container.PlexContent(MixedContent) + ListItem.Type(movie)">$LOCALIZE[31142]</value>
+		<value condition="Container.PlexContent(MixedContent) + ListItem.Type(clip)">$LOCALIZE[31144]</value>
 		<value>Item</value>
 	</variable>
 	<include name="TopBar">

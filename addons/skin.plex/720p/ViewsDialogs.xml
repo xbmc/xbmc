@@ -51,105 +51,6 @@
 		<font>Regular-24</font>
 		<textcolor>white</textcolor>
 	</include>
-	<!-- User avatar -->
-	<include name="DialogUserAvatar">
-		<control type="group">
-			<posy>10</posy>
-			<posx>10</posx>
-			<control type="image">
-				<width>90</width>
-				<height>90</height>
-				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-				<texture diffuse="round.png" background="true">round.png</texture>
-				<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
-			</control>
-			<control type="image">
-				<posy>5</posy>
-				<posx>5</posx>
-				<width>80</width>
-				<height>80</height>
-				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-				<texture diffuse="round.png" background="true" fallback="default-square-small.png">$INFO[ListItem.Art(thumb)]</texture>
-			</control>
-		</control>
-	</include>
-	<include name="DialogUserAvatarBg">
-		<control type="image">
-			<posx>0</posx>
-			<posy>1</posy>
-			<width>560</width>
-			<height>108</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-wide-big.png" background="true" blur="10">$INFO[ListItem.Art(thumb)]</texture>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>1</posy>
-			<width>560</width>
-			<height>108</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture background="true">mask-wide-big.png</texture>
-			<colordiffuse>black</colordiffuse>
-			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>38</posy>
-			<width>560</width>
-			<height>72</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture background="true">base-rounded-half.png</texture>
-			<colordiffuse>black</colordiffuse>
-			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
-		</control>
-	</include>
-	<include name="DialogUserIcons">
-		<control type="image">
-			<posx>102</posx>
-			<posy>16</posy>
-			<width>50</width>
-			<height>12</height>
-			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
-			<texture>icon-admin.png</texture>
-			<colordiffuse>orangeLight</colordiffuse>
-			<visible>!IsEmpty(ListItem.Property(admin))</visible>
-		</control>
-		<control type="image">
-			<posx>514</posx>
-			<posy>14</posy>
-			<width>50</width>
-			<height>16</height>
-			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
-			<texture>icon-selected.png</texture>
-			<colordiffuse>FF5CB85C</colordiffuse>
-			<visible>ListItem.IsSelected</visible>
-		</control>
-		<control type="image">
-			<posx>102</posx>
-			<posy>79</posy>
-			<width>50</width>
-			<height>12</height>
-			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
-			<texture>icon-pin.png</texture>
-			<colordiffuse>FF5CB85C</colordiffuse>
-			<visible>!IsEmpty(ListItem.Property(protected))</visible>
-		</control>
-		<control type="image">
-			<posx>102</posx>
-			<posy>79</posy>
-			<width>50</width>
-			<height>12</height>
-			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
-			<texture>icon-pinless.png</texture>
-			<colordiffuse>Unfocused</colordiffuse>
-			<visible>IsEmpty(ListItem.Property(protected))</visible>
-		</control>
-	</include>
-	<variable name="UserTitle1">
-		<value condition="IsEmpty(ListItem.Property(managed))">PIN</value>
-		<!--><value condition="!IsEmpty(ListItem.Property(admin))">ADMIN</value>-->
-		<value condition="!IsEmpty(ListItem.Property(managed))">MANAGED</value>
-	</variable>
 	<!-- variables to modify the position/appearance of the audio/subs selection window -->
 	<include name="AudioSubtitleStreamPickerWindowPosition">
 		<posy>-60</posy>
@@ -192,213 +93,6 @@
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
 	<!-- DialogSelect.xml -->
-	<include name="DialogUserSwitch">
-		<control type="group">
-			<!-- bg's -->
-			<control type="group">
-				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
-				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
-				<control type="image">
-					<include>FullScreenScaled</include>
-					<texture>black.png</texture>
-				</control>
-				<control type="image">
-					<include>FullScreenScaled</include>
-					<texture>bg-overlay-grainy.png</texture>
-				</control>
-				<control type="image">
-					<posy>50</posy>					
-					<width>1280</width>
-					<height>620</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<texture>plex-chevron-alone-big.png</texture>
-					<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
-				</control>
-			</control>
-			<control type="group">
-				<posx>340</posx>
-				<posy>147</posy>
-				<control type="label" id="1">
-					<label>-</label>
-					<width>580</width>
-					<height>40</height>
-					<align>center</align>
-					<font>Regular-24</font>
-					<textcolor>Focused</textcolor>
-				</control>
-				<control type="group">
-					<posy>80</posy>
-					<posx>20</posx>
-					<control type="list" id="3">
-						<width>560</width>
-						<height>330</height>
-						<onleft>-</onleft>
-						<onright>5</onright>
-						<onup>3</onup>
-						<ondown>3</ondown>
-						<pagecontrol>61</pagecontrol>
-						<scrolltime>200</scrolltime>
-						<texturefocus>-</texturefocus>
-						<itemlayout height="110">
-							<include>DialogUserAvatarBg</include>
-							<control type="image">
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>560</width>
-								<height>110</height>
-								<texture border="20">border-bottom-grey.png</texture>
-							</control>
-							<control type="label">
-								<width>560</width>
-								<height>50</height>
-								<info>ListItem.Label</info>
-								<font>Bold-16</font>
-								<textcolor>white</textcolor>
-								<textoffsetx>120</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(admin))</visible>
-							</control>
-							<control type="label">
-								<width>560</width>
-								<height>50</height>
-								<info>ListItem.Label</info>
-								<font>Bold-16</font>
-								<textcolor>white</textcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>!IsEmpty(ListItem.Property(admin))</visible>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>36</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$INFO[ListItem.Property(email)]</label>
-								<font>Regular-16</font>
-								<textcolor>Unfocused</textcolor>
-								<textoffsetx>120</textoffsetx>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>Unfocused</textcolor>
-								<textoffsetx>120</textoffsetx>
-								<visible>!IsEmpty(ListItem.Property(managed))</visible>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>Unfocused</textcolor>
-								<selectedcolor>Unfocused</selectedcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>FF5CB85C</textcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(managed)) + !IsEmpty(ListItem.Property(protected))</visible>
-							</control>
-							<include>DialogUserAvatar</include>
-							<include>DialogUserIcons</include>
-						</itemlayout>
-						<focusedlayout height="110">
-							<include>DialogUserAvatarBg</include>
-							<control type="label">
-								<width>560</width>
-								<height>50</height>
-								<info>ListItem.Label</info>
-								<font>Bold-16</font>
-								<textcolor>Focused</textcolor>
-								<textoffsetx>120</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(admin))</visible>
-							</control>
-							<control type="label">
-								<width>560</width>
-								<height>50</height>
-								<info>ListItem.Label</info>
-								<font>Bold-16</font>
-								<textcolor>Focused</textcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>!IsEmpty(ListItem.Property(admin))</visible>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>36</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$INFO[ListItem.Property(email)]</label>
-								<font>Regular-16</font>
-								<textcolor>Unfocused</textcolor>
-								<textoffsetx>120</textoffsetx>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>Focused</textcolor>
-								<textoffsetx>120</textoffsetx>
-								<visible>!IsEmpty(ListItem.Property(managed))</visible>
-							</control>
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>Unfocused</textcolor>
-								<selectedcolor>Unfocused</selectedcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
-							</control>							
-							<control type="label">
-								<posx>0</posx>
-								<posy>62</posy>
-								<width>560</width>
-								<height>50</height>
-								<label>$VAR[UserTitle1]</label>
-								<font>Bold-16</font>
-								<textcolor>FF5CB85C</textcolor>
-								<textoffsetx>140</textoffsetx>
-								<visible>IsEmpty(ListItem.Property(managed)) + !IsEmpty(ListItem.Property(protected))</visible>
-							</control>
-							<include>DialogUserAvatar</include>
-							<include>DialogUserIcons</include>
-							<control type="image">
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>560</width>
-								<height>110</height>
-								<include>Border</include>
-							</control>
-						</focusedlayout>
-					</control>
-					<control type="scrollbar" id="61">
-						<description>Scroll Bar</description>
-						<posy>-5</posy>
-						<posx>563</posx>
-						<width>20</width>
-						<height>300</height>
-					</control>
-				</control>
-			</control>
-		</control>
-	</include>
 	<include name="PinUserSwitch">
 		<control type="group">
 			<!-- bg's -->
@@ -423,8 +117,8 @@
 					<colordiffuse>FF000000</colordiffuse>
 					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
 				</control>-->
-				<!-- title bg -->
-				<!--><control type="image">
+			<!-- title bg -->
+			<!--><control type="image">
 					<width>600</width>
 					<height>80</height>
 					<texture border="10" flipy="true">base-rounded-half.png</texture>
@@ -523,7 +217,7 @@
 								<selectedcolor>Unfocused</selectedcolor>
 								<textoffsetx>140</textoffsetx>
 								<visible>IsEmpty(ListItem.Property(managed)) + IsEmpty(ListItem.Property(protected))</visible>
-							</control>							
+							</control>
 							<control type="label">
 								<posx>0</posx>
 								<posy>62</posy>
@@ -2722,9 +2416,9 @@
 				<control type="image">
 					<include>FullScreenScaled</include>
 					<texture>bg-overlay-grainy.png</texture>
-				</control>				
+				</control>
 				<control type="image">
-					<posy>50</posy>					
+					<posy>50</posy>
 					<width>1280</width>
 					<height>620</height>
 					<aspectratio aligny="top">keep</aspectratio>

@@ -1,0 +1,786 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- reusables -->
+	<include name="UserSwitchLoginAvatar">
+		<control type="group">
+			<posy>30</posy>
+			<posx>30</posx>
+			<control type="image">
+				<width>150</width>
+				<height>150</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">round-big.png</texture>
+				<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>5</posx>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">default-avatar.png</texture>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>5</posx>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+		</control>
+	</include>
+	<include name="UserSwitchLoginAvatarSelected">
+		<control type="group">
+			<posy>30</posy>
+			<posx>30</posx>
+			<control type="image">
+				<width>150</width>
+				<height>150</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">round-big.png</texture>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<colordiffuse>orange</colordiffuse>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>5</posx>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">default-avatar.png</texture>
+			</control>
+			<control type="image">
+				<posy>5</posy>
+				<posx>5</posx>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-big.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+		</control>
+	</include>
+	<include name="UserSwitchLoginAvatarBg">		
+		<control type="image">
+			<posx>4</posx>
+			<posy>4</posy>
+			<width>204</width>
+			<height>204</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture>mask-userswitch.png</texture>
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>4</posx>
+			<posy>4</posy>
+			<width>204</width>
+			<height>204</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture diffuse="mask-userswitch.png" blur="20">$INFO[ListItem.Art(thumb)]</texture>
+		</control>
+		<control type="image">
+			<posx>4</posx>
+			<posy>4</posy>
+			<width>204</width>
+			<height>204</height>
+			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+			<texture>mask-userswitch.png</texture>
+			<colordiffuse>black</colordiffuse>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="UserSwitchLoginAvatarBgSelected">
+		<include>KbPINDummy</include>
+		<control type="group">
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture>mask-userswitch-selected-PIN.png</texture>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-userswitch-selected-PIN.png" blur="20">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture>mask-userswitch-selected-PIN.png</texture>
+				<colordiffuse>black</colordiffuse>
+				<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>208</posy>
+				<width>204</width>
+				<height>51</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture>base.png</texture>
+				<colordiffuse>black</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<visible>!IsEmpty(ListItem.Property(protected))</visible>
+		</control>
+		<control type="group">
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture>mask-userswitch-selected.png</texture>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-userswitch-selected.png" blur="20">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>4</posy>
+				<width>204</width>
+				<height>254</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture>mask-userswitch-selected.png</texture>
+				<colordiffuse>black</colordiffuse>
+				<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>208</posy>
+				<width>204</width>
+				<height>50</height>
+				<texture>mask-userswitch-selected-bottom.png</texture>
+				<colordiffuse>black</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			</control>
+			<visible>IsEmpty(ListItem.Property(protected))</visible>
+		</control>
+	</include>
+	<include name="UserSwitchLoginAvatarComboKbPIN">
+		<control type="group">
+			<posy>247</posy>
+			<posx>534</posx>
+			<control type="group">
+				<control type="image">
+					<posx>4</posx>
+					<posy>4</posy>
+					<width>204</width>
+					<height>254</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture>mask-userswitch-selected-PIN.png</texture>
+					<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<posx>4</posx>
+					<posy>4</posy>
+					<width>204</width>
+					<height>254</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="mask-userswitch-selected-PIN.png" blur="20">$INFO[Container(3).ListItem(0).Art(thumb)]</texture>
+				</control>
+				<control type="image">
+					<posx>4</posx>
+					<posy>4</posy>
+					<width>204</width>
+					<height>254</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture>mask-userswitch-selected-PIN.png</texture>
+					<colordiffuse>black</colordiffuse>
+					<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<posx>4</posx>
+					<posy>208</posy>
+					<width>204</width>
+					<height>51</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture>base.png</texture>
+					<colordiffuse>black</colordiffuse>
+					<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<control type="group">
+				<posy>30</posy>
+				<posx>30</posx>
+				<control type="image">
+					<width>150</width>
+					<height>150</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-big.png">round-big.png</texture>
+					<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<posy>5</posy>
+					<posx>5</posx>
+					<width>140</width>
+					<height>140</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-big.png">default-avatar.png</texture>
+				</control>
+				<control type="image">
+					<posy>5</posy>
+					<posx>5</posx>
+					<width>140</width>
+					<height>140</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-big.png">$INFO[Container(3).ListItem(0).Art(thumb)]</texture>
+				</control>
+			</control>
+			<control type="group">
+				<control type="image">
+					<posx>160</posx>
+					<posy>161</posy>
+					<width>38</width>
+					<height>38</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-small.png">round-small.png</texture>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+					<colordiffuse>black</colordiffuse>
+				</control>
+				<control type="image">
+					<posx>154</posx>
+					<posy>172</posy>
+					<width>50</width>
+					<height>16</height>
+					<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					<texture>icon-admin.png</texture>
+					<colordiffuse>orangeLight</colordiffuse>
+				</control>
+				<visible>!IsEmpty(Container(3).ListItem(0).Property(admin))</visible>
+			</control>
+			<control type="group">
+				<control type="image">
+					<posx>160</posx>
+					<posy>15</posy>
+					<width>38</width>
+					<height>38</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-small.png">round-small.png</texture>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+					<colordiffuse>black</colordiffuse>
+				</control>
+				<control type="image">
+					<posx>154</posx>
+					<posy>26</posy>
+					<width>50</width>
+					<height>16</height>
+					<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					<texture>icon-selected.png</texture>
+					<colordiffuse>FF5CB85C</colordiffuse>
+				</control>
+				<visible>Container(3).ListItem(0).IsSelected</visible>
+			</control>
+			<control type="group">
+				<control type="image">
+					<posx>13</posx>
+					<posy>160</posy>
+					<width>38</width>
+					<height>38</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="round-small.png">round-small.png</texture>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+					<colordiffuse>black</colordiffuse>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>172</posy>
+					<width>50</width>
+					<height>16</height>
+					<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					<texture>icon-pin.png</texture>
+					<colordiffuse>FF5CB85C</colordiffuse>
+				</control>
+				<visible>!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
+			</control>
+			<control type="label">
+				<posy>209</posy>
+				<posx>19</posx>
+				<width>174</width>
+				<height>49</height>
+				<info>Container(3).ListItem(0).Label</info>
+				<font>Regular-18</font>
+				<textcolor>Focused</textcolor>
+				<align>center</align>
+				<visible>ControlGroup(500).HasFocus + IsEmpty(Control.GetLabel(4))</visible>
+			</control>
+		</control>
+	</include>
+	<include name="UserSwitchLoginIcons">
+		<control type="group">
+			<control type="image">
+				<posx>160</posx>
+				<posy>161</posy>
+				<width>38</width>
+				<height>38</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-small.png">round-small.png</texture>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				<colordiffuse>black</colordiffuse>
+			</control>
+			<control type="image">
+				<posx>154</posx>
+				<posy>172</posy>
+				<width>50</width>
+				<height>16</height>
+				<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+				<texture>icon-admin.png</texture>
+				<colordiffuse>orangeLight</colordiffuse>
+			</control>
+			<visible>!IsEmpty(ListItem.Property(admin))</visible>
+		</control>
+		<control type="group">
+			<control type="image">
+				<posx>160</posx>
+				<posy>15</posy>
+				<width>38</width>
+				<height>38</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-small.png">round-small.png</texture>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				<colordiffuse>black</colordiffuse>
+			</control>
+			<control type="image">
+				<posx>154</posx>
+				<posy>26</posy>
+				<width>50</width>
+				<height>16</height>
+				<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+				<texture>icon-selected.png</texture>
+				<colordiffuse>FF5CB85C</colordiffuse>
+			</control>
+			<visible>ListItem.IsSelected</visible>
+		</control>
+		<control type="group">
+			<control type="image">
+				<posx>13</posx>
+				<posy>160</posy>
+				<width>38</width>
+				<height>38</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="round-small.png">round-small.png</texture>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				<colordiffuse>black</colordiffuse>
+			</control>
+			<control type="image">
+				<posx>7</posx>
+				<posy>172</posy>
+				<width>50</width>
+				<height>16</height>
+				<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+				<texture>icon-pin.png</texture>
+				<colordiffuse>FF5CB85C</colordiffuse>
+			</control>
+			<visible>!IsEmpty(ListItem.Property(protected))</visible>
+		</control>
+		<!--><control type="image">
+			<posx>102</posx>
+			<posy>79</posy>
+			<width>50</width>
+			<height>12</height>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+			<texture>icon-pinless.png</texture>
+			<colordiffuse>Unfocused</colordiffuse>
+			<visible>IsEmpty(ListItem.Property(protected))</visible>
+		</control>-->
+	</include>
+	<variable name="UserTitle1">
+		<value condition="IsEmpty(ListItem.Property(managed))">PIN</value>
+		<!--><value condition="!IsEmpty(ListItem.Property(admin))">ADMIN</value>-->
+		<value condition="!IsEmpty(ListItem.Property(managed))">MANAGED</value>
+	</variable>
+	<include name="UserSwitchLoginKbButton">
+		<font>Regular-16</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>40</width>
+		<height>40</height>
+		<textoffsetx>-20</textoffsetx>
+		<textoffsety>20</textoffsety>
+		<textcolor>white</textcolor>
+		<texturefocus>orange.png</texturefocus>
+		<texturenofocus>grey.png</texturenofocus>
+		<focusedcolor>black</focusedcolor>
+	</include>
+	<include name="UserSwitchLoginKbButtonDelete">
+		<font>Regular-16</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>40</height>
+		<textcolor>white</textcolor>
+		<texturefocus>mask-userswitch-kb-delete-selected.png</texturefocus>
+		<texturenofocus>mask-userswitch-kb-delete.png</texturenofocus>
+		<focusedcolor>black</focusedcolor>
+	</include>
+	<include name="UserSwitchLoginKbButtonDone">
+		<font>Regular-16</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>40</height>
+		<textcolor>white</textcolor>
+		<texturefocus>mask-userswitch-kb-done-selected.png</texturefocus>
+		<texturenofocus>mask-userswitch-kb-done.png</texturenofocus>
+		<focusedcolor>black</focusedcolor>
+	</include>
+	<!-- list -->
+	<include name="UserSwitchLogin">
+		<control type="group">
+			<!-- bg's -->
+			<control type="group">
+				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
+				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
+				<control type="image">
+					<include>FullScreenScaled</include>
+					<texture>base.png</texture>
+					<colordiffuse>FF1F1F1F1F</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>0</posy>
+					<posx>538</posx>
+					<width>204</width>
+					<aspectratio>keep</aspectratio>
+					<texture>plex-logo-light-small.png</texture>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<!-- list -->
+			<control type="group">
+				<posx>0</posx>
+				<posy>140</posy>
+				<control type="group">
+					<posy>107</posy>
+					<posx>-138</posx>
+					<control type="fixedlist" id="3">
+						<width>1600</width>
+						<height>400</height>
+						<onleft>3</onleft>
+						<onright>3</onright>
+						<onup>-</onup>
+						<ondown>500</ondown>
+						<pagecontrol>-</pagecontrol>
+						<scrolltime>300</scrolltime>
+						<focusposition>3</focusposition>
+						<texturefocus>-</texturefocus>
+						<orientation>horizontal</orientation>
+						<itemlayout height="400" width="224">
+							<include>UserSwitchLoginAvatarBg</include>
+							<include>UserSwitchLoginAvatar</include>
+							<include>UserSwitchLoginIcons</include>
+						</itemlayout>
+						<focusedlayout height="400" width="224">
+							<include>UserSwitchLoginAvatarBgSelected</include>
+							<include>UserSwitchLoginAvatarSelected</include>
+							<include>UserSwitchLoginIcons</include>
+							<control type="label">
+								<posy>209</posy>
+								<posx>106</posx>
+								<width>174</width>
+								<height>49</height>
+								<info>ListItem.Label</info>
+								<font>Regular-18</font>
+								<textcolor>Focused</textcolor>
+								<align>center</align>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- keyboard -->
+	<include name="KbPINDummy">
+		<control type="group">
+			<control type="grouplist">
+				<animation effect="slide" start="0,0" end="0,223" time="0">Focus</animation>
+				<visible>!IsEmpty(ListItem.Property(protected))</visible>
+				<posy>22</posy>
+				<posx>-14</posx>
+				<itemgap>1</itemgap>
+				<width>240</width>
+				<height>150</height>
+				<align>center</align>
+				<orientation>vertical</orientation>
+				<!-- Row 1 -->
+				<control type="grouplist">
+					<itemgap>1</itemgap>
+					<width>240</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12311]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12312]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12313]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12314]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12315]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+				</control>
+				<!-- Row 2 -->
+				<control type="grouplist">
+					<itemgap>1</itemgap>
+					<width>240</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12316]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12317]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12318]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12319]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<label>$LOCALIZE[12310]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+				</control>
+				<!-- Row 3 -->
+				<control type="grouplist">
+					<itemgap>1</itemgap>
+					<width>240</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button">
+						<description>dummy button</description>
+						<width>81</width>
+						<include>UserSwitchLoginKbButtonDelete</include>
+						<label>&#x21A4;</label>
+					</control>
+					<control type="button">
+						<description>dummy button</description>
+						<width>122</width>
+						<include>UserSwitchLoginKbButtonDone</include>
+						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="KbPIN">
+		<control type="group">
+			<control type="group">
+				<include>UserSwitchLoginAvatarComboKbPIN</include>
+				<visible>ControlGroup(500).HasFocus + !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
+			</control>
+			<control type="grouplist" id="500">
+				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
+				<animation effect="slide" start="0,0" end="0,-300" time="0">Focus</animation>
+				<posy>742</posy>
+				<posx>538</posx>
+				<itemgap>1</itemgap>
+				<width>204</width>
+				<height>200</height>
+				<align>center</align>
+				<orientation>vertical</orientation>
+				<!-- Row 0 -->
+				<control type="grouplist">
+					<width>204</width>
+					<height>49</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="label" id="4">
+						<description>Edit Text</description>
+						<width>204</width>
+						<height>49</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$LOCALIZE[12323]</label>
+						<disabledcolor>white</disabledcolor>
+						<font>Regular-18</font>
+						<textcolor>white</textcolor>
+					</control>
+				</control>
+				<!-- Row 1 -->
+				<control type="grouplist" id="501">
+					<itemgap>1</itemgap>
+					<width>204</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="11">
+						<description>'1' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>3</onup>
+						<ondown>16</ondown>
+						<label>$LOCALIZE[12311]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="12">
+						<description>'2' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>3</onup>
+						<ondown>17</ondown>
+						<label>$LOCALIZE[12312]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="13">
+						<description>'3' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>3</onup>
+						<ondown>18</ondown>
+						<label>$LOCALIZE[12313]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="14">
+						<description>'4' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>3</onup>
+						<ondown>19</ondown>
+						<label>$LOCALIZE[12314]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="15">
+						<description>'5' button</description>
+						<onleft>501</onleft>
+						<onright>501</onright>
+						<onup>3</onup>
+						<ondown>10</ondown>
+						<label>$LOCALIZE[12315]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+				</control>
+				<!-- Row 2 -->
+				<control type="grouplist" id="502">
+					<itemgap>1</itemgap>
+					<width>204</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="16">
+						<description>'6' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>11</onup>
+						<ondown>23</ondown>
+						<label>$LOCALIZE[12316]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="17">
+						<description>'7' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>12</onup>
+						<ondown>23</ondown>
+						<label>$LOCALIZE[12317]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="18">
+						<description>'8' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>13</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12318]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="19">
+						<description>'9' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>14</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12319]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+					<control type="button" id="10">
+						<description>'0' button</description>
+						<onleft>502</onleft>
+						<onright>502</onright>
+						<onup>15</onup>
+						<ondown>21</ondown>
+						<label>$LOCALIZE[12310]</label>
+						<include>UserSwitchLoginKbButton</include>
+					</control>
+				</control>
+				<!-- Row 3 -->
+				<control type="grouplist" id="503">
+					<itemgap>1</itemgap>
+					<width>204</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="23">
+						<description>BACKSPACE button</description>
+						<width>81</width>
+						<onleft>503</onleft>
+						<onright>503</onright>
+						<onup>502</onup>
+						<ondown>501</ondown>
+						<include>UserSwitchLoginKbButtonDelete</include>
+						<label>&#x21A4;</label>
+					</control>
+					<control type="button" id="21">
+						<description>DONE button</description>
+						<width>122</width>
+						<onleft>503</onleft>
+						<onright>503</onright>
+						<onup>502</onup>
+						<ondown>501</ondown>
+						<include>UserSwitchLoginKbButtonDone</include>
+						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>
