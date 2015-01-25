@@ -225,7 +225,7 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag->m_iBroadcastId       = m_pDS->fv("idBroadcast").get_asInt();
         newTag->m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();
         newTag->m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
-		newTag->m_strIMDBNumber      = m_pDS->fv("sIMDBNumber").get_asString().c_str();
+	 newTag->m_strIMDBNumber      = m_pDS->fv("sIMDBNumber").get_asString().c_str();
         newTag->m_strCast            = m_pDS->fv("sCast").get_asString().c_str();
         newTag->m_strDirector        = m_pDS->fv("sDirector").get_asString().c_str();
         newTag->m_strWriter          = m_pDS->fv("sWriter").get_asString().c_str();
