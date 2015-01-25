@@ -34,9 +34,10 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/XBMC_vkeys.h"
+#include "GUILabelControl.h"
 
 #define CONTROL_LIST 3
-
+#define CONTROL_INPUT_LABEL 4
 #define CONTROL_NUM0 10
 #define CONTROL_NUM9 19
 #define CONTROL_BACKSPACE 23
@@ -58,6 +59,7 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
     m_selectedUser = "";
     m_selectedUserThumb = "";
     m_pin = "";
+    setPinControlText(m_pin);
 
     m_users.Clear();
     m_viewControl.Reset();
@@ -296,12 +298,16 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
       m_pin = "";
     }
   }
+
+  setPinControlText(m_pin);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::OnBackSpace()
 {
   if (!m_pin.IsEmpty())
     m_pin.Delete(m_pin.GetLength() - 1);
+
+  setPinControlText(m_pin);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,4 +316,14 @@ void CGUIWindowStartup::PreviousWindow()
   m_allowEscOut = true;
   g_windowManager.setRetrictedAccess(false);
   g_windowManager.PreviousWindow();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::setPinControlText(CStdString pin)
+{
+  CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_INPUT_LABEL);
+  if (pLabel)
+  {
+    pLabel->SetLabel(pin);
+  }
 }

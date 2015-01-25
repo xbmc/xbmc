@@ -44,6 +44,7 @@ public:
 private:
   void SelectUserByName(CStdString user);
   void OnUserSelected(CFileItemPtr item);
+  void setPinControlText(CStdString pin);
 
   CFileItemList m_users;
   CStdString m_pin;
