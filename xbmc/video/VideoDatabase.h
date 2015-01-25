@@ -515,7 +515,7 @@ public:
   void EraseVideoSettings(const std::string &path = "");
 
   bool GetStackTimes(const CStdString &filePath, std::vector<int> &times);
-  void SetStackTimes(const CStdString &filePath, std::vector<int> &times);
+  void SetStackTimes(const CStdString &filePath, const std::vector<int> &times);
 
   void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);

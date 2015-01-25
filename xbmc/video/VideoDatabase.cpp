@@ -4311,7 +4311,7 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<int> &time
 }
 
 /// \brief Sets the stack times for a particular video file
-void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<int> &times)
+void CVideoDatabase::SetStackTimes(const CStdString& filePath, const vector<int> &times)
 {
   try
   {
