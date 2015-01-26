@@ -100,6 +100,15 @@ function(add_addon_depends addon searchpath)
           set(deps)
         endif()
 
+        if(CROSS_AUTOCONF)
+          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
+          foreach(afile ${AUTOCONF_FILES})
+            file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+                 "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
+                 file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
+          endforeach()
+        endif()
+
         # prepare the setup of the call to externalproject_add()
         set(EXTERNALPROJECT_SETUP PREFIX ${BUILD_DIR}/${id}
                                   CMAKE_ARGS ${extraflags} ${BUILD_ARGS}
