@@ -172,6 +172,11 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
+  <startup>
+    <keyboard>
+      <backspace>Backspace</backspace>
+    </keyboard>
+  </startup>
   <MyTV>
     <keyboard>
       <delete>Delete</delete>
