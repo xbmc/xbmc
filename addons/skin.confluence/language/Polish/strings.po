@@ -222,7 +222,7 @@ msgstr "Nie używaj tapet w roli tła"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Używaj odtwarzane wideo w roli tła"
+msgstr "Wyświetlaj panel Teraz odtwarzane w tle interfejsu"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"

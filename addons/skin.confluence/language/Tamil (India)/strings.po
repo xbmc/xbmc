@@ -68,6 +68,22 @@ msgctxt "#31040"
 msgid "Now Playing"
 msgstr "தற்போது வாசிக்கபடுவது"
 
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "வாசிக்கபடுகிறது"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "இடைநிறுத்தம்"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "முன்சுற்று"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "பின்சுற்று"
+
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "தேடுகிறது"
