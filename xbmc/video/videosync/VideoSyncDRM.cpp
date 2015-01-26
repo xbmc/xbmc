@@ -150,7 +150,6 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
                                  unsigned int usec, void *data)
 {
   drmVBlank vbl;
-  struct timeval end;
   VblInfo *info = (VblInfo*)data;
   int crtc = g_Windowing.GetCrtc();
 
