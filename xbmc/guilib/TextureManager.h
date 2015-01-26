@@ -88,8 +88,8 @@ public:
 protected:
   void FreeTexture();
 
-  std::string m_textureName;
   CTextureArray m_texture;
+  std::string m_textureName;
   unsigned int m_referenceCount;
   uint32_t m_memUsage;
 };
