@@ -13,12 +13,12 @@ std::vector<std::string> CPlexAES::chunkData(const std::string& data)
 
   while (true)
   {
-    std::string chunk = data.substr(i, 16);
+    std::string chunk = data.substr(i, AES_BLOCK_SIZE);
     chunks.push_back(chunk);
-    if (chunk.length() < 16)
+    if (chunk.length() < AES_BLOCK_SIZE)
       break;
 
-    i += 16;
+    i += AES_BLOCK_SIZE;
   }
 
   return chunks;
@@ -31,7 +31,7 @@ std::string CPlexAES::encrypt(const std::string &data)
     return "";
   }
 
-  unsigned char block[16], buffer[16];
+  unsigned char block[AES_BLOCK_SIZE], buffer[AES_BLOCK_SIZE];
   std::string outData;
 
   BOOST_FOREACH(const std::string& chunk, chunkData(data))
@@ -57,7 +57,7 @@ std::string CPlexAES::decrypt(const std::string &data)
   }
 
   std::string outData;
-  unsigned char block[16], buffer[16];
+  unsigned char block[AES_BLOCK_SIZE], buffer[AES_BLOCK_SIZE];
 
   BOOST_FOREACH(const std::string& chunk, chunkData(data))
   {
