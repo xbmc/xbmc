@@ -85,6 +85,10 @@ ifeq (@USE_OPENGLES@,1)
 SRCS += AMLUtils.cpp
 endif
 
+ifeq (@USE_LIBAMCODEC@,1)
+SRCS += ScreenshotAML.cpp
+endif
+
 LIB   = utils.a
 
 include @abs_top_srcdir@/Makefile.include
