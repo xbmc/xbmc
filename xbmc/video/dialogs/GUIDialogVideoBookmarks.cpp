@@ -25,7 +25,10 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
-#endif
+#if defined(HAS_LIBAMCODEC)
+#include "utils/ScreenshotAML.h"
+#endif//HAS_LIBAMCODEC
+#endif//HAS_VIDEO_PLAYBACK
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
@@ -339,8 +342,13 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     {
       g_renderManager.Capture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
 
+#if !defined(HAS_LIBAMCODEC)
       if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
       {
+#else//HAS_LIBAMCODEC
+      {
+        CScreenshotAML::CaptureVideoFrame(thumbnail->GetPixels(), width, height, false);
+#endif
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
         bookmark.thumbNailImage = StringUtils::Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
@@ -349,8 +357,10 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
                                             bookmark.thumbNailImage))
           bookmark.thumbNailImage.clear();
       }
+#if !defined(HAS_LIBAMCODEC)
       else
         CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
+#endif
 
       g_renderManager.ReleaseRenderCapture(thumbnail);
     }
