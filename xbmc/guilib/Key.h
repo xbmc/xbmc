@@ -346,6 +346,7 @@
 #define ACTION_SETTINGS_LEVEL_CHANGE  242
 
 #define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_INPUT_TEXT             244
 
 // touch actions
 #define ACTION_TOUCH_TAP              401
@@ -417,6 +418,16 @@ public:
    \return name of the action
    */
   const CStdString &GetName() const { return m_name; };
+  
+  /*! \brief Text of the action if any
+   \return text payload of this action.
+   */
+  const std::string &GetText() const { return m_text; };
+  
+  /*! \brief Set the text payload of the action
+   \param text to be set
+   */
+  void SetText(const std::string &text) { m_text = text; };
 
   /*! \brief Get an amount associated with this action
    \param zero-based index of amount to retrieve, defaults to 0
@@ -455,6 +466,7 @@ private:
   unsigned int m_holdTime;
   unsigned int m_buttonCode;
   wchar_t      m_unicode;
+  std::string  m_text;
 };
 
 /*!
