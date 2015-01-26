@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <window id="2000">
-	<defaultcontrol>3</defaultcontrol>
+	<defaultcontrol always="true">3</defaultcontrol>
 	<controls>
 		<!-- ViewsUserSwitchLogin.xml -->
 		<include>UserSwitchLogin</include>
 		<control type="group">
 			<include>KbPIN</include>
+			<include>UserSwitchLoginPINLabel</include>
 		</control>
 		<!-- top-level ui (Debug.xml + grid) -->
 		<include>debugInfos</include>
