@@ -408,7 +408,6 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   const std::string &settingId = setting->GetId();
   if (settingId == "services.webserverusername")
   {
-    CSettingString *webserverusername = (CSettingString*)setting;
     // if webserverusername is xbmc and pw is not empty we treat it as altered
     // and don't change the username to kodi - part of rebrand
     if (CSettings::Get().GetString("services.webserverusername") == "xbmc" &&
