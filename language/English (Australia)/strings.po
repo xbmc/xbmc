@@ -7305,6 +7305,10 @@ msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Add-on for the backend to be able to use PVR."
 
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Please visit http://kodi.wiki/view/PVR to learn more."
+
 msgctxt "#19275"
 msgid "Conflict warning"
 msgstr "Conflict warning"
@@ -10632,6 +10636,14 @@ msgstr "Automatically download first subtitle from the search result list"
 msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Configuration has been moved"
+
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+
+msgctxt "#24999"
+msgid "Hide incompatible"
+msgstr "Hide incompatible"
 
 msgctxt "#25000"
 msgid "Notifications"

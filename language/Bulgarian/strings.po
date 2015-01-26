@@ -11135,11 +11135,11 @@ msgstr "Навигиране с жестове:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr "Замахване с 1 пръст <, >, ˄ и ˅ за курсори"
+msgstr "Плъзнете 1 пръст <, >, ˄ и ˅ за курсори"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr "Замахване с 2 пръста наляво за backspace"
+msgstr "Плъзнете 2 пръста наляво за backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"

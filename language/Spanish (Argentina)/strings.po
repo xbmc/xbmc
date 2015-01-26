@@ -5803,7 +5803,7 @@ msgstr "Sonidos de Navegación"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Skin Por defecto"
+msgstr "Original de skin"
 
 msgctxt "#15110"
 msgid "Larger font size"
@@ -9371,7 +9371,7 @@ msgstr "Sombreado de píxeles de alta calidad v2"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
-msgstr "Habilitar la lista de reproducción al inicio"
+msgstr "Activar una lista de reproducción al inicio"
 
 msgctxt "#21399"
 msgid "Use tween animations"

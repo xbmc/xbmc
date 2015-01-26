@@ -9951,7 +9951,7 @@ msgstr "ガイド"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "黒いバーを小さくする目的での縦横比エラーを許可しました"
+msgstr "黒帯を最小限にするためのアスペクト比の許容誤差"
 
 msgctxt "#22022"
 msgid "Show video files in listings"

@@ -389,6 +389,10 @@ msgctxt "#121"
 msgid "Confirm file move"
 msgstr "Тасдиқи интиқолдиҳии файл"
 
+msgctxt "#122"
+msgid "Confirm delete"
+msgstr "Тасдиқи несткунӣ"
+
 msgctxt "#123"
 msgid "Copy these files?"
 msgstr "Файлҳои зеринро нусхабардорӣ мекунед?"
@@ -685,6 +689,10 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Интерфейси веб"
 
+msgctxt "#200"
+msgid "Audio encoders"
+msgstr "Рамзгузори аудиоӣ"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Шиор"
@@ -844,6 +852,10 @@ msgstr "Экрани пурра"
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Андоза: (%i,%i)->(%i,%i) (Танзими андоза x%2.2f) Таносуб:%2.2f:1 (Пиксел: %2.2f:1) (Ҷойгардонии амудӣ: %2.2f)"
+
+msgctxt "#246"
+msgid "Monitor"
+msgstr "Монитор"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1084,6 +1096,10 @@ msgstr "Забони ҷараёнӣ аслӣ"
 msgctxt "#309"
 msgid "User interface language"
 msgstr "Забони интерфейси корбар"
+
+msgctxt "#310"
+msgid "Keyboard layouts"
+msgstr "Тарҳбандии клавиатура"
 
 msgctxt "#312"
 msgid "(0=auto)"

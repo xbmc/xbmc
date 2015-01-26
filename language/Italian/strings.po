@@ -3265,6 +3265,14 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "Intensità"
 
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Irregolare"
+
+msgctxt "#1380"
+msgid "Very"
+msgstr "Molto"
+
 msgctxt "#1381"
 msgid "Extreme"
 msgstr "Estremo"
@@ -3273,9 +3281,29 @@ msgctxt "#1382"
 msgid "Whirls"
 msgstr "Turbine"
 
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Il Cielo è Chiaro"
+
 msgctxt "#1384"
 msgid "Broken"
 msgstr "Non funzionante"
+
+msgctxt "#1385"
+msgid "Tornado"
+msgstr "Tornado"
+
+msgctxt "#1386"
+msgid "Tropical"
+msgstr "Tropicale"
+
+msgctxt "#1387"
+msgid "Hurricane"
+msgstr "Uragano"
+
+msgctxt "#1388"
+msgid "Cold"
+msgstr "Freddo"
 
 msgctxt "#1389"
 msgid "Windy"
@@ -3284,6 +3312,26 @@ msgstr "Ventoso"
 msgctxt "#1390"
 msgid "Settings"
 msgstr "Impostazioni"
+
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Ventoso"
+
+msgctxt "#1392"
+msgid "Gentle"
+msgstr "Gentile"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Molto Ventoso, quasi tempesta"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Intenso"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Violento"
 
 msgctxt "#1396"
 msgid "Drifting"

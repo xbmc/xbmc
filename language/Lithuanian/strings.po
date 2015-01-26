@@ -6251,7 +6251,7 @@ msgstr "Surasti panašų"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Importuoti EPG iš klientų"
+msgstr "Importuojama EPG iš klientų"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -7211,11 +7211,11 @@ msgstr "Filtruoti kanalus"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"
-msgstr "Įkeliamas EPG iš duomenų bazės"
+msgstr "Įkeliama EPG iš duomenų bazės"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr "Atnaujinti EPG duomenis"
+msgstr "Atnaujinti EPG informaciją"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"

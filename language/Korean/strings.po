@@ -8307,7 +8307,7 @@ msgstr "사용됨"
 
 msgctxt "#20163"
 msgid "of"
-msgstr "-"
+msgstr "/"
 
 msgctxt "#20164"
 msgid "Locking not supported"

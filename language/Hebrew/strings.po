@@ -8299,7 +8299,7 @@ msgstr "פרטי חומרה"
 
 msgctxt "#20161"
 msgid "Total"
-msgstr "סך הכל"
+msgstr "סה\"כ"
 
 msgctxt "#20162"
 msgid "Used"

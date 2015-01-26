@@ -599,7 +599,7 @@ msgstr "Wyświetlaj wideo w formacie 4:3 w trybie"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Nastrój"
+msgstr "Nastroje"
 
 msgctxt "#176"
 msgid "Styles"
@@ -4291,7 +4291,7 @@ msgstr "Niebezpieczne odłączenie urządzenia"
 
 msgctxt "#13023"
 msgid "Successfully removed device"
-msgstr "Bezpiecznie odłączenie urządzenia"
+msgstr "Bezpieczne odłączenie urządzenia"
 
 msgctxt "#13024"
 msgid "Joystick plugged"
@@ -4751,7 +4751,7 @@ msgstr "Tylko prawy"
 
 msgctxt "#13323"
 msgid "Enable karaoke support"
-msgstr "Aktywuj obsługę karaoke"
+msgstr "Uruchom obsługę karaoke"
 
 msgctxt "#13324"
 msgid "Background transparency"
@@ -6287,11 +6287,11 @@ msgstr "Serwer TV"
 
 msgctxt "#19013"
 msgid "Free to air"
-msgstr "Kanały niekodowane"
+msgstr "Brak"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr "Stała"
+msgstr "Stałe"
 
 msgctxt "#19015"
 msgid "Encryption"
@@ -9035,7 +9035,7 @@ msgstr "Pomijaj ścieżkę podczas aktualizacji biblioteki"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Ekstrahuj miniatury i informacje o wideo"
+msgstr "Wykonuj ekstrakcję miniatur i informacji o wideo"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -9255,7 +9255,7 @@ msgstr "Zastępuj czcionki w napisach ASS/SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and touch screen support"
-msgstr "Aktywuj obsługę myszy i ekranu dotykowego"
+msgstr "Uruchom obsługę myszy i ekranu dotykowego"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -11239,7 +11239,7 @@ msgstr "Nie używaj niestandardowej mapy klawiszy dla tego urządzenia"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
-msgstr "Aktywuj obsługę dżojstika i pada"
+msgstr "Uruchom obsługę dżojstika i pada"
 
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
@@ -11971,7 +11971,7 @@ msgstr "Uruchamia \"polecenie wznowienia\", kiedy Kodi będzie zamykane lub prze
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
-msgstr "Polecenie nie zostanie wykonane, jeśli nagranie nie rozpocznie się przed upłynięciem wprowadzonego tutaj czasu."
+msgstr "Polecenie nie zostanie wykonane, jeśli nagranie nie rozpocznie się przed upłynięciem wprowadzonegoczasu."
 
 msgctxt "#36243"
 msgid "The command to execute."
@@ -12027,7 +12027,7 @@ msgstr "Określa czy wykonawcy, którzy pojawiają się tylko w kompilacjach, b�
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
-msgstr "Automatycznie pobiera informacje o albumie i wykonawcy podczas skanowania."
+msgstr "Pobiera automatycznie informacje o albumie i wykonawcy podczas skanowania."
 
 msgctxt "#36257"
 msgid "Select the default album information source."

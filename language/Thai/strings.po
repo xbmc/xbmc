@@ -9039,7 +9039,7 @@ msgstr "แยกรูปย่อและข้อมูลวิดีโอ
 
 msgctxt "#20434"
 msgid "Sets"
-msgstr "ตั้งค่า"
+msgstr "ชุด"
 
 msgctxt "#20435"
 msgid "Combine split video items"
@@ -12943,7 +12943,7 @@ msgstr "ตั้งค่า"
 
 msgctxt "#36911"
 msgid "sets"
-msgstr "ตั้งค่า"
+msgstr "ชุด"
 
 msgctxt "#36912"
 msgid "video"

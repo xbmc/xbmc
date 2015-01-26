@@ -1237,6 +1237,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Leto"
 
+msgctxt "#346"
+msgid "Maintain original volume on downmix"
+msgstr "Ohrani izvorno jakost pri mešanju"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Sprejemnik podpira DTS-HD"
@@ -2469,6 +2473,10 @@ msgctxt "#679"
 msgid "Verbose logging for CEC library"
 msgstr "Podrobno zapisovanje knjižnice CEC"
 
+msgctxt "#680"
+msgid "Verbose logging for VIDEO component"
+msgstr "Podrobno zapisovanje komponente VIDEO"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Čiščenje knjižnice"
@@ -3201,6 +3209,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Oznani storitve drugim sistemom preko Zeroconf"
 
+msgctxt "#1268"
+msgid "iOS 8 compatibility mode"
+msgstr "Združljivostni način iOS 8"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Dovoli nadzor jakosti zvoka"
@@ -3253,6 +3265,10 @@ msgctxt "#1378"
 msgid "Intensity"
 msgstr "Intenzivnost"
 
+msgctxt "#1379"
+msgid "Ragged"
+msgstr "Raztrgano"
+
 msgctxt "#1380"
 msgid "Very"
 msgstr "Zelo"
@@ -3264,6 +3280,10 @@ msgstr "Ekstremno"
 msgctxt "#1382"
 msgid "Whirls"
 msgstr "Vrtinci"
+
+msgctxt "#1383"
+msgid "Sky Is Clear"
+msgstr "Jasno nebo"
 
 msgctxt "#1384"
 msgid "Broken"
@@ -3293,9 +3313,25 @@ msgctxt "#1390"
 msgid "Settings"
 msgstr "Nastavitve"
 
+msgctxt "#1391"
+msgid "Breeze"
+msgstr "Rahel"
+
 msgctxt "#1392"
 msgid "Gentle"
 msgstr "Nežen"
+
+msgctxt "#1393"
+msgid "High wind, near gale"
+msgstr "Močan, skoraj viharen"
+
+msgctxt "#1394"
+msgid "Severe"
+msgstr "Močan"
+
+msgctxt "#1395"
+msgid "Violent"
+msgstr "Silovit"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3327,7 +3363,7 @@ msgstr "Grom"
 
 msgctxt "#1403"
 msgid "Sun"
-msgstr "Sonce"
+msgstr "Sončno"
 
 msgctxt "#1404"
 msgid "Heavy"
@@ -3483,11 +3519,11 @@ msgstr "z"
 
 msgctxt "#1442"
 msgid "Chance"
-msgstr "Možnost"
+msgstr "možnostjo"
 
 msgctxt "#1443"
 msgid "of"
-msgstr "od"
+msgstr " "
 
 msgctxt "#1444"
 msgid "Funnel"
@@ -5181,6 +5217,14 @@ msgctxt "#13457"
 msgid "Prefer VAAPI render method"
 msgstr "Raje uporabi VAAPI render metodo"
 
+msgctxt "#13458"
+msgid "Allow hardware acceleration (OMXPlayer)"
+msgstr "Dovoli strojno pospeševanje (OMXPlayer)"
+
+msgctxt "#13459"
+msgid "Use OMXPlayer for decoding of video files."
+msgstr "Za dekodiranje video datotek uporabi OMXPlayer."
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metoda sinhroniziranja A/V"
@@ -5685,6 +5729,14 @@ msgctxt "#14101"
 msgid "Acceleration"
 msgstr "Pospeševanje"
 
+msgctxt "#14102"
+msgid "Blu-ray playback mode"
+msgstr "Predvajalni način za Blu-ray"
+
+msgctxt "#14103"
+msgid "Play main movie"
+msgstr "Predvajaj osrednji film"
+
 msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr "Prikaži enostavni meni"
@@ -6133,9 +6185,33 @@ msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr "DXVA-HD"
 
+msgctxt "#16327"
+msgid "VAAPI Bob"
+msgstr "VAAPI bob"
+
+msgctxt "#16328"
+msgid "VAAPI Motion Adaptive"
+msgstr "Prilagajanje gibanju VAAPI"
+
+msgctxt "#16329"
+msgid "VAAPI Motion Compensated"
+msgstr "Kompenzacija gibanja VAAPI"
+
 msgctxt "#16330"
 msgid "MMAL - Advanced"
 msgstr "MMAL - Napredno"
+
+msgctxt "#16331"
+msgid "MMAL - Advanced (Half)"
+msgstr "MMAL - napredno (polovično)"
+
+msgctxt "#16332"
+msgid "MMAL - Bob"
+msgstr "MMAL - bob"
+
+msgctxt "#16333"
+msgid "MMAL - Bob (Half)"
+msgstr "MMAL - bob (polovično)"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7228,6 +7304,10 @@ msgstr "Za PVR potrebujete sprejemnik, program za hrbtenico"
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
 msgstr "Dodatek za hrbtenico, ki bo omogočal uporabo PVR."
+
+msgctxt "#19274"
+msgid "Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Obiščite http://kodi.wiki/view/PVR za več informacij."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -8376,6 +8456,10 @@ msgstr "Prenašanje informacij o izvajalcu ni uspelo"
 msgctxt "#20220"
 msgid "Override song tags with online information"
 msgstr "Preglasijo oznake pesmi s spletnimi informacijami"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Če je to omogočeno, bodo vse prenesene informacije za albume in izvajalce imele prednost pred zapisanim v značkah posnetkov, kot so žanri, letnica, izvajalci posnetka itn. Uporabno, če imate v značkah posnetkov identifikatorje MusicBrainz."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -10553,6 +10637,10 @@ msgctxt "#24128"
 msgid "Configuration has been moved"
 msgstr "Nastavitve so bile premaknjene"
 
+msgctxt "#24129"
+msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
+msgstr "Prilagoditev XBMC je premaknjena na novo mesto za Kodi. Oglejte si http://kodi.wiki/view/Migration - to sporočilo ne bo več prikazano!"
+
 msgctxt "#24999"
 msgid "Hide incompatible"
 msgstr "Skrij nezdružljive"
@@ -11004,6 +11092,10 @@ msgstr "7.0"
 msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
+
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Izberite vedenje, ko za predvajanje ali za zvoke vmesnika ni potreben zvok. [Vedno] - na izhod gre zvezen neslišen signal, kar ohranja prejemno zvočno napravo v pripravljenosti za nove zvoke, vendar lahko tudi blokira zvok iz drugih aplikacij; [1- 10 minut] - enako kot Vedno, le da po določenem času zvok vstopi v začasno izklopljeno stanje; [Izključeno] - zvokovni izhod vstopi v začasno izklopljeno stanje. Opomba - če je zvokovni izhod v začasno izklopljenem stanju, lahko zamudite oddani zvok."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -11577,6 +11669,14 @@ msgctxt "#36163"
 msgid "Enable decoding of video files using pixel buffer objects."
 msgstr "Vključi strojno dekodiranje video datotek z uporabo pixel-buffer objektov."
 
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Omogoči, da se frekvenca osveževanja zaslona spremeni, tako da se najbolje ujema s številom sličic na sekundo posnetka. S tem si lahko zagotovite bolj gladko predvajanje videa."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Prekini za kratek čas med spremembo frekvence osveževanja zaslona."
+
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Stopnji osveževanja zaslona prilagodite posnetek."
@@ -11600,6 +11700,10 @@ msgstr "Dovolite predvajalniku videa delno ignoriranje razmerja slike, da zapoln
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Izberite način prikaza vsebin v razmerju 4:3 na širokih zaslonih."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
+msgstr "Pretvorba studijskih ravni VDPAU ponuja način, da napredne aplikacije, kot je Kodi, vplivajo na pretvorbo barvnega prostora."
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
@@ -11636,6 +11740,14 @@ msgstr "Ustvarite sličice in preberite informacije, kot so kodeki in razmerje s
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Združi večdelne video datoteke, mape DVD-jev in mape filmov na en sam element v ne-knjižničnih pogledih."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Odstrani naslov, žanr in druga vozlišča iz pogleda knjižnice. Z izborom kategorije ste postavljeni neposredno v pogled naslovov."
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
@@ -11741,9 +11853,21 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Izbrišite bazo programov/EPG in ponovno uvozite podatke iz hrbtenic."
 
+msgctxt "#36210"
+msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgstr "Prepreči, da se prikaže okno obvestila 'povezava izgubljena', ko se Kodi ne more usklajevati s strežnikom hrbtenice PVR."
+
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
 msgstr "Kategorija nastavitev menijev PVR, prikaza informacij med predvajanjem in informacij o programih."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Pokaži programske podatke ob spreminjanju programov, kot je trenutna TV oddaja."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Po preklopu programa zapri kontrolnik, prikazan na zaslonu."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11777,6 +11901,10 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skrijte oznako \"Informacije niso na voljo\", ko programskega vodiča za izbran program ni na voljo."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgstr "Izbriše zbirko podatkov EPG v Kodiju, nato ponovno uvozi podatke iz hrbtenice."
+
 msgctxt "#36226"
 msgid "Category for PVR playback and channel switching settings."
 msgstr "Kategorija nastavitev predvajanja PVR in preklapljanja med programi. "
@@ -11793,9 +11921,17 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Prikažite informacije o kvaliteti signala v oknu z informacijami o kodekih (če to podpirata dodatek in hrbtenica)."
 
+msgctxt "#36230"
+msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Kako dolgo Kodi čaka na spremembo programa, če programa ni mogoče sprejemati. Uporabno za zemeljske programe, ki občasno izgubijo jakost signala."
+
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pritisk na številčne gumbe v celozaslonskem načinu bo samodejno preklopil na program s to številko po 1 sekundi."
+
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Ob pritiskanju gumba za naslednji ali prejšnji kanal, se dejanski preklop kanala zgodi z zamikom, da ima uporabnik čas skočiti na določen kanal, ne da bi potreboval čakati vsakokratni preklop kanalov po vrsti."
 
 msgctxt "#36233"
 msgid "Category for default recording duration settings."
@@ -11841,6 +11977,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Ukaz, ki naj se zažene."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Čas za odštevanje od časa začetka naslednjega načrtovanega snemanja."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Zaženite ukaz bujenja vsak dan ob določenem času."
@@ -11881,9 +12021,17 @@ msgctxt "#36254"
 msgid "Enable the music library."
 msgstr "Omogočite knjižnico glasbe."
 
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Ugotovi, ali so izvajalci, ki se pojavljajo le na kompilacijah, v knjižnici prikazani v pogledu izvajalcev."
+
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Med pregledovanjem samodejno prenesite informacije o albumu in izvajalcu s ponudnikov."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Izberite privzeti vir za podatke o albumu."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11913,6 +12061,14 @@ msgctxt "#36265"
 msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
 msgstr "Kodi samodejno predvaja naslednjo datoteko v trenutni mapi. Na primer v pogledu datotek: Ko pesem zaključi s predvajanjem, bo Kodi samodejno začel predvajanje naslednje pesmi v tej isti mapi."
 
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "Pesmi se ob izboru namesto takojšnjega predvajanja postavijo v vrsto."
+
+msgctxt "#36267"
+msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Kodi prebere podatke ReplayGain, ki so vkodirani v zvočne datoteke s programi, kot je MP3Gain, in ustrezno normalizira jakost zvoka."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Privzeta vrednost po standardih je 89 dB. Bodite pazljivi pri spreminjanju."
@@ -11940,6 +12096,30 @@ msgstr "Izberite vizualizacijo ki se bo prikazovala ob predvajanju glasbe."
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Preberite informacije v značkah glasbenih datotek. Za velike mape to lahko upočasni branje, posebej preko omrežja."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "Določite, kako so prikazana imena pesmi v uporabniškem vmesniku. Da bi funkcija delovala pravilno, morate omogočiti branje značk."
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "Uporablja se za oblikovanje drugega stolpca v seznamih datotek."
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Določite, kako se prikažejo imena pesmi v seznamu trenutnega predvajanja."
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Uporablja se za oblikovanje drugega stolpca v seznamu trenutnega predvajanja."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Določite, kako so prikazana imena pesmi v seznamih knjižnice."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Uporablja se za oblikovanje drugega stolpca v seznamih knjižnice."
 
 msgctxt "#36281"
 msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
@@ -11993,6 +12173,10 @@ msgctxt "#36293"
 msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
 msgstr "Ob predvajanju katerikoli glasbene datoteke bo Kodi preveril za pripadajočo .cdg datoteko in prikazal pripadajočo grafiko."
 
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Pokaži pog. okno izbora pesmi, ko je zaključi predvajanje zadnje pesmi v vrsti."
+
 msgctxt "#36295"
 msgid "Select the font type used during karaoke."
 msgstr "Izberite tip pisave za prikazovanje med karaokami."
@@ -12008,6 +12192,14 @@ msgstr "Izberite barvo pisave za prikazovanje med karaokami."
 msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "Izberite nabor znakov za uporabo med karaokami."
+
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "Izvozi oštevilčene pesmi karaoke v datoteke HTML ali CSV."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "Uvozi oštevilčene pesmi karaoke iz datotek HTML ali CSV."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -12125,6 +12317,14 @@ msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "Določite vrata spletnega strežnika."
 
+msgctxt "#36330"
+msgid "Define the webserver username. This only takes effect when both the username and the password are set."
+msgstr "Določite uporabniško ime spletnega strežnika. V veljavi je le, če je obenem določeno tudi geslo."
+
+msgctxt "#36331"
+msgid "Define the webserver password. This only takes effect when both the username and the password are set."
+msgstr "Določite geslo spletnega strežnika. To pride v poštev le, če je določeno tudi uporabniško ime."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Izberite enega izmed spletnih vmesnikov, nameščenih preko upravljalnika dodatkov."
@@ -12185,6 +12385,14 @@ msgctxt "#36346"
 msgid "Category containing settings for how the SMB Client (samba) service is handled."
 msgstr "Kategorija nastavitev storitve SMB (samba)."
 
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Če je v omrežju strežnik WINS, tukaj vnesite njegov naslov IP. Sicer pustite prazno."
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Če je v omrežju strežnik WINS, tukaj vnesite njegovo ime delovne skupine. Sicer pustite prazno."
+
 msgctxt "#36349"
 msgid "Section that contains the System related settings for the device Kodi is installed on."
 msgstr "Razdelek sistemskih nastavitev za napravo, na katero je nameščen Kodi."
@@ -12196,6 +12404,18 @@ msgstr "Samodejno pošljite signal 'Wake-On-Lan' strežniku(om) tik pred dostopo
 msgctxt "#36351"
 msgid "Display Kodi in a window, or fullscreen on the selected screen."
 msgstr "Prikaži Kodi v oknu ali celozaslonsko na izbranem zaslonu."
+
+msgctxt "#36352"
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "Spremeni ločljivost, v kateri je prikazan uporabniški vmesnik."
+
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "Spremeni frekvenco osveževanja, s katero je prikazan uporabniški vmesnik."
+
+msgctxt "#36354"
+msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Pokaži Kodi v celozaslonskem oknu. Glavna prednost tega načina velja za večzaslonske namestitve, tako da lahko Kodi uporabljate brez pomanjševanja drugih aplikacij. S tem porabite več virov, zato je lahko predvajanje moteno."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
@@ -12213,13 +12433,29 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Testni vzorec za umerjanje strojne opreme."
 
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "Uporabi omejeni barvni obseg (16-235) namesto polnega barvnega obsega (0-255). Omejeni obseg uporabljamo, če je zaslon običajni televizor HDMI in nima načina PC ali drugega načina za prikaz barv v polnem obsegu; če je vaš zaslon računalniški, potem pustite možnost onemogočeno, da dobite ustrezno črnino."
+
 msgctxt "#36360"
 msgid "Category containing settings for how audio output is handled."
 msgstr "Kategorija nastavitev zvočnega izhoda."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Izberite, kako se določajo lastnosti zvočnega izhoda: [fiksno] - izhodne lastnosti so vedno nastavljene na navedeno mero vzorčenja in namestitev zvočnikov; [najboljše ujemanje] - izhodne lastnosti se vedno nastavijo tako, da se kar najbolj ujemajo z lastnostmi vira; [optimizirano] - izhodne lastnosti se nastavijo na začetku predvajanja in se ne spreminjajo, če se lastnosti vira ne spreminjajo."
+
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Izberite število kanalov, ki jih podpira zvočna povezava, oz. število zvočnikov, če imate analogne povezave. Nastavitev se ne nanaša na prepuščeni zvok. Opomba - SPDIF podpira le kanale 2.0 vendar lahko še vedno na izhod podaja večkanalni zvok v zapisu, ki ga podira prepuščanje."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Ojačaj pretoke AC3, ki so bili združeni v 2 kanala."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Izberite možnost, da omogočite mešanje 2-kanalnega zvoka na število zvočnih kanalov, ki jih določa prilagoditev kanalov."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12228,6 +12464,14 @@ msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi AC3.
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi DTS."
+
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Izberite največje število zvočnih kanalov/zvočnikov, ki so na voljo za dekodirani zvok. Če uporabljate optične/koaksialne digitalne izhode, morate to možnost nastaviti na 2.0."
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Izberite, če želite omogočiti možnosti prehoda zvoka ob predvajanju kodiranega zvoka, npr. v zapisu Dolby Digital."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -12252,6 +12496,14 @@ msgstr "Prilagodi zvoke uporabniškega vmesnika, kot so zvoki pomembnih obvestil
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
 msgstr "Kategorija nastavitev vhodnih naprav."
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "Prilagodite vse priklopljene periferne naprave."
+
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "Če je možnost potrjena, boste s smernimi tipkami na tipkovnici pomikali izbor na virtualni tipkovnici. Če možnost ni potrjena, boste z njimi pomikali kazalko v besedilu."
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
@@ -12296,6 +12548,10 @@ msgstr "V primeru, da imate omejeno pasovno širino internetneta, bo Kodi posku�
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
 msgstr "Kategorija nastavitev varčevanja z energijo."
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "V mirovanju izklopi zaslon. Uporabno za TV sprejemnike, ki se izklopijo, če ne zaznajo signala za prikaz."
 
 msgctxt "#36389"
 msgid "Define how long Kodi should idle before shutting down."
@@ -12409,13 +12665,29 @@ msgctxt "#36416"
 msgid "Specify the type of remote used."
 msgstr "Določite tip uporabljenega daljinskega upravljalca."
 
+msgctxt "#36417"
+msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgstr "Vedno zaženi pomočnika za Kodi, tako da je moč z daljincem Kodi zagnati."
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Določite časovni zamik med nizi pritiskov gumbov na univerzalnem daljincu."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Določite lokacijo, ki se uporablja za pridobivanje informacij o vremenu."
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Obvod mešalnika VDPAU prihrani vire na sistemih nižje moči, vendar rahlo zmanjša kakovost slike."
+
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "Omogočite strojno pospeševanje videa AMLogic."
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Izberite, kaj se zgodi, ko je izbran element elektronskega programskega vodiča (EPG): [Pokaži kontekstni meni] odpre kontekstni meni, iz katerega lahko izberete nadaljnja dejanja; [Preklopi na program] neposredno preklopi na navedeni program; [Pokaži podatke] prikaže podrobne podatke s kratko vsebino in dodatnimi možnostmi; [Snemaj] ustvari snemalni časovnik za izbrani element."
 
 msgctxt "#36425"
 msgid "Show context menu"
@@ -12433,9 +12705,33 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Snemaj"
 
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Izberite to, če izhodna zvočna povezava podpira le večkanalni zvok, npr. Dolby Digital 5.1, kot je povezava SPDIF; če aš sistem podpira večkanalni zvok LPCM, pustite možnost neizbrano."
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "Prilagodite pospeševanje video procesiranja, kar vključuje tudi dekodiranje in spreminjanje velikosti."
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "Določa, ali naj bo dekodiranje videa izvedeno programsko (zahteva več procesorske moči) ali s strojnim pospeševanjem, kjer je to možno."
+
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr "Izberi razporeditev tipk na virtualni tipkovnici"
+
+msgctxt "#36433"
+msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgstr "Če je možnost potrjena, je privzeta metoda upodabljanja VAAPI. S tem je CPE manj obremenjena, vendar se gonilnik lahko obesi!"
+
+msgctxt "#36434"
+msgid "Allow hardware acceleration (MMAL)"
+msgstr "Dovoli strojno pospeševanje (MMAL)"
+
+msgctxt "#36435"
+msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgstr "Za dekodiranje video datotek s pospeševanjem MMAL uporabi DVDPlayer."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"
@@ -12473,6 +12769,10 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Temelji na strojni opremi"
 
+msgctxt "#36509"
+msgid "Monoscopic (2D)"
+msgstr "Monoskopsko (2D)"
+
 msgctxt "#36520"
 msgid "Playback mode of stereoscopic 3D videos"
 msgstr "Način predvajanja stereoskopskih 3D videov"
@@ -12481,6 +12781,10 @@ msgctxt "#36521"
 msgid "Ask me"
 msgstr "Vprašaj me"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
+msgstr "Najvišja mera vzorčenja za spdif ali mera vzorčenja za fiksno izhodno prilagoditev."
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Želeni način"
@@ -12488,6 +12792,10 @@ msgstr "Želeni način"
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
 msgstr "Enako kot film (samodejno)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic 3D mode when playback ended"
+msgstr "Onemogoči stereoskopski način (3D), ko je predvajanje končano"
 
 msgctxt "#36527"
 msgid "Select playback mode"
@@ -12505,6 +12813,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Isto kot film"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note - Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgstr "Izberite, kako se izvede mešanje kanalov na njihovo manjše število, npr. iz 5.1 na 2.0: [omogočeno] ohrani jakost izvornega zvoka, vendar komprimira dinamični razpon; [onemogočeno] ohranja dinamični razpon izvornega zvoka, a pri mešanju bo jakost nižja. Opomba - Dinamični razpon je razlika med najtišjim in najglasnejšim zvokom v zvočnem viru. To možnost omogočite, če komaj slišite filmske dialoge."
+
 msgctxt "#36534"
 msgid "Specify additional libraries whose log messages are to be included in the log."
 msgstr "Določite dodatne knjižnice ki bodo vključene v zapisnik."
@@ -12517,9 +12829,21 @@ msgctxt "#36536"
 msgid "Invert Stereoscopic 3D mode (flip eyes)"
 msgstr "Obraten stereoskopski 3D način videa (zamenjani očesi)"
 
+msgctxt "#36537"
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] will show a dialog to select the desired mode for each playback. [Preferred mode] will use of the preferred mode specified in the 'System -> Video Hardware' section of the settings. [Monoscopic (2D)] will play the video in mono/2D. [Ignore] disables any stereoscopic 3D processing and handling"
+msgstr "Izberite, v katerem načinu se bodo predvajali stereoskopski (3D) posnetki. [Vprašaj] prikaže pogovorno okno, v katerem izberete želeni način za vsako predvajanje posebej; [Prednostni način] uporabi prednostni način, določen v nastavitvah pod »Sistem -> Video strojna oprema«. [Monokopsko (2D)] predvaja posnetek v mono/2D. [Prezri] onemogoči vsakršno stereoskopsko (3D) obdelavo in upravljanje."
+
+msgctxt "#36538"
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgstr "[Omogoči] Preklopi uporabniški vmesnik (in nekatere TV naprave) nazaj v 2-D način, ko se predvajanje zaključi. [Onemogočeno] Uporabniški vmesnik in TV ostaneta v stereoskopskem (3D) načinu. Pri seznamih predvajanja videa stereoskopski (3D) način ne bo spreminjal med posnetki, tudi ob monoskopskih (2D) ne."
+
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr "Spremeni stereoskopski 3D način uporabniškega vmesnika."
+
+msgctxt "#36540"
+msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
+msgstr "Predlagani način za predvajanje stereoskopskih 3D medijev, kot je video."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12552,6 +12876,10 @@ msgstr "Uporabi višjo kakovost teksture za ovitke in grafike (uporablja več po
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr "Omeji ločljivost grafičnega uporabniškega vmesnika za prihranitev pomnilnika. Ne vpliva na predvajanje videa. Zahteva ponovni zagon."
+
+msgctxt "#36549"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgstr "Uporabi podporo AirPlay, združljivo z iOS8. Če imate težave s starejšimi napravami iOS pri zaznavanju Kodija kot veljavne tarče, poskusite to možnost izključiti. Možnost prične delovati šele po ponovnem zagonu Kodija!"
 
 msgctxt "#36600"
 msgid "Category containing the settings for how the music library is handled."
@@ -12717,6 +13045,10 @@ msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr "Želite ustaviti predvajanje na oddaljeni napravi?"
 
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr "Izberite to, če izhodna zvočna povezava podpira le večkanalni zvok, kot je standard Dolby Digital 5.1; s tem je omogočeno poslušanje zapisov AAC5.1 in FLAC5.1 v prostorskem zvoku 5.1. Opomba: ne priporočamo na računalnikih RPi, saj zahteva veliko od CPE."
+
 msgctxt "#37025"
 msgid "Configure audio encoder settings such as quality and compression level"
 msgstr "Prilagodi nastavitve audio pretvornika kot je kakovost in stopnja kompresije"
@@ -12740,6 +13072,10 @@ msgstr "900"
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr "Neomejeno"
+
+msgctxt "#37031"
+msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
+msgstr "Določa, kako naj se odprejo/predvajajo diski Blu-ray. Meniji diska še niso v celoti podprti, zato lahko povzročajo težave."
 
 msgctxt "#38010"
 msgid "GPU accelerated"
