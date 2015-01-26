@@ -43,6 +43,12 @@ public:
   GLint GetStepLoc() { return m_hStep; }
   GLint GetContrastLoc() { return m_hContrast; }
   GLint GetBrightnessLoc() { return m_hBrightness; }
+  GLint GetModelLoc() { return m_hModel; }
+  bool HardwareClipIsPossible() { return m_clipPossible; }
+  GLfloat GetClipXFactor() { return m_clipXFactor; }
+  GLfloat GetClipXOffset() { return m_clipXOffset; }
+  GLfloat GetClipYFactor() { return m_clipYFactor; }
+  GLfloat GetClipYOffset() { return m_clipYOffset; }
 
 protected:
   GLint m_hTex0;
@@ -62,6 +68,12 @@ protected:
 
   GLfloat *m_proj;
   GLfloat *m_model;
+
+  bool m_clipPossible;
+  GLfloat m_clipXFactor;
+  GLfloat m_clipXOffset;
+  GLfloat m_clipYFactor;
+  GLfloat m_clipYOffset;
 };
 
 #endif // GUI_SHADER_H

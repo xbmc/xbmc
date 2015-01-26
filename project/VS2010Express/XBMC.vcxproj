@@ -434,6 +434,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIFadeLabelControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFixedListContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFont.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontCache.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTF.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFDX.cpp" />
@@ -1744,6 +1745,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIFadeLabelControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFixedListContainer.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFont.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontCache.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFontManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFontTTF.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFDX.h" />

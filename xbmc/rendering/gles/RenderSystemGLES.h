@@ -65,6 +65,8 @@ public:
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
 
+  virtual bool ScissorsCanEffectClipping();
+  virtual CRect ClipRectToScissorRect(const CRect &rect);
   virtual void SetScissors(const CRect& rect);
   virtual void ResetScissors();
 
@@ -95,6 +97,7 @@ public:
   GLint GUIShaderGetStep();
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
+  GLint GUIShaderGetModel();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;

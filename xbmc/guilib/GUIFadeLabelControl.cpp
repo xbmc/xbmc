@@ -109,18 +109,14 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     bool moveToNextLabel = false;
     if (!m_scrollOut)
     {
-      vecText text;
-      m_textLayout.GetFirstText(text);
-      if (m_scrollInfo.characterPos && m_scrollInfo.characterPos < text.size())
-        text.erase(text.begin(), text.begin() + min((int)m_scrollInfo.characterPos - 1, (int)text.size()));
-      if (m_label.font->GetTextWidth(text) < m_width)
+      if (m_scrollInfo.pixelPos + m_width > m_scrollInfo.m_textWidth)
       {
         if (m_fadeAnim.GetProcess() != ANIM_PROCESS_NORMAL)
           m_fadeAnim.QueueAnimation(ANIM_PROCESS_NORMAL);
         moveToNextLabel = true;
       }
     }
-    else if (m_scrollInfo.characterPos > m_textLayout.GetTextLength())
+    else if (m_scrollInfo.pixelPos > m_scrollInfo.m_textWidth)
       moveToNextLabel = true;
     
     // apply the fading animation
