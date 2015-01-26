@@ -1133,14 +1133,14 @@ msgid "Subtitle offset"
 msgstr "Subtitle offset"
 
 msgctxt "#52624"
-msgid "Pin entry"
-msgstr "Pin entry"
+msgid "PIN entry"
+msgstr "PIN entry"
 
 msgctxt "#52625"
-msgid "Wrong Pincode"
-msgstr "Wrong Pincode"
+msgid "Wrong PIN"
+msgstr "Wrong PIN"
 
 msgctxt "#52626"
-msgid "Pin is required"
-msgstr "Pin is required"
+msgid "PIN is required"
+msgstr "PIN is required"
 
