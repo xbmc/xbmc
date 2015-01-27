@@ -45,7 +45,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::CGUIWindowStartup(void)
-  : CGUIWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true)
+  : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true)
 {
 }
 
@@ -302,6 +302,7 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
   m_pin += num + '0';
 
   CFileItemPtr item = m_users.Get(m_viewControl.GetSelectedItem());
+  m_vecItems->SetProperty("LoginFailed", "");
 
   if (item && (m_pin.length() == 4))
   {
@@ -322,6 +323,7 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52624),
                                             g_localizeStrings.Get(52625));
       m_pin = "";
+      m_vecItems->SetProperty("LoginFailed", "1");
     }
   }
 

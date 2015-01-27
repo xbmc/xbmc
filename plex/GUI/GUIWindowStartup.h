@@ -20,13 +20,13 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
 #include "FileItem.h"
 #include "GUIViewControl.h"
 #include "JobManager.h"
+#include "video/windows/GUIWindowVideoNav.h"
 
 class CGUIWindowStartup :
-      public CGUIWindow, public IJobCallback
+      public CGUIMediaWindow, public IJobCallback
 {
 public:
   CGUIWindowStartup(void);
