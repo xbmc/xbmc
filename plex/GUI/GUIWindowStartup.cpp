@@ -35,6 +35,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/XBMC_vkeys.h"
 #include "GUILabelControl.h"
+#include "PlexJobs.h"
 
 #define CONTROL_LIST 3
 #define CONTROL_INPUT_LABEL 4
@@ -66,28 +67,13 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 
     g_windowManager.setRetrictedAccess(true);
 
-    /* Add the old user, so it can work offline as well */
-    if (g_plexApplication.myPlexManager)
-    {
-      CMyPlexUserInfo info = g_plexApplication.myPlexManager->GetCurrentUserInfo();
-      if (info.id != -1)
-      {
-        CFileItemPtr oldUser = CFileItemPtr(new CFileItem);
-        oldUser->SetLabel(info.username);
-        oldUser->SetProperty("restricted", info.restricted);
-        oldUser->SetProperty("protected", !info.pin.empty());
-        oldUser->SetProperty("id", info.id);
-        oldUser->SetArt("thumb", info.thumb);
-
-        m_users.Add(oldUser);
-        m_viewControl.SetItems(m_users);
-      }
-    }
-
     if (g_plexApplication.myPlexManager->IsSignedIn())
     {
-      if (!fetchUsers())
-        return false;
+      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+      CJobManager::GetInstance().AddJob(job, this);
+
+//      if (!fetchUsers())
+//        return false;
     }
   }
 
@@ -96,12 +82,8 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
     // users might have changed, let's refetch them.
     if (g_plexApplication.myPlexManager->IsSignedIn())
     {
-      if (!fetchUsers())
-      {
-        CLog::Log(LOGERROR, "Unable to Fetch users, going back to home");
-        PreviousWindow();
-        return true;
-      }
+      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+      CJobManager::GetInstance().AddJob(job, this);
     }
   }
 
@@ -145,17 +127,6 @@ void CGUIWindowStartup::OnWindowLoaded()
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_LIST));
   m_viewControl.SetCurrentView(CONTROL_LIST);
-
-  // focus the user list control
-  CGUIControl* list = (CGUIControl*)GetControl(CONTROL_LIST);
-  if (list)
-  {
-    list->SetFocus(true);
-  }
-
-  // select current user
-  std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
-  SelectUserByName(currentUsername);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +196,61 @@ bool CGUIWindowStartup::fetchUsers()
   }
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+
+  if (!fjob)
+    return;
+
+  m_users.Clear();
+
+  if (success)
+  { 
+    m_users.Copy(fjob->m_items);
+
+    for (int i = 0; i < m_users.Size(); i++)
+    {
+      CFileItemPtr item = m_users.Get(i);
+      if (item->GetProperty("restricted").asBoolean() == false)
+        item->ClearProperty("restricted");
+      if (item->GetProperty("protected").asBoolean() == false)
+        item->ClearProperty("protected");
+      if (item->GetProperty("admin").asBoolean() == false)
+        item->ClearProperty("admin");
+    }
+
+    setUsersList(m_users);
+  }
+  else
+  {
+    /* Add the old user, so it can work offline as well */
+    if (g_plexApplication.myPlexManager)
+    {
+      CMyPlexUserInfo info = g_plexApplication.myPlexManager->GetCurrentUserInfo();
+      if (info.id != -1)
+      {
+        CFileItemPtr oldUser = CFileItemPtr(new CFileItem);
+        oldUser->SetLabel(info.username);
+        oldUser->SetProperty("restricted", info.restricted);
+        oldUser->SetProperty("protected", !info.pin.empty());
+        oldUser->SetProperty("id", info.id);
+        oldUser->SetArt("thumb", info.thumb);
+
+        m_users.Add(oldUser);
+
+        setUsersList(m_users);
+      }
+    }
+
+    if (fjob->m_dir.IsTokenInvalid())
+      CLog::Log(LOGDEBUG, "CGUIDialogPlexUserSelect::fetchUser got a invalid token!");
+
+    PreviousWindow();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,4 +353,21 @@ void CGUIWindowStartup::setPinControlText(CStdString pin)
     CStdString mask = "....";
     pLabel->SetLabel(mask.Left(pin.size()));
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::setUsersList(CFileItemList &userlist)
+{
+  m_viewControl.SetItems(m_users);
+
+  // focus the user list control
+  CGUIControl* list = (CGUIControl*)GetControl(CONTROL_LIST);
+  if (list)
+  {
+    list->SetFocus(true);
+  }
+
+  // select current user
+  std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
+  SelectUserByName(currentUsername);
 }

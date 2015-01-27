@@ -23,9 +23,10 @@
 #include "guilib/GUIWindow.h"
 #include "FileItem.h"
 #include "GUIViewControl.h"
+#include "JobManager.h"
 
 class CGUIWindowStartup :
-      public CGUIWindow
+      public CGUIWindow, public IJobCallback
 {
 public:
   CGUIWindowStartup(void);
@@ -45,6 +46,8 @@ private:
   void SelectUserByName(CStdString user);
   void OnUserSelected(CFileItemPtr item);
   void setPinControlText(CStdString pin);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void setUsersList(CFileItemList &userlist);
 
   CFileItemList m_users;
   CStdString m_pin;
