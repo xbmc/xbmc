@@ -173,7 +173,7 @@
 	</include>
 	<include name="UserSwitchLoginAvatarComboKbPIN">
 		<control type="group">
-			<posy>247</posy>
+			<posy>229</posy>
 			<posx>534</posx>
 			<control type="group">
 				<control type="image">
@@ -431,72 +431,51 @@
 	</variable>
 	<include name="UserSwitchLoginKbButton">
 		<font>Regular-16</font>
-		<width>40</width>
+		<width>50</width>
 		<height>40</height>
-		<textoffsetx>15</textoffsetx>
+		<textoffsetx>20</textoffsetx>
 		<textcolor>white</textcolor>
 		<texturefocus>orange.png</texturefocus>
-		<texturenofocus>grey.png</texturenofocus>
+		<texturenofocus>mask-userswitch-kb-button.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
 	</include>
 	<include name="UserSwitchLoginKbButtonDummy">
 		<font>Regular-16</font>
-		<width>40</width>
+		<width>50</width>
 		<height>40</height>
-		<textoffsetx>15</textoffsetx>
-		<textcolor>Disabled</textcolor>
+		<textoffsetx>20</textoffsetx>
+		<textcolor>greyLight</textcolor>
 		<texturefocus>orange.png</texturefocus>
-		<texturenofocus>darkgrey.png</texturenofocus>
+		<texturenofocus>mask-userswitch-kb-button.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
+		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="UserSwitchLoginKbButtonBS">
-		<font>Regular-16</font>
-		<width>40</width>
-		<height>40</height>
-		<align>center</align>
+		<font>Regular-12</font>
+		<width>51</width>
+		<height>163</height>
+		<textoffsetx>20</textoffsetx>
 		<textcolor>white</textcolor>
-		<texturefocus>orange.png</texturefocus>
-		<texturenofocus>grey.png</texturenofocus>
+		<texturefocus>mask-userswitch-kb-delete-selected.png</texturefocus>
+		<texturenofocus>mask-userswitch-kb-delete.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
 	</include>
 	<include name="UserSwitchLoginKbButtonBSDummy">
-		<font>Regular-16</font>
-		<width>40</width>
-		<height>40</height>
-		<align>center</align>
-		<textcolor>Disabled</textcolor>
-		<texturefocus>orange.png</texturefocus>
-		<texturenofocus>darkgrey.png</texturenofocus>
+		<font>Regular-12</font>
+		<width>51</width>
+		<height>163</height>
+		<textoffsetx>20</textoffsetx>
+		<textcolor>greyLight</textcolor>
+		<texturefocus>mask-userswitch-kb-delete-selected.png</texturefocus>
+		<texturenofocus>mask-userswitch-kb-delete.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
-	</include>
-	<include name="UserSwitchLoginKbButtonSept">
-		<font>Regular-16</font>
-		<width>40</width>
-		<height>40</height>
-		<textoffsetx>15</textoffsetx>
-		<textcolor>white</textcolor>
-		<texturefocus>mask-userswitch-kb-sept-selected.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-sept.png</texturenofocus>
-		<focusedcolor>black</focusedcolor>
-	</include>
-	<include name="UserSwitchLoginKbButtonSeptDummy">
-		<font>Regular-16</font>
-		<width>40</width>
-		<height>40</height>
-		<textoffsetx>15</textoffsetx>
-		<textcolor>Disabled</textcolor>
-		<texturefocus>mask-userswitch-kb-sept-selected.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-sept-dummy.png</texturenofocus>
-		<focusedcolor>black</focusedcolor>
+		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="UserSwitchLoginKbButtonZero">
 		<font>Regular-16</font>
-		<align>center</align>
-		<aligny>center</aligny>
-		<width>81</width>
+		<width>152</width>
 		<height>40</height>
-		<textoffsetx>-20</textoffsetx>
-		<textoffsety>20</textoffsety>
+		<textoffsetx>71</textoffsetx>
 		<textcolor>white</textcolor>
 		<texturefocus>mask-userswitch-kb-zero-selected.png</texturefocus>
 		<texturenofocus>mask-userswitch-kb-zero.png</texturenofocus>
@@ -504,16 +483,14 @@
 	</include>
 	<include name="UserSwitchLoginKbButtonZeroDummy">
 		<font>Regular-16</font>
-		<align>center</align>
-		<aligny>center</aligny>
-		<width>81</width>
+		<width>152</width>
 		<height>40</height>
-		<textoffsetx>-20</textoffsetx>
-		<textoffsety>20</textoffsety>
-		<textcolor>Disabled</textcolor>
+		<textoffsetx>71</textoffsetx>
+		<textcolor>greyLight</textcolor>
 		<texturefocus>mask-userswitch-kb-zero-selected.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-zero-dummy.png</texturenofocus>
+		<texturenofocus>mask-userswitch-kb-zero.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
+		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
 	</include>
 	<!-- list -->
 	<include name="UserSwitchLogin">
@@ -525,7 +502,7 @@
 				<control type="image">
 					<include>FullScreenScaled</include>
 					<texture>base.png</texture>
-					<colordiffuse>FF1F1F1F1F</colordiffuse>
+					<colordiffuse>FF111111</colordiffuse>
 				</control>
 				<control type="image">
 					<posy>0</posy>
@@ -538,44 +515,40 @@
 			</control>
 			<!-- list -->
 			<control type="group">
-				<posx>0</posx>
-				<posy>140</posy>
-				<control type="group">
-					<posy>107</posy>
-					<posx>-138</posx>
-					<control type="fixedlist" id="3">
-						<width>1600</width>
-						<height>400</height>
-						<onleft>3</onleft>
-						<onright>3</onright>
-						<onup>-</onup>
-						<ondown>11</ondown>
-						<pagecontrol>-</pagecontrol>
-						<scrolltime>300</scrolltime>
-						<focusposition>3</focusposition>
-						<texturefocus>-</texturefocus>
-						<orientation>horizontal</orientation>
-						<itemlayout height="400" width="224">
-							<include>UserSwitchLoginAvatarBg</include>
-							<include>UserSwitchLoginAvatar</include>
-							<include>UserSwitchLoginIcons</include>
-						</itemlayout>
-						<focusedlayout height="400" width="224">
-							<include>UserSwitchLoginAvatarBgSelected</include>
-							<include>UserSwitchLoginAvatarSelected</include>
-							<include>UserSwitchLoginIcons</include>
-							<control type="label">
-								<posy>209</posy>
-								<posx>106</posx>
-								<width>174</width>
-								<height>49</height>
-								<info>ListItem.Label</info>
-								<font>Regular-18</font>
-								<textcolor>Focused</textcolor>
-								<align>center</align>
-							</control>
-						</focusedlayout>
-					</control>
+				<posy>229</posy>
+				<posx>-138</posx>
+				<control type="fixedlist" id="3">
+					<width>1600</width>
+					<height>400</height>
+					<onleft>3</onleft>
+					<onright>3</onright>
+					<onup>-</onup>
+					<ondown>11</ondown>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>300</scrolltime>
+					<focusposition>3</focusposition>
+					<texturefocus>-</texturefocus>
+					<orientation>horizontal</orientation>
+					<itemlayout height="400" width="224">
+						<include>UserSwitchLoginAvatarBg</include>
+						<include>UserSwitchLoginAvatar</include>
+						<include>UserSwitchLoginIcons</include>
+					</itemlayout>
+					<focusedlayout height="400" width="224">
+						<include>UserSwitchLoginAvatarBgSelected</include>
+						<include>UserSwitchLoginAvatarSelected</include>
+						<include>UserSwitchLoginIcons</include>
+						<control type="label">
+							<posy>209</posy>
+							<posx>106</posx>
+							<width>174</width>
+							<height>49</height>
+							<info>ListItem.Label</info>
+							<font>Regular-18</font>
+							<textcolor>Focused</textcolor>
+							<align>center</align>
+						</control>
+					</focusedlayout>
 				</control>
 			</control>
 		</control>
@@ -597,15 +570,17 @@
 				<!-- Column 1 -->
 				<control type="grouplist">
 					<itemgap>1</itemgap>
-					<width>122</width>
-					<height>122</height>
+					<width>152</width>
+					<height>163</height>
 					<align>left</align>
 					<orientation>vertical</orientation>
 					<!-- Row 1 -->
 					<control type="grouplist">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
+						<onright>23</onright>
+						<onleft>490</onleft>
 						<align>center</align>
 						<aligny>center</aligny>
 						<orientation>horizontal</orientation>
@@ -628,10 +603,8 @@
 					<!-- Row 2 -->
 					<control type="grouplist">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
-						<onright>23</onright>
-						<onleft>23</onleft>
 						<align>center</align>
 						<aligny>center</aligny>
 						<orientation>horizontal</orientation>
@@ -654,7 +627,7 @@
 					<!-- Row 3 -->
 					<control type="grouplist">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -662,7 +635,7 @@
 						<control type="button">
 							<description>'7' button</description>
 							<label>$LOCALIZE[12317]</label>
-							<include>UserSwitchLoginKbButtonSeptDummy</include>
+							<include>UserSwitchLoginKbButtonDummy</include>
 						</control>
 						<control type="button">
 							<description>'8' button</description>
@@ -675,27 +648,34 @@
 							<include>UserSwitchLoginKbButtonDummy</include>
 						</control>
 					</control>
+					<!-- Row 4 -->
+					<control type="grouplist">
+						<itemgap>1</itemgap>
+						<width>152</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="button">
+							<description>'0' button</description>
+							<width>152</width>
+							<label>$LOCALIZE[12310]</label>
+							<include>UserSwitchLoginKbButtonZeroDummy</include>
+						</control>
+					</control>
 				</control>
 				<!-- Column 2 -->
 				<control type="grouplist">
 					<control type="grouplist">
 						<itemgap>1</itemgap>
-						<width>81</width>
-						<height>122</height>
+						<width>51</width>
+						<height>163</height>
 						<align>left</align>
 						<orientation>vertical</orientation>
 						<control type="button">
 							<description>BACKSPACE button</description>
-							<width>81</width>
-							<height>81</height>
 							<include>UserSwitchLoginKbButtonBSDummy</include>
 							<label>&#x21A4;</label>
-						</control>
-						<control type="button">
-							<description>'0' button</description>
-							<width>81</width>
-							<label>$LOCALIZE[12310]</label>
-							<include>UserSwitchLoginKbButtonZeroDummy</include>
 						</control>
 					</control>
 				</control>
@@ -712,8 +692,8 @@
 				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
 				<animation effect="slide" start="0,0" end="0,-300" time="0" condition="[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4))]">Conditional</animation>
 				<animation effect="fade" time="100">VisibleChange</animation>
-				<posy>806</posy>
-				<posx>40</posx>
+				<posy>788</posy>
+				<posx>100</posx>
 				<itemgap>1</itemgap>
 				<width>1280</width>
 				<height>200</height>
@@ -723,17 +703,17 @@
 				<!-- Column 1 -->
 				<control type="grouplist" id="490">
 					<itemgap>1</itemgap>
-					<width>122</width>
-					<height>122</height>
+					<width>152</width>
+					<height>163</height>
 					<align>left</align>
 					<orientation>vertical</orientation>
 					<!-- Row 1 -->
 					<control type="grouplist" id="491">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
 						<onright>23</onright>
-						<onleft>23</onleft>
+						<onleft>490</onleft>
 						<align>center</align>
 						<aligny>center</aligny>
 						<orientation>horizontal</orientation>
@@ -768,10 +748,10 @@
 					<!-- Row 2 -->
 					<control type="grouplist" id="492">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
 						<onright>23</onright>
-						<onleft>23</onleft>
+						<onleft>490</onleft>
 						<align>center</align>
 						<aligny>center</aligny>
 						<orientation>horizontal</orientation>
@@ -806,10 +786,10 @@
 					<!-- Row 3 -->
 					<control type="grouplist" id="493">
 						<itemgap>1</itemgap>
-						<width>122</width>
+						<width>152</width>
 						<height>40</height>
-						<onright>10</onright>
-						<onleft>10</onleft>
+						<onright>23</onright>
+						<onleft>490</onleft>
 						<align>center</align>
 						<aligny>center</aligny>
 						<orientation>horizontal</orientation>
@@ -818,27 +798,48 @@
 							<onleft>10</onleft>
 							<onright>503</onright>
 							<onup>14</onup>
-							<ondown>11</ondown>
+							<ondown>10</ondown>
 							<label>$LOCALIZE[12317]</label>
-							<include>UserSwitchLoginKbButtonSept</include>
+							<include>UserSwitchLoginKbButton</include>
 						</control>
 						<control type="button" id="18">
 							<description>'8' button</description>
 							<onleft>503</onleft>
 							<onright>503</onright>
 							<onup>15</onup>
-							<ondown>12</ondown>
+							<ondown>10</ondown>
 							<label>$LOCALIZE[12318]</label>
 							<include>UserSwitchLoginKbButton</include>
 						</control>
 						<control type="button" id="19">
 							<description>'9' button</description>
 							<onleft>503</onleft>
-							<onright>10</onright>
+							<onright>23</onright>
 							<onup>16</onup>
-							<ondown>13</ondown>
+							<ondown>10</ondown>
 							<label>$LOCALIZE[12319]</label>
 							<include>UserSwitchLoginKbButton</include>
+						</control>
+					</control>
+					<!-- Row 4 -->
+					<control type="grouplist" id="494">
+						<itemgap>1</itemgap>
+						<width>152</width>
+						<height>40</height>
+						<onright>23</onright>
+						<onleft>490</onleft>
+						<align>center</align>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="button" id="10">
+							<description>'0' button</description>
+							<width>152</width>
+							<onleft>19</onleft>
+							<onright>17</onright>
+							<onup>493</onup>
+							<ondown>491</ondown>
+							<label>$LOCALIZE[12310]</label>
+							<include>UserSwitchLoginKbButtonZero</include>
 						</control>
 					</control>
 				</control>
@@ -846,30 +847,18 @@
 				<control type="grouplist" id="495">
 					<control type="grouplist" id="496">
 						<itemgap>1</itemgap>
-						<width>81</width>
-						<height>122</height>
+						<width>51</width>
+						<height>163</height>
 						<align>left</align>
 						<orientation>vertical</orientation>
 						<control type="button" id="23">
 							<description>BACKSPACE button</description>
-							<width>81</width>
-							<height>81</height>
-							<onleft>16</onleft>
-							<onright>11</onright>
+							<onleft>490</onleft>
+							<onright>-</onright>
 							<onup>3</onup>
 							<ondown>10</ondown>
 							<include>UserSwitchLoginKbButtonBS</include>
 							<label>&#x21A4;</label>
-						</control>
-						<control type="button" id="10">
-							<description>'0' button</description>
-							<width>81</width>
-							<onleft>19</onleft>
-							<onright>17</onright>
-							<onup>23</onup>
-							<ondown>21</ondown>
-							<label>$LOCALIZE[12310]</label>
-							<include>UserSwitchLoginKbButtonZero</include>
 						</control>
 					</control>
 				</control>
