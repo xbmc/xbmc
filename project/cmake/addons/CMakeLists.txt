@@ -25,7 +25,7 @@ endif()
 get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
 
 if(NOT BUILD_DIR)
-    set(BUILD_DIR "${CMAKE_BINARY_DIR}/build")
+  set(BUILD_DIR "${CMAKE_BINARY_DIR}/build")
 else()
   file(TO_CMAKE_PATH "${BUILD_DIR}" BUILD_DIR)
 endif()
