@@ -23,6 +23,8 @@
 #include "PlexPlayQueueManager.h"
 
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogOK.h"
+#include "ApplicationMessenger.h"
 
 #include "PlexApplication.h"
 #include "GUIUserMessages.h"
@@ -184,17 +186,21 @@ void CMyPlexManager::BroadcastState()
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
 
       if (m_lastError == ERROR_WRONG_CREDS && g_windowManager.GetActiveWindow() != WINDOW_SETTINGS_SYSTEM && m_homeId != -1)
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20117), "Please try again", 3000, false);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20117), g_localizeStrings.Get(52630), 3000, false);
 
       if (m_lastError == ERROR_INVALID_AUTH_TOKEN)
       {
-
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Disconnected from plex.tv", "Please login again...", 3000, false);
-
         // nuke cache of user info as well
         DoRemoveAllServers();
         g_guiSettings.SetString("myplex.uid", "");
         m_currentUserInfo = CMyPlexUserInfo();
+        CGUIDialogOK* dlg = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (dlg)
+        {
+          dlg->SetHeading(g_localizeStrings.Get(52631));
+          dlg->SetLine(0, g_localizeStrings.Get(52632));
+          CApplicationMessenger::Get().DoModal((CGUIDialog*)dlg, WINDOW_DIALOG_OK);
+        }
       }
       break;
     }

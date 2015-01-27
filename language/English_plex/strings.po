@@ -1144,3 +1144,14 @@ msgctxt "#52626"
 msgid "PIN is required"
 msgstr "PIN is required"
 
+msgctxt "#52630"
+msgid "Please try again"
+msgstr "Please try again"
+
+msgctxt "#52631"
+msgid "Please sign in again"
+msgstr "Please sign in again"
+
+msgctxt "#52632"
+msgid "Your credentials have expired. Please sign in again."
+msgstr "Your credentials have expired. Please sign in again."
