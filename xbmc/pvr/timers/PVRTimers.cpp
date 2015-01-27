@@ -667,9 +667,10 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   CFileItemPtr item = GetNextActiveTimer();
   if (item && item->HasPVRTimerInfoTag())
   {
+    const CDateTimeSpan prestart(0, 0, item->GetPVRTimerInfoTag()->MarginStart(), 0);
     const CDateTime start = item->GetPVRTimerInfoTag()->StartAsUTC();
     wakeuptime = ((start - idle) > now) ?
-        start - prewakeup:
+        start - prestart - prewakeup :
         now + idle;
   }
 
