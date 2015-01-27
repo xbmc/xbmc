@@ -48,6 +48,7 @@
 CGUIWindowStartup::CGUIWindowStartup(void)
   : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true), m_currentToken("")
 {
+  m_loadType = LOAD_EVERY_TIME;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
