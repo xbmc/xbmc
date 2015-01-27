@@ -392,10 +392,10 @@ namespace XBMCAddon
                                 const String& line3) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogProgress* pDialog= dlg;
+      CGUIDialogProgress* pDialog = dlg;
 
       if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
+        throw WindowException("Dialog not created.");
 
       if (percent >= 0 && percent <= 100)
       {
@@ -418,12 +418,16 @@ namespace XBMCAddon
     void DialogProgress::close()
     {
       DelayedCallGuard dcguard(languageHook);
+      if (dlg == NULL)
+        throw WindowException("Dialog not created.");
       dlg->Close();
       open = false;
     }
 
     bool DialogProgress::iscanceled()
     {
+      if (dlg == NULL)
+        throw WindowException("Dialog not created.");
       return dlg->IsCanceled();
     }
 
@@ -463,11 +467,10 @@ namespace XBMCAddon
     void DialogProgressBG::update(int percent, const String& heading, const String& message) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogExtendedProgressBar* pDialog = dlg;
       CGUIDialogProgressBarHandle* pHandle = handle;
 
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
+      if (pHandle == NULL)
+        throw WindowException("Dialog not created.");
 
       if (percent >= 0 && percent <= 100)
         pHandle->SetPercentage((float)percent);
@@ -480,12 +483,16 @@ namespace XBMCAddon
     void DialogProgressBG::close()
     {
       DelayedCallGuard dcguard(languageHook);
+      if (handle == NULL)
+        throw WindowException("Dialog not created.");
       handle->MarkFinished();
       open = false;
     }
 
     bool DialogProgressBG::isFinished()
     {
+      if (handle == NULL)
+        throw WindowException("Dialog not created.");
       return handle->IsFinished();
     }
 
