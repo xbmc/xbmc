@@ -385,7 +385,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
-        printf("    frame %4i                                ", j);
+        printf("    frame %4i (delay:%4i)                         ", j, frames.frameList[j].delay);
         CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
         frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
