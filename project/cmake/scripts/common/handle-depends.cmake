@@ -104,20 +104,24 @@ function(add_addon_depends addon searchpath)
         set(EXTERNALPROJECT_SETUP PREFIX ${BUILD_DIR}/${id}
                                   CMAKE_ARGS ${extraflags} ${BUILD_ARGS}
                                   PATCH_COMMAND ${PATCH_COMMAND}
-                                  ${INSTALL_COMMAND})
+                                  "${INSTALL_COMMAND}")
 
         # if there's an url defined we need to pass that to externalproject_add()
         if(DEFINED url AND NOT "${url}" STREQUAL "")
+          # check if there's a third parameter in the file
           if(deflength GREATER 2)
+            # the third parameter is considered as a revision of a git repository
             list(GET def 2 revision)
+
             externalproject_add(${id}
                                 GIT_REPOSITORY ${url}
                                 GIT_TAG ${revision}
-                                ${EXTERNALPROJECT_SETUP})
+                                "${EXTERNALPROJECT_SETUP}")
           else()
             if(WIN32)
               set(CONFIGURE_COMMAND "")
             else()
+              # manually specify the configure command to be able to pass in the custom PKG_CONFIG_PATH
               set(CONFIGURE_COMMAND PKG_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
                                     ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags}
                                     ${BUILD_DIR}/${id}/src/${id}
@@ -134,13 +138,14 @@ function(add_addon_depends addon searchpath)
                                 URL ${url}
                                 DOWNLOAD_DIR ${BUILD_DIR}/download
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
-                                ${EXTERNALPROJECT_SETUP})
+                                "${EXTERNALPROJECT_SETUP}")
           endif()
         else()
           externalproject_add(${id}
                               SOURCE_DIR ${dir}
-                              ${EXTERNALPROJECT_SETUP})
+                              "${EXTERNALPROJECT_SETUP}")
         endif()
+
         if(deps)
           add_dependencies(${id} ${deps})
         endif()
