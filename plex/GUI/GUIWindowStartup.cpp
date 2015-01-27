@@ -36,6 +36,7 @@
 #include "input/XBMC_vkeys.h"
 #include "GUILabelControl.h"
 #include "PlexJobs.h"
+#include "Client/MyPlex/MyPlexManager.h"
 
 #define CONTROL_LIST 3
 #define CONTROL_INPUT_LABEL 4
@@ -45,7 +46,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::CGUIWindowStartup(void)
-  : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true)
+  : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true), m_currentToken("")
 {
 }
 
@@ -69,21 +70,43 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 
     if (g_plexApplication.myPlexManager->IsSignedIn())
     {
-      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-      CJobManager::GetInstance().AddJob(job, this);
+      if (g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken != m_currentToken)
+      {
+        m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
 
-//      if (!fetchUsers())
-//        return false;
+        CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+        CJobManager::GetInstance().AddJob(job, this);
+      }
     }
   }
 
   if (message.GetMessage() == GUI_MSG_MYPLEX_STATE_CHANGE)
   {
-    // users might have changed, let's refetch them.
-    if (g_plexApplication.myPlexManager->IsSignedIn())
+    switch(message.GetParam1())
     {
-      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-      CJobManager::GetInstance().AddJob(job, this);
+      case CMyPlexManager::STATE_LOGGEDIN:
+        {
+          if (g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken != m_currentToken)
+          {
+            // users might have changed, let's refetch them.
+            if (g_plexApplication.myPlexManager->IsSignedIn())
+            {
+              CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+              CJobManager::GetInstance().AddJob(job, this);
+            }
+          }
+        }
+        break;
+
+      case CMyPlexManager::STATE_NOT_LOGGEDIN:
+        {
+          CLog::Log(LOGDEBUG,"Logged out while on user selection screen, going back");
+          PreviousWindow();
+        }
+        break;
+
+      default: // just ignore other states
+        break;
     }
   }
 
@@ -165,40 +188,6 @@ bool CGUIWindowStartup::OnAction(const CAction& action)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowStartup::fetchUsers()
-{
-  XFILE::CPlexDirectory dir;
-  CFileItemList users;
-  if (dir.GetDirectory(CURL("plexserver://myplex/api/home/users"), users))
-  {
-    std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
-
-    m_users.Clear();
-    m_users.Copy(users);
-
-    for (int i = 0; i < m_users.Size(); i++)
-    {
-      CFileItemPtr item = m_users.Get(i);
-      if (item->GetProperty("restricted").asBoolean() == false)
-        item->ClearProperty("restricted");
-      if (item->GetProperty("protected").asBoolean() == false)
-        item->ClearProperty("protected");
-      if (item->GetProperty("admin").asBoolean() == false)
-        item->ClearProperty("admin");
-    }
-
-    m_viewControl.SetItems(m_users);
-  }
-  else if (dir.IsTokenInvalid())
-  {
-    CLog::Log(LOGDEBUG, "CGUIDialogPlexUserSelect::fetchUser got a invalid token!");
-    return false;
-  }
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
@@ -224,6 +213,8 @@ void CGUIWindowStartup::OnJobComplete(unsigned int jobID, bool success, CJob *jo
     }
 
     setUsersList(m_users);
+
+    m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
   }
   else
   {

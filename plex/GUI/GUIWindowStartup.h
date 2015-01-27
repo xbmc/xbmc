@@ -32,8 +32,6 @@ public:
   CGUIWindowStartup(void);
   virtual ~CGUIWindowStartup(void);
 
-  bool fetchUsers();
-
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual bool OnMessage(CGUIMessage &message);
@@ -54,6 +52,7 @@ private:
   CStdString m_selectedUser;
   CStdString m_selectedUserThumb;
   bool m_allowEscOut;
+  CStdString m_currentToken;
 
   CGUIViewControl m_viewControl;
 };
