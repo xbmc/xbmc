@@ -179,6 +179,15 @@ bool CGUIWindowStartup::OnAction(const CAction& action)
 
     return true;
   }
+  else if ((action.GetID() == ACTION_MOVE_RIGHT) ||
+           (action.GetID() == ACTION_MOVE_LEFT) ||
+           (action.GetID() == ACTION_MOVE_UP) ||
+           (action.GetID() == ACTION_MOVE_DOWN))
+
+  {
+    // reset the skin flag if we change the focus control
+    m_vecItems->SetProperty("LoginFailed", "");
+  }
 
   return CGUIWindow::OnAction(action);
 }
