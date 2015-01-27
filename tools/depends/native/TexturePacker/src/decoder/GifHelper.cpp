@@ -294,7 +294,7 @@ bool GifHelper::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
   frame.m_delay = 0;
   frame.m_disposal = 0;
 #if GIFLIB_MAJOR >= 5
-  if (m_gif->ExtensionBlockCount > 0)
+  if (m_gif->ImageCount > 0)
   {
     GraphicsControlBlock gcb;
     if (!DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
