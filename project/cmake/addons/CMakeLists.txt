@@ -36,6 +36,7 @@ if(NOT DEPENDS_PATH)
 else()
   file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
 endif()
+get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
 
 # make sure CMAKE_PREFIX_PATH is set
 if(NOT CMAKE_PREFIX_PATH)
