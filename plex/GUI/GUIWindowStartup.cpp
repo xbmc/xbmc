@@ -64,19 +64,15 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
     setPinControlText(m_pin);
 
     m_users.Clear();
-    m_viewControl.Reset();
 
     g_windowManager.setRetrictedAccess(true);
 
     if (g_plexApplication.myPlexManager->IsSignedIn())
-    {
-      if (g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken != m_currentToken)
-      {
-        m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
+    {   
+      m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
 
-        CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-        CJobManager::GetInstance().AddJob(job, this);
-      }
+      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+      CJobManager::GetInstance().AddJob(job, this);
     }
   }
 
