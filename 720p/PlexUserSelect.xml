@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">3</defaultcontrol>
 	<controls>
 		<!-- ViewsUserSwitchLogin.xml -->
-		<include>UserSwitchLogin</include>
 		<control type="group">
+			<include>UserSwitchLogin</include>
 			<include>KbPIN</include>
 			<include>UserSwitchLoginPINLabel</include>
 		</control>
