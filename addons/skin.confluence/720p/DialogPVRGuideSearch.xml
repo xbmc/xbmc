@@ -36,7 +36,6 @@
 			<aligny>center</aligny>
 			<textcolor>selected</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!pvr.IsPlayingRadio</visible>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
