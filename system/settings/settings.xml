@@ -587,6 +587,7 @@
               <option label="630">0</option> <!-- ViewModeNormal -->
               <option label="633">3</option> <!-- ViewModeWideZoom -->
               <option label="634">4</option> <!-- ViewModeStretch16x9 -->
+              <option label="644">7</option> <!-- ViewModeStretch16x9 - nonlinear -->
               <option label="631">1</option> <!-- ViewModeZoom -->
             </options>
           </constraints>
