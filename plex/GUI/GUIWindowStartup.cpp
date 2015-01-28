@@ -295,8 +295,7 @@ void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
   else
   {
     // we selected a user that requires a pin, ask for pincode
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52624),
-                                          g_localizeStrings.Get(52626));
+    m_vecItems->SetProperty("LoginFailed", "1");
   }
 }
 
@@ -324,8 +323,6 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
     else
     {
       // we got an invalid pin
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52624),
-                                            g_localizeStrings.Get(52625));
       m_pin = "";
       m_vecItems->SetProperty("LoginFailed", "1");
     }

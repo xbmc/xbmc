@@ -753,6 +753,10 @@ msgctxt "#43009"
 msgid "20 Mbps"
 msgstr "20 Mbps"
 
+msgctxt "#43010"
+msgid "Max"
+msgstr "Max"
+
 msgctxt "#44000"
 msgid "Email"
 msgstr "Email"
@@ -1131,18 +1135,6 @@ msgstr "Queueing and recommending video, Sharing your media"
 msgctxt "#52623"
 msgid "Subtitle offset"
 msgstr "Subtitle offset"
-
-msgctxt "#52624"
-msgid "PIN entry"
-msgstr "PIN entry"
-
-msgctxt "#52625"
-msgid "Wrong PIN"
-msgstr "Wrong PIN"
-
-msgctxt "#52626"
-msgid "PIN is required"
-msgstr "PIN is required"
 
 msgctxt "#52630"
 msgid "Please try again"
