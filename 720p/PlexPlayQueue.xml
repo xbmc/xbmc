@@ -1117,7 +1117,7 @@
 										<height>26</height>
 										<texture flipy="true">icon-arrow-vert.png</texture>
 										<aspectratio scalediffuse="false">keep</aspectratio>
-										<animation effect="fade" end="0" time="500">Hidden</animation>
+										<animation effect="fade" end="0" time="100" delay="200">Hidden</animation>
 										<visible>Container.OnPrevious</visible>
 										<colordiffuse>orange</colordiffuse>
 									</control>
@@ -1135,7 +1135,7 @@
 										<height>26</height>
 										<texture>icon-arrow-vert.png</texture>
 										<aspectratio scalediffuse="false">keep</aspectratio>
-										<animation effect="fade" end="0" time="500">Hidden</animation>
+										<animation effect="fade" end="0" time="100" delay="200">Hidden</animation>
 										<colordiffuse>orange</colordiffuse>
 										<visible>Container.OnNext</visible>
 									</control>
