@@ -209,6 +209,13 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
     }
   }
 
+  if (action.GetID() == ACTION_SELECT_ITEM)
+  {
+    // select an item should start playback
+    OnAction(CAction(ACTION_PLAYER_PLAY));
+    return true;
+  }
+
   // record selected item before processing
   int oldSelectedID = m_viewControl.GetSelectedItem();
 
