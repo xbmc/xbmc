@@ -98,8 +98,8 @@
 				<width>204</width>
 				<height>254</height>
 				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-				<texture>mask-userswitch-selected-PIN.png</texture>
-				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				<texture>mask-userswitch-selected-PIN-grey.png</texture>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 			</control>
 			<control type="image">
 				<posx>4</posx>
@@ -182,8 +182,8 @@
 					<width>204</width>
 					<height>254</height>
 					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-					<texture>mask-userswitch-selected-PIN.png</texture>
-					<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+					<texture>mask-userswitch-selected-PIN-grey.png</texture>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -326,8 +326,19 @@
 				<font>Regular-18</font>
 				<textcolor>Focused</textcolor>
 				<align>center</align>
-				<visible>IsEmpty(Control.GetLabel(4))</visible>
-				<animation effect="fade" time="100">VisibleChange</animation>
+				<visible>IsEmpty(Control.GetLabel(4)) + IsEmpty(Container.Property(LoginFailed))</visible>
+			</control>
+			<control type="label">
+				<posy>209</posy>
+				<posx>19</posx>
+				<width>174</width>
+				<height>49</height>
+				<info>Container(3).ListItem(0).Label</info>
+				<font>Regular-18</font>
+				<textcolor>Focused</textcolor>
+				<align>center</align>
+				<visible>IsEmpty(Control.GetLabel(4)) + !IsEmpty(Container.Property(LoginFailed))</visible>
+				<animation effect="fade" start="0" end="100" time="500" delay="3500" reversible="false">Visible</animation>
 			</control>
 			<control type="label" id="4">
 				<description>Edit Text</description>
@@ -343,6 +354,33 @@
 				<textcolor>Focused</textcolor>
 				<visible>!IsEmpty(Control.GetLabel(4))</visible>
 				<animation effect="fade" time="100">VisibleChange</animation>
+			</control>
+			<control type="label" id="30">
+				<posy>212</posy>
+				<posx>4</posx>
+				<width>204</width>
+				<height>49</height>
+				<label>&#x2022; &#x2022; &#x2022; &#x2022;</label>
+				<font>Bold-26</font>
+				<textcolor>FFFF0000</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<visible>!IsEmpty(Container.Property(LoginFailed)) + IsEmpty(Control.GetLabel(4))</visible>				
+				<animation type="Visible" reversible="false">
+					<effect type="slide" start="0,0" end="-5,0" time="80" tween="elastic" easing="out" delay="100"/>
+					<effect type="slide" start="0,0" end="10,0" time="80" tween="elastic" easing="out" delay="180"/>
+					<effect type="slide" start="0,0" end="-10,0" time="80" tween="elastic" easing="out" delay="260"/>
+					<effect type="slide" start="0,0" end="10,0" time="80" tween="elastic" easing="out" delay="340"/>
+					<effect type="slide" start="0,0" end="-10,0" time="80" tween="elastic" easing="out" delay="420"/>
+					<effect type="slide" start="0,0" end="10,0" time="80" tween="elastic" easing="out" delay="500"/>
+					<effect type="slide" start="0,0" end="-10,0" time="80" tween="elastic" easing="out" delay="580"/>
+					<effect type="slide" start="0,0" end="10,0" time="80" tween="elastic" easing="out" delay="660"/>
+					<effect type="slide" start="0,0" end="-10,0" time="80" tween="elastic" easing="out" delay="740"/>
+					<effect type="slide" start="0,0" end="10,0" time="80" tween="elastic" easing="out" delay="820"/>
+					<effect type="slide" start="0,0" end="-10,0" time="80" tween="elastic" easing="out" delay="900"/>
+					<effect type="slide" start="0,0" end="5,0" time="80" tween="elastic" easing="out" delay="980"/>
+					<effect type="fade" start="100" end="0" time="500" delay="3000"/>
+				</animation>				
 			</control>
 		</control>
 	</include>
@@ -547,6 +585,7 @@
 							<font>Regular-18</font>
 							<textcolor>Focused</textcolor>
 							<align>center</align>
+							<visible>IsEmpty(Container.GetLabel(4))</visible>
 						</control>
 					</focusedlayout>
 				</control>
@@ -686,7 +725,7 @@
 		<control type="group">
 			<control type="group">
 				<include>UserSwitchLoginAvatarComboKbPIN</include>
-				<visible>[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4))] + !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
+				<visible>[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4)) | [IsEmpty(Control.GetLabel(4)) + !IsEmpty(Container.Property(LoginFailed))]] + !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
 			</control>
 			<control type="grouplist" id="500">
 				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>

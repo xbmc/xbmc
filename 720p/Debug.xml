@@ -355,8 +355,16 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>Container.Property(LoginFailed) : [COLOR=orangeLight]$INFO[Container.Property(LoginFailed)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label>System.PlexPlayQueue : [COLOR=orangeLight]Video[/COLOR]</label>
 					<visible>System.PlexPlayQueue(Video)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.OnNext : [COLOR=orangeLight]$INFO[Control.IsVisible(30)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
