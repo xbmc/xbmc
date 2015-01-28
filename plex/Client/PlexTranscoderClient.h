@@ -20,6 +20,8 @@
 #define PLEX_ONLINE_QUALITY_480p 3
 #define PLEX_ONLINE_QUALITY_SD 4
 
+#define PLEX_TRANSCODER_MAX_BITRATE_STR "200000"
+
 class CPlexTranscoderClient
 {
 private:

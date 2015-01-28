@@ -34,11 +34,13 @@ typedef std::map<std::string, std::string> str2str;
 
 static str2str _resolutions = boost::assign::list_of<std::pair<std::string, std::string> >
   ("64", "220x180") ("96", "220x128") ("208", "284x160") ("320", "420x240") ("720", "576x320") ("1500", "720x480") ("2000", "1024x768")
-  ("3000", "1280x720") ("4000", "1280x720") ("8000", "1920x1080") ("10000", "1920x1080") ("12000", "1920x1080") ("20000", "1920x1080");
+  ("3000", "1280x720") ("4000", "1280x720") ("8000", "1920x1080") ("10000", "1920x1080") ("12000", "1920x1080") ("20000", "1920x1080")
+  (PLEX_TRANSCODER_MAX_BITRATE_STR, "1920x1080");
 
 static str2str _qualities = boost::assign::list_of<std::pair<std::string, std::string> >
   ("64", "10") ("96", "20") ("208", "30") ("320", "30") ("720", "40") ("1500", "60") ("2000", "60")
-  ("3000", "75") ("4000", "100") ("8000", "60") ("10000", "75") ("12000", "90") ("20000", "100");
+  ("3000", "75") ("4000", "100") ("8000", "60") ("10000", "75") ("12000", "90") ("20000", "100")
+  (PLEX_TRANSCODER_MAX_BITRATE_STR, "100");
 
 CPlexTranscoderClient *CPlexTranscoderClient::_Instance = NULL;
 
@@ -241,7 +243,10 @@ std::string CPlexTranscoderClient::GetPrettyBitrate(int rawbitrate)
   if (rawbitrate < 1000)
     return boost::lexical_cast<std::string>(rawbitrate) + " kbps";
   else
-    return boost::lexical_cast<std::string>(rawbitrate / 1000) + " Mbps";
+    if (rawbitrate == atoi(PLEX_TRANSCODER_MAX_BITRATE_STR))
+      return g_localizeStrings.Get(43010);
+    else
+      return boost::lexical_cast<std::string>(rawbitrate / 1000) + " Mbps";
 }
 
 ///////////////////////////////////////////////////////////////////////////////

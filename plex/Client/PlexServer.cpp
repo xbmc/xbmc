@@ -6,6 +6,7 @@
 #include "threads/SingleLock.h"
 #include "PlexConnection.h"
 #include "Utility/PlexTimer.h"
+#include "PlexTranscoderClient.h"
 
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
@@ -112,6 +113,9 @@ bool CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 
     if (root->QueryStringAttribute("transcoderVideoBitrates", &stringValue) == TIXML_SUCCESS)
       m_transcoderBitrates = StringUtils::Split(stringValue, ",");
+
+    // we Add a max value to the transcoder provided ones
+    m_transcoderBitrates.push_back(PLEX_TRANSCODER_MAX_BITRATE_STR);
 
     if (root->QueryStringAttribute("transcoderVideoQualities", &stringValue) == TIXML_SUCCESS)
       m_transcoderQualities = StringUtils::Split(stringValue, ",");
