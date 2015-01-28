@@ -11,7 +11,7 @@ EC_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd 
+	lib/libdvd
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
@@ -211,7 +211,7 @@ endif
 
 SS_DIRS=
 ifneq (@DISABLE_RSXS@,1)
-  SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
+  SS_DIRS+= xbmc/screensavers/rsxs-1.0/xbmc
 else
   INSTALL_FILTER+= .*screensaver\.rsxs.*
 endif

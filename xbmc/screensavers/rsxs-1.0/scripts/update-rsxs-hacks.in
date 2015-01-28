@@ -1,0 +1,545 @@
+#! /bin/sh
+## --------------------- ##
+## M4sh Initialization.  ##
+## --------------------- ##
+
+# Be more Bourne compatible
+DUALCASE=1; export DUALCASE # for MKS sh
+if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
+  emulate sh
+  NULLCMD=:
+  # Zsh 3.x and 4.x performs word splitting on ${1+"$@"}, which
+  # is contrary to our usage.  Disable this feature.
+  alias -g '${1+"$@"}'='"$@"'
+  setopt NO_GLOB_SUBST
+else
+  case `(set -o) 2>/dev/null` in
+  *posix*) set -o posix ;;
+esac
+
+fi
+
+
+
+
+# PATH needs CR
+# Avoid depending upon Character Ranges.
+as_cr_letters='abcdefghijklmnopqrstuvwxyz'
+as_cr_LETTERS='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+as_cr_Letters=$as_cr_letters$as_cr_LETTERS
+as_cr_digits='0123456789'
+as_cr_alnum=$as_cr_Letters$as_cr_digits
+
+# The user is always right.
+if test "${PATH_SEPARATOR+set}" != set; then
+  echo "#! /bin/sh" >conf$$.sh
+  echo  "exit 0"   >>conf$$.sh
+  chmod +x conf$$.sh
+  if (PATH="/nonexistent;."; conf$$.sh) >/dev/null 2>&1; then
+    PATH_SEPARATOR=';'
+  else
+    PATH_SEPARATOR=:
+  fi
+  rm -f conf$$.sh
+fi
+
+# Support unset when possible.
+if ( (MAIL=60; unset MAIL) || exit) >/dev/null 2>&1; then
+  as_unset=unset
+else
+  as_unset=false
+fi
+
+
+# IFS
+# We need space, tab and new line, in precisely that order.  Quoting is
+# there to prevent editors from complaining about space-tab.
+# (If _AS_PATH_WALK were called with IFS unset, it would disable word
+# splitting by setting IFS to empty value.)
+as_nl='
+'
+IFS=" ""	$as_nl"
+
+# Find who we are.  Look in the path if we contain no directory separator.
+case $0 in
+  *[\\/]* ) as_myself=$0 ;;
+  *) as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
+done
+IFS=$as_save_IFS
+
+     ;;
+esac
+# We did not find ourselves, most probably we were run as `sh COMMAND'
+# in which case we are not to be found in the path.
+if test "x$as_myself" = x; then
+  as_myself=$0
+fi
+if test ! -f "$as_myself"; then
+  echo "$as_myself: error: cannot find myself; rerun with an absolute file name" >&2
+  { (exit 1); exit 1; }
+fi
+
+# Work around bugs in pre-3.0 UWIN ksh.
+for as_var in ENV MAIL MAILPATH
+do ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
+done
+PS1='$ '
+PS2='> '
+PS4='+ '
+
+# NLS nuisances.
+for as_var in \
+  LANG LANGUAGE LC_ADDRESS LC_ALL LC_COLLATE LC_CTYPE LC_IDENTIFICATION \
+  LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER \
+  LC_TELEPHONE LC_TIME
+do
+  if (set +x; test -z "`(eval $as_var=C; export $as_var) 2>&1`"); then
+    eval $as_var=C; export $as_var
+  else
+    ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
+  fi
+done
+
+# Required to use basename.
+if expr a : '\(a\)' >/dev/null 2>&1 &&
+   test "X`expr 00001 : '.*\(...\)'`" = X001; then
+  as_expr=expr
+else
+  as_expr=false
+fi
+
+if (basename -- /) >/dev/null 2>&1 && test "X`basename -- / 2>&1`" = "X/"; then
+  as_basename=basename
+else
+  as_basename=false
+fi
+
+
+# Name of the executable.
+as_me=`$as_basename -- "$0" ||
+$as_expr X/"$0" : '.*/\([^/][^/]*\)/*$' \| \
+	 X"$0" : 'X\(//\)$' \| \
+	 X"$0" : 'X\(/\)' \| . 2>/dev/null ||
+echo X/"$0" |
+    sed '/^.*\/\([^/][^/]*\)\/*$/{
+	    s//\1/
+	    q
+	  }
+	  /^X\/\(\/\/\)$/{
+	    s//\1/
+	    q
+	  }
+	  /^X\/\(\/\).*/{
+	    s//\1/
+	    q
+	  }
+	  s/.*/./; q'`
+
+# CDPATH.
+$as_unset CDPATH
+
+
+if test "x$CONFIG_SHELL" = x; then
+  if (eval ":") 2>/dev/null; then
+  as_have_required=yes
+else
+  as_have_required=no
+fi
+
+  if test $as_have_required = yes && 	 (eval ":
+(as_func_return () {
+  (exit \$1)
+}
+as_func_success () {
+  as_func_return 0
+}
+as_func_failure () {
+  as_func_return 1
+}
+as_func_ret_success () {
+  return 0
+}
+as_func_ret_failure () {
+  return 1
+}
+
+exitcode=0
+if as_func_success; then
+  :
+else
+  exitcode=1
+  echo as_func_success failed.
+fi
+
+if as_func_failure; then
+  exitcode=1
+  echo as_func_failure succeeded.
+fi
+
+if as_func_ret_success; then
+  :
+else
+  exitcode=1
+  echo as_func_ret_success failed.
+fi
+
+if as_func_ret_failure; then
+  exitcode=1
+  echo as_func_ret_failure succeeded.
+fi
+
+if ( set x; as_func_ret_success y && test x = \"\$1\" ); then
+  :
+else
+  exitcode=1
+  echo positional parameters were not saved.
+fi
+
+test \$exitcode = 0) || { (exit 1); exit 1; }
+") 2> /dev/null; then
+  :
+else
+  as_candidate_shells=
+    as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in /bin$PATH_SEPARATOR/usr/bin$PATH_SEPARATOR$PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  case $as_dir in
+	 /*)
+	   for as_base in sh bash ksh sh5; do
+	     as_candidate_shells="$as_candidate_shells $as_dir/$as_base"
+	   done;;
+       esac
+done
+IFS=$as_save_IFS
+
+
+      for as_shell in $as_candidate_shells $SHELL; do
+	 # Try only shells that exist, to save several forks.
+	 if { test -f "$as_shell" || test -f "$as_shell.exe"; } &&
+		{ ("$as_shell") 2> /dev/null <<\_ASEOF
+if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
+  emulate sh
+  NULLCMD=:
+  # Zsh 3.x and 4.x performs word splitting on ${1+"$@"}, which
+  # is contrary to our usage.  Disable this feature.
+  alias -g '${1+"$@"}'='"$@"'
+  setopt NO_GLOB_SUBST
+else
+  case `(set -o) 2>/dev/null` in
+  *posix*) set -o posix ;;
+esac
+
+fi
+
+
+:
+_ASEOF
+}; then
+  CONFIG_SHELL=$as_shell
+	       as_have_required=yes
+	       if { "$as_shell" 2> /dev/null <<\_ASEOF
+if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
+  emulate sh
+  NULLCMD=:
+  # Zsh 3.x and 4.x performs word splitting on ${1+"$@"}, which
+  # is contrary to our usage.  Disable this feature.
+  alias -g '${1+"$@"}'='"$@"'
+  setopt NO_GLOB_SUBST
+else
+  case `(set -o) 2>/dev/null` in
+  *posix*) set -o posix ;;
+esac
+
+fi
+
+
+:
+(as_func_return () {
+  (exit $1)
+}
+as_func_success () {
+  as_func_return 0
+}
+as_func_failure () {
+  as_func_return 1
+}
+as_func_ret_success () {
+  return 0
+}
+as_func_ret_failure () {
+  return 1
+}
+
+exitcode=0
+if as_func_success; then
+  :
+else
+  exitcode=1
+  echo as_func_success failed.
+fi
+
+if as_func_failure; then
+  exitcode=1
+  echo as_func_failure succeeded.
+fi
+
+if as_func_ret_success; then
+  :
+else
+  exitcode=1
+  echo as_func_ret_success failed.
+fi
+
+if as_func_ret_failure; then
+  exitcode=1
+  echo as_func_ret_failure succeeded.
+fi
+
+if ( set x; as_func_ret_success y && test x = "$1" ); then
+  :
+else
+  exitcode=1
+  echo positional parameters were not saved.
+fi
+
+test $exitcode = 0) || { (exit 1); exit 1; }
+
+_ASEOF
+}; then
+  break
+fi
+
+fi
+
+      done
+
+      if test "x$CONFIG_SHELL" != x; then
+  for as_var in BASH_ENV ENV
+        do ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
+        done
+        export CONFIG_SHELL
+        exec "$CONFIG_SHELL" "$as_myself" ${1+"$@"}
+fi
+
+
+    if test $as_have_required = no; then
+  echo This script requires a shell more modern than all the
+      echo shells that I found on your system.  Please install a
+      echo modern shell, or manually run the script under such a
+      echo shell if you do have one.
+      { (exit 1); exit 1; }
+fi
+
+
+fi
+
+fi
+
+
+
+(eval "as_func_return () {
+  (exit \$1)
+}
+as_func_success () {
+  as_func_return 0
+}
+as_func_failure () {
+  as_func_return 1
+}
+as_func_ret_success () {
+  return 0
+}
+as_func_ret_failure () {
+  return 1
+}
+
+exitcode=0
+if as_func_success; then
+  :
+else
+  exitcode=1
+  echo as_func_success failed.
+fi
+
+if as_func_failure; then
+  exitcode=1
+  echo as_func_failure succeeded.
+fi
+
+if as_func_ret_success; then
+  :
+else
+  exitcode=1
+  echo as_func_ret_success failed.
+fi
+
+if as_func_ret_failure; then
+  exitcode=1
+  echo as_func_ret_failure succeeded.
+fi
+
+if ( set x; as_func_ret_success y && test x = \"\$1\" ); then
+  :
+else
+  exitcode=1
+  echo positional parameters were not saved.
+fi
+
+test \$exitcode = 0") || {
+  echo No shell found that supports shell functions.
+  echo Please tell autoconf@gnu.org about your system,
+  echo including any error possibly output before this
+  echo message
+}
+
+
+
+
+
+
+
+exec 7<&0 </dev/null 6>&2
+
+rs_input=
+rs_output=
+rs_help=
+rs_usage=
+rs_version=
+rs_configs=""
+
+rs_prev=
+rs_dashdash=
+for rs_option; do
+	if test -n "$rs_prev"; then
+		eval rs_$rs_prev=\$rs_option
+		rs_prev=
+		continue
+	fi
+
+	case $rs_option in
+	*=*) rs_optarg=`expr "X$rs_option" : '[^=]*=\(.*\)'` ;;
+	*)   rs_optarg= ;;
+	esac
+
+	case $rs_option in
+	-i | --input)
+		rs_prev=input ;;
+	-i=* | --input=*)
+		rs_input=$rs_optarg ;;
+	-o | --output)
+		rs_prev=output ;;
+	-o=* | --output=*)
+		rs_output=$rs_optarg ;;
+	-? | --help)
+		rs_help=: ;;
+	--usage)
+		rs_usage=: ;;
+	-V | --version)
+		rs_version=: ;;
+	-*)
+		{ echo "$as_me: error: unrecognized option: $rs_option
+Try \`$0 --help' for more information." >&2
+   { (exit 1); exit 1; }; }		;;
+	*)
+		rs_config="$rs_top_srcdir/config/rs-$rs_option.conf"
+		if test -f "$rs_config"; then
+			rs_config=`echo "$rs_config" | sed "s/'/'\\\\\\\\''/g"`
+			rs_configs="$rs_configs '$rs_config'"
+		else
+			{ echo "$as_me: error: no config for \`$rs_option' found" >&2
+   { (exit 1); exit 1; }; }
+		fi
+		;;
+	esac
+done
+
+if test -n "$rs_prev"; then
+	ac_option=--`echo $rs_prev | sed 's/_/-/g'`
+	{ echo "$as_me: error: missing argument to $rs_option" >&2
+   { (exit 1); exit 1; }; }
+fi
+
+if test -n "$rs_help"; then
+	cat <<_RSEOF
+\`update-rsxs-hacks' updates XScreenSaver config files.
+
+Usage: $0 [OPTION]... [HACK]...
+
+Reads an XScreenSaver config file, strips out any existing
+Really Slick XScreenSavers hacks, then adds the specified
+hacks.
+
+File options:
+  -i, --input=FILE           Input file (default: standard input)
+  -o, --output=FILE          Output file (default: standard output)
+
+Help options:
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+  -V, --version              Print program version
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
+
+Report bugs to <@PACKAGE_BUGREPORT@>.
+_RSEOF
+	{ (exit 1); exit 1; }
+fi
+
+if test -n "$rs_usage"; then
+	cat <<_RSEOF
+Usage: $0 [-io?V] [--input=FILE] [--output=FILE]
+_RSEOF
+	{ (exit 1); exit 1; }
+fi
+
+rs_data=
+if test -n "$rs_input"; then
+	rs_data=`cat "$rs_input" 2>/dev/null` || {
+		{ echo "$as_me: error: could not read \`$rs_input'" >&2
+   { (exit 1); exit 1; }; }
+	}
+else
+	rs_data=`cat <&7 2>/dev/null` || {
+		{ echo "$as_me: error: could not read standard input" >&2
+   { (exit 1); exit 1; }; }
+	}
+fi
+
+rs_head=`echo "$rs_data" | sed '/^\*\{0,1\}programs:/q'`
+rs_body=
+if test -n "$rs_configs"; then
+	rs_body=`echo; eval "for i in $rs_configs; do sed 's/\\\\\\\\n\\$/\\\\\\\\n\\\\\\\\/' \\"\\$i\\"; done"`
+fi
+rs_tail=`echo; echo "$rs_data" | sed -n '
+/^\\*\\{0,1\\}programs:/ {
+	h
+	:a
+	n; H
+	/\\\\$/ { b a }
+	g
+	s/\\\\\\n-\\{0,1\\}[ \\t]*GL:[ \\t]*"Really Slick\\([^\\\\]*\\\\[^n][^\\\\]*\\)*[^\\\\]*\\\\n//g
+	s/^[^\\\\]*\\\\\\n//
+	p
+	:b
+	n; p; b b
+}'`
+
+if test -n "$rs_output"; then
+	echo "$rs_head$rs_body$rs_tail" 2>/dev/null >$rs_output || {
+		{ echo "$as_me: error: could not write to \`$rs_output'" >&2
+   { (exit 1); exit 1; }; }
+	}
+else
+	echo "$rs_head$rs_body$rs_tail" || {
+		{ echo "$as_me: error: could not write to standard output" >&2
+   { (exit 1); exit 1; }; }
+	}
+fi
