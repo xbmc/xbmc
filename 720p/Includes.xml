@@ -22,4 +22,5 @@
 	<include file="ViewsDialogs.xml"/>	
 	<include file="ViewsFullInfoCard.xml"/>
 	<include file="ViewsPlayListSelection.xml"/>
+	<include file="ViewsUserSwitchLogin.xml"/>
 </includes>
