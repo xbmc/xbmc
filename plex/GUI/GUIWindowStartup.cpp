@@ -187,15 +187,6 @@ bool CGUIWindowStartup::OnAction(const CAction& action)
 
     return true;
   }
-  else if ((action.GetID() == ACTION_MOVE_RIGHT) ||
-           (action.GetID() == ACTION_MOVE_LEFT) ||
-           (action.GetID() == ACTION_MOVE_UP) ||
-           (action.GetID() == ACTION_MOVE_DOWN))
-
-  {
-    // reset the skin flag if we change the focus control
-    m_vecItems->SetProperty("LoginFailed", "");
-  }
 
   return CGUIWindow::OnAction(action);
 }
@@ -295,7 +286,7 @@ void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
   else
   {
     // we selected a user that requires a pin, ask for pincode
-    m_vecItems->SetProperty("LoginFailed", "1");
+    notifyLoginFailed();
   }
 }
 
@@ -305,7 +296,6 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
   m_pin += num + '0';
 
   CFileItemPtr item = m_users.Get(m_viewControl.GetSelectedItem());
-  m_vecItems->SetProperty("LoginFailed", "");
 
   if (item && (m_pin.length() == 4))
   {
@@ -324,7 +314,7 @@ void CGUIWindowStartup::OnNumber(unsigned int num)
     {
       // we got an invalid pin
       m_pin = "";
-      m_vecItems->SetProperty("LoginFailed", "1");
+      notifyLoginFailed();
     }
   }
 
@@ -373,4 +363,18 @@ void CGUIWindowStartup::setUsersList(CFileItemList &userlist)
   // select current user
   std::string currentUsername = g_plexApplication.myPlexManager->GetCurrentUserInfo().username;
   SelectUserByName(currentUsername);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::OnTimeout()
+{
+  m_vecItems->SetProperty("LoginFailed", "");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowStartup::notifyLoginFailed()
+{
+  m_vecItems->SetProperty("LoginFailed", "1");
+  if (g_plexApplication.timer)
+    g_plexApplication.timer->SetTimeout(500, this);
 }

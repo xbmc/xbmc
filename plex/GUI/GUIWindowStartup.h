@@ -26,7 +26,7 @@
 #include "video/windows/GUIWindowVideoNav.h"
 
 class CGUIWindowStartup :
-      public CGUIMediaWindow, public IJobCallback
+      public CGUIMediaWindow, public IJobCallback, public IPlexGlobalTimeout
 {
 public:
   CGUIWindowStartup(void);
@@ -46,6 +46,8 @@ private:
   void setPinControlText(CStdString pin);
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   void setUsersList(CFileItemList &userlist);
+  void OnTimeout();
+  void notifyLoginFailed();
 
   CFileItemList m_users;
   CStdString m_pin;
