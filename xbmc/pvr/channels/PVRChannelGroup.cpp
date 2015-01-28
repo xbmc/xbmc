@@ -1244,16 +1244,17 @@ time_t CPVRChannelGroup::LastWatched(void) const
 
 bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 {
-  {
-    CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
 
-    if (m_iLastWatched != iLastWatched)
-      m_iLastWatched = iLastWatched;
+  if (m_iLastWatched != iLastWatched)
+  {
+    m_iLastWatched = iLastWatched;
+    lock.Leave();
+
+    /* update the database immediately */
+    if (CPVRDatabase *database = GetPVRDatabase())
+      return database->UpdateLastWatched(*this);
   }
-  
-  /* update the database immediately */
-  if (CPVRDatabase *database = GetPVRDatabase())
-    return database->UpdateLastWatched(*this);
 
   return false;
 }
