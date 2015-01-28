@@ -663,6 +663,7 @@
 					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markasunwatched</onclick>
 					<include>leftMenuBarButton</include>
+					<visible>ListItem.Status(unwatched) | ListItem.Status(inprogress)</visible>
 				</control>
 				<!-- Unwatched -->
 				<control type="button" id="109">
@@ -672,6 +673,7 @@
 					<onleft>XBMC.PrevItem</onleft>
 					<onclick>markaswatched</onclick>
 					<include>leftMenuBarButton</include>
+					<visible>ListItem.Status(watched)</visible>
 				</control>
 			</control>
 			<!-- filters & sorting menu -->

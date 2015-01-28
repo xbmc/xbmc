@@ -28,7 +28,7 @@
 			<texture fallback="default-square-big.png" background="true" diffuse="mask-square-big.png">$INFO[ListItem.CompositeImage(width=720;height=720;cols=2;rows=2)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 			<visible>ListItem.Type(musicplaylist) | ListItem.Type(musicplayqueue)</visible>
-		</control>		
+		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
@@ -56,7 +56,7 @@
 		<label>$INFO[ListItem.Label]</label>
 		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
-	</include>	
+	</include>
 	<include name="PqPlCompTitle2">
 		<posy>280</posy>
 		<posx>23</posx>
@@ -68,7 +68,7 @@
 		<textcolor>greyLighter</textcolor>
 		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
-	</include>	
+	</include>
 	<include name="PqPlPanel">
 		<control type="group">
 			<!-- main list -->
@@ -107,7 +107,7 @@
 				</control>
 			</control>
 			<!-- right side thumbs -->
-		<!--<control type="group">
+			<!--<control type="group">
 				<posx>800</posx>
 				<posy>300</posy>
 				<visible>!Container.OnNext + !Container.OnPrevious</visible>

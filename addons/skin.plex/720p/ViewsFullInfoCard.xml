@@ -385,7 +385,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>[!IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Property(summary))] | [!IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Property(summary))] | [Container.PlexContent(Episodes) + !IsEmpty(Container.ShowPlot)] | Control.IsVisible(88)</visible>
+							<visible>[!IsEmpty(ListItem.Plot) | !IsEmpty(ListItem.Property(summary))] | [Container.PlexContent(Episodes) + !IsEmpty(Container.ShowPlot)]</visible>
 						</control>
 						<control type="textbox">
 							<posy>115</posy>
@@ -405,7 +405,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.PlexContent(Channels) | Container.PlexContent(Channel) | Window.IsActive(mysharedcontent)] | Control.IsVisible(88)</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.PlexContent(Channels) | Container.PlexContent(Channel) | Window.IsActive(mysharedcontent) | Control.IsVisible(88)]</visible>
 						</control>
 					</control>
 					<!-- media flags -->

@@ -768,7 +768,7 @@
 								<texture background="true" diffuse="base.png">$VAR[PlayQueueCover0]</texture>
 								<include>PlayQueueCoverFormat</include>
 							</control>
-						</control>						
+						</control>
 						<!-- infos Left -->
 						<control type="group">
 							<posy>70</posy>
@@ -905,13 +905,13 @@
 					<texture>orange.png</texture>
 				</control>-->
 				</control>
-			</control>		
+			</control>
 			<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 			<include>LeftSideMenu</include>
 		</control>
 		<!-- video play queue -->
 		<control type="group">
-			<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episode) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movie) | Container.PlexContent(Movies)</visible>			
+			<visible>Container.PlexContent(MixedContent) | Container.PlexContent(Episode) | Container.PlexContent(Episodes) | Container.PlexContent(clip) | Container.PlexContent(clips) | [Container.PlexContent(channel) + System.PlexPlayQueue(Video)] | Container.PlexContent(Movie) | Container.PlexContent(Movies)</visible>
 			<include>BGGrainy</include>
 			<include>BGFanart</include>
 			<include>BGOverlay</include>
@@ -951,7 +951,7 @@
 						<viewtype label="VideoPlayQueueList">panel</viewtype>
 						<posy>11</posy>
 						<posx>470</posx>
-						<width>805</width>
+						<width>810</width>
 						<height>692</height>
 						<onright>88</onright>
 						<onleft condition="!Player.HasVideo">998</onleft>
@@ -969,7 +969,7 @@
 								<width>735</width>
 								<height>50</height>
 								<texture border="5">border-bottom-grey.png</texture>
-							</control>							
+							</control>
 							<include>ListSelectedFanArt</include>
 							<control type="image">
 								<posy>40</posy>
@@ -996,7 +996,7 @@
 								<include>Grey1</include>
 								<textoffsetx>240</textoffsetx>
 								<visible>ListItem.Type(movie)</visible>
-							</control>							
+							</control>
 							<control type="label">
 								<posy>34</posy>
 								<width>970</width>
@@ -1070,7 +1070,7 @@
 								<include>Grey1</include>
 								<textoffsetx>240</textoffsetx>
 								<visible>ListItem.Type(movie)</visible>
-							</control>							
+							</control>
 							<control type="label">
 								<posy>34</posy>
 								<width>970</width>
@@ -1090,10 +1090,61 @@
 								<include>White2</include>
 								<textoffsetx>240</textoffsetx>
 							</control>
+							<control type="group">
+								<posx>770</posx>
+								<visible>!IsEmpty(Container.Property(PlexEditMode))</visible>
+								<control type="image">
+									<posy>0</posy>
+									<width>40</width>
+									<height>99</height>
+									<texture>black.png</texture>
+									<animation effect="fade" start="0" end="60" condition="true">Conditional</animation>
+								</control>
+								<control type="group">
+									<posx>0</posx>
+									<posy>10</posy>
+									<control type="image">
+										<posx>5</posx>
+										<posy>53</posy>
+										<height>26</height>
+										<texture flipy="true">icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>5</posx>
+										<posy>53</posy>
+										<height>26</height>
+										<texture flipy="true">icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" end="0" time="100" delay="200">Hidden</animation>
+										<visible>Container.OnPrevious</visible>
+										<colordiffuse>orange</colordiffuse>
+									</control>
+									<control type="image">
+										<posx>5</posx>
+										<posy>0</posy>
+										<height>26</height>
+										<texture>icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" start="0" end="100" condition="true">Conditional</animation>
+									</control>
+									<control type="image">
+										<posx>5</posx>
+										<posy>0</posy>
+										<height>26</height>
+										<texture>icon-arrow-vert.png</texture>
+										<aspectratio scalediffuse="false">keep</aspectratio>
+										<animation effect="fade" end="0" time="100" delay="200">Hidden</animation>
+										<colordiffuse>orange</colordiffuse>
+										<visible>Container.OnNext</visible>
+									</control>
+								</control>
+							</control>
 						</focusedlayout>
 					</control>
 				</control>
-			</control>			
+			</control>
 			<!-- Item Full Info -->
 			<include>ListItemFullInfo</include>
 			<!-- current video PiP -->
@@ -1108,7 +1159,7 @@
 					<include>Black</include>
 				</control>
 				<control type="videowindow" id="1">
-					<description>Video Preview</description>					
+					<description>Video Preview</description>
 					<width>390</width>
 					<height>215</height>
 				</control>
@@ -1163,7 +1214,7 @@
 				<posx>-61</posx>
 				<posy>-180</posy>
 				<!-- progress bar -->
-				<control type="group">					
+				<control type="group">
 					<posy>30</posy>
 					<visible>Player.HasVideo</visible>
 					<animation effect="fade" start="100" end="0" time="400" condition="Player.HasVideo + !Player.Paused + System.IdleTime(3)" reversible="true">Conditional</animation>
