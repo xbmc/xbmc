@@ -803,16 +803,19 @@ void CPVRClients::StartChannelScan(void)
       __FUNCTION__, scanClient->GetFriendlyName().c_str());
   long perfCnt = XbmcThreads::SystemClockMillis();
 
-  /* stop the supervisor thread */
-  g_PVRManager.StopUpdateThreads();
+  /* stop live tv */
+  lock.Leave();
+  if (IsPlayingTV() || IsPlayingRadio())
+  {
+    CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
+    g_windowManager.SendMessage(msg);
+  }
+  lock.Enter();
 
   /* do the scan */
   if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
     /* an error occured */
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
-
-  /* restart the supervisor thread */
-  g_PVRManager.StartUpdateThreads();
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
       __FUNCTION__, (XbmcThreads::SystemClockMillis()-perfCnt)/1000, (XbmcThreads::SystemClockMillis()-perfCnt)%1000);
