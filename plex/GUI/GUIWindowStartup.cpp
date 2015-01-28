@@ -66,14 +66,21 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 
     m_users.Clear();
 
-    g_windowManager.setRetrictedAccess(true);
+    if (!g_guiSettings.GetBool("myplex.automaticlogin") || m_allowEscOut)
+    {
+      g_windowManager.setRetrictedAccess(true);
 
-    if (g_plexApplication.myPlexManager->IsSignedIn())
-    {   
-      m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
+      if (g_plexApplication.myPlexManager->IsSignedIn())
+      {
+        m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
 
-      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-      CJobManager::GetInstance().AddJob(job, this);
+        CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+        CJobManager::GetInstance().AddJob(job, this);
+      }
+    }
+    else
+    {
+      PreviousWindow();
     }
   }
 

@@ -268,11 +268,12 @@ void CGUIWindowManager::PreviousWindow()
        (g_windowManager.GetActiveWindow() == WINDOW_NOW_PLAYING)
        ))
   {
-    g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
-
     CGUIWindowStartup *window = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
     if (window)
       window->allowEscOut(false);
+
+    g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
+
     return;
   }
   /* END PLEX */
