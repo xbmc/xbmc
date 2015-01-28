@@ -1,2 +1,0 @@
-; filename                  mirror                                      source of the file
-bzip2-1.0.5-lib.zip         http://mirrors.xbmc.org/build-deps/win32/   http://downloads.sourceforge.net/project/gnuwin32/bzip2/1.0.5/
