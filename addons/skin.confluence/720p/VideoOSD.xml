@@ -280,6 +280,15 @@
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
+			<control type="button" id="350">
+				<width>55</width>
+				<height>55</height>
+				<label>31356</label>
+				<font>-</font>
+				<texturefocus>OSDTeleTextFO.png</texturefocus>
+				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
+				<onclick>ActivateWindow(Teletext)</onclick>
+			</control>
 			<control type="image" id="2300">
 				<width>215</width>
 				<texture>-</texture>
@@ -294,15 +303,6 @@
 				<texturefocus>OSDStereoscopicFO.png</texturefocus>
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onup>551</onup>
-			</control>
-			<control type="button" id="350">
-				<width>55</width>
-				<height>55</height>
-				<label>31356</label>
-				<font>-</font>
-				<texturefocus>OSDTeleTextFO.png</texturefocus>
-				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
-				<onclick>ActivateWindow(Teletext)</onclick>
 			</control>
 			<control type="button" id="351">
 				<width>55</width>
