@@ -811,7 +811,7 @@ int CDVDPlayerVideo::GetLevel() const
     int datasize = m_messageQueue.GetDataSize();
     if (m_pVideoCodec)
       datasize += m_pVideoCodec->GetDataSize();
-    return min(100, (int)(100 * datasize / (m_messageQueue.GetMaxDataSize() * m_messageQueue.GetMaxTimeSize())));
+    return min(100, MathUtils::round_int((100.0 * datasize) / m_messageQueue.GetMaxDataSize()));
   }
   else
   {
