@@ -26,6 +26,7 @@
 #include "DVDClock.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
+#include "guilib/GraphicContext.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -237,9 +238,29 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
       return NULL;
 
-    AVSubtitleRect& rect = *m_Subtitle.rects[m_SubtitleIndex];
+    AVSubtitleRect rect = *m_Subtitle.rects[m_SubtitleIndex];
     if (rect.pict.data[0] == NULL)
       return NULL;
+
+    CLog::Log(LOGDEBUG, "rect: %d x %d x %d x %d size: %d x %d", rect.x, rect.y, rect.w, rect.h, m_pCodecContext->width, m_pCodecContext->height);
+    RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+    if (stereo_mode ==RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+    {
+      m_height = m_pCodecContext->height / 2;
+      m_width  = m_pCodecContext->width;
+      rect.h -= m_height;
+    }
+    else if (stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+    {
+      m_height = m_pCodecContext->height;
+      m_width  = m_pCodecContext->width / 2;
+      rect.w -= m_width;
+    }
+    else
+    {
+      m_height = m_pCodecContext->height;
+      m_width  = m_pCodecContext->width;
+    }
 
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
@@ -259,36 +280,34 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     int right  = overlay->x + overlay->width;
     int bottom = overlay->y + overlay->height;
 
-    if(m_height == 0 && m_pCodecContext->height)
-      m_height = m_pCodecContext->height;
-    if(m_width  == 0 && m_pCodecContext->width)
-      m_width  = m_pCodecContext->width;
-
-    if(bottom > m_height)
+    if (stereo_mode == RENDER_STEREO_MODE_OFF)
     {
-      if     (bottom <= 480)
-        m_height      = 480;
-      else if(bottom <= 576)
-        m_height      = 576;
-      else if(bottom <= 720)
-        m_height      = 720;
-      else if(bottom <= 1080)
-        m_height      = 1080;
-      else
-        m_height      = bottom;
-    }
-    if(right > m_width)
-    {
-      if     (right <= 720)
-        m_width      = 720;
-      else if(right <= 1024)
-        m_width      = 1024;
-      else if(right <= 1280)
-        m_width      = 1280;
-      else if(right <= 1920)
-        m_width      = 1920;
-      else
-        m_width      = right;
+      if(bottom > m_height)
+      {
+        if     (bottom <= 480)
+          m_height      = 480;
+        else if(bottom <= 576)
+          m_height      = 576;
+        else if(bottom <= 720)
+          m_height      = 720;
+        else if(bottom <= 1080)
+          m_height      = 1080;
+        else
+          m_height      = bottom;
+      }
+      if(right > m_width)
+      {
+        if     (right <= 720)
+          m_width      = 720;
+        else if(right <= 1024)
+          m_width      = 1024;
+        else if(right <= 1280)
+          m_width      = 1280;
+        else if(right <= 1920)
+          m_width      = 1920;
+        else
+          m_width      = right;
+      }
     }
 
     overlay->source_width  = m_width;
