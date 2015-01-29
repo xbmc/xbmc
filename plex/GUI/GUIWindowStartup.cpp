@@ -46,7 +46,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::CGUIWindowStartup(void)
-  : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true), m_currentToken("")
+  : CGUIMediaWindow(WINDOW_STARTUP_ANIM, "PlexUserSelect.xml"), m_allowEscOut(true), m_currentToken(""), m_fetchUsersJobID(0)
 {
   m_loadType = LOAD_EVERY_TIME;
 }
@@ -75,12 +75,21 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
         m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
 
         CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-        CJobManager::GetInstance().AddJob(job, this);
+        m_fetchUsersJobID = CJobManager::GetInstance().AddJob(job, this);
       }
     }
     else
     {
       PreviousWindow();
+    }
+  }
+
+  if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  {
+    if (m_fetchUsersJobID)
+    {
+      CJobManager::GetInstance().CancelJob(m_fetchUsersJobID);
+      m_fetchUsersJobID = 0;
     }
   }
 

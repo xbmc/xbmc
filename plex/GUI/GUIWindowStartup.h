@@ -55,6 +55,7 @@ private:
   CStdString m_selectedUserThumb;
   bool m_allowEscOut;
   CStdString m_currentToken;
+  int m_fetchUsersJobID;
 
   CGUIViewControl m_viewControl;
 };
