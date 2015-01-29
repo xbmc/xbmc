@@ -70,13 +70,11 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
     {
       g_windowManager.setRetrictedAccess(true);
 
-      if (g_plexApplication.myPlexManager->IsSignedIn())
-      {
-        m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
+      m_currentToken = g_plexApplication.myPlexManager->GetCurrentUserInfo().authToken;
 
-        CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
-        m_fetchUsersJobID = CJobManager::GetInstance().AddJob(job, this);
-      }
+      CPlexDirectoryFetchJob * job = new CPlexDirectoryFetchJob(CURL("plexserver://myplex/api/home/users"));
+      m_fetchUsersJobID = CJobManager::GetInstance().AddJob(job, this);
+
     }
     else
     {
@@ -257,10 +255,12 @@ void CGUIWindowStartup::OnJobComplete(unsigned int jobID, bool success, CJob *jo
       }
     }
 
-    if (fjob->m_dir.IsTokenInvalid())
+    if (fjob->m_dir.IsTokenInvalid() || (m_users.Size() == 0))
+    {
       CLog::Log(LOGDEBUG, "CGUIDialogPlexUserSelect::fetchUser got a invalid token!");
+      PreviousWindow();
+    }
 
-    PreviousWindow();
   }
 }
 
