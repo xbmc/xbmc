@@ -22,7 +22,22 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
   CUrlOptions options;
   std::string durationStr;
 
-  options.AddOption("state", PlexUtils::GetMediaStateString(m_state));
+  if (m_state != PLEX_MEDIA_STATE_STOPPED)
+  {
+    options.AddOption("state", PlexUtils::GetMediaStateString(m_state));
+  else
+  {
+    int playlist = g_playlistPlayer.GetCurrentPlaylist();
+    if (g_playlistPlayer.GetPlaylist(playlist).size() > 0 && g_playlistPlayer.GetCurrentSong() != -1)
+    {
+      // if we're in a middle of a playlist we don't want to send the stopped state
+    }
+    else
+    {
+      options.AddOption("state", PlexUtils::GetMediaStateString(m_state));
+    }
+  }
+
 
   if (m_item)
   {
