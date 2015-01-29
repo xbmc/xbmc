@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>UserSwitchLogin</include>
 			<include>KbPIN</include>
-			<include>UserSwitchLoginPINLabel</include>
 		</control>
 		<!-- top-level ui (Debug.xml + grid) -->
 		<include>debugInfos</include>
