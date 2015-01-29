@@ -290,7 +290,7 @@
 				<onclick>ActivateWindow(Teletext)</onclick>
 			</control>
 			<control type="image" id="2300">
-				<width>215</width>
+				<width>165</width>
 				<texture>-</texture>
 			</control>
 			<control type="button" id="354">
@@ -303,6 +303,16 @@
 				<texturefocus>OSDStereoscopicFO.png</texturefocus>
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onup>551</onup>
+			</control>
+			<control type="button" id="250">
+				<width>55</width>
+				<height>55</height>
+				<label>31356</label>
+				<font>-</font>
+				<texturefocus>OSDSubtitlesFO.png</texturefocus>
+				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
+				<onup>404</onup>
+				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="351">
 				<width>55</width>
