@@ -151,6 +151,13 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
     }
   }
 
+  if (message.GetMessage() == GUI_MSG_PLEX_EXIT_USER_WINDOW)
+  {
+    m_allowEscOut = true;
+    g_windowManager.setRetrictedAccess(false);
+    g_windowManager.PreviousWindow();
+  }
+
   return CGUIWindow::OnMessage(message);
 }
 
@@ -341,9 +348,8 @@ void CGUIWindowStartup::OnBackSpace()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowStartup::PreviousWindow()
 {
-  m_allowEscOut = true;
-  g_windowManager.setRetrictedAccess(false);
-  g_windowManager.PreviousWindow();
+  CGUIMessage msg(GUI_MSG_PLEX_EXIT_USER_WINDOW, 0, 0, 0);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
