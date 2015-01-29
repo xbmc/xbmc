@@ -25,6 +25,7 @@ CUrlOptions CPlexTimeline::getTimeline(bool forServer)
   if (m_state != PLEX_MEDIA_STATE_STOPPED)
   {
     options.AddOption("state", PlexUtils::GetMediaStateString(m_state));
+  }
   else
   {
     int playlist = g_playlistPlayer.GetCurrentPlaylist();
