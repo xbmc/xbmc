@@ -754,8 +754,8 @@ msgid "20 Mbps"
 msgstr "20 Mbps"
 
 msgctxt "#43010"
-msgid "Max"
-msgstr "Max"
+msgid "Maximum"
+msgstr "Maximum"
 
 msgctxt "#44000"
 msgid "Email"
