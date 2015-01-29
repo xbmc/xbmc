@@ -54,6 +54,13 @@ bool CPlexServerCacheDatabase::UpdateOldVersion(int version)
     CommitTransaction();
     return true;
   }
+  else if (version == 3)
+  {
+    BeginTransaction();
+    clearTables();
+    CommitTransaction();
+    return true;
+  }
   return false;
 }
 

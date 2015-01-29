@@ -19,7 +19,7 @@ private:
   bool storeConnection(const CStdString& uuid, const CPlexConnectionPtr& connection);
   bool clearTables();
   
-  virtual int GetMinVersion() const { return 3; }
+  virtual int GetMinVersion() const { return 4; }
   virtual const char* GetBaseDBName() const { return "PlexServerCache"; }
   virtual bool UpdateOldVersion(int version);
   
