@@ -187,8 +187,6 @@ namespace PVR
      */
     CPVRChannelGroupPtr GetLastPlayedGroup(int iChannelID = -1) const;
 
-    bool CreateChannel(const CPVRChannel &channel) const;
-
     /*!
      * @brief Create EPG tags for channels in all internal channel groups.
      * @return True if EPG tags were created succesfully.

@@ -34,7 +34,7 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRRecordingUid::CPVRRecordingUid() :
-    m_iClientId(PVR_VIRTUAL_CLIENT_ID)
+    m_iClientId(PVR_INVALID_CLIENT_ID)
 {
 }
 

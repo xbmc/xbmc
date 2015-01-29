@@ -531,21 +531,7 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
 
 bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
 {
-  bool bReturn = false;
-
-  if (item->GetPath() == "pvr://channels/.add.channel")
-  {
-    /* show "add channel" dialog */
-    CGUIDialogOK::ShowAndGetInput(19033,0,19038,0);
-    bReturn = true;
-  }
-  else
-  {
-    /* open channel */
-    bReturn = PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
-  }
-
-  return bReturn;
+  return PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
 }
 
 bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)

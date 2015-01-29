@@ -56,7 +56,6 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsUserSetIcon          = false;
   m_bIsUserSetName          = false;
   m_bIsLocked               = false;
-  m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
   m_iCachedChannelNumber    = 0;
@@ -95,7 +94,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iCachedChannelNumber    = 0;
   m_iCachedSubChannelNumber = 0;
   m_iClientId               = iClientId;
-  m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = !channel.bIsHidden;
   m_strEPGScraper           = "client";
@@ -124,7 +122,6 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_bIsLocked               = channel.m_bIsLocked;
   m_strIconPath             = channel.m_strIconPath;
   m_strChannelName          = channel.m_strChannelName;
-  m_bIsVirtual              = channel.m_bIsVirtual;
   m_iLastWatched            = channel.m_iLastWatched;
   m_bEPGEnabled             = channel.m_bEPGEnabled;
   m_strEPGScraper           = channel.m_strEPGScraper;
@@ -371,23 +368,6 @@ bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUser
       m_strChannelName = ClientChannelName();
     }
     
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::SetVirtual(bool bIsVirtual)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_bIsVirtual != bIsVirtual)
-  {
-    /* update the virtual flag */
-    m_bIsVirtual = bIsVirtual;
     SetChanged();
     m_bChanged = true;
 
@@ -769,12 +749,6 @@ std::string CPVRChannel::ChannelName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strChannelName;
-}
-
-bool CPVRChannel::IsVirtual(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bIsVirtual;
 }
 
 time_t CPVRChannel::LastWatched(void) const

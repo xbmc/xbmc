@@ -289,12 +289,6 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetLastPlayedGroup(int iChannelI
   return groupTV;
 }
 
-bool CPVRChannelGroupsContainer::CreateChannel(const CPVRChannel &channel) const
-{
-  return GetGroupAll(channel.IsRadio())->AddNewChannel(channel);
-}
-
-
 bool CPVRChannelGroupsContainer::CreateChannelEpgs(void)
 {
   return m_groupsRadio->CreateChannelEpgs() &&

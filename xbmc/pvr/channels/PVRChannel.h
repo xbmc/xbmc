@@ -29,6 +29,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#define PVR_INVALID_CHANNEL_UID -1
+
 namespace EPG
 {
   class CEpg;
@@ -214,18 +216,6 @@ namespace PVR
      * @return True if the something changed, false otherwise.
      */
     bool SetChannelName(const std::string &strChannelName, bool bIsUserSetName = false);
-
-    /*!
-     * @return True if this channel is marked as virtual. False if not.
-     */
-    bool IsVirtual(void) const;
-
-    /*!
-     * @brief True if this channel is marked as virtual. False if not.
-     * @param bIsVirtual The new value.
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetVirtual(bool bIsVirtual);
 
     /*!
      * @return Time channel has been watched last.
@@ -480,7 +470,6 @@ namespace PVR
     bool             m_bIsLocked;               /*!< true if channel is locked, false if not */
     std::string      m_strIconPath;             /*!< the path to the icon for this channel */
     std::string      m_strChannelName;          /*!< the name for this channel used by XBMC */
-    bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
     unsigned int     m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */

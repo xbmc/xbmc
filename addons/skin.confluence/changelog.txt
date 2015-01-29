@@ -1,3 +1,7 @@
+[B]2.7.0[/B]
+
+- Removed new/edit/delete buttons from the channel manager dialog
+
 [B]2.6.0[/B]
 
 - Moved some context menu functionality for PVR channels to the sideblade

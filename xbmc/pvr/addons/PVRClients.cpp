@@ -110,7 +110,7 @@ int CPVRClients::GetClientId(const AddonPtr client) const
 bool CPVRClients::GetClient(int iClientId, PVR_CLIENT &addon) const
 {
   bool bReturn(false);
-  if (iClientId <= PVR_INVALID_CLIENT_ID || iClientId == PVR_VIRTUAL_CLIENT_ID)
+  if (iClientId <= PVR_INVALID_CLIENT_ID)
     return bReturn;
 
   CSingleLock lock(m_critSection);
@@ -1182,9 +1182,7 @@ bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
     m_playingClientId = tag.ClientID();
     m_bIsPlayingLiveTV = true;
 
-    if (tag.ClientID() == PVR_VIRTUAL_CLIENT_ID)
-      m_strPlayingClientName = g_localizeStrings.Get(19209);
-    else if (!tag.IsVirtual() && client.get())
+    if (client.get())
       m_strPlayingClientName = client->GetFriendlyName();
     else
       m_strPlayingClientName = g_localizeStrings.Get(13205);

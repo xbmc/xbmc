@@ -61,9 +61,6 @@ namespace PVR
     virtual bool OnClickButtonUseEPG(CGUIMessage &message);
     virtual bool OnClickEPGSourceSpin(CGUIMessage &message);
     virtual bool OnClickButtonGroupManager(CGUIMessage &message);
-    virtual bool OnClickButtonEditChannel(CGUIMessage &message);
-    virtual bool OnClickButtonDeleteChannel(CGUIMessage &message);
-    virtual bool OnClickButtonNewChannel(CGUIMessage &message);
 
     virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber);
     virtual void SetItemsUnchanged(void);

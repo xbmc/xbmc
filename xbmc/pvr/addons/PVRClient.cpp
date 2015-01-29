@@ -142,7 +142,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 ADDON_STATUS CPVRClient::Create(int iClientId)
 {
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-  if (iClientId <= PVR_INVALID_CLIENT_ID || iClientId == PVR_VIRTUAL_CLIENT_ID)
+  if (iClientId <= PVR_INVALID_CLIENT_ID)
     return status;
 
   /* ensure that a previous instance is destroyed */
