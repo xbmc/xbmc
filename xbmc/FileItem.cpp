@@ -870,6 +870,15 @@ bool CFileItem::IsVideo() const
   return (g_settings.m_videoExtensions.Find(extension) != -1);
 }
 
+/* PLEX */
+bool CFileItem::IsHomeMovie() const
+{
+  CURL url(GetProperty("guid").asString());
+  return  ((url.GetProtocol() == "com.plexapp.agents.none") &&
+           (GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE));
+}
+/* END PLEX */
+
 bool CFileItem::IsEPG() const
 {
   if (HasEPGInfoTag()) return true; /// is this enough?

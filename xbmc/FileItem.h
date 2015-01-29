@@ -435,6 +435,7 @@ public:
   virtual bool IsPlexMediaServerMusic() const;
   bool IsPlexMediaServerLibrary() const;
   bool IsPlexWebkit() const;
+  bool IsHomeMovie() const;
 
   void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
   std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
