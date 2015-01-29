@@ -417,6 +417,8 @@
 				<onclick>Close</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 				<onclick>ActivateWindow(SubtitleSearch)</onclick>
+				<!-- no point in downloading subtitles for live programs -->
+				<enable>!VideoPlayer.Content(LiveTV)</enable>
 			</control>
 			<control type="button" id="402">
 				<height>40</height>
