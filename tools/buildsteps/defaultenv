@@ -73,12 +73,6 @@ then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
-#clamp release builds to 1 thread only
-if [ "$Configuration" == "Release" ]
-then
-  BUILDTHREADS=1
-fi
-
 #helper functions
 
 #hash a dir based on the git revision, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN TOOLCHAIN_X86 (for droidx86) and XBMC_DEPENDS_ROOT
