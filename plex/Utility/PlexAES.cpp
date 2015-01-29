@@ -30,16 +30,14 @@ std::string CPlexAES::encrypt(const std::string &data)
   if (data.empty())
     return "";
 
-  unsigned char block[AES_BLOCK_SIZE], buffer[AES_BLOCK_SIZE];
+  unsigned char buffer[AES_BLOCK_SIZE];
   std::string outData;
 
   BOOST_FOREACH(const std::string& chunk, chunkData(data))
   {
-    memset(block, '\0', AES_BLOCK_SIZE);
     memset(buffer, '\0', AES_BLOCK_SIZE);
 
-    strncpy((char *)&block[0], chunk.c_str(), chunk.length());
-    if (aes_encrypt(block, buffer, &m_encryptCtx) == EXIT_FAILURE)
+    if (aes_encrypt((const unsigned char*)chunk.c_str(), buffer, &m_encryptCtx) == EXIT_FAILURE)
     {
       CLog::Log(LOGWARNING, "CPlexAES::encrypt failed to encrypt data...");
       return "";
@@ -58,15 +56,12 @@ std::string CPlexAES::decrypt(const std::string &data)
     return "";
 
   std::string outData;
-  unsigned char block[AES_BLOCK_SIZE], buffer[AES_BLOCK_SIZE];
+  unsigned char buffer[AES_BLOCK_SIZE];
 
   BOOST_FOREACH(const std::string& chunk, chunkData(data))
   {
-    memset(block, '\0', AES_BLOCK_SIZE);
     memset(buffer, '\0', AES_BLOCK_SIZE);
-
-    strncpy((char *)&block[0], chunk.c_str(), chunk.length());
-    if (aes_decrypt(block, buffer, &m_decryptCtx) == EXIT_FAILURE)
+    if (aes_decrypt((const unsigned char*)chunk.c_str(), buffer, &m_decryptCtx) == EXIT_FAILURE)
     {
       CLog::Log(LOGWARNING, "CPlexAES::decrypt failed to decrypt data...");
       return "";

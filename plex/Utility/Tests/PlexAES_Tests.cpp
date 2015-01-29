@@ -22,3 +22,13 @@ TEST(PlexAES, encryptDecryptToken)
   CStdString decrypted = aes.decrypt(encrypted);
   EXPECT_STREQ(token, decrypted);
 }
+
+TEST(PlexAES, encryptALotOfData)
+{
+  CPlexAES aes(key);
+
+  CStdString enc = aes.encrypt(testItem_movie);
+  CStdString dec = aes.decrypt(enc);
+
+  EXPECT_STREQ(testItem_movie, dec.c_str());
+}
