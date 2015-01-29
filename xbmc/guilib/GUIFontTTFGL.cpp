@@ -167,7 +167,9 @@ void CGUIFontTTFGL::LastEnd()
   glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
 #else
-  // GLES 2.0 version. Cannot draw quads. Convert to triangles.
+  // GLES 2.0 version.
+  CreateStaticVertexBuffers();
+
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
@@ -394,6 +396,8 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
 #if HAS_GLES
 void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
 {
+  if (m_staticVertexBufferCreated)
+    return;
   // Bind a new buffer to the OpenGL context's GL_ELEMENT_ARRAY_BUFFER binding point
   glGenBuffers(1, &m_elementArrayHandle);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
@@ -410,14 +414,19 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
   }
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  m_staticVertexBufferCreated = true;
 }
 
 void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
 {
+  if (!m_staticVertexBufferCreated)
+    return;
   glDeleteBuffers(1, &m_elementArrayHandle);
+  m_staticVertexBufferCreated = false;
 }
 
 GLuint CGUIFontTTFGL::m_elementArrayHandle;
+bool CGUIFontTTFGL::m_staticVertexBufferCreated;
 #endif
 
 #endif
