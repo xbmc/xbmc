@@ -299,11 +299,6 @@ void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
     m_selectedUserThumb = "";
     PreviousWindow();
   }
-  else
-  {
-    // we selected a user that requires a pin, ask for pincode
-    notifyLoginFailed();
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
