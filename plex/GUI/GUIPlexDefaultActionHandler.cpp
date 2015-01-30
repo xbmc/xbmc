@@ -290,8 +290,7 @@ bool CGUIPlexDefaultActionHandler::OnAction(int windowID, CAction action, CFileI
             CFileItemPtr plItem =  plDialog->GetSelectedItem();
             if (plItem)
             {
-              CStdString playlistID = plItem->GetProperty("unprocessed_ratingkey").asString();
-              
+              CStdString playlistID = plItem->GetProperty("ratingkey").asString();
               
               if (server)
               {
