@@ -76,6 +76,10 @@ private:
   };
   
   TextureStatus m_textureStatus;
+
+#if HAS_GLES
+  static bool m_staticVertexBufferCreated;
+#endif
 };
 
 #endif
