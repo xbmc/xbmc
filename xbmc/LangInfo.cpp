@@ -53,6 +53,7 @@ CLangInfo::CRegion::CRegion(const CRegion& region):
   m_strLangLocaleName(region.m_strLangLocaleName),
   m_strLangLocaleCodeTwoChar(region.m_strLangLocaleCodeTwoChar),
   m_strRegionLocaleName(region.m_strRegionLocaleName),
+  m_forceUnicodeFont(region.m_forceUnicodeFont),
   m_strName(region.m_strName),
   m_strDateFormatLong(region.m_strDateFormatLong),
   m_strDateFormatShort(region.m_strDateFormatShort),
