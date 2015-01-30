@@ -40,6 +40,7 @@
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
 #include "utils/URIUtils.h"
+#include "UPnPMimeSettings.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -129,10 +130,19 @@ GetMimeType(const CFileItem& item,
 
     NPT_String mime;
 
+    /* Use user custom mime type first for better compatibility
+    with devices that expect different mime type than
+    DLNA/UPnP standard specified */
+    if (!ext.IsEmpty())
+    {
+        mime = CUPnPMimeSettings::Get().GetMimeTypeForExtension(ext);
+        if (mime == "application/octet-stream") mime = "";
+    }
+
     /* We always use Platinum mime type first
        as it is defined to map extension to DLNA compliant mime type
        or custom according to context (who asked for it) */
-    if (!ext.IsEmpty()) {
+	if (!ext.IsEmpty() && mime.IsEmpty()) {
         mime = PLT_MimeType::GetMimeTypeFromExtension(ext, context);
         if (mime == "application/octet-stream") mime = "";
     }

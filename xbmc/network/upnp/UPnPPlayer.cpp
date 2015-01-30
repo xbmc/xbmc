@@ -39,6 +39,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "UPnPMimeSettings.h"
 
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
@@ -225,6 +226,10 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
   else if (item.IsMusicDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
+
+  /*  setting device data for CUPnPMimeSettings this way, to avoid adding another
+      parameter to BuildObject function */
+  CUPnPMimeSettings::Get().SetUPnPDevice(m_delegate->m_device.AsPointer());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer());
   if(obj.IsNull()) goto failed;

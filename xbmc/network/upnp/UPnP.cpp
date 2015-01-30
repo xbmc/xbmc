@@ -31,6 +31,7 @@
 #include "UPnPRenderer.h"
 #include "UPnPServer.h"
 #include "UPnPSettings.h"
+#include "UPnPMimeSettings.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -610,6 +611,10 @@ CUPnP::StartServer()
     // load upnpserver.xml
     std::string filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
+
+    // load upnpmime.xml
+    CStdString mimefilename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpmime.xml");
+    CUPnPMimeSettings::Get().Load(mimefilename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
     m_ServerHolder->m_Device = CreateServer(CUPnPSettings::Get().GetServerPort());
