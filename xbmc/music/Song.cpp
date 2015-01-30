@@ -68,6 +68,7 @@ CSong::CSong(CFileItem& item)
   albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
   strComment = tag.GetComment();
+  strCueSheet = tag.GetCueSheet();
   rating = tag.GetRating();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiscNumber();

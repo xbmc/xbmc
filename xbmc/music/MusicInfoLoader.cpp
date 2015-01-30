@@ -177,6 +177,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       if (it != m_songsMap.end())
       {  // Have we loaded this item from database before
         pItem->GetMusicInfoTag()->SetSong(it->second);
+        pItem->GetMusicInfoTag()->SetCueSheet(m_musicDatabase.LoadCuesheet(it->second.strFileName));
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }

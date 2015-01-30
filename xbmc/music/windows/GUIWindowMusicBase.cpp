@@ -67,6 +67,8 @@
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "cores/IPlayer.h"
+#include "CueDocument.h"
+
 
 using namespace std;
 using namespace XFILE;
@@ -518,6 +520,38 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   unsigned int startTick = XbmcThreads::SystemClockMillis();
 
   OnRetrieveMusicInfo(*m_vecItems);
+
+  // \todo Scan for multitrack items here...
+  vector<string> itemsForRemove;
+  CFileItemList itemsForAdd;
+  for (int i = 0; i < m_vecItems->Size(); ++i)
+  {
+    CFileItemPtr pItem = (*m_vecItems)[i];
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics())
+      continue;
+
+    CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
+    if (tag.Loaded() && !tag.GetCueSheet().empty())
+      pItem->LoadEmbeddedCue();
+
+    if (pItem->HasCueDocument()
+      && pItem->LoadTracksFromCueDocument(itemsForAdd))
+    {
+      itemsForRemove.push_back(pItem->GetPath());
+    }
+  }
+  for (size_t i = 0; i < itemsForRemove.size(); ++i)
+  {
+    for (int j = 0; j < m_vecItems->Size(); ++j)
+    {
+      if ((*m_vecItems)[j]->GetPath() == itemsForRemove[i])
+      {
+        m_vecItems->Remove(j);
+        break;
+      }
+    }
+  }
+  m_vecItems->Append(itemsForAdd);
 
   CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
             XbmcThreads::SystemClockMillis() - startTick);
