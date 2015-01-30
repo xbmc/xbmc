@@ -137,10 +137,9 @@
 	</include>
 	<include name="UserSwitchLoginUserSelected">
 		<control type="group">
-			<include>KbPINDummy</include>
 			<!-- Sans PIN -->
 			<control type="group">
-				<visible>IsEmpty(ListItem.Property(protected))</visible>
+				<visible>IsEmpty(ListItem.Property(protected)) | [!IsEmpty(ListItem.Property(protected)) + IsEmpty(Control.GetLabel(4)) + !ControlGroup(500).HasFocus]</visible>
 				<!-- card -->
 				<control type="group">
 					<control type="image">
@@ -189,7 +188,8 @@
 						<height>150</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 						<texture diffuse="round-big.png">round-big.png</texture>
-						<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<colordiffuse>orange</colordiffuse>
 					</control>
 					<control type="image">
 						<posy>5</posy>
@@ -211,17 +211,18 @@
 			</control>
 			<!-- With PIN -->
 			<control type="group">
-				<visible>!IsEmpty(ListItem.Property(protected)) | !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
+				<visible>[!IsEmpty(ListItem.Property(protected)) | !IsEmpty(Container(3).ListItem(0).Property(protected))]</visible>
 				<!-- card -->
 				<control type="group">
+					<visible>!ControlGroup(500).HasFocus + !IsEmpty(Control.GetLabel(4))</visible>
 					<control type="image">
 						<posx>4</posx>
 						<posy>4</posy>
 						<width>204</width>
 						<height>254</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture>mask-userswitch-selected-PIN-grey.png</texture>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<texture>mask-userswitch-selected.png</texture>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="image">
 						<posx>4</posx>
@@ -229,7 +230,38 @@
 						<width>204</width>
 						<height>254</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture diffuse="mask-userswitch-selected-PIN.png" blur="20">$INFO[ListItem.Art(thumb)]</texture>
+						<texture diffuse="mask-userswitch-selected.png" blur="20">$INFO[Container(3).ListItem(0).Art(thumb)]</texture>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>4</posy>
+						<width>204</width>
+						<height>254</height>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<texture>mask-userswitch-selected.png</texture>
+						<colordiffuse>black</colordiffuse>
+						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>208</posy>
+						<width>204</width>
+						<height>50</height>
+						<texture>mask-userswitch-selected-bottom.png</texture>
+						<colordiffuse>black</colordiffuse>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+				<control type="group">
+					<visible>ControlGroup(500).HasFocus</visible>
+					<control type="image">
+						<posx>4</posx>
+						<posy>4</posy>
+						<width>204</width>
+						<height>254</height>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<texture>mask-userswitch-selected-PIN.png</texture>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="image">
 						<posx>4</posx>
@@ -253,8 +285,7 @@
 						<posx>4</posx>
 						<posy>208</posy>
 						<width>204</width>
-						<height>51</height>
-						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<height>50</height>
 						<texture>base.png</texture>
 						<colordiffuse>black</colordiffuse>
 						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
@@ -467,6 +498,14 @@
 					<visible>!IsEmpty(ListItem.Property(protected)) | !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
 				</control>
 			</control>
+			<control type="button">
+				<description>show kb</description>
+				<onclick>Control.SetFocus(500)</onclick>
+				<textcolor></textcolor>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
+				<focusedcolor></focusedcolor>
+			</control>
 		</control>
 	</include>
 	<include name="UserSwitchLoginKbButton">
@@ -546,8 +585,8 @@
 				</control>
 				<control type="image">
 					<posy>0</posy>
-					<posx>538</posx>
-					<width>204</width>
+					<posx>540</posx>
+					<width>200</width>
 					<aspectratio>keep</aspectratio>
 					<texture>plex-logo-light-small.png</texture>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -562,8 +601,8 @@
 					<height>400</height>
 					<onleft>3</onleft>
 					<onright>3</onright>
-					<onup>-</onup>
-					<ondown>11</ondown>
+					<onup>3</onup>
+					<ondown>3</ondown>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>300</scrolltime>
 					<focusposition>3</focusposition>
@@ -580,134 +619,6 @@
 		</control>
 	</include>
 	<!-- keyboard -->
-	<include name="KbPINDummy">
-		<control type="group">
-			<control type="grouplist">
-				<animation effect="slide" start="0,0" end="0,223" time="0">Focus</animation>
-				<animation effect="fade" time="100">VisibleChange</animation>
-				<visible>!IsEmpty(ListItem.Property(protected))</visible>
-				<posy>36</posy>
-				<posx>4</posx>
-				<itemgap>1</itemgap>
-				<width>204</width>
-				<height>200</height>
-				<align>center</align>
-				<orientation>horizontal</orientation>
-				<!-- Column 1 -->
-				<control type="grouplist">
-					<itemgap>1</itemgap>
-					<width>152</width>
-					<height>163</height>
-					<align>left</align>
-					<orientation>vertical</orientation>
-					<!-- Row 1 -->
-					<control type="grouplist">
-						<itemgap>1</itemgap>
-						<width>152</width>
-						<height>40</height>
-						<onright>23</onright>
-						<onleft>490</onleft>
-						<align>center</align>
-						<aligny>center</aligny>
-						<orientation>horizontal</orientation>
-						<control type="button">
-							<description>'1' button</description>
-							<label>$LOCALIZE[12311]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'2' button</description>
-							<label>$LOCALIZE[12312]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'3' button</description>
-							<label>$LOCALIZE[12313]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-					</control>
-					<!-- Row 2 -->
-					<control type="grouplist">
-						<itemgap>1</itemgap>
-						<width>152</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<orientation>horizontal</orientation>
-						<control type="button">
-							<description>'4' button</description>
-							<label>$LOCALIZE[12314]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'5' button</description>
-							<label>$LOCALIZE[12315]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'6' button</description>
-							<label>$LOCALIZE[12316]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-					</control>
-					<!-- Row 3 -->
-					<control type="grouplist">
-						<itemgap>1</itemgap>
-						<width>152</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<orientation>horizontal</orientation>
-						<control type="button">
-							<description>'7' button</description>
-							<label>$LOCALIZE[12317]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'8' button</description>
-							<label>$LOCALIZE[12318]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-						<control type="button">
-							<description>'9' button</description>
-							<label>$LOCALIZE[12319]</label>
-							<include>UserSwitchLoginKbButtonDummy</include>
-						</control>
-					</control>
-					<!-- Row 4 -->
-					<control type="grouplist">
-						<itemgap>1</itemgap>
-						<width>152</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<orientation>horizontal</orientation>
-						<control type="button">
-							<description>'0' button</description>
-							<width>152</width>
-							<label>$LOCALIZE[12310]</label>
-							<include>UserSwitchLoginKbButtonZeroDummy</include>
-						</control>
-					</control>
-				</control>
-				<!-- Column 2 -->
-				<control type="grouplist">
-					<control type="grouplist">
-						<itemgap>1</itemgap>
-						<width>51</width>
-						<height>163</height>
-						<align>left</align>
-						<orientation>vertical</orientation>
-						<control type="button">
-							<description>BACKSPACE button</description>
-							<include>UserSwitchLoginKbButtonBSDummy</include>
-							<label>&#x21A4;</label>
-						</control>
-					</control>
-				</control>
-			</control>
-		</control>
-	</include>
 	<include name="KbPIN">
 		<control type="group">
 			<control type="group">
@@ -718,9 +629,9 @@
 			</control>
 			<control type="grouplist" id="500">
 				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
-				<animation effect="slide" start="0,0" end="0,-300" time="0" condition="[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4))]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="0,-400" time="0" condition="ControlGroup(500).HasFocus">Conditional</animation>
 				<animation effect="fade" time="100">VisibleChange</animation>
-				<posy>788</posy>
+				<posy>888</posy>
 				<posx>100</posx>
 				<itemgap>1</itemgap>
 				<width>1280</width>
