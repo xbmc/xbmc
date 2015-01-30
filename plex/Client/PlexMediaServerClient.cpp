@@ -297,7 +297,8 @@ void CPlexMediaServerClient::movePlayListItem(CFileItemPtr item, CFileItemPtr af
     url.SetOption("after", "0");
 
   CGUIMessage msg(GUI_MSG_UPDATE, 0, 0, 0, 0);
-  AddJob(new CPlexMediaServerClientJob(url.Get(), "PUT", msg, 16205));
+  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url.Get(), "PUT", msg, 16205);
+  g_plexApplication.busy.blockWaitingForJob(job, NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
