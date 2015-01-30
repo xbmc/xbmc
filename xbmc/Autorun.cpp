@@ -106,10 +106,8 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if (mediaPath.empty())
     mediaPath = path;
 
-#ifdef TARGET_WINDOWS
   if (mediaPath.empty() || mediaPath == "iso9660://")
-    mediaPath = g_mediaManager.TranslateDevicePath("");
-#endif
+    mediaPath = g_mediaManager.GetDiscPath();
 
   const CURL pathToUrl(mediaPath);
   auto_ptr<IDirectory> pDir ( CDirectoryFactory::Create( pathToUrl ));
