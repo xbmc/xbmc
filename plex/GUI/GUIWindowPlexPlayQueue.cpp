@@ -37,7 +37,8 @@ bool CGUIWindowPlexPlayQueue::isPQ() const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPlayQueue::isPlayList() const
 {
-  return boost::starts_with(m_vecItems->GetPath(), "plexserver://playlists");
+  CURL url(m_vecItems->GetPath());
+  return boost::starts_with(url.GetFileName(), "playlists/");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +236,6 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
       case ACTION_MOVE_DOWN:
         // Move the PQ item to the new selection position, but keep selection on old one
         int newSelectedID = m_viewControl.GetSelectedItem();
-        m_viewControl.SetSelectedItem(oldSelectedID);
 
         if (oldSelectedID != newSelectedID)
         {
@@ -250,8 +250,17 @@ bool CGUIWindowPlexPlayQueue::OnAction(const CAction &action)
               if (newSelectedID > 0)
                 after = m_vecItems->Get(newSelectedID - 1);
             }
-          
-            g_plexApplication.mediaServerClient->movePlayListItem(m_vecItems->Get(oldSelectedID), after);
+
+            // set immediately the GUI as it should come back from the job.
+            m_vecItems->Swap(oldSelectedID, newSelectedID);
+            int oldidx = m_vecItems->Get(oldSelectedID)->GetProperty("index").asInteger();
+            int newidx = m_vecItems->Get(newSelectedID)->GetProperty("index").asInteger();
+            m_vecItems->Get(oldSelectedID)->SetProperty("index", newidx);
+            m_vecItems->Get(newSelectedID)->SetProperty("index", oldidx);
+            m_viewControl.SetItems(*m_vecItems);
+            m_viewControl.SetSelectedItem(newSelectedID);
+
+            g_plexApplication.mediaServerClient->movePlayListItem(m_vecItems->Get(newSelectedID), after);
           }
           else
           {
