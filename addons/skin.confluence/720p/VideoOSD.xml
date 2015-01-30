@@ -280,8 +280,17 @@
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
+			<control type="button" id="350">
+				<width>55</width>
+				<height>55</height>
+				<label>31356</label>
+				<font>-</font>
+				<texturefocus>OSDTeleTextFO.png</texturefocus>
+				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
+				<onclick>ActivateWindow(Teletext)</onclick>
+			</control>
 			<control type="image" id="2300">
-				<width>215</width>
+				<width>165</width>
 				<texture>-</texture>
 			</control>
 			<control type="button" id="354">
@@ -295,14 +304,15 @@
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onup>551</onup>
 			</control>
-			<control type="button" id="350">
+			<control type="button" id="250">
 				<width>55</width>
 				<height>55</height>
 				<label>31356</label>
 				<font>-</font>
-				<texturefocus>OSDTeleTextFO.png</texturefocus>
-				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
-				<onclick>ActivateWindow(Teletext)</onclick>
+				<texturefocus>OSDSubtitlesFO.png</texturefocus>
+				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
+				<onup>404</onup>
+				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="351">
 				<width>55</width>
@@ -407,6 +417,8 @@
 				<onclick>Close</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 				<onclick>ActivateWindow(SubtitleSearch)</onclick>
+				<!-- no point in downloading subtitles for live programs -->
+				<enable>!VideoPlayer.Content(LiveTV)</enable>
 			</control>
 			<control type="button" id="402">
 				<height>40</height>
