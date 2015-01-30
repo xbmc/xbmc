@@ -189,7 +189,8 @@
 						<height>150</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 						<texture diffuse="round-big.png">round-big.png</texture>
-						<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<colordiffuse>orange</colordiffuse>
 					</control>
 					<control type="image">
 						<posy>5</posy>
@@ -546,8 +547,8 @@
 				</control>
 				<control type="image">
 					<posy>0</posy>
-					<posx>538</posx>
-					<width>204</width>
+					<posx>540</posx>
+					<width>200</width>
 					<aspectratio>keep</aspectratio>
 					<texture>plex-logo-light-small.png</texture>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -718,9 +719,9 @@
 			</control>
 			<control type="grouplist" id="500">
 				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
-				<animation effect="slide" start="0,0" end="0,-300" time="0" condition="[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4))]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="0,-400" time="0" condition="[ControlGroup(500).HasFocus | !IsEmpty(Control.GetLabel(4))]">Conditional</animation>
 				<animation effect="fade" time="100">VisibleChange</animation>
-				<posy>788</posy>
+				<posy>888</posy>
 				<posx>100</posx>
 				<itemgap>1</itemgap>
 				<width>1280</width>
