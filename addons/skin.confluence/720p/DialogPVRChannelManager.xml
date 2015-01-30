@@ -267,7 +267,7 @@
 					<left>0</left>
 					<top>25</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -286,9 +286,9 @@
 				<control type="edit" id="8">
 					<description>Channel name</description>
 					<left>0</left>
-					<top>65</top>
+					<top>75</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -304,9 +304,9 @@
 				<control type="button" id="9">
 					<description>Channel logo Button</description>
 					<left>0</left>
-					<top>105</top>
+					<top>125</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
@@ -318,19 +318,19 @@
 				</control>
 				<control type="image" id="10">
 					<description>Current Channel Icon</description>
-					<left>345</left>
-					<top>107</top>
-					<width>30</width>
-					<height>30</height>
+					<left>337</left>
+					<top>128</top>
+					<width>39</width>
+					<height>39</height>
 					<aspectratio>keep</aspectratio>
 					<info>ListItem.Property(Icon)</info>
 				</control>
 				<control type="radiobutton" id="12">
 					<description>EPG activated</description>
 					<left>0</left>
-					<top>145</top>
+					<top>175</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -349,9 +349,9 @@
 				<control type="spincontrolex" id="13">
 					<description>EPG source</description>
 					<left>0</left>
-					<top>185</top>
+					<top>225</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
@@ -364,9 +364,9 @@
 				<control type="radiobutton" id="14">
 					<description>Parental locked</description>
 					<left>0</left>
-					<top>225</top>
+					<top>275</top>
 					<width>380</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -385,7 +385,7 @@
 			</control>
 			<control type="group">
 				<left>490</left>
-				<top>360</top>
+				<top>420</top>
 				<control type="label">
 					<description>channel options Header</description>
 					<left>0</left>
@@ -403,8 +403,8 @@
 					<description>Group Manager Button</description>
 					<left>0</left>
 					<top>25</top>
-					<width>190</width>
-					<height>35</height>
+					<width>380</width>
+					<height>45</height>
 					<font>font12</font>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
@@ -417,10 +417,10 @@
 				</control>
 				<control type="button" id="34">
 					<description>TV/Radio Button</description>
-					<left>195</left>
-					<top>25</top>
-					<width>185</width>
-					<height>35</height>
+					<left>0</left>
+					<top>75</top>
+					<width>380</width>
+					<height>45</height>
 					<font>font12</font>
 					<visible>IsEmpty(Window.Property(IsRadio))</visible>
 					<texturefocus border="5">button-focus2.png</texturefocus>
@@ -434,10 +434,10 @@
 				</control>
 				<control type="button" id="34">
 					<description>TV/Radio Button</description>
-					<left>195</left>
-					<top>25</top>
-					<width>185</width>
-					<height>35</height>
+					<left>0</left>
+					<top>75</top>
+					<width>380</width>
+					<height>45</height>
 					<font>font12</font>
 					<visible>!IsEmpty(Window.Property(IsRadio))</visible>
 					<texturefocus border="5">button-focus2.png</texturefocus>
