@@ -19,52 +19,39 @@
  */
 
 #include "HTTPWebinterfaceHandler.h"
-#include "network/WebServer.h"
 #include "addons/AddonManager.h"
-#include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "Util.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #define DEFAULT_PAGE        "index.html"
 
-using namespace std;
-using namespace ADDON;
-using namespace XFILE;
+CHTTPWebinterfaceHandler::CHTTPWebinterfaceHandler(const HTTPRequest &request)
+  : CHTTPFileHandler(request)
+{
+  // resolve the URL into a file path and a HTTP response status
+  std::string file;
+  int responseStatus = ResolveUrl(request.url, file);
 
-bool CHTTPWebinterfaceHandler::CheckHTTPRequest(const HTTPRequest &request)
+  // set the file and the HTTP response status
+  SetFile(file, responseStatus);
+}
+
+bool CHTTPWebinterfaceHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return true;
 }
 
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(const HTTPRequest &request)
-{
-  m_responseCode = ResolveUrl(request.url, m_url);
-  if (m_responseCode != MHD_HTTP_OK)
-  {
-    if (m_responseCode == MHD_HTTP_FOUND)
-      m_responseType = HTTPRedirect;
-    else
-      m_responseType = HTTPError;
-
-    return MHD_YES;
-  }
-
-  m_responseType = HTTPFileDownload;
-
-  return MHD_YES;
-}
-
 int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &path)
 {
-  AddonPtr dummyAddon;
+  ADDON::AddonPtr dummyAddon;
   return ResolveUrl(url, path, dummyAddon);
 }
 
-int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &path, AddonPtr &addon)
+int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &path, ADDON::AddonPtr &addon)
 {
-  string addonPath;
+  std::string addonPath;
   bool useDefaultWebInterface = true;
 
   path = url;
@@ -74,12 +61,12 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
     StringUtils::Tokenize(path, components, "/");
     if (components.size() > 1)
     {
-      CAddonMgr::Get().GetAddon(components.at(1), addon);
+      ADDON::CAddonMgr::Get().GetAddon(components.at(1), addon);
       if (addon)
       {
         size_t pos;
         pos = path.find('/', 8); // /addons/ = 8 characters +1 to start behind the last slash
-        if (pos != string::npos)
+        if (pos != std::string::npos)
           path = path.substr(pos);
         else // missing trailing slash
         {
@@ -89,7 +76,7 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
 
         useDefaultWebInterface = false;
         addonPath = addon->Path();
-        if (addon->Type() != ADDON_WEB_INTERFACE) // No need to append /htdocs for web interfaces
+        if (addon->Type() != ADDON::ADDON_WEB_INTERFACE) // No need to append /htdocs for web interfaces
           addonPath = URIUtils::AddFileToFolder(addonPath, "/htdocs/");
       }
     }
@@ -102,7 +89,7 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
 
   if (useDefaultWebInterface)
   {
-    CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE, addon);
+    ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_WEB_INTERFACE, addon);
     if (addon)
       addonPath = addon->Path();
   }
@@ -110,12 +97,12 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
   if (addon)
     path = URIUtils::AddFileToFolder(addonPath, path);
 
-  string realPath = URIUtils::GetRealPath(path);
-  string realAddonPath = URIUtils::GetRealPath(addonPath);
+  std::string realPath = URIUtils::GetRealPath(path);
+  std::string realAddonPath = URIUtils::GetRealPath(addonPath);
   if (!URIUtils::IsInPath(realPath, realAddonPath))
     return MHD_HTTP_NOT_FOUND;
   
-  if (CDirectory::Exists(path))
+  if (XFILE::CDirectory::Exists(path))
   {
     if (path.at(path.size() -1) == '/')
       path.append(DEFAULT_PAGE);
@@ -126,7 +113,7 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
     }
   }
 
-  if (!CFile::Exists(path))
+  if (!XFILE::CFile::Exists(path))
     return MHD_HTTP_NOT_FOUND;
 
   return MHD_HTTP_OK;

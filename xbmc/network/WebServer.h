@@ -34,9 +34,6 @@ namespace XFILE
 }
 class CDateTime;
 
-typedef std::pair<int64_t, int64_t> HttpRange;
-typedef std::vector<HttpRange> HttpRanges;
-
 class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
@@ -60,6 +57,8 @@ public:
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);
 
+  static bool GetRequestedRanges(struct MHD_Connection *connection, uint64_t totalLength, CHttpRanges &ranges);
+
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);
@@ -74,6 +73,7 @@ private:
 #else
   static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
 #endif
+  static void ContentReaderFreeCallback(void *cls);
 
 #if (MHD_VERSION >= 0x00040001)
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
@@ -94,12 +94,16 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              unsigned int size);
 #endif
-  static int HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request);
-  static void ContentReaderFreeCallback (void *cls);
+  static int HandleRequest(IHTTPRequestHandler *handler);
+  static int FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus, struct MHD_Response *response);
+
+  static int CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response);
+  static int CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response);
+
   static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
-  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode);
+  static int CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response);
-  static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
+  static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
 
   static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
   
@@ -110,8 +114,6 @@ private:
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
   static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
-  static int64_t ParseRangeHeader(const std::string &rangeHeaderValue, int64_t totalLength, HttpRanges &ranges, int64_t &firstPosition, int64_t &lastPosition);
-  static std::string GenerateMultipartBoundary();
   static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
   struct MHD_Daemon *m_daemon_ip6;

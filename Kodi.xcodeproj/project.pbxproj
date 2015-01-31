@@ -1255,6 +1255,12 @@
 		DF527736151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52772F151BAF4C00B5B63B /* WebSocketV13.cpp */; };
 		DF527737151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527731151BAF4C00B5B63B /* WebSocketV8.cpp */; };
 		DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF529BAC1741697B00523FB4 /* Environment.cpp */; };
+		DF56EF1F1A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
+		DF56EF201A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
+		DF56EF211A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */; };
+		DF56EF241A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
+		DF56EF251A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
+		DF56EF261A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
 		DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3516C07AAA00D028FB /* GUIViewControl.cpp */; };
 		DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3716C07AAA00D028FB /* GUIViewState.cpp */; };
 		DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */; };
@@ -4945,6 +4951,10 @@
 		DF527732151BAF4C00B5B63B /* WebSocketV8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketV8.h; sourceTree = "<group>"; };
 		DF529BAC1741697B00523FB4 /* Environment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Environment.cpp; sourceTree = "<group>"; };
 		DF529BAD1741697B00523FB4 /* Environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Environment.h; sourceTree = "<group>"; };
+		DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFileHandler.cpp; sourceTree = "<group>"; };
+		DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFileHandler.h; sourceTree = "<group>"; };
+		DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpRangeUtils.cpp; sourceTree = "<group>"; };
+		DF56EF231A798A5E00CAAEFB /* HttpRangeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpRangeUtils.h; sourceTree = "<group>"; };
 		DF5EEEFB17CE977A003DEC49 /* AERingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AERingBuffer.h; sourceTree = "<group>"; };
 		DF64FE3516C07AAA00D028FB /* GUIViewControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewControl.cpp; sourceTree = "<group>"; };
 		DF64FE3616C07AAA00D028FB /* GUIViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewControl.h; sourceTree = "<group>"; };
@@ -8433,6 +8443,8 @@
 		DFCA6AB8152245CD000BFAAE /* httprequesthandler */ = {
 			isa = PBXGroup;
 			children = (
+				DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */,
+				DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */,
 				7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */,
 				7C6EB6F9155F32C30080368A /* HTTPImageHandler.h */,
 				DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */,
@@ -9721,6 +9733,8 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */,
+				DF56EF231A798A5E00CAAEFB /* HttpRangeUtils.h */,
 				B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */,
 				B542632E19917D3500726998 /* params_check_macros.h */,
 				B5011E3A19AA496D005ADF89 /* MarkWatchedJob.h */,
@@ -11609,6 +11623,7 @@
 				7C140989183224B8009F9411 /* ISetting.cpp in Sources */,
 				7C14098C183224B8009F9411 /* ISettingControl.cpp in Sources */,
 				7C14098F183224B8009F9411 /* Setting.cpp in Sources */,
+				DF56EF241A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				7C140992183224B8009F9411 /* SettingCategoryAccess.cpp in Sources */,
 				7C140995183224B8009F9411 /* SettingConditions.cpp in Sources */,
 				7C140998183224B8009F9411 /* SettingDependency.cpp in Sources */,
@@ -11756,6 +11771,7 @@
 				7CCDA8CF192756250074CF51 /* NptTlsTrustAnchor_Base_0032.cpp in Sources */,
 				7CCDA8D2192756250074CF51 /* NptTlsTrustAnchor_Base_0033.cpp in Sources */,
 				7CCDA8D5192756250074CF51 /* NptTlsTrustAnchor_Base_0034.cpp in Sources */,
+				DF56EF1F1A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */,
 				7CCDA8D8192756250074CF51 /* NptTlsTrustAnchor_Base_0035.cpp in Sources */,
 				7CCDA8DB192756250074CF51 /* NptTlsTrustAnchor_Base_0036.cpp in Sources */,
 				7CCDA8DE192756250074CF51 /* NptTlsTrustAnchor_Base_0037.cpp in Sources */,
@@ -12044,6 +12060,7 @@
 				DFF0F18C17528350002DA3A4 /* DVDSubtitleTagSami.cpp in Sources */,
 				DFF0F18D17528350002DA3A4 /* DVDAudio.cpp in Sources */,
 				DFF0F18E17528350002DA3A4 /* DVDClock.cpp in Sources */,
+				DF56EF261A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				DFF0F18F17528350002DA3A4 /* DVDDemuxSPU.cpp in Sources */,
 				DFF0F19017528350002DA3A4 /* DVDFileInfo.cpp in Sources */,
 				DFF0F19117528350002DA3A4 /* DVDMessage.cpp in Sources */,
@@ -12711,6 +12728,7 @@
 				DFF0F44017528350002DA3A4 /* LangInfo.cpp in Sources */,
 				DFF0F44117528350002DA3A4 /* MediaSource.cpp in Sources */,
 				DFF0F44217528350002DA3A4 /* NfoFile.cpp in Sources */,
+				DF56EF211A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */,
 				DFF0F44317528350002DA3A4 /* PartyModeManager.cpp in Sources */,
 				DFF0F44417528350002DA3A4 /* PasswordManager.cpp in Sources */,
 				DFF0F44517528350002DA3A4 /* PlayListPlayer.cpp in Sources */,
@@ -13326,6 +13344,7 @@
 				E4991249174E5D7E00741B6D /* GUIDialogSmartPlaylistEditor.cpp in Sources */,
 				E499124A174E5D7E00741B6D /* GUIDialogSmartPlaylistRule.cpp in Sources */,
 				E499124B174E5D7E00741B6D /* GUIDialogSubMenu.cpp in Sources */,
+				DF56EF201A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */,
 				E499124C174E5D7E00741B6D /* GUIDialogTextViewer.cpp in Sources */,
 				E499124D174E5D7E00741B6D /* GUIDialogVolumeBar.cpp in Sources */,
 				E499124E174E5D7E00741B6D /* GUIDialogYesNo.cpp in Sources */,
@@ -13970,6 +13989,7 @@
 				E4991579174E67EE00741B6D /* htsmsg.c in Sources */,
 				E499157A174E67EE00741B6D /* htsmsg_binary.c in Sources */,
 				E499157B174E67EE00741B6D /* htsstr.c in Sources */,
+				DF56EF251A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				E499157C174E67EE00741B6D /* net_posix.c in Sources */,
 				E499157D174E67EE00741B6D /* sha1.c in Sources */,
 				E4991582174E682F00741B6D /* AutoPool.mm in Sources */,

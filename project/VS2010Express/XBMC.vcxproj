@@ -636,6 +636,7 @@
     <ClCompile Include="..\..\xbmc\network\EventServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\GUIDialogAccessPoints.cpp" />
     <ClCompile Include="..\..\xbmc\network\GUIDialogNetworkSetup.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
@@ -648,6 +649,11 @@
     <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp" />
     <ClCompile Include="..\..\xbmc\network\Socket.cpp" />
     <ClCompile Include="..\..\xbmc\network\TCPServer.cpp" />
+    <ClCompile Include="..\..\xbmc\network\test\TestWebServer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp" />
     <ClCompile Include="..\..\xbmc\network\upnp\UPnP.cpp" />
     <ClCompile Include="..\..\xbmc\network\upnp\UPnPInternal.cpp" />
@@ -935,6 +941,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h" />
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
@@ -984,6 +991,7 @@
     <ClInclude Include="..\..\xbmc\utils\auto_buffer.h" />
     <ClInclude Include="..\..\xbmc\utils\BooleanLogic.h" />
     <ClInclude Include="..\..\xbmc\utils\CharsetDetection.h" />
+    <ClInclude Include="..\..\xbmc\utils\HttpRangeUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\IRssObserver.h" />
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h" />
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h" />
@@ -1129,10 +1137,15 @@
     <ClCompile Include="..\..\xbmc\utils\auto_buffer.cpp" />
     <ClCompile Include="..\..\xbmc\utils\BooleanLogic.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp" />
     <ClCompile Include="..\..\xbmc\utils\MarkWatchedJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringValidation.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\test\TestHttpRangeUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
