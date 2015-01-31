@@ -451,10 +451,6 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   shared_ptr<CSingleLock> lock;
   if(m_pHardware)
   {
-    CCriticalSection* section = m_pHardware->Section();
-    if(section)
-      lock = shared_ptr<CSingleLock>(new CSingleLock(*section));
-
     int result;
     if(pData)
       result = m_pHardware->Check(m_pCodecContext);
