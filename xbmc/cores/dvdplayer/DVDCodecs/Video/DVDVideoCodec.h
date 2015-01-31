@@ -171,6 +171,7 @@ class CDVDCodecOptions;
 #define VC_USERDATA 0x00000008  // the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
 #define VC_FLUSHED  0x00000010  // the decoder lost it's state, we need to restart decoding again
 #define VC_DROPPED  0x00000020  // needed to identify if a picture was dropped
+#define VC_NOBUFFER 0x00000040  // last FFmpeg GetBuffer failed
 
 class CDVDVideoCodec
 {
