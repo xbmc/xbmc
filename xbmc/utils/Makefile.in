@@ -48,6 +48,7 @@ SRCS += PerformanceSample.cpp
 SRCS += PerformanceStats.cpp
 SRCS += posix/PosixInterfaceForCLog.cpp
 SRCS += POUtils.cpp
+SRCS += ProgressJob.cpp
 SRCS += RecentlyAddedJob.cpp
 SRCS += RegExp.cpp
 SRCS += RingBuffer.cpp
