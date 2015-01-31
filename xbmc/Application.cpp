@@ -615,8 +615,8 @@ bool CApplication::Create()
 #endif // !USE_STATIC_FFMPEG
   if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
   {
-    if (strstr(FFMPEG_VERSION, "xbmc"))
-      CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-xbmc version detected");
+    if (strstr(FFMPEG_VERSION, "kodi"))
+      CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-kodi version detected");
     else
       CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
   }
