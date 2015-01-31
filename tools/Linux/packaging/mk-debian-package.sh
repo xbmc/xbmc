@@ -31,9 +31,10 @@ PDEBUILD_OPTS=${PDEBUILD_OPTS:-""}
 PBUILDER_BASE=${PBUILDER_BASE:-"/var/cache/pbuilder"}
 DPUT_TARGET=${DPUT_TARGET:-"local"}
 DEBIAN=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging/archive/master.tar.gz"}
+BUILD_DATE=$(date '+%Y%m%d.%H%M')
 
 function usage {
-    echo "$0: this script builds a Xbmc debian package from a git repository."
+    echo "$0: this script builds a Kodi debian package from a git repository."
     echo "The build is controlled by ENV variables, which van be overridden as appropriate:"
     echo "BUILDER is either debuild(default) or pdebuild(needs a proper pbuilder setup)"
     checkEnv
@@ -77,14 +78,14 @@ function getVersion {
         local MINORVER=$(grep VERSION_MINOR $REPO_DIR/version.txt | awk '{ print $2 }')
         RELEASEV=${MAJORVER}.${MINORVER}
     else
-        PACKAGEVERSION="${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+        PACKAGEVERSION="${RELEASEV}~git${BUILD_DATE}-${TAG}"
     fi
 
     if [[ -n ${VERSION_PREFIX} ]]
     then
-        PACKAGEVERSION="${VERSION_PREFIX}:${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+        PACKAGEVERSION="${VERSION_PREFIX}:${RELEASEV}~git${BUILD_DATE}-${TAG}"
     else
-        PACKAGEVERSION="${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+        PACKAGEVERSION="${RELEASEV}~git${BUILD_DATE}-${TAG}"
     fi
 }
 
@@ -100,7 +101,7 @@ function archiveRepo {
     git clean -xfd
     echo $REV > VERSION
     tools/depends/target/ffmpeg/autobuild.sh -d
-    DEST="kodi-${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+    DEST="kodi-${RELEASEV}~git${BUILD_DATE}-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
     tar -czf ${DEST}.tar.gz -h --exclude .git $(basename $REPO_DIR)
