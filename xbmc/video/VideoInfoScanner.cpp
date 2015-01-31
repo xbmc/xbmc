@@ -46,8 +46,8 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
-#include "video/jobs/VideoLibraryCleaningJob.h"
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
 #include "URL.h"
@@ -91,7 +91,7 @@ namespace VIDEO
       if (m_bClean && m_pathsToScan.empty())
       {
         std::set<int> paths;
-        CleanDatabase(m_handle, paths, false);
+        CVideoLibraryQueue::Get().CleanLibrary(paths, false, m_handle);
 
         if (m_handle)
           m_handle->MarkFinished();
@@ -149,7 +149,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          CleanDatabase(m_handle, m_pathsToClean, false);
+          CVideoLibraryQueue::Get().CleanLibrary(m_pathsToClean, false, m_handle);
         else
         {
           if (m_handle)
@@ -219,20 +219,6 @@ namespace VIDEO
     m_bRunning = true;
   }
 
-  void CVideoInfoScanner::StartCleanDatabase()
-  {
-    m_strStartDir.clear();
-    m_scanAll = false;
-    m_pathsToScan.clear();
-    m_pathsToClean.clear();
-
-    m_bClean = true;
-
-    StopThread();
-    Create();
-    m_bRunning = true;
-  }
-
   bool CVideoInfoScanner::IsScanning()
   {
     return m_bRunning;
@@ -244,21 +230,6 @@ namespace VIDEO
       m_database.Interupt();
 
     StopThread(false);
-  }
-
-  void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /* = NULL */, const set<int>& paths /* = set<int> */, bool showProgress /* = true */)
-  {
-    m_bRunning = true;
-    CVideoLibraryCleaningJob* cleaningJob = NULL;
-    if (handle != NULL)
-      cleaningJob = new CVideoLibraryCleaningJob(paths, handle);
-    else
-      cleaningJob = new CVideoLibraryCleaningJob(paths, showProgress);
-
-    cleaningJob->DoWork();
-
-    delete cleaningJob;
-    m_bRunning = false;
   }
 
   static void OnDirectoryScanned(const std::string& strDirectory)

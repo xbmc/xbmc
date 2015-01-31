@@ -4952,7 +4952,7 @@ void CApplication::UpdateLibraries()
 
 bool CApplication::IsVideoScanning() const
 {
-  return m_videoInfoScanner->IsScanning();
+  return m_videoInfoScanner->IsScanning() || CVideoLibraryQueue::Get().IsRunning();
 }
 
 bool CApplication::IsMusicScanning() const
@@ -4974,19 +4974,14 @@ void CApplication::StopMusicScan()
 
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 {
-  if (m_videoInfoScanner->IsScanning())
+  if (userInitiated && IsVideoScanning())
     return;
 
+  std::set<int> paths;
   if (userInitiated)
-  {
-    std::set<int> paths;
-    m_videoInfoScanner->CleanDatabase(NULL, paths, userInitiated);
-  }
+    CVideoLibraryQueue::Get().CleanLibraryModal(paths);
   else
-  {
-    m_videoInfoScanner->ShowDialog(false);
-    m_videoInfoScanner->StartCleanDatabase();
-  }
+    CVideoLibraryQueue::Get().CleanLibrary(paths, false);
 }
 
 void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
