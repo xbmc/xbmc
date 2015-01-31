@@ -120,7 +120,7 @@ void CJobQueue::CancelJob(const CJob *job)
   }
 }
 
-void CJobQueue::AddJob(CJob *job)
+bool CJobQueue::AddJob(CJob *job)
 {
   CSingleLock lock(m_section);
   // check if we have this job already.  If so, we're done.
@@ -128,7 +128,7 @@ void CJobQueue::AddJob(CJob *job)
       find(m_processing.begin(), m_processing.end(), job) != m_processing.end())
   {
     delete job;
-    return;
+    return false;
   }
 
   if (m_lifo)
@@ -136,6 +136,8 @@ void CJobQueue::AddJob(CJob *job)
   else
     m_jobQueue.push_front(CJobPointer(job));
   QueueNextJob();
+
+  return true;
 }
 
 void CJobQueue::QueueNextJob()
