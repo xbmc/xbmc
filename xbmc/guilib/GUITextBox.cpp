@@ -351,6 +351,15 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
   }
 }
 
+void CGUITextBox::SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition /* = "" */)
+{
+  m_autoScrollDelay = delay;
+  m_autoScrollTime = time;
+  if (!condition.empty())
+    m_autoScrollCondition = g_infoManager.Register(condition, GetParentID());
+  m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
+}
+
 void CGUITextBox::ResetAutoScrolling()
 {
   m_autoScrollDelayTime = 0;
