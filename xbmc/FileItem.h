@@ -154,6 +154,7 @@ public:
    */
   bool IsPicture() const;
   bool IsLyrics() const;
+  bool IsSubtitle() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for

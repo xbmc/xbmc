@@ -48,6 +48,7 @@ const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metad
                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
                                             " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\""
+                                            " xmlns:sec=\"http://www.sec.co.kr/\""
                                             " xmlns:xbmc=\"urn:schemas-xbmc-org:metadata-1-0/\">";
 const char* didl_footer         = "</DIDL-Lite>";
 const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
