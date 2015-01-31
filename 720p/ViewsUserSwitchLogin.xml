@@ -500,11 +500,20 @@
 			</control>
 			<control type="button">
 				<description>show kb</description>
-				<onclick>Control.SetFocus(500)</onclick>
+				<onclick>Skin.ToggleSetting(ShowSuccess)</onclick>
 				<textcolor></textcolor>
 				<texturefocus></texturefocus>
 				<texturenofocus></texturenofocus>
 				<focusedcolor></focusedcolor>
+			</control>
+			<control type="image">
+				<posx>4</posx>
+				<posy>268</posy>
+				<width>204</width>
+				<height>50</height>
+				<texture>mask-userswitch-selected-bottom.png</texture>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				<visible>!Skin.HasSetting(ShowSuccess)</visible>
 			</control>
 		</control>
 	</include>
