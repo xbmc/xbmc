@@ -1598,21 +1598,16 @@ bool CApplication::Initialize()
         g_windowManager.ActivateWindow(WINDOW_PLEX_STARTUP_HELPER);
         g_guiSettings.SetBool("system.firstrunwizard", true);
       }
-      else if (g_plexApplication.myPlexManager->IsPinProtected())
+      else
       {
         CGUIWindowStartup *window = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
         if (window)
           window->allowEscOut(false);
 
-        g_windowManager.ActivateWindow(WINDOW_STARTUP_ANIM);
-      }
-      else
-      {
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
       }
 #endif
     }
-
   }
   else //No GUI Created
   {
@@ -1621,7 +1616,6 @@ bool CApplication::Initialize()
 #endif
     ADDON::CAddonMgr::Get().StartServices(false);
   }
-
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
