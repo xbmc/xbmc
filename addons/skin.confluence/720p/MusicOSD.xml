@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">100</defaultcontrol>
+	<onload condition="!MusicPlayer.Content(LiveTV)">SetFocus(602)</onload>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
