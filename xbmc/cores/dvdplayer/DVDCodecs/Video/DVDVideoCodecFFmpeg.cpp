@@ -451,10 +451,6 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   shared_ptr<CSingleLock> lock;
   if(m_pHardware)
   {
-    CCriticalSection* section = m_pHardware->Section();
-    if(section)
-      lock = shared_ptr<CSingleLock>(new CSingleLock(*section));
-
     int result;
     if(pData)
       result = m_pHardware->Check(m_pCodecContext);
@@ -499,6 +495,15 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (len < 0)
   {
+    if(m_pHardware)
+    {
+      int result = m_pHardware->Check(m_pCodecContext);
+      if (result & VC_NOBUFFER)
+      {
+        result = m_pHardware->Decode(m_pCodecContext, NULL);
+        return result;
+      }
+    }
     CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
     return VC_ERROR;
   }

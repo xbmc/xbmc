@@ -39,7 +39,6 @@ public:
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "vda"; }
-  virtual CCriticalSection* Section() {  return NULL; }
   virtual unsigned GetAllowedReferences();
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
