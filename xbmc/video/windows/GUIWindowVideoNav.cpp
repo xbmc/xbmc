@@ -192,7 +192,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     }
     break;
     // update the display
-    case GUI_MSG_SCAN_FINISHED:
     case GUI_MSG_REFRESH_THUMBS:
       Refresh();
       break;
@@ -814,7 +813,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (info && !g_application.IsVideoScanning())
+      if (info)
         buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
     }
   }
@@ -902,8 +901,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           if (g_application.IsVideoScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-          else
-            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+
+          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
 
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
@@ -934,13 +933,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (!g_application.IsVideoScanning())
           {
             if (info && info->Content() != CONTENT_NONE)
-            {
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-            }
             else
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
+
+          if (info && info->Content() != CONTENT_NONE)
+            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
       }
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())

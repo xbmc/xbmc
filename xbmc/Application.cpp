@@ -37,6 +37,7 @@
 #include "PlayListPlayer.h"
 #include "Autorun.h"
 #include "video/Bookmark.h"
+#include "video/VideoLibraryQueue.h"
 #include "network/NetworkServices.h"
 #include "guilib/GUIControlProfiler.h"
 #include "utils/LangCodeExpander.h"
@@ -294,7 +295,6 @@ CApplication::CApplication(void)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
-  , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_playerController(new CPlayerController)
 {
@@ -352,7 +352,6 @@ CApplication::CApplication(void)
 CApplication::~CApplication(void)
 {
   delete m_musicInfoScanner;
-  delete m_videoInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
@@ -2814,8 +2813,8 @@ void CApplication::Stop(int exitCode)
     if (m_musicInfoScanner->IsScanning())
       m_musicInfoScanner->Stop();
 
-    if (m_videoInfoScanner->IsScanning())
-      m_videoInfoScanner->Stop();
+    if (CVideoLibraryQueue::Get().IsRunning())
+      CVideoLibraryQueue::Get().CancelAllJobs();
 
     CApplicationMessenger::Get().Cleanup();
 
@@ -4039,7 +4038,7 @@ void CApplication::CheckShutdown()
   if (m_bInhibitIdleShutdown
       || m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback() // is something playing?
       || m_musicInfoScanner->IsScanning()
-      || m_videoInfoScanner->IsScanning()
+      || CVideoLibraryQueue::Get().IsRunning()
       || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
       || !g_PVRManager.CanSystemPowerdown(false))
   {
@@ -4952,7 +4951,7 @@ void CApplication::UpdateLibraries()
 
 bool CApplication::IsVideoScanning() const
 {
-  return m_videoInfoScanner->IsScanning() || CVideoLibraryQueue::Get().IsRunning();
+  return CVideoLibraryQueue::Get().IsScanningLibrary();
 }
 
 bool CApplication::IsMusicScanning() const
@@ -4962,8 +4961,7 @@ bool CApplication::IsMusicScanning() const
 
 void CApplication::StopVideoScan()
 {
-  if (m_videoInfoScanner->IsScanning())
-    m_videoInfoScanner->Stop();
+  CVideoLibraryQueue::Get().StopLibraryScanning();
 }
 
 void CApplication::StopMusicScan()
@@ -4974,7 +4972,7 @@ void CApplication::StopMusicScan()
 
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 {
-  if (userInitiated && IsVideoScanning())
+  if (userInitiated && CVideoLibraryQueue::Get().IsRunning())
     return;
 
   std::set<int> paths;
@@ -4986,12 +4984,7 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
 
 void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
 {
-  if (m_videoInfoScanner->IsScanning())
-    return;
-
-  m_videoInfoScanner->ShowDialog(userInitiated);
-
-  m_videoInfoScanner->Start(strDirectory,scanAll);
+  CVideoLibraryQueue::Get().ScanLibrary(strDirectory, scanAll, userInitiated);
 }
 
 void CApplication::StartMusicCleanup(bool userInitiated /* = true */)

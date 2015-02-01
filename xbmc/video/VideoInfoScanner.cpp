@@ -59,8 +59,9 @@ using namespace ADDON;
 namespace VIDEO
 {
 
-  CVideoInfoScanner::CVideoInfoScanner() : CThread("VideoInfoScanner")
+  CVideoInfoScanner::CVideoInfoScanner()
   {
+    m_bStop = false;
     m_bRunning = false;
     m_handle = NULL;
     m_showDialog = false;
@@ -77,6 +78,8 @@ namespace VIDEO
 
   void CVideoInfoScanner::Process()
   {
+    m_bStop = false;
+
     try
     {
       if (m_showDialog && !CSettings::Get().GetBool("videolibrary.backgroundupdate"))
@@ -114,8 +117,6 @@ namespace VIDEO
       // Reset progress vars
       m_currentItem = 0;
       m_itemCount = -1;
-
-      SetPriority(GetMinPriority());
 
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
@@ -170,11 +171,6 @@ namespace VIDEO
     
     m_bRunning = false;
     ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
-
-    // we need to clear the videodb cache and update any active lists
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-    g_windowManager.SendThreadMessage(msg);
     
     if (m_handle)
       m_handle->MarkFinished();
@@ -214,14 +210,8 @@ namespace VIDEO
     m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
 
-    StopThread();
-    Create();
     m_bRunning = true;
-  }
-
-  bool CVideoInfoScanner::IsScanning()
-  {
-    return m_bRunning;
+    Process();
   }
 
   void CVideoInfoScanner::Stop()
@@ -229,7 +219,7 @@ namespace VIDEO
     if (m_bCanInterrupt)
       m_database.Interupt();
 
-    StopThread(false);
+    m_bStop = true;
   }
 
   static void OnDirectoryScanned(const std::string& strDirectory)
@@ -1232,7 +1222,7 @@ namespace VIDEO
 
     CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
     CVariant data;
-    if (IsScanning())
+    if (m_bRunning)
       data["transaction"] = true;
     ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
     return lResult;

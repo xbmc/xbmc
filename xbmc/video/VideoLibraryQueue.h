@@ -36,6 +36,9 @@ public:
 
   static CVideoLibraryQueue& Get();
 
+  void ScanLibrary(const std::string& directory, bool scanAll = false, bool showProgress = true);
+  bool IsScanningLibrary() const;
+  void StopLibraryScanning();
   void CleanLibrary(const std::set<int>& paths = std::set<int>(), bool asynchronous = true, CGUIDialogProgressBarHandle* progressBar = NULL);
 
   void CleanLibraryModal(const std::set<int>& paths = std::set<int>());

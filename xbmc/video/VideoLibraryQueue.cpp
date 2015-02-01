@@ -27,6 +27,7 @@
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
+#include "video/jobs/VideoLibraryScanningJob.h"
 
 using namespace std;
 
@@ -46,6 +47,45 @@ CVideoLibraryQueue& CVideoLibraryQueue::Get()
 {
   static CVideoLibraryQueue s_instance;
   return s_instance;
+}
+
+void CVideoLibraryQueue::ScanLibrary(const std::string& directory, bool scanAll /* = false */ , bool showProgress /* = true */)
+{
+  AddJob(new CVideoLibraryScanningJob(directory, scanAll, showProgress));
+}
+
+bool CVideoLibraryQueue::IsScanningLibrary() const
+{
+  // check if the library is being cleaned synchronously
+  if (m_cleaning)
+    return true;
+
+  // check if the library is being scanned asynchronously
+  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find("VideoLibraryScanningJob");
+  if (scanningJobs != m_jobs.end() && !scanningJobs->second.empty())
+    return true;
+
+  // check if the library is being cleaned asynchronously
+  VideoLibraryJobMap::const_iterator cleaningJobs = m_jobs.find("VideoLibraryCleaningJob");
+  if (cleaningJobs != m_jobs.end() && !cleaningJobs->second.empty())
+    return true;
+
+  return false;
+}
+
+void CVideoLibraryQueue::StopLibraryScanning()
+{
+  CSingleLock lock(m_critical);
+  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find("VideoLibraryScanningJob");
+  if (scanningJobs == m_jobs.end())
+    return;
+
+  // get a copy of the scanning jobs because CancelJob() will modify m_scanningJobs
+  VideoLibraryJobs tmpScanningJobs(scanningJobs->second.begin(), scanningJobs->second.end());
+
+  // cancel all scanning jobs
+  for (VideoLibraryJobs::const_iterator job = tmpScanningJobs.begin(); job != tmpScanningJobs.end(); ++job)
+    CancelJob(*job);
 }
 
 void CVideoLibraryQueue::CleanLibrary(const std::set<int>& paths /* = std::set<int>() */, bool asynchronous /* = true */, CGUIDialogProgressBarHandle* progressBar /* = NULL */)
