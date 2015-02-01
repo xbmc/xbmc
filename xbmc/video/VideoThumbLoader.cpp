@@ -140,7 +140,7 @@ bool CThumbExtractor::DoWork()
       if (URIUtils::IsStack(m_listpath))
       {
         // Don't know the total time of the stack, so set duration to zero to avoid confusion
-        m_item.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, 0);
+        info->m_streamDetails.SetVideoDuration(0, 0);
 
         // Restore original stack path
         m_item.SetPath(m_listpath);
@@ -150,6 +150,15 @@ bool CThumbExtractor::DoWork()
         db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : static_cast<const std::string&>(m_item.GetPath()));
       else
         db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+
+      // overwrite the runtime value if the one from streamdetails is available
+      if (info->m_iDbId > 0 && info->m_duration != info->GetDuration())
+      {
+        info->m_duration = info->GetDuration();
+
+        // store the updated information in the database
+        db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());
+      }
 
       db.Close();
     }

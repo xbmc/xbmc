@@ -2014,6 +2014,38 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
 }
 
 //********************************************************************************************************************************
+int CVideoDatabase::SetDetailsForItem(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork)
+{
+  return SetDetailsForItem(details.m_iDbId, details.m_type, details, artwork);
+}
+
+int CVideoDatabase::SetDetailsForItem(int id, const MediaType& mediaType, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork)
+{
+  if (mediaType == MediaTypeNone)
+    return -1;
+
+  if (mediaType == MediaTypeMovie)
+    return SetDetailsForMovie(details.GetPath(), details, artwork, id);
+  else if (mediaType == MediaTypeVideoCollection)
+    return SetDetailsForMovieSet(details, artwork, id);
+  else if (mediaType == MediaTypeTvShow)
+  {
+    map<int, map<string, string> > seasonArtwork;
+    if (!UpdateDetailsForTvShow(id, details, artwork, seasonArtwork))
+      return -1;
+
+    return id;
+  }
+  else if (mediaType == MediaTypeSeason)
+    return SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
+  else if (mediaType == MediaTypeEpisode)
+    return SetDetailsForEpisode(details.GetPath(), details, artwork, details.m_iIdShow, id);
+  else if (mediaType == MediaTypeMusicVideo)
+    return SetDetailsForMusicVideo(details.GetPath(), details, artwork, id);
+
+  return -1;
+}
+
 int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idMovie /* = -1 */)
 {
   try
