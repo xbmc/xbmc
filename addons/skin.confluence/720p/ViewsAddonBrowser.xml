@@ -209,9 +209,9 @@
 					<control type="textbox">
 						<description>Description</description>
 						<left>10</left>
-						<top>65</top>
+						<top>67</top>
 						<width>490</width>
-						<height>215</height>
+						<height>213</height>
 						<font>font13</font>
 						<align>left</align>
 						<textcolor>white</textcolor>
@@ -441,9 +441,9 @@
 					<control type="textbox">
 						<description>Description</description>
 						<left>10</left>
-						<top>75</top>
+						<top>77</top>
 						<width>290</width>
-						<height>445</height>
+						<height>443</height>
 						<font>font13</font>
 						<align>left</align>
 						<textcolor>white</textcolor>

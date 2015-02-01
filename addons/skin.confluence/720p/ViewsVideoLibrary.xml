@@ -718,9 +718,9 @@
 				<control type="textbox">
 					<description>Description Value The Movie</description>
 					<left>0</left>
-					<top>30</top>
+					<top>32</top>
 					<width>850</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1010,9 +1010,9 @@
 				<control type="textbox">
 					<description>Description Value for TVShows</description>
 					<left>10</left>
-					<top>210</top>
+					<top>212</top>
 					<width>510</width>
-					<height>190</height>
+					<height>188</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1074,9 +1074,9 @@
 				<control type="textbox">
 					<description>Description Value for TVShows</description>
 					<left>10</left>
-					<top>280</top>
+					<top>282</top>
 					<width>510</width>
-					<height>120</height>
+					<height>118</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1102,9 +1102,9 @@
 				<control type="textbox">
 					<description>Description Value for Seasons</description>
 					<left>270</left>
-					<top>0</top>
+					<top>2</top>
 					<width>250</width>
-					<height>355</height>
+					<height>353</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1159,9 +1159,9 @@
 				<control type="textbox">
 					<description>Description Value for Movie</description>
 					<left>270</left>
-					<top>0</top>
+					<top>2</top>
 					<width>250</width>
-					<height>355</height>
+					<height>353</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1437,9 +1437,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>395</top>
+					<top>397</top>
 					<width>490</width>
-					<height>170</height>
+					<height>168</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1543,9 +1543,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>395</top>
+					<top>397</top>
 					<width>490</width>
-					<height>170</height>
+					<height>168</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1704,9 +1704,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1768,9 +1768,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>145</height>
+					<height>143</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1817,9 +1817,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>145</height>
+					<height>143</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1866,9 +1866,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>400</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>

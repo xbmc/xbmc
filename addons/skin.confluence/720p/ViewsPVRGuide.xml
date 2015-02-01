@@ -268,9 +268,9 @@
 				<control type="textbox">
 					<description>Plot value</description>
 					<left>280</left>
-					<top>55</top>
+					<top>57</top>
 					<width>840</width>
-					<height>65</height>
+					<height>63</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>grey</textcolor>
@@ -573,9 +573,9 @@
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
 							<left>50</left>
-							<top>35</top>
+							<top>37</top>
 							<width>1000</width>
-							<height>60</height>
+							<height>58</height>
 							<font>font12</font>
 							<align>justify</align>
 							<textcolor>grey2</textcolor>
@@ -952,9 +952,9 @@
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
 							<left>50</left>
-							<top>35</top>
+							<top>37</top>
 							<width>1000</width>
-							<height>60</height>
+							<height>58</height>
 							<font>font12</font>
 							<align>justify</align>
 							<textcolor>grey2</textcolor>
@@ -1278,9 +1278,9 @@
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
 							<left>50</left>
-							<top>40</top>
+							<top>42</top>
 							<width>1000</width>
-							<height>60</height>
+							<height>58</height>
 							<font>font12</font>
 							<align>justify</align>
 							<textcolor>grey2</textcolor>

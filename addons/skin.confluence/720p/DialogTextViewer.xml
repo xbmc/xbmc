@@ -47,9 +47,9 @@
 				<control type="textbox" id="5">
 					<description>textarea</description>
 					<left>210</left>
-					<top>90</top>
+					<top>92</top>
 					<width>1000</width>
-					<height>600</height>
+					<height>598</height>
 					<label>-</label>
 					<font>font13</font>
 					<align>justify</align>

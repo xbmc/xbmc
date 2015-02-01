@@ -234,9 +234,9 @@
 			<control type="textbox">
 				<description>Appearance Description</description>
 				<left>300</left>
-				<top>520</top>
+				<top>522</top>
 				<width>740</width>
-				<height>100</height>
+				<height>98</height>
 				<font>font12</font>
 				<label>$INFO[Container(9000).ListItem.Label2]</label>
 				<align>left</align>

@@ -283,9 +283,9 @@
 				<control type="textbox">
 					<description>Comment value</description>
 					<left>160</left>
-					<top>177</top>
+					<top>179</top>
 					<width>460</width>
-					<height>140</height>
+					<height>138</height>
 					<font>font13</font>
 					<pagecontrol>-</pagecontrol>
 					<label fallback="161">$INFO[ListItem.Comment]</label>
