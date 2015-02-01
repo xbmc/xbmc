@@ -67,7 +67,9 @@ bool CGUIWindowStartup::OnMessage(CGUIMessage& message)
 
     m_users.Clear();
 
-    if ((!g_guiSettings.GetBool("myplex.automaticlogin") && g_plexApplication.myPlexManager->IsPinProtected()) || m_allowEscOut)
+    if ((!g_guiSettings.GetBool("myplex.automaticlogin") &&
+         (g_plexApplication.myPlexManager->IsPinProtected() || g_plexApplication.myPlexManager->GetCurrentUserInfo().home))
+        || m_allowEscOut)
     {
       g_windowManager.setRetrictedAccess(true);
 
