@@ -325,6 +325,9 @@
     <Filter Include="network\test">
       <UniqueIdentifier>{1bdb0045-3341-49b7-8d6f-30a53f812350}</UniqueIdentifier>
     </Filter>
+    <Filter Include="video\jobs">
+      <UniqueIdentifier>{f413004c-1ab9-42ce-bb1a-0636e5286a00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3062,9 +3065,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBFile.cpp">
       <Filter>filesystem\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\MarkWatchedJob.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\BlurayFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3109,6 +3109,27 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.cpp">
       <Filter>dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryJob.cpp">
+      <Filter>video\jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\VideoLibraryQueue.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryScanningJob.cpp">
+      <Filter>video\jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryMarkWatchedJob.cpp">
+      <Filter>video\jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryCleaningJob.cpp">
+      <Filter>video\jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\ProgressJob.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.cpp">
+      <Filter>video\jobs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6003,9 +6024,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBFile.h">
       <Filter>filesystem\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\MarkWatchedJob.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\DiscSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
@@ -6050,6 +6068,27 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryJob.h">
+      <Filter>video\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\VideoLibraryQueue.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryScanningJob.h">
+      <Filter>video\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryMarkWatchedJob.h">
+      <Filter>video\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryCleaningJob.h">
+      <Filter>video\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ProgressJob.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.h">
+      <Filter>video\jobs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
