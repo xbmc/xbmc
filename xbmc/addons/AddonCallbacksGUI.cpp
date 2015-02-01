@@ -1591,6 +1591,9 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
     CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowId);
     OnMessage(msg);
 
+    // this dialog is derived from GUiMediaWindow
+    // make sure it is rendered last
+    m_renderOrder = 2;
     while (m_bRunning && !g_application.m_bStop)
     {
       g_windowManager.ProcessRenderLoop();
