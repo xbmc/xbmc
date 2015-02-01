@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">602</defaultcontrol>
+	<defaultcontrol always="true">100</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
@@ -25,7 +25,7 @@
 			<onup>100</onup>
 			<ondown>100</ondown>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 		</control>
 		<control type="slider" id="87">
 			<description>Seek Slider</description>
@@ -40,7 +40,7 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 		</control>
 		<control type="grouplist" id="100">
 			<left>325</left>
@@ -50,7 +50,27 @@
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<control type="button" id="300">
+				<width>55</width>
+				<height>55</height>
+				<label>210</label>
+				<font>-</font>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>MusicPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="301">
+				<width>55</width>
+				<height>55</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>MusicPlayer.Content(LiveTV)</visible>
+			</control>
 			<control type="button" id="600">
 				<width>55</width>
 				<height>55</height>
@@ -59,6 +79,7 @@
 				<texturefocus>OSDPrevTrackFO.png</texturefocus>
 				<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
 				<onclick>PlayerControl(Previous)</onclick>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="601">
 				<width>55</width>
@@ -67,7 +88,9 @@
 				<font>-</font>
 				<texturefocus>OSDRewindFO.png</texturefocus>
 				<texturenofocus>OSDRewindNF.png</texturenofocus>
+				<animation effect="fade" start="100" end="50" time="100" condition="!Player.SeekEnabled">Conditional</animation>
 				<onclick>PlayerControl(Rewind)</onclick>
+				<enable>Player.SeekEnabled</enable>
 			</control>
 			<control type="togglebutton" id="602">
 				<width>55</width>
@@ -80,7 +103,9 @@
 				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<animation effect="fade" start="100" end="50" time="100" condition="!Player.PauseEnabled">Conditional</animation>
 				<onclick>PlayerControl(Play)</onclick>
+				<enable>Player.PauseEnabled</enable>
 			</control>
 			<control type="button" id="603">
 				<width>55</width>
@@ -98,7 +123,9 @@
 				<font>-</font>
 				<texturefocus>OSDForwardFO.png</texturefocus>
 				<texturenofocus>OSDForwardNF.png</texturenofocus>
+				<animation effect="fade" start="100" end="50" time="100" condition="!Player.SeekEnabled">Conditional</animation>
 				<onclick>PlayerControl(Forward)</onclick>
+				<enable>Player.SeekEnabled</enable>
 			</control>
 			<control type="button" id="605">
 				<width>55</width>
@@ -107,11 +134,33 @@
 				<font>-</font>
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
 				<onclick>PlayerControl(Next)</onclick>
+			</control>
+			<control type="button" id="306">
+				<width>55</width>
+				<height>55</height>
+				<label>19019</label>
+				<font>-</font>
+				<texturefocus>OSDChannelListFO.png</texturefocus>
+				<texturenofocus>OSDChannelListNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVROSDChannels)</onclick>
+				<visible>MusicPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="307">
+				<width>55</width>
+				<height>55</height>
+				<label>$LOCALIZE[19029]$INFO[MusicPlayer.ChannelName, - ]</label>
+				<font>-</font>
+				<texturefocus>OSDepgFO.png</texturefocus>
+				<texturenofocus>OSDepgNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVROSDGuide)</onclick>
+				<visible>MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="group" id="699">
 				<width>55</width>
 				<height>55</height>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
 				<control type="button" id="606">
 					<left>0</left>
 					<top>0</top>
@@ -192,12 +241,19 @@
 				<usealttexture>Playlist.IsRandom</usealttexture>
 				<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
 				<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
 				<onclick>PlayerControl(Random)</onclick>
 			</control>
 			<control type="image" id="2300">
 				<width>215</width>
 				<height>55</height>
 				<texture>-</texture>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="image" id="2400">
+				<width>270</width>
+				<texture>-</texture>
+				<visible>MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="701">
 				<width>55</width>
@@ -214,6 +270,7 @@
 				<altclick>Close</altclick>
 				<altclick>RunScript($INFO[Skin.String(LyricScript_Path)])</altclick>
 				<usealttexture>IsEmpty(Skin.String(LyricScript_Path))</usealttexture>
+				<visible>!MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="500">
 				<width>55</width>
