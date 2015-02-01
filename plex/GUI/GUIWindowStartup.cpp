@@ -43,6 +43,7 @@
 #define CONTROL_NUM0 10
 #define CONTROL_NUM9 19
 #define CONTROL_BACKSPACE 23
+#define CONTROL_PINKEYBOARD 500
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowStartup::CGUIWindowStartup(void)
@@ -298,6 +299,16 @@ void CGUIWindowStartup::OnUserSelected(CFileItemPtr item)
     m_selectedUser = "";
     m_selectedUserThumb = "";
     PreviousWindow();
+  }
+  else
+  {
+    // focus the pin keyboard to have it show up
+    CGUIControl *pinKeyboard = (CGUIControl*)GetControl(CONTROL_PINKEYBOARD);
+    if (pinKeyboard)
+    {
+      CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), CONTROL_PINKEYBOARD, 0);
+      g_windowManager.SendMessage(msg);
+    }
   }
 }
 
