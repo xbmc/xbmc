@@ -91,6 +91,25 @@ passed_ldflags="$LDFLAGS"
 passed_cxxflags="$CXXFLAGS"
 platform_cc=gcc
 platform_cxx=g++
+
+case $build in
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+    build_os="linux"
+  ;;
+  *darwin*)
+    build_os="osx"
+  ;;
+  *)
+    AC_MSG_ERROR(unsupported native build platform: $build)
+esac
+
+
 case $host in
   arm*-*linux-android*)
     if test "x$use_cpu" = "xauto"; then
@@ -383,7 +402,6 @@ if test "$platform_os" == "android"; then
   if ! test -f "$use_ndk/RELEASE.TXT" ; then
     AC_MSG_ERROR("$use_ndk is not an NDK directory")
   fi
-  use_ndk_ver=0x`cat $use_ndk/RELEASE.TXT | sed 's/^r\([[0-9a-z]]\+\)\b.*/\1/'`
 
   if test -z $use_sdk_path; then
     AC_MSG_ERROR("SDK path is required for android")
@@ -397,7 +415,10 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR(verify ndk path)
   fi
 
-  build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort -V | tail -n 1`
+  #not all sort versions support -V - probe it...
+  SORT_PARAMS=""
+  sort -V /dev/null > /dev/null 2>&1 && SORT_PARAMS="-V"
+  build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort $SORT_PARAMS | tail -n 1`
 
   AC_PATH_PROG(AAPT,aapt,"no",$build_tools_path)
   if test "x$AAPT" = "xno" ; then
@@ -464,7 +485,6 @@ if test "$platform_os" == "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
   AC_SUBST(use_ndk)
-  AC_SUBST(use_ndk_ver)
   AC_SUBST(use_sdk)
 fi
 
@@ -482,6 +502,7 @@ AC_SUBST(platform_cxxflags)
 AC_SUBST(platform_ldflags)
 AC_SUBST(platform_includes)
 AC_SUBST(platform_os)
+AC_SUBST(build_os)
 AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)

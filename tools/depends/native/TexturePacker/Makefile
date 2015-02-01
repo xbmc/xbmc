@@ -14,10 +14,10 @@ else
   PLATFORM = $(NATIVEPLATFORM)
 endif
 
-ifeq ($(OS), linux)
+ifeq ($(NATIVE_OS), linux)
   EXTRA_CONFIGURE = --enable-static
 endif
-ifeq ($(OS), android)
+ifeq ($(NATIVE_OS), android)
   EXTRA_CONFIGURE = --enable-static
 endif
 
@@ -36,7 +36,7 @@ $(PLATFORM): ../libsquish-native/.installed-$(PLATFORM)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); cp -a $(SOURCE)/* .
 	cd $(PLATFORM); ./autogen.sh
-	cd $(PLATFORM); ./configure --prefix=$(PREFIX) $(EXTRA_CONFIGURE) EXTRA_DEFINES="$(ARCH_DEFINES)"
+	cd $(PLATFORM); ./configure --prefix=$(PREFIX) $(EXTRA_CONFIGURE) EXTRA_DEFINES="$(NATIVE_ARCH_DEFINES)"
 
 
 $(APP): $(PLATFORM)

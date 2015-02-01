@@ -2,7 +2,6 @@ abs_top_srcdir=@abs_top_srcdir@
 
 TOOLCHAIN=@use_toolchain@
 NDKROOT=@use_ndk@
-NDK_VER=@use_ndk_ver@
 SDKROOT=@use_sdk_path@
 XBMCROOT=$(abspath $(abs_top_srcdir)/../../)
 TARBALLS_LOCATION=@use_tarballs@
@@ -17,8 +16,10 @@ PREFIX=@prefix@/@deps_dir@
 NATIVEPREFIX=@prefix@/@tool_dir@
 ARCHIVE_TOOL_NATIVE=$(NATIVEPREFIX)/bin/tar
 OS=@platform_os@
+NATIVE_OS=@build_os@
 CROSS_COMPILING=@cross_compiling@
 ARCH_DEFINES=@ARCH_DEFINES@
+NATIVE_ARCH_DEFINES=@NATIVE_ARCH_DEFINES@
 TARGET_PLATFORM=@use_platform@
 XCODE_VERSION=@use_xcode@
 AAPT=@AAPT@
@@ -52,10 +53,10 @@ READELF=@READELF@
 OBJDUMP=@OBJDUMP@
 
 CMAKE=@prefix@/@tool_dir@/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
-CFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
+CFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
 LDFLAGS=-L@prefix@/@deps_dir@/lib @platform_ldflags@
-CXXFLAGS=@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
-CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include -DNDK_VER=@use_ndk_ver@
+CXXFLAGS=@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
+CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
 
 PATH:=@prefix@/@tool_dir@/bin:$(PATH)
 ifneq (@use_build_toolchain@,)
