@@ -290,9 +290,6 @@
 #include <shlobj.h>
 #include "win32util.h"
 #endif
-#ifdef HAS_XRANDR
-#include "windowing/X11/XRandR.h"
-#endif
 
 #ifdef TARGET_DARWIN_OSX
 #include "osx/CocoaInterface.h"
@@ -751,10 +748,6 @@ bool CApplication::Create()
 
   std::string strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
-
-#ifdef HAS_XRANDR
-  g_xrandr.LoadCustomModeLinesToAllOutputs();
-#endif
 
   // for python scripts that check the OS
 #if defined(TARGET_DARWIN)
