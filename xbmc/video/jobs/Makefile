@@ -2,6 +2,7 @@ SRCS=VideoLibraryCleaningJob.cpp \
      VideoLibraryJob.cpp \
      VideoLibraryMarkWatchedJob.cpp \
      VideoLibraryProgressJob.cpp \
+     VideoLibraryScanningJob.cpp \
      
 LIB=video-jobs.a
 
