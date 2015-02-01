@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">202</defaultcontrol>
+	<defaultcontrol always="false">100</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
@@ -188,7 +188,6 @@
 		<control type="grouplist" id="100">
 			<left>325</left>
 			<top>60r</top>
-			<defaultcontrol always="true">301</defaultcontrol>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
