@@ -631,6 +631,11 @@ namespace PVR
     ManagerState GetState(void) const;
 
     void SetState(ManagerState state);
+
+    bool AllLocalBackendsIdle(void) const;
+    bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
+    bool IsNextEventWithinBackendIdleTime(void) const;
+
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
