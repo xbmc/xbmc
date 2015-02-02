@@ -102,7 +102,7 @@
 				<height>470</height>
 				<onup>20</onup>
 				<ondown>20</ondown>
-				<onleft>9002</onleft>
+				<onleft>9000</onleft>
 				<onright>60</onright>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
@@ -278,9 +278,9 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19074</label>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
-					<onup>30</onup>
+					<onup>34</onup>
 					<ondown>8</ondown>
 				</control>
 				<control type="edit" id="8">
@@ -297,7 +297,7 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19201</label>
 					<onright>9000</onright>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onup>7</onup>
 					<ondown>9</ondown>
 				</control>
@@ -311,7 +311,7 @@
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19202</label>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>8</onup>
 					<ondown>12</ondown>
@@ -341,7 +341,7 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19206</label>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>9</onup>
 					<ondown>13</ondown>
@@ -357,7 +357,7 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19200</label>
 					<onright>9000</onright>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onup>12</onup>
 					<ondown>14</ondown>
 				</control>
@@ -377,7 +377,7 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19267</label>
-					<onleft>20</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>13</onup>
 					<ondown>30</ondown>
@@ -410,13 +410,13 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<align>center</align>
 					<label>19205</label>
-					<onleft>20</onleft>
-					<onright>34</onright>
+					<onleft>60</onleft>
+					<onright>9000</onright>
 					<onup>14</onup>
-					<ondown>7</ondown>
+					<ondown>34</ondown>
 				</control>
 				<control type="button" id="34">
-					<description>TV/Radio Button</description>
+					<description>TV to Radio Button</description>
 					<left>0</left>
 					<top>75</top>
 					<width>380</width>
@@ -427,13 +427,13 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<align>center</align>
 					<label>19024</label>
-					<onleft>30</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
-					<onup>14</onup>
+					<onup>30</onup>
 					<ondown>7</ondown>
 				</control>
 				<control type="button" id="34">
-					<description>TV/Radio Button</description>
+					<description>Radio to TV Button</description>
 					<left>0</left>
 					<top>75</top>
 					<width>380</width>
@@ -444,9 +444,9 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<align>center</align>
 					<label>19023</label>
-					<onleft>30</onleft>
+					<onleft>60</onleft>
 					<onright>9000</onright>
-					<onup>14</onup>
+					<onup>30</onup>
 					<ondown>7</ondown>
 				</control>
 			</control>
