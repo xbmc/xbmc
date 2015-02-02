@@ -4,6 +4,7 @@
 	<controls>
 		<!-- ViewsUserSwitchLogin.xml -->
 		<control type="group">
+			<include>UserSwitchLoginBg</include>
 			<include>UserSwitchLogin</include>
 			<include>KbPIN</include>
 		</control>

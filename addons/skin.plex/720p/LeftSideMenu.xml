@@ -661,7 +661,7 @@
 					<texturenofocus>b-pp-watched.png</texturenofocus>
 					<onright>XBMC.NextItem</onright>
 					<onleft>XBMC.PrevItem</onleft>
-					<onclick>markasunwatched</onclick>
+					<onclick>markaswatched</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>ListItem.Status(unwatched) | ListItem.Status(inprogress)</visible>
 				</control>
@@ -671,7 +671,7 @@
 					<texturenofocus>b-pp-unwatched.png</texturenofocus>
 					<onright>XBMC.NextItem</onright>
 					<onleft>XBMC.PrevItem</onleft>
-					<onclick>markaswatched</onclick>
+					<onclick>markasunwatched</onclick>
 					<include>leftMenuBarButton</include>
 					<visible>ListItem.Status(watched)</visible>
 				</control>
