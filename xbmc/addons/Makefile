@@ -21,6 +21,7 @@ SRCS=Addon.cpp \
      Service.cpp \
      Skin.cpp \
      Visualisation.cpp \
+     Webinterface.cpp \
 
 LIB=addons.a
 
