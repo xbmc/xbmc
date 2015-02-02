@@ -20,6 +20,8 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "settings/GUISettings.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "GUI/GUIWindowStartup.h"
+#include "addons/Skin.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include "cores/AudioEngine/Engines/CoreAudio/CoreAudioDevice.h"
@@ -60,7 +62,10 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
           }
           else
           {
-            g_windowManager.ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+            CGUIWindowStartup* startup = (CGUIWindowStartup*)g_windowManager.GetWindow(WINDOW_STARTUP_ANIM);
+            if (startup)
+              startup->allowEscOut(false);
+            g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow(), std::vector<CStdString>(), true);
           }
           break;
         }
