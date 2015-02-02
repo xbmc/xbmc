@@ -21,10 +21,18 @@
 #include "IHTTPRequestHandler.h"
 #include "network/WebServer.h"
 
+IHTTPRequestHandler::IHTTPRequestHandler()
+  : m_request(),
+    m_response(),
+    m_postFields(),
+    m_ranged(false)
+{ }
+
 IHTTPRequestHandler::IHTTPRequestHandler(const HTTPRequest &request)
   : m_request(request),
     m_response(),
-    m_postFields()
+    m_postFields(),
+    m_ranged(false)
 {
   m_response.type = HTTPError;
   m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;

@@ -233,7 +233,7 @@ public:
 #endif
 
 protected:
-  IHTTPRequestHandler() { }
+  IHTTPRequestHandler();
   explicit IHTTPRequestHandler(const HTTPRequest &request);
 
 #if (MHD_VERSION >= 0x00040001)
