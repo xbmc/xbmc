@@ -149,7 +149,11 @@ CPlexRemoteResponse CPlexRemotePlayHandler::handle(const CStdString& url, const 
   CURL dirURL;
   if (!containerPath.empty())
   {
-    if (boost::starts_with(containerPath, "/playQueues"))
+    std::string type;
+    if (arguments.find("type") != arguments.end())
+      type = arguments.find("type")->second;
+
+    if (boost::starts_with(containerPath, "/playQueues") && type != "photo")
       return playPlayQueue(server, containerPath, arguments);
     else
       dirURL = server->BuildPlexURL(containerPath);
