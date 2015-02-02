@@ -96,7 +96,8 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
     }
 
     if (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
-        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP)
+        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
+        iActionId == ACTION_FIRST_PAGE || iActionId == ACTION_LAST_PAGE)
     {
       CGUIDialog::OnAction(action);
       int iSelected = m_viewControl.GetSelectedItem();
@@ -114,7 +115,7 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
       {
         std::string strNumber;
 
-        bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
+        bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP || iActionId == ACTION_FIRST_PAGE;
         unsigned int iLines = bMoveUp ? abs(m_iSelected - iSelected) : 1;
         bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
         if (bOutOfBounds)
