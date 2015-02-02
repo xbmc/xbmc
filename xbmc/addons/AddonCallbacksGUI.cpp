@@ -96,6 +96,8 @@ CAddonCallbacksGUI::CAddonCallbacksGUI(CAddon* addon)
   m_callbacks->Window_GetControl_Edit         = CAddonCallbacksGUI::Window_GetControl_Edit;
   m_callbacks->Window_GetControl_Progress     = CAddonCallbacksGUI::Window_GetControl_Progress;
   m_callbacks->Window_GetControl_RenderAddon  = CAddonCallbacksGUI::Window_GetControl_RenderAddon;
+  m_callbacks->Window_GetControl_Slider       = CAddonCallbacksGUI::Window_GetControl_Slider;
+  m_callbacks->Window_GetControl_SettingsSlider= CAddonCallbacksGUI::Window_GetControl_SettingsSlider;
 
   m_callbacks->Window_SetControlLabel         = CAddonCallbacksGUI::Window_SetControlLabel;
   m_callbacks->Window_MarkDirtyRegion         = CAddonCallbacksGUI::Window_MarkDirtyRegion;
@@ -132,6 +134,33 @@ CAddonCallbacksGUI::CAddonCallbacksGUI(CAddon* addon)
 
   m_callbacks->RenderAddon_SetCallbacks       = CAddonCallbacksGUI::RenderAddon_SetCallbacks;
   m_callbacks->RenderAddon_Delete             = CAddonCallbacksGUI::RenderAddon_Delete;
+
+  m_callbacks->Control_Slider_SetVisible              = CAddonCallbacksGUI::Control_Slider_SetVisible;
+  m_callbacks->Control_Slider_GetDescription          = CAddonCallbacksGUI::Control_Slider_GetDescription;
+  m_callbacks->Control_Slider_SetIntRange             = CAddonCallbacksGUI::Control_Slider_SetIntRange;
+  m_callbacks->Control_Slider_SetIntValue             = CAddonCallbacksGUI::Control_Slider_SetIntValue;
+  m_callbacks->Control_Slider_GetIntValue             = CAddonCallbacksGUI::Control_Slider_GetIntValue;
+  m_callbacks->Control_Slider_SetIntInterval          = CAddonCallbacksGUI::Control_Slider_SetIntInterval;
+  m_callbacks->Control_Slider_SetPercentage           = CAddonCallbacksGUI::Control_Slider_SetPercentage;
+  m_callbacks->Control_Slider_GetPercentage           = CAddonCallbacksGUI::Control_Slider_GetPercentage;
+  m_callbacks->Control_Slider_SetFloatRange           = CAddonCallbacksGUI::Control_Slider_SetFloatRange;
+  m_callbacks->Control_Slider_SetFloatValue           = CAddonCallbacksGUI::Control_Slider_SetFloatValue;
+  m_callbacks->Control_Slider_GetFloatValue           = CAddonCallbacksGUI::Control_Slider_GetFloatValue;
+  m_callbacks->Control_Slider_SetFloatInterval        = CAddonCallbacksGUI::Control_Slider_SetFloatInterval;
+
+  m_callbacks->Control_SettingsSlider_SetVisible      = CAddonCallbacksGUI::Control_SettingsSlider_SetVisible;
+  m_callbacks->Control_SettingsSlider_SetText         = CAddonCallbacksGUI::Control_SettingsSlider_SetText;
+  m_callbacks->Control_SettingsSlider_GetDescription  = CAddonCallbacksGUI::Control_SettingsSlider_GetDescription;
+  m_callbacks->Control_SettingsSlider_SetIntRange     = CAddonCallbacksGUI::Control_SettingsSlider_SetIntRange;
+  m_callbacks->Control_SettingsSlider_SetIntValue     = CAddonCallbacksGUI::Control_SettingsSlider_SetIntValue;
+  m_callbacks->Control_SettingsSlider_GetIntValue     = CAddonCallbacksGUI::Control_SettingsSlider_GetIntValue;
+  m_callbacks->Control_SettingsSlider_SetIntInterval  = CAddonCallbacksGUI::Control_SettingsSlider_SetIntInterval;
+  m_callbacks->Control_SettingsSlider_SetPercentage   = CAddonCallbacksGUI::Control_SettingsSlider_SetPercentage;
+  m_callbacks->Control_SettingsSlider_GetPercentage   = CAddonCallbacksGUI::Control_SettingsSlider_GetPercentage;
+  m_callbacks->Control_SettingsSlider_SetFloatRange   = CAddonCallbacksGUI::Control_SettingsSlider_SetFloatRange;
+  m_callbacks->Control_SettingsSlider_SetFloatValue   = CAddonCallbacksGUI::Control_SettingsSlider_SetFloatValue;
+  m_callbacks->Control_SettingsSlider_GetFloatValue   = CAddonCallbacksGUI::Control_SettingsSlider_GetFloatValue;
+  m_callbacks->Control_SettingsSlider_SetFloatInterval= CAddonCallbacksGUI::Control_SettingsSlider_SetFloatInterval;
 }
 
 CAddonCallbacksGUI::~CAddonCallbacksGUI()
@@ -1138,6 +1167,307 @@ const char* CAddonCallbacksGUI::Control_Progress_GetDescription(void *addonData,
   return buffer;
 }
 
+/*
+ * GUI slider control callback functions
+ */
+GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Slider(void *addonData, GUIHANDLE handle, int controlId)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return NULL;
+
+  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_SLIDER)
+    return NULL;
+
+  return pGUIControl;
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUIControl *pControl = (CGUIControl*)handle;
+  pControl->SetVisible(yesNo);
+}
+
+const char* CAddonCallbacksGUI::Control_Slider_GetDescription(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return NULL;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  std::string string = pControl->GetDescription();
+
+  char *buffer = (char*) malloc (string.length()+1);
+  strcpy(buffer, string.c_str());
+  return buffer;
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetRange(iStart, iEnd);
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_INT);
+  pControl->SetIntValue(iValue);
+}
+
+int CAddonCallbacksGUI::Control_Slider_GetIntValue(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  return pControl->GetIntValue();
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetIntInterval(iInterval);
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
+  pControl->SetPercentage(fPercent);
+}
+  
+float CAddonCallbacksGUI::Control_Slider_GetPercentage(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0.0f;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  return pControl->GetPercentage();
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetFloatRange(fStart, fEnd);
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetFloatValue(void *addonData, GUIHANDLE handle, float iValue)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
+  pControl->SetFloatValue(iValue);
+}
+
+float CAddonCallbacksGUI::Control_Slider_GetFloatValue(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0.0f;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  return pControl->GetFloatValue();
+}
+
+void CAddonCallbacksGUI::Control_Slider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  pControl->SetFloatInterval(fInterval);
+}
+
+/*
+ * GUI settings slider control callback functions
+ */
+GUIHANDLE CAddonCallbacksGUI::Window_GetControl_SettingsSlider(void *addonData, GUIHANDLE handle, int controlId)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return NULL;
+
+  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_SETTINGS_SLIDER)
+    return NULL;
+
+  return pGUIControl;
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUIControl *pControl = (CGUIControl*)handle;
+  pControl->SetVisible(yesNo);
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetText(void *addonData, GUIHANDLE handle, const char *label)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetText(label);
+}
+
+const char* CAddonCallbacksGUI::Control_SettingsSlider_GetDescription(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return NULL;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  std::string string = pControl->GetDescription();
+
+  char *buffer = (char*) malloc (string.length()+1);
+  strcpy(buffer, string.c_str());
+  return buffer;
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetRange(iStart, iEnd);
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_INT);
+  pControl->SetIntValue(iValue);
+}
+
+int CAddonCallbacksGUI::Control_SettingsSlider_GetIntValue(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  return pControl->GetIntValue();
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetIntInterval(iInterval);
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
+  pControl->SetPercentage(fPercent);
+}
+
+float CAddonCallbacksGUI::Control_SettingsSlider_GetPercentage(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0.0f;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  return pControl->GetPercentage();
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetFloatRange(fStart, fEnd);
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatValue(void *addonData, GUIHANDLE handle, float fValue)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
+  pControl->SetFloatValue(fValue);
+}
+
+float CAddonCallbacksGUI::Control_SettingsSlider_GetFloatValue(void *addonData, GUIHANDLE handle)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return 0.0f;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  return pControl->GetFloatValue();
+}
+
+void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper || !handle)
+    return;
+
+  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  pControl->SetFloatInterval(fInterval);
+}
+
+/*
+ * GUI list item control callback functions
+ */
 GUIHANDLE CAddonCallbacksGUI::ListItem_Create(void *addonData, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;

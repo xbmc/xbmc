@@ -444,7 +444,7 @@ void CAddonGUIProgressControl::SetPercentage(float fPercent)
 float CAddonGUIProgressControl::GetPercentage() const
 {
   if (!m_ProgressHandle)
-    return 0.0;
+    return 0.0f;
 
   return ((CB_GUILib*)m_cb)->Control_Progress_GetPercentage(((AddonCB*)m_Handle)->addonData, m_ProgressHandle);
 }
@@ -469,6 +469,214 @@ string CAddonGUIProgressControl::GetDescription() const
     return "";
 
   return ((CB_GUILib*)m_cb)->Control_Progress_GetDescription(((AddonCB*)m_Handle)->addonData, m_ProgressHandle);
+}
+
+
+///-------------------------------------
+/// cGUISliderControl
+
+DLLEXPORT CAddonGUISliderControl* GUI_control_get_slider(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+{
+  return new CAddonGUISliderControl(hdl, cb, window, controlId);
+}
+
+DLLEXPORT void GUI_control_release_slider(CAddonGUISliderControl* p)
+{
+  delete p;
+}
+
+CAddonGUISliderControl::CAddonGUISliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+ : m_Window(window)
+ , m_ControlId(controlId)
+ , m_Handle(hdl)
+ , m_cb(cb)
+{
+  m_SliderHandle = ((CB_GUILib*)m_cb)->Window_GetControl_Slider(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
+}
+
+void CAddonGUISliderControl::SetVisible(bool yesNo)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetVisible(((AddonCB*)m_Handle)->addonData, m_SliderHandle, yesNo);
+}
+
+string CAddonGUISliderControl::GetDescription() const
+{
+  if (!m_SliderHandle)
+    return "";
+
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetDescription(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetIntRange(int iStart, int iEnd)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntRange(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iStart, iEnd);
+}
+
+void CAddonGUISliderControl::SetIntValue(int iValue)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iValue);
+}
+
+int CAddonGUISliderControl::GetIntValue() const
+{
+  if (!m_SliderHandle)
+    return 0;
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetIntValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetIntInterval(int iInterval)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntInterval(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iInterval);
+}
+
+void CAddonGUISliderControl::SetPercentage(float fPercent)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetPercentage(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fPercent);
+}
+
+float CAddonGUISliderControl::GetPercentage() const
+{
+  if (!m_SliderHandle)
+    return 0.0f;
+
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetPercentage(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetFloatRange(float fStart, float fEnd)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatRange(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fStart, fEnd);
+}
+
+void CAddonGUISliderControl::SetFloatValue(float fValue)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fValue);
+}
+
+float CAddonGUISliderControl::GetFloatValue() const
+{
+  if (!m_SliderHandle)
+    return 0.0f;
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetFloatValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetFloatInterval(float fInterval)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatInterval(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fInterval);
+}
+
+
+///-------------------------------------
+/// cGUISettingsSliderControl
+
+DLLEXPORT CAddonGUISettingsSliderControl* GUI_control_get_settings_slider(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+{
+  return new CAddonGUISettingsSliderControl(hdl, cb, window, controlId);
+}
+
+DLLEXPORT void GUI_control_release_settings_slider(CAddonGUISettingsSliderControl* p)
+{
+  delete p;
+}
+
+CAddonGUISettingsSliderControl::CAddonGUISettingsSliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+ : m_Window(window)
+ , m_ControlId(controlId)
+ , m_Handle(hdl)
+ , m_cb(cb)
+{
+  m_SettingsSliderHandle = ((CB_GUILib*)m_cb)->Window_GetControl_SettingsSlider(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
+}
+
+void CAddonGUISettingsSliderControl::SetVisible(bool yesNo)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetVisible(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, yesNo);
+}
+
+void CAddonGUISettingsSliderControl::SetText(const char *label)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetText(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, label);
+}
+
+string CAddonGUISettingsSliderControl::GetDescription() const
+{
+  if (!m_SettingsSliderHandle)
+    return "";
+
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetDescription(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetIntRange(int iStart, int iEnd)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntRange(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iStart, iEnd);
+}
+
+void CAddonGUISettingsSliderControl::SetIntValue(int iValue)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iValue);
+}
+
+int CAddonGUISettingsSliderControl::GetIntValue() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0;
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetIntValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetIntInterval(int iInterval)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntInterval(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iInterval);
+}
+
+void CAddonGUISettingsSliderControl::SetPercentage(float fPercent)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetPercentage(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fPercent);
+}
+
+float CAddonGUISettingsSliderControl::GetPercentage() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0.0f;
+
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetPercentage(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatRange(float fStart, float fEnd)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatRange(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fStart, fEnd);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatValue(float fValue)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fValue);
+}
+
+float CAddonGUISettingsSliderControl::GetFloatValue() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0.0f;
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetFloatValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatInterval(float fInterval)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatInterval(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fInterval);
 }
 
 
