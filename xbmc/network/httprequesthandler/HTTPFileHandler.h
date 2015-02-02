@@ -39,7 +39,7 @@ public:
   virtual std::string GetResponseFile() const { return m_url; }
 
 protected:
-  CHTTPFileHandler() { }
+  CHTTPFileHandler();
   explicit CHTTPFileHandler(const HTTPRequest &request);
 
   void SetFile(const std::string& file, int responseStatus);
