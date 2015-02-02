@@ -1,6 +1,26 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- reusables -->
+	<include name="UserSwitchLoginBg">
+		<!-- bg's -->
+		<control type="group">
+			<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
+			<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>base.png</texture>
+				<colordiffuse>FF111111</colordiffuse>
+			</control>
+			<control type="image">
+				<posy>0</posy>
+				<posx>540</posx>
+				<width>200</width>
+				<aspectratio>keep</aspectratio>
+				<texture>plex-logo-light-small.png</texture>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			</control>
+		</control>
+	</include>
 	<include name="UserSwitchLoginUser">
 		<control type="group">
 			<!-- card -->
@@ -137,7 +157,7 @@
 	</include>
 	<include name="UserSwitchLoginUserSelected">
 		<control type="group">
-			<!-- Sans PIN -->
+			<!-- Sans PIN kb -->
 			<control type="group">
 				<visible>IsEmpty(ListItem.Property(protected)) | [!IsEmpty(ListItem.Property(protected)) + IsEmpty(Control.GetLabel(4)) + !ControlGroup(500).HasFocus]</visible>
 				<!-- card -->
@@ -148,8 +168,8 @@
 						<width>204</width>
 						<height>254</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture>mask-userswitch-selected.png</texture>
-						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						<texture>mask-userswitch-selected-grey.png</texture>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="image">
 						<posx>4</posx>
@@ -209,59 +229,19 @@
 					</control>
 				</control>
 			</control>
-			<!-- With PIN -->
+			<!-- With PIN kb -->
 			<control type="group">
-				<visible>[!IsEmpty(ListItem.Property(protected)) | !IsEmpty(Container(3).ListItem(0).Property(protected))]</visible>
+				<visible>!IsEmpty(Control.GetLabel(4)) | ControlGroup(500).HasFocus</visible>
 				<!-- card -->
 				<control type="group">
-					<visible>!ControlGroup(500).HasFocus + !IsEmpty(Control.GetLabel(4))</visible>
 					<control type="image">
 						<posx>4</posx>
 						<posy>4</posy>
 						<width>204</width>
 						<height>254</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture>mask-userswitch-selected.png</texture>
-						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
-					</control>
-					<control type="image">
-						<posx>4</posx>
-						<posy>4</posy>
-						<width>204</width>
-						<height>254</height>
-						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture diffuse="mask-userswitch-selected.png" blur="20">$INFO[Container(3).ListItem(0).Art(thumb)]</texture>
-					</control>
-					<control type="image">
-						<posx>4</posx>
-						<posy>4</posy>
-						<width>204</width>
-						<height>254</height>
-						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture>mask-userswitch-selected.png</texture>
-						<colordiffuse>black</colordiffuse>
-						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
-					</control>
-					<control type="image">
-						<posx>4</posx>
-						<posy>208</posy>
-						<width>204</width>
-						<height>50</height>
-						<texture>mask-userswitch-selected-bottom.png</texture>
-						<colordiffuse>black</colordiffuse>
-						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
-					</control>
-				</control>
-				<control type="group">
-					<visible>ControlGroup(500).HasFocus</visible>
-					<control type="image">
-						<posx>4</posx>
-						<posy>4</posy>
-						<width>204</width>
-						<height>254</height>
-						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-						<texture>mask-userswitch-selected-PIN.png</texture>
-						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						<texture>mask-userswitch-selected-PIN-grey.png</texture>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="image">
 						<posx>4</posx>
@@ -300,8 +280,7 @@
 						<height>150</height>
 						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 						<texture diffuse="round-big.png">round-big.png</texture>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<colordiffuse>orange</colordiffuse>
+						<animation effect="fade" start="20" end="20" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="image">
 						<posy>5</posy>
@@ -498,23 +477,6 @@
 					<visible>!IsEmpty(ListItem.Property(protected)) | !IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
 				</control>
 			</control>
-			<control type="button">
-				<description>show kb</description>
-				<onclick>Skin.ToggleSetting(ShowSuccess)</onclick>
-				<textcolor></textcolor>
-				<texturefocus></texturefocus>
-				<texturenofocus></texturenofocus>
-				<focusedcolor></focusedcolor>
-			</control>
-			<control type="image">
-				<posx>4</posx>
-				<posy>268</posy>
-				<width>204</width>
-				<height>50</height>
-				<texture>mask-userswitch-selected-bottom.png</texture>
-				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
-				<visible>!Skin.HasSetting(ShowSuccess)</visible>
-			</control>
 		</control>
 	</include>
 	<include name="UserSwitchLoginKbButton">
@@ -527,17 +489,6 @@
 		<texturenofocus>mask-userswitch-kb-button.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
 	</include>
-	<include name="UserSwitchLoginKbButtonDummy">
-		<font>Regular-16</font>
-		<width>50</width>
-		<height>40</height>
-		<textoffsetx>20</textoffsetx>
-		<textcolor>greyLight</textcolor>
-		<texturefocus>orange.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-button.png</texturenofocus>
-		<focusedcolor>black</focusedcolor>
-		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
-	</include>
 	<include name="UserSwitchLoginKbButtonBS">
 		<font>Regular-12</font>
 		<width>51</width>
@@ -547,17 +498,6 @@
 		<texturefocus>mask-userswitch-kb-delete-selected.png</texturefocus>
 		<texturenofocus>mask-userswitch-kb-delete.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
-	</include>
-	<include name="UserSwitchLoginKbButtonBSDummy">
-		<font>Regular-12</font>
-		<width>51</width>
-		<height>163</height>
-		<textoffsetx>20</textoffsetx>
-		<textcolor>greyLight</textcolor>
-		<texturefocus>mask-userswitch-kb-delete-selected.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-delete.png</texturenofocus>
-		<focusedcolor>black</focusedcolor>
-		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="UserSwitchLoginKbButtonZero">
 		<font>Regular-16</font>
@@ -569,38 +509,9 @@
 		<texturenofocus>mask-userswitch-kb-zero.png</texturenofocus>
 		<focusedcolor>black</focusedcolor>
 	</include>
-	<include name="UserSwitchLoginKbButtonZeroDummy">
-		<font>Regular-16</font>
-		<width>152</width>
-		<height>40</height>
-		<textoffsetx>71</textoffsetx>
-		<textcolor>greyLight</textcolor>
-		<texturefocus>mask-userswitch-kb-zero-selected.png</texturefocus>
-		<texturenofocus>mask-userswitch-kb-zero.png</texturenofocus>
-		<focusedcolor>black</focusedcolor>
-		<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
-	</include>
 	<!-- list -->
 	<include name="UserSwitchLogin">
 		<control type="group">
-			<!-- bg's -->
-			<control type="group">
-				<animation effect="fade" start="100" end="100" time="0">WindowOpen</animation>
-				<animation effect="fade" start="100" end="100" time="0">WindowClose</animation>
-				<control type="image">
-					<include>FullScreenScaled</include>
-					<texture>base.png</texture>
-					<colordiffuse>FF111111</colordiffuse>
-				</control>
-				<control type="image">
-					<posy>0</posy>
-					<posx>540</posx>
-					<width>200</width>
-					<aspectratio>keep</aspectratio>
-					<texture>plex-logo-light-small.png</texture>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-			</control>
 			<!-- list -->
 			<control type="group">
 				<posy>229</posy>
@@ -630,17 +541,10 @@
 	<!-- keyboard -->
 	<include name="KbPIN">
 		<control type="group">
-			<control type="group">
-				<posy>229</posy>
-				<posx>534</posx>
-				<include>UserSwitchLoginUserSelected</include>
-				<visible>!IsEmpty(Control.GetLabel(4)) | ControlGroup(500).HasFocus</visible>
-			</control>
 			<control type="grouplist" id="500">
-				<visible allowhiddenfocus="false">!IsEmpty(Container(3).ListItem(0).Property(protected))</visible>
-				<animation effect="slide" start="0,0" end="0,-400" time="0" condition="ControlGroup(500).HasFocus">Conditional</animation>
-				<animation effect="fade" time="100">VisibleChange</animation>
-				<posy>888</posy>
+				<visible allowhiddenfocus="true">ControlGroup(500).HasFocus</visible>
+				<animation effect="slide" start="0,0" end="0,200" time="200">Visible</animation>
+				<posy>288</posy>
 				<posx>100</posx>
 				<itemgap>1</itemgap>
 				<width>1280</width>
@@ -810,7 +714,13 @@
 						</control>
 					</control>
 				</control>
-			</control>
+			</control>				
+		</control>
+		<control type="group">
+			<posy>229</posy>
+			<posx>534</posx>
+			<include>UserSwitchLoginUserSelected</include>
+			<visible>!IsEmpty(Control.GetLabel(4)) | ControlGroup(500).HasFocus</visible>
 		</control>
 	</include>
 </includes>
