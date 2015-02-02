@@ -7,10 +7,16 @@ endif
 
 CMAKE_EXTRA =
 ifeq (darwin, $(findstring darwin, $(HOST)))
-  INSTALL_PREFIX = ../../../../../addons/
-  CMAKE_EXTRA = -DPACKAGE_ZIP=1 -DDEPENDS_PATH=$(PREFIX)
-else ifneq ($(PREFIX),)
-  INSTALL_PREFIX = $(PREFIX)
+    INSTALL_PREFIX = ../../../../../addons/
+    CMAKE_EXTRA = -DPACKAGE_ZIP=1
+endif
+
+ifneq ($(PREFIX),)
+  ifneq (darwin, $(findstring darwin, $(HOST)))
+    INSTALL_PREFIX = $(PREFIX)
+  endif
+
+  CMAKE_EXTRA += -DDEPENDS_PATH=$(PREFIX) -DAUTOCONF_FILES="$(CONFIG_SUB) $(CONFIG_GUESS)"
 endif
 
 all: .installed-$(PLATFORM)
@@ -28,6 +34,7 @@ ifeq ($(PREFIX),)
 	@echo "ERROR: please set PREFIX to the xbmc install path e.g. make PREFIX=/usr/local"
 	@exit 1
 endif
+	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
 	mkdir -p $(PLATFORM); \
          cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \

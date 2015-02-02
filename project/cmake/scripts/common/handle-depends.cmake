@@ -47,9 +47,15 @@ function(add_addon_depends addon searchpath)
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
                        -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}
-                       -DARCH_DEFINES=${ARCH_DEFINES}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
+        # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
+        # TODO: figure out if we should use -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${ARCH_DEFINES}" and why it doesn't work
+        # TODO: figure out why this doesn't work for OSX32 and IOS/ATV2
+        if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX AND NOT APPLE)
+          list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${ARCH_DEFINES}
+                                 -DCMAKE_CXX_FLAGS=${ARCH_DEFINES})
+        endif()
 
         if(CMAKE_TOOLCHAIN_FILE)
           list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
@@ -98,6 +104,15 @@ function(add_addon_depends addon searchpath)
           message(STATUS "${id} depends: ${deps}")
         else()
           set(deps)
+        endif()
+
+        if(CROSS_AUTOCONF)
+          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
+          foreach(afile ${AUTOCONF_FILES})
+            file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+                 "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
+                 file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
+          endforeach()
         endif()
 
         # prepare the setup of the call to externalproject_add()

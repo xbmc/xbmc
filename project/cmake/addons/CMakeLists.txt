@@ -46,6 +46,12 @@ else()
   list(APPEND CMAKE_PREFIX_PATH "${DEPENDS_PATH}")
 endif()
 
+# check for autoconf stuff to pass on
+if(AUTOCONF_FILES)
+  separate_arguments(AUTOCONF_FILES)
+  set(CROSS_AUTOCONF "yes")
+endif()
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR NOT CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/output/addons")
 endif()
