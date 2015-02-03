@@ -206,6 +206,42 @@ namespace EPG
     std::string Plot(bool bOverrideParental = false) const;
 
     /*!
+     * @brief Get the originaltitle of this event.
+     * @return The originaltitle.
+     */
+    std::string OriginalTitle(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Get the cast of this event.
+     * @return The cast.
+     */
+    std::string Cast() const;
+
+    /*!
+     * @brief Get the director of this event.
+     * @return The director.
+     */
+    std::string Director() const;
+
+    /*!
+     * @brief Get the writer of this event.
+     * @return The writer.
+     */
+    std::string Writer() const;
+
+    /*!
+     * @brief Get the year of this event.
+     * @return The year.
+     */
+    int Year() const;
+
+    /*!
+     * @brief Get the imdbnumber of this event.
+     * @return The imdbnumber.
+     */
+    std::string IMDBNumber() const;
+
+    /*!
      * @brief Get the genre type ID of this event.
      * @return The genre type ID.
      */
@@ -395,6 +431,12 @@ namespace EPG
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */
+    std::string              m_strOriginalTitle;   /*!< original title */
+    std::string              m_strCast;            /*!< cast */
+    std::string              m_strDirector;        /*!< director */
+    std::string              m_strWriter;          /*!< writer */
+    int                      m_iYear;              /*!< year */
+    std::string              m_strIMDBNumber;      /*!< imdb number */
     std::vector<std::string> m_genre;              /*!< genre */
     std::string              m_strEpisodeName;     /*!< episode name */
     std::string              m_strIconPath;        /*!< the path to the icon */
