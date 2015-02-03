@@ -63,7 +63,14 @@ bool CImageLoader::DoWork()
     unsigned int start = XbmcThreads::SystemClockMillis();
     m_texture = CBaseTexture::LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation"));
     if (!m_texture)
+    {
+      /* PLEX */
+      CLog::Log(LOGDEBUG, "CGUILargeTextureManager::DoWork could not load image %s from cache, killing the cached version", loadPath.c_str());
+      CTextureCache::Get().ClearCachedImage(texturePath, true);
+      return DoWork();
+      /* END PLEX */
       return false;
+    }
     if (XbmcThreads::SystemClockMillis() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
 
