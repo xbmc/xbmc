@@ -412,8 +412,9 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
-                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE }
-};
+                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
+                                  { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER }								  
+ };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
@@ -596,7 +597,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "dbtype",           LISTITEM_DBTYPE },
                                   { "dbid",             LISTITEM_DBID },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
-                                  { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC }};
+                                  { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
+                                  { "imdbnumber",       LISTITEM_IMDBNUMBER },
+                                  { "episodename",      LISTITEM_EPISODENAME }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -1625,6 +1628,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_CHANNEL_GROUP:
   case VIDEOPLAYER_PARENTAL_RATING:
   case VIDEOPLAYER_PLAYCOUNT:
+  case VIDEOPLAYER_IMDBNUMBER:
   case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
   break;
@@ -3805,7 +3809,9 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ENDTIME:
       epgTag = tag->GetEPGNow();
       return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-
+    case VIDEOPLAYER_IMDBNUMBER:
+      return epgTag ? epgTag->IMDBNumber() : "";
+	
     /* Next playing infos */
     case VIDEOPLAYER_NEXT_TITLE:
       epgTag = tag->GetEPGNext();
@@ -4499,6 +4505,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_ORIGINALTITLE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strOriginalTitle;
+	if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->OriginalTitle();
     break;
   case LISTITEM_PLAYCOUNT:
     {
@@ -4550,6 +4558,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
+    if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Director();
     break;
   case LISTITEM_ALBUM:
     if (item->HasVideoInfoTag())
@@ -4567,6 +4577,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     }
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetYearString();
+	if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Year();  
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
@@ -4859,6 +4871,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_CAST:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast();
+    if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Writer();
     break;
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
@@ -4867,6 +4881,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_WRITER:
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+    if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Writer();
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
@@ -5198,6 +5214,28 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       return stereoMode;
     }
+  case LISTITEM_IMDBNUMBER:
+	{
+      const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->IMDBNumber();
+      }
+    }
+    return "";
+  case LISTITEM_EPISODENAME:
+	{
+      const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
+      if (channel)
+      {
+        CEpgInfoTagPtr tag(channel->GetEPGNow());
+        if (tag)
+          return tag->EpisodeName();
+      }
+    }
+    return "";	
   }
   return "";
 }

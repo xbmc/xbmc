@@ -225,6 +225,72 @@ namespace EPG
     std::string PlotOutline(bool bOverrideParental = false) const;
 
     /*!
+     * @brief Change the imdbnumber of this event.
+     */
+    void SetIMDBNumber(const std::string &strIMDBNumber);
+
+    /*!
+     * @brief Get the imdbnumber of this event.
+     * @return The imdbnumber.
+     */
+    std::string IMDBNumber(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Change the cast of this event.
+     */
+    void SetCast(const std::string &strCast);
+
+    /*!
+     * @brief Get the cast of this event.
+     * @return The cast.
+     */
+    std::string Cast(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Change the director of this event.
+     */
+    void SetDirector(const std::string &strDirector);
+
+    /*!
+     * @brief Get the director of this event.
+     * @return The director.
+     */
+    std::string Director(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Change the writer of this event.
+     */
+    void SetWriter(const std::string &strWriter);
+
+    /*!
+     * @brief Get the writer of this event.
+     * @return The writer.
+     */
+    std::string Writer(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Change the originaltitle of this event.
+     */
+    void SetOriginalTitle(const std::string &strOriginalTitle);
+
+    /*!
+     * @brief Get the originaltitle of this event.
+     * @return The originaltitle.
+     */
+    std::string OriginalTitle(bool bOverrideParental = false) const;
+
+    /*!
+     * @brief Change the year of this event.
+     */
+    void SetYear(const std::string &strYear);
+
+    /*!
+     * @brief Get the year of this event.
+     * @return The year.
+     */
+    std::string Year(bool bOverrideParental = false) const;
+	
+    /*!
      * @brief Change the plot of this event.
      * @param strPlot The new plot.
      */
@@ -505,6 +571,12 @@ namespace EPG
     int                      m_iUniqueBroadcastID; /*!< unique broadcast ID */
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
+    std::string              m_strIMDBNumber;      /*!< imdbnumber */
+    std::string              m_strCast;            /*!< cast */
+    std::string              m_strDirector;        /*!< director */
+    std::string              m_strWriter;          /*!< writer */
+    std::string              m_strOriginalTitle;   /*!< originaltitle */
+    std::string              m_strYear;            /*!< year */
     std::string              m_strPlot;            /*!< plot */
     std::vector<std::string> m_genre;              /*!< genre */
     std::string              m_strEpisodeName;     /*!< episode name */
