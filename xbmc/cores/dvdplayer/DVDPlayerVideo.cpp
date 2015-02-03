@@ -985,13 +985,17 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   double render_framerate = g_graphicsContext.GetFPS();
   if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") == ADJUST_REFRESHRATE_OFF)
     render_framerate = config_framerate;
+  bool changerefresh = !m_bFpsInvalid &&
+                       (m_output.framerate == 0.0 || fmod(m_output.framerate, config_framerate) != 0.0) &&
+                       (render_framerate != config_framerate);
+
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
    || ( m_output.width           != pPicture->iWidth )
    || ( m_output.height          != pPicture->iHeight )
    || ( m_output.dwidth          != pPicture->iDisplayWidth )
    || ( m_output.dheight         != pPicture->iDisplayHeight )
-   || (!m_bFpsInvalid && fmod(m_output.framerate, config_framerate) != 0.0 && render_framerate != config_framerate)
+   || changerefresh
    || ( m_output.color_format    != (unsigned int)pPicture->format )
    || ( m_output.extended_format != pPicture->extended_format )
    || ( m_output.color_matrix    != pPicture->color_matrix    && pPicture->color_matrix    != 0 ) // don't reconfigure on unspecified
