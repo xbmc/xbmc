@@ -20,6 +20,8 @@
 #include "PlexUtils.h"
 #include "xbmc/Util.h"
 
+#define TEXTURE_CACHE_BUFFER_SIZE 131072
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPFetchJob::DoWork()
 {
@@ -233,22 +235,45 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
-  int bytesRead, bufferSize = 131072;
-  unsigned char buffer[131072];
+  unsigned char buffer[TEXTURE_CACHE_BUFFER_SIZE];
   bool outputFileOpenned = false;
 
-  if (m_inputFile.Open(image, READ_NO_CACHE))
+  // our buffer cache plus some padding
+  m_inputFile.SetBufferSize(TEXTURE_CACHE_BUFFER_SIZE + 1024);
+
+  if (m_inputFile.Open(image))
   {
-    while ((bytesRead = m_inputFile.Read(buffer, bufferSize)))
+    while (true)
     {
+      int bytesRead = m_inputFile.Read(buffer, TEXTURE_CACHE_BUFFER_SIZE);
+      if (bytesRead == 0)
+        break;
+
       // eventually open output file depending upon filetype
       if (!outputFileOpenned)
       {
+        // we want to check the HTTP fail code
+        if (m_inputFile.GetLastHTTPResponseCode() > 299)
+        {
+          CLog::Log(LOGERROR, "CPlexTextureCacheJob::CacheTexture failed to get image from %s, got code: %ld", m_url.c_str(), m_inputFile.GetLastHTTPResponseCode());
+          m_inputFile.Close();
+          return false;
+        }
+
         // we need to check if its a jpg or png
         if ((buffer[0] == 0xFF) && (buffer[1] == 0xD8))
+        {
           m_details.file = m_cachePath + ".jpg";
-        else
+        }
+        else if ((buffer[0]) == 0x89 && (buffer[1] == 0x50))
+        {
           m_details.file = m_cachePath + ".png";
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "CPlexTextureCacheJob::CacheTexture invalid image header at URL: %s", m_url.c_str());
+          return false;
+        }
 
         // now open the file
         if (m_outputFile.OpenForWrite(CTextureCache::GetCachedPath(m_details.file), true))
@@ -258,12 +283,12 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
         else
         {
           m_inputFile.Close();
-          CLog::Log(LOGERROR,"CTextureCacheJob::CacheTexture unable to open output file %s",CTextureCache::GetCachedPath(m_details.file).c_str());
+          CLog::Log(LOGERROR,"CPlexTextureCacheJob::CacheTexture unable to open output file %s",CTextureCache::GetCachedPath(m_details.file).c_str());
           return false;
         }
       }
 
-      m_outputFile.Write(buffer,bytesRead);
+      m_outputFile.Write(buffer, bytesRead);
     }
 
     m_outputFile.Flush();
@@ -273,7 +298,7 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
   }
   else
   {
-    CLog::Log(LOGERROR,"CTextureCacheJob::CacheTexture unable to open input file %s",image.c_str());
+    CLog::Log(LOGERROR,"CPlexTextureCacheJob::CacheTexture unable to open input file %s",image.c_str());
     return false;
   }
 }
