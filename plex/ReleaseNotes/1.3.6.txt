@@ -1,0 +1,25 @@
+NEW:
+  - Support for building on FreeBSD (Thanks to Ben Woods)
+  - Make pre-play load faster by not requesting file check directly.
+  - Our user select dialog did not contain enough Awesomeness<tm> we re-did
+    it to contain at least 150% more Awesomeness.
+  - PHT now handles token invalidation much better and will prompt you 
+    to relogin when a token expires. (Expiry can happen when you delete
+    the device in Web settings).
+
+FIXES:
+  - Make it possible to close the keyboard dialog with Escape.
+  - Fix filtering that was not applied to shuffle / play all.
+  - Back up if we fail to load a sub menu so we don't hang around on a empty window
+  - If you have a PIN set screensaver will now be forced to 'black' if you have 'dim' selected.
+  - MouseWheel now triggers paging fetch code
+  - Pressing a video in watch later now plays the correct video instead of the first one. 
+  - Fixes to video flinging
+  - You can now play a Photos that are flung from Android and iOS.
+  - Disable trailers for home movies
+  - Fixed Playlist editing mode.
+  - Fixed jump-to-letter when you have loaded a subview or a pre-play
+  - Correct watched / unwatched icons shown in pre-play
+  - Use better LIRC default path (thanks to Maxime Gauduin)
+  - Fixed a token corruption that could lead to client slowdown (Thanks to Steven Hartland)
+  - Fanouts and other timers should now work better with OpenELEC / Linux (Thanks to Dale Hamel)
