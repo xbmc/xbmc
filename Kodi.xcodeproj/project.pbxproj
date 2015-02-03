@@ -185,6 +185,9 @@
 		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
+		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
+		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -4075,6 +4078,8 @@
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
 		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
+		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
+		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -7054,6 +7059,8 @@
 				E38E17D10D25F9FA00618676 /* GUIDialogSeekBar.h */,
 				F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */,
 				F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */,
+				395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */,
+				395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */,
 				F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */,
 				F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */,
 				E38E17D60D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.cpp */,
@@ -11603,6 +11610,7 @@
 				DFECFB09172D9CAB00A43CF7 /* SettingAddon.cpp in Sources */,
 				DFECFB0C172D9CAB00A43CF7 /* SettingControl.cpp in Sources */,
 				DFECFB0E172D9CAB00A43CF7 /* SettingPath.cpp in Sources */,
+				395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
 				DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */,
 				DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */,
 				F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */,
@@ -12758,6 +12766,7 @@
 				DFF0F44B17528350002DA3A4 /* TextureDatabase.cpp in Sources */,
 				DFF0F44C17528350002DA3A4 /* ThumbLoader.cpp in Sources */,
 				DFF0F44D17528350002DA3A4 /* ThumbnailCache.cpp in Sources */,
+				395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
 				DFF0F44E17528350002DA3A4 /* URL.cpp in Sources */,
 				DFF0F44F17528350002DA3A4 /* Util.cpp in Sources */,
 				DFF0F45017528350002DA3A4 /* XBApplicationEx.cpp in Sources */,
@@ -13416,6 +13425,7 @@
 				E499127E174E5D9900741B6D /* DirectoryNodeAlbumCompilations.cpp in Sources */,
 				E499127F174E5D9900741B6D /* DirectoryNodeAlbumCompilationsSongs.cpp in Sources */,
 				E4991280174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAdded.cpp in Sources */,
+				395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
 				E4991281174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAddedSong.cpp in Sources */,
 				E4991282174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayed.cpp in Sources */,
 				E4991283174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayedSong.cpp in Sources */,
