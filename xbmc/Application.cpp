@@ -2383,8 +2383,8 @@ bool CApplication::OnAction(const CAction &action)
     if (!CBuiltins::IsSystemPowerdownCommand(action.GetName()) ||
         g_PVRManager.CanSystemPowerdown())
     {
-    CBuiltins::Execute(action.GetName());
-    m_navigationTimer.StartZero();
+      CBuiltins::Execute(action.GetName());
+      m_navigationTimer.StartZero();
     }
     return true;
   }
@@ -3165,14 +3165,14 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
         if (!haveTimes && !times.empty())
           dbs.SetStackTimes(item.GetPath(), times);
 
-        if( item.m_lStartOffset == STARTOFFSET_RESUME )
+        if (item.m_lStartOffset == STARTOFFSET_RESUME)
         {
           // can only resume seek here, not dvdstate
           CBookmark bookmark;
           std::string path = item.GetPath();
           if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
-          if( dbs.GetResumeBookMark(path, bookmark) )
+          if (dbs.GetResumeBookMark(path, bookmark))
             seconds = bookmark.timeInSeconds;
           else
             seconds = 0.0f;
@@ -4386,7 +4386,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
   {
     if (!CBuiltins::IsSystemPowerdownCommand(actionStr) ||
         g_PVRManager.CanSystemPowerdown())
-    CBuiltins::Execute(actionStr);
+      CBuiltins::Execute(actionStr);
   }
   else
   {
