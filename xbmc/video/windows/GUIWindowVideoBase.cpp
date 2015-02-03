@@ -76,7 +76,6 @@
 #include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
 #include "filesystem/File.h"
-#include "dialogs/GUIDialogSimpleMenu.h"
 
 using namespace std;
 using namespace XFILE;
@@ -779,11 +778,6 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (!mediapath.empty())
     {
       CFileItemPtr item(new CFileItem(mediapath, false));
-      if (StringUtils::EndsWithNoCase(mediapath, "index.bdmv"))
-      {
-        if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
-          return;
-      }
       queuedItems.Add(item);
       return;
     }
@@ -1488,8 +1482,6 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
      g_playlistPlayer.SetShuffle(iPlaylist, false);
 
   CFileItemPtr movieItem(new CFileItem(*item));
-  if(!CGUIDialogSimpleMenu::ShowPlaySelection(movieItem))
-    return false;
 
   // Call the base method to actually queue the items
   // and start playing the given item
@@ -1499,9 +1491,6 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItemPtr movieItem(new CFileItem(*item));
-
-  if (!CGUIDialogSimpleMenu::ShowPlaySelection(movieItem))
-    return;
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
