@@ -75,7 +75,6 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class CNetwork;
-class CInputManager;
 
 namespace VIDEO
 {
@@ -117,7 +116,6 @@ class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMs
                      public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
   friend class CApplicationPlayer;
-  friend class CInputManager;
 public:
 
   enum ESERVERS
@@ -189,7 +187,6 @@ public:
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool IsFullScreen();
-  bool OnKey(const CKey& key);
   bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
   void CheckShutdown();
@@ -484,11 +481,9 @@ protected:
   void VolumeChanged() const;
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
-  bool ExecuteInputAction(const CAction &action);
-  
+  int  GetActiveWindowID(void);
 
   float NavigationIdleTime();
-  static bool AlwaysProcess(const CAction& action);
 
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();

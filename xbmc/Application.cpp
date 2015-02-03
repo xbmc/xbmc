@@ -378,18 +378,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bStop)
         CApplicationMessenger::Get().Quit();
       break;
-    case XBMC_KEYDOWN:
-      g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
-      break;
-    case XBMC_KEYUP:
-      g_Keyboard.ProcessKeyUp();
-      break;
-    case XBMC_MOUSEBUTTONDOWN:
-    case XBMC_MOUSEBUTTONUP:
-    case XBMC_MOUSEMOTION:
-      g_Mouse.HandleEvent(newEvent);
-      CInputManager::Get().ProcessMouse(g_windowManager.GetActiveWindowID());
-      break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
           !g_advancedSettings.m_fullScreen)
@@ -421,38 +409,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       break;
     case XBMC_APPCOMMAND:
       return g_application.OnAppCommand(newEvent.appcommand.action);
-    case XBMC_TOUCH:
-    {
-      if (newEvent.touch.action == ACTION_TOUCH_TAP)
-      { // Send a mouse motion event with no dx,dy for getting the current guiitem selected
-        g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
-      }
-      int actionId = 0;
-      if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
-        actionId = newEvent.touch.action;
-      else
-      {
-        int iWin = g_windowManager.GetActiveWindowID();
-        CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
-      }
-
-      if (actionId <= 0)
-        return false;
-
-      if ((actionId >= ACTION_TOUCH_TAP && actionId <= ACTION_GESTURE_END)
-          || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END) )
-        CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), WINDOW_INVALID, false);
-      else
-        CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
-
-      // Post an unfocus message for touch device after the action.
-      if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
-      {
-        CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-        CApplicationMessenger::Get().SendGUIMessage(msg);
-      }
-      break;
-    }
     case XBMC_SETFOCUS:
       // Reset the screensaver
       g_application.ResetScreenSaver();
@@ -460,6 +416,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       // Send a mouse motion event with no dx,dy for getting the current guiitem selected
       g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
       break;
+    default:
+      return CInputManager::Get().OnEvent(newEvent);
   }
   return true;
 }
@@ -912,7 +870,6 @@ bool CApplication::CreateGUI()
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
     return false;
-
 
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
@@ -2085,153 +2042,6 @@ void CApplication::SetStandAlone(bool value)
   g_advancedSettings.m_handleMounting = m_bStandalone = value;
 }
 
-// OnKey() translates the key into a CAction which is sent on to our Window Manager.
-// The window manager will return true if the event is processed, false otherwise.
-// If not already processed, this routine handles global keypresses.  It returns
-// true if the key has been processed, false otherwise.
-
-bool CApplication::OnKey(const CKey& key)
-{
-
-  // Turn the mouse off, as we've just got a keypress from controller or remote
-  g_Mouse.SetActive(false);
-
-  // get the current active window
-  int iWin = g_windowManager.GetActiveWindowID();
-
-  // this will be checked for certain keycodes that need
-  // special handling if the screensaver is active
-  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-
-  // a key has been pressed.
-  // reset Idle Timer
-  m_idleTimer.StartZero();
-  bool processKey = AlwaysProcess(action);
-
-  if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState") || StringUtils::StartsWithNoCase(action.GetName(),"CECStandby"))
-  {
-    // do not wake up the screensaver right after switching off the playing device
-    if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState"))
-    {
-      CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
-      if (!CApplicationMessenger::Get().CECToggleState())
-        return true;
-    }
-    else
-    {
-      CApplicationMessenger::Get().CECStandby();
-      return true;
-    }
-  }
-
-  ResetScreenSaver();
-
-  // allow some keys to be processed while the screensaver is active
-  if (WakeUpScreenSaverAndDPMS(processKey) && !processKey)
-  {
-    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
-    return true;
-  }
-
-  if (iWin != WINDOW_FULLSCREEN_VIDEO)
-  {
-    // current active window isnt the fullscreen window
-    // just use corresponding section from keymap.xml
-    // to map key->action
-
-    // first determine if we should use keyboard input directly
-    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
-    CGUIWindow *window = g_windowManager.GetWindow(iWin);
-    if (window)
-    {
-      CGUIControl *control = window->GetFocusedControl();
-      if (control)
-      {
-        // If this is an edit control set usekeyboard to true. This causes the
-        // keypress to be processed directly not through the key mappings.
-        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-          useKeyboard = true;
-
-        // If the key pressed is shift-A to shift-Z set usekeyboard to true.
-        // This causes the keypress to be used for list navigation.
-        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
-          useKeyboard = true;
-      }
-    }
-    if (useKeyboard)
-    {
-      // use the virtualkeyboard section of the keymap, and send keyboard-specific or navigation
-      // actions through if that's what they are
-      CAction action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
-      if (!(action.GetID() == ACTION_MOVE_LEFT ||
-            action.GetID() == ACTION_MOVE_RIGHT ||
-            action.GetID() == ACTION_MOVE_UP ||
-            action.GetID() == ACTION_MOVE_DOWN ||
-            action.GetID() == ACTION_SELECT_ITEM ||
-            action.GetID() == ACTION_ENTER ||
-            action.GetID() == ACTION_PREVIOUS_MENU ||
-            action.GetID() == ACTION_NAV_BACK))
-      {
-        // the action isn't plain navigation - check for a keyboard-specific keymap
-        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
-        if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
-              action.GetID() == ACTION_BACKSPACE ||
-              action.GetID() == ACTION_SHIFT ||
-              action.GetID() == ACTION_SYMBOLS ||
-              action.GetID() == ACTION_CURSOR_LEFT ||
-              action.GetID() == ACTION_CURSOR_RIGHT)
-          action = CAction(0); // don't bother with this action
-      }
-      // else pass the keys through directly
-      if (!action.GetID())
-      {
-        if (key.GetFromService())
-          action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
-        else
-        {
-          // Check for paste keypress
-#ifdef TARGET_WINDOWS
-          // In Windows paste is ctrl-V
-          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
-#elif defined(TARGET_LINUX)
-          // In Linux paste is ctrl-V
-          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
-#elif defined(TARGET_DARWIN_OSX)
-          // In OSX paste is cmd-V
-          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_META)
-#else
-          // Placeholder for other operating systems
-          if (false)
-#endif
-            action = CAction(ACTION_PASTE);
-          // If the unicode is non-zero the keypress is a non-printing character
-          else if (key.GetUnicode())
-            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
-          // The keypress is a non-printing character
-          else
-            action = CAction(key.GetVKey() | KEY_VKEY);
-        }
-      }
-
-      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
-
-      if (OnAction(action))
-        return true;
-      // failed to handle the keyboard action, drop down through to standard action
-    }
-    if (key.GetFromService())
-    {
-      if (key.GetButtonCode() != KEY_INVALID)
-        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-    }
-    else
-      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-  }
-  if (!key.IsAnalogButton())
-    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
-
-  return ExecuteInputAction(action);
-}
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
 // This needs to return true if it processed the appcommand or false if it didn't
@@ -2687,26 +2497,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       g_windowManager.Process(CTimeUtils::GetFrameTime());
     g_windowManager.FrameMove();
   }
-}
-
-bool CApplication::ExecuteInputAction(const CAction &action)
-{
-  bool bResult = false;
-
-  // play sound before the action unless the button is held,
-  // where we execute after the action as held actions aren't fired every time.
-  if(action.GetHoldTime())
-  {
-    bResult = OnAction(action);
-    if(bResult)
-      g_audioManager.PlayActionSound(action);
-  }
-  else
-  {
-    g_audioManager.PlayActionSound(action);
-    bResult = OnAction(action);
-  }
-  return bResult;
 }
 
 
@@ -5103,33 +4893,6 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
     g_playlistPlayer.Play(track);
     return true;
   }
-  return false;
-}
-
-bool CApplication::AlwaysProcess(const CAction& action)
-{
-  // check if this button is mapped to a built-in function
-  if (!action.GetName().empty())
-  {
-    std::string builtInFunction;
-    vector<string> params;
-    CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    StringUtils::ToLower(builtInFunction);
-
-    // should this button be handled normally or just cancel the screensaver?
-    if (   builtInFunction == "powerdown"
-        || builtInFunction == "reboot"
-        || builtInFunction == "restart"
-        || builtInFunction == "restartapp"
-        || builtInFunction == "suspend"
-        || builtInFunction == "hibernate"
-        || builtInFunction == "quit"
-        || builtInFunction == "shutdown")
-    {
-      return true;
-    }
-  }
-
   return false;
 }
 

@@ -24,7 +24,13 @@
 
 #include "Application.h"
 #include "InputManager.h"
+#include "ApplicationMessenger.h"
 #include "guilib/Geometry.h"
+#include "guilib/GUIAudioManager.h"
+#include "guilib/GUIControl.h"
+#include "guilib/GUIWindow.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
@@ -50,10 +56,13 @@
 #include "input/SDLJoystick.h"
 #endif
 #include "ButtonTranslator.h"
-#include "guilib/Key.h"
 #include "input/MouseStat.h"
 #include "peripherals/Peripherals.h"
+#include "input/KeyboardStat.h"
+#include "XBMC_vkeys.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "Util.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -72,6 +81,15 @@ CInputManager& CInputManager::Get()
   static CInputManager inputManager;
   return inputManager;
 }
+
+void CInputManager::InitializeInputs()
+{
+#ifdef HAS_SDL_JOYSTICK
+  // Pass the mapping of axis to triggers to m_Joystick 
+  m_Joystick.Initialize();
+#endif
+}
+
 
 void CInputManager::ReInitializeJoystick()
 {
@@ -123,7 +141,7 @@ bool CInputManager::ProcessGamepad(int windowId)
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_Mouse.SetActive(false);
-      return g_application.ExecuteInputAction(action);
+      return ExecuteInputAction(action);
     }
   }
   if (m_Joystick.GetAxis(joyName, joyId))
@@ -148,7 +166,7 @@ bool CInputManager::ProcessGamepad(int windowId)
       float amount = m_Joystick.GetAmount(joyName, joyId);
       CAction action(actionID, fullrange ? (amount + 1.0f) / 2.0f : fabs(amount), 0.0f, actionName);
       g_Mouse.SetActive(false);
-      return g_application.ExecuteInputAction(action);
+      return ExecuteInputAction(action);
     }
   }
   int position = 0;
@@ -175,7 +193,7 @@ bool CInputManager::ProcessGamepad(int windowId)
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_Mouse.SetActive(false);
-      return g_application.ExecuteInputAction(action);
+      return ExecuteInputAction(action);
     }
   }
 #endif
@@ -189,7 +207,7 @@ bool CInputManager::ProcessRemote(int windowId)
   {
     CKey key(g_RemoteControl.GetButton(), g_RemoteControl.GetHoldTime());
     g_RemoteControl.Reset();
-    return g_application.OnKey(key);
+    return OnKey(key);
   }
 #endif
   return false;
@@ -199,7 +217,7 @@ bool CInputManager::ProcessPeripherals(float frameTime)
 {
   CKey key;
   if (g_peripherals.GetNextKeypress(frameTime, key))
-    return g_application.OnKey(key);
+    return OnKey(key);
   return false;
 }
 
@@ -312,7 +330,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       if (wKeyID & ES_FLAG_UNICODE)
       {
         key = CKey((uint8_t)0, wKeyID & ~ES_FLAG_UNICODE, 0, 0, 0);
-        return g_application.OnKey(key);
+        return OnKey(key);
       }
 
       if (wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
@@ -338,7 +356,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       else
         key = CKey(wKeyID);
       key.SetFromService(true);
-      return g_application.OnKey(key);
+      return OnKey(key);
     }
   }
 
@@ -389,10 +407,258 @@ bool CInputManager::ProcessJoystickEvent(int windowId, const std::string& joysti
 
   // Translate using regular joystick translator.
   if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joystickName, wKeyID, inputType, actionID, actionName, fullRange))
-    return g_application.ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName, holdTime));
+    return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName, holdTime));
   else
     CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i", joystickName.c_str(), wKeyID);
 #endif
 
   return false;
+}
+
+bool CInputManager::OnEvent(XBMC_Event& newEvent)
+{
+  switch (newEvent.type)
+  {
+  case XBMC_KEYDOWN:
+    OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
+    break;
+  case XBMC_KEYUP:
+    g_Keyboard.ProcessKeyUp();
+    break;
+  case XBMC_MOUSEBUTTONDOWN:
+  case XBMC_MOUSEBUTTONUP:
+  case XBMC_MOUSEMOTION:
+    g_Mouse.HandleEvent(newEvent);
+    ProcessMouse(g_windowManager.GetActiveWindowID());
+    break;
+  case XBMC_TOUCH:
+  {
+    if (newEvent.touch.action == ACTION_TOUCH_TAP)
+    { // Send a mouse motion event with no dx,dy for getting the current guiitem selected
+      g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
+    }
+    int actionId = 0;
+    if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
+      actionId = newEvent.touch.action;
+    else
+    {
+      int iWin = g_windowManager.GetActiveWindowID();
+      CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+    }
+
+    if (actionId <= 0)
+      return false;
+
+    if ((actionId >= ACTION_TOUCH_TAP && actionId <= ACTION_GESTURE_END)
+        || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END))
+        CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), WINDOW_INVALID, false);
+    else
+      CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
+
+    // Post an unfocus message for touch device after the action.
+    if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
+    {
+      CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+      CApplicationMessenger::Get().SendGUIMessage(msg);
+    }
+    break;
+  } //case
+  }//switch
+
+  return true;
+}
+
+// OnKey() translates the key into a CAction which is sent on to our Window Manager.
+// The window manager will return true if the event is processed, false otherwise.
+// If not already processed, this routine handles global keypresses.  It returns
+// true if the key has been processed, false otherwise.
+
+bool CInputManager::OnKey(const CKey& key)
+{
+
+  // Turn the mouse off, as we've just got a keypress from controller or remote
+  g_Mouse.SetActive(false);
+
+  // get the current active window
+  int iWin = g_windowManager.GetActiveWindowID();
+
+  // this will be checked for certain keycodes that need
+  // special handling if the screensaver is active
+  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // a key has been pressed.
+  // reset Idle Timer
+  g_application.ResetSystemIdleTimer();
+  bool processKey = AlwaysProcess(action);
+
+  if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState") || StringUtils::StartsWithNoCase(action.GetName(), "CECStandby"))
+  {
+    // do not wake up the screensaver right after switching off the playing device
+    if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
+    {
+      CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
+      if (!CApplicationMessenger::Get().CECToggleState())
+        return true;
+    }
+    else
+    {
+      CApplicationMessenger::Get().CECStandby();
+      return true;
+    }
+  }
+
+  g_application.ResetScreenSaver();
+
+  // allow some keys to be processed while the screensaver is active
+  if (g_application.WakeUpScreenSaverAndDPMS(processKey) && !processKey)
+  {
+    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
+    return true;
+  }
+
+  if (iWin != WINDOW_FULLSCREEN_VIDEO)
+  {
+    // current active window isnt the fullscreen window
+    // just use corresponding section from keymap.xml
+    // to map key->action
+
+    // first determine if we should use keyboard input directly
+    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+    CGUIWindow *window = g_windowManager.GetWindow(iWin);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control)
+      {
+        // If this is an edit control set usekeyboard to true. This causes the
+        // keypress to be processed directly not through the key mappings.
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+          useKeyboard = true;
+
+        // If the key pressed is shift-A to shift-Z set usekeyboard to true.
+        // This causes the keypress to be used for list navigation.
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
+          useKeyboard = true;
+      }
+    }
+    if (useKeyboard)
+    {
+      // use the virtualkeyboard section of the keymap, and send keyboard-specific or navigation
+      // actions through if that's what they are
+      CAction action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
+      if (!(action.GetID() == ACTION_MOVE_LEFT ||
+        action.GetID() == ACTION_MOVE_RIGHT ||
+        action.GetID() == ACTION_MOVE_UP ||
+        action.GetID() == ACTION_MOVE_DOWN ||
+        action.GetID() == ACTION_SELECT_ITEM ||
+        action.GetID() == ACTION_ENTER ||
+        action.GetID() == ACTION_PREVIOUS_MENU ||
+        action.GetID() == ACTION_NAV_BACK))
+      {
+        // the action isn't plain navigation - check for a keyboard-specific keymap
+        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
+        if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
+            action.GetID() == ACTION_BACKSPACE ||
+            action.GetID() == ACTION_SHIFT ||
+            action.GetID() == ACTION_SYMBOLS ||
+            action.GetID() == ACTION_CURSOR_LEFT ||
+            action.GetID() == ACTION_CURSOR_RIGHT)
+            action = CAction(0); // don't bother with this action
+      }
+      // else pass the keys through directly
+      if (!action.GetID())
+      {
+        if (key.GetFromService())
+          action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
+        else
+        {
+          // Check for paste keypress
+#ifdef TARGET_WINDOWS
+          // In Windows paste is ctrl-V
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
+#elif defined(TARGET_LINUX)
+          // In Linux paste is ctrl-V
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
+#elif defined(TARGET_DARWIN_OSX)
+          // In OSX paste is cmd-V
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_META)
+#else
+          // Placeholder for other operating systems
+          if (false)
+#endif
+            action = CAction(ACTION_PASTE);
+          // If the unicode is non-zero the keypress is a non-printing character
+          else if (key.GetUnicode())
+            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+          // The keypress is a non-printing character
+          else
+            action = CAction(key.GetVKey() | KEY_VKEY);
+        }
+      }
+
+      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetID());
+
+      if (g_application.OnAction(action))
+        return true;
+      // failed to handle the keyboard action, drop down through to standard action
+    }
+    if (key.GetFromService())
+    {
+      if (key.GetButtonCode() != KEY_INVALID)
+        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+    }
+    else
+      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+  }
+  if (!key.IsAnalogButton())
+    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
+
+  return ExecuteInputAction(action);
+}
+
+bool CInputManager::AlwaysProcess(const CAction& action)
+{
+  // check if this button is mapped to a built-in function
+  if (!action.GetName().empty())
+  {
+    std::string builtInFunction;
+    std::vector<std::string> params;
+    CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
+    StringUtils::ToLower(builtInFunction);
+
+    // should this button be handled normally or just cancel the screensaver?
+    if (builtInFunction == "powerdown"
+        || builtInFunction == "reboot"
+        || builtInFunction == "restart"
+        || builtInFunction == "restartapp"
+        || builtInFunction == "suspend"
+        || builtInFunction == "hibernate"
+        || builtInFunction == "quit"
+        || builtInFunction == "shutdown")
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CInputManager::ExecuteInputAction(const CAction &action)
+{
+  bool bResult = false;
+
+  // play sound before the action unless the button is held,
+  // where we execute after the action as held actions aren't fired every time.
+  if (action.GetHoldTime())
+  {
+    bResult = g_application.OnAction(action);
+    if (bResult)
+      g_audioManager.PlayActionSound(action);
+  }
+  else
+  {
+    g_audioManager.PlayActionSound(action);
+    bResult = g_application.OnAction(action);
+  }
+  return bResult;
 }

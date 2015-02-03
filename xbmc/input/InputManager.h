@@ -27,6 +27,8 @@
 #elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 #include "input/SDLJoystick.h"
 #endif
+#include "windowing/XBMC_events.h"
+#include "guilib/Key.h"
 
 class CInputManager
 {
@@ -79,8 +81,22 @@ public:
   */
   bool ProcessPeripherals(float frameTime);
 
+  /*!
+   * \brief Call once during application startup to initialize peripherals that need it
+   */
+  void InitializeInputs();
+
+  /*! \brief Enable or disable the joystick
+   *
+   * \param enabled true to enable joystick, false to disable
+   * \return void
+   */
   void SetEnabledJoystick(bool enabled = true);
 
+  /*! \brief Run joystick initialization again, e.g. a new device is connected
+  *
+  * \return void
+  */
   void ReInitializeJoystick();
 
   bool ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime = 0);
@@ -89,7 +105,42 @@ public:
   void UpdateJoystick(SDL_Event& joyEvent);
 #endif
 
+  /*! \brief Handle an input event
+   * 
+   * \param newEvent event details
+   * \return true on succesfully handled event
+   * \sa XBMC_Event
+   */
+  bool OnEvent(XBMC_Event& newEvent);
+
 private:
+
+  /*! \brief Process keyboard event and translate into an action
+  *
+  * \param CKey keypress details
+  * \return true on succesfully handled event
+  * \sa CKey
+  */
+  bool OnKey(const CKey& key);
+
+  /*! \brief Determine if an action should be processed or just
+  *   cancel the screensaver
+  *
+  * \param action Action that is about to be processed
+  * \return true on any poweractions such as shutdown/reboot/sleep/suspend, false otherwise
+  * \sa CAction
+  */
+  bool AlwaysProcess(const CAction& action);
+
+  /*! \brief Send the Action to CApplication for further handling,
+  *   play a sound before or after sending the action.
+  *
+  * \param action Action to send to CApplication
+  * \return result from CApplication::OnAction
+  * \sa CAction
+  */
+  bool ExecuteInputAction(const CAction &action);
+
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
