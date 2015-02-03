@@ -19,12 +19,8 @@
  *
  */
 
-#include "system.h"
 #include "Variant.h"
 #include <yajl/yajl_gen.h>
-#ifdef HAVE_YAJL_YAJL_VERSION_H
-#include <yajl/yajl_version.h>
-#endif
 
 class CJSONVariantWriter
 {
