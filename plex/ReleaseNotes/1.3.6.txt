@@ -20,6 +20,10 @@ FIXES:
   - Fixed Playlist editing mode.
   - Fixed jump-to-letter when you have loaded a subview or a pre-play
   - Correct watched / unwatched icons shown in pre-play
+  - Image cache improved, it will now reload bad cached images and will be more careful about
+    adding broken images to the cache.
+  - Fix certificate errors with cloud sync sections
+  - Remove keybindings for taking screenshots since this feature has been broken a long time.
   - Use better LIRC default path (thanks to Maxime Gauduin)
   - Fixed a token corruption that could lead to client slowdown (Thanks to Steven Hartland)
   - Fanouts and other timers should now work better with OpenELEC / Linux (Thanks to Dale Hamel)
