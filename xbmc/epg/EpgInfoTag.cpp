@@ -99,6 +99,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
   m_iEpisodeNumber = data.iEpisodeNumber;
   m_iEpisodePart = data.iEpisodePartNumber;
   m_iStarRating = data.iStarRating;
+  m_iYear = data.iYear;
 
   SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);
 
@@ -109,6 +110,16 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strPlotOutline = data.strPlotOutline;
   if (data.strPlot)
     m_strPlot = data.strPlot;
+  if (data.strOriginalTitle)
+    m_strOriginalTitle = data.strOriginalTitle;
+  if (data.strCast)
+    m_strCast = data.strCast;
+  if (data.strDirector)
+    m_strDirector = data.strDirector;
+  if (data.strWriter)
+    m_strWriter = data.strWriter;
+  if (data.strIMDBNumber)
+    m_strIMDBNumber = data.strIMDBNumber;
   if (data.strEpisodeName)
     m_strEpisodeName = data.strEpisodeName;
   if (data.strIconPath)
@@ -141,6 +152,12 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strTitle           == right.m_strTitle &&
           m_strPlotOutline     == right.m_strPlotOutline &&
           m_strPlot            == right.m_strPlot &&
+          m_strOriginalTitle   == right.m_strOriginalTitle &&
+          m_strCast            == right.m_strCast &&
+          m_strDirector        == right.m_strDirector &&
+          m_strWriter          == right.m_strWriter &&
+          m_iYear              == right.m_iYear &&
+          m_strIMDBNumber      == right.m_strIMDBNumber &&
           m_genre              == right.m_genre &&
           m_strEpisodeName     == right.m_strEpisodeName &&
           m_strIconPath        == right.m_strIconPath &&
@@ -166,6 +183,12 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
+  value["originaltitle"] = m_strOriginalTitle;
+  value["cast"] = m_strCast;
+  value["director"] = m_strDirector;
+  value["writer"] = m_strWriter;
+  value["year"] = m_iYear;
+  value["imdbnumber"] = m_strIMDBNumber;
   value["genre"] = m_genre;
   value["filenameandpath"] = m_strFileNameAndPath;
   value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::Empty;
@@ -348,6 +371,39 @@ std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
   return retVal;
 }
 
+std::string CEpgInfoTag::OriginalTitle(bool bOverrideParental /* = false */) const
+{
+  std::string retVal;
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
+    retVal = m_strOriginalTitle;
+  return retVal;
+}
+
+std::string CEpgInfoTag::Cast(void) const
+{
+  return m_strCast;
+}
+
+std::string CEpgInfoTag::Director(void) const
+{
+  return m_strDirector;
+}
+
+std::string CEpgInfoTag::Writer(void) const
+{
+  return m_strWriter;
+}
+
+int CEpgInfoTag::Year(void) const
+{
+  return m_iYear;
+}
+
+std::string CEpgInfoTag::IMDBNumber() const
+{
+  return m_strIMDBNumber;
+}
+
 void CEpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
 {
   if (m_iGenreType != iGenreType || m_iGenreSubType != iGenreSubType)
@@ -486,6 +542,12 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_strTitle           != tag.m_strTitle ||
         m_strPlotOutline     != tag.m_strPlotOutline ||
         m_strPlot            != tag.m_strPlot ||
+        m_strOriginalTitle   != tag.m_strOriginalTitle ||
+        m_strCast            != tag.m_strCast ||
+        m_strDirector        != tag.m_strDirector ||
+        m_strWriter          != tag.m_strWriter ||
+        m_iYear              != tag.m_iYear ||
+        m_strIMDBNumber      != tag.m_strIMDBNumber ||
         m_startTime          != tag.m_startTime ||
         m_endTime            != tag.m_endTime ||
         m_iGenreType         != tag.m_iGenreType ||
@@ -515,6 +577,12 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_strTitle           = tag.m_strTitle;
       m_strPlotOutline     = tag.m_strPlotOutline;
       m_strPlot            = tag.m_strPlot;
+      m_strOriginalTitle   = tag.m_strOriginalTitle;
+      m_strCast            = tag.m_strCast;
+      m_strDirector        = tag.m_strDirector;
+      m_strWriter          = tag.m_strWriter;
+      m_iYear              = tag.m_iYear;
+      m_strIMDBNumber      = tag.m_strIMDBNumber;
       m_startTime          = tag.m_startTime;
       m_endTime            = tag.m_endTime;
       m_iGenreType         = tag.m_iGenreType;

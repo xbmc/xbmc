@@ -61,6 +61,12 @@ void CEpgDatabase::CreateTables(void)
         "sTitle          varchar(128), "
         "sPlotOutline    text, "
         "sPlot           text, "
+        "sOriginalTitle  varchar(128), "
+        "sCast           varchar(255), "
+        "sDirector       varchar(255), "
+        "sWriter         varchar(255), "
+        "iYear           integer, "
+        "sIMDBNumber     varchar(50), "
         "sIconPath       varchar(255), "
         "iStartTime      integer, "
         "iEndTime        integer, "
@@ -99,6 +105,17 @@ void CEpgDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 9)
     m_pDS->exec("ALTER TABLE epgtags ADD sIconPath varchar(255);");
+  
+  if (iVersion < 10)
+    m_pDS->exec(
+      "ALTER TABLE epgtags ADD "
+      "sOriginalTitle  varchar(128), "
+      "sCast           varchar(255), "
+      "sDirector       varchar(255), "
+      "sWriter         varchar(255), "
+      "iYear           integer, "
+      "sIMDBNumber     varchar(50); "
+    );
 }
 
 bool CEpgDatabase::DeleteEpg(void)
@@ -217,6 +234,12 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag->m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();
         newTag->m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
         newTag->m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
+        newTag->m_strOriginalTitle   = m_pDS->fv("sOriginalTitle").get_asString().c_str();
+        newTag->m_strCast            = m_pDS->fv("sCast").get_asString().c_str();
+        newTag->m_strDirector        = m_pDS->fv("sDirector").get_asString().c_str();
+        newTag->m_strWriter          = m_pDS->fv("sWriter").get_asString().c_str();
+        newTag->m_iYear              = m_pDS->fv("sYear").get_asInt();
+        newTag->m_strIMDBNumber      = m_pDS->fv("sIMDBNumber").get_asString().c_str();
         newTag->m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
         newTag->m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
         newTag->m_genre              = StringUtils::Split(m_pDS->fv("sGenre").get_asString().c_str(), g_advancedSettings.m_videoItemSeparator);
@@ -333,12 +356,14 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   if (iBroadcastId < 0)
   {
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, sIconPath, iGenreType, iGenreSubType, sGenre, "
-        "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
+        "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
         tag.EpgID(), iStartTime, iEndTime,
-        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
+        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
+        tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID());
@@ -346,12 +371,14 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   else
   {
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, sIconPath, iGenreType, iGenreSubType, sGenre, "
-        "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
+        "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
-        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
+        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
+        tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
