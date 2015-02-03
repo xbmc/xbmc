@@ -419,7 +419,7 @@ std::string URLDecodePath(const std::string& strPath)
   return StringUtils::Join(segments, "/");
 }
 
-std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath)
+std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath, const bool &bAddPath /* = true */)
 {
   std::string toFile = fromFile;
 
@@ -443,7 +443,10 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
   if (!IsDOSPath(fromPath) && IsDOSPath(toPath))
     StringUtils::Replace(toFile, "/", "\\");
 
-  return AddFileToFolder(toPath, toFile);
+  if (bAddPath)
+    return AddFileToFolder(toPath, toFile);
+
+  return toFile;
 }
 
 CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)

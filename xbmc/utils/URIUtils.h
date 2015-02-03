@@ -78,7 +78,7 @@ public:
     \param toPath the base path of the resulting URL
     \return the full path.
    */
-  static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath);
+  static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath, const bool &bAddPath = true);
 
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
