@@ -493,8 +493,6 @@ lib/cpluff/stamp-h1
 /tools/Linux/kodi.sh
 /tools/Linux/kodi-standalone.sh
 /tools/Linux/kodi-xsession.desktop
-/tools/Linux/FEH-ARM.py
-/tools/Linux/FEH.py
 
 # /tools/osx
 /tools/osx/XBMCHelper

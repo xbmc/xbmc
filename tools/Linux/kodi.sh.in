@@ -138,11 +138,6 @@ print_crash_report()
 }
 
 migrate_home
-python @datadir@/${bin_name}/FEH.py $SAVED_ARGS
-RET=$?
-if [ $RET -ne 0 ]; then
-  exit $RET
-fi
 
 if command_exists gdb; then
   # Output warning in case ulimit is unsupported by shell
