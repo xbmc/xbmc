@@ -137,6 +137,7 @@ public:
   int RemoveThreadMessageByMessageIds(int *pMessageIDList);
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
+  int GetActiveWindowID();
   int GetFocusedWindow() const;
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
