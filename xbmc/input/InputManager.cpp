@@ -67,7 +67,7 @@ using namespace EVENTSERVER;
 
 using namespace PERIPHERALS;
 
-CInputManager& CInputManager::GetInstance()
+CInputManager& CInputManager::Get()
 {
   static CInputManager inputManager;
   return inputManager;

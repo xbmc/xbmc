@@ -41,7 +41,7 @@ private:
 public:
   /*! \brief static method to get the current instance of the class. Creates a new instance the first time it's called.
   */
-  static CInputManager& GetInstance();
+  static CInputManager& Get();
 
   /*! \brief decode an input event from remote controls.
 

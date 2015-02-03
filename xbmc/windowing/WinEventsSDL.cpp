@@ -238,7 +238,7 @@ bool CWinEventsSDL::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        CInputManager::GetInstance().UpdateJoystick(event);
+        CInputManager::Get().UpdateJoystick(event);
         ret = true;
         break;
 #endif

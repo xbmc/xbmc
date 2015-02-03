@@ -272,7 +272,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_graphicsContext);
   m_settingsManager->UnregisterCallback(&g_langInfo);
 #if defined(TARGET_WINDOWS) || defined(HAS_SDL_JOYSTICK)
-  m_settingsManager->UnregisterCallback(&CInputManager::GetInstance().m_Joystick);
+  m_settingsManager->UnregisterCallback(&CInputManager::Get().m_Joystick);
 #endif
   m_settingsManager->UnregisterCallback(&g_Mouse);
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
@@ -762,7 +762,7 @@ void CSettings::InitializeISettingCallbacks()
 #if defined(HAS_SDL_JOYSTICK)
   settingSet.clear();
   settingSet.insert("input.enablejoystick");
-  m_settingsManager->RegisterCallback(&CInputManager::GetInstance().m_Joystick, settingSet);
+  m_settingsManager->RegisterCallback(&CInputManager::Get().m_Joystick, settingSet);
 #endif
 
   settingSet.clear();

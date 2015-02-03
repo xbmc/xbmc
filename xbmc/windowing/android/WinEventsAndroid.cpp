@@ -220,7 +220,7 @@ bool CWinEventsAndroid::MessagePump()
 
       if (fabs(amount) >= ALMOST_ZERO)
       {
-        ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
+        ret |= CInputManager::Get().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
             input_device.name, item, input_type, amount, holdTime);
       }
     }

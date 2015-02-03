@@ -388,7 +388,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
-      CInputManager::GetInstance().ProcessMouse(g_windowManager.GetActiveWindowID());
+      CInputManager::Get().ProcessMouse(g_windowManager.GetActiveWindowID());
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
@@ -913,6 +913,7 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
+
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             info.iWidth,
@@ -1318,7 +1319,7 @@ bool CApplication::Initialize()
   ResetScreenSaver();
 
 #ifdef HAS_SDL_JOYSTICK
-  CInputManager::GetInstance().SetEnabledJoystick(CSettings::Get().GetBool("input.enablejoystick") &&
+  CInputManager::Get().SetEnabledJoystick(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
@@ -2670,10 +2671,10 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 #endif
 
     // process input actions
-    CInputManager::GetInstance().ProcessRemote(g_windowManager.GetActiveWindowID());
-    CInputManager::GetInstance().ProcessGamepad(g_windowManager.GetActiveWindowID());
-    CInputManager::GetInstance().ProcessEventServer(g_windowManager.GetActiveWindowID(), frameTime);
-    CInputManager::GetInstance().ProcessPeripherals(frameTime);
+    CInputManager::Get().ProcessRemote(g_windowManager.GetActiveWindowID());
+    CInputManager::Get().ProcessGamepad(g_windowManager.GetActiveWindowID());
+    CInputManager::Get().ProcessEventServer(g_windowManager.GetActiveWindowID(), frameTime);
+    CInputManager::Get().ProcessPeripherals(frameTime);
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
