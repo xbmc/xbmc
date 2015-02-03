@@ -272,6 +272,7 @@ bool CPlexTextureCacheJob::CacheTexture(CBaseTexture **texture)
         else
         {
           CLog::Log(LOGERROR, "CPlexTextureCacheJob::CacheTexture invalid image header at URL: %s", m_url.c_str());
+          m_inputFile.Close();
           return false;
         }
 
