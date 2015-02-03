@@ -177,12 +177,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
           std::string strItem = m_castList->Get(iItem)->GetLabel();
-          std::string strFind = StringUtils::Format(" %s ",g_localizeStrings.Get(20347).c_str());
-          size_t iPos = strItem.find(strFind);
-          if (iPos == std::string::npos)
-            iPos = strItem.size();
-          std::string tmp = strItem.substr(0, iPos);
-          OnSearch(tmp);
+          OnSearch(strItem);
         }
       }
     }
@@ -276,11 +271,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   { // movie/show/episode
     for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
-      std::string character;
-      if (it->strRole.empty())
-        character = it->strName;
-      else
-        character = StringUtils::Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.empty())
         item->SetArt("thumb", it->thumb);
@@ -294,7 +284,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
         }
       }
       item->SetIconImage("DefaultActor.png");
-      item->SetLabel(character);
+      item->SetLabel(it->strName);
+      item->SetLabel2(it->strRole);
       m_castList->Add(item);
     }
     // determine type:
