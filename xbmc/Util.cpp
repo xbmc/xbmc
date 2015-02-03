@@ -1898,11 +1898,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   vector<std::string> strLookInPaths;
   
   std::string strMovieFileName;
-  std::string strPath;
+  std::string strMoviePath;
   
-  URIUtils::Split(strMovie, strPath, strMovieFileName);
+  URIUtils::Split(strMovie, strMoviePath, strMovieFileName);
   std::string strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
-  strLookInPaths.push_back(strPath);
+  strLookInPaths.push_back(strMoviePath);
   
   CURL url(strMovie);
   std::string isoFileNameNoExt;
@@ -1944,8 +1944,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   {
     CURL url(strMovie);
     std::string strArchive = url.GetHostName();
-    URIUtils::Split(strArchive, strPath, strMovieFileName);
-    strLookInPaths.push_back(strPath);
+    URIUtils::Split(strArchive, strMoviePath, strMovieFileName);
+    strLookInPaths.push_back(strMoviePath);
   }
   
   int iSize = strLookInPaths.size();
@@ -2003,9 +2003,9 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
   if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() == 1)
   {
-    strPath = CSettings::Get().GetString("subtitles.custompath");
-    URIUtils::AddSlashAtEnd(strPath);
-    strLookInPaths.push_back(strPath);
+    std::string strPath2 = CSettings::Get().GetString("subtitles.custompath");
+    URIUtils::AddSlashAtEnd(strPath2);
+    strLookInPaths.push_back(strPath2);
   }
   
   std::string strDest;
@@ -2023,7 +2023,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
       
       for (int j = 0; j < items.Size(); j++)
       {
-        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
+        std::string strSubtitlePath;
+        URIUtils::Split(items[j]->GetPath(), strSubtitlePath, strItem);
         
         if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt)
           || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
