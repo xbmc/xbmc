@@ -257,6 +257,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogProgress.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSelect.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSlider.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSmartPlaylistEditor.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSmartPlaylistRule.cpp" />
@@ -849,6 +850,7 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h" />
     <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
     <ClInclude Include="..\..\xbmc\filesystem\BlurayFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h" />
