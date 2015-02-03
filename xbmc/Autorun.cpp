@@ -41,7 +41,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "dialogs/GUIDialogSimpleMenu.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
@@ -208,8 +207,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
           g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
           g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
-          if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
-            return false;
           g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
           g_playlistPlayer.Play(0);

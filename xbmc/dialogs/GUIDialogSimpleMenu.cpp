@@ -31,22 +31,22 @@
 #include "video/VideoInfoTag.h"
 #include "URL.h"
 
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item)
+bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
   /* if asked to resume somewhere, we should not show anything */
-  if (item->m_lStartOffset)
+  if (item.m_lStartOffset)
     return true;
 
   if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
   std::string path;
-  if (item->IsVideoDb())
-    path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+  if (item.IsVideoDb())
+    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   else
-    path = item->GetPath();
+    path = item.GetPath();
 
-  if (item->IsBDFile())
+  if (item.IsBDFile())
   {
     std::string root = URIUtils::GetParentPath(path);
     URIUtils::RemoveSlashAtEnd(root);
@@ -58,10 +58,10 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item)
     }
   }
 
-  if (item->IsDiscImage())
+  if (item.IsDiscImage())
   {
     CURL url2("udf://");
-    url2.SetHostName(item->GetPath());
+    url2.SetHostName(item.GetPath());
     url2.SetFileName("BDMV/index.bdmv");
     if (XFILE::CFile::Exists(url2.Get()))
     {
@@ -75,7 +75,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item)
   return true;
 }
 
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item, const std::string& directory)
+bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string& directory)
 {
 
   CFileItemList items;
@@ -86,7 +86,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item, const std::stri
     return true;
   }
 
-  if (items.Size() == 0)
+  if (items.IsEmpty())
   {
     CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", directory.c_str());
     return true;
@@ -110,14 +110,15 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItemPtr& item, const std::stri
 
     if (item_new->m_bIsFolder == false)
     {
-      item.reset(new CFileItem(*item));
-      item->SetProperty("original_listitem_url", item->GetPath());
-      item->SetPath(item_new->GetPath());
+      std::string original_path = item.GetPath();
+      item.Reset();
+      item = *item_new;
+      item.SetProperty("original_listitem_url", original_path);
       return true;
     }
 
     items.Clear();
-    if (!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints(), true) || items.Size() == 0)
+    if (!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints(), true) || items.IsEmpty())
     {
       CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
       break;
