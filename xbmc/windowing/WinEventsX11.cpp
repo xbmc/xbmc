@@ -542,7 +542,7 @@ bool CWinEventsX11Imp::MessagePump()
       // lose mouse coverage
       case LeaveNotify:
       {
-        g_Mouse.SetActive(false);
+        CInputManager::Get().SetMouseActive(false);
         break;
       }
 

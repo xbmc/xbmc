@@ -44,7 +44,13 @@
 
 #define MOUSE_MAX_BUTTON 5
 
-enum MOUSE_STATE { MOUSE_STATE_NORMAL = 1, MOUSE_STATE_FOCUS, MOUSE_STATE_DRAG, MOUSE_STATE_CLICK };
+enum MOUSE_STATE 
+{ 
+  MOUSE_STATE_NORMAL = 1, /*! < Normal state */
+  MOUSE_STATE_FOCUS,      /*! < Control below the mouse is currently in focus */
+  MOUSE_STATE_DRAG,       /*! < A drag operation is being performed */
+  MOUSE_STATE_CLICK       /*! < A mousebutton is being clicked */
+};
 enum MOUSE_BUTTON { MOUSE_LEFT_BUTTON = 0, MOUSE_RIGHT_BUTTON, MOUSE_MIDDLE_BUTTON, MOUSE_EXTRA_BUTTON1, MOUSE_EXTRA_BUTTON2 };
 
 // this holds everything we know about the current state of the mouse
@@ -57,6 +63,12 @@ struct MouseState
   int8_t dz;          // change in z (wheel)
   bool button[MOUSE_MAX_BUTTON];     // current state of the buttons
   bool active;        // true if the mouse is active
+};
+
+struct MousePosition
+{
+  int x;
+  int y;
 };
 
 class CAction;
@@ -86,6 +98,7 @@ public:
   inline int GetY(void) const { return m_mouseState.y; }
   inline int GetDX(void) const { return m_mouseState.dx; }
   inline int GetDY(void) const { return m_mouseState.dy; }
+  MousePosition GetPosition() { return MousePosition{ m_mouseState.x, m_mouseState.y }; }
 
 private:
   /*! \brief Holds information regarding a particular mouse button state
@@ -174,8 +187,6 @@ private:
 
   uint32_t m_Key;
 };
-
-extern CMouseStat g_Mouse;
 
 #endif
 

@@ -346,7 +346,7 @@ bool CWinEventsSDL::MessagePump()
       {
         if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
         {
-          g_Mouse.SetActive(false);
+          CInputManager::Get().SetMouseActive(false);
 #if defined(TARGET_DARWIN_OSX)
           // See CApplication::ProcessSlow() for a description as to why we call Cocoa_HideMouse.
           // this is here to restore the pointer when toggling back to window mode from fullscreen.

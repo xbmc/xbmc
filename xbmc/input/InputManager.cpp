@@ -56,12 +56,12 @@
 #include "input/SDLJoystick.h"
 #endif
 #include "ButtonTranslator.h"
-#include "input/MouseStat.h"
 #include "peripherals/Peripherals.h"
 #include "XBMC_vkeys.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "settings/Settings.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -89,6 +89,9 @@ void CInputManager::InitializeInputs()
 #endif
 
   m_Keyboard.Initialize();
+
+  m_Mouse.Initialize();
+  m_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
 }
 
 void CInputManager::ReInitializeJoystick()
@@ -140,7 +143,7 @@ bool CInputManager::ProcessGamepad(int windowId)
     if (CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Mouse.SetActive(false);
+      m_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
   }
@@ -165,7 +168,7 @@ bool CInputManager::ProcessGamepad(int windowId)
 
       float amount = m_Joystick.GetAmount(joyName, joyId);
       CAction action(actionID, fullrange ? (amount + 1.0f) / 2.0f : fabs(amount), 0.0f, actionName);
-      g_Mouse.SetActive(false);
+      m_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
   }
@@ -192,7 +195,7 @@ bool CInputManager::ProcessGamepad(int windowId)
     if (keymapId && CButtonTranslator::GetInstance().TranslateJoystickString(windowId, joyName, keymapId, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_Mouse.SetActive(false);
+      m_Mouse.SetActive(false);
       return ExecuteInputAction(action);
     }
   }
@@ -225,11 +228,11 @@ bool CInputManager::ProcessMouse(int windowId)
 {
   MEASURE_FUNCTION;
 
-  if (!g_Mouse.IsActive() || !g_application.IsAppFocused())
+  if (!m_Mouse.IsActive() || !g_application.IsAppFocused())
     return false;
 
   // Get the mouse command ID
-  uint32_t mousekey = g_Mouse.GetKey();
+  uint32_t mousekey = m_Mouse.GetKey();
   if (mousekey == KEY_MOUSE_NOOP)
     return true;
 
@@ -246,7 +249,7 @@ bool CInputManager::ProcessMouse(int windowId)
 
   // Deactivate mouse if non-mouse action
   if (!mouseaction.IsMouse())
-    g_Mouse.SetActive(false);
+    m_Mouse.SetActive(false);
 
   // Consume ACTION_NOOP.
   // Some views or dialogs gets closed after any ACTION and
@@ -274,11 +277,11 @@ bool CInputManager::ProcessMouse(int windowId)
 
   // This is a mouse action so we need to record the mouse position
   return g_application.OnAction(CAction(mouseaction.GetID(),
-    g_Mouse.GetHold(MOUSE_LEFT_BUTTON),
-    (float)g_Mouse.GetX(),
-    (float)g_Mouse.GetY(),
-    (float)g_Mouse.GetDX(),
-    (float)g_Mouse.GetDY(),
+    m_Mouse.GetHold(MOUSE_LEFT_BUTTON),
+    (float)m_Mouse.GetX(),
+    (float)m_Mouse.GetY(),
+    (float)m_Mouse.GetDX(),
+    (float)m_Mouse.GetDY(),
     mouseaction.GetName()));
 }
 
@@ -372,7 +375,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
   {
     CPoint pos;
-    if (es->GetMousePos(pos.x, pos.y) && g_Mouse.IsEnabled())
+    if (es->GetMousePos(pos.x, pos.y) && m_Mouse.IsEnabled())
     {
       XBMC_Event newEvent;
       newEvent.type = XBMC_MOUSEMOTION;
@@ -399,7 +402,7 @@ bool CInputManager::ProcessJoystickEvent(int windowId, const std::string& joysti
   if (g_application.WakeUpScreenSaverAndDPMS())
     return true;
 
-  g_Mouse.SetActive(false);
+  m_Mouse.SetActive(false);
 
   int actionID;
   std::string actionName;
@@ -428,7 +431,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:
   case XBMC_MOUSEMOTION:
-    g_Mouse.HandleEvent(newEvent);
+    m_Mouse.HandleEvent(newEvent);
     ProcessMouse(g_windowManager.GetActiveWindowID());
     break;
   case XBMC_TOUCH:
@@ -477,7 +480,7 @@ bool CInputManager::OnKey(const CKey& key)
 {
 
   // Turn the mouse off, as we've just got a keypress from controller or remote
-  g_Mouse.SetActive(false);
+  m_Mouse.SetActive(false);
 
   // get the current active window
   int iWin = g_windowManager.GetActiveWindowID();
@@ -661,4 +664,39 @@ bool CInputManager::ExecuteInputAction(const CAction &action)
     bResult = g_application.OnAction(action);
   }
   return bResult;
+}
+
+void CInputManager::SetMouseActive(bool active /* = true */)
+{
+  m_Mouse.SetActive(active);
+}
+
+void CInputManager::SetMouseEnabled(bool mouseEnabled /* = true */)
+{
+  m_Mouse.SetEnabled(mouseEnabled);
+}
+
+bool CInputManager::IsMouseActive()
+{
+  return m_Mouse.IsActive();
+}
+
+MOUSE_STATE CInputManager::GetMouseState()
+{
+  return m_Mouse.GetState();
+}
+
+MousePosition CInputManager::GetMousePosition()
+{
+  return m_Mouse.GetPosition();
+}
+
+void CInputManager::SetMouseResolution(int maxX, int maxY, float speedX, float speedY)
+{
+  m_Mouse.SetResolution(maxX, maxY, speedX, speedY);
+}
+
+void CInputManager::SetMouseState(MOUSE_STATE mouseState)
+{
+  m_Mouse.SetState(mouseState);
 }

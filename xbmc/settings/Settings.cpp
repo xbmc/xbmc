@@ -274,7 +274,7 @@ void CSettings::Uninitialize()
 #if defined(TARGET_WINDOWS) || defined(HAS_SDL_JOYSTICK)
   m_settingsManager->UnregisterCallback(&CInputManager::Get().m_Joystick);
 #endif
-  m_settingsManager->UnregisterCallback(&g_Mouse);
+  m_settingsManager->UnregisterCallback(&CInputManager::Get().m_Mouse);
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
@@ -767,7 +767,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert("input.enablemouse");
-  m_settingsManager->RegisterCallback(&g_Mouse, settingSet);
+  m_settingsManager->RegisterCallback(&CInputManager::Get().m_Mouse, settingSet);
 
   settingSet.clear();
   settingSet.insert("services.webserver");

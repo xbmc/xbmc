@@ -30,7 +30,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"
 #include "TextureManager.h"
-#include "input/MouseStat.h"
+#include "input/InputManager.h"
 #include "GUIWindowManager.h"
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
@@ -489,7 +489,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
 
   // update anyone that relies on sizing information
   g_renderManager.Recover();
-  g_Mouse.SetResolution(info_org.iWidth, info_org.iHeight, 1, 1);
+  CInputManager::Get().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
   Unlock();

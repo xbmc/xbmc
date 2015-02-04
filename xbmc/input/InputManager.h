@@ -30,6 +30,7 @@
 #include "windowing/XBMC_events.h"
 #include "guilib/Key.h"
 #include "input/KeyboardStat.h"
+#include "input/MouseStat.h"
 
 class CInputManager
 {
@@ -114,6 +115,55 @@ public:
    */
   bool OnEvent(XBMC_Event& newEvent);
 
+  /*! \brief Control if the mouse is actively used or not
+   *
+   * \param[in] active sets mouse active or inactive
+   */
+  void SetMouseActive(bool active = true);
+
+  /*! \brief Control if we should use a mouse or not
+   *
+   * \param[in] mouseEnabled sets mouse enabled or disabled
+   */
+  void SetMouseEnabled(bool mouseEnabled = true);
+
+  /*! \brief Set the current state of the mouse such as click, drag operation
+   *
+   * \param[in] mouseState which state the mouse should be set to
+   * \sa MOUSE_STATE
+   */
+  void SetMouseState(MOUSE_STATE mouseState);
+
+  /*! \brief Check if the mouse is currently active
+   *
+   * \return true if active, false otherwise 
+   */
+  bool IsMouseActive();
+
+  /*! \brief Get the current state of the mouse, such as click or drag operation
+   *
+   * \return the current state of the mouse as a value from MOUSE_STATE
+   * \sa MOUSE_STATE
+   */
+  MOUSE_STATE GetMouseState();
+
+  /*! \brief Get the current mouse positions x and y coordinates
+   *
+   * \return a struct containing the x and y coordinates
+   * \sa MousePosition
+   */
+  MousePosition GetMousePosition();
+
+  /*! \brief Set the current screen resolution and pointer speed
+   *
+   * \param[in] maxX    screen width
+   * \param[in] maxY    screen height
+   * \param[in] speedX  mouse speed in x dimension
+   * \param[in] speedY  mouse speed in y dimension
+   * \return 
+   */
+  void SetMouseResolution(int maxX, int maxY, float speedX, float speedY);
+
 private:
 
   /*! \brief Process keyboard event and translate into an action
@@ -143,6 +193,7 @@ private:
   bool ExecuteInputAction(const CAction &action);
 
   CKeyboardStat m_Keyboard;
+  CMouseStat m_Mouse;
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
