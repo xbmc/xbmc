@@ -596,7 +596,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     if ((g_PVRManager.IsPlayingRadio() && channel.get()->IsRadio()) ||
         (g_PVRManager.IsPlayingTV() && !channel.get()->IsRadio()))
-      g_PVRManager.PerformChannelSwitch(*channel.get(), false);
+      g_application.m_pPlayer->SwitchChannel(*channel.get());
     else
       CApplicationMessenger::Get().MediaPlay(CFileItem(*channel.get()));
 
