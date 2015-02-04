@@ -34,8 +34,6 @@ namespace ADDON
     CRepository(const cp_extension_t *props);
     virtual ~CRepository();
 
-    std::string Checksum() const;
-
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
      \return the md5 hash for the given addon, empty if non exists.

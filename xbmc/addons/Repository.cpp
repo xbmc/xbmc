@@ -104,20 +104,6 @@ CRepository::~CRepository()
 {
 }
 
-string CRepository::Checksum() const
-{
-  /* This code is duplicated in CRepositoryUpdateJob::GrabAddons().
-   * If you make changes here, they may be applicable there, too.
-   */
-  string result;
-  for (DirList::const_iterator it  = m_dirs.begin(); it != m_dirs.end(); ++it)
-  {
-    if (!it->checksum.empty())
-      result += FetchChecksum(it->checksum);
-  }
-  return result;
-}
-
 string CRepository::FetchChecksum(const string& url)
 {
   CFile file;
