@@ -182,6 +182,9 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -4070,6 +4073,8 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
+		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -8454,6 +8459,8 @@
 				DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */,
 				7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */,
 				7C6EB6F9155F32C30080368A /* HTTPImageHandler.h */,
+				395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */,
+				395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */,
 				DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */,
 				DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */,
 				DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */,
@@ -11560,6 +11567,7 @@
 				DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */,
 				DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
@@ -12181,6 +12189,7 @@
 				DFF0F20017528350002DA3A4 /* FTPParse.cpp in Sources */,
 				DFF0F20317528350002DA3A4 /* HDHomeRunDirectory.cpp in Sources */,
 				DFF0F20417528350002DA3A4 /* HDHomeRunFile.cpp in Sources */,
+				395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				DFF0F20517528350002DA3A4 /* HTSPDirectory.cpp in Sources */,
 				DFF0F20617528350002DA3A4 /* HTSPSession.cpp in Sources */,
 				DFF0F20717528350002DA3A4 /* HTTPDirectory.cpp in Sources */,
@@ -13882,6 +13891,7 @@
 				E499147F174E605900741B6D /* Variant.cpp in Sources */,
 				E4991480174E605900741B6D /* Weather.cpp in Sources */,
 				E4991481174E605900741B6D /* XBMCTinyXML.cpp in Sources */,
+				395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				E4991482174E605900741B6D /* XMLUtils.cpp in Sources */,
 				E4991483174E606500741B6D /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
 				E4991484174E606500741B6D /* GUIDialogFileStacking.cpp in Sources */,
