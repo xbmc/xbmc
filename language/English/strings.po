@@ -15747,7 +15747,13 @@ msgctxt "#36509"
 msgid "Monoscopic (2D)"
 msgstr ""
 
-#empty strings from id 36510 to 36519
+#. name of a stereoscopic mode
+#: system/settings/settings.xml
+msgctxt "#36510"
+msgid "Anaglyph Yellow/Blue"
+msgstr ""
+
+#empty strings from id 36511 to 36519
 #end of reserved strings for 3d modes
 
 #. Name of a setting, asking the user for the default playback mode (2D, 3D, ask) of stereoscopic videos

@@ -1390,7 +1390,7 @@
   "GUI.Stereoscopy.Mode": {
     "type": "object",
     "properties": {
-      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "monoscopic" ] },
+      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "anaglyph_yellow_blue", "monoscopic" ] },
       "label": { "type": "string", "required": true }
     }
   },

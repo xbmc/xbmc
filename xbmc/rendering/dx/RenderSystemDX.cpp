@@ -743,7 +743,8 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     return false;
 
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-  || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
+  || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
   {
     // if stereo anaglyph, data was cleared when left view was rendererd
     if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
@@ -1031,6 +1032,13 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_RED );
   }
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE);
+  }
 }
 
 bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const
@@ -1039,6 +1047,7 @@ bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const
   {
     case RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN:
     case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
+    case RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE:
       return true;
     default:
       return CRenderSystemBase::SupportsStereo(mode);
