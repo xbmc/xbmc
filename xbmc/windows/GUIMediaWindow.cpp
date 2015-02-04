@@ -751,7 +751,6 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   if (canfilter && url.HasOption("filter"))
     directory = RemoveParameterFromPath(directory, "filter");
 
-  ClearFileItems();
   if (!GetDirectory(directory, *m_vecItems))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", url.GetRedacted().c_str());
@@ -823,8 +822,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   m_vecItems->FillInDefaultIcons();
 
   // remember the original (untouched) list of items (for filtering etc)
-  m_unfilteredItems->SetPath(m_vecItems->GetPath()); // use the original path - it'll likely be relied on for other things later.
-  m_unfilteredItems->Append(*m_vecItems);
+  m_unfilteredItems->Assign(*m_vecItems);
 
   // Cache the list of items if possible
   OnCacheFileItems(*m_vecItems);
