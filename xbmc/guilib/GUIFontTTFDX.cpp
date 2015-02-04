@@ -169,6 +169,8 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
     delete m_speedupTexture;
     m_speedupTexture = NULL;
   }
+  m_staticCache.Flush();
+  m_dynamicCache.Flush();
 
   CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   pNewTexture->CreateTextureObject();
