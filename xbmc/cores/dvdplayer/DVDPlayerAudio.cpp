@@ -330,6 +330,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     || (m_speed   >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
       priority = 0;
 
+    // consider stream stalled if queue is empty
+    // we can't sync audio to clock with an empty queue
+    if (m_speed == DVD_PLAYSPEED_NORMAL)
+    {
+      timeout = 0;
+    }
+
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 
     if (ret == MSGQ_TIMEOUT)
