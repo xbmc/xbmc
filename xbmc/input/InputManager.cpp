@@ -58,7 +58,6 @@
 #include "ButtonTranslator.h"
 #include "input/MouseStat.h"
 #include "peripherals/Peripherals.h"
-#include "input/KeyboardStat.h"
 #include "XBMC_vkeys.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -88,8 +87,9 @@ void CInputManager::InitializeInputs()
   // Pass the mapping of axis to triggers to m_Joystick 
   m_Joystick.Initialize();
 #endif
-}
 
+  m_Keyboard.Initialize();
+}
 
 void CInputManager::ReInitializeJoystick()
 {
@@ -420,10 +420,10 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   switch (newEvent.type)
   {
   case XBMC_KEYDOWN:
-    OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
+    OnKey(m_Keyboard.ProcessKeyDown(newEvent.key.keysym));
     break;
   case XBMC_KEYUP:
-    g_Keyboard.ProcessKeyUp();
+    m_Keyboard.ProcessKeyUp();
     break;
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:
@@ -512,7 +512,7 @@ bool CInputManager::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (g_application.WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
-    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
+    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
     return true;
   }
 
@@ -596,7 +596,7 @@ bool CInputManager::OnKey(const CKey& key)
         }
       }
 
-      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetID());
+      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetID());
 
       if (g_application.OnAction(action))
         return true;
@@ -611,7 +611,7 @@ bool CInputManager::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   return ExecuteInputAction(action);
 }

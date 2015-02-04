@@ -35,7 +35,6 @@
 using namespace std;
 using namespace PERIPHERALS;
 
-CKeyboardStat g_Keyboard;
 
 CKeyboardStat::CKeyboardStat()
 {

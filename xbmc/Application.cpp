@@ -738,7 +738,7 @@ bool CApplication::Create()
   g_Mouse.Initialize();
   g_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
 
-  g_Keyboard.Initialize();
+  CInputManager::Get().InitializeInputs();
 
 #if defined(TARGET_DARWIN_OSX)
   // Configure and possible manually start the helper.

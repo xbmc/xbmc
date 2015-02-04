@@ -29,6 +29,7 @@
 #endif
 #include "windowing/XBMC_events.h"
 #include "guilib/Key.h"
+#include "input/KeyboardStat.h"
 
 class CInputManager
 {
@@ -140,6 +141,8 @@ private:
   * \sa CAction
   */
   bool ExecuteInputAction(const CAction &action);
+
+  CKeyboardStat m_Keyboard;
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
