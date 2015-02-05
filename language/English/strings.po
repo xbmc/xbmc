@@ -7551,7 +7551,19 @@ msgctxt "#16333"
 msgid "MMAL - Bob (Half)"
 msgstr ""
 
-#empty strings from id 16334 to 16399
+#. Description of OSD video settings for deinterlace method with label #16334
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16334"
+msgid "IMX - Fast motion"
+msgstr ""
+
+#. Description of OSD video settings for deinterlace method with label #16335
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16335"
+msgid "IMX - Fast motion (Double)"
+msgstr ""
+
+#empty strings from id 16336 to 16399
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16400"
