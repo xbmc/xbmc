@@ -303,7 +303,7 @@ msgstr "Kiểu xem: To tự động"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Kiểu xem: Hình đại diện"
+msgstr "Kiểu xem: Biểu tượng"
 
 msgctxt "#101"
 msgid "View: List"
@@ -347,7 +347,7 @@ msgstr "Tạo hình thu nhỏ"
 
 msgctxt "#111"
 msgid "Shortcuts"
-msgstr "Shortcut"
+msgstr "Phím tắt"
 
 msgctxt "#112"
 msgid "Paused"
@@ -355,11 +355,11 @@ msgstr "Tạm dừng"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Không thể cập nhật"
+msgstr "Lỗi cập nhật"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Không thể cài đặt"
+msgstr "Lỗi cài đặt"
 
 msgctxt "#115"
 msgid "Copy"
@@ -595,7 +595,7 @@ msgstr "Ngày phát hành"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "Hiển thị video 4:3 theo"
+msgstr "Hiển thị video theo tỷ lệ 4:3"
 
 msgctxt "#175"
 msgid "Moods"
@@ -851,7 +851,7 @@ msgstr "Toàn màn hình"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Cỡ: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Điểm ảnh: %2.2f:1) (VShift: %2.2f)"
+msgstr "Cỡ: (%i,%i)->(%i,%i) (Thu phóng x%2.2f) Tỷ lệ:%2.2f:1 (Điểm ảnh: %2.2f:1) (VShift: %2.2f)"
 
 msgctxt "#246"
 msgid "Monitor"
@@ -859,7 +859,7 @@ msgstr "Màn Hình"
 
 msgctxt "#247"
 msgid "Scripts"
-msgstr "Kịch bản"
+msgstr "Các đoạn mã"
 
 msgctxt "#248"
 msgid "Language"
@@ -1099,7 +1099,7 @@ msgstr "Ngôn ngữ giao diện"
 
 msgctxt "#310"
 msgid "Keyboard layouts"
-msgstr "Sơ đồ bàn phím"
+msgstr "Bố cục bàn phím"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1211,7 +1211,7 @@ msgstr "Sửa chữa"
 
 msgctxt "#339"
 msgid "Optimized"
-msgstr "Tối ưu hóa"
+msgstr "Đã được tối ưu"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1543,7 +1543,7 @@ msgstr "Đĩa"
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
-msgstr "Cho đúng đĩa CD/DVD"
+msgstr "Cho vào đúng đĩa CD/DVD"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
