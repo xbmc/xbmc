@@ -20,27 +20,35 @@
 
 #include "DVDVideoCodecIMX.h"
 
-#include <sys/stat.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <sys/mman.h>
+#include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
+#include "threads/Atomics.h"
 #include "utils/log.h"
 #include "DVDClock.h"
-#include "settings/AdvancedSettings.h"
-#include "threads/Atomics.h"
 
 #include <cassert>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
 
+#define IMX_VDI_MAX_WIDTH 968
 #define FRAME_ALIGN 16
 #define MEDIAINFO 1
+#define RENDER_QUEUE_SIZE 3
 #define _4CC(c1,c2,c3,c4) (((uint32_t)(c4)<<24)|((uint32_t)(c3)<<16)|((uint32_t)(c2)<<8)|(uint32_t)(c1))
 #define Align(ptr,align)  (((unsigned int)ptr + (align) - 1)/(align)*(align))
+#define Align2(ptr,align)  (((unsigned int)ptr)/(align)*(align))
+
+
+// Global instance
+CIMXContext g_IMXContext;
+
 
 // Experiments show that we need at least one more (+1) VPU buffer than the min value returned by the VPU
-const int CDVDVideoCodecIMX::m_extraVpuBuffers = 6;
+const int CDVDVideoCodecIMX::m_extraVpuBuffers = 1+RENDER_QUEUE_SIZE+2;
 const int CDVDVideoCodecIMX::m_maxVpuDecodeLoops = 5;
 CCriticalSection CDVDVideoCodecIMX::m_codecBufferLock;
 
@@ -92,8 +100,8 @@ bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
   return true;
 
 AllocFailure:
-        VpuFreeBuffers();
-        return false;
+  VpuFreeBuffers();
+  return false;
 }
 
 int CDVDVideoCodecIMX::VpuFindBuffer(void *frameAddr)
@@ -106,7 +114,7 @@ int CDVDVideoCodecIMX::VpuFindBuffer(void *frameAddr)
   return -1;
 }
 
-bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
+bool CDVDVideoCodecIMX::VpuFreeBuffers()
 {
   VpuMemDesc vpuMem;
   VpuDecRetCode vpuRet;
@@ -137,7 +145,7 @@ bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
       vpuRet = VPU_DecFreeMem(&vpuMem);
       if(vpuRet != VPU_DEC_RET_SUCCESS)
       {
-        CLog::Log(LOGERROR, "%s - Errror while trying to free physical memory (%d).\n", __FUNCTION__, ret);
+        CLog::Log(LOGERROR, "%s - Error while trying to free physical memory (%d).\n", __FUNCTION__, ret);
         ret = false;
       }
     }
@@ -150,7 +158,7 @@ bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
 }
 
 
-bool CDVDVideoCodecIMX::VpuOpen(void)
+bool CDVDVideoCodecIMX::VpuOpen()
 {
   VpuDecRetCode  ret;
   VpuVersionInfo vpuVersion;
@@ -187,7 +195,11 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
   VpuAllocBuffers(&memInfo);
 
   m_decOpenParam.nReorderEnable = 1;
+#ifdef IMX_INPUT_FORMAT_I420
+  m_decOpenParam.nChromaInterleave = 0;
+#else
   m_decOpenParam.nChromaInterleave = 1;
+#endif
   m_decOpenParam.nMapType = 0;
   m_decOpenParam.nTiled2LinearEnable = 0;
   m_decOpenParam.nEnableFileMode = 0;
@@ -205,6 +217,24 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
   if (ret != VPU_DEC_RET_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s - iMX VPU set skip mode failed  (%d).\n", __FUNCTION__, ret);
+    goto VpuOpenError;
+  }
+
+  config = VPU_DEC_CONF_BUFDELAY;
+  param = 0;
+  ret = VPU_DecConfig(m_vpuHandle, config, &param);
+  if (ret != VPU_DEC_RET_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "%s - iMX VPU set buffer delay failed  (%d).\n", __FUNCTION__, ret);
+    goto VpuOpenError;
+  }
+
+  config = VPU_DEC_CONF_INPUTTYPE;
+  param = VPU_DEC_IN_NORMAL;
+  ret = VPU_DecConfig(m_vpuHandle, config, &param);
+  if (ret != VPU_DEC_RET_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "%s - iMX VPU configure input type failed  (%d).\n", __FUNCTION__, ret);
     goto VpuOpenError;
   }
 
@@ -227,52 +257,78 @@ VpuOpenError:
   return false;
 }
 
-bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
+bool CDVDVideoCodecIMX::VpuAllocFrameBuffers()
 {
+  int totalSize = 0;
+  int ySize     = 0;
+  int uSize     = 0;
+  int vSize     = 0;
+  int mvSize    = 0;
+  int yStride   = 0;
+  int uvStride  = 0;
+
   VpuDecRetCode ret;
   VpuMemDesc vpuMem;
-  int totalSize=0;
-  int mvSize=0;
-  int ySize=0;
-  int uvSize=0;
-  int yStride=0;
-  int uvStride=0;
   unsigned char* ptr;
   unsigned char* ptrVirt;
   int nAlign;
 
-  m_vpuFrameBufferNum =  m_initInfo.nMinFrameBufferCount + m_extraVpuBuffers;
+  m_vpuFrameBufferNum = m_initInfo.nMinFrameBufferCount + m_extraVpuBuffers;
   m_vpuFrameBuffers = new VpuFrameBuffer[m_vpuFrameBufferNum];
 
-  yStride=Align(m_initInfo.nPicWidth,FRAME_ALIGN);
+  yStride = Align(m_initInfo.nPicWidth,FRAME_ALIGN);
   if(m_initInfo.nInterlace)
   {
-    ySize=Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,(2*FRAME_ALIGN));
+    ySize = Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,(2*FRAME_ALIGN));
   }
   else
   {
-    ySize=Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,FRAME_ALIGN);
+    ySize = Align(m_initInfo.nPicWidth,FRAME_ALIGN)*Align(m_initInfo.nPicHeight,FRAME_ALIGN);
   }
 
-  //NV12 for all video
-  uvStride=yStride;
-  uvSize=ySize/2;
-  mvSize=uvSize/2;
+#ifdef IMX_INPUT_FORMAT_I420
+  switch (m_initInfo.nMjpgSourceFormat)
+  {
+  case 0: // I420 (4:2:0)
+    uvStride = yStride / 2;
+    uSize = vSize = mvSize = ySize / 4;
+    break;
+  case 1: // Y42B (4:2:2 horizontal)
+    uvStride = yStride / 2;
+    uSize = vSize = mvSize = ySize / 2;
+    break;
+  case 3: // Y444 (4:4:4)
+    uvStride = yStride;
+    uSize = vSize = mvSize = ySize;
+    break;
+  default:
+    CLog::Log(LOGERROR, "%s: invalid source format in init info\n",__FUNCTION__,ret);
+    return false;
+  }
 
-  nAlign=m_initInfo.nAddressAlignment;
+#else
+  // NV12
+  uvStride = yStride;
+  uSize    = ySize/2;
+  mvSize   = uSize/2;
+#endif
+
+  nAlign = m_initInfo.nAddressAlignment;
   if(nAlign>1)
   {
-    ySize=Align(ySize,nAlign);
-    uvSize=Align(uvSize,nAlign);
+    ySize = Align(ySize, nAlign);
+    uSize = Align(uSize, nAlign);
+    vSize = Align(vSize, nAlign);
+    mvSize = Align(mvSize, nAlign);
   }
 
   m_outputBuffers = new CDVDVideoCodecIMXBuffer*[m_vpuFrameBufferNum];
 
   for (int i=0 ; i < m_vpuFrameBufferNum; i++)
   {
-    totalSize=(ySize+uvSize+mvSize+nAlign)*1;
+    totalSize = ySize + uSize + vSize + mvSize + nAlign;
 
-    vpuMem.nSize=totalSize;
+    vpuMem.nSize = totalSize;
     ret = VPU_DecGetMem(&vpuMem);
     if(ret != VPU_DEC_RET_SUCCESS)
     {
@@ -289,42 +345,52 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nSize = vpuMem.nSize;
 
     //fill frameBuf
-    ptr=(unsigned char*)vpuMem.nPhyAddr;
-    ptrVirt=(unsigned char*)vpuMem.nVirtAddr;
+    ptr = (unsigned char*)vpuMem.nPhyAddr;
+    ptrVirt = (unsigned char*)vpuMem.nVirtAddr;
 
     //align the base address
     if(nAlign>1)
     {
-      ptr=(unsigned char*)Align(ptr,nAlign);
-      ptrVirt=(unsigned char*)Align(ptrVirt,nAlign);
+      ptr = (unsigned char*)Align(ptr,nAlign);
+      ptrVirt = (unsigned char*)Align(ptrVirt,nAlign);
     }
 
     // fill stride info
-    m_vpuFrameBuffers[i].nStrideY=yStride;
-    m_vpuFrameBuffers[i].nStrideC=uvStride;
+    m_vpuFrameBuffers[i].nStrideY           = yStride;
+    m_vpuFrameBuffers[i].nStrideC           = uvStride;
 
     // fill phy addr
-    m_vpuFrameBuffers[i].pbufY=ptr;
-    m_vpuFrameBuffers[i].pbufCb=ptr+ySize;
-    m_vpuFrameBuffers[i].pbufCr=0;
-    m_vpuFrameBuffers[i].pbufMvCol=ptr+ySize+uvSize;
+    m_vpuFrameBuffers[i].pbufY              = ptr;
+    m_vpuFrameBuffers[i].pbufCb             = ptr + ySize;
+#ifdef IMX_INPUT_FORMAT_I420
+    m_vpuFrameBuffers[i].pbufCr             = ptr + ySize + uSize;
+#else
+    m_vpuFrameBuffers[i].pbufCr             = 0;
+#endif
+    m_vpuFrameBuffers[i].pbufMvCol          = ptr + ySize + uSize + vSize;
 
     // fill virt addr
-    m_vpuFrameBuffers[i].pbufVirtY=ptrVirt;
-    m_vpuFrameBuffers[i].pbufVirtCb=ptrVirt+ySize;
-    m_vpuFrameBuffers[i].pbufVirtCr=0;
-    m_vpuFrameBuffers[i].pbufVirtMvCol=ptrVirt+ySize+uvSize;
+    m_vpuFrameBuffers[i].pbufVirtY          = ptrVirt;
+    m_vpuFrameBuffers[i].pbufVirtCb         = ptrVirt + ySize;
+#ifdef IMX_INPUT_FORMAT_I420
+    m_vpuFrameBuffers[i].pbufVirtCr         = ptrVirt + ySize + uSize;
+#else
+    m_vpuFrameBuffers[i].pbufVirtCr         = 0;
+#endif
+    m_vpuFrameBuffers[i].pbufVirtMvCol      = ptrVirt + ySize + uSize + vSize;
 
-    m_vpuFrameBuffers[i].pbufY_tilebot=0;
-    m_vpuFrameBuffers[i].pbufCb_tilebot=0;
-    m_vpuFrameBuffers[i].pbufVirtY_tilebot=0;
-    m_vpuFrameBuffers[i].pbufVirtCb_tilebot=0;
+    m_vpuFrameBuffers[i].pbufY_tilebot      = 0;
+    m_vpuFrameBuffers[i].pbufCb_tilebot     = 0;
+    m_vpuFrameBuffers[i].pbufVirtY_tilebot  = 0;
+    m_vpuFrameBuffers[i].pbufVirtCb_tilebot = 0;
 
 #ifdef TRACE_FRAMES
     m_outputBuffers[i] = new CDVDVideoCodecIMXBuffer(i);
 #else
-    m_outputBuffers[i] = new CDVDVideoCodecIMXBuffer();
+    m_outputBuffers[i] = new CDVDVideoCodecIMXBuffer;
 #endif
+    // Those buffers are ours so lock them to prevent destruction
+    m_outputBuffers[i]->Lock();
   }
 
   return true;
@@ -337,6 +403,7 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   m_vpuFrameBuffers = NULL;
   m_outputBuffers = NULL;
   m_lastBuffer = NULL;
+  m_currentBuffer = NULL;
   m_extraMem = NULL;
   m_vpuFrameBufferNum = 0;
   m_dropState = false;
@@ -351,6 +418,9 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   m_convert_bitstream = false;
   m_bytesToBeConsumed = 0;
   m_previousPts = DVD_NOPTS_VALUE;
+#ifdef DUMP_STREAM
+  m_dump = NULL;
+#endif
 }
 
 CDVDVideoCodecIMX::~CDVDVideoCodecIMX()
@@ -365,6 +435,26 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CLog::Log(LOGNOTICE, "iMX VPU : software decoding requested.\n");
     return false;
   }
+
+  if (!g_IMXContext.Configure())
+    return false;
+
+#ifdef DUMP_STREAM
+  m_dump = fopen("stream.dump", "wb");
+  if (m_dump != NULL)
+  {
+    fwrite(&hints.software, sizeof(hints.software), 1, m_dump);
+    fwrite(&hints.codec, sizeof(hints.codec), 1, m_dump);
+    fwrite(&hints.profile, sizeof(hints.profile), 1, m_dump);
+    fwrite(&hints.codec_tag, sizeof(hints.codec_tag), 1, m_dump);
+    fwrite(&hints.extrasize, sizeof(hints.extrasize), 1, m_dump);
+    CLog::Log(LOGNOTICE, "Dump: HEADER: %d  %d  %d  %d  %d\n",
+              hints.software, hints.codec, hints.profile,
+              hints.codec_tag, hints.extrasize);
+    if (hints.extrasize > 0)
+      fwrite(hints.extradata, 1, hints.extrasize, m_dump);
+  }
+#endif
 
   m_hints = hints;
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -496,17 +586,26 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   return true;
 }
 
-void CDVDVideoCodecIMX::Dispose(void)
+void CDVDVideoCodecIMX::Dispose()
 {
+#ifdef DUMP_STREAM
+  if (m_dump)
+  {
+    fclose(m_dump);
+    m_dump = NULL;
+  }
+#endif
+
+  g_IMXContext.Clear();
+
   VpuDecRetCode  ret;
   bool VPU_loaded = m_vpuHandle;
 
-  // Prevent rendering thread from using frame buffers
-  Enter();
-
   // Release last buffer
-  if(m_lastBuffer)
-    SAFE_RELEASE(m_lastBuffer);
+  SAFE_RELEASE(m_lastBuffer);
+  SAFE_RELEASE(m_currentBuffer);
+
+  Enter();
 
   // Invalidate output buffers to prevent the renderer from mapping this memory
   for (int i=0; i<m_vpuFrameBufferNum; i++)
@@ -564,6 +663,7 @@ void CDVDVideoCodecIMX::Dispose(void)
     m_converter->Close();
     SAFE_DELETE(m_converter);
   }
+
   return;
 }
 
@@ -581,8 +681,25 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
 #ifdef IMX_PROFILE
   static unsigned long long previous, current;
+#endif
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
   unsigned long long before_dec;
 #endif
+
+#ifdef DUMP_STREAM
+  if (m_dump != NULL)
+  {
+    if (pData)
+    {
+      fwrite(&dts, sizeof(double), 1, m_dump);
+      fwrite(&pts, sizeof(double), 1, m_dump);
+      fwrite(&iSize, sizeof(int), 1, m_dump);
+      fwrite(pData, 1, iSize, m_dump);
+    }
+  }
+#endif
+
+  SAFE_RELEASE(m_currentBuffer);
 
   if (!m_vpuHandle)
   {
@@ -612,6 +729,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
   if ((pData && iSize) ||
      (m_bytesToBeConsumed))
   {
+    //printf("D   %f  %d\n", pts, iSize);
     if ((m_convert_bitstream) && (iSize))
     {
       // convert demuxer packet from bitstream to bytestream (AnnexB)
@@ -640,16 +758,24 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       inData.sCodecData.nSize = 0;
     }
 
+#ifdef IMX_PROFILE_BUFFERS
+    static unsigned long long dec_time = 0;
+#endif
+
     while (true) // Decode as long as the VPU consumes data
     {
-#ifdef IMX_PROFILE
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
       before_dec = XbmcThreads::SystemClockMillis();
 #endif
       if (m_frameReported)
         m_bytesToBeConsumed += inData.nSize;
       ret = VPU_DecDecodeBuf(m_vpuHandle, &inData, &decRet);
+#ifdef IMX_PROFILE_BUFFERS
+      unsigned long long dec_single_call = XbmcThreads::SystemClockMillis()-before_dec;
+      dec_time += dec_single_call;
+#endif
 #ifdef IMX_PROFILE
-        CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
+      CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
 #endif
 
       if (ret != VPU_DEC_RET_SUCCESS)
@@ -738,14 +864,53 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         m_frameInfo.pExtInfo->nFrmWidth  = (((m_frameInfo.pExtInfo->nFrmWidth) + 15) & ~15);
         m_frameInfo.pExtInfo->nFrmHeight = (((m_frameInfo.pExtInfo->nFrmHeight) + 15) & ~15);
 
-        /* quick & dirty fix to get proper timestamping for VP8 codec */
-        if (m_decOpenParam.CodecFormat == VPU_V_VP8)
+        idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
+        if (idx != -1)
         {
-          idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
-          m_outputBuffers[idx]->SetPts(pts);
-        }
+          CDVDVideoCodecIMXBuffer *buffer = m_outputBuffers[idx];
 
-        retStatus |= VC_PICTURE;
+          /* quick & dirty fix to get proper timestamping for VP8 codec */
+          if (m_decOpenParam.CodecFormat == VPU_V_VP8)
+            buffer->SetPts(pts);
+
+          buffer->Lock();
+          buffer->SetDts(dts);
+          buffer->Queue(&m_frameInfo, m_lastBuffer);
+
+#ifdef IMX_PROFILE_BUFFERS
+          CLog::Log(LOGNOTICE, "+D  %f  %lld\n", buffer->GetPts(), dec_time);
+          dec_time = 0;
+#endif
+
+#ifdef TRACE_FRAMES
+          CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, pDvdVideoPicture->dts, pDvdVideoPicture->pts);
+#endif
+
+          if (!m_usePTS)
+          {
+            buffer->SetPts(DVD_NOPTS_VALUE);
+            buffer->SetDts(DVD_NOPTS_VALUE);
+          }
+
+          // Save last buffer
+          SAFE_RELEASE(m_lastBuffer);
+          m_lastBuffer = buffer;
+          m_lastBuffer->Lock();
+
+#ifdef IMX_PROFILE_BUFFERS
+          static unsigned long long lastD = 0;
+          unsigned long long current = XbmcThreads::SystemClockMillis(), tmp;
+          CLog::Log(LOGNOTICE, "+V  %f  %lld\n", buffer->GetPts(), current-lastD);
+          lastD = current;
+#endif
+
+          m_currentBuffer = buffer;
+
+          if (m_currentBuffer)
+          {
+            retStatus |= VC_PICTURE;
+          }
+        }
       } //VPU_DEC_OUTPUT_DIS
 
       // According to libfslvpuwrap: If this flag is set then the frame should
@@ -824,10 +989,8 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
     } // Decode loop
   } //(pData && iSize)
 
-  if (retStatus == 0)
-  {
+  if (!retStatus)
     retStatus |= VC_BUFFER;
-  }
 
   if (m_bytesToBeConsumed > 0)
   {
@@ -837,8 +1000,6 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
     // at next call...
     m_previousPts = pts;
   }
-  // Store current dts (will be used only if VC_PICTURE is set)
-  m_dts = dts;
 
 #ifdef IMX_PROFILE
   CLog::Log(LOGDEBUG, "%s - returns %x - duration %lld\n", __FUNCTION__, retStatus, XbmcThreads::SystemClockMillis() - previous);
@@ -857,8 +1018,8 @@ void CDVDVideoCodecIMX::Reset()
     CLog::Log(LOGDEBUG, "%s - called\n", __FUNCTION__);
 
   // Release last buffer
-  if(m_lastBuffer)
-    SAFE_RELEASE(m_lastBuffer);
+  SAFE_RELEASE(m_lastBuffer);
+  SAFE_RELEASE(m_currentBuffer);
 
   // Invalidate all buffers
   for(int i=0; i < m_vpuFrameBufferNum; i++)
@@ -874,12 +1035,11 @@ void CDVDVideoCodecIMX::Reset()
   {
     CLog::Log(LOGERROR, "%s - VPU flush failed with error code %d.\n", __FUNCTION__, ret);
   }
-
 }
 
 unsigned CDVDVideoCodecIMX::GetAllowedReferences()
 {
-  return 3;
+  return RENDER_QUEUE_SIZE;
 }
 
 bool CDVDVideoCodecIMX::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -911,46 +1071,29 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_DROPPED;
 
+  if (m_initInfo.nInterlace)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_INTERLACED;
+  else
+    pDvdVideoPicture->iFlags &= ~DVP_FLAG_INTERLACED;
+
+  if (m_currentBuffer->GetFieldType() != VPU_FIELD_BOTTOM && m_currentBuffer->GetFieldType() != VPU_FIELD_BT)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  else
+    pDvdVideoPicture->iFlags &= ~DVP_FLAG_TOP_FIELD_FIRST;
+
   pDvdVideoPicture->format = RENDER_FMT_IMXMAP;
-  pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->iWidth = m_frameInfo.pExtInfo->FrmCropRect.nRight - m_frameInfo.pExtInfo->FrmCropRect.nLeft;
   pDvdVideoPicture->iHeight = m_frameInfo.pExtInfo->FrmCropRect.nBottom - m_frameInfo.pExtInfo->FrmCropRect.nTop;
 
   pDvdVideoPicture->iDisplayWidth = ((pDvdVideoPicture->iWidth * m_frameInfo.pExtInfo->nQ16ShiftWidthDivHeightRatio) + 32767) >> 16;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
 
-  int idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
-  if (idx != -1)
-  {
-    CDVDVideoCodecIMXBuffer *buffer = m_outputBuffers[idx];
+  // Current buffer is locked already -> hot potato
+  pDvdVideoPicture->pts = m_currentBuffer->GetPts();
+  pDvdVideoPicture->dts = m_currentBuffer->GetDts();
 
-    pDvdVideoPicture->pts = buffer->GetPts();
-    pDvdVideoPicture->dts = m_dts;
-    if (!m_usePTS)
-    {
-      pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-      pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
-    }
-
-    buffer->Queue(&m_frameInfo, m_lastBuffer);
-
-#ifdef TRACE_FRAMES
-    CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, pDvdVideoPicture->dts, pDvdVideoPicture->pts);
-#endif
-
-    pDvdVideoPicture->IMXBuffer = buffer;
-    pDvdVideoPicture->IMXBuffer->Lock();
-
-    // Save last buffer
-    if (m_lastBuffer)
-      SAFE_RELEASE(m_lastBuffer);
-    m_lastBuffer = buffer;
-    m_lastBuffer->Lock();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s - could not find frame buffer\n", __FUNCTION__);
-  }
+  pDvdVideoPicture->IMXBuffer = m_currentBuffer;
+  m_currentBuffer = NULL;
 
   return true;
 }
@@ -982,44 +1125,54 @@ void CDVDVideoCodecIMX::Leave()
 }
 
 /*******************************************/
-
 #ifdef TRACE_FRAMES
 CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer(int idx)
-  : m_refs(1)
-  , m_idx(idx)
+  : m_idx(idx)
+  ,
 #else
 CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
-  : m_refs(1)
+  :
 #endif
+    m_pts(DVD_NOPTS_VALUE)
+  , m_dts(DVD_NOPTS_VALUE)
   , m_frameBuffer(NULL)
   , m_rendered(false)
-  , m_pts(DVD_NOPTS_VALUE)
   , m_previousBuffer(NULL)
 {
+}
+
+void CDVDVideoCodecIMXBuffer::SetPts(double pts)
+{
+  m_pts = pts;
+}
+
+void CDVDVideoCodecIMXBuffer::SetDts(double dts)
+{
+  m_dts = dts;
 }
 
 void CDVDVideoCodecIMXBuffer::Lock()
 {
 #ifdef TRACE_FRAMES
-  long count = AtomicIncrement(&m_refs);
+  long count = AtomicIncrement(&m_iRefs);
   CLog::Log(LOGDEBUG, "R+ %02d  -  ref : %d  (VPU)\n", m_idx, count);
 #else
-  AtomicIncrement(&m_refs);
+  AtomicIncrement(&m_iRefs);
 #endif
 }
 
 long CDVDVideoCodecIMXBuffer::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = AtomicDecrement(&m_iRefs);
 #ifdef TRACE_FRAMES
   CLog::Log(LOGDEBUG, "R- %02d  -  ref : %d  (VPU)\n", m_idx, count);
 #endif
   if (count == 2)
   {
-    // Only referenced by the coded and its next frame, release the previous
+    // Only referenced by the codec and its next frame, release the previous
     SAFE_RELEASE(m_previousBuffer);
   }
-  if (count == 1)
+  else if (count == 1)
   {
     // If count drops to 1 then the only reference is being held by the codec
     // that it can be released in the next Decode call.
@@ -1045,6 +1198,16 @@ bool CDVDVideoCodecIMXBuffer::IsValid()
   return m_frameBuffer != NULL;
 }
 
+void CDVDVideoCodecIMXBuffer::BeginRender()
+{
+  CDVDVideoCodecIMX::Enter();
+}
+
+void CDVDVideoCodecIMXBuffer::EndRender()
+{
+  CDVDVideoCodecIMX::Leave();
+}
+
 bool CDVDVideoCodecIMXBuffer::Rendered() const
 {
   return m_rendered;
@@ -1061,10 +1224,16 @@ void CDVDVideoCodecIMXBuffer::Queue(VpuDecOutFrameInfo *frameInfo,
   if (m_previousBuffer)
     m_previousBuffer->Lock();
 
-  m_iWidth  = frameInfo->pExtInfo->nFrmWidth;
-  m_iHeight = frameInfo->pExtInfo->nFrmHeight;
-  m_VirtAddr = m_frameBuffer->pbufVirtY;
-  m_phyAddr = m_frameBuffer->pbufY;
+#ifdef IMX_INPUT_FORMAT_I420
+  iFormat     = _4CC('I', '4', '2', '0');
+#else
+  iFormat     = _4CC('N', 'V', '1', '2');
+#endif
+  iWidth      = frameInfo->pExtInfo->nFrmWidth;
+  iHeight     = frameInfo->pExtInfo->nFrmHeight;
+  pVirtAddr   = m_frameBuffer->pbufVirtY;
+  pPhysAddr   = (int)m_frameBuffer->pbufY;
+  m_fieldType = frameInfo->eFieldType;
 }
 
 VpuDecRetCode CDVDVideoCodecIMXBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
@@ -1084,31 +1253,679 @@ VpuDecRetCode CDVDVideoCodecIMXBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
 #endif
   m_rendered = false;
   m_frameBuffer = NULL;
-  m_pts = DVD_NOPTS_VALUE;
+  SetPts(DVD_NOPTS_VALUE);
   SAFE_RELEASE(m_previousBuffer);
 
   return ret;
 }
 
-void CDVDVideoCodecIMXBuffer::SetPts(double pts)
-{
-  m_pts = pts;
-}
-
-double CDVDVideoCodecIMXBuffer::GetPts(void) const
-{
-  return m_pts;
-}
-
-CDVDVideoCodecIMXBuffer *CDVDVideoCodecIMXBuffer::GetPreviousBuffer() const
-{
-  return m_previousBuffer;
-}
-
 CDVDVideoCodecIMXBuffer::~CDVDVideoCodecIMXBuffer()
 {
-  assert(m_refs == 0);
+  assert(m_iRefs == 0);
 #ifdef TRACE_FRAMES
   CLog::Log(LOGDEBUG, "~  %02d  (VPU)\n", m_idx);
 #endif
+}
+
+CIMXContext::CIMXContext()
+  : CThread("iMX IPU")
+  , m_fbHandle(0)
+  , m_fbPages(0)
+  , m_fbPhysAddr(0)
+  , m_fbVirtAddr(NULL)
+  , m_ipuHandle(0)
+  , m_vsync(true)
+  , m_pageCrops(NULL)
+{
+  // Limit queue to 2
+  m_input.resize(2);
+  m_beginInput = m_endInput = m_bufferedInput = 0;
+}
+
+CIMXContext::~CIMXContext()
+{
+  Close();
+}
+
+bool CIMXContext::Configure(int pages)
+{
+  SetBlitRects(CRectInt(), CRectInt());
+  m_fbCurrentPage = 0;
+
+  int fb0 = open("/dev/fb0", O_RDWR, 0);
+
+  if (fb0 < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to open /dev/fb0\n");
+    return false;
+  }
+
+  struct fb_var_screeninfo fbVar;
+  if (ioctl(fb0, FBIOGET_VSCREENINFO, &fbVar) < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to read primary screen resolution\n");
+    close(fb0);
+    return false;
+  }
+
+  close(fb0);
+
+  if (m_fbHandle)
+  {
+    // Check for updated screen resolution
+    if ((m_fbWidth != fbVar.xres) || (m_fbHeight != fbVar.yres) || (pages != m_fbPages))
+      Close();
+    else
+    {
+      Clear();
+      Unblank();
+      return true;
+    }
+  }
+
+  CLog::Log(LOGNOTICE, "iMX : Initialize render buffers\n");
+
+  memcpy(&m_fbVar, &fbVar, sizeof(fbVar));
+
+  const char *deviceName = "/dev/fb1";
+
+  m_fbHandle = open(deviceName, O_RDWR | O_NONBLOCK, 0);
+  if (m_fbHandle < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to open framebuffer: %s\n", deviceName);
+    return false;
+  }
+
+  m_fbWidth = m_fbVar.xres;
+  m_fbHeight = m_fbVar.yres;
+
+  if (ioctl(m_fbHandle, FBIOGET_VSCREENINFO, &m_fbVar) < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to query variable screen info at %s\n", deviceName);
+    return false;
+  }
+
+  // We want n fb pages
+  m_fbPages = pages;
+  m_pageCrops = new CRectInt[m_fbPages];
+
+  m_fbVar.xoffset = 0;
+  m_fbVar.yoffset = 0;
+  m_fbVar.bits_per_pixel = 16;
+  m_fbVar.nonstd = _4CC('U', 'Y', 'V', 'Y');
+  m_fbVar.activate = FB_ACTIVATE_NOW;
+  m_fbVar.xres = m_fbWidth;
+  m_fbVar.yres = m_fbHeight;
+  // One additional line that is required for deinterlacing
+  m_fbVar.yres_virtual = (m_fbVar.yres+1) * m_fbPages;
+  m_fbVar.xres_virtual = m_fbVar.xres;
+
+  if (ioctl(m_fbHandle, FBIOPUT_VSCREENINFO, &m_fbVar) < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to setup %s\n", deviceName);
+    close(m_fbHandle);
+    m_fbHandle = 0;
+    m_fbPages = 0;
+    return false;
+  }
+
+  struct fb_fix_screeninfo fb_fix;
+  if (ioctl(m_fbHandle, FBIOGET_FSCREENINFO, &fb_fix) < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to query fixed screen info at %s\n", deviceName);
+    close(m_fbHandle);
+    m_fbHandle = 0;
+    m_fbPages = 0;
+    return false;
+  }
+
+  // Final setup
+  m_fbLineLength = fb_fix.line_length;
+  m_fbPhysSize = fb_fix.smem_len;
+  m_fbPageSize = m_fbLineLength * m_fbVar.yres_virtual / m_fbPages;
+  m_fbPhysAddr = fb_fix.smem_start;
+  m_fbVirtAddr = (uint8_t*)mmap(0, m_fbPhysSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fbHandle, 0);
+
+  CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
+
+  m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
+  if (m_ipuHandle < 0)
+  {
+    CLog::Log(LOGWARNING, "iMX : Failed to initialize IPU: %s\n", strerror(errno));
+    m_ipuHandle = 0;
+    Close();
+    return false;
+  }
+
+  Clear();
+  Unblank();
+
+  // Start the ipu thread
+  Create();
+  return true;
+}
+
+bool CIMXContext::Close()
+{
+  CLog::Log(LOGINFO, "iMX : Closing context\n");
+
+  // Stop the ipu thread
+  StopThread();
+
+  if (m_pageCrops)
+  {
+    delete[] m_pageCrops;
+    m_pageCrops = NULL;
+  }
+
+  if (m_fbVirtAddr)
+  {
+    Clear();
+    munmap(m_fbVirtAddr, m_fbPhysSize);
+    m_fbVirtAddr = NULL;
+  }
+
+  if (m_fbHandle)
+  {
+    Blank();
+    close(m_fbHandle);
+    m_fbPages = 0;
+    m_fbHandle = 0;
+    m_fbPhysAddr = 0;
+  }
+
+  if (m_ipuHandle)
+  {
+    // Close IPU device
+    if (close(m_ipuHandle))
+      CLog::Log(LOGERROR, "iMX : Failed to close IPU: %s\n", strerror(errno));
+
+    m_ipuHandle = 0;
+  }
+
+  CLog::Log(LOGNOTICE, "iMX : Deinitialized render context\n", m_fbPages);
+
+  return true;
+}
+
+bool CIMXContext::GetPageInfo(CIMXBuffer *info, int page)
+{
+  if (page < 0 || page >= m_fbPages)
+    return false;
+
+  info->iWidth    = m_fbWidth;
+  info->iHeight   = m_fbHeight;
+  info->iFormat   = m_fbVar.nonstd;
+  info->pPhysAddr = m_fbPhysAddr + page*m_fbPageSize;
+  info->pVirtAddr = m_fbVirtAddr + page*m_fbPageSize;
+
+  return true;
+}
+
+bool CIMXContext::Blank()
+{
+  if (!m_fbHandle) return false;
+  return ioctl(m_fbHandle, FBIOBLANK, 1) == 0;
+}
+
+bool CIMXContext::Unblank()
+{
+  if (!m_fbHandle) return false;
+  return ioctl(m_fbHandle, FBIOBLANK, FB_BLANK_UNBLANK) == 0;
+}
+
+bool CIMXContext::SetVSync(bool enable)
+{
+  m_vsync = enable;
+}
+
+void CIMXContext::SetDoubleRate(bool flag)
+{
+  if (flag)
+    m_currentFieldFmt |= IPU_DEINTERLACE_RATE_EN;
+  else
+    m_currentFieldFmt &= ~IPU_DEINTERLACE_RATE_EN;
+
+  m_currentFieldFmt &= ~IPU_DEINTERLACE_RATE_FRAME1;
+}
+
+bool CIMXContext::DoubleRate() const
+{
+  return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN;
+}
+
+void CIMXContext::SetInterpolatedFrame(bool flag)
+{
+  if (flag)
+    m_currentFieldFmt &= ~IPU_DEINTERLACE_RATE_FRAME1;
+  else
+    m_currentFieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+}
+
+void CIMXContext::SetDeInterlacing(bool flag)
+{
+  m_deInterlacing = flag;
+}
+
+void CIMXContext::SetBlitRects(const CRect &srcRect, const CRect &dstRect)
+{
+  m_srcRect = srcRect;
+  m_dstRect = dstRect;
+}
+
+bool CIMXContext::Blit(int page, CIMXBuffer *source_p, CIMXBuffer *source, bool topBottomFields)
+{
+  if (page < 0 || page >= m_fbPages)
+    return false;
+
+  IPUTask ipu;
+  PrepareTask(ipu, source_p, source, topBottomFields);
+  return DoTask(ipu, page);
+}
+
+bool CIMXContext::BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source, bool topBottomFields)
+{
+  IPUTask ipu;
+  PrepareTask(ipu, source_p, source, topBottomFields);
+  return PushTask(ipu);
+}
+
+bool CIMXContext::ShowPage(int page)
+{
+  int ret;
+
+  if (!m_fbHandle) return false;
+  if (page < 0 || page >= m_fbPages) return false;
+
+  // Protect page swapping from screen capturing that does read the current
+  // front buffer. This is actually not done very frequently so the lock
+  // does not hurt.
+  CSingleLock lk(m_pageSwapLock);
+
+  m_fbCurrentPage = page;
+  m_fbVar.activate = FB_ACTIVATE_VBL;
+  m_fbVar.yoffset = (m_fbVar.yres+1)*page;
+  if ((ret = ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar)) < 0)
+    CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
+
+  // Wait for sync
+  if (m_vsync)
+  {
+    if (ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0) < 0)
+      CLog::Log(LOGWARNING, "Vsync failed: %s\n", strerror(errno));
+  }
+
+  return true;
+}
+
+void CIMXContext::Clear(int page)
+{
+  if (!m_fbVirtAddr) return;
+
+  uint8_t *tmp_buf;
+  int pixels;
+
+  if (page < 0)
+  {
+    tmp_buf = m_fbVirtAddr;
+    pixels = m_fbPageSize*m_fbPages/2;
+  }
+  else if (page < m_fbPages)
+  {
+    tmp_buf = m_fbVirtAddr + page*m_fbPageSize;
+    pixels = m_fbPageSize/2;
+  }
+  else
+    // out of range
+    return;
+
+  for (int i = 0; i < pixels; ++i, tmp_buf += 2)
+  {
+    tmp_buf[0] = 128;
+    tmp_buf[1] = 16;
+  }
+}
+
+#define clamp_byte(x) (x<0?0:(x>255?255:x))
+
+void CIMXContext::CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight)
+{
+  if (m_fbVar.nonstd != _4CC('U', 'Y', 'V', 'Y'))
+  {
+    CLog::Log(LOGWARNING, "iMX : Unknown screen capture format\n");
+    return;
+  }
+
+  // Prevent page swaps
+  CSingleLock lk(m_pageSwapLock);
+  if (m_fbCurrentPage < 0 || m_fbCurrentPage >= m_fbPages)
+  {
+    CLog::Log(LOGWARNING, "iMX : Invalid page to capture\n");
+    return;
+  }
+
+  int r,g,b,a;
+  int u, y0, v, y1;
+
+  unsigned char *display = m_fbVirtAddr + m_fbCurrentPage*m_fbPageSize;
+  int iStride = m_fbWidth*2;
+  int oStride = iWidth*4;
+
+  int cy  =  1*(1 << 16);
+  int cr1 =  1.40200*(1 << 16);
+  int cr2 = -0.71414*(1 << 16);
+  int cr3 =  0*(1 << 16);
+  int cb1 =  0*(1 << 16);
+  int cb2 = -0.34414*(1 << 16);
+  int cb3 =  1.77200*(1 << 16);
+
+  iWidth = std::min(iWidth/2, m_fbWidth/2);
+  iHeight = std::min(iHeight, m_fbHeight);
+
+  for (int y = 0; y < iHeight; ++y, display += iStride, buffer += oStride)
+  {
+    unsigned char *iLine = display;
+    unsigned char *oLine = buffer;
+
+    for (int x = 0; x < iWidth; ++x, iLine += 4, oLine += 8 )
+    {
+      u  = iLine[0]-128;
+      y0 = iLine[1]-16;
+      v  = iLine[2]-128;
+      y1 = iLine[3]-16;
+
+      a = 255-oLine[3];
+      r = (cy*y0 + cb1*u + cr1*v) >> 16;
+      g = (cy*y0 + cb2*u + cr2*v) >> 16;
+      b = (cy*y0 + cb3*u + cr3*v) >> 16;
+
+      oLine[0] = (clamp_byte(b)*a + oLine[0]*oLine[3])/255;
+      oLine[1] = (clamp_byte(g)*a + oLine[1]*oLine[3])/255;
+      oLine[2] = (clamp_byte(r)*a + oLine[2]*oLine[3])/255;
+      oLine[3] = 255;
+
+      a = 255-oLine[7];
+      r = (cy*y0 + cb1*u + cr1*v) >> 16;
+      g = (cy*y0 + cb2*u + cr2*v) >> 16;
+      b = (cy*y0 + cb3*u + cr3*v) >> 16;
+
+      oLine[4] = (clamp_byte(b)*a + oLine[4]*oLine[7])/255;
+      oLine[5] = (clamp_byte(g)*a + oLine[5]*oLine[7])/255;
+      oLine[6] = (clamp_byte(r)*a + oLine[6]*oLine[7])/255;
+      oLine[7] = 255;
+    }
+  }
+}
+
+bool CIMXContext::PushTask(const IPUTask &task)
+{
+  if (!task.current)
+    return false;
+
+  CSingleLock lk(m_monitor);
+
+  if (m_bStop)
+  {
+    m_inputNotEmpty.notifyAll();
+    return false;
+  }
+
+  // If the input queue is full, wait for a free slot
+  while ((m_bufferedInput == m_input.size()) && !m_bStop)
+    m_inputNotFull.wait(lk);
+
+  if (m_bStop)
+  {
+    m_inputNotEmpty.notifyAll();
+    return false;
+  }
+
+  // Store the value
+  if (task.previous) task.previous->Lock();
+  task.current->Lock();
+
+  memcpy(&m_input[m_endInput], &task, sizeof(IPUTask));
+  m_endInput = (m_endInput+1) % m_input.size();
+  ++m_bufferedInput;
+  m_inputNotEmpty.notifyAll();
+
+  return true;
+}
+
+void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
+                              bool topBottomFields)
+{
+  // Fill with zeros
+  ipu.Zero();
+  ipu.previous = source_p;
+  ipu.current = source;
+
+  CRect srcRect = m_srcRect;
+  CRect dstRect = m_dstRect;
+  CRectInt iSrcRect, iDstRect;
+
+  float srcWidth = srcRect.Width();
+  float srcHeight = srcRect.Height();
+  float dstWidth = dstRect.Width();
+  float dstHeight = dstRect.Height();
+
+  // Project coordinates outside the target buffer rect to
+  // the source rect otherwise the IPU task will fail
+  // This is under the assumption that the srcRect is always
+  // inside the input buffer rect. If that is not the case
+  // it needs to be projected to the ouput buffer rect as well
+  if (dstRect.x1 < 0)
+  {
+    srcRect.x1 -= dstRect.x1*srcWidth / dstWidth;
+    dstRect.x1 = 0;
+  }
+  if (dstRect.x2 > m_fbWidth)
+  {
+    srcRect.x2 -= (dstRect.x2-m_fbWidth)*srcWidth / dstWidth;
+    dstRect.x2 = m_fbWidth;
+  }
+  if (dstRect.y1 < 0)
+  {
+    srcRect.y1 -= dstRect.y1*srcHeight / dstHeight;
+    dstRect.y1 = 0;
+  }
+  if (dstRect.y2 > m_fbHeight)
+  {
+    srcRect.y2 -= (dstRect.y2-m_fbHeight)*srcHeight / dstHeight;
+    dstRect.y2 = m_fbHeight;
+  }
+
+  iSrcRect.x1 = Align((int)srcRect.x1,8);
+  iSrcRect.y1 = Align((int)srcRect.y1,8);
+  iSrcRect.x2 = Align((int)srcRect.x2,8);
+  iSrcRect.y2 = Align((int)srcRect.y2,8);
+
+  iDstRect.x1 = Align((int)dstRect.x1,8);
+  iDstRect.y1 = Align((int)dstRect.y1,8);
+  iDstRect.x2 = Align((int)dstRect.x2,8);
+  iDstRect.y2 = Align((int)dstRect.y2,8);
+
+  ipu.task.input.crop.pos.x  = iSrcRect.x1;
+  ipu.task.input.crop.pos.y  = iSrcRect.y1;
+  ipu.task.input.crop.w      = iSrcRect.Width();
+  ipu.task.input.crop.h      = iSrcRect.Height();
+
+  ipu.task.output.crop.pos.x = iDstRect.x1;
+  ipu.task.output.crop.pos.y = iDstRect.y1;
+  ipu.task.output.crop.w     = iDstRect.Width();
+  ipu.task.output.crop.h     = iDstRect.Height();
+
+  // Setup deinterlacing if enabled
+  if (m_deInterlacing)
+  {
+    ipu.task.input.deinterlace.enable = 1;
+    /*
+    if (source_p)
+    {
+      task.input.deinterlace.motion = MED_MOTION;
+      task.input.paddr   = source_p->pPhysAddr;
+      task.input.paddr_n = source->pPhysAddr;
+    }
+    else
+    */
+      ipu.task.input.deinterlace.motion = HIGH_MOTION;
+    ipu.task.input.deinterlace.field_fmt = m_currentFieldFmt;
+
+    if (topBottomFields)
+      ipu.task.input.deinterlace.field_fmt |= IPU_DEINTERLACE_FIELD_TOP;
+    else
+      ipu.task.input.deinterlace.field_fmt |= IPU_DEINTERLACE_FIELD_BOTTOM;
+  }
+}
+
+bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
+{
+  // Clear page if cropping changes
+  CRectInt dstRect(ipu.task.output.crop.pos.x, ipu.task.output.crop.pos.y,
+                   ipu.task.output.crop.pos.x + ipu.task.output.crop.w,
+                   ipu.task.output.crop.pos.y + ipu.task.output.crop.h);
+
+  // Populate input block
+  ipu.task.input.width   = ipu.current->iWidth;
+  ipu.task.input.height  = ipu.current->iHeight;
+  ipu.task.input.format  = ipu.current->iFormat;
+  ipu.task.input.paddr   = ipu.current->pPhysAddr;
+
+  // Populate output block
+  ipu.task.output.width  = m_fbWidth;
+  ipu.task.output.height = m_fbHeight;
+  ipu.task.output.format = m_fbVar.nonstd;
+  ipu.task.output.paddr  = m_fbPhysAddr + targetPage*m_fbPageSize;
+
+  if (m_pageCrops[targetPage] != dstRect)
+  {
+    m_pageCrops[targetPage] = dstRect;
+    Clear(targetPage);
+  }
+
+  if ((ipu.task.input.crop.w <= 0) || (ipu.task.input.crop.h <= 0)
+  ||  (ipu.task.output.crop.w <= 0) || (ipu.task.output.crop.h <= 0))
+    return false;
+
+#ifdef IMX_PROFILE_BUFFERS
+  unsigned long long before = XbmcThreads::SystemClockMillis();
+#endif
+
+  int ret = IPU_CHECK_ERR_INPUT_CROP;
+  while (ret != IPU_CHECK_OK && ret > IPU_CHECK_ERR_MIN)
+  {
+    ret = ioctl(m_ipuHandle, IPU_CHECK_TASK, &ipu.task);
+    switch (ret)
+    {
+      case IPU_CHECK_OK:
+        break;
+      case IPU_CHECK_ERR_SPLIT_INPUTW_OVER:
+        ipu.task.input.crop.w -= 8;
+        break;
+      case IPU_CHECK_ERR_SPLIT_INPUTH_OVER:
+        ipu.task.input.crop.h -= 8;
+        break;
+      case IPU_CHECK_ERR_SPLIT_OUTPUTW_OVER:
+        ipu.task.output.crop.w -= 8;
+        break;
+      case IPU_CHECK_ERR_SPLIT_OUTPUTH_OVER:
+        ipu.task.output.crop.h -= 8;
+        break;
+      default:
+        CLog::Log(LOGWARNING, "iMX : unhandled IPU check error: %d\n", ret);
+        return false;
+    }
+  }
+
+  // Need to find another interface to protect ipu.current from disposing
+  // in CDVDVideoCodecIMX::Dispose. CIMXContext must not have knowledge
+  // about CDVDVideoCodecIMX.
+  ipu.current->BeginRender();
+  if (ipu.current->IsValid())
+    ret = ioctl(m_ipuHandle, IPU_QUEUE_TASK, &ipu.task);
+  else
+    ret = 0;
+  ipu.current->EndRender();
+
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "IPU task failed: %s\n", strerror(errno));
+    return false;
+  }
+
+  // Duplicate 2nd scandline if double rate is active
+  if (ipu.task.input.deinterlace.field_fmt & IPU_DEINTERLACE_RATE_EN)
+  {
+    uint8_t *pageAddr = m_fbVirtAddr + targetPage*m_fbPageSize;
+    memcpy(pageAddr, pageAddr+m_fbLineLength, m_fbLineLength);
+  }
+
+#ifdef IMX_PROFILE_BUFFERS
+  unsigned long long after = XbmcThreads::SystemClockMillis();
+  CLog::Log(LOGNOTICE, "+P  %f  %d\n", ((CDVDVideoCodecIMXBuffer*)ipu.current)->GetPts(), (int)(after-before));
+#endif
+
+  return true;
+}
+
+void CIMXContext::OnStartup()
+{
+  CLog::Log(LOGNOTICE, "iMX : IPU thread started");
+}
+
+void CIMXContext::OnExit()
+{
+  CLog::Log(LOGNOTICE, "iMX : IPU thread terminated");
+}
+
+void CIMXContext::StopThread(bool bWait /*= true*/)
+{
+  CThread::StopThread(false);
+  m_inputNotFull.notifyAll();
+  m_inputNotEmpty.notifyAll();
+  if (bWait)
+    CThread::StopThread(true);
+}
+
+void CIMXContext::Process()
+{
+  bool ret, useBackBuffer;
+  int backBuffer;
+
+  while (!m_bStop)
+  {
+    {
+      CSingleLock lk(m_monitor);
+      while (!m_bufferedInput && !m_bStop)
+        m_inputNotEmpty.wait(lk);
+
+      if (m_bStop) break;
+
+      useBackBuffer = m_vsync;
+      IPUTask &task = m_input[m_beginInput];
+      backBuffer = useBackBuffer?1-m_fbCurrentPage:m_fbCurrentPage;
+      ret = DoTask(task, backBuffer);
+
+      // Free resources
+      task.Done();
+
+      m_beginInput = (m_beginInput+1) % m_input.size();
+      --m_bufferedInput;
+      m_inputNotFull.notifyAll();
+    }
+
+    // Show back buffer
+    if (useBackBuffer && ret) ShowPage(backBuffer);
+  }
+
+  // Mark all pending jobs as done
+  CSingleLock lk(m_monitor);
+  while (m_bufferedInput > 0)
+  {
+    m_input[m_beginInput].Done();
+    m_beginInput = (m_beginInput+1) % m_input.size();
+    --m_bufferedInput;
+  }
+
+  return;
 }

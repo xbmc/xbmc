@@ -31,6 +31,10 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
+#ifdef HAS_IMXVPU
+// This has to go into another header file
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
+#endif
 #include "utils/log.h"
 #include "EGLWrapper.h"
 #include "EGLQuirks.h"
@@ -270,7 +274,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;
 
-  m_nWidth        = res.iWidth;    
+  m_nWidth        = res.iWidth;
   m_nHeight       = res.iHeight;
   m_displayWidth  = res.iScreenWidth;
   m_displayHeight = res.iScreenHeight;
@@ -454,6 +458,9 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
     m_iVSyncMode = 0;
     CLog::Log(LOGERROR, "%s,Could not set egl vsync", __FUNCTION__);
   }
+#ifdef HAS_IMXVPU
+  g_IMXContext.SetVSync(enable);
+#endif
 }
 
 void CWinSystemEGL::ShowOSMouse(bool show)
