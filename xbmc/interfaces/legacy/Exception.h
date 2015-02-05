@@ -30,6 +30,8 @@
 namespace XBMCAddon
 {
   XBMCCOMMONS_STANDARD_EXCEPTION(WrongTypeException);
+  XBMCCOMMONS_STANDARD_EXCEPTION(InvalidArgumentException);
+  XBMCCOMMONS_STANDARD_EXCEPTION(NullPointerException);
 
   /**
    * UnimplementedException Can be used in places like the 
