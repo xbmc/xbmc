@@ -40,7 +40,7 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
   // Set locale to classic ("C") to ensure valid JSON numbers
   const char *currentLocale = setlocale(LC_NUMERIC, NULL);
   std::string backupLocale;
-  if (currentLocale != NULL)
+  if (currentLocale != NULL && (currentLocale[0] != 'C' || currentLocale[1] != 0))
   {
     backupLocale = currentLocale;
     setlocale(LC_NUMERIC, "C");
