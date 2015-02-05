@@ -78,6 +78,10 @@ For Ubuntu (all versions >= 7.04):
 
 For >= 10.10:
     $ sudo apt-get install autopoint libltdl-dev
+
+For >= 12.04 lts: Backport for Precise of libyajl2
+	& sudo-add-apt-repository ppa:team-xbmc/xbmc-nightly
+	& sudo apt-get install libyajl-dev
 	
 For >= 12.10:
 	$ sudo apt-get install libtag1-dev
