@@ -211,7 +211,7 @@ namespace XBMCAddon
        *     - title         : string (Big Fan)
        *     - originaltitle : string (Big Fan)
        *     - sorttitle     : string (Big Fan)
-       *     - duration      : string (3:18)
+       *     - duration      : integer (245) - duration in seconds
        *     - studio        : string (Warner Bros.)
        *     - tagline       : string (An awesome movie) - short description of movie
        *     - writer        : string (Robert D. Siegel)
