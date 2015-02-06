@@ -492,7 +492,7 @@ protected:
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
   bool ExecuteInputAction(const CAction &action);
-  int  GetActiveWindowID(void);
+  
 
   float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);

@@ -71,7 +71,7 @@ bool CWinEventsIOS::MessagePump()
       unsigned int holdTime = pumpEvent.jbutton.holdTime;
 
       CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
-      ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_application.GetActiveWindowID(), joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
+      ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(), joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
     }
     else
       ret |= g_application.OnEvent(pumpEvent);
