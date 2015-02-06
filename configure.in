@@ -1116,8 +1116,27 @@ if test "$use_mysql" = "yes"; then
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 fi
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
-AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
+
+PKG_CHECK_MODULES([TINYXML], [tinyxml >= 2.6.2],
+  [INCLUDES="$INCLUDES $TINYXML_CFLAGS"; LIBS="$LIBS $TINYXML_LIBS"],
+  AC_MSG_ERROR("libtinyxml >= 2.6.2 not found"))
+
+PKG_CHECK_MODULES([YAJL], [yajl >= 2],
+  [INCLUDES="$INCLUDES $YAJL_CFLAGS"; LIBS="$LIBS $YAJL_LIBS"; YAJL_FOUND="true"],
+  [AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([[
+#include <yajl/yajl_version.h>
+#if !defined YAJL_MAJOR || YAJL_MAJOR < 2
+#error yajl version < 2;
+#endif
+    ]])],, [AC_MSG_ERROR([libyajl >= 2.0.0 not found])]
+  )])
+
+if test "$YAJL_FOUND" != "true"; then
+  AC_CHECK_LIB([yajl], [main],, [AC_MSG_ERROR("libyajl >= 2.0.0 not found")])
+  AC_CHECK_HEADERS([yajl/yajl_common.h], [AC_MSG_NOTICE(libyajl2 found)], [AC_MSG_ERROR("yajl/yajl_common.h not found")])
+fi
+
 if test "$target_platform" = "target_android" ; then
   AC_CHECK_LIB([android],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([log],         [__android_log_vprint],, AC_MSG_ERROR($missing_library))
@@ -1914,11 +1933,6 @@ else
     USE_OPENMAX=0
   fi
 fi
-
-# yajl version check (yajl_version.h was added in yajl 2.0)
-AC_CHECK_HEADERS([yajl/yajl_version.h], [], [
-AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
-], [])
 
 # additional internal players
 case $add_players in
