@@ -244,6 +244,26 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
+  <layout name="Spanish QWERTY">
+    <keyboard>
+      <row>1234567890'¡</row>
+      <row>qwertyuiop`+</row>
+      <row>asdfghjklñ´ç</row>
+      <row>&lt;zxcvbnm,.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890?¿</row>
+      <row>QWERTYUIOP^*</row>
+      <row>ASDFGHJKLÑ¨Ç</row>
+      <row>&gt;ZXCVBNM;:_</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>!"·$%&amp;/()=?¿</row>
+      <row>\|@#€£¥[]{}~</row>
+      <row>áéíóúü¹²³ªº±</row>
+      <row>ÁÉÍÓÚÜ¼½¾«»§</row>
+    </keyboard>
+  </layout>
   <layout name="Hebrew QWERTY">
     <keyboard>
       <row>1234567890</row>
