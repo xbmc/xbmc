@@ -41,6 +41,7 @@ public:
 protected:
   // implementation of ILanguageInvoker
   virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
   virtual bool stop(bool abort);
   virtual void onExecutionFailed();
 

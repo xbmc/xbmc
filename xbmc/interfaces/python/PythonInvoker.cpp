@@ -156,7 +156,6 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
-  int m_Py_file_input = Py_file_input;
 
   // get the global lock
   PyEval_AcquireLock();
@@ -289,7 +288,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         Py_DECREF(f);
         setState(InvokerStateRunning);
         XBMCAddon::Python::PyContext pycontext; // this is a guard class that marks this callstack as being in a python context
-        PyRun_FileExFlags(fp, nativeFilename.c_str(), m_Py_file_input, moduleDict, moduleDict, 1, NULL);
+        executeScript(fp, nativeFilename, module, moduleDict);
       }
       else
         CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): %s not found!", GetId(), m_sourceFile.c_str(), m_sourceFile.c_str());
@@ -417,6 +416,15 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   setState(stateToSet);
 
   return true;
+}
+
+void CPythonInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
+{
+  if (fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+    return;
+
+  int m_Py_file_input = Py_file_input;
+  PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, NULL);
 }
 
 bool CPythonInvoker::stop(bool abort)
