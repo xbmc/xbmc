@@ -25,10 +25,7 @@
 #include "FileItem.h"
 #include "utils/SeekHandler.h"
 
-#define SEEK_BAR_DISPLAY_TIME 2000L
-#define SEEK_BAR_SEEK_TIME     500L
-
-#define POPUP_SEEK_SLIDER       401
+#define POPUP_SEEK_PROGRESS     401
 #define POPUP_SEEK_LABEL        402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
@@ -50,11 +47,12 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     return CGUIDialog::OnMessage(message);
 
   case GUI_MSG_LABEL_SET:
-    {
-      if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
-        CGUIDialog::OnMessage(message);
-    }
-    break;
+    if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
+      return CGUIDialog::OnMessage(message);
+      
+  case GUI_MSG_ITEM_SELECT:
+    if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
+      return CGUIDialog::OnMessage(message);
   }
   return false; // don't process anything other than what we need!
 }
@@ -71,12 +69,12 @@ void CGUIDialogSeekBar::FrameMove()
   if (!g_application.GetSeekHandler()->InProgress() && !g_infoManager.m_performingSeek
     && g_infoManager.GetTotalPlayTime())
   { // position the bar at our current time
-    CONTROL_SELECT_ITEM(POPUP_SEEK_LABEL, (unsigned int)(g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
+    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)(g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
     SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentPlayTime());
   }
   else
   {
-    CONTROL_SELECT_ITEM(POPUP_SEEK_LABEL, (unsigned int)g_application.GetSeekHandler()->GetPercent());
+    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)g_application.GetSeekHandler()->GetPercent());
     SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentSeekTime());
   }
 
