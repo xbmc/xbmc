@@ -44,6 +44,7 @@
 #include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "video/VideoDatabase.h"
+#include "network/Network.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -1382,26 +1383,15 @@ bool CPVRManager::IsRecording(void) const
 
 bool CPVRManager::IsIdle(void) const
 {
-  if (!IsStarted())
-    return true;
-
-  if (IsRecording() || IsPlaying()) // pvr recording or playing?
+  bool bReturn(true);
+  if (IsStarted())
   {
-    return false;
+    if (IsRecording() || IsPlaying()) // pvr recording or playing?
+      bReturn = false;
+    else
+      bReturn = !IsNextEventWithinBackendIdleTime();
   }
-  else if (m_timers) // has active timers, etc.?
-  {
-    const CDateTime now = CDateTime::GetUTCDateTime();
-    const CDateTimeSpan idle(0, 0, CSettings::Get().GetInt("pvrpowermanagement.backendidletime"), 0);
-
-    const CDateTime next = m_timers->GetNextEventTime();
-    const CDateTimeSpan delta = next - now;
-
-    if (delta <= idle)
-      return false;
-  }
-
-  return true;
+  return bReturn;
 }
 
 bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
@@ -1409,7 +1399,7 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
   bool bReturn(true);
   if (IsStarted())
   {
-    if (!m_addons->AllLocalBackendsIdle())
+    if (!AllLocalBackendsIdle())
     {
       if (bAskUser)
       {
@@ -1422,6 +1412,62 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
     }
   }
   return bReturn;
+}
+
+bool CPVRManager::AllLocalBackendsIdle(void) const
+{
+  if (m_timers)
+  {
+    // active recording on local backend?
+    std::vector<CFileItemPtr> recordings = m_timers->GetActiveRecordings();
+    for (std::vector<CFileItemPtr>::const_iterator timerIt = recordings.begin(); timerIt != recordings.end(); ++timerIt)
+    {
+      if (EventOccursOnLocalBackend(*timerIt))
+        return false;
+    }
+
+    // soon recording on local backend?
+    if (IsNextEventWithinBackendIdleTime())
+    {
+      CFileItemPtr item = m_timers->GetNextActiveTimer();
+      if (item.get() == NULL)
+      {
+        // Next event is due to automatic daily wakeup of PVR!
+        return false;
+      }
+
+      if (EventOccursOnLocalBackend(item))
+        return false;
+    }
+  }
+  return true;
+}
+
+bool CPVRManager::EventOccursOnLocalBackend(const CFileItemPtr& item) const
+{
+  if (item && item->HasPVRTimerInfoTag())
+  {
+    CPVRTimerInfoTag* tag = item->GetPVRTimerInfoTag();
+    if (tag)
+    {
+      std::string hostname(m_addons->GetBackendHostnameByClientId(tag->m_iClientId));
+      if (!hostname.empty() && g_application.getNetwork().IsLocalHost(hostname))
+        return true;
+    }
+  }
+  return false;
+}
+
+bool CPVRManager::IsNextEventWithinBackendIdleTime(void) const
+{
+  // timers going off soon?
+  const CDateTime now(CDateTime::GetUTCDateTime());
+  const CDateTimeSpan idle(
+    0, 0, CSettings::Get().GetInt("pvrpowermanagement.backendidletime"), 0);
+  const CDateTime next(m_timers->GetNextEventTime());
+  const CDateTimeSpan delta(next - now);
+
+  return (delta <= idle);
 }
 
 void CPVRManager::ShowPlayerInfo(int iTimeout)
