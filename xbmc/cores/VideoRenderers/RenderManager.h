@@ -201,10 +201,11 @@ protected:
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
 
-  bool m_bIsStarted;
   CSharedSection m_sharedSection;
 
+  bool m_bIsStarted;
   bool m_bReconfigured;
+  bool m_bRenderGUI;
 
   int m_rendermethod;
 

@@ -288,6 +288,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
       m_free.push_back(i);
 
     m_bIsStarted = true;
+    m_bRenderGUI = true;
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
@@ -370,7 +371,7 @@ void CXBMCRenderManager::FrameMove()
     for(std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
     {
       // renderer may want to keep the frame for postprocessing
-      if (!m_pRenderer->NeedBufferForRef(*it))
+      if (!m_pRenderer->NeedBufferForRef(*it) || !m_bRenderGUI)
       {
         m_pRenderer->ReleaseBuffer(*it);
         m_overlays.Release(*it);
@@ -380,6 +381,8 @@ void CXBMCRenderManager::FrameMove()
       else
         ++it;
     }
+
+    m_bRenderGUI = true;
   }
 }
 
@@ -1078,6 +1081,17 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
 int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 {
   CSingleLock lock2(m_presentlock);
+
+  // check if gui is active and discard buffer if not
+  // this keeps videoplayer going
+  if (!m_bRenderGUI || !g_application.GetRenderGUI())
+  {
+    m_bRenderGUI = false;
+    lock2.Leave();
+    Sleep(20);
+    DiscardBuffer();
+    return 0;
+  }
 
   XbmcThreads::EndTime endtime(timeout);
   while(m_free.empty())
