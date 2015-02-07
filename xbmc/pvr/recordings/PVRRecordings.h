@@ -48,7 +48,6 @@ namespace PVR
     virtual const std::string GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const;
     virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
     virtual void GetSubDirectories(const std::string &strBase, CFileItemList *results);
-    CPVRRecordingPtr GetByFileItem(const CFileItem &item) const;
 
     /**
      * @brief recursively deletes all recordings in the specified directory
@@ -65,7 +64,7 @@ namespace PVR
     int Load();
     void Unload();
     void Clear();
-    void UpdateFromClient(const CPVRRecording &tag);
+    void UpdateFromClient(const CPVRRecordingPtr &tag);
 
     /**
      * @brief refresh the recordings list from the clients.

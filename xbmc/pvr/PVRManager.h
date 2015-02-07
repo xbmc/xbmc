@@ -28,6 +28,7 @@
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 #include "interfaces/IAnnouncer.h"
+#include "pvr/recordings/PVRRecording.h"
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -46,7 +47,6 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
-  class CPVRRecording;
   class CPVRRecordings;
   class CPVRTimers;
   class CPVRGUIInfo;
@@ -319,7 +319,7 @@ namespace PVR
      * @param tag The recording to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenRecordedStream(const CPVRRecording &tag);
+    bool OpenRecordedStream(const CPVRRecordingPtr &tag);
 
     /*!
     * @brief Try to playback the given file item

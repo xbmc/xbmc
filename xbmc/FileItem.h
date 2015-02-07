@@ -51,6 +51,7 @@ namespace PVR
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
+  typedef boost::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
 }
 class CPictureInfoTag;
 
@@ -103,7 +104,7 @@ public:
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const EPG::CEpgInfoTagPtr& tag);
   CFileItem(const PVR::CPVRChannel& channel);
-  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
@@ -287,12 +288,10 @@ public:
 
   inline bool HasPVRRecordingInfoTag() const
   {
-    return m_pvrRecordingInfoTag != NULL;
+    return m_pvrRecordingInfoTag.get() != NULL;
   }
 
-  PVR::CPVRRecording* GetPVRRecordingInfoTag();
-
-  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  inline const PVR::CPVRRecordingPtr GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
@@ -486,7 +485,7 @@ private:
   CVideoInfoTag* m_videoInfoTag;
   EPG::CEpgInfoTagPtr m_epgInfoTag;
   PVR::CPVRChannel* m_pvrChannelInfoTag;
-  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;

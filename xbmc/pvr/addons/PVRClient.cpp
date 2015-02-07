@@ -1365,15 +1365,13 @@ bool CPVRClient::GetPlayingChannel(CPVRChannelPtr &channel) const
   return false;
 }
 
-bool CPVRClient::GetPlayingRecording(CPVRRecording &recording) const
+CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   if (m_bReadyToUse && m_bIsPlayingRecording)
-  {
-    recording = m_playingRecording;
-    return true;
-  }
-  return false;
+    return m_playingRecording;
+
+  return CPVRRecordingPtr();
 }
 
 bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel)
@@ -1426,7 +1424,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   return bReturn;
 }
 
-bool CPVRClient::OpenStream(const CPVRRecording &recording)
+bool CPVRClient::OpenStream(const CPVRRecordingPtr &recording)
 {
   bool bReturn(false);
   CloseStream();
@@ -1434,7 +1432,7 @@ bool CPVRClient::OpenStream(const CPVRRecording &recording)
   if (m_bReadyToUse && m_addonCapabilities.bSupportsRecordings)
   {
     PVR_RECORDING tag;
-    WriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(*recording, tag);
 
     try
     {

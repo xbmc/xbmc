@@ -1048,7 +1048,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
   return bReturn;
 }
 
-bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
+bool CPVRManager::OpenRecordedStream(const CPVRRecordingPtr &tag)
 {
   bool bReturn = false;
   CSingleLock lock(m_critSection);

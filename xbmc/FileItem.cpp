@@ -62,6 +62,8 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 
+#include <assert.h>
+
 using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -173,16 +175,17 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRRecording& record)
+CFileItem::CFileItem(const CPVRRecordingPtr& record)
 {
+  assert(record.get());
+
   Initialize();
 
-  m_strPath = record.m_strFileNameAndPath;
   m_bIsFolder = false;
-  *GetPVRRecordingInfoTag() = record;
-  SetLabel(record.m_strTitle);
-  m_strLabel2 = record.m_strPlot;
-
+  m_pvrRecordingInfoTag = record;
+  m_strPath = record->m_strFileNameAndPath;
+  SetLabel(record->m_strTitle);
+  m_strLabel2 = record->m_strPlot;
   FillInMimeType(false);
 }
 
@@ -230,7 +233,6 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
@@ -315,14 +317,12 @@ CFileItem::~CFileItem(void)
   delete m_musicInfoTag;
   delete m_videoInfoTag;
   delete m_pvrChannelInfoTag;
-  delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
@@ -382,19 +382,10 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_pvrChannelInfoTag = NULL;
   }
 
-  if (item.HasPVRRecordingInfoTag())
-  {
-    m_pvrRecordingInfoTag = GetPVRRecordingInfoTag();
-    if (m_pvrRecordingInfoTag)
-      *m_pvrRecordingInfoTag = *item.m_pvrRecordingInfoTag;
-  }
+  if (item.m_pvrRecordingInfoTag)
+    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   else
-  {
-    if (m_pvrRecordingInfoTag)
-      delete m_pvrRecordingInfoTag;
-
-    m_pvrRecordingInfoTag = NULL;
-  }
+    m_pvrRecordingInfoTag.reset();
 
   if (item.HasPVRTimerInfoTag())
   {
@@ -446,7 +437,6 @@ void CFileItem::Initialize()
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_bLabelPreformated=false;
@@ -490,8 +480,7 @@ void CFileItem::Reset()
   m_epgInfoTag.reset();
   delete m_pvrChannelInfoTag;
   m_pvrChannelInfoTag=NULL;
-  delete m_pvrRecordingInfoTag;
-  m_pvrRecordingInfoTag=NULL;
+  m_pvrRecordingInfoTag.reset();
   delete m_pvrTimerInfoTag;
   m_pvrTimerInfoTag=NULL;
   delete m_pictureInfoTag;
@@ -1399,8 +1388,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
     *GetVideoInfoTag() = *item.GetVideoInfoTag();
     // preferably use some information from PVR info tag if available
-    if (HasPVRRecordingInfoTag())
-      GetPVRRecordingInfoTag()->CopyClientInfo(GetVideoInfoTag());
+    if (m_pvrRecordingInfoTag)
+      m_pvrRecordingInfoTag->CopyClientInfo(GetVideoInfoTag());
     SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
     SetInvalid();
   }
@@ -3119,14 +3108,6 @@ CPVRChannel* CFileItem::GetPVRChannelInfoTag()
   return m_pvrChannelInfoTag;
 }
 
-CPVRRecording* CFileItem::GetPVRRecordingInfoTag()
-{
-  if (!m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = new CPVRRecording;
-
-  return m_pvrRecordingInfoTag;
-}
-
 CPVRTimerInfoTag* CFileItem::GetPVRTimerInfoTag()
 {
   if (!m_pvrTimerInfoTag)
@@ -3260,15 +3241,15 @@ int CFileItem::GetVideoContentType() const
 bool CFileItem::IsResumePointSet() const
 {
   return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
-      (HasPVRRecordingInfoTag() && GetPVRRecordingInfoTag()->GetLastPlayedPosition() > 0);
+      (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->GetLastPlayedPosition() > 0);
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (HasPVRRecordingInfoTag())
+  if (m_pvrRecordingInfoTag)
   {
     // This will retrieve 'fresh' resume information from the PVR server
-    int rc = GetPVRRecordingInfoTag()->GetLastPlayedPosition();
+    int rc = m_pvrRecordingInfoTag->GetLastPlayedPosition();
     if (rc > 0)
       return rc;
     // Fall through to default value
