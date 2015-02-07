@@ -228,7 +228,6 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
     m_strClientChannelName            = channel.ClientChannelName();
 
     UpdateEncryptionName();
-    m_bChanged = true;
     SetChanged();
   }
 
