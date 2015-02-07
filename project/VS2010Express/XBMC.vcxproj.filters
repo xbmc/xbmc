@@ -3104,6 +3104,9 @@
     <ClCompile Include="..\..\xbmc\input\InputManager.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestObservable.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6038,6 +6041,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InputManager.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Observable.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
