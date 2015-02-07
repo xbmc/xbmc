@@ -75,52 +75,70 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
 {
   bool bReturn(false);
   int iActionId = action.GetID();
-  if (GetFocusedControlID() == CONTROL_LIST_CHANNELS &&
-      (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
-       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
-       iActionId == ACTION_MOUSE_MOVE)) // item should be selected on hover
+
+  if (GetFocusedControlID() == CONTROL_LIST_CHANNELS)
   {
-    bReturn = true;
-    if (!m_bMovingMode)
+    if (iActionId == ACTION_MOUSE_MOVE)
+    {
+      int iSelected = m_viewControl.GetSelectedItem();
+      if (m_iSelected < iSelected)
+      {
+        iActionId = ACTION_MOVE_DOWN;
+      }
+      else if (m_iSelected > iSelected)
+      {
+        iActionId = ACTION_MOVE_UP;
+      }
+      else
+      {
+        return bReturn;
+      }
+    }
+
+    if (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
+        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP)
     {
       CGUIDialog::OnAction(action);
       int iSelected = m_viewControl.GetSelectedItem();
-      if (iSelected != m_iSelected)
-      {
-        m_iSelected = iSelected;
-        SetData(m_iSelected);
-      }
-    }
-    else
-    {
-      std::string strNumber;
-      CGUIDialog::OnAction(action);
 
-      bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
-      unsigned int iLines = bMoveUp ? abs(m_iSelected - m_viewControl.GetSelectedItem()) : 1;
-      bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
-      if (bOutOfBounds)
+      bReturn = true;
+      if (!m_bMovingMode)
       {
-        bMoveUp = !bMoveUp;
-        iLines  = m_channelItems->Size() - 1;
-      }
-
-      for (unsigned int iLine = 0; iLine < iLines; iLine++)
-      {
-        unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
-        if (m_channelItems->Get(iNewSelect)->GetProperty("Number").asString() != "-")
+        if (iSelected != m_iSelected)
         {
-          strNumber = StringUtils::Format("%i", m_iSelected+1);
-          m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
-          strNumber = StringUtils::Format("%i", iNewSelect+1);
-          m_channelItems->Get(m_iSelected)->SetProperty("Number", strNumber);
+          m_iSelected = iSelected;
+          SetData(m_iSelected);
         }
-        m_channelItems->Swap(iNewSelect, m_iSelected);
-        m_iSelected = iNewSelect;
       }
+      else
+      {
+        std::string strNumber;
 
-      m_viewControl.SetItems(*m_channelItems);
-      m_viewControl.SetSelectedItem(m_iSelected);
+        bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
+        unsigned int iLines = bMoveUp ? abs(m_iSelected - iSelected) : 1;
+        bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
+        if (bOutOfBounds)
+        {
+          bMoveUp = !bMoveUp;
+          iLines  = m_channelItems->Size() - 1;
+        }
+        for (unsigned int iLine = 0; iLine < iLines; iLine++)
+        {
+          unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
+          if (m_channelItems->Get(iNewSelect)->GetProperty("Number").asString() != "-")
+          {
+            strNumber = StringUtils::Format("%i", m_iSelected+1);
+            m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
+            strNumber = StringUtils::Format("%i", iNewSelect+1);
+            m_channelItems->Get(m_iSelected)->SetProperty("Number", strNumber);
+          }
+          m_channelItems->Swap(iNewSelect, m_iSelected);
+          m_iSelected = iNewSelect;
+        }
+
+        m_viewControl.SetItems(*m_channelItems);
+        m_viewControl.SetSelectedItem(m_iSelected);
+      }
     }
   }
 
