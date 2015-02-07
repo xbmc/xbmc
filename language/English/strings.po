@@ -872,7 +872,15 @@ msgctxt "#210"
 msgid "Previous"
 msgstr ""
 
-#empty strings from id 211 to 212
+#: system/settings/settings.xml
+msgctxt "#211"
+msgid "50 Hz"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#212"
+msgid "59.94 Hz"
+msgstr ""
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
@@ -8035,7 +8043,10 @@ msgctxt "#19107"
 msgid "at"
 msgstr ""
 
-#empty string with id 19108
+#: system/settings/settings.xml
+msgctxt "#19108"
+msgid "Framerate (fallback)"
+msgstr ""
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
@@ -14615,7 +14626,11 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#empty string with id 36261
+#. Description of setting "LiveTV -> Playback -> Refreshrate" with label #19108
+#: system/settings/settings.xml
+msgctxt "#36261"
+msgid "If enabled, this framerate is used for streams we were not able to detect fps."
+msgstr ""
 
 #. Description of setting "Music -> Library -> Export music library" with label #20196
 #: system/settings/settings.xml
