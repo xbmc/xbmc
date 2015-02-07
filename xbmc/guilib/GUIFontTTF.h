@@ -184,8 +184,6 @@ protected:
   float    m_textureScaleX;
   float    m_textureScaleY;
 
-  static int justification_word_weight;
-
   std::string m_strFileName;
   XUTILS::auto_buffer m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
