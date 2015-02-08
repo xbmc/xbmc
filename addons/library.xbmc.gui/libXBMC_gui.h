@@ -43,6 +43,7 @@ typedef void* GUIHANDLE;
 
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
+#define ADDON_ACTION_NAV_BACK               92
 
 class CAddonGUIWindow;
 class CAddonGUISpinControl;
