@@ -4310,7 +4310,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         {
           g_windowManager.PreviousWindow();
         }
-        else
+        else if (!IsHeadless())
         {
           CSingleLock lock(g_graphicsContext);
           //  resets to res_desktop or look&feel resolution (including refreshrate)
