@@ -56,6 +56,7 @@
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
 #include "filesystem/File.h"
+#include "utils/SeekHandler.h"
 
 #include <stdio.h>
 #include <algorithm>
@@ -160,14 +161,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (m_timeCodePosition > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
     else
-      g_application.m_pPlayer->Seek(false, false);
+      g_application.GetSeekHandler()->Seek(false, action.GetAmount(), action.GetRepeat());
     return true;
 
   case ACTION_STEP_FORWARD:
     if (m_timeCodePosition > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
     else
-      g_application.m_pPlayer->Seek(true, false);
+      g_application.GetSeekHandler()->Seek(true, action.GetAmount(), action.GetRepeat());
     return true;
 
   case ACTION_BIG_STEP_BACK:

@@ -372,7 +372,7 @@ public:
    \return a constant pointer to the seek handler.
    \sa CSeekHandler
    */
-  const CSeekHandler *GetSeekHandler() const { return m_seekHandler; };
+  CSeekHandler* const GetSeekHandler() const { return m_seekHandler; };
 
   bool SwitchToFullScreen();
 

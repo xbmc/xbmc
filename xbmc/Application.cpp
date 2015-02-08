@@ -295,7 +295,7 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
-  , m_seekHandler(new CSeekHandler)
+  , m_seekHandler(&CSeekHandler::Get())
   , m_playerController(new CPlayerController)
 {
   m_network = NULL;
@@ -364,7 +364,6 @@ CApplication::~CApplication(void)
 #endif
 
   delete m_dpms;
-  delete m_seekHandler;
   delete m_playerController;
   delete m_pInertialScrollingHandler;
   delete m_pPlayer;
@@ -2666,7 +2665,7 @@ bool CApplication::OnAction(const CAction &action)
   if (m_pPlayer->IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
-    m_seekHandler->Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat());
+    m_seekHandler->Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat(), true);
     return true;
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)

@@ -161,6 +161,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    std::vector<int> m_videoSeekSteps;
     std::string m_videoPPFFmpegDeint;
     std::string m_videoPPFFmpegPostProc;
     bool m_videoVDPAUtelecine;
