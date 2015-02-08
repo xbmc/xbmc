@@ -245,19 +245,21 @@ extern "C"
    */
   //@{
   /*!
-   * @return The total amount of channels on the backend or -1 on error.
+   * @return The total amount of recordings on the backend or -1 on error.
+   * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
    * @remarks Required if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  int GetRecordingsAmount(void);
+  int GetRecordingsAmount(bool deleted);
 
   /*!
    * Request the list of all recordings from the backend, if supported.
    * Recording entries are added to XBMC by calling TransferRecordingEntry() on the callback.
    * @param handle Handle to pass to the callback method.
+   * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
    * @return PVR_ERROR_NO_ERROR if the recordings have been fetched successfully.
    * @remarks Required if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordings(ADDON_HANDLE handle);
+  PVR_ERROR GetRecordings(ADDON_HANDLE handle, bool deleted);
 
   /*!
    * Delete a recording on the backend.
@@ -266,6 +268,20 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR DeleteRecording(const PVR_RECORDING& recording);
+
+  /*!
+   * Undelete a recording on the backend.
+   * @param recording The recording to undelete.
+   * @return PVR_ERROR_NO_ERROR if the recording has been undeleted successfully.
+   * @remarks Optional, and only used if bSupportsRecordingsUndelete is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR UndeleteRecording(const PVR_RECORDING& recording);
+
+  /*!
+   * @brief Delete all recordings permanent which in the deleted folder on the backend.
+   * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+   */
+  PVR_ERROR DeleteAllRecordingsFromTrash();
 
   /*!
    * Rename a recording on the backend.
@@ -637,6 +653,8 @@ extern "C"
     pClient->GetRecordingsAmount            = GetRecordingsAmount;
     pClient->GetRecordings                  = GetRecordings;
     pClient->DeleteRecording                = DeleteRecording;
+    pClient->UndeleteRecording              = UndeleteRecording;
+    pClient->DeleteAllRecordingsFromTrash   = DeleteAllRecordingsFromTrash;
     pClient->RenameRecording                = RenameRecording;
     pClient->SetRecordingPlayCount          = SetRecordingPlayCount;
     pClient->SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
