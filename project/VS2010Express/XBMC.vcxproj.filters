@@ -3107,6 +3107,9 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.cpp">
+      <Filter>dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6044,6 +6047,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h">
+      <Filter>dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
