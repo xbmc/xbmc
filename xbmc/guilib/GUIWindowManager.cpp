@@ -1076,8 +1076,6 @@ void CGUIWindowManager::UnloadWindows()
   }
   UnloadNotOnDemandWindows();
 
-  m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
-
   // destroy our custom windows...
   for (int i = 0; i < (int)m_vecCustomWindows.size(); i++)
   {
