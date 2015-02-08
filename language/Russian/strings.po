@@ -5753,6 +5753,10 @@ msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr "Показывать упрощенное меню"
 
+msgctxt "#14105"
+msgid "Highlight played folders"
+msgstr "Подсвечивать проигрываемые папки"
+
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Источник недоступен"
@@ -12752,6 +12756,10 @@ msgstr "Возобновлять воспроизведение папок с м
 msgctxt "#36437"
 msgid "Don't resume if folder with saved position was changed since last playing time."
 msgstr "Не возобновлять воспроизведение папки с сохранённого места, если содержимое было изменено со времени последнего воспроизведения."
+
+msgctxt "#36438"
+msgid "When playing folder with music or video, highlight it in addition to current file."
+msgstr "При проигрывании папки с музыкой или видео подсвечивать также её, как и текущий файл."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"

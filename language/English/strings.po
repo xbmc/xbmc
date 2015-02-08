@@ -6968,7 +6968,12 @@ msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr ""
 
-#empty strings from id 14105 to 15011
+#: system/settings/settings.xml
+msgctxt "#14105"
+msgid "Highlight played folders"
+msgstr ""
+
+#empty strings from id 14106 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -15706,7 +15711,13 @@ msgctxt "#36437"
 msgid "Don't resume if folder with saved position was changed since last playing time."
 msgstr ""
 
-#empty strings from id 36438 to 36499
+#. Description of setting "Appearance -> File lists -> Highlight played folders" with label #14074
+#: system/settings/settings.xml
+msgctxt "#36438"
+msgid "When playing folder with music or video, highlight it in addition to current file."
+msgstr ""
+
+#empty strings from id 36439 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
