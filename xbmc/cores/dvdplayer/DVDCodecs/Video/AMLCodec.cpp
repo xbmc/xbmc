@@ -910,9 +910,17 @@ static int divx3_write_header(am_private_t *para, am_packet_t *pkt)
 
 static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
 {
-  memcpy(pkt->hdr->data, buf, size);
-  pkt->hdr->size = size;
-  return PLAYER_SUCCESS;
+    if (size > HDR_BUF_SIZE)
+    {
+        free(pkt->hdr->data);
+        pkt->hdr->data = (char *)malloc(size);
+        if (!pkt->hdr->data)
+            return PLAYER_NOMEM;
+    }
+
+    memcpy(pkt->hdr->data, buf, size);
+    pkt->hdr->size = size;
+    return PLAYER_SUCCESS;
 }
 
 static int h264_write_header(am_private_t *para, am_packet_t *pkt)
@@ -936,6 +944,14 @@ static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 
 static int hevc_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
 {
+    if (size > HDR_BUF_SIZE)
+    {
+        free(pkt->hdr->data);
+        pkt->hdr->data = (char *)malloc(size);
+        if (!pkt->hdr->data)
+            return PLAYER_NOMEM;
+    }
+
     memcpy(pkt->hdr->data, buf, size);
     pkt->hdr->size = size;
     return PLAYER_SUCCESS;
