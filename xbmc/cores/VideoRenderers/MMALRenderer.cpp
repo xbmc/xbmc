@@ -355,6 +355,8 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (m_format == RENDER_FMT_BYPASS)
     return;
 
+  SetVideoRect(m_sourceRect, m_destRect);
+
   YUVBUFFER *buffer = &m_buffers[source];
   // we only want to upload frames once
   if (buffer->flipindex++)
