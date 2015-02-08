@@ -153,6 +153,7 @@ extern "C" {
     bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
+    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel */
     bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
     bool bSupportsRecordingFolders;     /*!< @brief true if the backend supports timers / recordings in folders. */

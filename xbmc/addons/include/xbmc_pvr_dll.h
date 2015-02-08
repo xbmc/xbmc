@@ -201,7 +201,7 @@ extern "C"
    * Delete a channel from the backend.
    * @param channel The channel to delete.
    * @return PVR_ERROR_NO_ERROR if the channel has been deleted successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
    */
   PVR_ERROR DeleteChannel(const PVR_CHANNEL& channel);
 
@@ -209,7 +209,7 @@ extern "C"
    * Rename a channel on the backend.
    * @param channel The channel to rename, containing the new channel name.
    * @return PVR_ERROR_NO_ERROR if the channel has been renamed successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Optional, and only used if bSupportsChannelSettings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR RenameChannel(const PVR_CHANNEL& channel);
 
@@ -217,7 +217,7 @@ extern "C"
    * Move a channel to another channel number on the backend.
    * @param channel The channel to move, containing the new channel number.
    * @return PVR_ERROR_NO_ERROR if the channel has been moved successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Optional, and only used if bSupportsChannelSettings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR MoveChannel(const PVR_CHANNEL& channel);
 
@@ -225,7 +225,7 @@ extern "C"
    * Show the channel settings dialog, if supported by the backend.
    * @param channel The channel to show the dialog for.
    * @return PVR_ERROR_NO_ERROR if the dialog has been displayed successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
    */
   PVR_ERROR DialogChannelSettings(const PVR_CHANNEL& channel);
 
@@ -233,7 +233,7 @@ extern "C"
    * Show the dialog to add a channel on the backend, if supported by the backend.
    * @param channel The channel to add.
    * @return PVR_ERROR_NO_ERROR if the channel has been added successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
    */
   PVR_ERROR DialogAddChannel(const PVR_CHANNEL& channel);
   //@}
