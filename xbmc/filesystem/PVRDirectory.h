@@ -38,6 +38,7 @@ public:
   static bool SupportsWriteFileOperations(const std::string& strPath);
   static bool IsLiveTV(const std::string& strPath);
   static bool HasRecordings();
+  static bool HasDeletedRecordings();
 
   virtual bool Exists(const CURL& url);
 

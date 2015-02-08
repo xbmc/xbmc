@@ -63,7 +63,7 @@ void CGUIViewStateWindowPVRRecordings::SaveViewState(void)
 
 bool CGUIViewStateWindowPVRRecordings::HideParentDirItems(void)
 {
-  return (CGUIViewState::HideParentDirItems() || m_items.GetPath() == "pvr://recordings/");
+  return (CGUIViewState::HideParentDirItems() || m_items.GetPath() == "pvr://recordings/active/" || m_items.GetPath() == "pvr://recordings/deleted/");
 }
 
 CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
