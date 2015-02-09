@@ -217,6 +217,13 @@ typedef enum {
   XBMCK_EURO        = 0x141,    // Some european keyboards
   XBMCK_UNDO        = 0x142,    // Atari keyboard has Undo
   XBMCK_SLEEP       = 0x143,    // Sleep button on Nyxboard remote (and others?)
+  XBMCK_GUIDE       = 0x144,
+  XBMCK_SETTINGS    = 0x145,
+  XBMCK_INFO        = 0x146,
+  XBMCK_RED         = 0x147,
+  XBMCK_GREEN       = 0x148,
+  XBMCK_YELLOW      = 0x149,
+  XBMCK_BLUE        = 0x14a,
 
   // Add any other keys here
 
