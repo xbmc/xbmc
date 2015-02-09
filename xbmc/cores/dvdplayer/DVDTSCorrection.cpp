@@ -26,8 +26,6 @@
 #include <cmath>
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
-#define MINVALIDFRAMEDURATION DVD_MSEC_TO_TIME(8.33)   // For VFR detection, max framerate allowed is 120fps
-#define MAXVALIDFRAMEDURATION DVD_MSEC_TO_TIME(200.0)  // For VFR detection, min framerate allowed is 5fps
 
 using namespace std;
 
@@ -332,33 +330,30 @@ double CPullupCorrection::CalcFrameDuration()
     frameduration /= m_pattern.size();
 
     // Update min and max frame duration, only if data is valid
+    bool standard = false;
+    double tempduration = CDVDCodecUtils::NormalizeFrameduration(currentmin, &standard);
     if (m_minframeduration == DVD_NOPTS_VALUE)
     {
-      if ((currentmin >= MINVALIDFRAMEDURATION) && (currentmin <= MAXVALIDFRAMEDURATION))
-        m_minframeduration = currentmin;
+      if (standard)
+        m_minframeduration = tempduration;
     }
     else
     {
-      if ((currentmin < m_minframeduration) &&
-          ((currentmin >= MINVALIDFRAMEDURATION) && (currentmin <= MAXVALIDFRAMEDURATION)))
-        m_minframeduration = currentmin;
+      if (standard && (tempduration < m_minframeduration))
+        m_minframeduration = tempduration;
     }
 
+    tempduration = CDVDCodecUtils::NormalizeFrameduration(currentmax, &standard);
     if (m_maxframeduration == DVD_NOPTS_VALUE)
     {
-      if ((currentmax >= MINVALIDFRAMEDURATION) && (currentmax <= MAXVALIDFRAMEDURATION))
-        m_maxframeduration = currentmax;
+      if (standard)
+        m_maxframeduration = tempduration;
     }
     else
     {
-      if ((currentmax > m_maxframeduration) &&
-          ((currentmax >= MINVALIDFRAMEDURATION) && (currentmax <= MAXVALIDFRAMEDURATION)))
-        m_maxframeduration = currentmax;
+      if (standard && (tempduration > m_maxframeduration))
+        m_maxframeduration = tempduration;
     }
-
-    //frameduration is not completely correct, use a common one if it's close
-    m_minframeduration = CDVDCodecUtils::NormalizeFrameduration(m_minframeduration);
-    m_maxframeduration = CDVDCodecUtils::NormalizeFrameduration(m_maxframeduration);
 
     //frameduration is not completely correct, use a common one if it's close
     return CDVDCodecUtils::NormalizeFrameduration(frameduration);
