@@ -258,6 +258,60 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_remove_directory");
       if (XBMC_remove_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_CPUInfo_GetUsedPercentage = (int(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetUsedPercentage");
+      if (XBMC_CPUInfo_GetUsedPercentage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUCount = (int(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUCount");
+      if (XBMC_CPUInfo_GetCPUCount == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUFrequency = (float(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUFrequency");
+      if (XBMC_CPUInfo_GetCPUFrequency == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUModel = (char*(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUModel");
+      if (XBMC_CPUInfo_GetCPUModel == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUBogoMips = (char*(*)(void *HANDLE, void* CB))
+      dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUBogoMips");
+      if (XBMC_CPUInfo_GetCPUBogoMips == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUHardware = (char*(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUHardware");
+      if (XBMC_CPUInfo_GetCPUHardware == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPURevision = (char*(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPURevision");
+      if (XBMC_CPUInfo_GetCPURevision == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUSerial = (char*(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUSerial");
+      if (XBMC_CPUInfo_GetCPUSerial == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      // ToDo: add class CoreInfo
+      //XBMC_CPUInfo_GetCoreInfo = ((*)(void *HANDLE, void* CB, int nCoreId))
+      //  dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCoreInfo");
+      //if (XBMC_CPUInfo_GetCoreInfo == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_HasCoreId = (bool(*)(void *HANDLE, void* CB, int nCoreId))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_HasCoreId");
+      if (XBMC_CPUInfo_HasCoreId == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCoresUsageString = (char*(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCoresUsageString");
+      if (XBMC_CPUInfo_GetCoresUsageString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_CPUInfo_GetCPUFeatures = (unsigned int(*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUFeatures");
+      if (XBMC_CPUInfo_GetCPUFeatures == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      // ToDo: add CTemperature
+      //XBMC_CPUInfo_GetTemperature = (bool(*)(void *HANDLE, void* CB, CTemperature& temperature))
+      //  dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetTemperature");
+      //if (XBMC_CPUInfo_GetTemperature == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
     }
@@ -557,6 +611,113 @@ namespace ADDON
       return XBMC_remove_directory(m_Handle, m_Callbacks, strPath);
     }
 
+    /*!
+     * @brief ToDo
+     * @return ToDo!
+     */
+    int CPUInfo_GetUsedPercentage()
+    {
+      return XBMC_CPUInfo_GetUsedPercentage(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!
+     */
+    int CPUInfo_GetCPUCount()
+    {
+      return XBMC_CPUInfo_GetCPUCount(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!
+     */
+    float CPUInfo_GetCPUFrequency()
+    {
+      return XBMC_CPUInfo_GetCPUFrequency(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCPUModel()
+    {
+      return XBMC_CPUInfo_GetCPUModel(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCPUBogoMips()
+    {
+      return XBMC_CPUInfo_GetCPUBogoMips(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCPUHardware()
+    {
+      return XBMC_CPUInfo_GetCPUHardware(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCPURevision()
+    {
+      return XBMC_CPUInfo_GetCPURevision(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCPUSerial()
+    {
+      return XBMC_CPUInfo_GetCPUSerial(m_Handle, m_Callbacks);
+
+    }
+
+    // ToDo: add class CoreInfo
+    //const CoreInfo& CPUInfo_GetCoreInfo(int nCoreId);
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!
+     */
+    bool CPUInfo_HasCoreId(int nCoreId)
+    {
+      return XBMC_CPUInfo_HasCoreId(m_Handle, m_Callbacks, nCoreId);
+    }
+
+    /*!
+     * @brief ToDo
+     * @return ToDo!. Must be freed by calling FreeString() when done.
+     */
+    char* CPUInfo_GetCoresUsageString()
+    {
+      return XBMC_CPUInfo_GetCoresUsageString(m_Handle, m_Callbacks);
+    }
+
+    /*!
+    * @brief ToDo
+    * @return ToDo!
+    */
+    unsigned int CPUInfo_GetCPUFeatures()
+    {
+      return XBMC_CPUInfo_GetCPUFeatures(m_Handle, m_Callbacks);
+    }
+
+    // ToDo: add CTemperature
+    //bool CPUInfo_GetTemperature(CTemperature& temperature);
+    
+
   protected:
     void* (*XBMC_register_me)(void *HANDLE);
     void (*XBMC_unregister_me)(void *HANDLE, void* CB);
@@ -587,6 +748,21 @@ namespace ADDON
     bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
+    int (*XBMC_CPUInfo_GetUsedPercentage)(void *HANDLE, void* CB);
+    int (*XBMC_CPUInfo_GetCPUCount)(void *HANDLE, void* CB);
+    float (*XBMC_CPUInfo_GetCPUFrequency)(void *HANDLE, void* CB);
+    char* (*XBMC_CPUInfo_GetCPUModel)(void *HANDLE, void* CB);
+    char* (*XBMC_CPUInfo_GetCPUBogoMips)(void *HANDLE, void* CB);
+    char* (*XBMC_CPUInfo_GetCPUHardware)(void *HANDLE, void* CB);
+    char* (*XBMC_CPUInfo_GetCPURevision)(void *HANDLE, void* CB);
+    char* (*XBMC_CPUInfo_GetCPUSerial)(void *HANDLE, void* CB);
+    // ToDo: add class CoreInfo
+    //const CoreInfo& (*XBMC_CPUInfo_GetCoreInfo)(void *HANDLE, void* CB, int nCoreId)
+    bool (*XBMC_CPUInfo_HasCoreId)(void *HANDLE, void* CB, int nCoreId);
+    char* (*XBMC_CPUInfo_GetCoresUsageString)(void *HANDLE, void* CB);
+    unsigned int (*XBMC_CPUInfo_GetCPUFeatures)(void *HANDLE, void* CB);
+    // ToDo: add CTemperature
+    //bool (*XBMC_CPUInfo_GetTemperature)(void *HANDLE, void* CB, CTemperature& temperature);
 
   private:
     void *m_libXBMC_addon;

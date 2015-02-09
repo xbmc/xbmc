@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
+#include "utils/CPUInfo.h"
 
 using namespace XFILE;
 
@@ -74,6 +75,22 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->CreateDirectory    = CreateDirectory;
   m_callbacks->DirectoryExists    = DirectoryExists;
   m_callbacks->RemoveDirectory    = RemoveDirectory;
+
+  m_callbacks->CPUInfo_GetUsedPercentage    = CPUInfo_GetUsedPercentage;
+  m_callbacks->CPUInfo_GetCPUCount          = CPUInfo_GetCPUCount;
+  m_callbacks->CPUInfo_GetCPUFrequency      = CPUInfo_GetCPUFrequency;
+  m_callbacks->CPUInfo_GetCPUModel          = CPUInfo_GetCPUModel;
+  m_callbacks->CPUInfo_GetCPUBogoMips       = CPUInfo_GetCPUBogoMips;
+  m_callbacks->CPUInfo_GetCPUHardware       = CPUInfo_GetCPUHardware;
+  m_callbacks->CPUInfo_GetCPURevision       = CPUInfo_GetCPURevision;
+  m_callbacks->CPUInfo_GetCPUSerial         = CPUInfo_GetCPUSerial;
+  // ToDo: add class CoreInfo
+  //m_callbacks->CPUInfo_GetCoreInfo        = CPUInfo_GetCoreInfo;
+  m_callbacks->CPUInfo_HasCoreId            = CPUInfo_HasCoreId;
+  m_callbacks->CPUInfo_GetCoresUsageString  = CPUInfo_GetCoresUsageString;
+  m_callbacks->CPUInfo_GetCPUFeatures       = CPUInfo_GetCPUFeatures;
+  // ToDo: add CTemperature
+  //m_callbacks->CPUInfo_GetTemperature     = CPUInfo_GetTemperature;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -528,5 +545,122 @@ bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *st
 
   return CDirectory::Remove(strPath);
 }
+
+int CAddonCallbacksAddon::CPUInfo_GetUsedPercentage(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  return g_cpuInfo.getUsedPercentage();
+}
+
+int CAddonCallbacksAddon::CPUInfo_GetCPUCount(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  return g_cpuInfo.getCPUCount();
+}
+
+float CAddonCallbacksAddon::CPUInfo_GetCPUFrequency(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  return g_cpuInfo.GetCPUFeatures();
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCPUModel(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.getCPUModel().c_str());
+
+  return buffer;
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCPUBogoMips(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.getCPUBogoMips().c_str());
+
+  return buffer;
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCPUHardware(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.getCPUHardware().c_str());
+
+  return buffer;
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCPURevision(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.getCPURevision().c_str());
+
+  return buffer;
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCPUSerial(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.getCPUSerial().c_str());
+
+  return buffer;
+}
+
+// ToDo: add class CoreInfo
+//const CoreInfo& CAddonCallbacksAddon::CPUInfo_GetCoreInfo(const void* addonData, int nCoreId);
+
+bool CAddonCallbacksAddon::CPUInfo_HasCoreId(const void* addonData, int nCoreId)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  return g_cpuInfo.HasCoreId(nCoreId);
+}
+
+char* CAddonCallbacksAddon::CPUInfo_GetCoresUsageString(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return NULL;
+
+  char* buffer = strdup(g_cpuInfo.GetCoresUsageString().c_str());
+
+  return buffer;
+}
+
+unsigned int CAddonCallbacksAddon::CPUInfo_GetCPUFeatures(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  return g_cpuInfo.GetCPUFeatures();
+}
+
+// ToDo: add CTemperature
+//bool CAddonCallbacksAddon::CPUInfo_GetTemperature(const void* addonData, CTemperature& temperature);
 
 }; /* namespace ADDON */

@@ -26,6 +26,7 @@
 #include <string>
 #include <map>
 #include "threads/SystemClock.h"
+#include "CPUFeatures.h"
 
 #ifdef TARGET_WINDOWS
 // avoid inclusion of <windows.h> and others
@@ -35,18 +36,19 @@ typedef HANDLE PDH_HCOUNTER;
 #endif
 class CTemperature;
 
-#define CPU_FEATURE_MMX      1 << 0
-#define CPU_FEATURE_MMX2     1 << 1
-#define CPU_FEATURE_SSE      1 << 2
-#define CPU_FEATURE_SSE2     1 << 3
-#define CPU_FEATURE_SSE3     1 << 4
-#define CPU_FEATURE_SSSE3    1 << 5
-#define CPU_FEATURE_SSE4     1 << 6
-#define CPU_FEATURE_SSE42    1 << 7
-#define CPU_FEATURE_3DNOW    1 << 8
-#define CPU_FEATURE_3DNOWEXT 1 << 9
-#define CPU_FEATURE_ALTIVEC  1 << 10
-#define CPU_FEATURE_NEON     1 << 11
+// moved to xbmc/utils/CPUFeatures.h
+//#define CPU_FEATURE_MMX      1 << 0
+//#define CPU_FEATURE_MMX2     1 << 1
+//#define CPU_FEATURE_SSE      1 << 2
+//#define CPU_FEATURE_SSE2     1 << 3
+//#define CPU_FEATURE_SSE3     1 << 4
+//#define CPU_FEATURE_SSSE3    1 << 5
+//#define CPU_FEATURE_SSE4     1 << 6
+//#define CPU_FEATURE_SSE42    1 << 7
+//#define CPU_FEATURE_3DNOW    1 << 8
+//#define CPU_FEATURE_3DNOWEXT 1 << 9
+//#define CPU_FEATURE_ALTIVEC  1 << 10
+//#define CPU_FEATURE_NEON     1 << 11
 
 struct CoreInfo
 {
