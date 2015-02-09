@@ -28,6 +28,7 @@
 class CGUISpinControlEx;
 class CGUIButtonControl;
 class CGUIRadioButtonControl;
+class CGUISliderControl;
 class CGUISettingsSliderControl;
 class CGUIEditControl;
 class CGUIRenderingControl;
@@ -99,6 +100,36 @@ public:
   static void         Control_Progress_SetInfo(void *addonData, GUIHANDLE handle, int iInfo);
   static int          Control_Progress_GetInfo(void *addonData, GUIHANDLE handle);
   static const char * Control_Progress_GetDescription(void *addonData, GUIHANDLE handle);
+
+  static GUIHANDLE    Window_GetControl_Slider(void *addonData, GUIHANDLE handle, int controlId);
+  static void         Control_Slider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo);
+  static const char * Control_Slider_GetDescription(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+  static void         Control_Slider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue);
+  static int          Control_Slider_GetIntValue(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval);
+  static void         Control_Slider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent);
+  static float        Control_Slider_GetPercentage(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+  static void         Control_Slider_SetFloatValue(void *addonData, GUIHANDLE handle, float fValue);
+  static float        Control_Slider_GetFloatValue(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval);
+
+  static GUIHANDLE    Window_GetControl_SettingsSlider(void *addonData, GUIHANDLE handle, int controlId);
+  static void         Control_SettingsSlider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo);
+  static void         Control_SettingsSlider_SetText(void *addonData, GUIHANDLE handle, const char *label);
+  static const char * Control_SettingsSlider_GetDescription(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+  static void         Control_SettingsSlider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue);
+  static int          Control_SettingsSlider_GetIntValue(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval);
+  static void         Control_SettingsSlider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent);
+  static float        Control_SettingsSlider_GetPercentage(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+  static void         Control_SettingsSlider_SetFloatValue(void *addonData, GUIHANDLE handle, float fValue);
+  static float        Control_SettingsSlider_GetFloatValue(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval);
+
   static GUIHANDLE    ListItem_Create(void *addonData, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
   static const char * ListItem_GetLabel(void *addonData, GUIHANDLE handle);
   static void         ListItem_SetLabel(void *addonData, GUIHANDLE handle, const char *label);

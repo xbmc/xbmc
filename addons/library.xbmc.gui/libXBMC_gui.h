@@ -36,13 +36,14 @@ typedef void* GUIHANDLE;
 #endif
 
 /* current ADDONGUI API version */
-#define XBMC_GUI_API_VERSION "5.7.0"
+#define XBMC_GUI_API_VERSION "5.8.0"
 
 /* min. ADDONGUI API version */
-#define XBMC_GUI_MIN_API_VERSION "5.3.0"
+#define XBMC_GUI_MIN_API_VERSION "5.8.0"
 
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
+#define ADDON_ACTION_NAV_BACK               92
 
 class CAddonGUIWindow;
 class CAddonGUISpinControl;
@@ -50,6 +51,8 @@ class CAddonGUIRadioButton;
 class CAddonGUIProgressControl;
 class CAddonListItem;
 class CAddonGUIRenderingControl;
+class CAddonGUISliderControl;
+class CAddonGUISettingsSliderControl;
 
 class CHelper_libXBMC_gui
 {
@@ -169,6 +172,21 @@ public:
       dlsym(m_libXBMC_gui, "GUI_control_release_rendering");
     if (GUI_control_release_rendering == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    GUI_control_get_slider = (CAddonGUISliderControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
+      dlsym(m_libXBMC_gui, "GUI_control_get_slider");
+    if (GUI_control_get_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    GUI_control_release_slider = (void (*)(CAddonGUISliderControl* p))
+      dlsym(m_libXBMC_gui, "GUI_control_release_slider");
+    if (GUI_control_release_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    GUI_control_get_settings_slider = (CAddonGUISettingsSliderControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
+      dlsym(m_libXBMC_gui, "GUI_control_get_settings_slider");
+    if (GUI_control_get_settings_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    GUI_control_release_settings_slider = (void (*)(CAddonGUISettingsSliderControl* p))
+      dlsym(m_libXBMC_gui, "GUI_control_release_settings_slider");
+    if (GUI_control_release_settings_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     m_Callbacks = GUI_register_me(m_Handle);
     return m_Callbacks != NULL;
@@ -259,6 +277,26 @@ public:
     return GUI_control_release_rendering(p);
   }
 
+  CAddonGUISliderControl* Control_getSlider(CAddonGUIWindow *window, int controlId)
+  {
+    return GUI_control_get_slider(m_Handle, m_Callbacks, window, controlId);
+  }
+
+  void Control_releaseSlider(CAddonGUISliderControl* p)
+  {
+    return GUI_control_release_slider(p);
+  }
+
+  CAddonGUISettingsSliderControl* Control_getSettingsSlider(CAddonGUIWindow *window, int controlId)
+  {
+    return GUI_control_get_settings_slider(m_Handle, m_Callbacks, window, controlId);
+  }
+
+  void Control_releaseSettingsSlider(CAddonGUISettingsSliderControl* p)
+  {
+    return GUI_control_release_settings_slider(p);
+  }
+
 protected:
   void* (*GUI_register_me)(void *HANDLE);
   void (*GUI_unregister_me)(void *HANDLE, void* CB);
@@ -279,6 +317,10 @@ protected:
   void (*GUI_ListItem_destroy)(CAddonListItem* p);
   CAddonGUIRenderingControl* (*GUI_control_get_rendering)(void *HANDLE, void* CB, CAddonGUIWindow *window, int controlId);
   void (*GUI_control_release_rendering)(CAddonGUIRenderingControl* p);
+  CAddonGUISliderControl* (*GUI_control_get_slider)(void *HANDLE, void* CB, CAddonGUIWindow *window, int controlId);
+  void (*GUI_control_release_slider)(CAddonGUISliderControl* p);
+  CAddonGUISettingsSliderControl* (*GUI_control_get_settings_slider)(void *HANDLE, void* CB, CAddonGUIWindow *window, int controlId);
+  void (*GUI_control_release_settings_slider)(CAddonGUISettingsSliderControl* p);
 
 private:
   void *m_libXBMC_gui;
@@ -350,6 +392,67 @@ private:
   void *m_cb;
 };
 
+class CAddonGUISliderControl
+{
+public:
+  CAddonGUISliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId);
+  virtual ~CAddonGUISliderControl(void) {}
+
+  virtual void        SetVisible(bool yesNo);
+  virtual std::string GetDescription() const;
+
+  virtual void        SetIntRange(int iStart, int iEnd);
+  virtual void        SetIntValue(int iValue);
+  virtual int         GetIntValue() const;
+  virtual void        SetIntInterval(int iInterval);
+
+  virtual void        SetPercentage(float fPercent);
+  virtual float       GetPercentage() const;
+
+  virtual void        SetFloatRange(float fStart, float fEnd);
+  virtual void        SetFloatValue(float fValue);
+  virtual float       GetFloatValue() const;
+  virtual void        SetFloatInterval(float fInterval);
+
+private:
+  CAddonGUIWindow *m_Window;
+  int         m_ControlId;
+  GUIHANDLE   m_SliderHandle;
+  void *m_Handle;
+  void *m_cb;
+};
+
+class CAddonGUISettingsSliderControl
+{
+public:
+  CAddonGUISettingsSliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId);
+  virtual ~CAddonGUISettingsSliderControl(void) {}
+
+  virtual void        SetVisible(bool yesNo);
+  virtual void        SetText(const char *label);
+  virtual std::string GetDescription() const;
+
+  virtual void        SetIntRange(int iStart, int iEnd);
+  virtual void        SetIntValue(int iValue);
+  virtual int         GetIntValue() const;
+  virtual void        SetIntInterval(int iInterval);
+
+  virtual void        SetPercentage(float fPercent);
+  virtual float       GetPercentage() const;
+
+  virtual void        SetFloatRange(float fStart, float fEnd);
+  virtual void        SetFloatValue(float fValue);
+  virtual float       GetFloatValue() const;
+  virtual void        SetFloatInterval(float fInterval);
+
+private:
+  CAddonGUIWindow *m_Window;
+  int         m_ControlId;
+  GUIHANDLE   m_SettingsSliderHandle;
+  void *m_Handle;
+  void *m_cb;
+};
+
 class CAddonListItem
 {
 friend class CAddonGUIWindow;
@@ -383,6 +486,8 @@ friend class CAddonGUISpinControl;
 friend class CAddonGUIRadioButton;
 friend class CAddonGUIProgressControl;
 friend class CAddonGUIRenderingControl;
+friend class CAddonGUISliderControl;
+friend class CAddonGUISettingsSliderControl;
 
 public:
   CAddonGUIWindow(void *hdl, void *cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
