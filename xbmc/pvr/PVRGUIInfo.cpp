@@ -71,6 +71,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_strBackendHost              .clear();
   m_strBackendTimers            .clear();
   m_strBackendRecordings        .clear();
+  m_strBackendDeletedRecordings .clear();
   m_strBackendChannels          .clear();
   m_iBackendUsedDiskspace       = 0;
   m_iBackendTotalDiskspace      = 0;
@@ -380,6 +381,9 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   case PVR_BACKEND_RECORDINGS:
     CharInfoBackendRecordings(strValue);
     break;
+  case PVR_BACKEND_DELETED_RECORDINGS:
+    CharInfoBackendDeletedRecordings(strValue);
+    break;
   case PVR_BACKEND_NUMBER:
     CharInfoBackendNumber(strValue);
     break;
@@ -637,6 +641,14 @@ void CPVRGUIInfo::CharInfoBackendRecordings(std::string &strValue) const
     strValue = m_strBackendRecordings;
 }
 
+void CPVRGUIInfo::CharInfoBackendDeletedRecordings(std::string &strValue) const
+{
+  if (m_strBackendDeletedRecordings.empty())
+    strValue = g_localizeStrings.Get(13205); /* Unknown */
+  else
+    strValue = m_strBackendDeletedRecordings;
+}
+
 void CPVRGUIInfo::CharInfoPlayingClientName(std::string &strValue) const
 {
   if (m_strPlayingClientName.empty())
@@ -685,6 +697,7 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   std::string strBackendHost;
   std::string strBackendTimers;
   std::string strBackendRecordings;
+  std::string strBackendDeletedRecordings;
   std::string strBackendChannels;
   long long   iBackendkBUsed(0);
   long long   iBackendkBTotal(0);
@@ -727,11 +740,17 @@ void CPVRGUIInfo::UpdateBackendCache(void)
     else
       strBackendTimers = g_localizeStrings.Get(161);
 
-    int NumRecordings = activeClient->second->GetRecordingsAmount();
+    int NumRecordings = activeClient->second->GetRecordingsAmount(false);
     if (NumRecordings >= 0)
       strBackendRecordings = StringUtils::Format("%i", NumRecordings);
     else
       strBackendRecordings = g_localizeStrings.Get(161);
+
+    int NumDeletedRecordings = activeClient->second->GetRecordingsAmount(true);
+    if (NumDeletedRecordings >= 0)
+      strBackendDeletedRecordings = StringUtils::Format("%i", NumDeletedRecordings);
+    else
+      strBackendDeletedRecordings = g_localizeStrings.Get(161); /* Unavailable */
 
     strBackendName    = activeClient->second->GetBackendName();
     strBackendVersion = activeClient->second->GetBackendVersion();
@@ -739,15 +758,16 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   }
 
   CSingleLock lock(m_critSection);
-  m_strBackendName         = strBackendName;
-  m_strBackendVersion      = strBackendVersion;
-  m_strBackendHost         = strBackendHost;
-  m_strBackendTimers       = strBackendTimers;
-  m_strBackendRecordings   = strBackendRecordings;
-  m_strBackendChannels     = strBackendChannels;
-  m_iActiveClients         = iActiveClients;
-  m_iBackendUsedDiskspace  = iBackendkBUsed;
-  m_iBackendTotalDiskspace = iBackendkBTotal;
+  m_strBackendName              = strBackendName;
+  m_strBackendVersion           = strBackendVersion;
+  m_strBackendHost              = strBackendHost;
+  m_strBackendTimers            = strBackendTimers;
+  m_strBackendRecordings        = strBackendRecordings;
+  m_strBackendDeletedRecordings = strBackendDeletedRecordings;
+  m_strBackendChannels          = strBackendChannels;
+  m_iActiveClients              = iActiveClients;
+  m_iBackendUsedDiskspace       = iBackendkBUsed;
+  m_iBackendTotalDiskspace      = iBackendkBTotal;
 }
 
 void CPVRGUIInfo::UpdateTimersCache(void)

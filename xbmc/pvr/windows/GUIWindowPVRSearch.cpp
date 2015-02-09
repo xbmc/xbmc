@@ -116,7 +116,7 @@ bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON 
         if (tag)
           m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
       }
-      else if (item.IsPVRRecording())
+      else if (item.IsUsablePVRRecording())
         m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRRecordingInfoTag()->m_strTitle + "\"";
       else if (item.IsPVRTimer())
         m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRTimerInfoTag()->m_strTitle + "\"";

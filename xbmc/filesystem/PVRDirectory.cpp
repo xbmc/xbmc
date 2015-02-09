@@ -71,8 +71,13 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item.reset(new CFileItem(base + "recordings/", true));
-    item->SetLabel(g_localizeStrings.Get(19017));
+    item.reset(new CFileItem(base + "recordings/active/", true));
+    item->SetLabel(g_localizeStrings.Get(19017)); // TV Recordings
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    item.reset(new CFileItem(base + "recordings/deleted/", true));
+    item->SetLabel(g_localizeStrings.Get(19108)); // Deleted TV Recordings
     item->SetLabelPreformated(true);
     items.Add(item);
 
@@ -120,4 +125,10 @@ bool CPVRDirectory::HasRecordings()
 {
   return g_PVRManager.IsStarted() ? 
     g_PVRRecordings->GetNumRecordings() > 0 : false;
+}
+
+bool CPVRDirectory::HasDeletedRecordings()
+{
+  return g_PVRManager.IsStarted() ?
+    g_PVRRecordings->HasDeletedRecordings() : false;
 }
