@@ -83,6 +83,10 @@ CInputManager& CInputManager::Get()
 
 void CInputManager::InitializeInputs()
 {
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.Initialize();
+#endif
+
 #ifdef HAS_SDL_JOYSTICK
   // Pass the mapping of axis to triggers to m_Joystick 
   m_Joystick.Initialize();
@@ -206,10 +210,10 @@ bool CInputManager::ProcessGamepad(int windowId)
 bool CInputManager::ProcessRemote(int windowId)
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  if (g_RemoteControl.GetButton())
+  if (m_RemoteControl.GetButton())
   {
-    CKey key(g_RemoteControl.GetButton(), g_RemoteControl.GetHoldTime());
-    g_RemoteControl.Reset();
+    CKey key(m_RemoteControl.GetButton(), m_RemoteControl.GetHoldTime());
+    m_RemoteControl.Reset();
     return OnKey(key);
   }
 #endif
@@ -391,6 +395,22 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
   }
 #endif
   return false;
+}
+
+bool CInputManager::Process(int windowId, float frameTime)
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  // Read the input from a remote
+  m_RemoteControl.Update();
+#endif
+
+  // process input actions
+  ProcessRemote(windowId);
+  ProcessGamepad(windowId);
+  ProcessEventServer(windowId, frameTime);
+  ProcessPeripherals(frameTime);
+  
+  return true;
 }
 
 bool CInputManager::ProcessJoystickEvent(int windowId, const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime /*=0*/)
@@ -666,6 +686,36 @@ bool CInputManager::ExecuteInputAction(const CAction &action)
   return bResult;
 }
 
+int CInputManager::ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params)
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  if (execute == "lirc.stop")
+  {
+    m_RemoteControl.Disconnect();
+    m_RemoteControl.setUsed(false);
+  }
+  else if (execute == "lirc.start")
+  {
+    m_RemoteControl.setUsed(true);
+    m_RemoteControl.Initialize();
+  }
+  else if (execute == "lirc.send")
+  {
+    std::string command;
+    for (int i = 0; i < (int)params.size(); i++)
+    {
+      command += params[i];
+      if (i < (int)params.size() - 1)
+        command += ' ';
+    }
+    m_RemoteControl.AddSendCommand(command);
+  }
+  else
+    return -1;
+#endif
+  return 0;
+}
+
 void CInputManager::SetMouseActive(bool active /* = true */)
 {
   m_Mouse.SetActive(active);
@@ -699,4 +749,37 @@ void CInputManager::SetMouseResolution(int maxX, int maxY, float speedX, float s
 void CInputManager::SetMouseState(MOUSE_STATE mouseState)
 {
   m_Mouse.SetState(mouseState);
+}
+
+bool CInputManager::IsRemoteControlEnabled()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return m_RemoteControl.IsInUse();
+#else
+  return false;
+#endif
+}
+
+void CInputManager::EnableRemoteControl()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.setUsed(true);
+  if (!m_RemoteControl.IsInitialized())
+    m_RemoteControl.Initialize();
+#endif
+}
+
+void CInputManager::DisableRemoteControl()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.Disconnect();
+  m_RemoteControl.setUsed(false);
+#endif
+}
+
+void CInputManager::SetRemoteControlName(const std::string& name)
+{
+#if defined(HAS_LIRC)
+  m_RemoteControl.setDeviceName(name);
+#endif
 }

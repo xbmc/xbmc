@@ -237,13 +237,6 @@
 #include "XHandle.h"
 #endif
 
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
-#endif
-#ifdef HAS_IRSERVERSUITE
-  #include "input/windows/IRServerSuite.h"
-#endif
-
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #include "android/activity/AndroidFeatures.h"
@@ -727,16 +720,11 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     return false;
   }
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  g_RemoteControl.Initialize();
-#endif
 
   g_peripherals.Initialise();
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
-  
-
   CInputManager::Get().InitializeInputs();
 
 #if defined(TARGET_DARWIN_OSX)
@@ -2474,16 +2462,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
     CWinEvents::MessagePump();
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-    // Read the input from a remote
-    g_RemoteControl.Update();
-#endif
+    CInputManager::Get().Process(g_windowManager.GetActiveWindowID(), frameTime);
 
-    // process input actions
-    CInputManager::Get().ProcessRemote(g_windowManager.GetActiveWindowID());
-    CInputManager::Get().ProcessGamepad(g_windowManager.GetActiveWindowID());
-    CInputManager::Get().ProcessEventServer(g_windowManager.GetActiveWindowID(), frameTime);
-    CInputManager::Get().ProcessPeripherals(frameTime);
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
@@ -2508,10 +2488,8 @@ bool CApplication::Cleanup()
 
     CAddonMgr::Get().DeInit();
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
     CLog::Log(LOGNOTICE, "closing down remote control service");
-    g_RemoteControl.Disconnect();
-#endif
+    CInputManager::Get().DisableRemoteControl();
 
     CLog::Log(LOGNOTICE, "unload sections");
 
@@ -4323,10 +4301,7 @@ void CApplication::ProcessSlow()
 
   g_mediaManager.ProcessEvents();
 
-#ifdef HAS_LIRC
-  if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
-    g_RemoteControl.Initialize();
-#endif
+  CInputManager::Get().EnableRemoteControl();
 
   if (!m_pPlayer->IsPlayingVideo() &&
       CSettings::Get().GetInt("general.addonupdates") != AUTO_UPDATES_NEVER)

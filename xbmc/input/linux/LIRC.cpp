@@ -37,8 +37,6 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 
-CRemoteControl g_RemoteControl;
-
 CRemoteControl::CRemoteControl():
   m_deviceName(LIRC_DEVICE)
 {

@@ -27,6 +27,7 @@
 #include "Autorun.h"
 #include "Builtins.h"
 #include "input/ButtonTranslator.h"
+#include "input/InputManager.h"
 #include "FileItem.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -1772,29 +1773,6 @@ int CBuiltins::Execute(const std::string& execString)
   {
     CApplicationMessenger::Get().CECStandby();
   }
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  else if (execute == "lirc.stop")
-  {
-    g_RemoteControl.Disconnect();
-    g_RemoteControl.setUsed(false);
-  }
-  else if (execute == "lirc.start")
-  {
-    g_RemoteControl.setUsed(true);
-    g_RemoteControl.Initialize();
-  }
-  else if (execute == "lirc.send")
-  {
-    std::string command;
-    for (int i = 0; i < (int)params.size(); i++)
-    {
-      command += params[i];
-      if (i < (int)params.size() - 1)
-        command += ' ';
-    }
-    g_RemoteControl.AddSendCommand(command);
-  }
-#endif
   else if (execute == "weather.locationset" && !params.empty())
   {
     int loc = atoi(params[0].c_str());
@@ -1851,6 +1829,6 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
   else
-    return -1;
+    return CInputManager::Get().ExecuteBuiltin(execute, params);
   return 0;
 }

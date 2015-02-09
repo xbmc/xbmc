@@ -21,12 +21,20 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
 #elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 #include "input/SDLJoystick.h"
 #endif
+#if defined(HAS_LIRC)
+#include "input/linux/LIRC.h"
+#endif
+#if defined(HAS_IRSERVERSUITE)
+#include "input/windows/IRServerSuite.h"
+#endif
+
 #include "windowing/XBMC_events.h"
 #include "guilib/Key.h"
 #include "input/KeyboardStat.h"
@@ -82,6 +90,14 @@ public:
   \return true if event is handled, false otherwise
   */
   bool ProcessPeripherals(float frameTime);
+
+  /*! \brief Process all inputs
+   *
+   * \param windowId Currently active window
+   * \param frameTime Time in seconds since last call
+   * \return true on success, false otherwise
+   */
+  bool Process(int windowId, float frameTime);
 
   /*!
    * \brief Call once during application startup to initialize peripherals that need it
@@ -164,6 +180,38 @@ public:
    */
   void SetMouseResolution(int maxX, int maxY, float speedX, float speedY);
 
+  /*! \brief Enable the remote control
+   *
+   */
+  void EnableRemoteControl();
+
+  /*! \brief Disable the remote control
+   *
+   */
+  void DisableRemoteControl();
+
+  /*! \brief Check if the remote control is enabled
+   *
+   * \return true if remote control is enabled, false otherwise 
+   */
+  bool IsRemoteControlEnabled();
+
+  /*! \brief Set the device name to use with LIRC, does nothing 
+   *   if IRServerSuite is used
+   *
+   * \param[in] name Name of the device to use with LIRC
+   */
+  void SetRemoteControlName(const std::string& name);
+
+  /*! \brief Parse a builtin command and execute any input action
+   *  currently only LIRC commands implemented
+   *
+   * \param[in] execute Command to execute
+   * \param[in] params  parameters that was passed to the command
+   * \return 0 on success, -1 on failure
+   */
+  int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
+
 private:
 
   /*! \brief Process keyboard event and translate into an action
@@ -194,6 +242,10 @@ private:
 
   CKeyboardStat m_Keyboard;
   CMouseStat m_Mouse;
+
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  CRemoteControl m_RemoteControl;
+#endif
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
