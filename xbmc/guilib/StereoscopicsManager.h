@@ -54,8 +54,9 @@ public:
   static CStereoscopicsManager& Get(void);
 
   void Initialize(void);
-  void SetStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetStereoMode(void);
+  void SetStereoModeByUser(const RENDER_STEREO_MODE &mode);
+  void SetStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   std::string DetectStereoModeByString(const std::string &needle);
   RENDER_STEREO_MODE GetStereoModeByUserChoice(const std::string &heading = "");
@@ -92,5 +93,6 @@ private:
   void OnPlaybackStarted(void);
   void OnPlaybackStopped(void);
 
-  RENDER_STEREO_MODE m_lastStereoMode;
+  RENDER_STEREO_MODE m_stereoModeSetByUser;
+  RENDER_STEREO_MODE m_lastStereoModeSetByUser;
 };

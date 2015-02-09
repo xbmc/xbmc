@@ -15834,7 +15834,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended - also between videos in a playlist if necessary. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Stereoscopic mode (current)" with label #36500
