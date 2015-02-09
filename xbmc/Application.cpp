@@ -4303,15 +4303,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (!m_pPlayer->IsPlayingVideo())
       {
-        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        if (!IsHeadless())
         {
-          g_windowManager.PreviousWindow();
-        }
-        else if (!IsHeadless())
-        {
-          CSingleLock lock(g_graphicsContext);
-          //  resets to res_desktop or look&feel resolution (including refreshrate)
-          g_graphicsContext.SetFullScreenVideo(false);
+          if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+          {
+            g_windowManager.PreviousWindow();
+          }
+          else
+          {
+            CSingleLock lock(g_graphicsContext);
+            //  resets to res_desktop or look&feel resolution (including refreshrate)
+            g_graphicsContext.SetFullScreenVideo(false);
+          }
         }
       }
 
