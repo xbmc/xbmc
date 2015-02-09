@@ -231,6 +231,13 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_PRINT,                  0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
 , { XBMCK_POWER,                  0,    0, XBMCVK_POWER,         "power" }
 , { XBMCK_SLEEP,                  0,    0, XBMCVK_SLEEP,         "sleep" }
+, { XBMCK_GUIDE,                  0,    0, XBMCVK_GUIDE,         "guide" }
+, { XBMCK_SETTINGS,               0,    0, XBMCVK_SETTINGS,      "settings" }
+, { XBMCK_INFO,                   0,    0, XBMCVK_INFO,          "info" }
+, { XBMCK_RED,                    0,    0, XBMCVK_RED,           "red" }
+, { XBMCK_GREEN,                  0,    0, XBMCVK_GREEN,         "green" }
+, { XBMCK_YELLOW,                 0,    0, XBMCVK_YELLOW,        "yellow" }
+, { XBMCK_BLUE,                   0,    0, XBMCVK_BLUE,          "blue" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);
