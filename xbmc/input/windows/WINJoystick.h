@@ -77,7 +77,6 @@ public:
   bool Reinitialize();
   void Acquire();
   typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
-  void LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs);
 
 private:
   bool IsButtonActive() const { return m_ButtonIdx != -1; }
@@ -115,5 +114,4 @@ private:
   std::vector<LPDIRECTINPUTDEVICE8> m_pJoysticks;
   std::vector<std::string> m_JoystickNames;
   std::vector<DIDEVCAPS> m_devCaps;
-  std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
 };
