@@ -1,6 +1,6 @@
 ## Questions about Kodi?
 
-To get your questions answered, please ask in the [Kodi community forums] (http://forum.kodi.tv/) or on IRC: #xbmc on freenode.net
+To get your questions answered, please ask in the [Kodi community forums] (http://forum.kodi.tv/) or on IRC: #kodi on freenode.net
 
 Do not open an issue.
 
