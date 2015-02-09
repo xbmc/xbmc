@@ -59,6 +59,11 @@
 		<value condition="[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]">divx</value>
 		<value>$INFO[ListItem.VideoCodec]</value>
 	</variable>
+	<variable name="SeekLabel">
+		<value condition="!IsEmpty(Player.SeekStepSize) + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
+		<value condition="Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
+		<value condition="!Player.DisplayAfterSeek + Player.Seeking">$LOCALIZE[31046]</value>
+	</variable>
 
 	<include name="BehindDialogFadeOut">
 		<control type="image">
