@@ -249,6 +249,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
                                   { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
+                                  { "screensaver",      SYSTEM_SCREENSAVER },
                                   { "dpmsactive",       SYSTEM_DPMS_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
                                   { "cpuusage",         SYSTEM_CPU_USAGE },
@@ -1459,6 +1460,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case WEATHER_PLUGIN:
     strLabel = CSettings::Get().GetString("weather.addon");
     break;
+  case SYSTEM_SCREENSAVER:
+    strLabel = CSettings::Get().GetString("screensaver.mode");
+    break;
   case SYSTEM_DATE:
     strLabel = GetDate();
     break;
@@ -1737,7 +1741,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
         GetFPS());
     return strLabel;
     break;
-
   case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
