@@ -79,11 +79,6 @@ public:
   */
   bool ProcessPeripherals(float frameTime);
 
-  /*!
-   * \brief Call once during application startup to initialize peripherals that need it
-   */
-  void InitializeInputs();
-
   void SetEnabledJoystick(bool enabled = true);
 
   void ReInitializeJoystick();

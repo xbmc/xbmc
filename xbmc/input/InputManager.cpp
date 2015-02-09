@@ -73,14 +73,6 @@ CInputManager& CInputManager::GetInstance()
   return inputManager;
 }
 
-void CInputManager::InitializeInputs()
-{
-#ifdef HAS_SDL_JOYSTICK
-  // Pass the mapping of axis to triggers to m_Joystick
-  m_Joystick.LoadAxesConfigs(CButtonTranslator::GetInstance().GetAxesConfigs());
-#endif
-}
-
 void CInputManager::ReInitializeJoystick()
 {
 #ifdef HAS_SDL_JOYSTICK
