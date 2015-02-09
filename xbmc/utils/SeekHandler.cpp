@@ -141,7 +141,10 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       if (g_infoManager.GetTotalPlayTime())
         percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
 
-      m_percent = m_percentPlayTime + percentPerSecond * GetSeekSeconds(forward);
+      int seekSeconds = GetSeekSeconds(forward);
+      g_infoManager.SetSeekStepSize(seekSeconds);
+
+      m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
     }
 
     if (m_percent > 100.0f) m_percent = 100.0f;
@@ -171,6 +174,9 @@ void CSeekHandler::Process()
     if (m_requireSeek)
     {
       g_infoManager.m_performingSeek = true;
+
+      // reset seek step size
+      g_infoManager.SetSeekStepSize(0);
 
       // calculate the seek time
       double time = g_infoManager.GetTotalPlayTime() * m_percent * 0.01;

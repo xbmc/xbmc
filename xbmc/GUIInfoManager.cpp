@@ -219,6 +219,7 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
+                                  { "seekstepsize",     PLAYER_SEEKSTEPSIZE },
                                   { "timeremaining",    PLAYER_TIME_REMAINING },
                                   { "timespeed",        PLAYER_TIME_SPEED },
                                   { "time",             PLAYER_TIME },
@@ -3238,6 +3239,14 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     if (m_seekOffset < 0)
       return "-" + seekOffset;
     if (m_seekOffset > 0)
+      return "+" + seekOffset;
+  }
+  else if (info.m_info == PLAYER_SEEKSTEPSIZE)
+  {
+    std::string seekOffset = StringUtils::SecondsToTimeString(abs(m_seekStepSize), (TIME_FORMAT)info.GetData1());
+    if (m_seekStepSize < 0)
+      return "-" + seekOffset;
+    if (m_seekStepSize > 0)
       return "+" + seekOffset;
   }
   else if (info.m_info == PLAYER_ITEM_ART)
