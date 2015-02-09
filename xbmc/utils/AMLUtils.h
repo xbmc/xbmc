@@ -42,7 +42,7 @@ enum AML_DISPLAY_AXIS_PARAM
 };
 
 bool aml_present();
-void aml_permissions();
+bool aml_permissions();
 bool aml_hw3d_present();
 bool aml_wired_present();
 bool aml_support_hevc();
