@@ -229,6 +229,8 @@ void CPlayList::Clear()
   m_strPlayListName = "";
   m_iPlayableItems = -1;
   m_bWasPlayed = false;
+  m_bFolder = false;
+  m_strFolderPath = "";
 
   if (announce)
     AnnounceClear();

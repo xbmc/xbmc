@@ -229,7 +229,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           }
 
           // not playing audio, or playback speed == 1
-          PlayItem(iItem);
+          OnResumeItem(iItem);
 
           return true;
         }
@@ -736,6 +736,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
            !g_advancedSettings.m_playlistAsFolders))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+          std::string resumeString = GetResumeString(*item);
+          if (!resumeString.empty())
+            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
         }
         else
         { // check what players we have, if we have multiple display play with option
@@ -809,6 +812,19 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     PlayItem(itemNumber);
     return true;
 
+  case CONTEXT_BUTTON_RESUME_ITEM:
+    if (item->m_bIsFolder)
+    {
+      CBookmark bookmark;
+      CMusicDatabase db;
+      db.Open();
+      db.GetBookmark(item->GetPath(), CBookmark::FOLDER_RESUME, bookmark);
+      db.Close();
+      PlayItem(itemNumber, &bookmark);
+      return true;
+    }
+    return true;
+
   case CONTEXT_BUTTON_PLAY_WITH:
     {
       VECPLAYERCORES vecCores;  // base class?
@@ -874,7 +890,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
   }
 }
 
-void CGUIWindowMusicBase::PlayItem(int iItem)
+void CGUIWindowMusicBase::PlayItem(int iItem, const CBookmark *bookmark)
 {
   // restrictions should be placed in the appropiate window code
   // only call the base code if the item passes since this clears
@@ -909,6 +925,20 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
+
+    int begin = 0;
+    if (bookmark)
+    {
+      for (begin = 0; begin < queuedItems.Size(); ++begin)
+      {
+        if (queuedItems[begin]->GetPath() == bookmark->filepath && queuedItems[begin]->m_lStartOffset == bookmark->startOffset)
+        {
+          queuedItems[begin]->m_lResumeOffset = (long)(bookmark->timeInSeconds * 75);
+          break;
+        }
+      }
+    }
+
     if (g_partyModeManager.IsEnabled())
     {
       g_partyModeManager.AddUserSongs(queuedItems, true);
@@ -922,6 +952,8 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Reset();
+    g_playlistPlayer.SetFolder(PLAYLIST_MUSIC, true);
+    g_playlistPlayer.SetFolderPath(PLAYLIST_MUSIC, item->GetPath());
     g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 
@@ -930,7 +962,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
 
     // play!
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(begin);
   }
   else if (pItem->IsPlayList())
   {
@@ -1216,4 +1248,84 @@ std::string CGUIWindowMusicBase::GetStartFolder(const std::string &dir)
   else if (lower == "$playlists" || lower == "playlists")
     return "special://musicplaylists/";
   return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+std::string CGUIWindowMusicBase::GetResumeString(const CFileItem &item)
+{
+  std::string resumeString;
+  CMusicDatabase db;
+
+  if (!db.Open())
+    return "";
+
+  CBookmark bookmark;
+  CBookmark::EType type = item.m_bIsFolder ? CBookmark::FOLDER_RESUME : CBookmark::RESUME;
+
+  if (!db.GetBookmark(item.GetPath(), type, bookmark))
+  {
+    db.Close();
+    return "";
+  }
+
+  std::string time = StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds));
+  if (item.m_bIsFolder)
+  {
+    if (!CSettings::Get().GetBool("filelists.resumefolders"))
+    {
+      db.Close();
+      return "";
+    }
+
+    std::string folder;
+    std::string filename;
+    URIUtils::Split(bookmark.filepath, folder, filename);
+    CFileItem fileitem(bookmark.filepath, false);
+    m_musicInfoLoader.LoadItem(&fileitem);
+    std::string artist = bookmark.artist;
+    std::string title = bookmark.title;
+    URIUtils::RemoveExtension(filename);
+
+    if (artist.empty() && title.empty())
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12024).c_str(), filename.c_str(), time.c_str());
+    else if (!artist.empty() && !title.empty())
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12024).c_str(), (artist + " - " + title).c_str(), time.c_str());
+    else if (!artist.empty())
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12024).c_str(), artist.c_str(), time.c_str());
+    else if (!title.empty())
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12024).c_str(), title.c_str(), time.c_str());
+  }
+  else
+  {
+    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+  }
+
+  db.Close();
+  return resumeString;
+}
+
+bool CGUIWindowMusicBase::OnResumeItem(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+
+  std::string resumeString = GetResumeString(*item);
+  if (resumeString.empty())
+    return OnContextButton(iItem, CONTEXT_BUTTON_PLAY_ITEM);
+
+  enum {
+    SELECT_ACTION_RESUME,
+    SELECT_ACTION_PLAY,
+  };
+
+  CContextButtons choices;
+  choices.Add(SELECT_ACTION_RESUME, resumeString);
+  choices.Add(SELECT_ACTION_PLAY, 12021);
+  int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (value < 0)
+    return true;
+
+  if (value == SELECT_ACTION_RESUME)
+    return OnContextButton(iItem, CONTEXT_BUTTON_RESUME_ITEM);
+  else
+    return OnContextButton(iItem, CONTEXT_BUTTON_PLAY_ITEM);
 }

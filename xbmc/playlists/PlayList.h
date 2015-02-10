@@ -71,6 +71,12 @@ public:
 
   const std::string& ResolveURL(const CFileItemPtr &item) const;
 
+  inline bool IsFolder() const { return m_bFolder; }
+  inline void SetFolder(bool bFolder) { m_bFolder = bFolder; }
+
+  inline void SetFolderPath(const std::string& path) { m_strFolderPath = path; }
+  inline std::string GetFolderPath() const { return m_strFolderPath; }
+
 protected:
   int m_id;
   std::string m_strPlayListName;
@@ -78,6 +84,8 @@ protected:
   int m_iPlayableItems;
   bool m_bShuffled;
   bool m_bWasPlayed;
+  bool m_bFolder;
+  std::string m_strFolderPath;
 
 //  CFileItemList m_vecItems;
   std::vector <CFileItemPtr> m_vecItems;

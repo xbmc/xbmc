@@ -3929,6 +3929,10 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr "Продолжить с %s"
 
+msgctxt "#12024"
+msgid "Resume from %s - %s"
+msgstr "Продолжить с %s - %s"
+
 msgctxt "#12310"
 msgid "0"
 msgstr "0"
@@ -5620,6 +5624,10 @@ msgstr "Применить изменения сейчас"
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr "Разрешить переименование и удаление файлов"
+
+msgctxt "#14072"
+msgid "Resume playing folders from last position"
+msgstr "Возобновлять воспроизведение папок с последнего места"
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -12732,6 +12740,10 @@ msgstr "Включить аппаратное ускорение (MMAL)"
 msgctxt "#36435"
 msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
 msgstr "Использовать DVDPlayer для декодирования видеофайлов с ускорением MMAL."
+
+msgctxt "#36436"
+msgid "Resume playing music and video folders from last position."
+msgstr "Возобновлять воспроизведение папок с музыкой и видео с последнего места."
 
 msgctxt "#36500"
 msgid "Stereoscopic 3D mode (current)"

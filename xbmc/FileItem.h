@@ -467,6 +467,7 @@ public:
   int m_lStartOffset;
   int m_lStartPartNumber;
   int m_lEndOffset;
+  int m_lResumeOffset;
   LockType m_iLockMode;
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked

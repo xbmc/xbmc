@@ -47,11 +47,18 @@ public:
   long seasonNumber;
   long episodeNumber;
 
+  std::string item; /*!< Full path to bookmarked item */
+  std::string filepath; /*!< Path to current file (for FOLDER_RESUME) */
+  std::string artist; /*!< Artist (for music bookmarks) */
+  std::string title; /*!< Title (for music bookmarks) */
+  int startOffset; /*!< Offset for CUE sheet */
+
   enum EType
   {
     STANDARD = 0,
     RESUME = 1,
-    EPISODE = 2
+    EPISODE = 2,
+    FOLDER_RESUME = 3
   } type;
 };
 

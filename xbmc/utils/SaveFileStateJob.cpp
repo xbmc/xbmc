@@ -35,6 +35,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 
 bool CSaveFileStateJob::DoWork()
 {
@@ -165,6 +168,28 @@ bool CSaveFileStateJob::DoWork()
     {
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, redactPath.c_str());
+
+      if (m_bookmark.type == CBookmark::FOLDER_RESUME && CSettings::Get().GetBool("filelists.resumefolders"))
+      {
+        CMusicDatabase musicdatabase;
+        if (!musicdatabase.Open())
+          return false;
+
+        m_bookmark.filepath = progressTrackingFile;
+        if (m_bookmark.timeInSeconds >= 0.0f)
+        {
+          m_bookmark.startOffset = m_item.m_lStartOffset;
+          m_bookmark.artist = StringUtils::Join(m_item.GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+          m_bookmark.title = m_item.GetMusicInfoTag()->GetTitle();
+          musicdatabase.AddBookmark(m_bookmark);
+        }
+        else if (m_bookmark.timeInSeconds < 0.0f)
+        {
+          musicdatabase.ClearBookmark(m_bookmark);
+        }
+
+        musicdatabase.Close();
+      }
 
       if (m_updatePlayCount)
       {

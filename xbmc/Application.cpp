@@ -3694,7 +3694,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
 void CApplication::UpdateFileState()
 {
   // Did the file change?
-  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
+  if (m_progressTrackingItem->GetPath() != "" && (m_progressTrackingItem->GetPath() != CurrentFile() || (m_pPlayer->IsPlayingAudio() && m_progressTrackingItem->m_lStartOffset != CurrentFileItem().m_lStartOffset)))
   {
     // Ignore for PVR channels, PerformChannelSwitch takes care of this.
     // Also ignore video playlists containing multiple items: video settings have already been saved in PlayFile()
@@ -3742,30 +3742,36 @@ void CApplication::UpdateFileState()
           if (m_progressTrackingItem->IsStack())
             m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, (int)GetTotalTime()); // Overwrite with CApp's totaltime as it takes into account total stack time
         }
+      }
 
-        // Update bookmark for save
-        m_progressTrackingResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
-        m_progressTrackingResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingResumeBookmark.thumbNailImage.clear();
+      // Update bookmark for save
+      int playlist = g_playlistPlayer.GetCurrentPlaylist();
+      bool bFolder = g_playlistPlayer.GetPlaylist(playlist).IsFolder();
+      m_progressTrackingResumeBookmark.item = g_playlistPlayer.GetFolderPath(playlist);
+      m_progressTrackingResumeBookmark.type = bFolder ? CBookmark::FOLDER_RESUME : CBookmark::RESUME;
+      m_progressTrackingResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
+      m_progressTrackingResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+      m_progressTrackingResumeBookmark.thumbNailImage.clear();
 
-        if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
-            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
-        {
-          // Delete the bookmark
-          m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
-        }
-        else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
-        {
-          // Update the bookmark
-          m_progressTrackingResumeBookmark.timeInSeconds = GetTime();
-          m_progressTrackingResumeBookmark.totalTimeInSeconds = GetTotalTime();
-        }
-        else
-        {
-          // Do nothing
-          m_progressTrackingResumeBookmark.timeInSeconds = 0.0f;
-        }
+      bool isVideo = m_pPlayer->IsPlayingVideo();
+      float ignorePercentAtEnd = isVideo ? g_advancedSettings.m_videoIgnorePercentAtEnd : g_advancedSettings.m_musicIgnorePercentAtEnd;
+      int ignoreSecondsAtStart = isVideo ? g_advancedSettings.m_videoIgnoreSecondsAtStart : g_advancedSettings.m_musicIgnoreSecondsAtStart;
+      if (ignorePercentAtEnd > 0 && !bFolder && GetTotalTime() - GetTime() < 0.01f * ignorePercentAtEnd * GetTotalTime())
+      {
+        // Delete the bookmark
+        m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
+      }
+      else
+      if (GetTime() > ignoreSecondsAtStart)
+      {
+        // Update the bookmark
+        m_progressTrackingResumeBookmark.timeInSeconds = GetTime();
+        m_progressTrackingResumeBookmark.totalTimeInSeconds = GetTotalTime();
+      }
+      else
+      {
+        m_progressTrackingResumeBookmark.timeInSeconds = 0.0f;
+        m_progressTrackingResumeBookmark.totalTimeInSeconds = GetTotalTime();
       }
     }
   }
@@ -4230,10 +4236,26 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        // Delete the bookmark
-        m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
+        int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+        bool bFolder = g_playlistPlayer.GetPlaylist(iPlaylist).IsFolder();
+        if (bFolder)
+        {
+          if (g_playlistPlayer.GetCurrentSong() == (g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1))
+          {
+            // Delete the bookmark
+            m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
+          }
+        }
+        else
+        {
+          if (m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
+          {
+            // Delete the bookmark
+            m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
+          }
+        }
       }
 
       // reset the current playing file

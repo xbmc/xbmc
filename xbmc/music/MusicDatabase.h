@@ -27,6 +27,7 @@
 #include "addons/Scraper.h"
 #include "utils/SortUtils.h"
 #include "MusicDbUrl.h"
+#include "video/Bookmark.h"
 
 class CArtist;
 class CFileItem;
@@ -464,6 +465,13 @@ public:
    \sa GetArtForItem
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+
+  void AddBookmark(const CBookmark &bookmark);
+  bool GetBookmark(const std::string &strUrl, CBookmark::EType type, CBookmark &bookmark);
+  void ClearBookmark(const CBookmark &bookmark);
+  int GetPathId(const std::string &strPath);
+  int GetFileId(const std::string &strUrl);
+  int AddFile(const std::string &strUrl);
 
 protected:
   std::map<std::string, int> m_artistCache;

@@ -4707,7 +4707,13 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
-#empty strings from id 12023 to 12309
+#empty string with id 12023
+
+msgctxt "#12024"
+msgid "Resume from %s - %s"
+msgstr ""
+
+#empty strings from id 12025 to 12309
 
 #: skin.confluence
 #: skin.retouched
@@ -6798,7 +6804,12 @@ msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr ""
 
-#empty strings from id 14072 to 14073
+#: system/settings/settings.xml
+msgctxt "#14072"
+msgid "Resume playing folders from last position"
+msgstr ""
+
+#empty string with id 14073
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -15680,7 +15691,13 @@ msgctxt "#36435"
 msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
-#empty strings from id 36436 to 36499
+#. Description of setting "Appearance -> File lists -> Resume playing folders from last position" with label #14072
+#: system/settings/settings.xml
+msgctxt "#36436"
+msgid "Resume playing music and video folders from last position."
+msgstr ""
+
+#empty strings from id 36437 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

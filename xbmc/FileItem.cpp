@@ -418,6 +418,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
   m_lEndOffset = item.m_lEndOffset;
+  m_lResumeOffset = item.m_lResumeOffset;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
   m_iprogramCount = item.m_iprogramCount;
@@ -450,6 +451,7 @@ void CFileItem::Initialize()
   m_lStartOffset = 0;
   m_lStartPartNumber = 1;
   m_lEndOffset = 0;
+  m_lResumeOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
   m_iLockMode = LOCK_MODE_EVERYONE;
@@ -514,6 +516,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_lStartOffset;
     ar << m_lStartPartNumber;
     ar << m_lEndOffset;
+    ar << m_lResumeOffset;
     ar << m_iLockMode;
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
@@ -561,6 +564,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_lStartOffset;
     ar >> m_lStartPartNumber;
     ar >> m_lEndOffset;
+    ar >> m_lResumeOffset;
     int temp;
     ar >> temp;
     m_iLockMode = (LockType)temp;
@@ -1482,6 +1486,7 @@ void CFileItem::SetFromSong(const CSong &song)
   m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
+  m_lResumeOffset = 0;
   if (!song.strThumb.empty())
     SetArt("thumb", song.strThumb);
   FillInMimeType(false);
