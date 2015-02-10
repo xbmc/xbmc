@@ -13986,11 +13986,7 @@ msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Enable" with label #24022
-#: system/settings/settings.xml
-msgctxt "#36140"
-msgid "Enable the video library."
-msgstr ""
+#empty string with id 36140
 
 #. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
 #: system/settings/settings.xml
@@ -14597,11 +14593,7 @@ msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Enable" with label #24022
-#: system/settings/settings.xml
-msgctxt "#36254"
-msgid "Enable the music library."
-msgstr ""
+#empty string with id 36254
 
 #. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
 #: system/settings/settings.xml
