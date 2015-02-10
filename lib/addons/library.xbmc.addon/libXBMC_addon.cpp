@@ -340,9 +340,6 @@ DLLEXPORT char* XBMC_CPUInfo_GetCPUSerial(void *hdl, void* cb)
   return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUSerial(((AddonCB*)hdl)->addonData);
 }
 
-// ToDo: add class CoreInfo
-//DLLEXPORT const CoreInfo& (*XBMC_CPUInfo_GetCoreInfo)(void *HANDLE, void* CB, int nCoreId)
-
 DLLEXPORT bool XBMC_CPUInfo_HasCoreId(void *hdl, void* cb, int nCoreId)
 {
   if (cb == NULL)
@@ -366,8 +363,5 @@ DLLEXPORT unsigned int XBMC_CPUInfo_GetCPUFeatures(void *hdl, void* cb)
 
   return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUFeatures(((AddonCB*)hdl)->addonData);
 }
-
-// ToDo: add CTemperature
-//DLLEXPORT bool XBMC_CPUInfo_GetTemperature(void *hdl, void* cb, CTemperature& temperature)
 
 };

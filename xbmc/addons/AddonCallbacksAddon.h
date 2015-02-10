@@ -74,13 +74,9 @@ public:
   static char* CPUInfo_GetCPUHardware(const void* addonData);
   static char* CPUInfo_GetCPURevision(const void* addonData);
   static char* CPUInfo_GetCPUSerial(const void* addonData);
-  // ToDo: add class CoreInfo
-  //static const CoreInfo& CPUInfo_GetCoreInfo(const void* addonData, int nCoreId);
   static bool CPUInfo_HasCoreId(const void* addonData, int nCoreId);
   static char* CPUInfo_GetCoresUsageString(const void* addonData);
   static unsigned int CPUInfo_GetCPUFeatures(const void* addonData);
-  // ToDo: add CTemperature
-  //static bool CPUInfo_GetTemperature(const void* addonData, CTemperature& temperature);
 
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */

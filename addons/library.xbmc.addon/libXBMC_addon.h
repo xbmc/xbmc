@@ -290,11 +290,6 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUSerial");
       if (XBMC_CPUInfo_GetCPUSerial == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      // ToDo: add class CoreInfo
-      //XBMC_CPUInfo_GetCoreInfo = ((*)(void *HANDLE, void* CB, int nCoreId))
-      //  dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCoreInfo");
-      //if (XBMC_CPUInfo_GetCoreInfo == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
       XBMC_CPUInfo_HasCoreId = (bool(*)(void *HANDLE, void* CB, int nCoreId))
         dlsym(m_libXBMC_addon, "XBMC_CPUInfo_HasCoreId");
       if (XBMC_CPUInfo_HasCoreId == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -306,11 +301,6 @@ namespace ADDON
       XBMC_CPUInfo_GetCPUFeatures = (unsigned int(*)(void *HANDLE, void* CB))
         dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetCPUFeatures");
       if (XBMC_CPUInfo_GetCPUFeatures == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      // ToDo: add CTemperature
-      //XBMC_CPUInfo_GetTemperature = (bool(*)(void *HANDLE, void* CB, CTemperature& temperature))
-      //  dlsym(m_libXBMC_addon, "XBMC_CPUInfo_GetTemperature");
-      //if (XBMC_CPUInfo_GetTemperature == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
@@ -684,9 +674,6 @@ namespace ADDON
 
     }
 
-    // ToDo: add class CoreInfo
-    //const CoreInfo& CPUInfo_GetCoreInfo(int nCoreId);
-
     /*!
      * @brief ToDo
      * @return ToDo!
@@ -712,11 +699,7 @@ namespace ADDON
     unsigned int CPUInfo_GetCPUFeatures()
     {
       return XBMC_CPUInfo_GetCPUFeatures(m_Handle, m_Callbacks);
-    }
-
-    // ToDo: add CTemperature
-    //bool CPUInfo_GetTemperature(CTemperature& temperature);
-    
+    }    
 
   protected:
     void* (*XBMC_register_me)(void *HANDLE);
@@ -756,13 +739,9 @@ namespace ADDON
     char* (*XBMC_CPUInfo_GetCPUHardware)(void *HANDLE, void* CB);
     char* (*XBMC_CPUInfo_GetCPURevision)(void *HANDLE, void* CB);
     char* (*XBMC_CPUInfo_GetCPUSerial)(void *HANDLE, void* CB);
-    // ToDo: add class CoreInfo
-    //const CoreInfo& (*XBMC_CPUInfo_GetCoreInfo)(void *HANDLE, void* CB, int nCoreId)
     bool (*XBMC_CPUInfo_HasCoreId)(void *HANDLE, void* CB, int nCoreId);
     char* (*XBMC_CPUInfo_GetCoresUsageString)(void *HANDLE, void* CB);
     unsigned int (*XBMC_CPUInfo_GetCPUFeatures)(void *HANDLE, void* CB);
-    // ToDo: add CTemperature
-    //bool (*XBMC_CPUInfo_GetTemperature)(void *HANDLE, void* CB, CTemperature& temperature);
 
   private:
     void *m_libXBMC_addon;
