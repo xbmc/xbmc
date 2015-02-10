@@ -598,7 +598,7 @@ int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struc
     // check if the range is valid
     if (!responseRange.IsValid())
     {
-      CLog::Log(LOGWARNING, "CWebServer: invalid response data with range start at %lld and end at %lld", responseRange.GetFirstPosition(), responseRange.GetLastPosition());
+      CLog::Log(LOGWARNING, "CWebServer: invalid response data with range start at %" PRId64 " and end at %" PRId64, responseRange.GetFirstPosition(), responseRange.GetLastPosition());
       return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
     }
 
