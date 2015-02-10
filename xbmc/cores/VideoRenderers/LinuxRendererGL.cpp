@@ -303,7 +303,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
 
-  m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && CSettings::Get().GetBool("videoplayer.usepbo");
+  m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object");
 
 #ifdef TARGET_DARWIN_OSX
   // on osx 10.9 mavericks we get a strange ripple
