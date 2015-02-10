@@ -52,6 +52,7 @@ public:
   std::string artist; /*!< Artist (for music bookmarks) */
   std::string title; /*!< Title (for music bookmarks) */
   int startOffset; /*!< Offset for CUE sheet */
+  std::string hash; /*!< Folder hash (for FOLDER_RESUME) */
 
   enum EType
   {

@@ -66,6 +66,7 @@
 #include "utils/XMLUtils.h"
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -5831,8 +5832,11 @@ void CMusicDatabase::AddBookmark(const CBookmark &bookmark)
   {
     int idFile = -1;
     int idPath = -1;
+    std::string hash;
     if (bookmark.type == CBookmark::FOLDER_RESUME)
     {
+      if (CSettings::Get().GetBool("filelists.checkfolderhash"))
+        hash = CFileUtils::GetFastHash(bookmark.item);
       idFile = AddFile(bookmark.filepath);
       idPath = GetPathId(bookmark.item);
       if (idPath < 0)
@@ -5865,9 +5869,9 @@ void CMusicDatabase::AddBookmark(const CBookmark &bookmark)
     m_pDS->close();
 
     if (idBookmark >= 0)
-      strSQL = PrepareSQL("UPDATE bookmark SET timeInSeconds=%f, totalTimeInSeconds=%f, startOffset=%i, thumbNailImage='%s', player='%s', playerState='%s', idPath=%i, idFile=%i, artist='%s', title='%s' where idBookmark=%i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), idBookmark);
+      strSQL = PrepareSQL("UPDATE bookmark SET timeInSeconds=%f, totalTimeInSeconds=%f, startOffset=%i, thumbNailImage='%s', player='%s', playerState='%s', idPath=%i, idFile=%i, artist='%s', title='%s', strHash='%s' where idBookmark=%i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), hash.c_str(), idBookmark);
     else
-      strSQL = PrepareSQL("INSERT INTO bookmark (idBookmark, timeInSeconds, totalTimeInSeconds, startOffset, thumbNailImage, player, playerState, idPath, idFile, artist, title, type) VALUES(NULL, %f, %f, %i, '%s', '%s', '%s', %i, %i, '%s', '%s', %i)", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), (int)bookmark.type, idBookmark);
+      strSQL = PrepareSQL("INSERT INTO bookmark (idBookmark, timeInSeconds, totalTimeInSeconds, startOffset, thumbNailImage, player, playerState, idPath, idFile, artist, title, type, strHash) VALUES(NULL, %f, %f, %i, '%s', '%s', '%s', %i, %i, '%s', '%s', %i, '%s')", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), (int)bookmark.type, hash.c_str());
 
     m_pDS->exec(strSQL.c_str());
   }
@@ -5914,6 +5918,7 @@ bool CMusicDatabase::GetBookmark(const std::string &strUrl, CBookmark::EType typ
     bookmark.type = type;
     bookmark.artist = m_pDS->fv("artist").get_asString();
     bookmark.title = m_pDS->fv("title").get_asString();
+    bookmark.hash = m_pDS->fv("strHash").get_asString();
     if (type == CBookmark::FOLDER_RESUME)
     {
       bookmark.item = strUrl;

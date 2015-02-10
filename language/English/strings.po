@@ -6809,7 +6809,10 @@ msgctxt "#14072"
 msgid "Resume playing folders from last position"
 msgstr ""
 
-#empty string with id 14073
+#: system/settings/settings.xml
+msgctxt "#14073"
+msgid "Check folder changes on resume"
+msgstr ""
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -15697,7 +15700,13 @@ msgctxt "#36436"
 msgid "Resume playing music and video folders from last position."
 msgstr ""
 
-#empty strings from id 36437 to 36499
+#. Description of setting "Appearance -> File lists -> Check folder changes on resume" with label #14073
+#: system/settings/settings.xml
+msgctxt "#36437"
+msgid "Don't resume if folder with saved position was changed since last playing time."
+msgstr ""
+
+#empty strings from id 36438 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

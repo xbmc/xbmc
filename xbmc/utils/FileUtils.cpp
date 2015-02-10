@@ -33,6 +33,8 @@
 #include "StringUtils.h"
 #include "URL.h"
 #include "settings/Settings.h"
+#include "utils/StringUtils.h"
+#include "filesystem/Directory.h"
 
 using namespace XFILE;
 using namespace std;
@@ -159,4 +161,50 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       return true;
   }
   return false;
+}
+
+std::string CFileUtils::GetFastHash(const std::string &path)
+{
+  struct __stat64 buffer;
+
+  if (CFile::Stat(path, &buffer))
+    return "";
+
+  std::list<std::string> folders = GetAllChildren(path);
+
+  int64_t fulltime = 0;
+  for (std::list<std::string>::iterator it = folders.begin(); it != folders.end(); ++it)
+  {
+    fulltime += GetModificationTime(*it);
+  }
+
+  std::string hash;
+  if (fulltime != 0)
+    hash = StringUtils::Format("fast%" PRId64, fulltime);
+
+  return hash;
+}
+
+int64_t CFileUtils::GetModificationTime(const std::string &path)
+{
+  struct __stat64 buffer;
+
+  if (CFile::Stat(path, &buffer))
+    return 0;
+
+  return buffer.st_mtime ? buffer.st_mtime : buffer.st_ctime;
+}
+
+std::list<std::string> CFileUtils::GetAllChildren(const std::string &directory)
+{
+  CFileItemList fileList;
+  std::list<std::string> directories;
+  directories.push_front(directory);
+  CDirectory::GetDirectory(directory, fileList, "*/");
+  for (int i = 0; i < fileList.Size(); ++i)
+  {
+    std::list<std::string> children = GetAllChildren(fileList[i]->GetPath());
+    directories.splice(directories.end(), children);
+  }
+  return directories;
 }

@@ -68,7 +68,7 @@
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "cores/IPlayer.h"
 #include "CueDocument.h"
-
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1274,6 +1274,19 @@ std::string CGUIWindowMusicBase::GetResumeString(const CFileItem &item)
     {
       db.Close();
       return "";
+    }
+
+    if (CSettings::Get().GetBool("filelists.checkfolderhash"))
+    {
+      if (bookmark.hash != "")
+      {
+        std::string hash = CFileUtils::GetFastHash(bookmark.item);
+        if (hash != bookmark.hash)
+        {
+          db.Close();
+          return "";
+        }
+      }
     }
 
     std::string folder;
