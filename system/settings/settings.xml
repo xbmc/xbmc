@@ -2111,7 +2111,7 @@
           <level>1</level>
           <default>webinterface.default</default>
           <constraints>
-            <addontype>xbmc.gui.webinterface</addontype>
+            <addontype>xbmc.webinterface</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>
