@@ -50,27 +50,6 @@
         "sys.stderr = xbmcout(" MODULE ".LOGERROR)\n" \
         ""
 
-#define RUNSCRIPT_OVERRIDE_HACK \
-        "" \
-        "import os\n" \
-        "def getcwd_xbmc():\n" \
-        "  import __main__\n" \
-        "  import warnings\n" \
-        "  if hasattr(__main__, \"__file__\"):\n" \
-        "    warnings.warn(\"os.getcwd() currently lies to you so please use addon.getAddonInfo('path') to find the script's root directory and DO NOT make relative path accesses based on the results of 'os.getcwd.' \", DeprecationWarning, stacklevel=2)\n" \
-        "    return os.path.dirname(__main__.__file__)\n" \
-        "  else:\n" \
-        "    return os.getcwd_original()\n" \
-        "" \
-        "def chdir_xbmc(dir):\n" \
-        "  raise RuntimeError(\"os.chdir not supported in xbmc\")\n" \
-        "" \
-        "os_getcwd_original = os.getcwd\n" \
-        "os.getcwd          = getcwd_xbmc\n" \
-        "os.chdir_orignal   = os.chdir\n" \
-        "os.chdir           = chdir_xbmc\n" \
-        ""
-
 #define RUNSCRIPT_SETUPTOOLS_HACK \
   "" \
   "import imp,sys\n" \
@@ -90,16 +69,10 @@
 
 #if defined(TARGET_ANDROID)
 
-#define RUNSCRIPT_BWCOMPATIBLE \
-  RUNSCRIPT_PRAMBLE RUNSCRIPT_OVERRIDE_HACK RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
-
 #define RUNSCRIPT_COMPLIANT \
   RUNSCRIPT_PRAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
 
 #else
-
-#define RUNSCRIPT_BWCOMPATIBLE \
-  RUNSCRIPT_PRAMBLE RUNSCRIPT_OVERRIDE_HACK RUNSCRIPT_POSTSCRIPT
 
 #define RUNSCRIPT_COMPLIANT \
   RUNSCRIPT_PRAMBLE RUNSCRIPT_POSTSCRIPT
@@ -155,7 +128,5 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CAddonPythonIn
 
 const char* CAddonPythonInvoker::getInitializationScript() const
 {
-  bool bwcompatMode = (m_addon.get() == NULL ||
-                       m_addon->GetDependencyVersion("xbmc.python") <= ADDON::AddonVersion("1.0"));
-  return bwcompatMode ? RUNSCRIPT_BWCOMPATIBLE : RUNSCRIPT_COMPLIANT;
+  return RUNSCRIPT_COMPLIANT;
 }
