@@ -566,7 +566,7 @@ float CAddonCallbacksAddon::CPUInfo_GetCPUFrequency(const void* addonData)
   if (!helper)
     return false;
 
-  return g_cpuInfo.GetCPUFeatures();
+  return g_cpuInfo.getCPUFrequency();
 }
 
 char* CAddonCallbacksAddon::CPUInfo_GetCPUModel(const void* addonData)
