@@ -247,7 +247,7 @@ DLLEXPORT bool XBMC_delete_file(void *hdl, void* cb, const char *strFileName)
 DLLEXPORT bool XBMC_can_open_directory(void *hdl, void* cb, const char* strURL)
 {
   if (cb == NULL)
-    return 0;
+    return false;
 
   return ((CB_AddOnLib*)cb)->CanOpenDirectory(((AddonCB*)hdl)->addonData, strURL);
 }
