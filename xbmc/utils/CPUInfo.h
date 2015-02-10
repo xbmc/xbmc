@@ -102,7 +102,7 @@ public:
 
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
-    unsigned long long& idle, unsigned long long& io);
+                    unsigned long long& idle, unsigned long long& io);
   void ReadCPUFeatures();
   static bool HasNeon();
 
