@@ -293,7 +293,7 @@ CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
   , m_itemCurrentFile(new CFileItem)
   , m_stackFileItemToUpdate(new CFileItem)
-  , m_progressTrackingVideoResumeBookmark(*new CBookmark)
+  , m_progressTrackingResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_playerController(new CPlayerController)
@@ -352,7 +352,7 @@ CApplication::CApplication(void)
 CApplication::~CApplication(void)
 {
   delete m_musicInfoScanner;
-  delete &m_progressTrackingVideoResumeBookmark;
+  delete &m_progressTrackingResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
 #endif
@@ -3677,7 +3677,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
 
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
       *m_stackFileItemToUpdate,
-      m_progressTrackingVideoResumeBookmark,
+      m_progressTrackingResumeBookmark,
       m_progressTrackingPlayCountUpdate,
       CMediaSettings::Get().GetCurrentVideoSettings());
   
@@ -3744,27 +3744,27 @@ void CApplication::UpdateFileState()
         }
 
         // Update bookmark for save
-        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
-        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.clear();
+        m_progressTrackingResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
+        m_progressTrackingResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        m_progressTrackingResumeBookmark.thumbNailImage.clear();
 
         if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
             GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
         {
           // Delete the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+          m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
         }
         else
         if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
         {
           // Update the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-          m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
+          m_progressTrackingResumeBookmark.timeInSeconds = GetTime();
+          m_progressTrackingResumeBookmark.totalTimeInSeconds = GetTotalTime();
         }
         else
         {
           // Do nothing
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+          m_progressTrackingResumeBookmark.timeInSeconds = 0.0f;
         }
       }
     }
@@ -4233,7 +4233,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
       {
         // Delete the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        m_progressTrackingResumeBookmark.timeInSeconds = -1.0f;
       }
 
       // reset the current playing file
