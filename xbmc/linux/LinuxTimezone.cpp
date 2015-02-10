@@ -38,6 +38,7 @@
 #include "XBDateTime.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include <stdlib.h>
 
 #include <algorithm>
 

@@ -18,6 +18,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "DarwinStorageProvider.h"
 #include "utils/RegExp.h"
 #include "Util.h"
