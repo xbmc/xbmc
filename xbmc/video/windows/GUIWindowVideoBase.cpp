@@ -880,6 +880,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
     else
     {
       CBookmark bookmark;
+      bookmark.type = CBookmark::RESUME;
       std::string strPath = item->GetPath();
       if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
         strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
@@ -979,13 +980,33 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
     OnPopupMenu(iItem);
     return true;
   case SELECT_ACTION_RESUME:
-    item->m_lStartOffset = STARTOFFSET_RESUME;
+    if (item->m_bIsFolder)
+    {
+      CBookmark bookmark;
+      bookmark.type = CBookmark::FOLDER_RESUME;
+      CVideoDatabase db;
+      db.Open();
+      db.GetResumeBookMark(item->GetPath(), bookmark);
+      db.Close();
+      PlayItem(iItem, &bookmark);
+      return true;
+    }
+    else
+    {
+      item->m_lStartOffset = STARTOFFSET_RESUME;
+    }
     break;
   case SELECT_ACTION_PLAYPART:
     if (!OnPlayStackPart(iItem))
       return false;
     break;
   case SELECT_ACTION_PLAY:
+    if (item->m_bIsFolder)
+    {
+      PlayItem(iItem);
+      return true;
+    }
+    break;
   default:
     break;
   }
@@ -1048,23 +1069,66 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 {
   std::string resumeString;
-  int startOffset = 0, startPart = 0;
-  GetResumeItemOffset(&item, startOffset, startPart);
-  if (startOffset > 0)
+  CVideoDatabase db;
+  if (!db.Open())
+    return "";
+
+  CBookmark bookmark;
+  bookmark.type = item.m_bIsFolder ? CBookmark::FOLDER_RESUME : CBookmark::RESUME;
+  std::string itemPath(item.GetPath());
+  if (item.IsVideoDb())
+    itemPath = item.GetVideoInfoTag()->GetPath();
+
+  if (db.GetResumeBookMark(itemPath, bookmark))
   {
-    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
-    if (startPart > 0)
+    int startOffset = 0, startPart = 0;
+    GetResumeItemOffset(&item, startOffset, startPart);
+
+    std::string folder;
+    std::string filename;
+    if (item.m_bIsFolder)
     {
-      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
-      resumeString += " (" + partString + ")";
+      if (!CSettings::Get().GetBool("filelists.resumefolders"))
+      {
+        db.Close();
+        return "";
+      }
+      if (CSettings::Get().GetBool("filelists.checkfolderhash"))
+      {
+        std::string hash = CFileUtils::GetFastHash(bookmark.item);
+        if (hash != bookmark.hash)
+        {
+          db.Close();
+          return "";
+        }
+      }
+      URIUtils::Split(bookmark.filepath, folder, filename);
+
+      startOffset = (int)(bookmark.timeInSeconds*75);
+      startPart = bookmark.partNumber;
+    }
+
+    if (startOffset > 0 || (startOffset == 0 && bookmark.type == CBookmark::FOLDER_RESUME))
+    {
+      if (item.m_bIsFolder)
+        resumeString = StringUtils::Format(g_localizeStrings.Get(12024).c_str(), filename.c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+      else
+        resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+      if (startPart > 0)
+      {
+        std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
+        resumeString += " (" + partString + ")";
+      }
     }
   }
+
+  db.Close();
   return resumeString;
 }
 
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
-  if (!item.m_bIsFolder && !item.IsLiveTV())
+  if (!item.IsLiveTV())
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
@@ -1086,13 +1150,6 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
-
-  if (item->m_bIsFolder)
-  {
-    // resuming directories isn't supported yet. play.
-    PlayItem(iItem);
-    return true;
-  }
 
   std::string resumeString = GetResumeString(*item);
 
@@ -1140,6 +1197,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
            !g_advancedSettings.m_playlistAsFolders))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+          std::string resumeString = GetResumeString(*item);
+          if (!resumeString.empty())
+            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
         }
 
         if (!m_vecItems->GetPath().empty() && !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://")
@@ -1320,7 +1380,21 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_RESUME_ITEM:
-    return OnFileAction(itemNumber, SELECT_ACTION_RESUME);
+    if (item->m_bIsFolder)
+    {
+      CBookmark bookmark;
+      bookmark.type = CBookmark::FOLDER_RESUME;
+      CVideoDatabase db;
+      db.Open();
+      db.GetResumeBookMark(item->GetPath(), bookmark);
+      db.Close();
+      PlayItem(itemNumber, &bookmark);
+      return true;
+    }
+    else
+    {
+      return OnFileAction(itemNumber, SELECT_ACTION_RESUME);
+    }
 
   case CONTEXT_BUTTON_INFO:
     OnInfo(itemNumber);
@@ -1563,7 +1637,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
   }
 }
 
-void CGUIWindowVideoBase::PlayItem(int iItem)
+void CGUIWindowVideoBase::PlayItem(int iItem, const CBookmark *bookmark)
 {
   // restrictions should be placed in the appropiate window code
   // only call the base code if the item passes since this clears
@@ -1589,11 +1663,26 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
 
+    int begin = 0;
+    if (bookmark)
+    {
+      for (begin = 0; begin < queuedItems.Size(); ++begin)
+      {
+        if (queuedItems[begin]->GetPath() == bookmark->filepath)
+        {
+          queuedItems[begin]->m_lStartOffset = (long)(bookmark->timeInSeconds * 75);
+          break;
+        }
+      }
+    }
+
     g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Reset();
+    g_playlistPlayer.SetFolder(PLAYLIST_VIDEO, true);
+    g_playlistPlayer.SetFolderPath(PLAYLIST_VIDEO, item->GetPath());
     g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(begin);
   }
   else if (pItem->IsPlayList())
   {

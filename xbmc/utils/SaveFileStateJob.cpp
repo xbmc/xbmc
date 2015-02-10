@@ -96,34 +96,37 @@ bool CSaveFileStateJob::DoWork()
           else
             videodatabase.UpdateLastPlayed(m_item);
 
-          if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
+          if (m_bookmark.type != CBookmark::FOLDER_RESUME || CSettings::Get().GetBool("filelists.resumefolders"))
           {
-            if (m_bookmark.timeInSeconds <= 0.0f)
-              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-            else
-              videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
-            if (m_item.HasVideoInfoTag())
-              m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
-
-            // PVR: Set/clear recording's resume bookmark on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
+            if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds || m_bookmark.type == CBookmark::FOLDER_RESUME)
             {
-              PVR::CPVRRecordingPtr recording = m_item.GetPVRRecordingInfoTag();
-              recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
-              recording->m_resumePoint = m_bookmark;
-            }
+              if (m_bookmark.timeInSeconds < 0.0f || (m_bookmark.timeInSeconds == 0.0f && m_bookmark.type != CBookmark::FOLDER_RESUME))
+                videodatabase.ClearBookMarksOfFile(progressTrackingFile, m_bookmark.type);
+              else
+                videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, m_bookmark.type);
+              if (m_item.HasVideoInfoTag())
+                m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
 
-            // UPnP announce resume point changes to clients
-            // however not if playcount is modified as that already announces
-            if (m_item.IsVideoDb() && !m_updatePlayCount)
-            {
-              CVariant data;
-              data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
-              data["type"] = m_item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
-            }
+              // PVR: Set/clear recording's resume bookmark on the backend (if supported)
+              if (m_item.HasPVRRecordingInfoTag())
+              {
+                PVR::CPVRRecordingPtr recording = m_item.GetPVRRecordingInfoTag();
+                recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
+                recording->m_resumePoint = m_bookmark;
+              }
 
-            updateListing = true;
+              // UPnP announce resume point changes to clients
+              // however not if playcount is modified as that already announces
+              if (m_item.IsVideoDb() && !m_updatePlayCount)
+              {
+                CVariant data;
+                data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
+                data["type"] = m_item.GetVideoInfoTag()->m_type;
+                ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              }
+
+              updateListing = true;
+            }
           }
         }
 
