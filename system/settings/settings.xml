@@ -318,11 +318,6 @@
   <section id="videos" label="3" help="36138">
     <category id="videolibrary" label="14022" help="36139">
       <group id="1">
-        <setting id="videolibrary.enabled" type="boolean" label="24022" help="36140">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
           <level>0</level>
           <default>true</default>
@@ -1544,11 +1539,6 @@
   <section id="music" label="2" help="36253">
     <category id="musiclibrary" label="14022" help="36600">
       <group id="1">
-        <setting id="musiclibrary.enabled" type="boolean" label="24022" help="36254">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
           <level>1</level>
           <default>true</default>
