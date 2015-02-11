@@ -113,7 +113,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        if (m_movieItem->GetVideoInfoTag()->m_iSeason < 0 && !m_movieItem->GetVideoInfoTag()->m_strShowTitle.empty()) // tv show
+        if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
         {
           bool bCanceled=false;
           if (CGUIDialogYesNo::ShowAndGetInput(20377,20378,-1,-1,bCanceled))
@@ -367,7 +367,7 @@ void CGUIDialogVideoInfo::Update()
 {
   // setup plot text area
   std::string strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
-  if (!(!m_movieItem->GetVideoInfoTag()->m_strShowTitle.empty() && m_movieItem->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
+  if (m_movieItem->GetVideoInfoTag()->m_type != MediaTypeTvShow)
     if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
       strTmp = g_localizeStrings.Get(20370);
 

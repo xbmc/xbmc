@@ -3006,9 +3006,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           std::string strContent="files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie)
             strContent = "movies";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode)
             strContent = "episodes";
-          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_artist.empty())
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
             strContent = "livetv";
@@ -4744,7 +4744,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetPVRRecordingInfoTag()->m_strPlot;
     if (item->HasVideoInfoTag())
     {
-      if (!(!item->GetVideoInfoTag()->m_strShowTitle.empty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
+      if (item->GetVideoInfoTag()->m_type != MediaTypeTvShow)
         if (item->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
           return g_localizeStrings.Get(20370);
 
