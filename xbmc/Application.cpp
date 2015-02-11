@@ -2662,13 +2662,6 @@ bool CApplication::OnAction(const CAction &action)
     ShowVolumeBar(&action);
     return true;
   }
-  // Check for global seek control
-  if (m_pPlayer->IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
-  {
-    if (!m_pPlayer->CanSeek()) return false;
-    m_seekHandler->Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat(), true);
-    return true;
-  }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
     CGUIControlProfiler::Instance().SetOutputFile(CSpecialProtocol::TranslatePath("special://home/guiprofiler.xml"));

@@ -261,6 +261,13 @@ bool CSeekHandler::OnAction(const CAction &action)
       g_application.SeekTime((double)setpos);
       return true;
     }
+    case ACTION_ANALOG_SEEK_FORWARD:
+    case ACTION_ANALOG_SEEK_BACK:
+    {
+      if (action.GetAmount())
+        Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat(), true);
+      return true;
+    }
     default:
       break;
   }
