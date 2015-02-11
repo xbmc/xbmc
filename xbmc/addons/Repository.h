@@ -57,7 +57,7 @@ namespace ADDON
     typedef std::vector<DirInfo> DirList;
     DirList m_dirs;
 
-    static VECADDONS Parse(const DirInfo& dir);
+    static bool Parse(const DirInfo& dir, VECADDONS& addons);
     static std::string FetchChecksum(const std::string& url);
 
     virtual void OnPostInstall(bool restart, bool update);
@@ -76,7 +76,7 @@ namespace ADDON
     virtual const char *GetType() const { return "repoupdate"; };
     virtual bool DoWork();
   private:
-    VECADDONS GrabAddons(RepositoryPtr& repo);
+    bool GrabAddons(const RepositoryPtr& repo, VECADDONS& addons);
 
     VECADDONS m_repos;
   };
