@@ -1065,7 +1065,7 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 
-AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
 XB_FIND_SONAME([CURL], [curl])
 AC_MSG_CHECKING([for CRYPTO_set_locking_callback(0) in $CURL_SONAME])
 if test "$host_vendor" = "apple" ; then
