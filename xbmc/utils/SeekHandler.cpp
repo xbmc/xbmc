@@ -108,14 +108,6 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     g_infoManager.SetSeeking(true);
     m_seekStep = 0;
     m_analogSeek = analogSeek;
-
-    if (!analogSeek)
-    {
-      // don't apply a seek delay if only one seek step for the given direction exists
-      if ((m_backwardSeekSteps.size() == 1 && forward == false) ||
-          (m_forwardSeekSteps.size() == 1 && forward == true))
-        m_seekDelay = 0;
-    }
   }
 
   // calculate our seek amount

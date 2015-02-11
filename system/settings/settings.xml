@@ -416,7 +416,7 @@
           <level>2</level>
           <default>1000</default>
           <constraints>
-            <minimum>500</minimum>
+            <minimum label="231">0</minimum> <!-- None -->
             <step>250</step>
             <maximum>3000</maximum>
           </constraints>
