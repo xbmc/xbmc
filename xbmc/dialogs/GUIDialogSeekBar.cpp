@@ -68,7 +68,7 @@ void CGUIDialogSeekBar::FrameMove()
   }
 
   // update controls
-  if (!g_application.GetSeekHandler()->InProgress() && !g_infoManager.m_performingSeek
+  if (!CSeekHandler::Get().InProgress() && !g_infoManager.m_performingSeek
     && g_infoManager.GetTotalPlayTime())
   { // position the bar at our current time
     CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)(g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
@@ -76,7 +76,7 @@ void CGUIDialogSeekBar::FrameMove()
   }
   else
   {
-    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)g_application.GetSeekHandler()->GetPercent());
+    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)CSeekHandler::Get().GetPercent());
     SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentSeekTime());
   }
 
