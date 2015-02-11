@@ -49,10 +49,12 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_LABEL_SET:
     if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
       return CGUIDialog::OnMessage(message);
-      
+    break;
+
   case GUI_MSG_ITEM_SELECT:
     if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
       return CGUIDialog::OnMessage(message);
+    break;
   }
   return false; // don't process anything other than what we need!
 }
