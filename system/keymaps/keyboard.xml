@@ -311,10 +311,10 @@
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
-      <left>SkipPrevious</left>
-      <right>SkipNext</right>
-      <up>IncreaseRating</up>
-      <down>DecreaseRating</down>      <!--<back>NextPreset</back>!-->
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>SkipNext</up>
+      <down>SkipPrevious</down>
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>

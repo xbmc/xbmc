@@ -102,10 +102,10 @@
       <button id="6">FastForward</button>
       <button id="10">OSD</button>
 
-      <hat    id="1" position="left">SkipPrevious</hat>
-      <hat    id="1" position="right">SkipNext</hat>
-      <hat    id="1" position="up">NextPreset</hat>
-      <hat    id="1" position="left">PreviousPreset</hat>
+      <hat    id="1" position="left">StepBack</hat>
+      <hat    id="1" position="right">StepForward</hat>
+      <hat    id="1" position="up">SkipNext</hat>
+      <hat    id="1" position="down">SkipPrevious</hat>
     </joystick>
   </Visualisation>
 

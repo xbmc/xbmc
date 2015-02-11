@@ -122,13 +122,13 @@
     <joystick name="WiiRemote">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
-      <button id="3">SkipNext</button>
-      <button id="4">SkipPrevious</button>
+      <button id="3">StepForward</button>
+      <button id="4">StepBack</button>
       <button id="5">OSD</button>
       <button id="6">Info</button>
       <button id="8">ActivateWindow(music)</button>
-      <button id="10">IncreaseRating</button>
-      <button id="11">DecreaseRating</button>
+      <button id="10">SkipNext</button>
+      <button id="11">SkipPrevious</button>
     </joystick>
   </Visualisation>
   <MusicOSD>
