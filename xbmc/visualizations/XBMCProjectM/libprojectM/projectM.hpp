@@ -262,7 +262,7 @@ private:
   int count;
   float fpsstart;
   
-  void switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
+  void switchPreset(std::unique_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
   void readConfig(const Settings configpm);
   void projectM_init(int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos, bool useFBO);
   void projectM_reset();
@@ -287,10 +287,10 @@ private:
   PresetChooser * m_presetChooser;
   
   /// Currently loaded preset
-  std::auto_ptr<Preset> m_activePreset;
+  std::unique_ptr<Preset> m_activePreset;
   
   /// Destination preset when smooth preset switching
-  std::auto_ptr<Preset> m_activePreset2;
+  std::unique_ptr<Preset> m_activePreset2;
     
   /// All readonly variables which are passed as inputs to presets
   PresetInputs presetInputs;

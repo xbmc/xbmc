@@ -21,11 +21,11 @@
  *
  */
 
-#include <boost/shared_ptr.hpp>
 #include "IEncoder.h"
 #include <string>
 #include <stdint.h>
 #include <stdio.h>
+#include <memory>
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
@@ -34,7 +34,7 @@ namespace XFILE { class CFile; }
 class CEncoder
 {
 public:
-  CEncoder(boost::shared_ptr<IEncoder> encoder);
+  CEncoder(std::shared_ptr<IEncoder> encoder);
   virtual ~CEncoder();
   virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream);
@@ -62,7 +62,7 @@ protected:
   static int WriteCallback(void *opaque, uint8_t *data, int size);
   static int64_t SeekCallback(void *opaque, int64_t offset, int whence);
 
-  boost::shared_ptr<IEncoder> m_impl;
+  std::shared_ptr<IEncoder> m_impl;
 
   XFILE::CFile *m_file;
 

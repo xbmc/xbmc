@@ -22,6 +22,8 @@
 #include "utils/XMLUtils.h"
 #include "settings/AdvancedSettings.h"
 
+#include <algorithm>
+
 using namespace std;
 
 void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true */)

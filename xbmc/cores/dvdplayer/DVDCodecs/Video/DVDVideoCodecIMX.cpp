@@ -32,6 +32,8 @@
 #include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
 
+#include <cassert>
+
 #define FRAME_ALIGN 16
 #define MEDIAINFO 1
 #define _4CC(c1,c2,c3,c4) (((uint32_t)(c4)<<24)|((uint32_t)(c3)<<16)|((uint32_t)(c2)<<8)|(uint32_t)(c1))

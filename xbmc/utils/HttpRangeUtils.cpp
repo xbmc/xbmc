@@ -23,6 +23,8 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "utils/Variant.h"
 
+#include <algorithm>
+
 #define HEADER_NEWLINE        "\r\n"
 #define HEADER_SEPARATOR      HEADER_NEWLINE HEADER_NEWLINE
 #define HEADER_BOUNDARY       "--"

@@ -33,12 +33,12 @@
 
 #include <algorithm>
 #include <vector>
+#include <memory>
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/sequenced_index.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
-#include "boost/shared_ptr.hpp"
 
 #include "TransformMatrix.h"
 
@@ -202,7 +202,7 @@ struct CGUIFontCacheStaticPosition
   void UpdateWithOffsets(const CGUIFontCacheStaticPosition &cached, bool scrolling) {}
 };
 
-struct CGUIFontCacheStaticValue : public boost::shared_ptr<std::vector<SVertex> >
+struct CGUIFontCacheStaticValue : public std::shared_ptr<std::vector<SVertex> >
 {
   void clear()
   {

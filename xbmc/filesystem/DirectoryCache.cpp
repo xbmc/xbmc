@@ -26,6 +26,8 @@
 #include "utils/StringUtils.h"
 #include "climits"
 
+#include <algorithm>
+
 using namespace std;
 using namespace XFILE;
 

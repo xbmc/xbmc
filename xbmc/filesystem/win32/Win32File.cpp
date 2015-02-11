@@ -37,6 +37,7 @@
 #include <intsafe.h>
 #include <wchar.h>
 #include <limits.h>
+#include <cassert>
 
 
 using namespace XFILE;

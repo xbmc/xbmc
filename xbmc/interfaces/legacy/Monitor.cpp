@@ -18,6 +18,7 @@
  *
  */
 
+#include <algorithm>
 #include "Monitor.h"
 #include <math.h>
 

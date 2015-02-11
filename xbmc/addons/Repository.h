@@ -25,7 +25,7 @@
 namespace ADDON
 {
   class CRepository;
-  typedef boost::shared_ptr<CRepository> RepositoryPtr;
+  typedef std::shared_ptr<CRepository> RepositoryPtr;
   class CRepository : public CAddon
   {
   public:

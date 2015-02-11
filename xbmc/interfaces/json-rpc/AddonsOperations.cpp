@@ -106,7 +106,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   {
     PluginPtr plugin;
     if (content != CPluginSource::UNKNOWN)
-      plugin = boost::dynamic_pointer_cast<CPluginSource>(addons.at(index));
+      plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
 
     if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
        ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))

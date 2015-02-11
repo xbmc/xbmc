@@ -21,6 +21,7 @@
 #include "ZeroconfBrowser.h"
 #include <stdexcept>
 #include "utils/log.h"
+#include <cassert>
 
 #if defined (HAS_AVAHI)
 #include "linux/ZeroconfBrowserAvahi.h"
