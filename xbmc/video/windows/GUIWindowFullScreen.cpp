@@ -157,46 +157,24 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_SMALL_STEP_BACK:
   case ACTION_STEP_BACK:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
-    else
-      g_application.GetSeekHandler()->Seek(false, action.GetAmount(), action.GetRepeat());
-    return true;
-
-  case ACTION_STEP_FORWARD:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
-    else
-      g_application.GetSeekHandler()->Seek(true, action.GetAmount(), action.GetRepeat());
-    return true;
-
   case ACTION_BIG_STEP_BACK:
   case ACTION_CHAPTER_OR_BIG_STEP_BACK:
     if (m_timeCodePosition > 0)
+    {
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
-    else
-      g_application.m_pPlayer->Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
-    return true;
-
+      return true;
+    }
+    break;
+  case ACTION_STEP_FORWARD:
   case ACTION_BIG_STEP_FORWARD:
   case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
     if (m_timeCodePosition > 0)
+    {
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
-    else
-      g_application.m_pPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
-    return true;
-
-  case ACTION_NEXT_SCENE:
-    if (g_application.m_pPlayer->SeekScene(true))
-      g_infoManager.SetDisplayAfterSeek();
-    return true;
-    break;
-
-  case ACTION_PREV_SCENE:
-    if (g_application.m_pPlayer->SeekScene(false))
-      g_infoManager.SetDisplayAfterSeek();
-    return true;
+      return true;
+    }
     break;
 
   case ACTION_SHOW_OSD_TIME:
@@ -248,18 +226,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       }
       m_bShowViewModeInfo = true;
       m_dwShowViewModeTimeout = XbmcThreads::SystemClockMillis();
-    }
-    return true;
-    break;
-  case ACTION_SMALL_STEP_BACK:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
-    else
-    {
-      int orgpos = (int)g_application.GetTime();
-      int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
-      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
-      g_application.SeekTime((double)setpos);
     }
     return true;
     break;

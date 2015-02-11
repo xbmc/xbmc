@@ -211,3 +211,59 @@ void CSeekHandler::OnSettingChanged(const CSetting *setting)
       setting->GetId() == "videoplayer.seeksteps")
     Reset();
 }
+
+bool CSeekHandler::OnAction(const CAction &action)
+{
+  if (!g_application.m_pPlayer->IsPlaying() || !g_application.m_pPlayer->CanSeek())
+    return false;
+
+  switch (action.GetID())
+  {
+    case ACTION_STEP_BACK:
+    {
+      Seek(false, action.GetAmount(), action.GetRepeat());
+      return true;
+    }
+    case ACTION_STEP_FORWARD:
+    {
+      Seek(true, action.GetAmount(), action.GetRepeat());
+      return true;
+    }
+    case ACTION_BIG_STEP_BACK:
+    case ACTION_CHAPTER_OR_BIG_STEP_BACK:
+    {
+      g_application.m_pPlayer->Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
+      return true;
+    }
+    case ACTION_BIG_STEP_FORWARD:
+    case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
+    {
+      g_application.m_pPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
+      return true;
+    }
+    case ACTION_NEXT_SCENE:
+    {
+      if (g_application.m_pPlayer->SeekScene(true))
+        g_infoManager.SetDisplayAfterSeek();
+      return true;
+    }
+    case ACTION_PREV_SCENE:
+    {
+      if (g_application.m_pPlayer->SeekScene(false))
+        g_infoManager.SetDisplayAfterSeek();
+      return true;
+    }
+    case ACTION_SMALL_STEP_BACK:
+    {
+      int orgpos = (int)g_application.GetTime();
+      int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
+      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
+      g_application.SeekTime((double)setpos);
+      return true;
+    }
+    default:
+      break;
+  }
+
+  return false;
+}

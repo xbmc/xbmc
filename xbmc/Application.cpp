@@ -1305,6 +1305,9 @@ bool CApplication::Initialize()
 
   CAddonMgr::Get().StartServices(true);
 
+  // register action listeners
+  RegisterActionListener(&CSeekHandler::Get());
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -2921,6 +2924,9 @@ void CApplication::Stop(int exitCode)
 
     // Stop services before unloading Python
     CAddonMgr::Get().StopServices(false);
+
+    // unregister action listeners
+    UnregisterActionListener(&CSeekHandler::Get());
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin

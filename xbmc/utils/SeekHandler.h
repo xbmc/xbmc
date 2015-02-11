@@ -20,11 +20,13 @@
  */
 
 #include <vector>
+#include "guilib/Key.h"
+#include "interfaces/IActionListener.h"
 #include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Stopwatch.h"
 
-class CSeekHandler : public ISettingCallback
+class CSeekHandler : public ISettingCallback, public IActionListener
 {
 public:
   static CSeekHandler& Get();
@@ -32,6 +34,7 @@ public:
   static void SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
   virtual void OnSettingChanged(const CSetting *setting);
+  virtual bool OnAction(const CAction &action);
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false);
   void Process();
