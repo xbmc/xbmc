@@ -198,6 +198,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
     strLocale = "C";
   }
 
+  g_langInfo.m_locale = current_locale; // TODO: move to CLangInfo class
   locale::global(current_locale);
 #endif
   g_charsetConverter.resetSystemCharset();
@@ -421,6 +422,8 @@ void CLangInfo::SetDefaults()
 
   // Set the default region, we may be unable to load langinfo.xml
   m_currentRegion=&m_defaultRegion;
+
+  m_locale = std::locale::classic();
   
   m_languageCodeGeneral = "eng";
 }
