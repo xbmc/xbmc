@@ -34,14 +34,14 @@
 				<onback>101</onback> 
 				<rulerlayout height="35" width="40">
 					<control type="label" id="2">
-						<left>10</left>
+						<left>0</left>
 						<top>0</top>
 						<width>34</width>
 						<height>29</height>
 						<font>font12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
-						<align>left</align>
+						<align>center</align>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</rulerlayout>
