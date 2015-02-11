@@ -130,8 +130,7 @@ void CRenderCaptureGL::BeginRender()
   if (!m_asyncChecked)
   {
 #ifndef HAS_GLES
-    bool usePbo = CSettings::Get().GetBool("videoplayer.usepbo");
-    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object") && usePbo;
+    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object");
     m_occlusionQuerySupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query");
 
     if (m_flags & CAPTUREFLAG_CONTINUOUS)
@@ -140,8 +139,6 @@ void CRenderCaptureGL::BeginRender()
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query not supported, performance might suffer");
       if (!g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
-      if (!usePbo)
-        CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object disabled, performance might suffer");
       if (UseOcclusionQuery())
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query disabled, performance might suffer");
     }

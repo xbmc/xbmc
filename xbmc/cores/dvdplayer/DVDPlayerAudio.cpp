@@ -196,7 +196,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_syncclock = true;
   m_silence = false;
 
-  m_maxspeedadjust = CSettings::Get().GetNumber("videoplayer.maxspeedadjust");
+  m_maxspeedadjust = 5.0;
 
   g_dataCacheCore.SignalAudioInfoChange();
 }

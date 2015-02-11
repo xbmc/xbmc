@@ -454,23 +454,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
-          <level>4</level>
-          <default>5.0</default>
-          <constraints>
-            <minimum>0.0</minimum>
-            <step>0.1</step>
-            <maximum>10.0</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usedisplayasclock" operator="is">true</condition>
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="spinner" format="number" />
-        </setting>
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
           <level>2</level>
           <default>0</default>
@@ -555,15 +538,6 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
-        <setting id="videoplayer.usepbo" type="boolean" parent="videoplayer.rendermethod" label="13424" help="36163">
-          <requirement>HAS_GL</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.rendermethod" operator="is">1</dependency> <!-- only supported with ARB -->
-          </dependencies>
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="2">
         <requirement>
@@ -575,16 +549,6 @@
             <condition>HAVE_LIBVDPAU</condition>
           </and>
         </requirement>
-        <setting id="videoplayer.vdpauUpscalingLevel" type="boolean" label="13121" help="36173">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="3">
         <setting id="videoplayer.decodingmethod" type="integer" label="13454" help="36431">

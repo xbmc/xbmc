@@ -5384,10 +5384,7 @@ msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13121"
-msgid "VDPAU HQ Upscaling level"
-msgstr ""
+#empty string with id 13121
 
 #: system/settings/settings.xml
 msgctxt "#13122"
@@ -6160,10 +6157,7 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13424"
-msgid "Use pixel buffer objects"
-msgstr ""
+#empty string with id 13424
 
 #: system/settings/settings.xml
 msgctxt "#13425"
@@ -6347,12 +6341,7 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13503
-
-#: system/settings/settings.xml
-msgctxt "#13504"
-msgid "Maximum speedup/slowdown amount (%)"
-msgstr ""
+#empty strings from id 13460 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -14114,11 +14103,7 @@ msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use pixel buffer objects" with label #13424
-#: system/settings/settings.xml
-msgctxt "#36163"
-msgid "Enable decoding of video files using pixel buffer objects."
-msgstr ""
+#empty string with id 36163
 
 #. Description of setting "Videos -> Playback -> Adjust display refresh rate to match video" with label #170
 #: system/settings/settings.xml
@@ -14138,13 +14123,7 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#empty string with id 36167
-
-#. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
-#: system/settings/settings.xml
-msgctxt "#36168"
-msgid "Maximum video speed adjust to match actual screen refresh rate."
-msgstr ""
+#empty strings from id 36167 to 36168
 
 #. Description of setting "System -> Audio output -> Resample quality" with label #13505
 #: system/settings/settings.xml
@@ -14170,11 +14149,7 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> VDPAU HQ Upscaling level" with label #13121
-#: system/settings/settings.xml
-msgctxt "#36173"
-msgid "Enable upscaling using VDPAU."
-msgstr ""
+#empty string with id 36173
 
 #. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
 #: system/settings/settings.xml
