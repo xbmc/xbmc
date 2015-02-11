@@ -219,6 +219,7 @@ bool CSeekHandler::OnAction(const CAction &action)
 
   switch (action.GetID())
   {
+    case ACTION_SMALL_STEP_BACK:
     case ACTION_STEP_BACK:
     {
       Seek(false, action.GetAmount(), action.GetRepeat());
@@ -251,14 +252,6 @@ bool CSeekHandler::OnAction(const CAction &action)
     {
       if (g_application.m_pPlayer->SeekScene(false))
         g_infoManager.SetDisplayAfterSeek();
-      return true;
-    }
-    case ACTION_SMALL_STEP_BACK:
-    {
-      int orgpos = (int)g_application.GetTime();
-      int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
-      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
-      g_application.SeekTime((double)setpos);
       return true;
     }
     case ACTION_ANALOG_SEEK_FORWARD:

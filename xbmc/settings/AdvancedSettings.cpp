@@ -131,9 +131,6 @@ void CAdvancedSettings::Initialize()
 
   m_videoSubsDelayRange = 60;
   m_videoAudioDelayRange = 10;
-  m_videoSmallStepBackSeconds = 7;
-  m_videoSmallStepBackTries = 3;
-  m_videoSmallStepBackDelay = 300;
   m_videoUseTimeSeeking = true;
   m_videoTimeSeekForward = 30;
   m_videoTimeSeekBackward = -30;
@@ -562,10 +559,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
     XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
     XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
-
-    XMLUtils::GetInt(pElement, "smallstepbackseconds", m_videoSmallStepBackSeconds, 1, INT_MAX);
-    XMLUtils::GetInt(pElement, "smallstepbacktries", m_videoSmallStepBackTries, 1, 10);
-    XMLUtils::GetInt(pElement, "smallstepbackdelay", m_videoSmallStepBackDelay, 100, 5000); //MS
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_videoUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_videoTimeSeekForward, 0, 6000);
