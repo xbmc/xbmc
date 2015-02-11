@@ -46,6 +46,12 @@ public:
     identify = false;
     fullscreen = false;
     video_only = false;
+    virtualSeek = false;
+    virtualResume = false;
+    virtualDirectCacheLevelCalculation = false;
+    virtualStartTime = 0LL;
+    virtualTotalTime = 0LL;
+	
   }
   double  starttime; /* start time in seconds */
   double  startpercent; /* start time in percent */  
@@ -53,6 +59,11 @@ public:
   std::string state;  /* potential playerstate to restore to */
   bool    fullscreen; /* player is allowed to switch to fullscreen */
   bool    video_only; /* player is not allowed to play audio streams, video streams only */
+  bool    virtualSeek; /* stream must use virtual seeking*/
+  bool    virtualResume; /* using  seek for resumming of stream after pause*/
+  bool    virtualDirectCacheLevelCalculation; /* calculate cache level for streams with virtual seeking*/
+  double  virtualTotalTime; /* total time in seconds for stream with virtual seeking*/
+  double  virtualStartTime; /* start time in seconds for stream with virtual seeking*/
 };
 
 class CFileItem;

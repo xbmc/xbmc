@@ -3188,8 +3188,11 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     SaveFileState(true);
 
-    // Switch to default options
-    CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+    if (!item.HasProperty("VirtualSeekProcess") || !item.GetProperty("VirtualSeekProcess").asBoolean())
+    {
+      // Switch to default options
+      CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+    }
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
@@ -3288,6 +3291,27 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   CPlayerOptions options;
 
+  if (item.HasProperty("VirtualSeek"))
+  {
+    options.virtualSeek = item.GetProperty("VirtualSeek").asBoolean();
+  }
+  if (item.HasProperty("VirtualResume"))
+  {
+    options.virtualResume = item.GetProperty("VirtualResume").asBoolean();
+  }
+  if (item.HasProperty("VirtualStartTime"))
+  {
+    options.virtualStartTime = item.GetProperty("VirtualStartTime").asDouble(0LL);
+  }
+  if (item.HasProperty("VirtualTotalTime"))
+  {
+    options.virtualTotalTime = item.GetProperty("VirtualTotalTime").asDouble(0LL);
+  }
+  if (item.HasProperty("VirtualDirectCacheLevelCalculation"))
+  {
+    options.virtualDirectCacheLevelCalculation = item.GetProperty("VirtualDirectCacheLevelCalculation").asBoolean();
+  }
+
   if( item.HasProperty("StartPercent") )
   {
     double fallback = 0.0f;
@@ -3314,8 +3338,10 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   else
   {
     options.starttime = item.m_lStartOffset / 75.0;
-    LoadVideoSettings(item.GetPath());
-
+    if (!item.HasProperty("VirtualSeekProcess") || !item.GetProperty("VirtualSeekProcess").asBoolean())
+    {
+      LoadVideoSettings(item.GetPath());
+    }
     if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie

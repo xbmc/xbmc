@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "cores/IPlayer.h"
 
 typedef enum
 {
@@ -59,7 +60,10 @@ class CApplicationPlayer
   int m_iAudioStream;
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
-  
+  CPlayerOptions m_playerOptions;
+  IPlayerCallback* m_playerCallbacks;
+
+
 public:
   CApplicationPlayer();
 
