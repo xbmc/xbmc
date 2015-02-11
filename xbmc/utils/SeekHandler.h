@@ -26,6 +26,12 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Stopwatch.h"
 
+enum SeekType
+{
+  SEEK_TYPE_VIDEO = 0,
+  SEEK_TYPE_MUSIC = 1
+};
+
 class CSeekHandler : public ISettingCallback, public IActionListener
 {
 public:
@@ -36,7 +42,7 @@ public:
   virtual void OnSettingChanged(const CSetting *setting);
   virtual bool OnAction(const CAction &action);
 
-  void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false);
+  void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void Process();
   void Reset();
 
@@ -51,14 +57,15 @@ protected:
 
 private:
   static const int time_for_display = 2000; // TODO: WTF?
-  int        GetSeekSeconds(bool forward);
+  int        GetSeekSeconds(bool forward, SeekType type);
   int        m_seekDelay;
+  std::map<SeekType, int > m_seekDelays;
   bool       m_requireSeek;
   float      m_percent;
   float      m_percentPlayTime;
   bool       m_analogSeek;
   int        m_seekStep;
-  std::vector<int> m_forwardSeekSteps;
-  std::vector<int> m_backwardSeekSteps;
+  std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
+  std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
   CStopWatch m_timer;
 };

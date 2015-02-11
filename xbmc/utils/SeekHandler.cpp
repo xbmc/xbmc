@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
 #include "Application.h"
+#include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -40,6 +41,9 @@ CSeekHandler::CSeekHandler()
 
 CSeekHandler::~CSeekHandler()
 {
+  m_seekDelays.clear();
+  m_forwardSeekSteps.clear();
+  m_backwardSeekSteps.clear();
 }
 
 CSeekHandler& CSeekHandler::Get()
@@ -53,46 +57,67 @@ void CSeekHandler::Reset()
   m_requireSeek = false;
   m_percent = 0;
   m_seekStep = 0;
-  m_seekDelay = CSettings::Get().GetInt("videoplayer.seekdelay");
 
-  std::vector<CVariant> seekSteps = CSettings::Get().GetList("videoplayer.seeksteps");
+  m_seekDelays.clear();
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::Get().GetInt("videoplayer.seekdelay")));
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::Get().GetInt("musicplayer.seekdelay")));
+
   m_forwardSeekSteps.clear();
   m_backwardSeekSteps.clear();
-  for (std::vector<CVariant>::iterator it = seekSteps.begin(); it != seekSteps.end(); ++it) {
-    int stepSeconds = (*it).asInteger();
-    if (stepSeconds < 0)
-      m_backwardSeekSteps.insert(m_backwardSeekSteps.begin(), stepSeconds);
-    else
-      m_forwardSeekSteps.push_back(stepSeconds);
+
+  std::map<SeekType, std::string> seekTypeSettingMap;
+  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_VIDEO, "videoplayer.seeksteps"));
+  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_MUSIC, "musicplayer.seeksteps"));
+
+  for (std::map<SeekType, std::string>::iterator it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
+  {
+    std::vector<int> forwardSeekSteps;
+    std::vector<int> backwardSeekSteps;
+
+    std::vector<CVariant> seekSteps = CSettings::Get().GetList(it->second);
+    for (std::vector<CVariant>::iterator it = seekSteps.begin(); it != seekSteps.end(); ++it)
+    {
+      int stepSeconds = (*it).asInteger();
+      if (stepSeconds < 0)
+        backwardSeekSteps.insert(backwardSeekSteps.begin(), stepSeconds);
+      else
+        forwardSeekSteps.push_back(stepSeconds);
+    }
+
+    m_forwardSeekSteps.insert(std::make_pair(it->first, forwardSeekSteps));
+    m_backwardSeekSteps.insert(std::make_pair(it->first, backwardSeekSteps));
   }
 }
 
-int CSeekHandler::GetSeekSeconds(bool forward)
+int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
 {
   m_seekStep = m_seekStep + (forward ? 1 : -1);
+
+  std::vector<int> forwardSeekSteps(m_forwardSeekSteps.at(type));
+  std::vector<int> backwardSeekSteps(m_backwardSeekSteps.at(type));
 
   int seconds = 0;
   if (m_seekStep > 0)
   {
     // when exceeding the selected amount of steps repeat/sum up the last step size
-    if ((size_t)m_seekStep <= m_forwardSeekSteps.size())
-      seconds = m_forwardSeekSteps.at(m_seekStep - 1);
+    if ((size_t)m_seekStep <= forwardSeekSteps.size())
+      seconds = forwardSeekSteps.at(m_seekStep - 1);
     else
-      seconds = m_forwardSeekSteps.back() * (m_seekStep - m_forwardSeekSteps.size() + 1);
+      seconds = forwardSeekSteps.back() * (m_seekStep - forwardSeekSteps.size() + 1);
   }
   else if (m_seekStep < 0)
   {
     // when exceeding the selected amount of steps repeat/sum up the last step size
-    if ((size_t)m_seekStep*-1 <= m_backwardSeekSteps.size())
-      seconds = m_backwardSeekSteps.at((m_seekStep*-1) - 1);
+    if ((size_t)m_seekStep*-1 <= backwardSeekSteps.size())
+      seconds = backwardSeekSteps.at((m_seekStep*-1) - 1);
     else
-      seconds = m_backwardSeekSteps.back() * ((m_seekStep*-1) - m_backwardSeekSteps.size() + 1);
+      seconds = backwardSeekSteps.back() * ((m_seekStep*-1) - backwardSeekSteps.size() + 1);
   }
 
   return seconds;
 }
 
-void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */)
+void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
   // not yet seeking
   if (!m_requireSeek)
@@ -108,6 +133,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     g_infoManager.SetSeeking(true);
     m_seekStep = 0;
     m_analogSeek = analogSeek;
+    m_seekDelay = m_seekDelays.at(type);
   }
 
   // calculate our seek amount
@@ -133,7 +159,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       if (g_infoManager.GetTotalPlayTime())
         percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
 
-      int seekSeconds = GetSeekSeconds(forward);
+      int seekSeconds = GetSeekSeconds(forward, type);
       g_infoManager.SetSeekStepSize(seekSeconds);
 
       m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
@@ -182,7 +208,7 @@ void CSeekHandler::Process()
 void CSeekHandler::SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   std::string label;
-  for (std::vector<int>::iterator it = g_advancedSettings.m_videoSeekSteps.begin(); it != g_advancedSettings.m_videoSeekSteps.end(); ++it) {
+  for (std::vector<int>::iterator it = g_advancedSettings.m_seekSteps.begin(); it != g_advancedSettings.m_seekSteps.end(); ++it) {
     int seconds = *it;
     if (seconds > 60)
       label = StringUtils::Format(g_localizeStrings.Get(14044).c_str(), seconds / 60);
@@ -200,7 +226,9 @@ void CSeekHandler::OnSettingChanged(const CSetting *setting)
     return;
 
   if (setting->GetId() == "videoplayer.seekdelay" ||
-      setting->GetId() == "videoplayer.seeksteps")
+      setting->GetId() == "videoplayer.seeksteps" ||
+      setting->GetId() == "musicplayer.seekdelay" ||
+      setting->GetId() == "musicplayer.seeksteps")
     Reset();
 }
 
@@ -209,17 +237,19 @@ bool CSeekHandler::OnAction(const CAction &action)
   if (!g_application.m_pPlayer->IsPlaying() || !g_application.m_pPlayer->CanSeek())
     return false;
 
+  SeekType type = g_application.CurrentFileItem().IsAudio() ? SEEK_TYPE_MUSIC : SEEK_TYPE_VIDEO;
+
   switch (action.GetID())
   {
     case ACTION_SMALL_STEP_BACK:
     case ACTION_STEP_BACK:
     {
-      Seek(false, action.GetAmount(), action.GetRepeat());
+      Seek(false, action.GetAmount(), action.GetRepeat(), false, type);
       return true;
     }
     case ACTION_STEP_FORWARD:
     {
-      Seek(true, action.GetAmount(), action.GetRepeat());
+      Seek(true, action.GetAmount(), action.GetRepeat(), false, type);
       return true;
     }
     case ACTION_BIG_STEP_BACK:
