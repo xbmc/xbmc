@@ -33,6 +33,7 @@
 #include "utils/RegExp.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
+#include "LangInfo.h"
 #include <locale>
 
 #include <math.h>
@@ -735,7 +736,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
   wchar_t *ld, *rd;
   wchar_t lc, rc;
   int64_t lnum, rnum;
-  const collate<wchar_t>& coll = use_facet< collate<wchar_t> >( locale() );
+  const collate<wchar_t>& coll = use_facet< collate<wchar_t> >( g_langInfo.GetLocale() );
   int cmp_res = 0;
   while (*l != 0 && *r != 0)
   {
