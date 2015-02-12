@@ -30,12 +30,6 @@ FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
   switch (dliNotify)
   {
     case dliNotePreLoadLibrary:
-      if (stricmp(pdli->szDll, "libmicrohttpd-5.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath(DLL_PATH_LIBMICROHTTP);
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
       if (stricmp(pdli->szDll, "ssh.dll") == 0)
       {
         std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/ssh.dll");
