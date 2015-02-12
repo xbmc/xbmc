@@ -32,6 +32,7 @@
 #include "utils/CharsetConverter.h"
 #endif
 #include "utils/StringUtils.h"
+#include "utils/StdString.h"
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)

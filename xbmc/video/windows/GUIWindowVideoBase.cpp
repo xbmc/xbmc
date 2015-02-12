@@ -1146,12 +1146,12 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItemPtr pitem;
+  CFileItemPtr pItem;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
-    pitem = m_vecItems->Get(itemNumber);
+    pItem = m_vecItems->Get(itemNumber);
 
   // contextual buttons
-  if (pitem && !pitem->GetProperty("pluginreplacecontextitems").asBoolean())
+  if (pItem && !pItem->GetProperty("pluginreplacecontextitems").asBoolean())
   {
     CFileItem item(*pItem);
     CStdString path = GetBDPath(pItem);
@@ -1159,7 +1159,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
     {
       item.SetPath(path);
     }
-    if (!item->IsParentFolder())
+    
+    if (!item.IsParentFolder())
     {
       std::string path(item.GetPath());
       if (item.IsVideoDb() && item.HasVideoInfoTag())
@@ -1182,7 +1183,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
 
-        if (!m_vecItems->GetPath().empty() && !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://")
+        if (!m_vecItems->GetPath().empty() && !StringUtils::StartsWithNoCase(item.GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item.GetPath(), "newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
@@ -1201,7 +1202,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
         }
         else
-          CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
+          CPlayerCoreFactory::Get().GetPlayers(item, vecCores);
         if (vecCores.size() > 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
@@ -1215,19 +1216,19 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // only if the video is NOT a DVD (in that case the resume button will be added by CGUIDialogContextMenu::GetContextButtons)
       if (!item.IsDVD() && HasResumeItemOffset(&item))
       {
-        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
+        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(&item)));     // Resume Video
       }
       //if the item isn't a folder or script, is a member of a list rather than a single item
       //and we're not on the last element of the list, 
       //then add add either 'play from here' or 'play only this' depending on default behaviour
-      if (!(item.m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+      if (!(item.m_bIsFolder || item.IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         if (!CSettings::Get().GetBool("videoplayer.autoplaynextitem"))
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
         else
           buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 13434);
       }
-      if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
+      if (item.IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
     }
   }
@@ -2108,24 +2109,28 @@ bool CGUIWindowVideoBase::IsLaunchBD(const CFileItemPtr &item)
 
 const CStdString CGUIWindowVideoBase::GetBDPath(const CFileItemPtr &item)
 {
-	CStdString ext = URIUtils::GetExtension(item->GetPath());
-	ext.ToLower();
-	if (ext == ".iso" || ext == ".img")
-		return item->GetPath();
+  CStdString ext = URIUtils::GetExtension(item->GetPath());
+  ext.ToLower();
+  if (ext == ".iso" || ext == ".img")
+    return item->GetPath();
 
-	CStdString strPath;
-	if (item->IsVideoDb() && item->HasVideoInfoTag())
-		strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-	else if (item->IsBDFile())
-		strPath = item->GetPath();
-	else if (!item->IsInternetStream())
-		strPath = item->GetPath() + "BDMV\\index.bdmv";
+  CStdString strPath;
+  CStdString strFilename;
+  if (item->IsVideoDb() && item->HasVideoInfoTag())
+    strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+  else if (item->IsBDFile())
+    strPath = item->GetPath();
+  else if (!item->IsInternetStream())
+    strPath = item->GetPath() + "BDMV\\index.bdmv";
 
-	if (URIUtils::GetFileName(strPath).Equals("index.bdmv") && XFILE::CFile::Exists(strPath, false))
-		return strPath;
+  strFilename = URIUtils::GetFileName(strPath);
 
-	return "";
+  if (strFilename.Equals("index.bdmv") && XFILE::CFile::Exists(strPath, false))
+    return strPath;
+
+  return "";
 }
+
 bool CGUIWindowVideoBase::LaunchBD(const CFileItemPtr &item)
 {
 	if (IsLaunchBD(item))

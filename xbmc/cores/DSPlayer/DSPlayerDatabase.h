@@ -26,6 +26,8 @@
 
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
+#include "utils/StdString.h"
+
 
 class CEdition 
 {

@@ -199,6 +199,7 @@ public:
   void SetSubfilterVisible( bool bVisible );
   void SetSubfilter(int iStream);
   void SelectBestSubtitle();
+  int AddSubtitle(const std::string& subFilePath);
 
   int  GetEditionsCount();
   int  GetEdition();
@@ -212,14 +213,17 @@ public:
   void WaitUntilReady();
   /// @return The number of audio channels of the current audio stream
   int GetChannels();
+  int GetChannels(int istream);
   /// @return The number of bits per sample of the current audio stream
   int GetBitsPerSample();
   /// @return The sample rate of the current audio stream
   int GetSampleRate();
+  int GetSampleRate(int istream);
   /// @return The ID of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
   CStdString GetAudioCodecName();
   /// @return The displayname of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
   CStdString GetAudioCodecDisplayName() { int i = GetAudioStream(); return (i == -1) ? "" : m_audioStreams[i]->m_strCodecName; }
+  CStdString GetAudioCodecDisplayName(int istream) { return (istream == -1) ? "" : m_audioStreams[istream]->m_strCodecName; }
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
   
@@ -269,6 +273,7 @@ protected:
 
   std::vector<CDSStreamDetailAudio *> m_audioStreams;
   std::vector<CDSStreamDetailSubfilter *> m_subfilterStreams;
+  std::vector<CDSStreamDetailSubfilter *> m_subfilterStreams_int;
   std::vector<CDSStreamDetailEdition *> m_editionStreams;
   bool m_mkveditions;
   Com::SmartPtr<IDirectVobSub> m_pIDirectVobSub;
@@ -339,7 +344,7 @@ public:
    * @return -1 if the function fails. Otherwise, returns the index of the added subtitle
    * @remarks The subtitle will be automatically flagged as external
   */
-  int AddSubtitle(const CStdString& subFilePath);
+  int AddSubtitle(const std::string& subFilePath);
 
   void SetTime(REFERENCE_TIME rtNow);
   void SetSizes(Com::SmartRect window, Com::SmartRect video);

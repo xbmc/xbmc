@@ -318,12 +318,14 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     return;
   }
 
+#ifdef HAS_DS_PLAYER
   CSettingGroup *groupEdition = AddGroup(category);
   if (groupEdition == NULL)
   {
 	  CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
 	  return;
   }
+#endif
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
@@ -438,9 +440,9 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
     return;
 
 #ifdef HAS_DS_PLAYER
-  if (CSettings::Get().GetBool("dsplayer.videoaudioexpandedselector"))
+  if (CSettings::Get().GetBool("dsplayer.videoaudioexpandedselector") && (g_application.GetCurrentPlayer() == PCID_DSPLAYER))
   {
-	  AddButton(group, settingId, 460, 0, g_application.m_pPlayer->GetAudioStreamCount() > 0 ? true : false);
+	  AddButton(group, settingId, 460, 0, false, g_application.m_pPlayer->GetAudioStreamCount() > 0 ? true : false);
 	  return;
   }
 #endif
@@ -458,9 +460,9 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
     return;
 
 #ifdef HAS_DS_PLAYER
-  if (CSettings::Get().GetBool("dsplayer.videosubsexpandedselector"))
+  if (CSettings::Get().GetBool("dsplayer.videosubsexpandedselector") && (g_application.GetCurrentPlayer() == PCID_DSPLAYER))
   {
-	  AddButton(group, settingId, 462, 0, g_application.m_pPlayer->GetSubtitleCount() > 0 ? true : false);
+	  AddButton(group, settingId, 462, 0, false, g_application.m_pPlayer->GetSubtitleCount() > 0 ? true : false);
 	  return;
   }
 #endif

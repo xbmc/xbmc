@@ -30,11 +30,16 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
+#ifdef HAS_DS_PLAYER
+#include "Application.h"
+#include "DSPlayerDatabase.h"
+#include "utils/StdString.h"
+#endif
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
   /* if asked to resume somewhere, we should not show anything */
-  if (item.m_lStartOffset)
+  if (item.m_lStartOffset
 #ifdef HAS_DS_PLAYER
 	  || (GetDefaultPlayer(item) != EPC_DVDPLAYER && g_application.m_eForcedNextPlayer != EPC_DVDPLAYER)
 #endif
@@ -77,6 +82,23 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
     }
   }
   return true;
+}
+
+int CGUIDialogSimpleMenu::GetDefaultPlayer(const CFileItem &item)
+{
+    VECPLAYERCORES vecCores;
+	if (item.IsVideoDb())
+	{
+		CFileItem item2(*item.GetVideoInfoTag());
+		CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
+	}
+	else
+		CPlayerCoreFactory::Get().GetPlayers(item, vecCores);
+
+	if (vecCores.size())
+		return vecCores[0];
+
+  return PCID_NONE;
 }
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string& directory)

@@ -613,6 +613,10 @@ void CStreamsManager::LoadStreams()
       HRESULT hr = m_pSubs->QueryInterface(__uuidof(m_pIDirectVobSub), (void **) &m_pIDirectVobSub);
       if (SUCCEEDED(hr))
         m_bIsXYVSFilter = true;
+      
+      m_subfilterStreams_int = m_subfilterStreams;
+      m_pIDirectVobSub->put_LoadSettings(1, true, false, true);
+
       SubInterface(ADD_EXTERNAL_SUB);
     }
   }
@@ -692,6 +696,25 @@ void CStreamsManager::SetSubfilterVisible( bool bVisible )
   m_pIDirectVobSub->put_HideSubtitles(!m_bSubfilterVisible);
 } 
 
+int CStreamsManager::AddSubtitle(const std::string& subFilePath)
+{
+  if (!m_bIsXYVSFilter)
+    return -1;
+
+  CStdStringW subfileW;
+  g_charsetConverter.utf8ToW(subFilePath, subfileW);
+
+  CLog::Log(LOGDEBUG, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, subFilePath.c_str());
+
+  m_pIDirectVobSub->put_FileName(const_cast<wchar_t*>(subfileW.c_str()));
+
+  m_subfilterStreams = m_subfilterStreams_int;
+
+  SubInterface(ADD_EXTERNAL_SUB);
+
+  return GetSubfilterCount() - 1;
+}
+
 void CStreamsManager::SetSubfilter(int iStream)
 {
   if (! m_init)
@@ -735,9 +758,9 @@ void CStreamsManager::SetSubfilter(int iStream)
     {
       m_subfilterStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_subfilterStreams[enableIndex]->connected = true;
-      CLog::Log(LOGDEBUG, "%s Successfully selected subfilter stream", __FUNCTION__);
     }
   }
+  CLog::Log(LOGDEBUG, "%s Successfully selected subfilter stream number %i", __FUNCTION__, enableIndex);
   SetSubfilterVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 }
 
@@ -756,9 +779,8 @@ void CStreamsManager::SubInterface(SelectSubType action)
     {
       CStdString str;
       g_charsetConverter.wToUTF8(pszName, str);
-      switch (action)
+      if (action == ADD_EXTERNAL_SUB)
       {
-      case ADD_EXTERNAL_SUB:
         if (group == XYVSFILTER_SUB_EXTERNAL)
         {
           std::auto_ptr<CDSStreamDetailSubfilter> s(new CDSStreamDetailSubfilter(EXTERNAL));
@@ -767,7 +789,9 @@ void CStreamsManager::SubInterface(SelectSubType action)
           m_subfilterStreams.push_back(s.release());
           CLog::Log(LOGNOTICE, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, str.c_str());
         }
-      case SELECT_INTERNAL_SUB:
+      }
+      if (action == SELECT_INTERNAL_SUB)
+      {
         if (group == XYVSFILTER_SUB_INTERNAL) 
           m_pIAMStreamSelectSub->Enable(i, AMSTREAMSELECTENABLE_ENABLE);
       }
@@ -873,6 +897,11 @@ int CStreamsManager::GetChannels()
   return (i == -1) ? 0 : m_audioStreams[i]->m_iChannels;
 }
 
+int CStreamsManager::GetChannels(int istream)
+{
+  return (istream == -1) ? 0 : m_audioStreams[istream]->m_iChannels;
+}
+
 int CStreamsManager::GetBitsPerSample()
 {
   int i = GetAudioStream();
@@ -883,6 +912,11 @@ int CStreamsManager::GetSampleRate()
 {
   int i = GetAudioStream();
   return (i == -1) ? 0 : m_audioStreams[i]->m_iSampleRate;
+}
+
+int CStreamsManager::GetSampleRate(int istream)
+{
+  return (istream == -1) ? 0 : m_audioStreams[istream]->m_iSampleRate;
 }
 
 void CStreamsManager::ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfos)
@@ -1505,7 +1539,7 @@ void CSubtitleManager::SetSubtitleVisible( bool bVisible )
     m_pManager->SetEnable(bVisible);
 }
 
-int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
+int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
 {
   if (! m_pManager)
     return -1;

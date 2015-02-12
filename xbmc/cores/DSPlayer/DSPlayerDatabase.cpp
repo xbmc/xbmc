@@ -26,6 +26,7 @@
 #include "filesystem/StackDirectory.h"
 #include "video/VideoInfoTag.h "
 #include "settings/AdvancedSettings.h"
+#include "utils/StdString.h"
 
 using namespace XFILE;
 

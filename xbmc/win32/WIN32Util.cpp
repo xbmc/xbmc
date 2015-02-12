@@ -42,6 +42,7 @@
 #include "utils/Environment.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/StdString.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \

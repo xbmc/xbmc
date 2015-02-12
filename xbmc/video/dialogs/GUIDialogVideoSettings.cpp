@@ -87,7 +87,6 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 
 }
 
-
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
 { }
 
@@ -105,11 +104,13 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_DeinterlaceMode = static_cast<EDEINTERLACEMODE>(static_cast<const CSettingInt*>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_INTERLACEMETHOD)
     videoSettings.m_InterlaceMethod = static_cast<EINTERLACEMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+#ifdef HAS_DS_PLAYER
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   { 
     m_dsStats = static_cast<DS_STATS>(static_cast<const CSettingInt*>(setting)->GetValue());
     g_dsSettings.pRendererSettings->displayStats = (DS_STATS)m_dsStats;
   }
+#endif
   else if (settingId == SETTING_VIDEO_SCALINGMETHOD)
 #ifdef HAS_DS_PLAYER
   { 
@@ -149,8 +150,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
       videoSettings.m_CustomVerticalShift = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     else if (settingId == SETTING_VIDEO_PIXEL_RATIO)
       videoSettings.m_CustomPixelRatio = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
-      videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
     else if (settingId == SETTING_VIDEO_NONLIN_STRETCH)
       videoSettings.m_CustomNonLinStretch = static_cast<const CSettingBool*>(setting)->GetValue();
 
@@ -315,12 +314,14 @@ void CGUIDialogVideoSettings::InitializeSettings()
     return;
   }
 
+#ifdef HAS_DS_PLAYER
   CSettingGroup *groupDSFilter = AddGroup(category);
   if (groupDSFilter == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
+#endif
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 

@@ -170,10 +170,18 @@ void CDSPlayer::SetSubtitleVisible(bool bVisible)
 		if (CStreamsManager::Get())
 			CStreamsManager::Get()->SubtitleManager->SetSubtitleVisible(bVisible);
 	}
-
-
 }
 
+int CDSPlayer::AddSubtitle(const std::string& strSubPath) {
+
+	if (CGraphFilters::Get()->HasSubFilter())
+	{
+		return (CStreamsManager::Get()) ? CStreamsManager::Get()->AddSubtitle(strSubPath) : -1;
+	}
+	else {
+		return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath) : -1;
+	}
+}
 
 void CDSPlayer::ShowEditionDlg(bool playStart)
 {
@@ -328,7 +336,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 
 bool CDSPlayer::CloseFile(bool reopen)
 {
-	CSingleLock lock(m_CleanSection);
+  CSingleLock lock(m_CleanSection);
 
   if (PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_CLOSING)
     return true;
@@ -352,38 +360,49 @@ bool CDSPlayer::CloseFile(bool reopen)
 
 void CDSPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
-	CSingleLock lock(m_StateSection);
-	info.width  = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureWidth() : 0;
-	info.height = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureHeight() : 0;
-	info.videoCodecName = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetVideoCodecName() : "";
-	info.videoAspectRatio = (float)info.width / (float)info.height;
-	info.stereoMode == "mono";
+  CSingleLock lock(m_StateSection);
+  info.width  = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureWidth() : 0;
+  info.height = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureHeight() : 0;
+  info.videoCodecName = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetVideoCodecName() : "";
+  info.videoAspectRatio = (float)info.width / (float)info.height;
+  info.stereoMode == "mono";
 }
 
 
 void CDSPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
-	CSingleLock lock(m_StateSection);
-	info.bitrate = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetBitsPerSample() : 0;
-    CStdString strStreamName;
-	if (CStreamsManager::Get()) CStreamsManager::Get()->GetAudioStreamName(index,strStreamName);
-	info.language = strStreamName;
-    info.name = strStreamName;
-	info.channels = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetChannels() : 0;
-    info.audioCodecName = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecName() : "";
+
+  CSingleLock lock(m_StateSection);
+
+  CStdString strStreamName;
+  CStdString label;
+  CStdString codecname;
+
+  info.bitrate = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetBitsPerSample() : 0;
+  info.audioCodecName = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecName() : "";
+  if (CStreamsManager::Get()) CStreamsManager::Get()->GetAudioStreamName(index, strStreamName);  
+  info.language = strStreamName;
+  info.channels = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetChannels(index) : 0;
+  info.samplerate = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetSampleRate(index) : 0;
+  codecname = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecDisplayName(index) : "";
+  StringUtils::ToUpper(codecname);
+ 
+  label.Format("%s - (%s, %d Hz, %i Channels)", strStreamName, codecname, info.samplerate, info.channels);
+  info.name = label;
 }
+
 
 void CDSPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
-	CStdString strStreamName;
-	if (CGraphFilters::Get()->HasSubFilter()) 
-	{	
-		if (CStreamsManager::Get()) CStreamsManager::Get()->GetSubfilterName(index, strStreamName);
-	} else {
-		if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->GetSubtitleName(index, strStreamName);
-	}
-	info.language = strStreamName;
-	info.name = strStreamName;
+  CStdString strStreamName;
+  if (CGraphFilters::Get()->HasSubFilter()) 
+  {	
+    if (CStreamsManager::Get()) CStreamsManager::Get()->GetSubfilterName(index, strStreamName);
+  } else {
+    if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->GetSubtitleName(index, strStreamName);
+  }
+  info.language = strStreamName;
+  info.name = strStreamName;
 }
 
 bool CDSPlayer::IsPlaying() const

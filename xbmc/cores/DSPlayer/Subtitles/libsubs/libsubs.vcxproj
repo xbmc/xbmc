@@ -88,6 +88,7 @@
       </ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ProfileGuidedDatabase>$(TargetDir)$(TargetName).pgd</ProfileGuidedDatabase>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dsplayer\$(TargetFileName)"</Command>
