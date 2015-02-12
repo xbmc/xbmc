@@ -18,6 +18,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "filesystem/File.h"
