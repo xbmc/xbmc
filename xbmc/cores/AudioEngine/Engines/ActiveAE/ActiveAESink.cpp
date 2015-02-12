@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 
 #include <new> // for std::bad_alloc
+#include <algorithm>
 
 using namespace ActiveAE;
 

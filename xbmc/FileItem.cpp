@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -63,6 +65,7 @@
 #endif
 
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 using namespace XFILE;
@@ -1906,7 +1909,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
-    sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
+    sortItems[index] = std::shared_ptr<SortItem>(new SortItem);
     m_items[index]->ToSortable(*sortItems[index], fields);
     (*sortItems[index])[FieldId] = index;
   }
@@ -2186,7 +2189,7 @@ void CFileItemList::FilterCueItems()
               itemstodelete.push_back(strMediaFile);
               // get the additional stuff (year, genre etc.) from the underlying media files tag.
               CMusicInfoTag tag;
-              auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
+              unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
               if (NULL != pLoader.get())
               {
                 // get id3tag
@@ -3012,7 +3015,7 @@ bool CFileItem::LoadMusicTag()
   // load tag from file
   CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
   CMusicInfoTagLoaderFactory factory;
-  auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
+  unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
   if (NULL != pLoader.get())
   {
     if (pLoader->Load(m_strPath, *GetMusicInfoTag()))

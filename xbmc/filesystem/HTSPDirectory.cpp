@@ -30,6 +30,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 
+#include <cassert>
+
 extern "C" {
 #include "libhts/htsmsg.h"
 #include "libhts/htsmsg_binary.h"

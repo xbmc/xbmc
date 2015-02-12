@@ -28,6 +28,7 @@
 #include "linux/RBP.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
+#include <cassert>
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__

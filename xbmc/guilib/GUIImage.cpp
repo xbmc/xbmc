@@ -23,6 +23,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+#include <cassert>
+
 using namespace std;
 
 CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture)

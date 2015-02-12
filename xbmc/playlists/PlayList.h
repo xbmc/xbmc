@@ -20,7 +20,7 @@
  */
 
 #include "FileItem.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 namespace PLAYLIST
@@ -93,5 +93,5 @@ private:
   void AnnounceAdd(const CFileItemPtr& item, int pos);
 };
 
-typedef boost::shared_ptr<CPlayList> CPlayListPtr;
+typedef std::shared_ptr<CPlayList> CPlayListPtr;
 }

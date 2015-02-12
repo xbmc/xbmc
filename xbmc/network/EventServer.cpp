@@ -37,6 +37,7 @@
 #include "guilib/Key.h"
 #include <map>
 #include <queue>
+#include <cassert>
 
 using namespace EVENTSERVER;
 using namespace EVENTPACKET;

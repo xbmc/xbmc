@@ -18,6 +18,9 @@
  *
  */
 
+#include <cstdlib>
+#include <algorithm>
+
 #include "PictureInfoTag.h"
 #include "XBDateTime.h"
 #include "Util.h"

@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include <set>
+#include <algorithm>
 
 #define KEYBOARD_LAYOUTS_XML "special://xbmc/system/keyboardlayouts.xml"
 

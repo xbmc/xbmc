@@ -44,6 +44,8 @@
 #include "utils/StringUtils.h"
 #include "utils/StdString.h"
 
+#include <cassert>
+
 #define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \

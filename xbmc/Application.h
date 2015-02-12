@@ -37,7 +37,7 @@ namespace ADDON
 {
   class CSkinInfo;
   class IAddon;
-  typedef boost::shared_ptr<IAddon> AddonPtr;
+  typedef std::shared_ptr<IAddon> AddonPtr;
 }
 
 namespace MEDIA_DETECT
@@ -408,7 +408,7 @@ protected:
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
 
   bool LoadSkin(const std::string& skinID);
-  bool LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
+  bool LoadSkin(const std::shared_ptr<ADDON::CSkinInfo>& skin);
   
   /*!
    \brief Delegates the action to all registered action handlers.

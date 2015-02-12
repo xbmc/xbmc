@@ -18,6 +18,7 @@
  *
  */
 
+#include <algorithm>
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "utils/log.h"

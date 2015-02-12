@@ -36,7 +36,7 @@
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "threads/Atomics.h"
 
 #ifndef TARGET_POSIX
@@ -70,7 +70,7 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
-using namespace boost;
+using namespace std;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
@@ -298,7 +298,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
     if (it->m_name == "surfaces")
-      m_uSurfacesCount = std::atoi(it->m_value.c_str());
+      m_uSurfacesCount = atoi(it->m_value.c_str());
     else
       av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }

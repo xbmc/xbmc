@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
+#include <stdlib.h>
 
 #ifdef TARGET_POSIX
 #define dll_open open

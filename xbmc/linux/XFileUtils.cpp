@@ -23,6 +23,7 @@
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"
@@ -50,7 +51,6 @@
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/AliasShortcutUtils.h"
-#include "utils/StringUtils.h"
 
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 {

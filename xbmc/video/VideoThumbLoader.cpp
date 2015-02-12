@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "VideoThumbLoader.h"
 #include "filesystem/StackDirectory.h"
 #include "utils/URIUtils.h"

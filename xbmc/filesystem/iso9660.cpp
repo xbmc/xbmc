@@ -19,8 +19,10 @@
  *
  */
 
+#include <algorithm>
 #include "system.h"
 #include "utils/log.h"
+#include <stdlib.h>
 
 /*
  Redbook   : CDDA

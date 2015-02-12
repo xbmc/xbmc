@@ -22,7 +22,7 @@
 
 #include <queue>
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
@@ -49,9 +49,9 @@ class CDVDMediaCodecInfo
 public:
   CDVDMediaCodecInfo( int index,
                       unsigned int texture,
-                      boost::shared_ptr<CJNIMediaCodec> &codec,
-                      boost::shared_ptr<CJNISurfaceTexture> &surfacetexture,
-                      boost::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready);
+                      std::shared_ptr<CJNIMediaCodec> &codec,
+                      std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
+                      std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready);
 
   // reference counting
   CDVDMediaCodecInfo* Retain();
@@ -80,9 +80,9 @@ private:
   CCriticalSection    m_section;
   // shared_ptr bits, shared between
   // CDVDVideoCodecAndroidMediaCodec and LinuxRenderGLES.
-  boost::shared_ptr<CJNIMediaCodec> m_codec;
-  boost::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
-  boost::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
+  std::shared_ptr<CJNIMediaCodec> m_codec;
+  std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
+  std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
 };
 
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
@@ -128,9 +128,9 @@ protected:
   // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
   // will get deleted before CLinuxRendererGLES is shut down and
   // CLinuxRendererGLES refs them via CDVDMediaCodecInfo.
-  boost::shared_ptr<CJNIMediaCodec> m_codec;
-  boost::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
-  boost::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
+  std::shared_ptr<CJNIMediaCodec> m_codec;
+  std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
+  std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
   std::queue<amc_demux> m_demux;
   std::vector<CJNIByteBuffer> m_input;

@@ -93,7 +93,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
 //  returns the database ids of the path,
 void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& params)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
     return;
@@ -255,7 +255,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
+  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
   if (pNode.get())
@@ -296,7 +296,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // hack - as the season node might return episodes
-  auto_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
+  unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
   switch (pNode->GetChildType())
   {

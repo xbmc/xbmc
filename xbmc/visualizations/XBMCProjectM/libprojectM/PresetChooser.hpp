@@ -43,7 +43,7 @@ public:
     /// \param presetInputs the preset inputs to associate with the preset upon construction
     /// \param presetOutputs the preset outputs to associate with the preset upon construction
     /// \returns an autopointer of the newly allocated preset
-    std::auto_ptr<Preset> allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs);
+    std::unique_ptr<Preset> allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs);
 
     ///  Set the chooser asocciated with this iterator
     void setChooser(const PresetChooser & chooser);
@@ -70,7 +70,7 @@ public:
     /// \param presetInputs the preset inputs to associate with the preset upon construction
     /// \param presetOutputs the preset outputs to associate with the preset upon construction
     /// \returns an auto pointer of the newly allocated preset
-    std::auto_ptr<Preset> directoryIndex(std::size_t index, PresetInputs & presetInputs,
+    std::unique_ptr<Preset> directoryIndex(std::size_t index, PresetInputs & presetInputs,
                                          PresetOutputs & presetOutputs) const;
 
     /// Gets the number of presets last believed to exist in the preset loader's filename collection
@@ -142,7 +142,7 @@ inline bool PresetIterator::operator ==(const PresetIterator & presetPos) const 
     return (*presetPos == **this);
 }
 
-inline std::auto_ptr<Preset> PresetIterator::allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs) {
+inline std::unique_ptr<Preset> PresetIterator::allocate( PresetInputs & presetInputs, PresetOutputs & presetOutputs) {
     return m_presetChooser->directoryIndex(m_currentIndex, presetInputs, presetOutputs);
 }
 
@@ -188,7 +188,7 @@ inline bool PresetChooser::empty() const {
 	return m_presetLoader->getNumPresets() == 0;
 }
 
-inline std::auto_ptr<Preset> PresetChooser::directoryIndex(std::size_t index, PresetInputs & presetInputs,
+inline std::unique_ptr<Preset> PresetChooser::directoryIndex(std::size_t index, PresetInputs & presetInputs,
                                          PresetOutputs & presetOutputs) const {
 
 	return m_presetLoader->loadPreset(index, presetInputs, presetOutputs);

@@ -23,6 +23,7 @@
 #include <avrt.h>
 #include <initguid.h>
 #include <stdint.h>
+#include <algorithm>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/AdvancedSettings.h"

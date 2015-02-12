@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

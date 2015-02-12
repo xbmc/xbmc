@@ -143,7 +143,7 @@ std::string CDatabase::PrepareSQL(std::string strStmt, ...) const
   return strResult;
 }
 
-std::string CDatabase::GetSingleValue(const std::string &query, std::auto_ptr<Dataset> &ds)
+std::string CDatabase::GetSingleValue(const std::string &query, std::unique_ptr<Dataset> &ds)
 {
   std::string ret;
   try

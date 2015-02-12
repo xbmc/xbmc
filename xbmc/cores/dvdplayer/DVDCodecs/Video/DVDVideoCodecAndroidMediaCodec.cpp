@@ -50,6 +50,8 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+#include <cassert>
+
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
   // All devices 'should' be capiable of surface rendering
@@ -123,7 +125,7 @@ protected:
 class CDVDMediaCodecOnFrameAvailable : public CEvent, CJNISurfaceTextureOnFrameAvailableListener
 {
 public:
-  CDVDMediaCodecOnFrameAvailable(boost::shared_ptr<CJNISurfaceTexture> &surfaceTexture)
+  CDVDMediaCodecOnFrameAvailable(std::shared_ptr<CJNISurfaceTexture> &surfaceTexture)
   : m_surfaceTexture(surfaceTexture)
   {
     m_surfaceTexture->setOnFrameAvailableListener(*this);
@@ -143,7 +145,7 @@ protected:
   }
 
 private:
-  boost::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
+  std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
 
 };
 
@@ -152,9 +154,9 @@ private:
 CDVDMediaCodecInfo::CDVDMediaCodecInfo(
     int index
   , unsigned int texture
-  , boost::shared_ptr<CJNIMediaCodec> &codec
-  , boost::shared_ptr<CJNISurfaceTexture> &surfacetexture
-  , boost::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
+  , std::shared_ptr<CJNIMediaCodec> &codec
+  , std::shared_ptr<CJNISurfaceTexture> &surfacetexture
+  , std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
 )
 : m_refs(1)
 , m_valid(true)
@@ -421,7 +423,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       if (types[j] == m_mime)
       {
-        m_codec = boost::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
+        m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
 
         // clear any jni exceptions, jni gets upset if we do not.
         if (xbmc_jnienv()->ExceptionCheck())
@@ -1225,9 +1227,9 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
     m_textureId = texture_id;
 
-    m_surfaceTexture = boost::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
+    m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
     // hook the surfaceTexture OnFrameAvailable callback
-    m_frameAvailable = boost::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
+    m_frameAvailable = std::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
     m_surface = new CJNISurface(*m_surfaceTexture);
   }
   else

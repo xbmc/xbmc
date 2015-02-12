@@ -287,7 +287,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDON
   CAddonMgr::Get().GetAddons(ADDON_PLUGIN, tempAddons);
   for (unsigned i=0; i<tempAddons.size(); i++)
   {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
+    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
     if (plugin && plugin->Provides(type))
       addons.push_back(tempAddons[i]);
   }
@@ -295,7 +295,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDON
   CAddonMgr::Get().GetAddons(ADDON_SCRIPT, tempAddons);
   for (unsigned i=0; i<tempAddons.size(); i++)
   {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
+    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
     if (plugin && plugin->Provides(type))
       addons.push_back(tempAddons[i]);
   }
@@ -315,7 +315,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     CFileItemPtr item(FileItemFromAddon(addons[i], 
                       addons[i]->Type()==ADDON_PLUGIN?"plugin://":"script://",
                       addons[i]->Type() == ADDON_PLUGIN));
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addons[i]);
     if (plugin->ProvidesSeveral())
     {
       CURL url = item->GetURL();

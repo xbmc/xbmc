@@ -33,6 +33,7 @@
 
 #include "OMXClock.h"
 #include "xbmc/linux/RBP.h"
+#include <cassert>
 
 #ifdef TARGET_LINUX
 #include "XMemUtils.h"

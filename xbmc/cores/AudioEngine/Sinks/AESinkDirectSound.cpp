@@ -20,6 +20,8 @@
 
 #define INITGUID
 
+#include <algorithm>
+
 #include "AESinkDirectSound.h"
 #include "utils/log.h"
 #include <initguid.h>

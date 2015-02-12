@@ -90,7 +90,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
       for (int i = PLAYLIST_MUSIC; i <= PLAYLIST_VIDEO; i++)
       {
         CPlayList &playlist = GetPlaylist(i);
-        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+        CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
         playlist.UpdateItem(item.get());
       }
     }

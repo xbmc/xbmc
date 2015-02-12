@@ -20,12 +20,12 @@
 
 #include "JobManager.h"
 #include <algorithm>
+#include <functional>
 #include <stdexcept>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include "system.h"
-
 
 using namespace std;
 

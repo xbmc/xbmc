@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "CPUInfo.h"
 #include "Temperature.h"
 #include <string>

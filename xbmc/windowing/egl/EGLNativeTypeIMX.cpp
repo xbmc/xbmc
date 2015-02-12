@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "system.h"
 #include <EGL/egl.h>
 
