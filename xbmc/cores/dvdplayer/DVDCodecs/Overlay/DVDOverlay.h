@@ -92,7 +92,7 @@ public:
   }
 
   /**
-   * static release function for use with boost shared ptr for example
+   * static release function for use with shared ptr for example
    */
   static void Release(CDVDOverlay* ov)
   {

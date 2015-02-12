@@ -24,6 +24,7 @@
 #include <memory>
 #include <string.h>
 #include <stdint.h>
+#include <algorithm>
 
 #ifdef __GNUC__
 // under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.

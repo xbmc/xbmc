@@ -23,6 +23,50 @@
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
 
+#include "boost/multi_index_container.hpp"
+#include "boost/multi_index/sequenced_index.hpp"
+#include "boost/multi_index/hashed_index.hpp"
+#include "boost/multi_index/member.hpp"
+
+using namespace boost::multi_index;
+
+template<class Position, class Value>
+class CGUIFontCacheImpl
+{
+  /* Empty structs used as tags to identify indexes */
+  struct Age {};
+  struct Hash {};
+
+  typedef multi_index_container <
+    CGUIFontCacheEntry<Position, Value>,
+    indexed_by<
+    sequenced<tag<Age> >,
+    hashed_unique<tag<Hash>,
+    member<CGUIFontCacheEntry<Position, Value>,
+    CGUIFontCacheKey<Position>, &CGUIFontCacheEntry<Position, Value>::m_key
+    >,
+    CGUIFontCacheHash<Position>, CGUIFontCacheKeysMatch < Position >
+    >
+    >
+  > EntryList;
+
+  typedef typename EntryList::template index<Age>::type::iterator EntryAgeIterator;
+  typedef typename EntryList::template index<Hash>::type::iterator EntryHashIterator;
+
+  EntryList m_list;
+  CGUIFontCache<Position, Value> *m_parent;
+
+public:
+
+  CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
+  Value &Lookup(Position &pos,
+                const vecColors &colors, const vecText &text,
+                uint32_t alignment, float maxPixelWidth,
+                bool scrolling,
+                unsigned int nowMillis, bool &dirtyCache);
+  void Flush();
+};
+
 template<class Position, class Value>
 void CGUIFontCacheEntry<Position, Value>::Reassign::operator()(CGUIFontCacheEntry<Position, Value> &entry)
 {
@@ -49,18 +93,44 @@ CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 }
 
 template<class Position, class Value>
+CGUIFontCache<Position, Value>::CGUIFontCache(CGUIFontTTFBase &font)
+: m_impl(new CGUIFontCacheImpl<Position, Value>(this))
+, m_font(font)
+{
+}
+
+template<class Position, class Value>
+CGUIFontCache<Position, Value>::~CGUIFontCache()
+{
+  delete m_impl;
+}
+
+template<class Position, class Value>
 Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
                                               const vecColors &colors, const vecText &text,
                                               uint32_t alignment, float maxPixelWidth,
                                               bool scrolling,
                                               unsigned int nowMillis, bool &dirtyCache)
 {
+  if (m_impl == nullptr)
+    m_impl = new CGUIFontCacheImpl<Position, Value>(this);
+
+  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis, dirtyCache);
+}
+
+template<class Position, class Value>
+Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
+                                                  const vecColors &colors, const vecText &text,
+                                                  uint32_t alignment, float maxPixelWidth,
+                                                  bool scrolling,
+                                                  unsigned int nowMillis, bool &dirtyCache)
+{
   const CGUIFontCacheKey<Position> key(pos,
                                        const_cast<vecColors &>(colors), const_cast<vecText &>(text),
                                        alignment, maxPixelWidth,
                                        scrolling, g_graphicsContext.GetGUIMatrix(),
                                        g_graphicsContext.GetGUIScaleX(), g_graphicsContext.GetGUIScaleY());
-  EntryHashIterator i = m_list.template get<Hash>().find(key);
+  auto i = m_list.template get<Hash>().find(key);
   if (i == m_list.template get<Hash>().end())
   {
     /* Cache miss */
@@ -76,7 +146,7 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
       /* We need a new entry instead */
       /* Yes, this causes the creation an destruction of a temporary entry, but
        * this code ought to only be used infrequently, when the cache needs to grow */
-      m_list.template get<Age>().push_back(CGUIFontCacheEntry<Position, Value>(*this, key, nowMillis));
+      m_list.template get<Age>().push_back(CGUIFontCacheEntry<Position, Value>(*m_parent, key, nowMillis));
     }
     dirtyCache = true;
     return (--m_list.template get<Age>().end())->m_value;
@@ -98,14 +168,24 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
 template<class Position, class Value>
 void CGUIFontCache<Position, Value>::Flush()
 {
+  m_impl->Flush();
+}
+
+template<class Position, class Value>
+void CGUIFontCacheImpl<Position, Value>::Flush()
+{
   m_list.template get<Age>().clear();
 }
 
+template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::CGUIFontCache(CGUIFontTTFBase &font);
+template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCache();
 template void CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Reassign::operator()(CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> &entry);
 template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheStaticValue &CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
 
+template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::CGUIFontCache(CGUIFontTTFBase &font);
+template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCache();
 template void CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Reassign::operator()(CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> &entry);
 template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);

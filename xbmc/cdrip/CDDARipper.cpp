@@ -116,7 +116,7 @@ bool CCDDARipper::RipCD()
   {
     CFileItemPtr pItem = vecItems[i];
     CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->GetPath()));
+    unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->GetPath()));
     if (NULL != pLoader.get())
     {
       pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag()); // get tag from file
@@ -297,7 +297,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon);
   if (addon)
   {
-    boost::shared_ptr<CAudioEncoder> enc = boost::static_pointer_cast<CAudioEncoder>(addon);
+    std::shared_ptr<CAudioEncoder> enc = std::static_pointer_cast<CAudioEncoder>(addon);
     track += enc->extension;
   }
 

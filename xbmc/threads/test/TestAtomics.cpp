@@ -21,7 +21,7 @@
 #include "TestHelpers.h"
 #include "threads/Atomics.h"
 
-#include <boost/shared_array.hpp>
+#include <memory>
 #include <iostream>
 
 #define TESTNUM 100000l
@@ -85,8 +85,8 @@ public:
 TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
+  std::shared_ptr<thread> t;
+  t.reset(new thread[NUMTHREADS], std::default_delete<thread[]>());
   DoIncrement di(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = thread(di);
@@ -100,8 +100,8 @@ TEST(TestMassAtomic, Increment)
 TEST(TestMassAtomic, Decrement)
 {
   long lNumber = (NUMTHREADS * TESTNUM);
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
+  std::shared_ptr<thread> t;
+  t.reset(new thread[NUMTHREADS], std::default_delete<thread[]>());
   DoDecrement dd(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = thread(dd);
@@ -116,8 +116,8 @@ TEST(TestMassAtomic, Add)
 {
   long lNumber = 0;
   long toAdd = 10;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
+  std::shared_ptr<thread> t;
+  t.reset(new thread[NUMTHREADS], std::default_delete<thread[]>());
   DoAdd da(&lNumber,toAdd);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = thread(da);
@@ -132,8 +132,8 @@ TEST(TestMassAtomic, Subtract)
 {
   long toSubtract = 10;
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
+  std::shared_ptr<thread> t;
+  t.reset(new thread[NUMTHREADS], std::default_delete<thread[]>());
   DoSubtract ds(&lNumber,toSubtract);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = thread(ds);

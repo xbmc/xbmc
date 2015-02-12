@@ -1696,7 +1696,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   AddonPtr addon;
   if (CAddonMgr::Get().GetAddon(skinID, addon, ADDON_SKIN))
   {
-    if (LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon)))
+    if (LoadSkin(std::dynamic_pointer_cast<ADDON::CSkinInfo>(addon)))
       return true;
   }
   CLog::Log(LOGERROR, "failed to load requested skin '%s'", skinID.c_str());
@@ -1852,7 +1852,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_infoManager.Clear();
 
-//  The g_SkinInfo boost shared_ptr ought to be reset here
+//  The g_SkinInfo shared_ptr ought to be reset here
 // but there are too many places it's used without checking for NULL
 // and as a result a race condition on exit can cause a crash.
 }
@@ -2983,7 +2983,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     CGUIDialogCache* dlgCache = new CGUIDialogCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
-    auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
+    unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
     bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.GetPath()));
 
     if (dlgCache)

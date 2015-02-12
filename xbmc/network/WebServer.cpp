@@ -25,7 +25,8 @@
 #include "WebServer.h"
 
 #ifdef HAS_WEB_SERVER
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <algorithm>
 
 #include "URL.h"
 #include "Util.h"
@@ -65,7 +66,7 @@ typedef struct ConnectionHandler
 } ConnectionHandler;
 
 typedef struct {
-  boost::shared_ptr<XFILE::CFile> file;
+  std::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
   size_t rangeCountTotal;
   string boundary;
@@ -729,7 +730,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   const HTTPResponseDetails &responseDetails = handler->GetResponseDetails();
   HttpResponseRanges responseRanges = handler->GetResponseData();
 
-  boost::shared_ptr<XFILE::CFile> file = boost::make_shared<XFILE::CFile>();
+  std::shared_ptr<XFILE::CFile> file = std::make_shared<XFILE::CFile>();
   std::string filePath = handler->GetResponseFile();
 
   if (!file->Open(filePath, READ_NO_CACHE))
@@ -753,7 +754,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   if (request.method != HEAD)
   {
     uint64_t totalLength = 0;
-    std::auto_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
+    std::unique_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
     context->file = file;
     context->contentType = mimeType;
     context->boundaryWritten = false;

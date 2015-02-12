@@ -33,22 +33,19 @@
 
 #include <algorithm>
 #include <vector>
-
-#include "boost/multi_index_container.hpp"
-#include "boost/multi_index/sequenced_index.hpp"
-#include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/member.hpp"
-#include "boost/shared_ptr.hpp"
+#include <memory>
+#include <cassert>
 
 #include "TransformMatrix.h"
-
-using namespace boost::multi_index;
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01)
 
 template<class Position, class Value> class CGUIFontCache;
 class CGUIFontTTFBase;
+
+template<class Position, class Value>
+class CGUIFontCacheImpl;
 
 template<class Position>
 struct CGUIFontCacheKey
@@ -162,30 +159,20 @@ struct CGUIFontCacheKeysMatch
   }
 };
 
+
+
 template<class Position, class Value>
 class CGUIFontCache
 {
-  /* Empty structs used as tags to identify indexes */
-  struct Age {};
-  struct Hash {};
-
-  typedef multi_index_container<
-      CGUIFontCacheEntry<Position, Value>,
-      indexed_by<
-          sequenced<tag<Age> >,
-          hashed_unique<tag<Hash>, member<CGUIFontCacheEntry<Position, Value>, CGUIFontCacheKey<Position>, &CGUIFontCacheEntry<Position, Value>::m_key>, CGUIFontCacheHash<Position>, CGUIFontCacheKeysMatch<Position> >
-      >
-  > EntryList;
-
-  typedef typename EntryList::template index<Age>::type::iterator EntryAgeIterator;
-  typedef typename EntryList::template index<Hash>::type::iterator EntryHashIterator;
-
-  EntryList m_list;
+  CGUIFontCacheImpl<Position, Value>* m_impl;
 
 public:
   const CGUIFontTTFBase &m_font;
 
-  CGUIFontCache(CGUIFontTTFBase &font) : m_font(font) {}
+  CGUIFontCache(CGUIFontTTFBase &font);
+
+  ~CGUIFontCache();
+ 
   Value &Lookup(Position &pos,
                 const vecColors &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,
@@ -202,7 +189,7 @@ struct CGUIFontCacheStaticPosition
   void UpdateWithOffsets(const CGUIFontCacheStaticPosition &cached, bool scrolling) {}
 };
 
-struct CGUIFontCacheStaticValue : public boost::shared_ptr<std::vector<SVertex> >
+struct CGUIFontCacheStaticValue : public std::shared_ptr<std::vector<SVertex> >
 {
   void clear()
   {

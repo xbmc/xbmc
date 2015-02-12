@@ -50,7 +50,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPt
   AddonPtr addon;
   ScraperPtr defaultScraper;
   if (CAddonMgr::Get().GetDefault(m_type, addon))
-    defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
+    defaultScraper = std::dynamic_pointer_cast<CScraper>(addon);
 
   if (m_type == ADDON_SCRAPER_ALBUMS)
   {
@@ -102,7 +102,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPt
 
   for (unsigned i = 0; i < addons.size(); ++i)
   {
-    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+    ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addons[i]);
 
     // skip if scraper requires settings and there's nothing set yet
     if (scraper->RequiresSettings() && !scraper->HasUserSettings())

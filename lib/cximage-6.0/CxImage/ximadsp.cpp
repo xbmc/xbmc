@@ -3531,7 +3531,7 @@ bool CxImage::FloodFill(const long xStart, const long yStart, const RGBQUAD cFil
 //------------------------------------- Begin of Flood Fill
 	POINT offset[4] = {{-1,0},{0,-1},{1,0},{0,1}};
 	std::queue<POINT> q;
-	POINT point = {xStart,yStart};
+	POINT point = {(int)xStart,(int)yStart};
 	q.push(point);
 
 	if (IsIndexed()){ //--- Generic indexed image, no tolerance OR Grayscale image with tolerance

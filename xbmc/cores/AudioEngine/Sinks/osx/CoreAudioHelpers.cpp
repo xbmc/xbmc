@@ -46,10 +46,10 @@ std::string GetError(OSStatus error)
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string &str)
 {
   char fourCC[5] = {
-    (desc.mFormatID >> 24) & 0xFF,
-    (desc.mFormatID >> 16) & 0xFF,
-    (desc.mFormatID >>  8) & 0xFF,
-     desc.mFormatID        & 0xFF,
+    (char)((desc.mFormatID >> 24) & 0xFF),
+    (char)((desc.mFormatID >> 16) & 0xFF),
+    (char)((desc.mFormatID >>  8) & 0xFF),
+    (char) (desc.mFormatID        & 0xFF),
     0
   };
 

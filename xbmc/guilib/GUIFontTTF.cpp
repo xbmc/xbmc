@@ -30,9 +30,9 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "threads/SystemClock.h"
-#include "boost/make_shared.hpp"
 
 #include <math.h>
+#include <memory>
 
 // stuff for freetype
 #include <ft2build.h>
@@ -375,10 +375,10 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
                             XbmcThreads::SystemClockMillis(),
                             dirtyCache) :
       unusedVertexBuffer;
-  boost::shared_ptr<std::vector<SVertex> > tempVertices = boost::make_shared<std::vector<SVertex> >();
-  boost::shared_ptr<std::vector<SVertex> > &vertices = hardwareClipping ?
+  std::shared_ptr<std::vector<SVertex> > tempVertices = std::make_shared<std::vector<SVertex> >();
+  std::shared_ptr<std::vector<SVertex> > &vertices = hardwareClipping ?
       tempVertices :
-      static_cast<boost::shared_ptr<std::vector<SVertex> >&>(m_staticCache.Lookup(staticPos,
+      static_cast<std::shared_ptr<std::vector<SVertex> >&>(m_staticCache.Lookup(staticPos,
                            colors, text,
                            alignment, maxPixelWidth,
                            scrolling,

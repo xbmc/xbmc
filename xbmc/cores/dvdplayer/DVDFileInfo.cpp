@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
 #include "FileItem.h"
@@ -57,8 +59,8 @@
 
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {
-  std::auto_ptr<CDVDInputStream> input;
-  std::auto_ptr<CDVDDemux> demux;
+  std::unique_ptr<CDVDInputStream> input;
+  std::unique_ptr<CDVDDemux> demux;
 
   input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, path, ""));
   if (!input.get())

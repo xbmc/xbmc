@@ -90,7 +90,7 @@ public:
    \param ds the dataset to use for the query.
    \return the value from the query, empty on failure.
    */
-  std::string GetSingleValue(const std::string &query, std::auto_ptr<dbiplus::Dataset> &ds);
+  std::string GetSingleValue(const std::string &query, std::unique_ptr<dbiplus::Dataset> &ds);
 
   /*!
    * @brief Delete values from a table.
@@ -206,9 +206,9 @@ protected:
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
-  std::auto_ptr<dbiplus::Database> m_pDB;
-  std::auto_ptr<dbiplus::Dataset> m_pDS;
-  std::auto_ptr<dbiplus::Dataset> m_pDS2;
+  std::unique_ptr<dbiplus::Database> m_pDB;
+  std::unique_ptr<dbiplus::Dataset> m_pDS;
+  std::unique_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
   void InitSettings(DatabaseSettings &dbSettings);

@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include <limits.h>
+#include <cassert>
 
 #include "AESinkPi.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

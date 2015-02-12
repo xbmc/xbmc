@@ -21,11 +21,11 @@
 #pragma once
 
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class TiXmlNode;
 class CGUIListItem;
-typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
+typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 /*!
  \ingroup listproviders
