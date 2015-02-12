@@ -910,7 +910,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   }
 
   int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  bool ismp3 = m_pFormatContext->iformat && (strcmp(m_pFormatContext->iformat->name, "mp3") == 0);
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3)
     seek_pts += m_pFormatContext->start_time;
 
   int ret;
