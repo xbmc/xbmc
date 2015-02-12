@@ -22,9 +22,18 @@
 #include "FileItem.h"
 #include "video/jobs/VideoLibraryJob.h"
 
+/*!
+ \brief Video library job implementation for marking items as watched/unwatched.
+ */
 class CVideoLibraryMarkWatchedJob : public CVideoLibraryJob
 {
 public:
+  /*!
+   \brief Creates a new video library scanning job.
+
+   \param[in] item Item to be marked as watched/unwatched
+   \param[in] mark Whether to mark the item as watched or unwatched
+  */
   CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark);
   virtual ~CVideoLibraryMarkWatchedJob();
 

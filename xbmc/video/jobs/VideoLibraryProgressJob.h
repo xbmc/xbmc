@@ -22,6 +22,9 @@
 #include "utils/ProgressJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 
+/*!
+ \brief Combined base implementation of a video library job with a progress bar.
+ */
 class CVideoLibraryProgressJob : public CProgressJob, public CVideoLibraryJob
 {
 public:

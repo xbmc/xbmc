@@ -23,12 +23,25 @@
 
 class CVideoDatabase;
 
+/*!
+ \brief Basic implementation/interface of a CJob which interacts with the
+ video database.
+ */
 class CVideoLibraryJob : public CJob
 {
 public:
   virtual ~CVideoLibraryJob();
 
+  /*!
+   \brief Whether the job can be cancelled or not.
+   */
   virtual bool CanBeCancelled() const { return false; }
+
+  /*!
+   \brief Tries to cancel the running job.
+
+   \return True if the job was cancelled, false otherwise
+  */
   virtual bool Cancel() { return false; }
 
   // implementation of CJob
@@ -39,5 +52,11 @@ public:
 protected:
   CVideoLibraryJob();
 
+  /*!
+   \brief Worker method to be implemented by an actual implementation.
+
+   \param[in] db Already open video database to be used for interaction
+   \return True if the process succeeded, false otherwise
+   */
   virtual bool Work(CVideoDatabase &db) = 0;
 };

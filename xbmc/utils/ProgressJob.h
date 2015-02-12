@@ -25,6 +25,10 @@
 
 class CGUIDialogProgressBarHandle;
 
+/*!
+  \brief Basic implementation of a CJob with a progress bar to indicate the
+  progress of the job being processed.
+ */
 class CProgressJob : public CJob
 {
 public:
@@ -37,13 +41,43 @@ public:
 protected:
   CProgressJob(CGUIDialogProgressBarHandle* progressBar);
 
+  /*!
+   \brief Returns the progress bar indicating the progress of the job.
+   */
   CGUIDialogProgressBarHandle* GetProgressBar() { return m_progress; }
 
+  /*!
+   \brief Sets the given title as the title of the progress bar.
+
+   \param[in] title Title to be set
+   */
   void SetTitle(const std::string &title);
+
+  /*!
+   \brief Sets the given text as the description of the progress bar.
+
+   \param[in] text Text to be set
+  */
   void SetText(const std::string &text);
 
+  /*!
+   \brief Sets the progress of the progress bar to the given value in percentage.
+
+   \param[in] percentage Percentage to be set as the current progress
+  */
   void SetProgress(float percentage);
+
+  /*!
+   \brief Sets the progress of the progress bar to the given value.
+
+   \param[in] currentStep Current step being processed
+   \param[in] totalSteps Total steps to be processed
+  */
   void SetProgress(int currentStep, int totalSteps);
+
+  /*!
+   \brief Marks the progress as finished by setting it to 100%.
+   */
   void MarkFinished();
 
 private:

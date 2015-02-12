@@ -24,9 +24,22 @@
 #include "video/VideoInfoScanner.h"
 #include "video/jobs/VideoLibraryJob.h"
 
+/*!
+ \brief Video library job implementation for scanning items.
+
+ Uses CVideoInfoScanner for the whole filesystem scanning and can be run with
+ or without a visible progress bar.
+ */
 class CVideoLibraryScanningJob : public CVideoLibraryJob
 {
 public:
+  /*!
+   \brief Creates a new video library scanning job.
+
+   \param[in] directory Directory to be scanned for new items
+   \param[in] scanAll Whether to scan all items or not
+   \param[in] showProgress Whether to show a progress bar or not
+   */
   CVideoLibraryScanningJob(const std::string& directory, bool scanAll = false, bool showProgress = true);
   virtual ~CVideoLibraryScanningJob();
 
