@@ -40,6 +40,8 @@ public:
   CWinDsRenderer();
   ~CWinDsRenderer();
 
+  bool CWinDsRenderer::RenderCapture(CRenderCapture* capture);
+
   virtual void         Update(bool bPauseDrawing);
   virtual void         SetupScreenshot();
   void                 CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};

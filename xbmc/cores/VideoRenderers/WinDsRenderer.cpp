@@ -81,6 +81,43 @@ void CWinDsRenderer::Update(bool bPauseDrawing)
   ManageDisplay();
 }
 
+bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
+{
+  if (!m_bConfigured)
+    return false;
+
+  bool succeeded = false;
+
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  CRect saveSize = m_destRect;
+  saveRotatedCoords();//backup current m_rotatedDestCoords
+
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+  syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
+
+  LPDIRECT3DSURFACE9 oldSurface;
+  pD3DDevice->GetRenderTarget(0, &oldSurface);
+
+  capture->BeginRender();
+  if (capture->GetState() != CAPTURESTATE_FAILED)
+  {
+    pD3DDevice->BeginScene();
+    Render(0);
+    pD3DDevice->EndScene();
+    capture->EndRender();
+    succeeded = true;
+  }
+
+  pD3DDevice->SetRenderTarget(0, oldSurface);
+  oldSurface->Release();
+
+  m_destRect = saveSize;
+  restoreRotatedCoords();//restores the previous state of the rotated dest coords
+
+  return succeeded;
+}
+
 void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (!m_bConfigured) return;

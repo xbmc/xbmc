@@ -53,7 +53,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height) {};
 
-  bool RenderCapture(CRenderCapture* capture) { return false; };
+  virtual bool RenderCapture(CRenderCapture* capture) { return false; };
 
   // Player functions
   virtual bool		   Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation){ return false; };
