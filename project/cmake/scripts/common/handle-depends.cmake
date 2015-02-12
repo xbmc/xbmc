@@ -47,6 +47,7 @@ function(add_addon_depends addon searchpath)
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
                        -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}
+                       -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
