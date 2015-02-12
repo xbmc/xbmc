@@ -48,6 +48,9 @@
 #include "utils/StreamDetails.h"
 #include "Filters/IDirectVobSub.h"
 
+#include <boost/shared_ptr.hpp>
+#include <cassert>
+
 #define XYVSFILTER_SUB_EXTERNAL 6590018
 #define XYVSFILTER_SUB_INTERNAL 6590016
 
