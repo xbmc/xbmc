@@ -227,7 +227,7 @@ void CGUITextBox::Render()
         uint32_t align = m_label.align;
         if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
           align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
-        m_font->DrawText(posX, posY + 2, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
+        m_font->DrawText(posX, posY, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
         posY += m_itemHeight;
         current++;
       }
@@ -351,6 +351,15 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
   }
 }
 
+void CGUITextBox::SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition /* = "" */)
+{
+  m_autoScrollDelay = delay;
+  m_autoScrollTime = time;
+  if (!condition.empty())
+    m_autoScrollCondition = g_infoManager.Register(condition, GetParentID());
+  m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
+}
+
 void CGUITextBox::ResetAutoScrolling()
 {
   m_autoScrollDelayTime = 0;
@@ -370,9 +379,9 @@ int CGUITextBox::GetCurrentPage() const
   return m_offset / m_itemsPerPage + 1;
 }
 
-CStdString CGUITextBox::GetLabel(int info) const
+std::string CGUITextBox::GetLabel(int info) const
 {
-  CStdString label;
+  std::string label;
   switch (info)
   {
   case CONTAINER_NUM_PAGES:

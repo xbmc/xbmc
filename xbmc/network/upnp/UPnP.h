@@ -23,7 +23,7 @@
  */
 #pragma once
 
-#include "utils/StdString.h"
+#include <string>
 
 class NPT_LogHandler;
 class PLT_UPnP;
@@ -88,7 +88,7 @@ public:
     PLT_MediaController*        m_MediaController;
 
 private:
-    CStdString                  m_IP;
+    std::string                 m_IP;
     PLT_UPnP*                   m_UPnP;
     NPT_LogHandler*             m_LogHandler;
     CDeviceHostReferenceHolder* m_ServerHolder;

@@ -200,7 +200,11 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   m_player  = player;
   m_navmode = false;
   m_hold = HOLD_NONE;
+  m_angle = 0;
   memset(&m_event, 0, sizeof(m_event));
+#ifdef HAVE_LIBBLURAY_BDJ
+  memset(&m_argb,  0, sizeof(m_argb));
+#endif
 }
 
 CDVDInputStreamBluray::~CDVDInputStreamBluray()
@@ -239,7 +243,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
 BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filename)
 {
   unsigned int playlist;
-  if(sscanf(filename.c_str(), "%05d.mpls", &playlist) != 1)
+  if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
     CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());
     return NULL;
@@ -804,7 +808,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     }
 
     const BD_PG_RLE_ELEM *rlep = ov->img;
-    uint8_t *img = (uint8_t*) malloc(ov->w * ov->h);
+    uint8_t *img = (uint8_t*) malloc((size_t)ov->w * (size_t)ov->h);
     if (!img)
       return;
     unsigned pixels = ov->w * ov->h;

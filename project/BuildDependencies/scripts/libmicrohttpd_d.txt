@@ -1,2 +1,0 @@
-; filename                        source of the file
-libmicrohttpd-0.4.5-win32.7z                    http://mirrors.xbmc.org/build-deps/win32/

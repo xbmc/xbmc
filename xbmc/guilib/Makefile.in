@@ -23,6 +23,7 @@ SRCS += GUIEditControl.cpp
 SRCS += GUIFadeLabelControl.cpp
 SRCS += GUIFixedListContainer.cpp
 SRCS += GUIFont.cpp
+SRCS += GUIFontCache.cpp
 SRCS += GUIFontManager.cpp
 SRCS += GUIFontTTF.cpp
 SRCS += GUIImage.cpp
@@ -82,6 +83,7 @@ ifeq (@USE_OPENGL@,1)
 SRCS += TextureGL.cpp
 SRCS += GUIFontTTFGL.cpp
 SRCS += GUITextureGL.cpp
+SRCS += MatrixGLES.cpp
 endif
 
 ifeq (@USE_OPENGLES@,1)

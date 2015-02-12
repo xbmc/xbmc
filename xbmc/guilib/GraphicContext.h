@@ -36,6 +36,7 @@
 #endif
 
 
+#include <string>
 #include <vector>
 #include <stack>
 #include <map>
@@ -43,7 +44,6 @@
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
-#include "utils/StdString.h"
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
@@ -88,8 +88,8 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
-  const CStdString& GetMediaDir() const { return m_strMediaDir; }
-  void SetMediaDir(const CStdString& strMediaDir);
+  const std::string& GetMediaDir() const { return m_strMediaDir; }
+  void SetMediaDir(const std::string& strMediaDir);
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
 
@@ -146,6 +146,7 @@ public:
   inline void ScaleFinalCoords(float &x, float &y, float &z) const XBMC_FORCE_INLINE { m_finalTransform.matrix.TransformPosition(x, y, z); }
   bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
+  inline const TransformMatrix &GetGUIMatrix() const XBMC_FORCE_INLINE { return m_finalTransform.matrix; }
   inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_finalTransform.scaleX; }
   inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_finalTransform.scaleY; }
   inline color_t MergeAlpha(color_t color) const XBMC_FORCE_INLINE
@@ -198,6 +199,7 @@ public:
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  CRect GetClipRegion();
   inline void AddGUITransform()
   {
     m_transforms.push(m_finalTransform);
@@ -242,7 +244,7 @@ protected:
   int m_iScreenHeight;
   int m_iScreenWidth;
   int m_iScreenId;
-  CStdString m_strMediaDir;
+  std::string m_strMediaDir;
   CRect m_videoRect;
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;

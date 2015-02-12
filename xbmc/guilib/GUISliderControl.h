@@ -86,8 +86,8 @@ public:
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
   virtual std::string GetDescription() const;
-  void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
-  void SetAction(const CStdString &action);
+  void SetTextValue(const std::string &textValue) { m_textValue = textValue; };
+  void SetAction(const std::string &action);
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
@@ -126,7 +126,7 @@ protected:
   float m_fEnd;
 
   int m_iInfoCode;
-  CStdString m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
+  std::string m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
   const SliderAction *m_action; ///< Allows the skin to configure the action of a click on the slider \sa SendClick
   bool m_dragging; ///< Whether we're in a (mouse/touch) drag operation or not - some actions are sent only on release.
 };

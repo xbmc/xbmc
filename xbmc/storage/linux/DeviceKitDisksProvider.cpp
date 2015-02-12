@@ -93,12 +93,9 @@ void CDeviceKitDiskDeviceNewAPI::Update()
     m_isRemovable = properties["DeviceIsRemovable"].asBoolean();
 }
 
-CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
+CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI):
+  m_DeviceKitUDI(DeviceKitUDI)
 {
-  m_DeviceKitUDI = DeviceKitUDI;
-  m_UDI = "";
-  m_MountPath = "";
-  m_FileSystem = "";
   m_isMounted = false;
   m_isMountedByUs = false;
   m_isRemovable = false;

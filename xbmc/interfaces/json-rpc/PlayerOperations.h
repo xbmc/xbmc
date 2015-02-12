@@ -25,6 +25,7 @@
 namespace EPG
 {
   class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 
 namespace JSONRPC
@@ -76,6 +77,6 @@ namespace JSONRPC
     static int ParseRepeatState(const CVariant &repeat);
     static double ParseTimeInSeconds(const CVariant &time);
     static bool IsPVRChannel();
-    static bool GetCurrentEpg(EPG::CEpgInfoTag &epg);
+    static EPG::CEpgInfoTagPtr GetCurrentEpg();
   };
 }

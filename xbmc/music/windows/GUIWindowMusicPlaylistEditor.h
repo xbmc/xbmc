@@ -65,5 +65,5 @@ protected:
   CMusicThumbLoader m_playlistThumbLoader;
 
   CFileItemList* m_playlist;
-  CStdString m_strLoadedPlaylist;
+  std::string m_strLoadedPlaylist;
 };

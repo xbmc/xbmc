@@ -75,7 +75,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(20325);
-      CStdString strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
+      std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
       pDialog->SetLine(0, strText);
       pDialog->SetLine(1, 20327);
       pDialog->SetChoice(0, 222);
@@ -301,7 +301,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
 
 void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 {
-  CStdString strStatus;
+  std::string strStatus;
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo(m_Res[m_iCurRes]);
 
   if (iControl == CONTROL_PIXEL_RATIO)
@@ -360,7 +360,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   g_graphicsContext.SetResInfo(m_Res[m_iCurRes], info);
 
   // set the label control correctly
-  CStdString strText;
+  std::string strText;
   if (g_Windowing.IsFullScreen())
     strText = StringUtils::Format("%ix%i@%.2f - %s | %s",
                                   info.iScreenWidth,

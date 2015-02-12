@@ -48,7 +48,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       unsigned int iControl = message.GetSenderId();
       if (iControl == CONTROL_VIS_BUTTON)
       {
-        CStdString addonID;
+        std::string addonID;
         if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
           CSettings::Get().SetString("musicplayer.visualisation", addonID);

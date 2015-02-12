@@ -110,64 +110,64 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.IsProtocol("androidapp"))
     return new CGUIViewStateWindowPrograms(items);
 
-  if (windowId==WINDOW_MUSIC_NAV)
+  if (windowId == WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
 
-  if (windowId==WINDOW_MUSIC_FILES)
+  if (windowId == WINDOW_MUSIC_FILES)
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (windowId==WINDOW_MUSIC_PLAYLIST)
+  if (windowId == WINDOW_MUSIC_PLAYLIST)
     return new CGUIViewStateWindowMusicPlaylist(items);
 
-  if (windowId==WINDOW_MUSIC_PLAYLIST_EDITOR)
+  if (windowId == WINDOW_MUSIC_PLAYLIST_EDITOR)
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (windowId==WINDOW_VIDEO_FILES)
+  if (windowId == WINDOW_VIDEO_FILES)
     return new CGUIViewStateWindowVideoFiles(items);
 
-  if (windowId==WINDOW_VIDEO_NAV)
+  if (windowId == WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoNav(items);
 
-  if (windowId==WINDOW_VIDEO_PLAYLIST)
+  if (windowId == WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
 
-  if (windowId==WINDOW_TV_CHANNELS)
+  if (windowId == WINDOW_TV_CHANNELS)
     return new CGUIViewStateWindowPVRChannels(windowId, items);
 
-  if (windowId==WINDOW_TV_RECORDINGS)
+  if (windowId == WINDOW_TV_RECORDINGS)
     return new CGUIViewStateWindowPVRRecordings(windowId, items);
 
-  if (windowId==WINDOW_TV_GUIDE)
+  if (windowId == WINDOW_TV_GUIDE)
     return new CGUIViewStateWindowPVRGuide(windowId, items);
 
-  if (windowId==WINDOW_TV_TIMERS)
+  if (windowId == WINDOW_TV_TIMERS)
     return new CGUIViewStateWindowPVRTimers(windowId, items);
 
-  if (windowId==WINDOW_TV_SEARCH)
+  if (windowId == WINDOW_TV_SEARCH)
     return new CGUIViewStateWindowPVRSearch(windowId, items);
 
-  if (windowId==WINDOW_RADIO_CHANNELS)
+  if (windowId == WINDOW_RADIO_CHANNELS)
       return new CGUIViewStateWindowPVRChannels(windowId, items);
 
-  if (windowId==WINDOW_RADIO_RECORDINGS)
+  if (windowId == WINDOW_RADIO_RECORDINGS)
     return new CGUIViewStateWindowPVRRecordings(windowId, items);
 
-  if (windowId==WINDOW_RADIO_GUIDE)
+  if (windowId == WINDOW_RADIO_GUIDE)
     return new CGUIViewStateWindowPVRGuide(windowId, items);
 
-  if (windowId==WINDOW_RADIO_TIMERS)
+  if (windowId == WINDOW_RADIO_TIMERS)
     return new CGUIViewStateWindowPVRTimers(windowId, items);
 
-  if (windowId==WINDOW_RADIO_SEARCH)
+  if (windowId == WINDOW_RADIO_SEARCH)
     return new CGUIViewStateWindowPVRSearch(windowId, items);
 
-  if (windowId==WINDOW_PICTURES)
+  if (windowId == WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
 
-  if (windowId==WINDOW_PROGRAMS)
+  if (windowId == WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
   
-  if (windowId==WINDOW_ADDON_BROWSER)
+  if (windowId == WINDOW_ADDON_BROWSER)
     return new CGUIViewStateAddonBrowser(items);
 
   //  Use as fallback/default
@@ -176,46 +176,32 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
 CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
-  m_currentViewAsControl=0;
-  m_currentSortMethod=0;
+  m_currentViewAsControl = 0;
+  m_currentSortMethod = 0;
   m_playlist = PLAYLIST_NONE;
-  m_sortOrder = SortOrderAscending;
 }
 
 CGUIViewState::~CGUIViewState()
-{
-}
-
-SortOrder CGUIViewState::GetDisplaySortOrder() const
-{
-  // we actually treat some sort orders in reverse, so that we can have
-  // the one sort order variable to save but it can be ascending usually,
-  // and descending for the views which should be usually descending.
-  // default sort order for date, size, program count + rating is reversed
-  SortDescription sorting = GetSortMethod();
-  if (sorting.sortBy == SortByDate || sorting.sortBy == SortBySize || sorting.sortBy == SortByPlaycount ||
-      sorting.sortBy == SortByRating || sorting.sortBy == SortByProgramCount ||
-      sorting.sortBy == SortByBitrate || sorting.sortBy == SortByListeners)
-  {
-    if (m_sortOrder == SortOrderAscending)
-      return SortOrderDescending;
-    if (m_sortOrder == SortOrderDescending)
-      return SortOrderAscending;
-  }
-
-  return m_sortOrder;
-}
+{ }
 
 SortOrder CGUIViewState::SetNextSortOrder()
 {
-  if (m_sortOrder == SortOrderAscending)
+  if (GetSortOrder() == SortOrderAscending)
     SetSortOrder(SortOrderDescending);
   else
     SetSortOrder(SortOrderAscending);
 
   SaveViewState();
 
-  return m_sortOrder;
+  return GetSortOrder();
+}
+
+SortOrder CGUIViewState::GetSortOrder() const
+{
+  if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
+    return m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder;
+
+  return SortOrderAscending;
 }
 
 int CGUIViewState::GetViewAsControl() const
@@ -240,9 +226,8 @@ void CGUIViewState::SaveViewAsControl(int viewAsControl)
 SortDescription CGUIViewState::GetSortMethod() const
 {
   SortDescription sorting;
-  if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
+  if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
     sorting = m_sortMethods[m_currentSortMethod].m_sortDescription;
-  sorting.sortOrder = m_sortOrder;
 
   return sorting;
 }
@@ -254,7 +239,7 @@ bool CGUIViewState::HasMultipleSortMethods() const
 
 int CGUIViewState::GetSortMethodLabel() const
 {
-  if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
+  if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
     return m_sortMethods[m_currentSortMethod].m_buttonLabel;
 
   return 551; // default sort method label 'Name'
@@ -262,9 +247,9 @@ int CGUIViewState::GetSortMethodLabel() const
 
 void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 {
-  if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
+  if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
   {
-    masks=m_sortMethods[m_currentSortMethod].m_labelMasks;
+    masks = m_sortMethods[m_currentSortMethod].m_labelMasks;
     return;
   }
 
@@ -275,19 +260,32 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
   return;
 }
 
-void CGUIViewState::AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes /* = SortAttributeNone */)
+void CGUIViewState::AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes /* = SortAttributeNone */, SortOrder sortOrder /* = SortOrderNone */)
 {
-  AddSortMethod(sortBy, sortAttributes, buttonLabel, labelMasks);
+  AddSortMethod(sortBy, sortAttributes, buttonLabel, labelMasks, sortOrder);
 }
 
-void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks)
+void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks, SortOrder sortOrder /* = SortOrderNone */)
 {
   for (size_t i = 0; i < m_sortMethods.size(); ++i)
     if (m_sortMethods[i].m_sortDescription.sortBy == sortBy)
       return;
 
-  SORT_METHOD_DETAILS sort;
+  // handle unspecified sort order
+  if (sortBy != SortByNone && sortOrder == SortOrderNone)
+  {
+    // the following sort methods are sorted in descending order by default
+    if (sortBy == SortByDate || sortBy == SortBySize || sortBy == SortByPlaycount ||
+        sortBy == SortByRating || sortBy == SortByProgramCount ||
+        sortBy == SortByBitrate || sortBy == SortByListeners)
+      sortOrder = SortOrderDescending;
+    else
+      sortOrder = SortOrderAscending;
+  }
+
+  GUIViewSortDetails sort;
   sort.m_sortDescription.sortBy = sortBy;
+  sort.m_sortDescription.sortOrder = sortOrder;
   sort.m_sortDescription.sortAttributes = sortAttributes;
   sort.m_buttonLabel = buttonLabel;
   sort.m_labelMasks = labelMasks;
@@ -296,7 +294,7 @@ void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
 
 void CGUIViewState::AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks)
 {
-  AddSortMethod(sortDescription.sortBy, sortDescription.sortAttributes, buttonLabel, labelMasks);
+  AddSortMethod(sortDescription.sortBy, sortDescription.sortAttributes, buttonLabel, labelMasks, sortDescription.sortOrder);
 }
 
 void CGUIViewState::SetCurrentSortMethod(int method)
@@ -309,28 +307,28 @@ void CGUIViewState::SetCurrentSortMethod(int method)
   if (sortBy < SortByNone || sortBy > SortByRandom)
     return; // invalid
 
-  SetSortMethod(sortBy, sortAttributes);
+  SetSortMethod(sortBy);
   SaveViewState();
 }
 
-void CGUIViewState::SetSortMethod(SortBy sortBy, SortAttribute sortAttributes /* = SortAttributeNone */)
+void CGUIViewState::SetSortMethod(SortBy sortBy, SortOrder sortOrder /* = SortOrderNone */)
 {
   for (int i = 0; i < (int)m_sortMethods.size(); ++i)
   {
-    if (m_sortMethods[i].m_sortDescription.sortBy == sortBy &&
-       // don't care about SortAttributeIgnoreFolders as it wasn't part of the old sorting comparison
-       (m_sortMethods[i].m_sortDescription.sortAttributes & ~SortAttributeIgnoreFolders) == (sortAttributes & ~SortAttributeIgnoreFolders))
+    if (m_sortMethods[i].m_sortDescription.sortBy == sortBy)
     {
       m_currentSortMethod = i;
       break;
     }
   }
-  SetSortOrder(m_sortOrder);
+
+  if (sortOrder != SortOrderNone)
+    SetSortOrder(sortOrder);
 }
 
 void CGUIViewState::SetSortMethod(SortDescription sortDescription)
 {
-  return SetSortMethod(sortDescription.sortBy, sortDescription.sortAttributes);
+  return SetSortMethod(sortDescription.sortBy, sortDescription.sortOrder);
 }
 
 SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
@@ -341,7 +339,6 @@ SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
     m_currentSortMethod = 0;
   if (m_currentSortMethod < 0)
     m_currentSortMethod = m_sortMethods.size() ? (int)m_sortMethods.size() - 1 : 0;
-  SetSortOrder(m_sortOrder);
 
   SaveViewState();
 
@@ -378,7 +375,7 @@ const std::string& CGUIViewState::GetPlaylistDirectory()
 
 void CGUIViewState::SetPlaylistDirectory(const std::string& strDirectory)
 {
-  m_strPlaylistDirectory=strDirectory;
+  m_strPlaylistDirectory = strDirectory;
   URIUtils::RemoveSlashAtEnd(m_strPlaylistDirectory);
 }
 
@@ -387,10 +384,10 @@ bool CGUIViewState::IsCurrentPlaylistDirectory(const std::string& strDirectory)
   if (g_playlistPlayer.GetCurrentPlaylist()!=GetPlaylist())
     return false;
 
-  std::string strDir=strDirectory;
+  std::string strDir = strDirectory;
   URIUtils::RemoveSlashAtEnd(strDir);
 
-  return (m_strPlaylistDirectory==strDir);
+  return m_strPlaylistDirectory == strDir;
 }
 
 bool CGUIViewState::AutoPlayNextItem()
@@ -470,64 +467,55 @@ void CGUIViewState::AddLiveTVSources()
   }
 }
 
-CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
-{
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
-  SetSortMethod(SortByLabel);
-
-  SetViewAsControl(DEFAULT_VIEW_LIST);
-
-  SetSortOrder(SortOrderAscending);
-}
-
 void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 {
-  if (GetSortMethod().sortBy == SortByNone)
-    m_sortOrder = SortOrderNone;
-  else if (sortOrder == SortOrderNone)
-    m_sortOrder = SortOrderAscending;
-  else
-    m_sortOrder = sortOrder;
+  if (sortOrder == SortOrderNone)
+    return;
+
+  if (m_currentSortMethod < 0 || m_currentSortMethod >= (int)m_sortMethods.size())
+    return;
+
+  m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder = sortOrder;
 }
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)
 { // get our view state from the db
   CViewDatabase db;
-  if (db.Open())
+  if (!db.Open())
+    return;
+
+  CViewState state;
+  if (db.GetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin")) ||
+      db.GetViewState(path, windowID, state, ""))
   {
-    CViewState state;
-    if (db.GetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin")) ||
-        db.GetViewState(path, windowID, state, ""))
-    {
-      SetViewAsControl(state.m_viewMode);
-      SetSortMethod(state.m_sortDescription);
-      SetSortOrder(state.m_sortDescription.sortOrder);
-    }
-    db.Close();
+    SetViewAsControl(state.m_viewMode);
+    SetSortMethod(state.m_sortDescription);
   }
 }
 
 void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewState *viewState)
 {
   CViewDatabase db;
-  if (db.Open())
-  {
-    SortDescription sorting = GetSortMethod();
-    CViewState state(m_currentViewAsControl, sorting.sortBy, m_sortOrder, sorting.sortAttributes);
-    if (viewState)
-      *viewState = state;
-    db.SetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin"));
-    db.Close();
-    if (viewState)
-      CSettings::Get().Save();
-  }
+  if (!db.Open())
+    return;
+
+  SortDescription sorting = GetSortMethod();
+  CViewState state(m_currentViewAsControl, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes);
+  if (viewState != NULL)
+    *viewState = state;
+
+  db.SetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin"));
+  db.Close();
+
+  if (viewState != NULL)
+    CSettings::Get().Save();
 }
 
 void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)
 {
   SortBy sortBy = SortByPlaylistOrder;
-  int         sortLabel = 559;
-  SortOrder   sortOrder = SortOrderAscending;
+  int sortLabel = 559;
+  SortOrder sortOrder = SortOrderAscending;
   if (items.HasProperty(PROPERTY_SORT_ORDER))
   {
     sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
@@ -537,18 +525,25 @@ void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS lab
       sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
     }
   }
-  AddSortMethod(sortBy, sortLabel, label_masks);
-  SetSortMethod(sortBy);
-  SetSortOrder(sortOrder);
+
+  AddSortMethod(sortBy, sortLabel, label_masks, SortAttributeNone, sortOrder);
+  SetSortMethod(sortBy, sortOrder);
 }
 
+CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
+{
+  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
+  SetSortMethod(SortByLabel);
+
+  SetViewAsControl(DEFAULT_VIEW_LIST);
+}
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
 {
-  const vector<SORT_METHOD_DETAILS> &details = items.GetSortDetails();
+  const vector<GUIViewSortDetails> &details = items.GetSortDetails();
   for (unsigned int i = 0; i < details.size(); i++)
   {
-    const SORT_METHOD_DETAILS sort = details[i];
+    const GUIViewSortDetails sort = details[i];
     AddSortMethod(sort.m_sortDescription, sort.m_buttonLabel, sort.m_labelMasks);
   }
   // TODO: Should default sort/view mode be specified?
@@ -556,7 +551,6 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(SortOrderAscending);
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
@@ -570,6 +564,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
         m_playlist = PLAYLIST_VIDEO;
     }
   }
+
   LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
@@ -582,7 +577,6 @@ CGUIViewStateLibrary::CGUIViewStateLibrary(const CFileItemList &items) : CGUIVie
 {
   AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
   SetSortMethod(SortByNone);
-  SetSortOrder(SortOrderNone);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
@@ -593,4 +587,3 @@ void CGUIViewStateLibrary::SaveViewState()
 {
   SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
 }
-

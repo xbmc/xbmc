@@ -21,7 +21,9 @@
 
 #if defined(TARGET_DARWIN)
 #include "VideoSync.h"
-class CVideoSyncCocoa : public CVideoSync
+#include "guilib/DispResource.h"
+
+class CVideoSyncCocoa : public CVideoSync, IDispResource
 {
 public:
   virtual bool Setup(PUPDATECLOCK func);
@@ -29,9 +31,11 @@ public:
   virtual void Cleanup();
   virtual float GetFps();
   void VblankHandler(int64_t nowtime, double fps);
+  virtual void OnResetDevice();
 private:
   void UpdateFPS(double fps);
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+  volatile bool m_abort;
 };
 
 #endif

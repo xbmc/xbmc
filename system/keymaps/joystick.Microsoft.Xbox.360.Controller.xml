@@ -71,29 +71,90 @@
 <!-- 1   left        D-Pad Left       -->
 <!-- 1   right       D-Pad Right      -->
 
-
-
 <keymap>
+  <joystickFamily name="Xbox 360 Controller (xpad)">
+     <name>Microsoft X-Box 360 pad</name>
+     <name>Xbox 360 Wireless Receiver (XBOX)</name>
+     <name>Xbox 360 Wireless Receiver</name>
+     <name>Thrustmaster Gamepad GP XID</name>
+     <name>Logitech Gamepad F310</name>
+     <name>Logitech Gamepad F510</name>
+     <name>Logitech Gamepad F710</name>
+     <name>Logitech Chillstream Controller</name>
+     <name>Mad Catz Wired Xbox 360 Controller</name>
+     <name>Mad Catz Street Fighter IV FightStick SE</name>
+     <name>Mad Catz Xbox 360 Controller</name>
+     <name>Mad Catz Street Fighter IV FightPad</name>
+     <name>Mad Catz Wired Xbox 360 Controller (SFIV)</name>
+     <name>Mad Catz Beat Pad</name>
+     <name>Mad Catz Xbox controller - MW2</name>
+     <name>Mad Catz JOYTECH NEO SE Advanced GamePad</name>
+     <name>Saitek Cyborg Rumble Pad - PC/Xbox 360</name>
+     <name>Saitek P3200 Rumble Pad - PC/Xbox 360</name>
+     <name>Super SFIV FightStick TE S</name>
+     <name>HSM3 Xbox360 dancepad</name>
+     <name>Afterglow AX.1 Gamepad for Xbox 360</name>
+     <name>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</name>
+     <name>Afterglow Gamepad for Xbox 360</name>
+     <name>Rock Candy Gamepad for Xbox 360</name>
+     <name>Logic3 Controller</name>
+     <name>Logic3 Controller</name>
+     <name>Hori Fighting Stick EX2</name>
+     <name>Hori Real Arcade Pro.EX</name>
+     <name>Honey Bee Xbox360 dancepad</name>
+     <name>PDP AFTERGLOW AX.1</name>
+     <name>RedOctane Guitar Hero X-plorer</name>
+     <name>BigBen Interactive XBOX 360 Controller</name>
+     <name>Razer Sabertooth</name>
+     <name>Power A Mini Pro Elite</name>
+     <name>Xbox Airflo wired controller</name>
+     <name>Batarang Xbox 360 controller</name>
+     <name>Joytech Neo-Se Take2</name>
+     <name>Razer Onza Tournament Edition</name>
+     <name>Razer Onza Classic Edition</name>
+     <name>Razer Sabertooth</name>
+     <name>Harmonix Rock Band Guitar</name>
+     <name>Harmonix Rock Band Drumkit</name>
+     <name>Mad Catz Xbox 360 Controller</name>
+     <name>MLG Pro Circuit Controller (Xbox)</name>
+     <name>Street Fighter IV FightPad</name>
+     <name>Street Fighter IV FightStick TE</name>
+     <name>Harmonix Xbox 360 Controller</name>
+     <name>Gamestop Xbox 360 Controller</name>
+     <name>Tron Xbox 360 controller</name>
+     <name>Razer Atrox Arcade Stick</name>
+     <name>PowerA MINI PROEX Controller</name>
+     <name>Xbox Airflo wired controller</name>
+     <name>Hori XBOX 360 EX 2 with Turbo</name>
+     <name>Hori Real Arcade Pro VX-SA</name>
+     <name>Hori SOULCALIBUR V Stick</name>
+     <name>Thrustmaster, Inc. GPX Controller</name>
+     <name>Thrustmaster Ferrari 458 Racing Wheel</name>
+     <name>Microsoft X-Box One pad</name>  
+  </joystickFamily>
+  <joystickFamily name="Xbox 360 Controller (Windows)">
+     <name>Afterglow Gamepad for Xbox 360 (Controller)</name>
+     <name>Controller (Gamepad F310)</name>
+     <name>Controller (Gamepad for Xbox 360)</name>
+     <name>Controller (Rumble Gamepad F510)</name>
+     <name>Controller (Wireless Gamepad F710)</name>
+     <name>Controller (Xbox 360 Wireless Receiver for Windows)</name>
+     <name>Controller (Xbox wireless receiver for windows)</name>
+     <name>Controller (XBOX360 GAMEPAD)</name>
+     <name>Controller (Batarang wired controller (XBOX))</name>
+     <name>Wireless Gamepad F710 (Controller)</name>
+     <name>XBOX 360 For Windows</name>
+     <name>XBOX 360 For Windows (Controller)</name>
+     <name>Xbox 360 Wireless Controller</name>
+     <name>Xbox Receiver for Windows (Wireless Controller)</name>
+     <name>Xbox wireless receiver for windows (Controller)</name>
+     <name>Gamepad F310 (Controller)</name>
+     <name>Razer Sabertooth Elite (Controller)</name>
+     <name>Controller (Razer Sabertooth Elite)</name>
+     <name>Controller (XBOX One For Windows)</name>
+  </joystickFamily>  
   <global>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <!-- A selects. B goes back. X gets context menu. Y goes fullscreen and back. -->
       <button id="1">Select</button>
       <button id="2">Back</button>
@@ -128,17 +189,7 @@
       <hat id="1" position="left">Left</hat>
       <hat id="1" position="right">Right</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="1">Select</button>
       <button id="2">Back</button>
       <button id="3">ContextMenu</button>
@@ -171,110 +222,26 @@
     </joystick>
   </global>
   <Home>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="8">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="8">Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
   <MyFiles>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="6">Highlight</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="6">Highlight</button>
     </joystick>
   </MyFiles>
   <MyMusicPlaylist>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="5">Delete</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="5">Delete</button>
     </joystick>
   </MyMusicPlaylist>
@@ -283,25 +250,7 @@
   <MyMusicLibrary>
   </MyMusicLibrary>
   <FullscreenVideo>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <!--
             A pauses and starts the video.
             B stops the video.
@@ -334,17 +283,7 @@
       <hat id="1" position="left">StepBack</hat>
       <hat id="1" position="right">StepForward</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
@@ -368,141 +307,58 @@
     </joystick>
   </FullscreenVideo>
   <FullscreenLiveTV>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="11">ChannelUp</button>
       <button id="12">ChannelDown</button>
-      <button id="13">PreviousChannelGroup</button>
-      <button id="14">NextChannelGroup</button>
+      <button id="13">StepBack</button>
+      <button id="14">StepForward</button>
       <hat id="1" position="up">ChannelUp</hat>
       <hat id="1" position="down">ChannelDown</hat>
-      <hat id="1" position="left">PreviousChannelGroup</hat>
-      <hat id="1" position="right">NextChannelGroup</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
-      <button id="12">PreviousChannelGroup</button>
-      <button id="13">NextChannelGroup</button>
+    <joystick family="Xbox 360 Controller (xpad)">
+      <button id="12">StepBack</button>
+      <button id="13">StepForward</button>
       <button id="14">ChannelUp</button>
       <button id="15">ChannelDown</button>
       <hat id="1" position="up">ChannelUp</hat>
       <hat id="1" position="down">ChannelDown</hat>
-      <hat id="1" position="left">PreviousChannelGroup</hat>
-      <hat id="1" position="right">NextChannelGroup</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
     </joystick>
   </FullscreenLiveTV>
   <FullscreenRadio>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="11">ChannelUp</button>
       <button id="12">ChannelDown</button>
-      <button id="13">PreviousChannelGroup</button>
-      <button id="14">NextChannelGroup</button>
+      <button id="13">StepBack</button>
+      <button id="14">StepForward</button>
       <hat id="1" position="up">ChannelUp</hat>
       <hat id="1" position="down">ChannelDown</hat>
-      <hat id="1" position="left">PreviousChannelGroup</hat>
-      <hat id="1" position="right">NextChannelGroup</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <button id="12">PreviousChannelGroup</button>
-      <button id="13">NextChannelGroup</button>
+    <joystick family="Xbox 360 Controller (xpad)">
+      <button id="12">StepBack</button>
+      <button id="13">StepForward</button>
       <button id="14">ChannelUp</button>
       <button id="15">ChannelDown</button>
       <hat id="1" position="up">ChannelUp</hat>
       <hat id="1" position="down">ChannelDown</hat>
-      <hat id="1" position="left">PreviousChannelGroup</hat>
-      <hat id="1" position="right">NextChannelGroup</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
     </joystick>
   </FullscreenRadio>
   <FullscreenInfo>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
@@ -511,65 +367,19 @@
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="3">Close</button>
       <button id="9">Close</button>
       <button id="10">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">Close</button>
       <button id="10">Close</button>
       <button id="11">Close</button>
     </joystick>
   </PlayerControls>
   <Visualisation>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">ActivateWindow(MusicOSD)</button>
@@ -587,17 +397,7 @@
       <hat id="1" position="left">PreviousPreset</hat>
       <hat id="1" position="right">NextPreset</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">ActivateWindow(MusicOSD)</button>
@@ -617,135 +417,34 @@
     </joystick>
   </Visualisation>
   <MusicOSD>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
+
       <button id="3">Close</button>
       <button id="6">Info</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">Close</button>
       <button id="6">Info</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="4">ZoomNormal</button>
@@ -764,17 +463,7 @@
       <hat id="1" position="left">PreviousPicture</hat>
       <hat id="1" position="right">NextPicture</hat>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="4">ZoomNormal</button>
@@ -795,157 +484,45 @@
     </joystick>
   </SlideShow>
   <ScreenCalibration>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
   </GUICalibration>
   <VideoOSD>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="3">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">Close</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
       <button id="8">Info</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
@@ -953,114 +530,30 @@
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="5">Delete</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="5">Delete</button>
     </joystick>
   </VideoBookmarks>
@@ -1069,61 +562,15 @@
   <MyVideoFiles>
   </MyVideoFiles>
   <MyVideoPlaylist>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="5">Delete</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="5">Delete</button>
     </joystick>
   </MyVideoPlaylist>
   <VirtualKeyboard>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-	  <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
@@ -1131,17 +578,7 @@
       <axis id="3" limit="+1">CursorLeft</axis>
       <axis id="3" limit="-1">CursorRight</axis>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
@@ -1151,515 +588,123 @@
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
       <button id="3">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
       <button id="3">Close</button>
     </joystick>
   </ContextMenu>
   <Scripts>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="3">Info</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="3">Info</button>
     </joystick>
   </Scripts>
   <Settings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">PreviousMenu</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">PreviousMenu</button>
     </joystick>
   </Settings>
   <AddonInformation>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </AddonInformation>
   <AddonSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
   <TextViewer>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </TextViewer>
   <shutdownmenu>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">PreviousMenu</button>
       <button id="9">PreviousMenu</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">PreviousMenu</button>
       <button id="10">PreviousMenu</button>
     </joystick>
   </shutdownmenu>
   <submenu>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">PreviousMenu</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">PreviousMenu</button>
     </joystick>
   </submenu>
   <MusicInformation>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </MusicInformation>
   <MovieInformation>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">Close</button>
     </joystick>
   </MovieInformation>
   <NumericInput>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">BackSpace</button>
       <button id="9">Enter</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">BackSpace</button>
       <button id="10">Enter</button>
     </joystick>
   </NumericInput>
   <GamepadInput>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="9">Stop</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="11">Stop</button>
     </joystick>
   </GamepadInput>
   <LockSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
-    <joystick name="Controller (XBOX 360 For Windows)">
-      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
-      <altname>Controller (Gamepad F310)</altname>
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (Rumble Gamepad F510)</altname>
-      <altname>Controller (Wireless Gamepad F710)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>Controller (XBOX360 GAMEPAD)</altname>
-      <altname>Controller (Batarang wired controller (XBOX))</altname>
-      <altname>Wireless Gamepad F710 (Controller)</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-      <altname>Gamepad F310 (Controller)</altname>
-      <altname>Razer Sabertooth Elite (Controller)</altname>
-      <altname>Controller (XBOX One For Windows)</altname>
+    <joystick family="Xbox 360 Controller (Windows)">
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
     </joystick>
-    <joystick name="Microsoft X-Box 360 pad">
-      <altname>BigBen Interactive XBOX 360 Controller</altname>
-      <altname>Generic X-Box pad</altname>
-      <altname>Logitech Chillstream Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller</altname>
-      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
-      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
-      <altname>Xbox 360 Wireless Receiver</altname>
-      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
-      <altname>Razer Sabertooth</altname>
+    <joystick family="Xbox 360 Controller (xpad)">
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>

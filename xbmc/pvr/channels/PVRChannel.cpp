@@ -56,7 +56,6 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsUserSetIcon          = false;
   m_bIsUserSetName          = false;
   m_bIsLocked               = false;
-  m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
   m_iCachedChannelNumber    = 0;
@@ -95,7 +94,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iCachedChannelNumber    = 0;
   m_iCachedSubChannelNumber = 0;
   m_iClientId               = iClientId;
-  m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = !channel.bIsHidden;
   m_strEPGScraper           = "client";
@@ -124,7 +122,6 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_bIsLocked               = channel.m_bIsLocked;
   m_strIconPath             = channel.m_strIconPath;
   m_strChannelName          = channel.m_strChannelName;
-  m_bIsVirtual              = channel.m_bIsVirtual;
   m_iLastWatched            = channel.m_iLastWatched;
   m_bEPGEnabled             = channel.m_bEPGEnabled;
   m_strEPGScraper           = channel.m_strEPGScraper;
@@ -161,17 +158,18 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["channelnumber"] = m_iCachedChannelNumber;
   value["subchannelnumber"] = m_iCachedSubChannelNumber;
   
-  CEpgInfoTag epg;
-  if (GetEPGNow(epg))
+  CEpgInfoTagPtr epg(GetEPGNow());
+  if (epg)
   {
     // add the properties of the current EPG item to the main object
-    epg.Serialize(value);
+    epg->Serialize(value);
     // and add an extra sub-object with only the current EPG details
-    epg.Serialize(value["broadcastnow"]);
+    epg->Serialize(value["broadcastnow"]);
   }
 
-  if (GetEPGNext(epg))
-    epg.Serialize(value["broadcastnext"]);
+  epg = GetEPGNext();
+  if (epg)
+    epg->Serialize(value["broadcastnext"]);
 }
 
 /********** XBMC related channel methods **********/
@@ -230,7 +228,6 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
     m_strClientChannelName            = channel.ClientChannelName();
 
     UpdateEncryptionName();
-    m_bChanged = true;
     SetChanged();
   }
 
@@ -243,7 +240,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   return m_bChanged;
 }
 
-bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
+bool CPVRChannel::Persist()
 {
   {
     // not changed
@@ -254,7 +251,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    bool bReturn = database->Persist(*this, bQueueWrite);
+    bool bReturn = database->Persist(*this);
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
@@ -379,36 +376,17 @@ bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUser
   return false;
 }
 
-bool CPVRChannel::SetVirtual(bool bIsVirtual)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_bIsVirtual != bIsVirtual)
-  {
-    /* update the virtual flag */
-    m_bIsVirtual = bIsVirtual;
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
 bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 {
-  CSingleLock lock(m_critSection);
-
-  if (m_iLastWatched != iLastWatched)
   {
-    /* update last watched  */
-    m_iLastWatched = iLastWatched;
-    SetChanged();
-    m_bChanged = true;
+    CSingleLock lock(m_critSection);
 
-    return true;
+    if (m_iLastWatched != iLastWatched)
+      m_iLastWatched = iLastWatched;
   }
+
+  if (CPVRDatabase *database = GetPVRDatabase())
+    return database->UpdateLastWatched(*this);
 
   return false;
 }
@@ -616,16 +594,24 @@ bool CPVRChannel::ClearEPG() const
   return true;
 }
 
-bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
+CEpgInfoTagPtr CPVRChannel::GetEPGNow() const
 {
   CEpg *epg = GetEPG();
-  return epg ? epg->InfoTagNow(tag) : false;
+  if (epg)
+    return epg->GetTagNow();
+
+  CEpgInfoTagPtr empty;
+  return empty;
 }
 
-bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
+CEpgInfoTagPtr CPVRChannel::GetEPGNext() const
 {
   CEpg *epg = GetEPG();
-  return epg ? epg->InfoTagNext(tag) : false;
+  if (epg)
+    return epg->GetTagNext();
+
+  CEpgInfoTagPtr empty;
+  return empty;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
@@ -762,12 +748,6 @@ std::string CPVRChannel::ChannelName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strChannelName;
-}
-
-bool CPVRChannel::IsVirtual(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bIsVirtual;
 }
 
 time_t CPVRChannel::LastWatched(void) const

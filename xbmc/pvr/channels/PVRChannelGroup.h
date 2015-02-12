@@ -418,11 +418,9 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
+    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
 
     bool ToggleChannelLocked(const CFileItem &channel);
-
-    virtual bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { return false; }
 
     /*!
      * @brief Get a channel given the channel number on the client.
@@ -441,6 +439,9 @@ namespace PVR
 
     void SetSelectedGroup(bool bSetTo);
     bool IsSelectedGroup(void) const;
+
+    void SetHidden(bool bHidden);
+    bool IsHidden(void) const;
 
   protected:
     /*!
@@ -518,8 +519,6 @@ namespace PVR
      */
     CFileItemPtr GetByChannelUpDown(const CFileItem &channel, bool bChannelUp) const;
 
-    void ResetChannelNumbers(void);
-
     /*!
      * @brief Get a channel given it's channel ID.
      * @param iChannelID The channel ID.
@@ -538,6 +537,7 @@ namespace PVR
     bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
     bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
     time_t           m_iLastWatched;                /*!< last time group has been watched */
+    bool             m_bHidden;                     /*!< true if this group is hidden, false otherwise */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
     
@@ -549,7 +549,7 @@ namespace PVR
   class CPVRPersistGroupJob : public CJob
   {
   public:
-    CPVRPersistGroupJob(CPVRChannelGroupPtr group) { m_group = group; }
+    CPVRPersistGroupJob(CPVRChannelGroupPtr group): m_group(group) {}
     virtual ~CPVRPersistGroupJob() {}
     const char *GetType() const { return "pvr-channelgroup-persist"; }
 

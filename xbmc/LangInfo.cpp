@@ -44,28 +44,26 @@ using namespace PVR;
 
 #define SPEED_UNIT_STRINGS 20200
 
-CLangInfo::CRegion::CRegion(const CRegion& region)
+CLangInfo::CRegion::CRegion(const CRegion& region):
+  m_strGuiCharSet(region.m_strGuiCharSet),
+  m_strSubtitleCharSet(region.m_strSubtitleCharSet),
+  m_strDVDMenuLanguage(region.m_strDVDMenuLanguage),
+  m_strDVDAudioLanguage(region.m_strDVDAudioLanguage),
+  m_strDVDSubtitleLanguage(region.m_strDVDSubtitleLanguage),
+  m_strLangLocaleName(region.m_strLangLocaleName),
+  m_strLangLocaleCodeTwoChar(region.m_strLangLocaleCodeTwoChar),
+  m_strRegionLocaleName(region.m_strRegionLocaleName),
+  m_forceUnicodeFont(region.m_forceUnicodeFont),
+  m_strName(region.m_strName),
+  m_strDateFormatLong(region.m_strDateFormatLong),
+  m_strDateFormatShort(region.m_strDateFormatShort),
+  m_strTimeFormat(region.m_strTimeFormat),
+  m_strTimeZone(region.m_strTimeZone)
 {
-  m_strName=region.m_strName;
-  m_forceUnicodeFont=region.m_forceUnicodeFont;
-  m_strGuiCharSet=region.m_strGuiCharSet;
-  m_strSubtitleCharSet=region.m_strSubtitleCharSet;
-  m_strDVDMenuLanguage=region.m_strDVDMenuLanguage;
-  m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
-  m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
-  m_strLangLocaleName = region.m_strLangLocaleName;
-  m_strLangLocaleCodeTwoChar = region.m_strLangLocaleCodeTwoChar;
-  m_strRegionLocaleName = region.m_strRegionLocaleName;
-
-  m_strDateFormatShort=region.m_strDateFormatShort;
-  m_strDateFormatLong=region.m_strDateFormatLong;
-  m_strTimeFormat=region.m_strTimeFormat;
   m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM];
   m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM];
-  m_strTimeFormat=region.m_strTimeFormat;
   m_tempUnit=region.m_tempUnit;
   m_speedUnit=region.m_speedUnit;
-  m_strTimeZone = region.m_strTimeZone;
 }
 
 CLangInfo::CRegion::CRegion()

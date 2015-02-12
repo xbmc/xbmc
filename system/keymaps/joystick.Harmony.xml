@@ -177,16 +177,16 @@
     <joystick name="Harmony">
       <!-- up       	-->      <button id="1">ChannelUp</button>
       <!-- down      	-->      <button id="2">ChannelDown</button>
-      <!-- left       	-->      <button id="3">PreviousChannelGroup</button>
-      <!-- right      	-->      <button id="4">NextChannelGroup</button>
+      <!-- left       	-->      <button id="3">StepBack</button>
+      <!-- right      	-->      <button id="4">StepForward</button>
     </joystick>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <joystick name="Harmony">
       <!-- up       	-->      <button id="1">ChannelUp</button>
       <!-- down      	-->      <button id="2">ChannelDown</button>
-      <!-- left       	-->      <button id="3">PreviousChannelGroup</button>
-      <!-- right      	-->      <button id="4">NextChannelGroup</button>
+      <!-- left       	-->      <button id="3">StepBack</button>
+      <!-- right      	-->      <button id="4">StepForward</button>
     </joystick>
   </FullscreenRadio>
   <FullscreenInfo>

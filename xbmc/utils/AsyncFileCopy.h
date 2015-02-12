@@ -20,9 +20,9 @@
  *
  */
 
+#include <string>
 #include "threads/Thread.h"
 #include "filesystem/File.h"
-#include "utils/StdString.h"
 
 class CAsyncFileCopy : public CThread, public XFILE::IFileCallback
 {
@@ -32,7 +32,7 @@ public:
 
   /// \brief  Main routine to copy files from one source to another.
   /// \return true if successful, and false if it failed or was cancelled.
-  bool Copy(const CStdString &from, const CStdString &to, const CStdString &heading);
+  bool Copy(const std::string &from, const std::string &to, const std::string &heading);
 
   /// \brief callback from CFile::Copy()
   virtual bool OnFileCallback(void *pContext, int ipercent, float avgSpeed);
@@ -48,7 +48,7 @@ private:
   volatile bool m_running;     ///< whether or not the copy operation is still in progress
   
   bool m_succeeded;  ///< whether or not the copy operation was successful
-  CStdString m_from; ///< source URL to copy from
-  CStdString m_to;   ///< destination URL to copy to
+  std::string m_from; ///< source URL to copy from
+  std::string m_to;   ///< destination URL to copy to
   CEvent m_event;    ///< event to set to force an update
 };

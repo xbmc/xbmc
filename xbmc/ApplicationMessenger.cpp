@@ -118,7 +118,7 @@ void CApplicationMessenger::Cleanup()
 {
   CSingleLock lock (m_critSection);
 
-  while (m_vecMessages.size() > 0)
+  while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
 
@@ -129,7 +129,7 @@ void CApplicationMessenger::Cleanup()
     m_vecMessages.pop();
   }
 
-  while (m_vecWindowMessages.size() > 0)
+  while (!m_vecWindowMessages.empty())
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
 
@@ -203,7 +203,7 @@ void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
   CSingleLock lock (m_critSection);
-  while (m_vecMessages.size() > 0)
+  while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
@@ -448,8 +448,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         pSlideShow->Reset();
 
         CFileItemList items;
-        CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_advancedSettings.m_pictureExtensions;
+        std::string strPath = pMsg->strParam;
+        std::string extensions = g_advancedSettings.m_pictureExtensions;
         if (pMsg->param1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -871,7 +871,7 @@ void CApplicationMessenger::ProcessWindowMessages()
 {
   CSingleLock lock (m_critSection);
   //message type is window, process window messages
-  while (m_vecWindowMessages.size() > 0)
+  while (!m_vecWindowMessages.empty())
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
@@ -891,7 +891,7 @@ void CApplicationMessenger::ProcessWindowMessages()
   }
 }
 
-int CApplicationMessenger::SetResponse(CStdString response)
+int CApplicationMessenger::SetResponse(std::string response)
 {
   CSingleLock lock (m_critBuffer);
   bufferResponse=response;
@@ -899,16 +899,16 @@ int CApplicationMessenger::SetResponse(CStdString response)
   return 0;
 }
 
-CStdString CApplicationMessenger::GetResponse()
+std::string CApplicationMessenger::GetResponse()
 {
-  CStdString tmp;
+  std::string tmp;
   CSingleLock lock (m_critBuffer);
   tmp=bufferResponse;
   lock.Leave();
   return tmp;
 }
 
-void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
+void CApplicationMessenger::ExecBuiltIn(const std::string &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
   tMsg.strParam = command;
@@ -921,15 +921,15 @@ void CApplicationMessenger::MediaPlay(string filename)
   MediaPlay(item);
 }
 
-void CApplicationMessenger::MediaPlay(const CFileItem &item)
+void CApplicationMessenger::MediaPlay(const CFileItem &item, bool wait)
 {
   CFileItemList list;
   list.Add(CFileItemPtr(new CFileItem(item)));
 
-  MediaPlay(list);
+  MediaPlay(list, 0, wait);
 }
 
-void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
+void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song, bool wait)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
   CFileItemList* listcopy = new CFileItemList();
@@ -937,7 +937,7 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.param1 = song;
   tMsg.param2 = 1;
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
@@ -1211,7 +1211,7 @@ void CApplicationMessenger::Minimize(bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const std::string &param)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
@@ -1220,7 +1220,7 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::ExecOS(const CStdString &command, bool waitExit)
+void CApplicationMessenger::ExecOS(const std::string &command, bool waitExit)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_OS};
   tMsg.strParam = command;
@@ -1316,7 +1316,7 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+void CApplicationMessenger::SetSplashMessage(const std::string& message)
 {
   ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
   tMsg.strParam = message;

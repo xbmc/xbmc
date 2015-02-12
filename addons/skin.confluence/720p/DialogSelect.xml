@@ -236,9 +236,9 @@
 					</control>
 					<control type="textbox">
 						<left>90</left>
-						<top>30</top>
+						<top>32</top>
 						<width>450</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -289,9 +289,9 @@
 					</control>
 					<control type="textbox">
 						<left>90</left>
-						<top>30</top>
+						<top>32</top>
 						<width>450</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>selected</selectedcolor>

@@ -187,7 +187,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
 
 void CEventClient::ProcessEvents()
 {
-  if (m_readyPackets.size() > 0)
+  if (!m_readyPackets.empty())
   {
     while ( ! m_readyPackets.empty() )
     {
@@ -204,7 +204,7 @@ void CEventClient::ProcessEvents()
 bool CEventClient::GetNextAction(CEventAction &action)
 {
   CSingleLock lock(m_critSection);
-  if (m_actionQueue.size() > 0)
+  if (!m_actionQueue.empty())
   {
     // grab the next action in line
     action = m_actionQueue.front();
@@ -722,7 +722,7 @@ void CEventClient::FreePacketQueues()
     {
       delete iter->second;
     }
-    iter++;
+    ++iter;
   }
   m_seqPackets.clear();
 }
@@ -755,7 +755,7 @@ unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, flo
 
   list<CEventButtonState> repeat;
   list<CEventButtonState>::iterator it;
-  for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); it++)
+  for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); ++it)
   {
     bcode        = it->KeyCode();
     joystickName = it->JoystickName();

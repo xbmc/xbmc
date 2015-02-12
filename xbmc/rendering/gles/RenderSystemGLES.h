@@ -39,6 +39,8 @@ enum ESHADERMETHOD
   SM_TEXTURE_RGBA,
   SM_TEXTURE_RGBA_OES,
   SM_TEXTURE_RGBA_BLENDCOLOR,
+  SM_TEXTURE_RGBA_BOB,
+  SM_TEXTURE_RGBA_BOB_OES,
   SM_ESHADERCOUNT
 };
 
@@ -63,6 +65,8 @@ public:
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
 
+  virtual bool ScissorsCanEffectClipping();
+  virtual CRect ClipRectToScissorRect(const CRect &rect);
   virtual void SetScissors(const CRect& rect);
   virtual void ResetScissors();
 
@@ -89,6 +93,11 @@ public:
   GLint GUIShaderGetCoord1();
   GLint GUIShaderGetUniCol();
   GLint GUIShaderGetCoord0Matrix();
+  GLint GUIShaderGetField();
+  GLint GUIShaderGetStep();
+  GLint GUIShaderGetContrast();
+  GLint GUIShaderGetBrightness();
+  GLint GUIShaderGetModel();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
@@ -104,13 +113,11 @@ protected:
   int        m_width;
   int        m_height;
 
-  CStdString m_RenderExtensions;
+  std::string m_RenderExtensions;
 
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method
   ESHADERMETHOD m_method;      // Current GUI Shader method
 
-  GLfloat    m_view[16];
-  GLfloat    m_projection[16];
   GLint      m_viewPort[4];
 };
 

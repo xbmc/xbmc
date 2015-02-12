@@ -112,16 +112,16 @@
   </FullscreenVideo>
   <FullscreenLiveTV>
     <gamepad>
-      <dpadleft>PreviousChannelGroup</dpadleft>
-      <dpadright>NextChannelGroup</dpadright>
+      <dpadleft>StepBack</dpadleft>
+      <dpadright>StepForward</dpadright>
       <dpadup>ChannelUp</dpadup>
       <dpaddown>ChannelDown</dpaddown>
     </gamepad>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <gamepad>
-      <dpadleft>PreviousChannelGroup</dpadleft>
-      <dpadright>NextChannelGroup</dpadright>
+      <dpadleft>StepBack</dpadleft>
+      <dpadright>StepForward</dpadright>
       <dpadup>ChannelUp</dpadup>
       <dpaddown>ChannelDown</dpaddown>
     </gamepad>

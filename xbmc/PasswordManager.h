@@ -19,8 +19,9 @@
  *
  */
 
-#include "utils/StdString.h"
 #include <map>
+#include <string>
+#include <stdint.h>
 #include "threads/CriticalSection.h"
 
 class CURL;
@@ -92,11 +93,11 @@ private:
 
   void Load();
   void Save() const;
-  CStdString GetLookupPath(const CURL &url) const;
-  CStdString GetServerLookup(const CStdString &path) const;
+  std::string GetLookupPath(const CURL &url) const;
+  std::string GetServerLookup(const std::string &path) const;
 
-  std::map<CStdString, CStdString>  m_temporaryCache;
-  std::map<CStdString, CStdString>  m_permanentCache;
+  std::map<std::string, std::string>  m_temporaryCache;
+  std::map<std::string, std::string>  m_permanentCache;
   bool m_loaded;
 
   CCriticalSection m_critSection;

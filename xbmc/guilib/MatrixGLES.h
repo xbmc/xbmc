@@ -1,6 +1,6 @@
 #pragma once
 /*
-*      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,28 +19,22 @@
  *
  */
 
-#include <vector>
-#include <string.h>
 
-enum EMATRIXMODE
-{
-  MM_PROJECTION = 0,
-  MM_MODELVIEW,
-  MM_TEXTURE,
-  MM_MATRIXSIZE  // Must be last! used for size of matrices
-};
+#include <cmath>
+#include <cstring>
+#include <stack>
 
-class CMatrixGLES
+class CMatrixGL
 {
 public:
-  CMatrixGLES();
-  ~CMatrixGLES();
-  
-  GLfloat* GetMatrix(EMATRIXMODE mode);
 
-  void MatrixMode(EMATRIXMODE mode);
-  void PushMatrix();
-  void PopMatrix();
+  CMatrixGL()                                  { memset(&m_pMatrix, 0, sizeof(m_pMatrix)); };
+  CMatrixGL(const float matrix[16])            { memcpy(m_pMatrix, matrix, sizeof(m_pMatrix)); }
+  CMatrixGL(const CMatrixGL &rhs )             { memcpy(m_pMatrix, rhs.m_pMatrix, sizeof(m_pMatrix)); }
+  CMatrixGL &operator=( const CMatrixGL &rhs ) { memcpy(m_pMatrix, rhs.m_pMatrix, sizeof(m_pMatrix)); return *this;}
+  operator float*()                            { return m_pMatrix; }
+  operator const float*() const                { return m_pMatrix; }
+
   void LoadIdentity();
   void Ortho(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f);
   void Ortho2D(GLfloat l, GLfloat r, GLfloat b, GLfloat t);
@@ -50,29 +44,52 @@ public:
   void Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
   void MultMatrixf(const GLfloat *matrix);
   void LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz);
-  void PrintMatrix(void);
+
   static bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
-protected:
+  void PrintMatrix(void);
 
-  struct MatrixWrapper 
-  {
-    MatrixWrapper(){ memset(&m_values, 0, sizeof(m_values)); };
-    MatrixWrapper( const float values[16]) { memcpy(m_values,values,sizeof(m_values)); }
-    MatrixWrapper( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); }
-    MatrixWrapper &operator=( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); return *this;}
-    operator float*() { return m_values; }
-    operator const float*() const { return m_values; }
-
-    float m_values[16];
-  };
-
-  std::vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
-  GLfloat *m_pMatrix;
-  EMATRIXMODE m_matrixMode;
-#if defined(__ARM_NEON__)
-  bool m_has_neon;
-#endif
+  GLfloat m_pMatrix[16];
 };
 
-extern CMatrixGLES g_matrices;
+class CMatrixGLStack
+{
+public:
+  CMatrixGLStack(GLenum type)
+  : m_type(type)
+  {}
+
+  void Push()
+  {
+    m_stack.push(m_current);
+  }
+
+  void Clear()
+  {
+    m_stack = std::stack<CMatrixGL>();
+  }
+
+  void Pop()
+  {
+    if(!m_stack.empty())
+    {
+      m_current = m_stack.top();
+      m_stack.pop();
+    }
+  }
+
+  void Load();
+  void PopLoad() { Pop(); Load(); }
+
+  CMatrixGL& Get()        { return m_current; }
+  CMatrixGL* operator->() { return &m_current; }
+
+private:
+  GLint                 m_type;
+  std::stack<CMatrixGL> m_stack;
+  CMatrixGL             m_current;
+};
+
+extern CMatrixGLStack glMatrixModview;
+extern CMatrixGLStack glMatrixProject;
+extern CMatrixGLStack glMatrixTexture;

@@ -718,9 +718,9 @@
 				<control type="textbox">
 					<description>Description Value The Movie</description>
 					<left>0</left>
-					<top>30</top>
+					<top>32</top>
 					<width>850</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -811,36 +811,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -901,36 +882,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
@@ -1048,9 +1010,9 @@
 				<control type="textbox">
 					<description>Description Value for TVShows</description>
 					<left>10</left>
-					<top>210</top>
+					<top>212</top>
 					<width>510</width>
-					<height>190</height>
+					<height>188</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1112,9 +1074,9 @@
 				<control type="textbox">
 					<description>Description Value for TVShows</description>
 					<left>10</left>
-					<top>280</top>
+					<top>282</top>
 					<width>510</width>
-					<height>120</height>
+					<height>118</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1140,9 +1102,9 @@
 				<control type="textbox">
 					<description>Description Value for Seasons</description>
 					<left>270</left>
-					<top>0</top>
+					<top>2</top>
 					<width>250</width>
-					<height>355</height>
+					<height>353</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1197,9 +1159,9 @@
 				<control type="textbox">
 					<description>Description Value for Movie</description>
 					<left>270</left>
-					<top>0</top>
+					<top>2</top>
 					<width>250</width>
-					<height>355</height>
+					<height>353</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1265,36 +1227,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -1355,36 +1298,17 @@
 						<top>8</top>
 						<width>40</width>
 						<height>26</height>
-						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<texture>$VAR[ResolutionOverlayVar]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>!ListItem.IsStereoscopic</visible>
-					</control>
-					<control type="image">
-						<left>515</left>
-						<top>8</top>
-						<width>40</width>
-						<height>26</height>
-						<texture>flagging/lists/3D.png</texture>
-						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
-						<visible>ListItem.IsStereoscopic</visible>
+						<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 					</control>
 					<control type="image">
 						<left>555</left>
 						<top>14</top>
 						<width>20</width>
 						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>555</left>
-						<top>14</top>
-						<width>16</width>
-						<height>16</height>
-						<texture>OverlayWatching.png</texture>
-						<visible>ListItem.IsResumable</visible>
+						<texture>$VAR[OverlayVar]</texture>
+						<aspectratio align="left">keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
@@ -1513,9 +1437,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>395</top>
+					<top>397</top>
 					<width>490</width>
-					<height>170</height>
+					<height>168</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1619,9 +1543,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>395</top>
+					<top>397</top>
 					<width>490</width>
-					<height>170</height>
+					<height>168</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1780,9 +1704,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1844,9 +1768,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>145</height>
+					<height>143</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1893,9 +1817,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>540</width>
-					<height>145</height>
+					<height>143</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -1942,9 +1866,9 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>430</top>
+					<top>432</top>
 					<width>400</width>
-					<height>100</height>
+					<height>98</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>

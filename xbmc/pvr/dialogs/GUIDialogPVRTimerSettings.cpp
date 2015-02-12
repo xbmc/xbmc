@@ -52,6 +52,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
     m_tmp_iFirstDay(0),
     m_tmp_day(11),
     m_bTimerActive(false),
+    m_selectedChannelEntry(0),
     m_timerItem(NULL)
 {
   m_loadType = LOAD_EVERY_TIME;
@@ -104,15 +105,10 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
         tag->m_iClientId         = channel->ClientID();
         tag->m_bIsRadio          = channel->IsRadio();
         tag->m_iChannelNumber    = channel->ChannelNumber();
+       
+        // Update channel pointer from above values
+        tag->UpdateChannel();
       }
-      else
-      {
-        tag->m_iClientChannelUid = PVR_VIRTUAL_CHANNEL_UID;
-        tag->m_iClientId         = PVR_VIRTUAL_CLIENT_ID;
-        tag->m_iChannelNumber    = 0;
-      }
-      // Update channel pointer from above values
-      tag->UpdateChannel();
     }
   }
   else if (settingId == SETTING_TMR_DAY)
@@ -352,11 +348,10 @@ CSetting* CGUIDialogPVRTimerSettings::AddChannelNames(CSettingGroup *group, bool
   std::vector< std::pair<std::string, int> > options;
   getChannelNames(bRadio, options, m_selectedChannelEntry, true);
   
-  int timerChannelID;
+  // select the correct channel
+  int timerChannelID = 0;
   if (m_timerItem->GetPVRTimerInfoTag()->ChannelTag())
     timerChannelID = m_timerItem->GetPVRTimerInfoTag()->ChannelTag()->ChannelID();
-  else
-    timerChannelID = PVR_VIRTUAL_CHANNEL_UID;
 
   for (std::vector< std::pair<std::string, int> >::const_iterator option = options.begin(); option != options.end(); ++option)
   {
@@ -448,10 +443,6 @@ void CGUIDialogPVRTimerSettings::getChannelNames(bool bRadio, std::vector< std::
   g_PVRChannelGroups->GetGroupAll(bRadio)->GetMembers(channelsList);
   
   int entry = 0;
-  list.push_back(std::make_pair("0 dummy", entry));
-  if (updateChannelEntries)
-    m_channelEntries.insert(std::make_pair(std::make_pair(bRadio, entry), PVR_VIRTUAL_CHANNEL_UID));
-  ++entry;
 
   for (int i = 0; i < channelsList.Size(); i++)
   {

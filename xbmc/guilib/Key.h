@@ -28,7 +28,8 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
+#include <stdint.h>
 
 // Reserved 0 - 255
 //  XBIRRemote.h
@@ -88,8 +89,13 @@
 #define KEY_MOUSE_LONG_CLICK       0xE020
 #define KEY_MOUSE_WHEEL_UP         0xE101
 #define KEY_MOUSE_WHEEL_DOWN       0xE102
-#define KEY_MOUSE_DRAG             0xE103
-#define KEY_MOUSE_MOVE             0xE104
+#define KEY_MOUSE_MOVE             0xE103
+#define KEY_MOUSE_DRAG             0xE104
+#define KEY_MOUSE_DRAG_START       0xE105
+#define KEY_MOUSE_DRAG_END         0xE106
+#define KEY_MOUSE_RDRAG            0xE107
+#define KEY_MOUSE_RDRAG_START      0xE108
+#define KEY_MOUSE_RDRAG_END        0xE109
 #define KEY_MOUSE_NOOP             0xEFFF
 #define KEY_MOUSE_END              0xEFFF
 
@@ -346,6 +352,7 @@
 #define ACTION_SETTINGS_LEVEL_CHANGE  242
 
 #define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_INPUT_TEXT             244
 
 // touch actions
 #define ACTION_TOUCH_TAP              401
@@ -395,10 +402,10 @@ class CKey;
 class CAction
 {
 public:
-  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "", unsigned int holdTime = 0);
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const std::string &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
-  CAction(int actionID, const CStdString &name, const CKey &key);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const std::string &name = "");
+  CAction(int actionID, const std::string &name, const CKey &key);
   CAction(int actionID, const std::string &name);
 
   /*! \brief Identifier of the action
@@ -416,7 +423,17 @@ public:
   /*! \brief Human-readable name of the action
    \return name of the action
    */
-  const CStdString &GetName() const { return m_name; };
+  const std::string &GetName() const { return m_name; };
+  
+  /*! \brief Text of the action if any
+   \return text payload of this action.
+   */
+  const std::string &GetText() const { return m_text; };
+  
+  /*! \brief Set the text payload of the action
+   \param text to be set
+   */
+  void SetText(const std::string &text) { m_text = text; };
 
   /*! \brief Get an amount associated with this action
    \param zero-based index of amount to retrieve, defaults to 0
@@ -446,7 +463,7 @@ public:
 
 private:
   int          m_id;
-  CStdString   m_name;
+  std::string   m_name;
 
   static const unsigned int max_amounts = 4; // Must be at least 4.
   float        m_amount[max_amounts];
@@ -455,6 +472,7 @@ private:
   unsigned int m_holdTime;
   unsigned int m_buttonCode;
   wchar_t      m_unicode;
+  std::string  m_text;
 };
 
 /*!

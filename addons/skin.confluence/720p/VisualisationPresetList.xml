@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<left>240</left>
@@ -25,14 +25,13 @@
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
-			<control type="label">
+			<control type="label" id="2">
 				<description>header label</description>
 				<left>40</left>
 				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>$LOCALIZE[31048]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>selected</textcolor>
@@ -49,10 +48,10 @@
 				<onclick>PreviousMenu</onclick>
 				<texturefocus>DialogCloseButton-focus.png</texturefocus>
 				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label" id="4">
@@ -64,15 +63,15 @@
 				<label>13389</label>
 				<font>font13</font>
 			</control>
-			<control type="list" id="2">
+			<control type="list" id="5">
 				<left>40</left>
 				<top>60</top>
 				<width>720</width>
 				<height>495</height>
 				<onleft>60</onleft>
 				<onright>60</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
+				<onup>5</onup>
+				<ondown>5</ondown>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45" width="720">
@@ -103,7 +102,7 @@
 						<width>720</width>
 						<height>40</height>
 						<texture border="5">button-nofocus.png</texture>
-						<visible>!Control.HasFocus(2)</visible>
+						<visible>!Control.HasFocus(5)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
@@ -112,7 +111,7 @@
 						<width>720</width>
 						<height>40</height>
 						<texture border="5">button-focus2.png</texture>
-						<visible>Control.HasFocus(2)</visible>
+						<visible>Control.HasFocus(5)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
@@ -139,8 +138,8 @@
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
+				<onleft>5</onleft>
+				<onright>5</onright>
 				<ondown>60</ondown>
 				<onup>60</onup>
 				<showonepage>false</showonepage>
@@ -157,7 +156,7 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<textcolor>grey</textcolor>
-				<label>([COLOR=blue]$INFO[Container(2).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(2).CurrentPage]/$INFO[Container(2).NumPages][/COLOR])</label>
+				<label>([COLOR=blue]$INFO[Container(5).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(5).CurrentPage]/$INFO[Container(5).NumPages][/COLOR])</label>
 			</control>
 		</control>
 	</controls>

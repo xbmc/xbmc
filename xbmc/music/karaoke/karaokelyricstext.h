@@ -56,7 +56,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     //! UStar lyrics might have video
     virtual bool HasVideo();
-    virtual void GetVideoParameters( CStdString& path, int64_t& offset  );
+    virtual void GetVideoParameters(std::string& path, int64_t& offset  );
 
   protected:
     enum
@@ -86,7 +86,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! flags could be 0 (regular), LYRICS_NEW_LINE (this syllable should start on a new line),
     //! and LYRICS_NEW_PARAGRAPH (this syllable should start on a new paragraph).
     //! If the lyrics support pitch (i.e. Ultrastar), it also should be specified.
-    void  addLyrics( const CStdString& text, unsigned int timing, unsigned int flags = 0, unsigned int pitch = LYRICS_INVALID_PITCH );
+    void  addLyrics( const std::string& text, unsigned int timing, unsigned int flags = 0, unsigned int pitch = LYRICS_INVALID_PITCH );
 
     //! This function clears the lyrics array and resets song information
     void  clearLyrics();
@@ -98,7 +98,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     void  rescanLyrics();
 
     //! Returns string width if rendered using current font
-    float  getStringWidth( const CStdString& text );
+    float  getStringWidth( const std::string& text );
 
     //! Saves parsed lyrics into a temporary file for debugging
     void  saveLyrics();
@@ -106,10 +106,10 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! Those variables keep the song information if available, parsed from the lyrics file.
     //! It should not be based on filename, as this case will be handled internally.
     //! Should be set to "" if no information available.
-    CStdString    m_songName;
-    CStdString    m_artist;
+    std::string    m_songName;
+    std::string    m_artist;
     bool          m_hasPitch;
-    CStdString    m_videoFile;
+    std::string    m_videoFile;
     int64_t       m_videoOffset;
 
   private:
@@ -142,7 +142,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     typedef struct
     {
-      CStdString    text;
+      std::string    text;
       unsigned int   timing;
       unsigned int   flags;
       unsigned int   pitch;
@@ -163,7 +163,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! Lyrics colors
     unsigned int    m_colorLyrics;
     unsigned int    m_colorLyricsOutline;
-    CStdString       m_colorSinging;
+    std::string       m_colorSinging;
 
     //! This is index in m_lyrics pointing to current paragraph first, last and current elements
     unsigned int    m_indexEndPara;
@@ -181,10 +181,10 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     unsigned int    m_lyricsState;
 
     //! Lyrics text on screen
-    CStdString      m_currentLyrics;
+    std::string      m_currentLyrics;
 
     //! Preamble text on screen
-    CStdString      m_currentPreamble;
+    std::string      m_currentPreamble;
 
     //
     // Configuration settings

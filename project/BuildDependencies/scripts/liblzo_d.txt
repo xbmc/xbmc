@@ -1,2 +1,0 @@
-; filename                  mirror of the file									source
-lzo-2.04_win32.7z    		http://mirrors.xbmc.org/build-deps/win32/			http://www.oberhumer.com/opensource/lzo/download/lzo-2.04.tar.gz

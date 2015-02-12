@@ -97,6 +97,10 @@ public:
         }
     }
 
+    /* Samsungs devices get subtitles from header in response (for movie file), not from didl.
+       It's a way to store subtitle uri generated when building didl, to use later in http response*/
+    NPT_Result AddSubtitleUriForSecResponse(NPT_String movie_md5, NPT_String subtitle_uri);
+
 
 private:
     void OnScanCompleted(int type);

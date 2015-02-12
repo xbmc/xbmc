@@ -21,7 +21,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "utils/StdString.h"
+#include <string>
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
@@ -95,11 +95,12 @@ struct RESOLUTION_INFO
   uint32_t dwFlags;
   float fPixelRatio;
   float fRefreshRate;
-  CStdString strMode;
-  CStdString strOutput;
-  CStdString strId;
+  std::string strMode;
+  std::string strOutput;
+  std::string strId;
 public:
-  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const CStdString &mode = "")
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = ""):
+    strMode(mode)
   {
     iWidth = width;
     iHeight = height;
@@ -107,7 +108,6 @@ public:
     iScreenWidth = width;
     iScreenHeight = height;
     fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
-    strMode = mode;
     bFullScreen = true;
     fRefreshRate = 0;
     dwFlags = iSubtitles = iScreen = 0;
@@ -117,14 +117,16 @@ public:
     return iWidth * fPixelRatio / iHeight;
   }
   RESOLUTION_INFO(const RESOLUTION_INFO& res) :
-    Overscan(res.Overscan)
+    Overscan(res.Overscan),
+    strMode(res.strMode),
+    strOutput(res.strOutput),
+    strId(res.strId)
   {
     bFullScreen = res.bFullScreen;
     iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
     iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
     fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
-    strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;
     iBlanking = res.iBlanking;
   }
 };

@@ -23,15 +23,14 @@
 using namespace jni;
 int CJNIBase::m_sdk_version = -1;
 
-CJNIBase::CJNIBase(std::string classname)
+CJNIBase::CJNIBase(std::string classname):
+    m_className(classname)
 {
-  m_className = classname;
 }
 
-CJNIBase::CJNIBase(const jhobject &object)
+CJNIBase::CJNIBase(const jhobject &object):
+    m_object(object)
 {
-  m_className = "";
-  m_object = object;
   m_object.setGlobal();
 }
 

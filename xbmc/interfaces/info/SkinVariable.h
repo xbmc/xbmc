@@ -19,7 +19,8 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
+#include <vector>
 #include "guilib/GUIInfoTypes.h"
 #include "interfaces/info/InfoBool.h"
 

@@ -21,7 +21,7 @@ bool CAndroidDyload::IsSystemLib(const string &filename)
 {
   {
     CSingleLock lock(m_libLock);
-    for ( solibit i = m_libs.begin() ; i != m_libs.end(); i++ )
+    for ( solibit i = m_libs.begin() ; i != m_libs.end(); ++i )
     {
       if (i->first == filename)
         return i->second.system;
@@ -95,7 +95,7 @@ void* CAndroidDyload::Find(const string &filename)
 string CAndroidDyload::Find(void *handle)
 {
   CSingleLock lock(m_libLock);
-  for ( solibit i = m_libs.begin() ; i != m_libs.end(); i++ )
+  for ( solibit i = m_libs.begin() ; i != m_libs.end(); ++i )
   {
     if (i->second.handle == handle)
       return i->first;
@@ -106,7 +106,7 @@ string CAndroidDyload::Find(void *handle)
 void *CAndroidDyload::FindInDeps(const string &filename)
 {
   CSingleLock lock(m_depsLock);
-  for (std::list<recursivelibdep>::iterator k = m_lib.deps.begin(); k != m_lib.deps.end(); k++)
+  for (std::list<recursivelibdep>::iterator k = m_lib.deps.begin(); k != m_lib.deps.end(); ++k)
   {
     if (k->filename == filename)
       return k->handle;
@@ -294,11 +294,11 @@ void* CAndroidDyload::Open_Internal(string filename, bool checkSystem)
 int CAndroidDyload::Close(void *handle)
 {
   CSingleLock lock(m_depsLock);
-  for (std::list<recursivelib>::iterator i = m_recursivelibs.begin(); i != m_recursivelibs.end(); i++)
+  for (std::list<recursivelib>::iterator i = m_recursivelibs.begin(); i != m_recursivelibs.end(); ++i)
   {
     if (i->handle == handle) 
     {
-      for (std::list<recursivelibdep>::iterator j = i->deps.begin(); j != i->deps.end(); j++)
+      for (std::list<recursivelibdep>::iterator j = i->deps.begin(); j != i->deps.end(); ++j)
       {
         if (DecRef(j->filename) == 0)
         {
@@ -322,16 +322,16 @@ int CAndroidDyload::Close(void *handle)
 void CAndroidDyload::Dump()
 {
   CSingleLock liblock(m_libLock);
-  for ( solibit i = m_libs.begin() ; i != m_libs.end(); i++ )
+  for ( solibit i = m_libs.begin() ; i != m_libs.end(); ++i )
   {
     CXBMCApp::android_printf("lib: %s. refcount: %i",i->first.c_str(), i->second.refcount);
   }
 
   CSingleLock depslock(m_depsLock);
-  for (std::list<recursivelib>::iterator i = m_recursivelibs.begin(); i != m_recursivelibs.end(); i++)
+  for (std::list<recursivelib>::iterator i = m_recursivelibs.begin(); i != m_recursivelibs.end(); ++i)
   {
     CXBMCApp::android_printf("xb_dlopen: recursive dep: %s", i->filename.c_str());
-    for (std::list<recursivelibdep>::iterator j = i->deps.begin(); j != i->deps.end(); j++)
+    for (std::list<recursivelibdep>::iterator j = i->deps.begin(); j != i->deps.end(); ++j)
     {
       CXBMCApp::android_printf("xb_dlopen: recursive dep: \\-- %s", j->filename.c_str());
     }

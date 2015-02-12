@@ -137,7 +137,7 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
   else if (property == "skin")
   {
-    CStdString skinId = CSettings::Get().GetString("lookandfeel.skin");
+    std::string skinId = CSettings::Get().GetString("lookandfeel.skin");
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(skinId, addon, ADDON_SKIN);
 

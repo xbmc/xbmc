@@ -21,6 +21,7 @@
 #include "GUIWindowPVRGuide.h"
 
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
@@ -42,7 +43,6 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml")
 {
   m_bUpdateRequired = false;
-  m_bShowHiddenChannels = false;
   m_cachedTimeline = new CFileItemList;
   m_cachedChannelGroup = CPVRChannelGroupPtr(new CPVRChannelGroup);
 }
@@ -79,7 +79,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     else
       buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);  /* delete timer */
   }
-  else if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
       buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
@@ -97,7 +97,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_END, 19064);             /* go to end */
   }
 
-  if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
+  if (pItem->HasEPGInfoTag() &&
+      pItem->GetEPGInfoTag()->HasPVRChannel() &&
       g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
@@ -209,6 +210,14 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
       }
       break;
     }
+    case GUI_MSG_CHANGE_VIEW_MODE:
+    {
+      // let's set the view mode first before update
+      CGUIWindowPVRBase::OnMessage(message);
+      Refresh(true);
+      bReturn = true;
+      break;
+    }
     case GUI_MSG_REFRESH_LIST:
       switch(message.GetParam1())
       {
@@ -265,10 +274,10 @@ void CGUIWindowPVRGuide::UpdateViewChannel()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
 
   m_vecItems->Clear();
-  if ((!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0) && currentChannel.get())
+  if (!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0)
   {
     CFileItemPtr item;
-    item.reset(new CFileItem("pvr://guide/" + currentChannel->ChannelName() + "/empty.epg", false));
+    item.reset(new CFileItem("pvr://guide/channel/empty.epg", false));
     item->SetLabel(g_localizeStrings.Get(19028));
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);

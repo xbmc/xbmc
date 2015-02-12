@@ -36,21 +36,6 @@ extern "C" {
 
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
-class CPTSOutputQueue
-{
-private:
-  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
-  TPTSItem m_current;
-  std::queue<TPTSItem> m_queue;
-  CCriticalSection m_sync;
-
-public:
-  CPTSOutputQueue();
-  void Add(double pts, double delay, double duration, double timestamp);
-  void Flush();
-  double Current(double timestamp);
-};
-
 class CSingleLock;
 
 class CDVDAudio
@@ -82,7 +67,8 @@ public:
 
   IAEStream *m_pAudioStream;
 protected:
-  CPTSOutputQueue m_time;
+  double m_playingPts;
+  double m_timeOfPts;
   CCriticalSection m_critSection;
 
   int m_iBitrate;

@@ -45,11 +45,11 @@ CKeyboardLayout::CKeyboardLayout(const std::string &name, const TiXmlElement &el
       StringUtils::ToLower(modifiers);
 
       std::vector<std::string> variants = StringUtils::Split(modifiers, ",");
-      for (std::vector<std::string>::const_iterator itv = variants.begin(); itv != variants.end(); itv++)
+      for (std::vector<std::string>::const_iterator itv = variants.begin(); itv != variants.end(); ++itv)
       {
         unsigned int iKeys = MODIFIER_KEY_NONE;
         std::vector<std::string> keys = StringUtils::Split(*itv, "+");
-        for (std::vector<std::string>::const_iterator it = keys.begin(); it != keys.end(); it++)
+        for (std::vector<std::string>::const_iterator it = keys.begin(); it != keys.end(); ++it)
         {
           std::string strKey = *it;
           if (strKey == "shift")
@@ -71,7 +71,7 @@ CKeyboardLayout::CKeyboardLayout(const std::string &name, const TiXmlElement &el
         std::vector<std::string> chars = BreakCharacters(strRow);
         if (!modifierKeysSet.empty())
         {
-          for (std::set<unsigned int>::const_iterator it = modifierKeysSet.begin(); it != modifierKeysSet.end(); it++)
+          for (std::set<unsigned int>::const_iterator it = modifierKeysSet.begin(); it != modifierKeysSet.end(); ++it)
             m_keyboards[*it].push_back(chars);
         }
         else
@@ -127,7 +127,7 @@ std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &cha
 CKeyboardLayout CKeyboardLayout::Load(const std::string& layout)
 {
   std::vector<CKeyboardLayout> layouts = LoadLayouts();
-  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); it++)
+  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); ++it)
   {
     if (it->GetName() == layout)
       return *it;
@@ -159,7 +159,7 @@ std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
 void CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   std::vector<CKeyboardLayout> layouts = LoadLayouts();
-  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); it++)
+  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); ++it)
   {
     std::string name = it->GetName();
     list.push_back(make_pair(name, name));

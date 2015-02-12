@@ -27,16 +27,16 @@
 using namespace std;
 using namespace MUSIC_GRABBER;
 
-CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
+CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL):
+  m_strTitle2(strAlbumInfo)
 {
-  m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
   m_relevance = -1;
   m_bLoaded = false;
 }
 
-CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist,
-  const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
+CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbum, const std::string& strArtist,
+  const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
   m_album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);

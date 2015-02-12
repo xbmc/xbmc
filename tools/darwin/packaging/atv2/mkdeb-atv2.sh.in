@@ -4,7 +4,7 @@
 XBMC_DEPENDS_ROOT=@DEPENDS_ROOT_FOR_XCODE@
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
-DSYM_TARGET_DIR=${XBMC_DEPENDS_ROOT}/dSyms
+DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
 DSYM_FILENAME=@APP_NAME@.frappliance.dSYM
 
 if [ ${SWITCH:-""} = "debug" ]; then

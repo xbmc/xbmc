@@ -393,7 +393,7 @@ void CGUIControl::SetEnabled(bool bEnable)
   }
 }
 
-void CGUIControl::SetEnableCondition(const CStdString &expression)
+void CGUIControl::SetEnableCondition(const std::string &expression)
 {
   if (expression == "true")
     m_enabled = true;
@@ -511,6 +511,8 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
   {
     m_forceHidden = !bVisible;
     SetInvalid();
+    if (m_forceHidden)
+      MarkDirtyRegion();
   }
   if (m_forceHidden)
   { // reset any visible animations that are in process
@@ -629,7 +631,7 @@ void CGUIControl::SetInitialVisibility()
   MarkDirtyRegion();
 }
 
-void CGUIControl::SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus)
+void CGUIControl::SetVisibleCondition(const std::string &expression, const std::string &allowHiddenFocus)
 {
   if (expression == "true")
     m_visible = VISIBLE;

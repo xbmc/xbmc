@@ -83,9 +83,9 @@
 					</control>
 					<control type="textbox">
 						<left>30</left>
-						<top>70</top>
+						<top>72</top>
 						<width>400</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -159,9 +159,9 @@
 					</control>
 					<control type="textbox">
 						<left>30</left>
-						<top>70</top>
+						<top>72</top>
 						<width>400</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -212,9 +212,9 @@
 					</control>
 					<control type="textbox">
 						<left>5</left>
-						<top>80</top>
+						<top>82</top>
 						<width>590</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -275,9 +275,9 @@
 					</control>
 					<control type="textbox">
 						<left>5</left>
-						<top>80</top>
+						<top>82</top>
 						<width>590</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -587,9 +587,9 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>145</top>
+						<top>147</top>
 						<width>590</width>
-						<height>70</height>
+						<height>68</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -652,9 +652,9 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>145</top>
+						<top>147</top>
 						<width>590</width>
-						<height>70</height>
+						<height>68</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -717,9 +717,9 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>145</top>
+						<top>147</top>
 						<width>590</width>
-						<height>70</height>
+						<height>68</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -809,9 +809,9 @@
 					</control>
 					<control type="textbox">
 						<left>240</left>
-						<top>40</top>
+						<top>42</top>
 						<width>350</width>
-						<height>130</height>
+						<height>128</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
@@ -831,9 +831,9 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>215</top>
+						<top>217</top>
 						<width>590</width>
-						<height>70</height>
+						<height>68</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -896,9 +896,9 @@
 					</control>
 					<control type="textbox">
 						<left>240</left>
-						<top>40</top>
+						<top>42</top>
 						<width>350</width>
-						<height>130</height>
+						<height>128</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
@@ -918,9 +918,9 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>215</top>
+						<top>217</top>
 						<width>590</width>
-						<height>70</height>
+						<height>68</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -1004,9 +1004,9 @@
 					</control>
 					<control type="textbox">
 						<left>5</left>
-						<top>80</top>
+						<top>82</top>
 						<width>590</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -1067,9 +1067,9 @@
 					</control>
 					<control type="textbox">
 						<left>5</left>
-						<top>80</top>
+						<top>82</top>
 						<width>590</width>
-						<height>50</height>
+						<height>48</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -1540,9 +1540,9 @@
 				<visible>!StringCompare(Window.Property(Alerts.Count),0)</visible>
 				<control type="textbox">
 					<left>40</left>
-					<top>115</top>
+					<top>117</top>
 					<width>570</width>
-					<height>400</height>
+					<height>398</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<selectedcolor>selected</selectedcolor>

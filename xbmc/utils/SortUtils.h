@@ -108,12 +108,12 @@ typedef struct SortDescription {
   { }
 } SortDescription;
 
-typedef struct
+typedef struct GUIViewSortDetails
 {
   SortDescription m_sortDescription;
   int m_buttonLabel;
   LABEL_MASKS m_labelMasks;
-} SORT_METHOD_DETAILS;
+} GUIViewSortDetails;
 
 typedef DatabaseResult SortItem;
 typedef boost::shared_ptr<SortItem> SortItemPtr;

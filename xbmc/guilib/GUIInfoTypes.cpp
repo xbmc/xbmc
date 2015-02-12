@@ -87,7 +87,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   std::string infoLabel(g_infoManager.GetLabel(m_info));
-  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel) : 0;
+  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
     m_color = color;
@@ -366,11 +366,11 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
     m_info.push_back(CInfoPortion(0, work, ""));
 }
 
-CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const std::string &prefix, const std::string &postfix, bool escaped /*= false */)
+CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const std::string &prefix, const std::string &postfix, bool escaped /*= false */):
+  m_prefix(prefix),
+  m_postfix(postfix)
 {
   m_info = info;
-  m_prefix = prefix;
-  m_postfix = postfix;
   m_escaped = escaped;
   // filter our prefix and postfix for comma's
   StringUtils::Replace(m_prefix, "$COMMA", ",");

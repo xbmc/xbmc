@@ -53,6 +53,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_streamFading = false;
   m_streamFreeBuffers = 0;
   m_streamIsBuffering = false;
+  m_streamIsFlushed = false;
   m_streamSlave = NULL;
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
@@ -181,8 +182,7 @@ void CActiveAEStream::RemapBuffer()
     }
 
     // swap sound packets
-    CSoundPacket *tmp = m_remapBuffer;
-    tmp = m_currentBuffer->pkt;
+    CSoundPacket *tmp = m_currentBuffer->pkt;
     m_currentBuffer->pkt = m_remapBuffer;
     m_remapBuffer = tmp;
   }
@@ -200,6 +200,8 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
   unsigned int copied = 0;
   int sourceFrames = frames;
   uint8_t* const *buf = data;
+
+  m_streamIsFlushed = false;
 
   while(copied < frames)
   {
@@ -386,10 +388,14 @@ bool CActiveAEStream::IsDrained()
 
 void CActiveAEStream::Flush()
 {
-  m_currentBuffer = NULL;
-  m_leftoverBytes = 0;
-  AE.FlushStream(this);
-  ResetFreeBuffers();
+  if (!m_streamIsFlushed)
+  {
+    m_currentBuffer = NULL;
+    m_leftoverBytes = 0;
+    AE.FlushStream(this);
+    ResetFreeBuffers();
+    m_streamIsFlushed = true;
+  }
 }
 
 float CActiveAEStream::GetAmplification()

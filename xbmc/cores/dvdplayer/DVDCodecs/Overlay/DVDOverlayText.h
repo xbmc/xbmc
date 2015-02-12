@@ -74,15 +74,15 @@ public:
       else
         m_text.assign(strText, size);
     }
-    CElementText(const std::string& text) : CElement(ELEMENT_TYPE_TEXT)
+    CElementText(const std::string& text) : CElement(ELEMENT_TYPE_TEXT),
+      m_text(text)
     {
-      m_text = text;
     }
 
     CElementText(CElementText& src)
-     : CElement(src)
+     : CElement(src),
+       m_text(src.m_text)
     {
-      m_text = src.m_text;
     }
 
     const std::string& GetText()

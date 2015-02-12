@@ -135,9 +135,9 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
       <button id="13">ChannelUp</button>
-      <button id="14">NextChannelGroup</button>
+      <button id="14">StepForward</button>
       <button id="15">ChannelDown</button>
-      <button id="16">PreviousChannelGroup</button>
+      <button id="16">StepBack</button>
     </joystick>
   </FullscreenLiveTV>
   <FullscreenRadio>
@@ -146,9 +146,9 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
       <button id="13">ChannelUp</button>
-      <button id="14">NextChannelGroup</button>
+      <button id="14">StepForward</button>
       <button id="15">ChannelDown</button>
-      <button id="16">PreviousChannelGroup</button>
+      <button id="16">StepBack</button>
     </joystick>
   </FullscreenRadio>
   <FullscreenInfo>

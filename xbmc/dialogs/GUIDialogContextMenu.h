@@ -158,11 +158,11 @@ public:
   virtual bool OnAction(const CAction& action);
   virtual void SetPosition(float posX, float posY);
 
-  static bool SourcesMenu(const std::string &strType, const CFileItemPtr item, float posX, float posY);
+  static bool SourcesMenu(const std::string &strType, const CFileItemPtr& item, float posX, float posY);
   static void SwitchMedia(const std::string& strType, const std::string& strPath);
 
-  static void GetContextButtons(const std::string &type, const CFileItemPtr item, CContextButtons &buttons);
-  static bool OnContextButton(const std::string &type, const CFileItemPtr item, CONTEXT_BUTTON button);
+  static void GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons);
+  static bool OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button);
 
   /*! \brief Show the context menu with the given choices
    \param choices the choices available for the user.

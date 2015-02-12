@@ -129,9 +129,15 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
       bNothingDown = false;
       break;
     case CButtonState::MB_DRAG_START:
+      bHold[i] = CButtonState::MB_DRAG_START;
+      bNothingDown = false;
+      break;
     case CButtonState::MB_DRAG:
+      bHold[i] = CButtonState::MB_DRAG;
+      bNothingDown = false;
+      break;
     case CButtonState::MB_DRAG_END:
-      bHold[i] = action - CButtonState::MB_DRAG_START + 1;
+      bHold[i] = CButtonState::MB_DRAG_END;
       bNothingDown = false;
       break;
     default:
@@ -163,9 +169,37 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 
   if (m_Key == KEY_MOUSE_NOOP)
   {
-    // The bHold array is set true if CButtonState::Update spots a mouse drag
-    if (bHold[MOUSE_LEFT_BUTTON])
-      m_Key = KEY_MOUSE_DRAG;
+    // The bHold array is set to the drag action
+    if (bHold[MOUSE_LEFT_BUTTON] != 0)
+    {
+      switch (bHold[MOUSE_LEFT_BUTTON])
+      {
+        case CButtonState::MB_DRAG:
+          m_Key = KEY_MOUSE_DRAG;
+          break;
+        case CButtonState::MB_DRAG_START:
+          m_Key = KEY_MOUSE_DRAG_START;
+          break;
+        case CButtonState::MB_DRAG_END:
+          m_Key = KEY_MOUSE_DRAG_END;
+          break;
+      }
+    }
+    else if (bHold[MOUSE_RIGHT_BUTTON] != 0)
+    {
+      switch (bHold[MOUSE_RIGHT_BUTTON])
+      {
+      case CButtonState::MB_DRAG:
+        m_Key = KEY_MOUSE_RDRAG;
+        break;
+      case CButtonState::MB_DRAG_START:
+        m_Key = KEY_MOUSE_RDRAG_START;
+        break;
+      case CButtonState::MB_DRAG_END:
+        m_Key = KEY_MOUSE_RDRAG_END;
+        break;
+      }
+    }
 
     // dz is +1 on wheel up and -1 on wheel down
     else if (m_mouseState.dz > 0)

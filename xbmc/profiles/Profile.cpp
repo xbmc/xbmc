@@ -22,7 +22,8 @@
 #include "GUIInfoManager.h"
 #include "utils/XMLUtils.h"
 
-CProfile::CLock::CLock(LockType type, const CStdString &password)
+CProfile::CLock::CLock(LockType type, const std::string &password):
+  code(password)
 {
   programs = false;
   pictures = false;
@@ -32,7 +33,6 @@ CProfile::CLock::CLock(LockType type, const CStdString &password)
   settings = LOCK_LEVEL::NONE;
   addonManager = false;
   mode = type;
-  code = password;
 }
 
 void CProfile::CLock::Validate()
@@ -44,11 +44,11 @@ void CProfile::CLock::Validate()
     code = "-";
 }
 
-CProfile::CProfile(const CStdString &directory, const CStdString &name, const int id)
+CProfile::CProfile(const std::string &directory, const std::string &name, const int id):
+  m_directory(directory),
+  m_name(name)
 {
   m_id = id;
-  m_directory = directory;
-  m_name = name;
   m_bDatabases = true;
   m_bCanWrite = true;
   m_bSources = true;
@@ -61,8 +61,8 @@ CProfile::~CProfile(void)
 
 void CProfile::setDate()
 {
-  CStdString strDate = g_infoManager.GetDate(true);
-  CStdString strTime = g_infoManager.GetTime();
+  std::string strDate = g_infoManager.GetDate(true);
+  std::string strTime = g_infoManager.GetTime();
   if (strDate.empty() || strTime.empty())
     setDate("-");
   else

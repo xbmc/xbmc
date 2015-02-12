@@ -167,6 +167,16 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
   }
 }
 
+CRect CGraphicContext::GetClipRegion()
+{
+  if (m_clipRegions.empty())
+    return CRect(0, 0, m_iScreenWidth, m_iScreenHeight);
+  CRect clipRegion(m_clipRegions.top());
+  if (!m_origins.empty())
+    clipRegion -= m_origins.top();
+  return clipRegion;
+}
+
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -225,8 +235,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   if (newRight > m_iScreenWidth) newRight = m_iScreenWidth;
   if (newBottom > m_iScreenHeight) newBottom = m_iScreenHeight;
 
-  ASSERT(newLeft < newRight);
-  ASSERT(newTop < newBottom);
+  assert(newLeft < newRight);
+  assert(newTop < newBottom);
 
   CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
 
@@ -877,7 +887,7 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
 
 void CGraphicContext::RestoreCameraPosition()
 { // remove the top camera from the stack
-  ASSERT(m_cameras.size());
+  assert(m_cameras.size());
   m_cameras.pop();
   UpdateCameraPosition(m_cameras.top());
 }
@@ -1011,7 +1021,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   return m_bFullScreenRoot;
 }
 
-void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
+void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 {
   g_TextureManager.SetTexturePath(strMediaDir);
   m_strMediaDir = strMediaDir;

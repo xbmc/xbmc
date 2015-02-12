@@ -125,9 +125,10 @@ namespace PVR
     /*!
      * @brief Get the list of groups.
      * @param results The file list to store the results in.
+     * @param bExcludeHidden Decides whether to filter hidden groups
      * @return The amount of items that were added.
      */
-    int GetGroupList(CFileItemList* results) const;
+    int GetGroupList(CFileItemList* results, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the previous group in this container.
@@ -191,13 +192,6 @@ namespace PVR
      * @return True when this container contains radio groups, false otherwise
      */
     bool IsRadio(void) const { return m_bRadio; }
-
-    /*!
-     * @brief Call by a guiwindow/dialog to add the groups to a control
-     * @param iWindowId The window to add the groups to.
-     * @param iControlId The control to add the groups to
-     */
-    void FillGroupsGUI(int iWindowId, int iControlId) const;
 
     /*!
      * @brief Update the contents of the groups in this container.

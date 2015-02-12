@@ -1683,8 +1683,7 @@ void CMixer::CreateVdpauMixer()
     &m_config.surfaceHeight,
     &m_config.vdpChromaType};
 
-  VdpStatus vdp_st = VDP_STATUS_ERROR;
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_create(m_config.context->GetDevice(),
+  VdpStatus vdp_st = m_config.context->GetProcs().vdp_video_mixer_create(m_config.context->GetDevice(),
                                 m_config.context->GetFeatureCount(),
                                 m_config.context->GetFeatures(),
                                 ARSIZE(parameters),
@@ -1902,8 +1901,11 @@ void CMixer::SetColor()
   else
   {
     vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
-    void const * pm_CSCMatix[] = { &m_CSCMatrix };
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    if(vdp_st != VDP_STATUS_ERROR)
+    {
+      void const * pm_CSCMatix[] = { &m_CSCMatrix };
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    }
   }
 
   CheckStatus(vdp_st, __LINE__);

@@ -30,6 +30,8 @@ REM End of main body
 
 :processFile
 CALL :setStageName Getting %1...
+SET RetryDownload=YES
+:startDownloadingFile
 IF EXIST %1 (
   ECHO Using downloaded %1
 ) ELSE (
@@ -41,7 +43,17 @@ IF EXIST %1 (
 CALL :setSubStageName Extracting %1...
 copy /b "%1" "%TMP_PATH%" || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 || exit /B 6
+%ZIP% x %1 || (
+  IF %RetryDownload%==YES (
+    POPD || EXIT /B 5
+    ECHO WARNNING! Can't extract files from archive %1!
+    ECHO WARNNING! Deleting %1 and will retry downloading.
+    del /f "%1"
+    SET RetryDownload=NO
+    GOTO startDownloadingFile
+  )
+  exit /B 6
+)
 
 dir /A:-D "%~n1\*.*" >NUL 2>NUL && (
 CALL :setSubStageName Pre-Cleaning %1...

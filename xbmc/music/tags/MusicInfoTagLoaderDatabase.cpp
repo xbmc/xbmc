@@ -34,7 +34,7 @@ CMusicInfoTagLoaderDatabase::~CMusicInfoTagLoaderDatabase()
 {
 }
 
-bool CMusicInfoTagLoaderDatabase::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderDatabase::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
   CMusicDatabase database;

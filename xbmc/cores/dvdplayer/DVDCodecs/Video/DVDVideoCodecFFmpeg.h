@@ -52,7 +52,6 @@ public:
     virtual unsigned GetAllowedReferences() { return 0; }
     virtual bool CanSkipDeint() {return false; }
     virtual const std::string Name() = 0;
-    virtual CCriticalSection* Section() { return NULL; }
   };
 
   CDVDVideoCodecFFmpeg();

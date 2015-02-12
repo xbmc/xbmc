@@ -1,0 +1,12 @@
+--- src/packet_cb.c.orig	2014-12-26 09:41:09.220220531 +0100
++++ src/packet_cb.c	2014-12-26 09:39:49.850555189 +0100
+@@ -36,6 +36,9 @@
+ #include "libssh/socket.h"
+ #include "libssh/ssh2.h"
+ #include "libssh/curve25519.h"
++#ifdef ANDROID
++#include <sys/endian.h>
++#endif
+ 
+ 
+ /**

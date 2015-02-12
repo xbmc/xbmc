@@ -127,10 +127,11 @@ tar --strip-components=1 -xf ../${ARCHIVE}
 
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 ./configure --prefix=$FFMPEG_PREFIX \
-	--extra-version="xbmc-${VERSION}" \
+	--extra-version="kodi-${VERSION}" \
 	--disable-devices \
 	--disable-ffplay \
 	--disable-ffmpeg \
+	--disable-sdl \
 	--disable-ffprobe \
 	--disable-ffserver \
 	--disable-doc \
@@ -155,6 +156,9 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-nonfree \
 	--enable-pthreads \
 	--enable-zlib \
+	--disable-mips32r2 \
+	--disable-mipsdspr1 \
+	--disable-mipsdspr2 \
         ${FLAGS}
 
 make -j ${BUILDTHREADS} 
@@ -163,6 +167,6 @@ then
   [ ${SUDO} ] && echo "Root priviledges are required to install to ${FFMPEG_PREFIX}"
   ${SUDO} make install && echo "$VERSION" > ../.ffmpeg-installed
 else
-  echo "ERROR: building ffmpeg failed"
+  echo "ERROR: Building ffmpeg failed"
   exit 1
 fi

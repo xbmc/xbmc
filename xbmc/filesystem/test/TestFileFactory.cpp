@@ -39,10 +39,10 @@ protected:
         CXBMCTestUtils::Instance().getGUISettingsFiles();
 
       std::vector<std::string>::iterator it;
-      for (it = guisettings.begin(); it < guisettings.end(); it++)
+      for (it = guisettings.begin(); it < guisettings.end(); ++it)
         CSettings::Get().Load(*it);
 
-      for (it = advancedsettings.begin(); it < advancedsettings.end(); it++)
+      for (it = advancedsettings.begin(); it < advancedsettings.end(); ++it)
         g_advancedSettings.ParseSettingsFile(*it);
 
       CSettings::Get().SetLoaded();
@@ -74,7 +74,7 @@ TEST_F(TestFileFactory, Read)
     CXBMCTestUtils::Instance().getTestFileFactoryReadUrls();
 
   std::vector<std::string>::iterator it;
-  for (it = urls.begin(); it < urls.end(); it++)
+  for (it = urls.begin(); it < urls.end(); ++it)
   {
     std::cout << "Testing URL: " << *it << std::endl;
     ASSERT_TRUE(file.Open(*it));
@@ -128,7 +128,7 @@ TEST_F(TestFileFactory, Write)
     CXBMCTestUtils::Instance().getTestFileFactoryWriteUrls();
 
   std::vector<std::string>::iterator it;
-  for (it = urls.begin(); it < urls.end(); it++)
+  for (it = urls.begin(); it < urls.end(); ++it)
   {
     std::cout << "Testing URL: " << *it << std::endl;
     std::cout << "Writing...";

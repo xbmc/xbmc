@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 //---------------------------------------------------------
 #include "ilog.h"
+#include <stdarg.h>
 
 #ifdef __GNUC__
 // The 'this' pointer counts as a parameter on member methods.

@@ -49,8 +49,8 @@ void CGUILabelControl::ShowCursor(bool bShow)
 
 void CGUILabelControl::SetCursorPos(int iPos)
 {
-  CStdString labelUTF8 = m_infoLabel.GetLabel(m_parentID);
-  CStdStringW label;
+  std::string labelUTF8 = m_infoLabel.GetLabel(m_parentID);
+  std::wstring label;
   g_charsetConverter.utf8ToW(labelUTF8, label);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
@@ -76,12 +76,12 @@ bool CGUILabelControl::UpdateColors()
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
-  CStdString label(m_infoLabel.GetLabel(m_parentID));
+  std::string label(m_infoLabel.GetLabel(m_parentID));
 
   bool changed = false;
   if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection || m_bShowCursor)
   {
-    CStdStringW utf16;
+    std::wstring utf16;
     g_charsetConverter.utf8ToW(label, utf16);
     vecText text; text.reserve(utf16.size()+1);
     vecColors colors;
@@ -216,7 +216,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-CStdString CGUILabelControl::ShortenPath(const CStdString &path)
+std::string CGUILabelControl::ShortenPath(const std::string &path)
 {
   if (m_width == 0 || path.empty())
     return path;
@@ -236,7 +236,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
   if ( cDelim == '\0' )
     return path;
 
-  CStdString workPath(path);
+  std::string workPath(path);
   // remove trailing slashes
   if (workPath.size() > 3)
     if (!StringUtils::EndsWith(workPath, "://") &&

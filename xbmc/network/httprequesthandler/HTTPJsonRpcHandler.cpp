@@ -28,65 +28,72 @@
 
 #define MAX_STRING_POST_SIZE 20000
 
-using namespace std;
-using namespace JSONRPC;
-
-bool CHTTPJsonRpcHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.compare("/jsonrpc") == 0);
 }
 
-int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPJsonRpcHandler::HandleRequest()
 {
   CHTTPClient client;
   bool isRequest = false;
-  if (request.method == POST)
+  if (m_request.method == POST)
   {
-    string contentType = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
-    // If the content-type of the request was specified, it must be application/json-rpc, application/json, or application/jsonrequest
+    std::string contentType = CWebServer::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+    // If the content-type of the m_request was specified, it must be application/json-rpc, application/json, or application/jsonrequest
     // http://www.jsonrpc.org/historical/json-rpc-over-http.html
     if (!contentType.empty() && contentType.compare("application/json-rpc") != 0 &&
         contentType.compare("application/json") != 0 && contentType.compare("application/jsonrequest") != 0)
     {
-      m_responseType = HTTPError;
-      m_responseCode = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
+      m_response.type = HTTPError;
+      m_response.status = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
       return MHD_YES;
     }
 
     isRequest = true;
   }
-  else if (request.method == GET)
+  else if (m_request.method == GET)
   {
-    map<string, string> arguments;
-    if (CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
+    std::map<std::string, std::string> arguments;
+    if (CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
     {
-      map<string, string>::const_iterator argument = arguments.find("request");
+      std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
       if (argument != arguments.end() && !argument->second.empty())
       {
-        m_request = argument->second;
+        m_requestData = argument->second;
         isRequest = true;
       }
     }
   }
 
   if (isRequest)
-    m_response = CJSONRPC::MethodCall(m_request, request.webserver, &client);
+    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
   else
   {
     // get the whole output of JSONRPC.Introspect
     CVariant result;
-    CJSONServiceDescription::Print(result, request.webserver, &client);
-    m_response = CJSONVariantWriter::Write(result, false);
+    JSONRPC::CJSONServiceDescription::Print(result, m_request.webserver, &client);
+    m_responseData = CJSONVariantWriter::Write(result, false);
   }
 
-  m_responseHeaderFields.insert(pair<string, string>(MHD_HTTP_HEADER_CONTENT_TYPE, "application/json"));
+  m_requestData.clear();
 
-  m_request.clear();
-  
-  m_responseType = HTTPMemoryDownloadNoFreeCopy;
-  m_responseCode = MHD_HTTP_OK;
+  m_responseRange.SetData(m_responseData.c_str(), m_responseData.size());
+
+  m_response.type = HTTPMemoryDownloadNoFreeCopy;
+  m_response.status = MHD_HTTP_OK;
+  m_response.contentType = "application/json";
+  m_response.totalLength = m_responseData.size();
 
   return MHD_YES;
+}
+
+HttpResponseRanges CHTTPJsonRpcHandler::GetResponseData() const
+{
+  HttpResponseRanges ranges;
+  ranges.push_back(m_responseRange);
+
+  return ranges;
 }
 
 #if (MHD_VERSION >= 0x00040001)
@@ -95,20 +102,20 @@ bool CHTTPJsonRpcHandler::appendPostData(const char *data, size_t size)
 bool CHTTPJsonRpcHandler::appendPostData(const char *data, unsigned int size)
 #endif
 {
-  if (m_request.size() + size > MAX_STRING_POST_SIZE)
+  if (m_requestData.size() + size > MAX_STRING_POST_SIZE)
   {
     CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
     return false;
   }
 
-  m_request.append(data, size);
+  m_requestData.append(data, size);
 
   return true;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetPermissionFlags()
 {
-  return OPERATION_PERMISSION_ALL;
+  return JSONRPC::OPERATION_PERMISSION_ALL;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetAnnouncementFlags()

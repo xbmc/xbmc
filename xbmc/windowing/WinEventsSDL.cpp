@@ -32,6 +32,7 @@
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
+#include "input/InputManager.h"
 #include "input/MouseStat.h"
 #include "WindowingFactory.h"
 #if defined(TARGET_DARWIN)
@@ -237,7 +238,7 @@ bool CWinEventsSDL::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        g_Joystick.Update(event);
+        CInputManager::GetInstance().UpdateJoystick(event);
         ret = true;
         break;
 #endif
@@ -455,19 +456,6 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_m: // CMD-m to minimize
       CApplicationMessenger::Get().Minimize();
-      return true;
-
-    case SDLK_v: // CMD-v to paste clipboard text
-      if (g_Windowing.IsTextInputEnabled())
-      {
-        const char *szStr = Cocoa_Paste();
-        if (szStr)
-        {
-          CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
-          msg.SetLabel(szStr);
-          g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
-        }
-      }
       return true;
 
     default:

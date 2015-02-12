@@ -23,10 +23,9 @@
 #include <stdlib.h>
 #include "utils/log.h"
 
-LibraryLoader::LibraryLoader(const std::string& libraryFile)
+LibraryLoader::LibraryLoader(const std::string& libraryFile):
+  m_fileName(libraryFile)
 {
-  m_fileName = libraryFile;
-
   size_t pos = m_fileName.find_last_of("\\/");
   if (pos != std::string::npos)
     m_path = m_fileName.substr(0, pos);

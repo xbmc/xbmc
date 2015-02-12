@@ -19,7 +19,6 @@
  */
 #include "system.h"
 #include <list>
-#include "utils/StdString.h"
 #include "VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -281,6 +280,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
 {
   CSingleLock SingleLock(m_CritSection);
   m_RefreshRate = m_pVideoSync->GetFps();
+  m_ClockSpeed = 1.0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %.3f hertz", m_RefreshRate);
 }

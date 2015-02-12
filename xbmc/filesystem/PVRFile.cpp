@@ -75,7 +75,7 @@ bool CPVRFile::Open(const CURL& url)
     CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
     if (tag && tag->HasPVRRecordingInfoTag())
     {
-      if (!g_PVRManager.OpenRecordedStream(*tag->GetPVRRecordingInfoTag()))
+      if (!g_PVRManager.OpenRecordedStream(tag->GetPVRRecordingInfoTag()))
         return false;
 
       m_isPlayRecording = true;

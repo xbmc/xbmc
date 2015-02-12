@@ -231,21 +231,7 @@
 				<aligny>center</aligny>
 				<font>font10_title</font>
 				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[31046]</label>
-				<visible>Player.Seeking</visible>
-			</control>
-			<control type="label">
-				<description>Final Seek amount Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
-				<visible>Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]</visible>
+				<label>$VAR[SeekLabel]</label>
 			</control>
 			<control type="label">
 				<description>FF Label</description>

@@ -38,14 +38,13 @@
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/Filters/RendererSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "DSUtil/DSUtil.h"
 #include "utils/CharsetConverter.h"
 #include "guilib/LocalizeStrings.h"
 #include "application.h"
 #endif
 
-
-#define SETTING_VIDEO_CROP                "video.crop"
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
 #define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
@@ -88,6 +87,7 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 
 }
 
+
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
 { }
 
@@ -114,20 +114,17 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 #ifdef HAS_DS_PLAYER
   { 
     if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-  { 
-    m_scalingMethod = static_cast<EDSSCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
-    videoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD)m_scalingMethod);
-  }
-  else 
+    { 
+      m_scalingMethod = static_cast<EDSSCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+      videoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD)m_scalingMethod);
+    }
+    else 
 #endif
-    videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
+      videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_DS_PLAYER
   }
 #endif
-
 #ifdef HAS_VIDEO_PLAYBACK
-  else if (settingId == SETTING_VIDEO_CROP)
-    videoSettings.m_Crop = static_cast<const CSettingBool*>(setting)->GetValue();
   else if (settingId == SETTING_VIDEO_VIEW_MODE)
   {
     videoSettings.m_ViewMode = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -205,13 +202,42 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   // TODO
   else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)
     Save();
+
 #ifdef HAS_DS_PLAYER
-  else if (settingId == VIDEO_SETTINGS_DS_FILTERS)
+  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
   {
+    CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+      if (!pDlg)
+        return;
+    
+    CStdString filterName;
+
+    BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
+    {
+      if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
+        continue;
+
+      Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
+      CAUUID pPages;
+      if (pProp)
+      {
+        pProp->GetPages(&pPages);
+        if (pPages.cElems > 0)
+        {
+          g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
+          pDlg->Add(filterName);
+        }
+        CoTaskMemFree(pPages.pElems);
+      }
+    }
+    EndEnumFilters
+    pDlg->SetHeading(55062);
+    pDlg->DoModal();
+
     IBaseFilter *pBF = NULL;
     CStdStringW strNameW;
 
-    g_charsetConverter.utf8ToW(setting->ToString(), strNameW);
+    g_charsetConverter.utf8ToW(pDlg->GetSelectedLabelText(), strNameW);
     if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
     {
       //Showing the property page for this filter
@@ -220,6 +246,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     }
   }
 #endif
+
 }
 
 void CGUIDialogVideoSettings::Save()
@@ -242,6 +269,13 @@ void CGUIDialogVideoSettings::Save()
     CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
     CSettings::Get().Save();
   }
+}
+
+void CGUIDialogVideoSettings::SetupView()
+{
+  CGUIDialogSettingsManualBase::SetupView();
+
+  SetHeading(13395);
 }
 
 void CGUIDialogVideoSettings::InitializeSettings()
@@ -291,7 +325,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
   CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
-
+  
   StaticIntegerSettingOptions entries;
   if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
     entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
@@ -331,10 +365,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
 
   /* remove unsupported methods */
-  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
+  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
   {
     if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
-      it++;
+      ++it;
     else
       it = entries.erase(it);
   }
@@ -355,34 +389,35 @@ void CGUIDialogVideoSettings::InitializeSettings()
   if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER)
   {
 #endif
-    entries.clear();
-    entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
-    entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
-    entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC));
-    entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
-    entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
-    entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
-    entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
-    entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
-    entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
-    //  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
-    entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
-    entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
-    entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-    entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
-    entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
-    entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
-    /* remove unsupported methods */
-    for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
-    {
-      if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
-        it++;
-      else
-        it = entries.erase(it);
-    }
+  entries.clear();
+  entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
+  entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
+  entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
+  entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
+  entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
+  entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
+  entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
+  entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
+  entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
+//  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
+  entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
+  entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
+  entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
+  entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
+  entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
+  entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
-    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+  /* remove unsupported methods */
+  for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  {
+    if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+      ++it;
+    else
+      it = entries.erase(it);
+  }
+
+  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 
 #ifdef HAS_DS_PLAYER
   }
@@ -405,13 +440,15 @@ void CGUIDialogVideoSettings::InitializeSettings()
     entries.push_back(make_pair(55013, DS_STATS_2));
     entries.push_back(make_pair(55014, DS_STATS_3));
     AddSpinner(groupVideo, VIDEO_SETTINGS_DS_STATS, 55015, 0, static_cast<int>(m_dsStats), entries);
- }
+  }
+
+  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+  {
+    AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
+  }
 #endif
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.Supports(RENDERFEATURE_CROP))
-    AddToggle(groupVideo, SETTING_VIDEO_CROP, 644, 0, videoSettings.m_Crop);
-
   if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     entries.clear();
@@ -433,36 +470,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
-/*
-#ifdef HAS_DS_PLAYER
-  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-  {
-    SettingInfo setting;
-    setting.type = SettingInfo::BUTTON;
-    setting.id = VIDEO_SETTINGS_DS_FILTERS;
-
-    BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
-    {
-      if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
-        continue;
-
-      Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
-      CAUUID pPages;
-      if (pProp)
-      {
-        pProp->GetPages(&pPages);
-        if (pPages.cElems > 0)
-        {
-          g_charsetConverter.wToUTF8(GetFilterName(pBF), setting.name);
-          m_settings.push_back(setting);
-        }
-        CoTaskMemFree(pPages.pElems);
-      }
-    }
-    EndEnumFilters
-  }
-#endif
-  */
   if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, 16312, usePopup);
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))

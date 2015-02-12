@@ -25,10 +25,10 @@
 #include "guilib/Key.h"
 #include "utils/StringUtils.h"
 
-CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &path)
+CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &path):
+  m_path(path),
+  m_label(label)
 {
-  m_label = label;
-  m_path  = path;
 }
 
 bool CAutorunMediaJob::DoWork()

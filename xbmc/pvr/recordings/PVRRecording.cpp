@@ -34,20 +34,20 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRRecordingUid::CPVRRecordingUid() :
-    m_iClientId(PVR_VIRTUAL_CLIENT_ID)
+    m_iClientId(PVR_INVALID_CLIENT_ID)
 {
 }
 
-CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId)
-{
-  m_iClientId = recordingId.m_iClientId;
-  m_strRecordingId = recordingId.m_strRecordingId;
+CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId) :
+  m_iClientId(recordingId.m_iClientId),
+  m_strRecordingId(recordingId.m_strRecordingId)
+{ 
 }
 
-CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
+CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
+  m_iClientId(iClientId),
+  m_strRecordingId(strRecordingId)
 {
-  m_iClientId = iClientId;
-  m_strRecordingId = strRecordingId;
 }
 
 bool CPVRRecordingUid::operator >(const CPVRRecordingUid& right) const
@@ -221,7 +221,7 @@ bool CPVRRecording::SetPlayCount(int count)
   return true;
 }
 
-void CPVRRecording::UpdateMetadata(void)
+void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
 {
   if (m_bGotMetaData)
     return;
@@ -231,20 +231,11 @@ void CPVRRecording::UpdateMetadata(void)
   
   if (!supportsPlayCount || !supportsLastPlayed)
   {
-    CVideoDatabase db;
-    if (db.Open())
-    {
-      if (!supportsPlayCount)
-      {
-        CFileItem pFileItem(*this);
-        m_playCount = db.GetPlayCount(pFileItem);
-      }
+    if (!supportsPlayCount)
+      m_playCount = db.GetPlayCount(m_strFileNameAndPath);
 
-      if (!supportsLastPlayed)
-        db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
-
-      db.Close();
-    }
+    if (!supportsLastPlayed)
+      db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
   }
   
   m_bGotMetaData = true;

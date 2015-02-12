@@ -21,7 +21,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 // C++ Interface: karaokelyrics
 
@@ -45,7 +45,7 @@ class CKaraokeLyrics
     virtual bool HasVideo() = 0;
 
     //! Should return video parameters if HasVideo() returned true
-    virtual void GetVideoParameters( CStdString& path, int64_t& offset  ) = 0;
+    virtual void GetVideoParameters( std::string& path, int64_t& offset  ) = 0;
 
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
@@ -68,10 +68,10 @@ class CKaraokeLyrics
     //! This function gets 'real' time since the moment song begins, corrected by using remote control
     //! to increase/decrease lyrics delays. All lyric show functions must use it to properly calculate
     //! the offset.
-    CStdString getSongFile() const;
+    std::string getSongFile() const;
 
     //! Sets the path to the lyrics file, and restores musicdb values
-    void initData( const CStdString& songPath );
+    void initData( const std::string& songPath );
 
     //! Adjusts lyrics delay
     void lyricsDelayIncrease();
@@ -85,7 +85,7 @@ class CKaraokeLyrics
     double        m_avOrigDelay;
 
     //! Current playing song
-    CStdString    m_songPath;
+    std::string   m_songPath;
     long          m_idSong;
 };
 

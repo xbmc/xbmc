@@ -3,19 +3,43 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="repositorydirectory">
+          <xs:sequence>
+            <xs:element name="dir" type="repositorydirectory" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="point" type="xs:string" use="required"/>
+          <xs:attribute name="id" type="simpleIdentifier"/>
+          <xs:attribute name="name" type="xs:string"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="repositorydirectory">
+    <xs:sequence>
       <xs:element name="info">
         <xs:complexType>
-          <xs:attribute name="compressed" type="xs:boolean"/>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="compressed" type="xs:boolean"/>
+            </xs:extension>
+          </xs:simpleContent>
         </xs:complexType>
       </xs:element>
       <xs:element name="checksum" type="xs:string"/>
       <xs:element name="datadir">
         <xs:complexType>
-          <xs:attribute name="zip" type="xs:boolean"/>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="zip" type="xs:boolean"/>
+            </xs:extension>
+          </xs:simpleContent>
         </xs:complexType>
       </xs:element>
-    </xs:complexType>
-  </xs:element>
+      <xs:element name="hashes" type="xs:boolean"/>
+    </xs:sequence>
+    <xs:attribute name="minversion" type="xs:string"/>
+  </xs:complexType>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
       <xs:pattern value="[^.]+"/>

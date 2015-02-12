@@ -19,32 +19,17 @@
  *
  */
 
-#include "File.h"
-#include "IFile.h"
+#include "filesystem/OverrideFile.h"
 
 namespace XFILE
 {
-class CSpecialProtocolFile : public IFile
+class CSpecialProtocolFile : public COverrideFile
 {
 public:
   CSpecialProtocolFile(void);
   virtual ~CSpecialProtocolFile(void);
-  virtual bool Open(const CURL& url);
-  virtual bool Exists(const CURL& url);
-  virtual int Stat(const CURL& url, struct __stat64* buffer);
-  virtual int Stat(struct __stat64* buffer);
-  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
-  virtual bool Delete(const CURL& url);
-  virtual bool Rename(const CURL& url, const CURL& urlnew);
-
-  virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
-  virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
-  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  virtual void Close();
-  virtual int64_t GetPosition();
-  virtual int64_t GetLength();
 
 protected:
-  CFile m_file;
+  virtual std::string TranslatePath(const CURL& url);
 };
 }

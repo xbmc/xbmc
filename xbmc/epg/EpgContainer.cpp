@@ -342,7 +342,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
 CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); ++it)
     if (channel.ChannelID() == it->second->ChannelID())
       return it->second;
 
@@ -598,7 +598,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       invalidTables.push_back(epg);
   }
 
-  for (vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); it++)
+  for (vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); ++it)
     DeleteEpg(**it, true);
 
   if (bInterrupted)

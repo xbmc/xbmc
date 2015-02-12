@@ -268,9 +268,9 @@
 				<control type="textbox">
 					<description>Description Value for TV Show</description>
 					<left>10</left>
-					<top>270</top>
+					<top>272</top>
 					<width>290</width>
-					<height>225</height>
+					<height>223</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>

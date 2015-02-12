@@ -32,10 +32,10 @@ enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2,
 class NetworkAccessPoint
 {
 public:
-   NetworkAccessPoint(const std::string &essId, const std::string &macAddress, int signalStrength, EncMode encryption, int channel = 0)
-   {
-      m_essId          = essId;
-      m_macAddress     = macAddress;
+    NetworkAccessPoint(const std::string &essId, const std::string &macAddress, int signalStrength, EncMode encryption, int channel = 0):
+      m_essId(essId),
+      m_macAddress(macAddress)
+    {
       m_dBm            = signalStrength;
       m_encryptionMode = encryption;
       m_channel        = channel;
@@ -110,7 +110,7 @@ public:
    virtual ~CNetwork();
 
    // Return our hostname
-   virtual std::string GetHostName(void);
+   virtual bool GetHostName(std::string& hostname);
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
@@ -146,6 +146,9 @@ public:
    void StopServices(bool bWait);
 
    static int ParseHex(char *str, unsigned char *addr);
+
+   // Return true if given name or ip address corresponds to localhost
+   bool IsLocalHost(const std::string& hostname);
 };
 
 #ifdef HAS_LINUX_NETWORK

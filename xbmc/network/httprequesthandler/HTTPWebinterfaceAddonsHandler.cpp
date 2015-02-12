@@ -19,34 +19,49 @@
  */
 
 #include "HTTPWebinterfaceAddonsHandler.h"
-#include "network/WebServer.h"
 #include "addons/AddonManager.h"
+#include "network/WebServer.h"
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
 
-using namespace std;
-using namespace ADDON;
-
-bool CHTTPWebinterfaceAddonsHandler::CheckHTTPRequest(const HTTPRequest &request)
+bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request)
 {
   return (request.url.compare("/addons") == 0 || request.url.compare("/addons/") == 0);
 }
 
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(const HTTPRequest &request)
+int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
-  m_response = ADDON_HEADER;
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
-  IVECADDONS addons_it;
-  for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
-    m_response += "<li><a href=/addons/"+ (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
+  m_responseData = ADDON_HEADER;
+  ADDON::VECADDONS addons;
+  if (!ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_WEB_INTERFACE, addons) || addons.empty())
+  {
+    m_response.type = HTTPError;
+    m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
 
-  m_response += "</ul>\n</body></html>";
+    return MHD_YES;
+  }
 
-  m_responseType = HTTPMemoryDownloadNoFreeCopy;
-  m_responseCode = MHD_HTTP_OK;
+  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
+    m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
+
+  m_responseData += "</ul>\n</body></html>";
+
+  m_responseRange.SetData(m_responseData.c_str(), m_responseData.size());
+
+  m_response.type = HTTPMemoryDownloadNoFreeCopy;
+  m_response.status = MHD_HTTP_OK;
+  m_response.contentType = "text/html";
+  m_response.totalLength = m_responseData.size();
 
   return MHD_YES;
+}
+
+HttpResponseRanges CHTTPWebinterfaceAddonsHandler::GetResponseData() const
+{
+  HttpResponseRanges ranges;
+  ranges.push_back(m_responseRange);
+
+  return ranges;
 }
 
 

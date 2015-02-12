@@ -22,6 +22,8 @@
  */
 
 // C++ Interface: karaokelyricsmanager
+//
+#include <string>
 
 class CKaraokeLyrics;
 class CGUIDialogKaraokeSongSelectorSmall;
@@ -37,7 +39,7 @@ class CKaraokeLyricsManager
     ~CKaraokeLyricsManager();
 
     //! A new song is started playing
-    bool Start( const CStdString& strSongPath );
+    bool Start( const std::string& strSongPath );
 
     //! Called when the current song is being paused or unpaused
     void SetPaused( bool now_paused );

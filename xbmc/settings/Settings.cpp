@@ -79,8 +79,10 @@
 #include "utils/SystemInfo.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/SeekHandler.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
+#include "input/InputManager.h"
 
 #ifdef HAS_DS_PLAYER  
 #include "FGLoader.h"
@@ -250,6 +252,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("stereoscopicmodes");
   m_settingsManager->UnregisterSettingOptionsFiller("preferedstereoscopicviewmodes");
   m_settingsManager->UnregisterSettingOptionsFiller("monitors");
+  m_settingsManager->UnregisterSettingOptionsFiller("videoseeksteps");
   m_settingsManager->UnregisterSettingOptionsFiller("shutdownstates");
   m_settingsManager->UnregisterSettingOptionsFiller("startupwindows");
   m_settingsManager->UnregisterSettingOptionsFiller("streamlanguages");
@@ -268,6 +271,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_advancedSettings);
   m_settingsManager->UnregisterCallback(&CMediaSettings::Get());
   m_settingsManager->UnregisterCallback(&CDisplaySettings::Get());
+  m_settingsManager->UnregisterCallback(&CSeekHandler::Get());
   m_settingsManager->UnregisterCallback(&CStereoscopicsManager::Get());
   m_settingsManager->UnregisterCallback(&g_application);
   m_settingsManager->UnregisterCallback(&g_audioManager);
@@ -275,7 +279,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_graphicsContext);
   m_settingsManager->UnregisterCallback(&g_langInfo);
 #if defined(TARGET_WINDOWS) || defined(HAS_SDL_JOYSTICK)
-  m_settingsManager->UnregisterCallback(&g_Joystick);
+  m_settingsManager->UnregisterCallback(&CInputManager::GetInstance().m_Joystick);
 #endif
   m_settingsManager->UnregisterCallback(&g_Mouse);
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
@@ -597,6 +601,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("stereoscopicmodes", CDisplaySettings::SettingOptionsStereoscopicModesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("preferedstereoscopicviewmodes", CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("monitors", CDisplaySettings::SettingOptionsMonitorsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("videoseeksteps", CSeekHandler::SettingOptionsSeekStepsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("shutdownstates", CPowerManager::SettingOptionsShutdownStatesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("startupwindows", ADDON::CSkinInfo::SettingOptionsStartupWindowsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("streamlanguages", CLangInfo::SettingOptionsStreamLanguagesFiller);
@@ -692,6 +697,11 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videoscreen.monitor");
   settingSet.insert("videoscreen.preferedstereoscopicmode");
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
+  
+  settingSet.clear();
+  settingSet.insert("videoplayer.seekdelay");
+  settingSet.insert("videoplayer.seeksteps");
+  m_settingsManager->RegisterCallback(&CSeekHandler::Get(), settingSet);
 
   settingSet.clear();
   settingSet.insert("videoscreen.stereoscopicmode");
@@ -760,7 +770,7 @@ void CSettings::InitializeISettingCallbacks()
 #if defined(HAS_SDL_JOYSTICK)
   settingSet.clear();
   settingSet.insert("input.enablejoystick");
-  m_settingsManager->RegisterCallback(&g_Joystick, settingSet);
+  m_settingsManager->RegisterCallback(&CInputManager::GetInstance().m_Joystick, settingSet);
 #endif
 
   settingSet.clear();
@@ -796,6 +806,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("pvrmanager.enabled");
   settingSet.insert("pvrmanager.channelmanager");
+  settingSet.insert("pvrmanager.groupmanager");
   settingSet.insert("pvrmanager.channelscan");
   settingSet.insert("pvrmanager.resetdb");
   settingSet.insert("pvrclient.menuhook");

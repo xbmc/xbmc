@@ -24,6 +24,7 @@
 
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
 #include "input/SDLJoystick.h"
 #include "utils/log.h"
@@ -219,8 +220,8 @@ bool CWinEventsAndroid::MessagePump()
 
       if (fabs(amount) >= ALMOST_ZERO)
       {
-        ret |= g_application.ProcessJoystickEvent(input_device.name,
-          item, input_type, amount, holdTime);
+        ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
+            input_device.name, item, input_type, amount, holdTime);
       }
     }
     else

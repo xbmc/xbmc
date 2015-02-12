@@ -23,7 +23,7 @@
 #include <Wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
 #pragma comment(lib, "comsuppw.lib")
-
+#include <string>
 
 class CWIN32Wmi
 {
@@ -35,8 +35,8 @@ public:
   void Release();
   void testquery();
 
-  std::vector<CStdString> GetWMIStrVector(CStdString& strQuery, CStdStringW& strProperty);
-  CStdString GetWMIString(CStdString& strQuery, CStdStringW& strProperty);
+  std::vector<std::string> GetWMIStrVector(std::string& strQuery, std::wstring& strProperty);
+  std::string GetWMIString(std::string& strQuery, std::wstring& strProperty);
 
 
 

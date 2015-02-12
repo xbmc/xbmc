@@ -37,7 +37,7 @@ using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
+CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
@@ -158,7 +158,7 @@ int CNfoFile::Scrape(ScraperPtr& scraper)
   return m_scurl.m_url.empty() ? 1 : 0;
 }
 
-int CNfoFile::Load(const CStdString& strFile)
+int CNfoFile::Load(const std::string& strFile)
 {
   Close();
   XFILE::CFile file;

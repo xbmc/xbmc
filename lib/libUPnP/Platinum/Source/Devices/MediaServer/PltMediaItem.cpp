@@ -260,6 +260,7 @@ PLT_MediaObject::Reset()
     m_XbmcInfo.rating = 0.0f;
     m_XbmcInfo.votes = "";
     m_XbmcInfo.artwork.Clear();
+    m_XbmcInfo.unique_identifier = "";
 
     m_Didl = "";
 
@@ -527,10 +528,49 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
             
             didl += " protocolInfo=\"";
             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo.ToString());
-            didl += "\">";
+            didl += "\"";
+            /* adding custom data */
+            NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_Resources[i].m_CustomData.GetEntries().GetFirstItem();
+            while (entry)
+            {
+                didl += " ";
+                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
+                didl += "=\"";
+                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
+                didl += "\"";
+
+                entry++;
+            }
+
+            didl += ">";
             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
             didl += "</res>";
         }
+    }
+
+    //sec resources related
+    for (NPT_Cardinal i = 0; i < m_SecResources.GetItemCount(); i++) {
+        didl += "<sec:";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
+
+        NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_SecResources[i].attributes.GetEntries().GetFirstItem();
+        while (entry)
+        {
+            didl += " sec:";
+            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
+            didl += "=\"";
+            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
+            didl += "\"";
+
+            entry++;
+        }
+
+        didl += ">";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].value);
+
+        didl += "</sec:";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
+        didl += ">";
     }
 
     // xbmc dateadded
@@ -557,6 +597,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     // xbmc artwork
     if (mask & PLT_FILTER_MASK_XBMC_ARTWORK) {
         m_XbmcInfo.artwork.ToDidl(didl, "artwork");
+    }
+
+    // xbmc unique identifier
+    if (mask & PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER && !m_XbmcInfo.unique_identifier.IsEmpty()) {
+        didl += "<xbmc:uniqueidentifier>";
+        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.unique_identifier);
+        didl += "</xbmc:uniqueidentifier>";
     }
 
     // class is required
@@ -780,6 +827,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
     m_XbmcInfo.artwork.FromDidl(children);
+
+    PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
     // we may have modified the tree to "fix" issues, so as not to break a renderer

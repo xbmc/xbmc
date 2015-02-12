@@ -224,12 +224,6 @@ namespace PVR
     bool CanSeekStream(void) const;
 
     /*!
-     * @brief Get the properties of the current playing stream content.
-     * @return A pointer to the properties or NULL if no stream is playing.
-     */
-    PVR_STREAM_PROPERTIES GetCurrentStreamProperties(void);
-
-    /*!
      * @brief Get the input format name of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
@@ -294,14 +288,13 @@ namespace PVR
      * @param tag The recording to start playing.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRRecording &tag);
+    bool OpenStream(const CPVRRecordingPtr &tag);
 
     /*!
      * @brief Get the recordings that is currently playing.
-     * @param recording A copy of the recording that is currently playing.
-     * @return True if a recording is playing, false otherwise.
+     * @return The recording that is currently playing, NULL otherwise.
      */
-    bool GetPlayingRecording(CPVRRecording &recording) const;
+    CPVRRecordingPtr GetPlayingRecording(void) const;
 
     //@}
 
@@ -551,6 +544,8 @@ namespace PVR
     bool HandlesInputStream(int iClientId) const;
 
     bool GetPlayingClient(PVR_CLIENT &client) const;
+
+    std::string GetBackendHostnameByClientId(int iClientId) const;
 
     time_t GetPlayingTime() const;
     time_t GetBufferTimeStart() const;

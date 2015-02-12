@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<variable name="typehackflagging">
-		<value condition="[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip) | substring(ListItem.FilenameAndPath,bd25) | substring(ListItem.FilenameAndPath,bd50)]">bluray</value>
-		<value condition="substring(ListItem.FilenameAndPath,hddvd)">hddvd</value>
-		<value condition="substring(ListItem.FilenameAndPath,dvd)">dvd</value>
-		<value condition="[substring(ListItem.FilenameAndPath,pdtv) | substring(ListItem.FilenameAndPath,hdtv) | substring(ListItem.FilenameAndPath,dsr)]">TV</value>
-		<value condition="substring(ListItem.FilenameAndPath,vhs)">vhs</value>
-	</variable>
-	<variable name="rating">
-		<value condition="substring(listitem.mpaa,Rated G)">mpaa_general</value>
-		<value condition="substring(listitem.mpaa,Rated PG) + !substring(listitem.mpaa,Rated PG-13)">mpaa_pg</value>
-		<value condition="substring(listitem.mpaa,Rated PG-13)">mpaa_pg13</value>
-		<value condition="substring(Listitem.mpaa,Rated R)">mpaa_restricted</value>
-		<value condition="substring(Listitem.mpaa,Rated NC)">mpaa_nc17</value>
-	</variable>
-	<variable name="videocodec">
-		<value condition="[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]">divx</value>
-		<value>$INFO[ListItem.VideoCodec]</value>
-	</variable>
 	<include name="VideoCodecFlaggingConditions">
 		<control type="image">
 			<description>Video rez Image</description>

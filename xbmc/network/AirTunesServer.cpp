@@ -262,21 +262,8 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
 
 void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *session, const void *buffer, int buflen)
 {
-  #define NUM_OF_BYTES 64
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
-  int sentBytes = 0;
-  unsigned char buf[NUM_OF_BYTES];
-
-  while (sentBytes < buflen)
-  {
-    int n = (buflen - sentBytes < NUM_OF_BYTES ? buflen - sentBytes : NUM_OF_BYTES);
-    memcpy(buf, (char*) buffer + sentBytes, n);
-
-    if (pipe->Write(buf, n) == 0)
-      return;
-
-    sentBytes += n;
-  }
+  pipe->Write(buffer, buflen);
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *session)

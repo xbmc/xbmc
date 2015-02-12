@@ -273,7 +273,7 @@ void CAirPlayServer::AnnounceToClients(int state)
   CSingleLock lock (m_connectionLock);
   
   std::vector<CTCPClient>::iterator it;
-  for (it = m_connections.begin(); it != m_connections.end(); it++)
+  for (it = m_connections.begin(); it != m_connections.end(); ++it)
   {
     std::string reverseHeader;
     std::string reverseBody;

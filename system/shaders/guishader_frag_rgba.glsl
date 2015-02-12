@@ -26,8 +26,14 @@ varying vec4      m_cord1;
 varying lowp vec4 m_colour;
 uniform int       m_method;
 
-// SM_TEXTURE_NOBLEND
+uniform float     m_brightness;
+uniform float     m_contrast;
+
 void main ()
 {
-  gl_FragColor.rgba = texture2D(m_samp0, m_cord0.xy).rgba;
+  vec4 color = texture2D(m_samp0, m_cord0.xy).rgba;
+  color = color * m_contrast;
+  color = color + m_brightness;
+
+  gl_FragColor.rgba = color;
 }

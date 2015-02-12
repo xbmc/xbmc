@@ -47,7 +47,7 @@ CMusicInfoTagLoaderCDDA::~CMusicInfoTagLoaderCDDA()
 {
 }
 
-bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
 #ifdef HAS_DVD_DRIVE
   try
@@ -77,7 +77,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
       if (cddb.queryCDinfo(pCdInfo))
       {
         // Fill the fileitems music tag with cddb information, if available
-        CStdString strTitle = cddb.getTrackTitle(iTrack);
+        std::string strTitle = cddb.getTrackTitle(iTrack);
         if (strTitle.size() > 0)
         {
           // Tracknumber
@@ -87,18 +87,18 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
           tag.SetTitle(strTitle);
 
           // Artist: Use track artist or disc artist
-          CStdString strArtist = cddb.getTrackArtist(iTrack);
+          std::string strArtist = cddb.getTrackArtist(iTrack);
           if (strArtist.empty())
             cddb.getDiskArtist(strArtist);
           tag.SetArtist(strArtist);
 
           // Album
-          CStdString strAlbum;
+          std::string strAlbum;
           cddb.getDiskTitle( strAlbum );
           tag.SetAlbum(strAlbum);
 
           // Album Artist
-          CStdString strAlbumArtist;
+          std::string strAlbumArtist;
           cddb.getDiskArtist(strAlbumArtist);
           tag.SetAlbumArtist(strAlbumArtist);
 
@@ -121,7 +121,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
       trackinfo ti = pCdInfo->GetTrackInformation(iTrack);
 
       // Fill the fileitems music tag with CD-Text information, if available
-      CStdString strTitle = ti.cdtext[CDTEXT_TITLE];
+      std::string strTitle = ti.cdtext[CDTEXT_TITLE];
       if (strTitle.size() > 0)
       {
         // Tracknumber
@@ -134,18 +134,18 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
         xbmc_cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
 
         // Artist: Use track artist or disc artist
-        CStdString strArtist = ti.cdtext[CDTEXT_PERFORMER];
+        std::string strArtist = ti.cdtext[CDTEXT_PERFORMER];
         if (strArtist.empty())
           strArtist = discCDText[CDTEXT_PERFORMER];
         tag.SetArtist(strArtist);
 
         // Album
-        CStdString strAlbum;
+        std::string strAlbum;
         strAlbum = discCDText[CDTEXT_TITLE];
         tag.SetAlbum(strAlbum);
 
         // Genre: use track or disc genre
-        CStdString strGenre = ti.cdtext[CDTEXT_GENRE];
+        std::string strGenre = ti.cdtext[CDTEXT_GENRE];
         if (strGenre.empty())
           strGenre = discCDText[CDTEXT_GENRE];
         tag.SetGenre( strGenre );

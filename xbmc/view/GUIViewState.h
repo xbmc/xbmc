@@ -45,23 +45,26 @@ public:
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
 
   SortOrder SetNextSortOrder();
-  SortOrder GetSortOrder() const { return m_sortOrder; };
-  SortOrder GetDisplaySortOrder() const;
+  SortOrder GetSortOrder() const;
+
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
   virtual bool DisableAddSourceButtons();
+
   virtual int GetPlaylist();
   const std::string& GetPlaylistDirectory();
   void SetPlaylistDirectory(const std::string& strDirectory);
   bool IsCurrentPlaylistDirectory(const std::string& strDirectory);
   virtual bool AutoPlayNextItem();
+
   virtual std::string GetLockType();
   virtual std::string GetExtensions();
   virtual VECSOURCES& GetSources();
 
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
-  virtual void SaveViewState()=0;
+
+  virtual void SaveViewState() = 0;
   virtual void SaveViewToDb(const std::string &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const std::string &path, int windowID);
   
@@ -83,24 +86,22 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
 
-  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
-  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
+  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone, SortOrder sortOrder = SortOrderNone);
+  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks, SortOrder sortOrder = SortOrderNone);
   void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
-  void SetSortMethod(SortBy sortBy, SortAttribute sortAttributes = SortAttributeNone);
+  void SetSortMethod(SortBy sortBy, SortOrder sortOrder = SortOrderNone);
   void SetSortMethod(SortDescription sortDescription);
   void SetSortOrder(SortOrder sortOrder);
-  const CFileItemList& m_items;
 
-  static VECSOURCES m_sources;
+  const CFileItemList& m_items;
 
   int m_currentViewAsControl;
   int m_playlist;
 
-  std::vector<SORT_METHOD_DETAILS> m_sortMethods;
+  std::vector<GUIViewSortDetails> m_sortMethods;
   int m_currentSortMethod;
 
-  SortOrder m_sortOrder;
-
+  static VECSOURCES m_sources;
   static std::string m_strPlaylistDirectory;
 };
 
@@ -110,7 +111,7 @@ public:
   CGUIViewStateGeneral(const CFileItemList& items);
 
 protected:
-  virtual void SaveViewState() {};
+  virtual void SaveViewState() { }
 };
 
 class CGUIViewStateFromItems : public CGUIViewState

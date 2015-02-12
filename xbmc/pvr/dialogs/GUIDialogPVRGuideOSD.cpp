@@ -98,7 +98,7 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
   for (int iEpgPtr = 0; iEpgPtr < m_vecItems->Size(); iEpgPtr++)
   {
     CFileItemPtr entry = m_vecItems->Get(iEpgPtr);
-    if (entry->GetEPGInfoTag()->IsActive())
+    if (entry->HasEPGInfoTag() && entry->GetEPGInfoTag()->IsActive())
     {
       iSelectedItem = iEpgPtr;
       break;

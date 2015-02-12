@@ -45,6 +45,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "interfaces/AnnouncementManager.h"
+#include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureInfoTag.h"
 #include "pictures/PictureThumbLoader.h"
 
@@ -131,7 +132,7 @@ void CBackgroundPicLoader::Process()
               count, totalTime, totalTime / count);
 }
 
-void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
+void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight)
 {
   m_iPic = iPic;
   m_iSlideNumber = iSlideNumber;
@@ -332,7 +333,7 @@ void CGUIWindowSlideShow::ShowPrevious()
 }
 
 
-void CGUIWindowSlideShow::Select(const CStdString& strPicture)
+void CGUIWindowSlideShow::Select(const std::string& strPicture)
 {
   for (int i = 0; i < m_slides->Size(); ++i)
   {
@@ -504,7 +505,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
   { // load first image
     CFileItemPtr item = m_slides->Get(m_iCurrentSlide);
-    CStdString picturePath = GetPicturePath(item.get());
+    std::string picturePath = GetPicturePath(item.get());
     if (!picturePath.empty())
     {
       if (item->IsVideo())
@@ -532,7 +533,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   { // load the next image
     m_iLastFailedNextSlide = -1;
     CFileItemPtr item = m_slides->Get(m_iNextSlide);
-    CStdString picturePath = GetPicturePath(item.get());
+    std::string picturePath = GetPicturePath(item.get());
     if (!picturePath.empty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
     {
       if (item->IsVideo())
@@ -940,7 +941,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SHOW_PICTURE:
     {
-      CStdString strFile = message.GetStringParam();
+      std::string strFile = message.GetStringParam();
       Reset();
       CFileItem item(strFile, false);
       Add(&item);
@@ -950,7 +951,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_START_SLIDESHOW:
     {
-      CStdString strFolder = message.GetStringParam();
+      std::string strFolder = message.GetStringParam();
       unsigned int iParams = message.GetParam1();
       std::string beginSlidePath = message.GetStringParam(1);
       //decode params
@@ -1129,7 +1130,7 @@ CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNu
     return CSlideShowPic::EFFECT_NO_TIMEOUT;
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::string &strFileName, CBaseTexture* pTexture, bool bFullSize)
 {
   if (pTexture)
   {
@@ -1148,7 +1149,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
     if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
       CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
-      CStdString strHostName = url.GetHostName();
+      std::string strHostName = url.GetHostName();
       if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
       {
         m_Image[iPic].m_bIsComic = true;
@@ -1188,10 +1189,10 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
+void CGUIWindowSlideShow::AddFromPath(const std::string &strPath,
                                       bool bRecursive, 
                                       SortBy method, SortOrder order, SortAttribute sortAttributes,
-                                      const CStdString &strExtensions)
+                                      const std::string &strExtensions)
 {
   if (strPath!="")
   {
@@ -1208,12 +1209,12 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
   }
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
+void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath, 
                                        bool bRecursive /* = false */, bool bRandom /* = false */,
-                                       bool bNotRandom /* = false */, const CStdString &beginSlidePath /* = "" */,
+                                       bool bNotRandom /* = false */, const std::string &beginSlidePath /* = "" */,
                                        bool startSlideShow /* = true */, SortBy method /* = SortByLabel */, 
                                        SortOrder order /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */,
-                                       const CStdString &strExtensions)
+                                       const std::string &strExtensions)
 {
   // stop any video
   if (g_application.m_pPlayer->IsPlayingVideo())
@@ -1249,21 +1250,23 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)
+void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)
 {
   // check whether we've already added this path
   if (recursivePaths)
   {
-    CStdString path(strPath);
+    std::string path(strPath);
     URIUtils::RemoveSlashAtEnd(path);
     if (recursivePaths->find(path) != recursivePaths->end())
       return;
     recursivePaths->insert(path);
   }
 
-  // fetch directory and sort accordingly
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strPath, items, m_strExtensions.empty()?g_advancedSettings.m_pictureExtensions:m_strExtensions,DIR_FLAG_NO_FILE_DIRS,true))
+  CGUIViewStateWindowPictures viewState(items);
+
+  // fetch directory and sort accordingly
+  if (!CDirectory::GetDirectory(strPath, items, viewState.GetExtensions(), DIR_FLAG_NO_FILE_DIRS, true))
     return;
 
   items.Sort(method, order, sortAttributes);
@@ -1289,10 +1292,10 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxHeight = g_Windowing.GetMaxTextureSize();
 }
 
-CStdString CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
+std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 {
   bool isVideo = item->IsVideo();
-  CStdString picturePath = item->GetPath();
+  std::string picturePath = item->GetPath();
   if (isVideo)
   {
     picturePath = item->GetArt("thumb");

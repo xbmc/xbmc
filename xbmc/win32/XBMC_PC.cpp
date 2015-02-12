@@ -227,10 +227,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }
 #endif
 
-  HRESULT hr = E_FAIL;
   IMMDeviceEnumerator *pEnumerator = NULL;
   CMMNotificationClient cMMNC;
-  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
+  HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
   if(SUCCEEDED(hr))
   {
     pEnumerator->RegisterEndpointNotificationCallback(&cMMNC);

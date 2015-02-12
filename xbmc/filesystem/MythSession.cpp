@@ -67,7 +67,7 @@ void CMythSession::CheckIdle()
     }
     else
     {
-      it++;
+      ++it;
     }
   }
 }
@@ -77,7 +77,7 @@ CMythSession* CMythSession::AquireSession(const CURL& url)
   CSingleLock lock(m_section_session);
 
   vector<CMythSession*>::iterator it;
-  for (it = m_sessions.begin(); it != m_sessions.end(); it++)
+  for (it = m_sessions.begin(); it != m_sessions.end(); ++it)
   {
     CMythSession* session = *it;
     if (session->CanSupport(url))
@@ -358,14 +358,15 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   return;
 }
 
-CMythSession::CMythSession(const CURL& url) : CThread("MythSession")
+CMythSession::CMythSession(const CURL& url) : CThread("MythSession"),
+  m_hostname(url.GetHostName()),
+  m_username(url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName()),
+  m_password(url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord())
 {
   m_control   = NULL;
   m_event     = NULL;
   m_database  = NULL;
-  m_hostname  = url.GetHostName();
-  m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
-  m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
+  m_listener  = NULL;
   m_port      = url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT;
   m_timestamp = XbmcThreads::SystemClockMillis();
   m_dll = new DllLibCMyth;

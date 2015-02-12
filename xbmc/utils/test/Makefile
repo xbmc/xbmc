@@ -21,6 +21,7 @@ SRCS=	\
 	TestHTMLUtil.cpp \
 	TestHttpHeader.cpp \
 	TestHttpParser.cpp \
+	TestHttpRangeUtils.cpp \
 	TestHttpResponse.cpp \
 	TestJobManager.cpp \
 	TestJSONVariantParser.cpp \
@@ -38,7 +39,6 @@ SRCS=	\
 	TestScraperParser.cpp \
 	TestScraperUrl.cpp \
 	TestSortUtils.cpp \
-	TestStdString.cpp \
 	TestStopwatch.cpp \
 	TestStreamDetails.cpp \
 	TestStreamUtils.cpp \

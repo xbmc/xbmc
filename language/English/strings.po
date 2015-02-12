@@ -872,7 +872,15 @@ msgctxt "#210"
 msgid "Previous"
 msgstr ""
 
-#empty strings from id 211 to 212
+#: system/settings/settings.xml
+msgctxt "#211"
+msgid "50 Hz"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#212"
+msgid "59.94 Hz"
+msgstr ""
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
@@ -2722,9 +2730,7 @@ msgctxt "#643"
 msgid "Avoid clipping on ReplayGained files"
 msgstr ""
 
-msgctxt "#644"
-msgid "Crop black bars"
-msgstr ""
+#empty string with id 644
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
@@ -5378,10 +5384,7 @@ msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13121"
-msgid "VDPAU HQ Upscaling level"
-msgstr ""
+#empty string with id 13121
 
 #: system/settings/settings.xml
 msgctxt "#13122"
@@ -6019,10 +6022,12 @@ msgctxt "#13394"
 msgid "Calculating folder size"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#13395"
 msgid "Video settings"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
 msgstr ""
@@ -6152,10 +6157,7 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13424"
-msgid "Use pixel buffer objects"
-msgstr ""
+#empty string with id 13424
 
 #: system/settings/settings.xml
 msgctxt "#13425"
@@ -6339,32 +6341,7 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13499
-
-#: system/settings/settings.xml
-msgctxt "#13500"
-msgid "A/V sync method"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13501"
-msgid "Audio clock"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13502"
-msgid "Video clock (Drop/Dupe audio)"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13503"
-msgid "Video clock (Resample audio)"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13504"
-msgid "Maximum speedup/slowdown amount (%)"
-msgstr ""
+#empty strings from id 13460 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -6452,7 +6429,19 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr ""
 
-#empty strings from id 13556 to 13599
+#. Label of a setting that allows to select the skip step sizes to use for skipping
+#: system/settings/settings.xml
+msgctxt "#13556"
+msgid "Skip steps"
+msgstr ""
+
+#. Name of a setting to configure the time to wait for subsequent keypresses in order to apply additive skipping
+#: system/settings/settings.xml
+msgctxt "#13557"
+msgid "Skip delay"
+msgstr ""
+
+#empty strings from id 13557 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -7804,7 +7793,7 @@ msgid "Programme info"
 msgstr ""
 
 msgctxt "#19048"
-msgid "Group management"
+msgid "Group manager"
 msgstr ""
 
 msgctxt "#19049"
@@ -7872,7 +7861,9 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr ""
 
-#empty string with id 19065
+msgctxt "#19065"
+msgid "Timer settings"
+msgstr ""
 
 #. Name of a shortcut to a custom folder for channel icons
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
@@ -8053,7 +8044,10 @@ msgctxt "#19107"
 msgid "at"
 msgstr ""
 
-#empty string with id 19108
+#: system/settings/settings.xml
+msgctxt "#19108"
+msgid "Framerate (fallback)"
+msgstr ""
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
@@ -8839,7 +8833,13 @@ msgctxt "#19288"
 msgid "Foreground"
 msgstr ""
 
-#empty strings from id 19289 to 19498
+#. Label for button to hide a group in the group manager
+#: addons/skin/confluence
+msgctxt "#19289"
+msgid "Hide group"
+msgstr ""
+
+#empty strings from id 19290 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"
@@ -9307,7 +9307,19 @@ msgctxt "#19684"
 msgid "Adult"
 msgstr ""
 
-#empty strings from id 19685 to 19999
+#. Title for shutdown confirmation dialog
+#: xbmc/ApplicationMessenger.cpp
+msgctxt "#19685"
+msgid "Confirm shutdown"
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/ApplicationMessenger.cpp
+msgctxt "#19686"
+msgid "The PVR backend is busy. Shutdown anyway?"
+msgstr ""
+
+#empty strings from id 19687 to 19999
 
 #: system/settings/settings.xml
 msgctxt "#20000"
@@ -12703,7 +12715,17 @@ msgctxt "#24129"
 msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
 msgstr ""
 
-#empty strings from id 24130 to 24998
+#: system/settings/settings.xml
+msgctxt "#24130"
+msgid "Enable parsing for closed captions"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24131"
+msgid "Enable to parse for CC in video stream. Puts slightly more load on the CPU"
+msgstr ""
+
+#empty strings from id 24132 to 24998
 
 msgctxt "#24999"
 msgid "Hide incompatible"
@@ -13953,11 +13975,7 @@ msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Enable" with label #24022
-#: system/settings/settings.xml
-msgctxt "#36140"
-msgid "Enable the video library."
-msgstr ""
+#empty string with id 36140
 
 #. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
 #: system/settings/settings.xml
@@ -14085,11 +14103,7 @@ msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use pixel buffer objects" with label #13424
-#: system/settings/settings.xml
-msgctxt "#36163"
-msgid "Enable decoding of video files using pixel buffer objects."
-msgstr ""
+#empty string with id 36163
 
 #. Description of setting "Videos -> Playback -> Adjust display refresh rate to match video" with label #170
 #: system/settings/settings.xml
@@ -14109,17 +14123,7 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> A/V sync method" with label #13500
-#: system/settings/settings.xml
-msgctxt "#36167"
-msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
-msgstr ""
-
-#. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
-#: system/settings/settings.xml
-msgctxt "#36168"
-msgid "Maximum video speed adjust to match actual screen refresh rate."
-msgstr ""
+#empty strings from id 36167 to 36168
 
 #. Description of setting "System -> Audio output -> Resample quality" with label #13505
 #: system/settings/settings.xml
@@ -14145,11 +14149,7 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> VDPAU HQ Upscaling level" with label #13121
-#: system/settings/settings.xml
-msgctxt "#36173"
-msgid "Enable upscaling using VDPAU."
-msgstr ""
+#empty string with id 36173
 
 #. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
 #: system/settings/settings.xml
@@ -14368,7 +14368,10 @@ msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
-#empty string with id 36213
+#: system/settings/settings.xml
+msgctxt "#36213"
+msgid "Open the group manager, which allows modification of groups and their respective channels"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36214"
@@ -14565,11 +14568,7 @@ msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Enable" with label #24022
-#: system/settings/settings.xml
-msgctxt "#36254"
-msgid "Enable the music library."
-msgstr ""
+#empty string with id 36254
 
 #. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
 #: system/settings/settings.xml
@@ -14606,7 +14605,11 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#empty string with id 36261
+#. Description of setting "LiveTV -> Playback -> Refreshrate" with label #19108
+#: system/settings/settings.xml
+msgctxt "#36261"
+msgid "If enabled, this framerate is used for streams we were not able to detect fps."
+msgstr ""
 
 #. Description of setting "Music -> Library -> Export music library" with label #20196
 #: system/settings/settings.xml
@@ -15798,7 +15801,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode when playback ended - also between videos in a playlist if necessary. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists the stereoscopic 3D mode won't change between videos, not even for non stereoscopic ones."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Stereoscopic mode (current)" with label #36500
@@ -16124,7 +16127,79 @@ msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened/played back. Disc menus are not fully supported yet and may cause problems."
 msgstr ""
 
-#empty strings from id 37032 to 38009
+#. Title of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37032"
+msgid "Accessibility"
+msgstr ""
+
+#. Description of category #37032 Settings -> Video -> Accessibility
+#: system/settings/settings.xml
+msgctxt "#37033"
+msgid "Video playback related accessibility settings, e.g., "Prefer subtitles for the hearing impaired""
+msgstr ""
+
+#. Setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37034"
+msgid "Prefer audio stream for the visually impaired"
+msgstr ""
+
+#. Description of setting #37034 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37035"
+msgid "Prefer the audio stream for the visually impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37036"
+msgid "Prefer audio stream for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37036 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37037"
+msgid "Prefer the audio stream for the hearing impaired to other audio streams of the same language"
+msgstr ""
+
+#. Setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37038"
+msgid "Prefer subtitles for the hearing impaired"
+msgstr ""
+
+#. Description of setting #37038 Settings -> Video -> Accessibility 
+#: system/settings/settings.xml
+msgctxt "#37039"
+msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
+msgstr ""
+
+#. Setting #37040 Settings -> Video -> Playback
+#: system/settings/settings.xml
+msgctxt "#37040"
+msgid "Prefer default audio streams"
+msgstr ""
+
+#. Description of setting #37040 Settings -> Video -> Playback
+#: system/settings/settings.xml
+msgctxt "#37041"
+msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channels or the used codec."
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Skip steps"
+#: system/settings/settings.xml
+msgctxt "#37042"
+msgid "Defines which step sizes to use when pressing the skip buttons. If more steps are selected for a skip direction, these can be applied by subsequent presses on the skip button within the defined skip delay. Forward (positive) and backward (negative) steps can be defined independently."
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> Skip delay"
+#: system/settings/settings.xml
+msgctxt "#37043"
+msgid "Defines the time to wait for subsequent key presses before performing the skip. Only applies when using smart skipping (when using more than one skip step for a direction)."
+msgstr ""
+
+#empty strings from id 37044 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

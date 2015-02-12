@@ -106,13 +106,16 @@ bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON 
     case CONTEXT_BUTTON_FIND:
     {
       m_searchfilter.Reset();
-      CEpgInfoTag tag;
 
       // construct the search term
       if (item.IsEPG())
         m_searchfilter.m_strSearchTerm = "\"" + item.GetEPGInfoTag()->Title() + "\"";
-      else if (item.IsPVRChannel() && item.GetPVRChannelInfoTag()->GetEPGNow(tag))
-        m_searchfilter.m_strSearchTerm = "\"" + tag.Title() + "\"";
+      else if (item.IsPVRChannel())
+      {
+        CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
+        if (tag)
+          m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
+      }
       else if (item.IsPVRRecording())
         m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRRecordingInfoTag()->m_strTitle + "\"";
       else if (item.IsPVRTimer())

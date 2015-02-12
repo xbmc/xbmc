@@ -99,7 +99,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
   // alloc as this can free our resources
   if (!m_texturePath.IsConstant())
   {
-    CStdString texturePath;
+    std::string texturePath;
     if (item)
       texturePath = m_texturePath.GetItemLabel(item, true);
     else
@@ -289,7 +289,7 @@ std::string CGUIMultiImage::GetDescription() const
   return m_image.GetDescription();
 }
 
-CGUIMultiImage::CMultiImageJob::CMultiImageJob(const CStdString &path)
+CGUIMultiImage::CMultiImageJob::CMultiImageJob(const std::string &path)
   : m_path(path)
 {
 }
@@ -307,7 +307,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
   {
     // Load in images from the directory specified
     // m_path is relative (as are all skin paths)
-    CStdString realPath = g_TextureManager.GetTexturePath(m_path, true);
+    std::string realPath = g_TextureManager.GetTexturePath(m_path, true);
     if (realPath.empty())
       return true;
 

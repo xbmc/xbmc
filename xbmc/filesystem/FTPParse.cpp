@@ -38,7 +38,6 @@ using namespace std;
 
 CFTPParse::CFTPParse()
 {
-  m_name = "";
   m_flagtrycwd = 0;
   m_flagtryretr = 0;
   m_size = 0;

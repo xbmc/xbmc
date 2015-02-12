@@ -62,6 +62,8 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 
+#include <assert.h>
+
 using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -110,22 +112,24 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-CFileItem::CFileItem(const CEpgInfoTag& tag)
+CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
 {
   Initialize();
 
-  m_strPath = tag.Path();
   m_bIsFolder = false;
-  *GetEPGInfoTag() = tag;
-  SetLabel(tag.Title());
-  m_strLabel2 = tag.Plot();
-  m_dateTime = tag.StartAsLocalTime();
+  m_epgInfoTag = tag;
+  if (tag)
+  {
+    m_strPath = tag->Path();
+    SetLabel(tag->Title());
+    m_strLabel2 = tag->Plot();
+    m_dateTime = tag->StartAsLocalTime();
 
-  if (!tag.Icon().empty())
-    SetIconImage(tag.Icon());
-  else if (tag.HasPVRChannel() && !tag.ChannelTag()->IconPath().empty())
-    SetIconImage(tag.ChannelTag()->IconPath());
-
+    if (!tag->Icon().empty())
+      SetIconImage(tag->Icon());
+    else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
+      SetIconImage(tag->ChannelTag()->IconPath());
+  }
   FillInMimeType(false);
 }
 
@@ -133,14 +137,13 @@ CFileItem::CFileItem(const CPVRChannel& channel)
 {
   Initialize();
 
-  CEpgInfoTag epgNow;
-  bool bHasEpgNow = channel.GetEPGNow(epgNow);
+  CEpgInfoTagPtr epgNow(channel.GetEPGNow());
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = bHasEpgNow ? epgNow.Title() :
+  m_strLabel2 = epgNow ? epgNow->Title() :
       CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
 
@@ -153,9 +156,9 @@ CFileItem::CFileItem(const CPVRChannel& channel)
       musictag->SetTitle(m_strLabel2);
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
-      if (bHasEpgNow)
-        musictag->SetGenre(epgNow.Genre());
-      musictag->SetDuration(bHasEpgNow ? epgNow.GetDuration() : 3600);
+      if (epgNow)
+        musictag->SetGenre(epgNow->Genre());
+      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
       musictag->SetLoaded(true);
       musictag->SetComment("");
       musictag->SetLyrics("");
@@ -172,16 +175,17 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRRecording& record)
+CFileItem::CFileItem(const CPVRRecordingPtr& record)
 {
+  assert(record.get());
+
   Initialize();
 
-  m_strPath = record.m_strFileNameAndPath;
   m_bIsFolder = false;
-  *GetPVRRecordingInfoTag() = record;
-  SetLabel(record.m_strTitle);
-  m_strLabel2 = record.m_strPlot;
-
+  m_pvrRecordingInfoTag = record;
+  m_strPath = record->m_strFileNameAndPath;
+  SetLabel(record->m_strTitle);
+  m_strLabel2 = record->m_strPlot;
   FillInMimeType(false);
 }
 
@@ -228,9 +232,7 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
@@ -256,6 +258,12 @@ CFileItem::CFileItem(const std::string& strLabel)
 {
   Initialize();
   SetLabel(strLabel);
+}
+
+CFileItem::CFileItem(const char* strLabel)
+{
+  Initialize();
+  SetLabel(std::string(strLabel));
 }
 
 CFileItem::CFileItem(const CURL& path, bool bIsFolder)
@@ -308,17 +316,13 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_epgInfoTag;
   delete m_pvrChannelInfoTag;
-  delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
@@ -360,18 +364,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   if (item.HasEPGInfoTag())
-  {
-    m_epgInfoTag = GetEPGInfoTag();
-    if (m_epgInfoTag)
-      *m_epgInfoTag = *item.m_epgInfoTag;
-  }
+    m_epgInfoTag = item.m_epgInfoTag;
   else
-  {
-    if (m_epgInfoTag)
-      delete m_epgInfoTag;
-
-    m_epgInfoTag = NULL;
-  }
+    m_epgInfoTag.reset();
 
   if (item.HasPVRChannelInfoTag())
   {
@@ -387,19 +382,10 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_pvrChannelInfoTag = NULL;
   }
 
-  if (item.HasPVRRecordingInfoTag())
-  {
-    m_pvrRecordingInfoTag = GetPVRRecordingInfoTag();
-    if (m_pvrRecordingInfoTag)
-      *m_pvrRecordingInfoTag = *item.m_pvrRecordingInfoTag;
-  }
+  if (item.m_pvrRecordingInfoTag)
+    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   else
-  {
-    if (m_pvrRecordingInfoTag)
-      delete m_pvrRecordingInfoTag;
-
-    m_pvrRecordingInfoTag = NULL;
-  }
+    m_pvrRecordingInfoTag.reset();
 
   if (item.HasPVRTimerInfoTag())
   {
@@ -453,9 +439,7 @@ void CFileItem::Initialize()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_bLabelPreformated=false;
@@ -499,12 +483,10 @@ void CFileItem::Reset()
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  delete m_epgInfoTag;
-  m_epgInfoTag=NULL;
+  m_epgInfoTag.reset();
   delete m_pvrChannelInfoTag;
   m_pvrChannelInfoTag=NULL;
-  delete m_pvrRecordingInfoTag;
-  m_pvrRecordingInfoTag=NULL;
+  m_pvrRecordingInfoTag.reset();
   delete m_pvrTimerInfoTag;
   m_pvrTimerInfoTag=NULL;
   delete m_pictureInfoTag;
@@ -834,6 +816,11 @@ bool CFileItem::IsPicture() const
 bool CFileItem::IsLyrics() const
 {
   return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
+}
+
+bool CFileItem::IsSubtitle() const
+{
+  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_subtitlesExtensions);
 }
 
 bool CFileItem::IsCUESheet() const
@@ -1189,6 +1176,11 @@ void CFileItem::FillInDefaultIcon()
       { // archive
         SetIconImage("DefaultFile.png");
       }
+      else if ( IsPVRRecording() )
+      {
+        // PVR recording
+        SetIconImage("DefaultVideo.png");
+      }
       else if ( IsAudio() )
       {
         // audio
@@ -1197,10 +1189,6 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("DefaultVideo.png");
-      }
-      else if (IsPVRRecording())
-      {
         SetIconImage("DefaultVideo.png");
       }
       else if (IsPVRTimer())
@@ -1413,8 +1401,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
     *GetVideoInfoTag() = *item.GetVideoInfoTag();
     // preferably use some information from PVR info tag if available
-    if (HasPVRRecordingInfoTag())
-      GetPVRRecordingInfoTag()->CopyClientInfo(GetVideoInfoTag());
+    if (m_pvrRecordingInfoTag)
+      m_pvrRecordingInfoTag->CopyClientInfo(GetVideoInfoTag());
     SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
     SetInvalid();
   }
@@ -1857,7 +1845,7 @@ int CFileItemList::Size() const
 bool CFileItemList::IsEmpty() const
 {
   CSingleLock lock(m_lock);
-  return (m_items.size() <= 0);
+  return m_items.empty();
 }
 
 void CFileItemList::Reserve(int iCount)
@@ -1972,7 +1960,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
-      const SORT_METHOD_DETAILS &details = m_sortDetails[j];
+      const GUIViewSortDetails &details = m_sortDetails[j];
       ar << (int)details.m_sortDescription.sortBy;
       ar << (int)details.m_sortDescription.sortOrder;
       ar << (int)details.m_sortDescription.sortAttributes;
@@ -2038,7 +2026,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> detailSize;
     for (unsigned int j = 0; j < detailSize; ++j)
     {
-      SORT_METHOD_DETAILS details;
+      GUIViewSortDetails details;
       ar >> (int&)tempint;
       details.m_sortDescription.sortBy = (SortBy)tempint;
       ar >> (int&)tempint;
@@ -2148,11 +2136,11 @@ void CFileItemList::FilterCueItems()
           VECSONGS newitems;
           cuesheet.GetSongs(newitems);
 
-          std::vector<CStdString> MediaFileVec;
+          std::vector<std::string> MediaFileVec;
           cuesheet.GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+          for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
             std::string strMediaFile = *itMedia;
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
@@ -3102,7 +3090,7 @@ void CFileItemList::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
 
 void CFileItemList::AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks)
 {
-  SORT_METHOD_DETAILS sort;
+  GUIViewSortDetails sort;
   sort.m_sortDescription = sortDescription;
   sort.m_buttonLabel = buttonLabel;
   sort.m_labelMasks = labelMasks;
@@ -3130,28 +3118,12 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   return m_videoInfoTag;
 }
 
-CEpgInfoTag* CFileItem::GetEPGInfoTag()
-{
-  if (!m_epgInfoTag)
-    m_epgInfoTag = new CEpgInfoTag;
-
-  return m_epgInfoTag;
-}
-
 CPVRChannel* CFileItem::GetPVRChannelInfoTag()
 {
   if (!m_pvrChannelInfoTag)
     m_pvrChannelInfoTag = new CPVRChannel;
 
   return m_pvrChannelInfoTag;
-}
-
-CPVRRecording* CFileItem::GetPVRRecordingInfoTag()
-{
-  if (!m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = new CPVRRecording;
-
-  return m_pvrRecordingInfoTag;
 }
 
 CPVRTimerInfoTag* CFileItem::GetPVRTimerInfoTag()
@@ -3287,15 +3259,15 @@ int CFileItem::GetVideoContentType() const
 bool CFileItem::IsResumePointSet() const
 {
   return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
-      (HasPVRRecordingInfoTag() && GetPVRRecordingInfoTag()->GetLastPlayedPosition() > 0);
+      (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->GetLastPlayedPosition() > 0);
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (HasPVRRecordingInfoTag())
+  if (m_pvrRecordingInfoTag)
   {
     // This will retrieve 'fresh' resume information from the PVR server
-    int rc = GetPVRRecordingInfoTag()->GetLastPlayedPosition();
+    int rc = m_pvrRecordingInfoTag->GetLastPlayedPosition();
     if (rc > 0)
       return rc;
     // Fall through to default value

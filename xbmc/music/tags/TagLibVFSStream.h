@@ -19,7 +19,6 @@
  *
  */
 #include "filesystem/File.h"
-#include "utils/StdString.h"
 #include <taglib/tiostream.h>
 
 namespace MUSIC_INFO

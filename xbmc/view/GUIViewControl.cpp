@@ -37,8 +37,7 @@ CGUIViewControl::CGUIViewControl(void)
 }
 
 CGUIViewControl::~CGUIViewControl(void)
-{
-}
+{ }
 
 void CGUIViewControl::Reset()
 {
@@ -96,7 +95,7 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
   CGUIControl *pNewView = m_visibleViews[m_currentView];
 
   // make only current control visible...
-  for (ciViews view = m_allViews.begin(); view != m_allViews.end(); view++)
+  for (ciViews view = m_allViews.begin(); view != m_allViews.end(); ++view)
     (*view)->SetVisible(false);
   pNewView->SetVisible(true);
 
@@ -157,13 +156,16 @@ void CGUIViewControl::UpdateView()
 
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
-  if (!control || !m_fileItems) return -1;
+  if (!control || !m_fileItems)
+    return -1;
+
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID());
   g_windowManager.SendMessage(msg, m_parentWindow);
 
   int iItem = msg.GetParam1();
   if (iItem >= m_fileItems->Size())
     return -1;
+
   return iItem;
 }
 
@@ -237,7 +239,7 @@ void CGUIViewControl::SetFocused()
 bool CGUIViewControl::HasControl(int viewControlID) const
 {
   // run through our controls, checking for the id
-  for (ciViews it = m_allViews.begin(); it != m_allViews.end(); it++)
+  for (ciViews it = m_allViews.begin(); it != m_allViews.end(); ++it)
   {
     if ((*it)->GetID() == viewControlID)
       return true;
@@ -349,4 +351,3 @@ void CGUIViewControl::UpdateViewVisibility()
       m_visibleViews.push_back(view);
   }
 }
-

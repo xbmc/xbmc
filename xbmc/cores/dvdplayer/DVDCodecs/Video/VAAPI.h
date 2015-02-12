@@ -449,6 +449,7 @@ protected:
   CVideoSurfaces m_videoSurfaces;
   vaapi_context m_hwContext;
   AVCodecContext* m_avctx;
+  bool m_getBufferError;
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;

@@ -38,6 +38,11 @@ using namespace std;
 using namespace EPG;
 using namespace PVR;
 
+CEpgInfoTagPtr CEpgInfoTag::CreateDefaultTag()
+{
+  return CEpgInfoTagPtr(new CEpgInfoTag());
+}
+
 CEpgInfoTag::CEpgInfoTag(void) :
     m_bNotify(false),
     m_bChanged(false),
@@ -52,11 +57,6 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iUniqueBroadcastID(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr emptyChannel;
-  m_pvrChannel = emptyChannel;
-
-  CPVRTimerInfoTagPtr emptyTimer;
-  m_timer = emptyTimer;
 }
 
 CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
@@ -75,8 +75,6 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_epg(epg),
     m_pvrChannel(pvrChannel)
 {
-  CPVRTimerInfoTagPtr emptyTimer;
-  m_timer = emptyTimer;
 }
 
 CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
@@ -93,12 +91,6 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iUniqueBroadcastID(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr emptyChannel;
-  m_pvrChannel = emptyChannel;
-
-  CPVRTimerInfoTagPtr emptyTimer;
-  m_timer = emptyTimer;
-
   SetStartFromUTC(data.startTime + g_advancedSettings.m_iPVRTimeCorrection);
   SetEndFromUTC(data.endTime + g_advancedSettings.m_iPVRTimeCorrection);
   SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);
@@ -123,36 +115,6 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     SetIcon(data.strIconPath);
   if (data.strRecordingId)
     SetRecordingId(data.strRecordingId);
-}
-
-CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
-    m_bNotify(tag.m_bNotify),
-    m_bChanged(tag.m_bChanged),
-    m_iBroadcastId(tag.m_iBroadcastId),
-    m_iGenreType(tag.m_iGenreType),
-    m_iGenreSubType(tag.m_iGenreSubType),
-    m_iParentalRating(tag.m_iParentalRating),
-    m_iStarRating(tag.m_iStarRating),
-    m_iSeriesNumber(tag.m_iSeriesNumber),
-    m_iEpisodeNumber(tag.m_iEpisodeNumber),
-    m_iEpisodePart(tag.m_iEpisodePart),
-    m_iUniqueBroadcastID(tag.m_iUniqueBroadcastID),
-    m_strTitle(tag.m_strTitle),
-    m_strPlotOutline(tag.m_strPlotOutline),
-    m_strPlot(tag.m_strPlot),
-    m_genre(tag.m_genre),
-    m_strEpisodeName(tag.m_strEpisodeName),
-    m_strIconPath(tag.m_strIconPath),
-    m_strFileNameAndPath(tag.m_strFileNameAndPath),
-    m_startTime(tag.m_startTime),
-    m_endTime(tag.m_endTime),
-    m_firstAired(tag.m_firstAired),
-    m_strRecordingId(tag.m_strRecordingId),
-    m_timer(tag.m_timer),
-    m_recording(tag.m_recording),
-    m_epg(tag.m_epg),
-    m_pvrChannel(tag.m_pvrChannel)
-{
 }
 
 CEpgInfoTag::~CEpgInfoTag()
@@ -196,40 +158,6 @@ bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
   if (this == &right) return false;
 
   return !(*this == right);
-}
-
-CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
-{
-  CSingleLock lock(other.m_critSection);
-
-  m_bNotify            = other.m_bNotify;
-  m_bChanged           = other.m_bChanged;
-  m_iBroadcastId       = other.m_iBroadcastId;
-  m_iGenreType         = other.m_iGenreType;
-  m_iGenreSubType      = other.m_iGenreSubType;
-  m_iParentalRating    = other.m_iParentalRating;
-  m_iStarRating        = other.m_iStarRating;
-  m_iSeriesNumber      = other.m_iSeriesNumber;
-  m_iEpisodeNumber     = other.m_iEpisodeNumber;
-  m_iEpisodePart       = other.m_iEpisodePart;
-  m_iUniqueBroadcastID = other.m_iUniqueBroadcastID;
-  m_strTitle           = other.m_strTitle;
-  m_strPlotOutline     = other.m_strPlotOutline;
-  m_strPlot            = other.m_strPlot;
-  m_genre              = other.m_genre;
-  m_strEpisodeName     = other.m_strEpisodeName;
-  m_strIconPath        = other.m_strIconPath;
-  m_strFileNameAndPath = other.m_strFileNameAndPath;
-  m_startTime          = other.m_startTime;
-  m_endTime            = other.m_endTime;
-  m_firstAired         = other.m_firstAired;
-  m_timer              = other.m_timer;
-  m_strRecordingId     = other.m_strRecordingId;
-  m_recording          = other.m_recording;
-  m_epg                = other.m_epg;
-  m_pvrChannel         = other.m_pvrChannel;
-
-  return *this;
 }
 
 void CEpgInfoTag::Serialize(CVariant &value) const
@@ -950,7 +878,8 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
         m_genre              != tag.m_genre ||
-        m_strRecordingId     != tag.m_strRecordingId
+        m_strRecordingId     != tag.m_strRecordingId ||
+        m_strIconPath        != tag.m_strIconPath
     );
     if (bUpdateBroadcastId)
       bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
@@ -989,6 +918,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_strEpisodeName     = tag.m_strEpisodeName;
       m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
       m_strRecordingId     = tag.m_strRecordingId;
+      m_strIconPath        = tag.m_strIconPath;
 
       m_bChanged = true;
     }

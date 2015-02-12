@@ -19,7 +19,8 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
+#include <vector>
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 
@@ -32,7 +33,7 @@ public:
   class CDll
   {
   public:
-    CStdString m_strDllName;
+    std::string m_strDllName;
     long m_lReferenceCount;
     LibraryLoader *m_pDll;
     unsigned int m_unloadDelayStartTick;
@@ -41,8 +42,8 @@ public:
   CSectionLoader(void);
   virtual ~CSectionLoader(void);
 
-  static LibraryLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
-  static void UnloadDLL(const CStdString& strSection);
+  static LibraryLoader* LoadDLL(const std::string& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
+  static void UnloadDLL(const std::string& strSection);
   static void UnloadDelayed();
   void UnloadAll();
 

@@ -1,20 +1,6 @@
---- src/connect.c	2011-05-31 10:29:52.000000000 -0400
-+++ src/connect.c	2013-01-03 00:38:13.572737322 -0500
-@@ -159,7 +159,11 @@
-   int timeout_ms;
-   ssh_pollfd_t fds;
-   int rc = 0;
-+#ifdef ANDROID
-+  socklen_t len = sizeof(rc);
-+#else
-   unsigned int len = sizeof(rc);
-+#endif
- 
-   enter_function();
- 
 --- src/misc.c	2011-05-31 10:29:52.000000000 -0400
 +++ src/misc.c	2013-01-03 00:37:37.652737345 -0500
-@@ -208,6 +208,9 @@
+@@ -207,6 +208,9 @@
  
  char *ssh_get_user_home_dir(void) {
    char *szPath = NULL;
@@ -24,7 +10,7 @@
    struct passwd pwd;
    struct passwd *pwdbuf;
    char buf[NSS_BUFLEN_PASSWD];
-@@ -219,7 +222,7 @@
+@@ -225,7 +222,7 @@
    }
  
    szPath = strdup(pwd.pw_dir);
@@ -33,17 +19,15 @@
    return szPath;
  }
  
-@@ -233,6 +236,19 @@
+@@ -239,6 +236,17 @@
  }
  
- char *ssh_get_local_username(ssh_session session) {
+ char *ssh_get_local_username(void) {
 +#ifdef ANDROID
 +    char *name = NULL;
 +    struct passwd *pwd = NULL;
 +    pwd = getpwuid(getuid());
 +    if ( pwd == NULL) {
-+        ssh_set_error(session, SSH_FATAL,
-+            "Couldn't retrieve information for current user!");
 +        return NULL;
 +    }
 +
@@ -53,11 +37,10 @@
      struct passwd pwd;
      struct passwd *pwdbuf;
      char buf[NSS_BUFLEN_PASSWD];
-@@ -248,6 +264,7 @@
+@@ -252,6 +264,7 @@
  
      name = strdup(pwd.pw_name);
  
 +#endif
      if (name == NULL) {
-       ssh_set_error_oom(session);
        return NULL;

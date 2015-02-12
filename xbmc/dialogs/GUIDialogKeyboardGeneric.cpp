@@ -32,6 +32,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "ApplicationMessenger.h"
+#include "windowing/WindowingFactory.h"
 
 #define BUTTON_ID_OFFSET      100
 #define BUTTONS_PER_ROW        20
@@ -66,7 +67,6 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_hiddenInput = false;
   m_keyType = LOWER;
   m_currentLayout = 0;
-  m_strHeading = "";
   m_loadType = KEEP_IN_MEMORY;
 }
 
@@ -76,6 +76,7 @@ void CGUIDialogKeyboardGeneric::OnWindowLoaded()
   CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
   if (edit)
     edit->SetShowCursorAlways(true);
+  g_Windowing.EnableTextInput(false);
 
   CGUIDialog::OnWindowLoaded();
 }
@@ -220,7 +221,6 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
     break;
 
   case GUI_MSG_SET_TEXT:
-  case GUI_MSG_INPUT_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
       // the edit control only handles these messages if it is either focues
@@ -271,9 +271,9 @@ void CGUIDialogKeyboardGeneric::Character(const std::string &ch)
   CGUIControl *edit = GetControl(CTL_EDIT);
   if (edit)
   {
-    CGUIMessage msg(GUI_MSG_INPUT_TEXT, GetID(), CTL_EDIT);
-    msg.SetLabel(ch);
-    edit->OnMessage(msg);
+    CAction action(ACTION_INPUT_TEXT);
+    action.SetText(ch);
+    edit->OnAction(action);
   }
 }
 

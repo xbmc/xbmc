@@ -12,7 +12,7 @@ ARCHIVE=$(SOURCE).tar.gz
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
---program-transform-name=s/tar/gtar/ --disable-dependency-tracking
+--program-transform-name=s/tar/gtar/ --disable-dependency-tracking ac_cv_func_fdopendir=no
 
 APP=$(SOURCE)/src/tar
 APPBIN=$(PREFIX)/bin/tar

@@ -1,0 +1,122 @@
+From ec171eae6aad8bbf51fdf52c97446db6418c96a1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Rafa=C5=82=20Chwia=C5=82a?= <rchwiala@gmail.com>
+Date: Sat, 17 Jan 2015 15:55:52 +0100
+Subject: [PATCH] platinum Changes to external subtitles over UPnP works
+
+Added custom data to resources field - needed to add some attributes to res.
+Added new struct PLK_SecResource - needed by Somasung devices. It's not specialized struct (just general one), because I can't find any "sec" specification.
+---
+ .../Source/Devices/MediaServer/PltDidl.cpp         |  1 +
+ .../Source/Devices/MediaServer/PltMediaItem.cpp    | 41 +++++++++++++++++++++-
+ .../Source/Devices/MediaServer/PltMediaItem.h      | 12 +++++++
+ 3 files changed, 53 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index 7b853c8..b58aa50 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -48,6 +48,7 @@ const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metad
+                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
+                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
+                                             " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\""
++                                            " xmlns:sec=\"http://www.sec.co.kr/\""
+                                             " xmlns:xbmc=\"urn:schemas-xbmc-org:metadata-1-0/\">";
+ const char* didl_footer         = "</DIDL-Lite>";
+ const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 4db2d45..f937df2 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -528,12 +528,51 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+             
+             didl += " protocolInfo=\"";
+             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo.ToString());
+-            didl += "\">";
++            didl += "\"";
++            /* adding custom data */
++            NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_Resources[i].m_CustomData.GetEntries().GetFirstItem();
++            while (entry)
++            {
++                didl += " ";
++                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
++                didl += "=\"";
++                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
++                didl += "\"";
++
++                entry++;
++            }
++
++            didl += ">";
+             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
+             didl += "</res>";
+         }
+     }
+ 
++    //sec resources related
++    for (NPT_Cardinal i = 0; i < m_SecResources.GetItemCount(); i++) {
++        didl += "<sec:";
++        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
++
++        NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_SecResources[i].attributes.GetEntries().GetFirstItem();
++        while (entry)
++        {
++            didl += " sec:";
++            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
++            didl += "=\"";
++            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
++            didl += "\"";
++
++            entry++;
++        }
++
++        didl += ">";
++        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].value);
++
++        didl += "</sec:";
++        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
++        didl += ">";
++    }
++
+     // xbmc dateadded
+     if ((mask & PLT_FILTER_MASK_XBMC_DATEADDED) && !m_XbmcInfo.date_added.IsEmpty()) {
+         didl += "<xbmc:dateadded>";
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index deb4961..6461b81 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -172,6 +172,12 @@ typedef struct {
+   NPT_String unique_identifier;
+ } PLT_XbmcInfo;
+ 
++typedef struct {
++  NPT_String name;
++  NPT_Map<NPT_String, NPT_String> attributes;
++  NPT_String value;
++} PLT_SecResource;
++
+ /*----------------------------------------------------------------------
+ |   PLT_MediaItemResource
+ +---------------------------------------------------------------------*/
+@@ -192,6 +198,9 @@ public:
+     NPT_UInt32       m_NbAudioChannels;
+     NPT_String       m_Resolution;
+     NPT_UInt32       m_ColorDepth;
++    /* to add custom data to resource, that are not standard one, or are only
++    proper for some type of devices (UPnP)*/
++    NPT_Map<NPT_String, NPT_String> m_CustomData;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -250,6 +259,9 @@ public:
+     /* resources related */
+     NPT_Array<PLT_MediaItemResource> m_Resources;
+ 
++    /* sec resources related */
++    NPT_Array<PLT_SecResource> m_SecResources;
++
+     /* XBMC specific */
+     PLT_XbmcInfo m_XbmcInfo;
+ 
+-- 
+1.8.3.msysgit.0
+

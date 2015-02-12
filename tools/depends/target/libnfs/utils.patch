@@ -1,0 +1,19 @@
+--- utils/nfs-ls.c.orig	2014-12-30 13:50:44.225840102 +0100
++++ utils/nfs-ls.c	2014-12-30 13:51:03.753840180 +0100
+@@ -35,11 +35,15 @@
+ #include <inttypes.h>
+ #include <string.h>
+ #include <sys/stat.h>
+-#include <sys/statvfs.h>
+ #ifndef AROS
++#ifdef ANDROID
++#define statvfs statfs
++#include <sys/vfs.h>
++#else
+ #include <sys/statvfs.h>
+ #endif
+ #endif
++#endif
+ 
+ #ifdef HAVE_UNISTD_H
+ #include <unistd.h>

@@ -27,10 +27,7 @@
 #include "video/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 
-//ios specifics
-#if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h"
-#endif
 
 //osx specifics
 #if defined(TARGET_DARWIN_OSX)
@@ -83,33 +80,34 @@ void CVideoSyncCocoa::VblankHandler(int64_t nowtime, double fps)
 bool CVideoSyncCocoa::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncCocoa: setting up Cocoa");
+  bool setupOk = false;
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
+  m_abort = false;
   
 #if defined(TARGET_DARWIN_IOS)
-  {
-    g_Windowing.InitDisplayLink(this);
-  }
+  g_Windowing.InitDisplayLink(this);
+  setupOk = true;
 #else
-  if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Cocoa_CVDisplayLinkCreate failed");
-    return false;
-  }
+  setupOk = Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this));
+  if (setupOk)
+    g_Windowing.Register(this);
   else
+    CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Cocoa_CVDisplayLinkCreate failed");
 #endif
-  {
-    GetFps();//UpdateRefreshrate(true); - FIXME?NEEDED?
-    return true;
-  }
+
+  if (setupOk)
+    GetFps();
+
+  return setupOk;
 }
 
 void CVideoSyncCocoa::Run(volatile bool& stop)
 {
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
-  while(!stop)
+  while(!stop && !m_abort)
   {
     Sleep(1000);
   }
@@ -122,6 +120,7 @@ void CVideoSyncCocoa::Cleanup()
   g_Windowing.DeinitDisplayLink();
 #else
   Cocoa_CVDisplayLinkRelease();
+  g_Windowing.Unregister(this);
 #endif
 }
 
@@ -134,6 +133,11 @@ void CVideoSyncCocoa::UpdateFPS(double fps)
     CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Detected refreshrate: %i hertz", fpsInt);
     m_fps = fpsInt;
   }
+}
+
+void CVideoSyncCocoa::OnResetDevice()
+{
+  m_abort = true;
 }
 
 float CVideoSyncCocoa::GetFps()

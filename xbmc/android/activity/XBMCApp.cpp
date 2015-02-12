@@ -456,7 +456,7 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
 
   newIntent.setPackage(package);
   startActivity(newIntent);
-  if (xbmc_jnienv()->ExceptionOccurred())
+  if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching %s", package.c_str());
     xbmc_jnienv()->ExceptionClear();

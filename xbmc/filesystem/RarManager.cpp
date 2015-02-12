@@ -50,6 +50,7 @@ CFileInfo::CFileInfo()
   m_bAutoDel = true;
   m_iUsed = 0;
   m_iIsSeekable = -1;
+  m_iOffset = 0;
 }
 
 CFileInfo::~CFileInfo()
@@ -225,7 +226,7 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
 
     if (iOffset == -1 && j != m_ExFiles.end())  // grab from list
     {
-      for( ArchiveList_struct* pIterator = j->second.first; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+      for( ArchiveList_struct* pIterator = j->second.first; pIterator; pIterator = pIterator->next)
       {
         std::string strName;
 
@@ -325,7 +326,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const std::string& str
   std::string strCompare = strPathInRar;
   if (!URIUtils::HasSlashAtEnd(strCompare) && !strCompare.empty())
     strCompare += '/';
-  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+  for( pIterator = pFileList; pIterator  ; pIterator = pIterator->next )
   {
     std::string strName;
 
@@ -460,7 +461,7 @@ void CRarManager::ClearCache(bool force)
 #ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
   map<std::string, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j;
-  for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
+  for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; ++j)
   {
 
     for (vector<CFileInfo>::iterator it2 = j->second.second.begin(); it2 != j->second.second.end(); ++it2)

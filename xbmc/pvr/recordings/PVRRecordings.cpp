@@ -43,7 +43,14 @@ CPVRRecordings::CPVRRecordings(void) :
     m_iLastId(0),
     m_bGroupItems(true)
 {
+  m_database.Open();
+}
 
+CPVRRecordings::~CPVRRecordings()
+{
+  Clear();
+  if (m_database.IsOpen())
+    m_database.Close();
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -119,8 +126,9 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     CFileItemPtr pFileItem;
-    current->UpdateMetadata();
-    
+    if (m_database.IsOpen())
+      current->UpdateMetadata(m_database);
+
     if (!results->Contains(strFilePath))
     {
       pFileItem.reset(new CFileItem(strCurrent, true));
@@ -192,7 +200,7 @@ int CPVRRecordings::GetRecordings(CFileItemList* results)
 
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
-    CFileItemPtr pFileItem(new CFileItem(*it->second));
+    CFileItemPtr pFileItem(new CFileItem(it->second));
     results->Add(pFileItem);
   }
 
@@ -228,21 +236,19 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
     return false;
   }
 
-  CPVRRecording *tag = (CPVRRecording *)item.GetPVRRecordingInfoTag();
+  CPVRRecordingPtr tag = item.GetPVRRecordingInfoTag();
   return tag->Delete();
 }
 
 bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 {
-  bool bReturn = false;
-
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot rename file: no valid recording tag", __FUNCTION__);
-    return bReturn;
+    return false;
   }
 
-  CPVRRecording* tag = item.GetPVRRecordingInfoTag();
+  CPVRRecordingPtr tag = item.GetPVRRecordingInfoTag();
   return tag->Rename(strNewName);
 }
 
@@ -250,8 +256,7 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 {
   bool bResult = false;
 
-  CVideoDatabase database;
-  if (database.Open())
+  if (m_database.IsOpen())
   {
     bResult = true;
 
@@ -283,7 +288,7 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
       if (!pItem->HasPVRRecordingInfoTag())
         continue;
 
-      CPVRRecordingPtr recording = GetByFileItem(*pItem);
+      const CPVRRecordingPtr recording = pItem->GetPVRRecordingInfoTag();
       if (recording)
       {
         recording->SetPlayCount(count);
@@ -291,15 +296,13 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
         // Clear resume bookmark
         if (count > 0)
         {
-          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+          m_database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
           recording->SetLastPlayedPosition(0);
         }
 
-        database.SetPlayCount(*pItem, count);
+        m_database.SetPlayCount(*pItem, count);
       }
     }
-
-    database.Close();
   }
 
   return bResult;
@@ -330,8 +333,9 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       if (!IsDirectoryMember(strDirectoryPath, current->m_strDirectory))
         continue;
 
-      current->UpdateMetadata();
-      CFileItemPtr pFileItem(new CFileItem(*current));
+      if (m_database.IsOpen())
+        current->UpdateMetadata(m_database);
+      CFileItemPtr pFileItem(new CFileItem(current));
       pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
       pFileItem->SetPath(current->m_strFileNameAndPath);
@@ -369,9 +373,10 @@ void CPVRRecordings::GetAll(CFileItemList &items)
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
     CPVRRecordingPtr current = it->second;
-    current->UpdateMetadata();
+    if (m_database.IsOpen())
+      current->UpdateMetadata(m_database);
 
-    CFileItemPtr pFileItem(new CFileItem(*current));
+    CFileItemPtr pFileItem(new CFileItem(current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
@@ -388,7 +393,7 @@ CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
     if (iId == it->second->m_iRecordingId)
-      item = CFileItemPtr(new CFileItem(*(it->second)));
+      item = CFileItemPtr(new CFileItem(it->second));
   }
 
   return item;
@@ -409,7 +414,7 @@ CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
       CPVRRecordingPtr current = it->second;
       if (URIUtils::PathEquals(path, current->m_strFileNameAndPath))
       {
-        CFileItemPtr fileItem(new CFileItem(*current));
+        CFileItemPtr fileItem(new CFileItem(current));
         return fileItem;
       }
     }
@@ -430,31 +435,25 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
   return retVal;
 }
 
-CPVRRecordingPtr CPVRRecordings::GetByFileItem(const CFileItem &item) const
-{
-  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
-  return GetById(recording->m_iClientId, recording->m_strRecordingId);
-}
-
 void CPVRRecordings::Clear()
 {
   CSingleLock lock(m_critSection);
   m_recordings.clear();
 }
 
-void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
+void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
 {
   CSingleLock lock(m_critSection);
 
-  CPVRRecordingPtr newTag = GetById(tag.m_iClientId, tag.m_strRecordingId);
+  CPVRRecordingPtr newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
   if (newTag)
   {
-    newTag->Update(tag);
+    newTag->Update(*tag);
   }
   else
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
-    newTag->Update(tag);
+    newTag->Update(*tag);
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
   }

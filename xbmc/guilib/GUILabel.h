@@ -33,7 +33,8 @@
 class CLabelInfo
 {
 public:
-  CLabelInfo()
+  CLabelInfo():
+    scrollSuffix(" | ")
   {
     font = NULL;
     align = XBFONT_LEFT;
@@ -41,7 +42,6 @@ public:
     width = 0;
     angle = 0;
     scrollSpeed = CScrollInfo::defaultSpeed;
-    scrollSuffix = " | ";
   };
   bool UpdateColors()
   {
@@ -70,7 +70,7 @@ public:
   float angle;
   CGUIFont *font;
   int scrollSpeed; 
-  CStdString scrollSuffix;
+  std::string scrollSuffix;
 };
 
 /*!
@@ -117,17 +117,17 @@ public:
   
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
-   \param text CStdString to set as this labels text
+   \param text std::string to set as this labels text
    \sa SetTextW, SetStyledText
    */
-  bool SetText(const CStdString &label);
+  bool SetText(const std::string &label);
 
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
-   \param text CStdStringW to set as this labels text
+   \param text std::wstring to set as this labels text
    \sa SetText, SetStyledText
    */
-  bool SetTextW(const CStdStringW &label);
+  bool SetTextW(const std::wstring &label);
 
   /*! \brief Set styled text to be displayed in the label
    Updates the label control and recomputes final position and size
@@ -189,11 +189,11 @@ public:
   float GetMaxWidth() const;
   
   /*! \brief Calculates the width of some text
-   \param text CStdStringW of text whose width we want
+   \param text std::wstring of text whose width we want
    \return width of the given text
    \sa GetTextWidth
    */
-  float CalcTextWidth(const CStdStringW &text) const { return m_textLayout.GetTextWidth(text); };
+  float CalcTextWidth(const std::wstring &text) const { return m_textLayout.GetTextWidth(text); };
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   CLabelInfo &GetLabelInfo() { return m_label; };

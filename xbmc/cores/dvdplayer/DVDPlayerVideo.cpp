@@ -36,7 +36,6 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "guilib/GraphicContext.h"
 #include <sstream>
@@ -132,7 +131,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_pOverlayContainer = pOverlayContainer;
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
-  m_pOverlayCodecCC = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_bRenderSubs = false;
@@ -766,63 +764,7 @@ void CDVDPlayerVideo::Process()
 
 void CDVDPlayerVideo::OnExit()
 {
-  if (m_pOverlayCodecCC)
-  {
-    m_pOverlayCodecCC->Dispose();
-    m_pOverlayCodecCC = NULL;
-  }
-
   CLog::Log(LOGNOTICE, "thread end: video_thread");
-}
-
-void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts)
-{
-  // check userdata type
-  uint8_t* data = pVideoUserData->data;
-  int size = pVideoUserData->size;
-
-  if (size >= 2)
-  {
-    if (data[0] == 'C' && data[1] == 'C')
-    {
-      data += 2;
-      size -= 2;
-
-      // closed captioning
-      if (!m_pOverlayCodecCC)
-      {
-        m_pOverlayCodecCC = new CDVDOverlayCodecCC();
-        CDVDCodecOptions options;
-        CDVDStreamInfo info;
-        if (!m_pOverlayCodecCC->Open(info, options))
-        {
-          delete m_pOverlayCodecCC;
-          m_pOverlayCodecCC = NULL;
-        }
-      }
-
-      if (m_pOverlayCodecCC)
-      {
-        DemuxPacket packet;
-        packet.pData = data;
-        packet.iSize = size;
-        packet.pts = DVD_NOPTS_VALUE;
-        packet.dts = DVD_NOPTS_VALUE;
-        m_pOverlayCodecCC->Decode(&packet);
-
-        CDVDOverlay* overlay;
-        while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)
-        {
-          overlay->iPTSStartTime += pts;
-          if(overlay->iPTSStopTime != 0.0)
-            overlay->iPTSStopTime += pts;
-
-          m_pOverlayContainer->Add(overlay);
-          overlay->Release();
-        }
-      }
-    }
-  }
 }
 
 void CDVDPlayerVideo::SetSpeed(int speed)
@@ -869,7 +811,7 @@ int CDVDPlayerVideo::GetLevel() const
     int datasize = m_messageQueue.GetDataSize();
     if (m_pVideoCodec)
       datasize += m_pVideoCodec->GetDataSize();
-    return min(100, (int)(100 * datasize / (m_messageQueue.GetMaxDataSize() * m_messageQueue.GetMaxTimeSize())));
+    return min(100, MathUtils::round_int((100.0 * datasize) / m_messageQueue.GetMaxDataSize()));
   }
   else
   {
@@ -1043,13 +985,17 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   double render_framerate = g_graphicsContext.GetFPS();
   if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") == ADJUST_REFRESHRATE_OFF)
     render_framerate = config_framerate;
+  bool changerefresh = !m_bFpsInvalid &&
+                       (m_output.framerate == 0.0 || fmod(m_output.framerate, config_framerate) != 0.0) &&
+                       (render_framerate != config_framerate);
+
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
    || ( m_output.width           != pPicture->iWidth )
    || ( m_output.height          != pPicture->iHeight )
    || ( m_output.dwidth          != pPicture->iDisplayWidth )
    || ( m_output.dheight         != pPicture->iDisplayHeight )
-   || (!m_bFpsInvalid && fmod(m_output.framerate, config_framerate) != 0.0 && render_framerate != config_framerate)
+   || changerefresh
    || ( m_output.color_format    != (unsigned int)pPicture->format )
    || ( m_output.extended_format != pPicture->extended_format )
    || ( m_output.color_matrix    != pPicture->color_matrix    && pPicture->color_matrix    != 0 ) // don't reconfigure on unspecified
@@ -1217,11 +1163,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
-  AutoCrop(pPicture);
-
-  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 1));
+  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50));
   if (buffer < 0)
+  {
+    m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
     return EOS_DROPPED;
+  }
 
   ProcessOverlays(pPicture, pts);
 
@@ -1236,7 +1183,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   if (index < 0)
+  {
+    m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
     return EOS_DROPPED;
+  }
 
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts, -1, mDisplayField);
 
@@ -1245,182 +1195,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   // no video renderer, let's mark it as dropped
   return EOS_DROPPED;
 #endif
-}
-
-void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
-{
-  if ((pPicture->format == RENDER_FMT_YUV420P) ||
-     (pPicture->format == RENDER_FMT_NV12) ||
-     (pPicture->format == RENDER_FMT_YUYV422) ||
-     (pPicture->format == RENDER_FMT_UYVY422))
-  {
-    RECT crop;
-
-    if (CMediaSettings::Get().GetCurrentVideoSettings().m_Crop)
-      AutoCrop(pPicture, crop);
-    else
-    { // reset to defaults
-      crop.left   = 0;
-      crop.right  = 0;
-      crop.top    = 0;
-      crop.bottom = 0;
-    }
-
-    m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
-    m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
-    m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
-    m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
-
-    crop.left   = MathUtils::round_int(m_crop.x1);
-    crop.right  = MathUtils::round_int(m_crop.x2);
-    crop.top    = MathUtils::round_int(m_crop.y1);
-    crop.bottom = MathUtils::round_int(m_crop.y2);
-
-    //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-    if(HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft  , crop.left)
-    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight , crop.right)
-    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop   , crop.top)
-    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom, crop.bottom))
-    {
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft   = crop.left;
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight  = crop.right;
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop    = crop.top;
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom = crop.bottom;
-      g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-    }
-# undef HYST
-  }
-}
-
-void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
-{
-  crop.left   = CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  crop.right  = CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  crop.top    = CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  crop.bottom = CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
-
-  int black  = 16; // what is black in the image
-  int level  = 8;  // how high above this should we detect
-  int multi  = 4;  // what multiple of last line should failing line be to accept
-  uint8_t *s;
-  int last, detect, black2;
-
-  // top and bottom levels
-  black2 = black * pPicture->iWidth;
-  detect = level * pPicture->iWidth + black2;
-
-  //YV12 and NV12 have planar Y plane
-  //YUY2 and UYVY have Y packed with U and V
-  int xspacing = 1;
-  int xstart   = 0;
-  if (pPicture->format == RENDER_FMT_YUYV422)
-    xspacing = 2;
-  else if (pPicture->format == RENDER_FMT_UYVY422)
-  {
-    xspacing = 2;
-    xstart   = 1;
-  }
-
-  // Crop top
-  s      = pPicture->data[0];
-  last   = black2;
-  for (unsigned int y = 0; y < pPicture->iHeight/2; y++)
-  {
-    int total = 0;
-    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
-      total += s[x];
-    s += pPicture->iLineSize[0];
-
-    if (total > detect)
-    {
-      if (total - black2 > (last - black2) * multi)
-        crop.top = y;
-      break;
-    }
-    last = total;
-  }
-
-  // Crop bottom
-  s    = pPicture->data[0] + (pPicture->iHeight-1) * pPicture->iLineSize[0];
-  last = black2;
-  for (unsigned int y = (int)pPicture->iHeight; y > pPicture->iHeight/2; y--)
-  {
-    int total = 0;
-    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
-      total += s[x];
-    s -= pPicture->iLineSize[0];
-
-    if (total > detect)
-    {
-      if (total - black2 > (last - black2) * multi)
-        crop.bottom = pPicture->iHeight - y;
-      break;
-    }
-    last = total;
-  }
-
-  // left and right levels
-  black2 = black * pPicture->iHeight;
-  detect = level * pPicture->iHeight + black2;
-
-
-  // Crop left
-  s    = pPicture->data[0];
-  last = black2;
-  for (unsigned int x = xstart; x < pPicture->iWidth/2*xspacing; x += xspacing)
-  {
-    int total = 0;
-    for (unsigned int y = 0; y < pPicture->iHeight; y++)
-      total += s[y * pPicture->iLineSize[0]];
-    s++;
-    if (total > detect)
-    {
-      if (total - black2 > (last - black2) * multi)
-        crop.left = x / xspacing;
-      break;
-    }
-    last = total;
-  }
-
-  // Crop right
-  s    = pPicture->data[0] + (pPicture->iWidth-1);
-  last = black2;
-  for (unsigned int x = (int)pPicture->iWidth*xspacing-1; x > pPicture->iWidth/2*xspacing; x -= xspacing)
-  {
-    int total = 0;
-    for (unsigned int y = 0; y < pPicture->iHeight; y++)
-      total += s[y * pPicture->iLineSize[0]];
-    s--;
-
-    if (total > detect)
-    {
-      if (total - black2 > (last - black2) * multi)
-        crop.right = pPicture->iWidth - (x / xspacing);
-      break;
-    }
-    last = total;
-  }
-
-  // We always crop equally on each side to get zoom
-  // effect intead of moving the image. Aslong as the
-  // max crop isn't much larger than the min crop
-  // use that.
-  int min, max;
-
-  min = std::min(crop.left, crop.right);
-  max = std::max(crop.left, crop.right);
-  if(10 * (max - min) / pPicture->iWidth < 1)
-    crop.left = crop.right = max;
-  else
-    crop.left = crop.right = min;
-
-  min = std::min(crop.top, crop.bottom);
-  max = std::max(crop.top, crop.bottom);
-  if(10 * (max - min) / pPicture->iHeight < 1)
-    crop.top = crop.bottom = max;
-  else
-    crop.top = crop.bottom = min;
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()

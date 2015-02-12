@@ -62,7 +62,6 @@ namespace PVR
 
   class CPVRTimerInfoTag;
   typedef boost::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-  #define PVR_VIRTUAL_CHANNEL_UID (-1)
 
   class CPVRTimerInfoTag : public ISerializable
   {
@@ -157,7 +156,7 @@ namespace PVR
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
-    void SetEpgInfoTag(EPG::CEpgInfoTagPtr tag);
+    void SetEpgInfoTag(EPG::CEpgInfoTagPtr &tag);
     void ClearEpgTag(void);
 
     void UpdateChannel(void);

@@ -44,12 +44,14 @@ class CVideoInfoTag;
 namespace EPG
 {
   class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 namespace PVR
 {
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
+  typedef boost::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
 }
 class CPictureInfoTag;
 
@@ -93,6 +95,7 @@ public:
   CFileItem(const CFileItem& item);
   CFileItem(const CGUIListItem& item);
   explicit CFileItem(const std::string& strLabel);
+  explicit CFileItem(const char* strLabel);
   CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const std::string& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
@@ -102,9 +105,9 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const EPG::CEpgInfoTag& tag);
+  CFileItem(const EPG::CEpgInfoTagPtr& tag);
   CFileItem(const PVR::CPVRChannel& channel);
-  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
@@ -155,6 +158,7 @@ public:
    */
   bool IsPicture() const;
   bool IsLyrics() const;
+  bool IsSubtitle() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for
@@ -260,14 +264,17 @@ public:
 
   inline bool HasEPGInfoTag() const
   {
-    return m_epgInfoTag != NULL;
+    return m_epgInfoTag.get() != NULL;
   }
 
-  EPG::CEpgInfoTag* GetEPGInfoTag();
-
-  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
+  inline const EPG::CEpgInfoTagPtr GetEPGInfoTag() const
   {
     return m_epgInfoTag;
+  }
+
+  inline void SetEPGInfoTag(const EPG::CEpgInfoTagPtr& tag)
+  {
+    m_epgInfoTag = tag;
   }
 
   inline bool HasPVRChannelInfoTag() const
@@ -284,12 +291,10 @@ public:
 
   inline bool HasPVRRecordingInfoTag() const
   {
-    return m_pvrRecordingInfoTag != NULL;
+    return m_pvrRecordingInfoTag.get() != NULL;
   }
 
-  PVR::CPVRRecording* GetPVRRecordingInfoTag();
-
-  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  inline const PVR::CPVRRecordingPtr GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
@@ -488,9 +493,9 @@ private:
   std::string m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  EPG::CEpgInfoTag* m_epgInfoTag;
+  EPG::CEpgInfoTagPtr m_epgInfoTag;
   PVR::CPVRChannel* m_pvrChannelInfoTag;
-  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
@@ -648,8 +653,8 @@ public:
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
   void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
-  bool HasSortDetails() const { return m_sortDetails.size() != 0; };
-  const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+  bool HasSortDetails() const { return m_sortDetails.size() != 0; }
+  const std::vector<GUIViewSortDetails> &GetSortDetails() const { return m_sortDetails; }
 
   /*! \brief Specify whether this list should be sorted with folders separate from files
    By default we sort with folders listed (and sorted separately) except for those sort modes
@@ -690,7 +695,7 @@ private:
   bool m_replaceListing;
   std::string m_content;
 
-  std::vector<SORT_METHOD_DETAILS> m_sortDetails;
+  std::vector<GUIViewSortDetails> m_sortDetails;
 
   CCriticalSection m_lock;
 };

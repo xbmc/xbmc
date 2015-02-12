@@ -21,8 +21,8 @@
 
 #include "threads/CriticalSection.h"
 #include "guilib/gui3d.h"
-#include "utils/StdString.h"
 #include "guilib/DirtyRegion.h"
+#include <string>
 
 typedef uint32_t color_t;
 
@@ -97,7 +97,7 @@ private:
   bool m_bIsFinished;
   bool m_bDrawNextImage;
   bool m_bIsDirty;
-  CStdString m_strFileName;
+  std::string m_strFileName;
   float m_fWidth;
   float m_fHeight;
   color_t m_alpha;

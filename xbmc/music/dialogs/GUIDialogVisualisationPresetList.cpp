@@ -27,9 +27,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
-#define CONTROL_LIST           2
-#define CONTROL_PRESETS_LABEL  3
+#define CONTROL_HEADER_LABEL   2
 #define CONTROL_NONE_AVAILABLE 4
+#define CONTROL_LIST           5
 
 using ADDON::CVisualisation;
 
@@ -123,14 +123,14 @@ void CGUIDialogVisualisationPresetList::OnDeinitWindow(int nextWindowID)
   CGUIDialog::OnDeinitWindow(nextWindowID);
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
   OnMessage(msg);
-  SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, "");
+  SET_CONTROL_LABEL(CONTROL_HEADER_LABEL, "");
   m_vecPresets->Clear();
 }
 
 void CGUIDialogVisualisationPresetList::Update()
 {
   m_vecPresets->Clear();
-  CStdString strHeading;
+  std::string strHeading;
   if (m_viz)
   {
     strHeading = StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str());
@@ -157,7 +157,7 @@ void CGUIDialogVisualisationPresetList::Update()
   }
 
   // update our dialog's label
-  SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strHeading);
+  SET_CONTROL_LABEL(CONTROL_HEADER_LABEL, strHeading);
 
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)

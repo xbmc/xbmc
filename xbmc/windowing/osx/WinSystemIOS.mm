@@ -75,7 +75,7 @@ bool CWinSystemIOS::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemIOS::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 	
@@ -296,7 +296,7 @@ bool CWinSystemIOS::IsExtSupported(const char* extension)
   if(strncmp(extension, "EGL_", 4) != 0)
     return CRenderSystemGLES::IsExtSupported(extension);
 
-  CStdString name;
+  std::string name;
 
   name  = " ";
   name += extension;

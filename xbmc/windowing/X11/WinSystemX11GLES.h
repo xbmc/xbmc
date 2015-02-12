@@ -31,7 +31,7 @@ class CWinSystemX11GLES : public CWinSystemX11, public CRenderSystemGLES
 public:
   CWinSystemX11GLES();
   virtual ~CWinSystemX11GLES();
-  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
@@ -41,7 +41,7 @@ protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   virtual void SetVSyncImpl(bool enable);
 
-  CStdString m_eglext;
+  std::string m_eglext;
 };
 
 XBMC_GLOBAL_REF(CWinSystemX11GLES,g_Windowing);

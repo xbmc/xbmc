@@ -214,12 +214,11 @@ bool CEGLWrapper::InitDisplay(EGLDisplay *display)
 
 bool CEGLWrapper::ChooseConfig(EGLDisplay display, EGLint *configAttrs, EGLConfig *config)
 {
-  EGLBoolean eglStatus = true;
   EGLint     configCount = 0;
   EGLConfig* configList = NULL;
 
   // Find out how many configurations suit our needs
-  eglStatus = eglChooseConfig(display, configAttrs, NULL, 0, &configCount);
+  EGLBoolean eglStatus = eglChooseConfig(display, configAttrs, NULL, 0, &configCount);
   CheckError();
 
   if (!eglStatus || !configCount)

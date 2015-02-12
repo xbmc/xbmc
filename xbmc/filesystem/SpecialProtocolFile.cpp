@@ -19,99 +19,19 @@
  */
 
 #include "SpecialProtocolFile.h"
-#include "SpecialProtocol.h"
 #include "URL.h"
-
-#include <sys/stat.h>
+#include "filesystem/SpecialProtocol.h"
 
 using namespace XFILE;
 
 CSpecialProtocolFile::CSpecialProtocolFile(void)
-{
-}
+  : COverrideFile(true)
+{ }
 
 CSpecialProtocolFile::~CSpecialProtocolFile(void)
+{ }
+
+std::string CSpecialProtocolFile::TranslatePath(const CURL& url)
 {
-  Close();
+  return CSpecialProtocol::TranslatePath(url);
 }
-
-bool CSpecialProtocolFile::Open(const CURL& url)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-
-  return m_file.Open(strFileName);
-}
-
-bool CSpecialProtocolFile::OpenForWrite(const CURL& url, bool bOverWrite /*=false */)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-
-  return m_file.OpenForWrite(strFileName,bOverWrite);
-}
-
-bool CSpecialProtocolFile::Delete(const CURL& url)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-  
-  return m_file.Delete(strFileName);
-}
-
-bool CSpecialProtocolFile::Exists(const CURL& url)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-
-  return m_file.Exists(strFileName);
-}
-
-int CSpecialProtocolFile::Stat(const CURL& url, struct __stat64* buffer)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-
-  return m_file.Stat(strFileName, buffer);
-}
-
-bool CSpecialProtocolFile::Rename(const CURL& url, const CURL& urlnew)
-{
-  std::string strFileName=CSpecialProtocol::TranslatePath(url);
-  std::string strFileName2=CSpecialProtocol::TranslatePath(urlnew);
-
-  return m_file.Rename(strFileName,strFileName2);
-}
-
-int CSpecialProtocolFile::Stat(struct __stat64* buffer)
-{
-  return m_file.Stat(buffer);
-}
-
-ssize_t CSpecialProtocolFile::Read(void* lpBuf, size_t uiBufSize)
-{
-  return m_file.Read(lpBuf, uiBufSize);
-}
-  
-ssize_t CSpecialProtocolFile::Write(const void* lpBuf, size_t uiBufSize)
-{
-  return m_file.Write(lpBuf,uiBufSize);
-}
-
-int64_t CSpecialProtocolFile::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
-{
-  return m_file.Seek(iFilePosition, iWhence);
-}
-
-void CSpecialProtocolFile::Close()
-{
-  m_file.Close();
-}
-
-int64_t CSpecialProtocolFile::GetPosition()
-{
-  return m_file.GetPosition();
-}
-
-int64_t CSpecialProtocolFile::GetLength()
-{
-  return m_file.GetLength();
-}
-
-
-

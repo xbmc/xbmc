@@ -249,10 +249,10 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   for (unsigned int i = 0; i < CProfilesManager::Get().GetNumberOfProfiles(); i++)
   {
     const CProfile *profile = CProfilesManager::Get().GetProfile(i);
-    CStdString locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
+    std::string locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetProperty("Addon.Summary", locked); // lock setting
-    CStdString thumb = profile->getThumb();
+    std::string thumb = profile->getThumb();
     if (thumb.empty())
       thumb = "unknown-user.png";
     item->SetIconImage(thumb);

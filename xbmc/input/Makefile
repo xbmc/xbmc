@@ -6,6 +6,7 @@ SRCS=ButtonTranslator.cpp \
      MouseStat.cpp \
      SDLJoystick.cpp \
      XBMC_keytable.cpp \
+     InputManager.cpp \
      
 LIB=input.a
 

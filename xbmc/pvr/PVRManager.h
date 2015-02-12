@@ -28,6 +28,7 @@
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 #include "interfaces/IAnnouncer.h"
+#include "pvr/recordings/PVRRecording.h"
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -46,7 +47,6 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
-  class CPVRRecording;
   class CPVRRecordings;
   class CPVRTimers;
   class CPVRGUIInfo;
@@ -195,11 +195,6 @@ namespace PVR
     CPVRDatabase *GetTVDatabase(void) const { return m_database; }
 
     /*!
-     * @brief Updates the recordings and the "now" and "next" timers.
-     */
-    void UpdateRecordingsCache(void);
-
-    /*!
      * @brief Get a GUIInfoManager character string.
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
@@ -324,7 +319,7 @@ namespace PVR
      * @param tag The recording to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenRecordedStream(const CPVRRecording &tag);
+    bool OpenRecordedStream(const CPVRRecordingPtr &tag);
 
     /*!
     * @brief Try to playback the given file item
@@ -348,12 +343,6 @@ namespace PVR
     bool StartRecordingOnPlayingChannel(bool bOnOff);
 
     /*!
-     * @brief Get the channel number of the previously selected channel.
-     * @return The requested channel number or -1 if it wasn't found.
-     */
-    int GetPreviousChannel(void);
-
-    /*!
      * @brief Check whether there are active timers.
      * @return True if there are active timers, false otherwise.
      */
@@ -370,6 +359,18 @@ namespace PVR
      * @return True if there are no active timers/recordings/wake-ups within the configured time span.
      */
     bool IsIdle(void) const;
+
+    /*!
+     * @brief Check whether the system Kodi is running on can be powered down
+     *        (shutdown/reboot/suspend/hibernate) without stopping any active
+     *        recordings and/or without preventing the start of recordings
+     *        sheduled for now + pvrpowermanagement.backendidletime.
+     * @param bAskUser True to informs user in case of potential
+     *        data loss. User can decide to allow powerdown anyway. False to
+     *        not to ask user and to not confirm power down.
+     * @return True if system can be safely powered down, false otherwise.
+     */
+    bool CanSystemPowerdown(bool bAskUser = true) const;
 
     /*!
      * @brief Set the current playing group, used to load the right channel.
@@ -549,13 +550,6 @@ namespace PVR
     bool WaitUntilInitialised(void);
 
     /*!
-     * @brief Handle PVR specific cActions
-     * @param action The action to process
-     * @return True if action could be handled, false otherwise.
-     */
-    bool OnAction(const CAction &action);
-
-    /*!
      * @brief Create EPG tags for all channels in internal channel groups
      * @return True if EPG tags where created successfully, false otherwise
      */
@@ -581,26 +575,6 @@ namespace PVR
      */
     bool Load(void);
     
-    /*!
-     * @brief Update all recordings.
-     */
-    void UpdateRecordings(void);
-
-    /*!
-     * @brief Update all timers.
-     */
-    void UpdateTimers(void);
-
-    /*!
-     * @brief Update all channels.
-     */
-    void UpdateChannels(void);
-
-    /*!
-     * @brief Update all channel groups and channels in them.
-     */
-    void UpdateChannelGroups(void);
-
     /*!
      * @brief Reset all properties.
      */
@@ -657,6 +631,11 @@ namespace PVR
     ManagerState GetState(void) const;
 
     void SetState(ManagerState state);
+
+    bool AllLocalBackendsIdle(void) const;
+    bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
+    bool IsNextEventWithinBackendIdleTime(void) const;
+
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */

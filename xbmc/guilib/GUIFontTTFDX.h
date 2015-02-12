@@ -38,11 +38,11 @@
 class CGUIFontTTFDX : public CGUIFontTTFBase
 {
 public:
-  CGUIFontTTFDX(const CStdString& strFileName);
+  CGUIFontTTFDX(const std::string& strFileName);
   virtual ~CGUIFontTTFDX(void);
 
-  virtual void Begin();
-  virtual void End();
+  virtual bool FirstBegin();
+  virtual void LastEnd();
 
 protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);

@@ -52,9 +52,11 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -66,9 +68,11 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -80,9 +84,11 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false),
+    m_bUsingBackendChannelNumbers(false),
     m_bSelectedGroup(false),
     m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0)
+    m_iLastWatched(0),
+    m_bHidden(false)
 {
 }
 
@@ -104,17 +110,18 @@ bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
   return !(*this == right);
 }
 
-CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
+CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
+  m_strGroupName(group.m_strGroupName)
 {
   m_bRadio                      = group.m_bRadio;
   m_iGroupType                  = group.m_iGroupType;
   m_iGroupId                    = group.m_iGroupId;
-  m_strGroupName                = group.m_strGroupName;
   m_bLoaded                     = group.m_bLoaded;
   m_bChanged                    = group.m_bChanged;
   m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
   m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
   m_iLastWatched                = group.m_iLastWatched;
+  m_bHidden                     = group.m_bHidden;
 
   for (int iPtr = 0; iPtr < group.Size(); iPtr++)
     m_members.push_back(group.m_members.at(iPtr));
@@ -317,7 +324,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
 struct sortByClientChannelNumber
 {
-  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
       return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
@@ -327,7 +334,7 @@ struct sortByClientChannelNumber
 
 struct sortByChannelNumber
 {
-  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.iChannelNumber == channel2.iChannelNumber)
       return channel1.iSubChannelNumber < channel2.iSubChannelNumber;
@@ -740,14 +747,11 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)
 {
-  bool bDelete(false);
   CSingleLock lock(m_critSection);
   for (unsigned int ptr = 0; ptr < m_members.size(); ptr--)
   {
-    bDelete = false;
+    bool bDelete = false;
     CPVRChannelPtr channel = m_members.at(ptr).channel;
-    if (channel->IsVirtual())
-      continue;
 
     if (m_members.at(ptr).channel->ClientChannelNumber() <= 0)
     {
@@ -894,7 +898,8 @@ bool CPVRChannelGroup::Persist(void)
   bool bReturn(true);
   CSingleLock lock(m_critSection);
 
-  if (!HasChanges())
+  /* don't persist until the group is fully loaded and has changes */
+  if (!HasChanges() || !m_bLoaded)
     return bReturn;
 
   if (CPVRDatabase *database = GetPVRDatabase())
@@ -967,10 +972,6 @@ void CPVRChannelGroup::ResetChannelNumberCache(void)
   if (!m_bSelectedGroup)
     return;
 
-  /* reset the channel number cache */
-  if (!IsInternalGroup())
-    g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
-
   /* set all channel numbers on members of this group */
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
@@ -1017,13 +1018,6 @@ bool CPVRChannelGroup::HasChanges(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bChanged || HasNewChannels() || HasChangedChannels();
-}
-
-void CPVRChannelGroup::ResetChannelNumbers(void)
-{
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
-    m_members.at(iChannelPtr).channel->SetCachedChannelNumber(0);
 }
 
 void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
@@ -1101,12 +1095,12 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || m_members.at(iChannelPtr).channel->IsHidden())
       continue;
 
-    CEpgInfoTag epgNow;
-    if (!epg->InfoTagNow(epgNow))
+    CEpgInfoTagPtr epgNow(epg->GetTagNow());
+    if (!epgNow)
       continue;
 
     CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->Path());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
@@ -1127,12 +1121,12 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || m_members.at(iChannelPtr).channel->IsHidden())
       continue;
 
-    CEpgInfoTag epgNow;
-    if (!epg->InfoTagNext(epgNow))
+    CEpgInfoTagPtr epgNext(epg->GetTagNext());
+    if (!epgNext)
       continue;
 
-    CFileItemPtr entry(new CFileItem(epgNow));
-    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime("", false));
+    CFileItemPtr entry(new CFileItem(epgNext));
+    entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->SetPath(channel->Path());
     entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
@@ -1168,7 +1162,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
   CDateTime date;
   CSingleLock lock(m_critSection);
   
-  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); it++)
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     if (it->channel && !it->channel->IsHidden())
     {
@@ -1252,12 +1246,12 @@ bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 
   if (m_iLastWatched != iLastWatched)
   {
-    /* update last watched  */
     m_iLastWatched = iLastWatched;
-    SetChanged();
-    m_bChanged = true;
+    lock.Leave();
 
-    return true;
+    /* update the database immediately */
+    if (CPVRDatabase *database = GetPVRDatabase())
+      return database->UpdateLastWatched(*this);
   }
 
   return false;
@@ -1275,7 +1269,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;
@@ -1292,8 +1286,6 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath, bUserSetIcon);
 
-  if (bVirtual)
-    channel->SetStreamURL(strStreamURL);
   if (iEPGSource == 0)
     channel->SetEPGScraper("client");
 
@@ -1357,4 +1349,21 @@ bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
 {
   /* used only by internal channel groups */
   return true;
+}
+
+void CPVRChannelGroup::SetHidden(bool bHidden)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_bHidden != bHidden)
+  {
+    m_bHidden = bHidden;
+    m_bChanged = true;
+  }
+}
+
+bool CPVRChannelGroup::IsHidden(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bHidden;
 }

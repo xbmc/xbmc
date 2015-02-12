@@ -37,6 +37,7 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 
 CSAPFile::CSAPFile()
+  : m_len(0)
 {}
 
 CSAPFile::~CSAPFile()
@@ -48,7 +49,7 @@ bool CSAPFile::Open(const CURL& url)
   std::string path = url.Get();
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); ++it)
   {
     if(it->path == path)
     {
@@ -69,7 +70,7 @@ bool CSAPFile::Exists(const CURL& url)
   std::string path = url.Get();
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); ++it)
   {
     if(it->path == path)
       return true;
@@ -93,7 +94,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); ++it)
   {
     if(it->path == path)
     {
@@ -163,7 +164,7 @@ bool CSAPFile::Delete(const CURL& url)
   std::string path = url.Get();
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); ++it)
   {
     if(it->path == path)
     {

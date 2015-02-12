@@ -103,6 +103,7 @@ public:
   virtual void         SetBufferSize(int numBuffers) { }
   virtual void         ReleaseBuffer(int idx) { }
   virtual bool         NeedBufferForRef(int idx) { return false; }
+  virtual bool         IsGuiLayer() { return true; }
 
   virtual bool Supports(ERENDERFEATURE feature) { return false; }
 

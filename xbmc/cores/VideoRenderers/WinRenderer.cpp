@@ -1265,7 +1265,6 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_STRETCH         ||
       feature == RENDERFEATURE_NONLINSTRETCH   ||
-      feature == RENDERFEATURE_CROP            ||
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||

@@ -318,11 +318,6 @@
   <section id="videos" label="3" help="36138">
     <category id="videolibrary" label="14022" help="36139">
       <group id="1">
-        <setting id="videolibrary.enabled" type="boolean" label="24022" help="36140">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
           <level>0</level>
           <default>true</default>
@@ -393,6 +388,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.preferdefaultflag" type="boolean" label="37040" help="37041">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.autoplaynextitem" type="boolean" label="13433" help="36152">
           <level>1</level>
           <default>false</default>
@@ -400,6 +400,32 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
+          <level>2</level>
+          <default>-1800,-900,-600,-300,-180,-60,-30,-15,-7,15,30,60,180,300,600,900,1800</default>
+          <constraints>
+            <options>videoseeksteps</options>
+            <delimiter>,</delimiter>
+            <minimumItems>2</minimumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+        <setting id="videoplayer.seekdelay" type="integer" label="13557" help="37043">
+          <level>2</level>
+          <default>1000</default>
+          <constraints>
+            <minimum>500</minimum>
+            <step>250</step>
+            <maximum>3000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
           <level>2</level>
           <default>0</default> <!-- ADJUST_REFRESHRATE_OFF -->
@@ -428,39 +454,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.synctype" type="integer" parent="videoplayer.usedisplayasclock" label="13500" help="36167">
-          <level>2</level>
-          <default>2</default> <!-- SYNC_RESAMPLE -->
-          <constraints>
-            <options>
-              <option label="13501">0</option> <!-- SYNC_DISCON -->
-              <option label="13502">1</option> <!-- SYNC_SKIPDUP -->
-              <option label="13503">2</option> <!-- SYNC_RESAMPLE -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.usedisplayasclock" operator="is">true</dependency>
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
-          <level>4</level>
-          <default>5.0</default>
-          <constraints>
-            <minimum>0.0</minimum>
-            <step>0.1</step>
-            <maximum>10.0</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usedisplayasclock" operator="is">true</condition>
-                <condition setting="videoplayer.synctype" operator="is">2</condition> <!-- SYNC_RESAMPLE -->
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="spinner" format="number" />
-        </setting>
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
           <level>2</level>
           <default>0</default>
@@ -487,7 +480,7 @@
           <control type="spinner" format="string" />
         </setting>
       </group>
-      <group id="3">
+      <group id="4">
         <setting id="videoplayer.teletextenabled" type="boolean" label="23050" help="36174">
           <level>1</level>
           <default>true</default>
@@ -502,7 +495,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4">
+      <group id="5">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
           <level>2</level>
           <default>0</default>
@@ -545,15 +538,6 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
-        <setting id="videoplayer.usepbo" type="boolean" parent="videoplayer.rendermethod" label="13424" help="36163">
-          <requirement>HAS_GL</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.rendermethod" operator="is">1</dependency> <!-- only supported with ARB -->
-          </dependencies>
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="2">
         <requirement>
@@ -565,16 +549,6 @@
             <condition>HAVE_LIBVDPAU</condition>
           </and>
         </requirement>
-        <setting id="videoplayer.vdpauUpscalingLevel" type="boolean" label="13121" help="36173">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="3">
         <setting id="videoplayer.decodingmethod" type="integer" label="13454" help="36431">
@@ -719,7 +693,7 @@
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.prefervaapirender" type="boolean" parent="videoplayer.usevaapi" label="13457" help="36433">
@@ -912,26 +886,6 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="subtitles.color" type="integer" parent="subtitles.font" label="737" help="36188">
-          <level>1</level>
-          <default>1</default> <!-- White -->
-          <constraints>
-            <options>
-              <option label="760">0</option> <!-- Yellow -->
-              <option label="761">1</option> <!-- White -->
-              <option label="762">2</option> <!-- Blue -->
-              <option label="763">3</option> <!-- Bright green -->
-              <option label="764">4</option> <!-- Yellow green -->
-              <option label="765">5</option> <!-- Cyan -->
-              <option label="766">6</option> <!-- Light grey -->
-              <option label="767">7</option> <!-- Grey -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
         <setting id="subtitles.border" type="integer" label="55050" help="">
           <level>1</level>
          <default>0</default>
@@ -973,6 +927,26 @@
           </constraints>
           <control type="spinner" format="integer" />
        </setting>
+        <setting id="subtitles.color" type="integer" parent="subtitles.font" label="737" help="36188">
+          <level>1</level>
+          <default>1</default> <!-- White -->
+          <constraints>
+            <options>
+              <option label="760">0</option> <!-- Yellow -->
+              <option label="761">1</option> <!-- White -->
+              <option label="762">2</option> <!-- Blue -->
+              <option label="763">3</option> <!-- Bright green -->
+              <option label="764">4</option> <!-- Yellow green -->
+              <option label="765">5</option> <!-- Cyan -->
+              <option label="766">6</option> <!-- Light grey -->
+              <option label="767">7</option> <!-- Grey -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
         <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
           <level>1</level>
           <default>DEFAULT</default>
@@ -1015,6 +989,11 @@
           <control type="button" format="path">
             <heading>657</heading>
           </control>
+        </setting>
+        <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
@@ -1158,6 +1137,27 @@
         </setting>
       </group>
     </category>
+    <category id="accessibility" label="37032" help="37033">
+      <group id="1">
+        <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="accessibility.audiohearing" type="boolean" label="37036" help="37037">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="accessibility.subhearing" type="boolean" label="37038" help="37039">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="scrapers" label="0" help="36197">
       <visible>false</visible>
       <group id="1">
@@ -1221,6 +1221,13 @@
       </group>
       <group id="3">
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="pvrmanager.groupmanager" type="action" label="19048" help="36213">
           <level>1</level>
           <dependencies>
             <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
@@ -1296,7 +1303,7 @@
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
-            <maximum>14</maximum>
+            <maximum>31</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>17999</formatlabel>
@@ -1404,6 +1411,20 @@
           <control type="spinner" format="string">
             <formatlabel>14046</formatlabel>
           </control>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="351">0</option>   <!-- OFF -->
+              <option label="211">1</option>   <!-- 50Hz -->
+              <option label="212">2</option>   <!-- 59.94Hz -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
     </category>
@@ -1599,11 +1620,6 @@
   <section id="music" label="2" help="36253">
     <category id="musiclibrary" label="14022" help="36600">
       <group id="1">
-        <setting id="musiclibrary.enabled" type="boolean" label="24022" help="36254">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
           <level>1</level>
           <default>true</default>

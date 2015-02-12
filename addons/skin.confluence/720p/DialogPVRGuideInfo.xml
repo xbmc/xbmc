@@ -181,9 +181,9 @@
 				<control type="textbox" id="400">
 					<description>Plot value</description>
 					<left>40</left>
-					<top>275</top>
+					<top>277</top>
 					<width>710</width>
-					<height>285</height>
+					<height>283</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
