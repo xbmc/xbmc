@@ -300,9 +300,13 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     g_application.m_pPlayer->GetSubtitleCapabilities(m_subCaps);
   }
 
+  // register IsPlayingPassthrough condition
+  m_settingsManager->AddCondition("IsPlayingPassthrough", IsPlayingPassthrough);
+
   CSettingDependency dependencyAudioOutputPassthroughDisabled(SettingDependencyTypeEnable, m_settingsManager);
-  dependencyAudioOutputPassthroughDisabled.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_AUDIO_PASSTHROUGH, "false", SettingDependencyOperatorEquals, false, m_settingsManager)));
+  dependencyAudioOutputPassthroughDisabled.Or()
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_AUDIO_PASSTHROUGH, "false", SettingDependencyOperatorEquals, false, m_settingsManager)))
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition("IsPlayingPassthrough", "", "", true, m_settingsManager)));
   SettingDependencies depsAudioOutputPassthroughDisabled;
   depsAudioOutputPassthroughDisabled.push_back(dependencyAudioOutputPassthroughDisabled);
   
@@ -411,6 +415,11 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
     m_subtitleStream = 0;
 
   AddSpinner(group, settingId, 462, 0, m_subtitleStream, SubtitleStreamsOptionFiller);
+}
+
+bool CGUIDialogAudioSubtitleSettings::IsPlayingPassthrough(const std::string &condition, const std::string &value, const CSetting *setting)
+{
+  return g_application.m_pPlayer->IsPassthrough();
 }
 
 void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
