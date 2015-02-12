@@ -571,12 +571,11 @@ public:
   }
 };
 
-template <class W> void RunMassEventTest(std::shared_ptr<W>& m, bool canWaitOnEvent)
+template <class W> void RunMassEventTest(std::vector<std::shared_ptr<W>>& m, bool canWaitOnEvent)
 {
-  std::shared_ptr<thread> t;
-  t.reset(new thread[NUMTHREADS], std::default_delete<thread[]>());
+  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(m[i]);
+    t[i].reset(new thread(*m[i]));
 
   EXPECT_TRUE(waitForThread(g_mutex,NUMTHREADS,10000));
   if (canWaitOnEvent)
@@ -588,20 +587,20 @@ template <class W> void RunMassEventTest(std::shared_ptr<W>& m, bool canWaitOnEv
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    EXPECT_TRUE(m[i].waiting);
+    EXPECT_TRUE(m[i]->waiting);
   }
 
   g_event->Set();
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    EXPECT_TRUE(t[i].timed_join(MILLIS(10000)));
+    EXPECT_TRUE(t[i]->timed_join(MILLIS(10000)));
   }
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    EXPECT_TRUE(!m[i].waiting);
-    EXPECT_TRUE(m[i].result);
+    EXPECT_TRUE(!m[i]->waiting);
+    EXPECT_TRUE(m[i]->result);
   }
 }
 
@@ -610,8 +609,9 @@ TEST(TestMassEvent, General)
 {
   g_event = new CEvent();
 
-  std::shared_ptr<mass_waiter> m;
-  m.reset(new mass_waiter[NUMTHREADS], std::default_delete<mass_waiter[]>());
+  std::vector<std::shared_ptr<mass_waiter>> m(NUMTHREADS);
+  for(size_t i=0; i<NUMTHREADS; i++)
+    m[i].reset(new mass_waiter());
 
   RunMassEventTest(m,true);
   delete g_event;
@@ -621,8 +621,9 @@ TEST(TestMassEvent, Polling)
 {
   g_event = new CEvent(true); // polling needs to avoid the auto-reset
 
-  std::shared_ptr<poll_mass_waiter> m;
-  m.reset(new poll_mass_waiter[NUMTHREADS], std::default_delete<poll_mass_waiter[]>());
+  std::vector<std::shared_ptr<poll_mass_waiter>> m(NUMTHREADS);
+  for(size_t i=0; i<NUMTHREADS; i++)
+    m[i].reset(new poll_mass_waiter());
 
   RunMassEventTest(m,false);
   delete g_event;
