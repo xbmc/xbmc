@@ -179,9 +179,11 @@ function(add_addon_depends addon searchpath)
       # (even if the target already exists as it still has to be built before the addon)
       if(${platform_found})
         list(APPEND ${addon}_DEPS ${id})
-        set(${addon}_DEPS "${${addon}_DEPS}" PARENT_SCOPE)
       endif()
     endif()
   endforeach()
+
+  # make the ${addon}_DEPS variable available to the calling script
+  set(${addon}_DEPS "${${addon}_DEPS}" PARENT_SCOPE)
 endfunction()
 
