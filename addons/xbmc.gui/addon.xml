@@ -5,5 +5,4 @@
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>
   <extension-point id="skin" schema="skin.xsd"/>
-  <extension-point id="webinterface" schema="webinterface.xsd"/>
 </addon>
