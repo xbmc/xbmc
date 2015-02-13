@@ -927,11 +927,11 @@ msgstr "HTTP 経由での Kodi の制御を有効に"
 
 msgctxt "#264"
 msgid "Record"
-msgstr "録音"
+msgstr "録画"
 
 msgctxt "#265"
 msgid "Stop Rec."
-msgstr "録音停止"
+msgstr "録画停止"
 
 msgctxt "#266"
 msgid "Sort by: Track"
@@ -1251,7 +1251,7 @@ msgstr "パススルーを有効にする"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "フルHD 対応レシーバー"
+msgstr "TrueHD 対応レシーバー"
 
 msgctxt "#350"
 msgid "Programs"
@@ -11323,7 +11323,7 @@ msgstr "スキン関連を設定するカテゴリーです。"
 
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
-msgstr "ユーザーインターフェースのスキンを選択しまう。これが Kodi の見た目と使い勝手を決定します。"
+msgstr "ユーザーインターフェースのスキンを選択します。これが Kodi の見た目と使い勝手を決定します。"
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -12031,7 +12031,7 @@ msgstr "情報を表示"
 
 msgctxt "#36428"
 msgid "Record"
-msgstr "録音"
+msgstr "録画"
 
 msgctxt "#36502"
 msgid "Disabled"
