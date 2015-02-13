@@ -22,15 +22,10 @@ function(add_addon_depends addon searchpath)
       list(LENGTH def deflength)
       get_filename_component(dir ${file} PATH)
 
-      # get the id and url of the dependency
-      set(url "")
+      # get the id of the dependency
       if(NOT "${def}" STREQUAL "")
-        # read the id and the url from the file
+        # read the id from the file
         list(GET def 0 id)
-        if(deflength GREATER 1)
-          list(GET def 1 url)
-          message(STATUS "${id} url: ${url}")
-        endif()
       else()
         # read the id from the filename
         get_filename_component(id ${file} NAME_WE)
@@ -41,6 +36,13 @@ function(add_addon_depends addon searchpath)
       check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
 
       if(${platform_found} AND NOT TARGET ${id})
+        # determine the download URL of the dependency
+        set(url "")
+        if(deflength GREATER 1)
+          list(GET def 1 url)
+          message(STATUS "${id} url: ${url}")
+        endif()
+
         # check if there are any library specific flags that need to be passed on
         if(EXISTS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
