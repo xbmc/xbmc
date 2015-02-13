@@ -184,24 +184,19 @@ bool CSeekHandler::InProgress() const
 
 void CSeekHandler::Process()
 {
-  if (m_timer.GetElapsedMilliseconds() > m_seekDelay)
+  if (m_timer.GetElapsedMilliseconds() > m_seekDelay && m_requireSeek)
   {
-    if (!g_infoManager.m_performingSeek && m_timer.GetElapsedMilliseconds() > time_for_display) // TODO: Why?
-      g_infoManager.SetSeeking(false);
+    g_infoManager.m_performingSeek = true;
 
-    if (m_requireSeek)
-    {
-      g_infoManager.m_performingSeek = true;
+    // reset seek step size
+    g_infoManager.SetSeekStepSize(0);
 
-      // reset seek step size
-      g_infoManager.SetSeekStepSize(0);
+    // calculate the seek time
+    double time = g_infoManager.GetTotalPlayTime() * m_percent * 0.01;
 
-      // calculate the seek time
-      double time = g_infoManager.GetTotalPlayTime() * m_percent * 0.01;
-
-      g_application.SeekTime(time);
-      m_requireSeek = false;
-    }
+    g_application.SeekTime(time);
+    m_requireSeek = false;
+    g_infoManager.SetSeeking(false);
   }
 }
 

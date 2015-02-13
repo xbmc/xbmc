@@ -56,7 +56,6 @@ protected:
   virtual ~CSeekHandler();
 
 private:
-  static const int time_for_display = 2000; // TODO: WTF?
   static const int analogSeekDelay = 500;
   
   int        GetSeekSeconds(bool forward, SeekType type);
