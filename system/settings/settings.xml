@@ -414,7 +414,7 @@
         </setting>
         <setting id="videoplayer.seekdelay" type="integer" label="13557" help="37043">
           <level>2</level>
-          <default>1000</default>
+          <default>750</default>
           <constraints>
             <minimum label="231">0</minimum> <!-- None -->
             <step>250</step>
@@ -1592,7 +1592,7 @@
         </setting>
         <setting id="musicplayer.seekdelay" type="integer" label="13557" help="37043">
           <level>2</level>
-          <default>1000</default>
+          <default>750</default>
           <constraints>
             <minimum label="231">0</minimum> <!-- None -->
             <step>250</step>
