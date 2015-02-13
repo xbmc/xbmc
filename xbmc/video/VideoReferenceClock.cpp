@@ -281,6 +281,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
 {
   CSingleLock SingleLock(m_CritSection);
   m_RefreshRate = m_pVideoSync->GetFps();
+  m_ClockSpeed = 1.0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %.3f hertz", m_RefreshRate);
 }
