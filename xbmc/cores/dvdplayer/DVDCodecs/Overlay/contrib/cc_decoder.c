@@ -258,7 +258,7 @@ void ccmem_tobuf(cc_decoder_t *dec)
         if (buf->rows[i].cells[f].c != ' ')
           break;
       for (l = CC_COLUMNS-1; l>0; l--)
-        if (buf->rows[i].cells[f].c != ' ')
+        if (buf->rows[i].cells[l].c != ' ')
           break;
       for (j = f; j <= l; j++)
         dec->text[dec->textlen++] = buf->rows[i].cells[j].c;
