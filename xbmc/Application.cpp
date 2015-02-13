@@ -296,7 +296,6 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
-  , m_seekHandler(&CSeekHandler::Get())
   , m_playerController(new CPlayerController)
 {
   m_network = NULL;
@@ -1304,6 +1303,9 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
   CAddonMgr::Get().StartServices(true);
+
+  // register action listeners
+  RegisterActionListener(&CSeekHandler::Get());
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2659,13 +2661,6 @@ bool CApplication::OnAction(const CAction &action)
     ShowVolumeBar(&action);
     return true;
   }
-  // Check for global seek control
-  if (m_pPlayer->IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
-  {
-    if (!m_pPlayer->CanSeek()) return false;
-    m_seekHandler->Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat(), true);
-    return true;
-  }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
     CGUIControlProfiler::Instance().SetOutputFile(CSpecialProtocol::TranslatePath("special://home/guiprofiler.xml"));
@@ -2725,7 +2720,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-      m_seekHandler->Process();
+      CSeekHandler::Get().Process();
     }
   }
   if (processGUI && m_renderGUI)
@@ -2921,6 +2916,9 @@ void CApplication::Stop(int exitCode)
 
     // Stop services before unloading Python
     CAddonMgr::Get().StopServices(false);
+
+    // unregister action listeners
+    UnregisterActionListener(&CSeekHandler::Get());
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
@@ -4142,7 +4140,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // reset the seek handler
-      m_seekHandler->Reset();
+      CSeekHandler::Get().Reset();
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
 
       // Update our infoManager with the new details etc.

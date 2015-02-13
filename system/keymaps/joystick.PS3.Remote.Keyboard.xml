@@ -72,8 +72,8 @@
       <button id="1">Info</button>
       <button id="2">Pause</button>
       <button id="3">Stop</button>
-      <hat    id="1" position="left">SkipPrevious</hat>
-      <hat    id="1" position="right">SkipNext</hat>
+      <hat    id="1" position="left">StepBack</hat>
+      <hat    id="1" position="right">StepForward</hat>
       <hat    id="1" position="up">IncreaseRating</hat>
       <hat    id="1" position="down">DecreaseRating</hat>
     </joystick>

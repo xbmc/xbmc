@@ -691,6 +691,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("videoplayer.seekdelay");
   settingSet.insert("videoplayer.seeksteps");
+  settingSet.insert("musicplayer.seekdelay");
+  settingSet.insert("musicplayer.seeksteps");
   m_settingsManager->RegisterCallback(&CSeekHandler::Get(), settingSet);
 
   settingSet.clear();
