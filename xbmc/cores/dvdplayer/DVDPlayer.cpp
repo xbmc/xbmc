@@ -4290,7 +4290,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if(m_pDemuxer)
   {
-    state.chapter       = m_pDemuxer->GetChapter();
+    if (IsInMenu())
+      state.chapter = 0;
+    else
+      state.chapter       = m_pDemuxer->GetChapter();
 
     state.chapters.clear();
     if (m_pDemuxer->GetChapterCount() > 0)
