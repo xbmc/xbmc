@@ -718,14 +718,14 @@ testframework: $(GTEST_LIBS)
 $(GTEST_LIBS): $(GTEST_DIR)/Makefile
 
 $(GTEST_DIR)/Makefile: force
-	$(MAKE) -C $(GTEST_DIR)
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -DGTEST_USE_OWN_TR1_TUPLE=1" -C $(GTEST_DIR)
 
 $(CHECK_LIBS): force
-	@$(MAKE) $(if $(V),,-s) -C $(@D)
+	@$(MAKE) CXXFLAGS="$(CXXFLAGS) -DGTEST_USE_OWN_TR1_TUPLE=1" $(if $(V),,-s) -C $(@D)
 
 @APP_NAME_LC@-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
 else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) $(CHECK_LIBADD) -rdynamic
 endif

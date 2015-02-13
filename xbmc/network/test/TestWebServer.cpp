@@ -19,9 +19,9 @@
  */
 
 #include <errno.h>
+#include <stdlib.h>
 
 #include <gtest/gtest.h>
-
 #include "system.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"

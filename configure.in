@@ -2854,6 +2854,7 @@ XB_CONFIG_MODULE([lib/gtest], [
     CC="$CC" \
     CXX="$CXX" \
     CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
