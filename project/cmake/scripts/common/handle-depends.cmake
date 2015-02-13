@@ -1,3 +1,5 @@
+include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
+
 # handle addon depends
 function(add_addon_depends addon searchpath)
   # input: string addon string searchpath
@@ -12,7 +14,8 @@ function(add_addon_depends addon searchpath)
             file MATCHES install.txt OR
             file MATCHES noinstall.txt OR
             file MATCHES flags.txt OR
-            file MATCHES deps.txt))
+            file MATCHES deps.txt OR
+            file MATCHES platforms.txt))
       message(STATUS "Processing ${file}")
       file(STRINGS ${file} def)
       separate_arguments(def)
@@ -33,7 +36,11 @@ function(add_addon_depends addon searchpath)
         get_filename_component(id ${file} NAME_WE)
       endif()
 
-      if(NOT TARGET ${id})
+      # check if the dependency has a platforms.txt
+      set(platform_found FALSE)
+      check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
+
+      if(${platform_found} AND NOT TARGET ${id})
         # check if there are any library specific flags that need to be passed on
         if(EXISTS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
