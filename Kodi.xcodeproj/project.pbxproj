@@ -182,12 +182,33 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
-		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
-		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
-		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
+		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		3994425B1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
+		3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
+		3994425D1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
+		3994426E1A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */; };
+		3994426F1A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */; };
+		399442701A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */; };
+		399442711A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442631A8DD920006C39E9 /* VideoLibraryJob.cpp */; };
+		399442721A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442631A8DD920006C39E9 /* VideoLibraryJob.cpp */; };
+		399442731A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442631A8DD920006C39E9 /* VideoLibraryJob.cpp */; };
+		399442741A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442651A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp */; };
+		399442751A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442651A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp */; };
+		399442761A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442651A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp */; };
+		399442771A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */; };
+		399442781A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */; };
+		399442791A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */; };
+		3994427A1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */; };
+		3994427B1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */; };
+		3994427C1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */; };
+		3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
+		399442801A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
+		399442811A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -664,9 +685,6 @@
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
-		B5011E3C19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
-		B5011E3D19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
-		B5011E3E19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */; };
 		B5011E4119AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5011E4319AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
@@ -3614,10 +3632,24 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
-		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
-		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
 		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
+		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
+		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
+		399442591A8DD8D0006C39E9 /* ProgressJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgressJob.cpp; sourceTree = "<group>"; };
+		3994425A1A8DD8D0006C39E9 /* ProgressJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressJob.h; sourceTree = "<group>"; };
+		399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryCleaningJob.cpp; sourceTree = "<group>"; };
+		399442621A8DD920006C39E9 /* VideoLibraryCleaningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryCleaningJob.h; sourceTree = "<group>"; };
+		399442631A8DD920006C39E9 /* VideoLibraryJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryJob.cpp; sourceTree = "<group>"; };
+		399442641A8DD920006C39E9 /* VideoLibraryJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryJob.h; sourceTree = "<group>"; };
+		399442651A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryMarkWatchedJob.cpp; sourceTree = "<group>"; };
+		399442661A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryMarkWatchedJob.h; sourceTree = "<group>"; };
+		399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryProgressJob.cpp; sourceTree = "<group>"; };
+		399442681A8DD920006C39E9 /* VideoLibraryProgressJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryProgressJob.h; sourceTree = "<group>"; };
+		399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryScanningJob.cpp; sourceTree = "<group>"; };
+		3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryScanningJob.h; sourceTree = "<group>"; };
+		3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryQueue.cpp; sourceTree = "<group>"; };
+		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -4225,8 +4257,6 @@
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		AEC0083315ACAC7C0099888C /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
-		B5011E3A19AA496D005ADF89 /* MarkWatchedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkWatchedJob.h; sourceTree = "<group>"; };
-		B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkWatchedJob.cpp; sourceTree = "<group>"; };
 		B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixFile.cpp; sourceTree = "<group>"; };
 		B5011E4019AF3B56005ADF89 /* PosixFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixFile.h; sourceTree = "<group>"; };
 		B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayFile.cpp; sourceTree = "<group>"; };
@@ -6405,6 +6435,23 @@
 			path = pthreads;
 			sourceTree = "<group>";
 		};
+		3994425F1A8DD920006C39E9 /* jobs */ = {
+			isa = PBXGroup;
+			children = (
+				399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */,
+				399442621A8DD920006C39E9 /* VideoLibraryCleaningJob.h */,
+				399442631A8DD920006C39E9 /* VideoLibraryJob.cpp */,
+				399442641A8DD920006C39E9 /* VideoLibraryJob.h */,
+				399442651A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp */,
+				399442661A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.h */,
+				399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */,
+				399442681A8DD920006C39E9 /* VideoLibraryProgressJob.h */,
+				399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */,
+				3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */,
+			);
+			path = jobs;
+			sourceTree = "<group>";
+		};
 		430C880812D649B10098821A /* powermanagement */ = {
 			isa = PBXGroup;
 			children = (
@@ -6794,6 +6841,7 @@
 		43FAC85D12D62F4300F67914 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				3994425F1A8DD920006C39E9 /* jobs */,
 				43FAC88612D6363B00F67914 /* dialogs */,
 				DFA0E8C619FD6BFC00269A92 /* videosync */,
 				43FAC88812D6364800F67914 /* windows */,
@@ -6818,6 +6866,8 @@
 				E38E1E960D25F9FD00618676 /* VideoInfoScanner.h */,
 				E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */,
 				E38E1E980D25F9FD00618676 /* VideoInfoTag.h */,
+				3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */,
+				3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */,
 				F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */,
 				F59876BE0FBA351D008EF4FB /* VideoReferenceClock.h */,
 				7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */,
@@ -9288,9 +9338,7 @@
 			children = (
 				DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */,
 				DF56EF231A798A5E00CAAEFB /* HttpRangeUtils.h */,
-				B5011E3B19AA4989005ADF89 /* MarkWatchedJob.cpp */,
 				B542632E19917D3500726998 /* params_check_macros.h */,
-				B5011E3A19AA496D005ADF89 /* MarkWatchedJob.h */,
 				F5CC22FB18150065006B5E91 /* ActorProtocol.cpp */,
 				F5CC22FC18150065006B5E91 /* ActorProtocol.h */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
@@ -9390,6 +9438,8 @@
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
 				F5ED908C15538E2300842059 /* POUtils.cpp */,
 				F5ED908D15538E2300842059 /* POUtils.h */,
+				399442591A8DD8D0006C39E9 /* ProgressJob.cpp */,
+				3994425A1A8DD8D0006C39E9 /* ProgressJob.h */,
 				18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */,
 				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
@@ -10248,6 +10298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E38E1F370D25F9FD00618676 /* Application.cpp in Sources */,
+				399442771A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
 				E38E1F380D25F9FD00618676 /* ApplicationMessenger.cpp in Sources */,
 				E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
@@ -10423,6 +10474,7 @@
 				E38E209A0D25F9FD00618676 /* GUIDialogSongInfo.cpp in Sources */,
 				E38E209B0D25F9FD00618676 /* GUIDialogSubMenu.cpp in Sources */,
 				E38E209D0D25F9FD00618676 /* GUIDialogVideoBookmarks.cpp in Sources */,
+				3994426E1A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */,
 				E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */,
 				E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */,
@@ -10783,6 +10835,7 @@
 				18B7C7DC1294222E009E7A26 /* GUIShader.cpp in Sources */,
 				18B7C7DD1294222E009E7A26 /* GUISliderControl.cpp in Sources */,
 				18B7C7DF1294222E009E7A26 /* GUISpinControl.cpp in Sources */,
+				399442711A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */,
 				18B7C7E01294222E009E7A26 /* GUISpinControlEx.cpp in Sources */,
 				18B7C7E21294222E009E7A26 /* GUIStaticItem.cpp in Sources */,
 				18B7C7E31294222E009E7A26 /* GUITextBox.cpp in Sources */,
@@ -10927,6 +10980,7 @@
 				DF93D6991444A8B1007C6459 /* AFPFile.cpp in Sources */,
 				DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */,
 				DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */,
+				3994427A1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */,
 				DF93D69C1444A8B1007C6459 /* CDDAFile.cpp in Sources */,
 				DF93D69D1444A8B1007C6459 /* CurlFile.cpp in Sources */,
 				DF93D69E1444A8B1007C6459 /* DAAPFile.cpp in Sources */,
@@ -11026,6 +11080,7 @@
 				DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				DF830D1215BB262700602BE6 /* GUIKeyboardFactory.cpp in Sources */,
 				36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */,
+				3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */,
 				36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */,
 				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
 				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
@@ -11071,6 +11126,7 @@
 				DFB25D40163D4743006C4A48 /* ModuleXbmcvfs.cpp in Sources */,
 				DFB25D41163D4743006C4A48 /* Monitor.cpp in Sources */,
 				DFB25D42163D4743006C4A48 /* Player.cpp in Sources */,
+				3994425B1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				DFB25D43163D4743006C4A48 /* PlayList.cpp in Sources */,
 				DFB25D44163D4743006C4A48 /* String.cpp in Sources */,
 				DFB25D45163D4743006C4A48 /* Window.cpp in Sources */,
@@ -11252,6 +11308,7 @@
 				DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */,
 				7CCDA7AF192756250074CF51 /* NptDebug.cpp in Sources */,
 				7CCDA7B8192756250074CF51 /* NptDigest.cpp in Sources */,
+				399442741A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				7CCDA7BB192756250074CF51 /* NptDynamicLibraries.cpp in Sources */,
 				7CCDA7BE192756250074CF51 /* NptFile.cpp in Sources */,
 				7CCDA7C7192756250074CF51 /* NptHash.cpp in Sources */,
@@ -11276,7 +11333,6 @@
 				7CCDA85A192756250074CF51 /* NptUtils.cpp in Sources */,
 				7CCDA863192756250074CF51 /* NptXml.cpp in Sources */,
 				7CCDA86C192756250074CF51 /* NptZip.cpp in Sources */,
-				B5011E3C19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */,
 				DF56EF1F1A798A3F00CAAEFB /* HTTPFileHandler.cpp in Sources */,
 				7CCDAA82192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
 				7CCDAA85192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
@@ -11377,6 +11433,7 @@
 				DFF0F13617528350002DA3A4 /* Exception.cpp in Sources */,
 				DFF0F13717528350002DA3A4 /* ilog.cpp in Sources */,
 				DFF0F13817528350002DA3A4 /* AEEncoderFFmpeg.cpp in Sources */,
+				399442791A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
 				DFF0F13E17528350002DA3A4 /* AEBitstreamPacker.cpp in Sources */,
 				DFF0F13F17528350002DA3A4 /* AEBuffer.cpp in Sources */,
 				DFF0F14017528350002DA3A4 /* AEChannelInfo.cpp in Sources */,
@@ -11659,6 +11716,7 @@
 				DFF0F26117528350002DA3A4 /* DirectoryNodeRoot.cpp in Sources */,
 				DFF0F26217528350002DA3A4 /* DirectoryNodeSeasons.cpp in Sources */,
 				DFF0F26317528350002DA3A4 /* DirectoryNodeTitleMovies.cpp in Sources */,
+				3994425D1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				DFF0F26417528350002DA3A4 /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
 				DFF0F26517528350002DA3A4 /* DirectoryNodeTitleTvShows.cpp in Sources */,
 				DFF0F26617528350002DA3A4 /* DirectoryNodeTvShowsOverview.cpp in Sources */,
@@ -11728,6 +11786,7 @@
 				DFF0F2A517528350002DA3A4 /* GUISelectButtonControl.cpp in Sources */,
 				DFF0F2A617528350002DA3A4 /* GUISettingsSliderControl.cpp in Sources */,
 				DFF0F2A717528350002DA3A4 /* GUIShader.cpp in Sources */,
+				399442811A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */,
 				DFF0F2A817528350002DA3A4 /* GUISliderControl.cpp in Sources */,
 				DFF0F2A917528350002DA3A4 /* GUISpinControl.cpp in Sources */,
 				DFF0F2AA17528350002DA3A4 /* GUISpinControlEx.cpp in Sources */,
@@ -11949,6 +12008,7 @@
 				DFF0F38117528350002DA3A4 /* GUIDialogPVRTimerSettings.cpp in Sources */,
 				DFF0F38217528350002DA3A4 /* PVRRecording.cpp in Sources */,
 				DFF0F38317528350002DA3A4 /* PVRRecordings.cpp in Sources */,
+				3994427C1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */,
 				DFF0F38417528350002DA3A4 /* PVRTimerInfoTag.cpp in Sources */,
 				DFF0F38517528350002DA3A4 /* PVRTimers.cpp in Sources */,
 				DFF0F38617528350002DA3A4 /* GUIViewStatePVR.cpp in Sources */,
@@ -11988,7 +12048,6 @@
 				DFF0F3B317528350002DA3A4 /* Implementation.cpp in Sources */,
 				DFF0F3B417528350002DA3A4 /* Atomics.cpp in Sources */,
 				DFF0F3B517528350002DA3A4 /* Event.cpp in Sources */,
-				B5011E3E19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */,
 				DFF0F3B617528350002DA3A4 /* LockFree.cpp in Sources */,
 				DFF0F3B717528350002DA3A4 /* SystemClock.cpp in Sources */,
 				DFF0F3B817528350002DA3A4 /* Thread.cpp in Sources */,
@@ -12026,6 +12085,7 @@
 				DFF0F3DA17528350002DA3A4 /* JSONVariantWriter.cpp in Sources */,
 				DFF0F3DB17528350002DA3A4 /* LabelFormatter.cpp in Sources */,
 				DFF0F3DC17528350002DA3A4 /* LangCodeExpander.cpp in Sources */,
+				399442731A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */,
 				DFF0F3DD17528350002DA3A4 /* LegacyPathTranslation.cpp in Sources */,
 				DFF0F3DE17528350002DA3A4 /* log.cpp in Sources */,
 				DFF0F3DF17528350002DA3A4 /* md5.cpp in Sources */,
@@ -12086,6 +12146,7 @@
 				DFF0F41517528350002DA3A4 /* VideoInfoTag.cpp in Sources */,
 				DFF0F41617528350002DA3A4 /* VideoReferenceClock.cpp in Sources */,
 				DFF0F41717528350002DA3A4 /* VideoThumbLoader.cpp in Sources */,
+				399442701A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */,
 				DFF0F41817528350002DA3A4 /* GUIViewControl.cpp in Sources */,
 				DFF0F41917528350002DA3A4 /* GUIViewState.cpp in Sources */,
 				DFF0F41A17528350002DA3A4 /* ViewDatabase.cpp in Sources */,
@@ -12139,6 +12200,7 @@
 				DFF0F45117528350002DA3A4 /* XBDateTime.cpp in Sources */,
 				DFF0F45217528350002DA3A4 /* xbmc.cpp in Sources */,
 				DFF0F45317528350002DA3A4 /* XbmcContext.cpp in Sources */,
+				399442761A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				DFF0F45417528350002DA3A4 /* MouseStat.cpp in Sources */,
 				DFF0F45517528350002DA3A4 /* Addon.cpp in Sources */,
 				DFF0F45617528350002DA3A4 /* AddonCallback.cpp in Sources */,
@@ -12774,8 +12836,10 @@
 				E4991302174E5DAD00741B6D /* GUIListLabel.cpp in Sources */,
 				E4991303174E5DAD00741B6D /* GUIMessage.cpp in Sources */,
 				E4991304174E5DAD00741B6D /* GUIMoverControl.cpp in Sources */,
+				399442751A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				E4991305174E5DAD00741B6D /* GUIMultiImage.cpp in Sources */,
 				E4991306174E5DAD00741B6D /* GUIMultiSelectText.cpp in Sources */,
+				3994427B1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */,
 				E4991307174E5DAD00741B6D /* GUIPanelContainer.cpp in Sources */,
 				E4991308174E5DAD00741B6D /* GUIProgressControl.cpp in Sources */,
 				E4991309174E5DAD00741B6D /* GUIRadioButtonControl.cpp in Sources */,
@@ -12787,6 +12851,7 @@
 				E499130F174E5DAD00741B6D /* GUISettingsSliderControl.cpp in Sources */,
 				E4991310174E5DAD00741B6D /* GUIShader.cpp in Sources */,
 				E4991311174E5DAD00741B6D /* GUISliderControl.cpp in Sources */,
+				3994426F1A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp in Sources */,
 				E4991312174E5DAD00741B6D /* GUISpinControl.cpp in Sources */,
 				E4991313174E5DAD00741B6D /* GUISpinControlEx.cpp in Sources */,
 				E4991314174E5DAD00741B6D /* GUIStaticItem.cpp in Sources */,
@@ -12913,6 +12978,7 @@
 				E49913A6174E5F2100741B6D /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				E49913A7174E5F2100741B6D /* HTTPWebinterfaceHandler.cpp in Sources */,
 				E49913A8174E5F2100741B6D /* IHTTPRequestHandler.cpp in Sources */,
+				3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				E49913A9174E5F2100741B6D /* NetworkLinux.cpp in Sources */,
 				E49913AA174E5F2100741B6D /* ZeroconfBrowserOSX.cpp in Sources */,
 				E49913AB174E5F2100741B6D /* ZeroconfOSX.cpp in Sources */,
@@ -13037,6 +13103,7 @@
 				E4991430174E603C00741B6D /* VideoSettings.cpp in Sources */,
 				E4991431174E604300741B6D /* DarwinStorageProvider.cpp in Sources */,
 				E4991432174E604300741B6D /* AutorunMediaJob.cpp in Sources */,
+				399442721A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */,
 				E4991433174E604300741B6D /* cdioSupport.cpp in Sources */,
 				E4991434174E604300741B6D /* DetectDVDType.cpp in Sources */,
 				E4991435174E604300741B6D /* IoSupport.cpp in Sources */,
@@ -13049,6 +13116,7 @@
 				E499143C174E604700741B6D /* Thread.cpp in Sources */,
 				E499143D174E604700741B6D /* Timer.cpp in Sources */,
 				E499143E174E605900741B6D /* AlarmClock.cpp in Sources */,
+				399442781A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
 				DF4BF01E1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */,
 				E4991440174E605900741B6D /* Archive.cpp in Sources */,
@@ -13152,6 +13220,7 @@
 				E49914A2174E607200741B6D /* GUIMediaWindow.cpp in Sources */,
 				E49914A3174E607200741B6D /* GUIWindowDebugInfo.cpp in Sources */,
 				E49914A4174E607200741B6D /* GUIWindowFileManager.cpp in Sources */,
+				399442801A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */,
 				E49914A5174E607200741B6D /* GUIWindowHome.cpp in Sources */,
 				E49914A6174E607200741B6D /* GUIWindowLoginScreen.cpp in Sources */,
 				E49914A7174E607200741B6D /* GUIWindowPointer.cpp in Sources */,
@@ -13381,7 +13450,6 @@
 				7CCDA864192756250074CF51 /* NptXml.cpp in Sources */,
 				7CCDA86D192756250074CF51 /* NptZip.cpp in Sources */,
 				B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */,
-				B5011E3D19AA4989005ADF89 /* MarkWatchedJob.cpp in Sources */,
 				7CCDAA83192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
 				7CCDAA86192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8C192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
