@@ -50,6 +50,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->TransferTimerEntry         = PVRTransferTimerEntry;
   m_callbacks->TransferRecordingEntry     = PVRTransferRecordingEntry;
   m_callbacks->AddMenuHook                = PVRAddMenuHook;
+  m_callbacks->AddTimerType               = PVRAddTimerType;
   m_callbacks->Recording                  = PVRRecording;
   m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
   m_callbacks->TriggerChannelGroupsUpdate = PVRTriggerChannelGroupsUpdate;
@@ -221,6 +222,25 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   /* transfer this entry to the timers container */
   CPVRTimerInfoTag transferTimer(*timer, channel, client->GetID());
   xbmcTimers->UpdateFromClient(transferTimer);
+}
+
+void CAddonCallbacksPVR::PVRAddTimerType(void *addonData, PVR_TIMERTYPE *type)
+{
+  CPVRClient *client = GetPVRClient(addonData);
+  if (!type || !client)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  PVR_TIMERTYPES *types = client->GetTimerTypes();
+  if (types)
+  {
+    /* add this new type */
+    PVR_TIMERTYPE typeInt = *type;
+
+    types->push_back(typeInt);
+  }
 }
 
 void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)

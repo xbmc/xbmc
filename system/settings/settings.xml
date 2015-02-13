@@ -1371,6 +1371,11 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="pvrrecord.onlynewepisodes" type="boolean" label="19179" help="36420">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="pvrrecord.timernotifications" type="boolean" label="19233" help="36239">

@@ -158,6 +158,14 @@ namespace PVR
      */
     int GetPlayingClientID(void) const;
 
+    /*!
+     * @brief Get a Localized String from the addon.
+     * @param iClientId The id of the client.
+     * @param iStringID The id of the requested string from the pvr addon.
+     * @return requested string, empty if not found.
+     */
+    std::string GetClientLocalizedString(int iClientID, uint32_t iStringID);
+
     //@}
 
     /*! @name Stream methods */
@@ -335,10 +343,11 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
+     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -348,6 +357,28 @@ namespace PVR
      * @return True if the timer was renamed successfully, false otherwise.
      */
     PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
+
+    /*!
+     * @brief Check whether a client has any additional timer types (i.e. serie types).
+     * @param iClientId The ID of the client to get the timer types for.
+     * @return True if the client has any additional types, false otherwise.
+     */
+    bool HasTimerTypes(int iClientId);
+
+    /*!
+     * @brief Get the menu hooks for a client.
+     * @param iClientId The ID of the client to get the timer types for.
+     * @return List of additional timer types.
+     */
+    PVR_TIMERTYPES *GetTimerTypes(int iClientID);
+
+    /*!
+     * @brief Get timer type localized string id for a client.
+     * @param typeId The type id to get the string id for.
+     * @param iClientId The ID of the client to get the string id for.
+     * @return localized string id.
+     */
+    int GetTimerTypeLocalizedStringId(int typeId, int iClientID);
 
     //@}
 

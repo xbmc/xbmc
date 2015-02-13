@@ -180,6 +180,7 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
+  value["hastimerschedule"] = HasTimerSchedule();
   value["recordingid"] = m_strRecordingId;
   value["hasrecording"] = HasRecording();
   value["isactive"] = IsActive();
@@ -812,6 +813,15 @@ bool CEpgInfoTag::HasTimer(void) const
 {
   CSingleLock lock(m_critSection);
   return m_timer != NULL;
+}
+
+bool CEpgInfoTag::HasTimerSchedule(void) const
+{
+  if (!HasTimer())
+    return false;
+
+  CSingleLock lock(m_critSection);
+  return m_timer->IsRepeating();
 }
 
 CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const

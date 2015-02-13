@@ -267,6 +267,15 @@ int CPVRClients::GetPlayingClientID(void) const
   return -EINVAL;
 }
 
+std::string CPVRClients::GetClientLocalizedString(int iClientID, uint32_t iStringID)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientID, client))
+    return client->GetString(iStringID);
+    
+  return "";
+}
+
 const std::string CPVRClients::GetPlayingClientName(void) const
 {
   CSingleLock lock(m_critSection);
@@ -413,13 +422,13 @@ PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
+PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetConnectedClient(timer.m_iClientId, client))
-    error = client->DeleteTimer(timer, bForce);
+    error = client->DeleteTimer(timer, bForce, bDeleteSchedule);
 
   return error;
 }
@@ -436,6 +445,31 @@ PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::str
     CLog::Log(LOGERROR, "PVR - %s - cannot rename timer on client '%d': %s",__FUNCTION__, timer.m_iClientId, CPVRClient::ToString(error));
 
   return error;
+}
+
+bool CPVRClients::HasTimerTypes(int iClientID)
+{
+  PVR_CLIENT client;
+  return (GetConnectedClient(iClientID, client) &&
+      client->HasTimerTypes());
+}
+
+PVR_TIMERTYPES *CPVRClients::GetTimerTypes(int iClientID)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientID, client))
+    return client->GetTimerTypes();
+
+  return NULL;
+}
+
+int CPVRClients::GetTimerTypeLocalizedStringId(int typeId, int iClientID)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientID, client))
+    return client->GetTimerTypeStrId(typeId);
+
+  return -1;
 }
 
 PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings)

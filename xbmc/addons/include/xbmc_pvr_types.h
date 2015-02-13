@@ -118,6 +118,34 @@ extern "C" {
   } PVR_TIMER_STATE;
 
   /*!
+   * @brief PVR timer types
+   */
+  typedef enum
+  {
+    PVR_TIMERTYPE_EPG_ONCE      = -1, /*!< @brief timer type for a once time epg based timer */
+    PVR_TIMERTYPE_MANUAL_ONCE   = -2, /*!< @brief timer type for a once time manual timer  */
+    PVR_TIMERTYPE_MANUAL_SERIE  = -3, /*!< @brief timer type for a manual timer schedule */
+    PVR_TIMERTYPE_UNKNOWN       = -4, /*!< @brief timer type for a unknown timer schedule */
+  } PVR_TIMERTYPEID;
+
+  /*!
+   * @brief PVR timer weekday mask
+   */
+  typedef enum
+  {
+    BITFLAG_MONDAY    = 0x01,
+    BITFLAG_TUESDAY   = 0x02,
+    BITFLAG_WEDNESDAY = 0x04,
+    BITFLAG_THURSDAY  = 0x08,
+    BITFLAG_FRIDAY    = 0x10,
+    BITFLAG_SATURDAY  = 0x20,
+    BITFLAG_SUNDAY    = 0x40,
+    BITFLAG_WEEKDAYS  = 0x1F,
+    BITFLAG_WEEKENDS  = 0x60,
+    BITFLAG_ALL_DAYS  = 0x7F
+  } PVR_WEEKDAYMASK;
+
+  /*!
    * @brief PVR menu hook categories
    */
   typedef enum
@@ -218,6 +246,19 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_MENUHOOK;
 
   /*!
+   * @brief Extra timer types which are available in the add/edit timer dialog.
+   */
+  typedef struct PVR_TIMERTYPE
+  {
+    int              iTypeId;              /*!< @brief (required) this type's identifier, should only contain positive numbers! */
+    int              iLocalizedStringId;   /*!< @brief (required) the id of the label for this type in g_localizeStrings */
+    bool             bDependsChannel;      /*!< @brief (required) this type needs the channel field */
+    bool             bDependsTime;         /*!< @brief (required) this type needs the time fields */
+    bool             bDependsNewEpisodes;  /*!< @brief (required) this type needs the new episodes field */
+    bool             bReadOnly;            /*!< @brief (required) this type may not be edited by Kodi */
+  } ATTRIBUTE_PACKED PVR_TIMERTYPE;
+
+  /*!
    * @brief Representation of a TV or radio channel.
    */
   typedef struct PVR_CHANNEL
@@ -259,14 +300,16 @@ extern "C" {
     time_t          startTime;                                 /*!< @brief (required) start time of the recording in UTC. instant timers that are sent to the add-on by xbmc will have this value set to 0 */
     time_t          endTime;                                   /*!< @brief (required) end time of the recording in UTC */
     PVR_TIMER_STATE state;                                     /*!< @brief (required) the state of this timer */
+    int             iTimerType;                                /*!< @brief (required) the type id of this timer, see PVR_TIMERTYPEID of use id's from your own PVR_TIMERTYPE's */
+    int             iScheduleUid;                              /*!< @brief (optional) id from the schedule where this timer is belonging to */
     char            strTitle[PVR_ADDON_NAME_STRING_LENGTH];    /*!< @brief (optional) title of this timer */
     char            strDirectory[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) the directory where the recording will be stored in */
     char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
     int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
     int             iLifetime;                                 /*!< @brief (optional) lifetimer of this timer in days */
-    bool            bIsRepeating;                              /*!< @brief (optional) true if this is a recurring timer */
-    time_t          firstDay;                                  /*!< @brief (optional) the first day this recording is active in case of a repeating event */
-    int             iWeekdays;                                 /*!< @brief (optional) weekday mask */
+    bool            bNewEpisodesOnly;                          /*!< @brief (optional) true if backend should only record new episodes in case of a repeating epg based timer */
+    time_t          firstDay;                                  /*!< @brief (optional) the first day this recording is active in case of a repeating manual timer */
+    int             iWeekdays;                                 /*!< @brief (optional) weekday mask in case of a manual repeating timer*/
     int             iEpgUid;                                   /*!< @brief (optional) epg event id */
     unsigned int    iMarginStart;                              /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
@@ -368,7 +411,7 @@ extern "C" {
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool, bool);
     PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
     bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
     void         (__cdecl* CloseLiveStream)(void);

@@ -3321,7 +3321,143 @@ msgctxt "#802"
 msgid "%s of %s available"
 msgstr ""
 
-#empty strings from id 803 to 849
+#. Message in a dialog when a user wants to delete a timer that is part of a repeating schedule
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+msgctxt "#803"
+msgid "Do you also want to delete all other timers from this repeating schedule?"
+msgstr ""
+
+#. Label of spinner control for choosing the timer type (once, weekdays, mondays,..)
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#804"
+msgid "Schedule type:"
+msgstr ""
+
+#. Type selection for an advanced (epg)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#805"
+msgid "Once"
+msgstr ""
+
+#. Type selection for an advanced (epg)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#810"
+msgid "Weekdays (Mon-Fri)"
+msgstr ""
+
+#. Type selection for an advanced (epg)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#811"
+msgid "Weekends (Sat-Sun)"
+msgstr ""
+
+#. Type selection when we opened an unsupported timer with 'edit timer'
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#812"
+msgid "Unsupported repeating timer"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#813"
+msgid "Mondays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#814"
+msgid "Tuesdays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#815"
+msgid "Wednesdays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#816"
+msgid "Thursdays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#817"
+msgid "Fridays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#818"
+msgid "Saturdays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#819"
+msgid "Sundays"
+msgstr ""
+
+#. Type selection for an advanced (manual)timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#820"
+msgid "All days"
+msgstr ""
+
+#. Label of new episodes button (if user don't want to record repeating episodes)
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#821"
+msgid "New episodes only:"
+msgstr ""
+
+#. Label of pre-record spinner
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#822"
+msgid "Pre-record (minutes):"
+msgstr ""
+
+#. Label of post-record spinner
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#823"
+msgid "Post-record (minutes):"
+msgstr ""
+
+#. Shows the timer type at %s in a confirmation dialog to delete a complete timer schedule.
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+msgctxt "#824"
+msgid "Schedule type: %s"
+msgstr ""
+
+#. Label of a context menu entry to create a new recording timer with advanced configuration options
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#825"
+msgid "Add advanced timer"
+msgstr ""
+
+#. Label of 'new episodes only' setting
+msgctxt "#826"
+msgid "Only new episodes"
+msgstr ""
+
+#empty strings from id 827 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -8343,7 +8479,10 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr ""
 
-#empty string with id 19179
+#: system/settings/settings.xml
+msgctxt "#19179"
+msgid "Skip new episodes for recordings"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19180"
@@ -15548,7 +15687,10 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#empty string with id 36420
+#: system/settings/settings.xml
+msgctxt "#36420"
+msgid "Only record new episodes for repeating schedules. Not supported by all Add-ons and backends."
+msgstr "
 
 #. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml

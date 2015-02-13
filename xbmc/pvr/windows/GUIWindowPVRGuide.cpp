@@ -85,6 +85,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
     else
       buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* add timer */
+    buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 825);  /* add advanced timer */
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */
@@ -476,6 +477,11 @@ bool CGUIWindowPVRGuide::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUT
   if (button == CONTEXT_BUTTON_START_RECORD)
   {
     StartRecordFile(*item);
+    bReturn = true;
+  }
+  if (button == CONTEXT_BUTTON_ADVANCED_RECORD)
+  {
+    StartRecordFile(*item, true);
     bReturn = true;
   }
 
