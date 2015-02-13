@@ -115,12 +115,10 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 
 ssize_t CSAPFile::Read(void *lpBuf, size_t uiBufSize)
 {
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
   if (uiBufSize > std::numeric_limits<std::streamsize>::max())
-    uiBufSize = (size_t)std::numeric_limits<std::streamsize>::max();
+    uiBufSize = static_cast<size_t>(std::numeric_limits<std::streamsize>::max());
 
-  return (ssize_t)m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
+  return static_cast<ssize_t>(m_stream.readsome((char*)lpBuf, static_cast<std::streamsize>(uiBufSize)));
 }
 
 void CSAPFile::Close()
