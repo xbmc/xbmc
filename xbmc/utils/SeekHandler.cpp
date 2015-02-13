@@ -133,7 +133,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     g_infoManager.SetSeeking(true);
     m_seekStep = 0;
     m_analogSeek = analogSeek;
-    m_seekDelay = m_seekDelays.at(type);
+    m_seekDelay = analogSeek ? analogSeekDelay : m_seekDelays.at(type);
   }
 
   // calculate our seek amount
