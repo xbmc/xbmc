@@ -57,7 +57,7 @@ TEST_F(TestLabelFormatter, FormatLabel)
   LABEL_MASKS labelMasks;
   CLabelFormatter formatter("", labelMasks.m_strLabel2File);
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
@@ -77,7 +77,7 @@ TEST_F(TestLabelFormatter, FormatLabel2)
   LABEL_MASKS labelMasks;
   CLabelFormatter formatter("", labelMasks.m_strLabel2File);
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
