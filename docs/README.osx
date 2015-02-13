@@ -3,7 +3,10 @@ TOC
 2. Getting the source code
 3. Install required libs
   3.1. Install Xcode
+  3.1.1 Supported Xcode and OSX constellations
   3.2. Install Kodi build depends
+  3.2.1 Compiling as 32 Bit binary
+  3.2.2 Compiling as 64 Bit binary
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -13,11 +16,12 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a platform port of Kodi for the Apple OSX operating system. 10.6, 10.7
-10.8, 10.9 and 10.10 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
-are the recommended versions.
+This is a platform port of Kodi for the Apple OSX operating system. 10.9 and 10.10 Intel development 
+platforms are supported. Xcode 6 newer are the recommended versions.
 There are 3 ways to build Kodi for Mac, from command-line with make, from command-line
 using xcodebuild or from Xcode.
+
+The minimum version of OSX you need to run(!) Kodi is 10.7 atm.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
@@ -25,19 +29,15 @@ The command-line build is still under development.
 Kodi for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
-On Snow Leopard (OSX 10.6.x) we recommend using Xcode 3.2.6.
-On Lion (OSX 10.7.x) we recommend using Xcode 4.3.x.
-On Mountain Lion (OSX 10.8.1) we recommend using Xcode 4.4.
-On Mavericks (OSX 10.9.3) we recommend using Xcode 5.1.1 or 6.0.1.
-On Yosemite (OSX 10.10) we recommend using Xcode 6.1.
+On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
+On Yosemite (OSX 10.10.x) we recommend using Xcode 6.1.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
 character itself should NOT be typed as part of the command.
 
-ATTENTION: When using Mountain Lion (OSX 10.8.x), Mavericks (10.9.x) or Yosemite (10.10.x) you 
-need to download and install XQuartz from https://xquartz.macosforge.org/landing/ since its not part of OSX
-anymore.
+ATTENTION: You need to download and install XQuartz from https://xquartz.macosforge.org/landing/ since 
+its not part of OSX anymore since 10.8.
 
 -----------------------------------------------------------------------------
 2. Getting the source code
@@ -47,54 +47,37 @@ anymore.
  $ git clone git://github.com/xbmc/xbmc.git Kodi
 
 -----------------------------------------------------------------------------
-3.0 Install XCODE
+3.1 Install XCODE
 -----------------------------------------------------------------------------
-See point 3.0a below for an updated list of supported/tested Xcode/osx constellations!!!
+See point 3.1.1 below for an updated list of supported/tested Xcode/osx constellations!!!
 
-Install latest Xcode (6.1.0 or 3.2.6 as of the writing). You can download it from
+Install latest Xcode (6.1.0 ). You can download it from the MacOSX AppStore (Xcode). 
 
-1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
-2. In the MacOSX AppStore (Xcode 4.3.x and later). 
-
-If you are using XCode 4.3.x or later you also need to install the "Command Line Tools". To do so
-after installing Xcode you have to go to "Xcode->Preferences->Downloads" and install the
-package "Command Line Tools". This is not needed anymore in Xcode 5.x. Command Line Tools are installed
-automagically on first invoke.
-
-Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
-Xcode 4.3.x only runs on 10.7.x (Lion).
-Xcode 4.4 only runs on 10.8.x (Mountain Lion).
-Xcode 5.1.1 runs on 10.8.x and 10.9.x (Mavericks).
-Xcode 6.0.1 runs on 10.9.4 and later (Mavericks).
-Xcode 6.1 runs on 10.9.5 and later (Mavericks).
+Xcode 6.1 runs on 10.9.5 and later (at least Mavericks).
 
 -----------------------------------------------------------------------------
-3.0a Supported Xcode and OSX constellations
+3.1.1 Supported Xcode and OSX constellations
 -----------------------------------------------------------------------------
 As far as we know the compilation for mac osx should work with the following
 constellations of Xcode and osx versions (to be updated once we know more):
  
-1. XCode 3.2.6 against OSX SDK 10.6 on 10.6.x (Snow Leopard)
-2. XCode 4.3.x against OSX SDK 10.6 and 10.7 on 10.7.x (Lion)
-3. XCode 4.6 against OSX SDK 10.6, 10.7 and 10.8 on 10.7.x (Lion) and 10.8.x (ML)
-4. XCode 5.1.1 against OSX SDK 10.8 (ML) and 10.9 (M)
-5. XCode 6.0.1 against OSX SDK 10.9 (M)
-6. XCode 6.1.0 against OSX SDK 10.10 (Y)
+1. XCode 6.0.1 against OSX SDK 10.9 (M)
+2. XCode 6.1.0 against OSX SDK 10.10 (Y)
 
 -----------------------------------------------------------------------------
-3.1 Install Kodi build depends
+3.2 Install Kodi build depends
 -----------------------------------------------------------------------------
  The following commands will build using the latest OSX SDK found on your
  system.
 
-3.1.1 Compiling as 32 Bit binary
+3.2.1 Compiling as 32 Bit binary
  $ cd $HOME/Kodi
  $ cd tools/depends
  $ ./bootstrap
  $ ./configure --host=i386-apple-darwin
  $ make
 
-3.1.2 Compiling as 64 Bit binary
+3.2.2 Compiling as 64 Bit binary
  $ cd $HOME/Kodi
  $ cd tools/depends
  $ ./bootstrap
@@ -107,9 +90,9 @@ constellations of Xcode and osx versions (to be updated once we know more):
 
  ADVANCED developers only! If you want to specify an OSX SDK version (if
  multiple versions are installed) - then append it to the configure line
- above (example below would use OSX SDK 10.7 and build for 64bit):
+ above (example below would use OSX SDK 10.9 and build for 64bit):
 
- $ ./configure --host=x86_64-apple-darwin --with-sdk=10.7
+ $ ./configure --host=x86_64-apple-darwin --with-sdk=10.9
 
  Ensure that you also adapt the xcode project to use this SDK version.
 
@@ -146,12 +129,7 @@ For development, Kodi is run from the $HOME/Kodi directory and needs to have
 the KODI_HOME environment variable set to know where that directory is located.
 To set KODI_HOME environment variable:
 
-Xcode 3.2.6
- Menu -> Project -> Edit Active Executable "Kodi", click "Arguments" tab and
- add "KODI_HOME" as an enviroment variable. Set the value to the path to the
- Kodi root folder. For example, "/Users/bigdog/Documents/Kodi"
-
-Xcode 4.3.x and later
+Xcode 6 and later
  Menu -> Product -> Edit Sheme -> "Run Kodi"/"Debug" -> Add KODI_HOME into
  the List of "Environment Variables". Set the value to the path to the Kodi
  root folder. For example, "/Users/bigdog/Documents/Kodi"	
@@ -159,13 +137,13 @@ Xcode 4.3.x and later
 There are two build targets "Kodi" and "Kodi.app" (each in 32Bit and 64Bit flavour) 
 with debug and release settings. The "Kodi" target is used for rapid build and 
 debug cycles while the "Kodi.app" target is used to build a self contained 
-OSX application.
+OSX application bundle.
 
 Set the build target to "Kodi" or "Kodi.app" and be sure to select the same 
-architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 64Bit), 
+architecture as selected in step 3.2 (either i386 for 32Bit or x86_64 for 64Bit), 
 then build. 
 
-If you have selected a specific OSX SDK Version in step 3.1 then you might need 
+If you have selected a specific OSX SDK Version in step 3.2 then you might need 
 to adapt the active target to use the same OSX SDK version. Else build will fail 
 (you will see alot of errors with at least non-found boost/shared_ptr.hpp).
 
@@ -191,7 +169,7 @@ $ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=
   -target "Kodi.app" -project Kodi.xcodeproj
 
 You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
-variables to the same architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 
+variables to the same architecture as selected in step 3.2 (either i386 for 32Bit or x86_64 
 for 64Bit).
 
 -----------------------------------------------------------------------------
@@ -200,15 +178,14 @@ for 64Bit).
 There are two methods, a) make/Xcode and b) make (which might fail as it's under
 construction).
 
-If you want to build a cross-compiled version that can run under 10.6/10.7, 
-you could try xcodebuild from the command-line (normally unneeded - for advanced
-developers).
+You could try xcodebuild from the command-line with altered SDK - like 10.9 in the example
+below(normally unneeded - for advanced developers).
 
  a)
  $ cd $HOME/Kodi
  $ export KODI_HOME=`pwd`
  $ make xcode_depends
- $ xcodebuild -sdk macosx10.7 -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
+ $ xcodebuild -sdk macosx10.9 -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
    ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
  b) building via make
@@ -227,7 +204,7 @@ distribution.
 
   2. $ cd tools/darwin/packaging/osx
 
-  3. $ ./mkdmg-osx.sh release
+  3. $ chmod +x ./mkdeb-osx.sh && ./mkdmg-osx.sh release
 
   4. Use release or debug - you have to be sure that you build the corresponding
      version before.
