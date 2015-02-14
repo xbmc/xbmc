@@ -64,6 +64,14 @@
 #define SETTING_XML_ATTR_SETTING      "setting"
 #define SETTING_XML_ATTR_BEFORE       "before"
 #define SETTING_XML_ATTR_AFTER        "after"
+#define SETTING_XML_ATTR_GROUP_TYPE   "grptype"
+
+enum settingsGroupType
+{
+  settingsGroupPrimary = 0,
+  settingsGroupSecondary = 1,
+  settingsGroupInformation = 2
+};
 
 typedef std::pair<int, int> StaticIntegerSettingOption;
 typedef std::vector<StaticIntegerSettingOption> StaticIntegerSettingOptions;

@@ -30,6 +30,7 @@ class CGUIEditControl;
 class CGUIButtonControl;
 class CGUIRadioButtonControl;
 class CGUISettingsSliderControl;
+class CGUISettingsGroupLabelControl;
 
 class CSetting;
 class CSettingControlSlider;
@@ -223,4 +224,18 @@ public:
   virtual void Clear() { m_pImage = NULL; }
 private:
   CGUIImage *m_pImage;
+};
+
+class CGUIControlGroupLabelSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlGroupLabelSetting(CGUISettingsGroupLabelControl* pLabel, int id);
+  virtual ~CGUIControlGroupLabelSetting();
+
+  virtual CGUIControl* GetControl() { return (CGUIControl*)m_pLabel; }
+  virtual bool OnClick() { return false; }
+  virtual void Update() {}
+  virtual void Clear() { m_pLabel = NULL; }
+private:
+  CGUISettingsGroupLabelControl *m_pLabel;
 };

@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUISettingsGroupLabelControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUISpinControlEx.h"
@@ -1135,4 +1136,17 @@ CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int 
 }
 
 CGUIControlSeparatorSetting::~CGUIControlSeparatorSetting()
+{ }
+
+CGUIControlGroupLabelSetting::CGUIControlGroupLabelSetting(CGUISettingsGroupLabelControl *pLabel, int id)
+  : CGUIControlBaseSetting(id, NULL)
+{
+  m_pLabel = pLabel;
+  if (m_pLabel == NULL)
+    return;
+
+  m_pLabel->SetID(id);
+}
+
+CGUIControlGroupLabelSetting::~CGUIControlGroupLabelSetting()
 { }
