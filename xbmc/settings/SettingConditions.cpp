@@ -237,8 +237,7 @@ void CSettingConditions::Initialize()
   m_simpleConditions.insert("have_libvdpau");
 #endif
 #ifdef TARGET_ANDROID
-  if (CAndroidFeatures::GetVersion() > 15)
-    m_simpleConditions.insert("has_mediacodec");
+  m_simpleConditions.insert("has_mediacodec");
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
   m_simpleConditions.insert("have_libstagefrightdecoder");

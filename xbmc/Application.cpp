@@ -1540,18 +1540,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  if (settingId == "videoplayer.usemediacodec")
-  {
-    // Do not permit MediaCodec to be used Android platforms that do not have it.
-    // The setting will be hidden but the default value is true,
-    // so change it to false.
-    if (CAndroidFeatures::GetVersion() < 16)
-    {
-      CSettingBool *usemediacodec = (CSettingBool*)setting;
-      return usemediacodec->SetValue(false);
-    }
-  }
-  else if (settingId == "videoplayer.usestagefright")
+  if (settingId == "videoplayer.usestagefright")
   {
     CSettingBool *usestagefright = (CSettingBool*)setting;
     return usestagefright->SetValue(false);
