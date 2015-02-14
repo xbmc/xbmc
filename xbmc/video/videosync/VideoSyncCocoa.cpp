@@ -126,12 +126,7 @@ void CVideoSyncCocoa::OnResetDevice()
 float CVideoSyncCocoa::GetFps()
 {
 #if defined(TARGET_DARWIN_IOS)
-  int fpsInt = MathUtils::round_int(g_Windowing.GetDisplayLinkFPS() + 0.5);
-
-  if (fpsInt != MathUtils::round_int(m_fps))
-  {
-    m_fps = fpsInt;
-  }
+  m_fps = g_Windowing.GetDisplayLinkFPS();
 #else
   m_fps = g_graphicsContext.GetFPS();
 #endif
