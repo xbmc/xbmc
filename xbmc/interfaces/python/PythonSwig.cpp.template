@@ -581,28 +581,29 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     pythonType.tp_basicsize = sizeof(PyHolder);
     pythonType.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
- if (doComparator) { %>
+  if (doComparator) { %>
     pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
- }
- if (clazz.@feature_python_rcmp) { %>
+  }
+  if (clazz.@feature_python_rcmp) { %>
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
- } %>
+  } %>
 
     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
- if (properties.size() > 0) { %>
+  if (properties.size() > 0) { %>
     pythonType.tp_getset = ${classNameAsVariable}_getsets;
 <%
- }
- if (callableOp) { %>
+  }
+  if (callableOp) { %>
     pythonType.tp_call = (ternaryfunc)${module.@name}_${PythonTools.getPyMethodName(callableOp,MethodType.method)};
 <%
- }
- if (doAsMapping) { %>
+  }
+  if (doAsMapping) { %>
     pythonType.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
-<%  }
-    Node baseclass = PythonTools.findValidBaseClass(clazz, module)
+<%
+  }
+  Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 
 %>
     pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
