@@ -4,6 +4,6 @@ XBMC_PLATFORM_DIR=android
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
-  cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS && tagSuccessFulBuild $WORKSPACE/tools/depends
+  git clean -xffd $WORKSPACE/tools/depends/native
+  cd $WORKSPACE/tools/depends/native;make -j $BUILDTHREADS && tagSuccessFulBuild $WORKSPACE/tools/depends
 fi
-

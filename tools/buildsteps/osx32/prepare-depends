@@ -4,9 +4,10 @@ XBMC_PLATFORM_DIR=osx32
 
 #clean without depends for skipping depends build if possible
 #also skip binary addons (pvr, audioencoder) as long as they are deployed in tree
-cd $WORKSPACE;git clean -xfd -e "project/cmake/.last_success_revision" -e "tools/depends" -e "addons/pvr.*" -e "addons/audioencoder.*"
+cd $WORKSPACE;git clean -xfd -e "project/cmake/.last_success_revision" -e "tools/depends" ${DEPLOYED_BINARY_ADDONS}
 
-if [ "$(rebuildDepends)" == "1" ]
+# if depends path has changed - cleanout everything and do a full rebuild
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   #clean up the rest too
   cd $WORKSPACE;git clean -xffd

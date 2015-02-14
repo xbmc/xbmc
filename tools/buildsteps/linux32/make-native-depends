@@ -4,6 +4,6 @@ XBMC_PLATFORM_DIR=linux32
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
-  cd $WORKSPACE/tools/depends;./configure \
-    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=i686-linux-gnu --with-tarballs=$TARBALLS
+  git clean -xffd $WORKSPACE/tools/depends/native
+  cd $WORKSPACE/tools/depends/native;make -j $BUILDTHREADS && tagSuccessFulBuild $WORKSPACE/tools/depends
 fi

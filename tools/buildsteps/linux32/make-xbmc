@@ -2,4 +2,4 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=linux32
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-cd $WORKSPACE;make -j$BUILDTHREADS
+cd $WORKSPACE;make -j$BUILDTHREADS || make
