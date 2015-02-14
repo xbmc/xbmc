@@ -125,9 +125,8 @@ void CVideoSyncCocoa::OnResetDevice()
 
 float CVideoSyncCocoa::GetFps()
 {
-  int fpsInt;
 #if defined(TARGET_DARWIN_IOS)
-  fpsInt = MathUtils::round_int(g_Windowing.GetDisplayLinkFPS() + 0.5);
+  int fpsInt = MathUtils::round_int(g_Windowing.GetDisplayLinkFPS() + 0.5);
 
   if (fpsInt != MathUtils::round_int(m_fps))
   {
@@ -135,9 +134,8 @@ float CVideoSyncCocoa::GetFps()
   }
 #else
   m_fps = g_graphicsContext.GetFPS();
-  fpsInt = MathUtils::round_int(m_fps);
 #endif
-  CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s Detected refreshrate: %i hertz", __FUNCTION__, fpsInt);
+  CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }
 
