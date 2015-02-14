@@ -31,6 +31,7 @@
 #include <linux/ipu.h>
 #include <linux/mxcfb.h>
 #include <imx-mm/vpu/vpu_wrapper.h>
+#include <g2d.h>
 
 
 // The decoding format of the VPU buffer. Comment this to decode
@@ -93,17 +94,15 @@ public:
   CIMXContext();
   ~CIMXContext();
 
-  bool Configure(int pages = 2);
+  void RequireConfiguration() { m_checkConfigRequired = true; }
+  bool Configure();
   bool Close();
 
   bool Blank();
   bool Unblank();
   bool SetVSync(bool enable);
 
-  bool IsValid() const { return m_fbPages > 0; }
-
-  // Returns the number of available pages
-  int PageCount() const { return m_fbPages; }
+  bool IsValid() const { return m_checkConfigRequired == false; }
 
   // Populates a CIMXBuffer with attributes of a page
   bool GetPageInfo(CIMXBuffer *info, int page);
@@ -127,7 +126,7 @@ public:
   // been queued. BlitAsync renders always to the current backbuffer and
   // swaps the pages.
   bool BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source,
-                 bool topBottomFields = true);
+                 bool topBottomFields = true, CRect *dest = NULL);
 
   // Shows a page vsynced
   bool ShowPage(int page);
@@ -141,6 +140,9 @@ public:
   // Captures the current visible frame buffer page and blends it into
   // the passed overlay. The buffer format is BGRA (4 byte)
   void CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight);
+  bool PushCaptureTask(CIMXBuffer *source, CRect *dest);
+  void *GetCaptureBuffer() const { if (m_bufferCapture) return m_bufferCapture->buf_vaddr; else return NULL; }
+  void WaitCapture();
 
 private:
   struct IPUTask
@@ -167,7 +169,7 @@ private:
 
   bool PushTask(const IPUTask &);
   void PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
-                   bool topBottomFields);
+                   bool topBottomFields, CRect *dest = NULL);
   bool DoTask(IPUTask &ipu, int targetPage);
 
   virtual void OnStartup();
@@ -179,7 +181,6 @@ private:
   typedef std::vector<IPUTask> TaskQueue;
 
   int                            m_fbHandle;
-  int                            m_fbPages;
   int                            m_fbCurrentPage;
   int                            m_fbWidth;
   int                            m_fbHeight;
@@ -206,6 +207,12 @@ private:
   XbmcThreads::ConditionVariable m_inputNotEmpty;
   XbmcThreads::ConditionVariable m_inputNotFull;
   mutable CCriticalSection       m_monitor;
+
+  void                           *m_g2dHandle;
+  struct g2d_buf                 *m_bufferCapture;
+  bool                           m_CaptureDone;
+  bool                           m_checkConfigRequired;
+  static const int               m_fbPages;
 };
 
 

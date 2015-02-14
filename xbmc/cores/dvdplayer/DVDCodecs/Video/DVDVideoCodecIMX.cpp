@@ -46,6 +46,8 @@
 // Global instance
 CIMXContext g_IMXContext;
 
+// Number of fb pages used for paning
+const int CIMXContext::m_fbPages = 2;
 
 // Experiments show that we need at least one more (+1) VPU buffer than the min value returned by the VPU
 const int CDVDVideoCodecIMX::m_extraVpuBuffers = 1+RENDER_QUEUE_SIZE+2;
@@ -436,8 +438,7 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
 
-  if (!g_IMXContext.Configure())
-    return false;
+  g_IMXContext.RequireConfiguration();
 
 #ifdef DUMP_STREAM
   m_dump = fopen("stream.dump", "wb");
@@ -811,6 +812,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
           {
             goto out_error;
           }
+
         }
         else
         {
@@ -883,7 +885,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 #endif
 
 #ifdef TRACE_FRAMES
-          CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, pDvdVideoPicture->dts, pDvdVideoPicture->pts);
+          CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, dts, pts);
 #endif
 
           if (!m_usePTS)
@@ -1270,12 +1272,15 @@ CDVDVideoCodecIMXBuffer::~CDVDVideoCodecIMXBuffer()
 CIMXContext::CIMXContext()
   : CThread("iMX IPU")
   , m_fbHandle(0)
-  , m_fbPages(0)
+  , m_fbCurrentPage(0)
   , m_fbPhysAddr(0)
   , m_fbVirtAddr(NULL)
   , m_ipuHandle(0)
   , m_vsync(true)
   , m_pageCrops(NULL)
+  , m_g2dHandle(NULL)
+  , m_bufferCapture(NULL)
+  , m_checkConfigRequired(true)
 {
   // Limit queue to 2
   m_input.resize(2);
@@ -1287,8 +1292,13 @@ CIMXContext::~CIMXContext()
   Close();
 }
 
-bool CIMXContext::Configure(int pages)
+
+bool CIMXContext::Configure()
 {
+
+  if (!m_checkConfigRequired)
+    return false;
+
   SetBlitRects(CRectInt(), CRectInt());
   m_fbCurrentPage = 0;
 
@@ -1311,17 +1321,7 @@ bool CIMXContext::Configure(int pages)
   close(fb0);
 
   if (m_fbHandle)
-  {
-    // Check for updated screen resolution
-    if ((m_fbWidth != fbVar.xres) || (m_fbHeight != fbVar.yres) || (pages != m_fbPages))
-      Close();
-    else
-    {
-      Clear();
-      Unblank();
-      return true;
-    }
-  }
+    Close();
 
   CLog::Log(LOGNOTICE, "iMX : Initialize render buffers\n");
 
@@ -1345,14 +1345,20 @@ bool CIMXContext::Configure(int pages)
     return false;
   }
 
-  // We want n fb pages
-  m_fbPages = pages;
   m_pageCrops = new CRectInt[m_fbPages];
 
   m_fbVar.xoffset = 0;
   m_fbVar.yoffset = 0;
-  m_fbVar.bits_per_pixel = 16;
-  m_fbVar.nonstd = _4CC('U', 'Y', 'V', 'Y');
+  if (m_deInterlacing)
+  {
+    m_fbVar.nonstd = _4CC('U', 'Y', 'V', 'Y');
+    m_fbVar.bits_per_pixel = 16;
+  }
+  else
+  {
+    m_fbVar.nonstd = _4CC('R', 'G', 'B', '4');
+    m_fbVar.bits_per_pixel = 32;
+  }
   m_fbVar.activate = FB_ACTIVATE_NOW;
   m_fbVar.xres = m_fbWidth;
   m_fbVar.yres = m_fbHeight;
@@ -1365,7 +1371,6 @@ bool CIMXContext::Configure(int pages)
     CLog::Log(LOGWARNING, "iMX : Failed to setup %s\n", deviceName);
     close(m_fbHandle);
     m_fbHandle = 0;
-    m_fbPages = 0;
     return false;
   }
 
@@ -1375,7 +1380,6 @@ bool CIMXContext::Configure(int pages)
     CLog::Log(LOGWARNING, "iMX : Failed to query fixed screen info at %s\n", deviceName);
     close(m_fbHandle);
     m_fbHandle = 0;
-    m_fbPages = 0;
     return false;
   }
 
@@ -1402,6 +1406,7 @@ bool CIMXContext::Configure(int pages)
 
   // Start the ipu thread
   Create();
+  m_checkConfigRequired = false;
   return true;
 }
 
@@ -1429,7 +1434,6 @@ bool CIMXContext::Close()
   {
     Blank();
     close(m_fbHandle);
-    m_fbPages = 0;
     m_fbHandle = 0;
     m_fbPhysAddr = 0;
   }
@@ -1443,7 +1447,8 @@ bool CIMXContext::Close()
     m_ipuHandle = 0;
   }
 
-  CLog::Log(LOGNOTICE, "iMX : Deinitialized render context\n", m_fbPages);
+  m_checkConfigRequired = true;
+  CLog::Log(LOGNOTICE, "iMX : Deinitialized render context\n");
 
   return true;
 }
@@ -1504,7 +1509,14 @@ void CIMXContext::SetInterpolatedFrame(bool flag)
 
 void CIMXContext::SetDeInterlacing(bool flag)
 {
+  bool sav_deInt = m_deInterlacing;
   m_deInterlacing = flag;
+  // If deinterlacing configuration changes then fb has to be reconfigured
+  if (sav_deInt != m_deInterlacing)
+  {
+    m_checkConfigRequired = true;
+    Configure();
+  }
 }
 
 void CIMXContext::SetBlitRects(const CRect &srcRect, const CRect &dstRect)
@@ -1523,10 +1535,18 @@ bool CIMXContext::Blit(int page, CIMXBuffer *source_p, CIMXBuffer *source, bool 
   return DoTask(ipu, page);
 }
 
-bool CIMXContext::BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source, bool topBottomFields)
+bool CIMXContext::BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source, bool topBottomFields, CRect *dest)
 {
   IPUTask ipu;
-  PrepareTask(ipu, source_p, source, topBottomFields);
+  PrepareTask(ipu, source_p, source, topBottomFields, dest);
+  return PushTask(ipu);
+}
+
+bool CIMXContext::PushCaptureTask(CIMXBuffer *source, CRect *dest)
+{
+  IPUTask ipu;
+  m_CaptureDone = false;
+  PrepareTask(ipu, NULL, source, false, dest);
   return PushTask(ipu);
 }
 
@@ -1563,34 +1583,44 @@ void CIMXContext::Clear(int page)
   if (!m_fbVirtAddr) return;
 
   uint8_t *tmp_buf;
-  int pixels;
+  int bytes;
 
   if (page < 0)
   {
     tmp_buf = m_fbVirtAddr;
-    pixels = m_fbPageSize*m_fbPages/2;
+    bytes = m_fbPageSize*m_fbPages;
   }
   else if (page < m_fbPages)
   {
     tmp_buf = m_fbVirtAddr + page*m_fbPageSize;
-    pixels = m_fbPageSize/2;
+    bytes = m_fbPageSize;
   }
   else
     // out of range
     return;
 
-  for (int i = 0; i < pixels; ++i, tmp_buf += 2)
+
+  if (m_fbVar.nonstd == _4CC('R', 'G', 'B', '4'))
+    memset(tmp_buf, 0, bytes);
+  else if (m_fbVar.nonstd == _4CC('U', 'Y', 'V', 'Y'))
   {
-    tmp_buf[0] = 128;
-    tmp_buf[1] = 16;
+    int pixels = bytes / 2;
+    for (int i = 0; i < pixels; ++i, tmp_buf += 2)
+    {
+      tmp_buf[0] = 128;
+      tmp_buf[1] = 16;
+    }
   }
+  else
+    CLog::Log(LOGERROR, "iMX Clear fb error : Unexpected format");
 }
 
 #define clamp_byte(x) (x<0?0:(x>255?255:x))
 
 void CIMXContext::CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight)
 {
-  if (m_fbVar.nonstd != _4CC('U', 'Y', 'V', 'Y'))
+  if ((m_fbVar.nonstd != _4CC('R', 'G', 'B', '4')) &&
+      (m_fbVar.nonstd != _4CC('U', 'Y', 'V', 'Y')))
   {
     CLog::Log(LOGWARNING, "iMX : Unknown screen capture format\n");
     return;
@@ -1603,56 +1633,60 @@ void CIMXContext::CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight)
     CLog::Log(LOGWARNING, "iMX : Invalid page to capture\n");
     return;
   }
-
-  int r,g,b,a;
-  int u, y0, v, y1;
-
   unsigned char *display = m_fbVirtAddr + m_fbCurrentPage*m_fbPageSize;
-  int iStride = m_fbWidth*2;
-  int oStride = iWidth*4;
 
-  int cy  =  1*(1 << 16);
-  int cr1 =  1.40200*(1 << 16);
-  int cr2 = -0.71414*(1 << 16);
-  int cr3 =  0*(1 << 16);
-  int cb1 =  0*(1 << 16);
-  int cb2 = -0.34414*(1 << 16);
-  int cb3 =  1.77200*(1 << 16);
-
-  iWidth = std::min(iWidth/2, m_fbWidth/2);
-  iHeight = std::min(iHeight, m_fbHeight);
-
-  for (int y = 0; y < iHeight; ++y, display += iStride, buffer += oStride)
+  if (m_fbVar.nonstd != _4CC('R', 'G', 'B', '4'))
+    memcpy(buffer, display, iWidth * iHeight * 4);
+  else //_4CC('U', 'Y', 'V', 'Y')))
   {
-    unsigned char *iLine = display;
-    unsigned char *oLine = buffer;
+    int r,g,b,a;
+    int u, y0, v, y1;
+    int iStride = m_fbWidth*2;
+    int oStride = iWidth*4;
 
-    for (int x = 0; x < iWidth; ++x, iLine += 4, oLine += 8 )
+    int cy  =  1*(1 << 16);
+    int cr1 =  1.40200*(1 << 16);
+    int cr2 = -0.71414*(1 << 16);
+    int cr3 =  0*(1 << 16);
+    int cb1 =  0*(1 << 16);
+    int cb2 = -0.34414*(1 << 16);
+    int cb3 =  1.77200*(1 << 16);
+
+    iWidth = std::min(iWidth/2, m_fbWidth/2);
+    iHeight = std::min(iHeight, m_fbHeight);
+
+    for (int y = 0; y < iHeight; ++y, display += iStride, buffer += oStride)
     {
-      u  = iLine[0]-128;
-      y0 = iLine[1]-16;
-      v  = iLine[2]-128;
-      y1 = iLine[3]-16;
+      unsigned char *iLine = display;
+      unsigned char *oLine = buffer;
 
-      a = 255-oLine[3];
-      r = (cy*y0 + cb1*u + cr1*v) >> 16;
-      g = (cy*y0 + cb2*u + cr2*v) >> 16;
-      b = (cy*y0 + cb3*u + cr3*v) >> 16;
+      for (int x = 0; x < iWidth; ++x, iLine += 4, oLine += 8 )
+      {
+        u  = iLine[0]-128;
+        y0 = iLine[1]-16;
+        v  = iLine[2]-128;
+        y1 = iLine[3]-16;
 
-      oLine[0] = (clamp_byte(b)*a + oLine[0]*oLine[3])/255;
-      oLine[1] = (clamp_byte(g)*a + oLine[1]*oLine[3])/255;
-      oLine[2] = (clamp_byte(r)*a + oLine[2]*oLine[3])/255;
-      oLine[3] = 255;
+        a = 255-oLine[3];
+        r = (cy*y0 + cb1*u + cr1*v) >> 16;
+        g = (cy*y0 + cb2*u + cr2*v) >> 16;
+        b = (cy*y0 + cb3*u + cr3*v) >> 16;
 
-      a = 255-oLine[7];
-      r = (cy*y0 + cb1*u + cr1*v) >> 16;
-      g = (cy*y0 + cb2*u + cr2*v) >> 16;
-      b = (cy*y0 + cb3*u + cr3*v) >> 16;
+        oLine[0] = (clamp_byte(b)*a + oLine[0]*oLine[3])/255;
+        oLine[1] = (clamp_byte(g)*a + oLine[1]*oLine[3])/255;
+        oLine[2] = (clamp_byte(r)*a + oLine[2]*oLine[3])/255;
+        oLine[3] = 255;
 
-      oLine[4] = (clamp_byte(b)*a + oLine[4]*oLine[7])/255;
-      oLine[5] = (clamp_byte(g)*a + oLine[5]*oLine[7])/255;
-      oLine[6] = (clamp_byte(r)*a + oLine[6]*oLine[7])/255;
-      oLine[7] = 255;
+        a = 255-oLine[7];
+        r = (cy*y0 + cb1*u + cr1*v) >> 16;
+        g = (cy*y0 + cb2*u + cr2*v) >> 16;
+        b = (cy*y0 + cb3*u + cr3*v) >> 16;
+
+        oLine[4] = (clamp_byte(b)*a + oLine[4]*oLine[7])/255;
+        oLine[5] = (clamp_byte(g)*a + oLine[5]*oLine[7])/255;
+        oLine[6] = (clamp_byte(r)*a + oLine[6]*oLine[7])/255;
+        oLine[7] = 255;
+      }
     }
   }
 }
@@ -1692,16 +1726,29 @@ bool CIMXContext::PushTask(const IPUTask &task)
   return true;
 }
 
-void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
-                              bool topBottomFields)
+void CIMXContext::WaitCapture()
 {
+  CSingleLock lk(m_monitor);
+  while (!m_CaptureDone)
+    m_inputNotFull.wait(lk);
+}
+
+void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
+                              bool topBottomFields, CRect *dest)
+{
+  Configure();
   // Fill with zeros
   ipu.Zero();
   ipu.previous = source_p;
   ipu.current = source;
 
   CRect srcRect = m_srcRect;
-  CRect dstRect = m_dstRect;
+  CRect dstRect;
+  if (dest == NULL)
+    dstRect = m_dstRect;
+  else
+    dstRect = *dest;
+
   CRectInt iSrcRect, iDstRect;
 
   float srcWidth = srcRect.Width();
@@ -1755,6 +1802,20 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
   ipu.task.output.crop.w     = iDstRect.Width();
   ipu.task.output.crop.h     = iDstRect.Height();
 
+  // If dest is set it means we do not want to blit to frame buffer
+  // but to a capture buffer and we state this capture buffer dimensions
+  if (dest)
+  {
+    // Populate partly output block
+    ipu.task.output.crop.pos.x = 0;
+    ipu.task.output.crop.pos.y = 0;
+    ipu.task.output.crop.w     = iDstRect.Width();
+    ipu.task.output.crop.h     = iDstRect.Height();
+    ipu.task.output.width  = iDstRect.Width();
+    ipu.task.output.height = iDstRect.Height();
+  }
+  else
+  {
   // Setup deinterlacing if enabled
   if (m_deInterlacing)
   {
@@ -1776,6 +1837,7 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
     else
       ipu.task.input.deinterlace.field_fmt |= IPU_DEINTERLACE_FIELD_BOTTOM;
   }
+  }
 }
 
 bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
@@ -1791,16 +1853,40 @@ bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
   ipu.task.input.format  = ipu.current->iFormat;
   ipu.task.input.paddr   = ipu.current->pPhysAddr;
 
-  // Populate output block
-  ipu.task.output.width  = m_fbWidth;
-  ipu.task.output.height = m_fbHeight;
-  ipu.task.output.format = m_fbVar.nonstd;
-  ipu.task.output.paddr  = m_fbPhysAddr + targetPage*m_fbPageSize;
-
-  if (m_pageCrops[targetPage] != dstRect)
+  // Populate output block if it has not already been filled
+  if (ipu.task.output.width == 0)
   {
-    m_pageCrops[targetPage] = dstRect;
-    Clear(targetPage);
+    ipu.task.output.width  = m_fbWidth;
+    ipu.task.output.height = m_fbHeight;
+    ipu.task.output.format = m_fbVar.nonstd;
+    ipu.task.output.paddr  = m_fbPhysAddr + targetPage*m_fbPageSize;
+
+    if (m_pageCrops[targetPage] != dstRect)
+    {
+      m_pageCrops[targetPage] = dstRect;
+      Clear(targetPage);
+    }
+  }
+  else
+  {
+    // If we have already set dest dimensions we want to use capture buffer
+    // Note we allocate this capture buffer as late as this function because
+    // all g2d functions have to be called from the same thread
+    int size = ipu.task.output.width * ipu.task.output.height * 4;
+    if ((m_bufferCapture) && (size != m_bufferCapture->buf_size))
+    {
+      if (g2d_free(m_bufferCapture))
+        CLog::Log(LOGERROR, "iMX : Error while freeing capture buuffer\n");
+      m_bufferCapture = NULL;
+    }
+
+    if (m_bufferCapture == NULL)
+    {
+      m_bufferCapture = g2d_alloc(size, 0);
+      if (m_bufferCapture == NULL)
+        CLog::Log(LOGERROR, "iMX : Error allocating capture buffer\n");
+    }
+    ipu.task.output.paddr = m_bufferCapture->buf_paddr;
   }
 
   if ((ipu.task.input.crop.w <= 0) || (ipu.task.input.crop.h <= 0)
@@ -1811,53 +1897,117 @@ bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
   unsigned long long before = XbmcThreads::SystemClockMillis();
 #endif
 
-  int ret = IPU_CHECK_ERR_INPUT_CROP;
-  while (ret != IPU_CHECK_OK && ret > IPU_CHECK_ERR_MIN)
+  if (ipu.task.input.deinterlace.enable)
   {
-    ret = ioctl(m_ipuHandle, IPU_CHECK_TASK, &ipu.task);
-    switch (ret)
+    //We really use IPU only if we have to deinterlace (using VDIC)
+    int ret = IPU_CHECK_ERR_INPUT_CROP;
+    while (ret != IPU_CHECK_OK && ret > IPU_CHECK_ERR_MIN)
     {
-      case IPU_CHECK_OK:
-        break;
-      case IPU_CHECK_ERR_SPLIT_INPUTW_OVER:
-        ipu.task.input.crop.w -= 8;
-        break;
-      case IPU_CHECK_ERR_SPLIT_INPUTH_OVER:
-        ipu.task.input.crop.h -= 8;
-        break;
-      case IPU_CHECK_ERR_SPLIT_OUTPUTW_OVER:
-        ipu.task.output.crop.w -= 8;
-        break;
-      case IPU_CHECK_ERR_SPLIT_OUTPUTH_OVER:
-        ipu.task.output.crop.h -= 8;
-        break;
-      default:
-        CLog::Log(LOGWARNING, "iMX : unhandled IPU check error: %d\n", ret);
+        ret = ioctl(m_ipuHandle, IPU_CHECK_TASK, &ipu.task);
+        switch (ret)
+        {
+        case IPU_CHECK_OK:
+            break;
+        case IPU_CHECK_ERR_SPLIT_INPUTW_OVER:
+            ipu.task.input.crop.w -= 8;
+            break;
+        case IPU_CHECK_ERR_SPLIT_INPUTH_OVER:
+            ipu.task.input.crop.h -= 8;
+            break;
+        case IPU_CHECK_ERR_SPLIT_OUTPUTW_OVER:
+            ipu.task.output.crop.w -= 8;
+            break;
+        case IPU_CHECK_ERR_SPLIT_OUTPUTH_OVER:
+            ipu.task.output.crop.h -= 8;
+            break;
+        default:
+            CLog::Log(LOGWARNING, "iMX : unhandled IPU check error: %d\n", ret);
+            return false;
+        }
+    }
+
+    // Need to find another interface to protect ipu.current from disposing
+    // in CDVDVideoCodecIMX::Dispose. CIMXContext must not have knowledge
+    // about CDVDVideoCodecIMX.
+    ipu.current->BeginRender();
+    if (ipu.current->IsValid())
+        ret = ioctl(m_ipuHandle, IPU_QUEUE_TASK, &ipu.task);
+    else
+        ret = 0;
+    ipu.current->EndRender();
+
+    if (ret < 0)
+    {
+        CLog::Log(LOGERROR, "IPU task failed: %s\n", strerror(errno));
         return false;
     }
-  }
 
-  // Need to find another interface to protect ipu.current from disposing
-  // in CDVDVideoCodecIMX::Dispose. CIMXContext must not have knowledge
-  // about CDVDVideoCodecIMX.
-  ipu.current->BeginRender();
-  if (ipu.current->IsValid())
-    ret = ioctl(m_ipuHandle, IPU_QUEUE_TASK, &ipu.task);
+    // Duplicate 2nd scandline if double rate is active
+    if (ipu.task.input.deinterlace.field_fmt & IPU_DEINTERLACE_RATE_EN)
+    {
+        uint8_t *pageAddr = m_fbVirtAddr + targetPage*m_fbPageSize;
+        memcpy(pageAddr, pageAddr+m_fbLineLength, m_fbLineLength);
+    }
+  }
   else
-    ret = 0;
-  ipu.current->EndRender();
-
-  if (ret < 0)
   {
-    CLog::Log(LOGERROR, "IPU task failed: %s\n", strerror(errno));
-    return false;
-  }
+    // deinterlacing is not required, let's use g2d instead of IPU
 
-  // Duplicate 2nd scandline if double rate is active
-  if (ipu.task.input.deinterlace.field_fmt & IPU_DEINTERLACE_RATE_EN)
-  {
-    uint8_t *pageAddr = m_fbVirtAddr + targetPage*m_fbPageSize;
-    memcpy(pageAddr, pageAddr+m_fbLineLength, m_fbLineLength);
+    struct g2d_surface src, dst;
+    memset(&src, 0, sizeof(src));
+    memset(&dst, 0, sizeof(dst));
+
+    ipu.current->BeginRender();
+    if (ipu.current->IsValid())
+    {
+      if (ipu.current->iFormat == _4CC('I', '4', '2', '0'))
+      {
+        src.format = G2D_I420;
+        src.planes[0] = ipu.current->pPhysAddr;
+        src.planes[1] = src.planes[0] + Align(ipu.current->iWidth * ipu.current->iHeight, 64);
+        src.planes[2] = src.planes[1] + Align((ipu.current->iWidth * ipu.current->iHeight) / 2, 64);
+      }
+      else //_4CC('N', 'V', '1', '2');
+      {
+        src.format = G2D_NV12;
+        src.planes[0] = ipu.current->pPhysAddr;
+        src.planes[1] =  src.planes[0] + Align(ipu.current->iWidth * ipu.current->iHeight, 64);
+      }
+
+      src.left = ipu.task.input.crop.pos.x;
+      src.right = ipu.task.input.crop.w + src.left ;
+      src.top  = ipu.task.input.crop.pos.y;
+      src.bottom = ipu.task.input.crop.h + src.top;
+      src.stride = ipu.current->iWidth;
+      src.width  = ipu.current->iWidth;
+      src.height = ipu.current->iHeight;
+      src.rot = G2D_ROTATION_0;
+      /*printf("src planes :%x -%x -%x \n",src.planes[0], src.planes[1], src.planes[2] );
+      printf("src left %d right %d top %d bottom %d stride %d w : %d h %d rot : %d\n",
+           src.left, src.right, src.top, src.bottom, src.stride, src.width, src.height, src.rot);*/
+
+      dst.planes[0] = ipu.task.output.paddr;
+      dst.left = ipu.task.output.crop.pos.x;
+      dst.top = ipu.task.output.crop.pos.y;
+      dst.right = ipu.task.output.crop.w + dst.left;
+      dst.bottom = ipu.task.output.crop.h + dst.top;
+
+      dst.stride = ipu.task.output.width;
+      dst.width = ipu.task.output.width;
+      dst.height = ipu.task.output.height;
+      dst.rot = G2D_ROTATION_0;
+      dst.format = G2D_RGBA8888;
+      /*printf("dst planes :%x -%x -%x \n",dst.planes[0], dst.planes[1], dst.planes[2] );
+      printf("dst left %d right %d top %d bottom %d stride %d w : %d h %d rot : %d format %d\n",
+           dst.left, dst.right, dst.top, dst.bottom, dst.stride, dst.width, dst.height, dst.rot, dst.format);*/
+
+      // Launch synchronous blit
+      g2d_blit(m_g2dHandle, &src, &dst);
+      g2d_finish(m_g2dHandle);
+      if ((m_bufferCapture) && (ipu.task.output.paddr == m_bufferCapture->buf_paddr))
+        m_CaptureDone = true;
+    }
+    ipu.current->EndRender();
   }
 
 #ifdef IMX_PROFILE_BUFFERS
@@ -1892,6 +2042,16 @@ void CIMXContext::Process()
   bool ret, useBackBuffer;
   int backBuffer;
 
+  // open g2d here to ensure all g2d fucntions are called from the same thread
+  if (m_g2dHandle == NULL)
+  {
+    if (g2d_open(&m_g2dHandle) != 0)
+    {
+      m_g2dHandle = NULL;
+      CLog::Log(LOGERROR, "%s - Error while trying open G2D\n", __FUNCTION__);
+    }
+  }
+
   while (!m_bStop)
   {
     {
@@ -1904,6 +2064,10 @@ void CIMXContext::Process()
       useBackBuffer = m_vsync;
       IPUTask &task = m_input[m_beginInput];
       backBuffer = useBackBuffer?1-m_fbCurrentPage:m_fbCurrentPage;
+
+      // Hack to detect we deal with capture buffer
+      if (task.task.output.width != 0)
+          useBackBuffer = false;
       ret = DoTask(task, backBuffer);
 
       // Free resources
@@ -1925,6 +2089,20 @@ void CIMXContext::Process()
     m_input[m_beginInput].Done();
     m_beginInput = (m_beginInput+1) % m_input.size();
     --m_bufferedInput;
+  }
+
+  // close g2d here to ensure all g2d fucntions are called from the same thread
+  if (m_bufferCapture)
+  {
+    if (g2d_free(m_bufferCapture))
+      CLog::Log(LOGERROR, "iMX : Failed to free capture buffers\n");
+    m_bufferCapture = NULL;
+  }
+  if (m_g2dHandle)
+  {
+    if (g2d_close(m_g2dHandle))
+      CLog::Log(LOGERROR, "iMX : Error while closing G2D\n");
+    m_g2dHandle = NULL;
   }
 
   return;
