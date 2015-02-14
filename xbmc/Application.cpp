@@ -1545,22 +1545,6 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
       return ret;
     }
   }
-  else if (settingId == "screensaver.mode")
-  {
-    CSettingString *screensaverMode = (CSettingString*)setting;
-    // we no longer ship the built-in slideshow screensaver, replace it if it's still in use
-    if (StringUtils::EqualsNoCase(screensaverMode->GetValue(), "screensaver.xbmc.builtin.slideshow"))
-      return screensaverMode->SetValue("screensaver.xbmc.builtin.dim");
-  }
-  else if (settingId == "scrapers.musicvideosdefault")
-  {
-    CSettingAddon *musicvideoScraper = (CSettingAddon*)setting;
-    if (StringUtils::EqualsNoCase(musicvideoScraper->GetValue(), "metadata.musicvideos.last.fm"))
-    {
-      musicvideoScraper->Reset();
-      return true;
-    }
-  }
 #if defined(HAS_LIBAMCODEC)
   else if (settingId == "videoplayer.useamcodec")
   {
