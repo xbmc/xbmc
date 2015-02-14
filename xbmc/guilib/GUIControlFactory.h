@@ -66,6 +66,15 @@ public:
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAnimations(TiXmlNode *control, const CRect &rect, int context, std::vector<CAnimation> &animation);
 
+  /*! \brief Check the settingsgrouplabel on which group types is allowed from skin
+   \param pRootNode the <control> XML node.
+   \param tag the XML node to parse.
+   \param allowedWhere [out] returned flags for where is visible
+   \param allowFirstGroupIfEmpty [out] Used for "texturebg" to check XML node to show also on first group if no string present
+   \return true if we found and read the tag.
+   */
+  static bool GetSettingLabelVisibility(const TiXmlNode* pRootNode, const char* tag, unsigned int &allowedWhere, bool &allowFirstGroupIfEmpty, bool &hideIfEmpty);
+
   /*! \brief Create an info label from an XML element
    Processes XML elements of the form
     <xmltag fallback="fallback_value">info_value</xmltag>
