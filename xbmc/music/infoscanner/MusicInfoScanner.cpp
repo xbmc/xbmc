@@ -52,6 +52,7 @@
 #include "GUIUserMessages.h"
 #include "addons/AddonManager.h"
 #include "addons/Scraper.h"
+#include "CueDocument.h"
 
 #include <algorithm>
 
@@ -538,14 +539,23 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
     }
 
     if (m_handle && m_itemCount>0)
-      m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
+      m_handle->SetPercentage(m_currentItem / (float)m_itemCount * 100);
 
-    if (!tag.Loaded())
+    if (!tag.Loaded() && !pItem->HasCueDocument())
     {
       CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->GetPath().c_str());
       continue;
     }
-    scannedItems.Add(pItem);
+    else
+    {
+      if (!tag.GetCueSheet().empty())
+        pItem->LoadEmbeddedCue();
+    }
+
+    if (pItem->HasCueDocument())
+      pItem->LoadTracksFromCueDocument(scannedItems);
+    else
+      scannedItems.Add(pItem);
   }
   return INFO_ADDED;
 }

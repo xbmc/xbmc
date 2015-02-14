@@ -495,6 +495,7 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "YEAR")                      tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.toString().to8Bit(true));
+    else if (it->first == "CUESHEET")                  tag.SetCueSheet(it->second.toString().to8Bit(true));
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.toString().toInt() == 1);
     else if (it->first == "LYRICS")                    tag.SetLyrics(it->second.toString().to8Bit(true));
@@ -535,6 +536,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
     else if (it->first == "DATE")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.front().to8Bit(true));
+    else if (it->first == "CUESHEET")                  tag.SetCueSheet(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "ENSEMBLE")                  {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.front().toInt() == 1);

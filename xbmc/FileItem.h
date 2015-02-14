@@ -62,6 +62,10 @@ class CGenre;
 
 class CURL;
 
+class CFileItemList;
+class CCueDocument;
+typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
+
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
 
@@ -466,6 +470,10 @@ public:
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
 
+  void SetCueDocument(const CCueDocumentPtr& cuePtr);
+  void LoadEmbeddedCue();
+  bool HasCueDocument() const;
+  bool LoadTracksFromCueDocument(CFileItemList& scannedItems);
 private:
   /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
    Called from constructors, and from Reset()
@@ -489,6 +497,8 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+
+  CCueDocumentPtr m_cueDocument;
 };
 
 /*!
