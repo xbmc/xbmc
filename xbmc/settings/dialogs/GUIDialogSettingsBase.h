@@ -103,6 +103,7 @@ protected:
   virtual std::set<std::string> CreateSettings();
   virtual void UpdateSettings();
   
+  virtual std::string GetSettingsLabel(CSetting *pSetting);
   virtual CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
   
