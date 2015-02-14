@@ -18,12 +18,11 @@
 *
 */
 
-#include <map>
-#include <string>
 #include <math.h>
 
 #include "Application.h"
 #include "InputManager.h"
+#include "input/Key.h"
 #include "ApplicationMessenger.h"
 #include "guilib/Geometry.h"
 #include "guilib/GUIAudioManager.h"
@@ -89,7 +88,7 @@ void CInputManager::InitializeInputs()
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
-  // Pass the mapping of axis to triggers to m_Joystick 
+  // Pass the mapping of axis to triggers to m_Joystick
   m_Joystick.Initialize();
 #endif
 

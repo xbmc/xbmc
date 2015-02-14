@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "Key.h"
+#include "input/Key.h"
 
 CKey::CKey(void)
 {

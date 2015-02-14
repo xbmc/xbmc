@@ -21,7 +21,7 @@
 #include "GUIDialogSlider.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 #define CONTROL_HEADING 10

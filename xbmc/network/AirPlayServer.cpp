@@ -40,7 +40,7 @@
 #include "utils/md5.h"
 #include "utils/Variant.h"
 #include "settings/Settings.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "URL.h"
 #include "cores/IPlayer.h"
 #include "interfaces/AnnouncementManager.h"

@@ -41,7 +41,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
 

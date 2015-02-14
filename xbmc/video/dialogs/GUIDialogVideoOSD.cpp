@@ -23,7 +23,7 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "input/InputManager.h"
 #include "cores/IPlayer.h"
 

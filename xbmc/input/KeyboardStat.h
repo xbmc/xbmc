@@ -40,7 +40,7 @@
 #include <string>
 
 #include "windowing/XBMC_events.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "input/XBMC_keyboard.h"
 
 class CKeyboardStat

@@ -22,7 +22,7 @@
 
 #include "guilib/GUIControl.h"
 #include "guilib/GUIFont.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 
 #include "Alternative.h"
 #include "Tuple.h"

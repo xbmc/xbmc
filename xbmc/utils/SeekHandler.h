@@ -20,7 +20,7 @@
  */
 
 #include <vector>
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "interfaces/IActionListener.h"
 #include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"

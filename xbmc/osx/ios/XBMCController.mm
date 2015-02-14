@@ -36,7 +36,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "windowing/WindowingFactory.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"

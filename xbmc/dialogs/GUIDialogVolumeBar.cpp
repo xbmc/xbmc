@@ -19,7 +19,7 @@
  */
 
 #include "GUIDialogVolumeBar.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "utils/TimeUtils.h"
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L

@@ -19,7 +19,7 @@
  */
 
 #include "GUIWindowHome.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/WindowIDs.h"
 #include "utils/JobManager.h"
 #include "utils/RecentlyAddedJob.h"

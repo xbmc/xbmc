@@ -18,7 +18,7 @@
  *
  */
 
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/LocalizeStrings.h"

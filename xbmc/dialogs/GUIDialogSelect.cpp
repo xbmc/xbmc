@@ -21,7 +21,7 @@
 #include "GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 

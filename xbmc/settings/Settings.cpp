@@ -37,12 +37,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/KeyboardLayout.h"
-#include "input/MouseStat.h"
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK)
-#include "input/SDLJoystick.h"
-#endif // defined(HAS_SDL_JOYSTICK)
 #if defined(TARGET_POSIX)
 #include "linux/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)

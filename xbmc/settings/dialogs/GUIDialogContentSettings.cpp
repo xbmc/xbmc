@@ -27,7 +27,7 @@
 #include "filesystem/AddonsDirectory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "interfaces/Builtins.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDependency.h"

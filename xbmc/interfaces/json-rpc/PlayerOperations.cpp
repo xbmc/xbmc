@@ -24,7 +24,7 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "GUIUserMessages.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"

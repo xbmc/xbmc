@@ -28,7 +28,7 @@
 #include "GUIUserMessages.h"
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #undef BOOL
 
 void SendKeyboardText(const char *text)

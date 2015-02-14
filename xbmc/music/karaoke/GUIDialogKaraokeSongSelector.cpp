@@ -21,7 +21,7 @@
 #include "GUIDialogKaraokeSongSelector.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

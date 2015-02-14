@@ -36,10 +36,11 @@
 #endif
 
 #include "windowing/XBMC_events.h"
-#include "guilib/Key.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
 #include "settings/lib/ISettingCallback.h"
+
+class CKey;
 
 class CInputManager : public ISettingCallback
 {
@@ -248,7 +249,7 @@ private:
   CRemoteControl m_RemoteControl;
 #endif
 
-#ifdef HAS_EVENT_SERVER
+#if defined(HAS_EVENT_SERVER)
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
 

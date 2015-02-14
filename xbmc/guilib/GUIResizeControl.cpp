@@ -20,7 +20,7 @@
 
 #include "GUIResizeControl.h"
 #include "GUIWindowManager.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "utils/TimeUtils.h"
 
 // time to reset accelerated cursors (digital movement)

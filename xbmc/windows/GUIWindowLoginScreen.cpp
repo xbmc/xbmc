@@ -43,7 +43,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
 #include "view/ViewState.h"

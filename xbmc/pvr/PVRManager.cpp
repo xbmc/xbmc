@@ -59,7 +59,7 @@
 #include "timers/PVRTimers.h"
 #include "interfaces/AnnouncementManager.h"
 #include "addons/AddonInstaller.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 #include "dialogs/GUIDialogPVRGroupManager.h"
 

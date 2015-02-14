@@ -20,7 +20,7 @@
 
 #include "system.h"
 #include "GUIAudioManager.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "input/ButtonTranslator.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"

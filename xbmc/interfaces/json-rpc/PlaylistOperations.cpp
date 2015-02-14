@@ -23,7 +23,7 @@
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "GUIUserMessages.h"
 #include "ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"

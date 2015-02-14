@@ -28,7 +28,7 @@
 #include "music/windows/GUIWindowMusicBase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
 #include "FileItem.h"

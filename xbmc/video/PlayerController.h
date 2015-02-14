@@ -21,7 +21,7 @@
  */
 
 #include "guilib/ISliderCallback.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 
 /*! \brief Player controller class to handle user actions.
 

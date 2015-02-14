@@ -20,7 +20,7 @@
 
 #include "GUIMultiSelectText.h"
 #include "GUIWindowManager.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

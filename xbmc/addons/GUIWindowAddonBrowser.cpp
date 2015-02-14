@@ -47,7 +47,7 @@
 #include "settings/AdvancedSettings.h"
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "ContextMenuManager.h"
 
 #define CONTROL_AUTOUPDATE    5
@@ -201,28 +201,28 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   AddonPtr addon;
   if (CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false))
   {
-    if (button == CONTEXT_BUTTON_SETTINGS)
-      return CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  if (button == CONTEXT_BUTTON_SETTINGS)
+    return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
-    if (button == CONTEXT_BUTTON_REFRESH)
-    {
-      CAddonDatabase database;
-      database.Open();
-      database.DeleteRepository(addon->ID());
-      button = CONTEXT_BUTTON_SCAN;
-    }
+  if (button == CONTEXT_BUTTON_REFRESH)
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.DeleteRepository(addon->ID());
+    button = CONTEXT_BUTTON_SCAN;
+  }
 
-    if (button == CONTEXT_BUTTON_SCAN)
-    {
-      CAddonInstaller::Get().UpdateRepos(true);
-      return true;
-    }
+  if (button == CONTEXT_BUTTON_SCAN)
+  {
+    CAddonInstaller::Get().UpdateRepos(true);
+    return true;
+  }
 
-    if (button == CONTEXT_BUTTON_INFO)
-    {
-      CGUIDialogAddonInfo::ShowForItem(pItem);
-      return true;
-    }
+  if (button == CONTEXT_BUTTON_INFO)
+  {
+    CGUIDialogAddonInfo::ShowForItem(pItem);
+    return true;
+  }
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -548,9 +548,9 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
 
           // check if the addon is installed or can be installed
           if ((showInstallable || showMore) && !isInstalled && CAddonMgr::Get().CanAddonBeInstalled(pAddon))
-          {
+  {
             ++addon;
-            continue;
+      continue;
           }
         }
 
@@ -571,11 +571,11 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   std::map<std::string, AddonPtr> addonMap;
   CFileItemList items;
   for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
-  {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, ""));
-    if (!items.Contains(item->GetPath()))
     {
-      items.Add(item);
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, ""));
+      if (!items.Contains(item->GetPath()))
+    {
+        items.Add(item);
       addonMap.insert(std::make_pair(item->GetPath(), *addon));
     }
   }
@@ -638,7 +638,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
 
   addonIDs.clear();
   const CFileItemList& list = dialog->GetSelectedItems();
-  for (int i = 0; i < list.Size(); i++)
+  for (int i = 0 ; i < list.Size() ; i++)
   {
     const CFileItemPtr& item = list.Get(i);
 

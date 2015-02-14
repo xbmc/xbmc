@@ -28,7 +28,7 @@
 #include "GUIUserMessages.h"
 #include "settings/DisplaySettings.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif

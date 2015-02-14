@@ -21,7 +21,7 @@
 #include "GUIRadioButtonControl.h"
 #include "GUIInfoManager.h"
 #include "GUIFontManager.h"
-#include "Key.h"
+#include "input/Key.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,

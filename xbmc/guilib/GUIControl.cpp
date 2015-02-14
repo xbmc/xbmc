@@ -27,7 +27,7 @@
 #include "GUIControlProfiler.h"
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
-#include "Key.h"
+#include "input/Key.h"
 
 using namespace std;
 

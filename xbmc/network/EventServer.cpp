@@ -34,7 +34,7 @@
 #include "threads/SingleLock.h"
 #include "Zeroconf.h"
 #include "guilib/GUIAudioManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include <map>
 #include <queue>
 #include <cassert>

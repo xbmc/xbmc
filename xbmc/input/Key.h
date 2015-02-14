@@ -2,10 +2,6 @@
  \file Key.h
  \brief
  */
-
-#ifndef GUILIB_KEY
-#define GUILIB_KEY
-
 #pragma once
 
 /*
@@ -560,6 +556,4 @@ private:
   bool m_fromService;
 };
 #endif //undef SWIG
-
-#endif
 

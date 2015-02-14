@@ -34,7 +34,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace XFILE;

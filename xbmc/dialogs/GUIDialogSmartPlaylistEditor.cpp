@@ -29,7 +29,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace std;

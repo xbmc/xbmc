@@ -53,7 +53,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "filesystem/File.h"
