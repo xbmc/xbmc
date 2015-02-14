@@ -15,7 +15,6 @@ DEPENDS = \
 	python26 afpfs-ng libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	xbmc-pvr-addons xbmc-audioencoder-addons \
 	pythonmodule-pil libxslt ffmpeg
 
 FFMPEG_DEPENDS = gnutls
@@ -88,8 +87,6 @@ afpfs-ng: libgcrypt $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: openssl
-xbmc-pvr-addons: boost mysql
-xbmc-audioencoder-addons: libvorbis libflac libmp3lame libogg
 mysql: openssl
 libzip: $(ZLIB)
 libmp3lame: $(ICONV)
