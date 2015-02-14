@@ -7,6 +7,7 @@ TOC
   3.2. Install Kodi build depends
   3.2.1 Compiling as 32 Bit binary
   3.2.2 Compiling as 64 Bit binary
+  3.2.3 Compile binary addons
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -83,6 +84,10 @@ constellations of Xcode and osx versions (to be updated once we know more):
  $ ./bootstrap
  $ ./configure --host=x86_64-apple-darwin
  $ make
+
+3.2.3 Compile binary addons
+ $ make -C target/xbmc-pvr-addons
+ $ make -C target/xbmc-audioencoder-addons
 
  NOTE: You can speedup compilation on multicore systems by doing
  "make -j<number of cores>" instead of "make". For a dualcore this would read:
