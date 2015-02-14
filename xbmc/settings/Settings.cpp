@@ -503,6 +503,7 @@ void CSettings::InitializeControls()
   m_settingsManager->RegisterSettingControl("spinner", this);
   m_settingsManager->RegisterSettingControl("edit", this);
   m_settingsManager->RegisterSettingControl("button", this);
+  m_settingsManager->RegisterSettingControl("infobutton", this);
   m_settingsManager->RegisterSettingControl("list", this);
   m_settingsManager->RegisterSettingControl("slider", this);
   m_settingsManager->RegisterSettingControl("range", this);

@@ -37,6 +37,8 @@ ISettingControl* CSettingControlCreator::CreateControl(const std::string &contro
     return new CSettingControlEdit();
   else if (StringUtils::EqualsNoCase(controlType, "button"))
     return new CSettingControlButton();
+  else if (StringUtils::EqualsNoCase(controlType, "infobutton"))
+    return new CSettingControlInfoButton();
   else if (StringUtils::EqualsNoCase(controlType, "list"))
     return new CSettingControlList();
   else if (StringUtils::EqualsNoCase(controlType, "slider"))
@@ -155,6 +157,29 @@ bool CSettingControlButton::SetFormat(const std::string &format)
 
   return true;
 }
+
+bool CSettingControlInfoButton::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDEVALUE, m_hideValue);
+
+  return true;
+}
+
+bool CSettingControlInfoButton::SetFormat(const std::string &format)
+{
+  if (!StringUtils::EqualsNoCase(format, "action"))
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
 
 bool CSettingControlList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {

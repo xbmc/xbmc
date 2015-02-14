@@ -704,6 +704,66 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
     slider->SetTextValue(strText);
 }
 
+CGUIControlInfoButtonSetting::CGUIControlInfoButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
+  : CGUIControlBaseSetting(id, pSetting)
+{
+  m_pButton = pButton;
+  if (m_pButton == NULL)
+    return;
+
+  m_pButton->SetID(id);
+  Update();
+}
+
+CGUIControlInfoButtonSetting::~CGUIControlInfoButtonSetting()
+{ }
+
+bool CGUIControlInfoButtonSetting::OnClick()
+{
+  if (m_pButton == NULL)
+    return false;
+
+  const ISettingControl *control = m_pSetting->GetControl();
+  const std::string &controlFormat = control->GetFormat();
+
+  if (controlFormat == "action")
+  {
+    // simply call the OnSettingAction callback and whoever knows what to
+    // do can do so (based on the setting's identification)
+    CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
+    pSettingAction->OnSettingAction(pSettingAction);
+    SetValid(true);
+  }
+
+  return IsValid();
+}
+
+void CGUIControlInfoButtonSetting::Update(bool updateDisplayOnly /* = false */)
+{
+  if (updateDisplayOnly || m_pButton == NULL)
+    return;
+
+  CGUIControlBaseSetting::Update();
+
+  std::string strText;
+  const ISettingControl *control = m_pSetting->GetControl();
+  const std::string &controlFormat = control->GetFormat();
+
+  if (m_pSetting->GetType() == SettingTypeString &&
+      !static_cast<const CSettingControlButton*>(control)->HideValue())
+  {
+    std::string strValue = ((CSettingString *)m_pSetting)->GetValue();
+    if (controlFormat == "action")
+    {
+      strText = strValue;
+      if (strText.empty())
+        strText = g_localizeStrings.Get(231); // None
+    }
+  }
+
+  m_pButton->SetLabel2(strText);
+}
+
 CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting)
   : CGUIControlBaseSetting(id, pSetting)
 {

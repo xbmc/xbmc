@@ -245,6 +245,24 @@ CSettingAction* CGUIDialogSettingsManualBase::AddButton(CSettingGroup *group, co
   return setting;
 }
 
+CSettingString* CGUIDialogSettingsManualBase::AddInfoStringButton(CSettingGroup *group, const std::string &id, int label, int level, std::string info,
+                                                                  bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 ||
+      GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingString *setting = new CSettingString(id, label, info, m_settingsManager);
+  if (setting == NULL)
+    return NULL;
+
+  setting->SetControl(GetInfoButtonControl("action", false));
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
 CSettingAddon* CGUIDialogSettingsManualBase::AddAddon(CSettingGroup *group, const std::string &id, int label, int level, std::string value, ADDON::TYPE addonType,
                                                       bool allowEmpty /* = false */, int heading /* = -1 */, bool hideValue /* = false */, bool delayed /* = false */,
                                                       bool visible /* = true */, int help /* = -1 */)
@@ -965,6 +983,22 @@ ISettingControl* CGUIDialogSettingsManualBase::GetButtonControl(const std::strin
     return NULL;
   }
   
+  control->SetDelayed(delayed);
+  control->SetHeading(heading);
+  control->SetHideValue(hideValue);
+
+  return control;
+}
+
+ISettingControl* CGUIDialogSettingsManualBase::GetInfoButtonControl(const std::string &format, bool delayed /* = false */, int heading /* = -1 */, bool hideValue /* = false */)
+{
+  CSettingControlInfoButton *control = new CSettingControlInfoButton();
+  if (!control->SetFormat(format))
+  {
+    delete control;
+    return NULL;
+  }
+
   control->SetDelayed(delayed);
   control->SetHeading(heading);
   control->SetHideValue(hideValue);

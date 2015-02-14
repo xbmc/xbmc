@@ -674,6 +674,16 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
     ((CGUISettingsSliderControl *)pControl)->SetText(label);
     pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
   }
+  else if (controlType == "infobutton")
+  {
+    if (m_pOriginalButton != NULL)
+      pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlInfoButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+  }
   else
     return NULL;
 

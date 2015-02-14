@@ -164,6 +164,21 @@ private:
   CGUIButtonControl *m_pButton;
 };
 
+class CGUIControlInfoButtonSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlInfoButtonSetting(CGUIButtonControl* pButton, int id, CSetting *pSetting);
+  virtual ~CGUIControlInfoButtonSetting();
+
+  virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
+  virtual bool OnClick();
+  virtual void Update(bool updateDisplayOnly = false);
+  virtual void Clear() { m_pButton = NULL; }
+
+private:
+  CGUIButtonControl *m_pButton;
+};
+
 class CGUIControlEditSetting : public CGUIControlBaseSetting
 {
 public:
