@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "Util.h"
+#include <cassert>
 
 extern "C" {
 #include "libavutil/crc.h"

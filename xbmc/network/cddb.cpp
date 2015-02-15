@@ -54,11 +54,9 @@ using namespace CDDB;
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb()
     : m_cddb_socket(INVALID_SOCKET)
+    , m_cddb_ip_adress(g_advancedSettings.m_cddbAddress)
 {
   m_lastError = 0;
-  m_cddb_ip_adress = g_advancedSettings.m_cddbAddress;
-  cCacheDir = "";
-  m_strNull = "";
 }
 
 //-------------------------------------------------------------------------------------------------------------------

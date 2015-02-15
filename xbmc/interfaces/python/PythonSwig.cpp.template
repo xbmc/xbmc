@@ -511,19 +511,19 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     {
       CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
       PyErr_SetString(PyExc_TypeError, e.GetMessage());
-      return NULL;
+      return -1;
     }
     catch (const XbmcCommons::Exception& e)
     {
       CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
       PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
-      return NULL;
+      return -1;
     }
     catch (...)
     {
       CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
       PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
-      return NULL;
+      return -1;
     }
 
 <%

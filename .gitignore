@@ -365,6 +365,7 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/lib
 /project/BuildDependencies/msys
 /project/BuildDependencies/scripts/tmp
+/project/BuildDependencies/src
 /project/BuildDependencies/bin/swig
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
@@ -398,6 +399,7 @@ lib/cpluff/stamp-h1
 /system/libexif.dll
 /system/libexpat.dll
 /system/libidn-11.dll
+/system/libgif.dll
 /system/libssh2.dll
 /system/libssl32.dll
 /system/hdhomerun.dll
@@ -491,14 +493,12 @@ lib/cpluff/stamp-h1
 /tools/Linux/kodi.sh
 /tools/Linux/kodi-standalone.sh
 /tools/Linux/kodi-xsession.desktop
-/tools/Linux/FEH-ARM.py
-/tools/Linux/FEH.py
 
 # /tools/osx
 /tools/osx/XBMCHelper
 
 # /tools/TexturePacker
-/tools/TexturePacker/TexturePacker
+/tools/TexturePacker/TexturePacker*
 /tools/TexturePacker/Makefile
 /tools/TexturePacker/*.dll
 

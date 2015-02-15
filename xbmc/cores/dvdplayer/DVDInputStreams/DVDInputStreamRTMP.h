@@ -51,6 +51,7 @@ protected:
   bool       m_canSeek;
   bool       m_canPause;
   char*      m_sStreamPlaying;
+  std::vector<std::string> m_optionvalues;
 
   RTMP       *m_rtmp;
   DllLibRTMP m_libRTMP;

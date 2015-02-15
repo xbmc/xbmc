@@ -24,6 +24,7 @@
 #include <memory>
 #include <string.h>
 #include <stdint.h>
+#include <algorithm>
 
 #ifdef __GNUC__
 // under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
@@ -245,3 +246,14 @@ public:
   float alpha;
   bool identity;
 };
+
+inline bool operator==(const TransformMatrix &a, const TransformMatrix &b)
+{
+  return a.alpha == b.alpha && ((a.identity && b.identity) ||
+      (!a.identity && !b.identity && std::equal(&a.m[0][0], &a.m[0][0] + sizeof (a.m) / sizeof (a.m[0][0]), &b.m[0][0])));
+}
+
+inline bool operator!=(const TransformMatrix &a, const TransformMatrix &b)
+{
+  return !operator==(a, b);
+}

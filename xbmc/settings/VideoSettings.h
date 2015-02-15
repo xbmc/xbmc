@@ -148,11 +148,6 @@ public:
   float m_Sharpness;
   float m_AudioDelay;
   int m_ResumeTime;
-  bool m_Crop;
-  int m_CropTop;
-  int m_CropBottom;
-  int m_CropLeft;
-  int m_CropRight;
   int m_StereoMode;
   bool m_StereoInvert;
 

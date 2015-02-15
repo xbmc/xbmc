@@ -222,6 +222,7 @@ bool CWinSystemEGL::CreateWindow(RESOLUTION_INFO &res)
     return false;
   }
 
+
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
   if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
       g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
@@ -243,7 +244,9 @@ bool CWinSystemEGL::DestroyWindowSystem()
   DestroyWindow();
 
   if (m_context != EGL_NO_CONTEXT)
+  {
     m_egl->DestroyContext(m_display, m_context);
+  }
   m_context = EGL_NO_CONTEXT;
 
   if (m_display != EGL_NO_DISPLAY)
@@ -258,6 +261,7 @@ bool CWinSystemEGL::DestroyWindowSystem()
   delete m_egl;
   m_egl = NULL;
 
+  CWinSystemBase::DestroyWindowSystem();
   return true;
 }
 
@@ -298,7 +302,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   CSingleLock lock(m_resourceSection);
   // tell any shared resources
-  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnResetDevice();
 
   return true;

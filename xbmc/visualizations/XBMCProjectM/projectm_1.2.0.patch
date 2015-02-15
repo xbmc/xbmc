@@ -109,7 +109,7 @@ Index: projectM.hpp
  	std::string menuFontURL;		
 @@ -265,7 +267,7 @@
    
-   void switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
+   void switchPreset(std::unique_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
    void readConfig(const std::string & configFile);
 -  void projectM_init(int gx, int gy, int fps, int texsize, int width, int height);
 +  void projectM_init(int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos);

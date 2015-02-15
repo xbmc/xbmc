@@ -143,7 +143,8 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_flipindex = 0;
   m_currentField = FIELD_FULL;
   m_reloadShaders = 0;
-  m_pYUVShader = NULL;
+  m_pYUVProgShader = NULL;
+  m_pYUVBobShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
@@ -203,12 +204,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
     m_rgbBuffer = NULL;
   }
 
-  if (m_pYUVShader)
-  {
-    m_pYUVShader->Free();
-    delete m_pYUVShader;
-    m_pYUVShader = NULL;
-  }
+  ReleaseShaders();
 }
 
 bool CLinuxRendererGLES::ValidateRenderTarget()
@@ -526,32 +522,16 @@ void CLinuxRendererGLES::Update()
 
 void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
 
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
 
-  if (m_renderMethod & RENDER_BYPASS)
+  if (!IsGuiLayer())
   {
-    ManageDisplay();
-    // if running bypass, then the player might need the src/dst rects
-    // for sizing video playback on a layer other than the gles layer.
-    if (m_RenderUpdateCallBackFn)
-      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-
-    CRect old = g_graphicsContext.GetScissors();
-
-    g_graphicsContext.BeginPaint();
-    g_graphicsContext.SetScissors(m_destRect);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    g_graphicsContext.SetScissors(old);
-    g_graphicsContext.EndPaint();
+    RenderUpdateVideo(clear, flags, alpha);
     return;
   }
 
@@ -585,14 +565,18 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    if (m_pYUVShader)
-      m_pYUVShader->SetAlpha(alpha / 255.0f);
+    if (m_pYUVProgShader)
+      m_pYUVProgShader->SetAlpha(alpha / 255.0f);
+    if (m_pYUVBobShader)
+      m_pYUVBobShader->SetAlpha(alpha / 255.0f);
   }
   else
   {
     glDisable(GL_BLEND);
-    if (m_pYUVShader)
-      m_pYUVShader->SetAlpha(1.0f);
+    if (m_pYUVProgShader)
+      m_pYUVProgShader->SetAlpha(1.0f);
+    if (m_pYUVBobShader)
+      m_pYUVBobShader->SetAlpha(1.0f);
   }
 
   if ((flags & RENDER_FLAG_TOP) && (flags & RENDER_FLAG_BOT))
@@ -604,6 +588,26 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
+}
+
+void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
+{
+  if (!m_bConfigured)
+    return;
+
+  if (IsGuiLayer())
+    return;
+
+  if (m_renderMethod & RENDER_BYPASS)
+  {
+    ManageDisplay();
+    // if running bypass, then the player might need the src/dst rects
+    // for sizing video playback on a layer other than the gles layer.
+    if (m_RenderUpdateCallBackFn)
+      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
+
+    return;
+  }
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -728,12 +732,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   int requestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
-  if (m_pYUVShader)
-  {
-    m_pYUVShader->Free();
-    delete m_pYUVShader;
-    m_pYUVShader = NULL;
-  }
+  ReleaseShaders();
 
   switch(requestedMethod)
   {
@@ -786,21 +785,21 @@ void CLinuxRendererGLES::LoadShaders(int field)
       // Try GLSL shaders if supported and user requested auto or GLSL.
       if (glCreateProgram)
       {
-        // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
+        // create regular scan shader
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
-        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+        m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
+        m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
+        if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
+            && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
         {
           m_renderMethod = RENDER_GLSL;
           UpdateVideoFilter();
           break;
         }
-        else if (m_pYUVShader)
+        else
         {
-          m_pYUVShader->Free();
-          delete m_pYUVShader;
-          m_pYUVShader = NULL;
+          ReleaseShaders();
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
           // drop through and try SW
         }
@@ -880,6 +879,22 @@ void CLinuxRendererGLES::LoadShaders(int field)
     CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
     ReorderDrawPoints();
     m_oldRenderMethod = m_renderMethod;
+  }
+}
+
+void CLinuxRendererGLES::ReleaseShaders()
+{
+  if (m_pYUVProgShader)
+  {
+    m_pYUVProgShader->Free();
+    delete m_pYUVProgShader;
+    m_pYUVProgShader = NULL;
+  }
+  if (m_pYUVBobShader)
+  {
+    m_pYUVBobShader->Free();
+    delete m_pYUVBobShader;
+    m_pYUVBobShader = NULL;
   }
 }
 
@@ -1044,7 +1059,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANES &planes = fields[field];
+  YUVPLANES &planes = fields[FIELD_FULL];
+  YUVPLANES &planesf = fields[field];
 
   if (m_reloadShaders)
   {
@@ -1072,26 +1088,32 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  m_pYUVShader->SetWidth(im.width);
-  m_pYUVShader->SetHeight(im.height);
-  if     (field == FIELD_TOP)
-    m_pYUVShader->SetField(1);
-  else if(field == FIELD_BOT)
-    m_pYUVShader->SetField(0);
+  Shaders::BaseYUV2RGBShader *pYUVShader;
+  if (field != FIELD_FULL)
+    pYUVShader = m_pYUVBobShader;
+  else
+    pYUVShader = m_pYUVProgShader;
 
-  m_pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
-  m_pYUVShader->Enable();
+  pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  pYUVShader->SetWidth(im.width);
+  pYUVShader->SetHeight(im.height);
+  if     (field == FIELD_TOP)
+    pYUVShader->SetField(1);
+  else if(field == FIELD_BOT)
+    pYUVShader->SetField(0);
+
+  pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat m_vert[4][3];
   GLfloat m_tex[3][4][2];
 
-  GLint vertLoc = m_pYUVShader->GetVertexLoc();
-  GLint Yloc    = m_pYUVShader->GetYcoordLoc();
-  GLint Uloc    = m_pYUVShader->GetUcoordLoc();
-  GLint Vloc    = m_pYUVShader->GetVcoordLoc();
+  GLint vertLoc = pYUVShader->GetVertexLoc();
+  GLint Yloc    = pYUVShader->GetYcoordLoc();
+  GLint Uloc    = pYUVShader->GetUcoordLoc();
+  GLint Vloc    = pYUVShader->GetVcoordLoc();
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, m_vert);
   glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, m_tex[0]);
@@ -1114,17 +1136,17 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   // Setup texture coordinates
   for (int i=0; i<3; i++)
   {
-    m_tex[i][0][0] = m_tex[i][3][0] = planes[i].rect.x1;
-    m_tex[i][0][1] = m_tex[i][1][1] = planes[i].rect.y1;
-    m_tex[i][1][0] = m_tex[i][2][0] = planes[i].rect.x2;
-    m_tex[i][2][1] = m_tex[i][3][1] = planes[i].rect.y2;
+    m_tex[i][0][0] = m_tex[i][3][0] = planesf[i].rect.x1;
+    m_tex[i][0][1] = m_tex[i][1][1] = planesf[i].rect.y1;
+    m_tex[i][1][0] = m_tex[i][2][0] = planesf[i].rect.x2;
+    m_tex[i][2][1] = m_tex[i][3][1] = planesf[i].rect.y2;
   }
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   VerifyGLState();
 
-  m_pYUVShader->Disable();
+  pYUVShader->Disable();
   VerifyGLState();
 
   glDisableVertexAttribArray(vertLoc);
@@ -1183,7 +1205,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   VerifyGLState();
 
   // make sure the yuv shader is loaded and ready to go
-  if (!m_pYUVShader || (!m_pYUVShader->OK()))
+  if (!m_pYUVProgShader || (!m_pYUVProgShader->OK()))
   {
     CLog::Log(LOGERROR, "GL: YUV shader not active, cannot do multipass render");
     return;
@@ -1192,14 +1214,14 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  m_pYUVShader->SetWidth(im.width);
-  m_pYUVShader->SetHeight(im.height);
+  m_pYUVProgShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVProgShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVProgShader->SetWidth(im.width);
+  m_pYUVProgShader->SetHeight(im.height);
   if     (field == FIELD_TOP)
-    m_pYUVShader->SetField(1);
+    m_pYUVProgShader->SetField(1);
   else if(field == FIELD_BOT)
-    m_pYUVShader->SetField(0);
+    m_pYUVProgShader->SetField(0);
 
   VerifyGLState();
 //TODO
@@ -1217,7 +1239,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   VerifyGLState();
 
 
-  if (!m_pYUVShader->Enable())
+  if (!m_pYUVProgShader->Enable())
   {
     CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
   }
@@ -1257,7 +1279,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 //  glEnd();
 //  VerifyGLState();
 
-  m_pYUVShader->Disable();
+  m_pYUVProgShader->Disable();
 
   glMatrixModview.PopLoad();
   glMatrixProject.PopLoad();
@@ -1341,6 +1363,11 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][2];
@@ -1406,6 +1433,11 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][2];
@@ -1469,14 +1501,33 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
 
-  YUVPLANE &plane = m_buffers[index].fields[field][0];
+  YUVPLANE &plane = m_buffers[index].fields[0][0];
+  YUVPLANE &planef = m_buffers[index].fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+  if (field != FIELD_FULL)
+  {
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB);
+    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
+    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
+
+    if     (field == FIELD_TOP)
+      glUniform1i(fieldLoc, 1);
+    else if(field == FIELD_BOT)
+      glUniform1i(fieldLoc, 0);
+    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
+  }
+  else
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1504,11 +1555,20 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
     ver[i][3] = 1.0f;
   }
 
-  // Set texture coordinates (is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
+  if (field == FIELD_FULL)
+  {
+    tex[0][0] = tex[3][0] = plane.rect.x1;
+    tex[0][1] = tex[1][1] = plane.rect.y1;
+    tex[1][0] = tex[2][0] = plane.rect.x2;
+    tex[2][1] = tex[3][1] = plane.rect.y2;
+  }
+  else
+  {
+    tex[0][0] = tex[3][0] = planef.rect.x1;
+    tex[0][1] = tex[1][1] = planef.rect.y1 * 2.0f;
+    tex[1][0] = tex[2][0] = planef.rect.x2;
+    tex[2][1] = tex[3][1] = planef.rect.y2 * 2.0f;
+  }
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
@@ -1536,13 +1596,32 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   #endif
 
   YUVPLANE &plane = m_buffers[index].fields[0][0];
+  YUVPLANE &planef = m_buffers[index].fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  if (field != FIELD_FULL)
+  {
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
+    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
+    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
+
+    if     (field == FIELD_TOP)
+      glUniform1i(fieldLoc, 1);
+    else if(field == FIELD_BOT)
+      glUniform1i(fieldLoc, 0);
+    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
+  }
+  else
+    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
@@ -1570,10 +1649,20 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   }
 
   // Set texture coordinates (MediaCodec is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
+  if (field == FIELD_FULL)
+  {
+    tex[0][0] = tex[3][0] = plane.rect.x1;
+    tex[0][1] = tex[1][1] = plane.rect.y2;
+    tex[1][0] = tex[2][0] = plane.rect.x2;
+    tex[2][1] = tex[3][1] = plane.rect.y1;
+  }
+  else
+  {
+    tex[0][0] = tex[3][0] = planef.rect.x1;
+    tex[0][1] = tex[1][1] = planef.rect.y2 * 2.0f;
+    tex[1][0] = tex[2][0] = planef.rect.x2;
+    tex[2][1] = tex[3][1] = planef.rect.y1 * 2.0f;
+  }
 
   for(int i = 0; i < 4; i++)
   {
@@ -1618,6 +1707,11 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   glBindTexture(m_textureTarget, plane.id);
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1691,6 +1785,11 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
   glBindTexture(m_textureTarget, plane.id);
 
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  glUniform1f(contrastLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  glUniform1f(brightnessLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -1858,7 +1957,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     }
   }
 
-  bool deinterlacing;
+  bool deinterlacing = false;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
   else
@@ -1891,53 +1990,20 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   {
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-    if (deinterlacing)
-    {
-      // Load Even Y Field
-      LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
-               , im->width, im->height >> 1
-               , im->stride[0]*2, im->bpp, im->plane[0] );
+    // Load Y plane
+    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+        , im->width, im->height
+        , im->stride[0], im->bpp, im->plane[0] );
 
-      // Load Odd Y fields
-      LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
-               , im->width, im->height >> 1
-               , im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
+    //load U plane
+    LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
+        , im->width >> im->cshift_x, im->height >> im->cshift_y
+                                                   , im->stride[1], im->bpp, im->plane[1] );
 
-      // Load Even U & V Fields
-      LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-               , im->stride[1]*2, im->bpp, im->plane[1] );
-
-      LoadPlane( fields[FIELD_TOP][2], GL_ALPHA, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-               , im->stride[2]*2, im->bpp, im->plane[2] );
-
-      // Load Odd U & V Fields
-      LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-               , im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1] );
-
-      LoadPlane( fields[FIELD_BOT][2], GL_ALPHA, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-               , im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2] );
-    }
-    else
-    {
-      // Load Y plane
-      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
-               , im->width, im->height
-               , im->stride[0], im->bpp, im->plane[0] );
-
-      //load U plane
-      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> im->cshift_y
-               , im->stride[1], im->bpp, im->plane[1] );
-
-      //load V plane
-      LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> im->cshift_y
-               , im->stride[2], im->bpp, im->plane[2] );
-    }
+    //load V plane
+    LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
+        , im->width >> im->cshift_x, im->height >> im->cshift_y
+                                                   , im->stride[2], im->bpp, im->plane[2] );
   }
 
   VerifyGLState();
@@ -2542,7 +2608,6 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
 #ifdef HAS_LIBSTAGEFRIGHT
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
 
   DeleteEGLIMGTexture(index);
 
@@ -2552,16 +2617,23 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  if(m_renderMethod & RENDER_POT)
+  for (int f=0; f<3; ++f)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    YUVPLANE  &plane  = fields[f][0];
+
+    plane.texwidth  = im.width;
+    plane.texheight = im.height;
+    plane.pixpertex_x = 1;
+    plane.pixpertex_y = 1;
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      plane.texwidth  = NP2(plane.texwidth);
+      plane.texheight = NP2(plane.texheight);
+    }
   }
+
+  YUVPLANE  &plane  = fields[0][0];
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
   VerifyGLState();
@@ -2622,7 +2694,6 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
 
   memset(&im    , 0, sizeof(im));
   memset(&fields, 0, sizeof(fields));
@@ -2630,15 +2701,21 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  if(m_renderMethod & RENDER_POT)
+  for (int f=0; f<3; ++f)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    YUVPLANE  &plane  = fields[f][0];
+
+    plane.texwidth  = im.width;
+    plane.texheight = im.height;
+    plane.pixpertex_x = 1;
+    plane.pixpertex_y = 1;
+
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      plane.texwidth  = NP2(plane.texwidth);
+      plane.texheight = NP2(plane.texheight);
+    }
   }
 
   return true;
@@ -2799,10 +2876,10 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   }
 
   if(feature == RENDERFEATURE_BRIGHTNESS)
-    return false;
+    return true;
 
   if(feature == RENDERFEATURE_CONTRAST)
-    return false;
+    return true;
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
@@ -2817,7 +2894,6 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
     return false;
 
   if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_CROP            ||
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||
@@ -2849,9 +2925,6 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
-  if(m_renderMethod & RENDER_EGLIMG)
-    return false;
-
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
@@ -2878,10 +2951,20 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
     return false;
 
   if(m_renderMethod & RENDER_EGLIMG)
-    return false;
+  {
+    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+      return true;
+    else
+      return false;
+  }
 
   if(m_renderMethod & RENDER_MEDIACODEC)
-    return false;
+  {
+    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+      return true;
+    else
+      return false;
+  }
 
   if(m_renderMethod & RENDER_CVREF)
     return false;
@@ -2892,12 +2975,14 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-#if defined(__i386__) || defined(__x86_64__)
+#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
   || method == VS_INTERLACEMETHOD_SW_BLEND)
 #else
-  if(method == VS_INTERLACEMETHOD_SW_BLEND)
+  if(method == VS_INTERLACEMETHOD_SW_BLEND
+  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
 #endif
     return true;
 
@@ -2935,7 +3020,10 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
     return VS_INTERLACEMETHOD_NONE;
 
   if(m_renderMethod & RENDER_EGLIMG)
-    return VS_INTERLACEMETHOD_NONE;
+    return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
+
+  if(m_renderMethod & RENDER_MEDIACODEC)
+    return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
@@ -2943,10 +3031,10 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_IMXMAP)
     return VS_INTERLACEMETHOD_NONE;
 
-#if defined(__i386__) || defined(__x86_64__)
+#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 #else
-  return VS_INTERLACEMETHOD_SW_BLEND;
+  return VS_INTERLACEMETHOD_RENDER_BOB;
 #endif
 }
 
@@ -3045,6 +3133,14 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecIMXBuffer *buffer, int index
     buffer->Lock();
 }
 #endif
+
+bool CLinuxRendererGLES::IsGuiLayer()
+{
+  if (m_format == RENDER_FMT_BYPASS)
+    return false;
+  else
+    return true;
+}
 
 #endif
 

@@ -24,6 +24,9 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#if HAS_GLES
+#include "guilib/GUIFontTTFGL.h"
+#endif
 
 using namespace std;
 
@@ -51,6 +54,14 @@ bool CWinSystemBase::InitWindowSystem()
   UpdateResolutions();
   CDisplaySettings::Get().ApplyCalibrations();
   return true;
+}
+
+bool CWinSystemBase::DestroyWindowSystem()
+{
+#if HAS_GLES
+  CGUIFontTTFGL::DestroyStaticVertexBuffers();
+#endif
+  return false;
 }
 
 void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags)

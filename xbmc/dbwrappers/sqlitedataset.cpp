@@ -491,7 +491,7 @@ void SqliteDataset::make_query(StringList &_sql) {
   if (autocommit) db->start_transaction();
 
 
-  for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++) {
+  for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
   query = *i;
   char* err=NULL; 
   Dataset::parse_sql(query);

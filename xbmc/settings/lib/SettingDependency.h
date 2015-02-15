@@ -73,10 +73,10 @@ private:
   SettingDependencyOperator m_operator;
 };
 
-typedef boost::shared_ptr<CSettingDependencyCondition> CSettingDependencyConditionPtr;
+typedef std::shared_ptr<CSettingDependencyCondition> CSettingDependencyConditionPtr;
 
 class CSettingDependencyConditionCombination;
-typedef boost::shared_ptr<CSettingDependencyConditionCombination> CSettingDependencyConditionCombinationPtr;
+typedef std::shared_ptr<CSettingDependencyConditionCombination> CSettingDependencyConditionCombinationPtr;
 
 class CSettingDependencyConditionCombination : public CSettingConditionCombination
 {

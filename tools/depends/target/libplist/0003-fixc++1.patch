@@ -1,0 +1,11 @@
+--- a/src/Dictionary.cpp.orig  2014-12-31 14:05:09.000000000 -0600
++++ b/src/Dictionary.cpp       2014-12-31 14:09:58.000000000 -0600
+@@ -151,7 +151,7 @@
+         _map[key] = clone;
+         return _map.find(key);
+     }
+-    return iterator(NULL);
++    return iterator();
+ }
+ 
+ void Dictionary::Remove(Node* node)

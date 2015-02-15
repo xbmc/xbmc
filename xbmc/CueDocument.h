@@ -25,6 +25,8 @@
 
 #define MAX_PATH_SIZE 1024
 
+class CueReader;
+
 class CCueDocument
 {
   class CCueTrack
@@ -47,22 +49,19 @@ class CCueDocument
     float replayGainTrackGain;
     float replayGainTrackPeak;
   };
-
 public:
   CCueDocument(void);
   ~CCueDocument(void);
   // USED
-  bool Parse(const std::string &strFile);
+  bool ParseFile(const std::string &strFilePath);
+  bool ParseTag(const std::string &strContent);
   void GetSongs(VECSONGS &songs);
   std::string GetMediaPath();
   std::string GetMediaTitle();
   void GetMediaFiles(std::vector<std::string>& mediaFiles);
-
+  void UpdateMediaFile(const std::string& oldMediaFile, const std::string& mediaFile);
 private:
-
-  // USED for file access
-  XFILE::CFile m_file;
-  char m_szBuffer[1024];
+  bool Parse(CueReader& reader, const std::string& strFile = std::string());
 
   // Member variables
   std::string m_strArtist;  // album artist
@@ -78,7 +77,6 @@ private:
   // cuetrack array
   std::vector<CCueTrack> m_Track;
 
-  bool ReadNextLine(std::string &strLine);
   std::string ExtractInfo(const std::string &line);
   int ExtractTimeFromIndex(const std::string &index);
   int ExtractNumericInfo(const std::string &info);

@@ -26,12 +26,9 @@
 #include "utils/URIUtils.h"
 #include "PosixMountProvider.h"
 
-CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI)
+CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI):
+  m_DeviceKitUDI(DeviceKitUDI)
 {
-  m_DeviceKitUDI = DeviceKitUDI;
-  m_UDI = "";
-  m_MountPath = "";
-  m_FileSystem = "";
   m_isMounted = false;
   m_isMountedByUs = false;
   m_isRemovable = false;

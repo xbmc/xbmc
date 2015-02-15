@@ -35,6 +35,7 @@
 #include "utils/ActorProtocol.h"
 #include <list>
 #include <map>
+#include <memory>
 #include <va/va.h>
 #include "linux/sse4/DllLibSSE4.h"
 
@@ -449,6 +450,7 @@ protected:
   CVideoSurfaces m_videoSurfaces;
   vaapi_context m_hwContext;
   AVCodecContext* m_avctx;
+  bool m_getBufferError;
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;

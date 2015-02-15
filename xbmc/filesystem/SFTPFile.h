@@ -35,7 +35,7 @@
 #endif // !TARGET_WINDOWS
 #include <string>
 #include <map>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class CURL;
 
@@ -83,7 +83,7 @@ private:
   int m_LastActive;
 };
 
-typedef boost::shared_ptr<CSFTPSession> CSFTPSessionPtr;
+typedef std::shared_ptr<CSFTPSession> CSFTPSessionPtr;
 
 class CSFTPSessionManager
 {

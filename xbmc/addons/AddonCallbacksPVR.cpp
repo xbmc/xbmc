@@ -191,7 +191,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
   }
 
   /* transfer this entry to the recordings container */
-  CPVRRecording transferRecording(*recording, client->GetID());
+  CPVRRecordingPtr transferRecording(new CPVRRecording(*recording, client->GetID()));
   xbmcRecordings->UpdateFromClient(transferRecording);
 }
 

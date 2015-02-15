@@ -38,6 +38,8 @@ class CJNIAudioFormat
     static int CHANNEL_OUT_FRONT_RIGHT_OF_CENTER;
     static int CHANNEL_OUT_FRONT_RIGHT;
     static int CHANNEL_OUT_LOW_FREQUENCY;
+    static int CHANNEL_OUT_SIDE_LEFT;
+    static int CHANNEL_OUT_SIDE_RIGHT;
     static int CHANNEL_OUT_BACK_LEFT;
     static int CHANNEL_OUT_BACK_CENTER;
     static int CHANNEL_OUT_BACK_RIGHT;

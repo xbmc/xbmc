@@ -342,14 +342,17 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_RENAME)
   {
-    bReturn = true;
-
-    CPVRRecording *recording = item->GetPVRRecordingInfoTag();
-    std::string strNewName = recording->m_strTitle;
-    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
+    CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
+    if (recording)
     {
-      if (g_PVRRecordings->RenameRecording(*item, strNewName))
-        Refresh(true);
+      bReturn = true;
+
+      std::string strNewName = recording->m_strTitle;
+      if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
+      {
+        if (g_PVRRecordings->RenameRecording(*item, strNewName))
+          Refresh(true);
+      }
     }
   }
 

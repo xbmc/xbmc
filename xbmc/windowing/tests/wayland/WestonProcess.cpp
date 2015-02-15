@@ -75,7 +75,7 @@ FindBinaryFromPATH(const std::string &binary)
       }
     }
 
-    return possibleBinaryLocation.c_str();
+    return possibleBinaryLocation;
   }
   
   std::stringstream ss;

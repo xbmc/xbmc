@@ -77,7 +77,7 @@ void CVideoSyncDRM::Run(volatile bool& stop)
   else if (crtc > 1)
   {
     vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       (crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK);
+                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
   }
   vbl.request.sequence = 0;
   ret = drmWaitVBlank(m_fd, &vbl);
@@ -98,7 +98,7 @@ void CVideoSyncDRM::Run(volatile bool& stop)
   else if (crtc > 1)
   {
     vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       (crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK);
+                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
   }
   vbl.request.sequence = 1;
   vbl.request.signal = (unsigned long)&info;
@@ -150,7 +150,6 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
                                  unsigned int usec, void *data)
 {
   drmVBlank vbl;
-  struct timeval end;
   VblInfo *info = (VblInfo*)data;
   int crtc = g_Windowing.GetCrtc();
 
@@ -162,7 +161,7 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
   else if (crtc > 1)
   {
     vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       (crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK);
+                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
   }
   vbl.request.sequence = 1;
   vbl.request.signal = (unsigned long)data;

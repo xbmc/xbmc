@@ -35,6 +35,8 @@
 #include "pvr/timers/PVRTimers.h"
 #include "cores/IPlayer.h"
 
+#include <assert.h>
+
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
@@ -109,7 +111,7 @@ int CPVRClients::GetClientId(const AddonPtr client) const
 bool CPVRClients::GetClient(int iClientId, PVR_CLIENT &addon) const
 {
   bool bReturn(false);
-  if (iClientId <= PVR_INVALID_CLIENT_ID || iClientId == PVR_VIRTUAL_CLIENT_ID)
+  if (iClientId <= PVR_INVALID_CLIENT_ID)
     return bReturn;
 
   CSingleLock lock(m_critSection);
@@ -347,12 +349,10 @@ bool CPVRClients::GetPlayingChannel(CPVRChannelPtr &channel) const
   return false;
 }
 
-bool CPVRClients::GetPlayingRecording(CPVRRecording &recording) const
+CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
 {
   PVR_CLIENT client;
-  if (GetPlayingClient(client))
-    return client->GetPlayingRecording(recording);
-  return false;
+  return GetPlayingClient(client) ? client->GetPlayingRecording() : CPVRRecordingPtr();
 }
 
 bool CPVRClients::HasTimerSupport(int iClientId)
@@ -868,7 +868,7 @@ int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
     else
     {
       // create a new client instance
-      addon = boost::dynamic_pointer_cast<CPVRClient>(client);
+      addon = std::dynamic_pointer_cast<CPVRClient>(client);
       m_clientMap.insert(std::make_pair(iClientId, addon));
     }
   }
@@ -1004,9 +1004,6 @@ void CPVRClients::Process(void)
         ShowDialogNoClientsEnabled();
     }
 
-    PVR_CLIENT client;
-    if (GetPlayingClient(client))
-      client->UpdateCharInfoSignalStatus();
     Sleep(1000);
   }
 }
@@ -1184,9 +1181,7 @@ bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
     m_playingClientId = tag.ClientID();
     m_bIsPlayingLiveTV = true;
 
-    if (tag.ClientID() == PVR_VIRTUAL_CLIENT_ID)
-      m_strPlayingClientName = g_localizeStrings.Get(19209);
-    else if (!tag.IsVirtual() && client.get())
+    if (client.get())
       m_strPlayingClientName = client->GetFriendlyName();
     else
       m_strPlayingClientName = g_localizeStrings.Get(13205);
@@ -1197,18 +1192,20 @@ bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
   return bReturn;
 }
 
-bool CPVRClients::OpenStream(const CPVRRecording &tag)
+bool CPVRClients::OpenStream(const CPVRRecordingPtr &tag)
 {
+  assert(tag.get());
+
   bool bReturn(false);
   CloseStream();
 
   /* try to open the recording stream on the client */
   PVR_CLIENT client;
-  if (GetConnectedClient(tag.m_iClientId, client) &&
+  if (GetConnectedClient(tag->m_iClientId, client) &&
       client->OpenStream(tag))
   {
     CSingleLock lock(m_critSection);
-    m_playingClientId = tag.m_iClientId;
+    m_playingClientId = tag->m_iClientId;
     m_bIsPlayingRecording = true;
     m_strPlayingClientName = client->GetFriendlyName();
     bReturn = true;
@@ -1279,18 +1276,6 @@ std::string CPVRClients::GetCurrentInputFormat(void) const
   return strReturn;
 }
 
-PVR_STREAM_PROPERTIES CPVRClients::GetCurrentStreamProperties(void)
-{
-  PVR_STREAM_PROPERTIES props;
-  PVR_CLIENT client;
-  
-  memset(&props, 0, sizeof(props));
-  if (GetPlayingClient(client))
-    client->GetStreamProperties(&props);
-
-  return props;
-}
-
 bool CPVRClients::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
@@ -1333,6 +1318,19 @@ bool CPVRClients::IsEncrypted(void) const
   return false;
 }
 
+std::string CPVRClients::GetBackendHostnameByClientId(int iClientId) const
+{
+  PVR_CLIENT client;
+  std::string name;
+
+  if (GetConnectedClient(iClientId, client))
+  {
+    name = client->GetBackendHostname();
+  }
+
+  return name;
+}
+
 time_t CPVRClients::GetPlayingTime() const
 {
   PVR_CLIENT client;
@@ -1371,3 +1369,4 @@ time_t CPVRClients::GetBufferTimeEnd() const
 
   return time;
 }
+

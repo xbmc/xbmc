@@ -911,7 +911,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   }
 
   int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  bool ismp3 = m_pFormatContext->iformat && (strcmp(m_pFormatContext->iformat->name, "mp3") == 0);
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3)
     seek_pts += m_pFormatContext->start_time;
 
   int ret;
@@ -1709,7 +1710,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
         if (content.compare(pos, 9, "channels=", 9) == 0)
         {
           pos += 9; // move position to char after 'channels='
-          int len = content.find(';', pos);
+          size_t len = content.find(';', pos);
           if (len != std::string::npos)
             len -= pos;
           std::string no_channels(content, pos, len);
@@ -1727,7 +1728,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
         else if (content.compare(pos, 5, "rate=", 5) == 0)
         {
           pos += 5; // move position to char after 'rate='
-          int len = content.find(';', pos);
+          size_t len = content.find(';', pos);
           if (len != std::string::npos)
             len -= pos;
           std::string rate(content, pos, len);

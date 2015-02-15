@@ -289,6 +289,7 @@ GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 CHECK_DIRS = xbmc/addons/test \
              xbmc/filesystem/test \
              xbmc/music/tags/test \
+             xbmc/network/test \
              xbmc/utils/test \
              xbmc/video/test \
              xbmc/threads/test \
@@ -298,6 +299,7 @@ CHECK_DIRS = xbmc/addons/test \
 CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/filesystem/test/filesystemTest.a \
              xbmc/music/tags/test/tagsTest.a \
+             xbmc/network/test/networkTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/video/test/videoTest.a \
              xbmc/threads/test/threadTest.a \
@@ -437,7 +439,7 @@ ifeq (@USE_ASAP_CODEC@,1)
   endif
 endif
 	$(MAKE) -C lib/stsound/StSoundLibrary
-ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@),$(findstring freebsd,@ARCH@)),)
+ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@),$(findstring freebsd,@ARCH@),$(findstring mips,@ARCH@)),)
 	$(MAKE) -C lib/snesapu/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -599,7 +601,6 @@ install-scripts:
 	@cd $(DESTDIR)$(bindir); [ -L xbmc-standalone ] || [ -f xbmc-standalone ] ||  ln -s @APP_NAME_LC@-standalone xbmc-standalone
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(datarootdir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
-	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/FEH.py
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
 	@install -m 0644 tools/Linux/@APP_NAME_LC@-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || [ -f xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
@@ -717,14 +718,14 @@ testframework: $(GTEST_LIBS)
 $(GTEST_LIBS): $(GTEST_DIR)/Makefile
 
 $(GTEST_DIR)/Makefile: force
-	$(MAKE) -C $(GTEST_DIR)
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -DGTEST_USE_OWN_TR1_TUPLE=1" -C $(GTEST_DIR)
 
 $(CHECK_LIBS): force
-	@$(MAKE) $(if $(V),,-s) -C $(@D)
+	@$(MAKE) CXXFLAGS="$(CXXFLAGS) -DGTEST_USE_OWN_TR1_TUPLE=1" $(if $(V),,-s) -C $(@D)
 
 @APP_NAME_LC@-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
 else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) $(CHECK_LIBADD) -rdynamic
 endif

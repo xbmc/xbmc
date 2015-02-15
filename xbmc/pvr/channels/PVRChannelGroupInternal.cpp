@@ -270,23 +270,6 @@ bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel &channel) const
   return !channel.IsHidden();
 }
 
-bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
-{
-  CSingleLock lock(m_critSection);
-  CPVRChannelPtr updateChannel = GetByUniqueID(channel.UniqueID());
-
-  if (!updateChannel)
-  {
-    updateChannel = CPVRChannelPtr(new CPVRChannel(channel.IsRadio()));
-    PVRChannelGroupMember newMember = { updateChannel, 0 };
-    m_members.push_back(newMember);
-    updateChannel->SetUniqueID(channel.UniqueID());
-  }
-  updateChannel->UpdateFromClient(channel);
-
-  return updateChannel->Persist(!m_bLoaded);
-}
-
 bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);

@@ -19,6 +19,45 @@
  */
 
 #include "IHTTPRequestHandler.h"
+#include "network/WebServer.h"
+
+IHTTPRequestHandler::IHTTPRequestHandler()
+  : m_request(),
+    m_response(),
+    m_postFields(),
+    m_ranged(false)
+{ }
+
+IHTTPRequestHandler::IHTTPRequestHandler(const HTTPRequest &request)
+  : m_request(request),
+    m_response(),
+    m_postFields(),
+    m_ranged(false)
+{
+  m_response.type = HTTPError;
+  m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
+  m_response.totalLength = 0;
+}
+
+bool IHTTPRequestHandler::HasResponseHeader(const std::string &field) const
+{
+  if (field.empty())
+    return false;
+
+  return m_response.headers.find(field) != m_response.headers.end();
+}
+
+bool IHTTPRequestHandler::AddResponseHeader(const std::string &field, const std::string &value, bool allowMultiple /* = false */)
+{
+  if (field.empty() || value.empty())
+    return false;
+
+  if (!allowMultiple && HasResponseHeader(field))
+    return false;
+
+  m_response.headers.insert(std::make_pair(field, value));
+  return true;
+}
 
 void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string &value)
 {
@@ -42,4 +81,16 @@ bool IHTTPRequestHandler::AddPostData(const char *data, unsigned int size)
     return appendPostData(data, size);
   
   return true;
+}
+
+bool IHTTPRequestHandler::GetRequestedRanges(uint64_t totalLength)
+{
+  if (!m_ranged || m_request.webserver == NULL || m_request.connection == NULL)
+    return false;
+
+  m_request.ranges.Clear();
+  if (totalLength == 0)
+    return true;
+
+  return m_request.webserver->GetRequestedRanges(m_request.connection, totalLength, m_request.ranges);
 }

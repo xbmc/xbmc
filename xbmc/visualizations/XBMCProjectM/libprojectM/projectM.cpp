@@ -278,7 +278,7 @@ DLLEXPORT void projectM::renderFrame()
 		if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
 		{
                         CSectionLock lock(&mutex);
-			m_activePreset = m_activePreset2;			
+			m_activePreset = std::move(m_activePreset2);			
 			switchPreset(m_activePreset2, presetInputs2, presetOutputs2);
 			timeKeeper->EndSmoothing();
 		}
@@ -800,7 +800,7 @@ void projectM::selectPreset ( unsigned int index )
 	timeKeeper->StartPreset();
 }
 
-void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs) {
+void projectM::switchPreset(std::unique_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs) {
 
 	if (_settings.shuffleEnabled)
 		*m_presetPos = m_presetChooser->weightedRandom();

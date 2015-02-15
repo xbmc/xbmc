@@ -111,6 +111,7 @@ namespace INFO
 #define PLAYER_TITLE                 53
 #define PLAYER_ISINTERNETSTREAM      54
 #define PLAYER_FILENAME              55
+#define PLAYER_SEEKSTEPSIZE          56
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -217,6 +218,7 @@ namespace INFO
 #define MUSICPLAYER_CHANNEL_GROUP   231
 #define MUSICPLAYER_SUB_CHANNEL_NUMBER 232
 #define MUSICPLAYER_CHANNEL_NUMBER_LBL 233
+#define MUSICPLAYER_CONTENT         234
 
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -672,7 +674,11 @@ namespace INFO
 
 // forward
 class CGUIWindow;
-namespace EPG { class CEpgInfoTag; }
+namespace EPG
+{
+  class CEpgInfoTag;
+  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
+}
 
 // Info Flags
 // Stored in the top 8 bits of GUIInfo::m_data1
@@ -796,6 +802,7 @@ public:
 
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
+  void SetSeekStepSize(int seekStepSize) { m_seekStepSize = seekStepSize; };
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
@@ -899,10 +906,9 @@ protected:
 
   /*!
    * @brief Get the EPG tag that is currently active
-   * @param tag The active tag
-   * @return True if an EPG tag is active and 'tag' was updated, false otherwise
+   * @return the currently active tag or NULL if no active tag was found
    */
-  bool GetEpgInfoTag(EPG::CEpgInfoTag& tag) const;
+  EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
 
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
@@ -927,6 +933,7 @@ protected:
   //Fullscreen OSD Stuff
   unsigned int m_AfterSeekTimeout;
   int m_seekOffset;
+  int m_seekStepSize;
   bool m_playerSeeking;
   bool m_playerShowTime;
   bool m_playerShowCodec;

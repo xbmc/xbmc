@@ -42,14 +42,20 @@ function(add_addon_depends addon searchpath)
         endif()
 
         set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
-                       -DOUTPUT_DIR=${DEPENDS_PATH}
+                       -DOUTPUT_DIR=${OUTPUT_DIR}
                        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
-                       -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
-                       -DARCH_DEFINES=${ARCH_DEFINES}
+                       -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
+        # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
+        # TODO: figure out if we should use -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${ARCH_DEFINES}" and why it doesn't work
+        # TODO: figure out why this doesn't work for OSX32 and IOS/ATV2
+        if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX AND NOT APPLE)
+          list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${ARCH_DEFINES}
+                                 -DCMAKE_CXX_FLAGS=${ARCH_DEFINES})
+        endif()
 
         if(CMAKE_TOOLCHAIN_FILE)
           list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
@@ -82,7 +88,7 @@ function(add_addon_depends addon searchpath)
           set(INSTALL_COMMAND INSTALL_COMMAND ${CMAKE_COMMAND}
                                               -DINPUTDIR=${BUILD_DIR}/${id}/src/${id}-build/
                                               -DINPUTFILE=${dir}/install.txt
-                                              -DDESTDIR=${DEPENDS_PATH}
+                                              -DDESTDIR=${OUTPUT_DIR}
                                               -DENABLE_STATIC=1
                                               "${extraflags}"
                                               -P ${PROJECT_SOURCE_DIR}/install.cmake)
@@ -100,26 +106,39 @@ function(add_addon_depends addon searchpath)
           set(deps)
         endif()
 
+        if(CROSS_AUTOCONF)
+          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
+          foreach(afile ${AUTOCONF_FILES})
+            file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+                 "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
+                 file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
+          endforeach()
+        endif()
+
         # prepare the setup of the call to externalproject_add()
         set(EXTERNALPROJECT_SETUP PREFIX ${BUILD_DIR}/${id}
                                   CMAKE_ARGS ${extraflags} ${BUILD_ARGS}
                                   PATCH_COMMAND ${PATCH_COMMAND}
-                                  ${INSTALL_COMMAND})
+                                  "${INSTALL_COMMAND}")
 
         # if there's an url defined we need to pass that to externalproject_add()
         if(DEFINED url AND NOT "${url}" STREQUAL "")
+          # check if there's a third parameter in the file
           if(deflength GREATER 2)
+            # the third parameter is considered as a revision of a git repository
             list(GET def 2 revision)
+
             externalproject_add(${id}
                                 GIT_REPOSITORY ${url}
                                 GIT_TAG ${revision}
-                                ${EXTERNALPROJECT_SETUP})
+                                "${EXTERNALPROJECT_SETUP}")
           else()
             if(WIN32)
               set(CONFIGURE_COMMAND "")
             else()
+              # manually specify the configure command to be able to pass in the custom PKG_CONFIG_PATH
               set(CONFIGURE_COMMAND PKG_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
-                                    ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags}
+                                    ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags} ${BUILD_ARGS}
                                     ${BUILD_DIR}/${id}/src/${id}
                                     -DPACKAGE_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
                                     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
@@ -134,13 +153,14 @@ function(add_addon_depends addon searchpath)
                                 URL ${url}
                                 DOWNLOAD_DIR ${BUILD_DIR}/download
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
-                                ${EXTERNALPROJECT_SETUP})
+                                "${EXTERNALPROJECT_SETUP}")
           endif()
         else()
           externalproject_add(${id}
                               SOURCE_DIR ${dir}
-                              ${EXTERNALPROJECT_SETUP})
+                              "${EXTERNALPROJECT_SETUP}")
         endif()
+
         if(deps)
           add_dependencies(${id} ${deps})
         endif()

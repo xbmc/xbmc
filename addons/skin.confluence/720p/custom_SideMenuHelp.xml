@@ -37,9 +37,9 @@
 		</control>
 		<control type="textbox">
 			<left>240</left>
-			<top>240</top>
+			<top>242</top>
 			<width>680</width>
-			<height>250</height>
+			<height>248</height>
 			<font>font14</font>
 			<textcolor>white</textcolor>
 			<align>left</align>

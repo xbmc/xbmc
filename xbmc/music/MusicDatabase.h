@@ -263,6 +263,12 @@ public:
   int GetArtistByName(const std::string& strArtist);
 
   /////////////////////////////////////////////////
+  // Cuesheets
+  /////////////////////////////////////////////////
+  void SaveCuesheet(const std::string& fullSongPath, const std::string& strCuesheet);
+  std::string LoadCuesheet(const std::string& fullSongPath);
+
+  /////////////////////////////////////////////////
   // Paths
   /////////////////////////////////////////////////
   int AddPath(const std::string& strPath);
@@ -465,6 +471,8 @@ protected:
   std::map<std::string, int> m_pathCache;
   std::map<std::string, int> m_thumbCache;
   std::map<std::string, CAlbum> m_albumCache;
+  typedef std::map<std::string, std::string> CueCache;
+  CueCache m_cueCache;
 
   virtual void CreateTables();
   virtual void CreateAnalytics();

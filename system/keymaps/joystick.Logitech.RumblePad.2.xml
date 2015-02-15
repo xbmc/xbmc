@@ -73,8 +73,8 @@
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
-      <hat    id="1" position="left">PreviousChannelGroup</hat>
-      <hat    id="1" position="right">NextChannelGroup</hat>
+      <hat    id="1" position="left">StepBack</hat>
+      <hat    id="1" position="right">StepForward</hat>
       <hat    id="1" position="up">ChannelUp</hat>
       <hat    id="1" position="down">ChannelDown</hat>
     </joystick>
@@ -84,8 +84,8 @@
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
       <altname>Logitech RumblePad 2 USB</altname>
-      <hat    id="1" position="left">PreviousChannelGroup</hat>
-      <hat    id="1" position="right">NextChannelGroup</hat>
+      <hat    id="1" position="left">StepBack</hat>
+      <hat    id="1" position="right">StepForward</hat>
       <hat    id="1" position="up">ChannelUp</hat>
       <hat    id="1" position="down">ChannelDown</hat>
     </joystick>
@@ -102,10 +102,10 @@
       <button id="6">FastForward</button>
       <button id="10">OSD</button>
 
-      <hat    id="1" position="left">SkipPrevious</hat>
-      <hat    id="1" position="right">SkipNext</hat>
-      <hat    id="1" position="up">NextPreset</hat>
-      <hat    id="1" position="left">PreviousPreset</hat>
+      <hat    id="1" position="left">StepBack</hat>
+      <hat    id="1" position="right">StepForward</hat>
+      <hat    id="1" position="up">SkipNext</hat>
+      <hat    id="1" position="down">SkipPrevious</hat>
     </joystick>
   </Visualisation>
 

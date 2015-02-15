@@ -36,7 +36,6 @@
 			<aligny>center</aligny>
 			<textcolor>selected</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!pvr.IsPlayingRadio</visible>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
@@ -96,9 +95,9 @@
 		<control type="textbox">
 			<description>Search help</description>
 			<left>30</left>
-			<top>155</top>
+			<top>157</top>
 			<width>800</width>
-			<height>70</height>
+			<height>68</height>
 			<align>left</align>
 			<font>font12</font>
 			<textcolor>grey2</textcolor>

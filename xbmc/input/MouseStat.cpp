@@ -185,6 +185,21 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
           break;
       }
     }
+    else if (bHold[MOUSE_RIGHT_BUTTON] != 0)
+    {
+      switch (bHold[MOUSE_RIGHT_BUTTON])
+      {
+      case CButtonState::MB_DRAG:
+        m_Key = KEY_MOUSE_RDRAG;
+        break;
+      case CButtonState::MB_DRAG_START:
+        m_Key = KEY_MOUSE_RDRAG_START;
+        break;
+      case CButtonState::MB_DRAG_END:
+        m_Key = KEY_MOUSE_RDRAG_END;
+        break;
+      }
+    }
 
     // dz is +1 on wheel up and -1 on wheel down
     else if (m_mouseState.dz > 0)

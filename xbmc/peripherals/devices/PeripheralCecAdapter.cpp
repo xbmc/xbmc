@@ -628,9 +628,9 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          CApplicationMessenger::Get().Suspend();
+          g_application.ExecuteXBMCAction("Suspend");
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
-          CApplicationMessenger::Get().Shutdown();
+          g_application.ExecuteXBMCAction("Shutdown");
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:
@@ -1158,7 +1158,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
     bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
     CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
     bool bPlayingAndDeactivated = activated == 0 && (
-        (pSlideShow && pSlideShow->IsPlaying()) || g_application.m_pPlayer->IsPlaying());
+        (pSlideShow && pSlideShow->IsPlaying()) || !g_application.m_pPlayer->IsPausedPlayback());
     bool bPausedAndActivated = activated == 1 && adapter->m_bPlaybackPaused && (
         (pSlideShow && pSlideShow->IsPaused()) || g_application.m_pPlayer->IsPausedPlayback());
     if (bPlayingAndDeactivated)

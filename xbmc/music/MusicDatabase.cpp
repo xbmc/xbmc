@@ -178,6 +178,9 @@ void CMusicDatabase::CreateTables()
   CLog::Log(LOGINFO, "create art table");
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
 
+  CLog::Log(LOGINFO, "create cue table");
+  m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
+
   // Add 'Karaoke' genre
   AddGenre( "Karaoke" );
 }
@@ -226,6 +229,8 @@ void CMusicDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
+  m_pDS->exec("CREATE UNIQUE INDEX idxCue ON cue(idPath, strFileName(255))");
+
   CLog::Log(LOGINFO, "create triggers");
   m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
               "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
@@ -245,6 +250,9 @@ void CMusicDatabase::CreateAnalytics()
               "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
               "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
               "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
+              " END");
+  m_pDS->exec("CREATE TRIGGER tgrDeletePath AFTER delete ON path FOR EACH ROW BEGIN"
+              "  DELETE FROM cue WHERE cue.idPath = old.idPath;"
               " END");
 
   // we create views last to ensure all indexes are rolled in
@@ -367,6 +375,105 @@ std::string GetArtistString(const VECARTISTCREDITS &credits)
   return artistString;
 }
 
+void CMusicDatabase::SaveCuesheet(const std::string& fullSongPath, const std::string& strCuesheet)
+{
+  std::string strPath, strFileName;
+  URIUtils::Split(fullSongPath, strPath, strFileName);
+  
+  int idPath = AddPath(strPath);
+
+  if (idPath == -1)
+    return;
+
+  std::string strSQL;
+  try
+  {
+    CueCache::const_iterator it;
+
+    it = m_cueCache.find(fullSongPath);
+    if (it != m_cueCache.end() && it->second == strCuesheet)
+      return;
+
+    if (NULL == m_pDB.get())
+      return;
+
+    if (NULL == m_pDS.get())
+      return;
+
+    strSQL = PrepareSQL("SELECT * FROM cue WHERE idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+    {
+      if (strCuesheet.empty())
+      {
+        m_pDS->close();
+        m_cueCache.insert(CueCache::value_type(fullSongPath, strCuesheet));
+        return;
+      }
+      strSQL = PrepareSQL("INSERT INTO cue (idPath, strFileName, strCuesheet) VALUES(%i, '%s', '%s')",
+        idPath, strFileName.c_str(), strCuesheet.c_str());
+    }
+    else
+    {
+      if (strCuesheet.empty())
+      {
+        strSQL = PrepareSQL("DELETE FROM cue SET WHERE idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
+      }
+      else
+      {
+        strSQL = PrepareSQL("UPDATE cue SET strCuesheet='%s') WHERE idPath=%i AND strFileName='%s'",
+          strCuesheet.c_str(), idPath, strFileName.c_str());
+      }
+    }
+    m_pDS->close();
+    m_pDS->exec(strSQL.c_str());
+    m_cueCache.insert(CueCache::value_type(fullSongPath, strCuesheet));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "musicdatabase:unable to addcue (%s)", strSQL.c_str());
+  }
+}
+
+std::string CMusicDatabase::LoadCuesheet(const std::string& fullSongPath)
+{
+  CueCache::const_iterator it;
+  it = m_cueCache.find(fullSongPath);
+  if (it != m_cueCache.end())
+    return it->second;
+
+  std::string strCuesheet;
+
+  std::string strPath, strFileName;
+  URIUtils::Split(fullSongPath, strPath, strFileName);
+
+  int idPath = AddPath(strPath);
+  if (idPath == -1)
+    return strCuesheet;
+
+  std::string strSQL;
+  try
+  {
+    if (NULL == m_pDB.get())
+      return strCuesheet;
+
+    if (NULL == m_pDS.get())
+      return strCuesheet;
+
+    strSQL = PrepareSQL("select strCuesheet from cue where idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
+    m_pDS->query(strSQL.c_str());
+
+    if (0 < m_pDS->num_rows())
+      strCuesheet = m_pDS->get_sql_record()->at(0).get_asString();
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "musicdatabase:unable to loadcue (%s)", strSQL.c_str());
+  }
+  return strCuesheet;
+}
+
 bool CMusicDatabase::AddAlbum(CAlbum& album)
 {
   BeginTransaction();
@@ -404,6 +511,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
                            song->lastPlayed,
                            song->rating,
                            song->iKaraokeNumber);
+
     for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
     {
       artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
@@ -415,6 +523,8 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
                     artistCredit == song->artistCredits.begin() ? false : true,
                     std::distance(song->artistCredits.begin(), artistCredit));
     }
+
+    SaveCuesheet(song->strFileName, song->strCueSheet);
   }
   for (VECSONGS::const_iterator infoSong = album.infoSongs.begin(); infoSong != album.infoSongs.end(); ++infoSong)
     AddAlbumInfoSong(album.idAlbum, *infoSong);
@@ -488,6 +598,8 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
                     artistCredit == song->artistCredits.begin() ? false : true,
                     std::distance(song->artistCredits.begin(), artistCredit));
     }
+
+    SaveCuesheet(song->strFileName, song->strCueSheet);
   }
   for (VECSONGS::const_iterator infoSong = album.infoSongs.begin(); infoSong != album.infoSongs.end(); ++infoSong)
     AddAlbumInfoSong(album.idAlbum, *infoSong);
@@ -2796,7 +2908,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 
     std::string strSelectedAlbum = pDlg->GetSelectedLabelText();
     map<ULONG, std::string>::iterator it;
-    for (it = mapCDDBIds.begin();it != mapCDDBIds.end();it++)
+    for (it = mapCDDBIds.begin();it != mapCDDBIds.end();++it)
     {
       if (it->second == strSelectedAlbum)
       {
@@ -3225,7 +3337,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir, const Filt
     // get data from returned rows
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3389,7 +3501,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     // get data from returned rows
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3490,7 +3602,7 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
     items.Reserve(results.size());
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
     int count = 0;
-    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
@@ -3819,7 +3931,7 @@ void CMusicDatabase::UpdateTables(int version)
       }
       m_pDS->close();
 
-      for (vector<string>::const_iterator it = contentPaths.begin(); it != contentPaths.end(); it++)
+      for (vector<string>::const_iterator it = contentPaths.begin(); it != contentPaths.end(); ++it)
       {
         std::string originalPath = *it;
         std::string path = CLegacyPathTranslation::TranslateMusicDbPath(originalPath);
@@ -3921,11 +4033,15 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("UPDATE karaokedata SET strKaraLyrFileCRC=NULL");
     m_pDS->exec("UPDATE album SET idThumb=NULL");
   }
+  if (version < 49)
+  {
+    m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 48;
+  return 49;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -4579,7 +4695,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr addon;
         if (!scraperUUID.empty() && ADDON::CAddonMgr::Get().GetAddon(scraperUUID, addon) && addon)
         {
-          info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
           if (!info)
             return false;
           // store this path's settings
@@ -4591,7 +4707,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get().GetDefault(type, defaultScraper))
         {
-          info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
         }
       }
     }
@@ -4602,7 +4718,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       ADDON::AddonPtr addon;
       if(ADDON::CAddonMgr::Get().GetDefault(type, addon))
       {
-        info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+        info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
         return info != NULL;
       }
       else

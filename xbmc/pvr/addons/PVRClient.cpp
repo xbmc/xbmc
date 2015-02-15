@@ -132,17 +132,17 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName        = DEFAULT_INFO_STRING_VALUE;
+  m_strBackendHostname.clear();
   m_bIsPlayingTV          = false;
   m_bIsPlayingRecording   = false;
   memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
-  ResetQualityData(m_qualityInfo);
   m_apiVersion = AddonVersion("0.0.0");
 }
 
 ADDON_STATUS CPVRClient::Create(int iClientId)
 {
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-  if (iClientId <= PVR_INVALID_CLIENT_ID || iClientId == PVR_VIRTUAL_CLIENT_ID)
+  if (iClientId <= PVR_INVALID_CLIENT_ID)
     return status;
 
   /* ensure that a previous instance is destroyed */
@@ -353,7 +353,7 @@ bool CPVRClient::CheckAPIVersion(void)
 
 bool CPVRClient::GetAddonProperties(void)
 {
-  std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion;
+  std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
   PVR_ADDON_CAPABILITIES addonCapabilities;
 
   /* get the capabilities */
@@ -384,12 +384,17 @@ bool CPVRClient::GetAddonProperties(void)
   try { strBackendVersion = m_pStruct->GetBackendVersion(); }
   catch (std::exception &e) { LogException(e, "GetBackendVersion()"); return false;  }
 
+  /* backend hostname */
+  try { strBackendHostname = m_pStruct->GetBackendHostname(); }
+  catch (std::exception &e) { LogException(e, "GetBackendHostname()"); return false; }
+
   /* update the members */
   m_strBackendName      = strBackendName;
   m_strConnectionString = strConnectionString;
   m_strFriendlyName     = strFriendlyName;
   m_strBackendVersion   = strBackendVersion;
   m_addonCapabilities   = addonCapabilities;
+  m_strBackendHostname  = strBackendHostname;
 
   return true;
 }
@@ -408,6 +413,11 @@ const std::string& CPVRClient::GetBackendName(void) const
 const std::string& CPVRClient::GetBackendVersion(void) const
 {
   return m_strBackendVersion;
+}
+
+const std::string& CPVRClient::GetBackendHostname(void) const
+{
+  return m_strBackendHostname;
 }
 
 const std::string& CPVRClient::GetConnectionString(void) const
@@ -1079,7 +1089,6 @@ bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
   {
     CPVRChannelPtr currentChannel = g_PVRChannelGroups->GetByUniqueID(channel.UniqueID(), channel.ClientID());
     CSingleLock lock(m_critSection);
-    ResetQualityData(m_qualityInfo);
     m_playingChannel = currentChannel;
   }
 
@@ -1356,15 +1365,13 @@ bool CPVRClient::GetPlayingChannel(CPVRChannelPtr &channel) const
   return false;
 }
 
-bool CPVRClient::GetPlayingRecording(CPVRRecording &recording) const
+CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   if (m_bReadyToUse && m_bIsPlayingRecording)
-  {
-    recording = m_playingRecording;
-    return true;
-  }
-  return false;
+    return m_playingRecording;
+
+  return CPVRRecordingPtr();
 }
 
 bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel)
@@ -1417,7 +1424,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   return bReturn;
 }
 
-bool CPVRClient::OpenStream(const CPVRRecording &recording)
+bool CPVRClient::OpenStream(const CPVRRecordingPtr &recording)
 {
   bool bReturn(false);
   CloseStream();
@@ -1425,7 +1432,7 @@ bool CPVRClient::OpenStream(const CPVRRecording &recording)
   if (m_bReadyToUse && m_addonCapabilities.bSupportsRecordings)
   {
     PVR_RECORDING tag;
-    WriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(*recording, tag);
 
     try
     {
@@ -1510,51 +1517,6 @@ bool CPVRClient::CanSeekStream(void) const
     catch (std::exception &e) { LogException(e, __FUNCTION__); }
   }
   return bReturn;
-}
-
-void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
-{
-  memset(&qualityInfo, 0, sizeof(qualityInfo));
-  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
-  {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-  }
-  else
-  {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-  }
-}
-
-void CPVRClient::GetQualityData(PVR_SIGNAL_STATUS *status) const
-{
-  CSingleLock lock(m_critSection);
-  *status = m_qualityInfo;
-}
-
-int CPVRClient::GetSignalLevel(void) const
-{
-  CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
-}
-
-int CPVRClient::GetSNR(void) const
-{
-  CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.iSNR / 0xFFFF * 100);
-}
-
-void CPVRClient::UpdateCharInfoSignalStatus(void)
-{
-  PVR_SIGNAL_STATUS qualityInfo;
-  ResetQualityData(qualityInfo);
-
-  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
-    SignalQuality(qualityInfo);
-
-  CSingleLock lock(m_critSection);
-  m_qualityInfo = qualityInfo;
 }
 
 time_t CPVRClient::GetPlayingTime(void) const

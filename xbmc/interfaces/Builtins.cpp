@@ -96,6 +96,7 @@
 #include <vector>
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "powermanagement/PowerManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -240,6 +241,39 @@ bool CBuiltins::HasCommand(const std::string& execString)
   {
     if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
       return true;
+  }
+  return false;
+}
+
+bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
+{
+  std::string execute;
+  vector<string> params;
+  CUtil::SplitExecFunction(execString, execute, params);
+  StringUtils::ToLower(execute);
+
+  // Check if action is resulting in system powerdown.
+  if (execute == "reboot"    ||
+      execute == "restart"   ||
+      execute == "reset"     ||
+      execute == "powerdown" ||
+      execute == "hibernate" ||
+      execute == "suspend" )
+  {
+    return true;
+  }
+  else if (execute == "shutdown")
+  {
+    switch (CSettings::Get().GetInt("powermanagement.shutdownstate"))
+    {
+      case POWERSTATE_SHUTDOWN:
+      case POWERSTATE_SUSPEND:
+      case POWERSTATE_HIBERNATE:
+        return true;
+
+      default:
+        return false;
+    }
   }
   return false;
 }
@@ -590,7 +624,7 @@ int CBuiltins::Execute(const std::string& execString)
       AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_PLUGIN))
       {
-        PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
+        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         std::string addonid = params[0];
         std::string urlParameters;
         vector<string> parameters;
@@ -727,7 +761,7 @@ int CBuiltins::Execute(const std::string& execString)
           break;
       }
 
-      auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
+      unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
       if (state.get())
         items.Sort(state->GetSortMethod());
       else
@@ -1285,6 +1319,19 @@ int CBuiltins::Execute(const std::string& execString)
     }
     else if (execute == "skin.setimage")
     {
+      if (params.size() > 2)
+      {
+        value = params[2];
+        URIUtils::AddSlashAtEnd(value);
+        bool bIsSource;
+        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        {
+          CMediaSource share;
+          share.strName = g_localizeStrings.Get(13278);
+          share.strPath = value;
+          localShares.push_back(share);
+        }
+      }
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
         CSkinSettings::Get().SetString(string, value);
     }

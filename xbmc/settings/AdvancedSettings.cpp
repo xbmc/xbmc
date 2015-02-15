@@ -115,6 +115,8 @@ void CAdvancedSettings::Initialize()
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
 
+  m_seekSteps = { 7, 15, 30, 60, 180, 300, 600, 900, 1800 };
+
   m_omxHWAudioDecode = false;
   m_omxDecodeStartWithValidFrame = false;
 
@@ -131,9 +133,6 @@ void CAdvancedSettings::Initialize()
 
   m_videoSubsDelayRange = 60;
   m_videoAudioDelayRange = 10;
-  m_videoSmallStepBackSeconds = 7;
-  m_videoSmallStepBackTries = 3;
-  m_videoSmallStepBackDelay = 300;
   m_videoUseTimeSeeking = true;
   m_videoTimeSeekForward = 30;
   m_videoTimeSeekBackward = -30;
@@ -143,6 +142,7 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
+
   m_videoBlackBarColour = 0;
   m_videoPPFFmpegDeint = "linblenddeint";
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
@@ -550,10 +550,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
     XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
     XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
-
-    XMLUtils::GetInt(pElement, "smallstepbackseconds", m_videoSmallStepBackSeconds, 1, INT_MAX);
-    XMLUtils::GetInt(pElement, "smallstepbacktries", m_videoSmallStepBackTries, 1, 10);
-    XMLUtils::GetInt(pElement, "smallstepbackdelay", m_videoSmallStepBackDelay, 100, 5000); //MS
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_videoUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_videoTimeSeekForward, 0, 6000);
@@ -1176,6 +1172,16 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
+  }
+
+  std::string seekSteps;
+  XMLUtils::GetString(pRootElement, "seeksteps", seekSteps);
+  if (!seekSteps.empty())
+  {
+    m_seekSteps.clear();
+    std::vector<string> steps = StringUtils::Split(seekSteps, ',');
+    for(std::vector<string>::iterator it = steps.begin(); it != steps.end(); ++it)
+      m_seekSteps.push_back(atoi((*it).c_str()));
   }
 
   // load in the settings overrides

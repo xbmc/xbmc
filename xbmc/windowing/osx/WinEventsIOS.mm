@@ -21,6 +21,7 @@
 #include "system.h"
 #include <list>
 #include "WinEventsIOS.h"
+#include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
 #include "input/SDLJoystick.h"
 #include "Application.h"
@@ -70,7 +71,7 @@ bool CWinEventsIOS::MessagePump()
       unsigned int holdTime = pumpEvent.jbutton.holdTime;
 
       CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
-      ret |= g_application.ProcessJoystickEvent(joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
+      ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(), joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
     }
     else
       ret |= g_application.OnEvent(pumpEvent);

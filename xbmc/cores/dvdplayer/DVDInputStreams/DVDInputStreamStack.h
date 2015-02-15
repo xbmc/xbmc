@@ -21,7 +21,7 @@
  */
 
 #include "DVDInputStream.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class CDVDInputStreamStack : public CDVDInputStream
 {
@@ -39,7 +39,7 @@ public:
 
 protected:
 
-  typedef boost::shared_ptr<XFILE::CFile> TFile;
+  typedef std::shared_ptr<XFILE::CFile> TFile;
 
   struct TSeg
   {

@@ -7,8 +7,8 @@ DEPS= ../../Makefile.include FFMPEG-VERSION Makefile
 APPLY_PATCHES=no
 
 # configuration settings
-ffmpg_config = --prefix=$(PREFIX) --extra-version="xbmc-$(VERSION)"
-ffmpg_config += --cc=$(CC) --cxx=$(CXX)
+ffmpg_config = --prefix=$(PREFIX) --extra-version="kodi-$(VERSION)"
+ffmpg_config += --cc=$(CC) --cxx=$(CXX) --ar=$(AR) --ranlib=$(RANLIB)
 ffmpg_config += --disable-devices --disable-doc
 ffmpg_config += --disable-ffplay --disable-ffmpeg --disable-sdl
 ffmpg_config += --disable-ffprobe --disable-ffserver
@@ -48,6 +48,9 @@ ifeq ($(OS), osx)
 endif
 ifeq ($(findstring arm, $(CPU)), arm)
   ffmpg_config += --enable-pic --disable-armv5te --disable-armv6t2
+endif
+ifeq ($(findstring mips, $(CPU)), mips)
+  ffmpg_config += --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2
 endif
 ifeq ($(Configuration), Release)
   ffmpg_config += --disable-debug

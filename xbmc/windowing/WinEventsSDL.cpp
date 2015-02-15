@@ -32,6 +32,7 @@
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
+#include "input/InputManager.h"
 #include "input/MouseStat.h"
 #include "WindowingFactory.h"
 #if defined(TARGET_DARWIN)
@@ -237,7 +238,7 @@ bool CWinEventsSDL::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        g_Joystick.Update(event);
+        CInputManager::GetInstance().UpdateJoystick(event);
         ret = true;
         break;
 #endif

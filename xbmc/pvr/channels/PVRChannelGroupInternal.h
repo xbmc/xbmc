@@ -55,13 +55,6 @@ namespace PVR
     int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
     /*!
-     * @brief Add or update a channel in this table.
-     * @param channel The channel to update.
-     * @return True if the channel was updated and persisted.
-     */
-    bool UpdateChannel(const CPVRChannel &channel);
-
-    /*!
      * @brief Add a channel to this internal group.
      * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
      */

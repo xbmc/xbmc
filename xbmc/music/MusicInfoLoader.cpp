@@ -111,7 +111,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 
   // we load up the actual tag for this file
-  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
+  unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
   if (NULL != pLoader.get())
   {
     CMusicInfoTag tag;
@@ -177,6 +177,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       if (it != m_songsMap.end())
       {  // Have we loaded this item from database before
         pItem->GetMusicInfoTag()->SetSong(it->second);
+        pItem->GetMusicInfoTag()->SetCueSheet(m_musicDatabase.LoadCuesheet(it->second.strFileName));
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }
@@ -196,7 +197,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser
-        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
+        unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
         if (NULL != pLoader.get())
           // get tag
           pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());

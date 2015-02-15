@@ -39,8 +39,7 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVRGUIInfo"),
-    m_playingEpgTag(NULL)
+    CThread("PVRGUIInfo")
 {
   ResetProperties();
 }
@@ -860,56 +859,50 @@ int CPVRGUIInfo::GetStartTime(void) const
 void CPVRGUIInfo::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
-  SAFE_DELETE(m_playingEpgTag);
+  m_playingEpgTag.reset();
   m_iDuration = 0;
 }
 
-bool CPVRGUIInfo::GetPlayingTag(CEpgInfoTag &tag) const
+CEpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
 {
-  bool bReturn(false);
-
   CSingleLock lock(m_critSection);
-  if (m_playingEpgTag)
-  {
-    tag = *m_playingEpgTag;
-    bReturn = true;
-  }
-
-  return bReturn;
+  return m_playingEpgTag;
 }
 
 void CPVRGUIInfo::UpdatePlayingTag(void)
 {
   CPVRChannelPtr currentChannel;
-  CPVRRecording recording;
   if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
-    CEpgInfoTag epgTag;
-    bool bHasEpgTag  = GetPlayingTag(epgTag);
+    CEpgInfoTagPtr epgTag(GetPlayingTag());
     CPVRChannelPtr channel;
-    if (bHasEpgTag)
-      channel = epgTag.ChannelTag();
+    if (epgTag)
+      channel = epgTag->ChannelTag();
 
-    if (!bHasEpgTag || !epgTag.IsActive() ||
+    if (!epgTag || !epgTag->IsActive() ||
         !channel || *channel != *currentChannel)
     {
-      CEpgInfoTag newTag;
       {
         CSingleLock lock(m_critSection);
         ResetPlayingTag();
-        if (currentChannel->GetEPGNow(newTag))
+        CEpgInfoTagPtr newTag(currentChannel->GetEPGNow());
+        if (newTag)
         {
-          m_playingEpgTag = new CEpgInfoTag(newTag);
+          m_playingEpgTag = newTag;
           m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
         }
       }
       g_PVRManager.UpdateCurrentFile();
     }
   }
-  else if (g_PVRClients->GetPlayingRecording(recording))
+  else
   {
-    ResetPlayingTag();
-    m_iDuration = recording.GetDuration() * 1000;
+    CPVRRecordingPtr recording(g_PVRClients->GetPlayingRecording());
+    if (recording)
+    {
+      ResetPlayingTag();
+      m_iDuration = recording->GetDuration() * 1000;
+    }
   }
 }
 

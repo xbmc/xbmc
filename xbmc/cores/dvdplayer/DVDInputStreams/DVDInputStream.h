@@ -57,7 +57,7 @@ namespace XFILE
 namespace PVR
 {
   class CPVRChannel;
-  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 }
 
 class CDVDInputStream

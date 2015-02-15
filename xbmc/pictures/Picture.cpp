@@ -23,6 +23,8 @@
   #include "config.h"
 #endif
 
+#include <algorithm>
+
 #include "Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -42,6 +44,31 @@ extern "C" {
 }
 
 using namespace XFILE;
+
+bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile, uint8_t* &result, size_t& result_size)
+{
+  unsigned char *thumb = NULL;
+  unsigned int thumbsize = 0;
+
+  // get an image handler
+  IImage* image = ImageFactory::CreateLoader(thumbFile);
+  if (image == NULL || !image->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  {
+    delete image;
+    return false;
+  }
+
+  // copy the resulting buffer
+  result_size = thumbsize;
+  result = new uint8_t[result_size];
+  memcpy(result, thumb, result_size);
+
+  // release the image buffer and the image handler
+  image->ReleaseThumbnailBuffer();
+  delete image;
+
+  return true;
+}
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const std::string &thumbFile)
 {
@@ -72,13 +99,13 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   return ret;
 }
 
-CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const std::string& thumbFile)
+CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const std::string& thumbFile):
+  m_thumbFile(thumbFile)
 {
   m_buffer    = buffer;
   m_width     = width;
   m_height    = height;
   m_stride    = stride;
-  m_thumbFile = thumbFile;
 }
 
 CThumbnailWriter::~CThumbnailWriter()
@@ -98,6 +125,75 @@ bool CThumbnailWriter::DoWork()
 
   delete [] m_buffer;
   m_buffer = NULL;
+
+  return success;
+}
+
+bool CPicture::ResizeTexture(const std::string &image, CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size)
+{
+  if (image.empty() || texture == NULL)
+    return false;
+
+  return ResizeTexture(image, texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+                       dest_width, dest_height, result, result_size);
+}
+
+bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size)
+{
+  if (image.empty() || pixels == NULL)
+    return false;
+
+  dest_width = std::min(width, dest_width);
+  dest_height = std::min(height, dest_height);
+
+  // if no max width or height is specified, don't resize
+  if (dest_width == 0 && dest_height == 0)
+  {
+    dest_width = width;
+    dest_height = height;
+  }
+  else if (dest_width == 0)
+  {
+    double factor = (double)dest_height / (double)height;
+    dest_width = (uint32_t)(width * factor);
+  }
+  else if (dest_height == 0)
+  {
+    double factor = (double)dest_width / (double)width;
+    dest_height = (uint32_t)(height * factor);
+  }
+
+  // nothing special to do if the dimensions already match
+  if (dest_width >= width || dest_height >= height)
+    return GetThumbnailFromSurface(pixels, dest_width, dest_height, pitch, image, result, result_size);
+
+  // create a buffer large enough for the resulting image
+  GetScale(width, height, dest_width, dest_height);
+
+  uint8_t *buffer = new uint8_t[dest_width * dest_height * sizeof(uint32_t)];
+  if (buffer == NULL)
+  {
+    result = NULL;
+    result_size = 0;
+    return false;
+  }
+
+  if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t)))
+  {
+    delete[] buffer;
+    result = NULL;
+    result_size = 0;
+    return false;
+  }
+
+  bool success = GetThumbnailFromSurface(buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), image, result, result_size);
+  delete[] buffer;
+
+  if (!success)
+  {
+    result = NULL;
+    result_size = 0;
+  }
 
   return success;
 }
@@ -210,8 +306,8 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
         }
       }
       delete[] scaled;
-      delete texture;
     }
+    delete texture;
   }
   // now save to a file
   if (success)

@@ -35,6 +35,7 @@
   #ifdef HAS_SDL
     #include <SDL/SDL.h>
   #endif
+#include <locale.h>
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"

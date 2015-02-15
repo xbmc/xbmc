@@ -55,8 +55,8 @@ typedef intptr_t      ssize_t;
 #define ADDON_HELPER_ARCH       "powerpc64-linux"
 #elif defined(__ARMEL__)
 #define ADDON_HELPER_ARCH       "arm"
-#elif defined(_MIPSEL)
-#define ADDON_HELPER_ARCH       "mipsel-linux"
+#elif defined(__mips__)
+#define ADDON_HELPER_ARCH       "mips"
 #else
 #define ADDON_HELPER_ARCH       "i486-linux"
 #endif

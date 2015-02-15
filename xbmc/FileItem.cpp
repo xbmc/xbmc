@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -49,7 +51,6 @@
 #include "pictures/PictureInfoTag.h"
 #include "music/Artist.h"
 #include "music/Album.h"
-#include "music/Song.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -61,6 +62,9 @@
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"
 #endif
+
+#include <assert.h>
+#include <algorithm>
 
 using namespace std;
 using namespace XFILE;
@@ -110,22 +114,24 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-CFileItem::CFileItem(const CEpgInfoTag& tag)
+CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
 {
   Initialize();
 
-  m_strPath = tag.Path();
   m_bIsFolder = false;
-  *GetEPGInfoTag() = tag;
-  SetLabel(tag.Title());
-  m_strLabel2 = tag.Plot();
-  m_dateTime = tag.StartAsLocalTime();
+  m_epgInfoTag = tag;
+  if (tag)
+  {
+    m_strPath = tag->Path();
+    SetLabel(tag->Title());
+    m_strLabel2 = tag->Plot();
+    m_dateTime = tag->StartAsLocalTime();
 
-  if (!tag.Icon().empty())
-    SetIconImage(tag.Icon());
-  else if (tag.HasPVRChannel() && !tag.ChannelTag()->IconPath().empty())
-    SetIconImage(tag.ChannelTag()->IconPath());
-
+    if (!tag->Icon().empty())
+      SetIconImage(tag->Icon());
+    else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
+      SetIconImage(tag->ChannelTag()->IconPath());
+  }
   FillInMimeType(false);
 }
 
@@ -133,14 +139,13 @@ CFileItem::CFileItem(const CPVRChannel& channel)
 {
   Initialize();
 
-  CEpgInfoTag epgNow;
-  bool bHasEpgNow = channel.GetEPGNow(epgNow);
+  CEpgInfoTagPtr epgNow(channel.GetEPGNow());
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = bHasEpgNow ? epgNow.Title() :
+  m_strLabel2 = epgNow ? epgNow->Title() :
       CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
 
@@ -153,9 +158,9 @@ CFileItem::CFileItem(const CPVRChannel& channel)
       musictag->SetTitle(m_strLabel2);
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
-      if (bHasEpgNow)
-        musictag->SetGenre(epgNow.Genre());
-      musictag->SetDuration(bHasEpgNow ? epgNow.GetDuration() : 3600);
+      if (epgNow)
+        musictag->SetGenre(epgNow->Genre());
+      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
       musictag->SetLoaded(true);
       musictag->SetComment("");
       musictag->SetLyrics("");
@@ -172,16 +177,17 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRRecording& record)
+CFileItem::CFileItem(const CPVRRecordingPtr& record)
 {
+  assert(record.get());
+
   Initialize();
 
-  m_strPath = record.m_strFileNameAndPath;
   m_bIsFolder = false;
-  *GetPVRRecordingInfoTag() = record;
-  SetLabel(record.m_strTitle);
-  m_strLabel2 = record.m_strPlot;
-
+  m_pvrRecordingInfoTag = record;
+  m_strPath = record->m_strFileNameAndPath;
+  SetLabel(record->m_strTitle);
+  m_strLabel2 = record->m_strPlot;
   FillInMimeType(false);
 }
 
@@ -228,9 +234,7 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
@@ -256,6 +260,12 @@ CFileItem::CFileItem(const std::string& strLabel)
 {
   Initialize();
   SetLabel(strLabel);
+}
+
+CFileItem::CFileItem(const char* strLabel)
+{
+  Initialize();
+  SetLabel(std::string(strLabel));
 }
 
 CFileItem::CFileItem(const CURL& path, bool bIsFolder)
@@ -308,17 +318,13 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_epgInfoTag;
   delete m_pvrChannelInfoTag;
-  delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
@@ -360,18 +366,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   if (item.HasEPGInfoTag())
-  {
-    m_epgInfoTag = GetEPGInfoTag();
-    if (m_epgInfoTag)
-      *m_epgInfoTag = *item.m_epgInfoTag;
-  }
+    m_epgInfoTag = item.m_epgInfoTag;
   else
-  {
-    if (m_epgInfoTag)
-      delete m_epgInfoTag;
-
-    m_epgInfoTag = NULL;
-  }
+    m_epgInfoTag.reset();
 
   if (item.HasPVRChannelInfoTag())
   {
@@ -387,19 +384,10 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_pvrChannelInfoTag = NULL;
   }
 
-  if (item.HasPVRRecordingInfoTag())
-  {
-    m_pvrRecordingInfoTag = GetPVRRecordingInfoTag();
-    if (m_pvrRecordingInfoTag)
-      *m_pvrRecordingInfoTag = *item.m_pvrRecordingInfoTag;
-  }
+  if (item.m_pvrRecordingInfoTag)
+    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   else
-  {
-    if (m_pvrRecordingInfoTag)
-      delete m_pvrRecordingInfoTag;
-
-    m_pvrRecordingInfoTag = NULL;
-  }
+    m_pvrRecordingInfoTag.reset();
 
   if (item.HasPVRTimerInfoTag())
   {
@@ -450,9 +438,7 @@ void CFileItem::Initialize()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_bLabelPreformated=false;
@@ -493,12 +479,10 @@ void CFileItem::Reset()
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  delete m_epgInfoTag;
-  m_epgInfoTag=NULL;
+  m_epgInfoTag.reset();
   delete m_pvrChannelInfoTag;
   m_pvrChannelInfoTag=NULL;
-  delete m_pvrRecordingInfoTag;
-  m_pvrRecordingInfoTag=NULL;
+  m_pvrRecordingInfoTag.reset();
   delete m_pvrTimerInfoTag;
   m_pvrTimerInfoTag=NULL;
   delete m_pictureInfoTag;
@@ -821,6 +805,11 @@ bool CFileItem::IsPicture() const
 bool CFileItem::IsLyrics() const
 {
   return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
+}
+
+bool CFileItem::IsSubtitle() const
+{
+  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_subtitlesExtensions);
 }
 
 bool CFileItem::IsCUESheet() const
@@ -1176,6 +1165,11 @@ void CFileItem::FillInDefaultIcon()
       { // archive
         SetIconImage("DefaultFile.png");
       }
+      else if ( IsPVRRecording() )
+      {
+        // PVR recording
+        SetIconImage("DefaultVideo.png");
+      }
       else if ( IsAudio() )
       {
         // audio
@@ -1184,10 +1178,6 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("DefaultVideo.png");
-      }
-      else if (IsPVRRecording())
-      {
         SetIconImage("DefaultVideo.png");
       }
       else if (IsPVRTimer())
@@ -1400,8 +1390,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
     *GetVideoInfoTag() = *item.GetVideoInfoTag();
     // preferably use some information from PVR info tag if available
-    if (HasPVRRecordingInfoTag())
-      GetPVRRecordingInfoTag()->CopyClientInfo(GetVideoInfoTag());
+    if (m_pvrRecordingInfoTag)
+      m_pvrRecordingInfoTag->CopyClientInfo(GetVideoInfoTag());
     SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
     SetInvalid();
   }
@@ -1538,6 +1528,89 @@ bool CFileItem::IsPath(const std::string& path) const
 {
   return URIUtils::PathEquals(m_strPath, path);
 }
+
+void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
+{
+  m_cueDocument = cuePtr;
+}
+
+void CFileItem::LoadEmbeddedCue()
+{
+  CMusicInfoTag& tag = *GetMusicInfoTag();
+  if (!tag.Loaded())
+    return;
+
+  const std::string embeddedCue = tag.GetCueSheet();
+  if (!embeddedCue.empty())
+  {
+    CCueDocumentPtr cuesheet(new CCueDocument);
+    if (cuesheet->ParseTag(embeddedCue))
+    {
+      std::vector<std::string> MediaFileVec;
+      cuesheet->GetMediaFiles(MediaFileVec);
+      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+        cuesheet->UpdateMediaFile(*itMedia, GetPath());
+      SetCueDocument(cuesheet);
+    }
+  }
+}
+
+bool CFileItem::HasCueDocument() const
+{
+  return (nullptr != m_cueDocument.get());
+}
+
+bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
+{
+  if (!m_cueDocument)
+    return false;
+
+  CMusicInfoTag& tag = *GetMusicInfoTag();
+
+  VECSONGS tracks;
+  m_cueDocument->GetSongs(tracks);
+  m_cueDocument.reset();
+
+  int tracksFound = 0;
+  for (VECSONGS::iterator it = tracks.begin(); it != tracks.end(); ++it)
+  {
+    CSong& song = *it;
+    if (song.strFileName == GetPath())
+    {
+      if (tag.Loaded())
+      {
+        if (song.strAlbum.empty() && !tag.GetAlbum().empty())
+          song.strAlbum = tag.GetAlbum();
+        if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty())
+          song.albumArtist = tag.GetAlbumArtist();
+        if (song.genre.empty() && !tag.GetGenre().empty())
+          song.genre = tag.GetGenre();
+        if (song.artist.empty() && !tag.GetArtist().empty())
+          song.artist = tag.GetArtist();
+        if (tag.GetDiscNumber())
+          song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
+        if (!tag.GetCueSheet().empty())
+          song.strCueSheet = tag.GetCueSheet();
+
+        SYSTEMTIME dateTime;
+        tag.GetReleaseDate(dateTime);
+        if (dateTime.wYear)
+          song.iYear = dateTime.wYear;
+        if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
+          song.embeddedArt = tag.GetCoverArtInfo();
+      }
+
+      if (!song.iDuration && tag.GetDuration() > 0)
+      { // must be the last song
+        song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+      }
+      scannedItems.Add(CFileItemPtr(new CFileItem(song)));
+      ++tracksFound;
+    }
+  }
+  return 0 != tracksFound;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -1839,7 +1912,7 @@ int CFileItemList::Size() const
 bool CFileItemList::IsEmpty() const
 {
   CSingleLock lock(m_lock);
-  return (m_items.size() <= 0);
+  return m_items.empty();
 }
 
 void CFileItemList::Reserve(int iCount)
@@ -1900,7 +1973,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
-    sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
+    sortItems[index] = std::shared_ptr<SortItem>(new SortItem);
     m_items[index]->ToSortable(*sortItems[index], fields);
     (*sortItems[index])[FieldId] = index;
   }
@@ -2115,7 +2188,6 @@ void CFileItemList::FilterCueItems()
 {
   CSingleLock lock(m_lock);
   // Handle .CUE sheet files...
-  VECSONGS itemstoadd;
   vector<string> itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2124,14 +2196,11 @@ void CFileItemList::FilterCueItems()
     { // see if it's a .CUE sheet
       if (pItem->IsCUESheet())
       {
-        CCueDocument cuesheet;
-        if (cuesheet.Parse(pItem->GetPath()))
+        CCueDocumentPtr cuesheet(new CCueDocument);
+        if (cuesheet->ParseFile(pItem->GetPath()))
         {
-          VECSONGS newitems;
-          cuesheet.GetSongs(newitems);
-
           std::vector<std::string> MediaFileVec;
-          cuesheet.GetMediaFiles(MediaFileVec);
+          cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
           for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
@@ -2140,7 +2209,6 @@ void CFileItemList::FilterCueItems()
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
                                                    // as we're going to search for others here...
             bool bFoundMediaFile = CFile::Exists(strMediaFile);
-            // queue the cue sheet and the underlying media file for deletion
             if (!bFoundMediaFile)
             {
               // try file in same dir, not matching case...
@@ -2176,61 +2244,22 @@ void CFileItemList::FilterCueItems()
             }
             if (bFoundMediaFile)
             {
-              itemstodelete.push_back(pItem->GetPath());
-              itemstodelete.push_back(strMediaFile);
-              // get the additional stuff (year, genre etc.) from the underlying media files tag.
-              CMusicInfoTag tag;
-              auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
-              if (NULL != pLoader.get())
+              cuesheet->UpdateMediaFile(fileFromCue, strMediaFile);
+              // apply CUE for later processing
+              for (int j = 0; j < (int)m_items.size(); j++)
               {
-                // get id3tag
-                pLoader->Load(strMediaFile, tag);
+                CFileItemPtr pItem = m_items[j];
+                if (stricmp(pItem->GetPath().c_str(), strMediaFile.c_str()) == 0)
+                  pItem->SetCueDocument(cuesheet);
               }
-              // fill in any missing entries from underlying media file
-              for (int j = 0; j < (int)newitems.size(); j++)
-              {
-                CSong song = newitems[j];
-                // only for songs that actually match the current media file
-                if (song.strFileName == fileFromCue)
-                {
-                  // we might have a new media file from the above matching code
-                  song.strFileName = strMediaFile;
-                  if (tag.Loaded())
-                  {
-                    if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
-                    if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty()) song.albumArtist = tag.GetAlbumArtist();
-                    if (song.genre.empty() && !tag.GetGenre().empty()) song.genre = tag.GetGenre();
-                    if (song.artist.empty() && !tag.GetArtist().empty()) song.artist = tag.GetArtist();
-                    if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
-                    SYSTEMTIME dateTime;
-                    tag.GetReleaseDate(dateTime);
-                    if (dateTime.wYear) song.iYear = dateTime.wYear;
-                    if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
-                      song.embeddedArt = tag.GetCoverArtInfo();
-                  }
-                  if (!song.iDuration && tag.GetDuration() > 0)
-                  { // must be the last song
-                    song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
-                  }
-                  // add this item to the list
-                  itemstoadd.push_back(song);
-                }
-              }
-            }
-            else
-            { // remove the .cue sheet from the directory
-              itemstodelete.push_back(pItem->GetPath());
             }
           }
         }
-        else
-        { // remove the .cue sheet from the directory (can't parse it - no point listing it)
-          itemstodelete.push_back(pItem->GetPath());
-        }
+        itemstodelete.push_back(pItem->GetPath());
       }
     }
   }
-  // now delete the .CUE files and underlying media files.
+  // now delete the .CUE files.
   for (int i = 0; i < (int)itemstodelete.size(); i++)
   {
     for (int j = 0; j < (int)m_items.size(); j++)
@@ -2242,13 +2271,6 @@ void CFileItemList::FilterCueItems()
         break;
       }
     }
-  }
-  // and add the files from the .CUE sheet
-  for (int i = 0; i < (int)itemstoadd.size(); i++)
-  {
-    // now create the file item, and add to the item list.
-    CFileItemPtr pItem(new CFileItem(itemstoadd[i]));
-    m_items.push_back(pItem);
   }
 }
 
@@ -3006,7 +3028,7 @@ bool CFileItem::LoadMusicTag()
   // load tag from file
   CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
   CMusicInfoTagLoaderFactory factory;
-  auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
+  unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
   if (NULL != pLoader.get())
   {
     if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
@@ -3112,28 +3134,12 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   return m_videoInfoTag;
 }
 
-CEpgInfoTag* CFileItem::GetEPGInfoTag()
-{
-  if (!m_epgInfoTag)
-    m_epgInfoTag = new CEpgInfoTag;
-
-  return m_epgInfoTag;
-}
-
 CPVRChannel* CFileItem::GetPVRChannelInfoTag()
 {
   if (!m_pvrChannelInfoTag)
     m_pvrChannelInfoTag = new CPVRChannel;
 
   return m_pvrChannelInfoTag;
-}
-
-CPVRRecording* CFileItem::GetPVRRecordingInfoTag()
-{
-  if (!m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = new CPVRRecording;
-
-  return m_pvrRecordingInfoTag;
 }
 
 CPVRTimerInfoTag* CFileItem::GetPVRTimerInfoTag()
@@ -3269,15 +3275,15 @@ int CFileItem::GetVideoContentType() const
 bool CFileItem::IsResumePointSet() const
 {
   return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
-      (HasPVRRecordingInfoTag() && GetPVRRecordingInfoTag()->GetLastPlayedPosition() > 0);
+      (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->GetLastPlayedPosition() > 0);
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (HasPVRRecordingInfoTag())
+  if (m_pvrRecordingInfoTag)
   {
     // This will retrieve 'fresh' resume information from the PVR server
-    int rc = GetPVRRecordingInfoTag()->GetLastPlayedPosition();
+    int rc = m_pvrRecordingInfoTag->GetLastPlayedPosition();
     if (rc > 0)
       return rc;
     // Fall through to default value

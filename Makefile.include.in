@@ -119,7 +119,7 @@ GEN_DEPS=\
 
 %.o: %.m
 	@rm -f $@
-	$(SILENT_MM) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_MM) $(CC) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.mm

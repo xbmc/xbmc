@@ -123,8 +123,6 @@
 #define WINDOW_DIALOG_PVR_UPDATE_PROGRESS 10609
 #define WINDOW_DIALOG_PVR_OSD_CHANNELS    10610
 #define WINDOW_DIALOG_PVR_OSD_GUIDE       10611
-#define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10612
-#define WINDOW_DIALOG_PVR_OSD_CUTTER      10613
 #define WINDOW_FULLSCREEN_LIVETV          10614 // virtual window for PVR specific keymap bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
 #define WINDOW_TV_CHANNELS                10615
 #define WINDOW_TV_RECORDINGS              10616

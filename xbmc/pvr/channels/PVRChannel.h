@@ -27,11 +27,16 @@
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
+
+#define PVR_INVALID_CHANNEL_UID -1
 
 namespace EPG
 {
   class CEpg;
+  class CEpgInfoTag;
+  typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
+
 }
 
 namespace PVR
@@ -40,7 +45,7 @@ namespace PVR
   class CPVRChannelGroupInternal;
 
   class CPVRChannel;
-  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   typedef struct
   {
@@ -85,10 +90,9 @@ namespace PVR
 
     /*!
      * @brief Persists the changes in the database.
-     * @param bQueueWrite Queue the change and write changes later.
      * @return True if the changes were saved succesfully, false otherwise.
      */
-    bool Persist(bool bQueueWrite = false);
+    bool Persist();
 
     /*!
      * @return The identifier given to this channel by the TV database.
@@ -212,18 +216,6 @@ namespace PVR
      * @return True if the something changed, false otherwise.
      */
     bool SetChannelName(const std::string &strChannelName, bool bIsUserSetName = false);
-
-    /*!
-     * @return True if this channel is marked as virtual. False if not.
-     */
-    bool IsVirtual(void) const;
-
-    /*!
-     * @brief True if this channel is marked as virtual. False if not.
-     * @param bIsVirtual The new value.
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetVirtual(bool bIsVirtual);
 
     /*!
      * @return Time channel has been watched last.
@@ -411,7 +403,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    bool GetEPGNow(EPG::CEpgInfoTag &tag) const;
+    EPG::CEpgInfoTagPtr GetEPGNow() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -421,7 +413,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    bool GetEPGNext(EPG::CEpgInfoTag &tag) const;
+    EPG::CEpgInfoTagPtr GetEPGNext() const;
 
     /*!
      * @return Don't use an EPG for this channel if set to false.
@@ -478,7 +470,6 @@ namespace PVR
     bool             m_bIsLocked;               /*!< true if channel is locked, false if not */
     std::string      m_strIconPath;             /*!< the path to the icon for this channel */
     std::string      m_strChannelName;          /*!< the name for this channel used by XBMC */
-    bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
     unsigned int     m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */

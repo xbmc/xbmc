@@ -75,25 +75,17 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
 
-  if (pItem->GetPath() == "pvr://channels/.add.channel")
-  {
-    /* If yes show only "New Channel" on context menu */
-    buttons.Add(CONTEXT_BUTTON_ADD, 19046);                                           /* add new channel */
-  }
-  else
-  {
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
-    buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
-    buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
+  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
+  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
 
-    if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
+  if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
+    buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
 
-    // Add parent buttons before the Manage button
-    CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
+  // Add parent buttons before the Manage button
+  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
     
-    buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
-  }
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
@@ -124,12 +116,12 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
   /* empty list for hidden channels */
-  if (m_vecItems->Size() == 0 && m_bShowHiddenChannels)
+  if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
   {
-      /* show the visible channels instead */
-      m_bShowHiddenChannels = false;
-      lock.Leave();
-      Update(GetDirectoryPath());
+    /* show the visible channels instead */
+    m_bShowHiddenChannels = false;
+    lock.Leave();
+    Update(GetDirectoryPath());
   }
 
   return bReturn;
@@ -137,6 +129,13 @@ bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateF
 
 void CGUIWindowPVRChannels::UpdateButtons(void)
 {
+  CGUIRadioButtonControl *btnShowHidden = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWHIDDEN);
+  if (btnShowHidden)
+  {
+    btnShowHidden->SetVisible(g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetNumHiddenChannels() > 0);
+    btnShowHidden->SetSelected(m_bShowHiddenChannels);
+  }
+
   CGUIWindowPVRBase::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : GetGroup()->GroupName());
 }

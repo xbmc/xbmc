@@ -746,4 +746,5 @@ void CGUIEditControl::SetFocus(bool focus)
   m_smsTimer.Stop();
   g_Windowing.EnableTextInput(focus);
   CGUIControl::SetFocus(focus);
+  SetInvalid();
 }

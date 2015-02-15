@@ -31,9 +31,9 @@ DllDynamic::DllDynamic()
   m_DelayUnload=true;
 }
 
-DllDynamic::DllDynamic(const std::string& strDllName)
+DllDynamic::DllDynamic(const std::string& strDllName):
+  m_strDllName(strDllName)
 {
-  m_strDllName=strDllName;
   m_dll=NULL;
   m_DelayUnload=true;
 }

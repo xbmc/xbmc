@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <memory>
 
 #define JACTIVE_BUTTON 0x00000001
 #define JACTIVE_AXIS   0x00000002
@@ -62,7 +63,6 @@ struct AxisState {
 };
 
 class CRegExp;
-namespace boost { template <typename T> class shared_ptr; }
 
 // Class to manage all connected joysticks
 // Note: 'index' always refers to indices specific to this class,
@@ -87,7 +87,6 @@ public:
   float SetDeadzone(float val);
   bool Reinitialize();
   typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state value>]
-  void LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig>& axesConfigs);
   void ApplyAxesConfigs();
 
 private:
@@ -120,10 +119,7 @@ private:
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
   std::map<int, SDL_Joystick*> m_Joysticks;
-  std::map<boost::shared_ptr<CRegExp>, AxesConfig> m_AxesConfigs; // <joy, <axis num, isTrigger, restState> >
 };
-
-extern CJoystick g_Joystick;
 
 #endif
 

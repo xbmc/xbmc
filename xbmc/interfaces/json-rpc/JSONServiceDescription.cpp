@@ -1154,9 +1154,9 @@ void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinit
   referencedTypeSet = true;
 }
 
-JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap()
+JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap() :
+   m_propertiesmap(std::map<std::string, JSONSchemaTypeDefinitionPtr>())
 {
-  m_propertiesmap = std::map<std::string, JSONSchemaTypeDefinitionPtr>();
 }
 
 void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
@@ -2003,9 +2003,9 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionP
     getReferencedTypes(type->unionTypes.at(index), referencedTypes);
 }
 
-CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()
+CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap():
+  m_actionmap(std::map<std::string, JsonRpcMethod>())
 {
-  m_actionmap = std::map<std::string, JsonRpcMethod>();
 }
 
 void CJSONServiceDescription::CJsonRpcMethodMap::clear()

@@ -21,6 +21,7 @@
 #include "system.h"
 
 #ifdef HAS_DVD_DRIVE
+#include <stdlib.h>
 
 #include "Autorun.h"
 #include "Application.h"
@@ -42,12 +43,10 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/windows/GUIWindowVideoBase.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
 
-using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
@@ -106,13 +105,11 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if (mediaPath.empty())
     mediaPath = path;
 
-#ifdef TARGET_WINDOWS
   if (mediaPath.empty() || mediaPath == "iso9660://")
-    mediaPath = g_mediaManager.TranslateDevicePath("");
-#endif
+    mediaPath = g_mediaManager.GetDiscPath();
 
   const CURL pathToUrl(mediaPath);
-  auto_ptr<IDirectory> pDir ( CDirectoryFactory::Create( pathToUrl ));
+  std::unique_ptr<IDirectory> pDir ( CDirectoryFactory::Create( pathToUrl ));
   bool bPlaying = RunDisc(pDir.get(), mediaPath, nAddedToPlaylist, true, bypassSettings, startFromBeginning);
 
   if ( !bPlaying && nAddedToPlaylist > 0 )
@@ -209,8 +206,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
           g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
           g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
-          if (!CGUIWindowVideoBase::ShowPlaySelection(item))
-            return false;
           g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
           g_playlistPlayer.Play(0);

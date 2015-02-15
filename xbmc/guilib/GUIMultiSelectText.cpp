@@ -28,9 +28,9 @@ using namespace std;
 
 CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const std::string &text, bool selectable, const std::string &clickAction)
  : m_text(font, false)
+ , m_clickAction(clickAction)
 {
   m_selectable = selectable;
-  m_clickAction = clickAction;
   StringUtils::TrimLeft(m_clickAction, " =");
   StringUtils::TrimRight(m_clickAction);
   m_text.Update(text);

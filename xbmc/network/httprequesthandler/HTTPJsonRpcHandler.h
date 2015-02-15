@@ -19,8 +19,10 @@
  *
  */
 
-#include "IHTTPRequestHandler.h"
+#include <string>
+
 #include "interfaces/json-rpc/IClient.h"
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
 
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
 {
@@ -28,16 +30,20 @@ public:
   CHTTPJsonRpcHandler() { }
   virtual ~CHTTPJsonRpcHandler() { }
   
-  virtual IHTTPRequestHandler* GetInstance() { return new CHTTPJsonRpcHandler(); }
-  virtual bool CheckHTTPRequest(const HTTPRequest &request);
-  virtual int HandleHTTPRequest(const HTTPRequest &request);
+  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPJsonRpcHandler(request); }
+  virtual bool CanHandleRequest(const HTTPRequest &request);
 
-  virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };
-  virtual size_t GetHTTPResonseDataLength() const { return m_response.size(); }
+  virtual int HandleRequest();
+
+  virtual HttpResponseRanges GetResponseData() const;
 
   virtual int GetPriority() const { return 2; }
 
 protected:
+  explicit CHTTPJsonRpcHandler(const HTTPRequest &request)
+    : IHTTPRequestHandler(request)
+  { }
+
 #if (MHD_VERSION >= 0x00040001)
   virtual bool appendPostData(const char *data, size_t size);
 #else
@@ -45,8 +51,9 @@ protected:
 #endif
 
 private:
-  std::string m_request;
-  std::string m_response;
+  std::string m_requestData;
+  std::string m_responseData;
+  CHttpResponseRange m_responseRange;
 
   class CHTTPClient : public JSONRPC::IClient
   {

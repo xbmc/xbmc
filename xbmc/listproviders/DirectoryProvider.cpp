@@ -34,8 +34,9 @@
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
-#include "boost/make_shared.hpp"
 #include "interfaces/AnnouncementManager.h"
+
+#include <memory>
 
 using namespace std;
 using namespace XFILE;
@@ -84,7 +85,7 @@ public:
     return true;    
   }
 
-  boost::shared_ptr<CThumbLoader> getThumbLoader(CGUIStaticItemPtr &item)
+  std::shared_ptr<CThumbLoader> getThumbLoader(CGUIStaticItemPtr &item)
   {
     if (item->IsVideo())
     {
@@ -110,7 +111,7 @@ public:
   {
     if (!m_thumbloaders.count(type))
     {
-      boost::shared_ptr<CThumbLoader> thumbLoader = boost::make_shared<CThumbLoaderClass>();
+      std::shared_ptr<CThumbLoader> thumbLoader = std::make_shared<CThumbLoaderClass>();
       thumbLoader->OnLoaderStart();
       m_thumbloaders.insert(make_pair(type, thumbLoader));
     }
@@ -121,7 +122,7 @@ public:
   std::vector<InfoTagType> GetItemTypes(std::vector<InfoTagType> &itemTypes) const
   {
     itemTypes.clear();
-    for (std::map<InfoTagType, boost::shared_ptr<CThumbLoader> >::const_iterator
+    for (std::map<InfoTagType, std::shared_ptr<CThumbLoader> >::const_iterator
          i = m_thumbloaders.begin(); i != m_thumbloaders.end(); ++i)
       itemTypes.push_back(i->first);
     return itemTypes;
@@ -132,7 +133,7 @@ private:
   unsigned int m_limit;
   int m_parentID;
   std::vector<CGUIStaticItemPtr> m_items;
-  std::map<InfoTagType, boost::shared_ptr<CThumbLoader> > m_thumbloaders;
+  std::map<InfoTagType, std::shared_ptr<CThumbLoader> > m_thumbloaders;
 };
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
@@ -262,7 +263,7 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
-  CFileItem fileItem(*boost::static_pointer_cast<CFileItem>(item));
+  CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
   string target = fileItem.GetProperty("node.target").asString();
   if (target.empty())
     target = m_currentTarget;

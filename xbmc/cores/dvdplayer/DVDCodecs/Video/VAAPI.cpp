@@ -471,6 +471,7 @@ CDecoder::CDecoder() : m_vaapiOutput(&m_inMsgEvent)
   m_vaapiConfig.contextId = VA_INVALID_ID;
   m_vaapiConfig.configId = VA_INVALID_ID;
   m_avctx = NULL;
+  m_getBufferError = false;
 }
 
 CDecoder::~CDecoder()
@@ -697,9 +698,9 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     uint16_t decoded, processed, render;
     bool vpp;
     va->m_bufferStats.Get(decoded, processed, render, vpp);
-    CLog::Log(LOGERROR, "VAAPI::FFGetBuffer - no surface available - dec: %d, render: %d",
+    CLog::Log(LOGWARNING, "VAAPI::FFGetBuffer - no surface available - dec: %d, render: %d",
                          decoded, render);
-    va->m_DisplayState = VAAPI_ERROR;
+    va->m_getBufferError = true;
     return -1;
   }
 
@@ -734,6 +735,8 @@ void CDecoder::FFReleaseBuffer(uint8_t *data)
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 {
+  m_getBufferError = false;
+
   int result = Check(avctx);
   if (result)
     return result;
@@ -850,6 +853,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  int ret = 0;
   EDisplayState state;
 
   { CSingleLock lock(m_DecoderSection);
@@ -891,7 +895,12 @@ int CDecoder::Check(AVCodecContext* avctx)
     else
       return VC_ERROR;
   }
-  return 0;
+
+  if (m_getBufferError)
+    ret |= VC_NOBUFFER;
+
+  m_getBufferError = false;
+  return ret;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)

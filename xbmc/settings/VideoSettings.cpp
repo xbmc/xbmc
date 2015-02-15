@@ -52,11 +52,6 @@ CVideoSettings::CVideoSettings()
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;
   m_ResumeTime = 0;
-  m_Crop = false;
-  m_CropTop = 0;
-  m_CropBottom = 0;
-  m_CropLeft = 0;
-  m_CropRight = 0;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -84,11 +79,6 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_AudioDelay != right.m_AudioDelay) return true;
   if (m_OutputToAllSpeakers != right.m_OutputToAllSpeakers) return true;
   if (m_ResumeTime != right.m_ResumeTime) return true;
-  if (m_Crop != right.m_Crop) return true;
-  if (m_CropTop != right.m_CropTop) return true;
-  if (m_CropBottom != right.m_CropBottom) return true;
-  if (m_CropLeft != right.m_CropLeft) return true;
-  if (m_CropRight != right.m_CropRight) return true;
   if (m_StereoMode != right.m_StereoMode) return true;
   if (m_StereoInvert != right.m_StereoInvert) return true;
   return false;

@@ -327,10 +327,10 @@ do { \
 
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 // forwards
-class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
+class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CFileItemList;
 
 /*!

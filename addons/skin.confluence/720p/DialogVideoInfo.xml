@@ -849,7 +849,7 @@
 				<control type="textbox" id="400">
 					<description>Description Value for Movies</description>
 					<left>210</left>
-					<top>525</top>
+					<top>527</top>
 					<width>1030</width>
 					<height>120</height>
 					<font>font13</font>
@@ -892,6 +892,7 @@
 							<texture border="5">button-nofocus.png</texture>
 						</control>
 						<control type="label">
+							<description>Actor and Role</description>
 							<left>10</left>
 							<top>0</top>
 							<width>410</width>
@@ -900,7 +901,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<selectedcolor>white</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.Label2, $LOCALIZE[20347] ,]</label>
 						</control>
 					</itemlayout>
 					<focusedlayout height="40" width="430">
@@ -921,6 +922,7 @@
 							<texture border="5">button-focus2.png</texture>
 						</control>
 						<control type="label">
+							<description>Actor and Role</description>
 							<left>10</left>
 							<top>0</top>
 							<width>410</width>
@@ -929,7 +931,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<selectedcolor>white</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.Label2, $LOCALIZE[20347] ,]</label>
 						</control>
 					</focusedlayout>
 				</control>

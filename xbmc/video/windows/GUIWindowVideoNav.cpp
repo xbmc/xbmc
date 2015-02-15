@@ -287,12 +287,12 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
 
       int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
+      int itemsSize = items.GetObjectCount();
+      int firstIndex = items.Size() - itemsSize;
 
       // perform the flattening logic for tvshows with a single (unwatched) season (+ optional special season)
       if (node == NODE_TYPE_SEASONS && !items.IsEmpty())
       {
-        int itemsSize = items.GetObjectCount();
-        int firstIndex = items.Size() - itemsSize;
         // check if the last item is the "All seasons" item which should be ignored for flattening
         if (!items[items.Size() - 1]->HasVideoInfoTag() || items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
           itemsSize -= 1;
@@ -358,7 +358,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         items.SetProperty("showplot", details.m_strPlot);
 
         // the container folder thumb is the parent (i.e. season or show)
-        if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+        if (itemsSize && (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES))
         {
           items.SetContent("episodes");
 
@@ -372,7 +372,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           if (seasonParam >= -1)
             seasonID = m_database.GetSeasonId(details.m_iDbId, seasonParam);
           else
-            seasonID = items[items.Size() - items.GetObjectCount()]->GetVideoInfoTag()->m_iIdSeason;
+            seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
           CGUIListItem::ArtMap seasonArt;
           if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))

@@ -51,76 +51,73 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
   free(m_index);
 }
 
-void CGUIFontTTFDX::Begin()
+bool CGUIFontTTFDX::FirstBegin()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   if (pD3DDevice == NULL)
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to get Direct3D device");
-
-  if (m_nestedBeginCount == 0 && pD3DDevice != NULL && m_texture != NULL)
   {
-    int unit = 0;
-    // just have to blit from our texture.
-    m_texture->BindToUnit(unit);
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-    unit++;
-
-    if(g_Windowing.UseLimitedColor())
-    {
-      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
-      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
-      pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16,0) );
-      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-      unit++;
-    }
-
-    // no other texture stages needed
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-    pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-    pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-    pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-    pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-    pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-    pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
-
-    pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-    m_vertex_count = 0;
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to get Direct3D device");
+    return false;
   }
 
-  // Keep track of the nested begin/end calls.
-  m_nestedBeginCount++;
+  int unit = 0;
+  // just have to blit from our texture.
+  m_texture->BindToUnit(unit);
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+  unit++;
+
+  if(g_Windowing.UseLimitedColor())
+  {
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
+    pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16,0) );
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+    unit++;
+  }
+
+  // no other texture stages needed
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_DISABLE);
+  pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+  pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+  pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+  pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+  pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+  pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
+  pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+  return true;
 }
 
-void CGUIFontTTFDX::End()
+void CGUIFontTTFDX::LastEnd()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_nestedBeginCount == 0)
+  if (m_vertex.size() == 0)
     return;
 
-  if (--m_nestedBeginCount > 0)
-    return;
-
-  if (m_vertex_count == 0)
-    return;
-
-  unsigned index_size = m_vertex_size * 6 / 4;
+  /* If the number of elements in m_vertex reduces, we can simply re-use the
+   * first elements in m_index without any need to reallocate or reinitialise
+   * it. To ensure we don't reallocate m_index any more frequently than
+   * m_vertex, keep their respective high watermarks (m_index_size and
+   * m_vertex.capacity()) in line.
+   */
+  unsigned index_size = m_vertex.capacity() * 6 / 4;
   if(m_index_size < index_size)
   {
     uint16_t* id  = (uint16_t*)calloc(index_size, sizeof(uint16_t));
     if(id == NULL)
       return;
 
-    for(int i = 0, b = 0; i < m_vertex_size; i += 4, b += 6)
+    for(int i = 0, b = 0; i < m_vertex.capacity(); i += 4, b += 6)
     {
       id[b+0] = i + 0;
       id[b+1] = i + 1;
@@ -149,11 +146,11 @@ void CGUIFontTTFDX::End()
 
   pD3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST
                                     , 0
-                                    , m_vertex_count
-                                    , m_vertex_count / 2
+                                    , m_vertex.size()
+                                    , m_vertex.size() / 2
                                     , m_index
                                     , D3DFMT_INDEX16
-                                    , m_vertex
+                                    , &m_vertex[0]
                                     , sizeof(SVertex));
   pD3DDevice->SetTransform(D3DTS_WORLD, &orig);
 
@@ -172,6 +169,8 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
     delete m_speedupTexture;
     m_speedupTexture = NULL;
   }
+  m_staticCache.Flush();
+  m_dynamicCache.Flush();
 
   CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   pNewTexture->CreateTextureObject();

@@ -431,7 +431,7 @@ bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
   return true;
 }
 
-double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
+double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool *match)
 {
   //if the duration is within 20 microseconds of a common duration, use that
   const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
@@ -451,9 +451,17 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
   }
 
   if (selected != -1)
+  {
+    if (match)
+      *match = true;
     return durations[selected];
+  }
   else
+  {
+    if (match)
+      *match = false;
     return frameduration;
+  }
 }
 
 struct EFormatMap {

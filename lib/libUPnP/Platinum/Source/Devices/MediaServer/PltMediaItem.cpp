@@ -528,10 +528,49 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
             
             didl += " protocolInfo=\"";
             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo.ToString());
-            didl += "\">";
+            didl += "\"";
+            /* adding custom data */
+            NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_Resources[i].m_CustomData.GetEntries().GetFirstItem();
+            while (entry)
+            {
+                didl += " ";
+                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
+                didl += "=\"";
+                PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
+                didl += "\"";
+
+                entry++;
+            }
+
+            didl += ">";
             PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
             didl += "</res>";
         }
+    }
+
+    //sec resources related
+    for (NPT_Cardinal i = 0; i < m_SecResources.GetItemCount(); i++) {
+        didl += "<sec:";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
+
+        NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = m_SecResources[i].attributes.GetEntries().GetFirstItem();
+        while (entry)
+        {
+            didl += " sec:";
+            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetKey());
+            didl += "=\"";
+            PLT_Didl::AppendXmlEscape(didl, (*entry)->GetValue());
+            didl += "\"";
+
+            entry++;
+        }
+
+        didl += ">";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].value);
+
+        didl += "</sec:";
+        PLT_Didl::AppendXmlEscape(didl, m_SecResources[i].name);
+        didl += ">";
     }
 
     // xbmc dateadded

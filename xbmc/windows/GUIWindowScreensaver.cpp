@@ -142,7 +142,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
         return false;
 
-      m_addon = boost::dynamic_pointer_cast<CScreenSaver>(addon);
+      m_addon = std::dynamic_pointer_cast<CScreenSaver>(addon);
 
       if (!m_addon)
         return false;

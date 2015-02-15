@@ -82,7 +82,12 @@ GifHelper::GifHelper() :
 
 GifHelper::~GifHelper()
 {
-  int err = DGifCloseFile(m_gif);
+  int err;
+#if GIFLIB_MAJOR >= 5 && GIFLIB_MINOR >= 1
+  DGifCloseFile(m_gif, &err);
+#else
+  err = DGifCloseFile(m_gif);
+#endif
   if (err == D_GIF_ERR_CLOSE_FAILED)
   {
     fprintf(stderr, "Gif::~Gif(): D_GIF_ERR_CLOSE_FAILED\n");
@@ -119,7 +124,7 @@ bool GifHelper::LoadGifMetaData(GifFileType* file)
   if (DGifSlurp(m_gif) == GIF_ERROR)
   {
 #if GIFLIB_MAJOR >= 5
-    char* error = GifErrorString(m_gif->Error);
+    const char* error = GifErrorString(m_gif->Error);
     if (error)
       fprintf(stderr, "Gif::LoadGif(): Could not read file %s - %s\n", m_filename.c_str(), error);
 #else
@@ -190,7 +195,7 @@ bool GifHelper::LoadGifMetaData(const char* file)
   if (!m_gif)
   {
 #if GIFLIB_MAJOR >= 5
-    char* error = GifErrorString(err);
+    const char* error = GifErrorString(err);
     if (error)
       fprintf(stderr, "Gif::LoadGif(): Could not open file %s - %s\n", m_filename.c_str(), error);
 #else
@@ -248,7 +253,11 @@ bool GifHelper::IsAnimated(const char* file)
     {
       if (DGifSlurp(gif) && gif->ImageCount > 1)
         m_isAnimated = 1;
+#if GIFLIB_MAJOR >= 5 && GIFLIB_MINOR >= 1
+      DGifCloseFile(gif, NULL);
+#else
       DGifCloseFile(gif);
+#endif
       fclose(gifFile);
     }
   }
@@ -285,12 +294,12 @@ bool GifHelper::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
   frame.m_delay = 0;
   frame.m_disposal = 0;
 #if GIFLIB_MAJOR >= 5
-  if (m_gif->ExtensionBlockCount > 0)
+  if (m_gif->ImageCount > 0)
   {
     GraphicsControlBlock gcb;
     if (!DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
     {
-      char* error = GifErrorString(m_gif->Error);
+      const char* error = GifErrorString(m_gif->Error);
       if (error)
         fprintf(stderr, "Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d - %s\n", imgIdx, error);
       else
@@ -495,7 +504,7 @@ bool GifHelper::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
   if (!m_gif)
   {
 #if GIFLIB_MAJOR >= 5
-    char* error = GifErrorString(err);
+    const char* error = GifErrorString(err);
     if (error)
       fprintf(stderr, "Gif::LoadImageFromMemory(): Could not open gif from memory - %s\n", error);
 #else

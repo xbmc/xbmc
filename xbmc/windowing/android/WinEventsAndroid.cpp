@@ -24,6 +24,7 @@
 
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
 #include "input/SDLJoystick.h"
 #include "utils/log.h"
@@ -57,7 +58,7 @@ static bool different_event(XBMC_Event &curEvent, XBMC_Event &newEvent)
     return true;
 
   // different axis direction (handles -1 vs 1)
-  if (signbit(curEvent.jaxis.fvalue) != signbit(newEvent.jaxis.fvalue))
+  if (std::signbit(curEvent.jaxis.fvalue) != std::signbit(newEvent.jaxis.fvalue))
     return true;
 
   // different axis value (handles 0 vs 1 or -1)
@@ -219,8 +220,8 @@ bool CWinEventsAndroid::MessagePump()
 
       if (fabs(amount) >= ALMOST_ZERO)
       {
-        ret |= g_application.ProcessJoystickEvent(input_device.name,
-          item, input_type, amount, holdTime);
+        ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
+            input_device.name, item, input_type, amount, holdTime);
       }
     }
     else

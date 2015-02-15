@@ -159,19 +159,49 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    return len;
 }
 
-std::string CNetwork::GetHostName(void)
+bool CNetwork::GetHostName(std::string& hostname)
 {
   char hostName[128];
   if (gethostname(hostName, sizeof(hostName)))
-    return "unknown";
+    return false;
 
-  std::string hostStr;
 #ifdef TARGET_WINDOWS
+  std::string hostStr;
   g_charsetConverter.systemToUtf8(hostName, hostStr);
+  hostname = hostStr;
 #else
-  hostStr = hostName;
+  hostname = hostName;
 #endif
-  return hostStr;
+  return true;
+}
+
+bool CNetwork::IsLocalHost(const std::string& hostname)
+{
+  if (hostname.empty())
+    return false;
+
+  if (StringUtils::StartsWith(hostname, "127.")
+      || (hostname == "::1")
+      || StringUtils::EqualsNoCase(hostname, "localhost"))
+    return true;
+
+  std::string myhostname;
+  if (GetHostName(myhostname)
+      && StringUtils::EqualsNoCase(hostname, myhostname))
+    return true;
+
+  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+  std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+  while (iter != ifaces.end())
+  {
+    CNetworkInterface* iface = *iter;
+    if (iface && iface->GetCurrentIPAddress() == hostname)
+      return true;
+
+     ++iter;
+  }
+
+  return false;
 }
 
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()

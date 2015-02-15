@@ -69,10 +69,10 @@ struct TVShowRegexp
   bool byDate;
   std::string regexp;
   int defaultSeason;
-  TVShowRegexp(bool d, const std::string& r, int s = 1)
+  TVShowRegexp(bool d, const std::string& r, int s = 1):
+    regexp(r)
   {
     byDate = d;
-    regexp = r;
     defaultSeason = s;
   }
 };
@@ -149,9 +149,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
-    int m_videoSmallStepBackSeconds;
-    int m_videoSmallStepBackTries;
-    int m_videoSmallStepBackDelay;
     bool m_videoUseTimeSeeking;
     int m_videoTimeSeekForward;
     int m_videoTimeSeekBackward;
@@ -161,6 +158,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    std::vector<int> m_seekSteps;
     std::string m_videoPPFFmpegDeint;
     std::string m_videoPPFFmpegPostProc;
     bool m_videoVDPAUtelecine;

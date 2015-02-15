@@ -25,7 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace EPG
 {
@@ -59,7 +59,7 @@ namespace PVR
   };
   
   class CPVRChannelGroup;
-  typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
+  typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   /** A group of channels */
   class CPVRChannelGroup : public Observable,
@@ -418,11 +418,9 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
+    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon = false);
 
     bool ToggleChannelLocked(const CFileItem &channel);
-
-    virtual bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { return false; }
 
     /*!
      * @brief Get a channel given the channel number on the client.
@@ -551,7 +549,7 @@ namespace PVR
   class CPVRPersistGroupJob : public CJob
   {
   public:
-    CPVRPersistGroupJob(CPVRChannelGroupPtr group) { m_group = group; }
+    CPVRPersistGroupJob(CPVRChannelGroupPtr group): m_group(group) {}
     virtual ~CPVRPersistGroupJob() {}
     const char *GetType() const { return "pvr-channelgroup-persist"; }
 

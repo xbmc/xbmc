@@ -183,7 +183,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   if (CSettings::Get().GetString("audiocds.encoder") == "audioencoder.xbmc.builtin.aac" ||
            CSettings::Get().GetString("audiocds.encoder") == "audioencoder.xbmc.builtin.wma")
   {
-    boost::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
+    std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
   }
   else
@@ -192,9 +192,9 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
     CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon);
     if (addon)
     {
-      boost::shared_ptr<CAudioEncoder> aud =  boost::static_pointer_cast<CAudioEncoder>(addon);
+      std::shared_ptr<CAudioEncoder> aud =  std::static_pointer_cast<CAudioEncoder>(addon);
       aud->Create();
-      boost::shared_ptr<IEncoder> enc =  boost::static_pointer_cast<IEncoder>(aud);
+      std::shared_ptr<IEncoder> enc =  std::static_pointer_cast<IEncoder>(aud);
       encoder = new CEncoder(enc);
     }
   }

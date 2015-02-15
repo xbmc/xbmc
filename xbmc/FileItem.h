@@ -34,7 +34,7 @@
 #include "threads/CriticalSection.h"
 
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 namespace MUSIC_INFO
 {
@@ -44,12 +44,14 @@ class CVideoInfoTag;
 namespace EPG
 {
   class CEpgInfoTag;
+  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 namespace PVR
 {
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
+  typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
 }
 class CPictureInfoTag;
 
@@ -59,6 +61,10 @@ class CSong;
 class CGenre;
 
 class CURL;
+
+class CFileItemList;
+class CCueDocument;
+typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
 
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
@@ -90,6 +96,7 @@ public:
   CFileItem(const CFileItem& item);
   CFileItem(const CGUIListItem& item);
   explicit CFileItem(const std::string& strLabel);
+  explicit CFileItem(const char* strLabel);
   CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const std::string& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
@@ -99,9 +106,9 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const EPG::CEpgInfoTag& tag);
+  CFileItem(const EPG::CEpgInfoTagPtr& tag);
   CFileItem(const PVR::CPVRChannel& channel);
-  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
@@ -152,6 +159,7 @@ public:
    */
   bool IsPicture() const;
   bool IsLyrics() const;
+  bool IsSubtitle() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for
@@ -257,14 +265,17 @@ public:
 
   inline bool HasEPGInfoTag() const
   {
-    return m_epgInfoTag != NULL;
+    return m_epgInfoTag.get() != NULL;
   }
 
-  EPG::CEpgInfoTag* GetEPGInfoTag();
-
-  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
+  inline const EPG::CEpgInfoTagPtr GetEPGInfoTag() const
   {
     return m_epgInfoTag;
+  }
+
+  inline void SetEPGInfoTag(const EPG::CEpgInfoTagPtr& tag)
+  {
+    m_epgInfoTag = tag;
   }
 
   inline bool HasPVRChannelInfoTag() const
@@ -281,12 +292,10 @@ public:
 
   inline bool HasPVRRecordingInfoTag() const
   {
-    return m_pvrRecordingInfoTag != NULL;
+    return m_pvrRecordingInfoTag.get() != NULL;
   }
 
-  PVR::CPVRRecording* GetPVRRecordingInfoTag();
-
-  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  inline const PVR::CPVRRecordingPtr GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
@@ -461,6 +470,10 @@ public:
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
 
+  void SetCueDocument(const CCueDocumentPtr& cuePtr);
+  void LoadEmbeddedCue();
+  bool HasCueDocument() const;
+  bool LoadTracksFromCueDocument(CFileItemList& scannedItems);
 private:
   /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
    Called from constructors, and from Reset()
@@ -478,19 +491,21 @@ private:
   std::string m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  EPG::CEpgInfoTag* m_epgInfoTag;
+  EPG::CEpgInfoTagPtr m_epgInfoTag;
   PVR::CPVRChannel* m_pvrChannelInfoTag;
-  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+
+  CCueDocumentPtr m_cueDocument;
 };
 
 /*!
   \brief A shared pointer to CFileItem
   \sa CFileItem
   */
-typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 /*!
   \brief A vector of pointer to CFileItem

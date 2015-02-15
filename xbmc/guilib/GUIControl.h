@@ -83,6 +83,9 @@ public:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void DoRender();
   virtual void Render() {};
+  // Called after the actual rendering is completed to trigger additional
+  // non GUI rendering operations
+  virtual void RenderEx() {};
 
   /*! \brief Returns whether or not we have processed */
   bool HasProcessed() const { return m_hasProcessed; };

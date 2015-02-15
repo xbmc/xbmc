@@ -36,7 +36,8 @@
 #include "utils/RegExp.h"
 #include "XBIRRemote.h"
 #include "Util.h"
-#include <boost/shared_ptr.hpp>
+
+#include <algorithm>
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -304,8 +305,6 @@ static const ActionMapping windows[] =
         {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
         {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
         {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
-        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
-        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
@@ -414,7 +413,10 @@ static const ActionMapping mousekeys[] =
   { "mousemove",   KEY_MOUSE_MOVE },
   { "mousedrag",   KEY_MOUSE_DRAG },
   { "mousedragstart", KEY_MOUSE_DRAG_START },
-  { "mousedragend",   KEY_MOUSE_DRAG_END }
+  { "mousedragend",   KEY_MOUSE_DRAG_END },
+  { "mouserdrag", KEY_MOUSE_RDRAG },
+  { "mouserdragstart", KEY_MOUSE_RDRAG_START },
+  { "mouserdragend", KEY_MOUSE_RDRAG_END }
 };
 
 static const ActionMapping touchcommands[] =
@@ -505,7 +507,7 @@ void CButtonTranslator::AddDevice(std::string& strDevice)
 {
   // Only add the device if it isn't already in the list
   std::list<std::string>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+  for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
     if (*it == strDevice)
       return;
 
@@ -521,7 +523,7 @@ void CButtonTranslator::RemoveDevice(std::string& strDevice)
 {
   // Find the device
   std::list<std::string>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+  for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
     if (*it == strDevice)
       break;
   if (it == m_deviceList.end())
@@ -563,7 +565,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 
       // Load mappings for any HID devices we have connected
       std::list<std::string>::iterator it;
-      for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+      for (it = m_deviceList.begin(); it != m_deviceList.end(); ++it)
       {
         std::string devicedir = DIRS_TO_CHECK[dirIndex];
         devicedir.append(*it);
@@ -651,7 +653,9 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
       const char *szWindow = pWindow->Value();
       if (szWindow)
       {
-        if (strcmpi(szWindow, "global") == 0)
+        if (strcmpi(szWindow, "joystickFamily") == 0)
+          MapJoystickFamily(pWindow);
+        else if (strcmpi(szWindow, "global") == 0)
           windowID = -1;
         else
           windowID = TranslateWindow(szWindow);
@@ -759,29 +763,84 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
 }
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+void CButtonTranslator::MapJoystickFamily(TiXmlNode *pNode)
+{
+  TiXmlElement *pFamily = pNode->ToElement();
+  if (pFamily && pFamily->Attribute("name"))
+  {
+    std::string joyFamilyName = pFamily->Attribute("name");
+    JoystickFamily* joyFamily = &m_joystickFamilies[joyFamilyName];
+
+    TiXmlElement *pMember = pFamily->FirstChildElement();
+    while (pMember)
+    {
+      TiXmlNode* pName = pMember->FirstChild();
+      if (pName && pName->ValueStr() != "") {
+        std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
+        std::string joyRe = JoynameToRegex(pName->ValueStr());
+        if (!re->RegComp(joyRe, CRegExp::StudyRegExp))
+        {
+          CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", pName->Value());
+          continue;
+        }
+        AddFamilyRegex(joyFamily, re);
+      }
+      pMember = pMember->NextSiblingElement();
+    }
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "Ignoring nameless joystick family");
+  }
+}
+
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
   string joyname = JOYSTICK_DEFAULT_MAP; // default global map name
-  vector<boost::shared_ptr<CRegExp> > joynames;
+  std::string joyFamilyName;
   map<int, string> buttonMap;
   map<int, string> axisMap;
   AxesConfig axesConfig;
   ActionMap hatMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
-  if (pJoy && pJoy->Attribute("name"))
-    joyname = pJoy->Attribute("name");
+  if (pJoy && pJoy->Attribute("name")) {
+    // transform loose name to new family, including altnames
+    std::string joyName = pJoy->Attribute("name");
+    joyFamilyName = joyName;    
+    JoystickFamily* joyFamily = &m_joystickFamilies[joyFamilyName];
+
+    std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
+    std::string joyRe = JoynameToRegex(joyname);
+    if (!re->RegComp(joyRe, CRegExp::StudyRegExp))
+    {
+      CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyname.c_str());
+      return;
+    }
+    AddFamilyRegex(joyFamily, re);
+
+    // add altnames to family
+    TiXmlElement *pNode = pJoystick->FirstChildElement();
+    while (pNode) {
+      const std::string &type = pNode->ValueStr();
+      if (type == "altname") {
+        std::string altName = pNode->FirstChild()->ValueStr();
+        std::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
+        std::string altReStr = JoynameToRegex(altName);
+        if (!altRe->RegComp(altReStr, CRegExp::StudyRegExp))
+          CLog::Log(LOGNOTICE, "Ignoring invalid joystick altname regex: '%s'", altReStr.c_str());
+        else
+          AddFamilyRegex(joyFamily, altRe);
+      }
+      pNode = pNode->NextSiblingElement();
+    }
+
+  }
+  else if (pJoy && pJoy->Attribute("family"))
+    joyFamilyName = pJoy->Attribute("family");
   else
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
 
-  boost::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
-  if (!re->RegComp(JoynameToRegex(joyname), CRegExp::StudyRegExp))
-  {
-    CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyname.c_str());
-    return;
-  }
-  else 
-    joynames.push_back(re);
 
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
@@ -855,30 +914,16 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
       else
         CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", type.c_str());
     }
-    else if (type == "altname")
-    {
-      boost::shared_ptr<CRegExp> altRe(new CRegExp(true, CRegExp::asciiOnly));
-      if (!altRe->RegComp(JoynameToRegex(action), CRegExp::StudyRegExp))
-        CLog::Log(LOGNOTICE, "Ignoring invalid joystick altname regex: '%s'", action.c_str());
-      else
-        joynames.push_back(altRe);
-    }
     else
       CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
 
     pButton = pButton->NextSiblingElement();
   }
-  vector<boost::shared_ptr<CRegExp> >::iterator it = joynames.begin();
-  while (it!=joynames.end())
-  {
-    MergeMap(*it, &m_joystickButtonMap, windowID, buttonMap);
-    MergeMap(*it, &m_joystickAxisMap, windowID, axisMap);
-    MergeMap(*it, &m_joystickHatMap, windowID, hatMap);
-    if (windowID == -1) 
-      m_joystickAxesConfigs[*it] = axesConfig;
-//    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
-    it++;
-  }
+  m_joystickButtonMap[joyFamilyName][windowID].insert(buttonMap.begin(), buttonMap.end());
+  m_joystickAxisMap[joyFamilyName][windowID].insert(axisMap.begin(), axisMap.end());
+  m_joystickHatMap[joyFamilyName][windowID].insert(hatMap.begin(), hatMap.end());
+  if (windowID == -1) 
+    m_joystickAxesConfigs[joyFamilyName] = axesConfig;
 }
 
 std::string CButtonTranslator::JoynameToRegex(const std::string& joyName) const
@@ -894,34 +939,58 @@ std::string CButtonTranslator::JoynameToRegex(const std::string& joyName) const
   return "\\Q" + joyName + "\\E";
 }
 
-void CButtonTranslator::MergeMap(boost::shared_ptr<CRegExp> joyName, JoystickMap *joystick, int windowID, const ActionMap &map)
+bool CButtonTranslator::AddFamilyRegex(JoystickFamily* family, std::shared_ptr<CRegExp> regex)
 {
-  // find or create WindowMap entry, match on pattern equality
-  JoystickMap::iterator jit;
-  for (jit = joystick->begin(); jit != joystick->end(); jit++)
+  // even though family is a set, this does not prevent the same regex 
+  // from being added twice, so we manually match on pattern equality
+  JoystickFamily::iterator it;
+  for (it = family->begin(); it != family->end(); it++)
   {
-    if (jit->first->GetPattern() == joyName->GetPattern())
-      break;
+    if ((*it)->GetPattern() == regex->GetPattern())
+      return false;
   }
-  WindowMap *w = (jit == joystick->end()) ? &(*joystick)[joyName] : &jit->second;
-  
-  // find or create ActionMap, and merge/overwrite new entries
-  ActionMap *a = &(*w)[windowID];
-  for (ActionMap::const_iterator it = map.begin(); it != map.end(); it++)
-    (*a)[it->first] = it->second;
+  family->insert(regex);
+  return true;
+}
+
+const AxesConfig* CButtonTranslator::GetAxesConfigFor(const std::string& joyName) const
+{
+  JoystickFamilyMap::const_iterator familyIt = FindJoystickFamily(joyName);
+  if (familyIt == m_joystickFamilies.end())
+    return NULL;
+  else {
+    std::map<std::string, AxesConfig>::const_iterator it = m_joystickAxesConfigs.find(familyIt->first);
+    if (it == m_joystickAxesConfigs.end())
+      return NULL;
+    else
+      return &it->second;
+  }
 }
 
 CButtonTranslator::JoystickMap::const_iterator CButtonTranslator::FindWindowMap(const std::string& joyName, const JoystickMap &maps) const
 {
-  JoystickMap::const_iterator it;
-  for (it = maps.begin(); it != maps.end(); it++)
+  JoystickFamilyMap::const_iterator familyIt = FindJoystickFamily(joyName);
+  if (familyIt == m_joystickFamilies.end())
+    return maps.end();
+  else
+    return maps.find(familyIt->first);
+}
+
+CButtonTranslator::JoystickFamilyMap::const_iterator CButtonTranslator::FindJoystickFamily(const std::string& joyName) const
+{
+  // find the family corresponding to a joystick name
+  JoystickFamilyMap::const_iterator it;
+  for (it = m_joystickFamilies.begin(); it != m_joystickFamilies.end(); it++)
   {
-    if (it->first->RegFind(joyName) >= 0)
+    JoystickFamily::const_iterator regexIt;
+    for (regexIt = it->second.begin(); regexIt != it->second.end(); regexIt++)
     {
-      // CLog::Log(LOGDEBUG, "Regex %s matches joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
-      break;
+      if ((*regexIt)->RegFind(joyName) >= 0)
+      {
+        // CLog::Log(LOGDEBUG, "Regex %s matches joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
+        return it;
+      }
     }
-    // CLog::Log(LOGDEBUG, "No match: %s for joystick %s", it->first->GetPattern().c_str(), joyName.c_str());
   }
   return it;
 }
@@ -1404,7 +1473,6 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton == "enter") buttonCode = XINPUT_IR_REMOTE_ENTER;
   else if (strButton == "xbox") buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else if (strButton == "playlist") buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton == "guide") buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton == "teletext") buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton == "red") buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton == "green") buttonCode = XINPUT_IR_REMOTE_GREEN;

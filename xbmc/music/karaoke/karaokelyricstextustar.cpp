@@ -20,6 +20,7 @@
 
 // C++ Implementation: karaokelyricstextlrc
 
+#include <cstdlib>
 #include <math.h>
 
 #include "filesystem/File.h"
@@ -31,8 +32,8 @@
 
 CKaraokeLyricsTextUStar::CKaraokeLyricsTextUStar( const std::string & lyricsFile )
   : CKaraokeLyricsText()
+  , m_lyricsFile(lyricsFile)
 {
-  m_lyricsFile = lyricsFile;
 }
 
 

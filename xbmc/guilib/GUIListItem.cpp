@@ -43,23 +43,18 @@ CGUIListItem::CGUIListItem(const CGUIListItem& item)
 CGUIListItem::CGUIListItem(void)
 {
   m_bIsFolder = false;
-  m_strLabel2 = "";
-  m_strLabel = "";
   m_bSelected = false;
-  m_strIcon = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
 }
 
-CGUIListItem::CGUIListItem(const std::string& strLabel)
+CGUIListItem::CGUIListItem(const std::string& strLabel):
+  m_strLabel(strLabel)
 {
   m_bIsFolder = false;
-  m_strLabel2 = "";
-  m_strLabel = strLabel;
   SetSortLabel(strLabel);
   m_bSelected = false;
-  m_strIcon = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;

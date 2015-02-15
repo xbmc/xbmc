@@ -165,16 +165,16 @@ namespace EPG
     void Clear(void);
 
     /*!
-     * @brief Get the event that is occurring now.
-     * @return The current event.
+     * @brief Get the event that is occurring now
+     * @return The current event or NULL if it wasn't found.
      */
-    bool InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded = true);
+    CEpgInfoTagPtr GetTagNow(bool bUpdateIfNeeded = true) const;
 
     /*!
-     * @brief Get the event that will occur next.
-     * @return The next event.
+     * @brief Get the event that will occur next
+     * @return The next event or NULL if it wasn't found.
      */
-    bool InfoTagNext(CEpgInfoTag &tag);
+    CEpgInfoTagPtr GetTagNext() const;
 
     /*!
      * @brief Get the event that occurs at the given time.
@@ -340,7 +340,7 @@ namespace EPG
 
     bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
 
-    void UpdateRecording(CEpgInfoTagPtr tag);
+    void UpdateRecording(CEpgInfoTagPtr &tag);
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;
@@ -352,7 +352,7 @@ namespace EPG
     int                                 m_iEpgID;          /*!< the database ID of this table */
     std::string                         m_strName;         /*!< the name of this table */
     std::string                         m_strScraperName;  /*!< the name of the scraper to use */
-    CDateTime                           m_nowActiveStart;  /*!< the start time of the tag that is currently active */
+    mutable CDateTime                   m_nowActiveStart;  /*!< the start time of the tag that is currently active */
 
     CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */
 

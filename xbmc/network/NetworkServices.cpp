@@ -59,6 +59,7 @@
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPImageHandler.h"
+#include "network/httprequesthandler/HTTPImageTransformationHandler.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
 #ifdef HAS_JSONRPC
 #include "network/httprequesthandler/HTTPJsonRpcHandler.h"
@@ -95,6 +96,7 @@ CNetworkServices::CNetworkServices()
   :
   m_webserver(*new CWebServer),
   m_httpImageHandler(*new CHTTPImageHandler),
+  m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
   m_httpVfsHandler(*new CHTTPVfsHandler)
 #ifdef HAS_JSONRPC
   , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
@@ -107,6 +109,7 @@ CNetworkServices::CNetworkServices()
 {
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpImageHandler);
+  CWebServer::RegisterRequestHandler(&m_httpImageTransformationHandler);
   CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_JSONRPC
   CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
@@ -123,6 +126,8 @@ CNetworkServices::~CNetworkServices()
 #ifdef HAS_WEB_SERVER
   CWebServer::UnregisterRequestHandler(&m_httpImageHandler);
   delete &m_httpImageHandler;
+  CWebServer::UnregisterRequestHandler(&m_httpImageTransformationHandler);
+  delete &m_httpImageTransformationHandler;
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
   delete &m_httpVfsHandler;
 #ifdef HAS_JSONRPC
@@ -408,7 +413,6 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   const std::string &settingId = setting->GetId();
   if (settingId == "services.webserverusername")
   {
-    CSettingString *webserverusername = (CSettingString*)setting;
     // if webserverusername is xbmc and pw is not empty we treat it as altered
     // and don't change the username to kodi - part of rebrand
     if (CSettings::Get().GetString("services.webserverusername") == "xbmc" &&

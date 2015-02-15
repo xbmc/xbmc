@@ -27,6 +27,7 @@ class CBaseTexture;
 class CPicture
 {
 public:
+  static bool GetThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile, uint8_t* &result, size_t& result_size);
   static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile);
 
   /*! \brief Create a tiled thumb of the given files
@@ -34,6 +35,9 @@ public:
    \param thumb the filename of the thumb
    */
   static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
+
+  static bool ResizeTexture(const std::string &image, CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size);
+  static bool ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size);
 
   /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
    \param texture a pointer to a CBaseTexture

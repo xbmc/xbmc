@@ -1,7 +1,5 @@
 SRCS=GUIDialogPVRChannelManager.cpp \
      GUIDialogPVRChannelsOSD.cpp \
-     GUIDialogPVRCutterOSD.cpp \
-     GUIDialogPVRDirectorOSD.cpp \
      GUIDialogPVRGroupManager.cpp \
      GUIDialogPVRGuideInfo.cpp \
      GUIDialogPVRGuideOSD.cpp \

@@ -28,14 +28,9 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
 {
   string output;
 
-#if YAJL_MAJOR == 2
   yajl_gen g = yajl_gen_alloc(NULL);
   yajl_gen_config(g, yajl_gen_beautify, compact ? 0 : 1);
   yajl_gen_config(g, yajl_gen_indent_string, "\t");
-#else
-  yajl_gen_config conf = { compact ? 0 : 1, "\t" };
-  yajl_gen g = yajl_gen_alloc(&conf, NULL);
-#endif
 
   // Set locale to classic ("C") to ensure valid JSON numbers
   const char *currentLocale = setlocale(LC_NUMERIC, NULL);
@@ -50,13 +45,8 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
   {
     const unsigned char * buffer;
 
-#if YAJL_MAJOR == 2
     size_t length;
     yajl_gen_get_buf(g, &buffer, &length);
-#else
-    unsigned int length;
-    yajl_gen_get_buf(g, &buffer, &length);
-#endif
     output = string((const char *)buffer, length);
   }
 
@@ -77,18 +67,10 @@ bool CJSONVariantWriter::InternalWrite(yajl_gen g, const CVariant &value)
   switch (value.type())
   {
   case CVariant::VariantTypeInteger:
-#if YAJL_MAJOR == 2
     success = yajl_gen_status_ok == yajl_gen_integer(g, (long long int)value.asInteger());
-#else
-    success = yajl_gen_status_ok == yajl_gen_integer(g, (long int)value.asInteger());
-#endif
     break;
   case CVariant::VariantTypeUnsignedInteger:
-#if YAJL_MAJOR == 2
     success = yajl_gen_status_ok == yajl_gen_integer(g, (long long int)value.asUnsignedInteger());
-#else
-    success = yajl_gen_status_ok == yajl_gen_integer(g, (long int)value.asUnsignedInteger());
-#endif
     break;
   case CVariant::VariantTypeDouble:
     success = yajl_gen_status_ok == yajl_gen_double(g, value.asDouble());
@@ -97,11 +79,7 @@ bool CJSONVariantWriter::InternalWrite(yajl_gen g, const CVariant &value)
     success = yajl_gen_status_ok == yajl_gen_bool(g, value.asBoolean() ? 1 : 0);
     break;
   case CVariant::VariantTypeString:
-#if YAJL_MAJOR == 2
     success = yajl_gen_status_ok == yajl_gen_string(g, (const unsigned char*)value.c_str(), (size_t)value.size());
-#else
-    success = yajl_gen_status_ok == yajl_gen_string(g, (const unsigned char*)value.c_str(), value.size());
-#endif
     break;
   case CVariant::VariantTypeArray:
     success = yajl_gen_status_ok == yajl_gen_array_open(g);
@@ -118,11 +96,7 @@ bool CJSONVariantWriter::InternalWrite(yajl_gen g, const CVariant &value)
 
     for (CVariant::const_iterator_map itr = value.begin_map(); itr != value.end_map() && success; ++itr)
     {
-#if YAJL_MAJOR == 2
       success &= yajl_gen_status_ok == yajl_gen_string(g, (const unsigned char*)itr->first.c_str(), (size_t)itr->first.length());
-#else
-      success &= yajl_gen_status_ok == yajl_gen_string(g, (const unsigned char*)itr->first.c_str(), itr->first.length());
-#endif
       if (success)
         success &= InternalWrite(g, itr->second);
     }

@@ -57,8 +57,8 @@ private:
   struct CGetJob
     : CJob
   {
-    CGetJob(boost::shared_ptr<IDirectory>& imp
-          , boost::shared_ptr<CResult>& result)
+    CGetJob(std::shared_ptr<IDirectory>& imp
+          , std::shared_ptr<CResult>& result)
       : m_result(result)
       , m_imp(imp)
     {}
@@ -71,13 +71,13 @@ private:
       return m_result->m_result;
     }
 
-    boost::shared_ptr<CResult>    m_result;
-    boost::shared_ptr<IDirectory> m_imp;
+    std::shared_ptr<CResult>    m_result;
+    std::shared_ptr<IDirectory> m_imp;
   };
 
 public:
 
-  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CURL& dir, const CURL& listDir)
+  CGetDirectory(std::shared_ptr<IDirectory>& imp, const CURL& dir, const CURL& listDir)
     : m_result(new CResult(dir, listDir))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
@@ -106,7 +106,7 @@ public:
     list.Copy(m_result->m_list);
     return true;
   }
-  boost::shared_ptr<CResult> m_result;
+  std::shared_ptr<CResult> m_result;
   unsigned int               m_id;
 };
 
@@ -144,7 +144,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    boost::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (!pDirectory.get())
       return false;
 
@@ -285,7 +285,7 @@ bool CDirectory::Create(const CURL& url)
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (pDirectory.get())
       if(pDirectory->Create(realURL))
         return true;
@@ -320,7 +320,7 @@ bool CDirectory::Exists(const CURL& url, bool bUseCache /* = true */)
       if (bPathInCache)
         return false;
     }
-    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (pDirectory.get())
       return pDirectory->Exists(realURL);
   }
@@ -344,7 +344,7 @@ bool CDirectory::Remove(const CURL& url)
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (pDirectory.get())
       if(pDirectory->Remove(realURL))
       {
@@ -368,7 +368,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &
     CFileItemPtr pItem=items[i];
     if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_TYPE_ALWAYS))
     {
-      auto_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
+      unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
       if (pDirectory.get())
         pItem->m_bIsFolder = true;
       else

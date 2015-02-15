@@ -24,6 +24,8 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/contrib/cc_decoder708.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 class CBitstream
 {
 public:
@@ -96,6 +98,7 @@ bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec)
 {
   m_hasData = false;
+  m_curPts = 0;
   m_ccDecoder = NULL;
   m_codec = codec;
 }
@@ -176,7 +179,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
           else if (len >= 6 &&
                    buf[0] == 'C' && buf[1] == 'C' && buf[2] == 1)
           {
-            int oddfirst = buf[4] & 0x80;
+            int oddidx = (buf[4] & 0x80) ? 0 : 1;
             int cc_count = (buf[4] & 0x3e) >> 1;
             int extrafield = buf[4] & 0x01;
             if (extrafield)
@@ -195,7 +198,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
                   if (i == cc_count - 1 && extrafield && j == 1)
                     break;
 
-                  if ((!oddfirst == j) && (src[0] == 0xFF))
+                  if ((oddidx == j) && (src[0] == 0xFF))
                   {
                     dst[0] = 0x04;
                     dst[1] = src[1];

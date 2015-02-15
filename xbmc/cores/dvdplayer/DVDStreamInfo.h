@@ -56,7 +56,7 @@ public:
 
 
   // VIDEO
-  int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
+  int fpsscale; // scale of 1001 and a rate of 60000 will result in 59.94 fps
   int fpsrate;
   int rfpsscale;
   int rfpsrate;

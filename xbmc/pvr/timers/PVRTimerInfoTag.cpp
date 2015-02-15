@@ -44,7 +44,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void) :
 {
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
-  m_iClientChannelUid  = PVR_VIRTUAL_CHANNEL_UID;
+  m_iClientChannelUid  = PVR_INVALID_CHANNEL_UID;
   m_iPriority          = CSettings::Get().GetInt("pvrrecord.defaultpriority");
   m_iLifetime          = CSettings::Get().GetInt("pvrrecord.defaultlifetime");
   m_bIsRepeating       = false;
@@ -439,10 +439,10 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
     CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
 }
 
-void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTagPtr tag)
+void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTagPtr &tag)
 {
   CSingleLock lock(m_critSection);
-  if (tag && m_epgTag != tag)
+  if (tag && *m_epgTag != *tag)
     CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", m_strTitle.c_str(), tag->Title().c_str());
   else if (!tag && m_epgTag)
     CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", m_strTitle.c_str());

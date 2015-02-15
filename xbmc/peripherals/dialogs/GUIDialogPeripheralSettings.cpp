@@ -116,6 +116,13 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   SetupView();
 }
 
+void CGUIDialogPeripheralSettings::SetupView()
+{
+  CGUIDialogSettingsManualBase::SetupView();
+
+  SetHeading(5);
+}
+
 void CGUIDialogPeripheralSettings::InitializeSettings()
 {
   if (m_item == NULL)

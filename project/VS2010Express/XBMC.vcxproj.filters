@@ -322,6 +322,9 @@
     <Filter Include="cores\dvdplayer\DVDCodecs\Overlay\contrib">
       <UniqueIdentifier>{43526341-7b96-462d-9f71-685e426251ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\test">
+      <UniqueIdentifier>{1bdb0045-3341-49b7-8d6f-30a53f812350}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -986,6 +989,9 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIFont.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontCache.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp">
@@ -1720,12 +1726,6 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.cpp">
-      <Filter>pvr\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.cpp">
-      <Filter>pvr\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
@@ -1764,6 +1764,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp">
       <Filter>dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\PVRActionListener.cpp">
+      <Filter>pvr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp">
       <Filter>pvr</Filter>
@@ -3086,6 +3089,27 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.cpp">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\test\TestWebServer.cpp">
+      <Filter>network\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestHttpRangeUtils.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputManager.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.cpp">
+      <Filter>dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3870,6 +3894,9 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIFont.h">
       <Filter>guilib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontCache.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIFontManager.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4575,6 +4602,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h">
       <Filter>interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h">
       <Filter>interfaces</Filter>
     </ClInclude>
@@ -4689,12 +4719,6 @@
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h">
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h">
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
@@ -4730,6 +4754,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\PVRActionListener.h">
+      <Filter>pvr</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h">
       <Filter>pvr</Filter>
@@ -6008,6 +6035,21 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.h">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\HttpRangeUtils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputManager.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h">
+      <Filter>dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

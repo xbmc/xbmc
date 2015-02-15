@@ -113,7 +113,7 @@ CPythonInvoker::~CPythonInvoker()
     CLog::Log(LOGDEBUG, "CPythonInvoker(%d): waiting for python thread \"%s\" to stop",
       GetId(), (!m_sourceFile.empty() ? m_sourceFile.c_str() : "unknown script"));
   Stop(true);
-  g_pythonParser.PulseGlobalEvent();
+  pulseGlobalEvent();
 
   if (m_argv != NULL)
   {
@@ -121,7 +121,7 @@ CPythonInvoker::~CPythonInvoker()
       delete [] m_argv[i];
     delete [] m_argv;
   }
-  g_pythonParser.FinalizeScript();
+  onExecutionFinalized();
 }
 
 bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
@@ -135,7 +135,7 @@ bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::s
     return false;
   }
 
-  if (!g_pythonParser.InitializeEngine())
+  if (!onExecutionInitialized())
     return false;
 
   return ILanguageInvoker::Execute(script, arguments);
@@ -436,7 +436,7 @@ bool CPythonInvoker::stop(bool abort)
 
     //tell xbmc.Monitor to call onAbortRequested()
     if (m_addon != NULL)
-      g_pythonParser.OnAbortRequested(m_addon->ID());
+      onAbortRequested();
 
     PyObject *m;
     m = PyImport_AddModule((char*)"xbmc");
@@ -491,7 +491,7 @@ bool CPythonInvoker::stop(bool abort)
       }
 
       // If a dialog entered its doModal(), we need to wake it to see the exception
-      g_pythonParser.PulseGlobalEvent();
+      pulseGlobalEvent();
     }
 
     if (old != NULL)

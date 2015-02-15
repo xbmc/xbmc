@@ -121,7 +121,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   if( m_nativeUpscaleSettings.MaxHeight && iNatH > m_nativeUpscaleSettings.MaxHeight )
     iNatH = 0;
 
-  if( CSettings::Get().GetInt("videoplayer.nativeresolution") > 0 && iNatW && iNatH )     // Native Upscale Mode
+  if( CSettings::Get().GetBool("videoplayer.nativeresolution") && iNatW && iNatH )     // Native Upscale Mode
   {
     CLog::Log(LOGNOTICE, "Searching for NATIVE resolution: %dx%d", m_sourceWidth, m_sourceHeight);
 
@@ -133,26 +133,6 @@ void CBaseRenderer::ChooseBestResolution(float fps)
     float fOrgRefreshRate = org.fRefreshRate;
     int iOrgScreen = org.iScreen;
 
-    switch (CSettings::Get().GetInt("videoplayer.nativeresolution"))
-    {
-        case 1:
-            m_nativeUpscaleSettings.OverrideFPS = false;
-            m_nativeUpscaleSettings.CorrectPixelRatio = false;
-            break;
-        case 2:
-            m_nativeUpscaleSettings.OverrideFPS = true;
-            m_nativeUpscaleSettings.CorrectPixelRatio = false;
-            break;
-        case 3:
-            m_nativeUpscaleSettings.OverrideFPS = false;
-            m_nativeUpscaleSettings.CorrectPixelRatio = true;
-            break;
-        case 4:
-            m_nativeUpscaleSettings.OverrideFPS = true;
-            m_nativeUpscaleSettings.CorrectPixelRatio = true;
-            break;
-    }
-      
     if(iNatW <= m_nativeUpscaleSettings.MinWidth &&
        iNatH <= m_nativeUpscaleSettings.MinHeight)
     {
@@ -184,15 +164,17 @@ void CBaseRenderer::ChooseBestResolution(float fps)
         fD += fRD + ( (abs(nfRD-floor(nfRD+0.5)) < 1e-6) ? 10.0 : 1000.0 );
       }
 
-      if( fRD >= 0.0 && iWD >= 0 && iHD >= 0 && fD <= fODist &&
-          info.iScreen == iOrgScreen )
+      // if( fRD >= 0.0 && iWD >= 0 && iHD >= 0 && fD <= fODist && info.iScreen == iOrgScreen )
+      // Only select resolution if equals
+      if( fRD == 0.0 && iWD == 0 && iHD == 0 && info.iScreen == iOrgScreen )
       {
-        m_resolution = (RESOLUTION)i;         // if we are here, then this resolution is closer to
-        fODist = fD;                          // the source parameters than previous one
+        m_resolution = (RESOLUTION)i;         // if we are here, then this resolution is supported by device
+        fODist = fD;
+        break;
       }
     }
 
-    CLog::Log(LOGNOTICE, "Display resolution ADJUST2 : %s (%d)", org.strMode.c_str(), m_resolution);
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST2 : %s (%d)", g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution);
   }
 }
 
@@ -396,8 +378,8 @@ RESOLUTION CBaseRenderer::GetResolution() const
 
 float CBaseRenderer::GetAspectRatio() const
 {
-  float width = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  float height = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  float width = (float)m_sourceWidth;
+  float height = (float)m_sourceHeight;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
@@ -709,11 +691,6 @@ void CBaseRenderer::ManageDisplay()
       break;
   }
 
-  m_sourceRect.x1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  m_sourceRect.y1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  m_sourceRect.x2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  m_sourceRect.y2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
-
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
 
@@ -736,7 +713,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float sourceFrameRatio = GetAspectRatio();
 
   // if we upscale via external AVR device, correct the pixel ratio
-  if( CSettings::Get().GetInt("videoplayer.nativeresolution") > 0 && m_bestResolution != m_resolution
+  if( CSettings::Get().GetBool("videoplayer.nativeresolution") && m_bestResolution != m_resolution
    && m_nativeUpscaleSettings.CorrectPixelRatio )
   {
     float destWidth = (float)(m_nativeUpscaleSettings.DestWidth);
@@ -837,7 +814,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
       newHeight = screenHeight;
     }
     // now work out the zoom amount so that no zoom is done
-    CDisplaySettings::Get().SetZoomAmount((m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom) / newHeight);
+    CDisplaySettings::Get().SetZoomAmount(m_sourceHeight / newHeight);
   }
   else if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeCustom)
   {

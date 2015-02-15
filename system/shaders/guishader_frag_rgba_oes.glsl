@@ -24,8 +24,14 @@ precision mediump float;
 uniform samplerExternalOES m_samp0;
 varying vec4      m_cord0;
 
-// SM_TEXTURE_OES
+uniform float     m_brightness;
+uniform float     m_contrast;
+
 void main ()
 {
-  gl_FragColor.rgba = texture2D(m_samp0, m_cord0.xy).rgba;
+    vec4 color = texture2D(m_samp0, m_cord0.xy).rgba;
+    color = color * m_contrast;
+    color = color + m_brightness;
+
+    gl_FragColor.rgba = color;
 }

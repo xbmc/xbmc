@@ -41,14 +41,14 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/ISerializable.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class CFileItem;
 
 namespace EPG
 {
   class CEpgInfoTag;
-  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
+  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 }
 
 namespace PVR
@@ -58,11 +58,10 @@ namespace PVR
   class CPVRChannelGroupInternal;
 
   class CPVRChannel;
-  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   class CPVRTimerInfoTag;
-  typedef boost::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-  #define PVR_VIRTUAL_CHANNEL_UID (-1)
+  typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
 
   class CPVRTimerInfoTag : public ISerializable
   {
@@ -157,7 +156,7 @@ namespace PVR
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
-    void SetEpgInfoTag(EPG::CEpgInfoTagPtr tag);
+    void SetEpgInfoTag(EPG::CEpgInfoTagPtr &tag);
     void ClearEpgTag(void);
 
     void UpdateChannel(void);

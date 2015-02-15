@@ -65,9 +65,9 @@
 		<control type="textbox" id="9">
 			<description>text</description>
 			<left>30</left>
-			<top>60</top>
+			<top>62</top>
 			<width>550</width>
-			<height>80</height>
+			<height>78</height>
 			<align>left</align>
 			<label>-</label>
 			<font>font13</font>

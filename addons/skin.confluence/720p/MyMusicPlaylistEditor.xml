@@ -82,9 +82,9 @@
 				</control>
 				<control type="textbox">
 					<left>480</left>
-					<top>300</top>
+					<top>302</top>
 					<width>320</width>
-					<height>220</height>
+					<height>218</height>
 					<font>font11</font>
 					<align>center</align>
 					<textcolor>white</textcolor>
@@ -106,9 +106,9 @@
 				</control>
 				<control type="textbox">
 					<left>465</left>
-					<top>300</top>
+					<top>302</top>
 					<width>350</width>
-					<height>220</height>
+					<height>218</height>
 					<font>font11</font>
 					<align>center</align>
 					<textcolor>white</textcolor>

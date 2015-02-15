@@ -30,6 +30,7 @@ SRCS += HTMLTable.cpp
 SRCS += HTMLUtil.cpp
 SRCS += HttpHeader.cpp
 SRCS += HttpParser.cpp
+SRCS += HttpRangeUtils.cpp
 SRCS += HttpResponse.cpp
 SRCS += InfoLoader.cpp
 SRCS += JobManager.cpp
@@ -83,6 +84,10 @@ SRCS += SysfsUtils.cpp
 
 ifeq (@USE_OPENGLES@,1)
 SRCS += AMLUtils.cpp
+endif
+
+ifeq (@USE_LIBAMCODEC@,1)
+SRCS += ScreenshotAML.cpp
 endif
 
 LIB   = utils.a

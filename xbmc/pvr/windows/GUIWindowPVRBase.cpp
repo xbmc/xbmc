@@ -330,8 +330,7 @@ bool CGUIWindowPVRBase::StartRecordFile(const CFileItem &item)
   if (!item.HasEPGInfoTag())
     return false;
 
-  // tag has been checked for NULL in HasEPGInfoTag()
-  const CEpgInfoTag *tag = item.GetEPGInfoTag();
+  const CEpgInfoTagPtr tag = item.GetEPGInfoTag();
   CPVRChannelPtr channel = tag->ChannelTag();
 
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
@@ -372,7 +371,7 @@ bool CGUIWindowPVRBase::StopRecordFile(const CFileItem &item)
   if (!item.HasEPGInfoTag())
     return false;
 
-  const CEpgInfoTag *tag = item.GetEPGInfoTag();
+  const CEpgInfoTagPtr tag(item.GetEPGInfoTag());
   if (!tag || !tag->HasPVRChannel())
     return false;
 
@@ -472,10 +471,10 @@ void CGUIWindowPVRBase::ShowEPGInfo(CFileItem *item)
   }
   else if (item->IsPVRChannel())
   {
-    CEpgInfoTag epgnow;
+    CEpgInfoTagPtr epgnow(item->GetPVRChannelInfoTag()->GetEPGNow());
     channel = *item->GetPVRChannelInfoTag();
     bHasChannel = true;
-    if (!item->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
+    if (!epgnow)
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
       return;
@@ -513,7 +512,10 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
               m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
           {
             CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
-            epgGridContainer->SetChannel((*(*it)->GetEPGInfoTag()->ChannelTag()));
+            if ((*it)->HasEPGInfoTag() && (*it)->GetEPGInfoTag()->HasPVRChannel())
+              epgGridContainer->SetChannel(*(*it)->GetEPGInfoTag()->ChannelTag());
+            else
+              epgGridContainer->SetChannel(*(*it)->GetPVRChannelInfoTag());
           }
           else
             m_viewControl.SetSelectedItem(itemIndex);
@@ -529,21 +531,7 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
 
 bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
 {
-  bool bReturn = false;
-
-  if (item->GetPath() == "pvr://channels/.add.channel")
-  {
-    /* show "add channel" dialog */
-    CGUIDialogOK::ShowAndGetInput(19033,0,19038,0);
-    bReturn = true;
-  }
-  else
-  {
-    /* open channel */
-    bReturn = PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
-  }
-
-  return bReturn;
+  return PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
 }
 
 bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
@@ -552,8 +540,8 @@ bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
     return false;
 
   CPVRChannelPtr channel;
-  CEpgInfoTag *epgTag = item->GetEPGInfoTag();
-  if (epgTag->HasPVRChannel())
+  CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
+  if (epgTag && epgTag->HasPVRChannel())
     channel = epgTag->ChannelTag();
 
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
@@ -561,7 +549,7 @@ bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
 
   CFileItem fileItem;
   if (epgTag->HasRecording())
-    fileItem = CFileItem(*epgTag->Recording());
+    fileItem = CFileItem(epgTag->Recording());
   else
     fileItem = CFileItem(*channel);
 
@@ -609,7 +597,7 @@ bool CGUIWindowPVRBase::ActionRecord(CFileItem *item)
 {
   bool bReturn = false;
 
-  CEpgInfoTag *epgTag = item->GetEPGInfoTag();
+  CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
   if (!epgTag)
     return bReturn;
 

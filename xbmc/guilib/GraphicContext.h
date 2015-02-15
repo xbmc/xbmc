@@ -146,6 +146,7 @@ public:
   inline void ScaleFinalCoords(float &x, float &y, float &z) const XBMC_FORCE_INLINE { m_finalTransform.matrix.TransformPosition(x, y, z); }
   bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
+  inline const TransformMatrix &GetGUIMatrix() const XBMC_FORCE_INLINE { return m_finalTransform.matrix; }
   inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_finalTransform.scaleX; }
   inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_finalTransform.scaleY; }
   inline color_t MergeAlpha(color_t color) const XBMC_FORCE_INLINE
@@ -198,6 +199,7 @@ public:
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  CRect GetClipRegion();
   inline void AddGUITransform()
   {
     m_transforms.push(m_finalTransform);

@@ -920,7 +920,9 @@
       { "name": "musicbrainztrackid", "$ref": "Optional.String" },
       { "name": "musicbrainzartistid", "$ref": "Optional.String" },
       { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" }
+      { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "lastplayed", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },

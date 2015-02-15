@@ -35,6 +35,7 @@
 #ifndef TARGET_WINDOWS
 #include "linux/XTimeUtils.h"
 #endif
+#include <stdlib.h>
 
 CAppParamParser::CAppParamParser()
 {

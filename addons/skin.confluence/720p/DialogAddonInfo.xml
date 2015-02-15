@@ -217,9 +217,9 @@
 					<control type="textbox" id="400">
 						<description>Description</description>
 						<left>10</left>
-						<top>195</top>
+						<top>197</top>
 						<width>600</width>
-						<height>190</height>
+						<height>188</height>
 						<font>font13</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
@@ -256,9 +256,9 @@
 					<control type="textbox">
 						<description>Disclaimer</description>
 						<left>10</left>
-						<top>425</top>
+						<top>427</top>
 						<width>600</width>
-						<height>66</height>
+						<height>64</height>
 						<font>font12</font>
 						<align>left</align>
 						<textcolor>white</textcolor>
@@ -283,9 +283,9 @@
 					<control type="textbox" id="401">
 						<description>Description</description>
 						<left>10</left>
-						<top>205</top>
+						<top>207</top>
 						<width>600</width>
-						<height>260</height>
+						<height>258</height>
 						<font>font13</font>
 						<align>left</align>
 						<textcolor>white</textcolor>
@@ -412,9 +412,9 @@
 				<control type="textbox">
 					<description>Reason label</description>
 					<left>100</left>
-					<top>35</top>
+					<top>37</top>
 					<width>800</width>
-					<height>50</height>
+					<height>48</height>
 					<font>font13</font>
 					<label>$INFO[ListItem.Property(Addon.broken)]</label>
 					<align>left</align>

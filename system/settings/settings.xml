@@ -318,11 +318,6 @@
   <section id="videos" label="3" help="36138">
     <category id="videolibrary" label="14022" help="36139">
       <group id="1">
-        <setting id="videolibrary.enabled" type="boolean" label="24022" help="36140">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
           <level>0</level>
           <default>true</default>
@@ -393,6 +388,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.preferdefaultflag" type="boolean" label="37040" help="37041">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.autoplaynextitem" type="boolean" label="13433" help="36152">
           <level>1</level>
           <default>false</default>
@@ -400,6 +400,32 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
+          <level>2</level>
+          <default>-1800,-900,-600,-300,-180,-60,-30,-15,-7,15,30,60,180,300,600,900,1800</default>
+          <constraints>
+            <options>videoseeksteps</options>
+            <delimiter>,</delimiter>
+            <minimumItems>2</minimumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+        <setting id="videoplayer.seekdelay" type="integer" label="13557" help="37043">
+          <level>2</level>
+          <default>750</default>
+          <constraints>
+            <minimum label="231">0</minimum> <!-- None -->
+            <step>250</step>
+            <maximum>3000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
           <level>2</level>
           <default>0</default> <!-- ADJUST_REFRESHRATE_OFF -->
@@ -423,44 +449,18 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videoplayer.nativeresolution" type="integer" parent="videoplayer.adjustrefreshrate" label="13556">
+        <setting id="videoplayer.nativeresolution" type="boolean" parent="videoplayer.adjustrefreshrate" label="13558" help="36167">
           <level>2</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="1223">0</option> 
-              <option label="13557">1</option> 
-              <option label="13558">2</option> 
-              <option label="13559">3</option> 
-              <option label="13560">4</option> 
-            </options>
-          </constraints>
+          <default>false</default>
           <dependencies>
             <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="toggle" />
         </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
-          <level>4</level>
-          <default>5.0</default>
-          <constraints>
-            <minimum>0.0</minimum>
-            <step>0.1</step>
-            <maximum>10.0</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usedisplayasclock" operator="is">true</condition>
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="spinner" format="number" />
         </setting>
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
           <level>2</level>
@@ -488,7 +488,7 @@
           <control type="spinner" format="string" />
         </setting>
       </group>
-      <group id="3">
+      <group id="4">
         <setting id="videoplayer.teletextenabled" type="boolean" label="23050" help="36174">
           <level>1</level>
           <default>true</default>
@@ -503,7 +503,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4">
+      <group id="5">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
           <level>2</level>
           <default>0</default>
@@ -546,15 +546,6 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
-        <setting id="videoplayer.usepbo" type="boolean" parent="videoplayer.rendermethod" label="13424" help="36163">
-          <requirement>HAS_GL</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.rendermethod" operator="is">1</dependency> <!-- only supported with ARB -->
-          </dependencies>
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="2">
         <requirement>
@@ -566,16 +557,6 @@
             <condition>HAVE_LIBVDPAU</condition>
           </and>
         </requirement>
-        <setting id="videoplayer.vdpauUpscalingLevel" type="boolean" label="13121" help="36173">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="3">
         <setting id="videoplayer.decodingmethod" type="integer" label="13454" help="36431">
@@ -1323,6 +1304,20 @@
           </control>
         </setting>
       </group>
+      <group id="3">
+        <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="351">0</option>   <!-- OFF -->
+              <option label="211">1</option>   <!-- 50Hz -->
+              <option label="212">2</option>   <!-- 59.94Hz -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
     </category>
     <category id="pvrrecord" label="19043" help="36233">
       <group id="1">
@@ -1516,11 +1511,6 @@
   <section id="music" label="2" help="36253">
     <category id="musiclibrary" label="14022" help="36600">
       <group id="1">
-        <setting id="musiclibrary.enabled" type="boolean" label="24022" help="36254">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
           <level>1</level>
           <default>true</default>
@@ -1596,6 +1586,32 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="musicplayer.seeksteps" type="list[integer]" label="13556" help="37042">
+          <level>2</level>
+          <default>-60,-30,-15,-7,7,15,30,60</default>
+          <constraints>
+            <options>videoseeksteps</options>
+            <delimiter>,</delimiter>
+            <minimumItems>2</minimumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+        <setting id="musicplayer.seekdelay" type="integer" label="13557" help="37043">
+          <level>2</level>
+          <default>750</default>
+          <constraints>
+            <minimum label="231">0</minimum> <!-- None -->
+            <step>250</step>
+            <maximum>3000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="musicplayer.replaygaintype" type="integer" label="638" help="36267">
           <level>2</level>
           <default>1</default> <!-- REPLAY_GAIN_ALBUM -->
@@ -1647,7 +1663,7 @@
           </dependencies>
         </setting>
       </group>
-      <group id="3">
+      <group id="4">
         <setting id="musicplayer.crossfade" type="integer" label="13314" help="36271">
           <level>1</level>
           <default>0</default>
@@ -1669,7 +1685,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4">
+      <group id="5">
         <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
           <level>0</level>
           <default>visualization.glspectrum</default>
@@ -2093,7 +2109,7 @@
           <level>1</level>
           <default>webinterface.default</default>
           <constraints>
-            <addontype>xbmc.gui.webinterface</addontype>
+            <addontype>xbmc.webinterface</addontype>
           </constraints>
           <control type="button" format="addon" />
         </setting>

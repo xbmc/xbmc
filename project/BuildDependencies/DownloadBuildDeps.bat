@@ -28,11 +28,6 @@ md %TMP_PATH%
 
 cd scripts
 
-FOR /F "tokens=*" %%S IN ('dir /B "*_d.bat"') DO (
-  echo running %%S ...
-  CALL %%S
-)
-
 SET FORMED_OK_FLAG=%TMP_PATH%\got-all-formed-packages
 REM Trick to preserve console title
 start /b /wait cmd.exe /c get_formed.cmd

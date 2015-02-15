@@ -479,7 +479,7 @@ TEST(TestHttpHeader, GetMimeType)
   EXPECT_STREQ(CHECK_CONTENT_TYPE_TEXT, testHdr.GetMimeType().c_str()) << "MIME-type was not overwritten by \"AddParam\"";
 
   /* Correct trimming */
-  testHdr.AddParam(CHECK_CNT_TYPE_NAME, "  "CHECK_CONTENT_TYPE_TEXT " \t ;foo=bar");
+  testHdr.AddParam(CHECK_CNT_TYPE_NAME, "  " CHECK_CONTENT_TYPE_TEXT " \t ;foo=bar");
   EXPECT_STREQ(CHECK_CONTENT_TYPE_TEXT, testHdr.GetMimeType().c_str()) << "MIME-type is not trimmed correctly";
 }
 

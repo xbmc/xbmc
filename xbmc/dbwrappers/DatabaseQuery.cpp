@@ -172,7 +172,7 @@ bool CDatabaseQueryRule::Save(TiXmlNode *parent) const
   rule.SetAttribute("field", TranslateField(m_field).c_str());
   rule.SetAttribute("operator", TranslateOperator(m_operator).c_str());
 
-  for (vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
+  for (vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
     TiXmlElement value("value");
     TiXmlText text(*it);
@@ -483,13 +483,13 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant &obj, const IDatabaseQue
 
     if (it->isMember("and") || it->isMember("or"))
     {
-      boost::shared_ptr<CDatabaseQueryRuleCombination> combo(factory->CreateCombination());
+      std::shared_ptr<CDatabaseQueryRuleCombination> combo(factory->CreateCombination());
       if (combo && combo->Load(*it, factory))
         m_combinations.push_back(combo);
     }
     else
     {
-      boost::shared_ptr<CDatabaseQueryRule> rule(factory->CreateRule());
+      std::shared_ptr<CDatabaseQueryRule> rule(factory->CreateRule());
       if (rule && rule->Load(*it))
         m_rules.push_back(rule);
     }
@@ -513,7 +513,7 @@ bool CDatabaseQueryRuleCombination::Save(CVariant &obj) const
   CVariant comboArray(CVariant::VariantTypeArray);
   if (!m_combinations.empty())
   {
-    for (CDatabaseQueryRuleCombinations::const_iterator combo = m_combinations.begin(); combo != m_combinations.end(); combo++)
+    for (CDatabaseQueryRuleCombinations::const_iterator combo = m_combinations.begin(); combo != m_combinations.end(); ++combo)
     {
       CVariant comboObj(CVariant::VariantTypeObject);
       if ((*combo)->Save(comboObj))
@@ -523,7 +523,7 @@ bool CDatabaseQueryRuleCombination::Save(CVariant &obj) const
   }
   if (!m_rules.empty())
   {
-    for (CDatabaseQueryRules::const_iterator rule = m_rules.begin(); rule != m_rules.end(); rule++)
+    for (CDatabaseQueryRules::const_iterator rule = m_rules.begin(); rule != m_rules.end(); ++rule)
     {
       CVariant ruleObj(CVariant::VariantTypeObject);
       if ((*rule)->Save(ruleObj))

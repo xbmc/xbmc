@@ -102,6 +102,7 @@ public:
   const std::string& GetMusicBrainzTRMID() const;
   const std::string& GetComment() const;
   const std::string& GetLyrics() const;
+  const std::string& GetCueSheet() const;
   const CDateTime& GetLastPlayed() const;
   bool  GetCompilation() const;
   char  GetRating() const;
@@ -142,6 +143,7 @@ public:
   void SetMusicBrainzTRMID(const std::string& strTRMID);
   void SetComment(const std::string& comment);
   void SetLyrics(const std::string& lyrics);
+  void SetCueSheet(const std::string& cueSheet);
   void SetRating(char rating);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
@@ -197,6 +199,7 @@ protected:
   std::string m_strMusicBrainzTRMID;
   std::string m_strComment;
   std::string m_strLyrics;
+  std::string m_cuesheet;
   CDateTime m_lastPlayed;
   bool m_bCompilation;
   int m_iDuration;

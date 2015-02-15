@@ -286,8 +286,8 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
       return;
 
     /* Get the current running show on this channel from the EPG storage */
-    CEpgInfoTag epgnow;
-    if (!channel->GetEPGNow(epgnow))
+    CEpgInfoTagPtr epgnow(channel->GetEPGNow());
+    if (!epgnow)
       return;
 
     /* Load programme info dialog */

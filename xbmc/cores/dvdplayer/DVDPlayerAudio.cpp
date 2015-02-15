@@ -196,7 +196,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_syncclock = true;
   m_silence = false;
 
-  m_maxspeedadjust = CSettings::Get().GetNumber("videoplayer.maxspeedadjust");
+  m_maxspeedadjust = 5.0;
 
   g_dataCacheCore.SignalAudioInfoChange();
 }
@@ -329,6 +329,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     ||  m_speed   <  DVD_PLAYSPEED_PAUSE  /* when rewinding */
     || (m_speed   >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
       priority = 0;
+
+    // consider stream stalled if queue is empty
+    // we can't sync audio to clock with an empty queue
+    if (m_speed == DVD_PLAYSPEED_NORMAL)
+    {
+      timeout = 0;
+    }
 
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 

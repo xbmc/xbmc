@@ -21,7 +21,7 @@
 #include "TestHelpers.h"
 #include "threads/Atomics.h"
 
-#include <boost/shared_array.hpp>
+#include <memory>
 #include <iostream>
 
 #define TESTNUM 100000l
@@ -85,14 +85,14 @@ public:
 TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
   DoIncrement di(&lNumber);
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(di);
+
+  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
+  for (size_t i=0;i<NUMTHREADS;++i)
+    t[i].reset(new thread(di));
 
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].join();
+    t[i]->join();
 
   EXPECT_EQ((NUMTHREADS * TESTNUM), lNumber);
  }
@@ -100,14 +100,14 @@ TEST(TestMassAtomic, Increment)
 TEST(TestMassAtomic, Decrement)
 {
   long lNumber = (NUMTHREADS * TESTNUM);
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
   DoDecrement dd(&lNumber);
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(dd);
+
+  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
+  for (size_t i=0;i<NUMTHREADS;++i)
+    t[i].reset(new thread(dd));
 
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].join();
+    t[i]->join();
 
   EXPECT_EQ(0, lNumber);
  }
@@ -116,14 +116,14 @@ TEST(TestMassAtomic, Add)
 {
   long lNumber = 0;
   long toAdd = 10;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
   DoAdd da(&lNumber,toAdd);
+
+  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(da);
+    t[i].reset(new thread(da));
 
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].join();
+    t[i]->join();
 
   EXPECT_EQ((NUMTHREADS * TESTNUM) * toAdd, lNumber);
  }
@@ -132,14 +132,14 @@ TEST(TestMassAtomic, Subtract)
 {
   long toSubtract = 10;
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
-  boost::shared_array<thread> t;
-  t.reset(new thread[NUMTHREADS]);
   DoSubtract ds(&lNumber,toSubtract);
+
+  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(ds);
+    t[i].reset(new thread(ds));
 
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].join();
+    t[i]->join();
 
   EXPECT_EQ(0, lNumber);
  }

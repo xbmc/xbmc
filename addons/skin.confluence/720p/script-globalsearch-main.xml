@@ -494,18 +494,18 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Tagline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(PlotOutline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -513,9 +513,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -580,18 +580,18 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Tagline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(PlotOutline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -599,9 +599,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -727,18 +727,18 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Tagline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(PlotOutline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -746,9 +746,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -813,18 +813,18 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Tagline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(PlotOutline)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -832,9 +832,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>45</top>
+									<top>47</top>
 									<width>265</width>
-									<height>75</height>
+									<height>73</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -950,9 +950,9 @@
 								</control>
 								<control type="textbox">
 									<left>5</left>
-									<top>110</top>
+									<top>112</top>
 									<width>360</width>
-									<height>55</height>
+									<height>53</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1007,9 +1007,9 @@
 								</control>
 								<control type="textbox">
 									<left>5</left>
-									<top>110</top>
+									<top>112</top>
 									<width>360</width>
-									<height>55</height>
+									<height>53</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1105,9 +1105,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>30</top>
+									<top>32</top>
 									<width>260</width>
-									<height>120</height>
+									<height>118</height>
 									<label>$INFO[ListItem.Property(TvShowTitle)]</label>
 									<font>font12</font>
 									<textcolor>grey2</textcolor>
@@ -1141,9 +1141,9 @@
 								</control>
 								<control type="textbox">
 									<left>100</left>
-									<top>30</top>
+									<top>32</top>
 									<width>260</width>
-									<height>120</height>
+									<height>118</height>
 									<label>$INFO[ListItem.Property(TvShowTitle)]</label>
 									<font>font12</font>
 									<textcolor>grey2</textcolor>
@@ -1256,9 +1256,9 @@
 								</control>
 								<control type="textbox">
 									<left>160</left>
-									<top>50</top>
+									<top>52</top>
 									<width>585</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1311,9 +1311,9 @@
 								</control>
 								<control type="textbox">
 									<left>160</left>
-									<top>50</top>
+									<top>52</top>
 									<width>585</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Plot)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1609,9 +1609,9 @@
 								</control>
 								<control type="textbox">
 									<left>160</left>
-									<top>50</top>
+									<top>52</top>
 									<width>585</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Artist_Description)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1655,9 +1655,9 @@
 								</control>
 								<control type="textbox">
 									<left>160</left>
-									<top>50</top>
+									<top>52</top>
 									<width>585</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Artist_Description)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1762,9 +1762,9 @@
 								</control>
 								<control type="textbox">
 									<left>110</left>
-									<top>50</top>
+									<top>52</top>
 									<width>630</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Album_Description)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>
@@ -1808,9 +1808,9 @@
 								</control>
 								<control type="textbox">
 									<left>110</left>
-									<top>50</top>
+									<top>52</top>
 									<width>630</width>
-									<height>45</height>
+									<height>43</height>
 									<label>$INFO[ListItem.Property(Album_Description)]</label>
 									<font>font10</font>
 									<textcolor>white</textcolor>

@@ -73,7 +73,20 @@ static CEvent screenChangeEvent;
 - (void) setScreen:(unsigned int) screenIdx withMode:(UIScreenMode *)mode
 {
     UIScreen *newScreen = [[UIScreen screens] objectAtIndex:screenIdx];
-    bool toExternal = _screenIdx == 0 && _screenIdx != screenIdx;
+    bool toExternal = false;
+
+    // current screen is main screen and new screen
+    // is different
+    if (_screenIdx == 0 && _screenIdx != screenIdx)
+      toExternal = true;
+
+    // current screen is not main screen
+    // and new screen is the same as current
+    // this means we are external already but
+    // for example resolution gets changed
+    // treat this as toExternal for proper rotation...
+    if (_screenIdx != 0 && _screenIdx == screenIdx)
+      toExternal = true;
 
     //set new screen mode
     [newScreen setCurrentMode:mode];

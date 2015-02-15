@@ -33,6 +33,7 @@
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include <locale>
+#include <functional>
 
 #include <assert.h>
 #include <math.h>
@@ -655,7 +656,7 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
 std::string StringUtils::Join(const vector<string> &strings, const std::string& delimiter)
 {
   std::string result;
-  for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++ )
+  for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); ++it )
     result += (*it) + delimiter;
   
   if (!result.empty())

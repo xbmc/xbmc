@@ -42,8 +42,8 @@ xw::Output::Output(IDllWaylandClient &clientLibrary,
   m_clientLibrary(clientLibrary),
   m_output(output),
   m_scaleFactor(1.0),
-  m_current(NULL),
-  m_preferred(NULL)
+  m_currentValid(false),
+  m_preferredValid(false)
 {
   protocol::AddListenerOnWaylandObject(m_clientLibrary,
                                        m_output,
@@ -69,21 +69,21 @@ xw::Output::GetWlOutput()
 const xw::Output::ModeGeometry &
 xw::Output::CurrentMode()
 {
-  if (!m_current)
+  if (!m_currentValid)
     throw std::logic_error("No current mode has been set by the server"
                            " yet");
   
-  return *m_current;
+  return m_current;
 }
 
 const xw::Output::ModeGeometry &
 xw::Output::PreferredMode()
 {
-  if (!m_preferred)
+  if (!m_preferredValid)
     throw std::logic_error("No preferred mode has been set by the "
                            " server yet");
 
-  return *m_preferred;
+  return m_preferred;
 }
 
 const std::vector <xw::Output::ModeGeometry> &
@@ -229,9 +229,15 @@ xw::Output::Mode(uint32_t flags,
    * or existing mode. In both cases we need to
    * update the current and preferred modes */
   if (outputFlags & WL_OUTPUT_MODE_CURRENT)
-    m_current = update;
+  {
+    m_current = *update;
+    m_currentValid = true;
+  }
   if (outputFlags & WL_OUTPUT_MODE_PREFERRED)
-    m_preferred = update;
+  {
+    m_preferred = *update;
+    m_preferredValid = true;
+  }
 }
 
 void

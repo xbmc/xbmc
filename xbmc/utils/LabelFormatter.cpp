@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdlib>
+
 #include "LabelFormatter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -30,6 +32,8 @@
 #include "StringUtils.h"
 #include "URIUtils.h"
 #include "guilib/LocalizeStrings.h"
+
+#include <cassert>
 
 using namespace MUSIC_INFO;
 

@@ -27,7 +27,7 @@
 #include "utils/RegExp.h"
 
 #include <math.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <dinput.h>
 #include <dinputd.h>
@@ -139,15 +139,10 @@ BOOL CALLBACK CJoystick::EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInst
           p_this->m_devCaps.push_back(diDevCaps);
 
           // load axes configuration from keymap
-          std::map<boost::shared_ptr<CRegExp>, AxesConfig>::const_iterator axesCfg;
-          for (axesCfg = p_this->m_AxesConfigs.begin(); axesCfg != p_this->m_AxesConfigs.end(); axesCfg++)
+          const AxesConfig* axesCfg = CButtonTranslator::GetInstance().GetAxesConfigFor(joyName);
+          if (axesCfg != NULL)
           {
-            if (axesCfg->first->RegFind(joyName) >= 0)
-              break;
-          }
-          if (axesCfg != p_this->m_AxesConfigs.end())
-          {
-            for (AxesConfig::const_iterator it = axesCfg->second.begin(); it != axesCfg->second.end(); ++it)
+            for (AxesConfig::const_iterator it = axesCfg->begin(); it != axesCfg->end(); ++it)
             {
               int axis = p_this->MapAxis(pJoystick, it->axis - 1);
               p_this->m_Axes[axis].trigger = it->isTrigger;
@@ -519,12 +514,6 @@ void CJoystick::Acquire()
         (*it)->Acquire();
     }
   }
-}
-
-void CJoystick::LoadAxesConfigs(const std::map<boost::shared_ptr<CRegExp>, AxesConfig> &axesConfigs)
-{
-  m_AxesConfigs.clear();
-  m_AxesConfigs.insert(axesConfigs.begin(), axesConfigs.end());
 }
 
 int CJoystick::JoystickIndex(const std::string &joyName) const
