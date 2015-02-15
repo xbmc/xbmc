@@ -100,11 +100,9 @@
   if(framebufferResizeRequested)
   {
     framebufferResizeRequested = FALSE;
-    [self deinitDisplayLink];
     [self deleteFramebuffer];
     [self createFramebuffer];
-    [self setFramebuffer];  
-    [self initDisplayLink];
+    [self setFramebuffer];
   }
 }
 
@@ -193,8 +191,6 @@
     [self setContext:context];
     [self createFramebuffer];
     [self setFramebuffer];
-
-		displayLink = nil;
   }
 
   return self;
@@ -351,7 +347,6 @@
       selector:@selector(runAnimation:)
       object:animationThreadLock];
     [animationThread start];
-    [self initDisplayLink];
 	}
 }
 //--------------------------------------------------------------
@@ -360,7 +355,6 @@
   PRINT_SIGNATURE();
 	if (animating && context)
 	{
-    [self deinitDisplayLink];
 		animating = FALSE;
     xbmcAlive = FALSE;
     if (!g_application.m_bStop)
@@ -447,53 +441,6 @@
   [g_xbmcController enableSystemSleep];
   //[g_xbmcController applicationDidExit];
   exit(0);
-}
-
-//--------------------------------------------------------------
-- (void) runDisplayLink;
-{
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-  displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
-  if (animationThread && [animationThread isExecuting] == YES)
-  {
-    if (g_VideoReferenceClock.IsRunning())
-      g_Windowing.VblankHandler(CurrentHostCounter(), displayFPS);
-  }
-  [pool release];
-}
-//--------------------------------------------------------------
-- (void) initDisplayLink
-{
-  //init with the appropriate display link for the
-  //used screen
-  bool external = currentScreen != [UIScreen mainScreen];
-  
-  if(external)
-  {
-    fprintf(stderr,"InitDisplayLink on external");
-  }
-  else
-  {
-    fprintf(stderr,"InitDisplayLink on internal");
-  }
-  
-  
-  displayLink = [currentScreen displayLinkWithTarget:self selector:@selector(runDisplayLink)];
-  [displayLink setFrameInterval:1];
-  [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-  displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
-}
-//--------------------------------------------------------------
-- (void) deinitDisplayLink
-{
-  [displayLink invalidate];
-  displayLink = nil;
-}
-//--------------------------------------------------------------
-- (double) getDisplayLinkFPS;
-{
-  return displayFPS;
 }
 //--------------------------------------------------------------
 @end
