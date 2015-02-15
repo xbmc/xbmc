@@ -453,6 +453,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIRSSControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIScrollBarControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISelectButtonControl.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUISettingsGroupLabelControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISettingsSliderControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIShader.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISliderControl.cpp" />
@@ -1787,6 +1788,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIRSSControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIScrollBarControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISelectButtonControl.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUISettingsGroupLabelControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISettingsSliderControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIShader.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h" />

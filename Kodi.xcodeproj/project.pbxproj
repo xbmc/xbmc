@@ -268,6 +268,9 @@
 		3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442801A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442811A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
+		39E5A63C1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39E5A63A1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp */; };
+		39E5A63D1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39E5A63A1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp */; };
+		39E5A63E1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39E5A63A1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -3614,6 +3617,8 @@
 		3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryScanningJob.h; sourceTree = "<group>"; };
 		3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryQueue.cpp; sourceTree = "<group>"; };
 		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
+		39E5A63A1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISettingsGroupLabelControl.cpp; sourceTree = "<group>"; };
+		39E5A63B1A8A8B36000C172F /* GUISettingsGroupLabelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISettingsGroupLabelControl.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -6089,6 +6094,8 @@
 				18B7C72A1294222D009E7A26 /* GUIScrollBarControl.h */,
 				18B7C7851294222E009E7A26 /* GUISelectButtonControl.cpp */,
 				18B7C72B1294222D009E7A26 /* GUISelectButtonControl.h */,
+				39E5A63A1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp */,
+				39E5A63B1A8A8B36000C172F /* GUISettingsGroupLabelControl.h */,
 				18B7C7861294222E009E7A26 /* GUISettingsSliderControl.cpp */,
 				18B7C72C1294222D009E7A26 /* GUISettingsSliderControl.h */,
 				18B7C7871294222E009E7A26 /* GUIShader.cpp */,
@@ -10241,6 +10248,7 @@
 				E38E202A0D25F9FD00618676 /* ISO9660Directory.cpp in Sources */,
 				E38E20330D25F9FD00618676 /* MultiPathDirectory.cpp in Sources */,
 				E38E20340D25F9FD00618676 /* DirectoryNode.cpp in Sources */,
+				39E5A63C1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */,
 				E38E20350D25F9FD00618676 /* DirectoryNodeAlbum.cpp in Sources */,
 				E38E20360D25F9FD00618676 /* DirectoryNodeAlbumCompilations.cpp in Sources */,
 				E38E20370D25F9FD00618676 /* DirectoryNodeAlbumCompilationsSongs.cpp in Sources */,
@@ -12193,6 +12201,7 @@
 				7CCDA85C192756250074CF51 /* NptUtils.cpp in Sources */,
 				7CCDA865192756250074CF51 /* NptXml.cpp in Sources */,
 				7CCDA86E192756250074CF51 /* NptZip.cpp in Sources */,
+				39E5A63E1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */,
 				7CCDAA84192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
 				7CCDAA87192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8D192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
@@ -12644,6 +12653,7 @@
 				E4991313174E5DAD00741B6D /* GUISpinControlEx.cpp in Sources */,
 				E4991314174E5DAD00741B6D /* GUIStaticItem.cpp in Sources */,
 				E4991315174E5DAD00741B6D /* GUITextBox.cpp in Sources */,
+				39E5A63D1A8A8B36000C172F /* GUISettingsGroupLabelControl.cpp in Sources */,
 				E4991316174E5DAD00741B6D /* GUITextLayout.cpp in Sources */,
 				E4991317174E5DAD00741B6D /* GUITexture.cpp in Sources */,
 				395C2A121A9F072400EBC7AD /* ResourceDirectory.cpp in Sources */,

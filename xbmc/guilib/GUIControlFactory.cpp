@@ -28,6 +28,7 @@
 #include "GUIImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
+#include "GUISettingsGroupLabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -109,6 +110,7 @@ static const ControlMapping controls[] =
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
     {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
     {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
+    {"settingsgrouplabel",CGUIControl::GUICONTROL_SETTINGS_GROUP_LABEL},
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
@@ -1226,6 +1228,25 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         checkWidth, checkHeight, labelInfo);
 
       ((CGUICheckMarkControl *)control)->SetLabel(strLabel);
+    }
+    break;
+  case CGUIControl::GUICONTROL_SETTINGS_GROUP_LABEL:
+    {
+      control = new CGUISettingsGroupLabelControl(
+        parentID, id, posX, posY, width, height,
+        textureBackground, labelInfo);
+
+      float selPosY = 0;
+      float selHeight = 0;
+
+      XMLUtils::GetFloat(pControlNode, "imageposy", selPosY);
+      XMLUtils::GetFloat(pControlNode, "imageheight", selHeight);
+      if (!selHeight)
+        selHeight = minHeight;
+
+      ((CGUISettingsGroupLabelControl *)control)->SetTexture(selPosY, selHeight);
+      ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
+      ((CGUISettingsGroupLabelControl *)control)->SetAspectRatio(aspect);
     }
     break;
   case CGUIControl::GUICONTROL_RADIO:

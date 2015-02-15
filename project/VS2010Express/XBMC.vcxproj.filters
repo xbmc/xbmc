@@ -1039,6 +1039,9 @@
     <ClCompile Include="..\..\xbmc\guilib\GUISelectButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUISettingsGroupLabelControl.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUISettingsSliderControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3895,6 +3898,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISelectButtonControl.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUISettingsGroupLabelControl.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISettingsSliderControl.h">
