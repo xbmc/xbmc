@@ -176,8 +176,9 @@ extern "C"
    * Show the channel scan dialog if this backend supports it.
    * @return PVR_ERROR_NO_ERROR if the dialog was displayed successfully.
    * @remarks Required if bSupportsChannelScan is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @note see libXBMC_gui.h about related parts
    */
-  PVR_ERROR DialogChannelScan(void);
+  PVR_ERROR OpenDialogChannelScan(void);
 
   /*!
     * @return The total amount of channels on the backend, or -1 on error.
@@ -201,7 +202,7 @@ extern "C"
    * Delete a channel from the backend.
    * @param channel The channel to delete.
    * @return PVR_ERROR_NO_ERROR if the channel has been deleted successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
    */
   PVR_ERROR DeleteChannel(const PVR_CHANNEL& channel);
 
@@ -209,7 +210,7 @@ extern "C"
    * Rename a channel on the backend.
    * @param channel The channel to rename, containing the new channel name.
    * @return PVR_ERROR_NO_ERROR if the channel has been renamed successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Optional, and only used if bSupportsChannelSettings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR RenameChannel(const PVR_CHANNEL& channel);
 
@@ -217,7 +218,7 @@ extern "C"
    * Move a channel to another channel number on the backend.
    * @param channel The channel to move, containing the new channel number.
    * @return PVR_ERROR_NO_ERROR if the channel has been moved successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Optional, and only used if bSupportsChannelSettings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR MoveChannel(const PVR_CHANNEL& channel);
 
@@ -225,17 +226,19 @@ extern "C"
    * Show the channel settings dialog, if supported by the backend.
    * @param channel The channel to show the dialog for.
    * @return PVR_ERROR_NO_ERROR if the dialog has been displayed successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
+   * @note see libXBMC_gui.h about related parts
    */
-  PVR_ERROR DialogChannelSettings(const PVR_CHANNEL& channel);
+  PVR_ERROR OpenDialogChannelSettings(const PVR_CHANNEL& channel);
 
   /*!
    * Show the dialog to add a channel on the backend, if supported by the backend.
    * @param channel The channel to add.
    * @return PVR_ERROR_NO_ERROR if the channel has been added successfully.
-   * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsChannelSettings is set to true.
+   * @note see libXBMC_gui.h about related parts
    */
-  PVR_ERROR DialogAddChannel(const PVR_CHANNEL& channel);
+  PVR_ERROR OpenDialogChannelAdd(const PVR_CHANNEL& channel);
   //@}
 
   /** @name PVR recording methods
@@ -245,19 +248,21 @@ extern "C"
    */
   //@{
   /*!
-   * @return The total amount of channels on the backend or -1 on error.
+   * @return The total amount of recordings on the backend or -1 on error.
+   * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
    * @remarks Required if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  int GetRecordingsAmount(void);
+  int GetRecordingsAmount(bool deleted);
 
   /*!
    * Request the list of all recordings from the backend, if supported.
    * Recording entries are added to XBMC by calling TransferRecordingEntry() on the callback.
    * @param handle Handle to pass to the callback method.
+   * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
    * @return PVR_ERROR_NO_ERROR if the recordings have been fetched successfully.
    * @remarks Required if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordings(ADDON_HANDLE handle);
+  PVR_ERROR GetRecordings(ADDON_HANDLE handle, bool deleted);
 
   /*!
    * Delete a recording on the backend.
@@ -266,6 +271,20 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR DeleteRecording(const PVR_RECORDING& recording);
+
+  /*!
+   * Undelete a recording on the backend.
+   * @param recording The recording to undelete.
+   * @return PVR_ERROR_NO_ERROR if the recording has been undeleted successfully.
+   * @remarks Optional, and only used if bSupportsRecordingsUndelete is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR UndeleteRecording(const PVR_RECORDING& recording);
+
+  /*!
+   * @brief Delete all recordings permanent which in the deleted folder on the backend.
+   * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+   */
+  PVR_ERROR DeleteAllRecordingsFromTrash();
 
   /*!
    * Rename a recording on the backend.
@@ -617,7 +636,7 @@ extern "C"
     pClient->GetBackendName                 = GetBackendName;
     pClient->GetBackendVersion              = GetBackendVersion;
     pClient->GetDriveSpace                  = GetDriveSpace;
-    pClient->DialogChannelScan              = DialogChannelScan;
+    pClient->OpenDialogChannelScan          = OpenDialogChannelScan;
     pClient->MenuHook                       = CallMenuHook;
 
     pClient->GetEpg                         = GetEPGForChannel;
@@ -631,12 +650,14 @@ extern "C"
     pClient->DeleteChannel                  = DeleteChannel;
     pClient->RenameChannel                  = RenameChannel;
     pClient->MoveChannel                    = MoveChannel;
-    pClient->DialogChannelSettings          = DialogChannelSettings;
-    pClient->DialogAddChannel               = DialogAddChannel;
+    pClient->OpenDialogChannelSettings      = OpenDialogChannelSettings;
+    pClient->OpenDialogChannelAdd           = OpenDialogChannelAdd;
 
     pClient->GetRecordingsAmount            = GetRecordingsAmount;
     pClient->GetRecordings                  = GetRecordings;
     pClient->DeleteRecording                = DeleteRecording;
+    pClient->UndeleteRecording              = UndeleteRecording;
+    pClient->DeleteAllRecordingsFromTrash   = DeleteAllRecordingsFromTrash;
     pClient->RenameRecording                = RenameRecording;
     pClient->SetRecordingPlayCount          = SetRecordingPlayCount;
     pClient->SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
