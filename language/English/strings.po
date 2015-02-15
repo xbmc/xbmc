@@ -6432,27 +6432,25 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr ""
 
+#. Label of a setting that allows to select the skip step sizes to use for skipping
+#: system/settings/settings.xml
 msgctxt "#13556"
-msgid "Enable native resolution"
+msgid "Skip steps"
 msgstr ""
 
+#. Name of a setting to configure the time to wait for subsequent keypresses in order to apply additive skipping
+#: system/settings/settings.xml
 msgctxt "#13557"
-msgid "Passthrough resolution"
+msgid "Skip delay"
 msgstr ""
 
+#. Name of a setting to configure the native resolution
+#: system/settings/settings.xml
 msgctxt "#13558"
-msgid "Search for Fps"
+msgid "Enable native resolution if supported"
 msgstr ""
 
-msgctxt "#13559"
-msgid "Stretched"
-msgstr ""
-
-msgctxt "#13560"
-msgid "Search for Fps and Stretched"
-msgstr ""
-
-#empty strings from id 13561 to 13599
+#empty strings from id 13559 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -14127,7 +14125,11 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#empty string with id 36167
+#. Description of setting "Videos -> Playback -> Enable native resolution if supported" with label #13558
+#: system/settings/settings.xml
+msgctxt "#36167"
+msgid "Change to native resolution if your device supports it."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
 #: system/settings/settings.xml
