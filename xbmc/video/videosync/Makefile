@@ -1,5 +1,6 @@
 SRCS=VideoSyncGLX.cpp \
-     VideoSyncCocoa.cpp \
+     VideoSyncOsx.cpp \
+     VideoSyncIos.cpp \
      VideoSyncDRM.cpp \
      VideoSyncPi.cpp \
 
