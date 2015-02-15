@@ -563,7 +563,89 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     {NULL}
   };
 <%
-  } %>
+  }
+
+  if ((clazz.@feature_iterator && clazz.@feature_iterator != '') ||
+      (clazz.@feature_iterable && clazz.@feature_iterable != '')) { %>
+  static PyObject* ${module.@name}_${classNameAsVariable}_iter(PyObject* self)
+  { <%
+    if (clazz.@feature_iterator) { %>
+    return self; <%
+    }
+    else { %>
+    PyObject* result = NULL;
+    try
+    {
+      ${clazz.@feature_iterable}* apiResult = ((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${module.@name}_${classNameAsVariable}_iternext","${fullClassName}"))->begin();
+      
+      ${Helper.getOutConversion('p.' + clazz.@feature_iterable,'result',clazz)}
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      return NULL;
+    }
+
+    return result; <%
+    } %>
+  }
+<%
+
+    if (clazz.@feature_iterator) { %>
+  static PyObject* ${module.@name}_${classNameAsVariable}_iternext(PyObject* self)
+  {
+    PyObject* result = NULL;
+    try
+    {
+      ${fullClassName}* iter = (${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${module.@name}_${classNameAsVariable}_iternext","${fullClassName}");
+
+      // check if we have reached the end
+      if (!iter->end())
+      {
+        ++(*iter);
+
+        ${clazz.@feature_iterator} apiResult = **iter;
+        ${Helper.getOutConversion(clazz.@feature_iterator,'result',clazz)}
+      }
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      return NULL;
+    }
+
+    return result;
+  }
+<%
+    }
+  }
+%>
 
   // This method initializes the above mentioned Python Type structure
   static void ${initTypeCall}()
@@ -588,7 +670,15 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
   } %>
 
+<%
+  if (clazz.@feature_iterator) { %>
+    pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_ITER;
+<%
+  }
+  else { %>
     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+<%
+  } %>
     pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
   if (properties.size() > 0) { %>
@@ -603,9 +693,20 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
 <%
   }
-  Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 
+  if (clazz.@feature_iterator) { %>
+    pythonType.tp_iter = (getiterfunc)${module.@name}_${classNameAsVariable}_iter;
+    pythonType.tp_iternext = (iternextfunc)${module.@name}_${classNameAsVariable}_iternext;
+<%
+  }
+  else if (clazz.@feature_iterable && clazz.@feature_iterable != '') { %>
+    pythonType.tp_iter = (getiterfunc)${module.@name}_${classNameAsVariable}_iter;
+<%
+  }
+
+  Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 %>
+
     pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
     pythonType.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
 
