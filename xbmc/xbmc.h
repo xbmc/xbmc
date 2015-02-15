@@ -19,5 +19,20 @@
  */
 
 #pragma once
-extern "C" int XBMC_Run(bool renderGUI);
+#include <string>
+#include <vector>
+
+class CXBMCOptions
+{
+public:
+  CXBMCOptions();
+
+  bool fullscreen;
+  bool standalone;
+  bool portable;
+  bool renderGUI;
+  std::vector<std::string> settings;
+};
+
+extern "C" int XBMC_Run(const CXBMCOptions &options);
 

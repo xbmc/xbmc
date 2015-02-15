@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
   // set up some xbmc specific relationships
   XBMC::Context context;
 
-  bool renderGUI = true;
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
@@ -70,9 +69,11 @@ int main(int argc, char* argv[])
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
 
+  CXBMCOptions options;
+
 #ifndef TARGET_WINDOWS
   CAppParamParser appParamParser;
-  appParamParser.Parse((const char **)argv, argc);
+  appParamParser.Parse((const char **)argv, argc, options);
 #endif
-  return XBMC_Run(renderGUI);
+  return XBMC_Run(options);
 }

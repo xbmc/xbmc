@@ -18,20 +18,16 @@
  *
  */
 
-#include "FileItem.h"
+#include "xbmc.h"
 
 class CAppParamParser
 {
   public:
     CAppParamParser();
-    void Parse(const char* argv[], int nArgs);
+    void Parse(const char* argv[], int nArgs, CXBMCOptions &options);
 
   private:
-    bool m_testmode;
-    CFileItemList m_playlist;
-    void ParseArg(const std::string &arg);
+    void ParseArg(const std::string &arg, CXBMCOptions &options);
     void DisplayHelp();
     void DisplayVersion();
-    void EnableDebugMode();
-    void PlayPlaylist();
 };

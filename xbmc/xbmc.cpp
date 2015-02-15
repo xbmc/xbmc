@@ -18,6 +18,7 @@
  *
  */
 
+#include "xbmc.h"
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
 
@@ -25,8 +26,25 @@
 #include "linux/RBP.h"
 #endif
 
-extern "C" int XBMC_Run(bool renderGUI)
+CXBMCOptions::CXBMCOptions()
 {
+  fullscreen = false;
+  standalone = false;
+  portable = false;
+  renderGUI = true;
+}
+
+extern "C" int XBMC_Run(const CXBMCOptions &options)
+{
+  if (options.fullscreen)
+    g_advancedSettings.m_startFullScreen = true;
+
+  g_application.SetStandAlone(options.standalone);
+  g_application.EnablePlatformDirectories(!options.portable);
+
+  for (std::vector<std::string>::const_iterator itr = options.settings.begin(); itr != options.settings.end(); itr++)
+    g_advancedSettings.AddSettingsFile(*itr);
+
   int status = -1;
 
   if (!g_advancedSettings.Initialized())
@@ -53,7 +71,7 @@ extern "C" int XBMC_Run(bool renderGUI)
   g_RBP.LogFirmwareVerison();
 #endif
 
-  if (renderGUI && !g_application.CreateGUI())
+  if (options.renderGUI && !g_application.CreateGUI())
   {
     fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
     return status;
