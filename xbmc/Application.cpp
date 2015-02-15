@@ -1526,43 +1526,8 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     return false;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "audiooutput.channels")
-  {
-    // check if this is an update from Eden
-    if (oldSettingId != NULL && oldSettingNode != NULL &&
-        StringUtils::EqualsNoCase(oldSettingId, "audiooutput.channellayout"))
-    {
-      bool ret = false;
-      CSettingInt* channels = (CSettingInt*)setting;
-      if (channels->FromString(oldSettingNode->FirstChild()->ValueStr()) && channels->GetValue() < AE_CH_LAYOUT_MAX - 1)
-        ret = channels->SetValue(channels->GetValue() + 1);
-
-      // let's just reset the audiodevice settings as well
-      std::string audiodevice = CSettings::Get().GetString("audiooutput.audiodevice");
-      CAEFactory::VerifyOutputDevice(audiodevice, false);
-      ret |= CSettings::Get().SetString("audiooutput.audiodevice", audiodevice.c_str());
-
-      return ret;
-    }
-  }
-  else if (settingId == "screensaver.mode")
-  {
-    CSettingString *screensaverMode = (CSettingString*)setting;
-    // we no longer ship the built-in slideshow screensaver, replace it if it's still in use
-    if (StringUtils::EqualsNoCase(screensaverMode->GetValue(), "screensaver.xbmc.builtin.slideshow"))
-      return screensaverMode->SetValue("screensaver.xbmc.builtin.dim");
-  }
-  else if (settingId == "scrapers.musicvideosdefault")
-  {
-    CSettingAddon *musicvideoScraper = (CSettingAddon*)setting;
-    if (StringUtils::EqualsNoCase(musicvideoScraper->GetValue(), "metadata.musicvideos.last.fm"))
-    {
-      musicvideoScraper->Reset();
-      return true;
-    }
-  }
 #if defined(HAS_LIBAMCODEC)
-  else if (settingId == "videoplayer.useamcodec")
+  if (settingId == "videoplayer.useamcodec")
   {
     // Do not permit amcodec to be used on non-aml platforms.
     // The setting will be hidden but the default value is true,
@@ -1575,7 +1540,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  else if (settingId == "videoplayer.usemediacodec")
+  if (settingId == "videoplayer.usemediacodec")
   {
     // Do not permit MediaCodec to be used Android platforms that do not have it.
     // The setting will be hidden but the default value is true,
@@ -1593,7 +1558,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_DARWIN_OSX)
-  else if (settingId == "audiooutput.audiodevice")
+  if (settingId == "audiooutput.audiodevice")
   {
     CSettingString *audioDevice = (CSettingString*)setting;
     // Gotham and older didn't enumerate audio devices per stream on osx
