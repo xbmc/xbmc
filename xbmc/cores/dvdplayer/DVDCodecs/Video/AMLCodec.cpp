@@ -167,9 +167,7 @@ public:
     CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE cntl_handle
     CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE sub_handle
 
-    // added in JellyBean 4.2
-    if (CAndroidFeatures::GetVersion() > 16)
-      CBitstreamConverter::write_bits(&bs, 32, 0);                 // CODEC_HANDLE audio_utils_handle
+    CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE audio_utils_handle
 
     CBitstreamConverter::write_bits(&bs, 32, p_in->stream_type);   // stream_type_t stream_type
 
@@ -193,15 +191,6 @@ public:
     CBitstreamConverter::write_bits(&bs, 32, 0);                   // int audio_samplerate
     CBitstreamConverter::write_bits(&bs, 32, 0);                   // int vbuf_size
     CBitstreamConverter::write_bits(&bs, 32, 0);                   // int abuf_size
-
-    // ARM requires 8-byte alignment for 64-bit members (ratio64)
-    // and this will force am_sysinfo to be also have 8-byte alignment.
-    // Since the inclusion of audio_utils_handle for JellyBean 4.2
-    // 'naturally' aligns am_sysinfo to 8-byte, we need to compensate
-    // when we are NOT JellyBean 4.2. If these member values get changed,
-    // then make sure you check that am_sysinfo has 8-byte alignment.
-    if (CAndroidFeatures::GetVersion() < 17)
-      CBitstreamConverter::write_bits(&bs, 32, 0);
 
     CBitstreamConverter::write_bits(&bs, 32, p_in->format);        // am_sysinfo, unsigned int format
     CBitstreamConverter::write_bits(&bs, 32, p_in->width);         // am_sysinfo, unsigned int width

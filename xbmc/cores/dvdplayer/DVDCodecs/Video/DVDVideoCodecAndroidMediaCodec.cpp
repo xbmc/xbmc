@@ -313,10 +313,6 @@ CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
 
 bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  // check for 4.1 Jellybean and above.
-  if (CAndroidFeatures::GetVersion() < 16)
-    return false;
-
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
