@@ -33,7 +33,6 @@ public:
   void VblankHandler(int64_t nowtime, double fps);
   virtual void OnResetDevice();
 private:
-  void UpdateFPS(double fps);
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
 };
