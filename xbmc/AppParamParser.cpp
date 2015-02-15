@@ -65,6 +65,7 @@ void CAppParamParser::DisplayHelp()
   printf("\t\t\t\tenables network settings.\n");
   printf("  -p or --portable\t\t%s will look for configurations in install folder instead of ~/.%s\n", appName.c_str(), lcAppName.c_str());
   printf("  --version\t\t\tPrint version information\n");
+  printf("  --debug\t\t\tEnable debug logging\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
   exit(0);
@@ -82,6 +83,8 @@ void CAppParamParser::ParseArg(const std::string &arg, CXBMCOptions &options)
     options.standalone = true;
   else if (arg == "-p" || arg  == "--portable")
     options.portable = true;
+  else if (arg  == "--debug")
+    options.debug = true;
   else if (arg.substr(0, 11) == "--settings=")
     options.settings.push_back(arg.substr(11));
 }

@@ -31,6 +31,7 @@ public:
   bool standalone;
   bool portable;
   bool renderGUI;
+  bool debug;
   std::vector<std::string> settings;
 };
 

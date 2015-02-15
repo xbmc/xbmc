@@ -32,6 +32,11 @@ CXBMCOptions::CXBMCOptions()
   standalone = false;
   portable = false;
   renderGUI = true;
+#ifdef _DEBUG
+  debug = true;
+#else
+  debug = false;
+#endif
 }
 
 extern "C" int XBMC_Run(const CXBMCOptions &options)
@@ -49,13 +54,9 @@ extern "C" int XBMC_Run(const CXBMCOptions &options)
 
   if (!g_advancedSettings.Initialized())
   {
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+    g_advancedSettings.m_logLevel     = options.debug ? LOG_LEVEL_DEBUG : LOG_LEVEL_NORMAL;
+    g_advancedSettings.m_logLevelHint = options.debug ? LOG_LEVEL_DEBUG : LOG_LEVEL_NORMAL;
+
     g_advancedSettings.Initialize();
   }
 
