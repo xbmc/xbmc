@@ -36,13 +36,15 @@
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
-#include "video/videosync/VideoSyncCocoa.h"
+#include "video/videosync/VideoSyncIos.h"
 #include <vector>
 #undef BOOL
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import <QuartzCore/CADisplayLink.h>
+
 #if defined(TARGET_DARWIN_IOS_ATV2)
 #import "atv2/KodiController.h"
 #else
@@ -52,17 +54,36 @@
 #include "osx/DarwinUtils.h"
 #import <dlfcn.h>
 
+// IOSDisplayLinkCallback is declared in the lower part of the file
+@interface IOSDisplayLinkCallback : NSObject
+{
+@private CVideoSyncIos *_videoSyncImpl;
+}
+@property (nonatomic, setter=SetVideoSyncImpl:) CVideoSyncIos *_videoSyncImpl;
+- (void) runDisplayLink;
+@end
+
+struct CADisplayLinkWrapper
+{
+  CADisplayLink* impl;
+  IOSDisplayLinkCallback *callbackClass;
+};
+
 CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_IOS;
 
   m_iVSyncErrors = 0;
   m_bIsBackgrounded = false;
-  m_VideoSync = NULL;
+  m_pDisplayLink = new CADisplayLinkWrapper;
+  m_pDisplayLink->callbackClass = [[IOSDisplayLinkCallback alloc] init];
+  
 }
 
 CWinSystemIOS::~CWinSystemIOS()
 {
+  [m_pDisplayLink->callbackClass release];
+  delete m_pDisplayLink;
 }
 
 bool CWinSystemIOS::InitWindowSystem()
@@ -346,26 +367,56 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
     (*i)->OnAppFocusChange(focus);
 }
 
-void CWinSystemIOS::VblankHandler(int64_t nowtime, double fps)
+//--------------------------------------------------------------
+//-------------------DisplayLink stuff
+@implementation IOSDisplayLinkCallback
+@synthesize _videoSyncImpl;
+//--------------------------------------------------------------
+- (void) runDisplayLink;
 {
-  if (m_VideoSync)
-    m_VideoSync->VblankHandler(nowtime, fps);
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  if (_videoSyncImpl != nil)
+  {
+    _videoSyncImpl->IosVblankHandler();
+  }
+  [pool release];
+}
+@end
+
+bool CWinSystemIOS::InitDisplayLink(CVideoSyncIos *syncImpl)
+{
+  //init with the appropriate display link for the
+  //used screen
+  if([[IOSScreenManager sharedInstance] isExternalScreen])
+  {
+    fprintf(stderr,"InitDisplayLink on external");
+  }
+  else
+  {
+    fprintf(stderr,"InitDisplayLink on internal");
+  }
+  
+  unsigned int currentScreenIdx = [[IOSScreenManager sharedInstance] GetScreenIdx];
+  UIScreen * currentScreen = [[UIScreen screens] objectAtIndex:currentScreenIdx];
+  [m_pDisplayLink->callbackClass SetVideoSyncImpl:syncImpl];
+  m_pDisplayLink->impl = [currentScreen displayLinkWithTarget:m_pDisplayLink->callbackClass selector:@selector(runDisplayLink)];
+  
+  [m_pDisplayLink->impl setFrameInterval:1];
+  [m_pDisplayLink->impl addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+  return m_pDisplayLink->impl != nil;
 }
 
-void CWinSystemIOS::InitDisplayLink(CVideoSyncCocoa *syncImpl)
-{
-  m_VideoSync = syncImpl;
-}
 void CWinSystemIOS::DeinitDisplayLink(void)
 {
+  if (m_pDisplayLink->impl)
+  {
+    [m_pDisplayLink->impl invalidate];
+    m_pDisplayLink->impl = nil;
+    [m_pDisplayLink->callbackClass SetVideoSyncImpl:nil];
+  }
 }
-double CWinSystemIOS::GetDisplayLinkFPS(void)
-{
-  double fps;
-
-  fps = [g_xbmcController getDisplayLinkFPS];
-  return fps;
-}
+//------------DispalyLink stuff end
+//--------------------------------------------------------------
 
 bool CWinSystemIOS::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
