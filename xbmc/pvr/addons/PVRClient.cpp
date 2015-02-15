@@ -461,6 +461,106 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   return PVR_ERROR_UNKNOWN;
 }
 
+PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->OpenDialogChannelAdd(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->OpenDialogChannelSettings(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->DeleteChannel(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::RenameChannel(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->RenameChannel(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
 void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
 {
   if (!m_bReadyToUse)
@@ -1323,6 +1423,11 @@ bool CPVRClient::SupportsChannelGroups(void) const
 bool CPVRClient::SupportsChannelScan(void) const
 {
   return m_addonCapabilities.bSupportsChannelScan;
+}
+
+bool CPVRClient::SupportsChannelSettings(void) const
+{
+  return m_addonCapabilities.bSupportsChannelSettings;
 }
 
 bool CPVRClient::SupportsEPG(void) const

@@ -893,6 +893,93 @@ void CPVRClients::StartChannelScan(void)
   m_bChannelScanRunning = false;
 }
 
+std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bRadio) const
+{
+  std::vector<PVR_CLIENT> possibleSettingsClients;
+  CSingleLock lock(m_critSection);
+
+  /* get clients that support channel settings */
+  for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+  {
+    if (itr->second->ReadyToUse() && itr->second->SupportsChannelSettings() &&
+         ((bRadio && itr->second->SupportsRadio()) || (!bRadio && itr->second->SupportsTV())))
+      possibleSettingsClients.push_back(itr->second);
+  }
+
+  return possibleSettingsClients;
+}
+
+
+bool CPVRClients::OpenDialogChannelAdd(const CPVRChannel &channel)
+{
+  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+
+  PVR_CLIENT client;
+  if (GetConnectedClient(channel.ClientID(), client))
+    error = client->OpenDialogChannelAdd(channel);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+
+  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  {
+    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    return true;
+  }
+
+  return error == PVR_ERROR_NO_ERROR;
+}
+
+bool CPVRClients::OpenDialogChannelSettings(const CPVRChannel &channel)
+{
+  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+
+  PVR_CLIENT client;
+  if (GetConnectedClient(channel.ClientID(), client))
+    error = client->OpenDialogChannelSettings(channel);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+
+  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  {
+    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    return true;
+  }
+
+  return error == PVR_ERROR_NO_ERROR;
+}
+
+bool CPVRClients::DeleteChannel(const CPVRChannel &channel)
+{
+  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+
+  PVR_CLIENT client;
+  if (GetConnectedClient(channel.ClientID(), client))
+    error = client->DeleteChannel(channel);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+
+  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  {
+    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    return true;
+  }
+
+  return error == PVR_ERROR_NO_ERROR;
+}
+
+bool CPVRClients::RenameChannel(const CPVRChannel &channel)
+{
+  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+
+  PVR_CLIENT client;
+  if (GetConnectedClient(channel.ClientID(), client))
+    error = client->RenameChannel(channel);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+
+  return (error == PVR_ERROR_NO_ERROR || error == PVR_ERROR_NOT_IMPLEMENTED);
+}
+
 bool CPVRClients::IsKnownClient(const AddonPtr client) const
 {
   // database IDs start at 1
@@ -1169,6 +1256,12 @@ bool CPVRClients::SupportsChannelScan(int iClientId) const
 {
   PVR_CLIENT client;
   return GetConnectedClient(iClientId, client) && client->SupportsChannelScan();
+}
+
+bool CPVRClients::SupportsChannelSettings(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetConnectedClient(iClientId, client) && client->SupportsChannelSettings();
 }
 
 bool CPVRClients::SupportsEPG(int iClientId) const

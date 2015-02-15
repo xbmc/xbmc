@@ -550,11 +550,50 @@ namespace PVR
 
     //@}
 
+    /*! @name Channel settings methods */
+    //@{
+
+    /*!
+     * @return All clients that support channel settings inside addon.
+     */
+    std::vector<PVR_CLIENT> GetClientsSupportingChannelSettings(bool bRadio) const;
+
+    /*!
+     * @brief Open addon settings dialog to add a channel
+     * @param channel The channel to edit.
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool OpenDialogChannelAdd(const CPVRChannel &channel);
+
+    /*!
+     * @brief Open addon settings dialog to related channel
+     * @param channel The channel to edit.
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool OpenDialogChannelSettings(const CPVRChannel &channel);
+
+    /*!
+     * @brief Inform addon to delete channel
+     * @param channel The channel to delete.
+     * @return True if it was successfull, false otherwise.
+     */
+    bool DeleteChannel(const CPVRChannel &channel);
+
+    /*!
+     * @brief Request the client to rename given channel
+     * @param channel The channel to rename
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool RenameChannel(const CPVRChannel &channel);
+
+    //@}
+
     void Notify(const Observable &obs, const ObservableMessage msg);
 
     bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
 
     bool SupportsChannelScan(int iClientId) const;
+    bool SupportsChannelSettings(int iClientId) const;
     bool SupportsLastPlayedPosition(int iClientId) const;
     bool SupportsRadio(int iClientId) const;
     bool SupportsRecordingFolders(int iClientId) const;
