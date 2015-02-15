@@ -53,6 +53,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   
   return kCVReturnSuccess;
 }
+#endif
 
 void CVideoSyncCocoa::VblankHandler(int64_t nowtime, double fps)
 {
@@ -69,7 +70,6 @@ void CVideoSyncCocoa::VblankHandler(int64_t nowtime, double fps)
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
   UpdateClock(NrVBlanks, nowtime);
 }
-#endif
 
 bool CVideoSyncCocoa::Setup(PUPDATECLOCK func)
 {
