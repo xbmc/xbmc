@@ -199,7 +199,6 @@
 		43348AA4107747CD00F859CF /* Edl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA1107747CD00F859CF /* Edl.cpp */; };
 		43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
 		43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
-		43352CEE1071634600706B8A /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		551C3A45175A12010051AAAD /* VDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 551C3A43175A12010051AAAD /* VDA.cpp */; };
 		552840CC1626163B00ED1333 /* UPnPPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 552840CA1626163B00ED1333 /* UPnPPlayer.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		552A226915F7E14B0015C0D0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 552A226815F7E14B0015C0D0 /* main.cpp */; };
@@ -962,7 +961,6 @@
 		DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB9517528174002DA3A4 /* UIKit.framework */; };
 		DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */; };
 		DFF0ECA4175282AD002DA3A4 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
-		DFF0ECA5175282AD002DA3A4 /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		DFF0ECA6175282AD002DA3A4 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		DFF0F0EF17528350002DA3A4 /* archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE60D25F9FC00618676 /* archive.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
@@ -3074,7 +3072,6 @@
 		E499157C174E67EE00741B6D /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
 		E499157D174E67EE00741B6D /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		E499157E174E681200741B6D /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
-		E499157F174E681600741B6D /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		E4991580174E681600741B6D /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		E4991582174E682F00741B6D /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
@@ -3643,8 +3640,6 @@
 		43348AA91077486D00F859CF /* PlayerCoreFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreFactory.h; path = playercorefactory/PlayerCoreFactory.h; sourceTree = "<group>"; };
 		43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerSelectionRule.cpp; path = playercorefactory/PlayerSelectionRule.cpp; sourceTree = "<group>"; };
 		43348AAB1077486D00F859CF /* PlayerSelectionRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerSelectionRule.h; path = playercorefactory/PlayerSelectionRule.h; sourceTree = "<group>"; };
-		43352CE61071545C00706B8A /* squish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = squish.h; path = libsquish/squish.h; sourceTree = "<group>"; };
-		43352CED1071634600706B8A /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
 		436721A612D66A09002508E6 /* IAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnnouncer.h; sourceTree = "<group>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndianSwap.h; sourceTree = "<group>"; };
 		43BF09DD1080D39300E25290 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
@@ -5884,7 +5879,6 @@
 			files = (
 				E38E256D0D263A1C00618676 /* librtv.a in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap.a in Frameworks */,
-				43352CEE1071634600706B8A /* libsquish.a in Frameworks */,
 				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */,
@@ -5925,7 +5919,6 @@
 				DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */,
 				DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */,
 				DFF0ECA4175282AD002DA3A4 /* librtv.a in Frameworks */,
-				DFF0ECA5175282AD002DA3A4 /* libsquish.a in Frameworks */,
 				DFF0ECA6175282AD002DA3A4 /* libxdaap.a in Frameworks */,
 				DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */,
 			);
@@ -5950,7 +5943,6 @@
 				E49910F8174E561500741B6D /* libz.dylib in Frameworks */,
 				E49910F9174E561D00741B6D /* libiconv.dylib in Frameworks */,
 				E499157E174E681200741B6D /* librtv.a in Frameworks */,
-				E499157F174E681600741B6D /* libsquish.a in Frameworks */,
 				E4991580174E681600741B6D /* libxdaap.a in Frameworks */,
 				E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */,
 				DFF0EBB7175281E1002DA3A4 /* CoreAudio.framework in Frameworks */,
@@ -9022,7 +9014,6 @@
 				E38E196D0D25F9FB00618676 /* libhdhomerun */,
 				F551106A0F5C424700955236 /* libhts */,
 				E38E1A130D25F9FB00618676 /* libRTV */,
-				F5E55E601076B34F006E788A /* libsquish */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
@@ -9711,7 +9702,6 @@
 			isa = PBXGroup;
 			children = (
 				E38E256C0D263A1C00618676 /* librtv.a */,
-				43352CED1071634600706B8A /* libsquish.a */,
 				E38E25680D2639F100618676 /* libxdaap.a */,
 				18404DA51396C31B00863BBA /* SlingboxLib.a */,
 			);
@@ -9868,14 +9858,6 @@
 				F5E10530140AA38000175026 /* GUIDialogPeripheralSettings.h */,
 			);
 			path = dialogs;
-			sourceTree = "<group>";
-		};
-		F5E55E601076B34F006E788A /* libsquish */ = {
-			isa = PBXGroup;
-			children = (
-				43352CE61071545C00706B8A /* squish.h */,
-			);
-			name = libsquish;
 			sourceTree = "<group>";
 		};
 		F5E56B11108284E6006E788A /* playercorefactory */ = {
@@ -13499,7 +13481,6 @@
 					"$(SRCROOT)/lib/libXDAAP",
 					"$(SRCROOT)/lib/cmyth/libcmyth",
 					"$(SRCROOT)/lib/cmyth/librefmem",
-					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
@@ -13565,7 +13546,6 @@
 					"$(SRCROOT)/lib/libXDAAP",
 					"$(SRCROOT)/lib/cmyth/libcmyth",
 					"$(SRCROOT)/lib/cmyth/librefmem",
-					"$(SRCROOT)/lib/libsquish",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
@@ -13677,7 +13657,6 @@
 					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/cmyth/libcmyth\"",
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
@@ -13737,7 +13716,6 @@
 					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/cmyth/libcmyth\"",
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
