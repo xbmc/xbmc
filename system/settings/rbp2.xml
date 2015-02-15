@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="videos">
+    <category id="videoacceleration">
+      <group id="3">
+        <setting id="videoplayer.useomxplayer">
+          <default>false</default>
+        </setting>
+      </group>
+    </category>
+  </section>
+
+  <section id="system">
+    <category id="videoscreen">
+      <group id="1">
+        <setting id="videoscreen.textures32">
+          <default>true</default>
+        </setting>
+      </group>
+    </category>
+    <category id="audiooutput">
+      <group id="3">
+        <setting id="audiooutput.ac3transcode" help="36429">
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

@@ -49,6 +49,9 @@
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
 #endif
+#if defined(TARGET_RASPBERRY_PI)
+#include "linux/RBP.h"
+#endif
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
@@ -456,6 +459,8 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_RASPBERRY_PI)
   if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
     CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
+  if (g_RBP.RasberryPiVersion() > 1 && CFile::Exists(SETTINGS_XML_FOLDER "rbp2.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp2.xml"))
+    CLog::Log(LOGFATAL, "Unable to load rbp2-specific settings definitions");
 #elif defined(TARGET_FREEBSD)
   if (CFile::Exists(SETTINGS_XML_FOLDER "freebsd.xml") && !Initialize(SETTINGS_XML_FOLDER "freebsd.xml"))
     CLog::Log(LOGFATAL, "Unable to load freebsd-specific settings definitions");
