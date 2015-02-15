@@ -51,13 +51,15 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item,
                                  const std::string& listpath,
                                  bool thumb,
                                  const std::string& target,
-                                 int64_t pos)
+                                 int64_t pos,
+                                 bool fillStreamDetails)
 {
   m_listpath = listpath;
   m_target = target;
   m_thumb = thumb;
   m_item = item;
   m_pos = pos;
+  m_fillStreamDetails = fillStreamDetails;
 
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     m_item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
@@ -108,7 +110,7 @@ bool CThumbExtractor::DoWork()
     // construct the thumb cache file
     CTextureDetails details;
     details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
-    result = CDVDFileInfo::ExtractThumb(m_item.GetPath(), details, &m_item.GetVideoInfoTag()->m_streamDetails, (int) m_pos);
+    result = CDVDFileInfo::ExtractThumb(m_item.GetPath(), details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->m_streamDetails : NULL, (int) m_pos);
     if(result)
     {
       CTextureCache::Get().AddCachedTexture(m_target, details);
