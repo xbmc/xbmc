@@ -453,7 +453,7 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   if (!m_addonCapabilities.bSupportsChannelScan)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
-  try { return m_pStruct->DialogChannelScan(); }
+  try { return m_pStruct->OpenDialogChannelScan(); }
   catch (std::exception &e) { LogException(e, __FUNCTION__); }
 
   return PVR_ERROR_UNKNOWN;
