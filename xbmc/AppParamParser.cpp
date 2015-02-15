@@ -59,12 +59,12 @@ void CAppParamParser::DisplayHelp()
 
   printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
   printf("Arguments:\n");
-  printf("  -fs\t\t\tRuns %s in full screen\n", appName.c_str());
-  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", appName.c_str());
-  printf("\t\t\tmanager and supporting applications. For example, that\n");
-  printf("\t\t\tenables network settings.\n");
-  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", appName.c_str(), lcAppName.c_str());
-  printf("  --version\t\tPrint version information\n");
+  printf("  -fs\t\t\t\tRuns %s in full screen\n", appName.c_str());
+  printf("  --standalone\t\t\t%s runs in a stand alone environment without a window \n", appName.c_str());
+  printf("\t\t\t\tmanager and supporting applications. For example, that\n");
+  printf("\t\t\t\tenables network settings.\n");
+  printf("  -p or --portable\t\t%s will look for configurations in install folder instead of ~/.%s\n", appName.c_str(), lcAppName.c_str());
+  printf("  --version\t\t\tPrint version information\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
   exit(0);
