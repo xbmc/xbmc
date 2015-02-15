@@ -22,7 +22,8 @@
 #include "guilib/GUIDialog.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/GUIViewControl.h"
-#include "../channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/addons/PVRClient.h"
 
 namespace PVR
 {
@@ -61,6 +62,7 @@ namespace PVR
     virtual bool OnClickButtonUseEPG(CGUIMessage &message);
     virtual bool OnClickEPGSourceSpin(CGUIMessage &message);
     virtual bool OnClickButtonGroupManager(CGUIMessage &message);
+    virtual bool OnClickButtonNewChannel();
 
     virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber);
     virtual void SetItemsUnchanged(void);
@@ -71,12 +73,17 @@ namespace PVR
     void SaveList(void);
     void Renumber(void);
     void SetData(int iItem);
+    void RenameChannel(CFileItemPtr pItem);
     bool m_bIsRadio;
     bool m_bMovingMode;
     bool m_bContainsChanges;
+    bool m_bAllowNewChannel;
 
     int m_iSelected;
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
+
+    typedef std::vector<PVR_CLIENT>::iterator PVR_CLIENT_ITR;
+    std::vector<PVR_CLIENT> m_clientsWithSettingsList;
   };
 }
