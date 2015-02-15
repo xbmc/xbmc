@@ -57,6 +57,7 @@
 #endif
 #include "ButtonTranslator.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/devices/PeripheralImon.h"
 #include "XBMC_vkeys.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -70,10 +71,10 @@
 #endif
 
 #ifdef HAS_EVENT_SERVER
-using namespace EVENTSERVER;
+using EVENTSERVER::CEventServer;
 #endif
 
-using namespace PERIPHERALS;
+using PERIPHERALS::CPeripherals;
 
 CInputManager& CInputManager::Get()
 {
@@ -781,5 +782,21 @@ void CInputManager::SetRemoteControlName(const std::string& name)
 {
 #if defined(HAS_LIRC)
   m_RemoteControl.setDeviceName(name);
+#endif
+}
+
+void CInputManager::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "input.enablemouse")
+    m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
+
+#if defined(HAS_SDL_JOYSTICK)
+  if (settingId == "input.enablejoystick")
+    m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
+    PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif
 }

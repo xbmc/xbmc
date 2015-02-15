@@ -39,16 +39,15 @@
 #include "guilib/Key.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
+#include "settings/lib/ISettingCallback.h"
 
-class CInputManager
+class CInputManager : public ISettingCallback
 {
 private:
   CInputManager() { }
   CInputManager(const CInputManager&);
   CInputManager const& operator=(CInputManager const&);
   virtual ~CInputManager() { };
-
-  friend class CSettings;
 
 public:
   /*! \brief static method to get the current instance of the class. Creates a new instance the first time it's called.
@@ -211,6 +210,8 @@ public:
    * \return 0 on success, -1 on failure
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
+
+  virtual void OnSettingChanged(const CSetting *setting);
 
 private:
 

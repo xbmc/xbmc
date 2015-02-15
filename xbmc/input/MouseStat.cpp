@@ -38,16 +38,6 @@ CMouseStat::~CMouseStat()
 {
 }
 
-void CMouseStat::OnSettingChanged(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablemouse")
-    SetEnabled(((CSettingBool*)setting)->GetValue());
-}
-
 void CMouseStat::Initialize()
 {
   // Set the default resolution (PAL)

@@ -24,7 +24,6 @@
 #include <map>
 #include <memory>
 #include <stdint.h>
-#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001
@@ -55,13 +54,12 @@ typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state val
 class CRegExp;
 
 // Class to manage all connected joysticks
-class CJoystick : public ISettingCallback
+class CJoystick
 {
 public:
   CJoystick();
   ~CJoystick();
 
-  virtual void OnSettingChanged(const CSetting *setting);
   void Initialize();
   void Reset();
   void Update();

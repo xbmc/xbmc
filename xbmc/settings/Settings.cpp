@@ -271,10 +271,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_charsetConverter);
   m_settingsManager->UnregisterCallback(&g_graphicsContext);
   m_settingsManager->UnregisterCallback(&g_langInfo);
-#if defined(TARGET_WINDOWS) || defined(HAS_SDL_JOYSTICK)
-  m_settingsManager->UnregisterCallback(&CInputManager::Get().m_Joystick);
-#endif
-  m_settingsManager->UnregisterCallback(&CInputManager::Get().m_Mouse);
+  m_settingsManager->UnregisterCallback(&CInputManager::Get());
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
@@ -759,15 +756,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("locale.country");
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
-#if defined(HAS_SDL_JOYSTICK)
   settingSet.clear();
   settingSet.insert("input.enablejoystick");
-  m_settingsManager->RegisterCallback(&CInputManager::Get().m_Joystick, settingSet);
-#endif
-
-  settingSet.clear();
   settingSet.insert("input.enablemouse");
-  m_settingsManager->RegisterCallback(&CInputManager::Get().m_Mouse, settingSet);
+  m_settingsManager->RegisterCallback(&CInputManager::Get(), settingSet);
 
   settingSet.clear();
   settingSet.insert("services.webserver");

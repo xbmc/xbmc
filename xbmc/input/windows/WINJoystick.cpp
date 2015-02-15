@@ -65,16 +65,6 @@ CJoystick::~CJoystick()
   ReleaseJoysticks();
 }
 
-void CJoystick::OnSettingChanged(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablejoystick")
-    SetEnabled(((CSettingBool*)setting)->GetValue() && PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
-}
-
 void CJoystick::Reset()
 {
   m_AxisIdx = -1;

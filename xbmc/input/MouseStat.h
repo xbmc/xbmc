@@ -21,7 +21,6 @@
  *
  */
 
-#include "settings/lib/ISettingCallback.h"
 #include "windowing/XBMC_events.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
@@ -73,13 +72,11 @@ struct MousePosition
 
 class CAction;
 
-class CMouseStat : public ISettingCallback
+class CMouseStat
 {
 public:
   CMouseStat();
   virtual ~CMouseStat();
-
-  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void HandleEvent(XBMC_Event& newEvent);

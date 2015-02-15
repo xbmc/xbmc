@@ -22,7 +22,6 @@
 #define SDL_JOYSTICK_H
 
 #include "system.h" // for HAS_SDL_JOYSTICK
-#include "settings/lib/ISettingCallback.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -67,12 +66,10 @@ class CRegExp;
 // Class to manage all connected joysticks
 // Note: 'index' always refers to indices specific to this class,
 //       whereas 'ids' always refer to SDL instance id's
-class CJoystick : public ISettingCallback
+class CJoystick
 {
 public:
   CJoystick();
-
-  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void Reset();
