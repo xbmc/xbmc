@@ -346,6 +346,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
         break;
       case UIInterfaceOrientationLandscapeLeft:
       case UIInterfaceOrientationLandscapeRight:
+      case UIInterfaceOrientationUnknown:
         break;//just leave the rect as is
     }
     m_glView.frame = rect;
@@ -1000,6 +1001,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UIView *view = [m_window.subviews objectAtIndex:0];
   switch(newOrientation)
   {
+    case UIInterfaceOrientationUnknown:
     case UIInterfaceOrientationPortrait:
       angle = 0;
       break;
