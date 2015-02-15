@@ -92,7 +92,7 @@ DLLEXPORT bool XBMC_wake_on_lan(void* hdl, void* cb, char* mac)
   return ((CB_AddOnLib*)cb)->WakeOnLan(mac);
 }
 
-DLLEXPORT char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
+DLLEXPORT const char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
 {
   if (cb == NULL)
     return NULL;
@@ -100,7 +100,7 @@ DLLEXPORT char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
   return ((CB_AddOnLib*)cb)->UnknownToUTF8(str);
 }
 
-DLLEXPORT char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
+DLLEXPORT const char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
 {
   if (cb == NULL)
     return "";
@@ -108,7 +108,7 @@ DLLEXPORT char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
   return ((CB_AddOnLib*)cb)->GetLocalizedString(((AddonCB*)hdl)->addonData, dwCode);
 }
 
-DLLEXPORT char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
+DLLEXPORT const char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
 {
   if (cb == NULL)
     return "";
