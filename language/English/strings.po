@@ -8292,7 +8292,11 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr ""
 
-#empty string with id 19168
+#. Used in system info to show amount of it
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#19168"
+msgid "Deleted and recoverable recordings"
+msgstr ""
 
 msgctxt "#19169"
 msgid "Hide video information box"
@@ -8343,7 +8347,11 @@ msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr ""
 
-#empty string with id 19179
+#. Used as extension header on recordings window
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19179"
+msgid "Deleted"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19180"
@@ -8365,7 +8373,11 @@ msgctxt "#19183"
 msgid "Radio"
 msgstr ""
 
-#empty string with id 19184
+#. Used on pvr recordings as button to show of them
+#: skin.confluence
+msgctxt "#19184"
+msgid "Deleted recordings"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19185"
@@ -8839,7 +8851,37 @@ msgctxt "#19289"
 msgid "Hide group"
 msgstr ""
 
-#empty strings from id 19290 to 19498
+#. Used on recordings context menu
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19290"
+msgid "Undelete"
+msgstr ""
+
+#. Used on recordings context menu
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19291"
+msgid "Delete permanently"
+msgstr ""
+
+#. Used on recordings context menu
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19292"
+msgid "Delete all permanently"
+msgstr ""
+
+#. Used on yes no dialog
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19293"
+msgid "Delete all recordings permanently?"
+msgstr ""
+
+#. Used on yes no dialog
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+msgctxt "#19294"
+msgid "Delete this recording permanently?"
+msgstr ""
+
+#empty strings from id 19295 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"
