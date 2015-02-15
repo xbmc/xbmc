@@ -41,11 +41,22 @@ CBaseRenderer::CBaseRenderer()
   m_sourceWidth = 720;
   m_sourceHeight = 480;
   m_resolution = RES_DESKTOP;
+  m_bestResolution = m_resolution;
   m_fps = 0.0f;
   m_renderOrientation = 0;
   m_oldRenderOrientation = 0;
   m_oldDestRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
   m_iFlags = 0;
+
+  m_nativeUpscaleSettings = NativeUpscale();
+  m_nativeUpscaleSettings.OverrideFPS = false;
+  m_nativeUpscaleSettings.CorrectPixelRatio = false;
+  m_nativeUpscaleSettings.DestWidth = 1920;
+  m_nativeUpscaleSettings.DestHeight = 1080;
+  m_nativeUpscaleSettings.MinWidth = 0;
+  m_nativeUpscaleSettings.MinHeight = 0;
+  m_nativeUpscaleSettings.MaxWidth = 1920;
+  m_nativeUpscaleSettings.MaxHeight = 1080;
 
   for(int i=0; i < 4; i++)
   {
@@ -99,6 +110,72 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 #endif
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)",
         m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution);
+
+  m_bestResolution = m_resolution;                                   // save it
+  int iNatW = (int)m_sourceWidth;
+  int iNatH = (int)m_sourceHeight;
+
+  if( m_nativeUpscaleSettings.MaxWidth && iNatW > m_nativeUpscaleSettings.MaxWidth )
+    iNatW = 0;
+
+  if( m_nativeUpscaleSettings.MaxHeight && iNatH > m_nativeUpscaleSettings.MaxHeight )
+    iNatH = 0;
+
+  if( CSettings::Get().GetBool("videoplayer.nativeresolution") && iNatW && iNatH )     // Native Upscale Mode
+  {
+    CLog::Log(LOGNOTICE, "Searching for NATIVE resolution: %dx%d", m_sourceWidth, m_sourceHeight);
+
+    RESOLUTION_INFO org = g_graphicsContext.GetResInfo(m_resolution);
+
+    bool bOverrideFPS = m_nativeUpscaleSettings.OverrideFPS;
+    double nfRD, fRD, fD, fODist = 100000000.0;
+    int iWD, iHD;
+    float fOrgRefreshRate = org.fRefreshRate;
+    int iOrgScreen = org.iScreen;
+
+    if(iNatW <= m_nativeUpscaleSettings.MinWidth &&
+       iNatH <= m_nativeUpscaleSettings.MinHeight)
+    {
+      iNatW = m_nativeUpscaleSettings.MinWidth;
+      iNatH = m_nativeUpscaleSettings.MinHeight;
+    }
+
+    // best fit
+    for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
+    {
+      const RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)i);
+      fRD = info.fRefreshRate - fOrgRefreshRate;  // refreshrate delta
+      nfRD = info.fRefreshRate / fOrgRefreshRate; // refreshrate fit
+      iWD = info.iWidth - iNatW;                  // width delta
+      iHD = info.iHeight - iNatH;                 // height delta
+      // distance function:
+      // refreshrate, witdh and height deltas are multiplied by weight factors
+      // current weights values do not prefer any parameter (well, almost...)
+      // so we will search for lowest width, height and refresh rate which fit to the source parameters
+      // however if any of these parameters need to be preferred, bump up the weight value for it
+      fD = (iWD * 1.0) + (iHD * 1.0);                                // default weights for width and height resolution
+
+      if (!bOverrideFPS)
+      {                                                              // if original fps should be preserved, accept only these
+        fRD = (fRD == 0.0) ? (0.0) : (-1.0);                         // resolutions where refreshrate is the same
+      }
+      else
+      {                                                              // preferred multiple fps
+        fD += fRD + ( (abs(nfRD-floor(nfRD+0.5)) < 1e-6) ? 10.0 : 1000.0 );
+      }
+
+      // if( fRD >= 0.0 && iWD >= 0 && iHD >= 0 && fD <= fODist && info.iScreen == iOrgScreen )
+      // Only select resolution if equals
+      if( fRD == 0.0 && iWD == 0 && iHD == 0 && info.iScreen == iOrgScreen )
+      {
+        m_resolution = (RESOLUTION)i;         // if we are here, then this resolution is supported by device
+        fODist = fD;
+        break;
+      }
+    }
+
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST2 : %s (%d)", g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution);
+  }
 }
 
 bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fallback)
@@ -619,10 +696,12 @@ void CBaseRenderer::ManageDisplay()
 
 void CBaseRenderer::SetViewMode(int viewMode)
 {
+  int savedViewMode;
+
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
+  CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = savedViewMode = viewMode;
 
   // get our calibrated full screen resolution
   RESOLUTION res = GetResolution();
@@ -632,6 +711,27 @@ void CBaseRenderer::SetViewMode(int viewMode)
 
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
+
+  // if we upscale via external AVR device, correct the pixel ratio
+  if( CSettings::Get().GetBool("videoplayer.nativeresolution") && m_bestResolution != m_resolution
+   && m_nativeUpscaleSettings.CorrectPixelRatio )
+  {
+    float destWidth = (float)(m_nativeUpscaleSettings.DestWidth);
+    float destHeight = (float)(m_nativeUpscaleSettings.DestHeight);
+    float destFrameRatio = (float)destWidth / destHeight;
+    bool  destScreenIs43 = (destFrameRatio < 8.f/(3.f*sqrt(3.f)));   // final output
+    float outWidth = (float)(info.iWidth);
+    float outHeight = (float)(info.iHeight);
+    float outFrameRatio = (float)outWidth / outHeight;
+    bool  outScreenIs43 = (outFrameRatio < 8.f/(3.f*sqrt(3.f)));     // xbmc output
+
+    if( outScreenIs43 && !destScreenIs43 )         // final output is 16x9
+      viewMode = ViewModeStretch16x9;
+    else if( !outScreenIs43 && destScreenIs43 )    // final output is 4x3
+      viewMode = ViewModeStretch4x3;
+
+    CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
+  }
 
   bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
               CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeNormal);
@@ -728,6 +828,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetPixelRatio(1.0);
     CDisplaySettings::Get().SetZoomAmount(1.0);
   }
+
+  // restore original view mode
+  CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = savedViewMode;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = CDisplaySettings::Get().GetZoomAmount();
   CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = CDisplaySettings::Get().GetPixelRatio();

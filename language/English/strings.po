@@ -6441,7 +6441,13 @@ msgctxt "#13557"
 msgid "Skip delay"
 msgstr ""
 
-#empty strings from id 13557 to 13599
+#. Name of a setting to configure the native resolution
+#: system/settings/settings.xml
+msgctxt "#13558"
+msgid "Enable native resolution if supported"
+msgstr ""
+
+#empty strings from id 13559 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -14123,7 +14129,13 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#empty strings from id 36167 to 36168
+#. Description of setting "Videos -> Playback -> Enable native resolution if supported" with label #13558
+#: system/settings/settings.xml
+msgctxt "#36167"
+msgid "Change to native resolution if your device supports it."
+msgstr ""
+
+#empty strings from id 36168 to 36168
 
 #. Description of setting "System -> Audio output -> Resample quality" with label #13505
 #: system/settings/settings.xml
