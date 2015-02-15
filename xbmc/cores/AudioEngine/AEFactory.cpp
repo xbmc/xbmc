@@ -40,22 +40,11 @@ IAE *CAEFactory::GetEngine()
 
 bool CAEFactory::LoadEngine()
 {
-  return CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
-}
-
-bool CAEFactory::LoadEngine(enum AEEngine engine)
-{
   /* can only load the engine once, XBMC restart is required to change it */
   if (AE)
     return false;
 
-  switch(engine)
-  {
-    case AE_ENGINE_NULL     :
-    case AE_ENGINE_ACTIVE   : AE = new ActiveAE::CActiveAE(); break;
-    default:
-      return false;
-  }
+  AE = new ActiveAE::CActiveAE();
 
   if (AE && !AE->CanInit())
   {
