@@ -75,7 +75,7 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
                --with-ndk=/Volumes/android-dev/android/android-ndk-r10d \
-               --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-14 \
+               --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-17 \
                --prefix=/Volumes/android-dev/android/xbmc-depends
 
 --------------------------------------------------------------------
@@ -87,7 +87,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision at least r9c (10d recommended). For the SDK just use the latest available. 
+         Revision at least 10d. For the SDK just use the latest available. 
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
@@ -98,10 +98,10 @@ NDK (referenced as <android-ndk> from now on):
 /opt/android-ndk-r10d
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
-/opt/arm-linux-androideabi-4.8-vanilla/android-14
+/opt/arm-linux-androideabi-4.8-vanilla/android-17
 
 TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
-/opt/x86-linux-4.8-vanilla/android-14
+/opt/x86-linux-4.8-vanilla/android-17
 
 SDK (referenced as <android-sdk> from now on):
 /opt/android-sdk-linux
@@ -131,7 +131,7 @@ common scenario.
 The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
 specifies where the resulting toolchain should be installed (your choice). 
 
-[NOTICE] Kodi uses the android API Version 14 and gcc version 4.8!
+[NOTICE] Kodi uses the android API Version 17 and gcc version 4.8!
 
 Building for arm architecture:
 
@@ -139,7 +139,7 @@ Building for arm architecture:
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain-arm>/android-14 --platform=android-14 \
+     --install-dir=<android-toolchain-arm>/android-17 --platform=android-17 \
      --toolchain=arm-linux-androideabi-4.8
      
 Building for x86 architecture:
@@ -148,7 +148,7 @@ Building for x86 architecture:
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain-x86>/android-14 --platform=android-14 \
+     --install-dir=<android-toolchain-x86>/android-17 --platform=android-17 \
      --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
 
 Make sure to pick a toolchain for your desired architecture. If an error about
