@@ -657,6 +657,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "backendchannels",          PVR_BACKEND_CHANNELS },
                                   { "backendtimers",            PVR_BACKEND_TIMERS },
                                   { "backendrecordings",        PVR_BACKEND_RECORDINGS },
+                                  { "backenddeletedrecordings", PVR_BACKEND_DELETED_RECORDINGS },
                                   { "backendnumber",            PVR_BACKEND_NUMBER },
                                   { "hasepg",                   PVR_HAS_EPG },
                                   { "hastxt",                   PVR_HAS_TXT },
@@ -1418,6 +1419,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_BACKEND_CHANNELS:
   case PVR_BACKEND_TIMERS:
   case PVR_BACKEND_RECORDINGS:
+  case PVR_BACKEND_DELETED_RECORDINGS:
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:

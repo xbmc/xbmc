@@ -178,7 +178,9 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           g_PVRClients->ProcessMenuHooks(item->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG, item.get());
         else if (item->IsPVRChannel())
           g_PVRClients->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL, item.get());
-        else if (item->IsPVRRecording())
+        else if (item->IsDeletedPVRRecording())
+          g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING, item.get());
+        else if (item->IsUsablePVRRecording())
           g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING, item.get());
         else if (item->IsPVRTimer())
           g_PVRClients->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER, item.get());

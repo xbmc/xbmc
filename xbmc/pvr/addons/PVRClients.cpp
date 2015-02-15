@@ -438,7 +438,7 @@ PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::str
   return error;
 }
 
-PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings)
+PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
 {
   PVR_ERROR error(PVR_ERROR_NO_ERROR);
   PVR_CLIENTMAP clients;
@@ -446,7 +446,7 @@ PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings)
 
   for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
-    PVR_ERROR currentError = (*itrClients).second->GetRecordings(recordings);
+    PVR_ERROR currentError = (*itrClients).second->GetRecordings(recordings, deleted);
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
         currentError != PVR_ERROR_NO_ERROR)
     {
@@ -482,6 +482,81 @@ PVR_ERROR CPVRClients::DeleteRecording(const CPVRRecording &recording)
 
   if (error != PVR_ERROR_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot delete recording from client '%d': %s",__FUNCTION__, recording.m_iClientId, CPVRClient::ToString(error));
+
+  return error;
+}
+
+PVR_ERROR CPVRClients::UndeleteRecording(const CPVRRecording &recording)
+{
+  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+
+  if (!recording.IsDeleted())
+    return error;
+
+  PVR_CLIENT client;
+  if (GetConnectedClient(recording.m_iClientId, client))
+    error = client->UndeleteRecording(recording);
+
+  if (error != PVR_ERROR_NO_ERROR)
+    CLog::Log(LOGERROR, "PVR - %s - cannot undelete recording from client '%d': %s",__FUNCTION__, recording.m_iClientId, CPVRClient::ToString(error));
+
+  return error;
+}
+
+PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
+{
+  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  std::vector<PVR_CLIENT> suppClients;
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); ++itrClients)
+  {
+    if (itrClients->second->SupportsRecordingsUndelete() && itrClients->second->GetRecordingsAmount(true) > 0)
+      suppClients.push_back(itrClients->second);
+  }
+
+  int selection = 0;
+  if (suppClients.size() > 1)
+  {
+    // have user select client
+    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    pDialog->Reset();
+    pDialog->SetHeading(19292);                 /* Delete all permanently */
+    pDialog->Add(g_localizeStrings.Get(24032)); /* All Add-ons */
+
+    PVR_CLIENTMAP_CITR itrClients;
+    for (itrClients = clients.begin(); itrClients != clients.end(); ++itrClients)
+    {
+      if (itrClients->second->SupportsRecordingsUndelete() && itrClients->second->GetRecordingsAmount(true) > 0)
+        pDialog->Add(itrClients->second->GetBackendName());
+    }
+    pDialog->DoModal();
+    selection = pDialog->GetSelectedLabel();
+  }
+
+  if (selection == 0)
+  {
+    typedef std::vector<PVR_CLIENT>::const_iterator suppClientsCITR;
+    for (suppClientsCITR itrSuppClients = suppClients.begin(); itrSuppClients != suppClients.end(); ++itrSuppClients)
+    {
+      PVR_ERROR currentError = (*itrSuppClients)->DeleteAllRecordingsFromTrash();
+      if (currentError != PVR_ERROR_NO_ERROR)
+      {
+        CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, (*itrSuppClients)->GetID(), CPVRClient::ToString(currentError));
+        error = currentError;
+      }
+    }
+  }
+  else if (selection >= 1 && selection <= (int)suppClients.size())
+  {
+    PVR_ERROR currentError = suppClients[selection-1]->DeleteAllRecordingsFromTrash();
+    if (currentError != PVR_ERROR_NO_ERROR)
+    {
+      CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, suppClients[selection-1]->GetID(), CPVRClient::ToString(currentError));
+      error = currentError;
+    }
+  }
 
   return error;
 }
@@ -1118,6 +1193,12 @@ bool CPVRClients::SupportsRecordings(int iClientId) const
 {
   PVR_CLIENT client;
   return GetConnectedClient(iClientId, client) && client->SupportsRecordings();
+}
+
+bool CPVRClients::SupportsRecordingsUndelete(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetConnectedClient(iClientId, client) && client->SupportsRecordingsUndelete();
 }
 
 bool CPVRClients::SupportsRecordingFolders(int iClientId) const

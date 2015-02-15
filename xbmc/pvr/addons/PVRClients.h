@@ -362,11 +362,19 @@ namespace PVR
     bool SupportsRecordings(int iClientId) const;
 
     /*!
+     * @brief Check whether a client supports undelete of recordings.
+     * @param iClientId The id of the client to check.
+     * @return True if the supports undeleted of recordings, false otherwise.
+     */
+    bool SupportsRecordingsUndelete(int iClientId) const;
+
+    /*!
      * @brief Get all recordings from clients
      * @param recordings Store the recordings in this container.
+     * @param deleted Return deleted recordings
      * @return The amount of recordings that were added.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *recordings);
+    PVR_ERROR GetRecordings(CPVRRecordings *recordings, bool deleted);
 
     /*!
      * @brief Rename a recordings on the backend.
@@ -383,6 +391,20 @@ namespace PVR
      * @return True if the recordings was deleted successfully, false otherwise.
      */
     PVR_ERROR DeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Undelete a recording from the backend.
+     * @param recording The recording to undelete.
+     * @param error An error if it occured.
+     * @return True if the recording was undeleted successfully, false otherwise.
+     */
+    PVR_ERROR UndeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Delete all recordings permanent which in the deleted folder on the backend.
+     * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+     */
+    PVR_ERROR DeleteAllRecordingsFromTrash();
 
     /*!
      * @brief Set play count of a recording on the backend.

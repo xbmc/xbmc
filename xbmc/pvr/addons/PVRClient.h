@@ -233,16 +233,18 @@ namespace PVR
     //@{
 
     /*!
-     * @return The total amount of channels on the server or -1 on error.
+     * @param deleted if set return deleted recording
+     * @return The total amount of recordingd on the server or -1 on error.
      */
-    int GetRecordingsAmount(void);
+    int GetRecordingsAmount(bool deleted);
 
     /*!
      * @brief Request the list of all recordings from the backend.
      * @param results The container to add the recordings to.
+     * @param deleted if set return deleted recording
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *results);
+    PVR_ERROR GetRecordings(CPVRRecordings *results, bool deleted);
 
     /*!
      * @brief Delete a recording on the backend.
@@ -250,6 +252,19 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the recording has been deleted successfully.
      */
     PVR_ERROR DeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Undelete a recording on the backend.
+     * @param recording The recording to undelete.
+     * @return PVR_ERROR_NO_ERROR if the recording has been undeleted successfully.
+     */
+    PVR_ERROR UndeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Delete all recordings permanent which in the deleted folder on the backend.
+     * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+     */
+    PVR_ERROR DeleteAllRecordingsFromTrash();
 
     /*!
      * @brief Rename a recording on the backend.
@@ -479,6 +494,7 @@ namespace PVR
     bool SupportsLastPlayedPosition(void) const;
     bool SupportsRadio(void) const;
     bool SupportsRecordings(void) const;
+    bool SupportsRecordingsUndelete(void) const;
     bool SupportsRecordingFolders(void) const;
     bool SupportsRecordingPlayCount(void) const;
     bool SupportsRecordingEdl(void) const;
