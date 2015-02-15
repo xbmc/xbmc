@@ -41,9 +41,7 @@ CXBMCOptions::CXBMCOptions()
 
 extern "C" int XBMC_Run(const CXBMCOptions &options)
 {
-  if (options.fullscreen)
-    g_advancedSettings.m_startFullScreen = true;
-
+  g_advancedSettings.m_startFullScreen = options.fullscreen;
   g_application.SetStandAlone(options.standalone);
   g_application.EnablePlatformDirectories(!options.portable);
 
