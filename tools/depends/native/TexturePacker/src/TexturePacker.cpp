@@ -389,7 +389,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
         frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
-        printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
+        printf("%s%c (%d,%d @ %" PRIu64 " bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
           frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
       }
     }
