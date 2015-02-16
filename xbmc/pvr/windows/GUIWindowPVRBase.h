@@ -28,6 +28,7 @@
 #define CONTROL_BTNSORTASC                4
 #define CONTROL_BTNGROUPITEMS             5
 #define CONTROL_BTNSHOWHIDDEN             6
+#define CONTROL_BTNSHOWDELETED            7
 #define CONTROL_BTNCHANNELGROUPS          28
 #define CONTROL_BTNFILTERCHANNELS         31
 

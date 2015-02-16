@@ -115,6 +115,12 @@ namespace PVR
     bool Delete(void);
 
     /*!
+     * @brief Undelete this recording on the client (if supported).
+     * @return True if it was undeleted successfully, false otherwise.
+     */
+    bool Undelete(void);
+
+    /*!
      * @brief Rename this recording on the client (if supported).
      * @param strNewName The new name.
      * @return True if it was renamed successfully, false otherwise.
@@ -183,9 +189,15 @@ namespace PVR
      */
     void CopyClientInfo(CVideoInfoTag *target) const;
 
+    /*!
+     * @brief If deleted but can be undeleted it is true
+     */
+    bool IsDeleted() const { return m_bIsDeleted; }
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool      m_bGotMetaData;
+    bool      m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

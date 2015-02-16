@@ -70,7 +70,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
   }
-  else if (StringUtils::StartsWith(strURL, "pvr://recordings/"))
+  else if (StringUtils::StartsWith(strURL, "pvr://recordings/active"))
   {
     CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
     if (tag && tag->HasPVRRecordingInfoTag())
@@ -86,6 +86,11 @@ bool CPVRFile::Open(const CURL& url)
       CLog::Log(LOGERROR, "PVRFile - Recording not found with filename %s", strURL.c_str());
       return false;
     }
+  }
+  else if (StringUtils::StartsWith(strURL, "pvr://recordings/deleted/"))
+  {
+    CLog::Log(LOGNOTICE, "PVRFile - Playback of deleted recordings is not possible (%s)", strURL.c_str());
+    return false;
   }
   else
   {
@@ -298,7 +303,7 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
   if (found != std::string::npos)
     newname = newname.substr(found+1);
 
-  if (StringUtils::StartsWith(path, "recordings/") && path[path.size()-1] != '/')
+  if (StringUtils::StartsWith(path, "recordings/active/") && path[path.size()-1] != '/')
   {
     std::string strURL = url.Get();
     CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);

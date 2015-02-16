@@ -103,6 +103,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
+  m_bIsDeleted                     = recording.bIsDeleted;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -124,7 +125,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strIconPath        == right.m_strIconPath &&
        m_strThumbnailPath   == right.m_strThumbnailPath &&
        m_strFanartPath      == right.m_strFanartPath &&
-       m_iRecordingId       == right.m_iRecordingId);
+       m_iRecordingId       == right.m_iRecordingId &&
+       m_bIsDeleted         == right.m_bIsDeleted);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -145,6 +147,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
   value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
+  value["deleted"] = m_bIsDeleted;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -169,6 +172,7 @@ void CPVRRecording::Reset(void)
   m_strFanartPath      .clear();
   m_bGotMetaData       = false;
   m_iRecordingId       = 0;
+  m_bIsDeleted         = false;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -185,6 +189,18 @@ int CPVRRecording::GetDuration() const
 bool CPVRRecording::Delete(void)
 {
   PVR_ERROR error = g_PVRClients->DeleteRecording(*this);
+  if (error != PVR_ERROR_NO_ERROR)
+  {
+    DisplayError(error);
+    return false;
+  }
+
+  return true;
+}
+
+bool CPVRRecording::Undelete(void)
+{
+  PVR_ERROR error = g_PVRClients->UndeleteRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
@@ -315,6 +331,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strIconPath       = tag.m_strIconPath;
   m_strThumbnailPath  = tag.m_strThumbnailPath;
   m_strFanartPath     = tag.m_strFanartPath;
+  m_bIsDeleted        = tag.m_bIsDeleted;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
@@ -360,7 +377,7 @@ void CPVRRecording::UpdatePath(void)
       strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
     if (!m_strChannelName.empty())
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
-    m_strFileNameAndPath = StringUtils::Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
+    m_strFileNameAndPath = StringUtils::Format("pvr://recordings/%s/%s%s, TV%s, %s.pvr", (m_bIsDeleted ? "deleted" : "active"),  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
 

@@ -208,6 +208,8 @@ public:
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRRecording() const;
+  bool IsUsablePVRRecording() const;
+  bool IsDeletedPVRRecording() const;
   bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;

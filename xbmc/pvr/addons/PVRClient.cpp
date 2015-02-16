@@ -246,6 +246,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording.iLifetime           = xbmcRecording.m_iLifetime;
   addonRecording.iPlayCount          = xbmcRecording.m_playCount;
   addonRecording.iLastPlayedPosition = (int)xbmcRecording.m_resumePoint.timeInSeconds;
+  addonRecording.bIsDeleted          = xbmcRecording.IsDeleted();
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
@@ -270,6 +271,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
 
   addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
   addonTimer.state             = xbmcTimer.m_state;
+  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
   addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
   strncpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle) - 1);
   strncpy(addonTimer.strDirectory, xbmcTimer.m_strDirectory.c_str(), sizeof(addonTimer.strDirectory) - 1);
@@ -453,10 +455,110 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   if (!m_addonCapabilities.bSupportsChannelScan)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
-  try { return m_pStruct->DialogChannelScan(); }
+  try { return m_pStruct->OpenDialogChannelScan(); }
   catch (std::exception &e) { LogException(e, __FUNCTION__); }
 
   return PVR_ERROR_UNKNOWN;
+}
+
+PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->OpenDialogChannelAdd(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->OpenDialogChannelSettings(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->DeleteChannel(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::RenameChannel(const CPVRChannel &channel)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsChannelSettings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_CHANNEL addonChannel;
+    WriteClientChannelInfo(channel, addonChannel);
+
+    retVal = m_pStruct->RenameChannel(addonChannel);
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
 }
 
 void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
@@ -480,9 +582,14 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
         hookData.cat = PVR_MENUHOOK_CHANNEL;
         WriteClientChannelInfo(*item->GetPVRChannelInfoTag(), hookData.data.channel);
       }
-      else if (item->IsPVRRecording())
+      else if (item->IsUsablePVRRecording())
       {
         hookData.cat = PVR_MENUHOOK_RECORDING;
+        WriteClientRecordingInfo(*item->GetPVRRecordingInfoTag(), hookData.data.recording);
+      }
+      else if (item->IsDeletedPVRRecording())
+      {
+        hookData.cat = PVR_MENUHOOK_DELETED_RECORDING;
         WriteClientRecordingInfo(*item->GetPVRRecordingInfoTag(), hookData.data.recording);
       }
       else if (item->IsPVRTimer())
@@ -644,25 +751,31 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
   return retVal;
 }
 
-int CPVRClient::GetRecordingsAmount(void)
+int CPVRClient::GetRecordingsAmount(bool deleted)
 {
   int iReturn(-EINVAL);
 
-  if (m_addonCapabilities.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings || (deleted && !m_addonCapabilities.bSupportsRecordingsUndelete))
+    return iReturn;
+
+  try
   {
-    try { iReturn = m_pStruct->GetRecordingsAmount(); }
-    catch (std::exception &e) { LogException(e, __FUNCTION__); }
+    iReturn = m_pStruct->GetRecordingsAmount(deleted);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
   }
 
   return iReturn;
 }
 
-PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
+PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results, bool deleted)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
 
-  if (!m_addonCapabilities.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings || (deleted && !m_addonCapabilities.bSupportsRecordingsUndelete))
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
@@ -671,7 +784,7 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
     ADDON_HANDLE_STRUCT handle;
     handle.callerAddress = this;
     handle.dataAddress = (CPVRRecordings*) results;
-    retVal = m_pStruct->GetRecordings(&handle);
+    retVal = m_pStruct->GetRecordings(&handle, deleted);
 
     LogError(retVal, __FUNCTION__);
   }
@@ -698,6 +811,55 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
     WriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->DeleteRecording(tag);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording &recording)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsRecordingsUndelete)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    PVR_RECORDING tag;
+    WriteClientRecordingInfo(recording, tag);
+
+    retVal = m_pStruct->UndeleteRecording(tag);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::DeleteAllRecordingsFromTrash()
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsRecordingsUndelete)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    retVal = m_pStruct->DeleteAllRecordingsFromTrash();
 
     LogError(retVal, __FUNCTION__);
   }
@@ -1263,6 +1425,11 @@ bool CPVRClient::SupportsChannelScan(void) const
   return m_addonCapabilities.bSupportsChannelScan;
 }
 
+bool CPVRClient::SupportsChannelSettings(void) const
+{
+  return m_addonCapabilities.bSupportsChannelSettings;
+}
+
 bool CPVRClient::SupportsEPG(void) const
 {
   return m_addonCapabilities.bSupportsEPG;
@@ -1281,6 +1448,11 @@ bool CPVRClient::SupportsRadio(void) const
 bool CPVRClient::SupportsRecordings(void) const
 {
   return m_addonCapabilities.bSupportsRecordings;
+}
+
+bool CPVRClient::SupportsRecordingsUndelete(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingsUndelete;
 }
 
 bool CPVRClient::SupportsRecordingFolders(void) const

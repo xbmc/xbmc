@@ -362,11 +362,19 @@ namespace PVR
     bool SupportsRecordings(int iClientId) const;
 
     /*!
+     * @brief Check whether a client supports undelete of recordings.
+     * @param iClientId The id of the client to check.
+     * @return True if the supports undeleted of recordings, false otherwise.
+     */
+    bool SupportsRecordingsUndelete(int iClientId) const;
+
+    /*!
      * @brief Get all recordings from clients
      * @param recordings Store the recordings in this container.
+     * @param deleted Return deleted recordings
      * @return The amount of recordings that were added.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *recordings);
+    PVR_ERROR GetRecordings(CPVRRecordings *recordings, bool deleted);
 
     /*!
      * @brief Rename a recordings on the backend.
@@ -383,6 +391,20 @@ namespace PVR
      * @return True if the recordings was deleted successfully, false otherwise.
      */
     PVR_ERROR DeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Undelete a recording from the backend.
+     * @param recording The recording to undelete.
+     * @param error An error if it occured.
+     * @return True if the recording was undeleted successfully, false otherwise.
+     */
+    PVR_ERROR UndeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Delete all recordings permanent which in the deleted folder on the backend.
+     * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+     */
+    PVR_ERROR DeleteAllRecordingsFromTrash();
 
     /*!
      * @brief Set play count of a recording on the backend.
@@ -528,11 +550,50 @@ namespace PVR
 
     //@}
 
+    /*! @name Channel settings methods */
+    //@{
+
+    /*!
+     * @return All clients that support channel settings inside addon.
+     */
+    std::vector<PVR_CLIENT> GetClientsSupportingChannelSettings(bool bRadio) const;
+
+    /*!
+     * @brief Open addon settings dialog to add a channel
+     * @param channel The channel to edit.
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool OpenDialogChannelAdd(const CPVRChannel &channel);
+
+    /*!
+     * @brief Open addon settings dialog to related channel
+     * @param channel The channel to edit.
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool OpenDialogChannelSettings(const CPVRChannel &channel);
+
+    /*!
+     * @brief Inform addon to delete channel
+     * @param channel The channel to delete.
+     * @return True if it was successfull, false otherwise.
+     */
+    bool DeleteChannel(const CPVRChannel &channel);
+
+    /*!
+     * @brief Request the client to rename given channel
+     * @param channel The channel to rename
+     * @return True if the edit was successfull, false otherwise.
+     */
+    bool RenameChannel(const CPVRChannel &channel);
+
+    //@}
+
     void Notify(const Observable &obs, const ObservableMessage msg);
 
     bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
 
     bool SupportsChannelScan(int iClientId) const;
+    bool SupportsChannelSettings(int iClientId) const;
     bool SupportsLastPlayedPosition(int iClientId) const;
     bool SupportsRadio(int iClientId) const;
     bool SupportsRecordingFolders(int iClientId) const;

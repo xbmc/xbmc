@@ -738,7 +738,22 @@ bool CFileItem::IsPVRChannel() const
 
 bool CFileItem::IsPVRRecording() const
 {
-  if (HasPVRRecordingInfoTag()) return true; /// is this enough?
+  if (HasPVRRecordingInfoTag())
+    return true;
+  return false;
+}
+
+bool CFileItem::IsUsablePVRRecording() const
+{
+  if (m_pvrRecordingInfoTag && !m_pvrRecordingInfoTag->IsDeleted())
+    return true;
+  return false;
+}
+
+bool CFileItem::IsDeletedPVRRecording() const
+{
+  if (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsDeleted())
+    return true;
   return false;
 }
 
@@ -1165,10 +1180,15 @@ void CFileItem::FillInDefaultIcon()
       { // archive
         SetIconImage("DefaultFile.png");
       }
-      else if ( IsPVRRecording() )
+      else if ( IsUsablePVRRecording() )
       {
         // PVR recording
         SetIconImage("DefaultVideo.png");
+      }
+      else if ( IsDeletedPVRRecording() )
+      {
+        // PVR deleted recording
+        SetIconImage("DefaultVideoDeleted.png");
       }
       else if ( IsAudio() )
       {
