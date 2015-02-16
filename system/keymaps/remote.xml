@@ -232,7 +232,7 @@
       <down>SkipPrevious</down>
       <back>Back</back>
       <title>CodecInfo</title>
-      <select>ActivateWindow(VisualisationPresetList)</select>
+      <select>OSD</select>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
