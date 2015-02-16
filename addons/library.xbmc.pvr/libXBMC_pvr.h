@@ -112,6 +112,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_add_menu_hook");
     if (PVR_add_menu_hook == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_add_timer_type = (void (*)(void* HANDLE, void* CB, PVR_TIMERTYPE *type))
+      dlsym(m_libXBMC_pvr, "PVR_add_timer_type");
+    if (PVR_add_timer_type == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     PVR_recording = (void (*)(void* HANDLE, void* CB, const char *Name, const char *FileName, bool On))
       dlsym(m_libXBMC_pvr, "PVR_recording");
     if (PVR_recording == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -228,6 +232,15 @@ public:
   }
 
   /*!
+   * @brief Add an additional timer type for this add-on
+   * @param type The type to add.
+   */
+  void AddTimerType(PVR_TIMERTYPE* type)
+  {
+    return PVR_add_timer_type(m_Handle, m_Callbacks, type);
+  }
+
+  /*!
    * @brief Display a notification in XBMC that a recording started or stopped on the server
    * @param strRecordingName The name of the recording to display
    * @param strFileName The filename of the recording
@@ -308,6 +321,7 @@ protected:
   void (*PVR_transfer_timer_entry)(void*, void*, const ADDON_HANDLE, const PVR_TIMER*);
   void (*PVR_transfer_recording_entry)(void*, void*, const ADDON_HANDLE, const PVR_RECORDING*);
   void (*PVR_add_menu_hook)(void*, void*, PVR_MENUHOOK*);
+  void (*PVR_add_timer_type)(void*, void*, PVR_TIMERTYPE*);
   void (*PVR_recording)(void*, void*, const char*, const char*, bool);
   void (*PVR_trigger_channel_update)(void*, void*);
   void (*PVR_trigger_channel_groups_update)(void*, void*);

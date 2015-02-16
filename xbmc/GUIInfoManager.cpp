@@ -589,6 +589,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
                                   { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
+                                  { "hastimerschedule", LISTITEM_HASTIMERSCHEDULE },
                                   { "hasrecording",     LISTITEM_HASRECORDING },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "inprogress",       LISTITEM_INPROGRESS },
@@ -4548,6 +4549,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return disc;
     }
   case LISTITEM_ARTIST:
+    if (item->HasPVRTimerInfoTag())
+      return item->GetPVRTimerInfoTag()->GetType();
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
@@ -5322,6 +5325,15 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
         if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsActive();
+      }
+    }
+    else if (condition == LISTITEM_HASTIMERSCHEDULE)
+    {
+      if (pItem->HasEPGInfoTag())
+      {
+        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->IsRepeating();
       }
     }
     else if (condition == LISTITEM_HASRECORDING)

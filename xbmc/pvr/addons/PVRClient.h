@@ -42,6 +42,7 @@ namespace PVR
   class CPVRClient;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
+  typedef std::vector<PVR_TIMERTYPE> PVR_TIMERTYPES;
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
 
@@ -315,9 +316,10 @@ namespace PVR
      * @brief Delete a timer on the backend.
      * @param timer The timer to delete.
      * @param bForce Set to true to delete a timer that is currently recording a program.
+     * @param bDeleteSchedule Set to true to delete the complete timer schedule instead of the given timer only.
      * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false, bool bDeleteSchedule = false);
 
     /*!
      * @brief Rename a timer on the server.
@@ -334,6 +336,20 @@ namespace PVR
      */
     PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timer);
 
+    /*!
+     * @return True if this add-on has extra timer types, false otherwise.
+     */
+    bool HasTimerTypes() const;
+
+    /*!
+     * @return The extra timer types for this add-on.
+     */
+    PVR_TIMERTYPES *GetTimerTypes(void);
+
+    /*!
+     * @return The string id for this type on this client.
+     */
+    int GetTimerTypeStrId(int typeId);
     //@}
     /** @name PVR live stream methods */
     //@{
@@ -584,6 +600,8 @@ namespace PVR
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     std::string            m_strHostName;          /*!< the host name */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
+    PVR_TIMERTYPES         m_timertypes;           /*!< Additional timer types for this backend */
+    std::map<int,int>      m_strTimerTypes;        /*!< Contains string Id's for the additional timer types */
     int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */

@@ -100,21 +100,39 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
     return bReturn;
   }
 
-  // prompt user for confirmation of timer deletion
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-
-  if (pDialog)
+  if (!timer->GetPVRTimerInfoTag()->IsRepeating())
   {
-    pDialog->SetHeading(265);
-    pDialog->SetLine(0, "");
-    pDialog->SetLine(1, timer->GetPVRTimerInfoTag()->m_strTitle);
-    pDialog->SetLine(2, "");
-    pDialog->DoModal();
+    // prompt user for confirmation of timer deletion
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 
-    if (pDialog->IsConfirmed())
+    if (pDialog)
+    {
+      pDialog->SetHeading(265);
+      pDialog->SetLine(0, "");
+      pDialog->SetLine(1, timer->GetPVRTimerInfoTag()->m_strTitle);
+      pDialog->SetLine(2, "");
+      pDialog->DoModal();
+
+      if (pDialog->IsConfirmed())
+      {
+        Close();
+        bReturn = CPVRTimers::DeleteTimer(*timer);
+      }
+    }
+  }
+  else
+  {
+    bool bCancel(false);
+    bool bConfirm(false);
+
+    /* prompt user for deleting the complete timer schedule */
+    bConfirm = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(122),g_localizeStrings.Get(803),"",
+        StringUtils::Format(g_localizeStrings.Get(824).c_str(), timer->GetPVRTimerInfoTag()->GetType().c_str()), bCancel);
+
+    if (!bCancel)
     {
       Close();
-      bReturn = CPVRTimers::DeleteTimer(*timer);
+      bReturn = CPVRTimers::DeleteTimer(*timer, false, bConfirm);
     }
   }
 

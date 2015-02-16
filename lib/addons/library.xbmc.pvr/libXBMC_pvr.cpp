@@ -100,6 +100,14 @@ DLLEXPORT void PVR_add_menu_hook(void *hdl, void* cb, PVR_MENUHOOK *hook)
   ((CB_PVRLib*)cb)->AddMenuHook(((AddonCB*)hdl)->addonData, hook);
 }
 
+DLLEXPORT void PVR_add_timer_type(void *hdl, void* cb, PVR_TIMERTYPE *type)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->AddTimerType(((AddonCB*)hdl)->addonData, type);
+}
+
 DLLEXPORT void PVR_recording(void *hdl, void* cb, const char *Name, const char *FileName, bool On)
 {
   if (cb == NULL)

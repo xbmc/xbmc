@@ -95,6 +95,13 @@ public:
   static void PVRTransferRecordingEntry(void* addonData, const ADDON_HANDLE handle, const PVR_RECORDING* entry);
 
   /*!
+   * @brief Add an additional timer type for this add-on
+   * @param addonData A pointer to the add-on.
+   * @param type The type to add.
+   */
+  static void PVRAddTimerType(void* addonData, PVR_TIMERTYPE* type);
+
+  /*!
    * @brief Add or replace a menu hook for the context menu for this add-on
    * @param addonData A pointer to the add-on.
    * @param hook The hook to add.
