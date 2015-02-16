@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/lib/Setting.h"
@@ -44,15 +45,23 @@ using namespace PVR;
 #define SETTING_TMR_FIRST_DAY           "timer.firstday"
 #define SETTING_TMR_NAME                "timer.name"
 #define SETTING_TMR_DIR                 "timer.directory"
-#define SETTING_TMR_RADIO               "timer.radio"
 #define SETTING_TMR_CHNAME_RADIO        "timer.radiochannelname"
+#define SETTING_TMR_TYPE                "timer.type"
+#define SETTING_TMR_NEW_EPISODES        "timer.newepisodes"
+#define SETTING_TMR_BEGIN_PRE           "timer.startmargin"
+#define SETTING_TMR_END_POST            "timer.endmargin"
+
+#define OPENREADONLY 20
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml"),
     m_tmp_iFirstDay(0),
-    m_tmp_day(11),
+    m_tmp_day(0),
+    m_tmp_type(0),
     m_bTimerActive(false),
     m_selectedChannelEntry(0),
+    m_bIsNewTimer(true),
+    m_bIsManualTimer(true),
     m_timerItem(NULL)
 {
   m_loadType = LOAD_EVERY_TIME;
@@ -60,7 +69,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
 
 void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
 {
-  m_timerItem         = item;
+  m_timerItem = item;
 
   m_timerItem->GetPVRTimerInfoTag()->StartAsLocalTime().GetAsSystemTime(m_timerStartTime);
   m_timerItem->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsSystemTime(m_timerEndTime);
@@ -68,7 +77,8 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_timerEndTimeStr     = m_timerItem->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsLocalizedTime("", false);
 
   m_tmp_iFirstDay     = 0;
-  m_tmp_day           = 11;
+  m_tmp_day           = 0;
+  m_tmp_type          = 0;
 }
 
 void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
@@ -85,15 +95,9 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_TMR_ACTIVE)
     m_bTimerActive = static_cast<const CSettingBool*>(setting)->GetValue();
-  if (settingId == SETTING_TMR_RADIO || settingId == SETTING_TMR_CHNAME_TV || settingId == SETTING_TMR_CHNAME_RADIO)
+  else if (settingId == SETTING_TMR_CHNAME_TV || settingId == SETTING_TMR_CHNAME_RADIO)
   {
-    if (settingId == SETTING_TMR_RADIO)
-    {
-      tag->m_bIsRadio = static_cast<const CSettingBool*>(setting)->GetValue();
-      m_selectedChannelEntry = 0;
-    }
-    else
-      m_selectedChannelEntry = static_cast<const CSettingInt*>(setting)->GetValue();
+    m_selectedChannelEntry = static_cast<const CSettingInt*>(setting)->GetValue();
 
     std::map<std::pair<bool, int>, int>::iterator itc = m_channelEntries.find(std::make_pair(tag->m_bIsRadio, m_selectedChannelEntry));
     if (itc != m_channelEntries.end())
@@ -115,37 +119,29 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   {
     m_tmp_day = static_cast<const CSettingInt*>(setting)->GetValue();
 
-    if (m_tmp_day <= 10)
-      SetTimerFromWeekdaySetting(*tag);
-    else
-    {
-      CDateTime time = CDateTime::GetCurrentDateTime();
-      CDateTime timestart = m_timerStartTime;
-      CDateTime timestop = m_timerEndTime;
-      int m_tmp_diff;
+    CDateTime time = CDateTime::GetCurrentDateTime();
+    CDateTime timestart = m_timerStartTime;
+    CDateTime timestop = m_timerEndTime;
+    int m_tmp_diff;
 
-      // get diffence of timer in days between today and timer start date
-      tm time_cur; time.GetAsTm(time_cur);
-      tm time_tmr; timestart.GetAsTm(time_tmr);
+    // get diffence of timer in days between today and timer start date
+    tm time_cur; time.GetAsTm(time_cur);
+    tm time_tmr; timestart.GetAsTm(time_tmr);
 
-      m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday;
-      if (time_tmr.tm_yday - time_cur.tm_yday < 0)
-        m_tmp_diff = 365;
+    m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday;
+    if (time_tmr.tm_yday - time_cur.tm_yday < 0)
+      m_tmp_diff = 365;
 
-      CDateTime newStart = timestart + CDateTimeSpan(m_tmp_day - 11 - m_tmp_diff, 0, 0, 0);
-      CDateTime newEnd = timestop + CDateTimeSpan(m_tmp_day - 11 - m_tmp_diff, 0, 0, 0);
+    CDateTime newStart = timestart + CDateTimeSpan(m_tmp_day - m_tmp_diff, 0, 0, 0);
+    CDateTime newEnd = timestop + CDateTimeSpan(m_tmp_day - m_tmp_diff, 0, 0, 0);
 
-      // add a day to end time if end time is before start time
-      // TODO: this should be removed after separate end date control was added
-      if (newEnd < newStart)
-        newEnd += CDateTimeSpan(1, 0, 0, 0);
+    // add a day to end time if end time is before start time
+    // TODO: this should be removed after separate end date control was added
+    if (newEnd < newStart)
+      newEnd += CDateTimeSpan(1, 0, 0, 0);
 
-      tag->SetStartFromLocalTime(newStart);
-      tag->SetEndFromLocalTime(newEnd);
-
-      tag->m_bIsRepeating = false;
-      tag->m_iWeekdays = 0;
-    }
+    tag->SetStartFromLocalTime(newStart);
+    tag->SetEndFromLocalTime(newEnd);
   }
   else if (settingId == SETTING_TMR_PRIORITY)
     tag->m_iPriority = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -165,6 +161,17 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
     tag->m_strTitle = static_cast<const CSettingString*>(setting)->GetValue();
   else if (settingId == SETTING_TMR_DIR)
     tag->m_strDirectory = static_cast<const CSettingString*>(setting)->GetValue();
+  else if (settingId == SETTING_TMR_TYPE)
+  {
+    m_tmp_type = static_cast<const CSettingInt*>(setting)->GetValue();
+    SetTimerFromWeekdayAndType(*tag);
+  }
+  else if (settingId == SETTING_TMR_BEGIN_PRE)
+    tag->m_iMarginStart = static_cast<const CSettingInt*>(setting)->GetValue();
+  else if (settingId == SETTING_TMR_END_POST)
+    tag->m_iMarginEnd = static_cast<const CSettingInt*>(setting)->GetValue();
+  else if (settingId == SETTING_TMR_NEW_EPISODES)
+    tag->m_bNewEpisodesOnly = static_cast<const CSettingInt*>(setting)->GetValue();
 
   tag->UpdateSummary();
 }
@@ -269,53 +276,89 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
     return;
   }
 
-  // add a condition
-  m_settingsManager->AddCondition("IsTimerDayRepeating", IsTimerDayRepeating);
-
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
+
+  m_bIsNewTimer = (tag->m_state == PVR_TIMER_STATE_NEW);
+  m_bIsManualTimer = (tag->m_type == PVR_TIMER_TYPE_NONE
+                    || tag->m_type == PVR_TIMER_TYPE_ONCE_MANUAL
+                    || tag->m_type == PVR_TIMER_TYPE_SERIE_MANUAL);
+
+  tag->m_bIsRepeating = !(tag->m_type == PVR_TIMER_TYPE_NONE
+                        || tag->m_type == PVR_TIMER_TYPE_ONCE_MANUAL
+                        || tag->m_type == PVR_TIMER_TYPE_ONCE_EPG) ;
 
   m_selectedChannelEntry = 0;
   m_channelEntries.clear();
   m_bTimerActive = tag->IsActive();
 
-  AddToggle(group, SETTING_TMR_ACTIVE, 19074, 0, m_bTimerActive);
-  AddEdit(group, SETTING_TMR_NAME, 19075, 0, tag->m_strTitle, false, false, 19097);
+  // m_tmp_type = UNSUPPORTED_NUM if we opened an unsupported timer
+  // in this case the dialog is opened in a sort of 'read-only' mode (all controls are disabled)
+  // this is done with the settings dependencies underneath
+  // stop time, end time, title, day and channel are always in 'read-only' mode if this is an epg based timer
+  SetTypeFromTimer(*tag);
 
+  /// Timer type
+  if (m_bIsManualTimer)
+    AddSpinner(group, SETTING_TMR_TYPE, 804, 0, m_tmp_type, TypesManualOptionsFiller);
+  else
+    AddSpinner(group, SETTING_TMR_TYPE, 804, 0, m_tmp_type, TypesEpgOptionsFiller);
+
+  /// Timer active selection, only for existing timers
+  if (!m_bIsNewTimer)
+    AddToggle(group, SETTING_TMR_ACTIVE, 19074, 0, m_bTimerActive);
+
+  /// Tile
+  CSettingString *settingTitle = AddEdit(group, SETTING_TMR_NAME, 19075, 0, tag->m_strTitle, false, false, 19097);
+
+  // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+  CSettingDependency dependencytitle(SettingDependencyTypeEnable, m_settingsManager);
+  dependencytitle.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY || m_bIsManualTimer), m_settingsManager)));
+  SettingDependencies depsTitle;
+  depsTitle.push_back(dependencytitle);
+  settingTitle->SetDependencies(depsTitle);
+
+  /// Recording folder
   if (tag->SupportsFolders())
-    AddEdit(group, SETTING_TMR_DIR, 19076, 0, tag->m_strDirectory, true, false, 19104);
+  {
+    CSettingString *settingFolder = AddEdit(group, SETTING_TMR_DIR, 19076, 0, tag->m_strDirectory, true, false, 19104);
 
-  AddToggle(group, SETTING_TMR_RADIO, 19077, 0, tag->m_bIsRadio);
+    // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+    CSettingDependency dependencyfolder(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyfolder.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY || m_bIsManualTimer) , m_settingsManager)));
+    SettingDependencies depsFolder;
+    depsFolder.push_back(dependencyfolder);
+    settingFolder->SetDependencies(depsFolder);
+  }
 
   /// Channel names
-  {
-    // For TV
-    AddChannelNames(group, false);
-
-    // For Radio
-    AddChannelNames(group, true);
-  }
+  AddChannelNames(group, tag->m_bIsRadio);
 
   /// Day
-  {
-    // get diffence of timer in days between today and timer start date
-    tm time_cur; CDateTime::GetCurrentDateTime().GetAsTm(time_cur);
-    tm time_tmr; tag->StartAsLocalTime().GetAsTm(time_tmr);
+  // get difference of timer in days between today and timer start date
+  tm time_cur; CDateTime::GetCurrentDateTime().GetAsTm(time_cur);
+  tm time_tmr; tag->StartAsLocalTime().GetAsTm(time_tmr);
 
-    m_tmp_day += time_tmr.tm_yday - time_cur.tm_yday;
-    if (time_tmr.tm_yday - time_cur.tm_yday < 0)
-      m_tmp_day += 365;
+  m_tmp_day += time_tmr.tm_yday - time_cur.tm_yday;
+  if (time_tmr.tm_yday - time_cur.tm_yday < 0)
+    m_tmp_day += 365;
 
-    SetWeekdaySettingFromTimer(*tag);
+  CSettingInt *settingDay = AddSpinner(group, SETTING_TMR_DAY, 19079, 0, m_tmp_day, DaysOptionsFiller);
 
-    AddSpinner(group, SETTING_TMR_DAY, 19079, 0, m_tmp_day, DaysOptionsFiller);
-  }
+  // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+  CSettingDependency dependencyday(SettingDependencyTypeEnable, m_settingsManager);
+  dependencyday.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY || m_bIsManualTimer), m_settingsManager)));
+  CSettingDependency dependency2day(SettingDependencyTypeVisible, m_settingsManager);
+  dependency2day.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "0", SettingDependencyOperatorEquals, false, m_settingsManager)));
+  SettingDependencies depsDay;
+  depsDay.push_back(dependencyday);
 
-  AddButton(group, SETTING_TMR_BEGIN, 19080, 0);
-  AddButton(group, SETTING_TMR_END, 19081, 0);
-  AddSpinner(group, SETTING_TMR_PRIORITY, 19082, 0, tag->m_iPriority, 0, 1, 99);
-  AddSpinner(group, SETTING_TMR_LIFETIME, 19083, 0, tag->m_iLifetime, 0, 1, 365);
+  if (m_bIsManualTimer)
+    depsDay.push_back(dependency2day);
 
-  /// First day
+  settingDay->SetDependencies(depsDay);
+
+  /// First day (only for manual timers)
+  if (m_bIsManualTimer)
   {
     CDateTime time = CDateTime::GetCurrentDateTime();
     CDateTime timestart = tag->FirstDayAsLocalTime();
@@ -333,14 +376,97 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
 
     CSettingInt *settingFirstDay = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, 0, m_tmp_iFirstDay, DaysOptionsFiller);
 
-    // define an enable dependency with m_tmp_day <= 10
-    CSettingDependency depdendencyFirstDay(SettingDependencyTypeEnable, m_settingsManager);
-    depdendencyFirstDay.And()
-      ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition("IsTimerDayRepeating", "true", SETTING_TMR_DAY, false, m_settingsManager)));
-    SettingDependencies deps;
-    deps.push_back(depdendencyFirstDay);
-    settingFirstDay->SetDependencies(deps);
+    // define an enable dependency with timer type set to "!once" or unsupported timer (=20)
+    CSettingDependency dependencyFirstDay(SettingDependencyTypeVisible, m_settingsManager);
+    dependencyFirstDay.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    CSettingDependency dependency2FirstDay(SettingDependencyTypeEnable, m_settingsManager);
+    dependency2FirstDay.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsFirstDay;
+    depsFirstDay.push_back(dependencyFirstDay);
+    depsFirstDay.push_back(dependency2FirstDay);
+    settingFirstDay->SetDependencies(depsFirstDay);
   }
+
+  /// Begin and end time
+  if (!m_bIsManualTimer || m_tmp_type == OPENREADONLY)
+  {
+    // add greyed out edit boxes for epg based timers (just for displaying info to user)
+    CSettingString *settingBegin = AddEdit(group, SETTING_TMR_BEGIN, 19080, 0, m_timerStartTimeStr, false, false);
+    CSettingString *settingEnd = AddEdit(group, SETTING_TMR_END, 19081, 0, m_timerEndTimeStr, false, false);
+
+    CSettingDependency dependencybegin(SettingDependencyTypeEnable, m_settingsManager);
+    dependencybegin.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY), m_settingsManager)));
+    SettingDependencies depsBegin;
+    depsBegin.push_back(dependencybegin);
+    settingBegin->SetDependencies(depsBegin);
+
+    CSettingDependency dependencyend(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyend.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY), m_settingsManager)));
+    SettingDependencies depsEnd;
+    depsEnd.push_back(dependencyend);
+    settingEnd->SetDependencies(depsEnd);
+  }
+  else
+  {
+    // manual timer uses non greyed out boxes
+    AddButton(group, SETTING_TMR_BEGIN, 19080, 0);
+    AddButton(group, SETTING_TMR_END, 19081, 0);
+  }
+
+  /// "New episodes only" rule (only for epg timers)
+  if (!m_bIsManualTimer && g_PVRClients->HasNewEpisodesTimerSupport(tag->m_iClientId))
+  {
+    CSettingBool *settingNewEpisodesOnly = AddToggle(group, SETTING_TMR_NEW_EPISODES, 821, 0, tag->m_bNewEpisodesOnly);
+
+    // only show button when timer is repeating and gray out when we opened an unsupported timer (SETTING_TMR_TYPE = 20)
+    CSettingDependency dependencyNewEpisodes(SettingDependencyTypeVisible, m_settingsManager);
+    dependencyNewEpisodes.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    CSettingDependency dependency2NewEpisodes(SettingDependencyTypeEnable, m_settingsManager);
+    dependency2NewEpisodes.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsRepeat;
+    depsRepeat.push_back(dependency2NewEpisodes);
+    depsRepeat.push_back(dependencyNewEpisodes);
+    settingNewEpisodesOnly->SetDependencies(depsRepeat);
+  }
+
+  /// Pre and post time (only for epg timers)
+  if (!m_bIsManualTimer)
+  {
+    CSettingInt *settingExtraStart = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 822, 0, 0, tag->m_iMarginStart,1,60);
+    CSettingInt *settingExtraEnd = AddSpinner(group, SETTING_TMR_END_POST, 823, 0, 0, tag->m_iMarginEnd,1,60);
+
+    // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+    CSettingDependency dependencyextrastart(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyextrastart.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsExtraStart;
+    depsExtraStart.push_back(dependencyextrastart);
+    settingExtraStart->SetDependencies(depsExtraStart);
+
+    // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+    CSettingDependency dependencyextraend(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyextraend.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsExtraEnd;
+    depsExtraEnd.push_back(dependencyextraend);
+    settingExtraEnd->SetDependencies(depsExtraEnd);
+  }
+
+  /// Priority and lifetime
+  CSettingInt *settingPrio = AddSpinner(group, SETTING_TMR_PRIORITY, 19082, 0, tag->m_iPriority, 0, 1, 99);
+  CSettingInt *settingLifetime = AddSpinner(group, SETTING_TMR_LIFETIME, 19083, 0, tag->m_iLifetime, 0, 1, 365);
+
+  // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+  CSettingDependency dependencypri(SettingDependencyTypeEnable, m_settingsManager);
+  dependencypri.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+  SettingDependencies depsPri;
+  depsPri.push_back(dependencypri);
+  settingPrio->SetDependencies(depsPri);
+
+  // grey out when we open an unsupported timer (SETTING_TMR_TYPE = 20)
+  CSettingDependency dependencylife(SettingDependencyTypeEnable, m_settingsManager);
+  dependencylife.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, true, m_settingsManager)));
+  SettingDependencies depsLife;
+  depsLife.push_back(dependencylife);
+  settingLifetime->SetDependencies(depsLife);
 }
 
 CSetting* CGUIDialogPVRTimerSettings::AddChannelNames(CSettingGroup *group, bool bRadio)
@@ -367,74 +493,185 @@ CSetting* CGUIDialogPVRTimerSettings::AddChannelNames(CSettingGroup *group, bool
   if (setting == NULL)
     return NULL;
 
-  // define an enable dependency with tag->m_bIsRadio
-  CSettingDependency depdendencyIsRadio(SettingDependencyTypeEnable, m_settingsManager);
-  depdendencyIsRadio.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_RADIO, "true", SettingDependencyOperatorEquals, !bRadio, m_settingsManager)));
+  // grey out when we opened an unsupported timer (SETTING_TMR_TYPE = 20) or an epg based timer */
+  CSettingDependency dependencyChannel(SettingDependencyTypeEnable, m_settingsManager);
+  dependencyChannel.And()->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_TMR_TYPE, "20", SettingDependencyOperatorEquals, (m_tmp_type == OPENREADONLY || m_bIsManualTimer), m_settingsManager)));
   SettingDependencies deps;
-  deps.push_back(depdendencyIsRadio);
+  deps.push_back(dependencyChannel);
   setting->SetDependencies(deps);
 
   return setting;
 }
 
-void CGUIDialogPVRTimerSettings::SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer)
+void CGUIDialogPVRTimerSettings::SetTypeFromTimer(const CPVRTimerInfoTag &timer)
 {
   if (timer.m_bIsRepeating)
   {
-    if (timer.m_iWeekdays == 0x01)
-      m_tmp_day = 0;
-    else if (timer.m_iWeekdays == 0x02)
-      m_tmp_day = 1;
-    else if (timer.m_iWeekdays == 0x04)
-      m_tmp_day = 2;
-    else if (timer.m_iWeekdays == 0x08)
-      m_tmp_day = 3;
-    else if (timer.m_iWeekdays == 0x10)
-      m_tmp_day = 4;
-    else if (timer.m_iWeekdays == 0x20)
-      m_tmp_day = 5;
-    else if (timer.m_iWeekdays == 0x40)
-      m_tmp_day = 6;
-    else if (timer.m_iWeekdays == 0x1F)
-      m_tmp_day = 7;
-    else if (timer.m_iWeekdays == 0x3F)
-      m_tmp_day = 8;
-    else if (timer.m_iWeekdays == 0x7F)
-      m_tmp_day = 9;
-    else if (timer.m_iWeekdays == 0x60)
-      m_tmp_day = 10;
+    if (m_bIsManualTimer)
+    {
+      switch (timer.m_iWeekdays)
+      {
+      case BITFLAG_MONDAY:
+        m_tmp_type = 1;
+        break;
+      case BITFLAG_TUESDAY:
+        m_tmp_type = 2;
+        break;
+      case BITFLAG_WEDNESDAY:
+        m_tmp_type = 3;
+        break;
+      case BITFLAG_THURSDAY:
+        m_tmp_type = 4;
+        break;
+      case BITFLAG_FRIDAY:
+        m_tmp_type = 5;
+        break;
+      case BITFLAG_SATURDAY:
+        m_tmp_type = 6;
+        break;
+      case BITFLAG_SUNDAY:
+        m_tmp_type = 7;
+        break;
+      case BITFLAG_WEEKDAYS:
+        m_tmp_type = 8;
+        break;
+      case BITFLAG_WEEKENDS:
+        m_tmp_type = 9;
+        break;
+      case BITFLAG_ALL_DAYS:
+        m_tmp_type = 10;
+        break;
+      default:
+        m_tmp_type = OPENREADONLY;     //not supported
+        break;
+      }
+
+      /* supported by kodi but marked as unsupported by pvr client */
+      if (!(PVR_TIMER_TYPE_SERIE_MANUAL & g_PVRClients->GetSupportedTimers(timer.m_iClientId)))
+        m_tmp_type = OPENREADONLY;
+    }
+    else
+    {
+      switch (timer.m_type)
+      {
+      case PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_THIS_CHANNEL:
+        m_tmp_type = 1;
+        break;
+      case PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_ANY_CHANNEL:
+        m_tmp_type = 2;
+        break;
+      case PVR_TIMER_TYPE_SERIE_EPG_WEEKLY_AROUND_TIME:
+        m_tmp_type = 3;
+        break;
+      case PVR_TIMER_TYPE_SERIE_EPG_DAILY_AROUND_TIME:
+        m_tmp_type = 4;
+        break;
+      case PVR_TIMER_TYPE_SERIE_EPG_WEEKDAYS:
+        m_tmp_type = 5;
+        break;
+      case PVR_TIMER_TYPE_SERIE_EPG_WEEKENDS:
+        m_tmp_type = 6;
+        break;
+      default:
+        m_tmp_type = OPENREADONLY;     //not supported
+        break;
+      }
+
+      /* supported by kodi but marked as unsupported by pvr client */
+      if (!(timer.m_type & g_PVRClients->GetSupportedTimers(timer.m_iClientId)))
+        m_tmp_type = OPENREADONLY;
+    }
   }
+  else
+    m_tmp_type = 0;    //rec once
 }
 
-void CGUIDialogPVRTimerSettings::SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer)
+void CGUIDialogPVRTimerSettings::SetTimerFromWeekdayAndType(CPVRTimerInfoTag &timer)
 {
-  timer.m_bIsRepeating = true;
-
-  if (m_tmp_day == 0)
-    timer.m_iWeekdays = 0x01;
-  else if (m_tmp_day == 1)
-    timer.m_iWeekdays = 0x02;
-  else if (m_tmp_day == 2)
-    timer.m_iWeekdays = 0x04;
-  else if (m_tmp_day == 3)
-    timer.m_iWeekdays = 0x08;
-  else if (m_tmp_day == 4)
-    timer.m_iWeekdays = 0x10;
-  else if (m_tmp_day == 5)
-    timer.m_iWeekdays = 0x20;
-  else if (m_tmp_day == 6)
-    timer.m_iWeekdays = 0x40;
-  else if (m_tmp_day == 7)
-    timer.m_iWeekdays = 0x1F;
-  else if (m_tmp_day == 8)
-    timer.m_iWeekdays = 0x3F;
-  else if (m_tmp_day == 9)
-    timer.m_iWeekdays = 0x7F;
-  else if (m_tmp_day == 10)
-    timer.m_iWeekdays = 0x60;
-  else
+  if (m_tmp_type == 0) //once
+  {
+    timer.m_bIsRepeating = false;
+    timer.m_type = m_bIsManualTimer ? PVR_TIMER_TYPE_ONCE_MANUAL : PVR_TIMER_TYPE_ONCE_EPG;
     timer.m_iWeekdays = 0;
+  }
+  else
+  {
+    timer.m_bIsRepeating = true;
+
+    if (m_bIsManualTimer)
+    {
+      timer.m_type = PVR_TIMER_TYPE_SERIE_MANUAL;
+
+      switch (m_tmp_type)
+      {
+      case 1:
+        timer.m_iWeekdays = BITFLAG_MONDAY;
+        break;
+      case 2:
+        timer.m_iWeekdays = BITFLAG_TUESDAY;
+        break;
+      case 3:
+        timer.m_iWeekdays = BITFLAG_WEDNESDAY;
+        break;
+      case 4:
+        timer.m_iWeekdays = BITFLAG_THURSDAY;
+        break;
+      case 5:
+        timer.m_iWeekdays = BITFLAG_FRIDAY;
+        break;
+      case 6:
+        timer.m_iWeekdays = BITFLAG_SATURDAY;
+        break;
+      case 7:
+        timer.m_iWeekdays = BITFLAG_SUNDAY;
+        break;
+      case 8:
+        timer.m_iWeekdays = BITFLAG_WEEKDAYS;
+        break;
+      case 9:
+        timer.m_iWeekdays = BITFLAG_WEEKENDS;
+        break;
+      case 10:
+        timer.m_iWeekdays = BITFLAG_ALL_DAYS;
+        break;
+      default:
+        {
+          timer.m_iWeekdays = 0;
+          timer.m_type = PVR_TIMER_TYPE_NONE;
+        }
+        break;
+      }
+    }
+    else
+    {
+      timer.m_iWeekdays = 0;
+
+      switch (m_tmp_type)
+      {
+      case 1:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_THIS_CHANNEL;
+        break;
+      case 2:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_ANY_CHANNEL;
+        break;
+      case 3:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_WEEKLY_AROUND_TIME ;
+        break;
+      case 4:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_DAILY_AROUND_TIME;
+        break;
+      case 5:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_WEEKDAYS;
+        break;
+      case 6:
+        timer.m_type = PVR_TIMER_TYPE_SERIE_EPG_WEEKENDS;
+        break;
+      default:
+        timer.m_type = PVR_TIMER_TYPE_NONE;
+        break;
+      }
+    }
+  }
 }
 
 void CGUIDialogPVRTimerSettings::getChannelNames(bool bRadio, std::vector< std::pair<std::string, int> > &list, int &current, bool updateChannelEntries /* = false */)
@@ -468,15 +705,6 @@ void CGUIDialogPVRTimerSettings::setButtonLabels()
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
 }
 
- bool CGUIDialogPVRTimerSettings::IsTimerDayRepeating(const std::string &condition, const std::string &value, const CSetting *setting)
- {
-   if (setting == NULL || setting->GetType() != SettingTypeInteger)
-     return false;
-
-   bool result = static_cast<const CSettingInt*>(setting)->GetValue() <= 10;
-   return result == StringUtils::EqualsNoCase(value, "true");
- }
-
 void CGUIDialogPVRTimerSettings::ChannelNamesOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   if (data == NULL)
@@ -502,18 +730,88 @@ void CGUIDialogPVRTimerSettings::DaysOptionsFiller(const CSetting *setting, std:
   if (tag == NULL)
     return;
 
-  if (setting->GetId() == SETTING_TMR_DAY)
-  {
-    for (unsigned int iDayPtr = 19086; iDayPtr <= 19096; iDayPtr++)
-      list.push_back(std::make_pair(g_localizeStrings.Get(iDayPtr), list.size()));
-  }
-  else if (setting->GetId() == SETTING_TMR_FIRST_DAY)
-    list.push_back(std::make_pair(g_localizeStrings.Get(19030), 0));
-  
+  if (setting->GetId() == SETTING_TMR_FIRST_DAY)
+    list.push_back(std::make_pair(g_localizeStrings.Get(19030), 0)); //now
+
   CDateTime time = CDateTime::GetCurrentDateTime();
   for (int i = 1; i < 365; ++i)
   {
     list.push_back(std::make_pair(time.GetAsLocalizedDate(), list.size()));
     time += CDateTimeSpan(1, 0, 0, 0);
+  }
+}
+
+void CGUIDialogPVRTimerSettings::TypesEpgOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  if (setting == NULL || data == NULL)
+    return;
+
+  CGUIDialogPVRTimerSettings *dialog = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (dialog == NULL)
+    return;
+
+  const CPVRTimerInfoTag *tag = dialog->m_timerItem->GetPVRTimerInfoTag();
+  if (tag == NULL)
+    return;
+
+  /* unsupported repeating timer*/
+  if (current == OPENREADONLY)
+  {
+    list.push_back(std::make_pair(g_localizeStrings.Get(812), OPENREADONLY));
+    return;
+  }
+
+  int mask = g_PVRClients->GetSupportedTimers(tag->m_iClientId);
+
+  if (mask & PVR_TIMER_TYPE_ONCE_EPG)
+    list.push_back(std::make_pair(g_localizeStrings.Get(805), 0));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_THIS_CHANNEL)
+    list.push_back(std::make_pair(g_localizeStrings.Get(806), 1));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_ANYTIME_ANY_CHANNEL)
+    list.push_back(std::make_pair(g_localizeStrings.Get(807), 2));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_WEEKLY_AROUND_TIME)
+    list.push_back(std::make_pair(g_localizeStrings.Get(808), 3));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_DAILY_AROUND_TIME)
+    list.push_back(std::make_pair(g_localizeStrings.Get(809), 4));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_WEEKDAYS)
+    list.push_back(std::make_pair(g_localizeStrings.Get(810), 5));
+  if (mask & PVR_TIMER_TYPE_SERIE_EPG_WEEKENDS)
+    list.push_back(std::make_pair(g_localizeStrings.Get(811), 6));
+}
+
+
+void CGUIDialogPVRTimerSettings::TypesManualOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  if (setting == NULL || data == NULL)
+    return;
+
+  CGUIDialogPVRTimerSettings *dialog = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (dialog == NULL)
+    return;
+
+  const CPVRTimerInfoTag *tag = dialog->m_timerItem->GetPVRTimerInfoTag();
+  if (tag == NULL)
+    return;
+
+  /* unsupported repeating timer*/
+  if (current == OPENREADONLY)
+  {
+    list.push_back(std::make_pair(g_localizeStrings.Get(812), OPENREADONLY));
+    return;
+  }
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(805), 0)); //once
+
+  // manual repeating timer support?
+  if (PVR_TIMER_TYPE_SERIE_MANUAL & g_PVRClients->GetSupportedTimers(tag->m_iClientId))
+  {
+    /* add days mon-sun */
+    for (unsigned int iDayPtr = 813; iDayPtr <= 819; iDayPtr++)
+      list.push_back(std::make_pair(g_localizeStrings.Get(iDayPtr), iDayPtr-812));
+
+    /* add weekend and weekday */
+    list.push_back(std::make_pair(g_localizeStrings.Get(810), 8));  //weekdays
+    list.push_back(std::make_pair(g_localizeStrings.Get(811), 9));  //weekends
+    list.push_back(std::make_pair(g_localizeStrings.Get(820), 10)); //all days
   }
 }

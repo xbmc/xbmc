@@ -54,8 +54,8 @@ namespace PVR
     virtual void InitializeSettings();
     
     virtual CSetting* AddChannelNames(CSettingGroup *group, bool bRadio);
-    virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
-    virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
+    virtual void SetTypeFromTimer(const CPVRTimerInfoTag &timer);
+    virtual void SetTimerFromWeekdayAndType(CPVRTimerInfoTag &timer);
 
     void getChannelNames(bool bRadio, std::vector< std::pair<std::string, int> > &list, int &current, bool updateChannelEntries = false);
     void setButtonLabels();
@@ -64,6 +64,8 @@ namespace PVR
 
     static void ChannelNamesOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void DaysOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void TypesManualOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void TypesEpgOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     SYSTEMTIME                          m_timerStartTime;
     SYSTEMTIME                          m_timerEndTime;
@@ -71,7 +73,10 @@ namespace PVR
     std::string                         m_timerEndTimeStr;
     int                                 m_tmp_iFirstDay;
     int                                 m_tmp_day;
+    int                                 m_tmp_type;
     bool                                m_bTimerActive;
+    bool                                m_bIsNewTimer;
+    bool                                m_bIsManualTimer;
     int                                 m_selectedChannelEntry;
     std::map<std::pair<bool, int>, int> m_channelEntries;
 

@@ -142,9 +142,10 @@ namespace PVR
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
+     * @param bDeleteSchedule Also delete repeating schedule instead of single timer only.
      * @return True if it was sent correctly, false if not.
      */
-    static bool DeleteTimer(const CFileItem &item, bool bForce = false);
+    static bool DeleteTimer(const CFileItem &item, bool bForce = false, bool bDeleteSchedule = false);
 
     /*!
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.

@@ -364,6 +364,33 @@ bool CPVRClients::HasTimerSupport(int iClientId)
   return false;
 }
 
+bool CPVRClients::HasSerieEpgTimerSupport(int iClientId)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientId, client))
+    return client->SupportsSerieEpgTimers();
+
+  return false;
+}
+
+bool CPVRClients::HasNewEpisodesTimerSupport(int iClientId)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientId, client))
+    return client->SupportsNewEpisodesTimers();
+
+  return false;
+}
+
+int CPVRClients::GetSupportedTimers(int iClientId)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientId, client))
+    return client->GetSupportedTimers();
+
+  return 0;
+}
+
 PVR_ERROR CPVRClients::GetTimers(CPVRTimers *timers)
 {
   PVR_ERROR error(PVR_ERROR_NO_ERROR);
@@ -413,13 +440,13 @@ PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
+PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetConnectedClient(timer.m_iClientId, client))
-    error = client->DeleteTimer(timer, bForce);
+    error = client->DeleteTimer(timer, bForce, bDeleteSchedule);
 
   return error;
 }
