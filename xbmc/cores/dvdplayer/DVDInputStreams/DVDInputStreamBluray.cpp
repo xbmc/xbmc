@@ -564,7 +564,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     m_player->OnDVDNavResult((void*) &pid, 3);
     break;
 
-#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,2,2))
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(0,2,2))
   case BD_EVENT_MENU:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_MENU %d",
         m_event.param);
@@ -933,6 +933,14 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
     return false;
   else
     return true;
+}
+
+int64_t CDVDInputStreamBluray::GetChapterPos(int ch)
+{
+  if (ch == -1 || ch > GetChapterCount())
+    ch = GetChapter();
+
+  return m_title->chapters[ch-1].start;
 }
 
 int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)

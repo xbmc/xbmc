@@ -111,6 +111,7 @@ public:
   int GetChapterCount();
   int GetChapter();
   void GetChapterName(std::string& strChapterName);
+  int64_t GetChapterPos(int chapterIdx=-1);
   virtual void GetStreamCodecName(int iStreamId, std::string &strName);
 
   bool Aborted();

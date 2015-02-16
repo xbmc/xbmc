@@ -1455,3 +1455,18 @@ bool CDVDInputStreamNavigator::GetDVDSerialString(std::string& serialStr)
   serialStr.assign(str);
   return true;
 }
+
+int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
+{
+  if (ch == -1 || ch > GetChapterCount())
+    ch = GetChapter();
+
+  uint64_t* times, duration;
+
+  m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
+
+  int64_t result = ch==1?0.0:times[ch-2]/90000;
+  free(times);
+
+  return result;
+}

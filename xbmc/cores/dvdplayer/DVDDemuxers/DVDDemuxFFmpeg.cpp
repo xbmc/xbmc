@@ -1404,7 +1404,7 @@ int CDVDDemuxFFmpeg::GetChapter()
 void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
 {
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
-  if(ich)  
+  if(ich)
     ich->GetChapterName(strChapterName);
   else
   {
@@ -1417,6 +1417,20 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
     if (titleTag)
       strChapterName = titleTag->value;
   }
+}
+
+int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
+{
+  if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
+    chapterIdx = GetChapter();
+  if(chapterIdx <= 0)
+    return 0;
+
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)  
+    return ich->GetChapterPos(chapterIdx);
+
+  return m_pFormatContext->chapters[chapterIdx-1]->start*av_q2d(m_pFormatContext->chapters[chapterIdx-1]->time_base);
 }
 
 bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
