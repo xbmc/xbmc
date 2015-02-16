@@ -20,10 +20,6 @@
 
 #include "system.h"
 #include "AppParamParser.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
-#include "PlayListPlayer.h"
-#include "utils/log.h"
 #include "xbmc.h"
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
@@ -36,9 +32,6 @@
     #include <SDL/SDL.h>
   #endif
 #include <locale.h>
-#endif
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
 #endif
 #include "XbmcContext.h"
 
