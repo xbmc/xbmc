@@ -735,6 +735,13 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
+  // Determine the proper list to queue this element
+  int playlist = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = g_application.m_pPlayer->GetPreferredPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = PLAYLIST_VIDEO;
+
   // don't re-queue items from playlist window
   if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_VIDEO_PLAYLIST ) return ;
 
@@ -757,8 +764,8 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
     return;
   }
 
-  g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  g_playlistPlayer.Add(playlist, queuedItems);
+  g_playlistPlayer.SetCurrentPlaylist(playlist);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
 }

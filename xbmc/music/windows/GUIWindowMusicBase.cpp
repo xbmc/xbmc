@@ -561,10 +561,17 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 /// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
+  // Determine the proper list to queue this element
+  int playlist = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = g_application.m_pPlayer->GetPreferredPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = PLAYLIST_MUSIC;
+
   // don't re-queue items from playlist window
   if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_MUSIC_PLAYLIST) return ;
 
-  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
+  int iOldSize=g_playlistPlayer.GetPlaylist(playlist).size();
 
   // add item 2 playlist (make a copy as we alter the queuing state)
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -591,14 +598,14 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
     return;
   }
 
-  g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.m_pPlayer->IsPlaying())
+  g_playlistPlayer.Add(playlist, queuedItems);
+  if (g_playlistPlayer.GetPlaylist(playlist).size() && !g_application.m_pPlayer->IsPlaying())
   {
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistmusic://");
 
     g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.SetCurrentPlaylist(playlist);
     g_playlistPlayer.Play(iOldSize); // start playing at the first new item
   }
 }
