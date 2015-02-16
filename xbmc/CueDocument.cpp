@@ -259,7 +259,11 @@ bool CCueDocument::GetSong(int aTrackNumber, CSong& aSong)
   else
     aSong.iDuration = 0;
 
-  // \todo Set replay gain here
+  if (m_albumReplayGain.Valid())
+    aSong.replayGain.Set(ReplayGain::ALBUM, m_albumReplayGain);
+
+  if (track.replayGain.Valid())
+    aSong.replayGain.Set(ReplayGain::TRACK, track.replayGain);
   return true;
 }
 

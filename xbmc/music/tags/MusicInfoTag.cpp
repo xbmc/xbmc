@@ -540,6 +540,11 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
   m_iAlbumId = song.idAlbum;
+
+  if (song.replayGain.Get(ReplayGain::TRACK).Valid())
+    m_replayGain.Set(ReplayGain::TRACK, song.replayGain.Get(ReplayGain::TRACK));
+  if (song.replayGain.Get(ReplayGain::ALBUM).Valid())
+    m_replayGain.Set(ReplayGain::ALBUM, song.replayGain.Get(ReplayGain::ALBUM));
 }
 
 void CMusicInfoTag::Serialize(CVariant& value) const

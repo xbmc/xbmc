@@ -40,6 +40,7 @@
 
 #include "TagLibVFSStream.h"
 #include "MusicInfoTag.h"
+#include "ReplayGain.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"

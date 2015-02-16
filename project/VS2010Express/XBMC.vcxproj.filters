@@ -3173,6 +3173,9 @@
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutManager.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6092,12 +6095,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryMarkWatchedJob.h">
       <Filter>video\jobs</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\ReplayGain.h">
       <Filter>music\tags</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryCleaningJob.h">
       <Filter>video\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h">
+      <Filter>music</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ProgressJob.h">
       <Filter>utils</Filter>
