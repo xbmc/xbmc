@@ -74,21 +74,18 @@ function(add_addon_depends addon searchpath)
         endif()
 
         # if there's a CMakeLists.txt use it to prepare the build
+        set(PATCH_FILE ${BUILD_DIR}/${id}/tmp/patch.cmake)
         if(EXISTS ${dir}/CMakeLists.txt)
-          file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+          file(APPEND ${PATCH_FILE}
                "file(COPY ${dir}/CMakeLists.txt
                    DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
-        else()
-          set(PATCH_COMMAND "")
         endif()
 
         # check if we have patches to apply
         file(GLOB patches ${dir}/*.patch)
         list(SORT patches)
         foreach(patch ${patches})
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
-          file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+          file(APPEND ${PATCH_FILE}
                "execute_process(COMMAND patch -p1 -i ${patch})\n")
         endforeach()
 
@@ -116,13 +113,18 @@ function(add_addon_depends addon searchpath)
           set(deps)
         endif()
 
-        if(CROSS_AUTOCONF)
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
+        if(CROSS_AUTOCONF AND AUTOCONF_FILES)
           foreach(afile ${AUTOCONF_FILES})
-            file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+            file(APPEND ${PATCH_FILE}
                  "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
                  file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
           endforeach()
+        endif()
+
+        # if the patch file exists we need to set the PATCH_COMMAND
+        set(PATCH_COMMAND "")
+        if (EXISTS ${PATCH_FILE})
+          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${PATCH_FILE})
         endif()
 
         # prepare the setup of the call to externalproject_add()
