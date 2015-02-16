@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2005-2010, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -40,9 +40,6 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <errno.h>
 #include <refmem/refmem.h>
 #include <refmem/atomic.h>
@@ -52,9 +49,14 @@
 #include <stdio.h>
 
 #ifdef DEBUG
+#include <inttypes.h>
 #include <assert.h>
 #define ALLOC_MAGIC 0xef37a45d
 #define GUARD_MAGIC 0xe3
+#define GUARD_BYTES 1
+#if defined(ANDROID)
+#include <android/log.h>
+#endif
 #endif /* DEBUG */
 
 /* Disable optimization on OSX ppc
@@ -63,6 +65,8 @@
 #pragma GCC optimization_level 0
 #endif
 
+static mvp_atomic_t total_refcount = 0;
+static mvp_atomic_t total_bytecount = 0;
 /*
  * struct refcounter
  *
@@ -98,7 +102,7 @@ typedef struct refcounter {
 
 #ifdef DEBUG
 typedef struct {
-	unsigned char magic;
+	unsigned char magic[GUARD_BYTES];
 } guard_t;
 #endif /* DEBUG */
 
@@ -109,6 +113,32 @@ typedef struct {
 #define REF_ALLOC_BINS	101
 static refcounter_t *ref_list[REF_ALLOC_BINS];
 #endif /* DEBUG */
+
+#ifdef DEBUG
+static inline void
+guard_set(guard_t *guard, unsigned char val)
+{
+	memset(&(guard->magic[0]), val, GUARD_BYTES);
+}
+
+static inline void
+guard_check(guard_t *guard)
+{
+	int i;
+
+	for (i=0; i<GUARD_BYTES; i++) {
+		assert(guard->magic[i] == GUARD_MAGIC);
+	}
+}
+#endif /* DEBUG */
+
+int ref_get_refcount(char *loc)
+{
+	refmem_dbg(REF_DBG_COUNTERS,
+		   "%40.40s Refs: %7d   Bytes: %8d\n",
+		   loc,total_refcount,total_bytecount);
+	return(total_refcount);
+}
 
 #if defined(DEBUG)
 static inline void
@@ -186,6 +216,21 @@ ref_alloc_show(void)
 		}
 	}
 
+#if defined(ANDROID)
+	{
+		char buf[512];
+
+		snprintf(buf, sizeof(buf),
+			 "refmem allocation count: %d\n", count);
+		__android_log_print(ANDROID_LOG_DEBUG, "refmem", buf);
+		snprintf(buf, sizeof(buf),
+			 "refmem allocation bytes: %d\n", bytes);
+		__android_log_print(ANDROID_LOG_DEBUG, "refmem", buf);
+		snprintf(buf, sizeof(buf),
+			 "refmem unique allocation types: %d\n", types);
+		__android_log_print(ANDROID_LOG_DEBUG, "refmem", buf);
+	}
+#else
 	printf("refmem allocation count: %d\n", count);
 	printf("refmem allocation bytes: %d\n", bytes);
 	printf("refmem unique allocation types: %d\n", types);
@@ -194,6 +239,7 @@ ref_alloc_show(void)
 		       alloc_list[i].file, alloc_list[i].func,
 		       alloc_list[i].line, alloc_list[i].count);
 	}
+#endif
 }
 #else
 void
@@ -236,6 +282,9 @@ __ref_alloc(size_t len, const char *file, const char *func, int line)
 	if (block) {
 		memset(block, 0, sizeof(refcounter_t) + len);
 		mvp_atomic_set(&ref->refcount, 1);
+		mvp_atomic_inc(&total_refcount);
+		total_bytecount += sizeof(refcounter_t) + len;
+
 #ifdef DEBUG
 		ref->magic = ALLOC_MAGIC;
 		ref->file = file;
@@ -243,7 +292,7 @@ __ref_alloc(size_t len, const char *file, const char *func, int line)
 		ref->line = line;
 		guard = (guard_t*)((uintptr_t)block +
 				   sizeof(refcounter_t) + len);
-		guard->magic = GUARD_MAGIC;
+		guard_set(guard, GUARD_MAGIC);
 		ref_add(ref);
 #endif /* DEBUG */
 		ref->destroy = NULL;
@@ -409,9 +458,10 @@ ref_hold(void *p)
 		assert(ref->magic == ALLOC_MAGIC);
 		guard = (guard_t*)((uintptr_t)block +
 				   sizeof(refcounter_t) + ref->length);
-		assert(guard->magic == GUARD_MAGIC);
+		guard_check(guard);
 #endif /* DEBUG */
 		mvp_atomic_inc(&ref->refcount);
+		mvp_atomic_inc(&total_refcount);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
         return p;
@@ -441,6 +491,7 @@ ref_release(void *p)
 #ifdef DEBUG
 	guard_t *guard;
 #endif /* DEBUG */
+	int refcount;
 
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) {\n", __FUNCTION__, p);
 	if (p) {
@@ -452,8 +503,14 @@ ref_release(void *p)
 		assert(ref->magic == ALLOC_MAGIC);
 		guard = (guard_t*)((uintptr_t)block +
 				   sizeof(refcounter_t) + ref->length);
-		assert(guard->magic == GUARD_MAGIC);
+		guard_check(guard);
 #endif /* DEBUG */
+
+		/* Remove a refcount */
+		mvp_atomic_dec(&total_refcount);
+
+		refcount = ((int)ref->refcount) - 1;
+
 		if (mvp_atomic_dec_and_test(&ref->refcount)) {
 			/*
 			 * Last reference, destroy the structure (if
@@ -468,14 +525,17 @@ ref_release(void *p)
 				   __FILE__, __LINE__, __FUNCTION__);
 #ifdef DEBUG
 			ref->magic = 0;
-			guard->magic = 0;
-#ifndef _WIN32
-			refmem_ref_remove(ref);
-#endif
+			guard_set(guard, 0);
+			ref_remove(ref);
 			ref->next = NULL;
 #endif /* DEBUG */
+			/* Remove its bytes */
+			total_bytecount -= ( sizeof(refcounter_t) + ref->length);
 			free(block);
 		}
+		if (refcount < 0)
+			fprintf(stderr, "*** %s(): %p refcount %d ***\n",
+				__FUNCTION__, p, ref->refcount);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }
