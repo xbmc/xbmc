@@ -26,7 +26,7 @@
 #include "linux/RBP.h"
 #endif
 
-CXBMCOptions::CXBMCOptions()
+CAppOptions::CAppOptions()
 {
   fullscreen = false;
   standalone = false;
@@ -39,7 +39,7 @@ CXBMCOptions::CXBMCOptions()
 #endif
 }
 
-extern "C" int XBMC_Run(const CXBMCOptions &options)
+extern "C" int XBMC_Run(const CAppOptions &options)
 {
   g_advancedSettings.m_startFullScreen = options.fullscreen;
   g_application.SetStandAlone(options.standalone);

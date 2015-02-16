@@ -69,11 +69,12 @@ int main(int argc, char* argv[])
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
 
-  CXBMCOptions options;
+  CAppOptions options;
 
 #ifndef TARGET_WINDOWS
   CAppParamParser appParamParser;
   appParamParser.Parse((const char **)argv, argc, options);
 #endif
+
   return XBMC_Run(options);
 }

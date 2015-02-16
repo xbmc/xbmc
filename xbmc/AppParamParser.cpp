@@ -27,7 +27,7 @@ CAppParamParser::CAppParamParser()
 {
 }
 
-void CAppParamParser::Parse(const char* argv[], int nArgs, CXBMCOptions &options)
+void CAppParamParser::Parse(const char* argv[], int nArgs, CAppOptions &options)
 {
   if (nArgs > 1)
   {
@@ -71,7 +71,7 @@ void CAppParamParser::DisplayHelp()
   exit(0);
 }
 
-void CAppParamParser::ParseArg(const std::string &arg, CXBMCOptions &options)
+void CAppParamParser::ParseArg(const std::string &arg, CAppOptions &options)
 {
   if (arg == "-fs" || arg == "--fullscreen")
     options.fullscreen = true;

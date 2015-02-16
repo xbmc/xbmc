@@ -22,10 +22,10 @@
 #include <string>
 #include <vector>
 
-class CXBMCOptions
+class CAppOptions
 {
 public:
-  CXBMCOptions();
+  CAppOptions();
 
   bool fullscreen;
   bool standalone;
@@ -35,5 +35,5 @@ public:
   std::vector<std::string> settings;
 };
 
-extern "C" int XBMC_Run(const CXBMCOptions &options);
+extern "C" int XBMC_Run(const CAppOptions &options);
 

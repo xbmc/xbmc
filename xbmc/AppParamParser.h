@@ -24,10 +24,10 @@ class CAppParamParser
 {
   public:
     CAppParamParser();
-    void Parse(const char* argv[], int nArgs, CXBMCOptions &options);
+    void Parse(const char* argv[], int nArgs, CAppOptions &options);
 
   private:
-    void ParseArg(const std::string &arg, CXBMCOptions &options);
+    void ParseArg(const std::string &arg, CAppOptions &options);
     void DisplayHelp();
     void DisplayVersion();
 };
