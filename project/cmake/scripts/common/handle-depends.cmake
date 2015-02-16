@@ -91,6 +91,7 @@ function(add_addon_depends addon searchpath)
 
 
         # if there's an install.txt use it to properly install the built files
+        set(INSTALL_COMMAND "")
         if(EXISTS ${dir}/install.txt)
           set(INSTALL_COMMAND INSTALL_COMMAND ${CMAKE_COMMAND}
                                               -DINPUTDIR=${BUILD_DIR}/${id}/src/${id}-build/
@@ -101,8 +102,6 @@ function(add_addon_depends addon searchpath)
                                               -P ${PROJECT_SOURCE_DIR}/install.cmake)
         elseif(EXISTS ${dir}/noinstall.txt)
           set(INSTALL_COMMAND INSTALL_COMMAND "")
-        else()
-          set(INSTALL_COMMAND "")
         endif()
 
         # check if there's a deps.txt containing dependencies on other libraries
@@ -145,9 +144,8 @@ function(add_addon_depends addon searchpath)
                                 GIT_TAG ${revision}
                                 "${EXTERNALPROJECT_SETUP}")
           else()
-            if(WIN32)
-              set(CONFIGURE_COMMAND "")
-            else()
+            set(CONFIGURE_COMMAND "")
+            if(NOT WIN32)
               # manually specify the configure command to be able to pass in the custom PKG_CONFIG_PATH
               set(CONFIGURE_COMMAND PKG_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
                                     ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags} ${BUILD_ARGS}
