@@ -531,7 +531,7 @@ int CActiveAEResamplePi::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t
   }
   #ifdef DEBUG_VERBOSE
   CLog::Log(LOGINFO, "%s::%s format:%d->%d rate:%d->%d chan:%d->%d samples %d->%d (%f) %d", CLASSNAME, __func__,
-    (int)m_src_fmt, (int)m_dst_fmt, m_src_rate, m_dst_rate, m_src_channels, m_dst_channels, src_samples, dst_samples, ratio, m_Initialized, received);
+    (int)m_src_fmt, (int)m_dst_fmt, m_src_rate, m_dst_rate, m_src_channels, m_dst_channels, src_samples, dst_samples, ratio, received);
   #endif
   assert(received <= dst_samples);
   return received;
@@ -539,9 +539,10 @@ int CActiveAEResamplePi::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t
 
 int64_t CActiveAEResamplePi::GetDelay(int64_t base)
 {
-  int ret = m_dst_rate ? 1000 * GetBufferedSamples() / m_dst_rate : 0;
+  int64_t ret = av_rescale_rnd(GetBufferedSamples(), m_dst_rate, base, AV_ROUND_UP);
+
   #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGINFO, "%s::%s = %d", CLASSNAME, __func__, ret);
+  CLog::Log(LOGINFO, "%s::%s = %" PRId64, CLASSNAME, __func__, ret);
   #endif
   return ret;
 }
@@ -562,7 +563,7 @@ int CActiveAEResamplePi::GetBufferedSamples()
 
 int CActiveAEResamplePi::CalcDstSampleCount(int src_samples, int dst_rate, int src_rate)
 {
-  int ret = ((long long)src_samples * dst_rate + src_rate-1) / src_rate;
+  int ret = av_rescale_rnd(src_samples, dst_rate, src_rate, AV_ROUND_UP);
   #ifdef DEBUG_VERBOSE
   CLog::Log(LOGINFO, "%s::%s = %d", CLASSNAME, __func__, ret);
   #endif
@@ -571,7 +572,7 @@ int CActiveAEResamplePi::CalcDstSampleCount(int src_samples, int dst_rate, int s
 
 int CActiveAEResamplePi::GetSrcBufferSize(int samples)
 {
-  int ret = 0;
+  int ret = av_samples_get_buffer_size(NULL, m_src_channels, samples, m_src_fmt, 1);
   #ifdef DEBUG_VERBOSE
   CLog::Log(LOGINFO, "%s::%s = %d", CLASSNAME, __func__, ret);
   #endif
@@ -580,7 +581,7 @@ int CActiveAEResamplePi::GetSrcBufferSize(int samples)
 
 int CActiveAEResamplePi::GetDstBufferSize(int samples)
 {
-  int ret = CalcDstSampleCount(samples, m_dst_rate, m_src_rate);
+  int ret = av_samples_get_buffer_size(NULL, m_dst_channels, samples, m_dst_fmt, 1);
   #ifdef DEBUG_VERBOSE
   CLog::Log(LOGINFO, "%s::%s = %d", CLASSNAME, __func__, ret);
   #endif
