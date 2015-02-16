@@ -1224,21 +1224,10 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
       break;
     case VIDEODB_CONTENT_MOVIE_SETS:
       database.DeleteSet(item->GetVideoInfoTag()->m_iDbId);
-      return true; // no need to invalidate path hashes
+      break;
     default:
       return false;
   }
-
-  CStdString path;
-  database.GetFilePathById(item->GetVideoInfoTag()->m_iDbId, path, type);
-  if (!path.empty())
-  {
-    if (type == VIDEODB_CONTENT_TVSHOWS)
-      database.SetPathHash(path,"");
-    else
-      database.SetPathHash(URIUtils::GetDirectory(path), "");
-  }
-
   return true;
 }
 
