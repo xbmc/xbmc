@@ -47,7 +47,7 @@ void CAppParamParser::DisplayVersion()
     version = StringUtils::Format("%d.%d-%s Git: %s", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(), CCompileInfo::GetSuffix(), CCompileInfo::GetSCMID());
 
   printf("%s Media Center %s\n", version.c_str(), appName.c_str());
-  printf("Copyright (C) 2005-2013 Team %s - http://kodi.tv\n", appName.c_str());
+  printf("Copyright (C) 2005-2015 Team %s - http://kodi.tv\n", appName.c_str());
   exit(0);
 }
 
