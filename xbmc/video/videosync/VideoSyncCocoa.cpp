@@ -28,6 +28,7 @@
 #include "utils/TimeUtils.h"
 
 #include "windowing/WindowingFactory.h"
+#include "guilib/GraphicContext.h"
 
 //osx specifics
 #if defined(TARGET_DARWIN_OSX)
@@ -58,13 +59,6 @@ void CVideoSyncCocoa::VblankHandler(int64_t nowtime, double fps)
 {
   int           NrVBlanks;
   double        VBlankTime;
-  int           RefreshRate = MathUtils::round_int(fps);
-  
-  if (RefreshRate != MathUtils::round_int(m_fps))
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Detected refreshrate: %f hertz, rounding to %i hertz", fps, RefreshRate);
-    UpdateFPS(fps);
-  }
   
   //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)g_VideoReferenceClock.GetFrequency();
@@ -79,7 +73,7 @@ void CVideoSyncCocoa::VblankHandler(int64_t nowtime, double fps)
 
 bool CVideoSyncCocoa::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncCocoa: setting up Cocoa");
+  CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s - setting up Cocoa", __FUNCTION__);
   bool setupOk = false;
 
   //init the vblank timestamp
@@ -95,7 +89,7 @@ bool CVideoSyncCocoa::Setup(PUPDATECLOCK func)
   if (setupOk)
     g_Windowing.Register(this);
   else
-    CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Cocoa_CVDisplayLinkCreate failed");
+    CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s Cocoa_CVDisplayLinkCreate failed", __FUNCTION__);
 #endif
 
   if (setupOk)
@@ -115,24 +109,13 @@ void CVideoSyncCocoa::Run(volatile bool& stop)
 
 void CVideoSyncCocoa::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncCocoa: cleaning up Cocoa");
+  CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s cleaning up Cocoa", __FUNCTION__);
 #if defined(TARGET_DARWIN_IOS)
   g_Windowing.DeinitDisplayLink();
 #else
   Cocoa_CVDisplayLinkRelease();
   g_Windowing.Unregister(this);
 #endif
-}
-
-void CVideoSyncCocoa::UpdateFPS(double fps)
-{
-  int fpsInt = MathUtils::round_int(fps);
-
-  if (fpsInt != MathUtils::round_int(m_fps))
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncCocoa: Detected refreshrate: %i hertz", fpsInt);
-    m_fps = fpsInt;
-  }
 }
 
 void CVideoSyncCocoa::OnResetDevice()
@@ -143,11 +126,11 @@ void CVideoSyncCocoa::OnResetDevice()
 float CVideoSyncCocoa::GetFps()
 {
 #if defined(TARGET_DARWIN_IOS)
-  UpdateFPS(g_Windowing.GetDisplayLinkFPS() + 0.5);
+  m_fps = g_Windowing.GetDisplayLinkFPS();
 #else
-  UpdateFPS(Cocoa_GetCVDisplayLinkRefreshPeriod());
+  m_fps = g_graphicsContext.GetFPS();
 #endif
-
+  CLog::Log(LOGDEBUG, "CVideoSyncCocoa::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }
 
