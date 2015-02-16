@@ -41,7 +41,6 @@ CAppOptions::CAppOptions()
 
 extern "C" int XBMC_Run(const CAppOptions &options)
 {
-  g_advancedSettings.m_startFullScreen = options.fullscreen;
   g_application.SetStandAlone(options.standalone);
   g_application.EnablePlatformDirectories(!options.portable);
 
@@ -57,6 +56,8 @@ extern "C" int XBMC_Run(const CAppOptions &options)
 
     g_advancedSettings.Initialize();
   }
+
+  g_advancedSettings.m_startFullScreen = options.fullscreen;
 
   if (!g_application.Create())
   {
