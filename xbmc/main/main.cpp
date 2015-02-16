@@ -47,17 +47,6 @@ int main(int argc, char* argv[])
   // set up some xbmc specific relationships
   XBMC::Context context;
 
-  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
-  //the loglevel set with the --debug flag
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-
 #ifdef TARGET_POSIX
 #if defined(DEBUG)
   struct rlimit rlim;
@@ -67,7 +56,6 @@ int main(int argc, char* argv[])
 #endif
 #endif
   setlocale(LC_NUMERIC, "C");
-  g_advancedSettings.Initialize();
 
   CAppOptions options;
 
