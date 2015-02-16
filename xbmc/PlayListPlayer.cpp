@@ -350,6 +350,7 @@ void CPlayListPlayer::SetCurrentSong(int iSong)
 {
   if (iSong >= -1 && iSong < GetPlaylist(m_iCurrentPlayList).size())
     m_iCurrentSong = iSong;
+
 }
 
 int CPlayListPlayer::GetCurrentSong() const
@@ -360,6 +361,17 @@ int CPlayListPlayer::GetCurrentSong() const
 int CPlayListPlayer::GetCurrentPlaylist() const
 {
   return m_iCurrentPlayList;
+}
+
+int CPlayListPlayer::GetCurrentPlaylist(int iPlaylist) const
+{
+  if (GetCurrentPlaylist() != PLAYLIST_NONE)
+    return GetCurrentPlaylist();
+
+  if (g_application.m_pPlayer->GetPreferredPlaylist() != PLAYLIST_NONE)
+    return g_application.m_pPlayer->GetPreferredPlaylist();
+
+  return iPlaylist;
 }
 
 void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
@@ -709,9 +721,7 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
 {
-  if (strProperty.empty() || value.isNull() ||
-     (iPlaylist == PLAYLIST_VIDEO && !g_application.m_pPlayer->IsPlayingVideo()) ||
-     (iPlaylist == PLAYLIST_MUSIC && !g_application.m_pPlayer->IsPlayingAudio()))
+  if (strProperty.empty() || value.isNull())
     return;
 
   CVariant data;
