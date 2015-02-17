@@ -30,6 +30,7 @@ ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* =
   : m_id(id),
     m_settingsManager(settingsManager),
     m_visible(true),
+    m_label(-1), m_help(-1),
     m_meetsRequirements(true),
     m_requirementCondition(settingsManager)
 { }
@@ -42,6 +43,16 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   bool value;
   if (XMLUtils::GetBoolean(node, SETTING_XML_ELM_VISIBLE, value))
     m_visible = value;
+
+  const TiXmlElement *element = node->ToElement();
+  if (element == NULL)
+    return false;
+
+  int iValue = -1;
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &iValue) == TIXML_SUCCESS && iValue > 0)
+    m_label = iValue;
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &iValue) == TIXML_SUCCESS && iValue > 0)
+    m_help = iValue;
 
   const TiXmlNode *requirementNode = node->FirstChild(SETTING_XML_ELM_REQUIREMENT);
   if (requirementNode == NULL)
