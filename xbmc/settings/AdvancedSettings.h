@@ -278,6 +278,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
+    bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
     bool m_bVideoLibraryImportResumePoint;
