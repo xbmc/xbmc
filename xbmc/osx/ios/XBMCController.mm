@@ -887,21 +887,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 	[super viewDidUnload];	
 }
 //--------------------------------------------------------------
-- (void) initDisplayLink
-{
-	[m_glView initDisplayLink];
-}
-//--------------------------------------------------------------
-- (void) deinitDisplayLink
-{
-  [m_glView deinitDisplayLink];
-}
-//--------------------------------------------------------------
-- (double) getDisplayLinkFPS;
-{
-  return [m_glView getDisplayLinkFPS];
-}
-//--------------------------------------------------------------
 - (void) setFramebuffer
 {
   [m_glView setFramebuffer];

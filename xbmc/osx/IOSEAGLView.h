@@ -47,11 +47,6 @@
   NSThread* animationThread;
   UIScreen *currentScreen;
 
-	// Use of the CADisplayLink class is the preferred method for controlling the animation timing.
-	// CADisplayLink will link to the main display and fire every vsync when added to a given run-loop.
-	CADisplayLink *displayLink;
-  CFTimeInterval displayFPS;
-	BOOL displayLinkSupported;
   BOOL framebufferResizeRequested;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
@@ -62,9 +57,6 @@
 @property BOOL framebufferResizeRequested;
 
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
-- (void) initDisplayLink;
-- (void) deinitDisplayLink;
-- (double) getDisplayLinkFPS;
 - (void) pauseAnimation;
 - (void) resumeAnimation;
 - (void) startAnimation;

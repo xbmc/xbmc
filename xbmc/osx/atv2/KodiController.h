@@ -43,7 +43,6 @@
 - (void) applicationDidExit;
 - (void) initDisplayLink;
 - (void) deinitDisplayLink;
-- (double) getDisplayLinkFPS;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
