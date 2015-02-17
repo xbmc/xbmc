@@ -194,6 +194,19 @@
 				<label>$VAR[SeekLabel]</label>
 			</control>
 			<control type="label">
+				<description>Elapsed Time Label</description>
+				<left>20</left>
+				<top>23</top>
+				<width>240</width>
+				<height>20</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.Time] - $INFO[Player.Duration]</label>
+				<visible>!Player.Seeking</visible>
+			</control>
+			<control type="label">
 				<description>Seek Time Label</description>
 				<left>20</left>
 				<top>23</top>
