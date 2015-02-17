@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="win32">
@@ -358,10 +358,10 @@
     <Filter Include="cores\DSPlayer\Filters\Source">
       <UniqueIdentifier>{c356be07-4c7d-42dc-9a99-2beea6f8dc56}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\DSPlayer\iMON">
-      <UniqueIdentifier>{c9cfe4a7-b0c3-4b86-aca2-908c801742b5}</UniqueIdentifier>
-    </Filter> 
- </ItemGroup>
+    <Filter Include="cores\DSPlayer\Dialogs">
+      <UniqueIdentifier>{58a4c04d-f658-4d4e-a4d4-dd2fd900a301}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <Filter>win32</Filter>
@@ -3218,6 +3218,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.cpp">
       <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.cpp">
+      <Filter>cores\DSPlayer\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.cpp">
+      <Filter>cores\DSPlayer\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\OverrideDirectory.cpp">
       <Filter>filesystem</Filter>
@@ -6326,6 +6335,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IDirectVobSub.h">
       <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.h">
+      <Filter>cores\DSPlayer\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.h">
+      <Filter>cores\DSPlayer\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h">
       <Filter>filesystem</Filter>

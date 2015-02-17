@@ -181,10 +181,6 @@
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "addons/GUIDialogAddonSettings.h"
 
-#ifdef HAS_DS_PLAYER
-#include "cores/DSPlayer/GUIDialogShaderList.h"
-#endif
-
 // PVR related include Files
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"

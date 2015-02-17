@@ -1103,6 +1103,22 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="dsplayer.rules" type="action" parent="dsplayer.autofiltersettings" label="60001">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" setting="dsplayer.autofiltersettings" operator="is">false</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="dsplayer.filters" type="action" parent="dsplayer.autofiltersettings" label="65001">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" setting="dsplayer.autofiltersettings" operator="is">false</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="3">
         <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55030" help="">
           <level>0</level>
           <default>true</default>
@@ -1124,7 +1140,7 @@
           <control type="spinner" format="integer" />
 	</setting>
       </group>
-      <group id="3">
+      <group id="4">
         <setting id="dsplayer.videoaudioexpandedselector" type="boolean" label="55060" help="">
           <level>0</level>
           <default>true</default>

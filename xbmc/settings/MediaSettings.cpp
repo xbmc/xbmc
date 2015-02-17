@@ -39,7 +39,10 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoDatabase.h"
-
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
+#endif
 using namespace std;
 
 CMediaSettings::CMediaSettings()
@@ -337,6 +340,12 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "videolibrary.export")
     CBuiltins::Execute("exportlibrary(video)");
+#ifdef HAS_DS_PLAYER
+  else if (settingId == "dsplayer.rules")
+    CGUIDialogDSRules::ShowDSRulesList();
+  else if (settingId == "dsplayer.filters")
+    CGUIDialogDSFilters::ShowDSFiltersList();
+#endif
   else if (settingId == "videolibrary.import")
   {
     std::string path;

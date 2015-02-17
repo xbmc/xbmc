@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -217,6 +217,8 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DataCacheCore.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
@@ -248,6 +250,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp" />
@@ -888,6 +891,8 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
@@ -932,6 +937,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h" />

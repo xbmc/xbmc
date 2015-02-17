@@ -359,6 +359,9 @@ void CProfilesManager::CreateProfileFolders()
 
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
+#ifdef HAS_DS_PLAYER
+  CDirectory::Create("special://masterprofile/dsplayer/");
+#endif
 }
 
 const CProfile& CProfilesManager::GetMasterProfile() const

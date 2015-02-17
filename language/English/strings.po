@@ -16376,6 +16376,126 @@ msgctxt "#55062"
 msgid "DSPlayer filters list..."
 msgstr ""
 
+msgctxt "#60001"
+msgid "DSPlayer Media Rules"
+msgstr ""
+
+msgctxt "#60002"
+msgid "Rule Name"
+msgstr ""
+
+msgctxt "#60003"
+msgid "FileTypes"
+msgstr ""
+
+msgctxt "#60004"
+msgid "FileName"
+msgstr ""
+
+msgctxt "#60005"
+msgid "Protocols"
+msgstr ""
+
+msgctxt "#60006"
+msgid "Url"
+msgstr 
+
+msgctxt "#60007"
+msgid "Source Filter"
+msgstr ""
+
+msgctxt "#60008"
+msgid "Splitter Filter"
+msgstr ""
+
+msgctxt "#60009"
+msgid "Video Filter"
+msgstr ""
+
+msgctxt "#60010"
+msgid "Audio Filter"
+msgstr ""
+
+msgctxt "#60011"
+msgid "Subs Filter"
+msgstr ""
+
+msgctxt "#60012"
+msgid "Extra Filter"
+msgstr 
+
+msgctxt "#60013"
+msgid "Shader Id"
+msgstr 
+
+msgctxt "#60014"
+msgid "Add new rule..."
+msgstr ""
+
+msgctxt "#60015"
+msgid "Add rule"
+msgstr 
+
+msgctxt "#60016"
+msgid "Save Rule Modifications"
+msgstr "
+
+msgctxt "#60017"
+msgid "Delete Rule"
+msgstr "
+
+msgctxt "#60018"
+msgid "Are you sure to delete this rule?"
+msgstr 
+
+msgctxt "#65001"
+msgid "DSPlayer Filters Config"
+msgstr "
+
+msgctxt "#65002"
+msgid "Add new filter..."
+msgstr "
+
+msgctxt "#65003"
+msgid "OSDName"
+msgstr "
+
+msgctxt "#65004"
+msgid "Filter Name"
+msgstr "
+
+msgctxt "#65005"
+msgid "Filter Type"
+msgstr "
+
+msgctxt "#65006"
+msgid "Filter Guid"
+msgstr "
+
+msgctxt "#65007"
+msgid "Add filter"
+msgstr "
+
+msgctxt "#65008"
+msgid "Save Filter Modifications"
+msgstr 
+
+msgctxt "#65009"
+msgid "Delete Filter"
+msgstr 
+
+msgctxt "#65010"
+msgid "System Filters list"
+msgstr 
+
+msgctxt "#65011"
+msgid "Are you sure to delete this filter?"
+msgstr 
+
+msgctxt "#65012"
+msgid "Please fill out all required fields"
+msgstr 
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

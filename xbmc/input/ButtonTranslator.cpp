@@ -349,6 +349,10 @@ static const ActionMapping windows[] =
         {"visualisationpresetlist"  , WINDOW_DIALOG_VIS_PRESET_LIST},
         {"osdvideosettings"         , WINDOW_DIALOG_VIDEO_OSD_SETTINGS},
         {"osdaudiosettings"         , WINDOW_DIALOG_AUDIO_OSD_SETTINGS},
+#ifdef HAS_DS_PLAYER
+        {"dsrulesettings"           , WINDOW_DIALOG_DSRULES},
+        {"dsfiltersettings"         , WINDOW_DIALOG_DSFILTERS},
+#endif
         {"videobookmarks"           , WINDOW_DIALOG_VIDEO_BOOKMARKS},
         {"filebrowser"              , WINDOW_DIALOG_FILE_BROWSER},
         {"networksetup"             , WINDOW_DIALOG_NETWORK_SETUP},

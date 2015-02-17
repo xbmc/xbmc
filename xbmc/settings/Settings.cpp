@@ -687,6 +687,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videolibrary.cleanup");
   settingSet.insert("videolibrary.import");
   settingSet.insert("videolibrary.export");
+#ifdef HAS_DS_PLAYER
+  settingSet.insert("dsplayer.rules");
+  settingSet.insert("dsplayer.filters");
+#endif
   m_settingsManager->RegisterCallback(&CMediaSettings::Get(), settingSet);
 
   settingSet.clear();
