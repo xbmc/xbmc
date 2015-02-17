@@ -62,7 +62,7 @@ $(TOOLCHAIN_FILE): $(abs_top_srcdir)/target/Toolchain_binaddons.cmake
 	sed "s|@CMAKE_FIND_ROOT_PATH@|$(ADDON_DEPS_DIR)|g" $(abs_top_srcdir)/target/Toolchain_binaddons.cmake > $@
 
 linux-system-libs:
-	mkdir -p $(ADDON_DEPS_DIR)/lib/pkgconfig
+	mkdir -p $(ADDON_DEPS_DIR)/lib/pkgconfig $(ADDON_DEPS_DIR)/include
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x11.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/xproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc ] || ln -s /usr/share/pkgconfig/kbproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc
@@ -77,4 +77,8 @@ linux-system-libs:
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/sm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xmu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/gl.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || \
+          (ln -s /usr/lib/$(HOST)/mesa $(ADDON_DEPS_DIR)/lib/mesa && ln -s $(ADDON_DEPS_DIR)/lib/mesa/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so)
+	[ -f $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
 
