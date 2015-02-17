@@ -13,6 +13,7 @@ include ../../../codegenerator.mk
 
 SRCS =	AddonPythonInvoker.cpp \
 	CallbackHandler.cpp \
+	ContextItemAddonInvoker.cpp \
 	LanguageHook.cpp \
 	PythonInvoker.cpp \
 	XBPython.cpp \
