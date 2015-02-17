@@ -97,8 +97,8 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   if (m_pCodecContext->request_channel_layout)
     CLog::Log(LOGNOTICE,"COMXAudioCodecOMX::Open() Requesting channel layout of %x", (unsigned)m_pCodecContext->request_channel_layout);
 
-  // vorbis has variable sized planar output, so skip concatenation
-  if (hints.codec == AV_CODEC_ID_VORBIS)
+  // vorbis and wma2v2 have variable sized planar output, so skip concatenation
+  if (hints.codec == AV_CODEC_ID_VORBIS || hints.codec == AV_CODEC_ID_WMAV2)
     m_bNoConcatenate = true;
 
   if(m_pCodecContext->bits_per_coded_sample == 0)
