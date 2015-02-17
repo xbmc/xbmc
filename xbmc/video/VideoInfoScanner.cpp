@@ -317,7 +317,10 @@ namespace VIDEO
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str).c_str(), info->Name().c_str()));
       }
 
-      CStdString fastHash = GetFastHash(strDirectory, regexps);
+      CStdString fastHash;
+      if (g_advancedSettings.m_bVideoLibraryUseFastHash)
+        fastHash = GetFastHash(strDirectory, regexps);
+
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         hash = fastHash;
@@ -729,7 +732,9 @@ namespace VIDEO
         m_pathsToScan.erase(it);
 
       CStdString hash, dbHash;
-      hash = GetRecursiveFastHash(item->GetPath(), regexps);
+      if (g_advancedSettings.m_bVideoLibraryUseFastHash)
+        hash = GetRecursiveFastHash(item->GetPath(), regexps);
+
       if (m_database.GetPathHash(item->GetPath(), dbHash) && !hash.empty() && dbHash == hash)
       {
         // fast hashes match - no need to process anything
@@ -1776,6 +1781,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const vector<string> &excludes) const
   {
+    if (!g_advancedSettings.m_bVideoLibraryUseFastHash)
+      return false;
+
     for (int i = 0; i < items.Size(); ++i)
     {
       if (items[i]->m_bIsFolder && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
