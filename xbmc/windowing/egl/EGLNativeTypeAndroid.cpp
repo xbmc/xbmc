@@ -25,9 +25,6 @@
 #include "guilib/gui3d.h"
 #if defined(TARGET_ANDROID)
   #include "android/activity/XBMCApp.h"
-  #if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
-    #include "utils/AMLUtils.h"
-  #endif
 #endif
 #include "utils/StringUtils.h"
 
@@ -49,21 +46,10 @@ bool CEGLNativeTypeAndroid::CheckCompatibility()
 
 void CEGLNativeTypeAndroid::Initialize()
 {
-#if defined(TARGET_ANDROID) && (defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC))
-  aml_permissions();
-  aml_cpufreq_min(true);
-  aml_cpufreq_max(true);
-#endif
-
   return;
 }
 void CEGLNativeTypeAndroid::Destroy()
 {
-#if defined(TARGET_ANDROID) && (defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC))
-  aml_cpufreq_min(false);
-  aml_cpufreq_max(false);
-#endif
-
   return;
 }
 
