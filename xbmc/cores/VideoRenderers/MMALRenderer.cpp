@@ -230,7 +230,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
         es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
     }
     if (m_bConfigured)
-      UnInit();
+      UnInitMMAL();
     m_bConfigured = init_vout(es_format);
     mmal_format_free(es_format);
   }
@@ -425,7 +425,7 @@ void CMMALRenderer::ReleaseBuffers()
     ReleaseBuffer(i);
 }
 
-void CMMALRenderer::UnInit()
+void CMMALRenderer::UnInitMMAL()
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   if (m_vout)
@@ -464,6 +464,11 @@ void CMMALRenderer::UnInit()
   m_StereoInvert = false;
 
   m_bConfigured = false;
+}
+
+void CMMALRenderer::UnInit()
+{
+  UnInitMMAL();
 }
 
 bool CMMALRenderer::RenderCapture(CRenderCapture* capture)

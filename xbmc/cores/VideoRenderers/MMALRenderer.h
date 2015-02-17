@@ -120,6 +120,7 @@ protected:
   CEvent            m_sync;
   bool init_vout(MMAL_ES_FORMAT_T *m_format);
   void ReleaseBuffers();
+  void UnInitMMAL();
 };
 
 #else
