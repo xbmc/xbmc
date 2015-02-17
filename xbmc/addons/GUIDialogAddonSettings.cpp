@@ -393,7 +393,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             {
               strMask = setting->Attribute("mask");
               // convert mask qualifiers
-              StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.m_musicExtensions);
+              StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.GetMusicExtensions());
               StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
               StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
 #if defined(_WIN32_WINNT)
@@ -407,7 +407,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (type == "video")
                 strMask = g_advancedSettings.m_videoExtensions;
               else if (type == "audio")
-                strMask = g_advancedSettings.m_musicExtensions;
+                strMask = g_advancedSettings.GetMusicExtensions();
               else if (type == "executable")
 #if defined(_WIN32_WINNT)
                 strMask = ".exe|.bat|.cmd|.py";
