@@ -796,7 +796,6 @@ void CButtonTranslator::MapJoystickFamily(TiXmlNode *pNode)
 
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
-  string joyname = JOYSTICK_DEFAULT_MAP; // default global map name
   std::string joyFamilyName;
   map<int, string> buttonMap;
   map<int, string> axisMap;
@@ -804,17 +803,21 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   ActionMap hatMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
-  if (pJoy && pJoy->Attribute("name")) {
+  if (pJoy && pJoy->Attribute("family"))
+    joyFamilyName = pJoy->Attribute("family");
+  else if (pJoy) {
     // transform loose name to new family, including altnames
-    std::string joyName = pJoy->Attribute("name");
+    string joyName = JOYSTICK_DEFAULT_MAP; // default global map name
+    if (pJoy->Attribute("name"))
+      joyName = pJoy->Attribute("name");
     joyFamilyName = joyName;    
     JoystickFamily* joyFamily = &m_joystickFamilies[joyFamilyName];
 
     std::shared_ptr<CRegExp> re(new CRegExp(true, CRegExp::asciiOnly));
-    std::string joyRe = JoynameToRegex(joyname);
+    std::string joyRe = JoynameToRegex(joyName);
     if (!re->RegComp(joyRe, CRegExp::StudyRegExp))
     {
-      CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyname.c_str());
+      CLog::Log(LOGNOTICE, "Invalid joystick regex specified: '%s'", joyName.c_str());
       return;
     }
     AddFamilyRegex(joyFamily, re);
@@ -836,11 +839,6 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     }
 
   }
-  else if (pJoy && pJoy->Attribute("family"))
-    joyFamilyName = pJoy->Attribute("family");
-  else
-    CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
-
 
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
