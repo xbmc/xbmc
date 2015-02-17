@@ -252,7 +252,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
   return false;
 }
 
-const char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
+char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 {
   std::string string;
   if (strSource != NULL)
@@ -263,7 +263,7 @@ const char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
   return buffer;
 }
 
-const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
+char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper || g_application.m_bStop)
@@ -283,7 +283,7 @@ const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long
   return buffer;
 }
 
-const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
+char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)
@@ -295,7 +295,7 @@ const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
   return buffer;
 }
 
-void CAddonCallbacksAddon::FreeString(const void* addonData, const char* str)
+void CAddonCallbacksAddon::FreeString(const void* addonData, char* str)
 {
   delete[] str;
 }
