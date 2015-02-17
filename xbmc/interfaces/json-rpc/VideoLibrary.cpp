@@ -1024,7 +1024,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "lastplayed"))
     SetFromDBDateTime(parameterObject["lastplayed"], details.m_lastPlayed);
   if (ParameterNotNull(parameterObject, "firstaired"))
-    SetFromDBDateTime(parameterObject["firstaired"], details.m_firstAired);
+    SetFromDBDate(parameterObject["firstaired"], details.m_firstAired);
   if (ParameterNotNull(parameterObject, "productioncode"))
     details.m_strProductionCode = parameterObject["productioncode"].asString();
   if (ParameterNotNull(parameterObject, "season"))
