@@ -94,6 +94,7 @@ public:
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 protected:
+  int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
   std::vector<ERenderFormat> m_formats;
@@ -119,6 +120,7 @@ protected:
   CEvent            m_sync;
   bool init_vout(MMAL_ES_FORMAT_T *m_format);
   void ReleaseBuffers();
+  void UnInitMMAL();
 };
 
 #else

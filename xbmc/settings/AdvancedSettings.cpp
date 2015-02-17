@@ -118,7 +118,7 @@ void CAdvancedSettings::Initialize()
   m_seekSteps = { 7, 15, 30, 60, 180, 300, 600, 900, 1800 };
 
   m_omxHWAudioDecode = false;
-  m_omxDecodeStartWithValidFrame = false;
+  m_omxDecodeStartWithValidFrame = true;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
