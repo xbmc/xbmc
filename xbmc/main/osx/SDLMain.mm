@@ -14,6 +14,7 @@
 #import "SDLMain.h"
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
+#import <Sparkle/Sparkle.h>
 
 #import "osx/CocoaInterface.h"
 //hack around problem with xbmc's typedef int BOOL
@@ -72,7 +73,7 @@ static NSString *getApplicationName(void)
 
   return appName;
 }
-static void setupApplicationMenu(void)
+static void setupApplicationMenu(bool launchedFromAppBundle)
 {
   // warning: this code is very odd
   NSMenu *appleMenu;
@@ -98,6 +99,13 @@ static void setupApplicationMenu(void)
   [appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
 
   [appleMenu addItem:[NSMenuItem separatorItem]];
+
+  if (launchedFromAppBundle)
+  {
+    menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Check for updates" action:@selector(checkForUpdates:) keyEquivalent:@""];
+    [menuItem setTarget:[SUUpdater sharedUpdater]];
+    [appleMenu addItem:[NSMenuItem separatorItem]];
+  }
 
   title = [@"Quit " stringByAppendingString:appName];
   [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
@@ -518,7 +526,20 @@ int main(int argc, char *argv[])
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   XBMCDelegate *xbmc_delegate;
+  
+  bool launchedFromAppBundle = false;
+  
+  NSBundle *bref = [NSBundle bundleForClass:[[XBMCApplication sharedApplication] class]];
+  NSString *pathname = [bref executablePath];
 
+  // enable updater
+  //only instantiate the updater when run from the app bundle
+  if ( pathname && strstr([pathname UTF8String], "Contents") )
+  {
+    launchedFromAppBundle = true;
+    [SUUpdater updaterForBundle:[NSBundle bundleForClass:[[XBMCApplication sharedApplication] class]]];
+  }
+  
   // Block SIGPIPE
   // SIGPIPE repeatably kills us, turn it off
   {
@@ -568,7 +589,7 @@ int main(int argc, char *argv[])
 
   // Set up the menubars
   [NSApp setMainMenu:[[NSMenu alloc] init]];
-  setupApplicationMenu();
+  setupApplicationMenu(launchedFromAppBundle);
   setupWindowMenu();
 
   // Create XBMCDelegate and make it the app delegate
