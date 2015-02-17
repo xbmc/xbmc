@@ -26,6 +26,7 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUISettingsGroupLabelControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUISpinControlEx.h"
@@ -56,6 +57,8 @@ using namespace std;
 #define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_DEFAULT_SLIDER          13
+#define CONTROL_DEFAULT_SETTING_LABEL   14
+
 
 CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &xmlFile)
     : CGUIDialog(windowId, xmlFile),
@@ -69,6 +72,7 @@ CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &
       m_pOriginalButton(NULL),
       m_pOriginalEdit(NULL),
       m_pOriginalImage(NULL),
+      m_pOriginalGroupSettingsLabel(NULL),
       m_newOriginalEdit(false),
       m_delayedTimer(this),
       m_confirmed(false)
@@ -351,6 +355,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   m_pOriginalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_BUTTON));
   m_pOriginalImage = dynamic_cast<CGUIImage *>(GetControl(CONTROL_DEFAULT_SEPARATOR));
   m_pOriginalEdit = dynamic_cast<CGUIEditControl *>(GetControl(CONTROL_DEFAULT_EDIT));
+  m_pOriginalGroupSettingsLabel = dynamic_cast<CGUISettingsGroupLabelControl *>(GetControl(CONTROL_DEFAULT_SETTING_LABEL));
 
   if (!m_pOriginalEdit && m_pOriginalButton)
   {
@@ -365,6 +370,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   if (m_pOriginalCategoryButton) m_pOriginalCategoryButton->SetVisible(false);
   if (m_pOriginalEdit) m_pOriginalEdit->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
+  if (m_pOriginalGroupSettingsLabel) m_pOriginalGroupSettingsLabel->SetVisible(false);
 
   if (m_pOriginalCategoryButton != NULL)
   {
@@ -513,9 +519,13 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
     if (settings.size() <= 0)
       continue;
 
+    // Add named group separator if present on skin
+    if (m_pOriginalGroupSettingsLabel)
+      AddGroupSeparator(group->GetWidth(), iControlID, first, (*groupIt)->GetGroupType(), (*groupIt)->GetLabel());
+
     if (first)
       first = false;
-    else
+    else if (!m_pOriginalGroupSettingsLabel) // Allow fallback to normal separator if settings group label separator not present
       AddSeparator(group->GetWidth(), iControlID);
 
     for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end(); ++settingIt)
@@ -537,6 +547,11 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   UpdateSettings();
 
   return settingMap;
+}
+
+std::string CGUIDialogSettingsBase::GetSettingsLabel(CSetting *pSetting)
+{
+  return GetLocalizedString(pSetting->GetLabel());
 }
 
 void CGUIDialogSettingsBase::UpdateSettings()
@@ -562,7 +577,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
   CGUIControl *pControl = NULL;
 
   // determine the label and any possible indentation in case of sub settings
-  string label = GetLocalizedString(pSetting->GetLabel());
+  std::string label = GetSettingsLabel(pSetting);
   int parentLevels = 0;
   CSetting *parentSetting = GetSetting(pSetting->GetParent());
   while (parentSetting != NULL)
@@ -659,6 +674,16 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
     ((CGUISettingsSliderControl *)pControl)->SetText(label);
     pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
   }
+  else if (controlType == "infobutton")
+  {
+    if (m_pOriginalButton != NULL)
+      pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlInfoButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+  }
   else
     return NULL;
 
@@ -678,6 +703,32 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
     return NULL;
 
   return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID)), width, iControlID);
+}
+
+CGUIControl* CGUIDialogSettingsBase::AddGroupSeparator(float width, int &controlId, bool first, unsigned int groupType, int label)
+{
+  if (m_pOriginalGroupSettingsLabel == NULL)
+    return NULL;
+
+  CGUIControl *control = new CGUISettingsGroupLabelControl(*m_pOriginalGroupSettingsLabel);
+  if (control == NULL)
+    return NULL;
+
+  //! Set label if allowed for this group
+  std::string strLabel;
+  if (((CGUISettingsGroupLabelControl *)control)->LabelAllowedToVisible(groupType))
+  {
+    strLabel = GetLocalizedString(label);
+    ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
+  }
+
+  /*! Hide Separator image if not allowed for group or if first group without label and not wish from skin to have visible.
+   *  ((CGUISettingsGroupLabelControl *)control) with "SetHideTexture" called from here again to show which side have the right to do this.
+   *  (maybe for further improvement) */
+  if (!((CGUISettingsGroupLabelControl *)control)->TextureAllowedToVisible(groupType, first, strLabel.empty()))
+    ((CGUISettingsGroupLabelControl *)control)->SetHideTexture(true);
+
+  return AddSettingControl(control, BaseSettingControlPtr(new CGUIControlGroupLabelSetting((CGUISettingsGroupLabelControl *)control, controlId)), width, controlId);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID)

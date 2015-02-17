@@ -62,7 +62,8 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
 }
 
 CSettingGroup::CSettingGroup(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
-  : ISetting(id, settingsManager)
+  : ISetting(id, settingsManager),
+    m_groupType(settingsGroupPrimary)
 { }
 
 CSettingGroup::~CSettingGroup()
@@ -77,6 +78,14 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
+
+  const TiXmlElement *element = node->ToElement();
+  if (element == NULL)
+    return false;
+
+  unsigned int value = settingsGroupPrimary;
+  if (element->QueryUnsignedAttribute(SETTING_XML_ATTR_GROUP_TYPE, &value) == TIXML_SUCCESS)
+    m_groupType = value;
 
   const TiXmlElement *settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
   while (settingElement != NULL)

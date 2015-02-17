@@ -139,6 +139,18 @@ protected:
   bool m_hideValue;
 };
 
+class CSettingControlInfoButton : public CSettingControlButton
+{
+public:
+  CSettingControlInfoButton() { }
+  virtual ~CSettingControlInfoButton() { }
+
+  // specialization of CSettingControlButton
+  virtual std::string GetType() const { return "infobutton"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool SetFormat(const std::string &format);
+};
+
 class CSettingControlList : public ISettingControl
 {
 public:

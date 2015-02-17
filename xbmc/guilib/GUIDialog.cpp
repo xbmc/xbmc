@@ -21,6 +21,7 @@
 #include "GUIDialog.h"
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
+#include "GUISettingsGroupLabelControl.h"
 #include "GUIAudioManager.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
@@ -58,6 +59,16 @@ void CGUIDialog::OnWindowLoaded()
       if ((*p)->GetControlType() == CGUIControl::GUICONTROL_LABEL)
       {
         CGUILabelControl* pLabel = (CGUILabelControl*)(*p);
+
+        if (!pLabel->GetWidth())
+        {
+          float spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
+          pLabel->SetWidth(pBase->GetWidth() - spacing);
+        }
+      }
+      else if ((*p)->GetControlType() == CGUIControl::GUICONTROL_SETTINGS_GROUP_LABEL)
+      {
+        CGUISettingsGroupLabelControl* pLabel = (CGUISettingsGroupLabelControl*)(*p);
 
         if (!pLabel->GetWidth())
         {
