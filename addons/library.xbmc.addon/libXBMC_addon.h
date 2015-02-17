@@ -166,19 +166,19 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_wake_on_lan");
       if (XBMC_wake_on_lan == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_unknown_to_utf8 = (const char* (*)(void* HANDLE, void* CB, const char* str))
+      XBMC_unknown_to_utf8 = (char* (*)(void* HANDLE, void* CB, const char* str))
         dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
       if (XBMC_unknown_to_utf8 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_get_localized_string = (const char* (*)(void* HANDLE, void* CB, int dwCode))
+      XBMC_get_localized_string = (char* (*)(void* HANDLE, void* CB, int dwCode))
         dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
       if (XBMC_get_localized_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_free_string = (void (*)(void* HANDLE, void* CB, const char* str))
+      XBMC_free_string = (void (*)(void* HANDLE, void* CB, char* str))
         dlsym(m_libXBMC_addon, "XBMC_free_string");
       if (XBMC_free_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_get_dvd_menu_language = (const char* (*)(void* HANDLE, void* CB))
+      XBMC_get_dvd_menu_language = (char* (*)(void* HANDLE, void* CB))
         dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
       if (XBMC_get_dvd_menu_language == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -318,7 +318,7 @@ namespace ADDON
      * @param str The string to translate.
      * @return The string translated to UTF8. Must be freed by calling FreeString() when done.
      */
-    const char* UnknownToUTF8(const char* str)
+    char* UnknownToUTF8(const char* str)
     {
       return XBMC_unknown_to_utf8(m_Handle, m_Callbacks, str);
     }
@@ -328,7 +328,7 @@ namespace ADDON
      * @param dwCode The code of the message to get.
      * @return The message. Must be freed by calling FreeString() when done.
      */
-    const char* GetLocalizedString(int dwCode)
+    char* GetLocalizedString(int dwCode)
     {
       return XBMC_get_localized_string(m_Handle, m_Callbacks, dwCode);
     }
@@ -338,7 +338,7 @@ namespace ADDON
      * @brief Get the DVD menu language.
      * @return The language. Must be freed by calling FreeString() when done.
      */
-    const char* GetDVDMenuLanguage()
+    char* GetDVDMenuLanguage()
     {
       return XBMC_get_dvd_menu_language(m_Handle, m_Callbacks);
     }
@@ -347,7 +347,7 @@ namespace ADDON
      * @brief Free the memory used by str
      * @param str The string to free
      */
-    void FreeString(const char* str)
+    void FreeString(char* str)
     {
       return XBMC_free_string(m_Handle, m_Callbacks, str);
     }
@@ -564,10 +564,10 @@ namespace ADDON
     bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
     void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
     bool (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
-    const char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
-    const char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
-    const char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
-    void (*XBMC_free_string)(void *HANDLE, void* CB, const char* str);
+    char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
+    char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
+    char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
+    void (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
     void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
     void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
     ssize_t (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, size_t uiBufSize);
