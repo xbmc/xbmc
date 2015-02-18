@@ -4348,7 +4348,12 @@ void CGUIInfoManager::UpdateAVInfo()
       SPlayerAudioStreamInfo audio;
 
       g_application.m_pPlayer->GetVideoStreamInfo(video);
-      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), audio);
+
+      int stream = g_application.m_pPlayer->GetAudioStream();
+      if (stream >= 0)
+        g_application.m_pPlayer->GetAudioStreamInfo(stream, audio);
+      else
+        g_dataCacheCore.SignalAudioInfoChange();
 
       m_videoInfo = video;
       m_audioInfo = audio;
