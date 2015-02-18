@@ -591,6 +591,20 @@ OBJDUMP="${OBJDUMP:-objdump}"
 READELF="${READELF:-readelf}"
 NM="${NM:-nm}"
 
+# Workaround a build issue on i386 with gcc 4.9:
+# including <algorithm> pulls in SSE intrinsics.
+# possible GCC bug? ideas welcome
+if test "$GCC_CXX" = "yes"; then
+  GCC_VERSION=$($CXX -dumpversion)
+  GCC_MAJOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $1}')
+  GCC_MINOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $2}')
+
+  if (test "$GCC_MAJOR_VER" -eq "4" && test "$GCC_MINOR_VER" -ge "9") || (test "$GCC_MAJOR_VER" -gt "4"); then
+    CXXFLAGS="$CXXFLAGS -msse"
+    AC_MSG_NOTICE("detected gcc version $GCC_VERSION - enabling SSE")
+  fi
+fi
+
 # host detection and setup
 case $host in
   i*86*-linux-android*)
@@ -849,14 +863,9 @@ if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
     [AC_LANG_SOURCE([int foo;])],
     [ use_sse4=yes
       USE_SSE4=1],
-    [ use_sse=no
+    [ use_sse4=no
       USE_SSE4=0])
   CFLAGS="$SAVE_CFLAGS"
-
-  if test "$use_sse4" = "yes"; then
-    CFLAGS="${CFLAGS} -msse4.1"
-    CXXFLAGS="${CXXFLAGS} -msse4.1"
-  fi
 fi
 
 # Checks for library functions.
