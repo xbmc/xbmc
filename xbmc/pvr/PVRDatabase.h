@@ -161,15 +161,14 @@ namespace PVR
 
     /*!
      * @brief Add a client to the database if it's not already in there.
-     * @param strClientName The name of the client.
-     * @param strGuid The unique ID of the client.
+     * @param addon The pointer to related addon
      * @return The database ID of the client.
      */
     int Persist(const ADDON::AddonPtr addon);
 
     /*!
      * @brief Remove a client from the database
-     * @param strGuid The unique ID of the client.
+     * @param client The related PVR client to remove from Database.
      * @return True if the client was removed successfully, false otherwise.
      */
     bool Delete(const CPVRClient &client);
@@ -199,7 +198,6 @@ namespace PVR
   private:
     /*!
      * @brief Create the PVR database tables.
-     * @return True if the tables were created successfully, false otherwise.
      */
     void CreateTables();
     void CreateAnalytics();
