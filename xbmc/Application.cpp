@@ -4173,7 +4173,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Don't queue if next media type is different from current one
       if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
-          || (!file.IsAudio() && m_pPlayer->IsPlayingAudio()))
+          || ((!file.IsAudio() || file.IsVideo()) && m_pPlayer->IsPlayingAudio()))
       {
         m_pPlayer->OnNothingToQueueNotify();
         return true;
