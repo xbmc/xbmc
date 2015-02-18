@@ -5,6 +5,8 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake])
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
+m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
+AX_CXX_COMPILE_STDCXX_11(,[optional])
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
