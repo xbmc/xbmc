@@ -116,7 +116,6 @@
 		18B7C7ED1294222E009E7A26 /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */; };
 		18B7C7EE1294222E009E7A26 /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */; };
 		18B7C7EF1294222E009E7A26 /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */; };
-		18B7C7F01294222E009E7A26 /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79B1294222E009E7A26 /* Key.cpp */; };
 		18B7C7F11294222E009E7A26 /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */; };
 		18B7C7F21294222E009E7A26 /* MatrixGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */; };
 		18B7C7F31294222E009E7A26 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79E1294222E009E7A26 /* Shader.cpp */; };
@@ -182,6 +181,9 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		395C29BC1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
+		395C29BD1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
+		395C29BE1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
 		395C29C11A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
 		395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
 		395C29C31A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
@@ -1452,7 +1454,6 @@
 		DFF0F2B817528350002DA3A4 /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3716B9896C00D8023E /* imagefactory.cpp */; };
 		DFF0F2B917528350002DA3A4 /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */; };
 		DFF0F2BA17528350002DA3A4 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
-		DFF0F2BB17528350002DA3A4 /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79B1294222E009E7A26 /* Key.cpp */; };
 		DFF0F2BC17528350002DA3A4 /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */; };
 		DFF0F2BD17528350002DA3A4 /* MatrixGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */; };
 		DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79E1294222E009E7A26 /* Shader.cpp */; };
@@ -2704,7 +2705,6 @@
 		E4991321174E5DAD00741B6D /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3716B9896C00D8023E /* imagefactory.cpp */; };
 		E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */; };
 		E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
-		E4991324174E5DAD00741B6D /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79B1294222E009E7A26 /* Key.cpp */; };
 		E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */; };
 		E4991326174E5DAD00741B6D /* MatrixGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */; };
 		E4991327174E5DAD00741B6D /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79E1294222E009E7A26 /* Shader.cpp */; };
@@ -3459,7 +3459,6 @@
 		18B7C7401294222D009E7A26 /* IAudioDeviceChangedCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioDeviceChangedCallback.h; sourceTree = "<group>"; };
 		18B7C7411294222D009E7A26 /* IMsgTargetCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMsgTargetCallback.h; sourceTree = "<group>"; };
 		18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IWindowManagerCallback.h; sourceTree = "<group>"; };
-		18B7C7431294222D009E7A26 /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		18B7C7441294222D009E7A26 /* LocalizeStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalizeStrings.h; sourceTree = "<group>"; };
 		18B7C7451294222E009E7A26 /* MatrixGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixGLES.h; sourceTree = "<group>"; };
 		18B7C7461294222E009E7A26 /* Resolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resolution.h; sourceTree = "<group>"; };
@@ -3543,7 +3542,6 @@
 		18B7C7981294222E009E7A26 /* GUIWindowManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowManager.cpp; sourceTree = "<group>"; };
 		18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWrappingListContainer.cpp; sourceTree = "<group>"; };
 		18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IWindowManagerCallback.cpp; sourceTree = "<group>"; };
-		18B7C79B1294222E009E7A26 /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
 		18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalizeStrings.cpp; sourceTree = "<group>"; };
 		18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MatrixGLES.cpp; sourceTree = "<group>"; };
 		18B7C79E1294222E009E7A26 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
@@ -3671,6 +3669,8 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		395C29BA1A94733100EBC7AD /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
+		395C29BB1A94733100EBC7AD /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Webinterface.cpp; sourceTree = "<group>"; };
 		395C29C01A98A0A000EBC7AD /* Webinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Webinterface.h; sourceTree = "<group>"; };
 		395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ILanguageInvoker.cpp; sourceTree = "<group>"; };
@@ -6308,8 +6308,6 @@
 				18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */,
 				32C631261423A90F00F18420 /* JpegIO.cpp */,
 				32C631271423A90F00F18420 /* JpegIO.h */,
-				18B7C79B1294222E009E7A26 /* Key.cpp */,
-				18B7C7431294222D009E7A26 /* Key.h */,
 				18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */,
 				18B7C7441294222D009E7A26 /* LocalizeStrings.h */,
 				18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */,
@@ -6415,6 +6413,8 @@
 				DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */,
 				DF14CF7C1A77782E00396CC9 /* InputManager.cpp */,
 				DF14CF7D1A77782E00396CC9 /* InputManager.h */,
+				395C29BA1A94733100EBC7AD /* Key.cpp */,
+				395C29BB1A94733100EBC7AD /* Key.h */,
 				7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */,
 				7CF80DC819710DC2003B2B34 /* KeyboardLayout.h */,
 				18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */,
@@ -10651,6 +10651,7 @@
 				E38E22490D25F9FE00618676 /* log.cpp in Sources */,
 				E38E224B0D25F9FE00618676 /* match.cpp in Sources */,
 				E38E224D0D25F9FE00618676 /* options.cpp in Sources */,
+				395C29BC1A94733100EBC7AD /* Key.cpp in Sources */,
 				E38E224E0D25F9FE00618676 /* pathfn.cpp in Sources */,
 				395C29F01A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */,
 				E38E22500D25F9FE00618676 /* rarvm.cpp in Sources */,
@@ -10970,7 +10971,6 @@
 				18B7C7ED1294222E009E7A26 /* GUIWindowManager.cpp in Sources */,
 				18B7C7EE1294222E009E7A26 /* GUIWrappingListContainer.cpp in Sources */,
 				18B7C7EF1294222E009E7A26 /* IWindowManagerCallback.cpp in Sources */,
-				18B7C7F01294222E009E7A26 /* Key.cpp in Sources */,
 				18B7C7F11294222E009E7A26 /* LocalizeStrings.cpp in Sources */,
 				18B7C7F21294222E009E7A26 /* MatrixGLES.cpp in Sources */,
 				18B7C7F31294222E009E7A26 /* Shader.cpp in Sources */,
@@ -11935,7 +11935,6 @@
 				DFF0F2B817528350002DA3A4 /* imagefactory.cpp in Sources */,
 				DFF0F2B917528350002DA3A4 /* IWindowManagerCallback.cpp in Sources */,
 				DFF0F2BA17528350002DA3A4 /* JpegIO.cpp in Sources */,
-				DFF0F2BB17528350002DA3A4 /* Key.cpp in Sources */,
 				DFF0F2BC17528350002DA3A4 /* LocalizeStrings.cpp in Sources */,
 				DFF0F2BD17528350002DA3A4 /* MatrixGLES.cpp in Sources */,
 				DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */,
@@ -12105,6 +12104,7 @@
 				DFF0F35E17528350002DA3A4 /* PlayList.cpp in Sources */,
 				DFF0F35F17528350002DA3A4 /* PlayListB4S.cpp in Sources */,
 				DFF0F36017528350002DA3A4 /* PlayListFactory.cpp in Sources */,
+				395C29BE1A94733100EBC7AD /* Key.cpp in Sources */,
 				DFF0F36117528350002DA3A4 /* PlayListM3U.cpp in Sources */,
 				DF4BF0191A4EF31F0053AC56 /* cc_decoder.c in Sources */,
 				DFF0F36217528350002DA3A4 /* PlayListPLS.cpp in Sources */,
@@ -12666,6 +12666,7 @@
 				E49911CB174E5D2500741B6D /* DVDOverlayCodecTX3G.cpp in Sources */,
 				E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */,
+				395C29BD1A94733100EBC7AD /* Key.cpp in Sources */,
 				E49911D0174E5D2500741B6D /* DVDVideoCodecVDA.cpp in Sources */,
 				E49911D1174E5D2500741B6D /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E49911D2174E5D2E00741B6D /* DVDDemux.cpp in Sources */,
@@ -13015,7 +13016,6 @@
 				E4991321174E5DAD00741B6D /* imagefactory.cpp in Sources */,
 				E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */,
 				E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */,
-				E4991324174E5DAD00741B6D /* Key.cpp in Sources */,
 				E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */,
 				E4991326174E5DAD00741B6D /* MatrixGLES.cpp in Sources */,
 				E4991327174E5DAD00741B6D /* Shader.cpp in Sources */,
