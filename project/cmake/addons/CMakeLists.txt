@@ -13,6 +13,7 @@ if(NOT CORE_SYSTEM_NAME)
 endif()
 
 include(ExternalProject)
+include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
 
 ### setup all the necessary paths
 if(NOT APP_ROOT AND NOT XBMCROOT)
@@ -116,37 +117,10 @@ foreach(addon ${addons})
     list(FIND ADDONS_TO_BUILD ${id} idx)
     if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
       get_filename_component(dir ${addon} PATH)
-      set(platform_found FALSE)
 
       # check if the addon has a platforms.txt
-      if(EXISTS ${dir}/platforms.txt)
-        # get all the specified platforms
-        file(STRINGS ${dir}/platforms.txt platforms)
-        separate_arguments(platforms)
-
-        # check if the addon should be built for the current platform
-        foreach(platform ${platforms})
-          if(${platform} STREQUAL "all" OR ${platform} STREQUAL ${CORE_SYSTEM_NAME})
-            set(platform_found TRUE)
-          else()
-            # check if the platform is defined as "!<platform>"
-            string(SUBSTRING ${platform} 0 1 platform_first)
-            if(${platform_first} STREQUAL "!")
-              # extract the platform
-              string(LENGTH ${platform} platform_length)
-              MATH(EXPR platform_length "${platform_length} - 1")
-              string(SUBSTRING ${platform} 1 ${platform_length} platform)
-
-              # check if the current platform does not match the extracted platform
-              if (NOT ${platform} STREQUAL ${CORE_SYSTEM_NAME})
-                set(platform_found TRUE)
-              endif()
-            endif()
-          endif()
-        endforeach()
-      else()
-        set(platform_found TRUE)
-      endif()
+      set(platform_found FALSE)
+      check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
 
       if (${platform_found})
         # make sure the output directory is clean
