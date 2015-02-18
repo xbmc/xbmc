@@ -93,7 +93,7 @@ void CGUIDialogDSRules::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SetHeading(60001);
+  SET_CONTROL_LABEL(0,60001);
 }
 
 void CGUIDialogDSRules::SetNewRule(bool b)
