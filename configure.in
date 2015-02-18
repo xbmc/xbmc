@@ -849,7 +849,7 @@ if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
     [AC_LANG_SOURCE([int foo;])],
     [ use_sse4=yes
       USE_SSE4=1],
-    [ use_sse=no
+    [ use_sse4=no
       USE_SSE4=0])
   CFLAGS="$SAVE_CFLAGS"
 
