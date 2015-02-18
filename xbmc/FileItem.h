@@ -62,6 +62,10 @@ class CGenre;
 
 class CURL;
 
+class CFileItemList;
+class CCueDocument;
+typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
+
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
 #ifdef HAS_DS_PLAYER
@@ -207,6 +211,8 @@ public:
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRRecording() const;
+  bool IsUsablePVRRecording() const;
+  bool IsDeletedPVRRecording() const;
   bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
@@ -476,6 +482,10 @@ public:
   } m_itemType;
 #endif
 
+  void SetCueDocument(const CCueDocumentPtr& cuePtr);
+  void LoadEmbeddedCue();
+  bool HasCueDocument() const;
+  bool LoadTracksFromCueDocument(CFileItemList& scannedItems);
 private:
   /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
    Called from constructors, and from Reset()
@@ -499,6 +509,8 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+
+  CCueDocumentPtr m_cueDocument;
 };
 
 /*!

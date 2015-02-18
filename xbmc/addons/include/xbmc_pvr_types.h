@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.9.3"
+#define XBMC_PVR_API_VERSION "1.9.4"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.9.3"
+#define XBMC_PVR_MIN_API_VERSION "1.9.4"
 
 #ifdef __cplusplus
 extern "C" {
@@ -122,13 +122,14 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_MENUHOOK_UNKNOWN         =-1, /*!< @brief unknown menu hook */
-    PVR_MENUHOOK_ALL             = 0, /*!< @brief all categories */
-    PVR_MENUHOOK_CHANNEL         = 1, /*!< @brief for channels */
-    PVR_MENUHOOK_TIMER           = 2, /*!< @brief for timers */
-    PVR_MENUHOOK_EPG             = 3, /*!< @brief for EPG */
-    PVR_MENUHOOK_RECORDING       = 4, /*!< @brief for recordings */
-    PVR_MENUHOOK_SETTING         = 5, /*!< @brief for settings */
+    PVR_MENUHOOK_UNKNOWN           =-1, /*!< @brief unknown menu hook */
+    PVR_MENUHOOK_ALL               = 0, /*!< @brief all categories */
+    PVR_MENUHOOK_CHANNEL           = 1, /*!< @brief for channels */
+    PVR_MENUHOOK_TIMER             = 2, /*!< @brief for timers */
+    PVR_MENUHOOK_EPG               = 3, /*!< @brief for EPG */
+    PVR_MENUHOOK_RECORDING         = 4, /*!< @brief for recordings */
+    PVR_MENUHOOK_DELETED_RECORDING = 5, /*!< @brief for deleted recordings */
+    PVR_MENUHOOK_SETTING           = 6, /*!< @brief for settings */
   } PVR_MENUHOOK_CAT;
 
   /*!
@@ -150,9 +151,11 @@ extern "C" {
     bool bSupportsTV;                   /*!< @brief true if this add-on provides TV channels */
     bool bSupportsRadio;                /*!< @brief true if this add-on supports radio channels */
     bool bSupportsRecordings;           /*!< @brief true if this add-on supports playback of recordings stored on the backend */
+    bool bSupportsRecordingsUndelete;   /*!< @brief true if this add-on supports undelete of recordings stored on the backend */
     bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
+    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel */
     bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
     bool bSupportsRecordingFolders;     /*!< @brief true if the backend supports timers / recordings in folders. */
@@ -295,6 +298,7 @@ extern "C" {
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
+    bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
@@ -349,17 +353,19 @@ extern "C" {
     int          (__cdecl* GetChannelGroupsAmount)(void);
     PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
     PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
-    PVR_ERROR    (__cdecl* DialogChannelScan)(void);
+    PVR_ERROR    (__cdecl* OpenDialogChannelScan)(void);
     int          (__cdecl* GetChannelsAmount)(void);
     PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE, bool);
     PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL&);
     PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL&);
     PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* DialogChannelSettings)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* DialogAddChannel)(const PVR_CHANNEL&);
-    int          (__cdecl* GetRecordingsAmount)(void);
-    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE);
+    PVR_ERROR    (__cdecl* OpenDialogChannelSettings)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* OpenDialogChannelAdd)(const PVR_CHANNEL&);
+    int          (__cdecl* GetRecordingsAmount)(bool);
+    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE, bool);
     PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* UndeleteRecording)(const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* DeleteAllRecordingsFromTrash)(void);
     PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING&);
     PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
     PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);

@@ -63,23 +63,3 @@ int CAndroidFeatures::GetVersion()
   return version;
 }
 
-std::string CAndroidFeatures::GetLibiomxName()
-{
-  std::string strOMXLibName;
-  int version = GetVersion();
-
-  // Gingerbread
-  if (version <= 10)
-    strOMXLibName = "libiomx-10.so";
-  // Honeycomb
-  else if (version <= 13)
-    strOMXLibName = "libiomx-13.so";
-  // IceCreamSandwich
-  else if (version <= 15)
-    strOMXLibName = "libiomx-14.so";
-  else
-    strOMXLibName = "unknown";
-
-  return strOMXLibName;
-}
-

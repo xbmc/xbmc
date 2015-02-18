@@ -38,7 +38,7 @@
   IOSExternalTouchController *_externalTouchController;
   UIInterfaceOrientation _lastTouchControllerOrientation;
 }
-@property unsigned int  _screenIdx;
+@property (readonly, getter=GetScreenIdx)unsigned int  _screenIdx;
 @property (readonly, getter=isExternalScreen)bool _externalScreen;
 @property (assign, setter=setView:) IOSEAGLView *_glView;
 @property UIInterfaceOrientation _lastTouchControllerOrientation;

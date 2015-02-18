@@ -60,6 +60,12 @@ CDVDVideoCodecAmlogic::~CDVDVideoCodecAmlogic()
 
 bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  if (!aml_permissions())
+  {
+    CLog::Log(LOGERROR, "AML: no proper permission, please contact the device vendor. Skipping codec...");
+    return false;
+  }
+
   m_hints = hints;
 
   switch(m_hints.codec)

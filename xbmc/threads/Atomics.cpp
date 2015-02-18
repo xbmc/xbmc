@@ -50,7 +50,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return prev;
 
 #elif defined(__arm__)
-  register long prev;
+  long prev;
   asm volatile (
     "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
     "1:                      \n"
@@ -172,7 +172,7 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 
 #elif defined(__arm__) && !defined(__ARM_ARCH_5__)
-  register long val;
+  long val;
   asm volatile (
     "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
     "1:                     \n" 
@@ -203,7 +203,7 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 
 #elif defined(__x86_64__)
-  register long result;
+  long result;
   __asm__ __volatile__ (
     "lock/xaddq %q0, %1"
     : "=r" (result), "=m" (*pAddr)
@@ -211,7 +211,7 @@ long AtomicIncrement(volatile long* pAddr)
   return *pAddr;
 
 #else // Linux / OSX86 (GCC)
-  register long reg __asm__ ("eax") = 1;
+  long reg __asm__ ("eax") = 1;
   __asm__ __volatile__ (
     "lock/xadd %0, %1 \n"
     "inc %%eax"
@@ -247,7 +247,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return val;
 
 #elif defined(__arm__) && !defined(__ARM_ARCH_5__)
-  register long val;
+  long val;
   asm volatile (
     "dmb      ish           \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
   "1:                       \n" 
@@ -278,7 +278,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return amount;
 
 #elif defined(__x86_64__)
-  register long result;
+  long result;
   __asm__ __volatile__ (
     "lock/xaddq %q0, %1"
     : "=r" (result), "=m" (*pAddr)
@@ -286,7 +286,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return *pAddr;
 
 #else // Linux / OSX86 (GCC)
-  register long reg __asm__ ("eax") = amount;
+  long reg __asm__ ("eax") = amount;
   __asm__ __volatile__ (
     "lock/xadd %0, %1 \n"
     "dec %%eax"
@@ -322,7 +322,7 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 
 #elif defined(__arm__)
-  register long val;
+  long val;
   asm volatile (
     "dmb      ish           \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
     "1:                     \n" 
@@ -353,7 +353,7 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 
 #elif defined(__x86_64__)
-  register long result;
+  long result;
   __asm__ __volatile__ (
     "lock/xaddq %q0, %1"
     : "=r" (result), "=m" (*pAddr)
@@ -361,7 +361,7 @@ long AtomicDecrement(volatile long* pAddr)
   return *pAddr;
 
 #else // Linux / OSX86 (GCC)
-  register long reg __asm__ ("eax") = -1;
+  long reg __asm__ ("eax") = -1;
   __asm__ __volatile__ (
     "lock/xadd %0, %1 \n"
     "dec %%eax"
@@ -398,7 +398,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   return val;
 
 #elif defined(__arm__)
-  register long val;
+  long val;
   asm volatile (
     "dmb     ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
     "1:                     \n" 
@@ -430,7 +430,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   return amount;
 
 #elif defined(__x86_64__)
-  register long result;
+  long result;
   __asm__ __volatile__ (
     "lock/xaddq %q0, %1"
     : "=r" (result), "=m" (*pAddr)
@@ -438,7 +438,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   return *pAddr;
 
 #else // Linux / OSX86 (GCC)
-  register long reg __asm__ ("eax") = -1 * amount;
+  long reg __asm__ ("eax") = -1 * amount;
   __asm__ __volatile__ (
     "lock/xadd %0, %1 \n"
     "dec %%eax"

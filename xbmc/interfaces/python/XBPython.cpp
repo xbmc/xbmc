@@ -585,7 +585,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
       CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
     }
-    setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
 #elif defined(TARGET_WINDOWS)
     // because the third party build of python is compiled with vs2008 we need
     // a hack to set the PYTHONPATH

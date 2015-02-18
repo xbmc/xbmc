@@ -100,7 +100,7 @@ bool CMMALRenderer::init_vout(MMAL_ES_FORMAT_T *format)
     return false;
   }
 
-  m_vout_input->buffer_num = m_vout_input->buffer_num_recommended;
+  m_vout_input->buffer_num = std::max(m_vout_input->buffer_num_recommended, (uint32_t)m_NumYV12Buffers);
   m_vout_input->buffer_size = m_vout_input->buffer_size_recommended;
 
   status = mmal_port_enable(m_vout_input, vout_input_port_cb_static);
@@ -149,6 +149,7 @@ CMMALRenderer::CMMALRenderer()
   m_vout_input_pool = NULL;
   memset(m_buffers, 0, sizeof m_buffers);
   m_release_queue = mmal_queue_create();
+  m_iYV12RenderBuffer = 0;
   Create();
 }
 
@@ -229,7 +230,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
         es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
     }
     if (m_bConfigured)
-      UnInit();
+      UnInitMMAL();
     m_bConfigured = init_vout(es_format);
     mmal_format_free(es_format);
   }
@@ -298,6 +299,9 @@ int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CMMALRenderer::ReleaseBuffer(int idx)
 {
+  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+    return;
+
 #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, idx);
 #endif
@@ -319,6 +323,7 @@ void CMMALRenderer::Reset()
 
 void CMMALRenderer::Flush()
 {
+  m_iYV12RenderBuffer = 0;
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 }
 
@@ -333,13 +338,12 @@ void CMMALRenderer::Update()
 
 void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  int source = m_iYV12RenderBuffer;
 #if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d %x %d", CLASSNAME, __func__, clear, flags, alpha);
+  CLog::Log(LOGDEBUG, "%s::%s - %d %x %d %d", CLASSNAME, __func__, clear, flags, alpha, source);
 #endif
 
   if (!m_bConfigured) return;
-
-  CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
 
@@ -347,16 +351,11 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   // for sizing video playback on a layer other than the gles layer.
   if (m_RenderUpdateCallBackFn)
     (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-}
 
-void CMMALRenderer::FlipPage(int source)
-{
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, source);
-#endif
-
-  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+  if (m_format == RENDER_FMT_BYPASS)
     return;
+
+  SetVideoRect(m_sourceRect, m_destRect);
 
   YUVBUFFER *buffer = &m_buffers[source];
   // we only want to upload frames once
@@ -384,9 +383,20 @@ void CMMALRenderer::FlipPage(int source)
   else assert(0);
 }
 
+void CMMALRenderer::FlipPage(int source)
+{
+  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+    return;
+
+#if defined(MMAL_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, source);
+#endif
+
+  m_iYV12RenderBuffer = source;
+}
+
 unsigned int CMMALRenderer::PreInit()
 {
-  CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
 
@@ -403,6 +413,7 @@ unsigned int CMMALRenderer::PreInit()
   m_formats.push_back(RENDER_FMT_MMAL);
   m_formats.push_back(RENDER_FMT_BYPASS);
 
+  m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = NUM_BUFFERS;
 
   return 0;
@@ -414,9 +425,8 @@ void CMMALRenderer::ReleaseBuffers()
     ReleaseBuffer(i);
 }
 
-void CMMALRenderer::UnInit()
+void CMMALRenderer::UnInitMMAL()
 {
-  CSingleLock lock(g_graphicsContext);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   if (m_vout)
   {
@@ -454,6 +464,11 @@ void CMMALRenderer::UnInit()
   m_StereoInvert = false;
 
   m_bConfigured = false;
+}
+
+void CMMALRenderer::UnInit()
+{
+  UnInitMMAL();
 }
 
 bool CMMALRenderer::RenderCapture(CRenderCapture* capture)

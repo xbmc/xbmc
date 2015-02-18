@@ -226,13 +226,13 @@
   </PlayerControls>
   <Visualisation>
     <remote>
-      <left>PreviousPreset</left>
-      <right>NextPreset</right>
-      <up>IncreaseRating</up>
-      <down>DecreaseRating</down>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>SkipNext</up>
+      <down>SkipPrevious</down>
       <back>Back</back>
       <title>CodecInfo</title>
-      <select>ActivateWindow(VisualisationPresetList)</select>
+      <select>OSD</select>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>

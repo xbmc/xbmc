@@ -32,6 +32,22 @@
 #include "guilib/GraphicContext.h"
 #include "utils/log.h"
 
+static drmVBlankSeqType CrtcSel(void)
+{
+  int crtc = g_Windowing.GetCrtc();
+  int ret = 0;
+
+  if (crtc == 1)
+  {
+    ret = DRM_VBLANK_SECONDARY;
+  }
+  else if (crtc > 1)
+  {
+    ret = (crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK;
+  }
+  return (drmVBlankSeqType)ret;
+}
+  
 bool CVideoSyncDRM::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncDRM::%s - setting up DRM", __FUNCTION__);
@@ -47,7 +63,7 @@ bool CVideoSyncDRM::Setup(PUPDATECLOCK func)
 
   drmVBlank vbl;
   int ret;
-  vbl.request.type = DRM_VBLANK_RELATIVE;
+  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | CrtcSel());
   vbl.request.sequence = 0;
   ret = drmWaitVBlank(m_fd, &vbl);
   if (ret != 0)
@@ -67,18 +83,9 @@ void CVideoSyncDRM::Run(volatile bool& stop)
   drmVBlank vbl;
   VblInfo info;
   int ret;
-  int crtc = g_Windowing.GetCrtc();
+  drmVBlankSeqType crtcSel = CrtcSel();
 
-  vbl.request.type = DRM_VBLANK_RELATIVE;
-  if (crtc == 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type | DRM_VBLANK_SECONDARY);
-  }
-  else if (crtc > 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
-  }
+  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | crtcSel);
   vbl.request.sequence = 0;
   ret = drmWaitVBlank(m_fd, &vbl);
   if (ret != 0)
@@ -90,16 +97,7 @@ void CVideoSyncDRM::Run(volatile bool& stop)
   info.start = CurrentHostCounter();
   info.videoSync = this;
 
-  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | DRM_VBLANK_EVENT);
-  if (crtc == 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type | DRM_VBLANK_SECONDARY);
-  }
-  else if (crtc > 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
-  }
+  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | DRM_VBLANK_EVENT | crtcSel);
   vbl.request.sequence = 1;
   vbl.request.signal = (unsigned long)&info;
   ret = drmWaitVBlank(m_fd, &vbl);
@@ -151,18 +149,9 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
 {
   drmVBlank vbl;
   VblInfo *info = (VblInfo*)data;
-  int crtc = g_Windowing.GetCrtc();
+  drmVBlankSeqType crtcSel = CrtcSel();
 
-  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | DRM_VBLANK_EVENT);
-  if (crtc == 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type | DRM_VBLANK_SECONDARY);
-  }
-  else if (crtc > 1)
-  {
-    vbl.request.type = (drmVBlankSeqType)(vbl.request.type |
-                       ((crtc << DRM_VBLANK_HIGH_CRTC_SHIFT) & DRM_VBLANK_HIGH_CRTC_MASK));
-  }
+  vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | DRM_VBLANK_EVENT | crtcSel);
   vbl.request.sequence = 1;
   vbl.request.signal = (unsigned long)data;
 

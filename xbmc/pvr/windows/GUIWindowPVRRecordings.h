@@ -40,6 +40,7 @@ namespace PVR
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+    void UpdateButtons(void);
     void UnregisterObservers(void);
     void ResetObservers(void);
 
@@ -50,6 +51,8 @@ namespace PVR
   private:
     bool ActionDeleteRecording(CFileItem *item);
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
@@ -57,5 +60,6 @@ namespace PVR
 
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
+    bool m_bShowDeletedRecordings;
   };
 }

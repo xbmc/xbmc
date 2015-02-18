@@ -181,48 +181,8 @@
 					<visible>Player.Forwarding32x</visible>
 				</control>
 			</control>
-
 			<control type="label">
-				<description>Playing Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[31042]</label>
-				<visible>Player.Playing + !Player.Seeking + !Player.DisplayAfterSeek</visible>
-			</control>
-			<control type="label">
-				<description>Paused Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>31043</label>
-				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek</visible>
-			</control>
-			<control type="label">
-				<description>Cache Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
-				<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
-			</control>
-			<control type="label">
-				<description>Seeking Label</description>
+				<description>Seekbar Label</description>
 				<left>20</left>
 				<top>7</top>
 				<width>240</width>
@@ -232,32 +192,6 @@
 				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>$VAR[SeekLabel]</label>
-			</control>
-			<control type="label">
-				<description>FF Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>31044</label>
-				<visible>Player.Forwarding</visible>
-			</control>
-			<control type="label">
-				<description>RW Label</description>
-				<left>20</left>
-				<top>7</top>
-				<width>240</width>
-				<height>20</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10_title</font>
-				<textcolor>blue</textcolor>
-				<label>31045</label>
-				<visible>Player.Rewinding</visible>
 			</control>
 			<control type="label">
 				<description>Elapsed Time Label</description>

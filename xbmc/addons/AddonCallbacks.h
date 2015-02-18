@@ -154,6 +154,33 @@ typedef float       (*GUIControl_Progress_GetPercentage)(void *addonData, GUIHAN
 typedef void        (*GUIControl_Progress_SetInfo)(void *addonData, GUIHANDLE handle, int iInfo);
 typedef int         (*GUIControl_Progress_GetInfo)(void *addonData, GUIHANDLE handle);
 typedef const char* (*GUIControl_Progress_GetDescription)(void *addonData, GUIHANDLE handle);
+typedef GUIHANDLE   (*GUIWindow_GetControl_Slider)(void *addonData, GUIHANDLE handle, int controlId);
+typedef void        (*GUIControl_Slider_SetVisible)(void *addonData, GUIHANDLE handle, bool yesNo);
+typedef const char *(*GUIControl_Slider_GetDescription)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_Slider_SetIntRange)(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+typedef void        (*GUIControl_Slider_SetIntValue)(void *addonData, GUIHANDLE handle, int iValue);
+typedef int         (*GUIControl_Slider_GetIntValue)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_Slider_SetIntInterval)(void *addonData, GUIHANDLE handle, int iInterval);
+typedef void        (*GUIControl_Slider_SetPercentage)(void *addonData, GUIHANDLE handle, float fPercent);
+typedef float       (*GUIControl_Slider_GetPercentage)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_Slider_SetFloatRange)(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+typedef void        (*GUIControl_Slider_SetFloatValue)(void *addonData, GUIHANDLE handle, float fValue);
+typedef float       (*GUIControl_Slider_GetFloatValue)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_Slider_SetFloatInterval)(void *addonData, GUIHANDLE handle, float fInterval);
+typedef GUIHANDLE   (*GUIWindow_GetControl_SettingsSlider)(void *addonData, GUIHANDLE handle, int controlId);
+typedef void        (*GUIControl_SettingsSlider_SetVisible)(void *addonData, GUIHANDLE handle, bool yesNo);
+typedef void        (*GUIControl_SettingsSlider_SetText)(void *addonData, GUIHANDLE handle, const char *label);
+typedef const char *(*GUIControl_SettingsSlider_GetDescription)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_SettingsSlider_SetIntRange)(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+typedef void        (*GUIControl_SettingsSlider_SetIntValue)(void *addonData, GUIHANDLE handle, int iValue);
+typedef int         (*GUIControl_SettingsSlider_GetIntValue)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_SettingsSlider_SetIntInterval)(void *addonData, GUIHANDLE handle, int iInterval);
+typedef void        (*GUIControl_SettingsSlider_SetPercentage)(void *addonData, GUIHANDLE handle, float fPercent);
+typedef float       (*GUIControl_SettingsSlider_GetPercentage)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_SettingsSlider_SetFloatRange)(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+typedef void        (*GUIControl_SettingsSlider_SetFloatValue)(void *addonData, GUIHANDLE handle, float fValue);
+typedef float       (*GUIControl_SettingsSlider_GetFloatValue)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIControl_SettingsSlider_SetFloatInterval)(void *addonData, GUIHANDLE handle, float fInterval);
 typedef GUIHANDLE   (*GUIListItem_Create)(void *addonData, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
 typedef const char* (*GUIListItem_GetLabel)(void *addonData, GUIHANDLE handle);
 typedef void        (*GUIListItem_SetLabel)(void *addonData, GUIHANDLE handle, const char *label);
@@ -168,6 +195,39 @@ typedef void        (*GUIListItem_SetPath)(void *addonData, GUIHANDLE handle, co
 typedef void        (*GUIRenderAddon_SetCallbacks)(void *addonData, GUIHANDLE handle, GUIHANDLE clienthandle, bool (*createCB)(GUIHANDLE,int,int,int,int,void*), void (*renderCB)(GUIHANDLE), void (*stopCB)(GUIHANDLE), bool (*dirtyCB)(GUIHANDLE));
 typedef void        (*GUIRenderAddon_Delete)(void *addonData, GUIHANDLE handle);
 typedef void        (*GUIRenderAddon_MarkDirty)(void *addonData, GUIHANDLE handle);
+
+typedef bool        (*GUIDialog_Keyboard_ShowAndGetInputWithHead)(char &strTextString, unsigned int iMaxStringSize, const char *heading, bool allowEmptyResult, bool hiddenInput, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndGetInput)(char &strTextString, unsigned int iMaxStringSize, bool allowEmptyResult, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndGetNewPasswordWithHead)(char &newPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndGetNewPassword)(char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndVerifyNewPasswordWithHead)(char &strNewPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmpty, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndVerifyNewPassword)(char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs);
+typedef int         (*GUIDialog_Keyboard_ShowAndVerifyPassword)(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_ShowAndGetFilter)(char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs);
+typedef bool        (*GUIDialog_Keyboard_SendTextToActiveKeyboard)(const char *aTextString, bool closeKeyboard);
+typedef bool        (*GUIDialog_Keyboard_isKeyboardActivated)();
+
+typedef bool        (*GUIDialog_Numeric_ShowAndVerifyNewPassword)(char &strNewPassword, unsigned int iMaxStringSize);
+typedef int         (*GUIDialog_Numeric_ShowAndVerifyPassword)(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries);
+typedef bool        (*GUIDialog_Numeric_ShowAndVerifyInput)(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, bool bGetUserInput);
+typedef bool        (*GUIDialog_Numeric_ShowAndGetTime)(tm &time, const char *strHeading);
+typedef bool        (*GUIDialog_Numeric_ShowAndGetDate)(tm &date, const char *strHeading);
+typedef bool        (*GUIDialog_Numeric_ShowAndGetIPAddress)(char &strIPAddress, unsigned int iMaxStringSize, const char *strHeading);
+typedef bool        (*GUIDialog_Numeric_ShowAndGetNumber)(char &strInput, unsigned int iMaxStringSize, const char *strHeading, unsigned int iAutoCloseTimeoutMs);
+typedef bool        (*GUIDialog_Numeric_ShowAndGetSeconds)(char &timeString, unsigned int iMaxStringSize, const char *strHeading);
+
+typedef bool        (*GUIDialog_FileBrowser_ShowAndGetFile)(const char *directory, const char *mask, const char *heading, char &path, unsigned int iMaxStringSize, bool useThumbs, bool useFileDirectories, bool singleList);
+
+typedef void        (*GUIDialog_OK_ShowAndGetInputSingleText)(const char *heading, const char *text);
+typedef void        (*GUIDialog_OK_ShowAndGetInputLineText)(const char *heading, const char *line0, const char *line1, const char *line2);
+
+typedef bool        (*GUIDialog_YesNo_ShowAndGetInputSingleText)(const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel);
+typedef bool        (*GUIDialog_YesNo_ShowAndGetInputLineText)(const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel);
+typedef bool        (*GUIDialog_YesNo_ShowAndGetInputLineButtonText)(const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel);
+
+typedef void        (*GUIDialog_TextViewer)(const char *heading, const char *text);
+
+typedef int         (*GUIDialog_Select)(const char *heading, const char *entries[], unsigned int size, int selected);
 
 typedef struct CB_GUILib
 {
@@ -239,6 +299,66 @@ typedef struct CB_GUILib
   GUIRenderAddon_SetCallbacks         RenderAddon_SetCallbacks;
   GUIRenderAddon_Delete               RenderAddon_Delete;
 
+  GUIWindow_GetControl_Slider                         Window_GetControl_Slider;
+  GUIControl_Slider_SetVisible                        Control_Slider_SetVisible;
+  GUIControl_Slider_GetDescription                    Control_Slider_GetDescription;
+  GUIControl_Slider_SetIntRange                       Control_Slider_SetIntRange;
+  GUIControl_Slider_SetIntValue                       Control_Slider_SetIntValue;
+  GUIControl_Slider_GetIntValue                       Control_Slider_GetIntValue;
+  GUIControl_Slider_SetIntInterval                    Control_Slider_SetIntInterval;
+  GUIControl_Slider_SetPercentage                     Control_Slider_SetPercentage;
+  GUIControl_Slider_GetPercentage                     Control_Slider_GetPercentage;
+  GUIControl_Slider_SetFloatRange                     Control_Slider_SetFloatRange;
+  GUIControl_Slider_SetFloatValue                     Control_Slider_SetFloatValue;
+  GUIControl_Slider_GetFloatValue                     Control_Slider_GetFloatValue;
+  GUIControl_Slider_SetFloatInterval                  Control_Slider_SetFloatInterval;
+
+  GUIWindow_GetControl_SettingsSlider                 Window_GetControl_SettingsSlider;
+  GUIControl_SettingsSlider_SetVisible                Control_SettingsSlider_SetVisible;
+  GUIControl_SettingsSlider_SetText                   Control_SettingsSlider_SetText;
+  GUIControl_SettingsSlider_GetDescription            Control_SettingsSlider_GetDescription;
+  GUIControl_SettingsSlider_SetIntRange               Control_SettingsSlider_SetIntRange;
+  GUIControl_SettingsSlider_SetIntValue               Control_SettingsSlider_SetIntValue;
+  GUIControl_SettingsSlider_GetIntValue               Control_SettingsSlider_GetIntValue;
+  GUIControl_SettingsSlider_SetIntInterval            Control_SettingsSlider_SetIntInterval;
+  GUIControl_SettingsSlider_SetPercentage             Control_SettingsSlider_SetPercentage;
+  GUIControl_SettingsSlider_GetPercentage             Control_SettingsSlider_GetPercentage;
+  GUIControl_SettingsSlider_SetFloatRange             Control_SettingsSlider_SetFloatRange;
+  GUIControl_SettingsSlider_SetFloatValue             Control_SettingsSlider_SetFloatValue;
+  GUIControl_SettingsSlider_GetFloatValue             Control_SettingsSlider_GetFloatValue;
+  GUIControl_SettingsSlider_SetFloatInterval          Control_SettingsSlider_SetFloatInterval;
+
+  GUIDialog_Keyboard_ShowAndGetInputWithHead          Dialog_Keyboard_ShowAndGetInputWithHead;
+  GUIDialog_Keyboard_ShowAndGetInput                  Dialog_Keyboard_ShowAndGetInput;
+  GUIDialog_Keyboard_ShowAndGetNewPasswordWithHead    Dialog_Keyboard_ShowAndGetNewPasswordWithHead;
+  GUIDialog_Keyboard_ShowAndGetNewPassword            Dialog_Keyboard_ShowAndGetNewPassword;
+  GUIDialog_Keyboard_ShowAndVerifyNewPasswordWithHead Dialog_Keyboard_ShowAndVerifyNewPasswordWithHead;
+  GUIDialog_Keyboard_ShowAndVerifyNewPassword         Dialog_Keyboard_ShowAndVerifyNewPassword;
+  GUIDialog_Keyboard_ShowAndVerifyPassword            Dialog_Keyboard_ShowAndVerifyPassword;
+  GUIDialog_Keyboard_ShowAndGetFilter                 Dialog_Keyboard_ShowAndGetFilter;
+  GUIDialog_Keyboard_SendTextToActiveKeyboard         Dialog_Keyboard_SendTextToActiveKeyboard;
+  GUIDialog_Keyboard_isKeyboardActivated              Dialog_Keyboard_isKeyboardActivated;
+
+  GUIDialog_Numeric_ShowAndVerifyNewPassword          Dialog_Numeric_ShowAndVerifyNewPassword;
+  GUIDialog_Numeric_ShowAndVerifyPassword             Dialog_Numeric_ShowAndVerifyPassword;
+  GUIDialog_Numeric_ShowAndVerifyInput                Dialog_Numeric_ShowAndVerifyInput;
+  GUIDialog_Numeric_ShowAndGetTime                    Dialog_Numeric_ShowAndGetTime;
+  GUIDialog_Numeric_ShowAndGetDate                    Dialog_Numeric_ShowAndGetDate;
+  GUIDialog_Numeric_ShowAndGetIPAddress               Dialog_Numeric_ShowAndGetIPAddress;
+  GUIDialog_Numeric_ShowAndGetNumber                  Dialog_Numeric_ShowAndGetNumber;
+  GUIDialog_Numeric_ShowAndGetSeconds                 Dialog_Numeric_ShowAndGetSeconds;
+
+  GUIDialog_FileBrowser_ShowAndGetFile                Dialog_FileBrowser_ShowAndGetFile;
+
+  GUIDialog_OK_ShowAndGetInputSingleText              Dialog_OK_ShowAndGetInputSingleText;
+  GUIDialog_OK_ShowAndGetInputLineText                Dialog_OK_ShowAndGetInputLineText;
+
+  GUIDialog_YesNo_ShowAndGetInputSingleText           Dialog_YesNo_ShowAndGetInputSingleText;
+  GUIDialog_YesNo_ShowAndGetInputLineText             Dialog_YesNo_ShowAndGetInputLineText;
+  GUIDialog_YesNo_ShowAndGetInputLineButtonText       Dialog_YesNo_ShowAndGetInputLineButtonText;
+
+  GUIDialog_TextViewer                                Dialog_TextViewer;
+  GUIDialog_Select                                    Dialog_Select;
 } CB_GUILib;
 
 typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);

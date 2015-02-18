@@ -1,3 +1,5 @@
+include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
+
 # handle addon depends
 function(add_addon_depends addon searchpath)
   # input: string addon string searchpath
@@ -12,28 +14,35 @@ function(add_addon_depends addon searchpath)
             file MATCHES install.txt OR
             file MATCHES noinstall.txt OR
             file MATCHES flags.txt OR
-            file MATCHES deps.txt))
+            file MATCHES deps.txt OR
+            file MATCHES platforms.txt))
       message(STATUS "Processing ${file}")
       file(STRINGS ${file} def)
       separate_arguments(def)
       list(LENGTH def deflength)
       get_filename_component(dir ${file} PATH)
 
-      # get the id and url of the dependency
-      set(url "")
+      # get the id of the dependency
       if(NOT "${def}" STREQUAL "")
-        # read the id and the url from the file
+        # read the id from the file
         list(GET def 0 id)
-        if(deflength GREATER 1)
-          list(GET def 1 url)
-          message(STATUS "${id} url: ${url}")
-        endif()
       else()
         # read the id from the filename
         get_filename_component(id ${file} NAME_WE)
       endif()
 
-      if(NOT TARGET ${id})
+      # check if the dependency has a platforms.txt
+      set(platform_found FALSE)
+      check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
+
+      if(${platform_found} AND NOT TARGET ${id})
+        # determine the download URL of the dependency
+        set(url "")
+        if(deflength GREATER 1)
+          list(GET def 1 url)
+          message(STATUS "${id} url: ${url}")
+        endif()
+
         # check if there are any library specific flags that need to be passed on
         if(EXISTS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
@@ -47,6 +56,7 @@ function(add_addon_depends addon searchpath)
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                        -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
                        -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}
+                       -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
@@ -166,9 +176,15 @@ function(add_addon_depends addon searchpath)
         endif()
       endif()
 
-      set(${addon}_DEPS ${${addon}_DEPS} ${id})
-      set(${addon}_DEPS "${${addon}_DEPS}" PARENT_SCOPE)
+      # if the dependency is available for the target platform add it to the list of the addon's dependencies
+      # (even if the target already exists as it still has to be built before the addon)
+      if(${platform_found})
+        list(APPEND ${addon}_DEPS ${id})
+      endif()
     endif()
   endforeach()
+
+  # make the ${addon}_DEPS variable available to the calling script
+  set(${addon}_DEPS "${${addon}_DEPS}" PARENT_SCOPE)
 endfunction()
 

@@ -27,5 +27,4 @@ class CAndroidFeatures
 
   static bool         HasNeon();
   static int          GetVersion();
-  static std::string  GetLibiomxName();
 };

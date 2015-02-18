@@ -26,12 +26,11 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
@@ -178,7 +177,9 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           g_PVRClients->ProcessMenuHooks(item->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG, item.get());
         else if (item->IsPVRChannel())
           g_PVRClients->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL, item.get());
-        else if (item->IsPVRRecording())
+        else if (item->IsDeletedPVRRecording())
+          g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING, item.get());
+        else if (item->IsUsablePVRRecording())
           g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING, item.get());
         else if (item->IsPVRTimer())
           g_PVRClients->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER, item.get());

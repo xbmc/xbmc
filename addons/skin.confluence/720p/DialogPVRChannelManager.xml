@@ -245,16 +245,21 @@
 				</focusedlayout>
 			</control>
 		</control>
-		<control type="group" id="9002">
-			<control type="group">
+		<control type="group">
+			<control type="grouplist" id="9002">
 				<left>490</left>
-				<top>70</top>
-				<control type="label">
+				<top>75</top>
+				<onleft>60</onleft>
+				<onright>9000</onright>
+				<onup>34</onup>
+				<ondown>30</ondown>
+				<itemgap>5</itemgap>
+				<control type="label" id="9001">
 					<description>channel options Header</description>
 					<left>0</left>
 					<top>0</top>
 					<width>380</width>
-					<height>20</height>
+					<height>25</height>
 					<font>font12</font>
 					<label>$LOCALIZE[31511]</label>
 					<align>left</align>
@@ -265,9 +270,9 @@
 				<control type="radiobutton" id="7">
 					<description>Channel activated</description>
 					<left>0</left>
-					<top>25</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -278,17 +283,13 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19074</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>34</onup>
-					<ondown>8</ondown>
 				</control>
 				<control type="edit" id="8">
 					<description>Channel name</description>
 					<left>0</left>
-					<top>75</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -296,41 +297,43 @@
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19201</label>
-					<onright>9000</onright>
-					<onleft>60</onleft>
-					<onup>7</onup>
-					<ondown>9</ondown>
 				</control>
-				<control type="button" id="9">
-					<description>Channel logo Button</description>
+				<control type="group" id="9005">
 					<left>0</left>
-					<top>125</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
-					<font>font12</font>
-					<texturefocus border="5">button-focus2.png</texturefocus>
-					<texturenofocus border="5">button-nofocus.png</texturenofocus>
-					<label>19202</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>8</onup>
-					<ondown>12</ondown>
-				</control>
-				<control type="image" id="10">
-					<description>Current Channel Icon</description>
-					<left>337</left>
-					<top>128</top>
-					<width>39</width>
-					<height>39</height>
-					<aspectratio>keep</aspectratio>
-					<info>ListItem.Property(Icon)</info>
+					<height>40</height>
+					<control type="button" id="9">
+						<description>Channel logo Button</description>
+						<left>0</left>
+						<top>0</top>
+						<width>380</width>
+						<height>40</height>
+						<font>font12</font>
+						<texturefocus border="5">button-focus2.png</texturefocus>
+						<texturenofocus border="5">button-nofocus.png</texturenofocus>
+						<label>19202</label>
+						<onleft>60</onleft>
+						<onright>9000</onright>
+						<onup>8</onup>
+						<ondown>12</ondown>
+					</control>
+					<control type="image">
+						<description>Current Channel Icon</description>
+						<left>340</left>
+						<top>3</top>
+						<width>34</width>
+						<height>34</height>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.Property(Icon)</info>
+					</control>
 				</control>
 				<control type="radiobutton" id="12">
 					<description>EPG activated</description>
 					<left>0</left>
-					<top>175</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -341,32 +344,24 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19206</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>9</onup>
-					<ondown>13</ondown>
 				</control>
 				<control type="spincontrolex" id="13">
 					<description>EPG source</description>
 					<left>0</left>
-					<top>225</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19200</label>
-					<onright>9000</onright>
-					<onleft>60</onleft>
-					<onup>12</onup>
-					<ondown>14</ondown>
 				</control>
 				<control type="radiobutton" id="14">
 					<description>Parental locked</description>
 					<left>0</left>
-					<top>275</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
@@ -377,21 +372,23 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<pulseonselect>no</pulseonselect>
 					<label>19267</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>13</onup>
-					<ondown>30</ondown>
 				</control>
 			</control>
-			<control type="group">
+			<control type="grouplist">
 				<left>490</left>
-				<top>420</top>
-				<control type="label">
+				<top>375</top>
+				<itemgap>5</itemgap>
+				<onleft>60</onleft>
+				<onright>9000</onright>
+				<onup>14</onup>
+				<ondown>7</ondown>
+				<animation effect="slide" start="0,0" end="0,45" time="0" condition="!Control.IsVisible(31)">Conditional</animation>
+				<control type="label" id="9003">
 					<description>channel options Header</description>
 					<left>0</left>
 					<top>0</top>
 					<width>380</width>
-					<height>20</height>
+					<height>25</height>
 					<font>font12</font>
 					<label>$LOCALIZE[31026]</label>
 					<align>left</align>
@@ -399,55 +396,46 @@
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
+				<control type="button" id="31">
+					<description>New channel Button</description>
+					<left>0</left>
+					<top>0</top>
+					<width>380</width>
+					<height>40</height>
+					<font>font12</font>
+					<texturefocus border="5">button-focus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus.png</texturenofocus>
+					<align>center</align>
+					<label>19204</label>
+				</control>
 				<control type="button" id="30">
 					<description>Group Manager Button</description>
 					<left>0</left>
-					<top>25</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<align>center</align>
 					<label>19205</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>14</onup>
-					<ondown>34</ondown>
 				</control>
-				<control type="button" id="34">
-					<description>TV to Radio Button</description>
+				<control type="togglebutton" id="34">
+					<description>TV/Radio toggle</description>
 					<left>0</left>
-					<top>75</top>
+					<top>0</top>
 					<width>380</width>
-					<height>45</height>
+					<height>40</height>
 					<font>font12</font>
-					<visible>IsEmpty(Window.Property(IsRadio))</visible>
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
+					<alttexturefocus border="5">button-focus2.png</alttexturefocus>
+					<alttexturenofocus border="5">button-nofocus.png</alttexturenofocus>
 					<align>center</align>
+					<aligny>center</aligny>
 					<label>19024</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>30</onup>
-					<ondown>7</ondown>
-				</control>
-				<control type="button" id="34">
-					<description>Radio to TV Button</description>
-					<left>0</left>
-					<top>75</top>
-					<width>380</width>
-					<height>45</height>
-					<font>font12</font>
-					<visible>!IsEmpty(Window.Property(IsRadio))</visible>
-					<texturefocus border="5">button-focus2.png</texturefocus>
-					<texturenofocus border="5">button-nofocus.png</texturenofocus>
-					<align>center</align>
-					<label>19023</label>
-					<onleft>60</onleft>
-					<onright>9000</onright>
-					<onup>30</onup>
-					<ondown>7</ondown>
+					<altlabel>19023</altlabel>
+					<usealttexture>!IsEmpty(Window.Property(IsRadio))</usealttexture>
 				</control>
 			</control>
 		</control>

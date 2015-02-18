@@ -539,6 +539,11 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   return settingMap;
 }
 
+std::string CGUIDialogSettingsBase::GetSettingsLabel(CSetting *pSetting)
+{
+  return GetLocalizedString(pSetting->GetLabel());
+}
+
 void CGUIDialogSettingsBase::UpdateSettings()
 {
   for (vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
@@ -562,7 +567,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
   CGUIControl *pControl = NULL;
 
   // determine the label and any possible indentation in case of sub settings
-  string label = GetLocalizedString(pSetting->GetLabel());
+  std::string label = GetSettingsLabel(pSetting);
   int parentLevels = 0;
   CSetting *parentSetting = GetSetting(pSetting->GetParent());
   while (parentSetting != NULL)

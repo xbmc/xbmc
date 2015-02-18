@@ -7,6 +7,10 @@ PATH_CHANGE_REV_FILENAME=".last_success_revision"
 #TARBALLS ENV-VAR is only used by android scripts atm
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 
+BINARY_ADDONS_ROOT=tools/depends/target
+BINARY_ADDONS="xbmc-audioencoder-addons xbmc-pvr-addons"
+DEPLOYED_BINARY_ADDONS="-e addons"
+
 #set platform defaults
 #$XBMC_PLATFORM_DIR matches the platform subdirs!
 case $XBMC_PLATFORM_DIR in
@@ -76,6 +80,7 @@ fi
 #helper functions
 
 #hash a dir based on the git revision, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN TOOLCHAIN_X86 (for droidx86) and XBMC_DEPENDS_ROOT
+#param1 path to be hashed
 function getBuildHash ()
 {
   local checkPath
@@ -86,6 +91,7 @@ function getBuildHash ()
   echo $hashStr
 }
 
+#param1 path to be checked for changes
 function pathChanged ()
 {
   local ret
@@ -112,26 +118,14 @@ function pathChanged ()
   echo $ret
 }
 
-function rebuildDepends ()
+#param1 path to be tagged with hash
+function tagSuccessFulBuild ()
 {
-  local ret
-  ret="0"
-  # check if depends need to be rebuilt - this is done by checking last
-  # successfull build revision of depends and cmake dir
-  if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ] || [ "$(pathChanged $WORKSPACE/project/cmake)" == "1" ]
-  then
-    ret="1"
-  fi
-
-  echo $ret
-}
-
-function tagSuccessFulDependsBuild ()
-{
-  # tag last successful build of depends by marking the revisions of depends and cmake dir
-  # needs to match the checks in function rebuildDepends
-  echo "$(getBuildHash $WORKSPACE/tools/depends)" > $WORKSPACE/tools/depends/$PATH_CHANGE_REV_FILENAME
-  echo "$(getBuildHash $WORKSPACE/project/cmake)" > $WORKSPACE/project/cmake/$PATH_CHANGE_REV_FILENAME
+  local pathToTag
+  pathToTag="$1"
+  # tag last successful build with revisions of the given dir
+  # needs to match the checks in function getBuildHash
+  echo "$(getBuildHash $pathToTag)" > $pathToTag/$PATH_CHANGE_REV_FILENAME
 }
 
 function getBranchName ()

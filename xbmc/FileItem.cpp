@@ -51,7 +51,6 @@
 #include "pictures/PictureInfoTag.h"
 #include "music/Artist.h"
 #include "music/Album.h"
-#include "music/Song.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -752,7 +751,22 @@ bool CFileItem::IsPVRChannel() const
 
 bool CFileItem::IsPVRRecording() const
 {
-  if (HasPVRRecordingInfoTag()) return true; /// is this enough?
+  if (HasPVRRecordingInfoTag())
+    return true;
+  return false;
+}
+
+bool CFileItem::IsUsablePVRRecording() const
+{
+  if (m_pvrRecordingInfoTag && !m_pvrRecordingInfoTag->IsDeleted())
+    return true;
+  return false;
+}
+
+bool CFileItem::IsDeletedPVRRecording() const
+{
+  if (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsDeleted())
+    return true;
   return false;
 }
 
@@ -1179,10 +1193,15 @@ void CFileItem::FillInDefaultIcon()
       { // archive
         SetIconImage("DefaultFile.png");
       }
-      else if ( IsPVRRecording() )
+      else if ( IsUsablePVRRecording() )
       {
         // PVR recording
         SetIconImage("DefaultVideo.png");
+      }
+      else if ( IsDeletedPVRRecording() )
+      {
+        // PVR deleted recording
+        SetIconImage("DefaultVideoDeleted.png");
       }
       else if ( IsAudio() )
       {
@@ -1547,6 +1566,89 @@ bool CFileItem::IsPath(const std::string& path) const
 {
   return URIUtils::PathEquals(m_strPath, path);
 }
+
+void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
+{
+  m_cueDocument = cuePtr;
+}
+
+void CFileItem::LoadEmbeddedCue()
+{
+  CMusicInfoTag& tag = *GetMusicInfoTag();
+  if (!tag.Loaded())
+    return;
+
+  const std::string embeddedCue = tag.GetCueSheet();
+  if (!embeddedCue.empty())
+  {
+    CCueDocumentPtr cuesheet(new CCueDocument);
+    if (cuesheet->ParseTag(embeddedCue))
+    {
+      std::vector<std::string> MediaFileVec;
+      cuesheet->GetMediaFiles(MediaFileVec);
+      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+        cuesheet->UpdateMediaFile(*itMedia, GetPath());
+      SetCueDocument(cuesheet);
+    }
+  }
+}
+
+bool CFileItem::HasCueDocument() const
+{
+  return (nullptr != m_cueDocument.get());
+}
+
+bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
+{
+  if (!m_cueDocument)
+    return false;
+
+  CMusicInfoTag& tag = *GetMusicInfoTag();
+
+  VECSONGS tracks;
+  m_cueDocument->GetSongs(tracks);
+  m_cueDocument.reset();
+
+  int tracksFound = 0;
+  for (VECSONGS::iterator it = tracks.begin(); it != tracks.end(); ++it)
+  {
+    CSong& song = *it;
+    if (song.strFileName == GetPath())
+    {
+      if (tag.Loaded())
+      {
+        if (song.strAlbum.empty() && !tag.GetAlbum().empty())
+          song.strAlbum = tag.GetAlbum();
+        if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty())
+          song.albumArtist = tag.GetAlbumArtist();
+        if (song.genre.empty() && !tag.GetGenre().empty())
+          song.genre = tag.GetGenre();
+        if (song.artist.empty() && !tag.GetArtist().empty())
+          song.artist = tag.GetArtist();
+        if (tag.GetDiscNumber())
+          song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
+        if (!tag.GetCueSheet().empty())
+          song.strCueSheet = tag.GetCueSheet();
+
+        SYSTEMTIME dateTime;
+        tag.GetReleaseDate(dateTime);
+        if (dateTime.wYear)
+          song.iYear = dateTime.wYear;
+        if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
+          song.embeddedArt = tag.GetCoverArtInfo();
+      }
+
+      if (!song.iDuration && tag.GetDuration() > 0)
+      { // must be the last song
+        song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+      }
+      scannedItems.Add(CFileItemPtr(new CFileItem(song)));
+      ++tracksFound;
+    }
+  }
+  return 0 != tracksFound;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -2124,7 +2226,6 @@ void CFileItemList::FilterCueItems()
 {
   CSingleLock lock(m_lock);
   // Handle .CUE sheet files...
-  VECSONGS itemstoadd;
   vector<string> itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2133,14 +2234,11 @@ void CFileItemList::FilterCueItems()
     { // see if it's a .CUE sheet
       if (pItem->IsCUESheet())
       {
-        CCueDocument cuesheet;
-        if (cuesheet.Parse(pItem->GetPath()))
+        CCueDocumentPtr cuesheet(new CCueDocument);
+        if (cuesheet->ParseFile(pItem->GetPath()))
         {
-          VECSONGS newitems;
-          cuesheet.GetSongs(newitems);
-
           std::vector<std::string> MediaFileVec;
-          cuesheet.GetMediaFiles(MediaFileVec);
+          cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
           for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
@@ -2149,7 +2247,6 @@ void CFileItemList::FilterCueItems()
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
                                                    // as we're going to search for others here...
             bool bFoundMediaFile = CFile::Exists(strMediaFile);
-            // queue the cue sheet and the underlying media file for deletion
             if (!bFoundMediaFile)
             {
               // try file in same dir, not matching case...
@@ -2185,61 +2282,22 @@ void CFileItemList::FilterCueItems()
             }
             if (bFoundMediaFile)
             {
-              itemstodelete.push_back(pItem->GetPath());
-              itemstodelete.push_back(strMediaFile);
-              // get the additional stuff (year, genre etc.) from the underlying media files tag.
-              CMusicInfoTag tag;
-              unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
-              if (NULL != pLoader.get())
+              cuesheet->UpdateMediaFile(fileFromCue, strMediaFile);
+              // apply CUE for later processing
+              for (int j = 0; j < (int)m_items.size(); j++)
               {
-                // get id3tag
-                pLoader->Load(strMediaFile, tag);
+                CFileItemPtr pItem = m_items[j];
+                if (stricmp(pItem->GetPath().c_str(), strMediaFile.c_str()) == 0)
+                  pItem->SetCueDocument(cuesheet);
               }
-              // fill in any missing entries from underlying media file
-              for (int j = 0; j < (int)newitems.size(); j++)
-              {
-                CSong song = newitems[j];
-                // only for songs that actually match the current media file
-                if (song.strFileName == fileFromCue)
-                {
-                  // we might have a new media file from the above matching code
-                  song.strFileName = strMediaFile;
-                  if (tag.Loaded())
-                  {
-                    if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
-                    if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty()) song.albumArtist = tag.GetAlbumArtist();
-                    if (song.genre.empty() && !tag.GetGenre().empty()) song.genre = tag.GetGenre();
-                    if (song.artist.empty() && !tag.GetArtist().empty()) song.artist = tag.GetArtist();
-                    if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
-                    SYSTEMTIME dateTime;
-                    tag.GetReleaseDate(dateTime);
-                    if (dateTime.wYear) song.iYear = dateTime.wYear;
-                    if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
-                      song.embeddedArt = tag.GetCoverArtInfo();
-                  }
-                  if (!song.iDuration && tag.GetDuration() > 0)
-                  { // must be the last song
-                    song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
-                  }
-                  // add this item to the list
-                  itemstoadd.push_back(song);
-                }
-              }
-            }
-            else
-            { // remove the .cue sheet from the directory
-              itemstodelete.push_back(pItem->GetPath());
             }
           }
         }
-        else
-        { // remove the .cue sheet from the directory (can't parse it - no point listing it)
-          itemstodelete.push_back(pItem->GetPath());
-        }
+        itemstodelete.push_back(pItem->GetPath());
       }
     }
   }
-  // now delete the .CUE files and underlying media files.
+  // now delete the .CUE files.
   for (int i = 0; i < (int)itemstodelete.size(); i++)
   {
     for (int j = 0; j < (int)m_items.size(); j++)
@@ -2251,13 +2309,6 @@ void CFileItemList::FilterCueItems()
         break;
       }
     }
-  }
-  // and add the files from the .CUE sheet
-  for (int i = 0; i < (int)itemstoadd.size(); i++)
-  {
-    // now create the file item, and add to the item list.
-    CFileItemPtr pItem(new CFileItem(itemstoadd[i]));
-    m_items.push_back(pItem);
   }
 }
 

@@ -60,9 +60,14 @@
 		<value>$INFO[ListItem.VideoCodec]</value>
 	</variable>
 	<variable name="SeekLabel">
+		<value condition="Player.Playing + !Player.Seeking + !Player.DisplayAfterSeek">$LOCALIZE[31042]</value>
+		<value condition="[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek">$LOCALIZE[31043]</value>
+		<value condition="[Player.Paused + Player.Caching] + !Player.Seeking">$LOCALIZE[15107] $INFO[Player.CacheLevel]%</value>
 		<value condition="!IsEmpty(Player.SeekStepSize) + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
 		<value condition="Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]">$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
 		<value condition="!Player.DisplayAfterSeek + Player.Seeking">$LOCALIZE[31046]</value>
+		<value condition="Player.Forwarding">$LOCALIZE[31044]</value>
+		<value condition="Player.Rewinding">$LOCALIZE[31045]</value>
 	</variable>
 
 	<include name="BehindDialogFadeOut">
@@ -74,7 +79,7 @@
 			<texture>black-back.png</texture>
 			<animation effect="fade" time="400">Visible</animation>
 			<animation effect="fade" time="200">Hidden</animation>
-			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(Peripherals) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-cu-lrclyrics-main.xml) | Window.IsActive(PVRChannelManager) | Window.IsActive(MediaFilter)</visible>
+			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(Peripherals) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-cu-lrclyrics-main.xml) | Window.IsActive(MediaFilter)</visible>
 		</control>
 	</include>
 	<include name="WindowTitleCommons">

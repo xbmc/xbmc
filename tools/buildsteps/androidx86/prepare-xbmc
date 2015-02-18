@@ -9,3 +9,6 @@ then
 rm -r $WORKSPACE/addons/skin.re-touched
 fi
 git submodule update --init $WORKSPACE/addons/skin.re-touched
+
+#build binary addons before building xbmc...
+. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-binary-addons

@@ -128,6 +128,8 @@ CMMALVideo::CMMALVideo()
   m_output_busy = 0;
   m_demux_queue_length = 0;
   m_es_format = mmal_format_alloc();
+  m_preroll = true;
+  m_speed = DVD_PLAYSPEED_NORMAL;
 }
 
 CMMALVideo::~CMMALVideo()
@@ -621,12 +623,12 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
 
   error_concealment.hdr.id = MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT;
   error_concealment.hdr.size = sizeof(MMAL_PARAMETER_BOOLEAN_T);
-  error_concealment.enable = MMAL_FALSE;
+  error_concealment.enable = g_advancedSettings.m_omxDecodeStartWithValidFrame;
   status = mmal_port_parameter_set(m_dec_input, &error_concealment.hdr);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to disable error concealment on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
 
-  status = mmal_port_parameter_set_uint32(m_dec_input, MMAL_PARAMETER_EXTRA_BUFFERS, NUM_BUFFERS);
+  status = mmal_port_parameter_set_uint32(m_dec_input, MMAL_PARAMETER_EXTRA_BUFFERS, GetAllowedReferences());
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to enable extra buffers on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
 
@@ -696,6 +698,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
 
   m_drop_state = false;
   m_startframe = false;
+  m_preroll = !m_hints.stills;
+  m_speed = DVD_PLAYSPEED_NORMAL;
 
   return true;
 }
@@ -704,11 +708,11 @@ void CMMALVideo::Dispose()
 {
   // we are happy to exit, but let last shared pointer being deleted trigger the destructor
   bool done = false;
+  m_finished = true;
   Reset();
   pthread_mutex_lock(&m_output_mutex);
   if (!m_output_busy)
     done = true;
-  m_finished = true;
   pthread_mutex_unlock(&m_output_mutex);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s dts_queue(%d) ready_queue(%d) busy_queue(%d) done:%d", CLASSNAME, __func__, m_dts_queue.size(), m_output_ready.size(), m_output_busy, done);
@@ -879,7 +883,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
          bool deinterlace = m_interlace_mode != MMAL_InterlaceProgressive;
 
-         if (deinterlace_request == VS_DEINTERLACEMODE_OFF)
+         if (m_hints.stills || deinterlace_request == VS_DEINTERLACEMODE_OFF)
            deinterlace = false;
          else if (deinterlace_request == VS_DEINTERLACEMODE_FORCE)
            deinterlace = true;
@@ -904,23 +908,29 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       break;
   }
   int ret = 0;
-  if (!m_output_ready.empty())
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - got space for output: demux_queue(%d) space(%d)", CLASSNAME, __func__, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size);
-    ret |= VC_PICTURE;
-  }
   if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !m_demux_queue_length)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s -  got output picture:%d", CLASSNAME, __func__, m_output_ready.size());
+      CLog::Log(LOGDEBUG, "%s::%s - got space for output: demux_queue(%d) space(%d)", CLASSNAME, __func__, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size);
     ret |= VC_BUFFER;
+  }
+  else
+    m_preroll = false;
+
+  if (m_preroll && m_output_ready.size() >= GetAllowedReferences())
+    m_preroll = false;
+
+  if (!m_output_ready.empty() && !m_preroll)
+  {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s -  got output picture:%d", CLASSNAME, __func__, m_output_ready.size());
+    ret |= VC_PICTURE;
   }
   if (!ret)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - Nothing to do: dts_queue(%d) ready_queue(%d) busy_queue(%d) demux_queue(%d) space(%d)",
-        CLASSNAME, __func__, m_dts_queue.size(), m_output_ready.size(), m_output_busy, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size);
+      CLog::Log(LOGDEBUG, "%s::%s - Nothing to do: dts_queue(%d) ready_queue(%d) busy_queue(%d) demux_queue(%d) space(%d) preroll(%d)",
+        CLASSNAME, __func__, m_dts_queue.size(), m_output_ready.size(), m_output_busy, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size, m_preroll);
     Sleep(10); // otherwise we busy spin
   }
   return ret;
@@ -931,19 +941,21 @@ void CMMALVideo::Reset(void)
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
-  if (m_dec_input)
+  if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
-  if (m_deint_connection)
+  if (m_deint_connection && m_deint_connection->is_enabled)
     mmal_connection_disable(m_deint_connection);
-  if (m_dec_output)
+  if (m_dec_output && m_dec_output->is_enabled)
     mmal_port_disable(m_dec_output);
-  if (m_dec_input)
-    mmal_port_enable(m_dec_input, dec_input_port_cb);
-  if (m_deint_connection)
-    mmal_connection_enable(m_deint_connection);
-  if (m_dec_output)
-    mmal_port_enable(m_dec_output, dec_output_port_cb_static);
-
+  if (!m_finished)
+  {
+    if (m_dec_input)
+      mmal_port_enable(m_dec_input, dec_input_port_cb);
+    if (m_deint_connection)
+      mmal_connection_enable(m_deint_connection);
+    if (m_dec_output)
+      mmal_port_enable(m_dec_output, dec_output_port_cb_static);
+  }
   // blow all ready video frames
   bool old_drop_state = m_drop_state;
   SetDropState(true);
@@ -957,14 +969,23 @@ void CMMALVideo::Reset(void)
   if (!old_drop_state)
     SetDropState(false);
 
-  SendCodecConfigData();
+  if (!m_finished)
+    SendCodecConfigData();
 
   m_startframe = false;
   m_decoderPts = DVD_NOPTS_VALUE;
   m_droppedPics = 0;
   m_decode_frame_number = 1;
+  m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
 
+void CMMALVideo::SetSpeed(int iSpeed)
+{
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s %d->%d", CLASSNAME, __func__, m_speed, iSpeed);
+
+  m_speed = iSpeed;
+}
 
 void CMMALVideo::ReturnBuffer(CMMALVideoBuffer *buffer)
 {

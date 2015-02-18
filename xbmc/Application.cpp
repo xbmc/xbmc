@@ -299,7 +299,6 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
-  , m_seekHandler(&CSeekHandler::Get())
   , m_playerController(new CPlayerController)
 {
   m_network = NULL;
@@ -1313,6 +1312,9 @@ bool CApplication::Initialize()
 
   CAddonMgr::Get().StartServices(true);
 
+  // register action listeners
+  RegisterActionListener(&CSeekHandler::Get());
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1532,43 +1534,8 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     return false;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "audiooutput.channels")
-  {
-    // check if this is an update from Eden
-    if (oldSettingId != NULL && oldSettingNode != NULL &&
-        StringUtils::EqualsNoCase(oldSettingId, "audiooutput.channellayout"))
-    {
-      bool ret = false;
-      CSettingInt* channels = (CSettingInt*)setting;
-      if (channels->FromString(oldSettingNode->FirstChild()->ValueStr()) && channels->GetValue() < AE_CH_LAYOUT_MAX - 1)
-        ret = channels->SetValue(channels->GetValue() + 1);
-
-      // let's just reset the audiodevice settings as well
-      std::string audiodevice = CSettings::Get().GetString("audiooutput.audiodevice");
-      CAEFactory::VerifyOutputDevice(audiodevice, false);
-      ret |= CSettings::Get().SetString("audiooutput.audiodevice", audiodevice.c_str());
-
-      return ret;
-    }
-  }
-  else if (settingId == "screensaver.mode")
-  {
-    CSettingString *screensaverMode = (CSettingString*)setting;
-    // we no longer ship the built-in slideshow screensaver, replace it if it's still in use
-    if (StringUtils::EqualsNoCase(screensaverMode->GetValue(), "screensaver.xbmc.builtin.slideshow"))
-      return screensaverMode->SetValue("screensaver.xbmc.builtin.dim");
-  }
-  else if (settingId == "scrapers.musicvideosdefault")
-  {
-    CSettingAddon *musicvideoScraper = (CSettingAddon*)setting;
-    if (StringUtils::EqualsNoCase(musicvideoScraper->GetValue(), "metadata.musicvideos.last.fm"))
-    {
-      musicvideoScraper->Reset();
-      return true;
-    }
-  }
 #if defined(HAS_LIBAMCODEC)
-  else if (settingId == "videoplayer.useamcodec")
+  if (settingId == "videoplayer.useamcodec")
   {
     // Do not permit amcodec to be used on non-aml platforms.
     // The setting will be hidden but the default value is true,
@@ -1581,25 +1548,14 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  else if (settingId == "videoplayer.usemediacodec")
-  {
-    // Do not permit MediaCodec to be used Android platforms that do not have it.
-    // The setting will be hidden but the default value is true,
-    // so change it to false.
-    if (CAndroidFeatures::GetVersion() < 16)
-    {
-      CSettingBool *usemediacodec = (CSettingBool*)setting;
-      return usemediacodec->SetValue(false);
-    }
-  }
-  else if (settingId == "videoplayer.usestagefright")
+  if (settingId == "videoplayer.usestagefright")
   {
     CSettingBool *usestagefright = (CSettingBool*)setting;
     return usestagefright->SetValue(false);
   }
 #endif
 #if defined(TARGET_DARWIN_OSX)
-  else if (settingId == "audiooutput.audiodevice")
+  if (settingId == "audiooutput.audiodevice")
   {
     CSettingString *audioDevice = (CSettingString*)setting;
     // Gotham and older didn't enumerate audio devices per stream on osx
@@ -2010,7 +1966,7 @@ void CApplication::Render()
 
   {
     // Less fps in DPMS
-    bool lowfps = m_dpmsIsActive || g_Windowing.EnableFrameLimiter();
+    bool lowfps = g_Windowing.EnableFrameLimiter();
 
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
@@ -2680,13 +2636,6 @@ bool CApplication::OnAction(const CAction &action)
     ShowVolumeBar(&action);
     return true;
   }
-  // Check for global seek control
-  if (m_pPlayer->IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
-  {
-    if (!m_pPlayer->CanSeek()) return false;
-    m_seekHandler->Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat(), true);
-    return true;
-  }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
     CGUIControlProfiler::Instance().SetOutputFile(CSpecialProtocol::TranslatePath("special://home/guiprofiler.xml"));
@@ -2746,7 +2695,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-      m_seekHandler->Process();
+      CSeekHandler::Get().Process();
     }
   }
   if (processGUI && m_renderGUI)
@@ -2942,6 +2891,9 @@ void CApplication::Stop(int exitCode)
 
     // Stop services before unloading Python
     CAddonMgr::Get().StopServices(false);
+
+    // unregister action listeners
+    UnregisterActionListener(&CSeekHandler::Get());
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
@@ -3920,6 +3872,7 @@ bool CApplication::ToggleDPMS(bool manual)
     {
       m_dpmsIsActive = false;
       m_dpmsIsManual = false;
+      SetRenderGUI(true);
       CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnDPMSDeactivated");
       return m_dpms->DisablePowerSaving();
     }
@@ -3929,6 +3882,7 @@ bool CApplication::ToggleDPMS(bool manual)
       {
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
+        SetRenderGUI(false);
         CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnDPMSActivated");
         return true;
       }
@@ -4174,7 +4128,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // reset the seek handler
-      m_seekHandler->Reset();
+      CSeekHandler::Get().Reset();
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
 
       // Update our infoManager with the new details etc.
@@ -4251,7 +4205,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Don't queue if next media type is different from current one
       if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
-          || (!file.IsAudio() && m_pPlayer->IsPlayingAudio()))
+          || ((!file.IsAudio() || file.IsVideo()) && m_pPlayer->IsPlayingAudio()))
       {
         m_pPlayer->OnNothingToQueueNotify();
         return true;

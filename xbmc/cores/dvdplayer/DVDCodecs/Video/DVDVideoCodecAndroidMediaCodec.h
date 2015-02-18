@@ -132,7 +132,7 @@ protected:
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
-  std::queue<amc_demux> m_demux;
+  amc_demux m_demux_pkt;
   std::vector<CJNIByteBuffer> m_input;
   std::vector<CJNIByteBuffer> m_output;
   std::vector<CDVDMediaCodecInfo*> m_inflight;

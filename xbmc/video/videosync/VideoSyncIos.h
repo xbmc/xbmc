@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 20015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,23 +19,34 @@
  *
  */
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
 #include "VideoSync.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncCocoa : public CVideoSync, IDispResource
+class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
+  CVideoSyncIos() : m_LastVBlankTime(0), m_abort(false){}
+  
+  // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();
   virtual float GetFps();
-  void VblankHandler(int64_t nowtime, double fps);
+  
+  // IDispResource interface
   virtual void OnResetDevice();
+
+  // used in the displaylink callback
+  void IosVblankHandler();
+  
 private:
-  void UpdateFPS(double fps);
+  // CVideoSyncDarwin interface
+  virtual bool InitDisplayLink();
+  virtual void DeinitDisplayLink();
+
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
 };
 
-#endif
+#endif// TARGET_DARWIN_IOS

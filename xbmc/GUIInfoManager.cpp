@@ -660,6 +660,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "backendchannels",          PVR_BACKEND_CHANNELS },
                                   { "backendtimers",            PVR_BACKEND_TIMERS },
                                   { "backendrecordings",        PVR_BACKEND_RECORDINGS },
+                                  { "backenddeletedrecordings", PVR_BACKEND_DELETED_RECORDINGS },
                                   { "backendnumber",            PVR_BACKEND_NUMBER },
                                   { "hasepg",                   PVR_HAS_EPG },
                                   { "hastxt",                   PVR_HAS_TXT },
@@ -1421,6 +1422,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_BACKEND_CHANNELS:
   case PVR_BACKEND_TIMERS:
   case PVR_BACKEND_RECORDINGS:
+  case PVR_BACKEND_DELETED_RECORDINGS:
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
@@ -2122,7 +2124,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
             value = (int)(g_application.GetCachePercentage());
             break;
           case PLAYER_SEEKBAR:
-            value = (int)g_application.GetSeekHandler()->GetPercent();
+            value = (int)CSeekHandler::Get().GetPercent();
             break;
           case PLAYER_CACHELEVEL:
             value = (int)(g_application.m_pPlayer->GetCacheLevel());
@@ -4035,7 +4037,7 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 {
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  float time = GetTotalPlayTime() * g_application.GetSeekHandler()->GetPercent() * 0.01f;
+  float time = GetTotalPlayTime() * CSeekHandler::Get().GetPercent() * 0.01f;
   return StringUtils::SecondsToTimeString((int)time, format);
 }
 

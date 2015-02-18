@@ -618,12 +618,18 @@ void OMXPlayerVideo::SetSpeed(int speed)
 
 std::string OMXPlayerVideo::GetPlayerInfo()
 {
+  double match = 0.0f, phase = 0.0f, pll = 0.0f;
   std::ostringstream s;
   s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
   s << ", vq:"   << setw(2) << min(99,GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
-
+  if (m_omxVideo.GetPlayerInfo(match, phase, pll))
+  {
+     s << ", match:" << fixed << setprecision(2) << match;
+     s << ", phase:" << fixed << setprecision(2) << phase;
+     s << ", pll:"   << fixed << setprecision(5) << pll;
+  }
   return s.str();
 }
 

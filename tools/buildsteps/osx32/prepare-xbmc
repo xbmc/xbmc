@@ -2,4 +2,5 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=osx32
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-#nothing on osx
+#build binary addons before building xbmc...
+. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-binary-addons

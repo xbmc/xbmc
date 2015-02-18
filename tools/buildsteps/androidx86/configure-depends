@@ -7,7 +7,7 @@ NDK_ARCH=x86
 CURRENT_NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
 CURRENT_TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$SDK_VERSION-r$NDK_VERSION
 
-if [ "$(rebuildDepends)" == "1" ]
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
     --with-tarballs=$TARBALLS \

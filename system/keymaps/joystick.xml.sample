@@ -178,8 +178,8 @@
       <axis id="3" limit="-1">AnalogFastForward</axis>
       <hat id="1" position="up">SkipNext</hat>
       <hat id="1" position="down">SkipPrevious</hat>
-      <hat id="1" position="left">PreviousPreset</hat>
-      <hat id="1" position="right">NextPreset</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
     </joystick>
   </Visualisation>
   <MusicOSD>

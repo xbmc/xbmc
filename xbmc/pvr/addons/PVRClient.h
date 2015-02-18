@@ -157,6 +157,34 @@ namespace PVR
     PVR_ERROR StartChannelScan(void);
 
     /*!
+     * @brief Request the client to open dialog about given channel to add
+     * @param channel The channel to add
+     * @return PVR_ERROR_NO_ERROR if the add has been fetched successfully.
+     */
+    PVR_ERROR OpenDialogChannelAdd(const CPVRChannel &channel);
+
+    /*!
+     * @brief Request the client to open dialog about given channel settings
+     * @param channel The channel to edit
+     * @return PVR_ERROR_NO_ERROR if the edit has been fetched successfully.
+     */
+    PVR_ERROR OpenDialogChannelSettings(const CPVRChannel &channel);
+
+    /*!
+     * @brief Request the client to delete given channel
+     * @param channel The channel to delete
+     * @return PVR_ERROR_NO_ERROR if the delete has been fetched successfully.
+     */
+    PVR_ERROR DeleteChannel(const CPVRChannel &channel);
+
+    /*!
+     * @brief Request the client to rename given channel
+     * @param channel The channel to rename
+     * @return PVR_ERROR_NO_ERROR if the rename has been fetched successfully.
+     */
+    PVR_ERROR RenameChannel(const CPVRChannel &channel);
+
+    /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */
     bool HaveMenuHooks(PVR_MENUHOOK_CAT cat) const;
@@ -233,16 +261,18 @@ namespace PVR
     //@{
 
     /*!
-     * @return The total amount of channels on the server or -1 on error.
+     * @param deleted if set return deleted recording
+     * @return The total amount of recordingd on the server or -1 on error.
      */
-    int GetRecordingsAmount(void);
+    int GetRecordingsAmount(bool deleted);
 
     /*!
      * @brief Request the list of all recordings from the backend.
      * @param results The container to add the recordings to.
+     * @param deleted if set return deleted recording
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *results);
+    PVR_ERROR GetRecordings(CPVRRecordings *results, bool deleted);
 
     /*!
      * @brief Delete a recording on the backend.
@@ -250,6 +280,19 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the recording has been deleted successfully.
      */
     PVR_ERROR DeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Undelete a recording on the backend.
+     * @param recording The recording to undelete.
+     * @return PVR_ERROR_NO_ERROR if the recording has been undeleted successfully.
+     */
+    PVR_ERROR UndeleteRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Delete all recordings permanent which in the deleted folder on the backend.
+     * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+     */
+    PVR_ERROR DeleteAllRecordingsFromTrash();
 
     /*!
      * @brief Rename a recording on the backend.
@@ -475,10 +518,12 @@ namespace PVR
 
     bool SupportsChannelGroups(void) const;
     bool SupportsChannelScan(void) const;
+    bool SupportsChannelSettings(void) const;
     bool SupportsEPG(void) const;
     bool SupportsLastPlayedPosition(void) const;
     bool SupportsRadio(void) const;
     bool SupportsRecordings(void) const;
+    bool SupportsRecordingsUndelete(void) const;
     bool SupportsRecordingFolders(void) const;
     bool SupportsRecordingPlayCount(void) const;
     bool SupportsRecordingEdl(void) const;

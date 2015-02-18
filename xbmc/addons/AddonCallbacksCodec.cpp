@@ -81,6 +81,11 @@ private:
     tmp.codec_type = XBMC_CODEC_TYPE_SUBTITLE;
     tmp.codec_id   = AV_CODEC_ID_DVB_TELETEXT;
     m_lookup.insert(std::make_pair("TELETEXT", tmp));
+
+    // rds is not returned by av_codec_next. we got our own decoder
+    tmp.codec_type = XBMC_CODEC_TYPE_RDS;
+    tmp.codec_id   = AV_CODEC_ID_NONE;
+    m_lookup.insert(std::make_pair("RDS", tmp));
   }
 
   std::map<std::string, xbmc_codec_t> m_lookup;

@@ -112,6 +112,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_strComment = tag.m_strComment;
   m_strLyrics = tag.m_strLyrics;
+  m_cuesheet = tag.m_cuesheet;
   m_lastPlayed = tag.m_lastPlayed;
   m_bCompilation = tag.m_bCompilation;
   m_iDuration = tag.m_iDuration;
@@ -236,6 +237,11 @@ const std::string &CMusicInfoTag::GetComment() const
 const std::string &CMusicInfoTag::GetLyrics() const
 {
   return m_strLyrics;
+}
+
+const std::string &CMusicInfoTag::GetCueSheet() const
+{
+  return m_cuesheet;
 }
 
 char CMusicInfoTag::GetRating() const
@@ -392,6 +398,11 @@ void CMusicInfoTag::SetDuration(int iSec)
 void CMusicInfoTag::SetComment(const std::string& comment)
 {
   m_strComment = comment;
+}
+
+void CMusicInfoTag::SetCueSheet(const std::string& cueSheet)
+{
+  m_cuesheet = cueSheet;
 }
 
 void CMusicInfoTag::SetLyrics(const std::string& lyrics)
@@ -556,6 +567,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbumArtist(song.albumArtist);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetComment(song.strComment);
+  SetCueSheet(song.strCueSheet);
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
@@ -663,6 +675,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_bCompilation;
     ar << m_listeners;
     ar << m_coverArt;
+    ar << m_cuesheet;
   }
   else
   {
@@ -692,6 +705,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_bCompilation;
     ar >> m_listeners;
     ar >> m_coverArt;
+    ar >> m_cuesheet;
   }
 }
 
@@ -714,6 +728,7 @@ void CMusicInfoTag::Clear()
   m_lastPlayed.Reset();
   m_bCompilation = false;
   m_strComment.clear();
+  m_cuesheet.clear();
   m_rating = '0';
   m_iDbId = -1;
   m_type.clear();

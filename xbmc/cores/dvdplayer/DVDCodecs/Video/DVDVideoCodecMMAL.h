@@ -42,6 +42,7 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void);
   virtual bool GetCodecStats(double &pts, int &droppedPics);
+  virtual void SetSpeed(int iSpeed);
 
 protected:
   MMALVideoPtr m_decoder;

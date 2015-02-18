@@ -297,7 +297,7 @@ char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 
 void CAddonCallbacksAddon::FreeString(const void* addonData, char* str)
 {
-  delete[] str;
+  free(str);
 }
 
 void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileName, unsigned int flags)

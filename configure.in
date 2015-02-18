@@ -843,15 +843,20 @@ fi
 
 use_sse4=no
 if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
-    SAVE_CFLAGS="$CFLAGS"
-    CFLAGS="-msse4.1"
-    AC_COMPILE_IFELSE(
-      [AC_LANG_SOURCE([int foo;])],
-      [ use_sse4=yes
-        USE_SSE4=1],
-      [ use_sse=no
-        USE_SSE4=0])
-    CFLAGS="$SAVE_CFLAGS"
+  SAVE_CFLAGS="$CFLAGS"
+  CFLAGS="-msse4.1"
+  AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([int foo;])],
+    [ use_sse4=yes
+      USE_SSE4=1],
+    [ use_sse=no
+      USE_SSE4=0])
+  CFLAGS="$SAVE_CFLAGS"
+
+  if test "$use_sse4" = "yes"; then
+    CFLAGS="${CFLAGS} -msse4.1"
+    CXXFLAGS="${CXXFLAGS} -msse4.1"
+  fi
 fi
 
 # Checks for library functions.
@@ -2854,6 +2859,7 @@ XB_CONFIG_MODULE([lib/gtest], [
     CC="$CC" \
     CXX="$CXX" \
     CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \

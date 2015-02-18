@@ -50,30 +50,8 @@ namespace XBMCAddon
       if (id.empty())
         throw AddonException("No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
 
-      // if we still fail we MAY be able to recover.
       if (!ADDON::CAddonMgr::Get().GetAddon(id.c_str(), pAddon))
-      {
-        // we need to check the version prior to trying a bw compatibility trick
-        ADDON::AddonVersion version(getAddonVersion());
-        ADDON::AddonVersion allowable("1.0");
-
-        if (version <= allowable)
-        {
-          // try the default ...
-          id = getDefaultId();
-
-          if (id.empty() || !ADDON::CAddonMgr::Get().GetAddon(id.c_str(), pAddon))
-            throw AddonException("Could not get AddonPtr!");
-          else
-            CLog::Log(LOGERROR,"Use of deprecated functionality. Please to not assume that \"os.getcwd\" will return the script directory.");
-        }
-        else
-        {
-          throw AddonException("Could not get AddonPtr given a script id of %s."
-                               "If you are trying to use 'os.getcwd' to set the path, you cannot do that in a version %s plugin.", 
-                               id.c_str(), version.asString().c_str());
-        }
-      }
+        throw AddonException("Unknown addon id '%s'.", id.c_str());
 
       CAddonMgr::Get().AddToUpdateableAddons(pAddon);
     }

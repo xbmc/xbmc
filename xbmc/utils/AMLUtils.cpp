@@ -77,33 +77,71 @@ bool aml_wired_present()
   return has_wired == 1;
 }
 
-void aml_permissions()
-{
+bool aml_permissions()
+{  
   if (!aml_present())
-    return;
-  
-  // most all aml devices are already rooted.
-  int ret = system("ls /system/xbin/su");
-  if (ret != 0)
+    return false;
+
+  static int permissions_ok = -1;
+  if (permissions_ok == -1)
   {
-    CLog::Log(LOGWARNING, "aml_permissions: missing su, playback might fail");
+    permissions_ok = 1;
+
+    if (!SysfsUtils::HasRW("/dev/amvideo"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /dev/amvideo");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/dev/amstream_mpts"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /dev/amstream*");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/sys/class/video/axis"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/video/axis");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/sys/class/video/screen_mode"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/video/screen_mode");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/sys/class/video/disable_video"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/video/disable_video");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/sys/class/tsync/pts_pcrscr"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/tsync/pts_pcrscr");
+      permissions_ok = 0;
+    }
+    if (!SysfsUtils::HasRW("/sys/class/audiodsp/digital_raw"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/audiodsp/digital_raw");
+    }
+    if (!SysfsUtils::HasRW("/sys/class/ppmgr/ppmgr_3d_mode"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/ppmgr/ppmgr_3d_mode");
+    }
+#ifndef TARGET_ANDROID
+    if (!SysfsUtils::HasRW("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+    }
+    if (!SysfsUtils::HasRW("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+    }
+    if (!SysfsUtils::HasRW("/sys/devices/cpu/cpu/cpu0/cpufreq/scaling_governor"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/devices/cpu/cpu/cpu0/cpufreq/scaling_governor");
+    }
+#endif
   }
-  else
-  {
-    // certain aml devices have 664 permission, we need 666.
-    system("su -c chmod 666 /dev/amvideo");
-    system("su -c chmod 666 /dev/amstream*");
-    system("su -c chmod 666 /sys/class/video/axis");
-    system("su -c chmod 666 /sys/class/video/screen_mode");
-    system("su -c chmod 666 /sys/class/video/disable_video");
-    system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
-    system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
-    system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-    CLog::Log(LOGINFO, "aml_permissions: permissions changed");
-  }
+
+  return permissions_ok == 1;
 }
 
 bool aml_support_hevc()

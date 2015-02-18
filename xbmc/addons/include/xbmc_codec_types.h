@@ -34,6 +34,7 @@ typedef enum
     XBMC_CODEC_TYPE_AUDIO,
     XBMC_CODEC_TYPE_DATA,
     XBMC_CODEC_TYPE_SUBTITLE,
+    XBMC_CODEC_TYPE_RDS,
     XBMC_CODEC_TYPE_NB
 } xbmc_codec_type_t;
 

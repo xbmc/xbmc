@@ -37,6 +37,12 @@ int CHTTPJsonRpcHandler::HandleRequest()
 {
   CHTTPClient client;
   bool isRequest = false;
+  std::string jsonpCallback;
+
+  // get all query arguments
+  std::map<std::string, std::string> arguments;
+  CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments);
+
   if (m_request.method == POST)
   {
     std::string contentType = CWebServer::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
@@ -54,26 +60,44 @@ int CHTTPJsonRpcHandler::HandleRequest()
   }
   else if (m_request.method == GET)
   {
-    std::map<std::string, std::string> arguments;
-    if (CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
+    std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
+    if (argument != arguments.end() && !argument->second.empty())
     {
-      std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
-      if (argument != arguments.end() && !argument->second.empty())
-      {
-        m_requestData = argument->second;
-        isRequest = true;
-      }
+      m_requestData = argument->second;
+      isRequest = true;
     }
   }
 
-  if (isRequest)
-    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
+  std::map<std::string, std::string>::const_iterator argument = arguments.find("jsonp");
+  if (argument != arguments.end() && !argument->second.empty())
+    jsonpCallback = argument->second;
   else
+  {
+    argument = arguments.find("callback");
+    if (argument != arguments.end() && !argument->second.empty())
+      jsonpCallback = argument->second;
+  }
+
+  if (isRequest)
+  {
+    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
+
+    if (!jsonpCallback.empty())
+      m_responseData = jsonpCallback + "(" + m_responseData + ");";
+  }
+  else if (jsonpCallback.empty())
   {
     // get the whole output of JSONRPC.Introspect
     CVariant result;
     JSONRPC::CJSONServiceDescription::Print(result, m_request.webserver, &client);
     m_responseData = CJSONVariantWriter::Write(result, false);
+  }
+  else
+  {
+    m_response.type = HTTPError;
+    m_response.status = MHD_HTTP_BAD_REQUEST;
+
+    return MHD_YES;
   }
 
   m_requestData.clear();

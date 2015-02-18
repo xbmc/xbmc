@@ -81,6 +81,158 @@ DLLEXPORT int GUI_get_video_resolution(void *hdl, void *cb)
   return ((CB_GUILib*)cb)->GetVideoResolution();
 }
 
+/*! @name GUI Keyboard functions */
+//@{
+DLLEXPORT bool GUI_dialog_keyboard_show_and_get_input_with_head(void *hdl, void *cb, char &aTextString, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, bool hiddenInput, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndGetInputWithHead(aTextString, iMaxStringSize, strHeading, allowEmptyResult, hiddenInput, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_get_input(void *hdl, void *cb, char &aTextString, unsigned int iMaxStringSize, bool allowEmptyResult, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndGetInput(aTextString, iMaxStringSize, allowEmptyResult, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_get_new_password_with_head(void *hdl, void *cb, char &newPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndGetNewPasswordWithHead(newPassword, iMaxStringSize, strHeading, allowEmptyResult, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_get_new_password(void *hdl, void *cb, char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndGetNewPassword(strNewPassword, iMaxStringSize, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_verify_new_password_with_head(void *hdl, void *cb, char &strNewPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndVerifyNewPasswordWithHead(strNewPassword, iMaxStringSize, strHeading, allowEmptyResult, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_verify_new_password(void *hdl, void *cb, char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndVerifyNewPassword(strNewPassword, iMaxStringSize, autoCloseMs);
+}
+
+DLLEXPORT int GUI_dialog_keyboard_show_and_verify_password(void *hdl, void *cb, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndVerifyPassword(strPassword, iMaxStringSize, strHeading, iRetries, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_show_and_get_filter(void *hdl, void *cb, char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_ShowAndGetFilter(aTextString, iMaxStringSize, searching, autoCloseMs);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_send_text_to_active_keyboard(void *hdl, void *cb, const char *aTextString, bool closeKeyboard)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_SendTextToActiveKeyboard(aTextString, closeKeyboard);
+}
+
+DLLEXPORT bool GUI_dialog_keyboard_is_activated(void *hdl, void *cb)
+{
+  return ((CB_GUILib*)cb)->Dialog_Keyboard_isKeyboardActivated();
+}
+//@}
+
+/*! @name GUI Numeric functions */
+//@{
+DLLEXPORT bool GUI_dialog_numeric_show_and_verify_new_password(void *hdl, void *cb, char &strNewPassword, unsigned int iMaxStringSize)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndVerifyNewPassword(strNewPassword, iMaxStringSize);
+}
+
+DLLEXPORT int GUI_dialog_numeric_show_and_verify_password(void *hdl, void *cb, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndVerifyPassword(strPassword, iMaxStringSize, strHeading, iRetries);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_verify_input(void *hdl, void *cb, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, bool bGetUserInput)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndVerifyInput(strPassword, iMaxStringSize, strHeading, bGetUserInput);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_get_time(void *hdl, void *cb, tm &time, const char *strHeading)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndGetTime(time, strHeading);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_get_date(void *hdl, void *cb, tm &date, const char *strHeading)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndGetDate(date, strHeading);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_get_ipaddress(void *hdl, void *cb, char &IPAddress, unsigned int iMaxStringSize, const char *strHeading)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndGetIPAddress(IPAddress, iMaxStringSize, strHeading);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_get_number(void *hdl, void *cb, char &strInput, unsigned int iMaxStringSize, const char *strHeading, unsigned int iAutoCloseTimeoutMs)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndGetNumber(strInput, iMaxStringSize, strHeading, iAutoCloseTimeoutMs);
+}
+
+DLLEXPORT bool GUI_dialog_numeric_show_and_get_seconds(void *hdl, void *cb, char &timeString, unsigned int iMaxStringSize, const char *strHeading)
+{
+  return ((CB_GUILib*)cb)->Dialog_Numeric_ShowAndGetSeconds(timeString, iMaxStringSize, strHeading);
+}
+//@}
+
+/*! @name GUI File browser functions */
+//@{
+DLLEXPORT bool GUI_dialog_filebrowser_show_and_get_file(void *hdl, void *cb, const char *directory, const char *mask, const char *heading, char &path, unsigned int iMaxStringSize, bool useThumbs = false, bool useFileDirectories = false, bool singleList = false)
+{
+  return ((CB_GUILib*)cb)->Dialog_FileBrowser_ShowAndGetFile(directory, mask, heading, path, iMaxStringSize, useThumbs, useFileDirectories, singleList);
+}
+//@}
+
+/*! @name GUI OK Dialog functions */
+//@{
+DLLEXPORT void GUI_dialog_ok_show_and_get_input_single_text(void *hdl, void *cb, const char *heading, const char *text)
+{
+  return ((CB_GUILib*)cb)->Dialog_OK_ShowAndGetInputSingleText(heading, text);
+}
+
+DLLEXPORT void GUI_dialog_ok_show_and_get_input_line_text(void *hdl, void *cb, const char *heading, const char *line0, const char *line1, const char *line2)
+{
+  return ((CB_GUILib*)cb)->Dialog_OK_ShowAndGetInputLineText(heading, line0, line1, line2);
+}
+//@}
+
+/*! @name GUI OK Dialog functions */
+//@{
+DLLEXPORT bool GUI_dialog_yesno_show_and_get_input_linetext(void *hdl, void *cb, const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel)
+{
+  return ((CB_GUILib*)cb)->Dialog_YesNo_ShowAndGetInputLineText(heading, line0, line1, line2, noLabel, yesLabel);
+}
+
+DLLEXPORT bool GUI_dialog_yesno_show_and_get_input_singletext(void *hdl, void *cb, const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel)
+{
+  return ((CB_GUILib*)cb)->Dialog_YesNo_ShowAndGetInputSingleText(heading, text, bCanceled, noLabel, yesLabel);
+}
+
+DLLEXPORT bool GUI_dialog_yesno_show_and_get_input_linebuttontext(void *hdl, void *cb, const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel)
+{
+  return ((CB_GUILib*)cb)->Dialog_YesNo_ShowAndGetInputLineButtonText(heading, line0, line1, line2, bCanceled, noLabel, yesLabel);
+}
+//@}
+
+/*! @name GUI Text viewer Dialog */
+//@{
+DLLEXPORT void GUI_dialog_text_viewer(void *hdl, void *cb, const char *heading, const char *text)
+{
+  return ((CB_GUILib*)cb)->Dialog_TextViewer(heading, text);
+}
+//@}
+
+/*! @name GUI select Dialog */
+//@{
+DLLEXPORT int GUI_dialog_select(void *hdl, void *cb, const char *heading, const char *entries[], unsigned int size, int selected)
+{
+  return ((CB_GUILib*)cb)->Dialog_Select(heading, entries, size, selected);
+}
+//@}
+
+
 DLLEXPORT CAddonGUIWindow* GUI_Window_create(void *hdl, void *cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
 {
   return new CAddonGUIWindow(hdl, cb, xmlFilename, defaultSkin, forceFallback, asDialog);
@@ -114,7 +266,6 @@ DLLEXPORT bool GUI_Window_OnAction(GUIHANDLE handle, int actionId)
   CAddonGUIWindow *window = (CAddonGUIWindow*) handle;
   return window->OnAction(actionId);
 }
-
 
 CAddonGUIWindow::CAddonGUIWindow(void *hdl, void *cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
  : m_Handle(hdl)
@@ -444,7 +595,7 @@ void CAddonGUIProgressControl::SetPercentage(float fPercent)
 float CAddonGUIProgressControl::GetPercentage() const
 {
   if (!m_ProgressHandle)
-    return 0.0;
+    return 0.0f;
 
   return ((CB_GUILib*)m_cb)->Control_Progress_GetPercentage(((AddonCB*)m_Handle)->addonData, m_ProgressHandle);
 }
@@ -469,6 +620,214 @@ string CAddonGUIProgressControl::GetDescription() const
     return "";
 
   return ((CB_GUILib*)m_cb)->Control_Progress_GetDescription(((AddonCB*)m_Handle)->addonData, m_ProgressHandle);
+}
+
+
+///-------------------------------------
+/// cGUISliderControl
+
+DLLEXPORT CAddonGUISliderControl* GUI_control_get_slider(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+{
+  return new CAddonGUISliderControl(hdl, cb, window, controlId);
+}
+
+DLLEXPORT void GUI_control_release_slider(CAddonGUISliderControl* p)
+{
+  delete p;
+}
+
+CAddonGUISliderControl::CAddonGUISliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+ : m_Window(window)
+ , m_ControlId(controlId)
+ , m_Handle(hdl)
+ , m_cb(cb)
+{
+  m_SliderHandle = ((CB_GUILib*)m_cb)->Window_GetControl_Slider(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
+}
+
+void CAddonGUISliderControl::SetVisible(bool yesNo)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetVisible(((AddonCB*)m_Handle)->addonData, m_SliderHandle, yesNo);
+}
+
+string CAddonGUISliderControl::GetDescription() const
+{
+  if (!m_SliderHandle)
+    return "";
+
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetDescription(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetIntRange(int iStart, int iEnd)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntRange(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iStart, iEnd);
+}
+
+void CAddonGUISliderControl::SetIntValue(int iValue)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iValue);
+}
+
+int CAddonGUISliderControl::GetIntValue() const
+{
+  if (!m_SliderHandle)
+    return 0;
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetIntValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetIntInterval(int iInterval)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetIntInterval(((AddonCB*)m_Handle)->addonData, m_SliderHandle, iInterval);
+}
+
+void CAddonGUISliderControl::SetPercentage(float fPercent)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetPercentage(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fPercent);
+}
+
+float CAddonGUISliderControl::GetPercentage() const
+{
+  if (!m_SliderHandle)
+    return 0.0f;
+
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetPercentage(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetFloatRange(float fStart, float fEnd)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatRange(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fStart, fEnd);
+}
+
+void CAddonGUISliderControl::SetFloatValue(float fValue)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fValue);
+}
+
+float CAddonGUISliderControl::GetFloatValue() const
+{
+  if (!m_SliderHandle)
+    return 0.0f;
+  return ((CB_GUILib*)m_cb)->Control_Slider_GetFloatValue(((AddonCB*)m_Handle)->addonData, m_SliderHandle);
+}
+
+void CAddonGUISliderControl::SetFloatInterval(float fInterval)
+{
+  if (m_SliderHandle)
+    ((CB_GUILib*)m_cb)->Control_Slider_SetFloatInterval(((AddonCB*)m_Handle)->addonData, m_SliderHandle, fInterval);
+}
+
+
+///-------------------------------------
+/// cGUISettingsSliderControl
+
+DLLEXPORT CAddonGUISettingsSliderControl* GUI_control_get_settings_slider(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+{
+  return new CAddonGUISettingsSliderControl(hdl, cb, window, controlId);
+}
+
+DLLEXPORT void GUI_control_release_settings_slider(CAddonGUISettingsSliderControl* p)
+{
+  delete p;
+}
+
+CAddonGUISettingsSliderControl::CAddonGUISettingsSliderControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+ : m_Window(window)
+ , m_ControlId(controlId)
+ , m_Handle(hdl)
+ , m_cb(cb)
+{
+  m_SettingsSliderHandle = ((CB_GUILib*)m_cb)->Window_GetControl_SettingsSlider(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
+}
+
+void CAddonGUISettingsSliderControl::SetVisible(bool yesNo)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetVisible(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, yesNo);
+}
+
+void CAddonGUISettingsSliderControl::SetText(const char *label)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetText(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, label);
+}
+
+string CAddonGUISettingsSliderControl::GetDescription() const
+{
+  if (!m_SettingsSliderHandle)
+    return "";
+
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetDescription(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetIntRange(int iStart, int iEnd)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntRange(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iStart, iEnd);
+}
+
+void CAddonGUISettingsSliderControl::SetIntValue(int iValue)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iValue);
+}
+
+int CAddonGUISettingsSliderControl::GetIntValue() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0;
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetIntValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetIntInterval(int iInterval)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetIntInterval(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, iInterval);
+}
+
+void CAddonGUISettingsSliderControl::SetPercentage(float fPercent)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetPercentage(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fPercent);
+}
+
+float CAddonGUISettingsSliderControl::GetPercentage() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0.0f;
+
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetPercentage(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatRange(float fStart, float fEnd)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatRange(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fStart, fEnd);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatValue(float fValue)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fValue);
+}
+
+float CAddonGUISettingsSliderControl::GetFloatValue() const
+{
+  if (!m_SettingsSliderHandle)
+    return 0.0f;
+  return ((CB_GUILib*)m_cb)->Control_SettingsSlider_GetFloatValue(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle);
+}
+
+void CAddonGUISettingsSliderControl::SetFloatInterval(float fInterval)
+{
+  if (m_SettingsSliderHandle)
+    ((CB_GUILib*)m_cb)->Control_SettingsSlider_SetFloatInterval(((AddonCB*)m_Handle)->addonData, m_SettingsSliderHandle, fInterval);
 }
 
 

@@ -22,6 +22,14 @@
       <swipe direction="left" pointers="2">SmallStepBack</swipe>
     </touch>
   </FullScreenVideo>
+  <Visualisation>
+    <touch>
+      <swipe direction="left">StepBack</swipe>
+      <swipe direction="right">StepForward</swipe>
+      <swipe direction="up">SkipNext</swipe>
+      <swipe direction="down">SkipPrevious</swipe>
+    </touch>
+  </Visualisation>
   <SlideShow>
     <touch>
       <zoom>ZoomGesture</zoom>
