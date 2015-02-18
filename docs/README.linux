@@ -98,9 +98,10 @@ Tip: By adding -j<number> to the make command, you describe how many
 
     $ make -j2
 
-Note: From v14 with commit 4090a5f a new API for binary audio encoder addons is available, if you need to compile them do:
+Note: From v14 with commit 4090a5f a new API for binary audio encoder and pvr addons is available, if you need to compile them do:
     
-    $ make -C tools/depends/target/xbmc-audioencoder-addons PREFIX=/<system prefix you added on step 4.1
+    $ make -C tools/depends/target/xbmc-audioencoder-addons PREFIX=/<system prefix you added on step 4.1>
+    $ make -C tools/depends/target/xbmc-pvr-addons PREFIX=/<system prefix you added on step 4.1>
 
 .3  $ make install
 
