@@ -101,7 +101,19 @@ protected:
   virtual void SetupView();
   virtual std::set<std::string> CreateSettings();
   virtual void UpdateSettings();
-  
+
+  /*!
+    \brief Get the name for the setting entry
+
+    Used as virtual to allow related settings dialog to give a std::string name of the setting.
+    If not used on own dialog class it handle the string from int CSetting::GetLabel(),
+    This must also be used if on related dialog no special entry is wanted.
+
+    \param pSetting Base settings class which need the name
+    \return Name used on settings dialog
+   */
+  virtual std::string GetSettingsLabel(CSetting *pSetting);
+
   virtual CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
   
