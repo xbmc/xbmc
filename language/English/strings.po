@@ -11322,7 +11322,10 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr ""
 
-#empty string with id 21416
+#: system/settings/settings.xml
+msgctxt "#21416"
+msgid "Jump to first unwatched TV show season/episode"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21417"
@@ -11545,7 +11548,11 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr ""
 
-#empty string with id 21466
+#. Description of setting "Videos -> Library -> Jump to first unwatched TV show season/episode" with label #21416
+#: system/settings/settings.xml
+msgctxt "#21466"
+msgid "When entering a TV show season or episode view automatically jump to the first unwatched season or episode."
+msgstr ""
 
 #. Filter (media data) from float value to float value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
