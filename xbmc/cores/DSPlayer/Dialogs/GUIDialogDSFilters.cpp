@@ -77,11 +77,30 @@ CGUIDialogDSFilters* CGUIDialogDSFilters::Get()
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSFilters());
 }
 
+void CGUIDialogDSFilters::OnInitWindow()
+{
+  CGUIDialogSettingsManualBase::OnInitWindow();
+  isEdited = false;
+}
+
 void CGUIDialogDSFilters::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
   ShowDSFiltersList();
+}
 
+bool CGUIDialogDSFilters::OnBack(int actionID)
+{
+  if (isEdited)
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
+    {
+      CSetting *setting = GetSetting(SETTING_FILTER_SAVE);
+      OnSettingAction(setting);
+    }
+  }
+
+  return CGUIDialogSettingsManualBase::OnBack(actionID);
 }
 
 void CGUIDialogDSFilters::Save()
@@ -264,6 +283,8 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
+  isEdited = true;
+
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId(); 
 
@@ -282,7 +303,15 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
       if (settingId == "dsfilters.systemfilter")
       {
         (*it)->strFilterValue = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+
+        CStdString strOSDName = GetFilterName((*it)->strFilterValue);
+        CStdString strFilterName = strOSDName;
+        strFilterName.ToLower();
+        strFilterName.Replace(" ", "_");
+
         m_settingsManager->SetString("dsfilters.guid", (*it)->strFilterValue.c_str());
+        m_settingsManager->SetString("dsfilters.osdname", strOSDName);
+        m_settingsManager->SetString("dsfilters.name", strFilterName);
       }    
     }
   }
@@ -395,6 +424,7 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
       pFilter = pFilter->NextSiblingElement("filter");
       count++;
     }
+    isEdited = false;
     FiltersConfigXML.SaveFile(xmlFile);
     CGUIDialogDSFilters::Close();
   }
@@ -508,6 +538,24 @@ void CGUIDialogDSFilters::DSFilterOptionFiller(const CSetting *setting, std::vec
   }
 }
 
+CStdString CGUIDialogDSFilters::GetFilterName(CStdString guid)
+{
+  CDSFilterEnumerator p_dfilter;
+  std::vector<DSFiltersInfo> filterList;
+  p_dfilter.GetDSFilters(filterList);
 
+  std::vector<DSFiltersInfo>::const_iterator iter = filterList.begin();
+
+  for (int i = 1; iter != filterList.end(); i++)
+  {
+    DSFiltersInfo filter = *iter;
+    if (guid == filter.lpstrGuid) 
+    {
+      return filter.lpstrName;
+    }
+    ++iter;
+  }
+  return "";
+}
 
 

@@ -16423,47 +16423,47 @@ msgid "DSPlayer Media Rules"
 msgstr ""
 
 msgctxt "#60002"
-msgid "Rule Name"
+msgid "Rule name"
 msgstr ""
 
 msgctxt "#60003"
-msgid "FileTypes"
+msgid "- File types"
 msgstr ""
 
 msgctxt "#60004"
-msgid "FileName"
+msgid "- File name"
 msgstr ""
 
 msgctxt "#60005"
-msgid "Protocols"
+msgid "- Protocols"
 msgstr ""
 
 msgctxt "#60006"
-msgid "Url"
+msgid "- Url"
 msgstr 
 
 msgctxt "#60007"
-msgid "Source Filter"
+msgid "Source filter"
 msgstr ""
 
 msgctxt "#60008"
-msgid "Splitter Filter"
+msgid "Splitter filter"
 msgstr ""
 
 msgctxt "#60009"
-msgid "Video Filter"
+msgid "Video filter"
 msgstr ""
 
 msgctxt "#60010"
-msgid "Audio Filter"
+msgid "Audio filter"
 msgstr ""
 
 msgctxt "#60011"
-msgid "Subs Filter"
+msgid "Subs filter"
 msgstr ""
 
 msgctxt "#60012"
-msgid "Extra Filter"
+msgid "Extra filter"
 msgstr 
 
 msgctxt "#60013"
@@ -16479,15 +16479,39 @@ msgid "Add rule"
 msgstr 
 
 msgctxt "#60016"
-msgid "Save Rule Modifications"
+msgid "Save rule modifications"
 msgstr "
 
 msgctxt "#60017"
-msgid "Delete Rule"
+msgid "Delete rule"
 msgstr "
 
 msgctxt "#60018"
 msgid "Are you sure to delete this rule?"
+msgstr 
+
+msgctxt "#60019"
+msgid "- Video resolution"
+msgstr 
+
+msgctxt "#60020"
+msgid "- Video codec"
+msgstr 
+
+msgctxt "#60021"
+msgid "- Audio channels"
+msgstr 
+
+msgctxt "#60022"
+msgid "- Audio codec"
+msgstr 
+
+msgctxt "#61001"
+msgid "Save changes?"
+msgstr 
+
+msgctxt "#61002"
+msgid "Do you want to save changes you made?"
 msgstr 
 
 msgctxt "#65001"
@@ -16503,15 +16527,15 @@ msgid "OSDName"
 msgstr "
 
 msgctxt "#65004"
-msgid "Filter Name"
+msgid "Filter name"
 msgstr "
 
 msgctxt "#65005"
-msgid "Filter Type"
+msgid "Filter type"
 msgstr "
 
 msgctxt "#65006"
-msgid "Filter Guid"
+msgid "Filter guid"
 msgstr "
 
 msgctxt "#65007"
@@ -16519,15 +16543,15 @@ msgid "Add filter"
 msgstr "
 
 msgctxt "#65008"
-msgid "Save Filter Modifications"
+msgid "Save filter modifications"
 msgstr 
 
 msgctxt "#65009"
-msgid "Delete Filter"
+msgid "Delete filter"
 msgstr 
 
 msgctxt "#65010"
-msgid "System Filters list"
+msgid "System filters list"
 msgstr 
 
 msgctxt "#65011"

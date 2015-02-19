@@ -46,7 +46,6 @@
 #define SETTING_RULE_SAVE                     "rule.save"
 #define SETTING_RULE_ADD                      "rule.add"
 #define SETTING_RULE_DEL                      "rule.del"
-#define MAXEXTRASHADER                        3
 
 using namespace std;
 
@@ -56,8 +55,8 @@ settingRule(""),
 strRuleName(""),
 strRuleAttr(""),
 strRuleValue(""),
-strVec(NULL),
 ruleLabel(0),
+subNode(0),
 filler(NULL),
 m_ruleType(type)
 {
@@ -78,11 +77,31 @@ CGUIDialogDSRules* CGUIDialogDSRules::Get()
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSRules());
 }
 
+void CGUIDialogDSRules::OnInitWindow()
+{
+  CGUIDialogSettingsManualBase::OnInitWindow();
+  HideUnused();
+  isEdited = false;
+}
+
 void CGUIDialogDSRules::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
   ShowDSRulesList();
+}
 
+bool CGUIDialogDSRules::OnBack(int actionID)
+{
+  if (isEdited)
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
+    { 
+      CSetting *setting = GetSetting(SETTING_RULE_SAVE);
+      OnSettingAction(setting);
+    }
+  }
+
+  return CGUIDialogSettingsManualBase::OnBack(actionID);
 }
 
 void CGUIDialogDSRules::Save()
@@ -125,7 +144,7 @@ bool CGUIDialogDSRules::compare_by_word(const DynamicStringSettingOption& lhs, c
   return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
 }
 
-void CGUIDialogDSRules::InitRules(RuleType type, CStdString settingRule, int ruleLabel, CStdString strRuleAttr /* = "" */, CStdString strRuleName /*= "" */, StringSettingOptionsFiller filler /* = NULL */)
+void CGUIDialogDSRules::InitRules(RuleType type, CStdString settingRule, int ruleLabel, CStdString strRuleAttr /* = "" */, CStdString strRuleName /*= "" */, StringSettingOptionsFiller filler /* = NULL */, int subNode /* = 0 */)
 {
   DSRulesList* ruleList = new DSRulesList(type);
   ruleList->settingRule = settingRule;
@@ -133,7 +152,77 @@ void CGUIDialogDSRules::InitRules(RuleType type, CStdString settingRule, int rul
   ruleList->strRuleName = strRuleName;
   ruleList->filler = filler;
   ruleList->ruleLabel = ruleLabel;
+  ruleList->subNode = subNode;
   m_ruleList.push_back(ruleList);
+}
+
+void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, bool isChild /* = false */)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting->IsVisible() && visible)
+    return;
+  setting->SetVisible(visible);
+  m_settingsManager->SetString(id, "aaa");
+  if (!isChild) 
+    m_settingsManager->SetString(id, "[null]");
+  else
+    m_settingsManager->SetString(id, "");
+}
+
+void CGUIDialogDSRules::HideUnused()
+{
+  std::vector<DSRulesList *>::iterator it;
+  int countExtra = 0;
+  int countShader = 0;
+  bool showExtra;
+  bool showShader;
+
+  if (!m_allowchange)
+    return;
+
+  m_allowchange = false;
+
+  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  {
+    if ((*it)->m_ruleType == EXTRAFILTER)
+    {
+      if ((*it)->strRuleValue == "[null]")
+        countExtra++;
+
+      showExtra = (countExtra > 1 && (*it)->strRuleValue == "[null]");
+      SetVisible((*it)->settingRule.c_str(), !showExtra);
+
+      showExtra = (countExtra > 0 && (*it)->strRuleValue == "[null]");
+      std::vector<DSRulesList *>::iterator itchild;
+      for (itchild = m_ruleList.begin(); itchild != m_ruleList.end(); ++itchild)
+      {
+        if ((*itchild)->m_ruleType == EDITATTREXTRA && (*it)->subNode == (*itchild)->subNode)
+        {
+          SetVisible((*itchild)->settingRule.c_str(), !showExtra, true);
+        }
+      }
+    }
+
+    if ((*it)->m_ruleType == SHADER)
+    {
+      if ((*it)->strRuleValue == "[null]")
+        countShader++;
+
+      showShader = (countShader > 1 && (*it)->strRuleValue == "[null]");
+      SetVisible((*it)->settingRule.c_str(), !showShader);
+
+      showShader = (countShader > 0 && (*it)->strRuleValue == "[null]");
+      std::vector<DSRulesList *>::iterator itchild;
+      for (itchild = m_ruleList.begin(); itchild != m_ruleList.end(); ++itchild)
+      {
+        if ((*itchild)->m_ruleType == EDITATTRSHADER && (*it)->subNode == (*itchild)->subNode)
+        {
+          SetVisible((*itchild)->settingRule.c_str(), !showShader, true);
+        }
+      }
+    }
+  }
+  m_allowchange = true;
 }
 
 void CGUIDialogDSRules::ResetValue()
@@ -141,20 +230,14 @@ void CGUIDialogDSRules::ResetValue()
   std::vector<DSRulesList *>::iterator it;
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
   {
-    if ((*it)->m_ruleType == EDITATTR)
+    if ((*it)->m_ruleType == EDITATTR || (*it)->m_ruleType == EDITATTREXTRA || (*it)->m_ruleType == EDITATTRSHADER)
       (*it)->strRuleValue = "";
     if ((*it)->m_ruleType == SPINNERATTR)
       (*it)->strRuleValue = "[null]";
     if ((*it)->m_ruleType == FILTER)
       (*it)->strRuleValue = "[null]";
     if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
-    {
-      (*it)->strVec.clear();
-      for (int i = 0; i < MAXEXTRASHADER; ++i)
-      {
-        (*it)->strVec.push_back("[null]");
-      }
-    }
+      (*it)->strRuleValue = "[null]";
   }
 }
 
@@ -212,20 +295,53 @@ void CGUIDialogDSRules::InitializeSettings()
   int selected = Get()->GetRuleIndex();
   int count = 0;
 
-  if (m_ruleList.size() == 0)
+ if (m_ruleList.size() == 0)
   {
+    // RULE
     InitRules(EDITATTR, "rules.name", 60002, "name");
     InitRules(EDITATTR, "rules.filetypes", 60003, "filetypes");
     InitRules(EDITATTR, "rules.filename", 60004, "filename");
     InitRules(EDITATTR, "rules.protocols", 60005, "protocols");
     InitRules(SPINNERATTR, "rules.url", 60006, "url", "", UrlOptionFiller);
+
+    // FILTER
     InitRules(FILTER, "rules.source", 60007, "filter", "source", FiltersConfigOptionFiller);
     InitRules(FILTER, "rules.splitter", 60008, "filter", "splitter", FiltersConfigOptionFiller);
     InitRules(FILTER, "rules.video", 60009, "filter", "video", FiltersConfigOptionFiller);
     InitRules(FILTER, "rules.audio", 60010, "filter", "audio", FiltersConfigOptionFiller);
     InitRules(FILTER, "rules.subs", 60011, "filter", "subs", FiltersConfigOptionFiller);
-    InitRules(EXTRAFILTER, "rules.extra", 60012, "filter", "extra", FiltersConfigOptionFiller);
-    InitRules(SHADER, "rules.shader", 60013, "id", "shader", ShadersOptionFiller);
+
+    // EXTRAFILTER
+    InitRules(EXTRAFILTER, "rules.extra0", 60012, "filter", "extra", FiltersConfigOptionFiller, 0);
+    InitRules(EDITATTREXTRA, "rules.videores0", 60019, "videoresolution", "extra", 0 ,0);
+    InitRules(EDITATTREXTRA, "rules.videocodec0", 60020, "videocodec", "extra", 0, 0);
+    InitRules(EDITATTREXTRA, "rules.audiochans0", 60021, "audiochannels", "extra", 0, 0);
+    InitRules(EDITATTREXTRA, "rules.audiocodec0", 60022, "audiocodec", "extra", 0, 0);
+
+    InitRules(EXTRAFILTER, "rules.extra1", 60012, "filter", "extra", FiltersConfigOptionFiller, 1);
+    InitRules(EDITATTREXTRA, "rules.videores1", 60019, "videoresolution", "extra", 0, 1);
+    InitRules(EDITATTREXTRA, "rules.videocodec1", 60020, "videocodec", "extra", 0, 1);
+    InitRules(EDITATTREXTRA, "rules.audiochans1", 60021, "audiochannels", "extra", 0, 1);
+    InitRules(EDITATTREXTRA, "rules.audiocodec1", 60022, "audiocodec", "extra", 0, 1);
+
+    InitRules(EXTRAFILTER, "rules.extra2", 60012, "filter", "extra", FiltersConfigOptionFiller, 2);
+    InitRules(EDITATTREXTRA, "rules.videores2", 60019, "videoresolution", "extra", 0, 2);
+    InitRules(EDITATTREXTRA, "rules.videocodec2", 60020, "videocodec", "extra", 0, 2);
+    InitRules(EDITATTREXTRA, "rules.audiochans2", 60021, "audiochannels", "extra", 0, 2);
+    InitRules(EDITATTREXTRA, "rules.audiocodec2", 60022, "audiocodec", "extra", 0, 2);
+
+    // SHADER
+    InitRules(SHADER, "rules.shader0", 60013, "id", "shader", ShadersOptionFiller, 0);
+    InitRules(EDITATTRSHADER, "rules.shvideores0", 60019, "videoresolution", "shader", 0, 0);
+    InitRules(EDITATTRSHADER, "rules.shvideocodec0", 60020, "videocodec", "shader", 0, 0);
+
+    InitRules(SHADER, "rules.shader1", 60013, "id", "shader", ShadersOptionFiller, 1);
+    InitRules(EDITATTRSHADER, "rules.shvideores1", 60019, "videoresolution", "shader", 0, 1);
+    InitRules(EDITATTRSHADER, "rules.shvideocodec1", 60020, "videocodec", "shader", 0, 1);
+
+    InitRules(SHADER, "rules.shader2", 60013, "id", "shader", ShadersOptionFiller, 2);
+    InitRules(EDITATTRSHADER, "rules.shvideores2", 60019, "videoresolution", "shader", 0, 2);
+    InitRules(EDITATTRSHADER, "rules.shvideocodec2", 60020, "videocodec", "shader", 0, 2);
   }
 
   // Reset Button value
@@ -260,35 +376,32 @@ void CGUIDialogDSRules::InitializeSettings()
                 (*it)->strRuleValue = pFilter->Attribute((*it)->strRuleAttr.c_str());             
             }
 
-            if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
+            if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER || (*it)->m_ruleType == EDITATTREXTRA || (*it)->m_ruleType == EDITATTRSHADER)
             {             
               TiXmlElement *pFilter = pRule->FirstChildElement((*it)->strRuleName.c_str());
 
               if (pFilter)
               {
-                CStdString strExtra = pFilter->Attribute((*it)->strRuleAttr.c_str());
-            
-                (*it)->strVec[0] = strExtra;
-                if ((*it)->strVec[0] == "")
+                if ((*it)->subNode == 0)
+                  (*it)->strRuleValue = pFilter->Attribute((*it)->strRuleAttr.c_str());
+
+                if ((*it)->strRuleValue == "" || (*it)->subNode > 0)
                 {
                   int countsize = 0;
-                  TiXmlElement *pExtra2 = pFilter->FirstChildElement((*it)->strRuleName.c_str());
-                  while (pExtra2)
-                  {                    
-                    strExtra = pExtra2->Attribute((*it)->strRuleAttr.c_str());
-                    (*it)->strVec[countsize] = strExtra;     
-                    
-                    pExtra2 = pExtra2->NextSiblingElement((*it)->strRuleName.c_str());
+                  TiXmlElement *pSubExtra = pFilter->FirstChildElement((*it)->strRuleName.c_str());
+                  while (pSubExtra)
+                  {
+                    if ((*it)->subNode == countsize)
+                      (*it)->strRuleValue = pSubExtra->Attribute((*it)->strRuleAttr.c_str());
 
+                    pSubExtra = pSubExtra->NextSiblingElement((*it)->strRuleName.c_str());
                     countsize++;
-
-                    if (countsize >= MAXEXTRASHADER)
-                      break;
                   }
                 }
               }
             }
           }
+          break;
         }
         pRule = pRule->NextSiblingElement("rule");
         count++;
@@ -304,27 +417,26 @@ void CGUIDialogDSRules::InitializeSettings()
 
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
   {
-    if ((*it)->m_ruleType == EDITATTR)
+    if ((*it)->m_ruleType == EDITATTR || (*it)->m_ruleType == EDITATTREXTRA || (*it)->m_ruleType == EDITATTRSHADER)
     {
       if ((*it)->strRuleAttr == "name")
         groupTmp = groupName;
       else
         groupTmp = groupRule;
-      AddEdit(groupTmp, (*it)->settingRule, (*it)->ruleLabel, 0, (*it)->strRuleValue, true);
+
+      if ((*it)->m_ruleType == EDITATTREXTRA || (*it)->m_ruleType == EDITATTRSHADER)
+        groupTmp = groupExtra;
+
+      AddEdit(groupTmp, (*it)->settingRule, (*it)->ruleLabel, 0, (*it)->strRuleValue.c_str(), true);
     } 
     if ((*it)->m_ruleType == SPINNERATTR)
       AddSpinner(groupRule, (*it)->settingRule, (*it)->ruleLabel, 0, (*it)->strRuleValue, (*it)->filler);
+
     if ((*it)->m_ruleType == FILTER)
       AddList(groupFilter, (*it)->settingRule, (*it)->ruleLabel, 0, (*it)->strRuleValue, (*it)->filler, (*it)->ruleLabel);
+
     if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
-    { 
-      for (int i = 0; i < (*it)->strVec.size(); ++i)
-      {
-        setting_rule = (*it)->settingRule.c_str();
-        setting_rule.Format("%s%i", setting_rule.c_str(), i);
-        AddList(groupExtra, setting_rule, (*it)->ruleLabel, 0, (*it)->strVec[i], (*it)->filler, (*it)->ruleLabel);
-      }
-    }
+      AddList(groupExtra, (*it)->settingRule, (*it)->ruleLabel, 0, (*it)->strRuleValue, (*it)->filler, (*it)->ruleLabel);
   }
 
   if (Get()->GetNewRule())
@@ -341,34 +453,21 @@ void CGUIDialogDSRules::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
+  isEdited = true;
+
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
+  
   const std::string &settingId = setting->GetId(); 
 
   std::vector<DSRulesList *>::iterator it;
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
   {
-    if ((*it)->m_ruleType == EDITATTR || (*it)->m_ruleType == SPINNERATTR || (*it)->m_ruleType == FILTER)
-    { 
-      if (settingId == (*it)->settingRule)
-      {
-        (*it)->strRuleValue = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
-      }
-    }
-    if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
+    if (settingId == (*it)->settingRule)
     {
-      CStdString setting_rule;
-      CStdString value;
-      for (int i = 0; i < (*it)->strVec.size(); ++i)
-      {
-        setting_rule.Format("%s%i", (*it)->settingRule , i);
-        if (settingId == setting_rule)
-        {
-          value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
-          (*it)->strVec[i] = value;
-        }
-      }
+      (*it)->strRuleValue = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
     }
   }
+  HideUnused();
 }
 
 void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
@@ -387,11 +486,11 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
   // Init variables
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
   const std::string &settingId = setting->GetId();
-  bool isempty;
 
   // Del Rule
   if (settingId == SETTING_RULE_DEL)
   {
+
     if (!CGUIDialogYesNo::ShowAndGetInput(60017, 60018, 0, 0))
       return;
     
@@ -427,7 +526,7 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
       if ((*it)->m_ruleType == SPINNERATTR && (*it)->strRuleValue != "[null]" && (*it)->strRuleValue != "")
           pRule.SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
 
-      if ((*it)->m_ruleType == FILTER)
+      if ((*it)->m_ruleType == FILTER && (*it)->strRuleValue != "[null]")
       {
         pRule.InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
         TiXmlElement *pFilter = pRule.FirstChildElement((*it)->strRuleName.c_str());
@@ -435,34 +534,33 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
           pFilter->SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
       }
 
-      if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
+      if (((*it)->m_ruleType == EXTRAFILTER 
+        || (*it)->m_ruleType == SHADER 
+        || (*it)->m_ruleType == EDITATTREXTRA 
+        || (*it)->m_ruleType == EDITATTRSHADER) 
+        && (*it)->strRuleValue != "[null]" && (*it)->strRuleValue != "")
       {
-        isempty = true;
-        for (int i = 0; i < (*it)->strVec.size(); ++i)
-        {
-          if ((*it)->strVec[i] != "[null]")
-          {
-            isempty = false;
-            break;
-          }
-        }
-
-        if (!isempty)
+        TiXmlElement *pExtra = pRule.FirstChildElement((*it)->strRuleName.c_str());
+        if (!pExtra && (*it)->m_ruleType != EDITATTREXTRA && (*it)->m_ruleType != EDITATTRSHADER)
         {
           pRule.InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
-          TiXmlElement *pExtra = pRule.FirstChildElement((*it)->strRuleName.c_str());
-          TiXmlElement pExtra2((*it)->strRuleName.c_str());
-
-          for (int i = 0; i < (*it)->strVec.size(); ++i)
-          {
-            if ((*it)->strVec[i] != "[null]")
-            {
-              pExtra2.SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strVec[i].c_str());
-              pExtra->InsertEndChild(pExtra2);
-            }
-          }
+          pExtra = pRule.FirstChildElement((*it)->strRuleName.c_str());
         }
-      } 
+        if ((*it)->m_ruleType != EDITATTREXTRA && (*it)->m_ruleType != EDITATTRSHADER)
+          pExtra->InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
+         
+        TiXmlElement *pSubExtra = pExtra->FirstChildElement((*it)->strRuleName.c_str());
+
+        int countsize = 0;
+        while (pSubExtra)
+        {
+          if ((*it)->subNode == countsize)
+            pSubExtra->SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
+
+          pSubExtra = pSubExtra->NextSiblingElement((*it)->strRuleName.c_str());
+          countsize++;
+        }
+      }
     }
     pRules->InsertEndChild(pRule);
     MediasConfigXML.SaveFile(xmlFile);
@@ -472,6 +570,7 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
   // Save Modifications
   if (settingId == SETTING_RULE_SAVE)
   {
+
     int selected = Get()->GetRuleIndex();
     int count = 0;
 
@@ -501,45 +600,49 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
 
           if ((*it)->m_ruleType == FILTER)
           {
-            pRule->InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
-            TiXmlElement *pFilter = pRule->FirstChildElement((*it)->strRuleName.c_str());
-            if (pFilter)
-              pFilter->SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
-          }
-
-          if ((*it)->m_ruleType == EXTRAFILTER || (*it)->m_ruleType == SHADER)
-          {
-            isempty = true;
-            for (int i = 0; i < (*it)->strVec.size(); ++i)
-            {
-              if ((*it)->strVec[i] != "[null]")
-              {
-                isempty = false;
-                break;
-              }
-            }
-
-            if (!isempty)
+            if ((*it)->strRuleValue != "[null]" )
             {
               pRule->InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
-              TiXmlElement *pExtra = pRule->FirstChildElement((*it)->strRuleName.c_str());
-              TiXmlElement pExtra2((*it)->strRuleName.c_str());
+              TiXmlElement *pFilter = pRule->FirstChildElement((*it)->strRuleName.c_str());
+              if (pFilter)
+                pFilter->SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
+            }
+          }
+          if (((*it)->m_ruleType == EXTRAFILTER 
+            || (*it)->m_ruleType == SHADER 
+            || (*it)->m_ruleType == EDITATTREXTRA 
+            || (*it)->m_ruleType == EDITATTRSHADER) 
+            && (*it)->strRuleValue != "[null]" && (*it)->strRuleValue != "")
+          {
 
-              for (int i = 0; i < (*it)->strVec.size(); ++i)
-              {
-                if ((*it)->strVec[i] != "[null]")
-                {
-                  pExtra2.SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strVec[i].c_str());
-                  pExtra->InsertEndChild(pExtra2);
-                }
-              }
+            TiXmlElement *pExtra = pRule->FirstChildElement((*it)->strRuleName.c_str());
+            if (!pExtra && (*it)->m_ruleType != EDITATTREXTRA && (*it)->m_ruleType != EDITATTRSHADER)
+            {
+              pRule->InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
+              pExtra = pRule->FirstChildElement((*it)->strRuleName.c_str());
+            }
+            if ((*it)->m_ruleType != EDITATTREXTRA && (*it)->m_ruleType != EDITATTRSHADER)
+              pExtra->InsertEndChild(TiXmlElement((*it)->strRuleName.c_str()));
+
+            TiXmlElement *pSubExtra = pExtra->FirstChildElement((*it)->strRuleName.c_str());
+
+            int countsize = 0;
+            while (pSubExtra)
+            {
+              if ((*it)->subNode == countsize)
+                pSubExtra->SetAttribute((*it)->strRuleAttr.c_str(), (*it)->strRuleValue.c_str());
+
+              pSubExtra = pSubExtra->NextSiblingElement((*it)->strRuleName.c_str());
+              countsize++;
             }
           }
         }
+        break;
       }  
       pRule = pRule->NextSiblingElement("rule");
       count++;
     }
+    isEdited = false;
     MediasConfigXML.SaveFile(xmlFile);
     CGUIDialogDSRules::Close();
   }

@@ -28,6 +28,8 @@
 
 enum RuleType {
   EDITATTR,
+  EDITATTREXTRA,
+  EDITATTRSHADER,
   SPINNERATTR,
   FILTER,
   EXTRAFILTER,
@@ -50,7 +52,7 @@ public:
   CStdString strRuleName;
   CStdString strRuleValue;
   CStdString settingRule;
-  std::vector<std::string> strVec;
+  int subNode;
   int ruleLabel;
   StringSettingOptionsFiller filler;
   RuleType m_ruleType;
@@ -80,7 +82,9 @@ protected:
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual bool OnBack(int actionID);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
@@ -97,11 +101,16 @@ protected:
   static bool compare_by_word(const DynamicStringSettingOption& lhs, const DynamicStringSettingOption& rhs);
   static CGUIDialogDSRules* m_pSingleton;
   void LoadDsXML(CXBMCTinyXML *XML, xmlType type, TiXmlElement* &pNode, CStdString &xmlFile, bool forceCreate = false);
-  void InitRules(RuleType type, CStdString settingRule, int ruleLabel, CStdString strRuleName = "", CStdString strRuleAttr = "", StringSettingOptionsFiller filler = NULL);
+  void InitRules(RuleType type, CStdString settingRule, int ruleLabel, CStdString strRuleName = "", CStdString strRuleAttr = "", StringSettingOptionsFiller filler = NULL, int subNode = 0);
+
   void ResetValue();
+  void HideUnused();
+  void SetVisible(CStdString id, bool visible, bool isChild = false);
 
   bool m_newrule;
   int m_ruleIndex;
+  bool m_allowchange;
+  bool isEdited;
 
   std::vector<DSRulesList *> m_ruleList;
 };

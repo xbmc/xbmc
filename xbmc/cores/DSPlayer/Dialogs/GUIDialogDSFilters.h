@@ -72,7 +72,9 @@ protected:
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual bool OnBack(int actionID);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
@@ -90,8 +92,10 @@ protected:
   void LoadDsXML(CXBMCTinyXML *XML, TiXmlElement* &pNode, CStdString &xmlFile, bool forceCreate = false);
   void InitFilters(FilterType type, CStdString settingFilter, int FilterLabel, CStdString strFilterName = "", CStdString strFilterAttr = "", StringSettingOptionsFiller filler = NULL);
   void ResetValue();
+  CStdString GetFilterName(CStdString guid);
 
   bool m_newfilter;
+  bool isEdited;
   int m_filterIndex;
 
   std::vector<DSFiltersList *> m_filterList;
