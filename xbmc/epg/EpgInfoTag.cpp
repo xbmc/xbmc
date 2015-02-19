@@ -95,6 +95,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
   m_iUniqueBroadcastID = data.iUniqueBroadcastId;
   m_bNotify = data.bNotify;
   m_firstAired = (data.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
+  m_iSeriesNumber = data.iSeriesNumber;
   m_iEpisodeNumber = data.iEpisodeNumber;
   m_iEpisodePart = data.iEpisodePartNumber;
   m_iStarRating = data.iStarRating;
