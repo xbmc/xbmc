@@ -41,6 +41,14 @@ if(NOT EXISTS "${XBMC_INCLUDE_DIR}/")
   file(MAKE_DIRECTORY ${XBMC_INCLUDE_DIR})
 endif()
 
+# make sure C++11 is always set
+if(NOT WIN32)
+  string(REGEX MATCH "-std=(gnu|c)\\+\\+11" cxx11flag "${CMAKE_CXX_FLAGS}")
+  if(NOT cxx11flag)
+    set(CXX11_SWITCH "-std=c++11")
+  endif()
+endif()
+
 # kodi-config.cmake.in (further down) expects a "prefix" variable
 get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
 
