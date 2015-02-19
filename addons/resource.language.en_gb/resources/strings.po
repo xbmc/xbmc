@@ -15501,7 +15501,21 @@ msgctxt "#35010"
 msgid "Peripheral libraries"
 msgstr ""
 
-#empty strings from id 35011 to 35099
+#empty strings from id 35011 to 35048
+
+#. Name of game add-ons category
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#35049"
+msgid "Game add-ons"
+msgstr ""
+
+#. Name of controller add-ons
+#: xbmc/addons/Addon.cpp
+msgctxt "#35050"
+msgid "Controller profiles"
+msgstr ""
+
+#empty strings from id 35051 to 35099
 
 #: system/settings/settings.xml
 msgctxt "#35100"

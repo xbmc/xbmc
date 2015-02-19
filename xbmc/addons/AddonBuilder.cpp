@@ -34,6 +34,7 @@
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPAddon.h"
+#include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "pvr/addons/PVRClient.h"
 
@@ -151,6 +152,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CRepository::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_CONTEXT_ITEM:
       return CContextMenuAddon::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_GAME_CONTROLLER:
+      return GAME::CController::FromExtension(std::move(m_props), m_extPoint);
     default:
       break;
   }
@@ -215,6 +218,8 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CInputStream(std::move(addonProps)));
     case ADDON_PERIPHERALDLL:
       return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonProps), false, false)); // TODO
+    case ADDON_GAME_CONTROLLER:
+      return AddonPtr(new GAME::CController(std::move(addonProps)));
     default:
       break;
   }

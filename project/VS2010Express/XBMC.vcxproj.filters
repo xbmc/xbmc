@@ -436,6 +436,12 @@
     <Filter Include="addons\binary\interfaces\api1\Peripheral">
       <UniqueIdentifier>{bc7eb8ab-3f2e-4346-8546-7243b658fa30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="games">
+      <UniqueIdentifier>{336d29fc-9a49-40a8-9295-a8d1062c540c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers">
+      <UniqueIdentifier>{d0ae0c22-0869-416b-92c7-aa1dc14a58be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3393,6 +3399,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp">
       <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\Controller.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerFeature.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerLayout.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerTranslator.cpp">
+      <Filter>games\controllers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6586,6 +6604,24 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_utils.hpp">
       <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTranslator.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTypes.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\Controller.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerDefinitions.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerFeature.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerLayout.h">
+      <Filter>games\controllers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@ EC_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd 
+	lib/libdvd
 
 VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
                    xbmc/cores/VideoPlayer/DVDCodecs/DVDCodecs.a \
@@ -54,6 +54,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
+                   xbmc/games/controllers/controllers.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
                    xbmc/interfaces/builtins/builtins.a \

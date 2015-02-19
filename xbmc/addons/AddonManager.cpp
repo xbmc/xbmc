@@ -63,6 +63,7 @@
 #ifdef HAS_PVRCLIENTS
 #include "pvr/addons/PVRClient.h"
 #endif
+#include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
 
 using namespace XFILE;
