@@ -1317,6 +1317,20 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
       }
     }
+    else if (info[0].name == "control")
+    {
+      const Property &prop = info[1];
+      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
+      {
+        if (prop.name == control_labels[i].str)
+        { // TODO: The parameter for these should really be on the first not the second property
+          int controlID = atoi(prop.param().c_str());
+          if (controlID)
+            return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, atoi(info[2].param(0).c_str())));
+          return 0;
+        }
+      }
+    }
   }
 
   return 0;
@@ -3324,7 +3338,13 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     {
       const CGUIControl *control = window->GetControl(info.GetData1());
       if (control)
-        return control->GetDescription();
+      {
+        int data2 = info.GetData2();
+        if (data2)
+          return control->GetDescriptionByIndex(data2);
+        else
+          return control->GetDescription();
+      }
     }
   }
   else if (info.m_info == WINDOW_PROPERTY)
