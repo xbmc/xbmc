@@ -789,8 +789,8 @@ else
     DEBUG_FLAGS="-DNDEBUG=1"
   fi
 fi
-CFLAGS="$CFLAGS $DEBUG_FLAGS"
-CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS"
+CFLAGS="$DEBUG_FLAGS $CFLAGS"
+CXXFLAGS="$DEBUG_FLAGS $CXXFLAGS"
 
 
 if test "$use_optimizations" = "yes"; then
