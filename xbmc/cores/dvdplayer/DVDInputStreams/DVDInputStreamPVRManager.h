@@ -59,7 +59,7 @@ public:
   bool            SelectChannel(const PVR::CPVRChannel &channel);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
-  bool            GetSelectedChannel(PVR::CPVRChannelPtr& channel) const;
+  bool            GetSelectedChannel(PVR::CPVRChannelPtr& channel);
 
   int             GetTotalTime();
   int             GetTime();
