@@ -65,6 +65,19 @@ public:
   static bool DirectoryExists(const void* addonData, const char *strPath);
   static bool RemoveDirectory(const void* addonData, const char *strPath);
 
+  // cpuInfo methods
+  static int CPUInfo_GetUsedPercentage(const void* addonData);
+  static int CPUInfo_GetCPUCount(const void* addonData);
+  static float CPUInfo_GetCPUFrequency(const void* addonData);
+  static char* CPUInfo_GetCPUModel(const void* addonData);
+  static char* CPUInfo_GetCPUBogoMips(const void* addonData);
+  static char* CPUInfo_GetCPUHardware(const void* addonData);
+  static char* CPUInfo_GetCPURevision(const void* addonData);
+  static char* CPUInfo_GetCPUSerial(const void* addonData);
+  static bool CPUInfo_HasCoreId(const void* addonData, int nCoreId);
+  static char* CPUInfo_GetCoresUsageString(const void* addonData);
+  static unsigned int CPUInfo_GetCPUFeatures(const void* addonData);
+
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the add-on */

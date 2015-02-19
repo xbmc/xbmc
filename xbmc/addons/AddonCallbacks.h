@@ -61,6 +61,22 @@ typedef bool (*AddOnCreateDirectory)(const void* addonData, const char *strPath)
 typedef bool (*AddOnDirectoryExists)(const void* addonData, const char *strPath);
 typedef bool (*AddOnRemoveDirectory)(const void* addonData, const char *strPath);
 
+typedef int (*AddOnCPUInfoGetUsedPercentage)(const void* addonData);
+typedef int (*AddOnCPUInfoGetCPUCount)(const void* addonData);
+typedef float (*AddOnCPUInfoGetCPUFrequency)(const void* addonData);
+typedef char* (*AddOnCPUInfoGetCPUModel)(const void* addonData);
+typedef char* (*AddOnCPUInfoGetCPUBogoMips)(const void* addonData);
+typedef char* (*AddOnCPUInfoGetCPUHardware)(const void* addonData);
+typedef char* (*AddOnCPUInfoGetCPURevision)(const void* addonData);
+typedef char* (*AddOnCPUInfoGetCPUSerial)(const void* addonData);
+// ToDo: add class CoreInfo
+//typedef const CoreInfo& (*AddOnCPUInfoGetCoreInfo)(const void* addonData, int nCoreId)
+typedef bool (*AddOnCPUInfoHasCoreId)(const void* addonData, int nCoreId);
+typedef char* (*AddOnCPUInfoGetCoresUsageString)(const void* addonData);
+typedef unsigned int(*AddOnCPUInfoGetCPUFeatures)(const void* addonData);
+// ToDo: add CTemperature
+//typedef bool (*AddOnCPUInfoGetTemperature)(const void* addonData, CTemperature& temperature);
+
 typedef struct CB_AddOn
 {
   AddOnLogCallback        Log;
@@ -91,6 +107,22 @@ typedef struct CB_AddOn
   AddOnCreateDirectory    CreateDirectory;
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
+
+  AddOnCPUInfoGetUsedPercentage   CPUInfo_GetUsedPercentage;
+  AddOnCPUInfoGetCPUCount         CPUInfo_GetCPUCount;
+  AddOnCPUInfoGetCPUFrequency     CPUInfo_GetCPUFrequency;
+  AddOnCPUInfoGetCPUModel         CPUInfo_GetCPUModel;
+  AddOnCPUInfoGetCPUBogoMips      CPUInfo_GetCPUBogoMips;
+  AddOnCPUInfoGetCPUHardware      CPUInfo_GetCPUHardware;
+  AddOnCPUInfoGetCPURevision      CPUInfo_GetCPURevision;
+  AddOnCPUInfoGetCPUSerial        CPUInfo_GetCPUSerial;
+  // ToDo: add class CoreInfo
+  //AddOnCPUInfoGetCoreInfo       CPUInfo_GetCoreInfo;
+  AddOnCPUInfoHasCoreId           CPUInfo_HasCoreId;
+  AddOnCPUInfoGetCoresUsageString CPUInfo_GetCoresUsageString;
+  AddOnCPUInfoGetCPUFeatures      CPUInfo_GetCPUFeatures;
+  // ToDo: add CTemperature
+  //AddOnCPUInfoGetTemperature    CPUInfo_GetTemperature;
 } CB_AddOnLib;
 
 typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);

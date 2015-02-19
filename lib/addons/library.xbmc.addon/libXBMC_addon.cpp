@@ -276,4 +276,92 @@ DLLEXPORT bool XBMC_remove_directory(void *hdl, void* cb, const char *strPath)
   return ((CB_AddOnLib*)cb)->RemoveDirectory(((AddonCB*)hdl)->addonData, strPath);
 }
 
+DLLEXPORT int XBMC_CPUInfo_GetUsedPercentage(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return 0;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetUsedPercentage(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT int XBMC_CPUInfo_GetCPUCount(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUCount(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT float XBMC_CPUInfo_GetCPUFrequency(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return -1.0f;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUFrequency(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCPUModel(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUModel(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCPUBogoMips(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUBogoMips(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCPUHardware(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUHardware(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCPURevision(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPURevision(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCPUSerial(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUSerial(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT bool XBMC_CPUInfo_HasCoreId(void *hdl, void* cb, int nCoreId)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_HasCoreId(((AddonCB*)hdl)->addonData, nCoreId);
+}
+
+DLLEXPORT char* XBMC_CPUInfo_GetCoresUsageString(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCoresUsageString(((AddonCB*)hdl)->addonData);
+}
+
+DLLEXPORT unsigned int XBMC_CPUInfo_GetCPUFeatures(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return 0;
+
+  return ((CB_AddOnLib*)cb)->CPUInfo_GetCPUFeatures(((AddonCB*)hdl)->addonData);
+}
+
 };
