@@ -734,6 +734,10 @@ bool CApplication::Create()
     return false;
   }
 
+#ifdef TARGET_WINDOWS
+  CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
+#endif // TARGET_WINDOWS
+
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
   {
