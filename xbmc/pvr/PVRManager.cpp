@@ -1181,7 +1181,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       videotag->m_strFileNameAndPath = channelTag->Path();
       videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
       videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
-      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNum() : 0;
+      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNumber() : 0;
     }
   }
 

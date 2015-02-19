@@ -100,9 +100,9 @@ namespace EPG
     bool WasActive(void) const;
 
     /*!
-     * @return True when this event is in the future, false otherwise.
+     * @return True when this event is an upcoming event, false otherwise.
      */
-    bool InTheFuture(void) const;
+    bool IsUpcoming(void) const;
 
     /*!
      * @return The current progress of this tag.
@@ -148,9 +148,9 @@ namespace EPG
 
     /*!
      * @brief Change the event's database ID.
-     * @param iId The new database ID.
+     * @param iBroadcastID The new database ID.
      */
-    void SetBroadcastId(int iId);
+    void SetBroadcastId(int iBroadcastID);
 
     /*!
      * @brief Get the event's database ID.
@@ -233,10 +233,10 @@ namespace EPG
 
     /*!
      * @brief Change the genre of this event.
-     * @param iID The genre type ID.
-     * @param iSubID The genre subtype ID.
+     * @param iGenreType The genre type ID.
+     * @param iGenreSubType The genre subtype ID.
      */
-    void SetGenre(int iID, int iSubID, const char* strGenre);
+    void SetGenre(int iGenreType, int iGenreSubType, const char* strGenre);
 
     /*!
      * @brief Get the genre type ID of this event.
@@ -308,27 +308,27 @@ namespace EPG
 
     /*!
      * @brief Change the series number of this event.
-     * @param iSeriesNum The new series number.
+     * @param iSeriesNumber The new series number.
      */
-    void SetSeriesNum(int iSeriesNum);
+    void SetSeriesNumber(int iSeriesNumber);
 
     /*!
      * @brief The series number of this event.
      * @return The series number.
      */
-    int SeriesNum(void) const;
+    int SeriesNumber(void) const;
 
     /*!
      * @brief Change the episode number of this event.
      * @param iEpisodeNum The new episode number.
      */
-    void SetEpisodeNum(int iEpisodeNum);
+    void SetEpisodeNumber(int iEpisodeNumber);
 
     /*!
      * @brief The episode number of this event.
      * @return The episode number.
      */
-    int EpisodeNum(void) const;
+    int EpisodeNumber(void) const;
 
     /*!
      * @brief Change the episode part number of this event.
@@ -513,6 +513,6 @@ namespace EPG
 
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
-    PVR::CPVRChannelPtr    m_pvrChannel;
+    PVR::CPVRChannelPtr      m_pvrChannel;
   };
 }

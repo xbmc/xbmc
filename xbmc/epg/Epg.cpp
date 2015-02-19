@@ -226,7 +226,7 @@ CEpgInfoTagPtr CEpg::GetTagNext() const
     /* return the first event that is in the future */
     for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
     {
-      if (it->second->InTheFuture())
+      if (it->second->IsUpcoming())
         return it->second;
     }
   }

@@ -96,7 +96,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
   SetUniqueBroadcastID(data.iUniqueBroadcastId);
   SetNotify(data.bNotify);
   SetFirstAiredFromUTC(data.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
-  SetEpisodeNum(data.iEpisodeNumber);
+  SetEpisodeNumber(data.iEpisodeNumber);
   SetEpisodePart(data.iEpisodePartNumber);
   SetStarRating(data.iStarRating);
 
@@ -209,7 +209,7 @@ bool CEpgInfoTag::WasActive(void) const
   return (m_endTime < now);
 }
 
-bool CEpgInfoTag::InTheFuture(void) const
+bool CEpgInfoTag::IsUpcoming(void) const
 {
   CDateTime now = GetCurrentPlayingTime();
   return (m_startTime > now);
@@ -268,9 +268,9 @@ int CEpgInfoTag::UniqueBroadcastID(void) const
   return m_iUniqueBroadcastID;
 }
 
-void CEpgInfoTag::SetBroadcastId(int iId)
+void CEpgInfoTag::SetBroadcastId(int iBroadcastID)
 {
-  m_iBroadcastId = iId;
+  m_iBroadcastId = iBroadcastID;
 }
 
 int CEpgInfoTag::BroadcastId(void) const
@@ -387,13 +387,13 @@ std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
   return retVal;
 }
 
-void CEpgInfoTag::SetGenre(int iID, int iSubID, const char* strGenre)
+void CEpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
 {
-  if (m_iGenreType != iID || m_iGenreSubType != iSubID)
+  if (m_iGenreType != iGenreType || m_iGenreSubType != iGenreSubType)
   {
-    m_iGenreType    = iID;
-    m_iGenreSubType = iSubID;
-    if ((iID == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+    m_iGenreType    = iGenreType;
+    m_iGenreSubType = iGenreSubType;
+    if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
     {
       /* Type and sub type are not given. No EPG color coding possible
        * Use the provided genre description as backup. */
@@ -402,7 +402,7 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID, const char* strGenre)
     else
     {
       /* Determine the genre description from the type and subtype IDs */
-      m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iID, iSubID), g_advancedSettings.m_videoItemSeparator);
+      m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
     }
   }
 }
@@ -475,22 +475,22 @@ bool CEpgInfoTag::Notify(void) const
   return m_bNotify;
 }
 
-void CEpgInfoTag::SetSeriesNum(int iSeriesNum)
+void CEpgInfoTag::SetSeriesNumber(int iSeriesNumber)
 {
-  m_iSeriesNumber = iSeriesNum;
+  m_iSeriesNumber = iSeriesNumber;
 }
 
-int CEpgInfoTag::SeriesNum(void) const
+int CEpgInfoTag::SeriesNumber(void) const
 {
   return m_iSeriesNumber;
 }
 
-void CEpgInfoTag::SetEpisodeNum(int iEpisodeNum)
+void CEpgInfoTag::SetEpisodeNumber(int iEpisodeNumber)
 {
-  m_iEpisodeNumber = iEpisodeNum;
+  m_iEpisodeNumber = iEpisodeNumber;
 }
 
-int CEpgInfoTag::EpisodeNum(void) const
+int CEpgInfoTag::EpisodeNumber(void) const
 {
   return m_iEpisodeNumber;
 }
