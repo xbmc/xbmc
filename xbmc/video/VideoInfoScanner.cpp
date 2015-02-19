@@ -46,6 +46,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
@@ -58,8 +59,9 @@ using namespace ADDON;
 namespace VIDEO
 {
 
-  CVideoInfoScanner::CVideoInfoScanner() : CThread("VideoInfoScanner")
+  CVideoInfoScanner::CVideoInfoScanner()
   {
+    m_bStop = false;
     m_bRunning = false;
     m_handle = NULL;
     m_showDialog = false;
@@ -76,6 +78,8 @@ namespace VIDEO
 
   void CVideoInfoScanner::Process()
   {
+    m_bStop = false;
+
     try
     {
       if (m_showDialog && !CSettings::Get().GetBool("videolibrary.backgroundupdate"))
@@ -89,7 +93,8 @@ namespace VIDEO
       // check if we only need to perform a cleaning
       if (m_bClean && m_pathsToScan.empty())
       {
-        CleanDatabase(m_handle, NULL, false);
+        std::set<int> paths;
+        CVideoLibraryQueue::Get().CleanLibrary(paths, false, m_handle);
 
         if (m_handle)
           m_handle->MarkFinished();
@@ -112,8 +117,6 @@ namespace VIDEO
       // Reset progress vars
       m_currentItem = 0;
       m_itemCount = -1;
-
-      SetPriority(GetMinPriority());
 
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
@@ -147,7 +150,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          CleanDatabase(m_handle,&m_pathsToClean, false);
+          CVideoLibraryQueue::Get().CleanLibrary(m_pathsToClean, false, m_handle);
         else
         {
           if (m_handle)
@@ -168,11 +171,6 @@ namespace VIDEO
     
     m_bRunning = false;
     ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
-
-    // we need to clear the videodb cache and update any active lists
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-    g_windowManager.SendThreadMessage(msg);
     
     if (m_handle)
       m_handle->MarkFinished();
@@ -212,28 +210,8 @@ namespace VIDEO
     m_database.Close();
     m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
 
-    StopThread();
-    Create();
     m_bRunning = true;
-  }
-
-  void CVideoInfoScanner::StartCleanDatabase()
-  {
-    m_strStartDir.clear();
-    m_scanAll = false;
-    m_pathsToScan.clear();
-    m_pathsToClean.clear();
-
-    m_bClean = true;
-
-    StopThread();
-    Create();
-    m_bRunning = true;
-  }
-
-  bool CVideoInfoScanner::IsScanning()
-  {
-    return m_bRunning;
+    Process();
   }
 
   void CVideoInfoScanner::Stop()
@@ -241,16 +219,7 @@ namespace VIDEO
     if (m_bCanInterrupt)
       m_database.Interupt();
 
-    StopThread(false);
-  }
-
-  void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /*= NULL */, const set<int>* paths /*= NULL */, bool showProgress /*= true */)
-  {
-    m_bRunning = true;
-    m_database.Open();
-    m_database.CleanDatabase(handle, paths, showProgress);
-    m_database.Close();
-    m_bRunning = false;
+    m_bStop = true;
   }
 
   static void OnDirectoryScanned(const std::string& strDirectory)
@@ -1258,7 +1227,7 @@ namespace VIDEO
 
     CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
     CVariant data;
-    if (IsScanning())
+    if (m_bRunning)
       data["transaction"] = true;
     ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
     return lResult;

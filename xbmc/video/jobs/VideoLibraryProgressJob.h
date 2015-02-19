@@ -19,26 +19,22 @@
  *
  */
 
-#include "Job.h"
-#include "utils/JobManager.h"
+#include "utils/ProgressJob.h"
+#include "video/jobs/VideoLibraryJob.h"
 
-class CMarkWatchedJob : public CJob
+/*!
+ \brief Combined base implementation of a video library job with a progress bar.
+ */
+class CVideoLibraryProgressJob : public CProgressJob, public CVideoLibraryJob
 {
 public:
-  CMarkWatchedJob(const CFileItemPtr &item, bool bMark);
-private:
-  virtual ~CMarkWatchedJob();
-  virtual const char *GetType() const { return "markwatched"; }
-  virtual bool operator==(const CJob* job) const;
+  virtual ~CVideoLibraryProgressJob();
+
+  // implementation of CJob
   virtual bool DoWork();
-  CFileItemPtr m_item;
-  bool m_bMark;
-};
+  virtual const char *GetType() const { return "CVideoLibraryProgressJob"; }
+  virtual bool operator==(const CJob* job) const { return false; }
 
-class CMarkWatchedQueue: public CJobQueue
-{
-public:
-  static CMarkWatchedQueue &Get();
-private:
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+protected:
+  CVideoLibraryProgressJob(CGUIDialogProgressBarHandle* progressBar);
 };

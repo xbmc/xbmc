@@ -7816,7 +7816,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const std::string& strSearch, 
   }
 }
 
-void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const set<int>* paths, bool showProgress)
+void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const set<int>& paths, bool showProgress)
 {
   CGUIDialogProgress *progress=NULL;
   try
@@ -7832,17 +7832,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     // find all the files
     std::string sql = "SELECT files.idFile, files.strFileName, path.strPath FROM files, path WHERE files.idPath = path.idPath";
-    if (paths)
+    if (!paths.empty())
     {
-      if (paths->empty())
-      {
-        RollbackTransaction();
-        ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
-        return;
-      }
-
       std::string strPaths;
-      for (std::set<int>::const_iterator it = paths->begin(); it != paths->end(); ++it)
+      for (std::set<int>::const_iterator it = paths.begin(); it != paths.end(); ++it)
         strPaths += StringUtils::Format(",%i", *it);
       sql += PrepareSQL(" AND path.idPath IN (%s)", strPaths.substr(1).c_str());
     }

@@ -61,6 +61,7 @@
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoLibraryQueue.h"
 #include "Util.h"
 #include "URL.h"
 #include "music/MusicDatabase.h"
@@ -1458,8 +1459,8 @@ int CBuiltins::Execute(const std::string& execString)
     if (g_application.IsMusicScanning())
       g_application.StopMusicScan();
 
-    if (g_application.IsVideoScanning())
-      g_application.StopVideoScan();
+    if (CVideoLibraryQueue::Get().IsRunning())
+      CVideoLibraryQueue::Get().CancelAllJobs();
 
     ADDON::CAddonMgr::Get().StopServices(true);
 
