@@ -345,6 +345,11 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="videolibrary.jumptofirstunplayeditem" type="boolean" label="21416" help="21466">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
           <level>0</level>
           <default>false</default>

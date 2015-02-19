@@ -395,6 +395,11 @@ bool CGUIViewState::AutoPlayNextItem()
   return false;
 }
 
+bool CGUIViewState::JumpToFirstUnplayedItem()
+{
+  return false;
+}
+
 std::string CGUIViewState::GetLockType()
 {
   return "";
