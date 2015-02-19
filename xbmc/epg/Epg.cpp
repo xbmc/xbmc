@@ -304,7 +304,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->SetPVRChannel(m_pvrChannel);
     newTag->m_epg          = this;
     UpdateRecording(newTag);
-    newTag->m_bChanged     = false;
   }
 }
 
