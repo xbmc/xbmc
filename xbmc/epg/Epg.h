@@ -40,7 +40,6 @@ namespace EPG
   class CEpg : public Observable
   {
     friend class CEpgDatabase;
-    friend class CEpgInfoTag;
 
   public:
     /*!

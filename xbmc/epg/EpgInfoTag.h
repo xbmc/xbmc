@@ -135,6 +135,12 @@ namespace EPG
     const int EpgID(void) const;
 
     /*!
+     * @brief Sets the epg reference of this event
+     * @param epg The epg item
+     */
+    void SetEpg(CEpg *epg);
+
+    /*!
      * @brief Change the unique broadcast ID of this event.
      * @param iUniqueBroadcastId The new unique broadcast ID.
      */

@@ -302,7 +302,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   {
     newTag->Update(tag);
     newTag->SetPVRChannel(m_pvrChannel);
-    newTag->m_epg          = this;
+    newTag->SetEpg(this);
     UpdateRecording(newTag);
   }
 }
@@ -327,7 +327,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   }
 
   infoTag->Update(tag, bNewTag);
-  infoTag->m_epg          = this;
+  infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
   UpdateRecording(infoTag);
 

@@ -739,3 +739,8 @@ CPVRRecordingPtr CEpgInfoTag::Recording(void) const
 {
   return m_recording;
 }
+
+void CEpgInfoTag::SetEpg(CEpg *epg)
+{
+  m_epg = epg;
+}
