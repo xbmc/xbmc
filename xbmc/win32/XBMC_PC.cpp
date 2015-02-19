@@ -35,10 +35,20 @@
 #include "utils/CPUInfo.h"
 #include <mmdeviceapi.h>
 #include "win32/IMMNotificationClient.h"
+#include <winsparkle.h>
 
 #ifndef _DEBUG
 #define XBMC_TRACK_EXCEPTIONS
 #endif
+
+// callback for the sparkle updater
+void win_sparkle_shutdown_request_callback()
+{
+  // shutdown kodi...
+  g_application.Stop(EXITCODE_QUIT);
+}
+
+
 
 // Minidump creation function
 LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
@@ -236,7 +246,15 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     SAFE_RELEASE(pEnumerator);
   }
 
+  // init win_sparkle inapp updater
+  win_sparkle_set_shutdown_request_callback(win_sparkle_shutdown_request_callback);
+  win_sparkle_init();
+
+
   g_application.Run();
+
+  // shutdown the updater
+  win_sparkle_cleanup();
 
   // clear previously set timer resolution
   timeEndPeriod(1);		
