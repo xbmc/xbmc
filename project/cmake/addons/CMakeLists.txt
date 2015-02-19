@@ -205,6 +205,14 @@ foreach(id ${downloaded_addons})
                       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
                       CMAKE_ARGS ${BUILD_ARGS})
 
+  # add a custom step to the external project between the configure and the build step which will always
+  # be executed and therefore forces a re-build of all changed files
+  externalproject_add_step(${id} forcebuild
+                           COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
+                           DEPENDEES configure
+                           DEPENDERS build
+                           ALWAYS 1)
+
   set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
 
   if(EXISTS ${${id}_DEPENDS_DIR})
