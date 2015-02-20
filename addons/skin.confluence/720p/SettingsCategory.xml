@@ -254,6 +254,22 @@
 			<height>2</height>
 			<texture>separator2.png</texture>
 		</control>
+		<control type="settingsgrouplabel" id="14">
+			<description>Default settings group Label</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<imageposy>36</imageposy>
+			<imageheight>2</imageheight>
+			<font>font13</font>
+			<textcolor>grey</textcolor>
+			<disabledcolor>grey2</disabledcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>-</label>
+			<texturebg>separator2.png</texturebg>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
 		<control type="label" id="2">
 			<description>Fake Label so we can pass it value down to the one below</description>
 			<left>0</left>

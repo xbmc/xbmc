@@ -100,57 +100,6 @@
 				<ondown>5</ondown>
 			</control>
 		</control>
-		<control type="button" id="7">
-			<description>Default Button</description>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-		</control>
-		<control type="radiobutton" id="8">
-			<description>Default RadioButton</description>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-		</control>
-		<control type="spincontrolex" id="9">
-			<description>Default spincontrolex</description>
-			<height>40</height>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-			<font>font13</font>
-			<aligny>center</aligny>
-			<reverse>yes</reverse>
-		</control>
-		<control type="sliderex" id="13">
-			<description>Default Slider</description>
-			<height>40</height>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-		</control>
-		<control type="image" id="11">
-			<description>Default Seperator</description>
-			<height>2</height>
-			<texture>separator2.png</texture>
-		</control>
-		<control type="edit" id="12">
-			<description>Default Edit</description>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-		</control>
+		<include>SettingsList_Controls</include>
 	</controls>
 </window>
