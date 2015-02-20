@@ -657,6 +657,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_syncclock = false;
     m_errors.Flush();
+    m_integral = 0.0;
   }
 
   //check if measured error for 2 seconds
