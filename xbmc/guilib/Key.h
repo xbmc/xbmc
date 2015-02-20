@@ -354,6 +354,33 @@
 #define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_INPUT_TEXT             244
 
+#define ACTION_JUMP_LETTER_A          300
+#define ACTION_JUMP_LETTER_B          301
+#define ACTION_JUMP_LETTER_C          302
+#define ACTION_JUMP_LETTER_D          303
+#define ACTION_JUMP_LETTER_E          304
+#define ACTION_JUMP_LETTER_F          305
+#define ACTION_JUMP_LETTER_G          306
+#define ACTION_JUMP_LETTER_H          307
+#define ACTION_JUMP_LETTER_I          308
+#define ACTION_JUMP_LETTER_J          309
+#define ACTION_JUMP_LETTER_K          310
+#define ACTION_JUMP_LETTER_L          311
+#define ACTION_JUMP_LETTER_M          312
+#define ACTION_JUMP_LETTER_N          313
+#define ACTION_JUMP_LETTER_O          314
+#define ACTION_JUMP_LETTER_P          315
+#define ACTION_JUMP_LETTER_Q          316
+#define ACTION_JUMP_LETTER_R          317
+#define ACTION_JUMP_LETTER_S          318
+#define ACTION_JUMP_LETTER_T          319
+#define ACTION_JUMP_LETTER_U          320
+#define ACTION_JUMP_LETTER_V          321
+#define ACTION_JUMP_LETTER_W          322
+#define ACTION_JUMP_LETTER_X          323
+#define ACTION_JUMP_LETTER_Y          324
+#define ACTION_JUMP_LETTER_Z          325
+
 // touch actions
 #define ACTION_TOUCH_TAP              401
 #define ACTION_TOUCH_TAP_TEN          410

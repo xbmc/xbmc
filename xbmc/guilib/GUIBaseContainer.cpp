@@ -388,6 +388,38 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_JUMP_LETTER_A:
+  case ACTION_JUMP_LETTER_B:
+  case ACTION_JUMP_LETTER_C:
+  case ACTION_JUMP_LETTER_D:
+  case ACTION_JUMP_LETTER_E:
+  case ACTION_JUMP_LETTER_F:
+  case ACTION_JUMP_LETTER_G:
+  case ACTION_JUMP_LETTER_H:
+  case ACTION_JUMP_LETTER_I:
+  case ACTION_JUMP_LETTER_J:
+  case ACTION_JUMP_LETTER_K:
+  case ACTION_JUMP_LETTER_L:
+  case ACTION_JUMP_LETTER_M:
+  case ACTION_JUMP_LETTER_N:
+  case ACTION_JUMP_LETTER_O:
+  case ACTION_JUMP_LETTER_P:
+  case ACTION_JUMP_LETTER_Q:
+  case ACTION_JUMP_LETTER_R:
+  case ACTION_JUMP_LETTER_S:
+  case ACTION_JUMP_LETTER_T:
+  case ACTION_JUMP_LETTER_U:
+  case ACTION_JUMP_LETTER_V:
+  case ACTION_JUMP_LETTER_W:
+  case ACTION_JUMP_LETTER_X:
+  case ACTION_JUMP_LETTER_Y:
+  case ACTION_JUMP_LETTER_Z:
+    {
+      OnJumpLetter((char)(action.GetID() - ACTION_JUMP_LETTER_A + 65));
+      return true;
+    }
+    break;
+
   default:
     if (action.GetID())
     {
