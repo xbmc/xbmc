@@ -497,6 +497,36 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
   return ret;
 }
 
+bool CGUIControlFactory::GetSettingLabelVisibility(const TiXmlNode* pRootNode, const char* tag, unsigned int &allowedWhere, bool &allowFirstGroupIfEmpty, bool &hideIfEmpty)
+{
+  const TiXmlElement* pNode = pRootNode->FirstChildElement(tag);
+  if (!pNode)
+    return false;
+
+  const char *allow = pNode->Attribute("visible");
+  if (allow)
+  {
+    //! format is allowance = "primary[,secondary,info,everywhere,allowempty]"
+    std::vector<std::string> strRect = StringUtils::Split(allow, ',');
+    for (unsigned int i = 0; i < strRect.size(); i++)
+    {
+      if (strRect[i] == "usefirstifempty") //! If present texture become showed on first group without label
+        allowFirstGroupIfEmpty = true;
+      else if (strRect[i] == "hideifEmpty") //! If present texture become hidden if now label is present
+        hideIfEmpty = true;
+      else if (strRect[i] == "primary")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowPrimary;
+      else if (strRect[i] == "secondary")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowSecondary;
+       else if (strRect[i] == "info")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowInfo;
+      else /* if (strRect[i] == "everywhere") not needed */
+        allowedWhere |= CGUISettingsGroupLabelControl::allowEverywhere;
+    }
+  }
+  return true;
+}
+
 bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& action)
 {
   action.m_actions.clear();
@@ -1238,12 +1268,19 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       float selPosY = 0;
       float selHeight = 0;
+      unsigned int labelAllowed   = CGUISettingsGroupLabelControl::allowUndefined;
+      unsigned int textureAllowed = CGUISettingsGroupLabelControl::allowUndefined;
+      bool allowTextureFirstIfEmpty = false;
+      bool hideTextureIfEmpty = false;
 
+      GetSettingLabelVisibility(pControlNode, "label", labelAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
+      GetSettingLabelVisibility(pControlNode, "texturebg", textureAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
       XMLUtils::GetFloat(pControlNode, "imageposy", selPosY);
       XMLUtils::GetFloat(pControlNode, "imageheight", selHeight);
       if (!selHeight)
         selHeight = minHeight;
 
+      ((CGUISettingsGroupLabelControl *)control)->SetAllowedToBeVisible(labelAllowed, textureAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
       ((CGUISettingsGroupLabelControl *)control)->SetTexture(selPosY, selHeight);
       ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
       ((CGUISettingsGroupLabelControl *)control)->SetAspectRatio(aspect);

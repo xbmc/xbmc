@@ -58,6 +58,18 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
 
   /*!
+   * \brief Flags on which positions label parts allowed to be visible
+   */
+  enum labelAllowed
+  {
+    allowUndefined  = 0x00,
+    allowPrimary    = 0x01,
+    allowSecondary  = 0x02,
+    allowInfo       = 0x04,
+    allowEverywhere = 0x07
+  };
+
+  /*!
    * \brief Set the Texture really to hide, is separated to handle also usage of it
    * if no Label for first point is present on group list.
    * \param hide hide the Texture if true
@@ -78,12 +90,29 @@ public:
   void SetTexture(float posY, float height);
 
   /*!
+   * \brief Called on creation of control with defination based upon skin xml values
+   * \param labelAllowed contains group type flags where allowed to use the label (based upon enum labelAllowed)
+   * \param textureAllowed contains group type flags where allowed to use the texture (based upon enum labelAllowed)
+   * \param allowTextureFirstIfEmpty If set to true texture becomes also shown on first group without label
+   * \param hideTextureIfEmpty Hide the texture if no group label is present
+   */
+  void SetAllowedToBeVisible(unsigned int labelAllowed, unsigned int textureAllowed, bool allowTextureFirstIfEmpty, bool hideTextureIfEmpty);
+
+  /*!
+   * \brief Called to ask for label if it is allowed to use
+   * \param groupType in SettingDefinitions.h under settingsGroupType defined type to ask
+   * \return true if allowed to show
+   */
+  bool LabelAllowedToVisible(unsigned int groupType) const;
+
+  /*!
    * \brief Called to ask for texture if it is allowed to use
+   * \param groupType in SettingDefinitions.h under settingsGroupType defined type to ask
    * \param firstGroup Set true if is first group
    * \param labelEmpty Set true if label is empty
    * \return true if allowed to show
    */
-  bool TextureAllowedToVisible(bool firstGroup, bool labelEmpty) const;
+  bool TextureAllowedToVisible(unsigned int groupType, bool firstGroup, bool labelEmpty) const;
 
   virtual bool UpdateColors();
 
@@ -99,4 +128,8 @@ protected:
   float         m_imageHeight;                  //!< The height of the field on skin if only texture is present and no label
   float         m_normalHeight;                 //!< The normal height of the field on skin if label and texture is present
   bool          m_hideTexture;                  //!< From Settings seted flag to hide, is separated to handle groups without label to hide on first group
+  unsigned int  m_settingsLabelAllowedWhere;    //!< Set with flags from "enum labelAllowed"
+  unsigned int  m_settingsTextureAllowedWhere;  //!< Set with flags from "enum labelAllowed"
+  bool          m_allowTextureFirstIfEmpty;     //!< If set to true texture becomes also shown on first group without label
+  bool          m_hideTextureIfEmpty;           //!< If set to true the texture is hidden if no label is present
 };

@@ -59,6 +59,7 @@ using namespace std;
 #define CONTROL_DEFAULT_SLIDER          13
 #define CONTROL_DEFAULT_SETTING_LABEL   14
 
+
 CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &xmlFile)
     : CGUIDialog(windowId, xmlFile),
       m_iSetting(0), m_iCategory(0),
@@ -520,7 +521,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
 
     // Add named group separator if present on skin
     if (m_pOriginalGroupSettingsLabel)
-      AddGroupSeparator(group->GetWidth(), iControlID, first, (*groupIt)->GetLabel());
+      AddGroupSeparator(group->GetWidth(), iControlID, first, (*groupIt)->GetGroupType(), (*groupIt)->GetLabel());
 
     if (first)
       first = false;
@@ -694,7 +695,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
   return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID)), width, iControlID);
 }
 
-CGUIControl* CGUIDialogSettingsBase::AddGroupSeparator(float width, int &controlId, bool first, int label)
+CGUIControl* CGUIDialogSettingsBase::AddGroupSeparator(float width, int &controlId, bool first, unsigned int groupType, int label)
 {
   if (m_pOriginalGroupSettingsLabel == NULL)
     return NULL;
@@ -703,13 +704,18 @@ CGUIControl* CGUIDialogSettingsBase::AddGroupSeparator(float width, int &control
   if (control == NULL)
     return NULL;
 
-  std::string strLabel = GetLocalizedString(label);
-  ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
+  //! Set label if allowed for this group
+  std::string strLabel;
+  if (((CGUISettingsGroupLabelControl *)control)->LabelAllowedToVisible(groupType))
+  {
+    strLabel = GetLocalizedString(label);
+    ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
+  }
 
   /*! Hide Separator image if not allowed for group or if first group without label and not wish from skin to have visible.
    *  ((CGUISettingsGroupLabelControl *)control) with "SetHideTexture" called from here again to show which side have the right to do this.
    *  (maybe for further improvement) */
-  if (!((CGUISettingsGroupLabelControl *)control)->TextureAllowedToVisible(first, strLabel.empty()))
+  if (!((CGUISettingsGroupLabelControl *)control)->TextureAllowedToVisible(groupType, first, strLabel.empty()))
     ((CGUISettingsGroupLabelControl *)control)->SetHideTexture(true);
 
   return AddSettingControl(control, BaseSettingControlPtr(new CGUIControlGroupLabelSetting((CGUISettingsGroupLabelControl *)control, controlId)), width, controlId);

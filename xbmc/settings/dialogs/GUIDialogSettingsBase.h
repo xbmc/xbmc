@@ -149,7 +149,7 @@ protected:
   BaseSettingControlPtr GetSettingControl(int controlId);
   
   CGUIControl* AddSeparator(float width, int &iControlID);
-  CGUIControl* AddGroupSeparator(float width, int &controlId, bool first, int label);
+  CGUIControl* AddGroupSeparator(float width, int &controlId, bool first, unsigned int groupType, int label);
 
   std::vector<CSettingCategory*> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;

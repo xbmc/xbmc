@@ -89,7 +89,7 @@ CSettingCategory* CGUIDialogSettingsManualBase::AddCategory(const std::string &i
   return category;
 }
 
-CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category, int label /* -1 */, int help /* -1 */)
+CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category, int label /* -1 */, int help /* -1 */, unsigned int groupType /* settingsGroupPrimary */)
 {
   if (category == NULL)
     return NULL;
@@ -104,6 +104,7 @@ CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category
     group->SetLabel(label);
   if (help >= 0)
     group->SetHelp(help);
+  group->SetGroupType(groupType);
 
   category->AddGroup(group);
   return group;

@@ -31,7 +31,10 @@ CGUISettingsGroupLabelControl::CGUISettingsGroupLabelControl(int parentID, int c
     m_alpha(255),
     m_imageHeight(height),
     m_normalHeight(height),
-    m_hideTexture(false)
+    m_hideTexture(false),
+    m_settingsLabelAllowedWhere(allowEverywhere),
+    m_settingsTextureAllowedWhere(allowEverywhere),
+    m_allowTextureFirstIfEmpty(false)
 {
   ControlType = GUICONTROL_SETTINGS_GROUP_LABEL;
 }
@@ -197,10 +200,35 @@ void CGUISettingsGroupLabelControl::SetHideTexture(bool hide)
   }
 }
 
-bool CGUISettingsGroupLabelControl::TextureAllowedToVisible(bool firstGroup, bool labelEmpty) const
+void CGUISettingsGroupLabelControl::SetAllowedToBeVisible(unsigned int labelAllowed, unsigned int textureAllowed, bool allowTextureFirstIfEmpty, bool hideTextureIfEmpty)
 {
-  if (firstGroup && labelEmpty)
+  m_settingsLabelAllowedWhere   = labelAllowed   == allowUndefined ? allowEverywhere : labelAllowed;
+  m_settingsTextureAllowedWhere = textureAllowed == allowUndefined ? allowEverywhere : textureAllowed;
+  m_allowTextureFirstIfEmpty    = allowTextureFirstIfEmpty;
+  m_hideTextureIfEmpty          = hideTextureIfEmpty;
+}
+
+bool CGUISettingsGroupLabelControl::LabelAllowedToVisible(unsigned int groupType) const
+{
+  if ((m_settingsLabelAllowedWhere & allowPrimary   && groupType == settingsGroupPrimary)   ||
+      (m_settingsLabelAllowedWhere & allowSecondary && groupType == settingsGroupSecondary) ||
+      (m_settingsLabelAllowedWhere & allowInfo      && groupType == settingsGroupInformation))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool CGUISettingsGroupLabelControl::TextureAllowedToVisible(unsigned int groupType, bool firstGroup, bool labelEmpty) const
+{
+  if ((firstGroup && labelEmpty && !m_allowTextureFirstIfEmpty) || (labelEmpty && m_hideTextureIfEmpty))
     return false;
 
-  return true;
+  if ((m_settingsTextureAllowedWhere & allowPrimary   && groupType == settingsGroupPrimary)   ||
+      (m_settingsTextureAllowedWhere & allowSecondary && groupType == settingsGroupSecondary) ||
+      (m_settingsTextureAllowedWhere & allowInfo      && groupType == settingsGroupInformation))
+  {
+    return true;
+  }
+  return false;
 }

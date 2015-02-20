@@ -265,8 +265,8 @@
 			<textcolor>grey</textcolor>
 			<disabledcolor>grey2</disabledcolor>
 			<shadowcolor>black</shadowcolor>
-			<label>-</label>
-			<texturebg>separator2.png</texturebg>
+			<label visible="primary,info">-</label>
+			<texturebg visible="primary,secondary">separator2.png</texturebg>
 			<align>center</align>
 			<aligny>center</aligny>
 		</control>
