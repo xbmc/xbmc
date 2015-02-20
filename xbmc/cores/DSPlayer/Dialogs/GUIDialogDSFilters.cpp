@@ -50,21 +50,11 @@
 
 using namespace std;
 
-DSFiltersList::DSFiltersList(FilterType type) :
-
-settingFilter(""),
-strFilterName(""),
-strFilterAttr(""),
-strFilterValue(""),
-filterLabel(0),
-filler(NULL),
-m_filterType(type)
-{
-}
-
 CGUIDialogDSFilters::CGUIDialogDSFilters()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_DSFILTERS, "VideoOSDSettings.xml")
-{ }
+{ 
+  m_dsmanager = CGUIDialogDSManager::Get();
+}
 
 
 CGUIDialogDSFilters::~CGUIDialogDSFilters()
@@ -113,59 +103,6 @@ void CGUIDialogDSFilters::SetupView()
 
   SET_CONTROL_LABEL(0, 65001);
 }
-void CGUIDialogDSFilters::SetNewFilter(bool b)
-{
-  m_newfilter = b;
-}
-
-bool CGUIDialogDSFilters::GetNewFilter()
-{
-  return m_newfilter;
-}
-
-void CGUIDialogDSFilters::SetFilterIndex(int index)
-{
-  m_filterIndex = index;
-}
-
-int CGUIDialogDSFilters::GetFilterIndex()
-{
-  return m_filterIndex;
-}
-
-bool CGUIDialogDSFilters::compare_by_word(const DynamicStringSettingOption& lhs, const DynamicStringSettingOption& rhs)
-{
-  CStdString strLine1 = lhs.first;
-  CStdString strLine2 = rhs.first;
-  StringUtils::ToLower(strLine1);
-  StringUtils::ToLower(strLine2);
-  return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
-}
-
-void CGUIDialogDSFilters::InitFilters(FilterType type, CStdString settingFilter, int filterLabel, CStdString strFilterAttr /* = "" */, CStdString strFilterName /*= "" */, StringSettingOptionsFiller filler /* = NULL */)
-{
-  DSFiltersList* filterList = new DSFiltersList(type);
-  filterList->settingFilter = settingFilter;
-  filterList->strFilterAttr = strFilterAttr;
-  filterList->strFilterName = strFilterName;
-  filterList->filler = filler;
-  filterList->filterLabel = filterLabel;
-  m_filterList.push_back(filterList);
-}
-
-void CGUIDialogDSFilters::ResetValue()
-{
-  std::vector<DSFiltersList *>::iterator it;
-  for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
-  {
-    if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == OSDGUID)
-      (*it)->strFilterValue = "";
-    if ((*it)->m_filterType == SPINNERATTRFILTER)
-      (*it)->strFilterValue = "[null]";
-    if ((*it)->m_filterType == FILTERSYSTEM)
-      (*it)->strFilterValue = "[null]";
-  }
-}
 
 void CGUIDialogDSFilters::InitializeSettings()
 {
@@ -201,75 +138,61 @@ void CGUIDialogDSFilters::InitializeSettings()
   }
   
   // Init variables
-  int selected = Get()->GetFilterIndex();
-  int count = 0;
   CStdString strGuid;
 
   if (m_filterList.size() == 0)
   {
-    InitFilters(OSDGUID, "dsfilters.osdname", 65003, "","osdname");
-    InitFilters(EDITATTRFILTER, "dsfilters.name", 65004, "name");
-    InitFilters(SPINNERATTRFILTER, "dsfilters.type", 65005, "type", "", TypeOptionFiller);
-    InitFilters(OSDGUID, "dsfilters.guid", 65006, "","guid");
-    InitFilters(FILTERSYSTEM, "dsfilters.systemfilter", 65010, "", "", DSFilterOptionFiller);
+    m_dsmanager->InitConfig(m_filterList, OSDGUID, "dsfilters.osdname", 65003, "", "osdname");
+    m_dsmanager->InitConfig(m_filterList, EDITATTR, "dsfilters.name", 65004, "name");
+    m_dsmanager->InitConfig(m_filterList, SPINNERATTR, "dsfilters.type", 65005, "type", "", TypeOptionFiller);
+    m_dsmanager->InitConfig(m_filterList, OSDGUID, "dsfilters.guid", 65006, "", "guid");
+    m_dsmanager->InitConfig(m_filterList, FILTERSYSTEM, "dsfilters.systemfilter", 65010, "", "", m_dsmanager->DSFilterOptionFiller);
   }
 
   // Reset Button value
-  ResetValue();
+  m_dsmanager->ResetValue(m_filterList);
   
   // Load userdata Filteseconfig.xml
-  if (!Get()->GetNewFilter())
+  if (!m_dsmanager->GetisNew())
   {
-    CXBMCTinyXML FiltersConfigXML;
-    CStdString xmlFile;
     TiXmlElement *pFilters;
-    LoadDsXML(&FiltersConfigXML, pFilters, xmlFile, true);
+    m_dsmanager->LoadDsXML(FILTERSCONFIG, pFilters);
 
     if (pFilters)
     {
-      TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
+      TiXmlElement *pFilter = m_dsmanager->KeepSelectedNode(pFilters, "filter");
 
-      while (pFilter)
+      std::vector<DSConfigList *>::iterator it;
+      for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
       {
-        if (count == selected)
-        {
-          std::vector<DSFiltersList *>::iterator it;
-          for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
-          {                   
-            if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == SPINNERATTRFILTER)
-              (*it)->strFilterValue = pFilter->Attribute((*it)->strFilterAttr.c_str());   
-            if ((*it)->m_filterType == OSDGUID) {
-              XMLUtils::GetString(pFilter, (*it)->strFilterName.c_str(), strGuid);
-              (*it)->strFilterValue = strGuid;
-            }          
-            if ((*it)->m_filterType == FILTERSYSTEM)
-              (*it)->strFilterValue = strGuid;
-          }
+        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
+          (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
+        if ((*it)->m_configType == OSDGUID) {
+          XMLUtils::GetString(pFilter, (*it)->m_nodeName.c_str(), strGuid);
+          (*it)->m_value = strGuid;
         }
-        pFilter = pFilter->NextSiblingElement("filter");
-        count++;
+        if ((*it)->m_configType == FILTERSYSTEM)
+          (*it)->m_value = strGuid;
       }
     }
   }
 
   // Stamp Button
-
-  CStdString setting_filter;
-  std::vector<DSFiltersList *>::iterator it;
+  std::vector<DSConfigList *>::iterator it;
 
   for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
   {
-    if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == OSDGUID)
-      AddEdit(group, (*it)->settingFilter, (*it)->filterLabel, 0, (*it)->strFilterValue, true);
+    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == OSDGUID)
+      AddEdit(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, true);
 
-    if ((*it)->m_filterType == SPINNERATTRFILTER)
-      AddSpinner(group, (*it)->settingFilter, (*it)->filterLabel, 0, (*it)->strFilterValue, (*it)->filler);
+    if ((*it)->m_configType == SPINNERATTR)
+      AddSpinner(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler);
 
-    if ((*it)->m_filterType == FILTERSYSTEM)
-      AddList(groupSystem, (*it)->settingFilter, (*it)->filterLabel, 0, (*it)->strFilterValue, (*it)->filler, (*it)->filterLabel);
+    if ((*it)->m_configType == FILTERSYSTEM)
+      AddList(groupSystem, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
   }
 
-  if (Get()->GetNewFilter())
+  if (m_dsmanager->GetisNew())
     AddButton(groupSave, SETTING_FILTER_ADD, 65007, 0);
   else
   { 
@@ -288,28 +211,28 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId(); 
 
-  std::vector<DSFiltersList *>::iterator it;
+  std::vector<DSConfigList *>::iterator it;
   for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
   {
-    if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == SPINNERATTRFILTER || (*it)->m_filterType == OSDGUID)
+    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR || (*it)->m_configType == OSDGUID)
     { 
-      if (settingId == (*it)->settingFilter)
+      if (settingId == (*it)->m_setting)
       {
-        (*it)->strFilterValue = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
       }
     }
-    if ((*it)->m_filterType == FILTERSYSTEM)
+    if ((*it)->m_configType == FILTERSYSTEM)
     {
       if (settingId == "dsfilters.systemfilter")
       {
-        (*it)->strFilterValue = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
 
-        CStdString strOSDName = GetFilterName((*it)->strFilterValue);
+        CStdString strOSDName = GetFilterName((*it)->m_value);
         CStdString strFilterName = strOSDName;
         strFilterName.ToLower();
         strFilterName.Replace(" ", "_");
 
-        m_settingsManager->SetString("dsfilters.guid", (*it)->strFilterValue.c_str());
+        m_settingsManager->SetString("dsfilters.guid", (*it)->m_value.c_str());
         m_settingsManager->SetString("dsfilters.osdname", strOSDName);
         m_settingsManager->SetString("dsfilters.name", strFilterName);
       }    
@@ -323,10 +246,8 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
     return;
 
   // Load userdata Filteseconfig.xml
-  CXBMCTinyXML FiltersConfigXML;
-  CStdString xmlFile;
   TiXmlElement *pFilters;
-  LoadDsXML(&FiltersConfigXML, pFilters, xmlFile, true);
+  m_dsmanager->LoadDsXML(FILTERSCONFIG, pFilters, true);
   if (!pFilters)
     return;
 
@@ -340,103 +261,60 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
     if (!CGUIDialogYesNo::ShowAndGetInput(65009, 65011, 0, 0))
       return;
     
-    int selected = Get()->GetFilterIndex();
-    int count = 0;
-    TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
-    while (pFilter)
-    {
-      if (count == selected)
-      {
-        pFilters->RemoveChild(pFilter);
-        break;
-      }
-      pFilter = pFilter->NextSiblingElement("filter");
-      count++;
-    }
+    TiXmlElement *oldRule = m_dsmanager->KeepSelectedNode(pFilters, "filter");
+    pFilters->RemoveChild(oldRule);
 
-    FiltersConfigXML.SaveFile(xmlFile);
+    m_dsmanager->SaveDsXML(FILTERSCONFIG);
     CGUIDialogDSFilters::Close();
   }
 
-  // Add New Filter
-  if (settingId == SETTING_FILTER_ADD)
+  // Add & Save Filter
+  if (settingId == SETTING_FILTER_ADD || settingId == SETTING_FILTER_SAVE)
   {
     TiXmlElement pFilter("filter");
 
-    std::vector<DSFiltersList *>::iterator it;
+    std::vector<DSConfigList *>::iterator it;
     for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
     {
-      if ((*it)->strFilterValue == "" || (*it)->strFilterValue == "[null]") 
+      if ((*it)->m_value == "" || (*it)->m_value == "[null]") 
       {
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(65001), g_localizeStrings.Get(65012), 2000, false, 300);
         return;
       }
 
-      if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == SPINNERATTRFILTER)
-          pFilter.SetAttribute((*it)->strFilterAttr.c_str(), (*it)->strFilterValue.c_str());
+      if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
+          pFilter.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
-      if ((*it)->m_filterType == OSDGUID)
+      if ((*it)->m_configType == OSDGUID)
       { 
-        TiXmlElement newElement((*it)->strFilterName.c_str());
+        TiXmlElement newElement((*it)->m_nodeName.c_str());
         TiXmlNode *pNewNode = pFilter.InsertEndChild(newElement);
-        TiXmlText value((*it)->strFilterValue.c_str());
+        TiXmlText value((*it)->m_value.c_str());
         pNewNode->InsertEndChild(value);
       }
     }
-    pFilters->InsertEndChild(pFilter);
-    FiltersConfigXML.SaveFile(xmlFile);
-    CGUIDialogDSFilters::Close();
-  }
 
-  // Save Modifications
-  if (settingId == SETTING_FILTER_SAVE)
-  {
-    int selected = Get()->GetFilterIndex();
-    int count = 0;
-
-    TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
-    while (pFilter)
+    // SAVE
+    if (settingId == SETTING_FILTER_SAVE)
     {
-      if (count == selected)
-      {
-        pFilter->Clear();
-        std::vector<DSFiltersList *>::iterator it;
-        for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
-        {
-          if ((*it)->strFilterValue == "" || (*it)->strFilterValue == "[null]")
-          {
-            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(65001), g_localizeStrings.Get(65012), 2000, false, 300);
-            return;
-          }
-
-          if ((*it)->m_filterType == EDITATTRFILTER || (*it)->m_filterType == SPINNERATTRFILTER)
-            pFilter->SetAttribute((*it)->strFilterAttr.c_str(), (*it)->strFilterValue.c_str());
-
-          if ((*it)->m_filterType == OSDGUID)
-          {
-            TiXmlElement newElement((*it)->strFilterName.c_str());
-            TiXmlNode *pNewNode = pFilter->InsertEndChild(newElement);
-            TiXmlText value((*it)->strFilterValue.c_str());
-            pNewNode->InsertEndChild(value);
-          }
-        }
-      }
-      pFilter = pFilter->NextSiblingElement("filter");
-      count++;
+      TiXmlElement *oldFilter = m_dsmanager->KeepSelectedNode(pFilters, "filter");
+      pFilters->ReplaceChild(oldFilter, pFilter);
     }
+
+    if (settingId == SETTING_FILTER_ADD)
+      pFilters->InsertEndChild(pFilter);
+
     isEdited = false;
-    FiltersConfigXML.SaveFile(xmlFile);
+    m_dsmanager->SaveDsXML(FILTERSCONFIG);
     CGUIDialogDSFilters::Close();
   }
 }
 
 int CGUIDialogDSFilters::ShowDSFiltersList()
 {
-  // Load userdata Filteseconfig.xml
-  CXBMCTinyXML FiltesConfigXML;
-  CStdString xmlFile;
+  // Load userdata Filterseconfig.xml
   TiXmlElement *pFilters;
-  Get()->LoadDsXML(&FiltesConfigXML, pFilters, xmlFile, true);
+  Get()->m_dsmanager->LoadDsXML(FILTERSCONFIG, pFilters, true);
   if (!pFilters)
     return -1;
 
@@ -473,42 +351,16 @@ int CGUIDialogDSFilters::ShowDSFiltersList()
   pDlg->DoModal();
   selected = pDlg->GetSelectedLabel();
   if (selected == count)
-    Get()->SetNewFilter(true);
+    Get()->m_dsmanager->SetisNew(true);
   else
-    Get()->SetNewFilter(false);
-  Get()->SetFilterIndex(selected);
+    Get()->m_dsmanager->SetisNew(false);
+
+  Get()->m_dsmanager->SetConfigIndex(selected);
+
 
   if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSFILTERS);
 
   return selected;
-}
-
-void CGUIDialogDSFilters::LoadDsXML(CXBMCTinyXML *XML, TiXmlElement* &pNode, CStdString &xmlFile, bool forceCreate /*= false*/)
-{
-  CStdString xmlRoot, xmlNode;
-  pNode = NULL;
-
-  xmlFile = CProfilesManager::Get().GetUserDataItem("dsplayer/filtersconfig.xml");
-  xmlRoot = "filtersconfig";
-  xmlNode = "filters";
-
-  if (!XML->LoadFile(xmlFile))
-  {
-    CLog::Log(LOGERROR, "%s Error loading %s, Line %d (%s)", __FUNCTION__, xmlFile.c_str(), XML->ErrorRow(), XML->ErrorDesc());
-    if (!forceCreate)
-      return;
-
-    TiXmlElement pRoot(xmlRoot.c_str());
-    pRoot.InsertEndChild(TiXmlElement(xmlNode.c_str()));
-    XML->InsertEndChild(pRoot);
-  }
-  TiXmlElement *pConfig = XML->RootElement();
-  if (!pConfig || strcmpi(pConfig->Value(), xmlRoot.c_str()) != 0)
-  {
-    CLog::Log(LOGERROR, "%s Error loading medias configuration, no <%s> node", __FUNCTION__, xmlRoot.c_str());
-    return;
-  }
-  pNode = pConfig->FirstChildElement(xmlNode.c_str());
 }
 
 void CGUIDialogDSFilters::TypeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
@@ -522,22 +374,6 @@ void CGUIDialogDSFilters::TypeOptionFiller(const CSetting *setting, std::vector<
   list.push_back(std::make_pair("Extra Filter (extra)", "extra"));
 }
 
-void CGUIDialogDSFilters::DSFilterOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
-{
-  CDSFilterEnumerator p_dfilter;
-  std::vector<DSFiltersInfo> filterList;
-  p_dfilter.GetDSFilters(filterList);
-
-  std::vector<DSFiltersInfo>::const_iterator iter = filterList.begin();
-
-  for (int i = 1; iter != filterList.end(); i++)
-  {
-    DSFiltersInfo filter = *iter;
-    list.push_back(std::make_pair(filter.lpstrName, filter.lpstrGuid));
-    ++iter;
-  }
-}
-
 CStdString CGUIDialogDSFilters::GetFilterName(CStdString guid)
 {
   CDSFilterEnumerator p_dfilter;
@@ -549,7 +385,7 @@ CStdString CGUIDialogDSFilters::GetFilterName(CStdString guid)
   for (int i = 1; iter != filterList.end(); i++)
   {
     DSFiltersInfo filter = *iter;
-    if (guid == filter.lpstrGuid) 
+    if (guid == filter.lpstrGuid)
     {
       return filter.lpstrName;
     }

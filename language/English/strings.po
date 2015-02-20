@@ -16407,19 +16407,19 @@ msgid "Subtitles not found"
 msgstr ""
 
 msgctxt "#55060"
-msgid "Use DSPlayer menu audio selector"
+msgid "Use menu audio selector"
 msgstr ""
 
 msgctxt "#55061"
-msgid "Use DSPlayer menu subtitle selector"
+msgid "Use menu subtitle selector"
 msgstr ""
 
 msgctxt "#55062"
-msgid "DSPlayer filters list..."
+msgid "filters list..."
 msgstr ""
 
 msgctxt "#60001"
-msgid "DSPlayer Media Rules"
+msgid "Media rules"
 msgstr ""
 
 msgctxt "#60002"
@@ -16440,7 +16440,7 @@ msgstr ""
 
 msgctxt "#60006"
 msgid "- Url"
-msgstr 
+msgstr ""
 
 msgctxt "#60007"
 msgid "Source filter"
@@ -16464,11 +16464,11 @@ msgstr ""
 
 msgctxt "#60012"
 msgid "Extra filter"
-msgstr 
+msgstr ""
 
 msgctxt "#60013"
 msgid "Shader Id"
-msgstr 
+msgstr ""
 
 msgctxt "#60014"
 msgid "Add new rule..."
@@ -16476,91 +16476,135 @@ msgstr ""
 
 msgctxt "#60015"
 msgid "Add rule"
-msgstr 
+msgstr ""
 
 msgctxt "#60016"
-msgid "Save rule modifications"
-msgstr "
+msgid "Save rule changes"
+msgstr ""
 
 msgctxt "#60017"
 msgid "Delete rule"
-msgstr "
+msgstr ""
 
 msgctxt "#60018"
 msgid "Are you sure to delete this rule?"
-msgstr 
+msgstr ""
 
 msgctxt "#60019"
 msgid "- Video resolution"
-msgstr 
+msgstr ""
 
 msgctxt "#60020"
 msgid "- Video codec"
-msgstr 
+msgstr ""
 
 msgctxt "#60021"
 msgid "- Audio channels"
-msgstr 
+msgstr ""
 
 msgctxt "#60022"
 msgid "- Audio codec"
-msgstr 
+msgstr ""
 
 msgctxt "#61001"
 msgid "Save changes?"
-msgstr 
+msgstr ""
 
 msgctxt "#61002"
 msgid "Do you want to save changes you made?"
-msgstr 
+msgstr ""
 
 msgctxt "#65001"
-msgid "DSPlayer Filters Config"
-msgstr "
+msgid "Filters configuration"
+msgstr ""
 
 msgctxt "#65002"
 msgid "Add new filter..."
-msgstr "
+msgstr ""
 
 msgctxt "#65003"
 msgid "OSDName"
-msgstr "
+msgstr ""
 
 msgctxt "#65004"
 msgid "Filter name"
-msgstr "
+msgstr ""
 
 msgctxt "#65005"
 msgid "Filter type"
-msgstr "
+msgstr ""
 
 msgctxt "#65006"
 msgid "Filter guid"
-msgstr "
+msgstr ""
 
 msgctxt "#65007"
 msgid "Add filter"
-msgstr "
+msgstr ""
 
 msgctxt "#65008"
-msgid "Save filter modifications"
-msgstr 
+msgid "Save filter changes"
+msgstr ""
 
 msgctxt "#65009"
 msgid "Delete filter"
-msgstr 
+msgstr ""
 
 msgctxt "#65010"
 msgid "System filters list"
-msgstr 
+msgstr ""
 
 msgctxt "#65011"
 msgid "Are you sure to delete this filter?"
-msgstr 
+msgstr ""
 
 msgctxt "#65012"
 msgid "Please fill out all required fields"
-msgstr 
+msgstr ""
+
+msgctxt "#66001"
+msgid "DVDPlayer merits"
+msgstr ""
+
+msgctxt "#66002"
+msgid "Add new merits rule..."
+msgstr ""
+
+msgctxt "#66003"
+msgid "- Internet stream"
+msgstr ""
+
+msgctxt "#66004"
+msgid "- Remote"
+msgstr ""
+
+msgctxt "#66005"
+msgid "- Audio"
+msgstr ""
+
+msgctxt "#66006"
+msgid "- Video"
+msgstr ""
+
+msgctxt "#66007"
+msgid "- DVD"
+msgstr ""
+
+msgctxt "#66008"
+msgid "- DVD image"
+msgstr ""
+
+msgctxt "#66009"
+msgid "- DVD file"
+msgstr ""
+
+msgctxt "#66010"
+msgid "- Video aspect ratio"
+msgstr ""
+
+msgctxt "#66011"
+msgid "- Mimetypes"
+msgstr ""
 
 msgctxt "#909001"
 msgid "Rus"

@@ -3228,6 +3228,12 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.cpp">
       <Filter>cores\DSPlayer\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSManager.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\OverrideDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -6344,6 +6350,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSFilters.h">
       <Filter>cores\DSPlayer\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSManager.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h">
       <Filter>filesystem</Filter>

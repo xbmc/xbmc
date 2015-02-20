@@ -352,6 +352,7 @@ static const ActionMapping windows[] =
 #ifdef HAS_DS_PLAYER
         {"dsrulesettings"           , WINDOW_DIALOG_DSRULES},
         {"dsfiltersettings"         , WINDOW_DIALOG_DSFILTERS},
+        {"dsplayercoresettings"     , WINDOW_DIALOG_DSPLAYERCORE},
 #endif
         {"videobookmarks"           , WINDOW_DIALOG_VIDEO_BOOKMARKS},
         {"filebrowser"              , WINDOW_DIALOG_FILE_BROWSER},

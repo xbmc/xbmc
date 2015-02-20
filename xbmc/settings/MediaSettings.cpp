@@ -42,6 +42,7 @@
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
 #endif
 using namespace std;
 
@@ -345,6 +346,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     CGUIDialogDSRules::ShowDSRulesList();
   else if (settingId == "dsplayer.filters")
     CGUIDialogDSFilters::ShowDSFiltersList();
+  else if (settingId == "dsplayer.playercore")
+    CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory();
 #endif
   else if (settingId == "videolibrary.import")
   {

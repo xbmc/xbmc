@@ -153,6 +153,7 @@
 #include "cores/DSPlayer/GUIDialogShaderList.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
 #endif
 
 using namespace std;
@@ -230,6 +231,7 @@ void CGUIWindowManager::CreateWindows()
 #ifdef HAS_DS_PLAYER
   Add(new CGUIDialogDSRules);
   Add(new CGUIDialogDSFilters);
+  Add(new CGUIDialogDSPlayercoreFactory);
 #endif
   Add(new CGUIDialogVideoBookmarks);
   // Don't add the filebrowser dialog - it's created and added when it's needed
@@ -1337,7 +1339,7 @@ bool CGUIWindowManager::IsWindowVisible(int id) const
 #ifdef HAS_DS_PLAYER
   if (id == WINDOW_DIALOG_VIDEO_OSD_SETTINGS) 
   {
-    if (IsWindowActive(WINDOW_DIALOG_DSRULES, false) || IsWindowActive(WINDOW_DIALOG_DSFILTERS, false))
+    if (IsWindowActive(WINDOW_DIALOG_DSRULES, false) || IsWindowActive(WINDOW_DIALOG_DSFILTERS, false) || IsWindowActive(WINDOW_DIALOG_DSPLAYERCORE, false))
       return true;
   }
 #endif

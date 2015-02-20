@@ -27,21 +27,20 @@
 #include "utils/stdstring.h"
 #include "GUIDialogDSManager.h"
 
-
-class CGUIDialogDSRules : public CGUIDialogSettingsManualBase
+class CGUIDialogDSPlayercoreFactory : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogDSRules();
-  virtual ~CGUIDialogDSRules();
+  CGUIDialogDSPlayercoreFactory();
+  virtual ~CGUIDialogDSPlayercoreFactory();
 
-  static CGUIDialogDSRules* Get();
+  static CGUIDialogDSPlayercoreFactory* Get();
   static void Destroy()
   {
     delete m_pSingleton;
     m_pSingleton = NULL;
   }
 
-  static int ShowDSRulesList();
+  static int ShowDSPlayercoreFactory();
 
 protected:
 
@@ -58,18 +57,14 @@ protected:
 
   // specialization of CGUIDialogSettingsManualBase
   virtual void InitializeSettings();
+
   virtual void SetupView();
 
-  static CGUIDialogDSRules* m_pSingleton;
+  static CGUIDialogDSPlayercoreFactory* m_pSingleton;
 
-  void ResetValue();
-  void HideUnused();
-  void HideUnused(ConfigType type, ConfigType subType);
-  void SetVisible(CStdString id, bool visible, bool isChild = false);
+
+  bool isEdited;
 
   std::vector<DSConfigList *> m_ruleList;
   CGUIDialogDSManager* m_dsmanager;
-
-  bool isEdited;
-  bool m_allowchange;
 };

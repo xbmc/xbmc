@@ -690,6 +690,7 @@ void CSettings::InitializeISettingCallbacks()
 #ifdef HAS_DS_PLAYER
   settingSet.insert("dsplayer.rules");
   settingSet.insert("dsplayer.filters");
+  settingSet.insert("dsplayer.playercore");
 #endif
   m_settingsManager->RegisterCallback(&CMediaSettings::Get(), settingSet);
 

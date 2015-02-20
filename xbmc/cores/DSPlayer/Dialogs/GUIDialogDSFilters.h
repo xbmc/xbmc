@@ -25,28 +25,7 @@
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "utils/stdstring.h"
-
-enum FilterType {
-  EDITATTRFILTER,
-  OSDGUID,
-  SPINNERATTRFILTER,
-  FILTERSYSTEM,
-};
-
-class DSFiltersList
-{
-public:
-  DSFiltersList(FilterType type);
-
-  CStdString strFilterAttr;
-  CStdString strFilterName;
-  CStdString strFilterValue;
-  CStdString settingFilter;
-  int filterLabel;
-  StringSettingOptionsFiller filler;
-  FilterType m_filterType;
-
-};
+#include "GUIDialogDSManager.h"
 
 class CGUIDialogDSFilters : public CGUIDialogSettingsManualBase
 {
@@ -62,10 +41,6 @@ public:
   }
 
   static int ShowDSFiltersList();
-  void SetNewFilter(bool b);
-  bool GetNewFilter();
-  void SetFilterIndex(int index);
-  int GetFilterIndex();
 
 protected:
 
@@ -85,18 +60,12 @@ protected:
 
   virtual void SetupView();
 
-  static void DSFilterOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void TypeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static bool compare_by_word(const DynamicStringSettingOption& lhs, const DynamicStringSettingOption& rhs);
   static CGUIDialogDSFilters* m_pSingleton;
-  void LoadDsXML(CXBMCTinyXML *XML, TiXmlElement* &pNode, CStdString &xmlFile, bool forceCreate = false);
-  void InitFilters(FilterType type, CStdString settingFilter, int FilterLabel, CStdString strFilterName = "", CStdString strFilterAttr = "", StringSettingOptionsFiller filler = NULL);
-  void ResetValue();
   CStdString GetFilterName(CStdString guid);
 
-  bool m_newfilter;
   bool isEdited;
-  int m_filterIndex;
 
-  std::vector<DSFiltersList *> m_filterList;
+  std::vector<DSConfigList *> m_filterList;
+  CGUIDialogDSManager* m_dsmanager;
 };
