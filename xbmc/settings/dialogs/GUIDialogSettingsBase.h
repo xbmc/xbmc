@@ -49,6 +49,7 @@ class CGUIEditControl;
 class CGUIButtonControl;
 class CGUIRadioButtonControl;
 class CGUISettingsSliderControl;
+class CGUISettingsGroupLabelControl;
 
 class CSetting;
 class CSettingAction;
@@ -148,6 +149,7 @@ protected:
   BaseSettingControlPtr GetSettingControl(int controlId);
   
   CGUIControl* AddSeparator(float width, int &iControlID);
+  CGUIControl* AddGroupSeparator(float width, int &controlId, bool first, int label);
 
   std::vector<CSettingCategory*> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
@@ -164,6 +166,7 @@ protected:
   CGUIButtonControl *m_pOriginalButton;
   CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
+  CGUISettingsGroupLabelControl *m_pOriginalGroupSettingsLabel;
   bool m_newOriginalEdit;
   
   BaseSettingControlPtr m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()

@@ -54,7 +54,7 @@ protected:
   virtual void InitializeSettings();
 
   CSettingCategory* AddCategory(const std::string &id, int label, int help = -1);
-  CSettingGroup* AddGroup(CSettingCategory *category);
+  CSettingGroup* AddGroup(CSettingCategory *category, int label = -1, int help = -1);
   // checkmark control
   CSettingBool* AddToggle(CSettingGroup *group, const std::string &id, int label, int level, bool value, bool delayed = false, bool visible = true, int help = -1);
   // edit controls
