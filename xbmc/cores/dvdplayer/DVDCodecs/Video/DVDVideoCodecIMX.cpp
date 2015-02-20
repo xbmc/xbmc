@@ -886,6 +886,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
 #ifdef TRACE_FRAMES
           CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, dts, pts);
+          CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, buffer->GetDts(), buffer->GetPts());
 #endif
 
           if (!m_usePTS)
