@@ -4,17 +4,18 @@ XBMC_PLATFORM_DIR=osx32
 
 . $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-native-depends
 
-for addon in $BINARY_ADDONS
-do
-  ALL_BINARY_ADDONS_BUILT="1"
-  #only build binary addons if something in the addons metadata changed
-  if [ "$(pathChanged $WORKSPACE/project/cmake)" == "1" ]
-  then
+ALL_BINARY_ADDONS_BUILT="1"
+#only build binary addons if something in the addons metadata changed
+if [ "$(pathChanged $WORKSPACE/project/cmake)" == "1" ]
+then
+  for addon in $BINARY_ADDONS
+  do
     echo "building $addon"
     git clean -xffd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon
     cd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon;make -j $BUILDTHREADS || ALL_BINARY_ADDONS_BUILT="0"
-  fi
-done
+  done
+fi
+
 if [ "$ALL_BINARY_ADDONS_BUILT" == "1" ]
 then
   tagSuccessFulBuild $WORKSPACE/project/cmake
