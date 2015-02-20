@@ -43,7 +43,7 @@ public:
   virtual HttpResponseRanges GetResponseData() const { return m_responseData; }
 
   // priority must be higher than the one of CHTTPImageHandler
-  virtual int GetPriority() const { return 3; }
+  virtual int GetPriority() const { return 6; }
 
 protected:
   explicit CHTTPImageTransformationHandler(const HTTPRequest &request);

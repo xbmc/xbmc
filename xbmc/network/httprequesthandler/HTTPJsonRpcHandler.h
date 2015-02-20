@@ -37,7 +37,7 @@ public:
 
   virtual HttpResponseRanges GetResponseData() const;
 
-  virtual int GetPriority() const { return 2; }
+  virtual int GetPriority() const { return 5; }
 
 protected:
   explicit CHTTPJsonRpcHandler(const HTTPRequest &request)
