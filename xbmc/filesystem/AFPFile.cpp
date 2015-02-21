@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 
 using namespace XFILE;

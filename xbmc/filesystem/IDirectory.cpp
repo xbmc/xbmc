@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
