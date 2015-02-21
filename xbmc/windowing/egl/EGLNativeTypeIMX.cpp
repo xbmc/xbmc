@@ -100,7 +100,7 @@ void CEGLNativeTypeIMX::Initialize()
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
   }
-
+#ifdef HAS_IMXVPU
   struct mxcfb_color_key colorKey;
   struct mxcfb_gbl_alpha gbl_alpha;
   struct mxcfb_loc_alpha lalpha;
@@ -121,7 +121,7 @@ void CEGLNativeTypeIMX::Initialize()
   colorKey.color_key = (16 << 16)|(8 << 8)|16;
   if (ioctl(fd, MXCFB_SET_CLR_KEY, &colorKey) < 0)
     CLog::Log(LOGERROR, "%s - Failed to setup color keying\n", __FUNCTION__);
-
+#endif
   // Unblank the fb
   if (ioctl(fd, FBIOBLANK, 0) < 0)
   {
