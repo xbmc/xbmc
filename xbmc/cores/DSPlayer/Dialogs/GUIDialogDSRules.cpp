@@ -85,8 +85,13 @@ bool CGUIDialogDSRules::OnBack(int actionID)
   if (isEdited)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
-    { 
-      CSetting *setting = GetSetting(SETTING_RULE_SAVE);
+    {
+      CSetting *setting;
+      if (!m_dsmanager->GetisNew())
+        setting = GetSetting(SETTING_RULE_SAVE);
+      else
+        setting = GetSetting(SETTING_RULE_ADD);
+
       OnSettingAction(setting);
     }
   }
@@ -294,7 +299,10 @@ void CGUIDialogDSRules::InitializeSettings()
             (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
         }
 
-        if ((*it)->m_configType == EXTRAFILTER || (*it)->m_configType == SHADER || (*it)->m_configType == EDITATTREXTRA || (*it)->m_configType == EDITATTRSHADER)
+        if ((*it)->m_configType == EXTRAFILTER 
+          || (*it)->m_configType == SHADER 
+          || (*it)->m_configType == EDITATTREXTRA 
+          || (*it)->m_configType == EDITATTRSHADER)
         {
           TiXmlElement *pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
 
@@ -328,7 +336,9 @@ void CGUIDialogDSRules::InitializeSettings()
 
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
   {
-    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == EDITATTREXTRA || (*it)->m_configType == EDITATTRSHADER)
+    if ((*it)->m_configType == EDITATTR 
+      || (*it)->m_configType == EDITATTREXTRA 
+      || (*it)->m_configType == EDITATTRSHADER)
     {
       if ((*it)->m_attr == "name")
         groupTmp = groupName;

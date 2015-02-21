@@ -72,16 +72,21 @@ void CGUIDialogDSManager::ResetValue(std::vector<DSConfigList *> &configList)
   std::vector<DSConfigList *>::iterator it;
   for (it = configList.begin(); it != configList.end(); ++it)
   {
-    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == EDITATTREXTRA || (*it)->m_configType == EDITATTRSHADER)
+    if ((*it)->m_configType == EDITATTR 
+      || (*it)->m_configType == EDITATTREXTRA 
+      || (*it)->m_configType == EDITATTRSHADER
+      || (*it)->m_configType == OSDGUID)
       (*it)->m_value = "";
+
+    if ((*it)->m_configType == SPINNERATTR
+      || (*it)->m_configType == FILTER
+      || (*it)->m_configType == EXTRAFILTER 
+      || (*it)->m_configType == SHADER
+      || (*it)->m_configType == FILTERSYSTEM)
+      (*it)->m_value = "[null]";
+
     if ((*it)->m_configType == BOOLATTR)
       (*it)->m_value = "false";
-    if ((*it)->m_configType == SPINNERATTR)
-      (*it)->m_value = "[null]";
-    if ((*it)->m_configType == FILTER)
-      (*it)->m_value = "[null]";
-    if ((*it)->m_configType == EXTRAFILTER || (*it)->m_configType == SHADER)
-      (*it)->m_value = "[null]";
   }
 }
 
@@ -155,14 +160,19 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
 
   pNode = NULL;
 
+  m_XML.Clear();
+
   if (!m_XML.LoadFile(xmlFile))
   {
     CLog::Log(LOGERROR, "%s Error loading %s, Line %d (%s)", __FUNCTION__, xmlFile.c_str(), m_XML.ErrorRow(), m_XML.ErrorDesc());
     if (!forceCreate)
       return;
 
+    CLog::Log(LOGDEBUG, "%s Creating loading %s, with root <%s> and first node <%s>", __FUNCTION__, xmlFile.c_str(), xmlRoot.c_str(), xmlNode.c_str());
+
     TiXmlElement pRoot(xmlRoot.c_str());
-    pRoot.InsertEndChild(TiXmlElement(xmlNode.c_str()));
+    if (type != PLAYERCOREFACTORY) 
+      pRoot.InsertEndChild(TiXmlElement(xmlNode.c_str()));
     m_XML.InsertEndChild(pRoot);
   }
   TiXmlElement *pConfig = m_XML.RootElement();
@@ -171,7 +181,9 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
     CLog::Log(LOGERROR, "%s Error loading medias configuration, no <%s> node", __FUNCTION__, xmlRoot.c_str());
     return;
   }
-  if (type == MEDIASCONFIG || type == FILTERSCONFIG || type == HOMEFILTERSCONFIG )
+  if (type == MEDIASCONFIG 
+    || type == FILTERSCONFIG
+    || type == HOMEFILTERSCONFIG )
     pNode = pConfig->FirstChildElement(xmlNode.c_str());
 
   if (type == SHADERS)
@@ -196,7 +208,7 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
 std::vector<DynamicStringSettingOption>CGUIDialogDSManager::GetFilterList(xmlType type)
 {
   std::vector<DynamicStringSettingOption> list;
-  list.push_back(std::make_pair("[null]", "[null]"));
+  list.push_back(std::make_pair("", "[null]"));
 
   // Load filtersconfig.xml
   TiXmlElement *pFilters;
@@ -243,7 +255,7 @@ void CGUIDialogDSManager::AllFiltersConfigOptionFiller(const CSetting *setting, 
 void CGUIDialogDSManager::ShadersOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
 
-  list.push_back(std::make_pair("[null]", "[null]"));
+  list.push_back(std::make_pair("", "[null]"));
 
   TiXmlElement *pShaders;
 
@@ -274,6 +286,8 @@ void CGUIDialogDSManager::DSFilterOptionFiller(const CSetting *setting, std::vec
   CDSFilterEnumerator p_dfilter;
   std::vector<DSFiltersInfo> filterList;
   p_dfilter.GetDSFilters(filterList);
+
+  list.push_back(std::make_pair("", "[null]"));
 
   std::vector<DSFiltersInfo>::const_iterator iter = filterList.begin();
 

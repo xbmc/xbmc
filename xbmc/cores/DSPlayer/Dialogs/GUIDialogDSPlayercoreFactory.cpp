@@ -42,6 +42,8 @@
 #include "utils/XMLUtils.h"
 #include "Filters/RendererSettings.h"
 #include "PixelShaderList.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
+
 
 #define SETTING_RULE_SAVE                   "dsplayercore.save"
 #define SETTING_RULE_ADD                    "dsplayercore.add"
@@ -84,7 +86,12 @@ bool CGUIDialogDSPlayercoreFactory::OnBack(int actionID)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
     {
-      CSetting *setting = GetSetting(SETTING_RULE_SAVE);
+      CSetting *setting;
+      if (!m_dsmanager->GetisNew())
+        setting = GetSetting(SETTING_RULE_SAVE);
+      else
+        setting = GetSetting(SETTING_RULE_ADD);
+
       OnSettingAction(setting);
     }
   }
@@ -281,6 +288,9 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
 
     isEdited = false;
     m_dsmanager->SaveDsXML(PLAYERCOREFACTORY);
+
+    CPlayerCoreFactory::Get().OnSettingsLoaded();
+
     CGUIDialogDSPlayercoreFactory::Close();
   }
 }

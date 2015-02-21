@@ -85,8 +85,16 @@ bool CGUIDialogDSFilters::OnBack(int actionID)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
     {
-      CSetting *setting = GetSetting(SETTING_FILTER_SAVE);
+      CSetting *setting;
+      if (!m_dsmanager->GetisNew())
+        setting = GetSetting(SETTING_FILTER_SAVE);
+      else
+        setting = GetSetting(SETTING_FILTER_ADD);
+
       OnSettingAction(setting);
+
+      if (isEdited)
+        return false;
     }
   }
 
@@ -144,7 +152,7 @@ void CGUIDialogDSFilters::InitializeSettings()
   {
     m_dsmanager->InitConfig(m_filterList, OSDGUID, "dsfilters.osdname", 65003, "", "osdname");
     m_dsmanager->InitConfig(m_filterList, EDITATTR, "dsfilters.name", 65004, "name");
-    m_dsmanager->InitConfig(m_filterList, SPINNERATTR, "dsfilters.type", 65005, "type", "", TypeOptionFiller);
+    m_dsmanager->InitConfig(m_filterList, FILTER, "dsfilters.type", 65005, "type", "", TypeOptionFiller);
     m_dsmanager->InitConfig(m_filterList, OSDGUID, "dsfilters.guid", 65006, "", "guid");
     m_dsmanager->InitConfig(m_filterList, FILTERSYSTEM, "dsfilters.systemfilter", 65010, "", "", m_dsmanager->DSFilterOptionFiller);
   }
@@ -165,8 +173,9 @@ void CGUIDialogDSFilters::InitializeSettings()
       std::vector<DSConfigList *>::iterator it;
       for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
       {
-        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
+        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == FILTER)
           (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
+
         if ((*it)->m_configType == OSDGUID) {
           XMLUtils::GetString(pFilter, (*it)->m_nodeName.c_str(), strGuid);
           (*it)->m_value = strGuid;
@@ -185,8 +194,8 @@ void CGUIDialogDSFilters::InitializeSettings()
     if ((*it)->m_configType == EDITATTR || (*it)->m_configType == OSDGUID)
       AddEdit(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, true);
 
-    if ((*it)->m_configType == SPINNERATTR)
-      AddSpinner(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler);
+    if ((*it)->m_configType == FILTER)
+      AddList(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
 
     if ((*it)->m_configType == FILTERSYSTEM)
       AddList(groupSystem, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
@@ -214,7 +223,9 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
   std::vector<DSConfigList *>::iterator it;
   for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
   {
-    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR || (*it)->m_configType == OSDGUID)
+    if ((*it)->m_configType == EDITATTR 
+    || (*it)->m_configType == FILTER
+    || (*it)->m_configType == OSDGUID)
     { 
       if (settingId == (*it)->m_setting)
       {
@@ -227,14 +238,17 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
       {
         (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
 
-        CStdString strOSDName = GetFilterName((*it)->m_value);
-        CStdString strFilterName = strOSDName;
-        strFilterName.ToLower();
-        strFilterName.Replace(" ", "_");
+        if ((*it)->m_value != "[null]")
+        { 
+          CStdString strOSDName = GetFilterName((*it)->m_value);
+          CStdString strFilterName = strOSDName;
+          strFilterName.ToLower();
+          strFilterName.Replace(" ", "_");
 
-        m_settingsManager->SetString("dsfilters.guid", (*it)->m_value.c_str());
-        m_settingsManager->SetString("dsfilters.osdname", strOSDName);
-        m_settingsManager->SetString("dsfilters.name", strFilterName);
+          m_settingsManager->SetString("dsfilters.guid", (*it)->m_value.c_str());
+          m_settingsManager->SetString("dsfilters.osdname", strOSDName);
+          m_settingsManager->SetString("dsfilters.name", strFilterName);
+        }
       }    
     }
   }
@@ -282,7 +296,7 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
         return;
       }
 
-      if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
+      if ((*it)->m_configType == EDITATTR || (*it)->m_configType == FILTER)
           pFilter.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
       if ((*it)->m_configType == OSDGUID)
@@ -365,7 +379,7 @@ int CGUIDialogDSFilters::ShowDSFiltersList()
 
 void CGUIDialogDSFilters::TypeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  list.push_back(std::make_pair("[null]", "[null]"));
+  list.push_back(std::make_pair("", "[null]"));
   list.push_back(std::make_pair("Source Filter (source)", "source"));
   list.push_back(std::make_pair("Splitter Filter (splitter)", "splitter"));
   list.push_back(std::make_pair("Video Decoder (videodec)", "videodec"));
