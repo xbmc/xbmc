@@ -27,7 +27,9 @@
 #include <math.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#ifdef HAS_IMXVPU
 #include <linux/mxcfb.h>
+#endif
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
