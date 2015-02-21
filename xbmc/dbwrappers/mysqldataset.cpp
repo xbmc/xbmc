@@ -443,6 +443,7 @@ long MysqlDatabase::nextid(const char* sname) {
 void MysqlDatabase::start_transaction() {
   if (active)
   {
+    mysql_autocommit(conn, false);
     CLog::Log(LOGDEBUG,"Mysql Start transaction");
     _in_transaction = true;
   }

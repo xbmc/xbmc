@@ -92,6 +92,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/storage/storage.a \
                    xbmc/utils/utils.a \
                    xbmc/video/dialogs/videodialogs.a \
+                   xbmc/video/jobs/video-jobs.a \
                    xbmc/video/videosync/videosync.a \
                    xbmc/video/video.a \
                    xbmc/video/windows/videowindows.a \

@@ -611,6 +611,19 @@ case $host in
         use_cpu="i686"
      fi
      USE_STATIC_FFMPEG=1
+     # Workaround a build issue on i386 with gcc 4.9:
+     # including <algorithm> pulls in SSE intrinsics.
+     # possible GCC bug? ideas welcome
+     if test "$GCC_CXX" = "yes"; then
+       GCC_VERSION=$($CXX -dumpversion)
+       GCC_MAJOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $1}')
+       GCC_MINOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $2}')
+
+       if (test "$GCC_MAJOR_VER" -eq "4" && test "$GCC_MINOR_VER" -ge "9") || (test "$GCC_MAJOR_VER" -gt "4"); then
+         CXXFLAGS="$CXXFLAGS -msse"
+         AC_MSG_NOTICE("detected gcc version $GCC_VERSION - enabling SSE")
+       fi
+     fi
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
      ARCH="x86_64-linux"
@@ -849,14 +862,9 @@ if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
     [AC_LANG_SOURCE([int foo;])],
     [ use_sse4=yes
       USE_SSE4=1],
-    [ use_sse=no
+    [ use_sse4=no
       USE_SSE4=0])
   CFLAGS="$SAVE_CFLAGS"
-
-  if test "$use_sse4" = "yes"; then
-    CFLAGS="${CFLAGS} -msse4.1"
-    CXXFLAGS="${CXXFLAGS} -msse4.1"
-  fi
 fi
 
 # Checks for library functions.
@@ -1072,7 +1080,7 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 
-AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
 XB_FIND_SONAME([CURL], [curl])
 AC_MSG_CHECKING([for CRYPTO_set_locking_callback(0) in $CURL_SONAME])
 if test "$host_vendor" = "apple" ; then

@@ -471,7 +471,6 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
-  VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
 
   bool m_muted;

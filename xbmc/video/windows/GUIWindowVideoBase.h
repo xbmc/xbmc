@@ -53,7 +53,7 @@ public:
   static bool HasResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
-  virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
+  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper);
 
 
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)

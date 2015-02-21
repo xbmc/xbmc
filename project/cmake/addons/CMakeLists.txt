@@ -13,7 +13,6 @@ if(NOT CORE_SYSTEM_NAME)
 endif()
 
 include(ExternalProject)
-include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
 
 ### setup all the necessary paths
 if(NOT APP_ROOT AND NOT XBMCROOT)
@@ -38,6 +37,11 @@ else()
   file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
 endif()
 get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
+
+if(NOT PLATFORM_DIR)
+  set(PLATFORM_DIR ${APP_ROOT}/project/cmake/platform/${CORE_SYSTEM_NAME})
+  file(TO_CMAKE_PATH "${PLATFORM_DIR}" PLATFORM_DIR)
+endif()
 
 # make sure CMAKE_PREFIX_PATH is set
 if(NOT CMAKE_PREFIX_PATH)
@@ -91,6 +95,18 @@ if(NOT KODI_LIB_DIR)
 else()
   file(TO_CMAKE_PATH "${KODI_LIB_DIR}" KODI_LIB_DIR)
 endif()
+
+# check for platform specific stuff
+if(EXISTS ${PLATFORM_DIR}/defines.txt)
+  file(STRINGS ${PLATFORM_DIR}/defines.txt platformdefines)
+
+  if(NOT ARCH_DEFINES AND platformdefines)
+    set(ARCH_DEFINES ${platformdefines})
+  endif()
+endif()
+
+# include check_target_platform() function
+include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
 
 ### prepare the build environment for the binary addons
 # copy the prepare-env.cmake script to the depends path so that we can include it

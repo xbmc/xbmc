@@ -278,9 +278,11 @@ CUPnPServer::Build(CFileItemPtr                  item,
             object->m_ObjectID = "0";
             object->m_ParentID = "-1";
             // root has 5 children
-            if (with_count) {
-                ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
-            }
+            
+            //This is dead code because of the HACK a few lines up setting with_count to false
+            //if (with_count) {
+            //    ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
+            //}
         } else {
             goto failure;
         }

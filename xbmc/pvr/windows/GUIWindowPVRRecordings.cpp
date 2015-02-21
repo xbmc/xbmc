@@ -328,7 +328,7 @@ bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
 {
   bool bReturn = false;
 
-  if (!item->IsPVRRecording() && !item->m_bIsFolder)
+  if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
     return bReturn;
 
   /* show a confirmation dialog */

@@ -50,7 +50,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
-#include "utils/MarkWatchedJob.h"
+#include "video/VideoLibraryQueue.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/Key.h"
@@ -71,6 +71,7 @@
 #include "xbmc/android/activity/XBMCApp.h"
 #endif
 #include "FileItemListModification.h"
+#include "video/VideoInfoTag.h"
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -851,9 +852,35 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     }
   }
 
-  // if we haven't found the selected item, select the first item
+  // if we haven't found the selected item, see if we should select the first unplayed item
+  // if yes, find the first unplayed item and select it
+  // if no, select the first item
   if (!bSelectedFound)
-    m_viewControl.SetSelectedItem(0);
+  {
+    int iIndex = 0; // index of the item to select, default to the first item
+
+    // Check if we should select the first unplayed item
+    if (m_guiState.get()->JumpToFirstUnplayedItem())
+    {
+      // Find the index of the 
+      for (int i = 0; i < m_vecItems->Size(); ++i)
+      {
+        CFileItemPtr pItem = m_vecItems->Get(i);
+        // We don't want to jump to the parent folder item or an All Seasons item
+        if (pItem->IsParentFolder() || !pItem->HasVideoInfoTag() || 
+          (pItem->GetVideoInfoTag()->m_type == MediaTypeSeason && pItem->GetVideoInfoTag()->m_iSeason < 0))
+          continue;
+
+        if (pItem->GetVideoInfoTag()->m_playCount == 0)
+        {
+          iIndex = i;
+          break;
+        }
+      }
+    }
+
+    m_viewControl.SetSelectedItem(iIndex);
+  }
 
   m_history.AddPath(m_vecItems->GetPath(), m_strFilterPath);
 
@@ -1532,8 +1559,12 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
-  if (!item)
+  // ensure that the "go to parent" item doesn't have any context menu items
+  if (!item || item->IsParentFolder())
+  {
+    buttons.clear();
     return;
+  }
 
   // user added buttons
   std::string label;
@@ -1579,7 +1610,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
-      CMarkWatchedQueue::Get().AddJob(new CMarkWatchedJob(item, (button == CONTEXT_BUTTON_MARK_WATCHED)));
+      CVideoLibraryQueue::Get().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
       return true;
     }
   case CONTEXT_BUTTON_ADD_FAVOURITE:

@@ -19,26 +19,36 @@
  *
  */
 
-#include "Job.h"
-#include "utils/JobManager.h"
+#include "FileItem.h"
+#include "video/jobs/VideoLibraryJob.h"
 
-class CMarkWatchedJob : public CJob
+/*!
+ \brief Video library job implementation for marking items as watched/unwatched.
+ */
+class CVideoLibraryMarkWatchedJob : public CVideoLibraryJob
 {
 public:
-  CMarkWatchedJob(const CFileItemPtr &item, bool bMark);
-private:
-  virtual ~CMarkWatchedJob();
-  virtual const char *GetType() const { return "markwatched"; }
+  /*!
+   \brief Creates a new video library scanning job.
+
+   \param[in] item Item to be marked as watched/unwatched
+   \param[in] mark Whether to mark the item as watched or unwatched
+  */
+  CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark);
+  virtual ~CVideoLibraryMarkWatchedJob();
+
+  virtual const char *GetType() const { return "CVideoLibraryMarkWatchedJob"; }
   virtual bool operator==(const CJob* job) const;
-  virtual bool DoWork();
-  CFileItemPtr m_item;
-  bool m_bMark;
-};
 
-class CMarkWatchedQueue: public CJobQueue
-{
-public:
-  static CMarkWatchedQueue &Get();
+protected:
+
+#ifdef HAS_DS_PLAYER
+  virtual bool Work(CVideoDatabase &db, CDSPlayerDatabase &dspdb);
+#else
+  virtual bool (CVideoDatabase &db);
+#endif
+
 private:
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  CFileItemPtr m_item;
+  bool m_mark;
 };

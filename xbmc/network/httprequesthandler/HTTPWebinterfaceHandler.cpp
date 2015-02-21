@@ -89,8 +89,8 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
 
   if (useDefaultWebInterface)
   {
-    ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_WEB_INTERFACE, addon);
-    if (addon)
+    
+    if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_WEB_INTERFACE, addon) && addon)
       addonPath = addon->Path();
   }
 
