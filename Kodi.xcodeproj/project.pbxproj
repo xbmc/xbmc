@@ -182,6 +182,36 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		395C29C11A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
+		395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
+		395C29C31A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
+		395C29C51A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */; };
+		395C29C61A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */; };
+		395C29C71A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */; };
+		395C29D51A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CA1A98A11C00EBC7AD /* WsgiErrorStream.cpp */; };
+		395C29D61A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CA1A98A11C00EBC7AD /* WsgiErrorStream.cpp */; };
+		395C29D71A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CA1A98A11C00EBC7AD /* WsgiErrorStream.cpp */; };
+		395C29D81A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CC1A98A11C00EBC7AD /* WsgiInputStream.cpp */; };
+		395C29D91A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CC1A98A11C00EBC7AD /* WsgiInputStream.cpp */; };
+		395C29DA1A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CC1A98A11C00EBC7AD /* WsgiInputStream.cpp */; };
+		395C29DB1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CE1A98A11C00EBC7AD /* WsgiResponse.cpp */; };
+		395C29DC1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CE1A98A11C00EBC7AD /* WsgiResponse.cpp */; };
+		395C29DD1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29CE1A98A11C00EBC7AD /* WsgiResponse.cpp */; };
+		395C29DE1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29D01A98A11C00EBC7AD /* WsgiResponseBody.cpp */; };
+		395C29DF1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29D01A98A11C00EBC7AD /* WsgiResponseBody.cpp */; };
+		395C29E01A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29D01A98A11C00EBC7AD /* WsgiResponseBody.cpp */; };
+		395C29E31A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */; };
+		395C29E41A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */; };
+		395C29E51A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */; };
+		395C29ED1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E71A98A16300EBC7AD /* HTTPPythonInvoker.cpp */; };
+		395C29EE1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E71A98A16300EBC7AD /* HTTPPythonInvoker.cpp */; };
+		395C29EF1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29E71A98A16300EBC7AD /* HTTPPythonInvoker.cpp */; };
+		395C29F01A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */; };
+		395C29F11A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */; };
+		395C29F21A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */; };
+		395C29F61A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
+		395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
+		395C29F81A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
 		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
@@ -3632,6 +3662,25 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Webinterface.cpp; sourceTree = "<group>"; };
+		395C29C01A98A0A000EBC7AD /* Webinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Webinterface.h; sourceTree = "<group>"; };
+		395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ILanguageInvoker.cpp; sourceTree = "<group>"; };
+		395C29CA1A98A11C00EBC7AD /* WsgiErrorStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WsgiErrorStream.cpp; sourceTree = "<group>"; };
+		395C29CB1A98A11C00EBC7AD /* WsgiErrorStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WsgiErrorStream.h; sourceTree = "<group>"; };
+		395C29CC1A98A11C00EBC7AD /* WsgiInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WsgiInputStream.cpp; sourceTree = "<group>"; };
+		395C29CD1A98A11C00EBC7AD /* WsgiInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WsgiInputStream.h; sourceTree = "<group>"; };
+		395C29CE1A98A11C00EBC7AD /* WsgiResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WsgiResponse.cpp; sourceTree = "<group>"; };
+		395C29CF1A98A11C00EBC7AD /* WsgiResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WsgiResponse.h; sourceTree = "<group>"; };
+		395C29D01A98A11C00EBC7AD /* WsgiResponseBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WsgiResponseBody.cpp; sourceTree = "<group>"; };
+		395C29D11A98A11C00EBC7AD /* WsgiResponseBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WsgiResponseBody.h; sourceTree = "<group>"; };
+		395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPPythonHandler.cpp; sourceTree = "<group>"; };
+		395C29E21A98A15700EBC7AD /* HTTPPythonHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPythonHandler.h; sourceTree = "<group>"; };
+		395C29E71A98A16300EBC7AD /* HTTPPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPPythonInvoker.cpp; sourceTree = "<group>"; };
+		395C29E81A98A16300EBC7AD /* HTTPPythonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPythonInvoker.h; sourceTree = "<group>"; };
+		395C29E91A98A16300EBC7AD /* HTTPPythonRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPythonRequest.h; sourceTree = "<group>"; };
+		395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPPythonWsgiInvoker.cpp; sourceTree = "<group>"; };
+		395C29EB1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPythonWsgiInvoker.h; sourceTree = "<group>"; };
+		395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonModuleXbmcwsgi.cpp; sourceTree = "<group>"; };
 		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
@@ -6075,6 +6124,8 @@
 				F52B063911869862004B1D66 /* Skin.h */,
 				18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */,
 				18B4A0011152BFA5001AF8A6 /* Visualisation.h */,
+				395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */,
+				395C29C01A98A0A000EBC7AD /* Webinterface.h */,
 			);
 			path = addons;
 			sourceTree = "<group>";
@@ -6435,6 +6486,33 @@
 				3802709713D5A62D009493DD /* ThreadLocal.h */,
 			);
 			path = pthreads;
+			sourceTree = "<group>";
+		};
+		395C29C81A98A11B00EBC7AD /* wsgi */ = {
+			isa = PBXGroup;
+			children = (
+				395C29CA1A98A11C00EBC7AD /* WsgiErrorStream.cpp */,
+				395C29CB1A98A11C00EBC7AD /* WsgiErrorStream.h */,
+				395C29CC1A98A11C00EBC7AD /* WsgiInputStream.cpp */,
+				395C29CD1A98A11C00EBC7AD /* WsgiInputStream.h */,
+				395C29CE1A98A11C00EBC7AD /* WsgiResponse.cpp */,
+				395C29CF1A98A11C00EBC7AD /* WsgiResponse.h */,
+				395C29D01A98A11C00EBC7AD /* WsgiResponseBody.cpp */,
+				395C29D11A98A11C00EBC7AD /* WsgiResponseBody.h */,
+			);
+			path = wsgi;
+			sourceTree = "<group>";
+		};
+		395C29E61A98A16300EBC7AD /* python */ = {
+			isa = PBXGroup;
+			children = (
+				395C29E71A98A16300EBC7AD /* HTTPPythonInvoker.cpp */,
+				395C29E81A98A16300EBC7AD /* HTTPPythonInvoker.h */,
+				395C29E91A98A16300EBC7AD /* HTTPPythonRequest.h */,
+				395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */,
+				395C29EB1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.h */,
+			);
+			path = python;
 			sourceTree = "<group>";
 		};
 		3994425F1A8DD920006C39E9 /* jobs */ = {
@@ -7748,6 +7826,7 @@
 				DF1ACFD915FCE50700E10810 /* AddonModuleXbmcgui.cpp */,
 				DF1ACFDD15FCE50700E10810 /* AddonModuleXbmcplugin.cpp */,
 				DF1ACFE115FCE50700E10810 /* AddonModuleXbmcvfs.cpp */,
+				395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */,
 			);
 			name = generated;
 			path = python/generated;
@@ -7778,6 +7857,7 @@
 		DF1AD17B15FCE77900E10810 /* legacy */ = {
 			isa = PBXGroup;
 			children = (
+				395C29C81A98A11B00EBC7AD /* wsgi */,
 				DF1AD17C15FCE77900E10810 /* Addon.cpp */,
 				DF1AD17D15FCE77900E10810 /* Addon.h */,
 				DF1AD18015FCE77900E10810 /* AddonCallback.cpp */,
@@ -7900,6 +7980,7 @@
 			isa = PBXGroup;
 			children = (
 				DF40BC22178B4C07009DB567 /* ILanguageInvocationHandler.h */,
+				395C29C41A98A0E100EBC7AD /* ILanguageInvoker.cpp */,
 				DF40BC23178B4C07009DB567 /* ILanguageInvoker.h */,
 				DF40BC24178B4C07009DB567 /* LanguageInvokerThread.cpp */,
 				DF40BC25178B4C07009DB567 /* LanguageInvokerThread.h */,
@@ -8049,6 +8130,7 @@
 		DFCA6AB8152245CD000BFAAE /* httprequesthandler */ = {
 			isa = PBXGroup;
 			children = (
+				395C29E61A98A16300EBC7AD /* python */,
 				DF56EF1D1A798A3F00CAAEFB /* HTTPFileHandler.cpp */,
 				DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */,
 				7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */,
@@ -8057,6 +8139,8 @@
 				395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */,
 				DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */,
 				DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */,
+				395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */,
+				395C29E21A98A15700EBC7AD /* HTTPPythonHandler.h */,
 				DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */,
 				DFCA6ABE152245CD000BFAAE /* HTTPVfsHandler.h */,
 				DFCA6ABF152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp */,
@@ -10329,6 +10413,7 @@
 				E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */,
 				E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */,
 				E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */,
+				395C29DE1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */,
 				E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */,
 				E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */,
@@ -10353,6 +10438,7 @@
 				E38E1F9F0D25F9FD00618676 /* DVDStateSerializer.cpp in Sources */,
 				E38E1FA10D25F9FD00618676 /* DVDMessage.cpp in Sources */,
 				E38E1FA20D25F9FD00618676 /* DVDMessageQueue.cpp in Sources */,
+				395C29C11A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
 				E38E1FA40D25F9FD00618676 /* DVDOverlayContainer.cpp in Sources */,
 				E38E1FA50D25F9FD00618676 /* DVDOverlayRenderer.cpp in Sources */,
 				E38E1FA70D25F9FD00618676 /* DVDPlayer.cpp in Sources */,
@@ -10390,6 +10476,7 @@
 				E38E20060D25F9FD00618676 /* DAAPDirectory.cpp in Sources */,
 				E38E20070D25F9FD00618676 /* Directory.cpp in Sources */,
 				E38E20090D25F9FD00618676 /* DirectoryHistory.cpp in Sources */,
+				395C29D81A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */,
 				E38E200B0D25F9FD00618676 /* DllLibCurl.cpp in Sources */,
 				E38E200E0D25F9FD00618676 /* File.cpp in Sources */,
 				E38E20130D25F9FD00618676 /* FileFactory.cpp in Sources */,
@@ -10430,6 +10517,7 @@
 				E38E20520D25F9FD00618676 /* RarDirectory.cpp in Sources */,
 				E38E20530D25F9FD00618676 /* RarManager.cpp in Sources */,
 				E38E20540D25F9FD00618676 /* RTVDirectory.cpp in Sources */,
+				395C29C51A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */,
 				E38E20570D25F9FD00618676 /* SIDFileDirectory.cpp in Sources */,
 				E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */,
 				E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */,
@@ -10496,6 +10584,7 @@
 				E38E20B50D25F9FD00618676 /* GUIWindowMusicNav.cpp in Sources */,
 				E38E20B60D25F9FD00618676 /* GUIDialogMusicOverlay.cpp in Sources */,
 				E38E20B70D25F9FD00618676 /* GUIWindowMusicPlaylist.cpp in Sources */,
+				395C29F61A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				E38E20B80D25F9FD00618676 /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				E38E20B90D25F9FD00618676 /* GUIWindowMusicSongs.cpp in Sources */,
 				E38E20BB0D25F9FD00618676 /* GUIDialogVideoOSD.cpp in Sources */,
@@ -10541,6 +10630,7 @@
 				E38E224B0D25F9FE00618676 /* match.cpp in Sources */,
 				E38E224D0D25F9FE00618676 /* options.cpp in Sources */,
 				E38E224E0D25F9FE00618676 /* pathfn.cpp in Sources */,
+				395C29F01A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */,
 				E38E22500D25F9FE00618676 /* rarvm.cpp in Sources */,
 				E38E22520D25F9FE00618676 /* rawread.cpp in Sources */,
 				E38E22530D25F9FE00618676 /* rdwrfn.cpp in Sources */,
@@ -10563,6 +10653,7 @@
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
 				E38E22750D25F9FE00618676 /* XFileUtils.cpp in Sources */,
 				E38E22760D25F9FE00618676 /* XHandle.cpp in Sources */,
+				395C29E31A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				E38E22770D25F9FE00618676 /* XMemUtils.cpp in Sources */,
 				E38E227A0D25F9FE00618676 /* XTimeUtils.cpp in Sources */,
 				E38E227C0D25F9FE00618676 /* MediaManager.cpp in Sources */,
@@ -10625,6 +10716,7 @@
 				E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */,
 				E38E25C30D263DE200618676 /* DVDDemuxFFmpeg.cpp in Sources */,
 				E3A4780A0D29029A00F3C3A6 /* GUIDialogCache.cpp in Sources */,
+				395C29ED1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
 				E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */,
 				E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */,
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
@@ -10787,6 +10879,7 @@
 				18B7C38B12942090009E7A26 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				18B7C392129420E5009E7A26 /* Settings.cpp in Sources */,
 				18B7C3A812942132009E7A26 /* AdvancedSettings.cpp in Sources */,
+				395C29DB1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
 				18B7C7A91294222E009E7A26 /* AnimatedGif.cpp in Sources */,
 				18B7C7AB1294222E009E7A26 /* D3DResource.cpp in Sources */,
 				18B7C7AC1294222E009E7A26 /* DDSImage.cpp in Sources */,
@@ -11174,6 +11267,7 @@
 				DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */,
 				DF89901E1709BB2D00B35C21 /* SkinSettings.cpp in Sources */,
 				DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */,
+				395C29D51A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */,
 				DF28EDA2170E1A11005FA9D2 /* GUIDialogLockSettings.cpp in Sources */,
 				DF28EDA3170E1A11005FA9D2 /* GUIDialogProfileSettings.cpp in Sources */,
 				DF28EDA6170E1A11005FA9D2 /* Profile.cpp in Sources */,
@@ -11405,6 +11499,7 @@
 				DFF0F11217528350002DA3A4 /* strlist.cpp in Sources */,
 				DFF0F11317528350002DA3A4 /* system.cpp in Sources */,
 				DFF0F11417528350002DA3A4 /* timefn.cpp in Sources */,
+				395C29E51A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				DFF0F11517528350002DA3A4 /* ulinks.cpp in Sources */,
 				DFF0F11617528350002DA3A4 /* unicode.cpp in Sources */,
 				DFF0F11717528350002DA3A4 /* unpack.cpp in Sources */,
@@ -11462,6 +11557,7 @@
 				DFF0F15517528350002DA3A4 /* DllLoaderContainer.cpp in Sources */,
 				DFF0F15617528350002DA3A4 /* LibraryLoader.cpp in Sources */,
 				DFF0F15717528350002DA3A4 /* SoLoader.cpp in Sources */,
+				395C29EF1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
 				DFF0F15817528350002DA3A4 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				DFF0F15B17528350002DA3A4 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				DFF0F15E17528350002DA3A4 /* DVDOverlayCodec.cpp in Sources */,
@@ -11669,6 +11765,7 @@
 				DFF0F22F17528350002DA3A4 /* NFSDirectory.cpp in Sources */,
 				DFF0F23017528350002DA3A4 /* NFSFile.cpp in Sources */,
 				DFF0F23117528350002DA3A4 /* NptXbmcFile.cpp in Sources */,
+				395C29D71A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */,
 				DFF0F23217528350002DA3A4 /* NSFFileDirectory.cpp in Sources */,
 				DFF0F23317528350002DA3A4 /* OGGFileDirectory.cpp in Sources */,
 				DFF0F23417528350002DA3A4 /* PipeFile.cpp in Sources */,
@@ -11687,6 +11784,7 @@
 				DFF0F24117528350002DA3A4 /* SAPDirectory.cpp in Sources */,
 				DFF0F24217528350002DA3A4 /* SAPFile.cpp in Sources */,
 				DFF0F24317528350002DA3A4 /* SFTPDirectory.cpp in Sources */,
+				395C29C71A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */,
 				DFF0F24417528350002DA3A4 /* SFTPFile.cpp in Sources */,
 				DFF0F24517528350002DA3A4 /* ShoutcastFile.cpp in Sources */,
 				DFF0F24617528350002DA3A4 /* SIDFileDirectory.cpp in Sources */,
@@ -11729,6 +11827,7 @@
 				DFF0F26A17528350002DA3A4 /* VTPDirectory.cpp in Sources */,
 				DFF0F26B17528350002DA3A4 /* VTPFile.cpp in Sources */,
 				DFF0F26C17528350002DA3A4 /* VTPSession.cpp in Sources */,
+				395C29C31A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
 				DFF0F26D17528350002DA3A4 /* ZeroconfDirectory.cpp in Sources */,
 				DFF0F26E17528350002DA3A4 /* ZipDirectory.cpp in Sources */,
 				DFF0F26F17528350002DA3A4 /* ZipFile.cpp in Sources */,
@@ -11758,6 +11857,7 @@
 				DFF0F28717528350002DA3A4 /* GUIEditControl.cpp in Sources */,
 				DFF0F28817528350002DA3A4 /* GUIFadeLabelControl.cpp in Sources */,
 				DFF0F28917528350002DA3A4 /* GUIFixedListContainer.cpp in Sources */,
+				395C29DA1A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */,
 				DFF0F28A17528350002DA3A4 /* GUIFont.cpp in Sources */,
 				DFF0F28B17528350002DA3A4 /* GUIFontManager.cpp in Sources */,
 				DFF0F28C17528350002DA3A4 /* GUIFontTTF.cpp in Sources */,
@@ -11999,6 +12099,7 @@
 				DFF0F37217528350002DA3A4 /* PVRClients.cpp in Sources */,
 				DFF0F37317528350002DA3A4 /* PVRChannel.cpp in Sources */,
 				DFF0F37417528350002DA3A4 /* PVRChannelGroup.cpp in Sources */,
+				395C29F81A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				DFF0F37517528350002DA3A4 /* PVRChannelGroupInternal.cpp in Sources */,
 				DFF0F37617528350002DA3A4 /* PVRChannelGroups.cpp in Sources */,
 				DFF0F37717528350002DA3A4 /* PVRChannelGroupsContainer.cpp in Sources */,
@@ -12095,6 +12196,7 @@
 				DFF0F3DF17528350002DA3A4 /* md5.cpp in Sources */,
 				DFF0F3E017528350002DA3A4 /* Mime.cpp in Sources */,
 				DFF0F3E117528350002DA3A4 /* Observer.cpp in Sources */,
+				395C29E01A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */,
 				DFF0F3E217528350002DA3A4 /* PerformanceSample.cpp in Sources */,
 				DFF0F3E317528350002DA3A4 /* PerformanceStats.cpp in Sources */,
 				DFF0F3E417528350002DA3A4 /* POUtils.cpp in Sources */,
@@ -12237,10 +12339,12 @@
 				DFF0F46F17528350002DA3A4 /* ButtonTranslator.cpp in Sources */,
 				DFF0F47017528350002DA3A4 /* InertialScrollingHandler.cpp in Sources */,
 				DFF0F47117528350002DA3A4 /* KeyboardLayoutConfiguration.cpp in Sources */,
+				395C29DD1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
 				DFF0F47217528350002DA3A4 /* KeyboardStat.cpp in Sources */,
 				DFF0F47317528350002DA3A4 /* SDLJoystick.cpp in Sources */,
 				DFF0F47417528350002DA3A4 /* XBMC_keytable.cpp in Sources */,
 				DFF0F47517528350002DA3A4 /* WinEventsIOS.mm in Sources */,
+				395C29F21A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */,
 				DFF0F47617528350002DA3A4 /* WinSystemIOS.mm in Sources */,
 				DFF0F47717528350002DA3A4 /* htsatomic.c in Sources */,
 				DFF0F47817528350002DA3A4 /* htsbuf.c in Sources */,
@@ -12633,6 +12737,7 @@
 				E4991235174E5D7E00741B6D /* GUIDialogButtonMenu.cpp in Sources */,
 				E4991236174E5D7E00741B6D /* GUIDialogCache.cpp in Sources */,
 				E4991237174E5D7E00741B6D /* GUIDialogContextMenu.cpp in Sources */,
+				395C29D61A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */,
 				E4991238174E5D7E00741B6D /* GUIDialogExtendedProgressBar.cpp in Sources */,
 				E4991239174E5D7E00741B6D /* GUIDialogFavourites.cpp in Sources */,
 				E499123A174E5D7E00741B6D /* GUIDialogFileBrowser.cpp in Sources */,
@@ -12642,6 +12747,7 @@
 				E499123E174E5D7E00741B6D /* GUIDialogMediaFilter.cpp in Sources */,
 				E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */,
 				E4991240174E5D7E00741B6D /* GUIDialogMuteBug.cpp in Sources */,
+				395C29E41A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				E4991241174E5D7E00741B6D /* GUIDialogNumeric.cpp in Sources */,
 				E4991242174E5D7E00741B6D /* GUIDialogOK.cpp in Sources */,
 				E4991243174E5D7E00741B6D /* GUIDialogPlayEject.cpp in Sources */,
@@ -12681,6 +12787,7 @@
 				E4991264174E5D8F00741B6D /* FileCache.cpp in Sources */,
 				E4991265174E5D8F00741B6D /* FileDirectoryFactory.cpp in Sources */,
 				E4991266174E5D8F00741B6D /* FileFactory.cpp in Sources */,
+				395C29EE1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
 				E4991267174E5D8F00741B6D /* FileReaderFile.cpp in Sources */,
 				E4991268174E5D8F00741B6D /* FTPDirectory.cpp in Sources */,
 				E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */,
@@ -12741,6 +12848,7 @@
 				E49912A0174E5D9900741B6D /* PlaylistFileDirectory.cpp in Sources */,
 				E49912A1174E5D9900741B6D /* PluginDirectory.cpp in Sources */,
 				E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */,
+				395C29DC1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
 				E49912A3174E5D9900741B6D /* PVRFile.cpp in Sources */,
 				E49912A4174E5D9900741B6D /* RarDirectory.cpp in Sources */,
 				E49912A5174E5D9900741B6D /* RarFile.cpp in Sources */,
@@ -12755,6 +12863,7 @@
 				E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */,
 				E49912AF174E5D9900741B6D /* SIDFileDirectory.cpp in Sources */,
 				E49912B0174E5D9900741B6D /* SlingboxDirectory.cpp in Sources */,
+				395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
 				E49912B1174E5D9900741B6D /* SlingboxFile.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
@@ -12816,6 +12925,7 @@
 				E49912EA174E5DAD00741B6D /* GUIControl.cpp in Sources */,
 				E49912EB174E5DAD00741B6D /* GUIControlFactory.cpp in Sources */,
 				E49912EC174E5DAD00741B6D /* GUIControlGroup.cpp in Sources */,
+				395C29C61A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */,
 				E49912ED174E5DAD00741B6D /* GUIControlGroupList.cpp in Sources */,
 				E49912EE174E5DAD00741B6D /* GUIControlProfiler.cpp in Sources */,
 				E49912EF174E5DAD00741B6D /* GUIDialog.cpp in Sources */,
@@ -12905,6 +13015,7 @@
 				E4991358174E5EBE00741B6D /* PlayerOperations.cpp in Sources */,
 				E4991359174E5EBE00741B6D /* PlaylistOperations.cpp in Sources */,
 				E499135A174E5EBE00741B6D /* PVROperations.cpp in Sources */,
+				395C29DF1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */,
 				E499135B174E5EBE00741B6D /* SystemOperations.cpp in Sources */,
 				E499135C174E5EBE00741B6D /* VideoLibrary.cpp in Sources */,
 				E499135D174E5EBE00741B6D /* XBMCOperations.cpp in Sources */,
@@ -12916,6 +13027,7 @@
 				E4991363174E5EEF00741B6D /* CallbackHandler.cpp in Sources */,
 				E4991364174E5EEF00741B6D /* LanguageHook.cpp in Sources */,
 				E4991365174E5EEF00741B6D /* PyContext.cpp in Sources */,
+				395C29F11A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */,
 				E4991366174E5EEF00741B6D /* swig.cpp in Sources */,
 				E4991367174E5EEF00741B6D /* XBPython.cpp in Sources */,
 				E4991369174E5EEF00741B6D /* AnnouncementManager.cpp in Sources */,
@@ -13246,6 +13358,7 @@
 				E4991538174E642900741B6D /* GUIInfoManager.cpp in Sources */,
 				E4991539174E642900741B6D /* GUILargeTextureManager.cpp in Sources */,
 				E499153A174E642900741B6D /* GUIPassword.cpp in Sources */,
+				395C29D91A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */,
 				E499153B174E642900741B6D /* LangInfo.cpp in Sources */,
 				E499153C174E642900741B6D /* MediaSource.cpp in Sources */,
 				E499153D174E642900741B6D /* NfoFile.cpp in Sources */,
@@ -13473,6 +13586,7 @@
 				7C525DF6195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908895196358A8003D0619 /* auto_buffer.cpp in Sources */,
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
+				395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
