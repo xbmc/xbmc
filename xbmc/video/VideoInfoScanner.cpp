@@ -156,6 +156,7 @@ namespace VIDEO
         }
       }
 
+      g_infoManager.ResetLibraryBools();
       m_database.Close();
 
       tick = XbmcThreads::SystemClockMillis() - tick;
@@ -522,7 +523,6 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
-    g_infoManager.ResetLibraryBools();
     m_database.Close();
     return FoundSomeInfo;
   }
