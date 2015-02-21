@@ -53,7 +53,7 @@ CGUIDialogDSRules::CGUIDialogDSRules()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_DSRULES, "VideoOSDSettings.xml")
 { 
   m_dsmanager = CGUIDialogDSManager::Get();
-
+  m_allowchange = true;
 }
 
 
