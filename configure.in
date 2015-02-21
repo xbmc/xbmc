@@ -591,20 +591,6 @@ OBJDUMP="${OBJDUMP:-objdump}"
 READELF="${READELF:-readelf}"
 NM="${NM:-nm}"
 
-# Workaround a build issue on i386 with gcc 4.9:
-# including <algorithm> pulls in SSE intrinsics.
-# possible GCC bug? ideas welcome
-if test "$GCC_CXX" = "yes"; then
-  GCC_VERSION=$($CXX -dumpversion)
-  GCC_MAJOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $1}')
-  GCC_MINOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $2}')
-
-  if (test "$GCC_MAJOR_VER" -eq "4" && test "$GCC_MINOR_VER" -ge "9") || (test "$GCC_MAJOR_VER" -gt "4"); then
-    CXXFLAGS="$CXXFLAGS -msse"
-    AC_MSG_NOTICE("detected gcc version $GCC_VERSION - enabling SSE")
-  fi
-fi
-
 # host detection and setup
 case $host in
   i*86*-linux-android*)
@@ -625,6 +611,19 @@ case $host in
         use_cpu="i686"
      fi
      USE_STATIC_FFMPEG=1
+     # Workaround a build issue on i386 with gcc 4.9:
+     # including <algorithm> pulls in SSE intrinsics.
+     # possible GCC bug? ideas welcome
+     if test "$GCC_CXX" = "yes"; then
+       GCC_VERSION=$($CXX -dumpversion)
+       GCC_MAJOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $1}')
+       GCC_MINOR_VER=$(echo $GCC_VERSION | awk -F"." '{print $2}')
+
+       if (test "$GCC_MAJOR_VER" -eq "4" && test "$GCC_MINOR_VER" -ge "9") || (test "$GCC_MAJOR_VER" -gt "4"); then
+         CXXFLAGS="$CXXFLAGS -msse"
+         AC_MSG_NOTICE("detected gcc version $GCC_VERSION - enabling SSE")
+       fi
+     fi
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
      ARCH="x86_64-linux"
