@@ -32,6 +32,7 @@ DSConfigList::DSConfigList(ConfigType type) :
 
 m_setting(""),
 m_nodeName(""),
+m_nodeList(""),
 m_attr(""),
 m_value(""),
 m_label(0),
@@ -54,13 +55,14 @@ CGUIDialogDSManager* CGUIDialogDSManager::Get()
 }
 
 
-void CGUIDialogDSManager::InitConfig(std::vector<DSConfigList *> &configList,  ConfigType type, CStdString strSetting, int label, CStdString strAttr /* = "" */, CStdString strNodeName /*= "" */, StringSettingOptionsFiller filler /* = NULL */, int subNode /* = 0 */)
+void CGUIDialogDSManager::InitConfig(std::vector<DSConfigList *> &configList, ConfigType type, CStdString strSetting, int label, CStdString strAttr /* = "" */, CStdString strNodeName /*= "" */, StringSettingOptionsFiller filler /* = NULL */, int subNode /* = 0 */, CStdString strNodeList /* = "" */)
 {
   DSConfigList* list = new DSConfigList(type);
 
   list->m_setting = strSetting;
   list->m_attr = strAttr;
   list->m_nodeName = strNodeName;
+  list->m_nodeList = strNodeList;
   list->m_filler = filler;
   list->m_label = label;
   list->m_subNode = subNode;

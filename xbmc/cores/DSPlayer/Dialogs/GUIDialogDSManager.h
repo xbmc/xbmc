@@ -56,6 +56,7 @@ public:
 
   CStdString m_attr;
   CStdString m_nodeName;
+  CStdString m_nodeList;
   CStdString m_value;
   CStdString m_setting;
   int m_subNode;
@@ -83,7 +84,7 @@ public:
   void SetConfigIndex(int index)  { m_configIndex = index; };
   int GetConfigIndex() { return m_configIndex; };
 
-  void InitConfig(std::vector<DSConfigList *> &configList,  ConfigType type, CStdString strSetting, int label, CStdString strAttr = "", CStdString strNodeName = "", StringSettingOptionsFiller filler = NULL, int subNode = 0);
+  void InitConfig(std::vector<DSConfigList *> &configList,  ConfigType type, CStdString strSetting, int label, CStdString strAttr = "", CStdString strNodeName = "", StringSettingOptionsFiller filler = NULL, int subNode = 0, CStdString strNodeList = "");
   void ResetValue(std::vector<DSConfigList *>& configList);
   void LoadDsXML(xmlType type, TiXmlElement* &pNode, bool forceCreate = false);
   void SaveDsXML(xmlType type);

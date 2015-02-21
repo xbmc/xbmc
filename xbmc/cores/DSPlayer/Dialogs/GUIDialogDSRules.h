@@ -66,6 +66,7 @@ protected:
   void HideUnused();
   void HideUnused(ConfigType type, ConfigType subType);
   void SetVisible(CStdString id, bool visible, bool isChild = false);
+  bool NodeHasAttr(TiXmlElement *pNode, CStdString attr);
 
   std::vector<DSConfigList *> m_ruleList;
   CGUIDialogDSManager* m_dsmanager;

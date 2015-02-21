@@ -167,6 +167,18 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
   }
 }
 
+bool CGUIDialogDSRules::NodeHasAttr(TiXmlElement *pNode, CStdString attr)
+{
+  if (pNode) 
+  {
+    CStdString value = "";
+    value = pNode->Attribute(attr.c_str());
+    return ( value != "" );
+  }
+
+  return false;
+}
+
 void CGUIDialogDSRules::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
@@ -234,36 +246,36 @@ void CGUIDialogDSRules::InitializeSettings()
     m_dsmanager->InitConfig(m_ruleList, FILTER, "rules.subs", 60011, "filter", "subs", m_dsmanager->AllFiltersConfigOptionFiller);
 
     // EXTRAFILTER
-    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra0", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores0", 60019, "videoresolution", "extra", 0, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec0", 60020, "videocodec", "extra", 0, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans0", 60021, "audiochannels", "extra", 0, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec0", 60022, "audiocodec", "extra", 0, 0);
+    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra0", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 0, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores0", 60019, "videoresolution", "extra", 0, 0, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec0", 60020, "videocodec", "extra", 0, 0, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans0", 60021, "audiochannels", "extra", 0, 0, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec0", 60022, "audiocodec", "extra", 0, 0, "extra");
 
-    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra1", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores1", 60019, "videoresolution", "extra", 0, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec1", 60020, "videocodec", "extra", 0, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans1", 60021, "audiochannels", "extra", 0, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec1", 60022, "audiocodec", "extra", 0, 1);
+    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra1", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 1, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores1", 60019, "videoresolution", "extra", 0, 1, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec1", 60020, "videocodec", "extra", 0, 1, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans1", 60021, "audiochannels", "extra", 0, 1, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec1", 60022, "audiocodec", "extra", 0, 1, "extra");
 
-    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra2", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores2", 60019, "videoresolution", "extra", 0, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec2", 60020, "videocodec", "extra", 0, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans2", 60021, "audiochannels", "extra", 0, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec2", 60022, "audiocodec", "extra", 0, 2);
+    m_dsmanager->InitConfig(m_ruleList, EXTRAFILTER, "rules.extra2", 60012, "filter", "extra", m_dsmanager->AllFiltersConfigOptionFiller, 2, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videores2", 60019, "videoresolution", "extra", 0, 2, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.videocodec2", 60020, "videocodec", "extra", 0, 2, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiochans2", 60021, "audiochannels", "extra", 0, 2, "extra");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTREXTRA, "rules.audiocodec2", 60022, "audiocodec", "extra", 0, 2, "extra");
 
     // SHADER
-    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader0", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores0", 60019, "videoresolution", "shader", 0, 0);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec0", 60020, "videocodec", "shader", 0, 0);
+    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader0", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 0, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores0", 60019, "videoresolution", "shader", 0, 0, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec0", 60020, "videocodec", "shader", 0, 0, "shaders");
 
-    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader1", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores1", 60019, "videoresolution", "shader", 0, 1);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec1", 60020, "videocodec", "shader", 0, 1);
+    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader1", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 1, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores1", 60019, "videoresolution", "shader", 0, 1, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec1", 60020, "videocodec", "shader", 0, 1, "shaders");
 
-    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader2", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores2", 60019, "videoresolution", "shader", 0, 2);
-    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec2", 60020, "videocodec", "shader", 0, 2);
+    m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader2", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 2, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores2", 60019, "videoresolution", "shader", 0, 2, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec2", 60020, "videocodec", "shader", 0, 2, "shaders");
   }
 
   // Reset Button value
@@ -304,25 +316,30 @@ void CGUIDialogDSRules::InitializeSettings()
           || (*it)->m_configType == EDITATTREXTRA 
           || (*it)->m_configType == EDITATTRSHADER)
         {
-          TiXmlElement *pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
+          TiXmlElement *pFilter;
+          
+          pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
 
-          if (pFilter)
+          if (pFilter && NodeHasAttr(pFilter, (*it)->m_attr))
           {
             if ((*it)->m_subNode == 0)
               (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
 
-            if ((*it)->m_value == "" || (*it)->m_subNode > 0)
-            {
-              int countsize = 0;
-              TiXmlElement *pSubExtra = pFilter->FirstChildElement((*it)->m_nodeName.c_str());
-              while (pSubExtra)
-              {
-                if ((*it)->m_subNode == countsize)
-                  (*it)->m_value = pSubExtra->Attribute((*it)->m_attr.c_str());
+            continue;
+          } 
 
-                pSubExtra = pSubExtra->NextSiblingElement((*it)->m_nodeName.c_str());
-                countsize++;
-              }
+          pFilter = pRule->FirstChildElement((*it)->m_nodeList.c_str());
+          if (pFilter)
+          {
+            int countsize = 0;
+            TiXmlElement *pSubExtra = pFilter->FirstChildElement((*it)->m_nodeName.c_str());
+            while (pSubExtra)
+            {
+              if ((*it)->m_subNode == countsize)
+                (*it)->m_value = pSubExtra->Attribute((*it)->m_attr.c_str());
+
+              pSubExtra = pSubExtra->NextSiblingElement((*it)->m_nodeName.c_str());
+              countsize++;
             }
           }
         }
@@ -453,11 +470,11 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
         && (*it)->m_value != "[null]" && (*it)->m_value != "")
       {
 
-        TiXmlElement *pExtra = pRule.FirstChildElement((*it)->m_nodeName.c_str());
+        TiXmlElement *pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
         if (!pExtra && (*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER)
         {
-          pRule.InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
-          pExtra = pRule.FirstChildElement((*it)->m_nodeName.c_str());
+          pRule.InsertEndChild(TiXmlElement((*it)->m_nodeList.c_str()));
+          pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
         }
         if ((*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER)
           pExtra->InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
