@@ -16563,7 +16563,7 @@ msgid "Please fill out all required fields"
 msgstr ""
 
 msgctxt "#66001"
-msgid "DVDPlayer merits"
+msgid "DVDPlayer merits (need restart after changes)"
 msgstr ""
 
 msgctxt "#66002"

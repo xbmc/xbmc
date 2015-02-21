@@ -267,6 +267,8 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
         pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
     }
 
+    pRule.SetAttribute("player", "DVDPlayer");
+
     // SAVE
     if (settingId == SETTING_RULE_SAVE)
     {
