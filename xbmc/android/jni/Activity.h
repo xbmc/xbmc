@@ -47,11 +47,13 @@ public:
   static CJNIApplicationMainActivity* GetAppInstance() { return m_appInstance; }
 
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
+  static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
 
 private:
   static CJNIApplicationMainActivity *m_appInstance;
 
 protected:
   virtual void onNewIntent(CJNIIntent intent)=0;
+  virtual void onVolumeChanged(int volume)=0;
 };
 
