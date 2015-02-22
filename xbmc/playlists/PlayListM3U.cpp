@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 
 using namespace PLAYLIST;
@@ -170,6 +171,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           if (iEndOffset)
             lDuration = (iEndOffset - iStartOffset + 37) / 75;
         }
+        if (newItem->IsVideo() && !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
+          newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
         if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
