@@ -1483,6 +1483,7 @@ bool CIMXContext::Unblank()
 bool CIMXContext::SetVSync(bool enable)
 {
   m_vsync = enable;
+  return true;
 }
 
 void CIMXContext::SetDoubleRate(bool flag)
