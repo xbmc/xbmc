@@ -3,14 +3,19 @@ KODI ADDONS
 This directory contains the cmake-based buildsystem for addons. It looks into
 the "addons" sub-directory and parses all *.txt files recursively. Each addon
 must have its own <addon-id>.txt file in a separate sub-directory which must
-follow the defined format:
+follow one of the defined format:
   <addon-id> <git-url> <git-revision>
+  <addon-id> <tarball-url>
+  <addon-id> <file://path>
 where
   * <addon-id> must be identical to the addon's ID as defined in the addon's
     addon.xml
-  * <git-url> must be the URL of the git repository containing the addon.
+  * <git-url> must be the URL of the git repository containing the addon
   * <git-revision> must be a valid git tag/branch/commit in the addon's git
     repository which will be used for the build.
+  * <tarball-url> must be the URL to a .tar.gz tarball containing the addon
+  * <file://path> must be a file:// based path to the directory containing the
+    addon
 
 Reserved filenames (for additional information on how to build an addon)
 are:

@@ -160,6 +160,7 @@ foreach(addon ${addons})
         list(GET def 1 url)
 
         set(archive_name ${id})
+        set(SOURCE_DIR "")
 
           # if there is a 3rd parameter in the file, we consider it a git revision
         if(deflength GREATER 2)
@@ -169,71 +170,101 @@ foreach(addon ${addons})
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
           set(archive_name ${archive_name}-${revision})
-        endif()
-
-        # download and extract the addon
-        if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
-          # cleanup any of the previously downloaded archives of this addon
-          file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
-          if(archives)
-            message(STATUS "Removing old archives of ${id}: ${archives}")
-            file(REMOVE ${archives})
-          endif()
-
-          # download the addon
-          file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
-          list(GET dlstatus 0 retcode)
-          if(NOT ${retcode} EQUAL 0)
-            message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
-          endif()
-        endif()
-
-        # remove any previously extracted version of the addon
-        if(EXISTS "${BUILD_DIR}/${id}")
-          file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
-        endif()
-
-        # extract the addon from the archive
-        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
-                        WORKING_DIRECTORY ${BUILD_DIR})
-        file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
-        if(extract_dir STREQUAL "")
-          message(FATAL_ERROR "Error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
         else()
-          file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
+          # check if the URL starts with file://
+          string(REGEX MATCH "^file://.*$" local_url "${url}")
+
+          #if not we assume this to be a local directory
+          if(local_url)
+            # this is not an archive
+            set(archive_name "")
+
+            # remove the file:// protocol from the URL
+            string(REPLACE "file://" "" SOURCE_DIR "${url}")
+
+            # on win32 we may have to remove another leading /
+            if(WIN32)
+              # check if the path is a local path
+              string(REGEX MATCH "^/.*$" local_path "${SOURCE_DIR}")
+              if(local_path)
+                string(SUBSTRING "${SOURCE_DIR}" 1 -1 SOURCE_DIR)
+              endif()
+            endif()
+          endif()
         endif()
 
-        # setup building the addon
-        externalproject_add(${id}
-                            SOURCE_DIR ${BUILD_DIR}/${id}
-                            INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-                            CMAKE_ARGS ${BUILD_ARGS})
+        # download the addon if necessary
+        if(NOT "${archive_name}" STREQUAL "")
+          # download and extract the addon
+          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+            # cleanup any of the previously downloaded archives of this addon
+            file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
+            if(archives)
+              message(STATUS "Removing old archives of ${id}: ${archives}")
+              file(REMOVE ${archives})
+            endif()
 
-        # add a custom step to the external project between the configure and the build step which will always
-        # be executed and therefore forces a re-build of all changed files
-        externalproject_add_step(${id} forcebuild
-                                 COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
-                                 DEPENDEES configure
-                                 DEPENDERS build
-                                 ALWAYS 1)
-
-        # add "kodi-platform" as a dependency to every addon
-        add_dependencies(${id} kodi-platform)
-
-        set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
-
-        if(EXISTS ${${id}_DEPENDS_DIR})
-          include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
-          add_addon_depends(${id} ${${id}_DEPENDS_DIR})
-          if (${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
-            message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
-            add_dependencies(${id} ${${id}_DEPS})
+            # download the addon
+            file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
+            list(GET dlstatus 0 retcode)
+            if(NOT ${retcode} EQUAL 0)
+              message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+            endif()
           endif()
+
+          # remove any previously extracted version of the addon
+          if(EXISTS "${BUILD_DIR}/${id}")
+            file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
+          endif()
+
+          # extract the addon from the archive
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
+                          WORKING_DIRECTORY ${BUILD_DIR})
+          file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
+          if(extract_dir STREQUAL "")
+            message(FATAL_ERROR "${id}: error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
+          else()
+            file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
+          endif()
+
+          set(SOURCE_DIR ${BUILD_DIR}/${id})
+        endif()
+
+        if(NOT "${SOURCE_DIR}" STREQUAL "" AND EXISTS ${SOURCE_DIR})
+          # setup the buildsystem for the addon
+          externalproject_add(${id}
+                              SOURCE_DIR ${SOURCE_DIR}
+                              INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                              CMAKE_ARGS ${BUILD_ARGS})
+
+          # add a custom step to the external project between the configure and the build step which will always
+          # be executed and therefore forces a re-build of all changed files
+          externalproject_add_step(${id} forcebuild
+                                   COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
+                                   DEPENDEES configure
+                                   DEPENDERS build
+                                   ALWAYS 1)
+
+          # add "kodi-platform" as a dependency to every addon
+          add_dependencies(${id} kodi-platform)
+
+          set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
+
+          if(EXISTS ${${id}_DEPENDS_DIR})
+            include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
+            add_addon_depends(${id} ${${id}_DEPENDS_DIR})
+            if(${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
+              message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
+              add_dependencies(${id} ${${id}_DEPS})
+            endif()
+          endif()
+        else()
+          message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()
       endif()
     endif()
   endif()
-endforeach(
+endforeach()
 
 if(NEED_SUDO)
   add_custom_target(install
