@@ -73,6 +73,11 @@ set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
                -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS})
 
+if(MSVC)
+  # move cmake specific targets to a CMakePredefinedTargets folder in Visual Studio
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+endif()
+
 if(PACKAGE_ZIP)
   # needed for project installing
   list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
