@@ -3,6 +3,7 @@ TOOLCHAIN_FILE = $(ADDON_DEPS_DIR)/share/Toolchain_binaddons.cmake
 
 ifeq ($(CROSS_COMPILING),yes)
   DEPS = $(TOOLCHAIN_FILE) $(abs_top_srcdir)/target/config-binaddons.site $(abs_top_srcdir)/target/Toolchain_binaddons.cmake $(CONFIG_SUB) $(CONFIG_GUESS)
+  TOOLCHAIN = -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
   ifeq ($(OS),linux)
     ifneq ($(TARGET_PLATFORM),raspberry-pi)
       DEPS += linux-system-libs
@@ -42,17 +43,20 @@ distclean:
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) native
 
 .installed-$(PLATFORM): $(DEPS)
+	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
+	mkdir -p $(PLATFORM)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the xbmc install path e.g. make PREFIX=/usr/local"
 	@exit 1
 endif
-	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
+ifeq ($(CROSS_COMPILING),yes)
 	mkdir -p $(PLATFORM)/build/depends/share; \
-         cp -f $(abs_top_srcdir)/target/config-binaddons.site $(PLATFORM)/build/depends/share/config.site ;\
-         cd $(PLATFORM); \
-         $(NATIVEPREFIX)/bin/cmake -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
-         -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) \
+         cp -f $(abs_top_srcdir)/target/config-binaddons.site $(PLATFORM)/build/depends/share/config.site
+endif
+	cd $(PLATFORM); \
+         $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
+         $(TOOLCHAIN) \
          -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          $(MAKE);
 	touch $@
