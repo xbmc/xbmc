@@ -2398,7 +2398,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // Check for global volume control
-  if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+  if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN || action.GetID() == ACTION_VOLUME_SET))
   {
     if (!m_pPlayer->IsPassthrough())
     {
@@ -2415,13 +2415,18 @@ bool CApplication::OnAction(const CAction &action)
         step *= action.GetRepeat() * 50; // 50 fps
 #endif
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += action.GetAmount() * action.GetAmount() * step;
+        volume += (float)fabs(action.GetAmount()) * action.GetAmount() * step;
+      else if (action.GetID() == ACTION_VOLUME_DOWN)
+        volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
       else
-        volume -= action.GetAmount() * action.GetAmount() * step;
-      SetVolume(volume, false);
+        volume = action.GetAmount() * step;
+      if (volume != m_volumeLevel)
+      {
+        SetVolume(volume, false);
+        // show visual feedback of volume change...
+        ShowVolumeBar(&action);
+      }
     }
-    // show visual feedback of volume change...
-    ShowVolumeBar(&action);
     return true;
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
