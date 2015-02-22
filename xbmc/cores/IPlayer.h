@@ -26,6 +26,8 @@
 #include "guilib/Geometry.h"
 #include <string>
 
+#define CURRENT_STREAM -1
+
 struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
