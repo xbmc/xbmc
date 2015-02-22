@@ -8,6 +8,7 @@
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 boost-1.46.1-headers-win32.7z
 bzip2-1.0.5-win32.7z
+curl-7.40-win32.7z
 dnssd-541-win32.zip
 doxygen-1.8.2-win32.7z
 fontconfig-2.8.0-win32.7z
@@ -19,7 +20,6 @@ libass-0.10.2-win32.7z
 libbluray-0.4.0-win32.zip
 libcdio-0.83-win32-2.7z
 libcec-2.2.0-win32-1.7z
-libcurl-7.21.6-win32.7z
 libexpat_2.0.1-win32.7z
 libflac-1.2.1-win32.7z
 libfribidi-0.19.2-win32.7z
