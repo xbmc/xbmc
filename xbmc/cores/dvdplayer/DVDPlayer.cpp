@@ -4156,6 +4156,9 @@ int CDVDPlayer::GetSourceBitrate()
 
 void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
+  if (index == CURRENT_STREAM)
+    index = GetAudioStream();
+
   if (index < 0 || index > GetAudioStreamCount() - 1 )
     return;
 
