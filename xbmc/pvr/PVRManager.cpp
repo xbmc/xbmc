@@ -1329,7 +1329,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     // save previous and load new channel's settings (view mode is updated in 
     // the player)
     g_application.SaveFileState();
-    g_application.LoadVideoSettings(channel->Path());
+    g_application.LoadVideoSettings(channel);
     
     // set channel as selected item
     CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
