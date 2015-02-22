@@ -514,8 +514,10 @@ public:
   void DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType);
 
   // per-file video settings
-  bool GetVideoSettings(const std::string &strFilenameAndPath, CVideoSettings &settings);
-  void SetVideoSettings(const std::string &strFilenameAndPath, const CVideoSettings &settings);
+  bool GetVideoSettings(int idFile, CVideoSettings &settings);
+  bool GetVideoSettings(const CFileItem &item, CVideoSettings &settings);
+  bool GetVideoSettings(const std::string &filePath, CVideoSettings &settings);
+  void SetVideoSettings(const std::string &filePath, const CVideoSettings &settings);
 
   /**
    * Erases settings for all files beginning with the specified path. Defaults 
