@@ -110,6 +110,15 @@ endif()
 # include check_target_platform() function
 include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
 
+# check install permissions
+set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+check_install_permissions(${CMAKE_INSTALL_PREFIX} can_write)
+if(NOT ${can_write} AND NOT WIN32)
+  set(NEED_SUDO TRUE)
+  set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
+  message(STATUS "NEED_SUDO: ${NEED_SUDO}")
+endif()
+
 ### prepare the build environment for the binary addons
 # copy the prepare-env.cmake script to the depends path so that we can include it
 file(COPY ${APP_ROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${KODI_LIB_DIR})
@@ -204,7 +213,7 @@ endforeach()
 foreach(id ${downloaded_addons})
   externalproject_add(${id}
                       SOURCE_DIR ${BUILD_DIR}/${id}
-                      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                      INSTALL_DIR ${ADDON_INSTALL_DIR}
                       CMAKE_ARGS ${BUILD_ARGS})
 
   # add a custom step to the external project between the configure and the build step which will always
@@ -229,3 +238,12 @@ foreach(id ${downloaded_addons})
     endif()
   endif()
 endforeach()
+
+if(NEED_SUDO)
+  add_custom_target(install
+                    COMMAND ${CMAKE_COMMAND} -E echo "\n\n"
+                    COMMAND ${CMAKE_COMMAND} -E echo "WARNING: sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}\n"
+                    COMMAND sudo ${CMAKE_COMMAND} -E copy_directory ${ADDON_INSTALL_DIR}/ ${CMAKE_INSTALL_PREFIX}/
+                    COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
+                    COMMAND sudo -k)
+endif()

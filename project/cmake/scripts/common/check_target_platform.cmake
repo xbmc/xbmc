@@ -38,3 +38,24 @@ function(check_target_platform dir target_platform build)
   # make the ${build} variable available to the calling script
   set(${build} "${${build}}" PARENT_SCOPE)
 endfunction()
+
+function(check_install_permissions install_dir have_perms)
+  # param[in] install_dir directory to check for write permissions
+  # param[out] have_perms wether we have permissions to install to install_dir
+
+  set(${have_perms} TRUE)
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/kodi
+                  COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/kodi
+                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test
+                  RESULT_VARIABLE permtest)
+
+  if(${permtest} GREATER 0)
+    message(STATUS "check_install_permissions: ${permtest}")
+    set(${have_perms} FALSE)
+  endif()
+  set(${have_perms} "${${have_perms}}" PARENT_SCOPE)
+
+  if(EXISTS ${install_dir}/lib/kodi/.cmake-inst-test OR EXISTS ${install_dir}/share/kodi/.cmake-inst-test)
+    file(REMOVE ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test)
+  endif()
+endfunction()

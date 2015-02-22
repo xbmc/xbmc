@@ -59,6 +59,9 @@ endif
          $(TOOLCHAIN) \
          -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          $(MAKE);
+ifneq ($(CROSS_COMPILING),yes)
+	@[ -w $(INSTALL_PREFIX) ] || $(MAKE) -C $(PLATFORM) install
+endif
 	touch $@
 
 $(TOOLCHAIN_FILE): $(abs_top_srcdir)/target/Toolchain_binaddons.cmake
