@@ -225,8 +225,6 @@ const BUILT_IN commands[] = {
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
-  { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
-  { "StopPVRManager",             false,  "Stops the PVR manager" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -1826,14 +1824,6 @@ int CBuiltins::Execute(const std::string& execString)
     bool debug = CSettings::Get().GetBool("debug.showloginfo");
     CSettings::Get().SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
-  }
-  else if (execute == "startpvrmanager")
-  {
-    g_application.StartPVRManager();
-  }
-  else if (execute == "stoppvrmanager")
-  {
-    g_application.StopPVRManager();
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
