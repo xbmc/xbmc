@@ -203,41 +203,37 @@ foreach(addon ${addons})
           file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
         endif()
 
-        list(APPEND downloaded_addons ${id})
+        # setup building the addon
+        externalproject_add(${id}
+                            SOURCE_DIR ${BUILD_DIR}/${id}
+                            INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                            CMAKE_ARGS ${BUILD_ARGS})
 
+        # add a custom step to the external project between the configure and the build step which will always
+        # be executed and therefore forces a re-build of all changed files
+        externalproject_add_step(${id} forcebuild
+                                 COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
+                                 DEPENDEES configure
+                                 DEPENDERS build
+                                 ALWAYS 1)
+
+        # add "kodi-platform" as a dependency to every addon
+        add_dependencies(${id} kodi-platform)
+
+        set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
+
+        if(EXISTS ${${id}_DEPENDS_DIR})
+          include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
+          add_addon_depends(${id} ${${id}_DEPENDS_DIR})
+          if (${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
+            message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
+            add_dependencies(${id} ${${id}_DEPS})
+          endif()
+        endif()
       endif()
     endif()
   endif()
-endforeach()
-
-foreach(id ${downloaded_addons})
-  externalproject_add(${id}
-                      SOURCE_DIR ${BUILD_DIR}/${id}
-                      INSTALL_DIR ${ADDON_INSTALL_DIR}
-                      CMAKE_ARGS ${BUILD_ARGS})
-
-  # add a custom step to the external project between the configure and the build step which will always
-  # be executed and therefore forces a re-build of all changed files
-  externalproject_add_step(${id} forcebuild
-                           COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
-                           DEPENDEES configure
-                           DEPENDERS build
-                           ALWAYS 1)
-
-  # add "kodi-platform" as a dependency to every addon
-  add_dependencies(${id} kodi-platform)
-
-  set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
-
-  if(EXISTS ${${id}_DEPENDS_DIR})
-    include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
-    add_addon_depends(${id} ${${id}_DEPENDS_DIR})
-    if (${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
-      message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
-      add_dependencies(${id} ${${id}_DEPS})
-    endif()
-  endif()
-endforeach()
+endforeach(
 
 if(NEED_SUDO)
   add_custom_target(install
