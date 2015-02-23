@@ -535,12 +535,9 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
   return code;
 }
 
-const std::string CLangInfo::GetLanguageLocale(bool twochar /* = false */) const
+const std::string& CLangInfo::GetLanguageLocale() const
 {
-  if (twochar)
-    return m_currentRegion->m_strLangLocaleCodeTwoChar;
-
-  return m_currentRegion->m_strLangLocaleName;
+  return m_currentRegion->m_strLangLocaleCodeTwoChar;
 }
 
 const std::string& CLangInfo::GetRegionLocale() const
