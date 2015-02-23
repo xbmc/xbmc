@@ -371,6 +371,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       m_dvdAudio.SetPlayingPts(m_audioClock);
       if (pMsgGeneralResync->m_clock)
         m_pClock->Discontinuity(m_dvdAudio.GetPlayingPts());
+      m_syncclock = true;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
