@@ -11338,7 +11338,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21416"
-msgid "Jump to first unwatched TV show season/episode"
+msgid "Select the first unwatched TV show season/episode"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11562,10 +11562,10 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Jump to first unwatched TV show season/episode" with label #21416
+#. Description of setting "Videos -> Library -> Select first unwatched TV show season/episode" with label #21416
 #: system/settings/settings.xml
 msgctxt "#21466"
-msgid "When entering a TV show season or episode view automatically jump to the first unwatched season or episode."
+msgid "When entering a TV show season or episode view automatically select the first unwatched season or episode. [On first entry] the first unwatched item will be selected only when a view is entered for the first time. [Always] the first unwatched item will be selected every time a view is entered."
 msgstr ""
 
 #. Filter (media data) from float value to float value
@@ -11593,7 +11593,48 @@ msgctxt "#21470"
 msgid "%s [%d]"
 msgstr ""
 
-#empty strings from id 21471 to 21601
+#. One of the values valid for "Videos -> Library -> Select first unwatched TV show season/episode" with label #21416
+#: system/settings/settings.xml
+msgctxt "#21471"
+msgid "On first entry"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#21472"
+msgid "Include All Seasons and Specials"
+msgstr ""
+
+#. Description of setting "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#: system/settings/settings.xml
+msgctxt "#21473"
+msgid "Whether or not to consider All Seasons and Special items in the unwatched item selection."
+msgstr ""
+
+#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#: system/settings/settings.xml
+msgctxt "#21474"
+msgid "Neither"
+msgstr ""
+
+#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#: system/settings/settings.xml
+msgctxt "#21475"
+msgid "Both"
+msgstr ""
+
+#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#: system/settings/settings.xml
+msgctxt "#21476"
+msgid "Just All Seasons"
+msgstr ""
+
+#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#: system/settings/settings.xml
+msgctxt "#21477"
+msgid "Just Specials"
+msgstr ""
+
+#empty strings from id 21478 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"

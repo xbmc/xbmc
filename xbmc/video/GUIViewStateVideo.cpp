@@ -436,31 +436,6 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   return CSettings::Get().GetBool("videoplayer.autoplaynextitem");
 }
 
-bool CGUIViewStateWindowVideoNav::JumpToFirstUnplayedItem()
-{
-  if (m_items.IsVideoDb())
-  {
-    NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.GetPath());
-    switch (NodeType)
-    {
-    case NODE_TYPE_EPISODES:
-      if (GetSortMethod().sortBy == SortBy::SortByEpisodeNumber)
-        return CSettings::Get().GetBool("videolibrary.jumptofirstunplayeditem");
-      else
-        return false;
-
-    case NODE_TYPE_SEASONS:
-      return CSettings::Get().GetBool("videolibrary.jumptofirstunplayeditem");
-
-    default:
-      return false;
-      break;
-    }
-  }
-
-  return CGUIViewStateWindowVideo::JumpToFirstUnplayedItem();
-}
-
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   AddSortMethod(SortByNone, 551, LABEL_MASKS("%L", "", "%L", ""));  // Label, empty | Label, empty

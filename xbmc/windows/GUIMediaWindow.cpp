@@ -853,35 +853,9 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     }
   }
 
-  // if we haven't found the selected item, see if we should select the first unplayed item
-  // if yes, find the first unplayed item and select it
-  // if no, select the first item
+  // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
-  {
-    int iIndex = 0; // index of the item to select, default to the first item
-
-    // Check if we should select the first unplayed item
-    if (m_guiState.get()->JumpToFirstUnplayedItem())
-    {
-      // Find the index of the 
-      for (int i = 0; i < m_vecItems->Size(); ++i)
-      {
-        CFileItemPtr pItem = m_vecItems->Get(i);
-        // We don't want to jump to the parent folder item or an All Seasons item
-        if (pItem->IsParentFolder() || !pItem->HasVideoInfoTag() || 
-          (pItem->GetVideoInfoTag()->m_type == MediaTypeSeason && pItem->GetVideoInfoTag()->m_iSeason < 0))
-          continue;
-
-        if (pItem->GetVideoInfoTag()->m_playCount == 0)
-        {
-          iIndex = i;
-          break;
-        }
-      }
-    }
-
-    m_viewControl.SetSelectedItem(iIndex);
-  }
+    m_viewControl.SetSelectedItem(0);
 
   m_history.AddPath(m_vecItems->GetPath(), m_strFilterPath);
 

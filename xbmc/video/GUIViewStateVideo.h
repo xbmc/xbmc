@@ -49,7 +49,6 @@ class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 public:
   CGUIViewStateWindowVideoNav(const CFileItemList& items);
   virtual bool AutoPlayNextItem();
-  virtual bool JumpToFirstUnplayedItem();
 
 protected:
   virtual void SaveViewState();
