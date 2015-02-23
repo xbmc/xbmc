@@ -19,6 +19,7 @@
  */
 
 #include "utils/StringUtils.h"
+#include <algorithm>
 
 #include "gtest/gtest.h"
 
@@ -477,4 +478,17 @@ TEST(TestStringUtils, Paramify)
 
   std::string result = StringUtils::Paramify(input);
   EXPECT_STREQ(ref, result.c_str());
+}
+
+TEST(TestStringUtils, sortstringbyname)
+{
+  std::vector<std::string> strarray;
+  strarray.push_back("B");
+  strarray.push_back("c");
+  strarray.push_back("a");
+  std::sort(strarray.begin(), strarray.end(), sortstringbyname());
+
+  EXPECT_STREQ("a", strarray[0].c_str());
+  EXPECT_STREQ("B", strarray[1].c_str());
+  EXPECT_STREQ("c", strarray[2].c_str());
 }
