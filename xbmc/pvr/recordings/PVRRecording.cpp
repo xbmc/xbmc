@@ -91,7 +91,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
   m_iPriority                      = recording.iPriority;
   m_iLifetime                      = recording.iLifetime;
-  m_strDirectory                   = recording.strDirectory;
+  // Deleted recording is placed at the root of the deleted view
+  m_strDirectory                   = recording.bIsDeleted ? "" : recording.strDirectory;
   m_strPlot                        = recording.strPlot;
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
@@ -377,7 +378,7 @@ void CPVRRecording::UpdatePath(void)
       strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
     if (!m_strChannelName.empty())
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
-    m_strFileNameAndPath = StringUtils::Format("pvr://recordings/%s/%s%s, TV%s, %s.pvr", (m_bIsDeleted ? "deleted" : "active"),  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
+    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s, TV%s, %s.pvr", m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH,  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
 
@@ -392,7 +393,7 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
 std::string CPVRRecording::GetTitleFromURL(const std::string &url)
 {
   CRegExp reg(true);
-  if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
+  if (reg.RegComp("pvr://" PVR_RECORDING_BASE_PATH "/(.*/)*(.*), TV( \\(.*\\))?, "
       "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
   {
     if (reg.RegFind(url.c_str()) >= 0)
