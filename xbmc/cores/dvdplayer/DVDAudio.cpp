@@ -54,7 +54,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   CLog::Log(LOGNOTICE,
     "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
     codec,
-    audioframe.channel_count,
+    audioframe.passthrough ? audioframe.encoded_channel_count : audioframe.channel_count,
     audioframe.sample_rate,
     audioframe.passthrough ? "pass-through" : "no pass-through"
   );
