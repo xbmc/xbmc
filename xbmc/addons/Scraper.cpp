@@ -576,7 +576,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const std:
   vector<string> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   vcsIn[0] = CURL::Encode(vcsIn[0]);
-  if (!sYear.empty())
+  if (fFirst && !sYear.empty())
     vcsIn.push_back(sYear);
 
   // request a search URL from the title/filename/etc.
