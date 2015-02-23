@@ -39,6 +39,7 @@ SRCS += JSONVariantWriter.cpp
 SRCS += LabelFormatter.cpp
 SRCS += LangCodeExpander.cpp
 SRCS += LegacyPathTranslation.cpp
+SRCS += Locale.cpp
 SRCS += log.cpp
 SRCS += md5.cpp
 SRCS += Mime.cpp
