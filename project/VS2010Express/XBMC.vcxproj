@@ -925,6 +925,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVAudioSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h" />

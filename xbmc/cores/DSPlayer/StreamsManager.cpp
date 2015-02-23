@@ -616,6 +616,7 @@ void CStreamsManager::LoadStreams()
       
       m_subfilterStreams_int = m_subfilterStreams;
       m_pIDirectVobSub->put_LoadSettings(1, true, false, true);
+      m_InitialSubsDelay = GetSubTitleDelay();
 
       SubInterface(ADD_EXTERNAL_SUB);
     }
@@ -695,6 +696,105 @@ void CStreamsManager::SetSubfilterVisible( bool bVisible )
 
   m_pIDirectVobSub->put_HideSubtitles(!m_bSubfilterVisible);
 } 
+
+void CStreamsManager::resetDelayInterface()
+{
+  int iValueAudio = m_InitialAudioDelay * 1000;
+  int iValueSubs = m_InitialSubsDelay * 1000;
+
+  if (m_bIsFFDSAudio)
+    m_pIFFDSwhoAudioSettings->putParam(IDFF_audio_decoder_delay, iValueAudio);
+
+  if (m_bIsXYVSFilter)
+    m_pIDirectVobSub->put_SubtitleTiming(iValueSubs, 1000, 1000);
+
+  if (m_bIsLavAudio)
+    m_pILAVAudioSettings->SetAudioDelay(true, iValueAudio);
+}
+
+bool CStreamsManager::SetAudioInterface()
+{
+  Com::SmartPtr<IBaseFilter> m_pAudio;
+  m_pAudio = CGraphFilters::Get()->Audio.pBF;
+
+  CStdString audioName;
+  HRESULT hraudio;
+  g_charsetConverter.wToUTF8(GetFilterName(m_pAudio), audioName);
+
+  hraudio = m_pAudio->QueryInterface(__uuidof(m_pILAVAudioSettings), (void **) &m_pILAVAudioSettings);
+  if (SUCCEEDED(hraudio))
+  {
+    CLog::Log(LOGDEBUG, "%s Get LAVAudio Settings interface from %s", __FUNCTION__, audioName.c_str());
+    m_bIsLavAudio = true;
+  }
+
+  hraudio = m_pAudio->QueryInterface(IID_IffdshowBaseW, (void **)&m_pIFFDSwhoAudioSettings);
+  if (SUCCEEDED(hraudio))
+  {
+    CLog::Log(LOGDEBUG, "%s Get FFDShowAudio Settings interface from %s", __FUNCTION__, audioName.c_str());
+    m_bIsFFDSAudio = true;
+  }
+
+  m_InitialAudioDelay = GetAVDelay();
+
+  return (m_bIsLavAudio || m_bIsFFDSAudio);
+}
+
+void CStreamsManager::SetAVDelay(float fValue)
+{
+  //delay float secs to int msecs
+  int iValue = fValue * 1000;
+
+  //get displaylatency and invert the sign because kodi interface
+  int displayLatency = -(g_renderManager.GetDisplayLatency() * 1000);
+  iValue = iValue + displayLatency;
+
+  //get delay and invert the sign because kodi interface
+  iValue = -iValue;
+
+  if (m_bIsLavAudio)
+    m_pILAVAudioSettings->SetAudioDelay(true, iValue);
+
+  if (m_bIsFFDSAudio)
+    m_pIFFDSwhoAudioSettings->putParam(IDFF_audio_decoder_delay, iValue);
+}
+
+float CStreamsManager::GetAVDelay()
+{
+  float fValue = 0.0f;
+  int iValue;
+  BOOL bValue;
+
+  if (m_bIsLavAudio)
+    m_pILAVAudioSettings->GetAudioDelay(&bValue, &iValue);
+ 
+  if (m_bIsFFDSAudio)
+    m_pIFFDSwhoAudioSettings->getParam(IDFF_audio_decoder_delay, &iValue);
+
+  fValue = (float)iValue / 1000;
+
+  return -fValue;
+}
+
+void CStreamsManager::SetSubTitleDelay(float fValue)
+{
+  int iValue = fValue * 1000;
+
+  if (m_bIsXYVSFilter)
+    m_pIDirectVobSub->put_SubtitleTiming(iValue,1000,1000);
+}
+
+float CStreamsManager::GetSubTitleDelay()
+{
+  float fValue = 0.0f;
+  int iValue, a, b;
+  
+  if (m_bIsXYVSFilter)
+    m_pIDirectVobSub->get_SubtitleTiming(&iValue, &a, &b);
+
+  fValue = (float)iValue / 1000;
+  return fValue;
+}
 
 int CStreamsManager::AddSubtitle(const std::string& subFilePath)
 {
@@ -865,7 +965,11 @@ bool CStreamsManager::InitManager()
   m_hsubfilter = CGraphFilters::Get()->HasSubFilter();
   m_init = true;
   m_bIsXYVSFilter = false;
-  
+  m_bIsLavAudio = false;
+  m_bIsFFDSAudio = false;
+  m_InitialAudioDelay = 0.0f;
+  m_InitialSubsDelay = 0.0f;
+
   return true;
 }
 

@@ -72,6 +72,7 @@ protected:
   bool m_passthrough;
   int m_subtitleStream;
   bool m_subtitleVisible;
+  bool m_bIsDSPlayer;
 
   typedef std::vector<int> Features;
   Features m_audioCaps;

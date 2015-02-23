@@ -57,9 +57,18 @@ void CWinDsRenderer::SetupScreenshot()
 
 bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
+  if (m_sourceWidth != width
+    || m_sourceHeight != height)
+  {
+    m_sourceWidth = width;
+    m_sourceHeight = height;
+    // need to recreate textures
+  }
+
+  m_fps = fps;
+  m_iFlags = flags;
   m_flags = flags;
+  m_format = format;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -68,6 +77,7 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
   ManageDisplay();
 
   m_bConfigured = true;
+
   return true;
 }
 
@@ -75,7 +85,7 @@ void CWinDsRenderer::Reset()
 {
 }
 
-void CWinDsRenderer::Update(bool bPauseDrawing)
+void CWinDsRenderer::Update()
 {
   if (!m_bConfigured) return;
   ManageDisplay();
@@ -120,21 +130,33 @@ bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
 
 void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
-  
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  if (clear)
+    g_graphicsContext.Clear(m_clearColour);
+
+  if (alpha < 255)
+    pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+  else
+    pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+  if (!m_bConfigured)
+    return;
+
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  if (clear)
-    pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
-
-  if(alpha < 255)
-    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  else
-    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
   Render(flags);
+}
+
+void CWinDsRenderer::Flush()
+{
+  PreInit();
+  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  ManageDisplay();
+
+  m_bConfigured = true;
 }
 
 unsigned int CWinDsRenderer::PreInit()

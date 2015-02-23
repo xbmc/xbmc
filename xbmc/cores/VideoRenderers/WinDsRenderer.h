@@ -42,7 +42,7 @@ public:
 
   bool CWinDsRenderer::RenderCapture(CRenderCapture* capture);
 
-  virtual void         Update(bool bPauseDrawing);
+  virtual void         Update();
   virtual void         SetupScreenshot();
   void                 CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
 
@@ -56,6 +56,7 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
+  virtual void         Flush();
   
   virtual void         RegisterCallback(IPaintCallback *callback);
   virtual void         UnregisterCallback();

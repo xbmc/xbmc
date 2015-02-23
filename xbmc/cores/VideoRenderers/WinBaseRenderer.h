@@ -67,7 +67,8 @@ public:
   virtual void         UnInit() {};
   virtual void         Reset() {}; /* resets renderer after seek for example */
   virtual bool         IsConfigured() {return false;}
-  
+  virtual void         Flush() {};
+
   virtual void         RegisterCallback(IPaintCallback *callback) {};
   virtual void         UnregisterCallback() {};
   virtual inline void  OnAfterPresent() {};

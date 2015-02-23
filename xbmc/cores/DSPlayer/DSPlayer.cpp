@@ -338,6 +338,9 @@ bool CDSPlayer::CloseFile(bool reopen)
 {
   CSingleLock lock(m_CleanSection);
 
+  // reset intial delay in decoder interface
+  if (CStreamsManager::Get()) CStreamsManager::Get()->resetDelayInterface();
+
   if (PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_CLOSING)
     return true;
 
@@ -437,6 +440,46 @@ void CDSPlayer::GetGeneralInfo(std::string& strGeneralInfo)
   strGeneralInfo = g_dsGraph->GetGeneralInfo();
 }
 
+float CDSPlayer::GetAVDelay()
+{
+  float fValue = 0.0f;
+
+  if (CStreamsManager::Get())
+    fValue = CStreamsManager::Get()->GetAVDelay();
+
+  return fValue;
+}
+
+void CDSPlayer::SetAVDelay(float fValue)
+{
+  if (CStreamsManager::Get()) CStreamsManager::Get()->SetAVDelay(fValue);
+}
+
+float CDSPlayer::GetSubTitleDelay()
+{
+  float fValue = 0.0f;
+
+  if (CStreamsManager::Get())
+  {
+    if (CGraphFilters::Get()->HasSubFilter())
+      fValue = CStreamsManager::Get()->GetSubTitleDelay();
+    else
+      fValue = CStreamsManager::Get()->SubtitleManager->GetSubtitleDelay();
+  }
+  return fValue;
+}
+
+void CDSPlayer::SetSubTitleDelay(float fValue)
+{
+  if (CStreamsManager::Get())
+  {
+    if (CGraphFilters::Get()->HasSubFilter())
+      CStreamsManager::Get()->SetSubTitleDelay(fValue);
+    else
+      CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
+  }
+}
+
 //CThread
 void CDSPlayer::OnStartup()
 {
@@ -516,10 +559,29 @@ void CDSPlayer::Process()
 	else 
 		g_application.m_pPlayer->SetAudioStream(0);
 
-	
+    float fValue;
 
-	while (!m_bStop && PlayerState != DSPLAYER_CLOSED && PlayerState != DSPLAYER_LOADING)
-		HandleMessages();
+    // Get Audio Interface LAV AUDIO/FFDSHOW
+
+    if (CStreamsManager::Get()) 
+    { 
+      if (CStreamsManager::Get()->SetAudioInterface());
+      {
+        fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
+        CStreamsManager::Get()->SetAVDelay(fValue);
+      }
+    }	
+
+    fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay;
+
+    if (CGraphFilters::Get()->HasSubFilter())
+      if (CStreamsManager::Get()) CStreamsManager::Get()->SetSubTitleDelay(fValue);
+      else
+      if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
+    
+
+    while (!m_bStop && PlayerState != DSPLAYER_CLOSED && PlayerState != DSPLAYER_LOADING)
+      HandleMessages();
 }
 
 void CDSPlayer::HandleMessages()

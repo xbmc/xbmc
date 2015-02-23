@@ -115,6 +115,10 @@ public:
   virtual void GetVideoInfo(std::string& strVideoInfo);
   virtual void GetGeneralInfo(std::string& strGeneralInfo);
   virtual bool Closing()                                      { return PlayerState == DSPLAYER_CLOSING; }
+  virtual void SetAVDelay(float fValue = 0.0f);
+  virtual float GetAVDelay();
+  virtual void SetSubTitleDelay(float fValue = 0.0f);
+  virtual float GetSubTitleDelay();
 
 //Audio stream selection
   virtual int  GetAudioStreamCount() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioStreamCount() : 0; }
@@ -162,11 +166,7 @@ public:
   virtual void SetSubtitleVisible(bool bVisible);
 
   virtual int AddSubtitle(const std::string& strSubPath);
-  virtual void SetSubTitleDelay(float fValue = 0.0f) {
-    if (CStreamsManager::Get())
-      CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
-  };
-  virtual float GetSubTileDelay(void) { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->GetSubtitleDelay() : 0; }
+
   // Chapters
 
   virtual int  GetChapterCount() { CSingleLock lock(m_StateSection); return CChaptersManager::Get()->GetChapterCount(); }
