@@ -40,8 +40,14 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build -x bdist_egg --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
+ifeq ($(OS),android)
 	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
 	unzip -oq $(LIBDYLIB) -d $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
+else
+	mkdir -p $(PREFIX)/lib/python2.6/site-packages/PIL
+	unzip -oq $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
+	echo 'PIL' > $(PREFIX)/lib/python2.6/site-packages/PIL.pth
+endif
 	touch $@
 
 clean:
