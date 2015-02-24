@@ -292,6 +292,13 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
                                               in ? in->pkt->data : NULL,
                                               in ? in->pkt->nb_samples : 0,
                                               m_resampleRatio);
+      // in case of error, trigger re-create of resampler
+      if (out_samples < 0)
+      {
+        out_samples = 0;
+        m_changeResampler = true;
+      }
+
       m_procSample->pkt->nb_samples += out_samples;
       busy = true;
       m_empty = (out_samples == 0);

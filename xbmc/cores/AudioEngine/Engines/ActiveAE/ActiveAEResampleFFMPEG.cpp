@@ -184,11 +184,11 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
   if (ratio != 1.0)
   {
     if (swr_set_compensation(m_pContext,
-                                            (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
-                                             dst_samples*m_dst_rate/m_src_rate) < 0)
+                             (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
+                             dst_samples*m_dst_rate/m_src_rate) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
-      return 0;
+      return -1;
     }
   }
 
@@ -196,7 +196,7 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - resample failed");
-    return 0;
+    return -1;
   }
 
   // special handling for S24 formats which are carried in S32
