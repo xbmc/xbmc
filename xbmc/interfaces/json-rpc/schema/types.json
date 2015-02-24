@@ -521,7 +521,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "lastplayed", "art" ]
+                "dateadded", "tag", "art" ]
     }
   },
   "Video.Fields.Season": {
