@@ -41,13 +41,13 @@ CDSFilterEnumerator::CDSFilterEnumerator(void)
 
 HRESULT CDSFilterEnumerator::GetDSFilters(std::vector<DSFiltersInfo>& pFilters)
 {
-  CSingleLock lock (m_critSection);
+  CSingleLock lock(m_critSection);
   pFilters.clear();
 
   Com::SmartPtr<IPropertyBag> propBag = NULL;
   BeginEnumSysDev(CLSID_LegacyAmFilterCategory, pMoniker)
   {
-    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**) &propBag)))
+    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&propBag)))
     {
       _variant_t var;
 
@@ -64,7 +64,8 @@ HRESULT CDSFilterEnumerator::GetDSFilters(std::vector<DSFiltersInfo>& pFilters)
 
       AddFilter(pFilters, filterGuid, filterName);
       propBag = NULL;
-    } else
+    }
+    else
       return E_FAIL;
   }
   EndEnumSysDev;

@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright (C) 2003-2006 Gabest
  *  http://www.gabest.org
  *
@@ -9,15 +9,15 @@
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
  *  any later version.
- *   
+ *
  *  This Program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
- *   
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with GNU Make; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
@@ -37,21 +37,21 @@ CPixelShaderCompiler::CPixelShaderCompiler(bool fStaySilent)
   HINSTANCE    hDll;
   hDll = g_dsSettings.GetD3X9Dll();
 
-  if(hDll)
+  if (hDll)
   {
     m_pD3DXCompileShader = (D3DXCompileShaderPtr)GetProcAddress(hDll, "D3DXCompileShader");
     m_pD3DXDisassembleShader = (D3DXDisassembleShaderPtr)GetProcAddress(hDll, "D3DXDisassembleShader");
   }
 
-  if(!fStaySilent)
+  if (!fStaySilent)
   {
-    if(!hDll)
+    if (!hDll)
     {
-      CLog::Log(LOGERROR,"%s Cannot load D3DX9_xx.DLL, pixel shaders will not work.",__FUNCTION__);
+      CLog::Log(LOGERROR, "%s Cannot load D3DX9_xx.DLL, pixel shaders will not work.", __FUNCTION__);
     }
-    else if(!m_pD3DXCompileShader || !m_pD3DXDisassembleShader) 
+    else if (!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
     {
-      CLog::Log(LOGERROR,"%s Cannot find necessary function entry points in D3DX9_xx.DLL, pixel shaders will not work.",__FUNCTION__);
+      CLog::Log(LOGERROR, "%s Cannot find necessary function entry points in D3DX9_xx.DLL, pixel shaders will not work.", __FUNCTION__);
     }
   }
 }
@@ -61,15 +61,15 @@ CPixelShaderCompiler::~CPixelShaderCompiler()
 }
 
 HRESULT CPixelShaderCompiler::CompileShader(
-    LPCSTR pSrcData,
-    LPCSTR pFunctionName,
-    LPCSTR pProfile,
-    DWORD Flags,
-    IDirect3DPixelShader9** ppPixelShader,
-    CStdString* disasm,
-    CStdString* errmsg)
+  LPCSTR pSrcData,
+  LPCSTR pFunctionName,
+  LPCSTR pProfile,
+  DWORD Flags,
+  IDirect3DPixelShader9** ppPixelShader,
+  CStdString* disasm,
+  CStdString* errmsg)
 {
-  if(!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
+  if (!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
     return E_FAIL;
 
   HRESULT hr;
@@ -77,13 +77,13 @@ HRESULT CPixelShaderCompiler::CompileShader(
   Com::SmartPtr<ID3DXBuffer> pShader, pDisAsm, pErrorMsgs;
   hr = m_pD3DXCompileShader(pSrcData, strlen(pSrcData), NULL, NULL, pFunctionName, pProfile, Flags, &pShader, &pErrorMsgs, NULL);
 
-  if(FAILED(hr))
+  if (FAILED(hr))
   {
-    if(errmsg)
+    if (errmsg)
     {
       CStdStringA msg = "Unexpected compiler error";
 
-      if(pErrorMsgs)
+      if (pErrorMsgs)
       {
         int len = pErrorMsgs->GetBufferSize();
         memcpy(msg.GetBufferSetLength(len), pErrorMsgs->GetBufferPointer(), len);
@@ -95,17 +95,17 @@ HRESULT CPixelShaderCompiler::CompileShader(
     return hr;
   }
 
-  if(ppPixelShader)
+  if (ppPixelShader)
   {
-    if(!g_Windowing.Get3DDevice()) return E_FAIL;
+    if (!g_Windowing.Get3DDevice()) return E_FAIL;
     hr = g_Windowing.Get3DDevice()->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
-    if(FAILED(hr)) return hr;
+    if (FAILED(hr)) return hr;
   }
 
-  if(disasm)
+  if (disasm)
   {
     hr = m_pD3DXDisassembleShader((DWORD*)pShader->GetBufferPointer(), FALSE, NULL, &pDisAsm);
-    if(SUCCEEDED(hr) && pDisAsm) *disasm = CStdStringA((const char*)pDisAsm->GetBufferPointer());
+    if (SUCCEEDED(hr) && pDisAsm) *disasm = CStdStringA((const char*)pDisAsm->GetBufferPointer());
   }
 
   return S_OK;

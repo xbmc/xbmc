@@ -51,11 +51,13 @@ using namespace XFILE;
 #define WM_GRAPHMESSAGE  WM_USER + 5
 
 /** Video state mode */
-enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
-                  MOVIE_OPENED    = 0x01,
-                  MOVIE_PLAYING   = 0x02,
-                  MOVIE_STOPPED   = 0x03,
-                  MOVIE_PAUSED    = 0x04 };
+enum VideoStateMode {
+  MOVIE_NOTOPENED = 0x00,
+  MOVIE_OPENED = 0x01,
+  MOVIE_PLAYING = 0x02,
+  MOVIE_STOPPED = 0x03,
+  MOVIE_PAUSED = 0x04
+};
 
 class CFGManager;
 
@@ -80,7 +82,7 @@ public:
 
   /** @return True if the graph is paused, false else */
   virtual bool IsPaused() const;
-  
+
   virtual bool IsDvd() { return m_VideoInfo.isDVD; };
   bool IsEof() { return m_State.eof; };
   bool IsInMenu() const;
@@ -139,7 +141,7 @@ public:
   /** Close the file, clean the graph and free resources */
   void CloseFile();
 
-  /** Sets the volume (amplitude) of the audio signal 
+  /** Sets the volume (amplitude) of the audio signal
    * @param[in] nVolume The volume level in 1/100ths dB Valid values range from -10,000 (silence) to 0 (full volume) 0 = 0 dB -10000 = -100 dB
    */
   void SetVolume(float nVolume);
@@ -156,7 +158,7 @@ public:
 private:
   //Direct Show Filters
   CFGManager*                           m_pGraphBuilder;
-  Com::SmartQIPtr<IMediaControl>        m_pMediaControl;  
+  Com::SmartQIPtr<IMediaControl>        m_pMediaControl;
   Com::SmartQIPtr<IMediaEventEx>        m_pMediaEvent;
   Com::SmartQIPtr<IMediaSeeking>        m_pMediaSeeking;
   Com::SmartQIPtr<IBasicAudio>          m_pBasicAudio;
@@ -186,22 +188,22 @@ private:
 
     void Clear()
     {
-	  eof = false;
+      eof = false;
       time = 0;
       time_total = 0;
       player_state = "";
-	  cache_offset  = 0.0;
+      cache_offset = 0.0;
       current_filter_state = State_Stopped;
     }
-	bool eof;
+    bool eof;
     uint64_t time;              // current playback time in millisec
     uint64_t time_total;        // total playback time in millisec
-	double  cache_offset;       // percentage of file ahead of current position
+    double  cache_offset;       // percentage of file ahead of current position
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state
   } m_State;
-  
+
   struct SDvdState
   {
     void Clear()
@@ -219,8 +221,8 @@ private:
     }
     void Clear()
     {
-      time_total    = 0;
-      time_format   = GUID_NULL;
+      time_total = 0;
+      time_format = GUID_NULL;
       isDVD = false;
     }
     double time_total;        // total playback time

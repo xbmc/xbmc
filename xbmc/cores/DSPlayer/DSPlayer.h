@@ -90,7 +90,7 @@ protected:
 class CDSPlayer : public IPlayer, public CThread
 {
 public:
-//IPlayer
+  //IPlayer
   CDSPlayer(IPlayerCallback& callback);
   virtual ~CDSPlayer();
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
@@ -108,8 +108,8 @@ public:
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage()                                 { return g_dsGraph->GetPercentage(); }
   virtual float GetCachePercentage()							{ return g_dsGraph->GetCachePercentage(); }
-  virtual bool ControlsVolume()									{ return true;}
-  virtual void SetMute(bool bOnOff)								{ if(bOnOff) g_dsGraph->SetVolume(VOLUME_MINIMUM);}
+  virtual bool ControlsVolume()									{ return true; }
+  virtual void SetMute(bool bOnOff)								{ if (bOnOff) g_dsGraph->SetVolume(VOLUME_MINIMUM); }
   virtual void SetVolume(float nVolume)                         { g_dsGraph->SetVolume(nVolume); }
   virtual void GetAudioInfo(std::string& strAudioInfo);
   virtual void GetVideoInfo(std::string& strVideoInfo);
@@ -120,12 +120,12 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
 
-//Audio stream selection
+  //Audio stream selection
   virtual int  GetAudioStreamCount() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioStreamCount() : 0; }
   virtual int  GetAudioStream() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioStream() : 0; }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) {
     if (CStreamsManager::Get())
-      CStreamsManager::Get()->GetAudioStreamName(iStream,strStreamName);
+      CStreamsManager::Get()->GetAudioStreamName(iStream, strStreamName);
   };
   virtual void SetAudioStream(int iStream) {
     if (CStreamsManager::Get())
@@ -133,26 +133,26 @@ public:
   };
 
   //Editions selection
-  virtual int  GetEditionsCount() 
-  { 
-	  return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetEditionsCount() : 0; 
+  virtual int  GetEditionsCount()
+  {
+    return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetEditionsCount() : 0;
   }
-  virtual int  GetEdition() 
-  { 
-	  return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetEdition() : 0; 
+  virtual int  GetEdition()
+  {
+    return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetEdition() : 0;
   }
   virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt) {
-	  if (CStreamsManager::Get())
-		  CStreamsManager::Get()->GetEditionInfo(iEdition, strEditionName, prt);
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->GetEditionInfo(iEdition, strEditionName, prt);
   };
   virtual void SetEdition(int iEdition) {
-	  if (CStreamsManager::Get())
-		  CStreamsManager::Get()->SetEdition(iEdition);
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SetEdition(iEdition);
   };
 
   virtual bool IsMatroskaEditions()
   {
-	  return (CStreamsManager::Get()) ? CStreamsManager::Get()->IsMatroskaEditions() : false; 
+    return (CStreamsManager::Get()) ? CStreamsManager::Get()->IsMatroskaEditions() : false;
   }
 
   virtual int  GetSubtitleCount();
@@ -198,7 +198,7 @@ public:
 
   virtual bool SwitchChannel(PVR::CPVRChannel &channel);
   virtual bool CachePVRStream(void) const;
-  
+
   //CDSPlayer
   virtual void Stop();
   CDVDClock&  GetClock() { return m_pClock; }
@@ -216,59 +216,59 @@ public:
 
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
-	  if (! m_threadID)
-	  {
-		  msg->Release();
-		  return;
-	  }
+    if (!m_threadID)
+    {
+      msg->Release();
+      return;
+    }
 
-	  if (wait)
-		  msg->Acquire();
+    if (wait)
+      msg->Acquire();
 
-	  CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
-	  PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM) msg);
+    CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
+    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
 
-	  if (wait)
-	  {
-		  msg->Wait();
-		  msg->Release();
-	  }
+    if (wait)
+    {
+      msg->Wait();
+      msg->Release();
+    }
   }
 
-  static bool IsCurrentThread() {return CThread::IsCurrentThread(m_threadID); } 
+  static bool IsCurrentThread() { return CThread::IsCurrentThread(m_threadID); }
 
-  protected:
+protected:
 
-	  void StopThread(bool bWait = true)
-	  {
-		  if (m_threadID)
-		  {
-			  PostThreadMessage(m_threadID, WM_QUIT, 0, 0);
-			  m_threadID = 0;
-		  }
-		  CThread::StopThread(bWait);
-	  }
+  void StopThread(bool bWait = true)
+  {
+    if (m_threadID)
+    {
+      PostThreadMessage(m_threadID, WM_QUIT, 0, 0);
+      m_threadID = 0;
+    }
+    CThread::StopThread(bWait);
+  }
 
-	  void HandleMessages();
+  void HandleMessages();
 
-	  bool ShowPVRChannelInfo();
+  bool ShowPVRChannelInfo();
 
-	  CGraphManagementThread m_pGraphThread;
-	  CDVDClock m_pClock;
-	  CPlayerOptions m_PlayerOptions;
-	  CEvent m_hReadyEvent;
-	  static ThreadIdentifier m_threadID;
-	  bool m_bEof;
-
-	  
-	  bool SelectChannel(bool bNext);
-	  bool SwitchChannel(unsigned int iChannelNumber);
+  CGraphManagementThread m_pGraphThread;
+  CDVDClock m_pClock;
+  CPlayerOptions m_PlayerOptions;
+  CEvent m_hReadyEvent;
+  static ThreadIdentifier m_threadID;
+  bool m_bEof;
 
 
-	  // CThread
-	  virtual void OnStartup();
-	  virtual void OnExit();
-	  virtual void Process();
+  bool SelectChannel(bool bNext);
+  bool SwitchChannel(unsigned int iChannelNumber);
+
+
+  // CThread
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
 };
 

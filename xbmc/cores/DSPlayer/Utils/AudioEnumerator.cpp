@@ -37,13 +37,13 @@ CAudioEnumerator::CAudioEnumerator(void)
 
 HRESULT CAudioEnumerator::GetAudioRenderers(std::vector<DSFilterInfo>& pRenderers)
 {
-  CSingleLock lock (m_critSection);
+  CSingleLock lock(m_critSection);
   pRenderers.clear();
 
   Com::SmartPtr<IPropertyBag> propBag = NULL;
   BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
   {
-    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**) &propBag)))
+    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&propBag)))
     {
       _variant_t var;
 
@@ -60,7 +60,8 @@ HRESULT CAudioEnumerator::GetAudioRenderers(std::vector<DSFilterInfo>& pRenderer
 
       AddFilter(pRenderers, filterGuid, filterName);
       propBag = NULL;
-    } else
+    }
+    else
       return E_FAIL;
   }
   EndEnumSysDev;
@@ -68,7 +69,7 @@ HRESULT CAudioEnumerator::GetAudioRenderers(std::vector<DSFilterInfo>& pRenderer
   return S_OK;
 }
 
-void CAudioEnumerator::AddFilter( std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName )
+void CAudioEnumerator::AddFilter(std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName)
 {
   DSFilterInfo filterInfo;
 
@@ -76,7 +77,7 @@ void CAudioEnumerator::AddFilter( std::vector<DSFilterInfo>& pRenderers, CStdStr
   g_charsetConverter.wToUTF8(lpName, filterInfo.lpstrName);
 
   pRenderers.push_back(filterInfo);
-  
+
   CLog::Log(LOGDEBUG, "Found audio renderer device \"%s\" (guid: %s)", filterInfo.lpstrName.c_str(), filterInfo.lpstrGuid.c_str());
 }
 

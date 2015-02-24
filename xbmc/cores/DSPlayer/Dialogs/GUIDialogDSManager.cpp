@@ -74,15 +74,15 @@ void CGUIDialogDSManager::ResetValue(std::vector<DSConfigList *> &configList)
   std::vector<DSConfigList *>::iterator it;
   for (it = configList.begin(); it != configList.end(); ++it)
   {
-    if ((*it)->m_configType == EDITATTR 
-      || (*it)->m_configType == EDITATTREXTRA 
+    if ((*it)->m_configType == EDITATTR
+      || (*it)->m_configType == EDITATTREXTRA
       || (*it)->m_configType == EDITATTRSHADER
       || (*it)->m_configType == OSDGUID)
       (*it)->m_value = "";
 
     if ((*it)->m_configType == SPINNERATTR
       || (*it)->m_configType == FILTER
-      || (*it)->m_configType == EXTRAFILTER 
+      || (*it)->m_configType == EXTRAFILTER
       || (*it)->m_configType == SHADER
       || (*it)->m_configType == FILTERSYSTEM)
       (*it)->m_value = "[null]";
@@ -154,9 +154,9 @@ bool CGUIDialogDSManager::FindPrepend(TiXmlElement* &pNode, CStdString xmlNode)
   return isPrepend;
 }
 
-void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool forceCreate /*= false*/)
+void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode, bool forceCreate /*= false*/)
 {
- 
+
   CStdString xmlFile, xmlNode, xmlRoot;
   GetPath(type, xmlFile, xmlNode, xmlRoot);
 
@@ -173,7 +173,7 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
     CLog::Log(LOGDEBUG, "%s Creating loading %s, with root <%s> and first node <%s>", __FUNCTION__, xmlFile.c_str(), xmlRoot.c_str(), xmlNode.c_str());
 
     TiXmlElement pRoot(xmlRoot.c_str());
-    if (type != PLAYERCOREFACTORY) 
+    if (type != PLAYERCOREFACTORY)
       pRoot.InsertEndChild(TiXmlElement(xmlNode.c_str()));
     m_XML.InsertEndChild(pRoot);
   }
@@ -183,9 +183,9 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
     CLog::Log(LOGERROR, "%s Error loading medias configuration, no <%s> node", __FUNCTION__, xmlRoot.c_str());
     return;
   }
-  if (type == MEDIASCONFIG 
+  if (type == MEDIASCONFIG
     || type == FILTERSCONFIG
-    || type == HOMEFILTERSCONFIG )
+    || type == HOMEFILTERSCONFIG)
     pNode = pConfig->FirstChildElement(xmlNode.c_str());
 
   if (type == SHADERS)
@@ -195,7 +195,7 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode,  bool fo
 
     pNode = pConfig->FirstChildElement(xmlNode.c_str());
 
-    if (!FindPrepend(pNode,xmlNode) )
+    if (!FindPrepend(pNode, xmlNode))
     {
       TiXmlElement pTmp(xmlNode.c_str());
       pTmp.SetAttribute("action", "prepend");

@@ -48,7 +48,7 @@ public:
     delete m_pSplitter;
     delete m_pAudio;
     delete m_pVideo;
-	delete m_pSubs;
+    delete m_pSubs;
     delete m_pExtras;
     delete m_pAudioRenderer;
     delete m_pShaders;
@@ -68,7 +68,7 @@ public:
     if (checkUrl && pFileItem.IsInternetStream() && m_url < 1) return false;
     if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return false;
     if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(pFileItem.GetPath(), regExp)) return false;
-	if (CompileRegExp(m_Protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return false;
+    if (CompileRegExp(m_Protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return false;
 
     return true;
   }
@@ -152,10 +152,10 @@ private:
     if (!m_name || m_name.IsEmpty())
       m_name = "un-named";
 
-    m_url       = GetTristate(pRule->Attribute("url"));
+    m_url = GetTristate(pRule->Attribute("url"));
     m_fileTypes = pRule->Attribute("filetypes");
-    m_fileName  = pRule->Attribute("filename");
-	m_Protocols = pRule->Attribute("protocols");
+    m_fileName = pRule->Attribute("filename");
+    m_Protocols = pRule->Attribute("protocols");
 
     // Source rules
     m_pSource = new CFilterSelectionRule(pRule->FirstChildElement("source"), "source");

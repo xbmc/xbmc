@@ -32,46 +32,52 @@
 #include "threads/Thread.h"
 #include "DSUtil/SmartPtr.h"
 
-class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown
+class CDSPlayerPropertyPageSite : public IPropertyPageSite, public CUnknown
 {
 public:
   DECLARE_IUNKNOWN
-  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv) { return E_NOTIMPL; }
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv) { return E_NOTIMPL; }
 
   HRESULT STDMETHODCALLTYPE OnStatusChange(
-    /* [in] */ DWORD dwFlags ) {
+    /* [in] */ DWORD dwFlags) {
 
-      if (hwnd == (HWND)NULL)
-        return E_UNEXPECTED;
-      
-      switch ( dwFlags )
-      {
-        case PROPPAGESTATUS_DIRTY:
-          /* dirty */
-          SendMessage(GetParent(hwnd), PSM_CHANGED, (WPARAM)(hwnd), 0);
-          break;
-        case PROPPAGESTATUS_VALIDATE:
-          /* validate */
-          SendMessage(GetParent(hwnd), PSM_UNCHANGED, (WPARAM)(hwnd), 0);
-          break;
-        default:
-          return E_INVALIDARG;
-      }
-      
-      return S_OK;
+    if (hwnd == (HWND)NULL)
+      return E_UNEXPECTED;
+
+    switch (dwFlags)
+    {
+    case PROPPAGESTATUS_DIRTY:
+      /* dirty */
+      SendMessage(GetParent(hwnd), PSM_CHANGED, (WPARAM)(hwnd), 0);
+      break;
+    case PROPPAGESTATUS_VALIDATE:
+      /* validate */
+      SendMessage(GetParent(hwnd), PSM_UNCHANGED, (WPARAM)(hwnd), 0);
+      break;
+    default:
+      return E_INVALIDARG;
+    }
+
+    return S_OK;
   };
 
   HRESULT STDMETHODCALLTYPE GetLocaleID(
-    __RPC__out LCID *pLocaleID) { *pLocaleID = m_lcid; return S_OK; };
+    __RPC__out LCID *pLocaleID) {
+    *pLocaleID = m_lcid; return S_OK;
+  };
 
-  HRESULT STDMETHODCALLTYPE GetPageContainer( 
-    /* [out] */ __RPC__deref_out_opt IUnknown **ppUnk) { return E_NOTIMPL; };
+  HRESULT STDMETHODCALLTYPE GetPageContainer(
+    /* [out] */ __RPC__deref_out_opt IUnknown **ppUnk) {
+    return E_NOTIMPL;
+  };
 
 
-  HRESULT STDMETHODCALLTYPE TranslateAccelerator( 
-    /* [in] */ __RPC__in MSG *pMsg) { return E_NOTIMPL; };
+  HRESULT STDMETHODCALLTYPE TranslateAccelerator(
+    /* [in] */ __RPC__in MSG *pMsg) {
+    return E_NOTIMPL;
+  };
 
-  CDSPlayerPropertyPageSite(LCID lcid):
+  CDSPlayerPropertyPageSite(LCID lcid) :
     CUnknown("DSPlayer Property Page", NULL),
     m_lcid(lcid),
     hwnd(0)

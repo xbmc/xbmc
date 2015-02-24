@@ -39,6 +39,6 @@ public:
 private:
   CCriticalSection m_critSection;
   void AddFilter(std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName);
-  
+
 };
 

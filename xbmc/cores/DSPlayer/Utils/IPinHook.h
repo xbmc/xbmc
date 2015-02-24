@@ -33,30 +33,30 @@ interface IPinC;
 typedef struct IPinCVtbl
 {
   BEGIN_INTERFACE
-    HRESULT ( STDMETHODCALLTYPE *QueryInterface )( IPinC * This, /* [in] */ REFIID riid, /* [iid_is][out] */ void **ppvObject );
-    ULONG ( STDMETHODCALLTYPE *AddRef )( IPinC * This );
-    ULONG ( STDMETHODCALLTYPE *Release )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *Connect )( IPinC * This, /* [in] */ IPinC *pReceivePin, /* [in] */ const AM_MEDIA_TYPE *pmt );
-    HRESULT ( STDMETHODCALLTYPE *ReceiveConnection )( IPinC * This, /* [in] */ IPinC *pConnector, /* [in] */ const AM_MEDIA_TYPE *pmt );
-    HRESULT ( STDMETHODCALLTYPE *Disconnect )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *ConnectedTo )( IPinC * This, /* [out] */ IPinC **pPin );
-    HRESULT ( STDMETHODCALLTYPE *ConnectionMediaType )( IPinC * This, /* [out] */ AM_MEDIA_TYPE *pmt );
-    HRESULT ( STDMETHODCALLTYPE *QueryPinInfo )( IPinC * This, /* [out] */ PIN_INFO *pInfo );
-    HRESULT ( STDMETHODCALLTYPE *QueryDirection )( IPinC * This, /* [out] */ PIN_DIRECTION *pPinDir );
-    HRESULT ( STDMETHODCALLTYPE *QueryId )( IPinC * This, /* [out] */ LPWSTR *Id );
-    HRESULT ( STDMETHODCALLTYPE *QueryAccept )( IPinC * This, /* [in] */ const AM_MEDIA_TYPE *pmt );
-    HRESULT ( STDMETHODCALLTYPE *EnumMediaTypes )( IPinC * This, /* [out] */ IEnumMediaTypes **ppEnum );
-    HRESULT ( STDMETHODCALLTYPE *QueryInternalConnections )( IPinC * This, /* [out] */ IPinC **apPin, /* [out][in] */ ULONG *nPin );
-    HRESULT ( STDMETHODCALLTYPE *EndOfStream )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *BeginFlush )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *EndFlush )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *NewSegment )( IPinC * This, /* [in] */ REFERENCE_TIME tStart, /* [in] */ REFERENCE_TIME tStop, /* [in] */ double dRate );
+    HRESULT(STDMETHODCALLTYPE *QueryInterface)(IPinC * This, /* [in] */ REFIID riid, /* [iid_is][out] */ void **ppvObject);
+    ULONG(STDMETHODCALLTYPE *AddRef)(IPinC * This);
+    ULONG(STDMETHODCALLTYPE *Release)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *Connect)(IPinC * This, /* [in] */ IPinC *pReceivePin, /* [in] */ const AM_MEDIA_TYPE *pmt);
+    HRESULT(STDMETHODCALLTYPE *ReceiveConnection)(IPinC * This, /* [in] */ IPinC *pConnector, /* [in] */ const AM_MEDIA_TYPE *pmt);
+    HRESULT(STDMETHODCALLTYPE *Disconnect)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *ConnectedTo)(IPinC * This, /* [out] */ IPinC **pPin);
+    HRESULT(STDMETHODCALLTYPE *ConnectionMediaType)(IPinC * This, /* [out] */ AM_MEDIA_TYPE *pmt);
+    HRESULT(STDMETHODCALLTYPE *QueryPinInfo)(IPinC * This, /* [out] */ PIN_INFO *pInfo);
+    HRESULT(STDMETHODCALLTYPE *QueryDirection)(IPinC * This, /* [out] */ PIN_DIRECTION *pPinDir);
+    HRESULT(STDMETHODCALLTYPE *QueryId)(IPinC * This, /* [out] */ LPWSTR *Id);
+    HRESULT(STDMETHODCALLTYPE *QueryAccept)(IPinC * This, /* [in] */ const AM_MEDIA_TYPE *pmt);
+    HRESULT(STDMETHODCALLTYPE *EnumMediaTypes)(IPinC * This, /* [out] */ IEnumMediaTypes **ppEnum);
+    HRESULT(STDMETHODCALLTYPE *QueryInternalConnections)(IPinC * This, /* [out] */ IPinC **apPin, /* [out][in] */ ULONG *nPin);
+    HRESULT(STDMETHODCALLTYPE *EndOfStream)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *BeginFlush)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *EndFlush)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *NewSegment)(IPinC * This, /* [in] */ REFERENCE_TIME tStart, /* [in] */ REFERENCE_TIME tStop, /* [in] */ double dRate);
   END_INTERFACE
 } IPinCVtbl;
 
 interface IPinC
 {
-    CONST_VTBL struct IPinCVtbl *lpVtbl;
+  CONST_VTBL struct IPinCVtbl *lpVtbl;
 };
 
 interface IMemInputPinC;
@@ -64,21 +64,21 @@ interface IMemInputPinC;
 typedef struct IMemInputPinCVtbl
 {
   BEGIN_INTERFACE
-    HRESULT ( STDMETHODCALLTYPE *QueryInterface )( IPinC * This, /* [in] */ REFIID riid, /* [iid_is][out] */ void **ppvObject );
-    ULONG ( STDMETHODCALLTYPE *AddRef )( IPinC * This );
-    ULONG ( STDMETHODCALLTYPE *Release )( IPinC * This );
-    HRESULT ( STDMETHODCALLTYPE *GetAllocator )( IMemInputPinC * This, IMemAllocator **ppAllocator);
-    HRESULT ( STDMETHODCALLTYPE *NotifyAllocator )( IMemInputPinC * This, IMemAllocator *pAllocator, BOOL bReadOnly);
-    HRESULT ( STDMETHODCALLTYPE *GetAllocatorRequirements )( IMemInputPinC * This, ALLOCATOR_PROPERTIES *pProps);
-    HRESULT ( STDMETHODCALLTYPE *Receive )( IMemInputPinC * This, IMediaSample *pSample);
-    HRESULT ( STDMETHODCALLTYPE *ReceiveMultiple )( IMemInputPinC * This, IMediaSample **pSamples, long nSamples, long *nSamplesProcessed);
-    HRESULT ( STDMETHODCALLTYPE *ReceiveCanBlock )( IMemInputPinC * This);
+    HRESULT(STDMETHODCALLTYPE *QueryInterface)(IPinC * This, /* [in] */ REFIID riid, /* [iid_is][out] */ void **ppvObject);
+    ULONG(STDMETHODCALLTYPE *AddRef)(IPinC * This);
+    ULONG(STDMETHODCALLTYPE *Release)(IPinC * This);
+    HRESULT(STDMETHODCALLTYPE *GetAllocator)(IMemInputPinC * This, IMemAllocator **ppAllocator);
+    HRESULT(STDMETHODCALLTYPE *NotifyAllocator)(IMemInputPinC * This, IMemAllocator *pAllocator, BOOL bReadOnly);
+    HRESULT(STDMETHODCALLTYPE *GetAllocatorRequirements)(IMemInputPinC * This, ALLOCATOR_PROPERTIES *pProps);
+    HRESULT(STDMETHODCALLTYPE *Receive)(IMemInputPinC * This, IMediaSample *pSample);
+    HRESULT(STDMETHODCALLTYPE *ReceiveMultiple)(IMemInputPinC * This, IMediaSample **pSamples, long nSamples, long *nSamplesProcessed);
+    HRESULT(STDMETHODCALLTYPE *ReceiveCanBlock)(IMemInputPinC * This);
   END_INTERFACE
 } IMemInputPinCVtbl;
 
 interface IMemInputPinC
 {
-    CONST_VTBL struct IMemInputPinCVtbl *lpVtbl;
+  CONST_VTBL struct IMemInputPinCVtbl *lpVtbl;
 };
 
 extern bool HookNewSegmentAndReceive(IPinC* pPinC, IMemInputPinC* pMemInputPin);
@@ -95,55 +95,55 @@ typedef struct IAMVideoAcceleratorCVtbl
 {
   BEGIN_INTERFACE
 
-    HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IAMVideoAcceleratorC * This,
-            /* [in] */ REFIID riid,
-            /* [iid_is][out] */ void **ppvObject);
+    HRESULT(STDMETHODCALLTYPE *QueryInterface)(
+    IAMVideoAcceleratorC * This,
+    /* [in] */ REFIID riid,
+    /* [iid_is][out] */ void **ppvObject);
 
-    ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IAMVideoAcceleratorC * This);
+    ULONG(STDMETHODCALLTYPE *AddRef)(
+      IAMVideoAcceleratorC * This);
 
-    ULONG ( STDMETHODCALLTYPE *Release )( 
-            IAMVideoAcceleratorC * This);
+    ULONG(STDMETHODCALLTYPE *Release)(
+      IAMVideoAcceleratorC * This);
 
-    HRESULT ( STDMETHODCALLTYPE *GetVideoAcceleratorGUIDs )( 
-            IAMVideoAcceleratorC * This,
-            /* [out][in] */ LPDWORD pdwNumGuidsSupported,
-            /* [out][in] */ LPGUID pGuidsSupported);
+    HRESULT(STDMETHODCALLTYPE *GetVideoAcceleratorGUIDs)(
+      IAMVideoAcceleratorC * This,
+      /* [out][in] */ LPDWORD pdwNumGuidsSupported,
+      /* [out][in] */ LPGUID pGuidsSupported);
 
-    HRESULT ( STDMETHODCALLTYPE *GetUncompFormatsSupported )( 
-            IAMVideoAcceleratorC * This,
-            /* [in] */ const GUID *pGuid,
-            /* [out][in] */ LPDWORD pdwNumFormatsSupported,
-            /* [out][in] */ LPDDPIXELFORMAT pFormatsSupported);
+    HRESULT(STDMETHODCALLTYPE *GetUncompFormatsSupported)(
+      IAMVideoAcceleratorC * This,
+      /* [in] */ const GUID *pGuid,
+      /* [out][in] */ LPDWORD pdwNumFormatsSupported,
+      /* [out][in] */ LPDDPIXELFORMAT pFormatsSupported);
 
-    HRESULT ( STDMETHODCALLTYPE *GetInternalMemInfo )( 
-            IAMVideoAcceleratorC * This,
-            /* [in] */ const GUID *pGuid,
-            /* [in] */ const AMVAUncompDataInfo *pamvaUncompDataInfo,
-            /* [out][in] */ LPAMVAInternalMemInfo pamvaInternalMemInfo);
+    HRESULT(STDMETHODCALLTYPE *GetInternalMemInfo)(
+      IAMVideoAcceleratorC * This,
+      /* [in] */ const GUID *pGuid,
+      /* [in] */ const AMVAUncompDataInfo *pamvaUncompDataInfo,
+      /* [out][in] */ LPAMVAInternalMemInfo pamvaInternalMemInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *GetCompBufferInfo )( 
-            IAMVideoAcceleratorC * This,
-            /* [in] */ const GUID *pGuid,
-            /* [in] */ const AMVAUncompDataInfo *pamvaUncompDataInfo,
-            /* [out][in] */ LPDWORD pdwNumTypesCompBuffers,
-            /* [out] */ LPAMVACompBufferInfo pamvaCompBufferInfo);
+    HRESULT(STDMETHODCALLTYPE *GetCompBufferInfo)(
+      IAMVideoAcceleratorC * This,
+      /* [in] */ const GUID *pGuid,
+      /* [in] */ const AMVAUncompDataInfo *pamvaUncompDataInfo,
+      /* [out][in] */ LPDWORD pdwNumTypesCompBuffers,
+      /* [out] */ LPAMVACompBufferInfo pamvaCompBufferInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *GetInternalCompBufferInfo )( 
+    HRESULT(STDMETHODCALLTYPE *GetInternalCompBufferInfo)(
       IAMVideoAcceleratorC * This,
       /* [out][in] */ LPDWORD pdwNumTypesCompBuffers,
       /* [out] */ LPAMVACompBufferInfo pamvaCompBufferInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *BeginFrame )( 
+    HRESULT(STDMETHODCALLTYPE *BeginFrame)(
       IAMVideoAcceleratorC * This,
       /* [in] */ const AMVABeginFrameInfo *amvaBeginFrameInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *EndFrame )( 
+    HRESULT(STDMETHODCALLTYPE *EndFrame)(
       IAMVideoAcceleratorC * This,
       /* [in] */ const AMVAEndFrameInfo *pEndFrameInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+    HRESULT(STDMETHODCALLTYPE *GetBuffer)(
       IAMVideoAcceleratorC * This,
       /* [in] */ DWORD dwTypeIndex,
       /* [in] */ DWORD dwBufferIndex,
@@ -151,12 +151,12 @@ typedef struct IAMVideoAcceleratorCVtbl
       /* [out] */ LPVOID *ppBuffer,
       /* [out] */ LONG *lpStride);
 
-    HRESULT ( STDMETHODCALLTYPE *ReleaseBuffer )( 
+    HRESULT(STDMETHODCALLTYPE *ReleaseBuffer)(
       IAMVideoAcceleratorC * This,
       /* [in] */ DWORD dwTypeIndex,
       /* [in] */ DWORD dwBufferIndex);
 
-    HRESULT ( STDMETHODCALLTYPE *Execute )( 
+    HRESULT(STDMETHODCALLTYPE *Execute)(
       IAMVideoAcceleratorC * This,
       /* [in] */ DWORD dwFunction,
       /* [in] */ LPVOID lpPrivateInputData,
@@ -166,13 +166,13 @@ typedef struct IAMVideoAcceleratorCVtbl
       /* [in] */ DWORD dwNumBuffers,
       /* [in] */ const AMVABUFFERINFO *pamvaBufferInfo);
 
-    HRESULT ( STDMETHODCALLTYPE *QueryRenderStatus )( 
+    HRESULT(STDMETHODCALLTYPE *QueryRenderStatus)(
       IAMVideoAcceleratorC * This,
       /* [in] */ DWORD dwTypeIndex,
       /* [in] */ DWORD dwBufferIndex,
       /* [in] */ DWORD dwFlags);
 
-    HRESULT ( STDMETHODCALLTYPE *DisplayFrame )( 
+    HRESULT(STDMETHODCALLTYPE *DisplayFrame)(
       IAMVideoAcceleratorC * This,
       /* [in] */ DWORD dwFlipToIndex,
       /* [in] */ IMediaSample *pMediaSample);

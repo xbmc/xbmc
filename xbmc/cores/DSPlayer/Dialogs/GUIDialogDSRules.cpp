@@ -51,7 +51,7 @@ using namespace std;
 
 CGUIDialogDSRules::CGUIDialogDSRules()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_DSRULES, "VideoOSDSettings.xml")
-{ 
+{
   m_dsmanager = CGUIDialogDSManager::Get();
   m_allowchange = true;
 }
@@ -107,7 +107,7 @@ void CGUIDialogDSRules::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SET_CONTROL_LABEL(0,60001);
+  SET_CONTROL_LABEL(0, 60001);
 }
 
 
@@ -119,7 +119,7 @@ void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, bool isChild /* 
     return;
   setting->SetVisible(visible);
   m_settingsManager->SetString(id, "aaa");
-  if (!isChild) 
+  if (!isChild)
     m_settingsManager->SetString(id, "[null]");
   else
     m_settingsManager->SetString(id, "");
@@ -132,8 +132,8 @@ void CGUIDialogDSRules::HideUnused()
 
   m_allowchange = false;
 
-  HideUnused(EXTRAFILTER,EDITATTREXTRA);
-  HideUnused(SHADER,EDITATTRSHADER);
+  HideUnused(EXTRAFILTER, EDITATTREXTRA);
+  HideUnused(SHADER, EDITATTRSHADER);
 
   m_allowchange = true;
 }
@@ -169,11 +169,11 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
 
 bool CGUIDialogDSRules::NodeHasAttr(TiXmlElement *pNode, CStdString attr)
 {
-  if (pNode) 
+  if (pNode)
   {
     CStdString value = "";
     value = pNode->Attribute(attr.c_str());
-    return ( value != "" );
+    return (value != "");
   }
 
   return false;
@@ -279,10 +279,10 @@ void CGUIDialogDSRules::InitializeSettings()
   }
 
   // Reset Button value
-   m_dsmanager->ResetValue(m_ruleList);
-  
+  m_dsmanager->ResetValue(m_ruleList);
+
   // Load userdata Mediaseconfig.xml
-   if (!(m_dsmanager->GetisNew()))
+  if (!(m_dsmanager->GetisNew()))
   {
     TiXmlElement *pRules;
     m_dsmanager->LoadDsXML(MEDIASCONFIG, pRules);
@@ -311,13 +311,13 @@ void CGUIDialogDSRules::InitializeSettings()
             (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
         }
 
-        if ((*it)->m_configType == EXTRAFILTER 
-          || (*it)->m_configType == SHADER 
-          || (*it)->m_configType == EDITATTREXTRA 
+        if ((*it)->m_configType == EXTRAFILTER
+          || (*it)->m_configType == SHADER
+          || (*it)->m_configType == EDITATTREXTRA
           || (*it)->m_configType == EDITATTRSHADER)
         {
           TiXmlElement *pFilter;
-          
+
           pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
 
           if (pFilter && NodeHasAttr(pFilter, (*it)->m_attr))
@@ -326,7 +326,7 @@ void CGUIDialogDSRules::InitializeSettings()
               (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
 
             continue;
-          } 
+          }
 
           pFilter = pRule->FirstChildElement((*it)->m_nodeList.c_str());
           if (pFilter)
@@ -353,8 +353,8 @@ void CGUIDialogDSRules::InitializeSettings()
 
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
   {
-    if ((*it)->m_configType == EDITATTR 
-      || (*it)->m_configType == EDITATTREXTRA 
+    if ((*it)->m_configType == EDITATTR
+      || (*it)->m_configType == EDITATTREXTRA
       || (*it)->m_configType == EDITATTRSHADER)
     {
       if ((*it)->m_attr == "name")
@@ -366,7 +366,7 @@ void CGUIDialogDSRules::InitializeSettings()
         groupTmp = groupExtra;
 
       AddEdit(groupTmp, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value.c_str(), true);
-    } 
+    }
     if ((*it)->m_configType == BOOLATTR)
       AddToggle(groupRule, (*it)->m_setting, (*it)->m_label, 0, (*it)->GetBoolValue());
 
@@ -379,9 +379,9 @@ void CGUIDialogDSRules::InitializeSettings()
 
 
   if (m_dsmanager->GetisNew())
-    AddButton(groupSave, SETTING_RULE_ADD, 60015, 0);  
+    AddButton(groupSave, SETTING_RULE_ADD, 60015, 0);
   else
-  { 
+  {
     AddButton(groupSave, SETTING_RULE_SAVE, 60016, 0);
     AddButton(groupSave, SETTING_RULE_DEL, 60017, 0);
   }
@@ -395,8 +395,8 @@ void CGUIDialogDSRules::OnSettingChanged(const CSetting *setting)
   isEdited = true;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
-  
-  const std::string &settingId = setting->GetId(); 
+
+  const std::string &settingId = setting->GetId();
 
   std::vector<DSConfigList *>::iterator it;
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
@@ -433,8 +433,8 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
 
     if (!CGUIDialogYesNo::ShowAndGetInput(60017, 60018, 0, 0))
       return;
-    
-    TiXmlElement *oldRule = m_dsmanager->KeepSelectedNode(pRules,"rule");
+
+    TiXmlElement *oldRule = m_dsmanager->KeepSelectedNode(pRules, "rule");
     pRules->RemoveChild(oldRule);
 
     m_dsmanager->SaveDsXML(MEDIASCONFIG);
@@ -444,23 +444,23 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
   // Add & Save Rule
   if (settingId == SETTING_RULE_SAVE || settingId == SETTING_RULE_ADD)
   {
-   TiXmlElement pRule("rule");
+    TiXmlElement pRule("rule");
 
     std::vector<DSConfigList *>::iterator it;
     for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
     {
       if ((*it)->m_configType == EDITATTR && (*it)->m_value != "")
-          pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
       if ((*it)->m_configType == BOOLATTR && (*it)->m_value != "false")
-          pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
       if ((*it)->m_configType == FILTER && (*it)->m_value != "[null]")
       {
-          pRule.InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
-          TiXmlElement *pFilter = pRule.FirstChildElement((*it)->m_nodeName.c_str());
-          if (pFilter)
-            pFilter->SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+        pRule.InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
+        TiXmlElement *pFilter = pRule.FirstChildElement((*it)->m_nodeName.c_str());
+        if (pFilter)
+          pFilter->SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
       }
 
       if (((*it)->m_configType == EXTRAFILTER
@@ -497,11 +497,11 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
     if (settingId == SETTING_RULE_SAVE)
     {
       TiXmlElement *oldRule = m_dsmanager->KeepSelectedNode(pRules, "rule");
-      pRules->ReplaceChild(oldRule,pRule);
+      pRules->ReplaceChild(oldRule, pRule);
     }
 
     if (settingId == SETTING_RULE_ADD)
-     pRules->InsertEndChild(pRule);
+      pRules->InsertEndChild(pRule);
 
     isEdited = false;
     m_dsmanager->SaveDsXML(MEDIASCONFIG);

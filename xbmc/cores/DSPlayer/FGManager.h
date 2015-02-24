@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright (C) 2003-2006 Gabest
  *  http://www.gabest.org
  *
@@ -12,15 +12,15 @@
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
  *  any later version.
- *   
+ *
  *  This Program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
- *   
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with GNU Make; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
@@ -46,7 +46,7 @@ typedef std::list<CFGFilter*>::iterator FilterListIter;
 typedef std::list<CMediaType> MediaTypeList;
 typedef std::list<CMediaType>::iterator MediaTypeListIter;
 
-struct path_t {CLSID clsid; CStdStringW filter, pin;};
+struct path_t { CLSID clsid; CStdStringW filter, pin; };
 typedef std::list<path_t> PathList;
 typedef std::list<path_t>::iterator PathListIter;
 typedef std::list<path_t>::const_iterator PathListConstIter;
@@ -56,24 +56,24 @@ using namespace XFILE;
 
 class CFGLoader;
 
-class CFGManager:
+class CFGManager :
   public CCriticalSection
 {
 public:
-  
-  class CStreamPath : public std::list<path_t> 
+
+  class CStreamPath : public std::list < path_t >
   {
-  public: 
-    void Append(IBaseFilter* pBF, IPin* pPin); 
+  public:
+    void Append(IBaseFilter* pBF, IPin* pPin);
     bool Compare(const CStreamPath& path);
   };
 
-  class CStreamDeadEnd : public CStreamPath 
+  class CStreamDeadEnd : public CStreamPath
   {
-  public: 
+  public:
     std::list<CMediaType> mts;
   };
-  
+
 private:
   DWORD m_dwRegister;
   CStreamPath m_streampath;
@@ -109,7 +109,7 @@ protected:
   STDMETHODIMP Render(IPin* pPinOut);
   STDMETHODIMP RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList) { return E_NOTIMPL; };
   STDMETHODIMP AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter) { return E_NOTIMPL; };
-  STDMETHODIMP SetLogFile(DWORD_PTR hFile) {return E_NOTIMPL; };
+  STDMETHODIMP SetLogFile(DWORD_PTR hFile) { return E_NOTIMPL; };
   STDMETHODIMP Abort();
   STDMETHODIMP ShouldOperationContinue();
 
@@ -137,7 +137,7 @@ public:
 
   STDMETHODIMP ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt);
   STDMETHODIMP Disconnect(IPin* ppin);
-  
+
   // IGraphBuilder2
   HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);
   HRESULT IsPinConnected(IPin* pPin);
@@ -149,7 +149,7 @@ public:
   HRESULT RemoveFromROT();
   virtual HRESULT RenderFileXbmc(const CFileItem& pFileItem);
 
-  HRESULT QueryInterface(REFIID iid , void** ppv);
+  HRESULT QueryInterface(REFIID iid, void** ppv);
 
   HRESULT RecoverFromGraphError(const CFileItem& pFileItem);
 };

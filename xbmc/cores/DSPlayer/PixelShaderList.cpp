@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #ifdef HAS_DS_PLAYER
 
 #include "PixelShaderList.h"
@@ -36,7 +36,7 @@ CPixelShaderList::~CPixelShaderList()
   CSingleLock lock(m_accessLock);
 
   m_activatedPixelShaders.clear();
-  
+
   for (PixelShaderVector::iterator it = m_pixelShaders.begin();
     it != m_pixelShaders.end(); ++it)
   {
@@ -48,9 +48,9 @@ CPixelShaderList::~CPixelShaderList()
 void CPixelShaderList::SaveXML()
 {
   CStdString userDataDSPlayer = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "dsplayer");
-  if (! XFILE::CDirectory::Exists(userDataDSPlayer))
+  if (!XFILE::CDirectory::Exists(userDataDSPlayer))
   {
-    if (! XFILE::CDirectory::Create(userDataDSPlayer))
+    if (!XFILE::CDirectory::Create(userDataDSPlayer))
     {
       CLog::Log(LOGERROR, "%s Failed to create userdata folder (%s). Pixel shaders settings won't be saved.", __FUNCTION__, userDataDSPlayer.c_str());
       return;
@@ -62,13 +62,13 @@ void CPixelShaderList::SaveXML()
     XFILE::CFile::Delete(xmlFile);
 
   CXBMCTinyXML xmlDoc;
-  TiXmlNode* pRoot = xmlDoc.InsertEndChild( TiXmlElement("shaders") );
+  TiXmlNode* pRoot = xmlDoc.InsertEndChild(TiXmlElement("shaders"));
 
   for (PixelShaderVector::iterator it = m_pixelShaders.begin();
     it != m_pixelShaders.end(); ++it)
   {
     CExternalPixelShader * ps = (*it);
-    pRoot->InsertEndChild( ps->ToXML() );
+    pRoot->InsertEndChild(ps->ToXML());
   }
 
   if (!xmlDoc.SaveFile(xmlFile))
@@ -84,14 +84,14 @@ void CPixelShaderList::Load()
 bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
 {
   CLog::Log(LOGNOTICE, "Loading pixel shaders list from %s", xmlFile.c_str());
-  if (! XFILE::CFile::Exists(xmlFile))
+  if (!XFILE::CFile::Exists(xmlFile))
   {
     CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", xmlFile.c_str());
     return false;
   }
 
   CXBMCTinyXML xmlDoc;
-  if (! xmlDoc.LoadFile(xmlFile))
+  if (!xmlDoc.LoadFile(xmlFile))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", xmlFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
@@ -137,8 +137,8 @@ void CPixelShaderList::UpdateActivatedList()
   for (PixelShaderVector::iterator it = m_pixelShaders.begin();
     it != m_pixelShaders.end(); ++it)
   {
-    if ( (*it)->IsEnabled() )
-      m_activatedPixelShaders.push_back( *it );
+    if ((*it)->IsEnabled())
+      m_activatedPixelShaders.push_back(*it);
   }
 }
 

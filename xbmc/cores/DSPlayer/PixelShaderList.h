@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #ifndef HAS_DS_PLAYER
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
@@ -45,9 +45,11 @@ public:
   void SaveXML();
   void EnableShader(const uint32_t id, bool enabled = true);
   void DisableAll();
-  
-  bool Exists(const uint32_t id) { return (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameID),
-    id)) != m_pixelShaders.end()); }
+
+  bool Exists(const uint32_t id) {
+    return (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameID),
+      id)) != m_pixelShaders.end());
+  }
 
   PixelShaderVector& GetPixelShaders() { return m_pixelShaders; }
   PixelShaderVector GetActivatedPixelShaders() { return m_activatedPixelShaders; }

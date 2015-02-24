@@ -38,7 +38,7 @@ CFilterSelectionRule::~CFilterSelectionRule()
 
 void CFilterSelectionRule::Initialize(TiXmlElement* pRule, const CStdString &nodeName)
 {
-  if (! pRule)
+  if (!pRule)
     return;
 
   m_name = pRule->Attribute("name");
@@ -62,13 +62,13 @@ void CFilterSelectionRule::Initialize(TiXmlElement* pRule, const CStdString &nod
 
   if (m_bStreamDetails && !CSettings::Get().GetBool("myvideos.extractflags"))
   {
-      CLog::Log(LOGWARNING, "CFilterSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
+    CLog::Log(LOGWARNING, "CFilterSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
   }
 
   m_filterName = pRule->Attribute("filter");
 
   TiXmlElement* pSubRule = pRule->FirstChildElement(nodeName);
-  while (pSubRule) 
+  while (pSubRule)
   {
     vecSubRules.push_back(new CFilterSelectionRule(pSubRule, nodeName));
     pSubRule = pSubRule->NextSiblingElement(nodeName);
@@ -130,8 +130,8 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
     if (CompileRegExp(m_videoFourcc, regExp) && !MatchesRegExp(streamDetails.GetVideoFourcc(), regExp)) return;
 
     if (CompileRegExp(m_videoResolution, regExp) &&
-        !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
-        streamDetails.GetVideoHeight()), regExp)) return;
+      !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
+      streamDetails.GetVideoHeight()), regExp)) return;
 
     if (CompileRegExp(m_videoAspect, regExp) && !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(
       item.GetVideoInfoTag()->m_streamDetails.GetVideoAspect()), regExp)) return;
@@ -140,9 +140,9 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
   CURL url(item.GetPath());
 
   //if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
-  
+
   //if (CompileRegExp(m_protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return;
-  
+
   if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetMimeType(), regExp)) return;
 
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.GetPath(), regExp)) return;
@@ -151,7 +151,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
 
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
     vecSubRules[i]->GetFilters(item, vecCores, dxva);
-  
+
   if (!m_filterName.empty())
   {
     CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: adding filter: %s for rule: %s", m_filterName.c_str(), m_name.c_str());

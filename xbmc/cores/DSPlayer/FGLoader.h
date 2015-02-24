@@ -46,7 +46,7 @@ public:
   virtual ~CFGLoader();
 
   HRESULT    LoadConfig();
-  bool	     IsAutoRender(){return m_bIsAutoRender;};
+  bool	     IsAutoRender(){ return m_bIsAutoRender; };
   bool       LoadFilterCoreFactorySettings(const CStdString& item, ESettingsType type, bool clear);
 
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);

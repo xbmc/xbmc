@@ -53,7 +53,7 @@ using namespace std;
 
 CGUIDialogDSPlayercoreFactory::CGUIDialogDSPlayercoreFactory()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_DSPLAYERCORE, "VideoOSDSettings.xml")
-{ 
+{
   m_dsmanager = CGUIDialogDSManager::Get();
 }
 
@@ -160,7 +160,7 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
 
   // Reset Button value
   m_dsmanager->ResetValue(m_ruleList);
-  
+
   // Load userdata Playercorefactory.xml
   if (!m_dsmanager->GetisNew())
   {
@@ -174,7 +174,7 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
       std::vector<DSConfigList *>::iterator it;
       for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
       {
-        if ((*it)->m_configType == EDITATTR )
+        if ((*it)->m_configType == EDITATTR)
           (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
 
         if ((*it)->m_configType == BOOLATTR)
@@ -186,7 +186,7 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
       }
     }
   }
- 
+
   // Stamp Button
   std::vector<DSConfigList *>::iterator it;
 
@@ -202,7 +202,7 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
   if (m_dsmanager->GetisNew())
     AddButton(groupSave, SETTING_RULE_ADD, 60015, 0);
   else
-  { 
+  {
     AddButton(groupSave, SETTING_RULE_SAVE, 60016, 0);
     AddButton(groupSave, SETTING_RULE_DEL, 60017, 0);
   }
@@ -216,7 +216,7 @@ void CGUIDialogDSPlayercoreFactory::OnSettingChanged(const CSetting *setting)
   isEdited = true;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
-  const std::string &settingId = setting->GetId(); 
+  const std::string &settingId = setting->GetId();
 
   std::vector<DSConfigList *>::iterator it;
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
@@ -226,7 +226,7 @@ void CGUIDialogDSPlayercoreFactory::OnSettingChanged(const CSetting *setting)
       if ((*it)->m_configType != BOOLATTR)
         (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
       else
-        (*it)->SetBoolValue( static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()) );
+        (*it)->SetBoolValue(static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()));
     }
   }
 }
@@ -251,7 +251,7 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
   {
     if (!CGUIDialogYesNo::ShowAndGetInput(60017, 60018, 0, 0))
       return;
-    
+
     TiXmlElement *oldRule = m_dsmanager->KeepSelectedNode(pRules, "rule");
     pRules->RemoveChild(oldRule);
 
@@ -312,11 +312,11 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
 
   pDlg->SetHeading(66001);
 
-  std::vector<std::string> vecAttr 
-  { 
-    "name", "filename", "filetypes", "protocols", 
+  std::vector<std::string> vecAttr
+  {
+    "name", "filename", "filetypes", "protocols",
     "videocodec", "videoresolution", "videoaspect", "audiocodec", "audiochannels",
-    "internetstream", "remote", "audio", "video", "dvd", "dvdimage", "dvdfile", "mimetypes" 
+    "internetstream", "remote", "audio", "video", "dvd", "dvdimage", "dvdfile", "mimetypes"
   };
 
   CStdString value;
@@ -336,7 +336,7 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
       std::vector<std::string>::iterator it;
       for (it = vecAttr.begin(); it != vecAttr.end(); ++it)
       {
-        
+
         value = pRule->Attribute((*it).c_str());
         if (value != "")
         {
@@ -346,12 +346,12 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
         if (countAttr > 1)
           break;
       }
-    } 
+    }
     pDlg->Add(strLabel);
     pRule = pRule->NextSiblingElement("rule");
     count++;
   }
-  
+
 
   pDlg->Add(g_localizeStrings.Get(66002).c_str());
   pDlg->DoModal();

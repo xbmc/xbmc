@@ -18,9 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #ifdef HAS_DS_PLAYER
- 
+
 #include "ExternalPixelShader.h"
 #include "PixelShaderCompiler.h"
 #include "utils/StdString.h"
@@ -31,17 +31,17 @@
 
 HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
 {
-  if (! pCompiler)
+  if (!pCompiler)
     return E_FAIL;
 
   if (m_SourceData.empty())
   {
-    if (! Load())
+    if (!Load())
       return E_FAIL;
   }
   CStdString errorMsg;
   HRESULT hr = pCompiler->CompileShader(m_SourceData, "main", m_SourceTarget, 0, &m_pPixelShader, NULL, &errorMsg);
-  if(FAILED(hr))
+  if (FAILED(hr))
   {
     CLog::Log(LOGERROR, "%s Shader's compilation failed : %s", __FUNCTION__, errorMsg.c_str());
     return hr;
@@ -58,22 +58,22 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
   : m_id(-1), m_valid(false), m_enabled(false)
 {
   m_name = xml->Attribute("name");
-  xml->Attribute("id", & m_id);
+  xml->Attribute("id", &m_id);
 
-  if (! XMLUtils::GetString(xml, "path", m_SourceFile))
+  if (!XMLUtils::GetString(xml, "path", m_SourceFile))
     return;
 
-  if (! XMLUtils::GetString(xml, "profile", m_SourceTarget))
+  if (!XMLUtils::GetString(xml, "profile", m_SourceTarget))
     return;
 
-  if (! XFILE::CFile::Exists(m_SourceFile))
+  if (!XFILE::CFile::Exists(m_SourceFile))
   {
     CStdString originalFile = m_SourceFile;
     m_SourceFile = CProfilesManager::Get().GetUserDataItem("dsplayer/shaders/" + originalFile);
-    if (! XFILE::CFile::Exists(m_SourceFile))
+    if (!XFILE::CFile::Exists(m_SourceFile))
     {
       m_SourceFile = "special://xbmc/system/players/dsplayer/shaders/" + originalFile;
-      if (! XFILE::CFile::Exists(m_SourceFile))
+      if (!XFILE::CFile::Exists(m_SourceFile))
       {
         m_SourceFile = "";
         return;
@@ -82,9 +82,9 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
   }
 
   m_SourceTarget.ToLower();
-  if ( !m_SourceTarget.Equals("ps_1_1") && !m_SourceTarget.Equals("ps_1_2") && !m_SourceTarget.Equals("ps_1_3")
+  if (!m_SourceTarget.Equals("ps_1_1") && !m_SourceTarget.Equals("ps_1_2") && !m_SourceTarget.Equals("ps_1_3")
     && !m_SourceTarget.Equals("ps_1_4") && !m_SourceTarget.Equals("ps_2_0") && !m_SourceTarget.Equals("ps_2_a")
-    && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0") )
+    && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0"))
     return;
 
   m_valid = true;
@@ -94,14 +94,14 @@ CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strPro
   : m_id(-1), m_valid(false), m_enabled(false), m_SourceFile(strFile),
   m_SourceTarget(strProfile)
 {
-  if (! XFILE::CFile::Exists(m_SourceFile))
+  if (!XFILE::CFile::Exists(m_SourceFile))
   {
     CStdString originalFile = m_SourceFile;
     m_SourceFile = CProfilesManager::Get().GetUserDataItem("dsplayer/shaders/" + originalFile);
-    if (! XFILE::CFile::Exists(m_SourceFile))
+    if (!XFILE::CFile::Exists(m_SourceFile))
     {
       m_SourceFile = "special://xbmc/system/players/dsplayer/shaders/" + originalFile;
-      if (! XFILE::CFile::Exists(m_SourceFile))
+      if (!XFILE::CFile::Exists(m_SourceFile))
       {
         m_SourceFile = "";
         return;
@@ -110,9 +110,9 @@ CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strPro
   }
 
   m_SourceTarget.ToLower();
-  if ( !m_SourceTarget.Equals("ps_1_1") && !m_SourceTarget.Equals("ps_1_2") && !m_SourceTarget.Equals("ps_1_3")
+  if (!m_SourceTarget.Equals("ps_1_1") && !m_SourceTarget.Equals("ps_1_2") && !m_SourceTarget.Equals("ps_1_3")
     && !m_SourceTarget.Equals("ps_1_4") && !m_SourceTarget.Equals("ps_2_0") && !m_SourceTarget.Equals("ps_2_a")
-    && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0") )
+    && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0"))
     return;
 
   m_valid = true;
@@ -121,13 +121,13 @@ CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strPro
 bool CExternalPixelShader::Load()
 {
   XFILE::CFile file;
-  if (! file.Open(m_SourceFile))
+  if (!file.Open(m_SourceFile))
     return false;
 
   int64_t length = file.GetLength();
-  m_SourceData.SetBuf((int) length);
+  m_SourceData.SetBuf((int)length);
 
-  if (file.Read(m_SourceData.GetBuffer((int) length), length) != length)
+  if (file.Read(m_SourceData.GetBuffer((int)length), length) != length)
   {
     m_SourceData.Empty();
     return false;
@@ -144,22 +144,22 @@ TiXmlElement CExternalPixelShader::ToXML()
   shader.SetAttribute("id", GetId());
 
   TiXmlText text("");
-    
+
   {
     TiXmlElement path("path");
-    text.SetValue( m_SourceFile );
+    text.SetValue(m_SourceFile);
     path.InsertEndChild(text);
     shader.InsertEndChild(path);
   }
 
   {
     TiXmlElement profile("profile");
-    text.SetValue( m_SourceTarget );
+    text.SetValue(m_SourceTarget);
     profile.InsertEndChild(text);
     shader.InsertEndChild(profile);
   }
 
   return shader;
 }
- 
+
 #endif

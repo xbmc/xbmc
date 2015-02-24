@@ -40,7 +40,7 @@ CShadersSelectionRule::~CShadersSelectionRule()
 
 void CShadersSelectionRule::Initialize(TiXmlElement* pRule)
 {
-  if (! pRule)
+  if (!pRule)
     return;
 
   m_name = pRule->Attribute("name");
@@ -64,14 +64,14 @@ void CShadersSelectionRule::Initialize(TiXmlElement* pRule)
 
   if (m_bStreamDetails && !CSettings::Get().GetBool("myvideos.extractflags"))
   {
-      CLog::Log(LOGWARNING, "CFilterSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
+    CLog::Log(LOGWARNING, "CFilterSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
   }
 
-  if (pRule->QueryIntAttribute("id", (int *) &m_shaderId) != TIXML_SUCCESS)
+  if (pRule->QueryIntAttribute("id", (int *)&m_shaderId) != TIXML_SUCCESS)
     m_shaderId = -1;
 
   TiXmlElement* pSubRule = pRule->FirstChildElement("shader");
-  while (pSubRule) 
+  while (pSubRule)
   {
     vecSubRules.push_back(new CShadersSelectionRule(pSubRule));
     pSubRule = pSubRule->NextSiblingElement("shader");
@@ -133,8 +133,8 @@ void CShadersSelectionRule::GetShaders(const CFileItem& item, std::vector<uint32
     if (CompileRegExp(m_videoFourcc, regExp) && !MatchesRegExp(streamDetails.GetVideoFourcc(), regExp)) return;
 
     if (CompileRegExp(m_videoResolution, regExp) &&
-        !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
-        streamDetails.GetVideoHeight()), regExp)) return;
+      !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
+      streamDetails.GetVideoHeight()), regExp)) return;
 
     if (CompileRegExp(m_videoAspect, regExp) && !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(
       item.GetVideoInfoTag()->m_streamDetails.GetVideoAspect()), regExp)) return;
@@ -143,9 +143,9 @@ void CShadersSelectionRule::GetShaders(const CFileItem& item, std::vector<uint32
   CURL url(item.GetPath());
 
   //if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
-  
+
   //if (CompileRegExp(m_protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return;
-  
+
   if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetMimeType(), regExp)) return;
 
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.GetPath(), regExp)) return;

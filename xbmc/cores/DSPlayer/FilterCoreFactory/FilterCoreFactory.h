@@ -31,9 +31,9 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 
-typedef CFGFilter* (*InternalFilterConstructorPtr) ( CStdStringW name );
-template< class T > CFGFilter* InternalFilterConstructor( CStdStringW name = L"" ) {
-    return new CFGFilterInternal<T>( name );
+typedef CFGFilter* (*InternalFilterConstructorPtr) (CStdStringW name);
+template< class T > CFGFilter* InternalFilterConstructor(CStdStringW name = L"") {
+  return new CFGFilterInternal<T>(name);
 };
 
 struct InternalFilters
@@ -55,7 +55,7 @@ public:
   static HRESULT GetSplitterFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetVideoFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
-  static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);  
+  static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetSubsFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
   static HRESULT GetShaders(const CFileItem& pFileItem, std::vector<uint32_t>& shaders, bool dxva = false);
@@ -69,14 +69,14 @@ public:
 
   static void Destroy()
   {
-    while(!m_Filters.empty())
+    while (!m_Filters.empty())
     {
       if (m_Filters.back())
         delete m_Filters.back();
       m_Filters.pop_back();
     }
 
-    while(!m_selecRules.empty())
+    while (!m_selecRules.empty())
     {
       if (m_selecRules.back())
         delete m_selecRules.back();

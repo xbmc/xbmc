@@ -43,7 +43,7 @@
 
 CDSStreamDetail::CDSStreamDetail()
   : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
-    group(0), displayname(""), connected(false)
+  group(0), displayname(""), connected(false)
 {
 }
 
@@ -80,31 +80,31 @@ CStreamsManager *CStreamsManager::Get()
 }
 
 CStreamsManager::CStreamsManager(void)
-	: m_pIAMStreamSelect(NULL)
-	, m_init(false)
-	, m_readyEvent(true)
-	, m_dvdStreamLoaded(false)
-	, m_mkveditions(false)
-	,m_pIAMStreamSelectSub(NULL)
-	,m_pIDirectVobSub(NULL)
+  : m_pIAMStreamSelect(NULL)
+  , m_init(false)
+  , m_readyEvent(true)
+  , m_dvdStreamLoaded(false)
+  , m_mkveditions(false)
+  , m_pIAMStreamSelectSub(NULL)
+  , m_pIDirectVobSub(NULL)
 {
-	m_readyEvent.Set();
+  m_readyEvent.Set();
 }
 
 CStreamsManager::~CStreamsManager(void)
 {
 
-  while (! m_audioStreams.empty())
+  while (!m_audioStreams.empty())
   {
     delete m_audioStreams.back();
     m_audioStreams.pop_back();
   }
-  while (! m_editionStreams.empty())
+  while (!m_editionStreams.empty())
   {
-	  delete m_editionStreams.back();
-	  m_editionStreams.pop_back();
+    delete m_editionStreams.back();
+    m_editionStreams.pop_back();
   }
-  while (! m_subfilterStreams.empty())
+  while (!m_subfilterStreams.empty())
   {
     delete m_subfilterStreams.back();
     m_subfilterStreams.pop_back();
@@ -132,12 +132,12 @@ int CStreamsManager::GetAudioStream()
 {
   if (m_audioStreams.size() == 0)
     return -1;
-  
+
   int i = 0;
   for (std::vector<CDSStreamDetailAudio *>::const_iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
+    if ((*it)->flags & AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
 
@@ -162,7 +162,7 @@ void CStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
 
 void CStreamsManager::SetAudioStream(int iStream)
 {
-  if (! m_init || m_audioStreams.size() == 0)
+  if (!m_init || m_audioStreams.size() == 0)
     return;
 
   if (CGraphFilters::Get()->IsDVD())
@@ -173,7 +173,7 @@ void CStreamsManager::SetAudioStream(int iStream)
   long disableIndex = GetAudioStream(), enableIndex = iStream;
 
   if (disableIndex == enableIndex
-    || ! m_audioStreams[disableIndex]->connected
+    || !m_audioStreams[disableIndex]->connected
     || m_audioStreams[enableIndex]->connected)
     return;
 
@@ -192,7 +192,8 @@ void CStreamsManager::SetAudioStream(int iStream)
       m_audioStreams[enableIndex]->connected = true;
       CLog::Log(LOGDEBUG, "%s Successfully selected audio stream", __FUNCTION__);
     }
-  } else {
+  }
+  else {
 
     Com::SmartPtr<IPin> connectedToPin = NULL;
     HRESULT hr = S_OK;
@@ -204,7 +205,7 @@ void CStreamsManager::SetAudioStream(int iStream)
       CFGLoader::IsUsingDXVADecoder(), &indexes)))
     {
       CFGFilterFile *f;
-      if (! (f = CFilterCoreFactory::GetFilterFromName(filter, false)))
+      if (!(f = CFilterCoreFactory::GetFilterFromName(filter, false)))
       {
         CLog::Log(LOGERROR, "%s The filter corresponding to the new rule doesn't exist. Using current audio decoder to decode audio.", __FUNCTION__);
         goto standardway;
@@ -219,7 +220,7 @@ void CStreamsManager::SetAudioStream(int iStream)
         Com::SmartPtr<IPin> audioDecoderConnectedToPin = NULL;
         hr = audioDecoderOutputPin->ConnectedTo(&audioDecoderConnectedToPin);
 
-        if (! audioDecoderConnectedToPin)
+        if (!audioDecoderConnectedToPin)
           goto standardway;
 
         audioDecoderOutputPin = NULL;
@@ -275,7 +276,7 @@ void CStreamsManager::SetAudioStream(int iStream)
 #endif
 
     /* Disable filter */
-//standardway:
+    //standardway:
 
     // Stop the graph
     g_dsGraph->Stop();
@@ -284,7 +285,7 @@ void CStreamsManager::SetAudioStream(int iStream)
     IPin *oldAudioStreamPin = m_audioStreams[disableIndex]->pObj; // Splitter pin
 
     connectedToPin = m_audioStreams[disableIndex]->pUnk; // Audio dec pin
-    if (! connectedToPin) // This case shouldn't happened
+    if (!connectedToPin) // This case shouldn't happened
       hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
 
     if (FAILED(hr))
@@ -320,7 +321,7 @@ void CStreamsManager::SetAudioStream(int iStream)
     m_audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
     m_audioStreams[enableIndex]->connected = true;
 
-done:
+  done:
     g_dsGraph->Play();
 
     if (SUCCEEDED(hr))
@@ -332,78 +333,78 @@ done:
 
 int CStreamsManager::GetEditionsCount()
 {
-	return m_editionStreams.size();
+  return m_editionStreams.size();
 }
 
 int CStreamsManager::GetEdition()
 {
-	if (m_editionStreams.size() == 0)
-		return -1;
+  if (m_editionStreams.size() == 0)
+    return -1;
 
-	int i = 0;
-	for (std::vector<CDSStreamDetailEdition *>::const_iterator it = m_editionStreams.begin();
-		it != m_editionStreams.end(); ++it, i++)
-	{
-		if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
-			return i;
-	}
+  int i = 0;
+  for (std::vector<CDSStreamDetailEdition *>::const_iterator it = m_editionStreams.begin();
+    it != m_editionStreams.end(); ++it, i++)
+  {
+    if ((*it)->flags & AMSTREAMSELECTINFO_ENABLED)
+      return i;
+  }
 
-	return -1;
+  return -1;
 }
 
 void CStreamsManager::GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt)
 {
-	if (m_editionStreams.size() == 0)
-		return;
+  if (m_editionStreams.size() == 0)
+    return;
 
-	int i = 0;
-	for (std::vector<CDSStreamDetailEdition *>::const_iterator it = m_editionStreams.begin();
-		it != m_editionStreams.end(); ++it, i++)
-	{
-		if (i == iEdition)
-		{
-			
-			strEditionName = (*it)->displayname.c_str();
-			if(prt)*prt = (*it)->m_rtDuration;
-		}
-	}
+  int i = 0;
+  for (std::vector<CDSStreamDetailEdition *>::const_iterator it = m_editionStreams.begin();
+    it != m_editionStreams.end(); ++it, i++)
+  {
+    if (i == iEdition)
+    {
+
+      strEditionName = (*it)->displayname.c_str();
+      if (prt)*prt = (*it)->m_rtDuration;
+    }
+  }
 }
 
 void CStreamsManager::SetEdition(int iEdition)
 {
-	if (! m_init)
-		return;
+  if (!m_init)
+    return;
 
-	if (CGraphFilters::Get()->IsDVD())
-		return; // currently not implemented
+  if (CGraphFilters::Get()->IsDVD())
+    return; // currently not implemented
 
-	CSingleLock lock(m_lock);
+  CSingleLock lock(m_lock);
 
-	long disableIndex = GetEdition(), enableIndex = iEdition;
+  long disableIndex = GetEdition(), enableIndex = iEdition;
 
-	if (disableIndex == enableIndex)
-		return;
+  if (disableIndex == enableIndex)
+    return;
 
-	m_readyEvent.Reset();
-	CAutoSetEvent event(&m_readyEvent);
+  m_readyEvent.Reset();
+  CAutoSetEvent event(&m_readyEvent);
 
-	if (m_pIAMStreamSelect)
-	{
-		m_editionStreams[disableIndex]->flags = 0;
+  if (m_pIAMStreamSelect)
+  {
+    m_editionStreams[disableIndex]->flags = 0;
 
-		if (SUCCEEDED(m_pIAMStreamSelect->Enable(m_editionStreams[enableIndex]->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE)))
-		{
-			// Reload Chapters
-			if (!CChaptersManager::Get()->LoadChapters())
-				CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
+    if (SUCCEEDED(m_pIAMStreamSelect->Enable(m_editionStreams[enableIndex]->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE)))
+    {
+      // Reload Chapters
+      if (!CChaptersManager::Get()->LoadChapters())
+        CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
 
-			// Update displayed time
-			g_dsGraph->UpdateTotalTime();
+      // Update displayed time
+      g_dsGraph->UpdateTotalTime();
 
-			m_editionStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-			CLog::Log(LOGDEBUG, "%s Successfully selected edition", __FUNCTION__);
-		}
-	} 
+      m_editionStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      CLog::Log(LOGDEBUG, "%s Successfully selected edition", __FUNCTION__);
+    }
+  }
 }
 
 void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
@@ -417,7 +418,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
   m_pIAMStreamSelect->Count(&nStreams);
 
   AM_MEDIA_TYPE * mediaType = NULL;
-  for(unsigned int i = 0; i < nStreams; i++)
+  for (unsigned int i = 0; i < nStreams; i++)
   {
     m_pIAMStreamSelect->Info(i, &mediaType, &flags, &lcid, &group, &wname, &pObj, &pUnk);
 
@@ -425,12 +426,12 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     {
     case CStreamDetail::VIDEO:	infos = &m_videoStream;					break;
     case CStreamDetail::AUDIO:	infos = new CDSStreamDetailAudio();		break;
-    case CStreamDetail::SUBTITLE:	
-    { 
+    case CStreamDetail::SUBTITLE:
+    {
       if (m_hsubfilter)
         infos = new CDSStreamDetailSubfilter(INTERNAL);
       else
-        infos = new CDSStreamDetailSubtitle(); 
+        infos = new CDSStreamDetailSubtitle();
       break;
     }
     case CStreamDetail::EDITION:	m_mkveditions = true;
@@ -454,7 +455,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     if (group == CStreamDetail::AUDIO)
     {
       /* Audio stream */
-      if (pS.displayname.find("Undetermined") != std::string::npos )
+      if (pS.displayname.find("Undetermined") != std::string::npos)
         pS.displayname.Format("A: Audio %02d", i + 1);
 
       m_audioStreams.push_back(static_cast<CDSStreamDetailAudio *>(infos));
@@ -464,14 +465,14 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     {
       if (m_hsubfilter)
         m_subfilterStreams.push_back(static_cast<CDSStreamDetailSubfilter *>(infos));
-      else 
+      else
         SubtitleManager->GetSubtitles().push_back(static_cast<CDSStreamDetailSubtitle *>(infos));
       CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, pS.displayname.c_str());
     }
-    else if(group == CStreamDetail::EDITION || group == CStreamDetail::BD_TITLE)
+    else if (group == CStreamDetail::EDITION || group == CStreamDetail::BD_TITLE)
     {
       CDSStreamDetailEdition * pEdition = static_cast<CDSStreamDetailEdition *>(infos);
-      if(Com::SmartQIPtr<IBdStreamSelect> pBDSS = m_pSplitter)
+      if (Com::SmartQIPtr<IBdStreamSelect> pBDSS = m_pSplitter)
       {
         pBDSS->GetTitleInfo(m_editionStreams.size(), NULL, &pEdition->m_rtDuration);
       }
@@ -503,7 +504,7 @@ void CStreamsManager::LoadStreamsInternal()
 
   BeginEnumPins(m_pSplitter, pEP, pPin)
   {
-    if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
+    if (SUCCEEDED(pPin->QueryDirection(&dir)) && (dir == PINDIR_OUTPUT))
     {
       g_charsetConverter.wToUTF8(GetPinName(pPin), pinName);
       CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
@@ -541,7 +542,7 @@ void CStreamsManager::LoadStreamsInternal()
 
         if (pMediaType->majortype == MEDIATYPE_Audio)
         {
-          if (pS.displayname.find("Undetermined") != std::string::npos )
+          if (pS.displayname.find("Undetermined") != std::string::npos)
             pS.displayname.Format("Audio %02d", i + 1);
 
           if (i == 0)
@@ -552,10 +553,11 @@ void CStreamsManager::LoadStreamsInternal()
           m_audioStreams.push_back(static_cast<CDSStreamDetailAudio *>(infos));
           CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, pS.displayname.c_str());
           i++;
-            
-        } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+
+        }
+        else if (pMediaType->majortype == MEDIATYPE_Subtitle)
         {
-          if (pS.displayname.find("Undetermined") != std::string::npos )
+          if (pS.displayname.find("Undetermined") != std::string::npos)
             pS.displayname.Format("Subtitle %02d", j + 1);
 
           if (j == 0)
@@ -566,9 +568,10 @@ void CStreamsManager::LoadStreamsInternal()
           SubtitleManager->GetSubtitles().push_back(static_cast<CDSStreamDetailSubtitle *>(infos));
           CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, pS.displayname.c_str());
           j++;
-        } else if (pMediaType->majortype == MEDIATYPE_Video)
+        }
+        else if (pMediaType->majortype == MEDIATYPE_Video)
         {
-          
+
         }
 
         break; // if the pin has multiple output type, get only the first one
@@ -581,7 +584,7 @@ void CStreamsManager::LoadStreamsInternal()
 
 void CStreamsManager::LoadStreams()
 {
-  if (! m_init)
+  if (!m_init)
     return;
 
   CStdString splitterName;
@@ -591,29 +594,30 @@ void CStreamsManager::LoadStreams()
 
   // Does the splitter support IAMStreamSelect?
   m_pIAMStreamSelect = NULL;
-  HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **) &m_pIAMStreamSelect);
+  HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **)&m_pIAMStreamSelect);
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG, "%s Get IAMStreamSelect interface from %s", __FUNCTION__, splitterName.c_str());
     LoadIAMStreamSelectStreamsInternal();
-  } else
+  }
+  else
     LoadStreamsInternal();
 
-  if (m_hsubfilter) 
+  if (m_hsubfilter)
   {
     CStdString subName;
     g_charsetConverter.wToUTF8(GetFilterName(m_pSubs), subName);
     m_pIAMStreamSelectSub = NULL;
 
-    HRESULT hr = m_pSubs->QueryInterface(__uuidof(m_pIAMStreamSelectSub), (void **) &m_pIAMStreamSelectSub);
+    HRESULT hr = m_pSubs->QueryInterface(__uuidof(m_pIAMStreamSelectSub), (void **)&m_pIAMStreamSelectSub);
     if (SUCCEEDED(hr))
     {
       CLog::Log(LOGDEBUG, "%s Get IAMStreamSelect interface from %s", __FUNCTION__, subName.c_str());
-      
-      HRESULT hr = m_pSubs->QueryInterface(__uuidof(m_pIDirectVobSub), (void **) &m_pIDirectVobSub);
+
+      HRESULT hr = m_pSubs->QueryInterface(__uuidof(m_pIDirectVobSub), (void **)&m_pIDirectVobSub);
       if (SUCCEEDED(hr))
         m_bIsXYVSFilter = true;
-      
+
       m_subfilterStreams_int = m_subfilterStreams;
       m_pIDirectVobSub->put_LoadSettings(1, true, false, true);
       m_InitialSubsDelay = GetSubTitleDelay();
@@ -623,17 +627,17 @@ void CStreamsManager::LoadStreams()
   }
 
   SubtitleManager->Initialize();
-  if (! SubtitleManager->Ready())
+  if (!SubtitleManager->Ready())
   {
     SubtitleManager->Unload();
     return;
   }
-  
+
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
 
   std::vector<std::string> subtitles;
-  CUtil::ScanForExternalSubtitles( CDSPlayer::currentFileItem.GetPath(), subtitles );
+  CUtil::ScanForExternalSubtitles(CDSPlayer::currentFileItem.GetPath(), subtitles);
 
   for (std::vector<std::string>::const_iterator it = subtitles.begin(); it != subtitles.end(); ++it)
   {
@@ -649,12 +653,12 @@ int CStreamsManager::GetSubfilter()
 {
   if (m_subfilterStreams.size() == 0)
     return -1;
-  
+
   int i = 0;
   for (std::vector<CDSStreamDetailSubfilter *>::const_iterator it = m_subfilterStreams.begin();
     it != m_subfilterStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
+    if ((*it)->flags & AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
   return -1;
@@ -665,7 +669,7 @@ int CStreamsManager::GetSubfilterCount()
   return m_subfilterStreams.size();
 }
 
-void CStreamsManager::GetSubfilterName( int iStream, CStdString &strStreamName )
+void CStreamsManager::GetSubfilterName(int iStream, CStdString &strStreamName)
 {
   if (m_subfilterStreams.size() == 0)
     return;
@@ -686,7 +690,7 @@ bool CStreamsManager::GetSubfilterVisible()
   return m_bSubfilterVisible;
 }
 
-void CStreamsManager::SetSubfilterVisible( bool bVisible )
+void CStreamsManager::SetSubfilterVisible(bool bVisible)
 {
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_bSubfilterVisible = bVisible;
@@ -695,7 +699,7 @@ void CStreamsManager::SetSubfilterVisible( bool bVisible )
     return;
 
   m_pIDirectVobSub->put_HideSubtitles(!m_bSubfilterVisible);
-} 
+}
 
 void CStreamsManager::resetDelayInterface()
 {
@@ -721,7 +725,7 @@ bool CStreamsManager::SetAudioInterface()
   HRESULT hraudio;
   g_charsetConverter.wToUTF8(GetFilterName(m_pAudio), audioName);
 
-  hraudio = m_pAudio->QueryInterface(__uuidof(m_pILAVAudioSettings), (void **) &m_pILAVAudioSettings);
+  hraudio = m_pAudio->QueryInterface(__uuidof(m_pILAVAudioSettings), (void **)&m_pILAVAudioSettings);
   if (SUCCEEDED(hraudio))
   {
     CLog::Log(LOGDEBUG, "%s Get LAVAudio Settings interface from %s", __FUNCTION__, audioName.c_str());
@@ -767,7 +771,7 @@ float CStreamsManager::GetAVDelay()
 
   if (m_bIsLavAudio)
     m_pILAVAudioSettings->GetAudioDelay(&bValue, &iValue);
- 
+
   if (m_bIsFFDSAudio)
     m_pIFFDSwhoAudioSettings->getParam(IDFF_audio_decoder_delay, &iValue);
 
@@ -781,14 +785,14 @@ void CStreamsManager::SetSubTitleDelay(float fValue)
   int iValue = fValue * 1000;
 
   if (m_bIsXYVSFilter)
-    m_pIDirectVobSub->put_SubtitleTiming(iValue,1000,1000);
+    m_pIDirectVobSub->put_SubtitleTiming(iValue, 1000, 1000);
 }
 
 float CStreamsManager::GetSubTitleDelay()
 {
   float fValue = 0.0f;
   int iValue, a, b;
-  
+
   if (m_bIsXYVSFilter)
     m_pIDirectVobSub->get_SubtitleTiming(&iValue, &a, &b);
 
@@ -817,7 +821,7 @@ int CStreamsManager::AddSubtitle(const std::string& subFilePath)
 
 void CStreamsManager::SetSubfilter(int iStream)
 {
-  if (! m_init)
+  if (!m_init)
     return;
 
   CSingleLock lock(m_lock);
@@ -841,9 +845,9 @@ void CStreamsManager::SetSubfilter(int iStream)
 
     CDSStreamDetailSubfilter *s = reinterpret_cast<CDSStreamDetailSubfilter *>(m_subfilterStreams[enableIndex]);
 
-    m_pIAMStreamSelectSub->Enable( s->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE);	
+    m_pIAMStreamSelectSub->Enable(s->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE);
     s->flags = AMSTREAMSELECTINFO_ENABLED; // for gui
-    s->connected = true;	
+    s->connected = true;
   }
 
   else if (m_pIAMStreamSelect)
@@ -872,10 +876,10 @@ void CStreamsManager::SubInterface(SelectSubType action)
   DWORD nCount;
   DWORD group;
   if (FAILED(m_pIAMStreamSelectSub->Count(&nCount))) { nCount = 0; }
-  for (DWORD i = 0; i < nCount; i++) 
+  for (DWORD i = 0; i < nCount; i++)
   {
     WCHAR* pszName = nullptr;
-    if (SUCCEEDED(m_pIAMStreamSelectSub->Info(i, nullptr, nullptr, nullptr, &group, &pszName, nullptr, nullptr))) 
+    if (SUCCEEDED(m_pIAMStreamSelectSub->Info(i, nullptr, nullptr, nullptr, &group, &pszName, nullptr, nullptr)))
     {
       CStdString str;
       g_charsetConverter.wToUTF8(pszName, str);
@@ -892,7 +896,7 @@ void CStreamsManager::SubInterface(SelectSubType action)
       }
       if (action == SELECT_INTERNAL_SUB)
       {
-        if (group == XYVSFILTER_SUB_INTERNAL) 
+        if (group == XYVSFILTER_SUB_INTERNAL)
           m_pIAMStreamSelectSub->Enable(i, AMSTREAMSELECTENABLE_ENABLE);
       }
     }
@@ -903,37 +907,37 @@ void CStreamsManager::SubInterface(SelectSubType action)
 void CStreamsManager::SelectBestSubtitle()
 {
   int select = 0;
-	int iLibrary;
+  int iLibrary;
 
   // set previuos selected stream
-	iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
-	if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0)) 
-		select = iLibrary;
+  iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0))
+    select = iLibrary;
 
   // set first external sub
   else if (m_subfilterStreams.size() != 0)
-  {  
+  {
     int i = 0;
     for (std::vector<CDSStreamDetailSubfilter *>::const_iterator it = m_subfilterStreams.begin();
       it != m_subfilterStreams.end(); ++it, i++)
     {
-      if ( (*it)->m_subType & EXTERNAL)
-      {  
+      if ((*it)->m_subType & EXTERNAL)
+      {
         select = i;
         break;
       }
     }
   }
   // set first internal subtitle
-  else 
+  else
   {
     int iIndex = -1;
-    if ( (iIndex = GetSubfilter()) == -1 )
+    if ((iIndex = GetSubfilter()) == -1)
       select = 0;
     else
     {
-      if (! m_subfilterStreams[iIndex]->connected)
-      select = iIndex;
+      if (!m_subfilterStreams[iIndex]->connected)
+        select = iIndex;
     }
   }
   SetSubfilter(select);
@@ -952,13 +956,13 @@ void CStreamsManager::DisconnectCurrentSubtitlePins()
 
 bool CStreamsManager::InitManager()
 {
-  if (! g_dsGraph)
+  if (!g_dsGraph)
     return false;
 
   m_pSplitter = CGraphFilters::Get()->Splitter.pBF;
   m_pGraphBuilder = g_dsGraph->pFilterGraph;
   m_pSubs = CGraphFilters::Get()->Subs.pBF;
-  
+
   // Create subtitle manager
   SubtitleManager.reset(new CSubtitleManager(this));
 
@@ -975,18 +979,18 @@ bool CStreamsManager::InitManager()
 
 bool CStreamsManager::Create()
 {
-	if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
-		return false;
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return false;
 
-	if ((m_pSingleton = new CStreamsManager()))
-		return true;
+  if ((m_pSingleton = new CStreamsManager()))
+    return true;
 
-	return false;
+  return false;
 }
 
 void CStreamsManager::Destroy()
 {
-	SAFE_DELETE(m_pSingleton);
+  SAFE_DELETE(m_pSingleton);
 }
 
 void CStreamsManager::WaitUntilReady()
@@ -1027,7 +1031,7 @@ void CStreamsManager::ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfo
 {
   if (s.m_eType == CStreamDetail::SUBTITLE)
     return;
-  
+
   std::vector<std::string> tokens;
   StringUtils::Tokenize(codecInfos, tokens, "|");
 
@@ -1036,40 +1040,40 @@ void CStreamsManager::ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfo
     switch (s.m_eType)
     {
     case CStreamDetail::AUDIO:
-      {
-        CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
-        pS.m_strCodec = pS.m_strCodecName = codecInfos;
-        return;
-      }
+    {
+      CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
+      pS.m_strCodec = pS.m_strCodecName = codecInfos;
+      return;
+    }
     case CStreamDetail::VIDEO:
-      {
-        CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
-        pS.m_strCodec = pS.m_strCodecName = codecInfos;
-        return;
-      }
+    {
+      CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
+      pS.m_strCodec = pS.m_strCodecName = codecInfos;
+      return;
+    }
     }
   }
 
   switch (s.m_eType)
   {
   case CStreamDetail::AUDIO:
-    {
-      CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
-      pS.m_strCodecName = tokens[0];
-      pS.m_strCodec = tokens[1];
-      return;
-    }
+  {
+    CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
+    pS.m_strCodecName = tokens[0];
+    pS.m_strCodec = tokens[1];
+    return;
+  }
   case CStreamDetail::VIDEO:
-    {
-      CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
-      pS.m_strCodecName = tokens[0];
-      pS.m_strCodec = tokens[1];
-      return;
-    }
+  {
+    CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
+    pS.m_strCodecName = tokens[0];
+    pS.m_strCodec = tokens[1];
+    return;
+  }
   }
 }
 
-void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStreamDetail& s )
+void CStreamsManager::MediaTypeToStreamDetail(AM_MEDIA_TYPE *pMediaType, CStreamDetail& s)
 {
   if (pMediaType->majortype == MEDIATYPE_Audio)
   {
@@ -1084,7 +1088,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
         infos.m_iBitRate = f->nAvgBytesPerSec;
         ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag));
       }
-    } 
+    }
     else if (pMediaType->formattype == FORMAT_VorbisFormat2)
     {
       if (pMediaType->cbFormat >= sizeof(VORBISFORMAT2))
@@ -1095,7 +1099,8 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
         infos.m_iBitRate = v->BitsPerSample;
         ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
-    } else if (pMediaType->formattype == FORMAT_VorbisFormat)
+    }
+    else if (pMediaType->formattype == FORMAT_VorbisFormat)
     {
       if (pMediaType->cbFormat >= sizeof(VORBISFORMAT))
       {
@@ -1106,7 +1111,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
         ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
     }
-  } 
+  }
   else if (pMediaType->majortype == MEDIATYPE_Video)
   {
     CDSStreamDetailVideo& infos = static_cast<CDSStreamDetailVideo&>(s);
@@ -1120,7 +1125,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
         infos.m_iHeight = v->bmiHeader.biHeight;
         ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos.m_iFourcc));
       }
-    } 
+    }
     else if (pMediaType->formattype == FORMAT_MPEG2Video)
     {
       if (pMediaType->cbFormat >= (sizeof(MPEG2VIDEOINFO) - 4))
@@ -1136,7 +1141,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
           infos.m_strCodec = "mpeg2";
         }
       }
-    } 
+    }
     else if (pMediaType->formattype == FORMAT_VideoInfo2)
     {
       if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER2))
@@ -1146,7 +1151,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
         infos.m_iHeight = v->bmiHeader.biHeight;
         ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos.m_iFourcc));
       }
-    } 
+    }
     else if (pMediaType->formattype == FORMAT_MPEGVideo)
     {
       if (pMediaType->cbFormat >= sizeof(MPEG1VIDEOINFO))
@@ -1167,7 +1172,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
     // account. Unfortunatly, DirectShow does not provide any usefull informations about that.
     // TODO: Rename function and XML parameter to something more understandable (like
     // dxva_capable)
-    
+
     if (infos.m_iFourcc == 'H264' || infos.m_iFourcc == 'AVC1' || infos.m_iFourcc == 'WVC1'
       || infos.m_iFourcc == 'WMV3' || infos.m_iFourcc == 'WMVA' || infos.m_iFourcc == 'CCV1')
       CGraphFilters::Get()->SetIsUsingDXVADecoder(true);
@@ -1179,7 +1184,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
     {
       CLog::Log(LOGINFO, "Haali Media Splitter is configured for using a fake fourcc code 'CCV1'. If you've got an error message, be sure your video decoder handle that fourcc well.");
     }
-  } 
+  }
   else if (pMediaType->majortype == MEDIATYPE_Subtitle)
   {
     CDSStreamDetailSubtitle& infos = static_cast<CDSStreamDetailSubtitle&>(s);
@@ -1191,7 +1196,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
       infos.isolang = i->IsoLang;
       infos.offset = i->dwOffset;
       infos.trackname = i->TrackName;
-      if (! infos.lcid)
+      if (!infos.lcid)
         infos.lcid = ISO6392ToLcid(i->IsoLang);
     }
 
@@ -1222,7 +1227,7 @@ CStdString CStreamsManager::GetVideoCodecName()
   return m_videoStream.m_strCodec;
 }
 
-CDSStreamDetailVideo * CStreamsManager::GetVideoStreamDetail( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailVideo * CStreamsManager::GetVideoStreamDetail(unsigned int iIndex /*= 0*/)
 {
   /* We currently supports only one video stream */
   if (iIndex != 0)
@@ -1231,7 +1236,7 @@ CDSStreamDetailVideo * CStreamsManager::GetVideoStreamDetail( unsigned int iInde
   return &m_videoStream;
 }
 
-CDSStreamDetailAudio * CStreamsManager::GetAudioStreamDetail( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailAudio * CStreamsManager::GetAudioStreamDetail(unsigned int iIndex /*= 0*/)
 {
   if (iIndex > m_audioStreams.size())
     return NULL;
@@ -1239,7 +1244,7 @@ CDSStreamDetailAudio * CStreamsManager::GetAudioStreamDetail( unsigned int iInde
   return m_audioStreams[iIndex];
 }
 
-void CStreamsManager::FormatStreamName( CStreamDetail& s )
+void CStreamsManager::FormatStreamName(CStreamDetail& s)
 {
   std::vector<boost::shared_ptr<CRegExp>> regex;
 
@@ -1256,7 +1261,7 @@ void CStreamsManager::FormatStreamName( CStreamDetail& s )
   for (std::vector<boost::shared_ptr<CRegExp>>::iterator
     it = regex.begin(); it != regex.end(); ++it)
   {
-    if ( (*it)->RegFind(pS.displayname) > -1 )
+    if ((*it)->RegFind(pS.displayname) > -1)
     {
       pS.displayname = (*it)->GetMatch(1);
       break;
@@ -1273,8 +1278,8 @@ void CStreamsManager::FormatStreamName( CStreamDetail& s )
     {
       _name.resize(len - 1); //get rid of last \0
       CStdString name; g_charsetConverter.wToUTF8(_name, name);
-      if (s.m_eType == CStreamDetail::SUBTITLE && !((CDSStreamDetailSubtitle&) pS).trackname.empty())
-        pS.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&) pS).trackname);
+      if (s.m_eType == CStreamDetail::SUBTITLE && !((CDSStreamDetailSubtitle&)pS).trackname.empty())
+        pS.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&)pS).trackname);
       else
         pS.displayname = name;
     }
@@ -1282,19 +1287,19 @@ void CStreamsManager::FormatStreamName( CStreamDetail& s )
 
   if (s.m_eType == CStreamDetail::SUBTITLE && pS.displayname.empty())
   {
-    CDSStreamDetailSubtitle& c = (CDSStreamDetailSubtitle&) pS;
+    CDSStreamDetailSubtitle& c = (CDSStreamDetailSubtitle&)pS;
     CStdString name = ISOToLanguage(c.isolang);
     if (!name.empty() && !c.trackname.empty())
-      c.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&) pS).trackname);
-    else if (! c.trackname.empty())
+      c.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&)pS).trackname);
+    else if (!c.trackname.empty())
       c.displayname = c.trackname;
     else
       c.displayname = "Unknown";
   }
 }
 
-CSubtitleManager::CSubtitleManager(CStreamsManager* pStreamManager):
-  m_dll(), m_pStreamManager(pStreamManager), m_rtSubtitleDelay(0)
+CSubtitleManager::CSubtitleManager(CStreamsManager* pStreamManager) :
+m_dll(), m_pStreamManager(pStreamManager), m_rtSubtitleDelay(0)
 {
   m_dll.Load();
 
@@ -1329,13 +1334,13 @@ void CSubtitleManager::Initialize()
   ISubManager *pManager = NULL;
 
   if (CGraphFilters::Get()->HasSubFilter()) {
-	CLog::Log(LOGNOTICE, "%s disabled libsubs.dll", __FUNCTION__);  
+    CLog::Log(LOGNOTICE, "%s disabled libsubs.dll", __FUNCTION__);
     return;
   }
-  if (! m_dll.IsLoaded())
+  if (!m_dll.IsLoaded())
     return;
 
-  CLog::Log(LOGNOTICE, "%s enabled libsubs.dll", __FUNCTION__);  
+  CLog::Log(LOGNOTICE, "%s enabled libsubs.dll", __FUNCTION__);
   // Log manager for the DLL
   m_Log.reset(new ILogImpl());
 
@@ -1353,7 +1358,7 @@ void CSubtitleManager::Initialize()
   style.alpha[0] = CSettings::Get().GetInt("subtitles.alpha");
 
   g_graphicsContext.SetScalingResolution(RES_PAL_4x3, true);
-  style.fontSize = (float) (CSettings::Get().GetInt("subtitles.height")) * 50.0 / 72.0;
+  style.fontSize = (float)(CSettings::Get().GetInt("subtitles.height")) * 50.0 / 72.0;
 
   int fontStyle = CSettings::Get().GetInt("subtitles.style");
   switch (fontStyle)
@@ -1382,10 +1387,10 @@ void CSubtitleManager::Initialize()
   style.borderStyle = CSettings::Get().GetInt("subtitles.border");
   style.shadowDepthX = style.shadowDepthY = CSettings::Get().GetInt("subtitles.shadowdepth");
   style.outlineWidthX = style.outlineWidthY = CSettings::Get().GetInt("subtitles.outlinewidth");
-  
+
   CStdStringW fontName;
   g_charsetConverter.utf8ToW(CSettings::Get().GetString("subtitles.dsfont"), fontName);
-  style.fontName = (wchar_t *) CoTaskMemAlloc(fontName.length() * sizeof(wchar_t) + 2);
+  style.fontName = (wchar_t *)CoTaskMemAlloc(fontName.length() * sizeof(wchar_t) + 2);
   if (style.fontName)
     wcscpy_s(style.fontName, fontName.length() + 1, fontName.c_str());
 
@@ -1396,7 +1401,7 @@ void CSubtitleManager::Initialize()
   {
     // No internal subs. May have some externals!
   }
-  
+
   m_pManager->SetEnable(true);
 }
 
@@ -1424,17 +1429,17 @@ void CSubtitleManager::Unload()
     m_pManager->SetSubPicProvider(NULL);
     m_pManager->Free();
   }
-  while (! m_subtitleStreams.empty())
+  while (!m_subtitleStreams.empty())
   {
     if (m_subtitleStreams.back()->m_subType == EXTERNAL)
-      ((CDSStreamDetailSubtitleExternal *) m_subtitleStreams.back())->substream.FullRelease();
+      ((CDSStreamDetailSubtitleExternal *)m_subtitleStreams.back())->substream.FullRelease();
     delete m_subtitleStreams.back();
     m_subtitleStreams.pop_back();
   }
   m_pManager.reset();
 }
 
-void CSubtitleManager::SetTimePerFrame( REFERENCE_TIME iTimePerFrame )
+void CSubtitleManager::SetTimePerFrame(REFERENCE_TIME iTimePerFrame)
 {
   if (m_pManager)
     m_pManager->SetTimePerFrame(iTimePerFrame);
@@ -1445,7 +1450,7 @@ void CSubtitleManager::SetTime(REFERENCE_TIME rtNow)
     m_pManager->SetTime(rtNow - m_rtSubtitleDelay);
 }
 
-HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect )
+HRESULT CSubtitleManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect)
 {
   if (m_pManager)
     return m_pManager->GetTexture(pTexture, pSrc, pDest, renderRect);
@@ -1477,14 +1482,14 @@ int CSubtitleManager::GetSubtitle()
   for (std::vector<CDSStreamDetailSubtitle *>::const_iterator it = m_subtitleStreams.begin();
     it != m_subtitleStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED )
+    if ((*it)->flags & AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
 
   return -1;
 }
 
-void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
+void CSubtitleManager::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
   if (m_subtitleStreams.size() == 0)
     return;
@@ -1500,7 +1505,7 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
   }
 }
 
-void CSubtitleManager::SetSubtitle( int iStream )
+void CSubtitleManager::SetSubtitle(int iStream)
 {
   if (CGraphFilters::Get()->IsDVD())
     return; // currently not implemented
@@ -1533,7 +1538,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     CDSStreamDetailSubtitleExternal *s = reinterpret_cast<CDSStreamDetailSubtitleExternal *>(m_subtitleStreams[enableIndex]);
 
     m_pManager->SetSubPicProvider(s->substream);
-    
+
     s->flags = AMSTREAMSELECTINFO_ENABLED; // for gui
     s->connected = true;
 
@@ -1554,40 +1559,40 @@ void CSubtitleManager::SetSubtitle( int iStream )
       SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
       CLog::Log(LOGDEBUG, "%s Successfully selected subtitle stream", __FUNCTION__);
     }
-  } 
-  else 
+  }
+  else
   {
-    
+
     Com::SmartPtr<IPin> connectedToPin = NULL;
     Com::SmartPtr<IPin> oldAudioStreamPin = NULL;
     HRESULT hr = S_OK;
 
     g_dsGraph->Stop(); // Current position is kept by the graph
     stopped = true;
-    
+
     /* Disconnect pins */
     if (m_subtitleStreams[disableIndex]->m_subType != EXTERNAL)
     {
-      
+
       oldAudioStreamPin = m_subtitleStreams[disableIndex]->pObj;
       hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
 
       if (connectedToPin)
         hr = m_pStreamManager->m_pGraphBuilder->Disconnect(connectedToPin);
-      
+
       m_pStreamManager->m_pGraphBuilder->Disconnect(oldAudioStreamPin);
     }
 
     m_subtitleStreams[disableIndex]->flags = 0;
     m_subtitleStreams[disableIndex]->connected = false;
 
-    if (! connectedToPin)
+    if (!connectedToPin)
     {
       m_subtitleMediaType.subtype = m_subtitleStreams[enableIndex]->subtype;
       connectedToPin = GetFirstSubtitlePin(); // Find where connect the subtitle
     }
 
-    if (! connectedToPin)
+    if (!connectedToPin)
     {
       /* Nothing support subtitles! */
       CLog::Log(LOGERROR, "%s You're trying to use subtitle, but no filters in the graph seems to accept subtitles!", __FUNCTION__);
@@ -1616,7 +1621,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
 
     m_pManager->SetSubPicProviderToInternal();
 
-done:
+  done:
     if (stopped)
       g_dsGraph->Play();
 
@@ -1635,7 +1640,7 @@ bool CSubtitleManager::GetSubtitleVisible()
   return m_bSubtitlesVisible;
 }
 
-void CSubtitleManager::SetSubtitleVisible( bool bVisible )
+void CSubtitleManager::SetSubtitleVisible(bool bVisible)
 {
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_bSubtitlesVisible = bVisible;
@@ -1645,7 +1650,7 @@ void CSubtitleManager::SetSubtitleVisible( bool bVisible )
 
 int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
 {
-  if (! m_pManager)
+  if (!m_pManager)
     return -1;
 
   std::auto_ptr<CDSStreamDetailSubtitleExternal> s(new CDSStreamDetailSubtitleExternal());
@@ -1654,7 +1659,7 @@ int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
     s->flags = AMSTREAMSELECTINFO_ENABLED;
 
   s->path = CSpecialProtocol::TranslatePath(subFilePath);
-  if (! XFILE::CFile::Exists(s->path))
+  if (!XFILE::CFile::Exists(s->path))
     return -1;
 
   // Try to detect isolang of subtitle
@@ -1663,14 +1668,14 @@ int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
   if (regex.RegFind(s->path) > -1)
     s->isolang = regex.GetMatch(1);
 
-  if (! s->isolang.empty())
+  if (!s->isolang.empty())
   {
     s->lcid = ISO6392ToLcid(s->isolang);
-    if (! s->lcid)
+    if (!s->lcid)
       s->lcid = ISO6391ToLcid(s->isolang);
 
-    m_pStreamManager->FormatStreamName( *(s.get()) );
-  } 
+    m_pStreamManager->FormatStreamName(*(s.get()));
+  }
 
   if (s->displayname.empty())
     s->displayname = URIUtils::GetFileName(s->path);
@@ -1679,7 +1684,7 @@ int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
 
   // Load subtitle file
   Com::SmartPtr<ISubStream> pSubStream;
-  
+
   CStdStringW unicodePath; g_charsetConverter.utf8ToW(s->path, unicodePath);
 
   if (SUCCEEDED(m_pManager->LoadExternalSubtitle(unicodePath.c_str(), &pSubStream)))
@@ -1702,7 +1707,7 @@ int CSubtitleManager::AddSubtitle(const std::string& subFilePath)
   return -1;
 }
 
-void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
+void CSubtitleManager::DisconnectCurrentSubtitlePins(void)
 {
   int i = GetSubtitle();
   if (i == -1)
@@ -1712,8 +1717,8 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
   {
     m_subtitleStreams[i]->connected = false;
     m_subtitleStreams[i]->flags = 0;
-  } 
-  else 
+  }
+  else
   {
     if (m_subtitleStreams[i]->connected && m_subtitleStreams[i]->m_subType == INTERNAL)
     {
@@ -1738,17 +1743,17 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
   //m_bSubtitlesUnconnected = true;
 }
 
-void CSubtitleManager::SetSubtitleDelay( float fValue )
+void CSubtitleManager::SetSubtitleDelay(float fValue)
 {
-  m_rtSubtitleDelay = (int) (-fValue * 10000000i64); // second to directshow timebase
+  m_rtSubtitleDelay = (int)(-fValue * 10000000i64); // second to directshow timebase
 }
 
-float CSubtitleManager::GetSubtitleDelay( void )
+float CSubtitleManager::GetSubtitleDelay(void)
 {
-  return (float) m_rtSubtitleDelay / 10000000i64;
+  return (float)m_rtSubtitleDelay / 10000000i64;
 }
 
-IPin *CSubtitleManager::GetFirstSubtitlePin( void )
+IPin *CSubtitleManager::GetFirstSubtitlePin(void)
 {
   PIN_DIRECTION  pindir;
 
@@ -1758,7 +1763,7 @@ IPin *CSubtitleManager::GetFirstSubtitlePin( void )
     {
       Com::SmartPtr<IPin> pFellow;
 
-      if (SUCCEEDED (pPin->QueryDirection(&pindir)) &&
+      if (SUCCEEDED(pPin->QueryDirection(&pindir)) &&
         pindir == PINDIR_INPUT && pPin->ConnectedTo(&pFellow) == VFW_E_NOT_CONNECTED)
       {
         if (pPin->QueryAccept(&m_subtitleMediaType) == S_OK)
@@ -1769,10 +1774,10 @@ IPin *CSubtitleManager::GetFirstSubtitlePin( void )
   }
   EndEnumFilters
 
-  return NULL;
+    return NULL;
 }
 
-CStdString CStreamsManager::ISOToLanguage( CStdString code )
+CStdString CStreamsManager::ISOToLanguage(CStdString code)
 {
   if (code.length() == 2)
     return ISO6391ToLanguage(code);
@@ -1868,7 +1873,7 @@ void CStreamsManager::UpdateDVDStream()
       s->m_strCodecName = "Unknown";
       break;
     }
-    FormatStreamName( *(s.get()) );
+    FormatStreamName(*(s.get()));
 
     m_audioStreams.push_back(s.release());
   }
@@ -1889,15 +1894,15 @@ void CStreamsManager::UpdateDVDStream()
     std::auto_ptr<CDSStreamDetailSubfilter> s2(new CDSStreamDetailSubfilter(INTERNAL));
     s->lcid = subpic.Language;
     s2->lcid = subpic.Language;
-    FormatStreamName( *(s.get()) );
-    FormatStreamName( *(s2.get()) );
+    FormatStreamName(*(s.get()));
+    FormatStreamName(*(s2.get()));
     SubtitleManager->GetSubtitles().push_back(s.release());
     m_subfilterStreams.push_back(s2.release());
   }
 
   m_dvdStreamLoaded = true;
 }
-CDSStreamDetailSubtitle * CSubtitleManager::GetSubtitleStreamDetail( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailSubtitle * CSubtitleManager::GetSubtitleStreamDetail(unsigned int iIndex /*= 0*/)
 {
   if (iIndex > m_subtitleStreams.size())
     return NULL;
@@ -1908,7 +1913,7 @@ CDSStreamDetailSubtitle * CSubtitleManager::GetSubtitleStreamDetail( unsigned in
   return m_subtitleStreams[iIndex];
 }
 
-CDSStreamDetailSubtitleExternal* CSubtitleManager::GetExternalSubtitleStreamDetail( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailSubtitleExternal* CSubtitleManager::GetExternalSubtitleStreamDetail(unsigned int iIndex /*= 0*/)
 {
   if (iIndex > m_subtitleStreams.size())
     return NULL;
@@ -1919,7 +1924,7 @@ CDSStreamDetailSubtitleExternal* CSubtitleManager::GetExternalSubtitleStreamDeta
   return reinterpret_cast<CDSStreamDetailSubtitleExternal *>(m_subtitleStreams[iIndex]);
 }
 
-void CSubtitleManager::DeleteSubtitleManager( ISubManager* pManager, DllLibSubs dll )
+void CSubtitleManager::DeleteSubtitleManager(ISubManager* pManager, DllLibSubs dll)
 {
   dll.DeleteSubtitleManager(pManager);
 }
@@ -1927,37 +1932,37 @@ void CSubtitleManager::DeleteSubtitleManager( ISubManager* pManager, DllLibSubs 
 void CSubtitleManager::SelectBestSubtitle()
 {
   int select = 0;
-	int iLibrary;
+  int iLibrary;
 
   // set previuos selected stream
-	iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
-	if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0)) 
-		select = iLibrary;
+  iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0))
+    select = iLibrary;
 
   // set first external sub
   else if (m_subtitleStreams.size() != 0)
-  {  
+  {
     int i = 0;
     for (std::vector<CDSStreamDetailSubtitle *>::const_iterator it = m_subtitleStreams.begin();
       it != m_subtitleStreams.end(); ++it, i++)
     {
-      if ( (*it)->m_subType & EXTERNAL)
-      {  
+      if ((*it)->m_subType & EXTERNAL)
+      {
         select = i;
         break;
       }
     }
   }
   // set first internal subtitle
-  else 
+  else
   {
     int iIndex = -1;
-    if ( (iIndex = GetSubtitle()) == -1 )
+    if ((iIndex = GetSubtitle()) == -1)
       select = 0;
     else
     {
-      if (! m_subtitleStreams[iIndex]->connected)
-      select = iIndex;
+      if (!m_subtitleStreams[iIndex]->connected)
+        select = iIndex;
     }
   }
   SetSubtitle(select);

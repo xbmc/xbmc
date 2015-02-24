@@ -142,7 +142,7 @@ typedef CDSMsgType<int>    CDSMsgInt;
 typedef CDSMsgType<double> CDSMsgDouble;
 
 #define AM_SEEKING_AbsolutePositioning 1
-class CDSMsgPlayerSeekTime: public CDSMsg
+class CDSMsgPlayerSeekTime : public CDSMsg
 {
 public:
   CDSMsgPlayerSeekTime(uint64_t time, uint32_t flags = AM_SEEKING_AbsolutePositioning, bool showPopup = true)
@@ -171,7 +171,7 @@ private:
   bool m_showPopup;
 };
 
-class CDSMsgPlayerSeek: public CDSMsg
+class CDSMsgPlayerSeek : public CDSMsg
 {
 public:
   CDSMsgPlayerSeek(bool forward, bool largeStep)

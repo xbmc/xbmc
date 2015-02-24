@@ -43,6 +43,6 @@ private:
   CCriticalSection m_critSection;
   void AddFilter(std::vector<DSFiltersInfo>& pFilters, CStdStringW lpGuid, CStdStringW lpName);
   static bool compare_by_word(const DSFiltersInfo& lhs, const DSFiltersInfo& rhs);
-  
+
 };
 

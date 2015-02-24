@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #ifdef HAS_DS_PLAYER
 
 #include "GUIDialogShaderList.h"
@@ -43,9 +43,9 @@
 #if 0
 
 CGUIDialogShaderList::CGUIDialogShaderList(void)
-    : CGUIDialog(WINDOW_DIALOG_SHADER_LIST, "DialogShaderList.xml")
+  : CGUIDialog(WINDOW_DIALOG_SHADER_LIST, "DialogShaderList.xml")
 {
-  
+
 }
 
 CGUIDialogShaderList::~CGUIDialogShaderList(void)
@@ -54,51 +54,51 @@ CGUIDialogShaderList::~CGUIDialogShaderList(void)
 
 bool CGUIDialogShaderList::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_DEINIT:
-    {
-      
-    }
+  {
+
+  }
     break;
 
   case GUI_MSG_CLICKED:
+  {
+    int iControl = message.GetSenderId();
+    int iAction = ((int)iControl / 100) * 100;
+    uint16_t index = iControl - iAction;
+
+    CGUIListGroup * grp = (CGUIListGroup *)m_mainGrp->GetControl(CONTROL_START_IDS + index);
+    if (!grp)
+      return true;
+
+    CGUIControl* pControl = NULL;
+
+    switch (iAction)
     {
-      int iControl = message.GetSenderId();
-      int iAction = ((int) iControl / 100) * 100;
-      uint16_t index = iControl - iAction;
-
-      CGUIListGroup * grp = (CGUIListGroup *) m_mainGrp->GetControl(CONTROL_START_IDS + index);
-      if (! grp)
-        return true;
-
-      CGUIControl* pControl = NULL;
-
-      switch (iAction)
-      {
-      case CONTROL_BTN_UP:
-        g_dsSettings.pixelShaderList->MoveUp(index);
-        UpdateControls();
-        return true;
-        break;
-      case CONTROL_BTN_DOWN:
-        g_dsSettings.pixelShaderList->MoveDown(index);
-        UpdateControls();
-        return true;
-        break;
-      }
-
-      CGUIRadioButtonControl *pRadio = (CGUIRadioButtonControl *) grp->GetControl(CONTROL_RADIOBUTTON);
-      if (!pRadio)
-        return true;
-      
-      g_dsSettings.pixelShaderList->GetPixelShaders()[index]->SetEnabled( pRadio->IsSelected() );
-      g_dsSettings.pixelShaderList->UpdateActivatedList();
+    case CONTROL_BTN_UP:
+      g_dsSettings.pixelShaderList->MoveUp(index);
       UpdateControls();
-
+      return true;
+      break;
+    case CONTROL_BTN_DOWN:
+      g_dsSettings.pixelShaderList->MoveDown(index);
+      UpdateControls();
+      return true;
+      break;
     }
+
+    CGUIRadioButtonControl *pRadio = (CGUIRadioButtonControl *)grp->GetControl(CONTROL_RADIOBUTTON);
+    if (!pRadio)
+      return true;
+
+    g_dsSettings.pixelShaderList->GetPixelShaders()[index]->SetEnabled(pRadio->IsSelected());
+    g_dsSettings.pixelShaderList->UpdateActivatedList();
+    UpdateControls();
+
+  }
     break;
-default:
+  default:
     break;
   }
 
@@ -115,13 +115,13 @@ void CGUIDialogShaderList::UpdateControls()
 {
   CPixelShaderList* psList = g_dsSettings.pixelShaderList.get();
 
-  if (! psList->GetPixelShaders().empty())
+  if (!psList->GetPixelShaders().empty())
     SET_CONTROL_HIDDEN(CONTROL_LBL_NOSHADER);
   else
     return;
 
-  m_mainGrp = (CGUIListGroup *) GetControl(CONTROL_AREA);
-  CGUIListGroup * defaultGrp = (CGUIListGroup *) GetControl(CONTROL_DEFAULT_GRP);
+  m_mainGrp = (CGUIListGroup *)GetControl(CONTROL_AREA);
+  CGUIListGroup * defaultGrp = (CGUIListGroup *)GetControl(CONTROL_DEFAULT_GRP);
   if (!defaultGrp || !m_mainGrp)
     return;
 
@@ -132,7 +132,7 @@ void CGUIDialogShaderList::UpdateControls()
 
   PixelShaderVector& psVector = psList->GetPixelShaders();
   CGUIListGroup * pControl = NULL;
-  
+
   uint16_t index = 0;
   int right, up, down;
 
@@ -152,7 +152,7 @@ void CGUIDialogShaderList::UpdateControls()
     CExternalPixelShader* ps = (*it);
 
     pControl = new CGUIListGroup(*defaultGrp);
-    if (! pControl)
+    if (!pControl)
       continue;
 
     pControl->SetID(CONTROL_START_IDS + index);
@@ -173,21 +173,21 @@ void CGUIDialogShaderList::UpdateControls()
     }
     pControl->SetNavigation(up, down, 60, 60);
 
-    CGUIRadioButtonControl* pRadio = (CGUIRadioButtonControl *) pControl->GetControl(CONTROL_RADIOBUTTON);
-    if (! pRadio)
+    CGUIRadioButtonControl* pRadio = (CGUIRadioButtonControl *)pControl->GetControl(CONTROL_RADIOBUTTON);
+    if (!pRadio)
       return;
 
     pRadio->SetLabel(ps->GetName());
     pRadio->SetID(pRadio->GetID() + index);
-    pRadio->SetSelected( ps->IsEnabled() );
+    pRadio->SetSelected(ps->IsEnabled());
 
-    CGUIButtonControl * upBtn = (CGUIButtonControl *) pControl->GetControl(CONTROL_BTN_UP);
+    CGUIButtonControl * upBtn = (CGUIButtonControl *)pControl->GetControl(CONTROL_BTN_UP);
     if (!upBtn)
       continue;
 
     upBtn->SetID(upBtn->GetID() + index);
-    if (isFirst || ! ps->IsEnabled())
-    {      
+    if (isFirst || !ps->IsEnabled())
+    {
       upBtn->SetVisible(false);
       if (isFirst)
       {
@@ -196,15 +196,15 @@ void CGUIDialogShaderList::UpdateControls()
       }
     }
 
-    CGUIButtonControl *downBtn = (CGUIButtonControl *) pControl->GetControl(CONTROL_BTN_DOWN);
+    CGUIButtonControl *downBtn = (CGUIButtonControl *)pControl->GetControl(CONTROL_BTN_DOWN);
     if (!downBtn)
       continue;
 
     downBtn->SetID(downBtn->GetID() + index);
 
     PixelShaderVector::iterator it2 = it + 1;
-    if (! ps->IsEnabled() || (it2 != psVector.end() 
-                          && !(*it2)->IsEnabled()))
+    if (!ps->IsEnabled() || (it2 != psVector.end()
+      && !(*it2)->IsEnabled()))
       downBtn->SetVisible(false); // Only visible if pixel shader is enabled
 
     if (upBtn->IsVisible())

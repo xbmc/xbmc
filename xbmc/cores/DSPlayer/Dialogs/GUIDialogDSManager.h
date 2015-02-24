@@ -5,7 +5,7 @@
  *      http://xbmc.org
  *
  *      Copyright (C) 2014-2015 Aracnoz
- *      http://github.com/aracnoz/xbmc 
+ *      http://github.com/aracnoz/xbmc
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ enum ConfigType {
   BOOLATTR,
   FILTER,
   EXTRAFILTER,
-  SHADER, 
+  SHADER,
   OSDGUID,
   FILTERSYSTEM
 };
@@ -80,11 +80,11 @@ public:
   }
 
   void SetisNew(bool b) { m_isNew = b; };
-  bool GetisNew() { return m_isNew;  };
+  bool GetisNew() { return m_isNew; };
   void SetConfigIndex(int index)  { m_configIndex = index; };
   int GetConfigIndex() { return m_configIndex; };
 
-  void InitConfig(std::vector<DSConfigList *> &configList,  ConfigType type, CStdString strSetting, int label, CStdString strAttr = "", CStdString strNodeName = "", StringSettingOptionsFiller filler = NULL, int subNode = 0, CStdString strNodeList = "");
+  void InitConfig(std::vector<DSConfigList *> &configList, ConfigType type, CStdString strSetting, int label, CStdString strAttr = "", CStdString strNodeName = "", StringSettingOptionsFiller filler = NULL, int subNode = 0, CStdString strNodeList = "");
   void ResetValue(std::vector<DSConfigList *>& configList);
   void LoadDsXML(xmlType type, TiXmlElement* &pNode, bool forceCreate = false);
   void SaveDsXML(xmlType type);

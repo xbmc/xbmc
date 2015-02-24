@@ -48,7 +48,7 @@ struct SChapterInfos
 /** DSPlayer Chapters Manager.
 
   Singleton class handling chapters management
- */
+  */
 class CChaptersManager
 {
 public:
@@ -109,5 +109,5 @@ private:
   /// Pointer to the IAMExtendedSeeking interface
   Com::SmartQIPtr<IAMExtendedSeeking, &IID_IAMExtendedSeeking> m_pIAMExtendedSeeking;
 
-   CCriticalSection m_lock;
+  CCriticalSection m_lock;
 };

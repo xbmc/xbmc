@@ -5,7 +5,7 @@
  *      http://xbmc.org
  *
  *      Copyright (C) 2014-2015 Aracnoz
- *      http://github.com/aracnoz/xbmc 
+ *      http://github.com/aracnoz/xbmc
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

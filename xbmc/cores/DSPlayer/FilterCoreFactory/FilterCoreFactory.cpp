@@ -28,10 +28,10 @@
 
 InternalFilters internalFilters[] =
 {
-  {"internal_archivesource", "Internal archive source", &InternalFilterConstructor<CXBMCASyncReader>}
+  { "internal_archivesource", "Internal archive source", &InternalFilterConstructor < CXBMCASyncReader > }
 };
 
-HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
+HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig)
 {
   if (!pConfig || strcmpi(pConfig->Value(), "mediasconfig") != 0)
   {
@@ -54,7 +54,7 @@ HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
+HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig)
 {
   if (!pConfig || strcmpi(pConfig->Value(), "filtersconfig") != 0)
   {
@@ -79,7 +79,7 @@ HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
   return S_OK;
 }
 
-CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( const CFileItem& pFileItem, bool checkUrl /*= false*/ )
+CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule(const CFileItem& pFileItem, bool checkUrl /*= false*/)
 {
   for (ULONG i = 0; i < m_selecRules.size(); i++)
   {
@@ -90,7 +90,7 @@ CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( co
   return NULL;
 }
 
-HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdString& filter )
+HRESULT CFilterCoreFactory::GetSourceFilter(const CFileItem& pFileItem, CStdString& filter)
 {
   filter = "";
 
@@ -103,7 +103,7 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
   }
 
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem, true);
-  if (! pRule)
+  if (!pRule)
   {
     if (pFileItem.IsInternetStream())
     {
@@ -123,11 +123,11 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdString& filter )
+HRESULT CFilterCoreFactory::GetSplitterFilter(const CFileItem& pFileItem, CStdString& filter)
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   std::vector<CStdString> foo;
@@ -140,11 +140,11 @@ HRESULT CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdS
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, CStdString& filter )
+HRESULT CFilterCoreFactory::GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter)
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   std::vector<CStdString> foo;
@@ -157,11 +157,11 @@ HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, 
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/)
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   std::vector<CStdString> foo;
@@ -174,11 +174,11 @@ HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdStri
   return S_OK;;
 }
 
-HRESULT CFilterCoreFactory::GetVideoFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetVideoFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/)
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   std::vector<CStdString> foo;
@@ -191,11 +191,11 @@ HRESULT CFilterCoreFactory::GetVideoFilter( const CFileItem& pFileItem, CStdStri
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetSubsFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetSubsFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/)
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   std::vector<CStdString> foo;
@@ -208,11 +208,11 @@ HRESULT CFilterCoreFactory::GetSubsFilter( const CFileItem& pFileItem, CStdStrin
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva /*= false*/)
 {
   filters.clear();
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   pRule->GetExtraFilters(pFileItem, filters, dxva);
@@ -223,17 +223,17 @@ HRESULT CFilterCoreFactory::GetShaders(const CFileItem& pFileItem, std::vector<u
 {
   shaders.clear();
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
+  if (!pRule)
     return E_FAIL;
 
   pRule->GetShaders(pFileItem, shaders, dxva);
   return S_OK;
 }
 
-CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, bool showError )
+CFGFilter* CFilterCoreFactory::GetFilterFromName(const CStdString& _filter, bool showError)
 {
   CStdString filter = _filter;
-  
+
   // Right now we only have the rar source filter
   for (int i = 0; i < countof(internalFilters); i++)
   {
@@ -244,7 +244,7 @@ CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, boo
   }
 
   std::vector<CFGFilterFile *>::const_iterator it = std::find_if(m_Filters.begin(),
-    m_Filters.end(), std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filter) );
+    m_Filters.end(), std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filter));
 
   if (it == m_Filters.end())
   {

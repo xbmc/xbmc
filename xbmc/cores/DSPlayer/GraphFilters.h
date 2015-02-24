@@ -43,7 +43,7 @@ struct SFilterInfos
 
   ~SFilterInfos()
   {
-	  SAFE_DELETE(pData);
+    SAFE_DELETE(pData);
   }
 
   void Clear()
@@ -57,10 +57,10 @@ struct SFilterInfos
 
   void SetFilterInfo(IBaseFilter * pBF)
   {
-	  CStdString filterName;
-	  g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
-	  osdname = filterName;
-	  guid = GetCLSID(pBF);
+    CStdString filterName;
+    g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
+    osdname = filterName;
+    guid = GetCLSID(pBF);
   }
 
   Com::SmartPtr<IBaseFilter> pBF; ///< Pointer to the IBaseFilter interface. May be NULL
@@ -71,7 +71,7 @@ struct SFilterInfos
 };
 
 /// Specific informations about the video renderer filter
-struct SVideoRendererFilterInfos: SFilterInfos
+struct SVideoRendererFilterInfos : SFilterInfos
 {
   SVideoRendererFilterInfos()
     : SFilterInfos()
@@ -107,9 +107,9 @@ struct SDVDFilters
 
 enum DIRECTSHOW_RENDERER
 {
-    DIRECTSHOW_RENDERER_VMR9 = 1,
-    DIRECTSHOW_RENDERER_EVR = 2,
-    DIRECTSHOW_RENDERER_UNDEF = 3
+  DIRECTSHOW_RENDERER_VMR9 = 1,
+  DIRECTSHOW_RENDERER_EVR = 2,
+  DIRECTSHOW_RENDERER_UNDEF = 3
 };
 
 /** @brief Centralize graph filters management
@@ -154,7 +154,7 @@ public:
   SDVDFilters DVD;
 
   /// @return The current renderer type (EVR or VMR9)
-  DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }  
+  DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
 
   /// @return True if using DXVA, false otherwise
   bool IsUsingDXVADecoder() { return m_UsingDXVADecoder; }
@@ -163,11 +163,11 @@ public:
   bool IsDVD() { return m_isDVD; }
 
   void SetIsUsingDXVADecoder(bool val) { m_UsingDXVADecoder = val; }
-  void SetIsDVD(bool val) {  m_isDVD = val; }
+  void SetIsDVD(bool val) { m_isDVD = val; }
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
-  bool HasSubFilter() { return m_hsubfilter;}
-  void SetHasSubFilter(bool b) { m_hsubfilter = b;}
+  bool HasSubFilter() { return m_hsubfilter; }
+  void SetHasSubFilter(bool b) { m_hsubfilter = b; }
 
 private:
   CGraphFilters();

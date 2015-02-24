@@ -59,10 +59,10 @@
 [uuid("5711A92E-913E-45A5-9714-8481887644E3")]
 interface IBdStreamSelect : public IUnknown
 {
-	STDMETHOD_(UINT, GetTitlesCount)() PURE;
-	STDMETHOD_(UINT, GetSelTitle)() PURE;
-	STDMETHOD(SetSelTitle)(UINT idx) PURE;
-	STDMETHOD(GetTitleInfo)(UINT idx, LPUINT pidx, REFERENCE_TIME *prtDuration) PURE;
+  STDMETHOD_(UINT, GetTitlesCount)() PURE;
+  STDMETHOD_(UINT, GetSelTitle)() PURE;
+  STDMETHOD(SetSelTitle)(UINT idx) PURE;
+  STDMETHOD(GetTitleInfo)(UINT idx, LPUINT pidx, REFERENCE_TIME *prtDuration) PURE;
 };
 
 class CDSStreamDetail
@@ -84,7 +84,7 @@ public:
 //  CStdString codec; ///< Stream codec ID
 
 /// Informations about an audio stream
-class CDSStreamDetailAudio: public CDSStreamDetail, public CStreamDetailAudio
+class CDSStreamDetailAudio : public CDSStreamDetail, public CStreamDetailAudio
 {
 public:
   CDSStreamDetailAudio();
@@ -95,7 +95,7 @@ public:
 };
 
 /// Informations about a video stream
-struct CDSStreamDetailVideo: public CDSStreamDetail, public CStreamDetailVideo
+struct CDSStreamDetailVideo : public CDSStreamDetail, public CStreamDetailVideo
 {
 public:
   CStdString              m_strCodecName;
@@ -113,7 +113,7 @@ enum SelectSubType {
   SELECT_INTERNAL_SUB
 };
 
-class CDSStreamDetailSubtitle: public CDSStreamDetail, public CStreamDetailSubtitle
+class CDSStreamDetailSubtitle : public CDSStreamDetail, public CStreamDetailSubtitle
 {
 public:
   CDSStreamDetailSubtitle(SubtitleType type = INTERNAL);
@@ -126,7 +126,7 @@ public:
   const SubtitleType    m_subType;
 };
 
-class CDSStreamDetailSubfilter: public CDSStreamDetail, public CStreamDetailSubtitle
+class CDSStreamDetailSubfilter : public CDSStreamDetail, public CStreamDetailSubtitle
 {
 public:
   CDSStreamDetailSubfilter(SubtitleType type);
@@ -140,20 +140,20 @@ public:
 };
 
 
-struct CDSStreamDetailEdition: public CDSStreamDetail, public CStreamDetailEditon
+struct CDSStreamDetailEdition : public CDSStreamDetail, public CStreamDetailEditon
 {
 public:
-	
-	REFERENCE_TIME      m_rtDuration;
-	CDSStreamDetailEdition()
-		: m_rtDuration(_I64_MIN)
-	{
 
-	};
+  REFERENCE_TIME      m_rtDuration;
+  CDSStreamDetailEdition()
+    : m_rtDuration(_I64_MIN)
+  {
+
+  };
 };
 
 /// Informations about an external subtitle
-class CDSStreamDetailSubtitleExternal: public CDSStreamDetailSubtitle
+class CDSStreamDetailSubtitleExternal : public CDSStreamDetailSubtitle
 {
 public:
 
@@ -195,13 +195,13 @@ public:
    * @remarks If the IAMStreamSelect interface wasn't found, the graph must be stopped and restarted in order to change the audio stream
    */
   void SetAudioStream(int iStream);
-    /// @return Audio streams count
+  /// @return Audio streams count
 
   int  GetSubfilterCount();
   int  GetSubfilter();
   void GetSubfilterName(int iStream, CStdString &strStreamName);
   bool GetSubfilterVisible();
-  void SetSubfilterVisible( bool bVisible );
+  void SetSubfilterVisible(bool bVisible);
   void SetSubfilter(int iStream);
   void SelectBestSubtitle();
   int AddSubtitle(const std::string& subFilePath);
@@ -216,7 +216,7 @@ public:
   int  GetEdition();
   void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt);
   void SetEdition(int iEdition);
-  bool IsMatroskaEditions(){ return m_mkveditions;};
+  bool IsMatroskaEditions(){ return m_mkveditions; };
 
   /** Wait until the graph is ready. If a stream is being changed, the
    * function waits. Otherwise, simply returns.
@@ -237,7 +237,7 @@ public:
   CStdString GetAudioCodecDisplayName(int istream) { return (istream == -1) ? "" : m_audioStreams[istream]->m_strCodecName; }
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
-  
+
   /// Initialize streams from the current media file
   void LoadStreams();
 
@@ -249,7 +249,7 @@ public:
   CStdString GetVideoCodecName();
   /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
   CStdString GetVideoCodecDisplayName() { return m_videoStream.m_strCodecName; }
-  
+
   /** Initialize the manager
    * @return True if the manager is initialized, false otherwise
    */
@@ -317,7 +317,7 @@ class CSubtitleManager
 public:
   CSubtitleManager(CStreamsManager* pStreamManager);
   ~CSubtitleManager();
-  
+
   void Initialize();
   void Unload();
   bool Ready();
@@ -349,7 +349,7 @@ public:
   /** Set subtitle visibility
    * @param[in] bVisible Subtitle visibility
    */
-  void SetSubtitleVisible( bool bVisible );
+  void SetSubtitleVisible(bool bVisible);
   /** Set subtitle delay
    * @param in fValue Subtitle delay (in ms)
    */
@@ -360,7 +360,7 @@ public:
    * @param[in] subFilePath Path of the subtitle
    * @return -1 if the function fails. Otherwise, returns the index of the added subtitle
    * @remarks The subtitle will be automatically flagged as external
-  */
+   */
   int AddSubtitle(const std::string& subFilePath);
 
   void SetTime(REFERENCE_TIME rtNow);
