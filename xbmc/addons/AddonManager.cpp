@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/SystemInfo.h"
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
@@ -691,6 +692,9 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 
 bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 {
+  bool platformSupported = true; // defaults to true
+  bool archSupported = true; // defaults to true
+
   if (!plugin || !plugin->num_extensions)
     return false;
   const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
@@ -700,34 +704,86 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   vector<std::string> platforms;
   if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
   {
+    // tag is found so from here on we assume non-supported platforum until we find a match
+    platformSupported = false;
+
     for (vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
     {
       if (*platform == "all")
-        return true;
+        platformSupported = true;
+      else
+      {
 #if defined(TARGET_ANDROID)
-      if (*platform == "android")
+        if (*platform == "android")
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-      if (*platform == "linux")
+        if (*platform == "linux")
 #elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-      if (*platform == "wingl")
+        if (*platform == "wingl")
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-      if (*platform == "windx")
+        if (*platform == "windx")
 #elif defined(TARGET_DARWIN_OSX)
-// Remove this after Frodo and add an architecture filter
-// in addition to platform.
+// Remove this after Helix - its covered by arch filter below
 #if defined(__x86_64__)
-      if (*platform == "osx64" || *platform == "osx")
+        if (*platform == "osx64" || *platform == "osx")
 #else
-      if (*platform == "osx32" || *platform == "osx")
+        if (*platform == "osx32" || *platform == "osx")
 #endif
 #elif defined(TARGET_DARWIN_IOS)
-      if (*platform == "ios")
+        if (*platform == "ios")
 #endif
-        return true;
+          platformSupported = true;
+      }
+
+      if (platformSupported)// we don't need to check the others we are compatible platform wise
+        break;
     }
-    return false; // no <platform> works for us
   }
-  return true; // assume no <platform> is equivalent to <platform>all</platform>
+  
+  // check for specific architectures
+  vector<std::string> architectures;
+  if (CAddonMgr::Get().GetExtList(metadata->configuration, "architecture", architectures))
+  {
+    // tag is found so from here on we assume non-supported architecture until we find a match
+    archSupported = false;
+    for (vector<std::string>::const_iterator architecture = architectures.begin(); architecture != architectures.end(); ++architecture)
+    {
+      if (*architecture == "all")
+        archSupported = true;
+      else
+      {
+        if (*architecture == "x86_32")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_X86) && (g_sysinfo.GetKernelBitness() == 32);
+        }
+        else if (*architecture == "x86_64")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_X86) && (g_sysinfo.GetKernelBitness() == 64);
+        }
+        else if (*architecture == "arm_32")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_ARM) && (g_sysinfo.GetKernelBitness() == 32);
+        }
+        else if (*architecture == "arm_64")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_ARM) && (g_sysinfo.GetKernelBitness() == 64);
+        }
+        else if (*architecture == "mips_32")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_MIPS) && (g_sysinfo.GetKernelBitness() == 32);
+        }
+        else if (*architecture == "mips_64")
+        {
+          archSupported = (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_MIPS) && (g_sysinfo.GetKernelBitness() == 64);
+        }
+      }
+
+      if (archSupported)// we don't need to check the others we are compatible architecture wise
+        break;
+    }
+  }
+
+  // we support this addon if platform and arch are supported
+  return platformSupported && archSupported;
 }
 
 const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
