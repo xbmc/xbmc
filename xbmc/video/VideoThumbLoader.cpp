@@ -77,7 +77,8 @@ bool CThumbExtractor::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CThumbExtractor* jobExtract = dynamic_cast<const CThumbExtractor*>(job);
-    if (jobExtract && jobExtract->m_listpath == m_listpath)
+    if (jobExtract && jobExtract->m_listpath == m_listpath
+                   && jobExtract->m_target == m_target)
       return true;
   }
   return false;
