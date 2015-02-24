@@ -43,13 +43,14 @@ public:
   bool GetProgress(const std::string &addonID, unsigned int &percent) const;
   bool Cancel(const std::string &addonID);
 
-  /*! \brief Prompt the user as to whether they wish to install an addon.
+  /*! \brief Installs the addon while showing a modal progress dialog
    \param addonID the addon ID of the item to install.
    \param addon [out] the installed addon for later use.
+   \param promptForInstall Whether or not to prompt the user before installing the addon.
    \return true on successful install, false otherwise.
    \sa Install
    */
-  bool PromptForInstall(const std::string &addonID, ADDON::AddonPtr &addon);
+  bool InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall = true);
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install

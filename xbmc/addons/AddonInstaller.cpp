@@ -161,7 +161,7 @@ bool CAddonInstaller::Cancel(const std::string &addonID)
   return false;
 }
 
-bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &addon)
+bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall /* = true */)
 {
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
@@ -176,9 +176,11 @@ bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &add
   database.Open();
   if (database.GetAddon(addonID, addon))
   { // yes - ask user if they want it installed
-    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
+    if (promptForInstall &&
+        !CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
                                           addon->Name().c_str(), g_localizeStrings.Get(24101)))
       return false;
+
     if (Install(addonID, true))
     {
       CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -190,6 +192,7 @@ bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &add
         progress->SetLine(2, "");
         progress->SetPercentage(0);
         progress->StartModal();
+
         while (true)
         {
           progress->Progress();
@@ -199,12 +202,15 @@ bool CAddonInstaller::PromptForInstall(const std::string &addonID, AddonPtr &add
             Cancel(addonID);
             break;
           }
+
           if (!GetProgress(addonID, percent))
             break;
+
           progress->SetPercentage(percent);
         }
         progress->Close();
       }
+
       return CAddonMgr::Get().GetAddon(addonID, addon);
     }
   }
