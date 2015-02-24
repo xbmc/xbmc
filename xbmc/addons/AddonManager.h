@@ -129,6 +129,33 @@ namespace ADDON
      */
     bool IsAddonDisabled(const std::string& ID);
 
+    /* \brief Checks whether an addon can be disabled via DisableAddon.
+     \param ID id of the addon
+     \sa DisableAddon
+     */
+    bool CanAddonBeDisabled(const std::string& ID);
+
+    /* \brief Checks whether an addon is installed.
+     \param ID id of the addon
+    */
+    bool IsAddonInstalled(const std::string& ID);
+
+    /* \brief Checks whether an addon is installed.
+     \param ID id of the addon
+     \param addon Installed addon
+     */
+    bool IsAddonInstalled(const std::string& ID, AddonPtr& addon);
+
+    /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
+     \param ID id of the addon
+     */
+    bool CanAddonBeInstalled(const std::string& ID);
+
+    /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
+    \param addon addon to be checked
+    */
+    bool CanAddonBeInstalled(const AddonPtr& addon);
+
     /* libcpluff */
     std::string GetExtValue(cp_cfg_element_t *base, const char *path);
 

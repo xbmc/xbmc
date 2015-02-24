@@ -621,6 +621,82 @@ bool CAddonMgr::IsAddonDisabled(const std::string& ID)
   return ret;
 }
 
+bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
+{
+  if (ID.empty())
+    return false;
+
+  CSingleLock lock(m_critSection);
+  // can't disable an already disabled addon
+  if (IsAddonDisabled(ID))
+    return false;
+
+  AddonPtr localAddon;
+  // can't disable an addon that isn't installed
+  if (!IsAddonInstalled(ID, localAddon))
+    return false;
+
+  // can't disable an addon that is in use
+  if (localAddon->IsInUse())
+    return false;
+
+  // installed PVR addons can always be disabled
+  if (localAddon->Type() == ADDON_PVRDLL)
+    return true;
+
+  std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  // can't disable system addons
+  if (StringUtils::StartsWith(localAddon->Path(), systemAddonsPath))
+    return false;
+
+  return true;
+}
+
+bool CAddonMgr::IsAddonInstalled(const std::string& ID)
+{
+  AddonPtr tmp;
+  return IsAddonInstalled(ID, tmp);
+}
+
+bool CAddonMgr::IsAddonInstalled(const std::string& ID, AddonPtr& addon)
+{
+  return GetAddon(ID, addon);
+}
+
+bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)
+{
+  if (ID.empty())
+    return false;
+
+  CSingleLock lock(m_critSection);
+  // can't install already installed addon
+  if (IsAddonInstalled(ID))
+    return false;
+
+  // can't install broken addons
+  if (!m_database.IsAddonBroken(ID).empty())
+    return false;
+
+  return true;
+}
+
+bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
+{
+  if (addon == NULL)
+    return false;
+
+  CSingleLock lock(m_critSection);
+  // can't install already installed addon
+  if (IsAddonInstalled(addon->ID()))
+    return false;
+
+  // can't install broken addons
+  if (!addon->Props().broken.empty())
+    return false;
+
+  return true;
+}
+
 std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
 {
   if (!root)
