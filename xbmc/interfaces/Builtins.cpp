@@ -853,10 +853,12 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "reloadskin")
   {
     //  Reload the skin
+    g_windowManager.CloseDialogs(true);
     g_application.ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
   }
   else if (execute == "unloadskin")
   {
+    g_windowManager.CloseDialogs(true);
     g_application.UnloadSkin(true); // we're reloading the skin after this
   }
   else if (execute == "refreshrss")
