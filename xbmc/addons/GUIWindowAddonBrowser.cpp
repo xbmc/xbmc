@@ -379,7 +379,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
                       items[i]->GetProperty("Addon.Language"), "en") ||
             !FilterVar(CSettings::Get().GetBool("general.addonforeignfilter"),
                       items[i]->GetProperty("Addon.Language"),
-                      g_langInfo.GetLanguageLocale()))
+                      g_langInfo.GetLanguageLocale(true)))
         {
           i++;
         }
