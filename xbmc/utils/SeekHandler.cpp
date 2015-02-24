@@ -19,6 +19,8 @@
  */
 
 #include "SeekHandler.h"
+
+#include <stdlib.h>
 #include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
 #include "Application.h"
@@ -93,26 +95,25 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
 {
   m_seekStep = m_seekStep + (forward ? 1 : -1);
 
-  std::vector<int> forwardSeekSteps(m_forwardSeekSteps.at(type));
-  std::vector<int> backwardSeekSteps(m_backwardSeekSteps.at(type));
+  if (m_seekStep == 0)
+    return 0;
+
+  std::vector<int> seekSteps(m_seekStep > 0 ? m_forwardSeekSteps.at(type) : m_backwardSeekSteps.at(type));
+
+  if (seekSteps.empty())
+  {
+    CLog::Log(LOGERROR, "SeekHandler - %s - No %s %s seek steps configured.", __FUNCTION__,
+              (type == SeekType::SEEK_TYPE_VIDEO ? "video" : "music"), (m_seekStep > 0 ? "forward" : "backward"));
+    return 0;
+  }
 
   int seconds = 0;
-  if (m_seekStep > 0)
-  {
-    // when exceeding the selected amount of steps repeat/sum up the last step size
-    if ((size_t)m_seekStep <= forwardSeekSteps.size())
-      seconds = forwardSeekSteps.at(m_seekStep - 1);
-    else
-      seconds = forwardSeekSteps.back() * (m_seekStep - forwardSeekSteps.size() + 1);
-  }
-  else if (m_seekStep < 0)
-  {
-    // when exceeding the selected amount of steps repeat/sum up the last step size
-    if ((size_t)m_seekStep*-1 <= backwardSeekSteps.size())
-      seconds = backwardSeekSteps.at((m_seekStep*-1) - 1);
-    else
-      seconds = backwardSeekSteps.back() * ((m_seekStep*-1) - backwardSeekSteps.size() + 1);
-  }
+
+  // when exceeding the selected amount of steps repeat/sum up the last step size
+  if ((size_t)abs(m_seekStep) <= seekSteps.size())
+    seconds = seekSteps.at(abs(m_seekStep) - 1);
+  else
+    seconds = seekSteps.back() * (abs(m_seekStep) - seekSteps.size() + 1);
 
   return seconds;
 }
@@ -155,14 +156,23 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     }
     else
     {
-      float percentPerSecond = 0.0f;
-      if (g_infoManager.GetTotalPlayTime())
-        percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
-
       int seekSeconds = GetSeekSeconds(forward, type);
-      g_infoManager.SetSeekStepSize(seekSeconds);
+      if (seekSeconds != 0)
+      {
+        float percentPerSecond = 0.0f;
+        if (g_infoManager.GetTotalPlayTime())
+          percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
 
-      m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
+        m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
+
+        g_infoManager.SetSeekStepSize(seekSeconds);
+      }
+      else
+      {
+        // nothing to do, abort seeking
+        m_requireSeek = false;
+        g_infoManager.SetSeeking(false);
+      }
     }
 
     if (m_percent > 100.0f) m_percent = 100.0f;
