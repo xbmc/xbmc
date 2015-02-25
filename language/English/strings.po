@@ -4358,7 +4358,7 @@ msgid "Scripts"
 msgstr ""
 
 msgctxt "#10021"
-msgid "Web Browser"
+msgid "Settings - TV"
 msgstr ""
 
 #empty strings from id 10022 to 10024
