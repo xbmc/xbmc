@@ -1819,6 +1819,7 @@ void CDVDPlayer::HandlePlaySpeed()
         {
           CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
           m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
+          m_SpeedState.needsync = true;
           int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 500000.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true, false));
         }
@@ -2474,10 +2475,11 @@ void CDVDPlayer::HandleMessages()
           m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
           CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CDVDPlayer", __FUNCTION__, speed, m_playSpeed);
         }
-        else if (m_playSpeed < 0 && speed >= 0)
+        else if ((speed == DVD_PLAYSPEED_NORMAL) && m_SpeedState.needsync)
         {
           int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, true, true, false, false, true));
+          m_SpeedState.needsync = false;
         }
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
@@ -4156,6 +4158,9 @@ int CDVDPlayer::GetSourceBitrate()
 
 void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
+  if (index == CURRENT_STREAM)
+    index = GetAudioStream();
+
   if (index < 0 || index > GetAudioStreamCount() - 1 )
     return;
 

@@ -29,6 +29,8 @@
 #include "utils/StdString.h"
 #endif
 
+#define CURRENT_STREAM -1
+
 struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;

@@ -341,8 +341,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     SPlayerAudioStreamInfo info;
     std::string strLanguage;
 
-    int currentAudio = g_application.m_pPlayer->GetAudioStream();
-    g_application.m_pPlayer->GetAudioStreamInfo(currentAudio, info);
+    g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
 
     if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
       strLanguage = "Unknown";

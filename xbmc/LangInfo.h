@@ -76,7 +76,11 @@ public:
   const std::string& GetTimeZone() const;
 
   const std::string& GetRegionLocale() const;
-  const std::string GetLanguageLocale(bool twochar = false) const;
+
+  /*!
+   \brief Returns the two character ISO 639-1 language code of the current language.
+   */
+  const std::string& GetLanguageLocale() const;
 
   bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 

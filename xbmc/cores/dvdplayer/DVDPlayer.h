@@ -412,6 +412,7 @@ protected:
     int64_t lasttime;
     int lastseekpts;
     double  lastabstime;
+    bool needsync;
   } m_SpeedState;
 
   int m_errorCount;

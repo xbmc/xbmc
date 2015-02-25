@@ -587,8 +587,9 @@ void CDVDPlayerAudio::Process()
       // add any packets play
       packetadded = OutputPacket(audioframe);
 
-      // we are not running until something is cached in output device
-      if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0)
+      // we are not running until something is cached in output device and
+      // we still have a minimum level in the message queue
+      if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0 && m_messageQueue.GetLevel() > 5)
         m_stalled = false;
     }
 
@@ -657,6 +658,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_syncclock = false;
     m_errors.Flush();
+    m_integral = 0.0;
   }
 
   //check if measured error for 2 seconds

@@ -438,14 +438,17 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
 
   RENDER_STEREO_MODE stereo_mode = m_stereoMode;
 
-  // if the new mode is an actual stereo mode, switch to that
-  // if the old mode was an actual stereo mode, switch to no 3d mode
+  // if the new resolution is an actual stereo mode, switch to that
+  // if the old resolution was an actual stereo mode and renderer is still in old 3D mode, switch to no 3d mode
   if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DTB)
     stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
   else if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
     stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
-  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DSBS) != 0
-        || (info_last.dwFlags & D3DPRESENTFLAG_MODE3DTB)  != 0)
+  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DTB)
+        && m_stereoMode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+    stereo_mode = RENDER_STEREO_MODE_OFF;
+  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+        && m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     stereo_mode = RENDER_STEREO_MODE_OFF;
 
   if(stereo_mode != m_stereoMode)
