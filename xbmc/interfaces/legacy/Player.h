@@ -320,6 +320,12 @@ namespace XBMCAddon
        */
       std::vector<String>* getAvailableAudioStreams();
 
+      // Player_getAvailableAudioStreamsChannels
+      /**
+      * getAvailableAudioStreamsChannels() -- get Audio stream Channels Number
+      */
+      std::vector<String>* getAvailableAudioStreamsChannels();
+
       /**
        * setAudioStream(stream) -- set Audio Stream.
        * 

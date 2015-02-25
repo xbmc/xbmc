@@ -488,6 +488,24 @@ namespace XBMCAddon
       return NULL;
     } 
 
+    std::vector<String>* Player::getAvailableAudioStreamsChannels()
+    {
+      if (g_application.m_pPlayer->HasPlayer())
+      {
+        int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
+        std::vector<String>* ret = new std::vector<String>(streamCount);
+        for (int iStream = 0; iStream < streamCount; iStream++)
+        {
+          SPlayerAudioStreamInfo info;
+          g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
+          (*ret)[iStream] = std::to_string(info.channels);
+        }
+        return ret;
+      }
+
+      return NULL;
+    }
+
     void Player::setAudioStream(int iStream)
     {
       if (g_application.m_pPlayer->HasPlayer())
