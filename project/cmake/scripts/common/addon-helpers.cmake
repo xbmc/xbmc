@@ -60,8 +60,16 @@ macro (build_addon target prefix libs)
       # is changed within Visual Studio)
       string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" dll_location "${dll_location}")
 
+      # install the generated DLL file
       INSTALL(PROGRAMS ${dll_location} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})
+
+      IF(CMAKE_BUILD_TYPE MATCHES Debug)
+        # for debug builds also install the PDB file
+        get_filename_component(dll_directory ${dll_location} DIRECTORY)
+        INSTALL(FILES ${dll_directory}/${target}.pdb DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      ENDIF()
     ELSE(WIN32)
       INSTALL(TARGETS ${target} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})
