@@ -4,6 +4,7 @@ NDK_VERSION=${NDK_VERSION:-"Default"}
 Configuration=${Configuration:-"Default"}
 XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
+FAILED_BUILD_FILENAME=".last_failed_revision"
 #TARBALLS ENV-VAR is only used by android scripts atm
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 
@@ -126,6 +127,16 @@ function tagSuccessFulBuild ()
   # tag last successful build with revisions of the given dir
   # needs to match the checks in function getBuildHash
   echo "$(getBuildHash $pathToTag)" > $pathToTag/$PATH_CHANGE_REV_FILENAME
+}
+
+#param1 path to be tagged with hash
+function tagFailedBuild ()
+{
+  local pathToTag
+  pathToTag="$1"
+  # tag last failed build with revisions of the given dir
+  # needs to match the checks in function getBuildHash
+  echo "$(getBuildHash $pathToTag)" > $pathToTag/$FAILED_BUILD_FILENAME
 }
 
 function getBranchName ()
