@@ -182,7 +182,6 @@ void CStreamsManager::SetAudioStream(int iStream)
 
   if (m_pIAMStreamSelect)
   {
-
     m_audioStreams[disableIndex]->connected = false;
     m_audioStreams[disableIndex]->flags = 0;
 
@@ -190,7 +189,7 @@ void CStreamsManager::SetAudioStream(int iStream)
     {
       m_audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_audioStreams[enableIndex]->connected = true;
-      CLog::Log(LOGDEBUG, "%s Successfully selected audio stream", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s Successfully selected audio stream index: %i", __FUNCTION__, m_audioStreams[enableIndex]->IAMStreamSelect_Index);
     }
   }
   else {
@@ -391,6 +390,7 @@ void CStreamsManager::SetEdition(int iEdition)
   if (m_pIAMStreamSelect)
   {
     m_editionStreams[disableIndex]->flags = 0;
+    m_editionStreams[disableIndex]->connected = false;
 
     if (SUCCEEDED(m_pIAMStreamSelect->Enable(m_editionStreams[enableIndex]->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE)))
     {
@@ -402,7 +402,8 @@ void CStreamsManager::SetEdition(int iEdition)
       g_dsGraph->UpdateTotalTime();
 
       m_editionStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-      CLog::Log(LOGDEBUG, "%s Successfully selected edition", __FUNCTION__);
+      m_editionStreams[enableIndex]->connected = true;
+      CLog::Log(LOGDEBUG, "%s Successfully selected edition - index: %i", __FUNCTION__, m_editionStreams[enableIndex]->IAMStreamSelect_Index);
     }
   }
 }
@@ -450,7 +451,8 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     if (flags & AMSTREAMSELECTINFO_ENABLED)
       pS.connected = true;
 
-    MediaTypeToStreamDetail(mediaType, (CStreamDetail&)(*infos));
+    if (!m_mkveditions)
+      MediaTypeToStreamDetail(mediaType, (CStreamDetail&)(*infos));
 
     if (group == CStreamDetail::AUDIO)
     {
@@ -459,7 +461,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
         pS.displayname.Format("A: Audio %02d", i + 1);
 
       m_audioStreams.push_back(static_cast<CDSStreamDetailAudio *>(infos));
-      CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, pS.displayname.c_str());
+      CLog::Log(LOGNOTICE, "%s Audio stream found : %s - index: %i", __FUNCTION__, pS.displayname.c_str(), pS.IAMStreamSelect_Index);
     }
     else if (group == CStreamDetail::SUBTITLE)
     {
@@ -467,7 +469,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
         m_subfilterStreams.push_back(static_cast<CDSStreamDetailSubfilter *>(infos));
       else
         SubtitleManager->GetSubtitles().push_back(static_cast<CDSStreamDetailSubtitle *>(infos));
-      CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, pS.displayname.c_str());
+      CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s - index: %i", __FUNCTION__, pS.displayname.c_str(), pS.IAMStreamSelect_Index);
     }
     else if (group == CStreamDetail::EDITION || group == CStreamDetail::BD_TITLE)
     {
@@ -477,6 +479,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
         pBDSS->GetTitleInfo(m_editionStreams.size(), NULL, &pEdition->m_rtDuration);
       }
       m_editionStreams.push_back(pEdition);
+      CLog::Log(LOGNOTICE, "%s Editions stream found : %s - index : %i", __FUNCTION__, pS.displayname.c_str(), pS.IAMStreamSelect_Index);
     }
 
     DeleteMediaType(mediaType);

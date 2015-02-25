@@ -107,10 +107,10 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
   return iResult;
 }
 
-bool CApplicationPlayer::HasPlayer() const 
-{ 
+bool CApplicationPlayer::HasPlayer() const
+{
   std::shared_ptr<IPlayer> player = GetInternal();
-  return player != NULL; 
+  return player != NULL;
 }
 
 int CApplicationPlayer::GetChapter()
@@ -118,7 +118,7 @@ int CApplicationPlayer::GetChapter()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapter();
-  else 
+  else
     return -1;
 }
 
@@ -127,7 +127,7 @@ int CApplicationPlayer::GetChapterCount()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapterCount();
-  else 
+  else
     return 0;
 }
 
@@ -585,6 +585,68 @@ void CApplicationPlayer::GetVideoInfo(std::string& strVideoInfo)
     player->GetVideoInfo(strVideoInfo);
 }
 
+#ifdef HAS_DS_PLAYER
+int CApplicationPlayer::GetEditionsCount()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return player->GetEditionsCount();
+  }
+  else
+    return 0;
+}
+
+int CApplicationPlayer::GetEdition()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return player->GetEdition();
+  }
+  else
+    return -1;
+}
+
+void CApplicationPlayer::GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    player->GetEditionInfo(iEdition, strEditionName, prt);
+  }
+}
+
+void CApplicationPlayer::SetEdition(int iEdition)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    player->SetEdition(iEdition);
+  }
+}
+
+bool CApplicationPlayer::IsMatroskaEditions()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return player->IsMatroskaEditions();
+  }
+  else
+    return false;
+}
+
+void CApplicationPlayer::ShowEditionDlg(bool playStart)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return player->ShowEditionDlg(playStart);
+  }
+}
+#endif
+
 void CApplicationPlayer::GetGeneralInfo(std::string& strVideoInfo)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -636,9 +698,9 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
     return;
 
   if (!IsPlayingAudio() && !IsPlayingVideo())
-    return ;
+    return;
   if (m_iPlaySpeed == iSpeed)
-    return ;
+    return;
   if (!CanSeek())
     return;
   if (IsPaused())
@@ -646,7 +708,7 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
     if (
       ((m_iPlaySpeed > 1) && (iSpeed > m_iPlaySpeed)) ||
       ((m_iPlaySpeed < -1) && (iSpeed < m_iPlaySpeed))
-    )
+      )
     {
       iSpeed = m_iPlaySpeed; // from pause to ff/rw, do previous ff/rw speed
     }

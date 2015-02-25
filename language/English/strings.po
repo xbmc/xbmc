@@ -16369,7 +16369,7 @@ msgid "Use as the default video player"
 msgstr ""
 
 msgctxt "#55032"
-msgid "Show Blu-ray titles and Matroska Editions choice dialog (AVSplitter only)"
+msgid "Show Blu-ray titles and Matroska Editions choice dialog"
 msgstr ""
 
 #. 55050-55100 Directshow Subtitles 

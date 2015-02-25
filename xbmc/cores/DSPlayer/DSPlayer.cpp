@@ -210,7 +210,6 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
     }
   }
 
-
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
   bool listAllTitles = false;
@@ -293,8 +292,38 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
     if (PlayerState != DSPLAYER_ERROR)
     {
-      if (CSettings::Get().GetBool("dsplayer.showbdtitlechoice"))
-        ShowEditionDlg(true);
+      float fValue;
+
+      // Select Audio Stream
+      int iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream;
+
+      if ((iLibrary < GetAudioStreamCount()) && !(iLibrary < 0))
+        g_application.m_pPlayer->SetAudioStream(iLibrary);
+      else
+        g_application.m_pPlayer->SetAudioStream(0);
+
+      // Select Subtitle Stream and set Delay
+      fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay;
+      if (CGraphFilters::Get()->HasSubFilter())
+      {
+        if (CStreamsManager::Get()) CStreamsManager::Get()->SelectBestSubtitle();
+        if (CStreamsManager::Get()) CStreamsManager::Get()->SetSubTitleDelay(fValue);
+      }
+      else
+      {
+        if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->SelectBestSubtitle();
+        if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
+      }
+
+      // Get Audio Interface LAV AUDIO/FFDSHOW to setting Delay
+      if (CStreamsManager::Get())
+      {
+        if (CStreamsManager::Get()->SetAudioInterface());
+        {
+          fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
+          CStreamsManager::Get()->SetAVDelay(fValue);
+        }
+      }
 
       // Seek
       if (m_PlayerOptions.starttime > 0)
@@ -304,6 +333,16 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
       // Starts playback
       PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
+
+      // Select Editions
+      if (GetEditionsCount() > 1 && CSettings::Get().GetBool("dsplayer.showbdtitlechoice"))
+      {
+        //MSG Pause After because lavfilter don't select editions until the playback has started
+        PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
+        ShowEditionDlg(true);
+        PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
+      }
+
       if (CGraphFilters::Get()->IsDVD())
         CStreamsManager::Get()->LoadDVDStreams();
     }
@@ -551,40 +590,6 @@ void CDSPlayer::Process()
   g_dsSettings.pRendererSettings->bAllowFullscreen = m_PlayerOptions.fullscreen;
 
   if (m_PlayerOptions.identify == false) m_callback.OnPlayBackStarted();
-
-  if (CGraphFilters::Get()->HasSubFilter())
-    if (CStreamsManager::Get()) CStreamsManager::Get()->SelectBestSubtitle();
-    else
-      if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->SelectBestSubtitle();
-
-  int iLibrary;
-  iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream;
-
-  if ((iLibrary < GetAudioStreamCount()) && !(iLibrary < 0))
-    g_application.m_pPlayer->SetAudioStream(iLibrary);
-  else
-    g_application.m_pPlayer->SetAudioStream(0);
-
-  float fValue;
-
-  // Get Audio Interface LAV AUDIO/FFDSHOW
-
-  if (CStreamsManager::Get())
-  {
-    if (CStreamsManager::Get()->SetAudioInterface());
-    {
-      fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
-      CStreamsManager::Get()->SetAVDelay(fValue);
-    }
-  }
-
-  fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay;
-
-  if (CGraphFilters::Get()->HasSubFilter())
-    if (CStreamsManager::Get()) CStreamsManager::Get()->SetSubTitleDelay(fValue);
-    else
-      if (CStreamsManager::Get()) CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
-
 
   while (!m_bStop && PlayerState != DSPLAYER_CLOSED && PlayerState != DSPLAYER_LOADING)
     HandleMessages();

@@ -60,7 +60,7 @@ class CApplicationPlayer
   int m_iAudioStream;
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
-  
+
 public:
   CApplicationPlayer();
 
@@ -94,7 +94,7 @@ public:
   int   GetCacheLevel() const;
   float GetCachePercentage() const;
   int   GetChapterCount();
-  int   GetChapter();  
+  int   GetChapter();
   void  GetChapterName(std::string& strChapterName);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
@@ -151,12 +151,12 @@ public:
   void  ToFFRW(int iSpeed = 0);
 
 #ifdef HAS_DS_PLAYER
-  virtual int  GetEditionsCount()		{ return 0; }
-  virtual int  GetEdition()				{ return -1; }
-  virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt){};
-  virtual void SetEdition(int iEdition){};
-  virtual bool IsMatroskaEditions()		{ return false; }
-  virtual void ShowEditionDlg(bool playStart){};
+  int  GetEditionsCount();
+  int  GetEdition();
+  void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt);
+  void SetEdition(int iEdition);
+  bool IsMatroskaEditions();
+  void ShowEditionDlg(bool playStart);
 #endif
 
 };
