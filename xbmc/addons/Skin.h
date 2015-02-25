@@ -119,7 +119,7 @@ public:
   static void SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   virtual bool OnPreInstall();
-  virtual void OnPostInstall(bool restart, bool update);
+  virtual void OnPostInstall(bool restart, bool update, bool modal);
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate

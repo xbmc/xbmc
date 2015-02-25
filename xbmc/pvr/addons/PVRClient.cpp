@@ -90,7 +90,7 @@ bool CPVRClient::OnPreInstall()
   return false;
 }
 
-void CPVRClient::OnPostInstall(bool restart, bool update)
+void CPVRClient::OnPostInstall(bool restart, bool update, bool modal)
 {
   // (re)start the pvr manager
   PVR::CPVRManager::Get().Start(true);

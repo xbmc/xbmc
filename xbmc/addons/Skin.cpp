@@ -287,7 +287,7 @@ bool CSkinInfo::OnPreInstall()
   return false;
 }
 
-void CSkinInfo::OnPostInstall(bool restart, bool update)
+void CSkinInfo::OnPostInstall(bool restart, bool update, bool modal)
 {
   if (restart || (!update && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24099),"","")))
   {
