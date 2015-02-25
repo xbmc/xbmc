@@ -864,6 +864,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #endif
       break;
     }
+    case TMSG_SETPVRMANAGERSTATE:
+    {
+      if (pMsg->param1 != 0)
+        g_application.StartPVRManager();
+      else
+        g_application.StopPVRManager();
+    }
   }
 }
 
@@ -1410,5 +1417,12 @@ void CApplicationMessenger::CECActivateSource()
 void CApplicationMessenger::CECStandby()
 {
   ThreadMessage tMsg = {TMSG_CECSTANDBY};
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetPVRManagerState(bool onOff)
+{
+  ThreadMessage tMsg = {TMSG_SETPVRMANAGERSTATE};
+  tMsg.param1 = onOff ? 1 : 0;
   SendMessage(tMsg, false);
 }

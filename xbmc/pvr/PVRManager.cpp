@@ -144,10 +144,7 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == "pvrmanager.enabled")
   {
-    if (((CSettingBool*)setting)->GetValue())
-      CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
-    else
-      CApplicationMessenger::Get().ExecBuiltIn("StopPVRManager", false);
+    CApplicationMessenger::Get().SetPVRManagerState(((CSettingBool*)setting)->GetValue());
   }
   else if (settingId == "pvrparental.enabled")
   {
@@ -553,7 +550,7 @@ void CPVRManager::Process(void)
   if (IsStarted())
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
+    CApplicationMessenger::Get().SetPVRManagerState(true);
   }
   else
   {
