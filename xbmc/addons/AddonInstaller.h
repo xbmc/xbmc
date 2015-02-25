@@ -118,7 +118,7 @@ public:
     unsigned int progress;
   };
 
-  typedef std::map<std::string,CDownloadJob> JobMap;
+  typedef std::map<std::string, CDownloadJob> JobMap;
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -145,8 +145,7 @@ private:
    \param database database instance to update
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon,
-                         std::vector<std::string>& preDeps, CAddonDatabase &database);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);
@@ -180,10 +179,11 @@ public:
    *  \return The hosting repository
    */
   static ADDON::AddonPtr GetRepoForAddon(const ADDON::AddonPtr& addon);
+
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
-  bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo=ADDON::AddonPtr());
+  bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo = ADDON::AddonPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
 
   /*! \brief Queue a notification for addon installation/update failure
@@ -204,6 +204,7 @@ public:
   CAddonUnInstallJob(const ADDON::AddonPtr &addon);
 
   virtual bool DoWork();
+
 private:
   void OnPostUnInstall();
 
