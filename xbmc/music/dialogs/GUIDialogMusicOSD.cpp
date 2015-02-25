@@ -64,6 +64,21 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
+  case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
+    {
+      CGUIDialog *pDialog;
+
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+    }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
