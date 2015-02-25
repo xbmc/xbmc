@@ -693,7 +693,9 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 {
   if (!plugin || !plugin->num_extensions)
     return false;
-  const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
+  const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata"); //<! backword compatibilty
+  if (!metadata)
+    metadata = CAddonMgr::Get().GetExtension(plugin, "kodi.addon.metadata");
   if (!metadata)
     return false;
 
@@ -797,10 +799,11 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
     return AddonPtr(new CAddon(info));
   }
 
-  // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
+  // grab a relevant extension point, ignoring our kodi.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
+    if (0 != strcmp("xbmc.addon.metadata" , info->extensions[i].ext_point_id) && //<! backword compatibilty
+        0 != strcmp("kodi.addon.metadata" , info->extensions[i].ext_point_id) &&
         (type.empty() || 0 == strcmp(type.c_str(), info->extensions[i].ext_point_id)))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
