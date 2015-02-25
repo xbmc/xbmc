@@ -203,7 +203,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     Save();
 
 #ifdef HAS_DS_PLAYER
-  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+  if ( (g_application.GetCurrentPlayer() == PCID_DSPLAYER) && (settingId == VIDEO_SETTINGS_DS_FILTERS) )
   {
     CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
       if (!pDlg)

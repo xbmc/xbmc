@@ -16422,7 +16422,7 @@ msgid "Use menu subtitle selector"
 msgstr ""
 
 msgctxt "#55062"
-msgid "filters list..."
+msgid "DSPlayer filters list..."
 msgstr ""
 
 msgctxt "#60001"
