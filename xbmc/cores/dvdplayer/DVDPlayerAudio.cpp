@@ -653,6 +653,8 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   if (fabs(error) > DVD_MSEC_TO_TIME(100))
   {
     m_syncclock = true;
+    m_errors.Flush();
+    m_integral = 0.0;
     return;
   }
   else if (m_syncclock && fabs(error) < DVD_MSEC_TO_TIME(50))
