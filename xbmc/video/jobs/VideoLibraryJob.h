@@ -58,9 +58,6 @@ protected:
    \param[in] db Already open video database to be used for interaction
    \return True if the process succeeded, false otherwise
    */
-#ifdef HAS_DS_PLAYER
-  virtual bool Work(CVideoDatabase &db, CDSPlayerDatabase &dspdb) = 0;
-#else
-  virtual bool(CVideoDatabase &db = 0);
-#endif
+
+  virtual bool Work(CVideoDatabase &db) = 0;
 };

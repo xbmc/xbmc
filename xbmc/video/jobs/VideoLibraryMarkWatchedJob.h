@@ -42,11 +42,7 @@ public:
 
 protected:
 
-#ifdef HAS_DS_PLAYER
-  virtual bool Work(CVideoDatabase &db, CDSPlayerDatabase &dspdb);
-#else
-  virtual bool (CVideoDatabase &db);
-#endif
+  virtual bool Work(CVideoDatabase &db);
 
 private:
   CFileItemPtr m_item;

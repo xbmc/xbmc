@@ -20,9 +20,6 @@
 
 #include "VideoLibraryJob.h"
 #include "video/VideoDatabase.h"
-#ifdef HAS_DS_PLAYER
-#include "DSPlayerDatabase.h"
-#endif
 
 using namespace std;
 
@@ -35,16 +32,7 @@ CVideoLibraryJob::~CVideoLibraryJob()
 bool CVideoLibraryJob::DoWork()
 {
   CVideoDatabase db;
-#ifdef HAS_DS_PLAYER
-  CDSPlayerDatabase dspdb;
-  if (!db.Open() && !dspdb.Open()) return false;
-#else
   if (!db.Open()) return false;
-#endif
 
-#ifdef HAS_DS_PLAYER
-  return Work(db, dspdb);
-#else
   return Work(db);
-#endif
 }

@@ -54,11 +54,7 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
   return m_item->IsSamePath(markJob->m_item.get()) && markJob->m_mark == m_mark;
 }
 
-#ifdef HAS_DS_PLAYER
-bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db, CDSPlayerDatabase &dspdb)
-#else
 bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
-#endif
 {
   if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
     return false;
@@ -99,6 +95,7 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
         path = item->GetVideoInfoTag()->GetPath();
 
 #ifdef HAS_DS_PLAYER
+      CDSPlayerDatabase dspdb;
       dspdb.ClearEditionOfFile(item->GetPath());
 #endif
       db.ClearBookMarksOfFile(path, CBookmark::RESUME);
