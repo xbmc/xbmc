@@ -43,7 +43,6 @@ CFileOperationJob::CFileOperationJob()
     m_avgSpeed(),
     m_currentOperation(),
     m_currentFile(),
-    m_handle(NULL),
     m_displayProgress(false),
     m_heading(0),
     m_line(0)
@@ -59,7 +58,6 @@ CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
     m_avgSpeed(),
     m_currentOperation(),
     m_currentFile(),
-    m_handle(NULL),
     m_displayProgress(displayProgress),
     m_heading(heading),
     m_line(line)
@@ -82,11 +80,11 @@ bool CFileOperationJob::DoWork()
   FileOperationList ops;
   double totalTime = 0.0;
 
-  if (m_displayProgress)
+  if (m_displayProgress && GetProgressDialog() == NULL)
   {
     CGUIDialogExtendedProgressBar* dialog =
       (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-    m_handle = dialog->GetHandle(GetActionString(m_action));
+    SetProgressBar(dialog->GetHandle(GetActionString(m_action)));
   }
 
   bool success = DoProcess(m_action, m_items, m_strDestFile, ops, totalTime);
@@ -99,8 +97,7 @@ bool CFileOperationJob::DoWork()
   for (unsigned int i = 0; i < size && success; i++)
     success &= ops[i].ExecuteOperation(this, current, opWeight);
 
-  if (m_handle)
-    m_handle->MarkFinished();
+  MarkFinished();
 
   return success;
 }
@@ -268,11 +265,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   if (base->ShouldCancel((unsigned int)current, 100))
     return false;
 
-  if (base->m_handle)
-  {
-    base->m_handle->SetText(base->GetCurrentFile());
-    base->m_handle->SetPercentage((float)current);
-  }
+  base->SetText(base->GetCurrentFile());
 
   DataHolder data = {base, current, opWeight};
 
@@ -357,16 +350,11 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   else
     data->base->m_avgSpeed = StringUtils::Format("%.1f KB/s", avgSpeed / 1000.0f);
 
-  if (data->base->m_handle)
-  {
-    std::string line;
-    line = StringUtils::Format("%s (%s)",
-                               data->base->GetCurrentFile().c_str(),
-                               data->base->GetAverageSpeed().c_str());
-    data->base->m_handle->SetText(line);
-    data->base->m_handle->SetPercentage((float)current);
-  }
-
+  std::string line;
+  line = StringUtils::Format("%s (%s)",
+                              data->base->GetCurrentFile().c_str(),
+                              data->base->GetAverageSpeed().c_str());
+  data->base->SetText(line);
   return !data->base->ShouldCancel((unsigned)current, 100);
 }
 

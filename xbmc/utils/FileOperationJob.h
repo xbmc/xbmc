@@ -24,11 +24,9 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "utils/Job.h"
+#include "utils/ProgressJob.h"
 
-class CGUIDialogProgressBarHandle;
-
-class CFileOperationJob : public CJob
+class CFileOperationJob : public CProgressJob
 {
 public:
   enum FileAction
@@ -93,7 +91,6 @@ private:
   CFileItemList m_items;
   std::string m_strDestFile;
   std::string m_avgSpeed, m_currentOperation, m_currentFile;
-  CGUIDialogProgressBarHandle* m_handle;
   bool m_displayProgress;
   int m_heading;
   int m_line;
