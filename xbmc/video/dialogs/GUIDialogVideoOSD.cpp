@@ -102,15 +102,20 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
     }
     break;
   }
