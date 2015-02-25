@@ -18,47 +18,52 @@
  *
  */
 
+#include "system.h"
+
 #include "FileOperationJob.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "filesystem/ZipManager.h"
-#include "filesystem/FileDirectoryFactory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/SpecialProtocol.h"
-#include "log.h"
-#include "Util.h"
-#include "URIUtils.h"
-#include "utils/StringUtils.h"
 #include "URL.h"
+#include "Util.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/FileDirectoryFactory.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
-{
-  m_action = ActionCopy;
-  m_heading = 0;
-  m_line = 0;
-  m_handle = NULL;
-  m_displayProgress = false;
-}
+  : m_action(ActionCopy),
+    m_items(),
+    m_strDestFile(),
+    m_avgSpeed(),
+    m_currentOperation(),
+    m_currentFile(),
+    m_handle(NULL),
+    m_displayProgress(false),
+    m_heading(0),
+    m_line(0)
+{ }
 
 CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
                                     const std::string& strDestFile,
-                                    bool displayProgress,
-                                    int heading, int line)
+                                    bool displayProgress /* = false */,
+                                    int heading /* = 0 */, int line /* = 0 */)
+  : m_action(action),
+    m_items(),
+    m_strDestFile(strDestFile),
+    m_avgSpeed(),
+    m_currentOperation(),
+    m_currentFile(),
+    m_handle(NULL),
+    m_displayProgress(displayProgress),
+    m_heading(heading),
+    m_line(line)
 {
-  m_handle = NULL;
-  m_displayProgress = displayProgress;
-  m_heading = heading;
-  m_line = line;
   SetFileOperation(action, items, strDestFile);
 }
 
@@ -107,7 +112,7 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const std::string& strF
   if (action == ActionCopy || action == ActionReplace || (action == ActionMove && !CanBeRenamed(strFileA, strFileB)))
   {
     struct __stat64 data;
-    if(CFile::Stat(strFileA, &data) == 0)
+    if (CFile::Stat(strFileA, &data) == 0)
       time += data.st_size;
   }
 
@@ -128,9 +133,9 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
     delete file;
     return true;
   }
+
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
-  //m_rootDir.GetDirectory(strPath, items);
   CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_GET_HIDDEN);
   for (int i = 0; i < items.Size(); i++)
   {
@@ -139,7 +144,8 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
     CLog::Log(LOGDEBUG,"  -- %s",pItem->GetPath().c_str());
   }
 
-  if (!DoProcess(action, items, strDestFile, fileOperations, totalTime)) return false;
+  if (!DoProcess(action, items, strDestFile, fileOperations, totalTime))
+    return false;
 
   if (action == ActionMove)
   {
@@ -167,7 +173,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // get filename from label instead of path
         strFileName = pItem->GetLabel();
 
-        if(!pItem->m_bIsFolder && !URIUtils::HasExtension(strFileName))
+        if (!pItem->m_bIsFolder && !URIUtils::HasExtension(strFileName))
         {
           // FIXME: for now we only work well if the url has the extension
           // we should map the content type to the extension otherwise
@@ -178,7 +184,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
       }
 
       std::string strnewDestFile;
-      if(!strDestFile.empty()) // only do this if we have a destination
+      if (!strDestFile.empty()) // only do this if we have a destination
         strnewDestFile = URIUtils::ChangeBasePath(pItem->GetPath(), strFileName, strDestFile); // Convert (URL) encoding + slashes (if source / target differ)
 
       if (pItem->m_bIsFolder)
@@ -190,10 +196,13 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // create folder on dest. drive
         if (action != ActionDelete && action != ActionDeleteFolder)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
+
         if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
+
         if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
           return false;
+
         if (action == ActionDelete || action == ActionDeleteFolder)
           DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
       }
@@ -201,12 +210,16 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         DoProcessFile(action, pItem->GetPath(), strnewDestFile, fileOperations, totalTime);
     }
   }
+
   return true;
 }
 
-CFileOperationJob::CFileOperation::CFileOperation(FileAction action, const std::string &strFileA, const std::string &strFileB, int64_t time) : m_action(action), m_strFileA(strFileA), m_strFileB(strFileB), m_time(time)
-{
-}
+CFileOperationJob::CFileOperation::CFileOperation(FileAction action, const std::string &strFileA, const std::string &strFileB, int64_t time)
+  : m_action(action),
+    m_strFileA(strFileA),
+    m_strFileB(strFileB),
+    m_time(time)
+{ }
 
 struct DataHolder
 {
@@ -224,16 +237,20 @@ std::string CFileOperationJob::GetActionString(FileAction action)
     case ActionReplace:
       result = g_localizeStrings.Get(115);
       break;
+
     case ActionMove:
       result = g_localizeStrings.Get(116);
       break;
+
     case ActionDelete:
     case ActionDeleteFolder:
       result = g_localizeStrings.Get(117);
       break;
+
     case ActionCreateFolder:
       result = g_localizeStrings.Get(119);
       break;
+
     default:
       break;
   }
@@ -248,7 +265,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   base->m_currentFile = CURL(m_strFileA).GetFileNameWithoutPath();
   base->m_currentOperation = GetActionString(m_action);
 
-  if (base->ShouldCancel((unsigned)current, 100))
+  if (base->ShouldCancel((unsigned int)current, 100))
     return false;
 
   if (base->m_handle)
@@ -269,6 +286,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
       bResult = CFile::Copy(m_strFileA, m_strFileB, this, &data);
     }
     break;
+
     case ActionMove:
     {
       CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
@@ -281,6 +299,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
         bResult = false;
     }
     break;
+
     case ActionDelete:
     {
       CLog::Log(LOGDEBUG,"FileManager: delete %s\n", m_strFileA.c_str());
@@ -288,6 +307,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
       bResult = CFile::Delete(m_strFileA);
     }
     break;
+
     case ActionDeleteFolder:
     {
       CLog::Log(LOGDEBUG,"FileManager: delete folder %s\n", m_strFileA.c_str());
@@ -295,6 +315,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
       bResult = CDirectory::Remove(m_strFileA);
     }
     break;
+
     case ActionCreateFolder:
     {
       CLog::Log(LOGDEBUG,"FileManager: create folder %s\n", m_strFileA.c_str());
@@ -351,24 +372,24 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
 
 bool CFileOperationJob::operator==(const CJob* job) const
 {
-  if (strcmp(job->GetType(),GetType()) == 0)
+  if (strcmp(job->GetType(), GetType()) != 0)
+    return false;
+
+  const CFileOperationJob* rjob = dynamic_cast<const CFileOperationJob*>(job);
+  if (rjob == NULL)
+    return false;
+
+  if (GetAction() != rjob->GetAction() ||
+      m_strDestFile != rjob->m_strDestFile ||
+      m_items.Size() != rjob->m_items.Size())
+    return false;
+
+  for (int i = 0; i < m_items.Size(); i++)
   {
-    const CFileOperationJob* rjob = dynamic_cast<const CFileOperationJob*>(job);
-    if (rjob)
-    {
-      if (GetAction() == rjob->GetAction() &&
-          m_strDestFile == rjob->m_strDestFile &&
-          m_items.Size() == rjob->m_items.Size())
-      {
-        for (int i=0;i<m_items.Size();++i)
-        {
-          if (m_items[i]->GetPath() != rjob->m_items[i]->GetPath() ||
-              m_items[i]->IsSelected() != rjob->m_items[i]->IsSelected())
-            return false;
-        }
-        return true;
-      }
-    }
+    if (m_items[i]->GetPath() != rjob->m_items[i]->GetPath() ||
+        m_items[i]->IsSelected() != rjob->m_items[i]->IsSelected())
+      return false;
   }
-  return false;
+
+  return true;
 }
