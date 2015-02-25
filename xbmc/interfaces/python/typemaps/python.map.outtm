@@ -1,0 +1,53 @@
+<%
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(type)
+    keytype = templateArgs[0]
+    valtype = templateArgs[1]
+    boolean ispointer = swigTypeParser.SwigType_ispointer(type)
+    String accessor = ispointer ? '->' : '.'
+    seq = sequence.increment()
+%>
+    ${result} = PyDict_New();
+<%
+    if (ispointer)
+    {
+%>
+    if (${api} != NULL)
+    { 
+<%  }  %>
+      for (std::map<${swigTypeParser.SwigType_str(keytype)}, ${swigTypeParser.SwigType_str(valtype)}>::iterator iter = ${api}${accessor}begin(); iter != ${api}${accessor}end(); ++iter)
+      {
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(keytype))} key${seq} = iter->first;
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))} entry${seq} = iter->second;
+        PyObject* pykey${seq};
+        PyObject* pyentry${seq};
+        ${helper.getOutConversion(keytype,'result',method,[ 'result' : 'pykey' + seq, 'api' : 'key' + seq, 'sequence' : sequence ])}
+        ${helper.getOutConversion(valtype,'result',method,[ 'result' : 'pyentry' + seq, 'api' : 'entry' + seq, 'sequence' : sequence ])}
+        PyDict_SetItem(${result}, pykey${seq}, pyentry${seq});
+        Py_DECREF(pykey${seq});
+        Py_DECREF(pyentry${seq});
+      }
+<%
+    if (ispointer)
+    {
+%>
+    }
+<%  }  %>

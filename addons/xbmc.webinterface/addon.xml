@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="xbmc.webinterface" version="1.0.0" provider-name="Team-Kodi">
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+  <extension-point id="webinterface" schema="webinterface.xsd"/>
+</addon>

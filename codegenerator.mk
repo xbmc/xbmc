@@ -31,6 +31,7 @@ GROOVY_DIR = $(TOPDIR)/lib/groovy
 
 GENERATED =  $(GENDIR)/AddonModuleXbmc.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcgui.cpp
+GENERATED += $(GENDIR)/AddonModuleXbmcmod_python.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcplugin.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcaddon.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcvfs.cpp

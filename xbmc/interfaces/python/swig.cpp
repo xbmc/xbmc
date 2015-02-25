@@ -150,63 +150,98 @@ namespace PythonBindings
   {
     setClassname("PythonToCppException");
 
+    std::string msg;
+    std::string type, value, traceback;
+    if (!ParsePythonException(type, value, traceback))
+      UncheckedException::SetMessage("Strange: No Python exception occured");
+    else
+      SetMessage(type, value, traceback);
+  }
+
+  PythonToCppException::PythonToCppException(const std::string &exceptionType, const std::string &exceptionValue, const std::string &exceptionTraceback) : XbmcCommons::UncheckedException(" ")
+  {
+    setClassname("PythonToCppException");
+
+    SetMessage(exceptionType, exceptionValue, exceptionTraceback);
+  }
+
+  bool PythonToCppException::ParsePythonException(std::string &exceptionType, std::string &exceptionValue, std::string &exceptionTraceback)
+  {
     PyObject* exc_type;
     PyObject* exc_value;
     PyObject* exc_traceback;
     PyObject* pystring = NULL;
 
-    std::string msg;
-
     PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
-    if (exc_type == 0 && exc_value == 0 && exc_traceback == 0)
+    if (exc_type == NULL && exc_value == NULL && exc_traceback == NULL)
+      return false;
+
+    exceptionType.clear();
+    exceptionValue.clear();
+    exceptionTraceback.clear();
+
+    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyString_Check(pystring))
     {
-      msg = "Strange: No Python exception occured";
-    }
-    else
-    {
-      msg = "-->Python callback/script returned the following error<--\n";
-      msg += " - NOTE: IGNORING THIS CAN LEAD TO MEMORY LEAKS!\n";
-      if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && (PyString_Check(pystring)))
+      char *str = PyString_AsString(pystring);
+      if (str != NULL)
+        exceptionType = str;
+
+      pystring = PyObject_Str(exc_value);
+      if (pystring != NULL)
       {
-          PyObject *tracebackModule;
-
-          msg += StringUtils::Format("Error Type: %s\n", PyString_AsString(pystring));
-          if (PyObject_Str(exc_value))
-            msg += StringUtils::Format("Error Contents: %s\n", PyString_AsString(PyObject_Str(exc_value)));
-
-          tracebackModule = PyImport_ImportModule((char*)"traceback");
-          if (tracebackModule != NULL)
-          {
-            PyObject *tbList, *emptyString, *strRetval;
-
-            tbList = PyObject_CallMethod(tracebackModule, (char*)"format_exception", (char*)"OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
-            emptyString = PyString_FromString("");
-            strRetval = PyObject_CallMethod(emptyString, (char*)"join", (char*)"O", tbList);
-            
-            msg = StringUtils::Format("%s%s", msg.c_str(),PyString_AsString(strRetval));
-
-            Py_DECREF(tbList);
-            Py_DECREF(emptyString);
-            Py_DECREF(strRetval);
-            Py_DECREF(tracebackModule);
-          }
-          msg += "-->End of Python script error report<--\n";
+        str = PyString_AsString(pystring);
+        exceptionValue = str;
       }
-      else
+
+      PyObject *tracebackModule = PyImport_ImportModule("traceback");
+      if (tracebackModule != NULL)
       {
-        pystring = NULL;
-        msg += "<unknown exception type>";
+        PyObject *tbList = PyObject_CallMethod(tracebackModule, "format_exception", "OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+        PyObject *emptyString = PyString_FromString("");
+        PyObject *strRetval = PyObject_CallMethod(emptyString, "join", "O", tbList);
+
+        str = PyString_AsString(strRetval);
+        if (str != NULL)
+          exceptionTraceback = str;
+
+        Py_DECREF(tbList);
+        Py_DECREF(emptyString);
+        Py_DECREF(strRetval);
+        Py_DECREF(tracebackModule);
       }
     }
 
     Py_XDECREF(exc_type);
-    Py_XDECREF(exc_value); // caller owns all 3
-    Py_XDECREF(exc_traceback); // already NULL'd out
+    Py_XDECREF(exc_value);
+    Py_XDECREF(exc_traceback);
     Py_XDECREF(pystring);
 
-    SetMessage("%s",msg.c_str());
+    return true;
   }
 
+  void PythonToCppException::SetMessage(const std::string &exceptionType, const std::string &exceptionValue, const std::string &exceptionTraceback)
+  {
+    std::string msg = "-->Python callback/script returned the following error<--\n";
+    msg += " - NOTE: IGNORING THIS CAN LEAD TO MEMORY LEAKS!\n";
+
+    if (!exceptionType.empty())
+    {
+      msg += StringUtils::Format("Error Type: %s\n", exceptionType.c_str());
+
+      if (!exceptionValue.empty())
+        msg += StringUtils::Format("Error Contents: %s\n", exceptionValue.c_str());
+
+      if (!exceptionTraceback.empty())
+        msg += exceptionTraceback;
+
+      msg += "-->End of Python script error report<--\n";
+    }
+    else
+      msg += "<unknown exception type>";
+
+    UncheckedException::SetMessage("%s", msg.c_str());
+  }
+  
   XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {

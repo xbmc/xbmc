@@ -32,9 +32,11 @@ public:
   
   virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPWebinterfaceHandler(request); }
   virtual bool CanHandleRequest(const HTTPRequest &request);
-  
+
   static int ResolveUrl(const std::string &url, std::string &path);
   static int ResolveUrl(const std::string &url, std::string &path, ADDON::AddonPtr &addon);
+  static bool ResolveAddon(const std::string &url, ADDON::AddonPtr &addon);
+  static bool ResolveAddon(const std::string &url, ADDON::AddonPtr &addon, std::string &addonPath);
 
 protected:
   explicit CHTTPWebinterfaceHandler(const HTTPRequest &request);

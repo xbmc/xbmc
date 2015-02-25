@@ -30,9 +30,9 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
   int responseStatus = MHD_HTTP_BAD_REQUEST;
 
   // resolve the URL into a file path and a HTTP response status
-  if (m_request.url.size() > 7)
+  if (m_request.pathUrl.size() > 7)
   {
-    file = m_request.url.substr(7);
+    file = m_request.pathUrl.substr(7);
 
     XFILE::CImageFile imageFile;
     const CURL pathToUrl(file);
@@ -48,5 +48,5 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
 
 bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request)
 {
-  return request.url.find("/image/") == 0;
+  return request.pathUrl.find("/image/") == 0;
 }

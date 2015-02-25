@@ -18,8 +18,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-%>
-<%
     List templateArgs = swigTypeParser.SwigType_templateparmlist(ltype)
     valtype = templateArgs[0]
 %>

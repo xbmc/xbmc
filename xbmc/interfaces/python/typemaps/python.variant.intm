@@ -1,0 +1,46 @@
+<%
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+%>
+    {
+      if (PyBool_Check(${slarg}))
+      {
+        ${helper.getInConversion('bool', api, slarg, method)}
+      }
+      else if (PyFloat_Check(${slarg}))
+      {
+        ${helper.getInConversion('double', api, slarg, method)}
+      }
+      else if (PyString_Check(${slarg}) || PyUnicode_Check(${slarg}))
+      {
+        String ${api}_str;
+        ${helper.getInConversion('std::string', api + '_str', slarg, method)}
+        ${api} = ${api}_str;
+      }
+      else if (PyLong_Check(${slarg}) || PyInt_Check(${slarg}))
+      {
+        ${helper.getInConversion('int', api, slarg, method)}
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "EXCEPTION: Unsupported CVariant type");
+        PyErr_SetString(PyExc_TypeError, "Unsupported CVariant type");
+      }
+    }

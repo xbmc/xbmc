@@ -60,8 +60,10 @@ Helper.setup(this,classes,
       'long': '${result} = PyInt_FromLong(${api});',
       'unsigned long': '${result} = PyInt_FromLong(${api});',
       'bool': '${result} = Py_BuildValue((char*)"b", ${api});',
-      'long long': '${result} = Py_BuildValue((char*)"L", ${api});',
+      'long long': '${result} = PyLong_FromLongLong(${api});',
+      'unsigned long long': '${result} = PyLong_FromUnsignedLongLong(${api});',
       'int': '${result} = Py_BuildValue((char*)"i", ${api});',
+      'unsigned int': '${result} = Py_BuildValue((char*)"I", ${api});',
       'double': '${result} = PyFloat_FromDouble(${api});',
       'float': '${result} = Py_BuildValue((char*)"f", ${api});',
       'std::string' : new File('typemaps/python.string.outtm'),
@@ -70,7 +72,11 @@ Helper.setup(this,classes,
       (Pattern.compile('''boost::shared_ptr<\\(.*\\)>''')) : new File('typemaps/python.boost_shared_ptr.outtm'),
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
-      (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
+      (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm'),
+      (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.outtm'),
+      (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.outtm'),
+      (Pattern.compile('''(r.){0,1}XBMCAddon::MultiDictionary<\\(.*\\)>''')) : new File('typemaps/python.multidict.outtm'),
+      (Pattern.compile('''(p.){0,1}CVariant''')) : new File('typemaps/python.variant.outtm')
     ], '${result} = makePythonInstance(${api},true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
@@ -88,12 +94,14 @@ Helper.setup(this,classes,
       (Pattern.compile('''(r.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.intm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
       (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.intm'),
+      (Pattern.compile('''(r.){0,1}CVariant''')) : new File('typemaps/python.variant.intm'),
       'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
       'long' : '${api} = PyInt_AsLong(${slarg});',
       'unsigned long' : '${api} = PyLong_AsUnsignedLong(${slarg});',
       'long long' : '${api} = PyLong_AsLongLong(${slarg});',
       'unsigned long long' : '${api} = PyLong_AsUnsignedLongLong(${slarg});',
       'int' : '${api} = (int)PyInt_AsLong(${slarg});',
+      'unsigned int' : '${api} = (unsigned int)PyLong_AsUnsignedLong(${slarg});',
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
       'float' : '${api} = (float)PyFloat_AsDouble(${slarg});',
       'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyInt_Check(${slarg}) || PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
@@ -107,8 +115,10 @@ Helper.setup(this,classes,
  */
 void doMethod(Node method, MethodType methodType)
 {
+  Node classnode = Helper.findClassNode(method)
   boolean isOperator = method.@name.startsWith("operator ")
   boolean doAsMappingIndex = false
+  boolean doAsSequence = false
 
   if (isOperator)
   {
@@ -117,6 +127,8 @@ void doMethod(Node method, MethodType methodType)
     else
       return;
   }
+  else if (method.@name == classnode?.@feature_sequence)
+    doAsSequence = true
 
   boolean constructor = methodType == MethodType.constructor
 
@@ -129,7 +141,6 @@ void doMethod(Node method, MethodType methodType)
   int numParams = params?.size()
   String clazz = Helper.findFullClassName(method)
   String returns = constructor ? 'p.' + clazz : (destructor ? 'void' : Helper.getReturnSwigType(method))
-  Node classnode = Helper.findClassNode(method)
   String classNameAsVariable = clazz == null ? null : PythonTools.getClassNameAsVariable(classnode)
   boolean useKeywordParsing = !('true' == classnode?.@feature_python_nokwds || 'true' == method?.@feature_python_nokwds) 
 
@@ -144,15 +155,15 @@ void doMethod(Node method, MethodType methodType)
 <%  }
   }
 %>
-  static <% if(methodType == MethodType.destructor) { %>void<% } else { %>PyObject*<% } %> ${module.@name}_${PythonTools.getPyMethodName(method,methodType)} (<%= ((clazz == null) ? "PyObject" : 
+  static <% if(methodType == MethodType.destructor) { %>void<% } else if (doAsSequence) { %>int<% } else { %>PyObject*<% } %> ${module.@name}_${PythonTools.getPyMethodName(method,methodType)} (<%= ((clazz == null) ? "PyObject" : 
                    (constructor ? "PyTypeObject" : 'PyHolder')) %>* ${constructor ? 'pytype' : 'self'} <% 
-                   if (doAsMappingIndex) { %>, PyObject* py${params[0].@name}<% }
+                   if (doAsMappingIndex || doAsSequence) { %>, PyObject* py${params[0].@name}<% }
                    else if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
   {
     XBMC_TRACE;
 <%  if (numParams > 0)
     { 
-      if (useKeywordParsing && !doAsMappingIndex)
+      if (useKeywordParsing && !doAsMappingIndex && !doAsSequence)
       { %>
     static const char *keywords[] = {<%
           params.each { %>
@@ -162,12 +173,12 @@ void doMethod(Node method, MethodType methodType)
       params.each { 
 %>         
     ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(it.@type))} ${it.@name} ${it.@value != null ? ' = ' + it.@value : ''};<%
-        if (!PythonTools.parameterCanBeUsedDirectly(it))
+        if (!PythonTools.parameterCanBeUsedDirectly(it) && !doAsMappingIndex && !doAsSequence)
         { %>
     PyObject* py${it.@name} = NULL;<%
         }
      }
-    if (!doAsMappingIndex)
+    if (!doAsMappingIndex && !doAsSequence)
     { %>
     if (!${useKeywordParsing ? 'PyArg_ParseTupleAndKeywords' : 'PyArg_ParseTuple'}(
        args,
@@ -189,7 +200,7 @@ void doMethod(Node method, MethodType methodType)
     {
 <%
     // now do the input converstion if any are necessary
-    params.findAll({ !PythonTools.parameterCanBeUsedDirectly(it) || doAsMappingIndex }).each { %>      ${Helper.getInConversion(it.@type, it.@name, 'py' + it.@name, method)} <% println() }
+    params.findAll({ !PythonTools.parameterCanBeUsedDirectly(it) || doAsMappingIndex || doAsSequence }).each { %>      ${Helper.getInConversion(it.@type, it.@name, 'py' + it.@name, method)} <% println() }
 %>
 <%
     // check to see if this method is a call to a virtual function on a director class.
@@ -228,16 +239,26 @@ void doMethod(Node method, MethodType methodType)
     { 
       CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
       PyErr_SetString(PyExc_TypeError, e.GetMessage()); <%
-      if (!destructor) {  %>
+      if (!destructor) {
+      if (!doAsSequence) { %>
       return NULL; <%
+      }
+      if (doAsSequence) { %>
+      return -1; <%
+      }
       } %>
     }
     catch (const XbmcCommons::Exception& e)
     { 
       CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
       PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); <%
-      if (!destructor) {  %>
+      if (!destructor) {
+      if (!doAsSequence) { %>
       return NULL; <%
+      }
+      if (doAsSequence) { %>
+      return -1; <%
+      }
       } %>
     }
     catch (...)
@@ -249,7 +270,10 @@ void doMethod(Node method, MethodType methodType)
       } %>
     }
 <%
-    if (!destructor) { %>
+    if (doAsSequence) { %>
+    return (int)apiResult; <%
+    }
+    else if (!destructor) { %>
     PyObject* result = Py_None;
 
     // transform the result
@@ -343,16 +367,25 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   // see if we have any valid (or invalid) operators
   boolean doComparator = false
   boolean doAsMapping = false
+  boolean doAsSequence = clazz.@feature_sequence && clazz.@feature_sequence != ''
+  Node containsNode = null
+  if (doAsSequence) {
+    containsNode = clazz.function.find { it.@name == clazz.@feature_sequence }
+
+    doAsSequence = containsNode != null
+  }
   boolean hasEquivalenceOp = false
   boolean hasLtOp = false
   boolean hasGtOp = false
   Node indexOp = null
+  boolean indexOpSupportsSet = false
   Node sizeNode = null
 
-  List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
+  List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") && (!doAsSequence || it.@name != clazz.@feature_sequence) && it.@name != "toString" }
   List operators =  clazz.function.findAll { it.@name.startsWith("operator ") }
   List properties = clazz.variable.findAll { it.@access != null && it.@access == "public" }
   List properties_set = properties.findAll { it.@feature_immutable == null || it.@feature_immutable == 0 }
+  List stringifyMethods = clazz.function.findAll { it.@name == "toString" }
 
   operators.each {
     // we have an operator. The only one we can handle is ==
@@ -363,7 +396,12 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     else if (it.@name.substring(9) == ">")
       hasGtOp = true
     else if (it.@name.substring(9) == "[]")
+    {
       indexOp = it
+
+      if (it.@decl != null && it.@decl.endsWith('.r.'))
+        indexOpSupportsSet = true
+    }
     else
       System.err.println ("Warning: class ${fullClassName} has an operator \"${it.@name}\" that is being ignored.");
   }
@@ -376,15 +414,6 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
       doComparator = true
   }
 
-  if (indexOp)
-  { 
-    sizeNode =  clazz.function.find { it.@name == "size" }
-    if (sizeNode)
-      doAsMapping = true
-    else
-      System.err.println ("Warning: class ${fullClassName} has an inconsistent operator set. To get a as_mapping you must implement 'size' as well as operator[]")
-  }
-
   if (doComparator){ 
 %>
   static int ${module.@name}_${classNameAsVariable}_cmp(PyObject* obj1, PyObject* obj2)
@@ -394,21 +423,118 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 <%
   }
 
-  if (doAsMapping)
+  if (indexOp || doAsSequence)
+  { 
+    sizeNode =  clazz.function.find { it.@name == "size" }
+    if (sizeNode)
+    {
+      if (indexOp)
+        doAsMapping = true
+    }
+    else
+      System.err.println ("Warning: class ${fullClassName} has an inconsistent operator set. To get a as_mapping you must implement 'size' as well as operator[]")
+  }
+  
+  if (sizeNode)
   {
 %>
   static Py_ssize_t ${module.@name}_${classNameAsVariable}_size_(PyObject* self)
   {
-    return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))-> size();
+    return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))->size();
+  }
+<%
   }
 
+  if (doAsSequence)
+  { %>
+  //=========================================================================
+  // tp_as_sequence struct for ${fullClassName}
+  //=========================================================================
+  PySequenceMethods ${module.@name}_${classNameAsVariable}_as_sequence = { <%
+    if (sizeNode) { %>
+    ${module.@name}_${classNameAsVariable}_size_,  /* sq_length */ <%
+    }
+    else { %>
+    0,  /* sq_length */ <%
+    } %>
+    0,                                      /* sq_concat */
+    0,                                      /* sq_repeat */
+    0,                                      /* sq_item */
+    0,                                      /* sq_slice */
+    0,                                      /* sq_ass_item */
+    0,                                      /* sq_ass_slice */
+    (objobjproc)${module.@name}_${PythonTools.getPyMethodName(containsNode,MethodType.method)},  /* sq_contains */
+    0,                                      /* sq_inplace_concat */
+    0,                                      /* sq_inplace_repeat */
+  };
+<%
+  }
+
+  if (doAsMapping)
+  {
+    if (indexOpSupportsSet)
+    {
+      Node indexOpKeyParam = indexOp?.parm[0]
+      String indexOpReturns = Helper.getReturnSwigType(indexOp)
+%>
+  static int ${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)}_set(PyObject* self, PyObject* pykey, PyObject* pyvalue)
+  {
+    XBMC_TRACE;
+
+    ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(indexOpKeyParam.@type))} ${indexOpKeyParam.@name};
+    ${SwigTypeParser.SwigType_lstr(indexOpReturns)} value;
+    try
+    {
+      ${Helper.getInConversion(indexOpKeyParam.@type, indexOpKeyParam.@name, 'pykey', indexOp)}
+      ${Helper.getInConversion(indexOpReturns, 'value', 'pyvalue', indexOp)}
+
+      ((${fullClassName}*)retrieveApiInstance((PyObject*)self, &Ty${classNameAsVariable}_Type, "operator []", "${fullClassName}"))-> operator[](${indexOpKeyParam.@name}) = value;
+
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return -1;
+    }
+    catch (const XbmcCommons::Exception& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return -1;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"operator []\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"operator []\"");
+      return -1;
+    }
+
+    return 0;
+  }
+<%
+    }
+%>
   //=========================================================================
   // tp_as_mapping struct for ${fullClassName}
   //=========================================================================
   PyMappingMethods ${module.@name}_${classNameAsVariable}_as_mapping = {
     ${module.@name}_${classNameAsVariable}_size_,    /* inquiry mp_length;                  __len__ */
     (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)},   /* binaryfunc mp_subscript             __getitem__ */
-    0,                  /* objargproc mp_ass_subscript;     __setitem__ */
+<%
+    if (indexOpSupportsSet)
+    {
+%>
+    (objobjargproc)${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)}_set,   /* objobjargproc mp_ass_subscript             __setitem__ */
+<%
+    }
+    else
+    {
+%>
+    0,                  /* objargproc mp_ass_subscript             __setitem__ */
+<%
+    }
+%>
   };
 <%
   }
@@ -427,7 +553,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   // All of the methods on this class
   static PyMethodDef ${classNameAsVariable}_methods[] = { <%
     normalMethods.each {  %>
-    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
+    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS${it.@storage == 'static' ? '|METH_STATIC' : ''}, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 
     // now do all of the explcit feature:python:method's that may be in this class
     List tmpl = []
@@ -459,10 +585,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
       PyObject* result = NULL;
    <%
   properties.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} apiResult = (${SwigTypeParser.SwigType_lstr(it.@type)})theObj->${it.@sym_name};
-        ${Helper.getOutConversion(it.@type, 'result', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} apiResult = (${SwigTypeParser.SwigType_lstr(returns)})theObj->${it.@sym_name};
+        ${Helper.getOutConversion(returns, 'result', it)}
       }
       else<%
   } %>
@@ -528,10 +655,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 
 <%
   properties_set.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} tmp;
-        ${Helper.getInConversion(it.@type, 'tmp', 'value', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} tmp;
+        ${Helper.getInConversion(returns, 'tmp', 'value', it)}
         if (PyErr_Occurred())
           throw PythonBindings::PythonToCppException();
         
@@ -586,6 +714,13 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_getset = ${classNameAsVariable}_getsets;
 <%
  }
+ if (stringifyMethods.size() == 1) { %>
+    pythonType.tp_str = (reprfunc)${module.@name}_${PythonTools.getClassNameAsVariable(clazz)}_toString;
+<%
+ }
+ if (doAsSequence) { %>
+    pythonType.tp_as_sequence = &${module.@name}_${classNameAsVariable}_as_sequence;
+<% }
  if (doAsMapping) { %>
     pythonType.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
 <%  }
@@ -778,7 +913,7 @@ namespace PythonBindings
 
   static PyMethodDef ${module.@name}_methods[] = { <%
     module.depthFirst().findAll({ it.name() == 'function' && Helper.parents(it, { Node lnode -> lnode.name() == 'class'}).size() == 0 }).each {  %>
-    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
+    {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS${it.@storage == 'static' ? '|METH_STATIC' : ''}, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 %>
     {NULL, NULL, 0, NULL}
   };
