@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "filesystem/Directory.h"
+#include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
 
@@ -55,6 +56,22 @@ void CGUIAudioManager::OnSettingChanged(const CSetting *setting)
     Load();
   }
 }
+
+bool CGUIAudioManager::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+{
+  if (setting == NULL)
+    return false;
+
+  if (setting->GetId() == "lookandfeel.soundskin")
+  {
+    //We change to new resource.uisounds.confluence default only if current
+    //skin is confluence. Otherwise keep it as SKINDEFAULT.
+    return !(((CSettingString*)setting)->GetValue() == "SKINDEFAULT"
+        && CSettings::Get().GetString("lookandfeel.skin") == "skin.confluence");
+  }
+  return true;
+}
+
 
 void CGUIAudioManager::Initialize()
 {
@@ -201,6 +218,29 @@ void CGUIAudioManager::UnLoad()
   }
 }
 
+
+std::string GetSoundSkinPath()
+{
+  const std::string id = CSettings::Get().GetString("lookandfeel.soundskin");
+  if (id == "OFF")
+    return "";
+
+  if (id == "SKINDEFAULT")
+    return URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds");
+
+  ADDON::AddonPtr addon;
+  if (ADDON::CAddonMgr::Get().GetAddon(id, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
+    return URIUtils::AddFileToFolder("resource://", id);
+
+  //Check special directories
+  std::string path = URIUtils::AddFileToFolder("special://home/sounds", id);
+  if (XFILE::CDirectory::Exists(path))
+    return path;
+
+  return URIUtils::AddFileToFolder("special://xbmc/sounds", id);
+}
+
+
 // \brief Load the config file (sounds.xml) for nav sounds
 // Can be located in a folder "sounds" in the skin or from a
 // subfolder of the folder "sounds" in the root directory of
@@ -208,28 +248,13 @@ void CGUIAudioManager::UnLoad()
 bool CGUIAudioManager::Load()
 {
   CSingleLock lock(m_cs);
-
   UnLoad();
 
-  if (CSettings::Get().GetString("lookandfeel.soundskin")=="OFF")
+  m_strMediaDir = GetSoundSkinPath();
+  if (m_strMediaDir.empty())
     return true;
-  else
-    Enable(true);
 
-  std::string soundSkin = CSettings::Get().GetString("lookandfeel.soundskin");
-
-  if (soundSkin == "SKINDEFAULT")
-  {
-    m_strMediaDir = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds");
-  }
-  else
-  {
-    //check if sound skin is located in home, otherwise fallback to built-ins
-    m_strMediaDir = URIUtils::AddFileToFolder("special://home/sounds", soundSkin);
-    if (!XFILE::CDirectory::Exists(m_strMediaDir))
-      m_strMediaDir = URIUtils::AddFileToFolder("special://xbmc/sounds", soundSkin);
-  }
-
+  Enable(true);
   std::string strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file

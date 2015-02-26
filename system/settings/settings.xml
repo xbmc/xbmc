@@ -81,13 +81,16 @@
         </setting>
         <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
           <level>0</level>
-          <default>SKINDEFAULT</default>
+          <default>resource.uisounds.confluence</default>
           <constraints>
             <options>skinsounds</options>
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="list" format="string" />
         </setting>
       </group>
