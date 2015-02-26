@@ -74,6 +74,13 @@ bool CDSInputStreamPVRManager::Open(const CFileItem& file)
   m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
 
   std::string transFile = XFILE::CPVRFile::TranslatePVRFilename(file.GetPath());
+
+  if (transFile == file.GetPath())
+  {
+    CFileItemPtr channel = g_PVRChannelGroups->GetByPath(file.GetPath());
+    if (channel && channel->HasPVRChannelInfoTag())
+      transFile = g_PVRClients->GetStreamURL(*channel->GetPVRChannelInfoTag());
+  }
   CFileItem fileItem = file;
   fileItem.SetPath(transFile);
 
@@ -147,6 +154,7 @@ bool CDSInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumber
 
 bool CDSInputStreamPVRManager::SupportsChannelSwitch()const
 {
+  return false;
   PVR_CLIENT client;
   return g_PVRClients->GetPlayingClient(client) && client->HandlesInputStream();
 }
