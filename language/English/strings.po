@@ -14984,7 +14984,7 @@ msgstr ""
 #. Description of settings category "Weather -> General" with label #16000
 #: system/settings/settings.xml
 msgctxt "#36316"
-msgid "Category containing settings for how weather addons are handled."
+msgid "Category containing settings for how weather add-ons are handled."
 msgstr ""
 
 #. Description of settings category "Weather -> General -> Locations with label #0
