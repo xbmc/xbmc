@@ -12300,7 +12300,11 @@ msgctxt "#24005"
 msgid "Media sources"
 msgstr ""
 
-#empty string with id 24006
+#. Name of an add-on type
+#: xbmc/addons/Addon.cpp
+msgctxt "#24006"
+msgid "GUI Sounds"
+msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24007"
