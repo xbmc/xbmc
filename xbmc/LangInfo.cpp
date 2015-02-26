@@ -626,33 +626,6 @@ const std::string& CLangInfo::GetSpeedUnitString() const
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
 }
 
-void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
-{
-  //find languages...
-  CFileItemList items;
-  XFILE::CDirectory::GetDirectory("special://xbmc/language/", items);
-
-  vector<string> vecLanguage;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (pItem->m_bIsFolder)
-    {
-      if (StringUtils::EqualsNoCase(pItem->GetLabel(), ".svn") ||
-          StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
-          StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
-        continue;
-
-      vecLanguage.push_back(pItem->GetLabel());
-    }
-  }
-
-  sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-
-  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
-    list.push_back(make_pair(vecLanguage[i], vecLanguage[i]));
-}
-
 void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(308), "original"));

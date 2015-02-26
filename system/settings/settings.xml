@@ -114,13 +114,15 @@
     </category>
     <category id="locale" label="14090" help="36113">
       <group id="1">
-        <setting id="locale.language" type="string" label="248" help="36114">
+        <setting id="locale.language" type="addon" label="248" help="36114">
           <level>0</level>
           <default>English</default>
           <constraints>
-            <options>languages</options>
+            <addontype>kodi.resource.language</addontype>
           </constraints>
-          <control type="list" format="string" />
+          <control type="button" format="addon">
+            <show more="false" details="false">all</show>
+          </control>
         </setting>
         <setting id="locale.country" type="string" label="20026" help="36115">
           <level>0</level>
