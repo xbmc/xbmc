@@ -531,12 +531,15 @@ bool CGUIControlButtonSetting::OnClick()
   const std::string &controlFormat = control->GetFormat();
   if (controlType == "button")
   {
+    const CSettingControlButton *buttonControl = static_cast<const CSettingControlButton*>(control);
     if (controlFormat == "addon")
     {
       // prompt for the addon
       CSettingAddon *setting = (CSettingAddon *)m_pSetting;
       std::string addonID = setting->GetValue();
-      if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) != 1)
+      if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty(),
+                                                buttonControl->ShowAddonDetails(), buttonControl->ShowInstalledAddons(),
+                                                buttonControl->ShowInstallableAddons(), buttonControl->ShowMoreAddons()) != 1)
         return false;
 
       SetValid(setting->SetValue(addonID));
