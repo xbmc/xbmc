@@ -63,7 +63,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\..\..\xbmc;..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <PrecompiledHeader>
       </PrecompiledHeader>

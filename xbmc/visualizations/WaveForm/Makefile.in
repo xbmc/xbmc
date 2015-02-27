@@ -19,8 +19,7 @@ ifeq (@USE_OPENGLES@,1)
   endif
 else
   OBJS  = Main.o
-  DEFINES += -DHAS_SDL
-  DEFINES += -DHAS_SDL_OPENGL
+  DEFINES += -DHAS_GL
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGL
   else

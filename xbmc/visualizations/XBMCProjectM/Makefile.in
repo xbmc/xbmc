@@ -2,7 +2,7 @@ ARCH=@ARCH@
 OBJS=Main.o
 SLIB=@abs_top_srcdir@/addons/visualization.projectm/projectM.vis
 PRESETS=@abs_top_srcdir@/addons/visualization.projectm/resources/presets.zip
-DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
+DEFINES+=-DHAS_GL
 CXXFLAGS=-fPIC
 DIRS=libprojectM
 

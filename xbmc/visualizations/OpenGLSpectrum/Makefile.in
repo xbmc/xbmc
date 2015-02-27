@@ -17,8 +17,7 @@ ifeq (@USE_OPENGLES@,1)
     LDFLAGS += -lGLESv2
   endif
 else
-  DEFINES += -DHAS_SDL
-  DEFINES += -DHAS_SDL_OPENGL
+  DEFINES += -DHAS_GL
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGL
   else
