@@ -109,4 +109,11 @@ private:
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
   bool PrepareTemplate(const GifFrame &frame);
   void Release();
+  void PrettyPrintError(std::string messageTemplate, int reason);
+
+  inline std::string memOrFile()
+  {
+    return m_filename.empty() ? std::string("memory file") : m_filename;
+  }
+
 };

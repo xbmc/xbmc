@@ -3058,9 +3058,10 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp">
       <Filter>filesystem\win32</Filter>
-    <ClCompile Include="..\..\xbmc\pictures\Gif.cpp">
-      <Filter>pictures</Filter>
     </ClCompile>
+	<ClCompile Include="..\..\xbmc\pictures\Gif.cpp">
+      <Filter>pictures</Filter>
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
