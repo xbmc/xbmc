@@ -894,7 +894,7 @@ bool CApplication::CreateGUI()
 
   if (g_advancedSettings.m_splashImage)
   {
-    std::string strSplash = "special://home/media/Splash.png";
+    std::string strSplash = "special://xbmc/media/Splash.png";
     if (CFile::Exists("special://home/media/Splash.gif"))
       strSplash = "special://home/media/Splash.gif";
     if (CFile::Exists("special://home/media/Splash.png"))// user png wins over gif
