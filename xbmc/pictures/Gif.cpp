@@ -39,6 +39,27 @@ public:
   Gifreader() : buffer(NULL), buffSize(0), readPosition(0) {}
 };
 
+int ReadFromMemory(GifFileType* gif, GifByteType* gifbyte, int len)
+{
+  unsigned int alreadyRead = ((Gifreader*)gif->UserData)->readPosition;
+  unsigned int buffSizeLeft = ((Gifreader*)gif->UserData)->buffSize - alreadyRead;
+  int readBytes = len;
+
+  if (len <= 0)
+    readBytes = 0;
+
+  if (len > (int)buffSizeLeft)
+    readBytes = buffSizeLeft;
+
+  if (readBytes > 0)
+  {
+    unsigned char* src = ((Gifreader*)gif->UserData)->buffer + alreadyRead;
+    memcpy(gifbyte, src, readBytes);
+    ((Gifreader*)gif->UserData)->readPosition += readBytes;
+  }
+  return readBytes;
+}
+
 int ReadFromVfs(GifFileType* gif, GifByteType* gifbyte, int len)
 {
 	XFILE::CFile *gifFile = (XFILE::CFile*)gif->UserData;
@@ -115,7 +136,7 @@ bool Gif::LoadGifMetaData(GifFileType* file)
   if (!m_dll.IsLoaded())
     return false;
 
-  if (!m_dll.DGifSlurp(m_gif))
+  if (m_dll.DGifSlurp(m_gif) == GIF_ERROR)
   {
     int reason = 0;
 #if GIFLIB_MAJOR == 5
@@ -141,7 +162,6 @@ bool Gif::LoadGifMetaData(GifFileType* file)
 #if GIFLIB_MAJOR == 5
     GraphicsControlBlock GCB;
     m_dll.DGifSavedExtensionToGCB(m_gif, 0, &GCB);
-#endif
     ExtensionBlock* extb = m_gif->SavedImages[0].ExtensionBlocks;
     if (extb && extb->Function == APPLICATION_EXT_FUNC_CODE)
     {
@@ -151,6 +171,7 @@ bool Gif::LoadGifMetaData(GifFileType* file)
         m_loops = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1],extb->Bytes[2]);
       }
     }
+#endif
   }
   else
   {
@@ -252,11 +273,10 @@ bool Gif::IsAnimated(const char* file)
       int err = 0;
       int reason = 0;
 #if GIFLIB_MAJOR == 5
-      err = m_dll.DGifCloseFile(gif, &err);
+      err = m_dll.DGifCloseFile(gif, &reason);
 #else
       err = m_dll.DGifCloseFile(gif);
       reason = m_dll.GifLastError();
-      free(m_gif);
 #endif
       if (err == GIF_ERROR)
         PrettyPrintError(StringUtils::Format("Gif::~Gif(): closing file %s failed", memOrFile().c_str()), reason);
@@ -296,34 +316,43 @@ void Gif::InitTemplateAndColormap()
 
 bool Gif::gcbToFrame(GifFrame &frame, unsigned int imgIdx)
 {
-  int transparent = 0;
-#if GIFLIB_MAJOR == 4
-  ExtensionBlock* extb = m_gif->SavedImages[imgIdx].ExtensionBlocks;
-  while (extb && extb->Function != GRAPHICS_EXT_FUNC_CODE)
-    extb++;
-
-  if (extb)
+  int transparent = -1;
+  frame.m_delay = 0;
+  frame.m_disposal = 0;
+#if GIFLIB_MAJOR == 5
+  if (m_gif->ImageCount > 0)
   {
-    frame.m_delay = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1], extb->Bytes[2]) * 10;
-    frame.m_disposal = (extb->Bytes[0] >> 2) & 0x7;
-    if (extb->Bytes[0] & 0x1)
-      transparent = extb->Bytes[3];
-    else
-      transparent = -1;
+    GraphicsControlBlock gcb;
+    if (!m_dll.DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
+    {
+      PrettyPrintError(StringUtils::Format("Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d in file %s",
+        imgIdx, memOrFile().c_str()), m_gif->Error);
+      return false;
+    }
+    // delay in ms
+    frame.m_delay = gcb.DelayTime * 10;
+    frame.m_disposal = gcb.DisposalMode;
+    transparent = gcb.TransparentColor;
   }
 #else
-  GraphicsControlBlock gcb;
-  if (!m_dll.DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
+  if (m_gif->ImageCount > 0)
   {
-    PrettyPrintError(StringUtils::Format("Gif::ExtractFrames(): Could not read GraphicsControlBlock of frame %d in file %s",
-      imgIdx, memOrFile().c_str()), m_gif->Error);
-    return false;
+    ExtensionBlock* extb = m_gif->SavedImages[imgIdx].ExtensionBlocks;
+    while (extb && extb->Function != GRAPHICS_EXT_FUNC_CODE)
+      extb++;
+
+    if (extb)
+    {
+      frame.m_delay = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1], extb->Bytes[2]) * 10;
+      frame.m_disposal = (extb->Bytes[0] >> 2) & 0x7;
+      if (extb->Bytes[0] & 0x1)
+        transparent = extb->Bytes[3];
+      else
+        transparent = -1;
+    }
   }
-  // delay in ms
-  frame.m_delay = gcb.DelayTime * 10;
-  frame.m_disposal = gcb.DisposalMode;
-  transparent = gcb.TransparentColor;
 #endif
+
   if (transparent >= 0 && (unsigned)transparent < frame.m_palette.size())
     frame.m_palette[transparent].x = 0;
   return true;
@@ -491,11 +520,11 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
 
   int err = 0;
 #if GIFLIB_MAJOR == 4
-  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromVfs);
+  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory);
   if (!m_gif)
     err = m_dll.GifLastError();
 #else
-  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromVfs, &err);
+  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory, &err);
 #endif
   if (!m_gif)
   {
