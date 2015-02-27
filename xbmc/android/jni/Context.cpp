@@ -138,9 +138,9 @@ void CJNIContext::unregisterReceiver(const CJNIBroadcastReceiver &receiver)
     receiver.get_raw());
 }
 
-CJNIIntent CJNIContext::sendBroadcast(const CJNIIntent &intent)
+void CJNIContext::sendBroadcast(const CJNIIntent &intent)
 {
-  return call_method<jhobject>(m_context,
+  call_method<void>(m_context,
     "sendBroadcast", "(Landroid/content/Intent;)V",
     intent.get_raw());
 }
