@@ -39,27 +39,6 @@ public:
   Gifreader() : buffer(NULL), buffSize(0), readPosition(0) {}
 };
 
-int ReadFromMemory(GifFileType* gif, GifByteType* gifbyte, int len)
-{
-  unsigned int alreadyRead = ((Gifreader*)gif->UserData)->readPosition;
-  unsigned int buffSizeLeft = ((Gifreader*)gif->UserData)->buffSize - alreadyRead;
-  int readBytes = len;
-
-  if (len <= 0)
-    readBytes = 0;
-
-  if (len > buffSizeLeft)
-    readBytes = buffSizeLeft;
-
-  if (readBytes > 0)
-  {
-    unsigned char* src = ((Gifreader*)gif->UserData)->buffer + alreadyRead;
-    memcpy(gifbyte, src, readBytes);
-    ((Gifreader*)gif->UserData)->readPosition += readBytes;
-  }
-  return readBytes;
-}
-
 int ReadFromVfs(GifFileType* gif, GifByteType* gifbyte, int len)
 {
 	XFILE::CFile *gifFile = (XFILE::CFile*)gif->UserData;
@@ -257,9 +236,9 @@ bool Gif::IsAnimated(const char* file)
     {
       int err = 0;
 #if GIFLIB_MAJOR == 5
-      gif = m_dll.DGifOpen(&gifFile, ReadFromMemory, &err);
+      gif = m_dll.DGifOpen(&gifFile, ReadFromVfs, &err);
 #else
-      gif = m_dll.DGifOpen(&gifFile, ReadFromMemory);
+      gif = m_dll.DGifOpen(&gifFile, ReadFromVfs);
       if (!gif)
         err = m_dll.GifLastError();
 #endif
@@ -512,11 +491,11 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
 
   int err = 0;
 #if GIFLIB_MAJOR == 4
-  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory);
+  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromVfs);
   if (!m_gif)
     err = m_dll.GifLastError();
 #else
-  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory, &err);
+  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromVfs, &err);
 #endif
   if (!m_gif)
   {
