@@ -45,7 +45,7 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
   if (StringUtils::EndsWithNoCase(texture.filename, ".gif"))
   {
     Gif gif;
-    m_isAnimated = gif.IsAnimated(texture.filename);
+    m_isAnimated = gif.IsAnimated(texture.filename.c_str());
   }
 #endif
 }

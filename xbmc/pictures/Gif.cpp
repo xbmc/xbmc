@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "guilib/Texture.h"
 #include "filesystem/File.h"
+#include <algorithm>
 
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))
 #define GIF_MAX_MEMORY 82944000U // about 79 MB, which is equivalent to 10 full hd frames.
@@ -557,7 +558,7 @@ bool Gif::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int f
   return true;
 }
 
-bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile,
+bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile,
                                      unsigned char* &bufferout, unsigned int &bufferoutSize)
 {
   CLog::Log(LOGERROR, "Gif::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");

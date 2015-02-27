@@ -377,17 +377,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 #endif//HAS_GIFLIB
     }
 
-    m_vecTextures.push_back(pMap);
-    return pMap->GetTexture();
-#ifdef _DEBUG
-    int64_t end, freq;
-    end = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-    char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
-    OutputDebugString(temp);
-#endif
-
     if (pMap)
     {
       m_vecTextures.push_back(pMap);
