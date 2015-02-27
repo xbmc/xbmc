@@ -104,6 +104,7 @@ static void bind_socket(int sockfd)
         int res;
 
         saddrBindingSocket.sin_port = htons(port);
+        memset(&saddrBindingSocket.sin_zero, 0, sizeof(saddrBindingSocket.sin_zero));
         res = bind(sockfd, (struct sockaddr *)&saddrBindingSocket,
                    sizeof(saddrBindingSocket));
         if (res == 0) bound = 1;
