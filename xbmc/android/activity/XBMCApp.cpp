@@ -283,6 +283,7 @@ void CXBMCApp::run()
   CJNIIntent startIntent = getIntent();
 
   android_printf("%s Started with action: %s\n", CCompileInfo::GetAppName(), startIntent.getAction().c_str());
+  CAppOptions options;
 
   std::string filenameToPlay = GetFilenameFromIntent(startIntent);
   if (!filenameToPlay.empty())
@@ -295,7 +296,7 @@ void CXBMCApp::run()
     argv[1] = filenameToPlay.c_str();
 
     CAppParamParser appParamParser;
-    appParamParser.Parse((const char **)argv, argc);
+    appParamParser.Parse((const char **)argv, argc, options);
 
     free(argv);
   }
@@ -304,7 +305,7 @@ void CXBMCApp::run()
   android_printf(" => running XBMC_Run...");
   try
   {
-    status = XBMC_Run(true);
+    status = XBMC_Run(options);
     android_printf(" => XBMC_Run finished with %d", status);
   }
   catch(...)
