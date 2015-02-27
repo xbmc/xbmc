@@ -46,6 +46,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDbUrl.h"
+#include "settings/settings.h"
 
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -293,7 +294,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // always hide "all" items
-  if (g_advancedSettings.m_bMusicLibraryHideAllItems)
+  if (CSettings::Get().GetBool("musiclibrary.hideallitems"))
     return;
 
   // no need for "all" item when only one item
