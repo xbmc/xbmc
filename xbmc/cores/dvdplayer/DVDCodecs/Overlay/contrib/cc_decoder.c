@@ -575,8 +575,6 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
   uint32_t i;
   for (i = 0; i<buf_len; i += 3)
   {
-    
-    unsigned char cc_valid = buffer[i] & 0x04;
     unsigned char cc_type = buffer[i] & 0x03;
 
     uint8_t data1 = buffer[i + 1];
