@@ -1332,7 +1332,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the tv vendor override
   int iVendor = GetSettingInt("tv_vendor");
-  if (iVendor >= CEC_MAX_VENDORID &&
+  if (iVendor >= CEC_MIN_VENDORID &&
       iVendor <= CEC_MAX_VENDORID)
     m_configuration.tvVendor = iVendor;
 
