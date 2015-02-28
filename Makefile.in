@@ -54,6 +54,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/json-rpc/json-rpc.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
+									 xbmc/main/main.a \
                    xbmc/media/media.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
