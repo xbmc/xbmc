@@ -34,6 +34,7 @@ namespace PVR
   {
   private:
     typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
+    typedef PVR_RECORDINGMAP::iterator             PVR_RECORDINGMAP_ITR;
     typedef PVR_RECORDINGMAP::const_iterator             PVR_RECORDINGMAP_CITR;
 
     CCriticalSection             m_critSection;
@@ -66,6 +67,7 @@ namespace PVR
     void Unload();
     void Clear();
     void UpdateFromClient(const CPVRRecordingPtr &tag);
+    void UpdateEpgTags(void);
 
     /**
      * @brief refresh the recordings list from the clients.

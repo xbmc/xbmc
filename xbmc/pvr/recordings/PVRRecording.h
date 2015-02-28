@@ -198,10 +198,16 @@ namespace PVR
      */
     bool IsDeleted() const { return m_bIsDeleted; }
 
+    /*!
+     * @return Broadcast id of the EPG event associated with this recording
+     */
+    int EpgEvent(void) const { return m_iEpgEventId; }
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool      m_bGotMetaData;
     bool      m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
+    int       m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

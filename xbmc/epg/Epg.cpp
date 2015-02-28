@@ -261,6 +261,17 @@ CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
   return CEpgInfoTagPtr();
 }
 
+CEpgInfoTagPtr CEpg::GetTag(int uniqueID) const
+{
+  CEpgInfoTagPtr retval;
+  CSingleLock lock(m_critSection);
+  for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); !retval && it != m_tags.end(); ++it)
+    if (it->second->UniqueBroadcastID() == uniqueID)
+      retval = it->second;
+
+  return retval;
+}
+
 CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
 {
   CSingleLock lock(m_critSection);
@@ -303,7 +314,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->Update(tag);
     newTag->SetPVRChannel(m_pvrChannel);
     newTag->SetEpg(this);
-    UpdateRecording(newTag);
   }
 }
 
@@ -329,30 +339,11 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   infoTag->Update(tag, bNewTag);
   infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
-  UpdateRecording(infoTag);
 
   if (bUpdateDatabase)
     m_changedTags.insert(make_pair(infoTag->UniqueBroadcastID(), infoTag));
 
   return true;
-}
-
-void CEpg::UpdateRecording(CEpgInfoTagPtr &tag)
-{
-  if (!tag)
-    return;
-
-  if (tag->HasPVRChannel() && tag->HasRecordingId())
-  {
-    CPVRRecordingPtr recording = g_PVRRecordings->GetById(tag->ChannelTag()->ClientID(), tag->RecordingId());
-    if (recording)
-    {
-      tag->SetRecording(recording);
-      return;
-    }
-  }
-
-  tag->ClearRecording();
 }
 
 bool CEpg::Load(void)

@@ -105,6 +105,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
   m_bIsDeleted                     = recording.bIsDeleted;
+  m_iEpgEventId                    = recording.iEpgEventId;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -127,7 +128,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strThumbnailPath   == right.m_strThumbnailPath &&
        m_strFanartPath      == right.m_strFanartPath &&
        m_iRecordingId       == right.m_iRecordingId &&
-       m_bIsDeleted         == right.m_bIsDeleted);
+       m_bIsDeleted         == right.m_bIsDeleted &&
+       m_iEpgEventId        == right.m_iEpgEventId);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -149,6 +151,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
   value["deleted"] = m_bIsDeleted;
+  value["epgevent"] = m_iEpgEventId;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -174,6 +177,7 @@ void CPVRRecording::Reset(void)
   m_bGotMetaData       = false;
   m_iRecordingId       = 0;
   m_bIsDeleted         = false;
+  m_iEpgEventId        = -1;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -333,6 +337,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strThumbnailPath  = tag.m_strThumbnailPath;
   m_strFanartPath     = tag.m_strFanartPath;
   m_bIsDeleted        = tag.m_bIsDeleted;
+  m_iEpgEventId       = tag.m_iEpgEventId;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;

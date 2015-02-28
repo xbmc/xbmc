@@ -113,8 +113,6 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strEpisodeName = data.strEpisodeName;
   if (data.strIconPath)
     m_strIconPath = data.strIconPath;
-  if (data.strRecordingId)
-    m_strRecordingId = data.strRecordingId;
 
   UpdatePath();
 }
@@ -149,8 +147,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
           m_endTime            == right.m_endTime &&
-          m_pvrChannel         == right.m_pvrChannel &&
-          m_strRecordingId     == right.m_strRecordingId);
+          m_pvrChannel         == right.m_pvrChannel);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -180,7 +177,6 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
-  value["recordingid"] = m_strRecordingId;
   value["hasrecording"] = HasRecording();
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
@@ -442,16 +438,6 @@ std::string CEpgInfoTag::Path(void) const
   return m_strFileNameAndPath;
 }
 
-const std::string& CEpgInfoTag::RecordingId(void) const
-{
-  return m_strRecordingId;
-}
-
-bool CEpgInfoTag::HasRecordingId(void) const
-{
-  return !m_strRecordingId.empty();
-}
-
 bool CEpgInfoTag::HasTimer(void) const
 {
   return m_timer != NULL;
@@ -514,7 +500,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
         m_genre              != tag.m_genre ||
-        m_strRecordingId     != tag.m_strRecordingId ||
         m_strIconPath        != tag.m_strIconPath
     );
     if (bUpdateBroadcastId)
@@ -553,7 +538,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iSeriesNumber      = tag.m_iSeriesNumber;
       m_strEpisodeName     = tag.m_strEpisodeName;
       m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
-      m_strRecordingId     = tag.m_strRecordingId;
       m_strIconPath        = tag.m_strIconPath;
     }
   }
