@@ -55,6 +55,12 @@ CEpgContainer::CEpgContainer(void) :
   m_bStarted = false;
   m_bLoaded = false;
   m_pendingUpdates = 0;
+  m_iUpdateTime = 5 * 60;
+  m_iLastEpgCleanup = 0;
+  m_iNextEpgActiveTagCheck = 0;
+  m_iNextEpgUpdate = 0;
+  m_iDisplayTime = 24 * 60 * 60;
+  m_bIgnoreDbForClient = false;
 }
 
 CEpgContainer::~CEpgContainer(void)
