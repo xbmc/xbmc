@@ -6,6 +6,7 @@ VERSION_MINOR 0
 VERSION_TAG ALPHA1
 VERSION_CODE 149701
 ADDON_API 14.9.701
+SPARKLE_UPDATE_SCHEME_URL http://mirrors.kodi.tv/releases/sparkleupdate.xml
 
 # Notes:
 # Change AC_INIT in configure.in
