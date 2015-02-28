@@ -180,6 +180,16 @@ namespace PVR
     bool IsRecording(void) const;
 
     /*!
+     * @return If recording, gets the recording if the add-on provides the epg id in recordings
+     */
+    CPVRRecordingPtr GetRecording(void) const;
+
+    /*!
+     * @return True if this channel has a corresponding recording, false otherwise
+     */
+    bool HasRecording(void) const;
+
+    /*!
      * @return The path to the icon for this channel.
      */
     std::string IconPath(void) const;

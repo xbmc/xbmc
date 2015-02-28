@@ -273,7 +273,9 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
     return false;
   }
 
-  if (item->GetPath() == g_application.CurrentFile())
+  CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
+  if (item->GetPath() == g_application.CurrentFile() ||
+      (channel && channel->HasRecording() && channel->GetRecording()->GetPath() == g_application.CurrentFile()))
   {
     CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
     g_windowManager.SendMessage(msg);
@@ -289,11 +291,30 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
   else
   {
     bool bSwitchSuccessful(false);
-
     CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
     if (channel && g_PVRManager.CheckParentalLock(channel))
     {
+      CPVRRecordingPtr recording = channel->GetRecording();
+      if (recording)
+      {
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*) g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        if (pDialog)
+        {
+          pDialog->SetHeading(19687); // Play recording
+          pDialog->SetLine(0, "");
+          pDialog->SetLine(1, 12021); // Start from beginning
+          pDialog->SetLine(2, recording->m_strTitle.c_str());
+          pDialog->DoModal();
+
+          if (pDialog->IsConfirmed())
+          {
+            CFileItem recordingItem(recording);
+            return PlayRecording(&recordingItem, CSettings::Get().GetBool("pvrplayback.playminimized"));
+          }
+        }
+      }
+
       /* try a fast switch */
       if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
          (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))

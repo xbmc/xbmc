@@ -294,6 +294,20 @@ bool CPVRChannel::IsRecording(void) const
   return g_PVRTimers->IsRecordingOnChannel(*this);
 }
 
+CPVRRecordingPtr CPVRChannel::GetRecording(void) const
+{
+  EPG::CEpgInfoTagPtr epgTag = GetEPGNow();
+  return (epgTag && epgTag->HasRecording()) ?
+      epgTag->Recording() :
+      CPVRRecordingPtr();
+}
+
+bool CPVRChannel::HasRecording(void) const
+{
+  EPG::CEpgInfoTagPtr epgTag = GetEPGNow();
+  return epgTag && epgTag->HasRecording();
+}
+
 bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon /* = false */)
 {
   CSingleLock lock(m_critSection);
