@@ -1097,17 +1097,26 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       CLog::Log(LOGERROR, "Failed to choose a config %d\n", eglGetError());
     }
 
-    XVisualInfo x11_visual_info_template;
-    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, (EGLint*)&x11_visual_info_template.visualid)) {
+    EGLint eglVisualid;
+    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, &eglVisualid))
+    {
       CLog::Log(LOGERROR, "Failed to query native visual id\n");
     }
+    XVisualInfo x11_visual_info_template;
+    x11_visual_info_template.visualid = eglVisualid;
     int num_visuals;
     vi = XGetVisualInfo(m_dpy,
                         VisualIDMask,
-			&x11_visual_info_template,
-			&num_visuals);
+                        &x11_visual_info_template,
+                        &num_visuals);
 
 #endif
+
+    if(!vi) {
+      CLog::Log(LOGERROR, "Failed to find matching visual");
+      return false;
+    }
+
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
     bool hasWM = HasWindowManager();
