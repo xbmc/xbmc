@@ -506,7 +506,9 @@ bool CWinSystemX11::IsCurrentOutput(std::string output)
 #if defined(HAS_EGL)
 EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
 {
-  EGLint attributes[] = {
+  EGLint attributes[] =
+  {
+    EGL_DEPTH_SIZE, 24,
     EGL_NONE
   };
   EGLint numConfigs;
