@@ -41,7 +41,8 @@ using namespace PVR;
 CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false),
     m_iLastId(0),
-    m_bGroupItems(true)
+    m_bGroupItems(true),
+    m_bHasDeleted(false)
 {
   m_database.Open();
 }
