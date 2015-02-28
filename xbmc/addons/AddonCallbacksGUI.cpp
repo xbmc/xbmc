@@ -1723,10 +1723,10 @@ bool CAddonCallbacksGUI::Dialog_Keyboard_ShowAndVerifyNewPassword(char &strNewPa
 int CAddonCallbacksGUI::Dialog_Keyboard_ShowAndVerifyPassword(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs)
 {
   std::string str = &strPassword;
-  int bRet = CGUIKeyboardFactory::ShowAndVerifyNewPassword(str, strHeading, iRetries, autoCloseMs);
-  if (bRet)
+  int iRet = CGUIKeyboardFactory::ShowAndVerifyPassword(str, strHeading, iRetries, autoCloseMs);
+  if (iRet)
     strncpy(&strPassword, str.c_str(), iMaxStringSize);
-  return bRet;
+  return iRet;
 }
 
 bool CAddonCallbacksGUI::Dialog_Keyboard_ShowAndGetFilter(char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs)
