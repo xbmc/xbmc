@@ -44,19 +44,21 @@ public:
    \return true if a repo was found, false otherwise.
    */
   bool GetRepoForAddon(const std::string& addonID, std::string& repo);
-  int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum);
+  int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum, const ADDON::AddonVersion& version);
   void DeleteRepository(const std::string& id);
   void DeleteRepository(int id);
   int GetRepoChecksum(const std::string& id, std::string& checksum);
   bool GetRepository(const std::string& id, ADDON::VECADDONS& addons);
   bool GetRepository(int id, ADDON::VECADDONS& addons);
-  bool SetRepoTimestamp(const std::string& id, const std::string& timestamp);
+  bool SetRepoTimestamp(const std::string& id, const std::string& timestamp, const ADDON::AddonVersion& version);
 
   /*! \brief Retrieve the time a repository was last checked
    \param id id of the repo
    \return last time the repo was checked, current time if not available
    \sa SetRepoTimestamp */
   CDateTime GetRepoTimestamp(const std::string& id);
+
+  ADDON::AddonVersion GetRepoVersion(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
@@ -139,7 +141,7 @@ protected:
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 16; }
+  virtual int GetSchemaVersion() const { return 17; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
