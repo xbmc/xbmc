@@ -526,6 +526,11 @@ EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
 
   EGLConfig *eglConfigs;
   eglConfigs = (EGLConfig*)malloc(numConfigs * sizeof(EGLConfig));
+  if (!eglConfigs)
+  {
+    CLog::Log(LOGERROR, "eglConfigs malloc failed");
+    return EGL_NO_CONFIG;
+  }
   EGLConfig eglConfig = EGL_NO_CONFIG;
   if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, numConfigs, &numConfigs))
   {
