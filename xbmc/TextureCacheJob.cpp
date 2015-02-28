@@ -235,6 +235,9 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     if (time || st.st_size)
       return StringUtils::Format("d%" PRId64"s%" PRId64, time, st.st_size);;
 
+    // the image exists but we couldn't determine the mtime/ctime and/or size
+    // so set an obviously bad hash
+    return "BADHASH";
   }
   CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, url.c_str());
   return "";
