@@ -70,6 +70,8 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     KEYBOARD m_keyType;
     bool m_bShift;
     bool m_hiddenInput;
+    bool m_isKeyboardNavigationMode;
+    int m_previouslyFocusedButton;
 
     std::vector<CKeyboardLayout> m_layouts;
     unsigned int                 m_currentLayout;
