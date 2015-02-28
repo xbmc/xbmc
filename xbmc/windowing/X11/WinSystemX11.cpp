@@ -512,13 +512,30 @@ EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
     EGL_NONE
   };
   EGLint numConfigs;
-  // TODO make dynamic
-  EGLConfig eglConfigs[1024];
+
+  if (!eglChooseConfig(eglDisplay, attributes, NULL, 0, &numConfigs))
+  {
+    CLog::Log(LOGERROR, "Failed to query number of egl configs");
+    return EGL_NO_CONFIG;
+  }
+  if (numConfigs == 0)
+  {
+    CLog::Log(LOGERROR, "No suitable egl configs found");
+    return EGL_NO_CONFIG;
+  }
+
+  EGLConfig *eglConfigs;
+  eglConfigs = (EGLConfig*)malloc(numConfigs * sizeof(EGLConfig));
+  if (!eglConfigs)
+  {
+    CLog::Log(LOGERROR, "eglConfigs malloc failed");
+    return EGL_NO_CONFIG;
+  }
   EGLConfig eglConfig = EGL_NO_CONFIG;
-  if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, 1024, &numConfigs))
+  if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, numConfigs, &numConfigs))
   {
     CLog::Log(LOGERROR, "Failed to query egl configs");
-    return EGL_NO_CONFIG;
+    goto Exit;
   }
   for (EGLint i = 0;i < numConfigs;++i)
   {
@@ -534,6 +551,8 @@ EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
     }
   }
 
+Exit:
+  free(eglConfigs);
   return eglConfig;
 }
 
