@@ -534,7 +534,7 @@ bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
   return PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
 }
 
-bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
+bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item, bool bPlayRecording)
 {
   if (!item || !item->HasEPGInfoTag())
     return false;
@@ -548,7 +548,7 @@ bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
     return false;
 
   CFileItem fileItem;
-  if (epgTag->HasRecording())
+  if (bPlayRecording && epgTag->HasRecording())
     fileItem = CFileItem(epgTag->Recording());
   else
     fileItem = CFileItem(channel);

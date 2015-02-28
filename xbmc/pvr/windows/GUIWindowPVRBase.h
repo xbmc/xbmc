@@ -47,10 +47,11 @@ namespace PVR
 
   enum EPGSelectAction
   {
-    EPG_SELECT_ACTION_CONTEXT_MENU = 0,
-    EPG_SELECT_ACTION_SWITCH       = 1,
-    EPG_SELECT_ACTION_INFO         = 2,
-    EPG_SELECT_ACTION_RECORD       = 3
+    EPG_SELECT_ACTION_CONTEXT_MENU   = 0,
+    EPG_SELECT_ACTION_SWITCH         = 1,
+    EPG_SELECT_ACTION_INFO           = 2,
+    EPG_SELECT_ACTION_RECORD         = 3,
+    EPG_SELECT_ACTION_PLAY_RECORDING = 4,
   };
 
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
@@ -82,7 +83,7 @@ namespace PVR
 
     virtual bool ActionRecord(CFileItem *item);
     virtual bool ActionPlayChannel(CFileItem *item);
-    virtual bool ActionPlayEpg(CFileItem *item);
+    virtual bool ActionPlayEpg(CFileItem *item, bool bPlayRecording);
     virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
