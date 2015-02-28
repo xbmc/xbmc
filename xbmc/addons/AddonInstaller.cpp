@@ -405,24 +405,27 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
   if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
     return;
   m_repoUpdateWatch.StartZero();
+
   VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
-  for (unsigned int i=0;i<addons.size();++i)
+  if (CAddonMgr::Get().GetAddons(ADDON_REPOSITORY, addons))
   {
     CAddonDatabase database;
     database.Open();
-    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
-    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,24,0,0) < CDateTime::GetCurrentDateTime())
+    for (const auto& repo : addons)
     {
-      CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
-      m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
-      if (wait)
-      { // wait for our job to complete
-        lock.Leave();
-        CLog::Log(LOGDEBUG, "%s - waiting for this repository update job to finish...", __FUNCTION__);
-        m_repoUpdateDone.Wait();
+      CDateTime lastUpdate = database.GetRepoTimestamp(repo->ID());
+      if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,24,0,0) < CDateTime::GetCurrentDateTime())
+      {
+        CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",repo->Name().c_str());
+        m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+        if (wait)
+        { // wait for our job to complete
+          lock.Leave();
+          CLog::Log(LOGDEBUG, "%s - waiting for this repository update job to finish...", __FUNCTION__);
+          m_repoUpdateDone.Wait();
+        }
+        return;
       }
-      return;
     }
   }
 }
