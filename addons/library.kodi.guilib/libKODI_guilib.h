@@ -29,17 +29,17 @@
 typedef void* GUIHANDLE;
 
 #ifdef _WIN32
-#define GUI_HELPER_DLL "\\library.xbmc.gui\\libXBMC_gui" ADDON_HELPER_EXT
+#define GUI_HELPER_DLL "\\library.kodi.guilib\\libKODI_guilib" ADDON_HELPER_EXT
 #else
-#define GUI_HELPER_DLL_NAME "libXBMC_gui-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define GUI_HELPER_DLL "/library.xbmc.gui/" GUI_HELPER_DLL_NAME
+#define GUI_HELPER_DLL_NAME "libKODI_guilib-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define GUI_HELPER_DLL "/library.kodi.guilib/" GUI_HELPER_DLL_NAME
 #endif
 
 /* current ADDONGUI API version */
-#define XBMC_GUI_API_VERSION "5.8.0"
+#define KODI_GUILIB_API_VERSION "5.8.0"
 
 /* min. ADDONGUI API version */
-#define XBMC_GUI_MIN_API_VERSION "5.8.0"
+#define KODI_GUILIB_MIN_API_VERSION "5.8.0"
 
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
@@ -54,21 +54,21 @@ class CAddonGUIRenderingControl;
 class CAddonGUISliderControl;
 class CAddonGUISettingsSliderControl;
 
-class CHelper_libXBMC_gui
+class CHelper_libKODI_guilib
 {
 public:
-  CHelper_libXBMC_gui()
+  CHelper_libKODI_guilib()
   {
-    m_libXBMC_gui = NULL;
-    m_Handle      = NULL;
+    m_libKODI_guilib = NULL;
+    m_Handle = NULL;
   }
 
-  ~CHelper_libXBMC_gui()
+  ~CHelper_libKODI_guilib()
   {
-    if (m_libXBMC_gui)
+    if (m_libKODI_guilib)
     {
       GUI_unregister_me(m_Handle, m_Callbacks);
-      dlclose(m_libXBMC_gui);
+      dlclose(m_libKODI_guilib);
     }
   }
 
@@ -89,207 +89,207 @@ public:
       }
 #endif
 
-    m_libXBMC_gui = dlopen(libBasePath.c_str(), RTLD_LAZY);
-    if (m_libXBMC_gui == NULL)
+    m_libKODI_guilib = dlopen(libBasePath.c_str(), RTLD_LAZY);
+    if (m_libKODI_guilib == NULL)
     {
       fprintf(stderr, "Unable to load %s\n", dlerror());
       return false;
     }
 
     GUI_register_me = (void* (*)(void *HANDLE))
-      dlsym(m_libXBMC_gui, "GUI_register_me");
+      dlsym(m_libKODI_guilib, "GUI_register_me");
     if (GUI_register_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_unregister_me = (void (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_unregister_me");
+      dlsym(m_libKODI_guilib, "GUI_unregister_me");
     if (GUI_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_lock = (void (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_lock");
+      dlsym(m_libKODI_guilib, "GUI_lock");
     if (GUI_lock == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_unlock = (void (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_unlock");
+      dlsym(m_libKODI_guilib, "GUI_unlock");
     if (GUI_unlock == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_get_screen_height = (int (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_get_screen_height");
+      dlsym(m_libKODI_guilib, "GUI_get_screen_height");
     if (GUI_get_screen_height == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_get_screen_width = (int (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_get_screen_width");
+      dlsym(m_libKODI_guilib, "GUI_get_screen_width");
     if (GUI_get_screen_width == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_get_video_resolution = (int (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_get_video_resolution");
+      dlsym(m_libKODI_guilib, "GUI_get_video_resolution");
     if (GUI_get_video_resolution == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_Window_create = (CAddonGUIWindow* (*)(void *HANDLE, void *CB, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog))
-      dlsym(m_libXBMC_gui, "GUI_Window_create");
+      dlsym(m_libKODI_guilib, "GUI_Window_create");
     if (GUI_Window_create == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_Window_destroy = (void (*)(CAddonGUIWindow* p))
-      dlsym(m_libXBMC_gui, "GUI_Window_destroy");
+      dlsym(m_libKODI_guilib, "GUI_Window_destroy");
     if (GUI_Window_destroy == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_spin = (CAddonGUISpinControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_spin");
+      dlsym(m_libKODI_guilib, "GUI_control_get_spin");
     if (GUI_control_get_spin == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_spin = (void (*)(CAddonGUISpinControl* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_spin");
+      dlsym(m_libKODI_guilib, "GUI_control_release_spin");
     if (GUI_control_release_spin == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_radiobutton  = (CAddonGUIRadioButton* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_radiobutton");
+      dlsym(m_libKODI_guilib, "GUI_control_get_radiobutton");
     if (GUI_control_get_radiobutton == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_radiobutton = (void (*)(CAddonGUIRadioButton* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_radiobutton");
+      dlsym(m_libKODI_guilib, "GUI_control_release_radiobutton");
     if (GUI_control_release_radiobutton == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_progress     = (CAddonGUIProgressControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_progress");
+      dlsym(m_libKODI_guilib, "GUI_control_get_progress");
     if (GUI_control_get_progress == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_progress = (void (*)(CAddonGUIProgressControl* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_progress");
+      dlsym(m_libKODI_guilib, "GUI_control_release_progress");
     if (GUI_control_release_progress == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_ListItem_create = (CAddonListItem* (*)(void *HANDLE, void *CB, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path))
-      dlsym(m_libXBMC_gui, "GUI_ListItem_create");
+      dlsym(m_libKODI_guilib, "GUI_ListItem_create");
     if (GUI_ListItem_create == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_ListItem_destroy = (void (*)(CAddonListItem* p))
-      dlsym(m_libXBMC_gui, "GUI_ListItem_destroy");
+      dlsym(m_libKODI_guilib, "GUI_ListItem_destroy");
     if (GUI_ListItem_destroy == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_rendering = (CAddonGUIRenderingControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_rendering");
+      dlsym(m_libKODI_guilib, "GUI_control_get_rendering");
     if (GUI_control_get_rendering == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_rendering = (void (*)(CAddonGUIRenderingControl* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_rendering");
+      dlsym(m_libKODI_guilib, "GUI_control_release_rendering");
     if (GUI_control_release_rendering == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_slider = (CAddonGUISliderControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_slider");
+      dlsym(m_libKODI_guilib, "GUI_control_get_slider");
     if (GUI_control_get_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_slider = (void (*)(CAddonGUISliderControl* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_slider");
+      dlsym(m_libKODI_guilib, "GUI_control_release_slider");
     if (GUI_control_release_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_get_settings_slider = (CAddonGUISettingsSliderControl* (*)(void *HANDLE, void *CB, CAddonGUIWindow *window, int controlId))
-      dlsym(m_libXBMC_gui, "GUI_control_get_settings_slider");
+      dlsym(m_libKODI_guilib, "GUI_control_get_settings_slider");
     if (GUI_control_get_settings_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_control_release_settings_slider = (void (*)(CAddonGUISettingsSliderControl* p))
-      dlsym(m_libXBMC_gui, "GUI_control_release_settings_slider");
+      dlsym(m_libKODI_guilib, "GUI_control_release_settings_slider");
     if (GUI_control_release_settings_slider == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_get_input_with_head = (bool (*)(void *HANDLE, void *CB, char &aTextString, unsigned int iMaxStringSize, const char *heading, bool allowEmptyResult, bool hiddenInput, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_get_input_with_head");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_get_input_with_head");
     if (GUI_dialog_keyboard_show_and_get_input_with_head == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_get_input = (bool (*)(void *HANDLE, void *CB, char &aTextString, unsigned int iMaxStringSize, bool allowEmptyResult, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_get_input");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_get_input");
     if (GUI_dialog_keyboard_show_and_get_input == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_get_new_password_with_head = (bool (*)(void *HANDLE, void *CB, char &newPassword, unsigned int iMaxStringSize, const char *heading, bool allowEmptyResult, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_get_new_password_with_head");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_get_new_password_with_head");
     if (GUI_dialog_keyboard_show_and_get_new_password_with_head == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_get_new_password = (bool (*)(void *HANDLE, void *CB, char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_get_new_password");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_get_new_password");
     if (GUI_dialog_keyboard_show_and_get_new_password == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_verify_new_password_with_head = (bool (*)(void *HANDLE, void *CB, char &strNewPassword, unsigned int iMaxStringSize, const char *heading, bool allowEmptyResult, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_verify_new_password_with_head");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_verify_new_password_with_head");
     if (GUI_dialog_keyboard_show_and_verify_new_password_with_head == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_verify_new_password = (bool (*)(void *HANDLE, void *CB, char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_verify_new_password");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_verify_new_password");
     if (GUI_dialog_keyboard_show_and_verify_new_password == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_verify_password = (int (*)(void *HANDLE, void *CB, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_verify_password");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_verify_password");
     if (GUI_dialog_keyboard_show_and_verify_password == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_show_and_get_filter = (bool (*)(void *HANDLE, void *CB, char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_show_and_get_filter");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_show_and_get_filter");
     if (GUI_dialog_keyboard_show_and_get_filter == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_send_text_to_active_keyboard = (bool (*)(void *HANDLE, void *CB, const char *aTextString, bool closeKeyboard))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_send_text_to_active_keyboard");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_send_text_to_active_keyboard");
     if (GUI_dialog_keyboard_send_text_to_active_keyboard == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_keyboard_is_activated = (bool (*)(void *HANDLE, void *CB))
-      dlsym(m_libXBMC_gui, "GUI_dialog_keyboard_is_activated");
+      dlsym(m_libKODI_guilib, "GUI_dialog_keyboard_is_activated");
     if (GUI_dialog_keyboard_is_activated == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_verify_new_password = (bool (*)(void *HANDLE, void *CB, char &strNewPassword, unsigned int iMaxStringSize))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_verify_new_password");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_verify_new_password");
     if (GUI_dialog_numeric_show_and_verify_new_password == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_verify_password = (int (*)(void *HANDLE, void *CB, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_verify_password");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_verify_password");
     if (GUI_dialog_numeric_show_and_verify_password == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_verify_input = (bool (*)(void *HANDLE, void *CB, char &strPassword, unsigned int iMaxStringSize, const char *strHeading, bool bGetUserInput))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_verify_input");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_verify_input");
     if (GUI_dialog_numeric_show_and_verify_input == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_get_time = (bool (*)(void *HANDLE, void *CB, tm &time, const char *strHeading))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_get_time");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_get_time");
     if (GUI_dialog_numeric_show_and_get_time == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_get_date = (bool (*)(void *HANDLE, void *CB, tm &date, const char *strHeading))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_get_date");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_get_date");
     if (GUI_dialog_numeric_show_and_get_date == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_get_ipaddress = (bool (*)(void *HANDLE, void *CB, char &IPAddress, unsigned int iMaxStringSize, const char *strHeading))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_get_ipaddress");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_get_ipaddress");
     if (GUI_dialog_numeric_show_and_get_ipaddress == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_get_number = (bool (*)(void *HANDLE, void *CB, char &strInput, unsigned int iMaxStringSize, const char *strHeading, unsigned int iAutoCloseTimeoutMs))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_get_number");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_get_number");
     if (GUI_dialog_numeric_show_and_get_number == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_numeric_show_and_get_seconds = (bool (*)(void *HANDLE, void *CB, char &strTime, unsigned int iMaxStringSize, const char *strHeading))
-      dlsym(m_libXBMC_gui, "GUI_dialog_numeric_show_and_get_seconds");
+      dlsym(m_libKODI_guilib, "GUI_dialog_numeric_show_and_get_seconds");
     if (GUI_dialog_numeric_show_and_get_seconds == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_filebrowser_show_and_get_file = (bool (*)(void *HANDLE, void *CB, const char *directory, const char *mask, const char *heading, char &path, unsigned int iMaxStringSize, bool useThumbs, bool useFileDirectories, bool singleList))
-      dlsym(m_libXBMC_gui, "GUI_dialog_filebrowser_show_and_get_file");
+      dlsym(m_libKODI_guilib, "GUI_dialog_filebrowser_show_and_get_file");
     if (GUI_dialog_filebrowser_show_and_get_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_ok_show_and_get_input_single_text = (void (*)(void *HANDLE, void *CB, const char *heading, const char *text))
-      dlsym(m_libXBMC_gui, "GUI_dialog_ok_show_and_get_input_single_text");
+      dlsym(m_libKODI_guilib, "GUI_dialog_ok_show_and_get_input_single_text");
     if (GUI_dialog_ok_show_and_get_input_single_text == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_ok_show_and_get_input_line_text = (void (*)(void *HANDLE, void *CB, const char *heading, const char *line0, const char *line1, const char *line2))
-      dlsym(m_libXBMC_gui, "GUI_dialog_ok_show_and_get_input_line_text");
+      dlsym(m_libKODI_guilib, "GUI_dialog_ok_show_and_get_input_line_text");
     if (GUI_dialog_ok_show_and_get_input_line_text == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_yesno_show_and_get_input_singletext = (bool (*)(void *HANDLE, void *CB, const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel))
-      dlsym(m_libXBMC_gui, "GUI_dialog_yesno_show_and_get_input_singletext");
+      dlsym(m_libKODI_guilib, "GUI_dialog_yesno_show_and_get_input_singletext");
     if (GUI_dialog_yesno_show_and_get_input_singletext == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_yesno_show_and_get_input_linetext = (bool (*)(void *HANDLE, void *CB, const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel))
-      dlsym(m_libXBMC_gui, "GUI_dialog_yesno_show_and_get_input_linetext");
+      dlsym(m_libKODI_guilib, "GUI_dialog_yesno_show_and_get_input_linetext");
     if (GUI_dialog_yesno_show_and_get_input_linetext == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_yesno_show_and_get_input_linebuttontext = (bool (*)(void *HANDLE, void *CB, const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel))
-      dlsym(m_libXBMC_gui, "GUI_dialog_yesno_show_and_get_input_linebuttontext");
+      dlsym(m_libKODI_guilib, "GUI_dialog_yesno_show_and_get_input_linebuttontext");
     if (GUI_dialog_yesno_show_and_get_input_linebuttontext == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_text_viewer = (void (*)(void *hdl, void *cb, const char *heading, const char *text))
-      dlsym(m_libXBMC_gui, "GUI_dialog_text_viewer");
+      dlsym(m_libKODI_guilib, "GUI_dialog_text_viewer");
     if (GUI_dialog_text_viewer == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     GUI_dialog_select = (int (*)(void *hdl, void *cb, const char *heading, const char *entries[], unsigned int size, int selected))
-      dlsym(m_libXBMC_gui, "GUI_dialog_select");
+      dlsym(m_libKODI_guilib, "GUI_dialog_select");
     if (GUI_dialog_select == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
     m_Callbacks = GUI_register_me(m_Handle);
@@ -604,7 +604,7 @@ protected:
   int (*GUI_dialog_select)(void *hdl, void *cb, const char *heading, const char *entries[], unsigned int size, int selected);
 
 private:
-  void *m_libXBMC_gui;
+  void *m_libKODI_guilib;
   void *m_Handle;
   void *m_Callbacks;
   struct cb_array

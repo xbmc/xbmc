@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libKODI_guilib.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}</ProjectGuid>
     <RootNamespace>XBMC_VDR</RootNamespace>
@@ -59,6 +62,9 @@
     <Link>
       <OutputFile>..\..\..\..\..\addons\library.xbmc.gui\$(ProjectName).dll</OutputFile>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell -ExecutionPolicy ByPass  -File $(ProjectDir)\post-build.ps1 $(ProjectDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -71,10 +77,10 @@
     <Link>
       <OutputFile>../../../../../addons/library.xbmc.gui/$(ProjectName).dll</OutputFile>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell -ExecutionPolicy ByPass  -File $(ProjectDir)\post-build.ps1 $(ProjectDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\libXBMC_gui.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

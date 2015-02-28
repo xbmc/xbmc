@@ -1,0 +1,34 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc -I../../../xbmc/cores/dvdplayer/DVDDemuxers
+DEFINES+=
+CXXFLAGS=-fPIC
+LIBNAME=libKODI_guilib
+OBJS=$(LIBNAME).o
+
+LIB_INTERFACE=../../../addons/library.kodi.guilib/libKODI_guilib.h
+LIB_SHARED=../../../addons/library.kodi.guilib/$(LIBNAME)-$(ARCH).so
+GENERATED_ADDON_GUILIB = ../../../addons/kodi.guilib/addon.xml
+LIB_VERSION := $(shell sed -n 's/.*KODI_GUILIB_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
+LIB_VERSION_MIN := $(shell sed -n 's/.*KODI_GUILIB_MIN_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
+
+all: $(LIB_SHARED) $(GENERATED_ADDON_GUILIB)
+
+$(LIB_SHARED): $(OBJS) $(LIB_INTERFACE)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -o $@ \
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
+else
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
+endif
+
+$(GENERATED_ADDON_GUILIB) : $(LIB_INTERFACE)
+	sed -e s/@guilib_version@/$(LIB_VERSION)/g -e s/@guilib_version_min@/$(LIB_VERSION_MIN)/g $@.in > $@
+
+CLEAN_FILES = \
+	$(LIB_SHARED) \
+
+DISTCLEAN_FILES= \
+	Makefile \
+
+include ../../../Makefile.include
