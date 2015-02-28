@@ -159,6 +159,7 @@ bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
 
 void CEpgInfoTag::Serialize(CVariant &value) const
 {
+  CPVRRecordingPtr recording(Recording());
   value["broadcastid"] = m_iUniqueBroadcastID;
   value["parentalrating"] = m_iParentalRating;
   value["rating"] = m_iStarRating;
@@ -178,6 +179,7 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
   value["hasrecording"] = HasRecording();
+  value["recording"] = recording ? recording->m_strFileNameAndPath : "";
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
 }
