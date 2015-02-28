@@ -720,7 +720,8 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
       }
     }
 
-    GLint contextAttributes[] = {
+    EGLint contextAttributes[] =
+    {
       EGL_CONTEXT_CLIENT_VERSION, 2,
       EGL_NONE
     };
@@ -1026,7 +1027,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     };
 #endif
 #if defined(HAS_EGL)
-    GLint att[] =
+    EGLint att[] =
     {
       EGL_RED_SIZE, 8,
       EGL_GREEN_SIZE, 8,
