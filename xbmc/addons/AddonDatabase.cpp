@@ -59,7 +59,7 @@ void CAddonDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create repo table");
   m_pDS->exec("CREATE TABLE repo (id integer primary key, addonID text,"
-              "checksum text, lastcheck text)\n");
+              "checksum text, lastcheck text, version text)\n");
 
   CLog::Log(LOGINFO, "create addonlinkrepo table");
   m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
@@ -96,6 +96,11 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 16)
   {
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
+  }
+  if (version < 17)
+  {
+    m_pDS->exec("DELETE FROM repo");
+    m_pDS->exec("ALTER TABLE repo ADD version text");
   }
 }
 
@@ -374,7 +379,7 @@ void CAddonDatabase::DeleteRepository(int idRepo)
   }
 }
 
-int CAddonDatabase::AddRepository(const std::string& id, const VECADDONS& addons, const std::string& checksum)
+int CAddonDatabase::AddRepository(const std::string& id, const VECADDONS& addons, const std::string& checksum, const AddonVersion& version)
 {
   try
   {
@@ -389,7 +394,8 @@ int CAddonDatabase::AddRepository(const std::string& id, const VECADDONS& addons
     BeginTransaction();
 
     CDateTime time = CDateTime::GetCurrentDateTime();
-    sql = PrepareSQL("insert into repo (id,addonID,checksum,lastcheck) values (NULL,'%s','%s','%s')",id.c_str(),checksum.c_str(),time.GetAsDBDateTime().c_str());
+    sql = PrepareSQL("insert into repo (id,addonID,checksum,lastcheck,version) values (NULL,'%s','%s','%s','%s')",
+                     id.c_str(), checksum.c_str(), time.GetAsDBDateTime().c_str(), version.asString().c_str());
     m_pDS->exec(sql.c_str());
     idRepo = (int)m_pDS->lastinsertid();
     for (unsigned int i=0;i<addons.size();++i)
@@ -452,14 +458,38 @@ CDateTime CAddonDatabase::GetRepoTimestamp(const std::string& id)
   return date;
 }
 
-bool CAddonDatabase::SetRepoTimestamp(const std::string& id, const std::string& time)
+
+AddonVersion CAddonDatabase::GetRepoVersion(const std::string& id)
+{
+  AddonVersion version("0.0.0");
+  try
+  {
+    if (NULL == m_pDB.get()) return version;
+    if (NULL == m_pDS2.get()) return version;
+
+    std::string strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+    {
+      return AddonVersion(m_pDS->fv("version").get_asString());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
+  }
+  return version;
+}
+
+bool CAddonDatabase::SetRepoTimestamp(const std::string& id, const std::string& time, const ADDON::AddonVersion& version)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("update repo set lastcheck='%s' where addonID='%s'",time.c_str(),id.c_str());
+    std::string sql = PrepareSQL("UPDATE repo SET lastcheck='%s', version='%s' WHERE addonID='%s'",
+                                 time.c_str(), version.asString().c_str(), id.c_str());
     m_pDS->exec(sql.c_str());
 
     return true;
