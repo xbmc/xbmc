@@ -16253,7 +16253,19 @@ msgctxt "#37043"
 msgid "Defines the time to wait for subsequent key presses before performing the skip. Only applies when using smart skipping (when using more than one skip step for a direction)."
 msgstr ""
 
-#empty strings from id 37044 to 38009
+#. Setting #37044 Settings -> Video -> File lists -> Extract chapter thumbnails
+#: system/settings/settings.xml
+msgctxt "#37044"
+msgid "Extract chapter thumbnails"
+msgstr ""
+
+#. Description of setting #37044 "Video -> File lists -> Extract chapter thumbnails"
+#: system/settings/settings.xml
+msgctxt "#37045"
+msgid "Extract chapter thumbnails for presentation in the chapters/bookmarks dialog. This might increase CPU load."
+msgstr ""
+
+#empty strings from id 37046 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

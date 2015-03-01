@@ -52,6 +52,7 @@
 #include "filesystem/File.h"
 #include "TextureCache.h"
 #include "ApplicationMessenger.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -285,7 +286,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time)+".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
-    else if (i > m_jobsStarted)
+    else if (i > m_jobsStarted && CSettings::Get().GetBool("myvideos.extractchapterthumbs"))
     {
       CFileItem item(m_filePath, false);
       CJob* job = new CThumbExtractor(item, m_filePath, true, time, pos * 1000, false);
