@@ -38,19 +38,27 @@ public:
    \param type the type of addon wanted
    \param addonID [out] the addon ID of the selected item
    \param showNone whether there should be a "None" item in the list (defaults to false)
+   \param showDetails whether to show details of the addons or not
+   \param showInstalled whether installed addons should be in the list
+   \param showInstallable whether installable addons should be in the list
+   \param showMore whether to show the "Get More" button (only makes sense if showInstalled is true and showInstallable is false)
    \return 1 if an addon was selected, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
    */
-  static int SelectAddonID(ADDON::TYPE type, std::string &addonID, bool showNone = false);
-  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::string &addonID, bool showNone = false);
+  static int SelectAddonID(ADDON::TYPE type, std::string &addonID, bool showNone = false, bool showDetails = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
+  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::string &addonID, bool showNone = false, bool showDetails = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
    \param addonIDs [out] array of selected addon IDs
    \param showNone whether there should be a "None" item in the list (defaults to false)
+   \param showDetails whether to show details of the addons or not
    \param multipleSelection allow selection of multiple addons, if set to true showNone will automaticly switch to false
+   \param showInstalled whether installed addons should be in the list
+   \param showInstallable whether installable addons should be in the list
+   \param showMore whether to show the "Get More" button (only makes sense if showInstalled is true and showInstallable is false)
    \return 1 if an addon was selected or multiple selection was specified, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
    */
-  static int SelectAddonID(ADDON::TYPE type, std::vector<std::string> &addonIDs, bool showNone = false, bool multipleSelection = true);
-  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool multipleSelection = true);
+  static int SelectAddonID(ADDON::TYPE type, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
+  static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   
 protected:
   /* \brief set label2 of an item based on the Addon.Status property

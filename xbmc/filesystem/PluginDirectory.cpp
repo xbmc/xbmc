@@ -96,7 +96,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   // try the plugin type first, and if not found, try an unknown type
   if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
       !CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
-      !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), m_addon))
+      !CAddonInstaller::Get().InstallModal(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -424,7 +424,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), addon))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().InstallModal(url.GetHostName(), addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;

@@ -193,7 +193,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
   return false;
 }
 
-void CRepository::OnPostInstall(bool restart, bool update)
+void CRepository::OnPostInstall(bool restart, bool update, bool modal)
 {
   VECADDONS addons;
   AddonPtr repo(new CRepository(*this));

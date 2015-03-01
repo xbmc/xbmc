@@ -136,7 +136,7 @@ bool CService::OnPreInstall()
   return !CAddonMgr::Get().IsAddonDisabled(ID());
 }
 
-void CService::OnPostInstall(bool restart, bool update)
+void CService::OnPostInstall(bool restart, bool update, bool modal)
 {
   if (restart) // reload/start it if it was running
   {

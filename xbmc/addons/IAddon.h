@@ -117,7 +117,7 @@ namespace ADDON
     virtual void OnEnabled() =0;
     virtual AddonPtr GetRunningInstance() const=0;
     virtual bool OnPreInstall() =0;
-    virtual void OnPostInstall(bool restart, bool update) =0;
+    virtual void OnPostInstall(bool restart, bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
     virtual bool CanInstall(const std::string& referer) =0;

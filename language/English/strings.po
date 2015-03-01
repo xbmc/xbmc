@@ -12458,7 +12458,17 @@ msgctxt "#24056"
 msgid "Last updated %s"
 msgstr ""
 
-#empty strings from id 24057 to 24058
+#. Used as a title in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24057"
+msgid "Installing %s..."
+msgstr ""
+
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24058"
+msgid "Checking dependencies..."
+msgstr ""
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -12542,7 +12552,23 @@ msgctxt "#24076"
 msgid "Add-on Required"
 msgstr ""
 
-#empty strings from id 24077 to 24079
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24077"
+msgid "Verifying downloaded add-on..."
+msgstr ""
+
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24078"
+msgid "Downloading add-on..."
+msgstr ""
+
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24079"
+msgid "Installing add-on dependencies..."
+msgstr ""
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -12572,7 +12598,19 @@ msgctxt "#24084"
 msgid "Visualisation libraries"
 msgstr ""
 
-#empty strings from id 24085 to 24088
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24085"
+msgid "Failed to install a dependency"
+msgstr ""
+
+#. Used as a text in the progress dialog when installing an add-on
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24086"
+msgid "Installing add-on..."
+msgstr ""
+
+#empty strings from id 24087 to 24088
 
 msgctxt "#24089"
 msgid "Add-on restarts"

@@ -27,6 +27,10 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+#define SHOW_ADDONS_ALL               "all"
+#define SHOW_ADDONS_INSTALLED         "installed"
+#define SHOW_ADDONS_INSTALLABLE       "installable"
+
 ISettingControl* CSettingControlCreator::CreateControl(const std::string &controlType) const
 {
   if (StringUtils::EqualsNoCase(controlType, "toggle"))
@@ -139,6 +143,56 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
   
   XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
   XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDEVALUE, m_hideValue);
+
+  if (m_format == "addon")
+  {
+    std::string strShowAddons;
+    if (XMLUtils::GetString(node, "show", strShowAddons) && !strShowAddons.empty())
+    {
+      if (StringUtils::EqualsNoCase(strShowAddons, SHOW_ADDONS_ALL))
+      {
+        m_showInstalledAddons = true;
+        m_showInstallableAddons = true;
+      }
+      else if (StringUtils::EqualsNoCase(strShowAddons, SHOW_ADDONS_INSTALLED))
+      {
+        m_showInstalledAddons = true;
+        m_showInstallableAddons = false;
+      }
+      else if (StringUtils::EqualsNoCase(strShowAddons, SHOW_ADDONS_INSTALLABLE))
+      {
+        m_showInstalledAddons = false;
+        m_showInstallableAddons = true;
+      }
+      else
+        CLog::Log(LOGWARNING, "CSettingControlButton: invalid <show>");
+
+      const TiXmlElement *show = node->FirstChildElement("show");
+      if (show != NULL)
+      {
+        const char *strShowDetails = NULL;
+        if ((strShowDetails = show->Attribute(SETTING_XML_ATTR_SHOW_DETAILS)) != NULL)
+        {
+          if (StringUtils::EqualsNoCase(strShowDetails, "false") || StringUtils::EqualsNoCase(strShowDetails, "true"))
+            m_showAddonDetails = StringUtils::EqualsNoCase(strShowDetails, "true");
+          else
+            CLog::Log(LOGWARNING, "CSettingControlButton: error reading \"details\" attribute of <show>");
+        }
+
+        if (!m_showInstallableAddons)
+        {
+          const char *strShowMore = NULL;
+          if ((strShowMore = show->Attribute(SETTING_XML_ATTR_SHOW_MORE)) != NULL)
+          {
+            if (StringUtils::EqualsNoCase(strShowMore, "false") || StringUtils::EqualsNoCase(strShowMore, "true"))
+              m_showMoreAddons = StringUtils::EqualsNoCase(strShowMore, "true");
+            else
+              CLog::Log(LOGWARNING, "CSettingControlButton: error reading \"more\" attribute of <show>");
+          }
+        }
+      }
+    }
+  }
 
   return true;
 }

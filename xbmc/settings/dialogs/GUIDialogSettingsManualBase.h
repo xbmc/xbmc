@@ -71,7 +71,8 @@ protected:
   // button controls
   CSettingAction* AddButton(CSettingGroup *group, const std::string &id, int label, int level, bool delayed = false, bool visible = true, int help = -1);
   CSettingAddon* AddAddon(CSettingGroup *group, const std::string &id, int label, int level, std::string value, ADDON::TYPE addonType,
-                          bool allowEmpty = false, int heading = -1, bool hideValue = false, bool delayed = false, bool visible = true, int help = -1);
+                          bool allowEmpty = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true, bool showInstallableAddons = false,
+                          bool showMoreAddons = true, bool delayed = false, bool visible = true, int help = -1);
   CSettingPath* AddPath(CSettingGroup *group, const std::string &id, int label, int level, std::string value, bool writable = true,
                         const std::vector<std::string> &sources = std::vector<std::string>(), bool allowEmpty = false, int heading = -1, bool hideValue = false,
                         bool delayed = false, bool visible = true, int help = -1);
@@ -145,7 +146,8 @@ protected:
 
   ISettingControl* GetCheckmarkControl(bool delayed = false);
   ISettingControl* GetEditControl(const std::string &format, bool delayed = false, bool hidden = false, bool verifyNewValue = false, int heading = -1);
-  ISettingControl* GetButtonControl(const std::string &format, bool delayed = false, int heading = -1, bool hideValue = false);
+  ISettingControl* GetButtonControl(const std::string &format, bool delayed = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true,
+                                    bool showInstallableAddons = false, bool showMoreAddons = true);
   ISettingControl* GetSpinnerControl(const std::string &format, bool delayed = false, int minimumLabel = -1, int formatLabel = -1, const std::string &formatString = "");
   ISettingControl* GetListControl(const std::string &format, bool delayed = false, int heading = -1, bool multiselect = false);
   ISettingControl* GetSliderControl(const std::string &format, bool delayed = false, int heading = -1, bool usePopup = false, int formatLabel = -1, const std::string &formatString = "");
