@@ -77,7 +77,11 @@ void CGUIVideoControl::Render()
       region.Intersect(old);
       g_graphicsContext.BeginPaint();
       g_graphicsContext.SetScissors(region);
+#ifdef HAS_IMXVPU
+      g_graphicsContext.Clear((16 << 16)|(8 << 8)|16);
+#else
       g_graphicsContext.Clear(0);
+#endif
       g_graphicsContext.SetScissors(old);
       g_graphicsContext.EndPaint();
     }

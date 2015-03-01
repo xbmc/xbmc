@@ -54,7 +54,48 @@ bool CRenderCaptureBase::UseOcclusionQuery()
     return true;
 }
 
-#if defined(TARGET_RASPBERRY_PI)
+
+#if defined(HAS_IMXVPU)
+CRenderCaptureIMX::CRenderCaptureIMX()
+{
+}
+
+CRenderCaptureIMX::~CRenderCaptureIMX()
+{
+}
+
+int CRenderCaptureIMX::GetCaptureFormat()
+{
+    return CAPTUREFORMAT_RGBA;
+}
+
+void CRenderCaptureIMX::BeginRender()
+{
+  m_asyncChecked = true;
+  m_asyncSupported = true;
+}
+
+void CRenderCaptureIMX::EndRender()
+{
+  if (m_flags & CAPTUREFLAG_IMMEDIATELY)
+    ReadOut();
+  else
+    SetState(CAPTURESTATE_NEEDSREADOUT);
+}
+
+void* CRenderCaptureIMX::GetRenderBuffer()
+{
+    return m_pixels;
+}
+
+void CRenderCaptureIMX::ReadOut()
+{
+  g_IMXContext.WaitCapture();
+  m_pixels = reinterpret_cast<uint8_t*>(g_IMXContext.GetCaptureBuffer());
+  SetState(CAPTURESTATE_DONE);
+}
+
+#elif defined(TARGET_RASPBERRY_PI)
 
 CRenderCaptureDispmanX::CRenderCaptureDispmanX()
 {

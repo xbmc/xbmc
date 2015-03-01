@@ -1981,7 +1981,7 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
         ;;
     *imxvpu*)
       AC_CHECK_HEADER([imx-mm/vpu/vpu_wrapper.h],, AC_MSG_ERROR($missing_headers))
-      AC_CHECK_LIB([vpu], main, LIBS="$LIBS -lfslvpuwrap -lvpu", AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([vpu], main, LIBS="$LIBS -lfslvpuwrap -lvpu -lg2d", AC_MSG_ERROR($missing_library))
       XB_ADD_CODEC([IMXVPU], [imxvpu], [$codecs])
       CXXFLAGS="$CXXFLAGS -Wno-psabi -DLINUX "
       CFLAGS="$CFLAGS -DLINUX"

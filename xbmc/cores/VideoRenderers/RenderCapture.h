@@ -172,7 +172,33 @@ class CRenderCaptureBase
     bool             m_asyncChecked;
 };
 
-#if defined(TARGET_RASPBERRY_PI)
+
+#if defined(HAS_IMXVPU)
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
+
+class CRenderCaptureIMX : public CRenderCaptureBase
+{
+  public:
+    CRenderCaptureIMX();
+    ~CRenderCaptureIMX();
+
+    int   GetCaptureFormat();
+
+    void  BeginRender();
+    void  EndRender();
+    void  ReadOut();
+
+    void* GetRenderBuffer();
+};
+
+class CRenderCapture : public CRenderCaptureIMX
+{
+  public:
+    CRenderCapture() {};
+};
+
+
+#elif defined(TARGET_RASPBERRY_PI)
 #include "xbmc/linux/RBP.h"
 
 class CRenderCaptureDispmanX : public CRenderCaptureBase

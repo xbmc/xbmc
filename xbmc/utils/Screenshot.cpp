@@ -37,6 +37,11 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 
+#ifdef HAS_IMXVPU
+// This has to go into another header file
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
+#endif
+
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 
@@ -160,7 +165,7 @@ bool CScreenshotSurface::capture()
     for (int x = 0; x < m_width; x++, swap_pixels+=4)
     {
       std::swap(swap_pixels[0], swap_pixels[2]);
-    }   
+    }
 #endif
     memcpy(m_buffer + y * m_stride, surface + (m_height - y - 1) *m_stride, m_stride);
   }
@@ -170,6 +175,12 @@ bool CScreenshotSurface::capture()
 #if defined(HAS_LIBAMCODEC)
   // Captures the current visible videobuffer and blend it into m_buffer (captured overlay)
   CScreenshotAML::CaptureVideoFrame(m_buffer, m_width, m_height);
+#endif
+
+#ifdef HAS_IMXVPU
+  // Captures the current visible framebuffer page and blends it into the
+  // captured GL overlay
+  g_IMXContext.CaptureDisplay(m_buffer, m_width, m_height);
 #endif
 
 #else
