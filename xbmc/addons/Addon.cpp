@@ -390,6 +390,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PVRDLL:
       case ADDON_PLUGIN:
+      case ADDON_WEB_INTERFACE:
       case ADDON_SERVICE:
       case ADDON_REPOSITORY:
       case ADDON_AUDIOENCODER:

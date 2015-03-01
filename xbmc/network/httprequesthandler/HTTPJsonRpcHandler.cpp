@@ -30,7 +30,7 @@
 
 bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request)
 {
-  return (request.url.compare("/jsonrpc") == 0);
+  return (request.pathUrl.compare("/jsonrpc") == 0);
 }
 
 int CHTTPJsonRpcHandler::HandleRequest()

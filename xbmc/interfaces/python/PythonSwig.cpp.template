@@ -88,6 +88,7 @@ Helper.setup(this,classes,
       (Pattern.compile('''(r.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.intm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
       (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.intm'),
+      (Pattern.compile('''p.void''')) : '${api} = (void*)${slarg};',
       'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
       'long' : '${api} = PyInt_AsLong(${slarg});',
       'unsigned long' : '${api} = PyLong_AsUnsignedLong(${slarg});',
@@ -109,11 +110,14 @@ void doMethod(Node method, MethodType methodType)
 {
   boolean isOperator = method.@name.startsWith("operator ")
   boolean doAsMappingIndex = false
+  boolean doAsCallable = false
 
   if (isOperator)
   {
     if("[]" == method.@name.substring(9))
       doAsMappingIndex = true
+    else if("()" == method.@name.substring(9))
+      doAsCallable = true
     else
       return;
   }
@@ -162,7 +166,7 @@ void doMethod(Node method, MethodType methodType)
       params.each { 
 %>         
     ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(it.@type))} ${it.@name} ${it.@value != null ? ' = ' + it.@value : ''};<%
-        if (!PythonTools.parameterCanBeUsedDirectly(it))
+        if (!PythonTools.parameterCanBeUsedDirectly(it) && !doAsMappingIndex)
         { %>
     PyObject* py${it.@name} = NULL;<%
         }
@@ -347,6 +351,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
   boolean hasLtOp = false
   boolean hasGtOp = false
   Node indexOp = null
+  Node callableOp = null
   Node sizeNode = null
 
   List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
@@ -364,6 +369,8 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
       hasGtOp = true
     else if (it.@name.substring(9) == "[]")
       indexOp = it
+    else if (it.@name.substring(9) == "()")
+      callableOp = it
     else
       System.err.println ("Warning: class ${fullClassName} has an operator \"${it.@name}\" that is being ignored.");
   }
@@ -459,10 +466,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
       PyObject* result = NULL;
    <%
   properties.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} apiResult = (${SwigTypeParser.SwigType_lstr(it.@type)})theObj->${it.@sym_name};
-        ${Helper.getOutConversion(it.@type, 'result', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} apiResult = (${SwigTypeParser.SwigType_lstr(returns)})theObj->${it.@sym_name};
+        ${Helper.getOutConversion(returns, 'result', it)}
       }
       else<%
   } %>
@@ -528,10 +536,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 
 <%
   properties_set.each {
+     String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(it.@type)} tmp;
-        ${Helper.getInConversion(it.@type, 'tmp', 'value', it)}
+        ${SwigTypeParser.SwigType_lstr(returns)} tmp;
+        ${Helper.getInConversion(returns, 'tmp', 'value', it)}
         if (PyErr_Occurred())
           throw PythonBindings::PythonToCppException();
         
@@ -554,7 +563,89 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     {NULL}
   };
 <%
-  } %>
+  }
+
+  if ((clazz.@feature_iterator && clazz.@feature_iterator != '') ||
+      (clazz.@feature_iterable && clazz.@feature_iterable != '')) { %>
+  static PyObject* ${module.@name}_${classNameAsVariable}_iter(PyObject* self)
+  { <%
+    if (clazz.@feature_iterator) { %>
+    return self; <%
+    }
+    else { %>
+    PyObject* result = NULL;
+    try
+    {
+      ${clazz.@feature_iterable}* apiResult = ((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${module.@name}_${classNameAsVariable}_iternext","${fullClassName}"))->begin();
+      
+      ${Helper.getOutConversion('p.' + clazz.@feature_iterable,'result',clazz)}
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      return NULL;
+    }
+
+    return result; <%
+    } %>
+  }
+<%
+
+    if (clazz.@feature_iterator) { %>
+  static PyObject* ${module.@name}_${classNameAsVariable}_iternext(PyObject* self)
+  {
+    PyObject* result = NULL;
+    try
+    {
+      ${fullClassName}* iter = (${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${module.@name}_${classNameAsVariable}_iternext","${fullClassName}");
+
+      // check if we have reached the end
+      if (!iter->end())
+      {
+        ++(*iter);
+
+        ${clazz.@feature_iterator} apiResult = **iter;
+        ${Helper.getOutConversion(clazz.@feature_iterator,'result',clazz)}
+      }
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${module.@name}_${classNameAsVariable}_iternext\"");
+      return NULL;
+    }
+
+    return result;
+  }
+<%
+    }
+  }
+%>
 
   // This method initializes the above mentioned Python Type structure
   static void ${initTypeCall}()
@@ -572,26 +663,50 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     pythonType.tp_basicsize = sizeof(PyHolder);
     pythonType.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
- if (doComparator) { %>
+  if (doComparator) { %>
     pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
- }
- if (clazz.@feature_python_rcmp) { %>
+  }
+  if (clazz.@feature_python_rcmp) { %>
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
- } %>
+  } %>
 
+<%
+  if (clazz.@feature_iterator) { %>
+    pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_ITER;
+<%
+  }
+  else { %>
     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+<%
+  } %>
     pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
- if (properties.size() > 0) { %>
+  if (properties.size() > 0) { %>
     pythonType.tp_getset = ${classNameAsVariable}_getsets;
 <%
- }
- if (doAsMapping) { %>
+  }
+  if (callableOp) { %>
+    pythonType.tp_call = (ternaryfunc)${module.@name}_${PythonTools.getPyMethodName(callableOp,MethodType.method)};
+<%
+  }
+  if (doAsMapping) { %>
     pythonType.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
-<%  }
-    Node baseclass = PythonTools.findValidBaseClass(clazz, module)
+<%
+  }
 
+  if (clazz.@feature_iterator) { %>
+    pythonType.tp_iter = (getiterfunc)${module.@name}_${classNameAsVariable}_iter;
+    pythonType.tp_iternext = (iternextfunc)${module.@name}_${classNameAsVariable}_iternext;
+<%
+  }
+  else if (clazz.@feature_iterable && clazz.@feature_iterable != '') { %>
+    pythonType.tp_iter = (getiterfunc)${module.@name}_${classNameAsVariable}_iter;
+<%
+  }
+
+  Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 %>
+
     pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
     pythonType.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
 

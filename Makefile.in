@@ -107,9 +107,11 @@ NWAOBJSXBMC=	xbmc/threads/threads.a \
 
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
+DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/python/httprequesthandlers-python.a
 endif
 
 DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
+DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/wsgi/legacy-wsgi.a
 DIRECTORY_ARCHIVES += xbmc/interfaces/python/python_binding.a
 
 ifeq (@USE_OPENGL@,1)

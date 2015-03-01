@@ -18,15 +18,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-%>
-<%
     List templateArgs = swigTypeParser.SwigType_templateparmlist(type)
     vectype = templateArgs[0]
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     String accessor = ispointer ? '->' : '.'
     seq = sequence.increment()
 %>
-
     ${result} = PyList_New(0);
 <%
     if (ispointer)

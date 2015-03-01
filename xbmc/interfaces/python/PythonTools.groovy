@@ -92,12 +92,25 @@ public class PythonTools
       // if this is a destructor node then the methodtype best reflect that
       assert (method.name() != 'destructor' || methodType == MethodType.destructor), 'Cannot use a destructor node and not identify the type as a destructor' + method
 
-      return (clazz == null) ? method.@sym_name :
-      (
-      (methodType == MethodType.constructor) ? (clazz + "_New") :
-      (methodType == MethodType.destructor ? (clazz + "_Dealloc") : 
-       ((method.@name.startsWith("operator ") && "[]" == method.@name.substring(9)) ? "${clazz}_operatorIndex_" : clazz + "_" + method.@sym_name))
-      )
+      if (clazz == null)
+        return method.@sym_name
+
+      if (methodType == MethodType.constructor)
+        return clazz + "_New"
+
+      if (methodType == MethodType.destructor)
+        return clazz + "_Dealloc"
+
+      if (method.@name.startsWith("operator "))
+      {
+        if ("[]" == method.@name.substring(9))
+          return clazz + "_operatorIndex_"
+
+        if ("()" == method.@name.substring(9))
+          return clazz + "_callable_"
+      }
+
+      return clazz + "_" + method.@sym_name;
    }
 
   public static String makeDocString(Node docnode)

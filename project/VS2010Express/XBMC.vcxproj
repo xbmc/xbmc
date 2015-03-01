@@ -186,6 +186,7 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Service.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Webinterface.cpp" />
     <ClCompile Include="..\..\xbmc\Application.cpp" />
     <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp" />
     <ClCompile Include="..\..\xbmc\ApplicationPlayer.cpp" />
@@ -511,6 +512,7 @@
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\generic\ILanguageInvoker.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\generic\LanguageInvokerThread.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\generic\ScriptInvocationManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
@@ -561,6 +563,10 @@
     <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowDialog.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowDialogMixin.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowXML.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiErrorStream.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiInputStream.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiResponse.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiResponseBody.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\CallbackHandler.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmc.cpp" />
@@ -568,6 +574,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcgui.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcplugin.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcvfs.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcwsgi.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\LanguageHook.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\PyContext.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp" />
@@ -642,10 +649,13 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPPythonHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonInvoker.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonWsgiInvoker.cpp" />
     <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.cpp" />
     <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfMDNS.cpp" />
     <ClCompile Include="..\..\xbmc\network\Network.cpp" />
@@ -819,6 +829,7 @@
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\DatabaseManager.cpp" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
+    <ClInclude Include="..\..\xbmc\addons\Webinterface.h" />
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
@@ -937,6 +948,10 @@
     <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowException.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowInterceptor.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowXML.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiErrorStream.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiInputStream.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiResponse.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\wsgi\WsgiResponseBody.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\CallbackHandler.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\LanguageHook.h" />
@@ -948,6 +963,10 @@
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPPythonHandler.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonInvoker.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonRequest.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\python\HTTPPythonWsgiInvoker.h" />
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
@@ -2565,6 +2584,20 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\windows\CompileInfo.bat</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generating CompileInfo.cpp</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">..\..\xbmc\CompileInfo.cpp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcwsgi.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">CALL ..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generate SWIG Bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generate SWIG Bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Generate SWIG Bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

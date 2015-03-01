@@ -156,7 +156,6 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
-  int m_Py_file_input = Py_file_input;
 
   // get the global lock
   PyEval_AcquireLock();
@@ -260,6 +259,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   PyThreadState_Swap(state);
 
   bool failed = false;
+  std::string exceptionType, exceptionValue, exceptionTraceback;
   if (!stopping)
   {
     try
@@ -289,7 +289,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         Py_DECREF(f);
         setState(InvokerStateRunning);
         XBMCAddon::Python::PyContext pycontext; // this is a guard class that marks this callstack as being in a python context
-        PyRun_FileExFlags(fp, nativeFilename.c_str(), m_Py_file_input, moduleDict, moduleDict, 1, NULL);
+        executeScript(fp, nativeFilename, module, moduleDict);
       }
       else
         CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): %s not found!", GetId(), m_sourceFile.c_str(), m_sourceFile.c_str());
@@ -330,11 +330,17 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     // if it failed with an exception we already logged the details
     if (!failed)
     {
-      PythonBindings::PythonToCppException e;
-      e.LogThrowMessage();
+      PythonBindings::PythonToCppException *e = NULL;
+      if (PythonBindings::PythonToCppException::ParsePythonException(exceptionType, exceptionValue, exceptionTraceback))
+        e = new PythonBindings::PythonToCppException(exceptionType, exceptionValue, exceptionTraceback);
+      else
+        e = new PythonBindings::PythonToCppException();
+
+      e->LogThrowMessage();
+      delete e;
     }
 
-    onError();
+    onError(exceptionType, exceptionValue, exceptionTraceback);
   }
 
   // no need to do anything else because the script has already stopped
@@ -417,6 +423,15 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   setState(stateToSet);
 
   return true;
+}
+
+void CPythonInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
+{
+  if (fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+    return;
+
+  int m_Py_file_input = Py_file_input;
+  PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, NULL);
 }
 
 bool CPythonInvoker::stop(bool abort)
@@ -565,7 +580,7 @@ void CPythonInvoker::onDeinitialization()
   XBMC_TRACE;
 }
 
-void CPythonInvoker::onError()
+void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const std::string &exceptionValue /* = "" */, const std::string &exceptionTraceback /* = "" */)
 {
   CPyThreadState releaseGil;
   CSingleLock gc(g_graphicsContext);

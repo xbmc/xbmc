@@ -18,8 +18,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-%>
-<%
     boolean ispointer = swigTypeParser.SwigType_ispointer(ltype)
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
@@ -55,5 +53,3 @@
         }
       }
     }
-
-      

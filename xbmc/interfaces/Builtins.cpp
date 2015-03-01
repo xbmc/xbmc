@@ -530,7 +530,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (!filename.empty())
         argv[0] = filename;
 
-      CScriptInvocationManager::Get().Execute(scriptpath, addon, argv);
+      CScriptInvocationManager::Get().ExecuteAsync(scriptpath, addon, argv);
     }
   }
 #if defined(TARGET_DARWIN_OSX)
