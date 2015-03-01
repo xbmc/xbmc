@@ -672,6 +672,13 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
   }
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glColorMask(GL_TRUE, GL_TRUE, GL_FALSE, GL_TRUE);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glColorMask(GL_FALSE, GL_FALSE, GL_TRUE, GL_TRUE);
+  }
 
   if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED)
   {
@@ -698,6 +705,7 @@ bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
   {
     case RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN:
     case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
+    case RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE:
     case RENDER_STEREO_MODE_INTERLACED:
       return true;
     case RENDER_STEREO_MODE_HARDWAREBASED: {

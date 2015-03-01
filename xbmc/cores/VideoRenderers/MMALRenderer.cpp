@@ -592,7 +592,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
       video_stereo_mode = RENDER_STEREO_MODE_OFF;
       display_stereo_mode = RENDER_STEREO_MODE_OFF;
     }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
     {
       SrcRect.x2 *= 2.0f;
     }
@@ -607,7 +607,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
       video_stereo_mode = RENDER_STEREO_MODE_OFF;
       display_stereo_mode = RENDER_STEREO_MODE_OFF;
     }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
     {
       SrcRect.y2 *= 2.0f;
     }

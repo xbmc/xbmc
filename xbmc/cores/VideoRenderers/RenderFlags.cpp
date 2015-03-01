@@ -101,6 +101,7 @@ namespace RenderManager {
       convert["anaglyph_cyan_red"]      = 0u;
       convert["right_left"]             = CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT;
       convert["anaglyph_green_magenta"] = 0u;
+      convert["anaglyph_yellow_blue"]   = 0u;
       convert["block_lr"]               = 0u;
       convert["block_rl"]               = 0u;
     }
