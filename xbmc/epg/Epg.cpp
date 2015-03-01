@@ -226,7 +226,7 @@ CEpgInfoTagPtr CEpg::GetTagNext() const
     /* return the first event that is in the future */
     for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
     {
-      if (it->second->InTheFuture())
+      if (it->second->IsUpcoming())
         return it->second;
     }
   }
@@ -302,9 +302,8 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   {
     newTag->Update(tag);
     newTag->SetPVRChannel(m_pvrChannel);
-    newTag->m_epg          = this;
+    newTag->SetEpg(this);
     UpdateRecording(newTag);
-    newTag->m_bChanged     = false;
   }
 }
 
@@ -328,7 +327,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   }
 
   infoTag->Update(tag, bNewTag);
-  infoTag->m_epg          = this;
+  infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
   UpdateRecording(infoTag);
 
