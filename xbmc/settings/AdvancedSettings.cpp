@@ -1112,6 +1112,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "ca", m_databaseVideo.ca);
     XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
   }
 
   pDatabase = pRootElement->FirstChildElement("musicdatabase");
@@ -1128,6 +1129,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "ca", m_databaseMusic.ca);
     XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
   }
 
   pDatabase = pRootElement->FirstChildElement("tvdatabase");
@@ -1144,6 +1146,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "ca", m_databaseTV.ca);
     XMLUtils::GetString(pDatabase, "capath", m_databaseTV.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseTV.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseTV.compression);
   }
 
   pDatabase = pRootElement->FirstChildElement("epgdatabase");
@@ -1160,6 +1163,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "ca", m_databaseEpg.ca);
     XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseEpg.compression);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");

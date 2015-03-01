@@ -134,7 +134,13 @@ int MysqlDatabase::connect(bool create_new) {
       return DB_CONNECTION_NONE;
 
     // establish connection with just user credentials
-    if (mysql_real_connect(conn, host.c_str(),login.c_str(),passwd.c_str(), NULL, atoi(port.c_str()),NULL,0) != NULL)
+    if (mysql_real_connect(conn, host.c_str(),
+                                 login.c_str(),
+                                 passwd.c_str(),
+                                 NULL,
+                                 atoi(port.c_str()),
+                                 NULL,
+                                 compression ? CLIENT_COMPRESS : 0) != NULL)
     {
       // disable mysql autocommit since we handle it
       //mysql_autocommit(conn, false);

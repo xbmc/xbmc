@@ -50,6 +50,7 @@ public:
     ca.clear();
     capath.clear();
     ciphers.clear();
+    compression = false;
   };
   std::string type;
   std::string host;
@@ -62,6 +63,7 @@ public:
   std::string ca;
   std::string capath;
   std::string ciphers;
+  bool compression;
 };
 
 struct TVShowRegexp
