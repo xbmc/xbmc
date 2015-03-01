@@ -1090,6 +1090,7 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#257"
 msgid "Error"
 msgstr ""
@@ -2806,6 +2807,7 @@ msgctxt "#661"
 msgid "Choose export folder"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#662"
 msgid "This file is no longer available."
 msgstr ""
