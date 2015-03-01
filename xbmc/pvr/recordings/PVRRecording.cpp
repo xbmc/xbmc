@@ -200,8 +200,15 @@ bool CPVRRecording::Delete(void)
     DisplayError(error);
     return false;
   }
-
+  OnDelete();
   return true;
+}
+
+void CPVRRecording::OnDelete(void)
+{
+  EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(EpgEvent());
+  if (epgTag)
+    epgTag->ClearRecording();
 }
 
 bool CPVRRecording::Undelete(void)
@@ -363,6 +370,10 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     strEpisode.erase(0, pos + 2);
     m_strPlotOutline = strEpisode;
   }
+
+  if (m_bIsDeleted)
+    OnDelete();
+
   UpdatePath();
 }
 

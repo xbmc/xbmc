@@ -523,7 +523,7 @@ void CPVRRecordings::UpdateEpgTags(void)
   for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     iEpgEvent = it->second->EpgEvent();
-    if (iEpgEvent > 0)
+    if (iEpgEvent > 0 && !it->second->IsDeleted())
     {
       EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(iEpgEvent);
       if (epgTag)

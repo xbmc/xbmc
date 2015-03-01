@@ -121,6 +121,11 @@ namespace PVR
     bool Delete(void);
 
     /*!
+     * @brief Called when this recording has been deleted
+     */
+    void OnDelete(void);
+
+    /*!
      * @brief Undelete this recording on the client (if supported).
      * @return True if it was undeleted successfully, false otherwise.
      */
