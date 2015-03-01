@@ -78,6 +78,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "filesystem/VideoDatabaseFile.h"
 #include "utils/Variant.h"
 #include "windowing/egl/VideoSyncAndroid.h"
 #include "windowing/WinEvents.h"
@@ -838,8 +839,14 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   std::string action = intent.getAction();
   if (action == "android.intent.action.VIEW")
   {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(
-                                                 new CFileItem(GetFilenameFromIntent(intent), false)));
+    std::string playFile = GetFilenameFromIntent(intent);
+    CFileItem* item = new CFileItem(playFile, false);
+    if (item->IsVideoDb())
+    {
+      *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+    }
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
   }
 }
 

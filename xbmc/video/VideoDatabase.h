@@ -165,6 +165,7 @@ enum VideoDbDetails
 
 typedef enum
 {
+  VIDEODB_CONTENT_UNKNOWN = 0,
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
   VIDEODB_CONTENT_MUSICVIDEOS = 3,
@@ -612,6 +613,7 @@ public:
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag) const;
+  CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
 
   // scraper settings
   void SetScraperForPath(const std::string& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
